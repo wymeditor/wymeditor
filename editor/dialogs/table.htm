@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+ * WYM editor : what you see is What You Mean web-based editor
+ * Copyright (c) 1997-2006, H.O.net - http://www.honet.be/
+ * Use of WYM editor is granted by the terms of the MIT License (http://www.opensource.org/licenses/mit-license.php).
+ *
+ * For further information visit:
+ * 		http://www.wym-editor.org/
+ * 
+ * File Name:
+ *		table.htm
+ *		Dialog which defines tables values.
+ *		See the documentation for more info.
+ * 
+ * File Authors:
+ * 		Jean-Francois Hovinne (jf.hovinne@wym-editor.org)
+ *		Daniel Reszka (d.reszka@wym-editor.org)
+ *
+ * File Revision:
+ *		$Id: table.htm,v 1.3 2006/01/31 08:45:45 jf_hovinne Exp $
+-->
+
+<html>
+<head>
+<title>WYM editor - Table</title>
+<link rel="stylesheet" type="text/css" href="../skins/editor-skin.css" />
+<script type="text/javascript" src="../util.js"></script>
+<script type="text/javascript" src="../dialog.js"></script>
+</head>
+
+<body class="dialog" id="table">
+<p>
+ <label>Number of rows</label><input type="text" id="table_rows" value="3" />
+</p>
+<p>
+ <label>Number of columns</label><input type="text" id="table_cols" value="2" />
+</p>
+<p>
+ <input id="bt_submit" type="button" value="Submit" onclick="table_sendValue();window.close()" />
+ <input id="bt_cancel" type="button" value="Cancel" onclick="window.close()" />
+</p>
+</body>
+</html>

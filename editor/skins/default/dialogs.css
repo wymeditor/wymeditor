@@ -1,0 +1,28 @@
+/*
+ * WYM editor : what you see is What You Mean web-based editor
+ * Copyright (c) 1997-2006, H.O.net - http://www.honet.be/
+ * Use of WYM editor is granted by the terms of the MIT License (http://www.opensource.org/licenses/mit-license.php).
+ *
+ * For further information visit:
+ * 		http://www.wym-editor.org/
+ * 
+ * File Name:
+ *		dialog.css
+ *		Dialogs css file.
+ *		See the documentation for more info.
+ * 
+ * File Authors:
+ * 		Daniel Reszka (d.reszka@wym-editor.org)
+ *
+ * File Revision:
+ *		$Id: dialogs.css,v 1.3 2006/01/31 08:45:45 jf_hovinne Exp $
+*/
+
+/* DIALOGS */
+
+	.dialog			{ background: #e1e8f1}
+	.dialog	input		{ border: 1px solid gray; margin-bottom: 5px; background-color: white; float: left; width: 380px }
+	.dialog label		{ float: left; width: 140px; margin: 0 0 0 10px; padding: 0; clear: both;  }
+	.dialog p		{ margin: 0; padding: 1px 0     }
+	.dialog input#bt_submit	{ margin-left: 150px; background: #EEE ; clear: both; width: 50px}
+	.dialog input#bt_cancel	{ margin-left: 5px; background: #EEE ; width: 50px}

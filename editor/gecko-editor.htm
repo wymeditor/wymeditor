@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+ * WYM editor : what you see is What You Mean web-based editor
+ * Copyright (c) 1997-2006, H.O.net - http://www.honet.be/
+ * Use of WYM editor is granted by the terms of the MIT License (http://www.opensource.org/licenses/mit-license.php).
+ *
+ * For further information visit:
+ * 		http://www.wym-editor.org/
+ *
+ * File Name:
+ *		gecko-editor.htm
+ *		Main editor container for Gecko browsers.
+ *		See the documentation for more info.
+ *
+ * File Authors:
+ * 		Jean-Francois Hovinne (jf.hovinne@wym-editor.org)
+ *
+ * File Revision:
+ *		$Id: gecko-editor.htm,v 1.1 2006/02/28 12:01:49 jf_hovinne Exp $
+-->
+
+<html>
+<head>
+<title>WYM editor</title>
+<link rel="stylesheet" type="text/css" href="skins/editor-skin.css" />
+<script type="text/javascript" src="gecko-util.js"></script>
+<script type="text/javascript" src="gecko-wym.js"></script>
+</head>
+
+<body class="editor" onload="init()">
+
+<div id="topdiv">
+
+<div id="header">
+<a href="http://www.wym-editor.org/"><img id="logo-main" src="images/wym-editor.png" width="127" height="19" alt="WYM editor logo" /></a>
+</div>
+
+<div id="toolbars">
+
+ 	<!-- basic commands -->
+	<div id="m_basic">
+	<a id="m_strong" title="Strong" href="#" onclick="execCom('Bold');getCleanHTML()">Strong</a>
+	<a id="m_italic" title="Italics" href="#" onclick="execCom('Italic');getCleanHTML()">Italic</a>
+	<a id="m_sup" title="Supercript" href="#" onclick="execCom('Superscript');getCleanHTML()">Superscript</a>
+	<a id="m_sub" title="Subscript" href="#" onclick="execCom('Subscript');getCleanHTML()">Subscript</a>
+	<a id="m_ordered_list" title="Ordered list" href="#" onclick="execCom('InsertOrderedList');getCleanHTML()">Ordered List</a>
+	<a id="m_unordered_list" title="Unordered list" href="#" onclick="execCom('InsertUnorderedList');getCleanHTML()">Unordered List</a>
+	</div>
+	
+	<div id="m_undo_redo">
+	<a id="m_undo" title="Undo" href="#" onclick="execCom('Undo')">Undo</a>
+	<a id="m_redo" title="Redo" href="#" onclick="execCom('Redo')">Redo</a>
+	</div>
+
+	<!-- objects : link, image, table -->
+	<div id="m_objects">
+	<a id="m_link" title="Create link" href="#" onclick="alert('Not yet implemented');getCleanHTML()">Link</a>
+	<a id="m_unlink" title="Unlink" href="#" onclick="execCom('Unlink');getCleanHTML()">Unlink</a>
+	<a id="m_image" title="Insert image" href="#" onclick="alert('Not yet implemented');getCleanHTML()">Image</a>
+	<a id="m_table" title="Insert table" href="#" onclick="alert('Not yet implemented');getCleanHTML()">Table</a>
+	</div>
+
+	<!-- table : advanced commands -->
+	<div id="m_table_advanced">
+	<a id="m_table_insert_row_after" title="Insert new row after current row" href="#" onclick="alert('Not yet implemented');getCleanHTML()">Insert Row After</a>
+	<a id="m_table_insert_row_before" title="Insert new row before current row" href="#" onclick="alert('Not yet implemented');getCleanHTML()">Insert Row Before</a>
+	<a id="m_table_insert_col_after" title="Insert new column after current column" href="#" onclick="alert('Not yet implemented');getCleanHTML()">Insert Col After</a>
+	<a id="m_table_insert_col_before" title="Insert new column before current column" href="#" onclick="alert('Not yet implemented');getCleanHTML()">Insert Col Before</a>
+	<a id="m_table_delete_row" title="Delete current row" href="#" onclick="alert('Not yet implemented');getCleanHTML()">Delete Row</a>
+	<a id="m_table_delete_col" title="Delete current column" href="#" onclick="alert('Not yet implemented');getCleanHTML()">Delete Col</a>
+	</div>
+
+	<!-- advanced commands  -->
+	<div id="m_advanced">
+	<a id="m_html" title="View source code" href="#" onclick="getCleanHTML();htmlVisible()">Show / Hide HTML</a>
+	<a id="m_preview" title="Open preview" href="#" onclick="alert('Not yet implemented')">Preview</a>
+	</div>
+</div>
+
+<!-- html value -->
+<textarea name="txthtml" id="txthtml" cols="60" rows="10" onkeyup="setHTML()" style="display:none"></textarea>
+
+<!-- the editor -->
+<iframe id="editor" src="gecko-iframe.htm" />
+
+</div>
+</body>
+</html>

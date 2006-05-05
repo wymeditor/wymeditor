@@ -1,0 +1,80 @@
+/*
+ * WYM editor : what you see is What You Mean web-based editor
+ * Copyright (c) 1997-2006, H.O.net - http://www.honet.be/
+ * Use of WYM editor is granted by the terms of the MIT License (http://www.opensource.org/licenses/mit-license.php).
+ *
+ * For further information visit:
+ * 		http://www.wym-editor.org/
+ * 
+ * File Name:
+ *		screen.css
+ *		Preview css file.
+ *		See the documentation for more info.
+ * 
+ * File Authors:
+ * 		Daniel Reszka (d.reszka@wym-editor.org)
+ *
+ * File Revision:
+ *		$Id: screen.css,v 1.4 2006/01/31 08:45:45 jf_hovinne Exp $
+*/
+
+/* COMMON */
+	body				{ margin: 0; padding: 0; font-family: verdana, arial, sans-serif; font-size: 90%; background: /*#F6F8FB*/ #eee; line-height: 1.3em }
+	img#logo-main			{ float: right; margin: 5px 20px 0 0}
+	.nav ul				{ list-style: none; margin: 0; padding: 0; }
+	.nav a				{ text-decoration: none; }
+	.nav a:hover			{ background: yellow; }
+	#nav-pri 			{ border-bottom: 1px solid gray; border-top: 2px solid white; overflow: hidden; font-size: 0.8em; background: white; color: gray; }
+ * html #nav-pri 			{ height: 1%; overflow: visible;}
+	#nav-pri li			{ float: left; margin: 0 10px; padding: 5px 3px; }
+	#nav-pri a			{ display: block; padding: 0 3px;   }
+	#nav-pri span			{ color: black;}
+	#infos				{ padding: 10px 0 0 20px; border-bottom: 1px solid gray; background: #eee;    }
+	#infos h2			{ margin: 0; font-size: 0.9em; font-weight: normal; color: gray; }
+	#preview_container		{ background: white; padding: 20px; overflow: hidden; }
+ * html #preview_container		{ height:1%; overflow: visible; }
+	acronym				{ border-bottom: 1px dashed gray }
+	p.block                         { float: right; width: 200px; border: 1px solid gray; padding: 15px; margin: 0 0 20px 20px; clear: both; text-align: left !important;}
+	img.border                      { border: 1px solid black; padding: 1px }
+	p.important                     { border: 3px double black; padding: 3px;  background: #ffffcc }
+	.hidden-note			{ display: none;}
+/* SAMPLE 1*/
+	.sample_1 #infos 			{ background: white url(s1-bg01.png); }
+	.sample_1 #infos h2			{ background: white; display: inline; }
+	.sample_1 #preview_container 		{ background: white url(s1-bg02.png) no-repeat 624px 15px }
+	.sample_1 #preview_container h1 	{ color: #C8242F; font-family: georgia, serif; font-weight: normal; font-size: 1.6em; background: url(s1-line01.png) no-repeat bottom left; padding: 0 0 8px 15px; position: relative; left: -15px; margin: 1.3em 0 1em;   }
+	.sample_1 #preview_container h2 	{ color: #C8242F; font-family: georgia, serif; font-weight: normal; font-size: 1.4em; margin: 1.8em 0 0.5em; }
+	.sample_1 #preview_container h3 	{ color: #C8242F; font-family: georgia, serif; font-weight: normal; font-size: 1.3em; }
+	.sample_1 #preview_container h4 	{ color: #C8242F; font-family: georgia, serif; font-weight: normal; font-size: 1.2em; }
+	.sample_1 #preview_container h5 	{ color: #C8242F; font-family: georgia, serif; font-weight: normal; font-size: 1.1em; }
+	.sample_1 #preview_container h6 	{ color: #C8242F; font-family: georgia, serif; font-weight: normal; font-size: 1em; }
+	.sample_1 #preview_container p		{ font-size: 0.9em; margin-top: 0.5em }
+	.sample_1 #preview_container p.date	{ font-family: georgia, serif; color: #C8242F; margin-bottom: -0.4em;}
+	.sample_1 #preview_container strong	{ color: #C8242F;}
+	.sample_1 p.block                       { background: white}
+/* SAMPLE 2*/
+	.sample_2				{ margin-bottom: 20px; background: #637a91;  }
+	.sample_2 #infos 			{ border-bottom: 1px solid black; background: white url(s2-bg01.png) repeat-x ;  }
+	.sample_2 #preview_container		{ padding: 1px 30px; margin: 50px 70px 0;  background: #EFF1F4; border: 1px solid black;    }
+	.sample_2 #preview_container p		{ font-size: 0.9em; margin-top: 0.5em; font-size: 0.8em; text-align: justify; }
+	.sample_2 #preview_container p.date 	{ margin-bottom: -0.4em; font-family:Georgia, serif; color:#929DAA; font-weight:bold;}
+	.sample_2 #preview_container strong 	{ color: red; }
+	.sample_2 #preview_container h1		{ font-size: 15px; color: #637a91 ; border: 1px solid black; background: white; padding: 3px 5px 2px; letter-spacing: 0.1em; float: right; margin-top: 10px; }
+	.sample_2 #preview_container h2		{ background: url(s2-bullet01.png) no-repeat 5px 60%; color:#637a91; font-weight:bold; font-size: 1.1em; padding: 0 0 0 17px; position: relative; left: -17px; margin: 1.8em 0 0.5em; }
+	.sample_2 #preview_container h3		{ color:#637a91; font-weight:bold; font-size: 1em; }
+	.sample_2 #preview_container h4		{ color:#637a91; font-weight:normal; font-size: 1em; text-decoration: underline; }
+	.sample_2 #preview_container h5		{ color:#637a91; font-weight:normal; font-size: 0.9em; text-decoration: underline; }
+	.sample_2 #preview_container h6		{ color:#637a91; font-weight:bold; font-size: 0.8em; }
+	.sample_2 p.block                        { background: white}
+/* SAMPLE 3*/
+	.sample_3				{ background: #737E8A  }
+	.sample_3 #nav-pri			{ border: solid black; border-width: 2px 0}
+	.sample_3 #infos 			{ background: #42484E; color: #8B97A7; border: solid black; border-width: 1px 0  }
+	.sample_3 #preview_container		{ background: #8A97A7; margin: 0 20px; color: #2A2B2C; border: #9FA8B2 solid; border-width: 0 1px; font-family: arial, sans-serif; text-align: justify;   }
+	.sample_3 #preview_container p		{ font-size: 0.9em; margin-top: 0.5em }
+	.sample_3 p.date			{ color: #2C3034 ; margin-bottom: -0.4em;  }
+	.sample_3 #preview_container strong	{ color: white; font-weight: normal;}
+	.sample_3 #preview_container h1 	{ font-family: impact, arial black, sans-serif; font-weight: normal; font-size: 1.4em; margin: 1.3em 0 1em; letter-spacing: 0.1em; border-bottom: 1px solid; text-align: right;    }
+	.sample_3 #preview_container h2 	{ color: white; font-weight: bold; font-size: 1.2em; margin: 1.8em 0 0.5em; letter-spacing: 0.1em; }
+	.sample_3 p.block                       { background: #737E8A; border-color: black; }
+	.sample_3 p.important                   { background-color: #737E8A; border: none  }

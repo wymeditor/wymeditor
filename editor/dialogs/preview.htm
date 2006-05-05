@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+ * WYM editor : what you see is What You Mean web-based editor
+ * Copyright (c) 1997-2006, H.O.net - http://www.honet.be/
+ * Use of WYM editor is granted by the terms of the MIT License (http://www.opensource.org/licenses/mit-license.php).
+ *
+ * For further information visit:
+ * 		http://www.wym-editor.org/
+ *
+ * File Name:
+ *		preview.htm
+ *		Preview page.
+ *		See the documentation for more info.
+ *
+ * File Authors:
+ * 		Jean-Francois Hovinne (jf.hovinne@wym-editor.org)
+ *		Daniel Reszka (d.reszka@wym-editor.org)
+ *
+ * File Revision:
+ *		$Id: preview.htm,v 1.4 2006/01/31 08:45:45 jf_hovinne Exp $
+-->
+
+<html>
+<head>
+<title>WYM editor - Preview</title>
+<link rel="stylesheet" type="text/css" href="../skins/preview/screen.css" />
+<script type="text/javascript" src="../preview.js"></script>
+</head>
+
+<body onload="init('preview')" class="sample_1">
+<div id="nav-pri" class="nav">
+<img id="logo-main" src="../images/wym-editor.png" width="127" height="19" />
+<ul>
+<li>Current skin: <span id="m_skin_name">sample_1</span></li>
+<li><a id="m_switch_skin" href="#" onclick="switchSkin()">Switch Skin</a></li>
+</ul>
+</div>
+<div id="infos">
+<h2>Preview:</h2>
+</div>
+
+<div id="preview_container"></div>
+</body>
+</html>
