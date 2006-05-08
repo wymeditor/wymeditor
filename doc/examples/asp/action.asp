@@ -1,11 +1,11 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!--
- * WYM editor : what you see is What You Mean web-based editor
- * Copyright (c) 1997-2005, H.O.net - http://www.honet.be/
- * Use of WYM editor is granted by the terms of the MIT License (http://www.opensource.org/licenses/mit-license.php).
+ * WYMeditor : what you see is What You Mean web-based editor
+ * Copyright (C) 2006 Jean-François Hovinne - Daniel Reszka
+ * Use of WYMeditor is granted by the terms of the MIT License (http://www.opensource.org/licenses/mit-license.php).
  *
  * For further information visit:
- * 		http://www.wym-editor.org/
+ * 		http://www.wymeditor.org/
  *
  * File Name:
  *		action.asp
@@ -13,10 +13,7 @@
  *		See the documentation for more info.
  *
  * File Authors:
- * 		Jean-Francois Hovinne (jf.hovinne@wym-editor.org)
- *
- * File Revision:
- *		$Id: action.asp,v 1.1 2005/11/22 15:04:44 jf_hovinne Exp $
+ * 		Jean-François Hovinne (jf.hovinne@wymeditor.org)
 -->
 
 <%
@@ -26,7 +23,7 @@ html=Request.Form("txthtml")
 
 <html>
 <head>
-<title>WYM editor</title>
+<title>WYMeditor</title>
 <link rel="stylesheet" type="text/css" href="skins/preview/screen.css" />
 </head>
 

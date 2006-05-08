@@ -1,10 +1,10 @@
-/*
- * WYM editor : what you see is What You Mean web-based editor
- * Copyright (c) 1997-2006, H.O.net - http://www.honet.be/
- * Use of WYM editor is granted by the terms of the MIT License (http://www.opensource.org/licenses/mit-license.php).
+﻿/*
+ * WYMeditor : what you see is What You Mean web-based editor
+ * Copyright (C) 2006 Jean-François Hovinne - Daniel Reszka
+ * Use of WYMeditor is granted by the terms of the MIT License (http://www.opensource.org/licenses/mit-license.php).
  *
  * For further information visit:
- * 		http://www.wym-editor.org/
+ * 		http://www.wymeditor.org/
  * 
  * File Name:
  *		preview.js
@@ -12,10 +12,7 @@
  *		See the documentation for more info.
  * 
  * File Authors:
- * 		Jean-Francois Hovinne (jf.hovinne@wym-editor.org)
- *
- * File Revision:
- *		$Id: preview.js,v 1.3 2006/01/31 08:45:45 jf_hovinne Exp $
+ * 		Jean-François Hovinne (jf.hovinne@wymeditor.org)
 */
 
 var iClass=1;

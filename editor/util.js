@@ -1,10 +1,10 @@
-/*
- * WYM editor : what you see is What You Mean web-based editor
- * Copyright (c) 1997-2006, H.O.net - http://www.honet.be/
- * Use of WYM editor is granted by the terms of the MIT License (http://www.opensource.org/licenses/mit-license.php).
+﻿/*
+ * WYMeditor : what you see is What You Mean web-based editor
+ * Copyright (C) 2006 Jean-François Hovinne - Daniel Reszka
+ * Use of WYMeditor is granted by the terms of the MIT License (http://www.opensource.org/licenses/mit-license.php).
  *
  * For further information visit:
- * 		http://www.wym-editor.org/
+ * 		http://www.wymeditor.org/
  * 
  * File Name:
  *		util.js
@@ -12,10 +12,7 @@
  *		See the documentation for more info.
  * 
  * File Authors:
- * 		Jean-Francois Hovinne (jf.hovinne@wym-editor.org)
- *
- * File Revision:
- *		$Id: util.js,v 1.7 2006/02/28 12:01:49 jf_hovinne Exp $
+ * 		Jean-François Hovinne (jf.hovinne@wymeditor.org)
 */
 
 var entities=new Array('nbsp','iexcl','cent','pound','curren','yen','brvbar','sect','uml','copy','ordf','laquo','not','shy','reg','macr','deg','plusmn','sup2','sup3','acute','micro','para','middot','cedil','sup1','ordm','raquo','frac14','frac12','frac34','iquest','agrave','aacute','acirc','atilde','auml','aring','aelig','ccedil','egrave','eacute','ecirc','euml','igrave','iacute','icirc','iuml','eth','ntilde','ograve','oacute','ocirc','otilde','ouml','times','oslash','ugrave','uacute','ucirc','uuml','yacute','thorn','szlig','agrave','aacute','acirc','atilde','auml','aring','aelig','ccedil','egrave','eacute','ecirc','euml','igrave','iacute','icirc','iuml','eth','ntilde','ograve','oacute','ocirc','otilde','ouml','divide','oslash','ugrave','uacute','ucirc','uuml','yacute','thorn','yuml','quot','amp','lt','gt','oelig','oelig','scaron','scaron','yuml','circ','tilde','ensp','emsp','thinsp','zwnj','zwj','lrm','rlm','ndash','mdash','lsquo','rsquo','sbquo','ldquo','rdquo','bdquo','dagger','dagger','permil','lsaquo','rsaquo','euro','fnof','alpha','beta','gamma','delta','epsilon','zeta','eta','theta','iota','kappa','lambda','mu','nu','xi','omicron','pi','rho','sigma','tau','upsilon','phi','chi','psi','omega','alpha','beta','gamma','delta','epsilon','zeta','eta','theta','iota','kappa','lambda','mu','nu','xi','omicron','pi','rho','sigmaf','sigma','tau','upsilon','phi','chi','psi','omega','thetasym','upsih','piv','bull','hellip','prime','prime','oline','frasl','weierp','image','real','trade','alefsym','larr','uarr','rarr','darr','harr','crarr','larr','uarr','rarr','darr','harr','forall','part','exist','empty','nabla','isin','notin','ni','prod','sum','minus','lowast','radic','prop','infin','ang','and','or','cap','cup','int','there4','sim','cong','asymp','ne','equiv','le','ge','sub','sup','nsub','sube','supe','oplus','otimes','perp','sdot','lceil','rceil','lfloor','rfloor','lang','rang','loz','spades','clubs','hearts','diams')

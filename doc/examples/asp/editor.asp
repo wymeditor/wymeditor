@@ -1,11 +1,11 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!--
- * WYM editor : what you see is What You Mean web-based editor
- * Copyright (c) 1997-2005, H.O.net - http://www.honet.be/
- * Use of WYM editor is granted by the terms of the MIT License (http://www.opensource.org/licenses/mit-license.php).
+ * WYMeditor : what you see is What You Mean web-based editor
+ * Copyright (C) 2006 Jean-François Hovinne - Daniel Reszka
+ * Use of WYMeditor is granted by the terms of the MIT License (http://www.opensource.org/licenses/mit-license.php).
  *
  * For further information visit:
- * 		http://www.wym-editor.org/
+ * 		http://www.wymeditor.org/
  *
  * File Name:
  *		editor.asp
@@ -13,15 +13,12 @@
  *		See the documentation for more info.
  *
  * File Authors:
- * 		Jean-Francois Hovinne (jf.hovinne@wym-editor.org)
- *
- * File Revision:
- *		$Id: editor.asp,v 1.1 2005/11/22 15:04:44 jf_hovinne Exp $
+ * 		Jean-François Hovinne (jf.hovinne@wymeditor.org)
 -->
 
 <html>
 <head>
-<title>WYM editor</title>
+<title>WYMeditor</title>
 <link rel="stylesheet" type="text/css" href="skins/editor-skin.css" />
 <script type="text/javascript" src="util.js"></script>
 <script type="text/javascript" src="config.js"></script>
@@ -32,7 +29,7 @@
 <div id="topdiv">
 
 <div id="header">
-<a href="http://www.wym-editor.org/"><img id="logo-main" src="images/wym-editor.png" width="127" height="19" alt="WYM editor logo" /></a>
+<a href="http://www.wymeditor.org/"><img id="logo-main" src="images/wym-editor.png" width="127" height="19" alt="WYMeditor logo" /></a>
 </div>
 
 <form method="post" action="action.asp">
@@ -118,7 +115,7 @@
 	<!-- custom panel -->
 	<div id="m_custom">
 	<h2>Special</h2>
-	<a href="#" title="Insert WYM editor's description" onclick="insertAtCursor(custom_values['wym_editor_description']);getCleanHTML()">Insert WYM editor's description</a>
+	<a href="#" title="Insert WYMeditor's description" onclick="insertAtCursor(custom_values['wym_editor_description']);getCleanHTML()">Insert WYMeditor's description</a>
 	<a href="#" title="Insert template" onclick="openDialog('template');getCleanHTML()">Insert template</a>
 	</div>
 	
@@ -141,18 +138,18 @@
 	ondrop="event.returnValue=false"
 	onresizestart="event.returnValue=false">
 
-<h1>WYM editor</h1>
-<h2>What is WYM editor ?</h2>
-<p><strong>WYM editor</strong> is a web-based <acronym title="What You See Is What You Mean">WYSIWYM</acronym> editor.</p>
-<p class="block"><strong>WYM editor</strong>'s main concept is to leave details of the document's visual layout, and to concentrate on its structure and meaning, while trying to give the user as much comfort as possible (at least as <acronym title="What You See Is What You Get">WYSIWYG</acronym> editors).</p>
-<p><strong>WYM editor</strong> has been created to generate a perfectly structured <acronym title="eXtensible HyperText Markup Language">XHTML</acronym> code, to conform to the W3C specifications and to facilitate further processing by modern applications.</p>
-<p>With <strong>WYM editor</strong>, the code can't be contaminated by visual informations like font styles and weights, borders, colors, ...<br />
+<h1>WYMeditor</h1>
+<h2>What is WYMeditor ?</h2>
+<p><strong>WYMeditor</strong> is a web-based <acronym title="What You See Is What You Mean">WYSIWYM</acronym> editor.</p>
+<p class="block"><strong>WYMeditor</strong>'s main concept is to leave details of the document's visual layout, and to concentrate on its structure and meaning, while trying to give the user as much comfort as possible (at least as <acronym title="What You See Is What You Get">WYSIWYG</acronym> editors).</p>
+<p><strong>WYMeditor</strong> has been created to generate a perfectly structured <acronym title="eXtensible HyperText Markup Language">XHTML</acronym> code, to conform to the W3C specifications and to facilitate further processing by modern applications.</p>
+<p>With <strong>WYMeditor</strong>, the code can't be contaminated by visual informations like font styles and weights, borders, colors, ...<br />
 The end-user defines content meaning ; this will then determine its rendering. The result is easy and quick maintenance of the information.</p>
 <p>As the code is compliant to W3C specifications, you can for example process it using a <acronym title="eXtensible Stylesheet Language Transformation">XSLT</acronym> (at the client or the server side), giving you a wide range of applications.</p>
 
-<p><strong>WYM editor</strong> is released under the <a href="http://www.opensource.org/licenses/mit-license.php" title="About the M.I.T. license">Open Source MIT license</a> and is maintained by <a href="http://www.honet.be/" title="H.O.net website">H.O.net e-solutions</a>. If you want to contribute, don't hesitate to <a href="http://www.wym-editor.org/" title="WYM editor website">contact us</a>.</p>
+<p><strong>WYMeditor</strong> is released under the <a href="http://www.opensource.org/licenses/mit-license.php" title="About the M.I.T. license">Open Source MIT license</a> and is maintained by <a href="http://www.hovinne.com/" title="Jean-François Hovinne">Jean-François Hovinne</a> and <a href="http://www.pixarea.com/" title="Daniel Reszka">Daniel Reszka</a>. If you want to contribute, don't hesitate to <a href="http://www.wymeditor.org/" title="WYMeditor website">contact us</a>.</p>
 <p>Our goal is to create a XHTML web-based editor which will be usable on many platforms, with the help of the Open Source Community.</p>
-<p>WYM editor has been initially created to be part of our own CMS, <a href="http://www.cms-website.net" title="CMS Website project homepage">CMS Website</a>, a XML-based Content Management System which tries to be easy to use and at the same time to conform to the W3C recommendations.</p>
+<p>WYMeditor has been initially created to be part of our own CMS, <a href="http://www.wymsite.org" title="WYMsite project homepage">WYMsite</a>, a XML-based Content Management System which tries to be easy to use and at the same time to conform to the W3C recommendations.</p>
 
 <p>
 <a href="http://sourceforge.net" title="SourceForge website"><img src="http://sourceforge.net/sflogo.php?group_id=148869&amp;type=1" width="88" height="31" border="0" alt="SourceForge.net Logo" id="sourceforge-logo" /></a>
