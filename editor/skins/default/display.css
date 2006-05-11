@@ -1,6 +1,6 @@
-﻿/*
+/*
  * WYMeditor : what you see is What You Mean web-based editor
- * Copyright (C) 2006 Jean-François Hovinne - Daniel Reszka
+ * Copyright (C) 2006 Jean-Fran�ois Hovinne - Daniel Reszka
  * Use of WYMeditor is granted by the terms of the MIT License (http://www.opensource.org/licenses/mit-license.php).
  *
  * For further information visit:
@@ -12,12 +12,14 @@
  *		See the documentation for more info.
  *
  * File Authors:
- * 		Daniel Reszka (d.reszka@wymeditor.org)
-*/
-
-/* CSS FILE
-	AUTHOR:         Daniel Reszka - d.reszka@wymeditor.org
-	NOTES:		tab width = 8
+ * 		Daniel Reszka (d.reszka@wym-editor.org)
+ *
+ * Contributors:
+ * 		Maxime Caron (maxime.caron@gmail.com)
+ *
+ * Notes:
+ * 		Recommended tab width = 8
+ *
 */
 
 /* VISUAL FEEDBACK */
@@ -59,6 +61,7 @@
 	#editor h6		{ background-image: url(lbl-h6.png);}
        	#editor blockquote	{ background-image: url(lbl-blockquote.png);}
        	#editor pre		{ background-image: url(lbl-pre.png);}
+	/*#editor dl		{ background-image: url(lbl-dl.png);}*/
 
     /* specific HTML elements */
 	#editor	caption		{ text-align: left; }
@@ -77,11 +80,13 @@
 	#editor p.imglegend img	{ border: 1px solid gray; }
 
     /* visual feedback for non-valid nesting of elements*/
-    	h1 h1, h1 h2, h1 h3, h1 h4, h1 h5, h1 h6, h1 p,
-    	h2 h1, h2 h2, h2 h3, h2 h4, h2 h5, h2 h6, h2 p,
-    	h3 h1, h3 h2, h3 h3, h3 h4, h3 h5, h3 h6, h3 p,
-    	h4 h1, h4 h2, h3 h4, h4 h4, h4 h5, h4 h6, h4 p,
-    	h5 h1, h5 h2, h3 h5, h4 h5, h5 h5, h5 h6, h5 p,
-    	h6 h1, h6 h2, h3 h6, h4 h6, h5 h6, h6 h6, h6 p,
-    	p h1, p h2, p h3, p h4, p h5, p h6
+    	h1 h1, h1 h2, h1 h3, h1 h4, h1 h5, h1 h6, h1 p, h1 pre, h1 address,
+    	h2 h1, h2 h2, h2 h3, h2 h4, h2 h5, h2 h6, h2 p, h2 pre, h2 address,
+    	h3 h1, h3 h2, h3 h3, h3 h4, h3 h5, h3 h6, h3 p, h3 pre, h3 address,
+    	h4 h1, h4 h2, h4 h3, h4 h4, h4 h5, h4 h6, h4 p, h4 pre, h4 address,
+    	h5 h1, h5 h2, h5 h3, h5 h4, h5 h5, h5 h6, h5 p, h5 pre, h5 address,
+    	h6 h1, h6 h2, h6 h3, h6 h4, h6 h4, h6 h6, h6 p, h6 pre, h6 address,
+    	p h1, p h2, p h3, p h4, p h5, p h6, p pre, p address,
+	pre h1, pre h2, pre h3, pre h4, pre h5, pre h6, pre p, pre pre, pre address,
+	address h1, address h2, address h3, address h4, address h5, address h6, address p, address pre, address address,
 	{ background-color: #ff9999 !important; border: 1px solid red !important; font-size: 12px !important; font-weight: normal;  }
