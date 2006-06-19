@@ -25,22 +25,41 @@
 /* VISUAL FEEDBACK */
 
     /* basic */
-    	#editor			{ background: #e1e8f1; }
-	#editor div.editor   	{ border: 1px solid red }
+    	#editor,
+    	#gecko-editor		{ background: #e1e8f1; }
+	#editor div.editor   	{ border: 1px solid red; }
+	#editor			{ display: none; }
+ * html	#editor			{ display: block; }
+ *+html	#editor			{ display: block; }
+ * html	#gecko-editor		{ display: none; }
+ *+html	#gecko-editor		{ display: none; }
+ 
 
     /* make HTML blocs visible */
 	#editor p,
+	body#gecko-iframe p,
 	#editor h1,
+	body#gecko-iframe h1,
 	#editor h2,
+	body#gecko-iframe h2,
 	#editor h3,
+	body#gecko-iframe h3,
 	#editor h4,
+	body#gecko-iframe h4,
 	#editor h5,
+	body#gecko-iframe h5,
 	#editor h6,
+	body#gecko-iframe h6,
 	#editor ul,
+	body#gecko-iframe ul,
 	#editor ol,
+	body#gecko-iframe ol,
 	#editor table,
+	body#gecko-iframe table,
 	#editor blockquote,
-	#editor pre		{ padding:8px 5px 5px;  margin:10px; background: #FFFFFF no-repeat 2px 2px; }
+	body#gecko-iframe blockquote,
+	#editor pre,
+	body#gecko-iframe pre	{ padding:8px 5px 5px;  margin:10px; background: #FFFFFF no-repeat 2px 2px; }
 	#editor td		{ background: #F0F4F8; }
 	#editor th		{ background: #ffffcc; }
 	#editor ul,
@@ -52,15 +71,24 @@
 	#editor pre		{ background-color:transparent; border: 1px solid white }
 
     /* labels */
-    	#editor p		{ background-image: url(lbl-p.png);}
-	#editor h1		{ background-image: url(lbl-h1.png);}
-	#editor h2		{ background-image: url(lbl-h2.png);}
-	#editor h3		{ background-image: url(lbl-h3.png);}
-	#editor h4		{ background-image: url(lbl-h4.png);}
-	#editor h5		{ background-image: url(lbl-h5.png);}
-	#editor h6		{ background-image: url(lbl-h6.png);}
-       	#editor blockquote	{ background-image: url(lbl-blockquote.png);}
-       	#editor pre		{ background-image: url(lbl-pre.png);}
+    	#editor p,
+    	body#gecko-iframe p		{ background-image: url(lbl-p.png);}
+	#editor h1,
+	body#gecko-iframe h1		{ background-image: url(lbl-h1.png);}
+	#editor h2,
+	body#gecko-iframe h2		{ background-image: url(lbl-h2.png);}
+	#editor h3,
+	body#gecko-iframe h3		{ background-image: url(lbl-h3.png);}
+	#editor h4,
+	body#gecko-iframe h4		{ background-image: url(lbl-h4.png);}
+	#editor h5,
+	body#gecko-iframe h5		{ background-image: url(lbl-h5.png);}
+	#editor h6,
+	body#gecko-iframe h6		{ background-image: url(lbl-h6.png);}
+       	#editor blockquote,
+       	body#gecko-iframe blockquote	{ background-image: url(lbl-blockquote.png);}
+       	#editor pre,
+       	body#gecko-iframe pre		{ background-image: url(lbl-pre.png);}
 	/*#editor dl		{ background-image: url(lbl-dl.png);}*/
 
     /* specific HTML elements */
@@ -88,5 +116,5 @@
     	h6 h1, h6 h2, h6 h3, h6 h4, h6 h4, h6 h6, h6 p, h6 pre, h6 address,
     	p h1, p h2, p h3, p h4, p h5, p h6, p pre, p address,
 	pre h1, pre h2, pre h3, pre h4, pre h5, pre h6, pre p, pre pre, pre address,
-	address h1, address h2, address h3, address h4, address h5, address h6, address p, address pre, address address,
+	address h1, address h2, address h3, address h4, address h5, address h6, address p, address pre, address address
 	{ background-color: #ff9999 !important; border: 1px solid red !important; font-size: 12px !important; font-weight: normal;  }

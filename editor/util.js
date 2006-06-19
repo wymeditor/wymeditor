@@ -48,7 +48,7 @@ function indexOfArray(ar,item)
 }
 
 /*
-HTML cleanup
+HTML cleanup - IE version
 - closes empty tags and add missing double-quotes (for attributes) (bad MSIE behaviours)
 - closes unclosed list items (li) (MSIE again)
 - converts html entities to numerical ones
@@ -59,7 +59,7 @@ If you really need 100% well-formed XHTML code, please add code cleanup at the s
 Generating well-formed XHTML with 'MSIE contentEditable' is very, very difficult (it continuously breaks the well-formed code) !
 We've intensely tested this function, but we can't guarantee it will correct every error.
 */
-function cleanupHTML(sHtml)
+function cleanupHTML_ie(sHtml)
 {
 	var iEnt=-1;
 	var flagTag=false,begTag=false,flagAttr=false,begAttr=false,flagEntity=false,begEntity=false,flagLi=false,dropTag=false;
@@ -211,5 +211,65 @@ function cleanupHTML(sHtml)
 	var rExp=/> </gi;
 	ret=ret.replace(rExp,"><");
 	
+	return(ret);
+}
+
+/*
+HTML cleanup - MOZILLA version
+- replaces 'b' by 'strong', 'i' by 'em' (not done by string.replace for further cleanings)
+*/
+function cleanupHTML_moz(sHtml)
+{
+	var flagTag=false,begTag=false;
+	var tag="",ret="",attr="";
+	
+	for(var x=0;x<sHtml.length;x++)
+	{
+		c=sHtml.charAt(x);
+		
+		if(begTag)
+		{
+			if(c==" " || c==">")
+			{
+				switch(tag)
+				{
+					case "b":
+						tag="strong";
+						break;
+					case "/b":
+						tag="/strong";
+						break;
+					case "i":
+						tag="em";
+						break;
+					case "/i":
+						tag="/em";
+						break;
+					default:
+						break;
+				}
+				begTag=false;
+			}
+			else tag+=c;
+		}
+		
+		if(c=="<"){begTag=true;flagTag=true;}
+		
+		if(flagTag)
+		{
+			if(c==">")
+			{
+				flagTag=false;
+				ret+="<"+tag+attr+">";
+				tag="";
+				attr="";
+			}
+			else if(!begTag)
+			{
+				attr+=c;
+			}
+		}
+		else ret+=c;	
+	}
 	return(ret);
 }

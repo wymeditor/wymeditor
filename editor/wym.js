@@ -25,12 +25,18 @@ function init()
 	getHTML();
 	setImgEvent();
 	displayPasteCleanup(true);
+	if(moz)
+	{
+		iframe().contentDocument.designMode="on";
+		execCom("styleWithCSS",false);
+	}
 }
 
 //these functions return base objects
 function editor()
 {
-	return(document.getElementById('editor'));
+	if(ie) return(document.getElementById('editor'));
+	else if(moz) return(iframe().contentDocument.body);
 }
 function txthtml()
 {
@@ -53,6 +59,11 @@ function selectedId()
 {
 	if(selectedElement!=null)return(selectedElement.id);
 	else return(null);
+}
+
+function iframe()
+{
+	return(document.getElementById('gecko-editor'));
 }
 
 //we 'release' the image selection
@@ -106,28 +117,52 @@ function insertAfter(elem,currentElem)
 //put editor value in txthtml
 function getHTML()
 {
-	txthtml().innerText="";
-	txthtml().innerText=editor().innerHTML;
+	if(ie)
+	{
+		txthtml().innerText="";
+		txthtml().innerText=editor().innerHTML;
+	}
+	else if(moz)
+	{
+		txthtml().value="";
+		txthtml().value=editor().innerHTML;
+	}
 }
 
 //put cleaned editor value in txthtml
 function getCleanHTML()
 {
-	txthtml().innerText="";
-	txthtml().innerText=cleanupHTML(editor().innerHTML);
+	if(ie)
+	{
+		txthtml().innerText="";
+		txthtml().innerText=cleanupHTML_ie(editor().innerHTML);
+	}
+	else if(moz)
+	{
+		txthtml().value="";
+		txthtml().value=cleanupHTML_moz(editor().innerHTML);
+	}
 }
 
 //put txthtml value in editor
 function setHTML()
 {
-  editor().innerHTML=txthtml().innerText;
+	if(ie) editor().innerHTML=txthtml().innerText;
+	else if(moz)editor().innerHTML=txthtml().value;
 }
 
 //set txthtml (in)visible
 function htmlVisible()
 {
-  if(txthtml().style.display!="none")txthtml().style.display="none";
-  else txthtml().style.display="inline";
+	if(txthtml().style.display!="none")txthtml().style.display="none";
+	else txthtml().style.display="inline";
+}
+
+//buttons events
+function execCom(cmd,opt)
+{
+	if(moz) iframe().contentDocument.execCommand(cmd,'',opt);
+	else if(ie) {document.execCommand(cmd);}
 }
 
 //main function to get the current selected container
@@ -136,11 +171,11 @@ function getSelectedContainer()
 	if(selectedElement==null)
 	{
 		var caretPos=editor().caretPos;
-    	if(caretPos!=null)
-    	{
-    		if(caretPos.parentElement!=undefined)return(caretPos.parentElement());
+    		if(caretPos!=null)
+    		{
+    			if(caretPos.parentElement!=undefined)return(caretPos.parentElement());
+    		}
     	}
-    }
 	else return(selectedElement);
 }
 
@@ -226,10 +261,41 @@ function getAllowedContainer(container,aAllowedContainers)
 //switch the container to a new one with another type
 function setContainer(sType)
 {
-	container=getSelectedContainer();
-	if(container!=null)
+	if(ie)
 	{
-		switch(container.tagName)
+		container=getSelectedContainer();
+		if(container!=null)
+		{
+			switch(container.tagName)
+			{
+				case "P":
+				case "H1":
+				case "H2":
+				case "H3":
+				case "H4":
+				case "H5":
+				case "H6":
+				case "PRE":
+				case "BLOCKQUOTE":
+					break;
+				default:
+					var aTypes=new Array("P","H1","H2","H3","H4","H5","H6","PRE","BLOCKQUOTE");
+					container=getContainerOfTypeArray(container,aTypes);
+					break;
+			}
+        	
+			if(container!=null)
+			{
+				var html=container.innerHTML;
+				var newNode=document.createElement(sType);
+				container.replaceNode(newNode);
+				newNode.innerHTML=html;
+			}
+		}
+	}
+	else if(moz)
+	{
+		switch(sType)
 		{
 			case "P":
 			case "H1":
@@ -239,21 +305,13 @@ function setContainer(sType)
 			case "H5":
 			case "H6":
 			case "PRE":
+				execCom("formatblock",sType);
+				break;
 			case "BLOCKQUOTE":
+				//Midas inserts nested blockquotes, or blockquotes containing headings
+				//I don't know how to correct this behaviour
 				break;
-			default:
-				var aTypes=new Array("P","H1","H2","H3","H4","H5","H6","PRE","BLOCKQUOTE");
-				container=getContainerOfTypeArray(container,aTypes);
-				break;
-		}
-
-		if(container!=null)
-		{
-			var html=container.innerHTML;
-			var newNode=document.createElement(sType);
-			container.replaceNode(newNode);
-			newNode.innerHTML=html;
-		}
+		}		
 	}
 }
 

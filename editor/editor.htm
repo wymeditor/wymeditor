@@ -24,6 +24,7 @@
 <link rel="stylesheet" type="text/css" href="skins/editor-skin.css" />
 <script type="text/javascript" src="util.js"></script>
 <script type="text/javascript" src="config.js"></script>
+<script type="text/javascript" src="browser.js"></script>
 <script type="text/javascript" src="wym.js"></script>
 </head>
 
@@ -49,24 +50,24 @@
 
  	<!-- basic commands -->
 	<div id="m_basic">
-	<a id="m_strong" title="Strong" href="#" onclick="execCommand('Bold');getCleanHTML()">Strong</a>
-	<a id="m_italic" title="Italics" href="#" onclick="execCommand('Italic');getCleanHTML()">Italic</a>
-	<a id="m_sup" title="Supercript" href="#" onclick="execCommand('Superscript');getCleanHTML()">Superscript</a>
-	<a id="m_sub" title="Subscript" href="#" onclick="execCommand('Subscript');getCleanHTML()">Subscript</a>
+	<a id="m_strong" title="Strong" href="#" onclick="execCom('Bold');getCleanHTML()">Strong</a>
+	<a id="m_italic" title="Italics" href="#" onclick="execCom('Italic');getCleanHTML()">Italic</a>
+	<a id="m_sup" title="Supercript" href="#" onclick="execCom('Superscript');getCleanHTML()">Superscript</a>
+	<a id="m_sub" title="Subscript" href="#" onclick="execCom('Subscript');getCleanHTML()">Subscript</a>
 	<!-- we must remove class attribute before converting from P to OL or UL -->
-	<a id="m_ordered_list" title="Ordered list" href="#" onclick="removeClassAttr();execCommand('InsertOrderedList');getCleanHTML()">Ordered List</a>
-	<a id="m_unordered_list" title="Unordered list" href="#" onclick="removeClassAttr();execCommand('InsertUnorderedList');getCleanHTML()">Unordered List</a>
+	<a id="m_ordered_list" title="Ordered list" href="#" onclick="removeClassAttr();execCom('InsertOrderedList');getCleanHTML()">Ordered List</a>
+	<a id="m_unordered_list" title="Unordered list" href="#" onclick="removeClassAttr();execCom('InsertUnorderedList');getCleanHTML()">Unordered List</a>
 	</div>
 	
 	<div id="m_undo_redo">
-	<a id="m_undo" title="Undo" href="#" onclick="execCommand('Undo')">Undo</a>
-	<a id="m_redo" title="Redo" href="#" onclick="execCommand('Redo')">Redo</a>
+	<a id="m_undo" title="Undo" href="#" onclick="execCom('Undo')">Undo</a>
+	<a id="m_redo" title="Redo" href="#" onclick="execCom('Redo')">Redo</a>
 	</div>
 
 	<!-- objects : link, image, table -->
 	<div id="m_objects">
 	<a id="m_link" title="Create link" href="#" onclick="openDialog('link');getCleanHTML()">Link</a>
-	<a id="m_unlink" title="Unlink" href="#" onclick="execCommand('Unlink');getCleanHTML()">Unlink</a>
+	<a id="m_unlink" title="Unlink" href="#" onclick="execCom('Unlink');getCleanHTML()">Unlink</a>
 	<a id="m_image" title="Insert image" href="#" onclick="openDialog('image');getCleanHTML()">Image</a>
 	<a id="m_table" title="Insert table" href="#" onclick="openDialog('table');getCleanHTML()">Table</a>
 	</div>
@@ -131,6 +132,9 @@
 	</div>
 </div>
 
+<!-- html value -->
+<textarea name="txthtml" id="txthtml" cols="100" rows="20" onkeyup="setHTML()" style="display:none"></textarea>
+
 <!-- the editor - saveCaret saves cursor position - setImgEvent handles click on images -->
 <div contentEditable name="editor" id="editor"
 	onbeforedeactivate="saveCaret()"
@@ -162,8 +166,8 @@ The end-user defines content meaning ; this will then determine its rendering. T
 
 </div>
 
-<!-- html value -->
-<textarea name="txthtml" id="txthtml" cols="100" rows="20" onkeyup="setHTML()" style="display:none"></textarea>
+<!-- the editor -->
+<iframe id="gecko-editor" src="gecko-iframe.htm" />
 
 </div>
 </body>
