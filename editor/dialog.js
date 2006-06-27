@@ -20,8 +20,10 @@ var oSelected=window.opener.selected();
 var oSelectedId=null;
 
 //container and mainContainer : we are in a container and we want to insert a new object
-var container=window.opener.getSelectedContainer();
-var mainContainer=window.opener.getMainContainer(container);
+var container, mainContainer;
+
+if(ie) container=window.opener.getSelectedContainer();
+if(ie) mainContainer=window.opener.getMainContainer(container);
 
 //var selRange;
 
@@ -105,65 +107,91 @@ function setValue(sName,sValue)
 function link_sendValue()
 {
 	var elem=null;
+	var now=new Date();
+	var marker="wym-"+now.getTime();
 	
 	//create the link, or overwrite it
-	window.opener.document.execCommand("CreateLink",false,getValue("link_href"));
+	if(ie) window.opener.document.execCommand("CreateLink",false,getValue("link_href"));
+	
+	//well, not sure the marker is the best way to do it, but it works (see below, moz section)
+	else if(moz) window.opener.iframe().contentDocument.execCommand("CreateLink","",marker);
 	
 	//now we need to set the other attributes
-	//is it an image ?
-	if(oSelected!=null)
-	{
-		elem=oSelected.parentNode;
-		if(elem!=null)
-		{
-			//elem is the link
-			if(elem.tagName.toLowerCase()=="a")
-			{
-				elem.title=getValue("link_title");	
-			}	
-		}	
-	}
 	
-	//not an image
-	if(container!=null)
+	if(ie)
 	{
-		switch(container.tagName.toLowerCase())
+		//is it an image ?
+		if(oSelected!=null)
 		{
-			//an updated link
-			case "a":
-				container.title=getValue("link_title");
-				break;
-			//everything else
-			default:
-				elem=container.parentNode;
-				if(elem!=null)
+			elem=oSelected.parentNode;
+			if(elem!=null)
+			{
+				//elem is the link
+				if(elem.tagName.toLowerCase()=="a")
 				{
-					//is elem the link ?
-					if(elem.tagName.toLowerCase()=="a")
+					elem.title=getValue("link_title");	
+				}	
+			}	
+		}
+		
+		//not an image
+		if(container!=null)
+		{
+			switch(container.tagName.toLowerCase())
+			{
+				//an updated link
+				case "a":
+					container.title=getValue("link_title");
+					break;
+				//everything else
+				default:
+					elem=container.parentNode;
+					if(elem!=null)
 					{
-						elem.title=getValue("link_title");
-					}
-					else
-					{
-						//this is a new link
-						
-						//get the selected text
-						var sel=window.opener.document.selection.createRange();
-						//parentNode is undefined :(
-						//get the new link
-						elem=sel.parentElement();
-						if(elem!=null)
+						//is elem the link ?
+						if(elem.tagName.toLowerCase()=="a")
 						{
-							if(elem.tagName.toLowerCase()=="a")
+							elem.title=getValue("link_title");
+						}
+						else
+						{
+							//this is a new link
+							
+							//get the selected text
+							var sel=window.opener.document.selection.createRange();
+							//parentNode is undefined :(
+							//get the new link
+							elem=sel.parentElement();
+							if(elem!=null)
 							{
-								elem.title=getValue("link_title");
+								if(elem.tagName.toLowerCase()=="a")
+								{
+									elem.title=getValue("link_title");
+								}
 							}
 						}
 					}
-				}
-				break;
+					break;
+			}
 		}
 	}
+	
+	else if(moz)
+	{
+		var nodes=window.opener.iframe().contentDocument.body.getElementsByTagName("a");
+		for(var x=0;x<nodes.length;x++)
+		{
+			node=nodes.item(x);
+			attr=node.attributes.getNamedItem("href");
+			if(attr.value==marker)
+			{
+				//wow, we got it
+				node.setAttribute("href",getValue("link_href"));
+				node.setAttribute("title",getValue("link_title"));
+			}
+		}
+	}
+	
 	//update txthtml value
 	window.opener.getCleanHTML();
 }

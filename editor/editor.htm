@@ -22,13 +22,13 @@
 <title>WYMeditor</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="skins/editor-skin.css" />
+<script type="text/javascript" src="browser.js"></script>
 <script type="text/javascript" src="util.js"></script>
 <script type="text/javascript" src="config.js"></script>
-<script type="text/javascript" src="browser.js"></script>
 <script type="text/javascript" src="wym.js"></script>
 </head>
 
-<body class="editor" onload="init();" onfocusout="bCleanPaste=false;displayPasteCleanup(true)">
+<body id="main_body" class="editor" onload="init();" onfocusout="bCleanPaste=false;displayPasteCleanup(true)">
 <div id="topdiv">
 
 <div id="header">
@@ -111,9 +111,9 @@
 	<h3>Common</h3>
 	<a href="#" name="hidden-note" onclick="setClass('hidden-note','*','*');getCleanHTML()">note (hidden)</a>
 	<h3>Paragraph</h3>
-	<a href="#" name="important" onclick="setClass('important','P','*');getCleanHTML()">important</a>
+	<a href="#" name="important" onclick="setClass('important','P','','*');getCleanHTML()">important</a>
 	<a href="#" name="date" onclick="setClass('date','P,DIV','*');getCleanHTML()">date</a>
-	<a href="#" name="block" onclick="setClass('block','P,DIV','*');getCleanHTML()">side block</a>
+	<a href="#" name="block" onclick="setClass('block','P,DIV','','important');getCleanHTML()">side block</a>
 	<h3>Image</h3>
 	<a href="#" name="border" onclick="setClass('border','IMG','');getCleanHTML()">border</a>
 	</div>
@@ -167,7 +167,7 @@ The end-user defines content meaning ; this will then determine its rendering. T
 </div>
 
 <!-- the editor -->
-<iframe id="gecko-editor" src="gecko-iframe.htm" />
+<iframe id="iframe_editor" src="iframe.htm" />
 
 </div>
 </body>

@@ -63,7 +63,7 @@ function selectedId()
 
 function iframe()
 {
-	return(document.getElementById('gecko-editor'));
+	return(document.getElementById('iframe_editor'));
 }
 
 //we 'release' the image selection
@@ -182,16 +182,41 @@ function getSelectedContainer()
 //get the top container (the first editor's child which contains the element)
 function getMainContainer(elem)
 {
-	nodes=editor().children;
-	for(var x=0;x<nodes.length;x++)
+	if(ie)
 	{
-		if(nodes.item(x).contains(elem))
+		nodes=editor().children;
+		for(var x=0;x<nodes.length;x++)
 		{
-			container=nodes.item(x);
-			break;
+			if(ie && nodes.item(x).contains(elem)) //not supported by Mozilla
+			{
+				container=nodes.item(x);
+				break;
+			}
+		}
+		return(container);
+	}
+	else if(moz)
+	{
+		nodes=iframe().contentDocument.body.childNodes;
+		for(var x=0;x<nodes.length;x++)
+		{
+			if(nodeContains(nodes.item(x),elem))
+			{
+				container=nodes.item(x);
+				break;
+			}
+		return(container);
 		}
 	}
-	return(container);
+}
+
+//Moz only: Mozilla doesn't support node.contains()
+function nodeContains(node,elem)
+{
+	parent=elem.parentNode;
+	if(parent.tagName.toLowerCase()=="body")return(false);
+	else if(parent==node)return(true);
+	else return(nodeContains(node,parent));
 }
 
 //recursive function which returns the element's parent having a particular type
@@ -315,11 +340,15 @@ function setContainer(sType)
 	}
 }
 
-//set the class the container
-function setClass(sValue,sAllowedContainers,sConflictingClasses)
+//set the class to the container
+function setClass(sValue,sAllowedContainers,sConflictingClasses,sAllowedClasses)
 {
 	var bConflictFound=false;
+	var bAllowedFound=(sAllowedClasses=="" || sAllowedClasses==null);
 	var container=null;
+	
+	if(sConflictingClasses==null)sConflictingClasses="";
+	if(sAllowedClasses==null)sAllowedClasses="";
 
 	//sAllowedContainers : string e.g. "P,DIV,SPAN"
 	// '*' = all containers allowed
@@ -337,6 +366,9 @@ function setClass(sValue,sAllowedContainers,sConflictingClasses)
 		//check if there isn't a conflict with existent classes
 		var aClE=container.className.split(" "); 		//array of classes already applied to the container
 		var aClC=sConflictingClasses.split(",");		//array of conflicting classes
+		var aClA=sAllowedClasses.split(",");			//array of compatible classes
+		
+		if(container.className=="")bAllowedFound=true;		//if no classes already applied, every class is allowed
 
 		for(var i=0;i<aClE.length;i++)
 		{
@@ -349,10 +381,23 @@ function setClass(sValue,sAllowedContainers,sConflictingClasses)
 				}
 			}
 			if(bConflictFound)break;
+			
+			if(!bAllowedFound)
+			{
+				for(var k=0;k<aClA.length;k++)
+				{
+					if((aClA[k]==aClE[i] && aClA[k]!="") || (aClA[k]=="*" && aClE[i]!="") || (aClE[i]==sValue))
+					{
+						bAllowedFound=true;
+						break;	
+					}
+				}
+				if(bAllowedFound)break;
+			}
 		}
 
 		//apply or remove it if no conflict
-		if(!bConflictFound)
+		if(!bConflictFound && bAllowedFound)
 		{
 			var sClass=container.className;
 
