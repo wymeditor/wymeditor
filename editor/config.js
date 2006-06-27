@@ -15,14 +15,14 @@
  * 		Jean-François Hovinne (jf.hovinne@wymeditor.org)
 */
 
-//modify these values if you want to better integrate wym in your application
+//modify these values if you want to better integrate WYMeditor in your application
 //just modify the value after the ":"
 //i.e. "link.htm" becomes "link.php", so you can add server-side generated controls, values, ...
 var dialogs=
 {
-	"base":		"dialogs/",			//base dialogs url
+	"base":		"dialogs/",		//base dialogs url
 	"default": 	"dialog.htm",		//default dialog template
-	"link": 	"link.htm",			//dialog used to add or modify a link
+	"link": 	"link.htm",		//dialog used to add or modify a link
 	"image": 	"image.htm",		//add or modify an image
 	"table": 	"table.htm",		//add a table
 	"template":	"template.htm"		//add structured content based on a template

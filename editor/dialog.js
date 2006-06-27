@@ -22,10 +22,8 @@ var oSelectedId=null;
 //container and mainContainer : we are in a container and we want to insert a new object
 var container, mainContainer;
 
-if(ie) container=window.opener.getSelectedContainer();
-if(ie) mainContainer=window.opener.getMainContainer(container);
-
-//var selRange;
+container=window.opener.getSelectedContainer();
+mainContainer=window.opener.getMainContainer(container);
 
 //init dialog values
 function init(sDialog)

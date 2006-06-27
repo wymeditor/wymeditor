@@ -184,13 +184,30 @@ function getSelectedContainer()
     		}
     		else if(moz)
     		{
+			//ugly hacks, because selectionStart is undefined :(
     			var now=new Date();
     			var marker="wym-cursor-"+now.getTime();
-    			execCom("inserthtml","<span id='"+marker+"' />");
-			var span=iframe().contentDocument.getElementById(marker);
-			var par=span.parentNode;
-			par.removeChild(span);
-			return(par);
+			var sel=iframe().contentDocument.getSelection();
+			if(sel==null)
+			{
+    				execCom("inserthtml","<span id='"+marker+"' />");
+				var span=iframe().contentDocument.getElementById(marker);
+				var par=span.parentNode;
+				par.removeChild(span);
+				return(par);
+			}
+			else
+			{
+				//really, really ugly
+				execCom("underline");
+				var nodes=iframe().contentDocument.getElementsByTagName("u");
+				var node=nodes.item(0);
+
+				if(node.hasChildNodes)par=node.childNodes.item(0);
+				else par=node.parentNode;
+				execCom("underline");
+				return(par);
+			}
     		}
     	}
 	else return(selectedElement);
