@@ -28,6 +28,7 @@ function init()
 	if(moz)
 	{
 		iframe().contentDocument.designMode="on";
+		iframe().contentDocument.addEventListener('keyup',iframe_keyup_handler,false);
 		execCom("styleWithCSS",false);
 	}
 }
@@ -140,6 +141,9 @@ function getCleanHTML()
 	else if(moz)
 	{
 		txthtml().value="";
+		
+		//various cleanups, see util.js
+		removeLastBr(editor());	
 		txthtml().value=cleanupHTML_moz(editor().innerHTML);
 	}
 }
@@ -187,7 +191,7 @@ function getMainContainer(elem)
 		nodes=editor().children;
 		for(var x=0;x<nodes.length;x++)
 		{
-			if(ie && nodes.item(x).contains(elem)) //not supported by Mozilla
+			if(nodes.item(x).contains(elem)) //not supported by Mozilla
 			{
 				container=nodes.item(x);
 				break;
@@ -705,5 +709,27 @@ function pasteData()
 			
 			getCleanHTML();
 		}
+	}
+}
+
+function iframe_keyup_handler(evt)
+{
+	var blnFound=false;
+	
+	if(evt.keyCode=="13" && !evt.shiftKey)
+	{
+		nodes=editor().childNodes;
+
+		for(var x=0;x<nodes.length;x++)
+		{
+			if(nodes.item(x).nodeName.toLowerCase()=="br" && nodes.item(x+1).nodeName.toLowerCase()=="br")
+			{
+				editor().removeChild(nodes.item(x));
+				blnFound=true;
+				break;
+			}
+		}
+		
+		if(blnFound) execCom("formatblock","P");
 	}
 }

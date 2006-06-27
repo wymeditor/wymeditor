@@ -214,8 +214,11 @@ function cleanupHTML_ie(sHtml)
 	return(ret);
 }
 
+
+//GECKO
+
 /*
-HTML cleanup - MOZILLA version
+HTML cleanup
 - replaces 'b' by 'strong', 'i' by 'em' (not done by string.replace for further cleanings)
 */
 function cleanupHTML_moz(sHtml)
@@ -272,4 +275,21 @@ function cleanupHTML_moz(sHtml)
 		else ret+=c;	
 	}
 	return(ret);
+}
+
+
+//Removes unnecessary <br> nodes
+function removeLastBr(doc)
+{
+	var nodes=doc.childNodes;
+	for(x=0;x<nodes.length;x++)
+	{
+		if(nodes.item(x).nodeName.toLowerCase()=="p")
+		{
+			if(nodes.item(x).lastChild.nodeName.toLowerCase()=="br")
+			{
+				nodes.item(x).removeChild(nodes.item(x).lastChild);
+			}
+		}
+	}
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
 Script Name: Simple Javascript Browser/OS detection
 Authors: Harald Hope, Tapio Markula, Websites: http://techpatterns.com/
 http://www.nic.fi/~tapio1/Teaching/index1.php3

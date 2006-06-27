@@ -70,6 +70,9 @@
 	#editor blockquote	{ margin-left: 30px;}
 	#editor pre		{ background-color:transparent; border: 1px solid white }
 
+    /* Gecko min height fix */
+    	body#iframe_body p 	{ min-height: 1em; }
+    
     /* labels */
     	#editor p,
     	body#iframe_body p		{ background-image: url(lbl-p.png);}
