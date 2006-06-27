@@ -174,10 +174,23 @@ function getSelectedContainer()
 {
 	if(selectedElement==null)
 	{
-		var caretPos=editor().caretPos;
-    		if(caretPos!=null)
+		if(ie)
+		{
+			var caretPos=editor().caretPos;
+    			if(caretPos!=null)
+    			{
+    				if(caretPos.parentElement!=undefined)return(caretPos.parentElement());
+    			}
+    		}
+    		else if(moz)
     		{
-    			if(caretPos.parentElement!=undefined)return(caretPos.parentElement());
+    			var now=new Date();
+    			var marker="wym-cursor-"+now.getTime();
+    			execCom("inserthtml","<span id='"+marker+"' />");
+			var span=iframe().contentDocument.getElementById(marker);
+			var par=span.parentNode;
+			par.removeChild(span);
+			return(par);
     		}
     	}
 	else return(selectedElement);
@@ -712,6 +725,10 @@ function pasteData()
 	}
 }
 
+
+//GECKO
+
+//keyup handler, mainly used for cleanups
 function iframe_keyup_handler(evt)
 {
 	var blnFound=false;
@@ -731,5 +748,10 @@ function iframe_keyup_handler(evt)
 		}
 		
 		if(blnFound) execCom("formatblock","P");
+	}
+	
+	else if(evt.keyCode=="83")
+	{
+		//fix non-existent container	
 	}
 }
