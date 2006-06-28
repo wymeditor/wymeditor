@@ -309,7 +309,7 @@ function getContainerOfTypeArray(elem,aContainerTypes)
 // '*' = all containers allowed
 function getAllowedContainer(container,aAllowedContainers)
 {
-	if(container.id!="editor")
+	if(container!=null && container.id!="editor")
 	{
 		var bAllowed=false;
 		for(i=0;i<aAllowedContainers.length;i++)
