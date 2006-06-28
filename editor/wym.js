@@ -240,16 +240,16 @@ function getMainContainer(elem)
 	}
 	else if(moz)
 	{
-		nodes=iframe().contentDocument.body.childNodes;
-		for(var x=0;x<nodes.length;x++)
+		nodes=editor().childNodes;
+		for(var y=0;y<nodes.length;y++)
 		{
-			if(nodeContains(nodes.item(x),elem))
+			if(nodeContains(nodes.item(y),elem) || nodes.item(y)==elem)
 			{
-				container=nodes.item(x);
+				container=nodes.item(y);
 				break;
 			}
-		return(container);
 		}
+		return(container);
 	}
 }
 
@@ -257,7 +257,7 @@ function getMainContainer(elem)
 function nodeContains(node,elem)
 {
 	parent=elem.parentNode;
-	if(parent.tagName.toLowerCase()=="body")return(false);
+	if(parent.tagName.toLowerCase()=="body" || parent.tagName.toLowerCase()=="html")return(false);
 	else if(parent==node)return(true);
 	else return(nodeContains(node,parent));
 }
@@ -760,8 +760,9 @@ function iframe_keyup_handler(evt)
 {
 	var blnFound=false;
 	
-	if(evt.keyCode=="13" && !evt.shiftKey)
+	if(evt.keyCode==13 && !evt.shiftKey) //RETURN key
 	{
+		//cleanup <br><br> between paragraphs
 		nodes=editor().childNodes;
 
 		for(var x=0;x<nodes.length;x++)
@@ -777,11 +778,27 @@ function iframe_keyup_handler(evt)
 		if(blnFound) execCom("formatblock","P");
 	}
 	
-	else if(evt.keyCode=="46")
+	else if(evt.keyCode!=8 && evt.keyCode!=46) //BACKSPACE AND DELETE
 	{
-		//fix non-existent container
-		container=getSelectedContainer();
-		if(container.tagName.toLowerCase()=="body")execCom("formatblock","P");
+		//cleanup not allowed main containers when deleting a P
+		
+		mainContainer=getMainContainer(getSelectedContainer());
+		switch (mainContainer.tagName)
+		{
+			case "P":
+			case "H1":
+			case "H2":
+			case "H3":
+			case "H4":
+			case "H5":
+			case "H6":
+			case "PRE":
+			case "BLOCKQUOTE":
+				break;
+			default:
+				execCom("formatblock","P");
+				break;
+		}
 	}
 	
 	displayClasses();
