@@ -236,7 +236,7 @@ function nodeContains(node,elem)
 //recursive function which returns the element's parent having a particular type
 
 //we get the element's parent
-//if it's type (tagname) isn't sContainerType, we get its parent
+//if its type (tagname) isn't sContainerType, we get its parent
 //and so on ...
 function getContainerOfType(elem,sContainerType)
 {
@@ -300,41 +300,10 @@ function getAllowedContainer(container,aAllowedContainers)
 //switch the container to a new one with another type
 function setContainer(sType)
 {
-	if(ie)
+	container=getSelectedContainer();
+	if(container!=null)
 	{
-		container=getSelectedContainer();
-		if(container!=null)
-		{
-			switch(container.tagName)
-			{
-				case "P":
-				case "H1":
-				case "H2":
-				case "H3":
-				case "H4":
-				case "H5":
-				case "H6":
-				case "PRE":
-				case "BLOCKQUOTE":
-					break;
-				default:
-					var aTypes=new Array("P","H1","H2","H3","H4","H5","H6","PRE","BLOCKQUOTE");
-					container=getContainerOfTypeArray(container,aTypes);
-					break;
-			}
-        	
-			if(container!=null)
-			{
-				var html=container.innerHTML;
-				var newNode=document.createElement(sType);
-				container.replaceNode(newNode);
-				newNode.innerHTML=html;
-			}
-		}
-	}
-	else if(moz)
-	{
-		switch(sType)
+		switch(container.tagName)
 		{
 			case "P":
 			case "H1":
@@ -344,13 +313,22 @@ function setContainer(sType)
 			case "H5":
 			case "H6":
 			case "PRE":
-				execCom("formatblock",sType);
-				break;
 			case "BLOCKQUOTE":
-				//Midas inserts nested blockquotes, or blockquotes containing headings
-				//I don't know how to correct this behaviour
 				break;
-		}		
+			default:
+				var aTypes=new Array("P","H1","H2","H3","H4","H5","H6","PRE","BLOCKQUOTE");
+				container=getContainerOfTypeArray(container,aTypes);
+				break;
+		}
+       	
+		if(container!=null)
+		{
+			var html=container.innerHTML;
+			var newNode=document.createElement(sType);
+			if(ie)container.replaceNode(newNode);
+			else if(moz)container.parentNode.replaceChild(newNode,container);
+			newNode.innerHTML=html;
+		}
 	}
 }
 
