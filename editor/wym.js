@@ -29,6 +29,7 @@ function init()
 	{
 		iframe().contentDocument.designMode="on";
 		iframe().contentDocument.addEventListener('keyup',iframe_keyup_handler,false);
+		iframe().contentDocument.addEventListener('mouseup',iframe_mouseup_handler,false);
 		execCom("styleWithCSS",false);
 	}
 }
@@ -165,7 +166,35 @@ function htmlVisible()
 //buttons events
 function execCom(cmd,opt)
 {
-	if(moz) iframe().contentDocument.execCommand(cmd,'',opt);
+	if(moz)
+	{
+		//well, moz sets <b><strong>#text</strong></b> or <i><em>#text</em></i>
+		//in this case, we don't use execCommand: we replace the <strong> or <em> nodes by a textNode
+		switch(cmd.toLowerCase())
+		{
+			case "bold":
+				container=getSelectedContainer();
+				if(container.tagName.toLowerCase()=="strong")
+				{
+					ntext=iframe().contentDocument.createTextNode(container.innerHTML);
+					container.parentNode.replaceChild(ntext,container);
+				}
+				else iframe().contentDocument.execCommand(cmd,'',opt);
+				break;
+			case "italic":
+				container=getSelectedContainer();
+				if(container.tagName.toLowerCase()=="em")
+				{
+					ntext=iframe().contentDocument.createTextNode(container.innerHTML);
+					container.parentNode.replaceChild(ntext,container);
+				}
+				else iframe().contentDocument.execCommand(cmd,'',opt);
+				break;
+			default:
+				iframe().contentDocument.execCommand(cmd,'',opt);
+				break;
+		}
+	}
 	else if(ie) {document.execCommand(cmd);}
 }
 
@@ -338,6 +367,7 @@ function setClass(sValue,sAllowedContainers,sConflictingClasses,sAllowedClasses)
 	var bConflictFound=false;
 	var bAllowedFound=(sAllowedClasses=="" || sAllowedClasses==null);
 	var container=null;
+	var sClasses="";
 	
 	if(sConflictingClasses==null)sConflictingClasses="";
 	if(sAllowedClasses==null)sAllowedClasses="";
@@ -348,6 +378,8 @@ function setClass(sValue,sAllowedContainers,sConflictingClasses,sAllowedClasses)
 
 	//find the container (from cursor pos or selected element)
 	container=getSelectedContainer();
+	var attrClass=container.attributes.getNamedItem("class");
+	if(attrClass!=null)sClasses=attrClass.value;
 
 	//find allowed container
 	//if current container isn't allowed, take the parent, and so on ...
@@ -356,11 +388,11 @@ function setClass(sValue,sAllowedContainers,sConflictingClasses,sAllowedClasses)
 	if(container!=null)
 	{
 		//check if there isn't a conflict with existent classes
-		var aClE=container.className.split(" "); 		//array of classes already applied to the container
-		var aClC=sConflictingClasses.split(",");		//array of conflicting classes
-		var aClA=sAllowedClasses.split(",");			//array of compatible classes
+		var aClE=sClasses.split(" "); 							//array of classes already applied to the container
+		var aClC=sConflictingClasses.split(",");					//array of conflicting classes
+		var aClA=sAllowedClasses.split(",");						//array of compatible classes
 		
-		if(container.className=="")bAllowedFound=true;		//if no classes already applied, every class is allowed
+		if(sClasses=="")bAllowedFound=true;						//if no classes already applied, every class is allowed
 
 		for(var i=0;i<aClE.length;i++)
 		{
@@ -391,23 +423,29 @@ function setClass(sValue,sAllowedContainers,sConflictingClasses,sAllowedClasses)
 		//apply or remove it if no conflict
 		if(!bConflictFound && bAllowedFound)
 		{
-			var sClass=container.className;
-
-			if(sClass==sValue || sClass.indexOf(sValue+" ")>-1 || sClass.indexOf(" "+sValue)>-1)
+			if(sClasses==sValue || sClasses.indexOf(sValue+" ")>-1 || sClasses.indexOf(" "+sValue)>-1)
 			{
-				sClass=sClass.replace(sValue,"");
-				sClass=sClass.replace("  "," ");
-				sValue=sClass;
+				sClasses=sClasses.replace(sValue,"");
+				sClasses=sClasses.replace("  "," ");
+				sValue=sClasses;
 			}
 			else
 			{
-				if(sClass=="")sClass=sValue;
-				else sValue=sClass+" "+sValue;
+				if(sClasses=="")sClasses=sValue;
+				else sValue=sClasses+" "+sValue;
 			}
 
 			sValue=sTrim(sValue);
-			if(sValue=="")container.removeAttribute("className");
-			else container.setAttribute("className",sValue,0);
+			if(sValue=="")
+			{
+				if(ie)container.removeAttribute("className");
+				else if(moz)container.attributes.removeNamedItem("class");
+			}
+			else
+			{
+				if(ie)container.setAttribute("className",sValue,0);
+				else if(moz)container.setAttribute("class",sValue);
+			}
 			displayClasses();
 		}
 	}
@@ -418,12 +456,25 @@ function displayClasses()
 {
 	var container=getSelectedContainer();
 	var nodes=document.getElementById('m_class').getElementsByTagName("A"); //get the buttons from the panel
-	for(var i=0;i<nodes.length;i++){nodes.item(i).setAttribute("className","",0);} //clearing
+	for(var i=0;i<nodes.length;i++)
+	{
+		//clearing
+		if(ie)nodes.item(i).setAttribute("className","",0);
+		else if(moz)
+		{
+			if(nodes.item(i).attributes.getNamedItem("class")!=null)
+				nodes.item(i).attributes.removeNamedItem("class");
+		}
+	} 
 	
 	if(container==null)container=selected(); //an image ?
 	if(container!=null)
 	{
-		var aClE=container.className.split(" "); //get the classes names
+		var sClasses="";
+		var attrClass=container.attributes.getNamedItem("class");
+		if(attrClass!=null)sClasses=attrClass.value;
+		
+		var aClE=sClasses.split(" "); //get the classes names
 		for(i=0;i<aClE.length;i++)
 		{
 			if(aClE[i]!="")
@@ -432,7 +483,8 @@ function displayClasses()
 				{
 					if(nodes.item(j).name==aClE[i])
 					{
-						nodes.item(j).setAttribute("className","active",0); //set the 'active' class
+						if(ie)nodes.item(j).setAttribute("className","active",0); //set the 'active' class
+						else if(moz)nodes.item(j).setAttribute("class","active",0);
 						break;
 					}
 				}
@@ -725,8 +777,19 @@ function iframe_keyup_handler(evt)
 		if(blnFound) execCom("formatblock","P");
 	}
 	
-	else if(evt.keyCode=="83")
+	else if(evt.keyCode=="46")
 	{
-		//fix non-existent container	
+		//fix non-existent container
+		container=getSelectedContainer();
+		if(container.tagName.toLowerCase()=="body")execCom("formatblock","P");
 	}
+	
+	displayClasses();
+}
+
+function iframe_mouseup_handler(evt)
+{
+	release();
+	setImgEvent();
+	displayClasses();
 }

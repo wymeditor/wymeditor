@@ -284,9 +284,9 @@ function removeLastBr(doc)
 	var nodes=doc.childNodes;
 	for(x=0;x<nodes.length;x++)
 	{
-		if(nodes.item(x).nodeName.toLowerCase()=="p")
+		if(nodes.item(x).nodeName.toLowerCase()=="p" && nodes.item(x).hasChildNodes)
 		{
-			if(nodes.item(x).lastChild.nodeName.toLowerCase()=="br")
+			if(nodes.item(x).lastChild!=null && nodes.item(x).lastChild.nodeName.toLowerCase()=="br")
 			{
 				nodes.item(x).removeChild(nodes.item(x).lastChild);
 			}

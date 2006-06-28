@@ -101,14 +101,22 @@
 	#editor acronym		{ border: 1px solid gray }
 
     /* custom classes display */
-    	#editor	.important 	{ color:red; font-weight:bold; border: 1px solid red}
-	#editor	.hidden-note	{ color:#aaa; }
-	#editor	.hidden-note *	{ border-color: #aaa; }
-	#editor img.border     	{ padding: 4px; background: #ccc; }
-	#editor p.date		{ background-color: #ffffcc;}
-	#editor p.block		{ border: 2px solid #aaa; background-position: 4px 4px ; }
-	#editor p.imglegend	{ border: 1px solid; padding:5px; margin:10px; background-color: #ccffff; font-style: italic;}
-	#editor p.imglegend img	{ border: 1px solid gray; }
+    	#editor .important,
+    	body#iframe_body .important 	{ color:red; font-weight:bold; border: 1px solid red}
+	#editor	.hidden-note,
+	body#iframe_body .hidden-note	{ color:#aaa; }
+	#editor	.hidden-note *,
+	body#iframe_body .hidden-note	{ border-color: #aaa; }
+	#editor img.border,
+	body#iframe_body img.border	{ padding: 4px; background: #ccc; }
+	#editor p.date,
+	body#iframe_body p.date		{ background-color: #ffffcc;}
+	#editor p.block,
+	body#iframe_body p.block	{ border: 2px solid #aaa; background-position: 4px 4px ; }
+	#editor p.imglegend,
+	body#iframe_body p.imglegend	{ border: 1px solid; padding:5px; margin:10px; background-color: #ccffff; font-style: italic;}
+	#editor p.imglegend img,
+	body#iframe_body img		{ border: 1px solid gray; }
 
     /* visual feedback for non-valid nesting of elements*/
     	h1 h1, h1 h2, h1 h3, h1 h4, h1 h5, h1 h6, h1 p, h1 pre, h1 address,
