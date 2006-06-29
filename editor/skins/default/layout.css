@@ -85,5 +85,8 @@
     /* special buttons */
 	a#m_paragraph,
 	a#m_remove_class 		{ font-style: italic }
+	
+ * html a#m_paste			{ display:none; }
+ *+html a#m_paste			{ display:none; }
 
 

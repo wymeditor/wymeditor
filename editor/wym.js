@@ -28,9 +28,10 @@ function init()
 	if(moz)
 	{
 		iframe().contentDocument.designMode="on";
+		iframe().contentDocument.addEventListener('keydown',iframe_keydown_handler,false);
 		iframe().contentDocument.addEventListener('keyup',iframe_keyup_handler,false);
 		iframe().contentDocument.addEventListener('mouseup',iframe_mouseup_handler,false);
-		//iframe().contentDocument.addEventListener('blur',function(evt){bCleanPaste=false;displayPasteCleanup(true);},false);
+		iframe().contentDocument.addEventListener('blur',function(evt){bCleanPaste=false;displayPasteCleanup(true);},false);
 		execCom("styleWithCSS",false);
 	}
 }
@@ -708,22 +709,23 @@ function displayPasteCleanup(bln)
 
 //paste data from any application
 //onbeforepaste and onpaste events
-function pasteData()
+function pasteData(sData)
 {
-	if(!bCleanPaste)
+	if(!bCleanPaste || sData!=null)
 	{
 		//cancel the default behavior
-		event.returnValue=false;
+		if(ie) event.returnValue=false;
 
 		var parent;
 		var newNode;
 		var sTmp;
 		var tmpContainer=null;
+		var sPasted=sData;
 		
 		var container=getSelectedContainer();
 		
 		//get the data as raw text (no markup)
-		var sPasted=window.clipboardData.getData("Text");
+		if(ie) sPasted=window.clipboardData.getData("Text");
 		
 		//if we are in a P,heading,..., we get the parentNode
 		//if we are in a TD, we add a temporary P, to keep the following code simple
@@ -756,7 +758,9 @@ function pasteData()
 		if(parent!=null)
 		{
 			//split the data, using double newlines as the separator
-			var aP=sPasted.split("\r\n\r\n");
+			var aP;
+			if(ie) aP=sPasted.split("\r\n\r\n");
+			else if(moz) aP=sPasted.split("\n\n");
 	
 			//add a P for each item
 			for(x=0;x<aP.length;x++)
@@ -788,7 +792,17 @@ function pasteData()
 
 //GECKO
 
-//keyup handler, mainly used for cleanups
+//keydown & keyup handlers, mainly used for cleanups
+
+function iframe_keydown_handler(evt)
+{
+	if(evt.keyCode==86 && evt.ctrlKey) //CTRL+V -> PASTE
+	{	
+		//prevent CTRL+V
+		if(moz_prevent_copy) evt.preventDefault();
+	}
+}
+
 function iframe_keyup_handler(evt)
 {
 	var blnFound=false;
@@ -809,15 +823,6 @@ function iframe_keyup_handler(evt)
 		}
 		
 		if(blnFound) execCom("formatblock","P");
-	}
-	
-	else if(evt.keyCode==86 && evt.ctrlKey) //CTRL+V -> PASTE
-	{
-		//how to you prevent CTRL+V ?
-		//the following code doesn't work...
-		
-		evt.preventDefault();
-		evt.stopPropagation();
 	}
 	
 	else if(evt.keyCode!=8 && evt.keyCode!=46) //BACKSPACE AND DELETE

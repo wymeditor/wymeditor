@@ -25,7 +25,8 @@ var dialogs=
 	"link": 	"link.htm",		//dialog used to add or modify a link
 	"image": 	"image.htm",		//add or modify an image
 	"table": 	"table.htm",		//add a table
-	"template":	"template.htm"		//add structured content based on a template
+	"template":	"template.htm",		//add structured content based on a template
+	"paste":	"paste.htm"
 };
 
 //dialogs features - see javascript window.open()
@@ -34,6 +35,9 @@ var dialogs_features="menubar=no,titlebar=no,toolbar=no,resizable=no,width=560,h
 //preview dialog is specific
 var preview_url="dialogs/preview.htm";
 var preview_features="scrollbars,width=760,height=540";
+
+//prevent CTRL+V (Gecko browsers only)
+var moz_prevent_copy=false;
 
 //custom values
 var custom_values=

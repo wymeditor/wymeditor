@@ -1,0 +1,38 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+ * WYMeditor : what you see is What You Mean web-based editor
+ * Copyright (C) 2006 Jean-François Hovinne - Daniel Reszka
+ * Use of WYMeditor is granted by the terms of the MIT License (http://www.opensource.org/licenses/mit-license.php).
+ *
+ * For further information visit:
+ * 		http://www.wymeditor.org/
+ * 
+ * File Name:
+ *		paste.htm
+ *		Dialog used to paste data from the clipboard.
+ *		See the documentation for more info.
+ * 
+ * File Authors:
+ * 		Jean-François Hovinne (jf.hovinne@wymeditor.org)
+-->
+
+<html>
+<head>
+<title>WYMeditor - Paste</title>
+<link rel="stylesheet" type="text/css" href="../skins/editor-skin.css" />
+<script type="text/javascript" src="../browser.js"></script>
+<script type="text/javascript" src="../util.js"></script>
+<script type="text/javascript" src="../dialog.js"></script>
+</head>
+
+<body class="dialog" id="paste">
+<p>
+ <label>Paste your text here:</label>
+</p>
+<textarea cols="40" rows="10" id="paste_txt"></textarea>
+<p>
+ <input id="bt_submit" type="button" value="Submit" onclick="paste_sendValue();window.close()" />
+ <input id="bt_cancel" type="button" value="Cancel" onclick="window.close()" />
+</p>
+</body>
+</html>

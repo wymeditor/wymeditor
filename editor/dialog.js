@@ -373,3 +373,9 @@ function template_sendValue()
 		}
 	}
 }
+
+function paste_sendValue()
+{
+	var html=getValue("paste_txt");
+	window.opener.pasteData(html);
+}
