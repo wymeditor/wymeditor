@@ -254,6 +254,9 @@ function cleanupHTML_moz(sHtml)
 					case "/i":
 						tag="/em";
 						break;
+					case "br":
+						tag="br /"
+						break;
 					default:
 						break;
 				}

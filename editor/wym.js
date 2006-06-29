@@ -101,11 +101,18 @@ function getCaretPos()
 //insert HTML at cursor pos
 function insertAtCursor(sHtml)
 {
-	var pos=getCaretPos();
-	if(pos>-1)
+	if(ie)
 	{
-		var html=editor().innerHTML;
-		editor().innerHTML=insertAt(html,sHtml,pos);
+		var pos=getCaretPos();
+		if(pos>-1)
+		{
+			var html=editor().innerHTML;
+			editor().innerHTML=insertAt(html,sHtml,pos);
+		}
+	}
+	else if(moz)
+	{
+		execCom("inserthtml",sHtml);
 	}
 }
 
@@ -384,7 +391,7 @@ function setClass(sValue,sAllowedContainers,sConflictingClasses,sAllowedClasses)
 	//find allowed container
 	//if current container isn't allowed, take the parent, and so on ...
 	if(container!=null)container=getAllowedContainer(container,aCt);
-
+	
 	if(container!=null)
 	{
 		//check if there isn't a conflict with existent classes
@@ -499,7 +506,8 @@ function removeClassAttr()
 	var container=getSelectedContainer();
 	if(container!=null)
 	{
-		container.removeAttribute("className",false);
+		if(ie) container.removeAttribute("className",false);
+		else if(moz) container.removeAttribute("class",false);
 	}
 }
 
@@ -831,8 +839,6 @@ function iframe_keyup_handler(evt)
 
 function iframe_mouseup_handler(evt)
 {
-	var node=iframe().contentWindow.getSelection().focusNode;
-	if(node.nodeName!="img")release();
-	
+	if(evt.target.nodeName.toLowerCase()!="img")release();
 	displayClasses();
 }
