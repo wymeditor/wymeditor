@@ -21,13 +21,20 @@
 <head>
 <title>WYMeditor - Image</title>
 <link rel="stylesheet" type="text/css" href="../skins/editor-skin.css" />
+<script type="text/javascript" src="../browser.js"></script>
 <script type="text/javascript" src="../util.js"></script>
 <script type="text/javascript" src="../dialog.js"></script>
+<script type="text/javascript">
+function preview()
+{
+	image_preview();
+}
+</script>
 </head>
 
 <body onload="init('image')" class="dialog" id="image">
 <p>
- <label>URL</label><input type="text" id="image_src" value="" size="40" onchange="image_preview()" />
+ <label>URL</label><input type="text" id="image_src" value="" size="40" onchange="preview()" />
 </p>
 <p>
  <label>Alternative text</label><input type="text" id="image_alt" value="" size="40" />

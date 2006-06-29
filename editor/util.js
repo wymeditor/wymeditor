@@ -47,6 +47,12 @@ function indexOfArray(ar,item)
 	return(ret);
 }
 
+function getUniqueId()
+{
+	var now=new Date();
+	return("wym-"+now.getTime());
+}
+
 /*
 HTML cleanup - IE version
 - closes empty tags and add missing double-quotes (for attributes) (bad MSIE behaviours)

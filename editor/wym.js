@@ -532,7 +532,7 @@ function setImgIds()
 	var img=editor().getElementsByTagName("img");
 	for(var i=0;i<img.length;i++)
 	{
-		if(img.id==undefined || img.id==null || img.id=="")img.id=window.document.uniqueID;
+		if(img.id==undefined || img.id==null || img.id=="")img.id=getUniqueId();
 	}
 }
 
@@ -543,28 +543,50 @@ function setImgEvent()
 	var img=editor().getElementsByTagName("img");
 	for(var i=0;i<img.length;i++)
 	{
-		img[i].onmousedown=function()
+		if(ie)
 		{
-			img_mousedown_handler(this);
+			img[i].onmousedown=function()
+			{
+				img_mousedown_handler(this);
+			}
+			img[i].ondblclick=function()
+			{
+				img_dblclick_handler(this);
+			}
 		}
-		img[i].ondblclick=function()
+		else if(moz)
 		{
-			img_dblclick_handler(this);
+			img.item(i).addEventListener("mousedown",img_mousedown_handler_moz,false);
+			img.item(i).addEventListener("dblclick",img_dblclick_handler_moz,false);
 		}
 	}
 }
 
 function img_mousedown_handler(img)
 {
-	if(img.id==undefined || img.id==null || img.id=="")img.id=window.document.uniqueID;
+	if(img.id==undefined || img.id==null || img.id=="")img.id=getUniqueId();
 	selectedElement=img;
+	displayClasses();
+}
+
+function img_mousedown_handler_moz()
+{
+	if(this.id==undefined || this.id==null || this.id=="")this.id=getUniqueId();
+	selectedElement=this;
 	displayClasses();
 }
 
 function img_dblclick_handler(img)
 {
-	if(img.id==undefined || img.id==null || img.id=="")img.id=window.document.uniqueID;
+	if(img.id==undefined || img.id==null || img.id=="")img.id=getUniqueId();
 	selectedElement=img;
+	openDialog("image");
+}
+
+function img_dblclick_handler_moz()
+{
+	if(this.id==undefined || this.id==null || this.id=="")this.id=getUniqueId();
+	selectedElement=this;
 	openDialog("image");
 }
 
@@ -806,7 +828,30 @@ function iframe_keyup_handler(evt)
 
 function iframe_mouseup_handler(evt)
 {
-	release();
-	setImgEvent();
+	var node=iframe().contentWindow.getSelection().focusNode;
+	
+	//well, this is a little bit complicated
+	//the problem is: when the user clicks on the iframe, we must check if an image has been clicked
+	//so we don't 'release' the selection (see dialog.js)
+	//but if the img is contained in another element, the element is the selection, not the image
+	//so we check here if the selection contains an image, in case we don't release the selection
+	
+	if
+	(
+		(
+		node.hasChildNodes
+		&& node.childNodes.item(0)!=null
+		&& node.childNodes.item(0).nodeName.toLowerCase()=="img"
+		)
+		||
+		(node.nodeName=="img")
+	)
+	
+	{
+		//don't release
+	}
+	
+	else release();
+	
 	displayClasses();
 }

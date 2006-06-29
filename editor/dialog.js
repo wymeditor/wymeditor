@@ -105,8 +105,7 @@ function setValue(sName,sValue)
 function link_sendValue()
 {
 	var elem=null;
-	var now=new Date();
-	var marker="wym-"+now.getTime();
+	var marker=getUniqueId();
 	
 	//create the link, or overwrite it
 	if(ie) window.opener.document.execCommand("CreateLink",false,getValue("link_href"));
@@ -211,7 +210,7 @@ function image_preview()
 function image_unique_id()
 {
 	var elem=document.getElementById("image_id");
-	if(elem!=null)elem.value=window.opener.document.uniqueID;
+	if(elem!=null)elem.value=getUniqueId();
 }
 
 //update preview width an height
@@ -232,39 +231,64 @@ function image_sendValue()
 	//get the preview dimensions
 	image_sizes();
 	
-	//where was the cursor ?
-	var pos=window.opener.getCaretPos();
-	if(pos>-1 && oSelected==null)
+	if(ie)
 	{
-	  //not on an image > insert new image
-		var html=window.opener.editor().innerHTML;
-		var img=window.opener.document.createElement("IMG");
-		
-		img.src=getValue("image_src");
-      	img.title=getValue("image_title");
-      	img.alt=getValue("image_alt");
-      	img.width=getValue("image_width");
-      	img.height=getValue("image_height");
-      	img.id=getValue("image_id");
-      	
-		window.opener.editor().innerHTML=insertAt(html,img.outerHTML,pos);
-	}
-	else
-	{
-		if(oSelected!=null)
+		//where was the cursor ?
+		var pos=window.opener.getCaretPos();
+		if(pos>-1 && oSelected==null)
 		{
-      		//an image has been dblclicked > get it by id
-      		img=window.opener.document.getElementById(oSelectedId);
-      		if(img!=null)
-      		{
-      			//set new values
-      			img.src=getValue("image_src");
+		  //not on an image > insert new image
+			var html=window.opener.editor().innerHTML;
+			var img=window.opener.document.createElement("IMG");
+			
+			img.src=getValue("image_src");
       			img.title=getValue("image_title");
       			img.alt=getValue("image_alt");
       			img.width=getValue("image_width");
       			img.height=getValue("image_height");
-      		}
-      	}
+      			img.id=getValue("image_id");
+      		
+			window.opener.editor().innerHTML=insertAt(html,img.outerHTML,pos);
+		}
+		else
+		{
+			if(oSelected!=null)
+			{
+      				//an image has been dblclicked > get it by id
+      				img=window.opener.document.getElementById(oSelectedId);
+      				if(img!=null)
+      				{
+      					//set new values
+      					img.src=getValue("image_src");
+      					img.title=getValue("image_title");
+      					img.alt=getValue("image_alt");
+      					img.width=getValue("image_width");
+      					img.height=getValue("image_height");
+      				}
+      			}
+		}
+	}
+	else if(moz)
+	{
+		var marker=getUniqueId();
+		window.opener.iframe().contentDocument.execCommand("InsertImage","",marker);
+		
+		var nodes=window.opener.iframe().contentDocument.body.getElementsByTagName("img");
+		for(var x=0;x<nodes.length;x++)
+		{
+			node=nodes.item(x);
+			attr=node.attributes.getNamedItem("src");
+			if(attr.value==marker)
+			{
+				node.setAttribute("id",getValue("image_id"));
+				node.setAttribute("src",getValue("image_src"));
+      				node.setAttribute("title",getValue("image_title"));
+      				node.setAttribute("alt",getValue("image_alt"));
+      				node.setAttribute("width",getValue("image_width"));
+      				node.setAttribute("height",getValue("image_height"));
+			}
+		}
+		
 	}
 	//'release' the selection
 	window.opener.release();
