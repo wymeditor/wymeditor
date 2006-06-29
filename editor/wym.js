@@ -590,6 +590,7 @@ function img_dblclick_handler_moz()
 	openDialog("image");
 }
 
+//IE specific - Gecko has nested buttons for row and cells creation/removing
 //insert a row or column
 //sObjectType values : "ROW","COL"
 //bBefore : boolean (true : inserts before selected, false : inserts after selected object)
@@ -617,6 +618,7 @@ function table_insertObject(sObjectType,bBefore)
 					//insert a new row and create cols in it
 					case "ROW":
 						var newRow=table.insertRow(tr.rowIndex+pos);
+						
 						for(x=0;x<tr.cells.length;x++)
 						{
 							newRow.insertCell();
@@ -816,6 +818,7 @@ function iframe_keyup_handler(evt)
 			case "H6":
 			case "PRE":
 			case "BLOCKQUOTE":
+			case "TABLE":
 				break;
 			default:
 				execCom("formatblock","P");
@@ -829,29 +832,7 @@ function iframe_keyup_handler(evt)
 function iframe_mouseup_handler(evt)
 {
 	var node=iframe().contentWindow.getSelection().focusNode;
-	
-	//well, this is a little bit complicated
-	//the problem is: when the user clicks on the iframe, we must check if an image has been clicked
-	//so we don't 'release' the selection (see dialog.js)
-	//but if the img is contained in another element, the element is the selection, not the image
-	//so we check here if the selection contains an image, in case we don't release the selection
-	
-	if
-	(
-		(
-		node.hasChildNodes
-		&& node.childNodes.item(0)!=null
-		&& node.childNodes.item(0).nodeName.toLowerCase()=="img"
-		)
-		||
-		(node.nodeName=="img")
-	)
-	
-	{
-		//don't release
-	}
-	
-	else release();
+	if(node.nodeName!="img")release();
 	
 	displayClasses();
 }

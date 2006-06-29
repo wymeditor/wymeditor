@@ -59,19 +59,29 @@
 	#editor blockquote,
 	body#iframe_body blockquote,
 	#editor pre,
-	body#iframe_body pre	{ padding:8px 5px 5px;  margin:10px; background: #FFFFFF no-repeat 2px 2px; }
-	#editor td		{ background: #F0F4F8; }
-	#editor th		{ background: #ffffcc; }
+	body#iframe_body pre		{ padding:8px 5px 5px;  margin:10px; background: #FFFFFF no-repeat 2px 2px; }
+	#editor td,
+	body#iframe_body td		{ background: #F0F4F8; }
+	#editor th,
+	body#iframe_body th		{ background: #ffffcc; }
 	#editor ul,
-	#editor ol		{ border-left:20px solid #B9C4D0; padding:0px 5px}
-	#editor caption		{ background: #E4E4B0; padding: 5px; font-weight: bold; }
-	#editor table		{ font-size: 12px; width: 500px;}
-	#editor td		{ width: 25%}
-	#editor blockquote	{ margin-left: 30px;}
-	#editor pre		{ background-color:transparent; border: 1px solid white }
+	body#iframe_body ul,
+	#editor ol,
+	body#iframe_body ol		{ border-left:20px solid #B9C4D0; padding:0px 5px}
+	#editor caption,
+	body#iframe_body caption	{ background: #E4E4B0; padding: 5px; font-weight: bold; }
+	#editor table,
+	body#iframe_body table		{ font-size: 12px; width: 500px;}
+	#editor td,
+	body#iframe_body td		{ width: 25%}
+	#editor blockquote,
+	body#iframe_body blockquote	{ margin-left: 30px;}
+	#editor pre,
+	body#iframe_body pre		{ background-color:transparent; border: 1px solid white }
 
     /* Gecko min height fix */
     	body#iframe_body p 	{ min-height: 1em; }
+    	body#iframe_body td	{ height: 1.6em; }
     
     /* labels */
     	#editor p,

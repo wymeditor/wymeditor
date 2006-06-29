@@ -46,6 +46,9 @@
 	#toolbars a:hover	{ background-color: yellow }
 	#toolbars div 		{ float: left; border: 1px solid gray; margin-right: 5px; background: white  }
 	#toolbars #m_advanced	{ border: none; background: transparent  }
+	#m_table_advanced	{ display: none; }
+ * html	#m_table_advanced	{ display: block; }
+ *+html	#m_table_advanced	{ display: block; }
 
     /* panels */
 	#panels			{ width: 148px; float: right; font-family: verdana, arial, sans-serif; font-size: 11px }

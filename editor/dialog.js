@@ -305,7 +305,11 @@ function table_sendValue()
 	if(mainContainer!=null)
 	{
 		//we construct the new table
-		var table=window.opener.document.createElement("TABLE");
+		var table;
+		
+		if(ie) table=window.opener.document.createElement("TABLE");
+		else if(moz) table=window.opener.iframe().contentDocument.createElement("TABLE");
+		
 		var newRow=null;
 		var newCol=null;
 		
@@ -314,10 +318,12 @@ function table_sendValue()
 		
 		for(x=0;x<rows;x++)
 		{
-			newRow=table.insertRow();
+			if(ie) newRow=table.insertRow();
+			else if(moz) newRow=table.insertRow(x);
 			for(y=0;y<cols;y++)
 			{
-				newRow.insertCell();
+				if(ie) newRow.insertCell();
+				else if(moz) newRow.insertCell(y);
 			}
 		}
 		
