@@ -30,6 +30,7 @@ function init()
 		iframe().contentDocument.designMode="on";
 		iframe().contentDocument.addEventListener('keyup',iframe_keyup_handler,false);
 		iframe().contentDocument.addEventListener('mouseup',iframe_mouseup_handler,false);
+		//iframe().contentDocument.addEventListener('blur',function(evt){bCleanPaste=false;displayPasteCleanup(true);},false);
 		execCom("styleWithCSS",false);
 	}
 }
@@ -713,7 +714,7 @@ function pasteData()
 	{
 		//cancel the default behavior
 		event.returnValue=false;
-		
+
 		var parent;
 		var newNode;
 		var sTmp;
@@ -808,6 +809,15 @@ function iframe_keyup_handler(evt)
 		}
 		
 		if(blnFound) execCom("formatblock","P");
+	}
+	
+	else if(evt.keyCode==86 && evt.ctrlKey) //CTRL+V -> PASTE
+	{
+		//how to you prevent CTRL+V ?
+		//the following code doesn't work...
+		
+		evt.preventDefault();
+		evt.stopPropagation();
 	}
 	
 	else if(evt.keyCode!=8 && evt.keyCode!=46) //BACKSPACE AND DELETE

@@ -365,7 +365,8 @@ function template_sendValue()
 				else bln=false;
 			}
 			
-			mainContainer.insertAdjacentHTML("afterEnd",html); //inserting
+			if(ie) mainContainer.insertAdjacentHTML("afterEnd",html); //inserting
+			else if(moz) window.opener.execCom("inserthtml",html);
 			
 			//update txthtml value
 			window.opener.getCleanHTML();
