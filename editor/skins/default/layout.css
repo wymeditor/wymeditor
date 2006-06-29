@@ -81,6 +81,7 @@
 	a#m_word			{ background-position: 0 -168px }
 	a#m_undo			{ background-position: 0 -504px;}
 	a#m_redo			{ background-position: 0 -528px;}
+	a#m_paste			{ background-position: 0 -552px }
 
     /* special buttons */
 	a#m_paragraph,
