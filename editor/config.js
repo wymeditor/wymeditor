@@ -30,7 +30,7 @@ var dialogs=
 };
 
 //dialogs features - see javascript window.open()
-var dialogs_features="menubar=no,titlebar=no,toolbar=no,resizable=no,width=560,height=300";
+var dialogs_features="menubar=no,titlebar=no,toolbar=no,resizable=no,width=560,height=300,top=0,left=0";
 
 //preview dialog is specific
 var preview_url="dialogs/preview.htm";

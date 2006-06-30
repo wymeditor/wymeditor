@@ -17,9 +17,11 @@
 
 /* DIALOGS */
 
-	.dialog			{ background: #e1e8f1}
-	.dialog	input		{ border: 1px solid gray; margin-bottom: 5px; background-color: white; float: left; width: 380px }
-	.dialog label		{ float: left; width: 140px; margin: 0 0 0 10px; padding: 0; clear: both;  }
-	.dialog p		{ margin: 0; padding: 1px 0     }
-	.dialog input#bt_submit	{ margin-left: 150px; background: #EEE ; clear: both; width: 50px}
-	.dialog input#bt_cancel	{ margin-left: 5px; background: #EEE ; width: 50px}
+	.dialog				{ background: #e1e8f1}
+	.dialog	input			{ border: 1px solid gray; margin-bottom: 5px; background-color: white; float: left; width: 380px }
+	.dialog label			{ float: left; width: 140px; margin: 0 0 0 10px; padding: 0; clear: both;  }
+	.dialog p			{ margin: 0; padding: 1px 0     }
+	.dialog textarea		{ width: 380px; height: 200px; }
+	.dialog input#bt_submit		{ margin-left: 150px; background: #EEE ; clear: both; width: 100px}
+	.dialog input#bt_cancel		{ margin-left: 5px; background: #EEE ; width: 100px}
+	.dialog img#image_preview	{ margin-left: 150px; }
