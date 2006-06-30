@@ -376,6 +376,7 @@ function setClass(sValue,sAllowedContainers,sConflictingClasses,sAllowedClasses)
 	var bConflictFound=false;
 	var bAllowedFound=(sAllowedClasses=="" || sAllowedClasses==null);
 	var container=null;
+	var attrClass;
 	var sClasses="";
 	
 	if(sConflictingClasses==null)sConflictingClasses="";
@@ -387,8 +388,10 @@ function setClass(sValue,sAllowedContainers,sConflictingClasses,sAllowedClasses)
 
 	//find the container (from cursor pos or selected element)
 	container=getSelectedContainer();
-	var attrClass=container.attributes.getNamedItem("class");
-	if(attrClass!=null)sClasses=attrClass.value;
+	
+	if(ie) sClasses=container.className;
+	if(moz) attrClass=container.attributes.getNamedItem("class");
+	if(attrClass!=null) sClasses=attrClass.value;
 
 	//find allowed container
 	//if current container isn't allowed, take the parent, and so on ...
