@@ -854,6 +854,10 @@ function iframe_keyup_handler(evt)
 
 function iframe_mouseup_handler(evt)
 {
-	if(evt.target.nodeName.toLowerCase()!="img")release();
+	if(evt.target.nodeName.toLowerCase()!="img")
+	{
+		setImgEvent();
+		release();
+	}
 	displayClasses();
 }
