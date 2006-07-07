@@ -25,108 +25,69 @@
 /* VISUAL FEEDBACK */
 
     /* basic */
-    	#editor,
-    	#iframe_editor		{ background: #e1e8f1; }
-	#editor div.editor   	{ border: 1px solid red; }
-	#editor			{ display: none; }
- * html	#editor			{ display: block; }
- *+html	#editor			{ display: block; }
- * html	#iframe_editor		{ display: none; }
- *+html	#iframe_editor		{ display: none; }
+    	#editor			{ background: #e1e8f1;}
+	
+	#editor			{ display: none;}
+	#editor.iframe		{ display: block;}
+ * html	#editor			{ display: block;}
+ *+html	#editor			{ display: block;}
+ * html	#editor.iframe		{ display: none;}
+ *+html	#editor.iframe		{ display: none;}
+ * html iframe			{ display: none;} 
  
-
     /* make HTML blocs visible */
 	#editor p,
-	body#iframe_body p,
 	#editor h1,
-	body#iframe_body h1,
 	#editor h2,
-	body#iframe_body h2,
 	#editor h3,
-	body#iframe_body h3,
 	#editor h4,
-	body#iframe_body h4,
 	#editor h5,
-	body#iframe_body h5,
 	#editor h6,
-	body#iframe_body h6,
 	#editor ul,
-	body#iframe_body ul,
 	#editor ol,
-	body#iframe_body ol,
 	#editor table,
-	body#iframe_body table,
 	#editor blockquote,
-	body#iframe_body blockquote,
-	#editor pre,
-	body#iframe_body pre		{ padding:8px 5px 5px;  margin:10px; background: #FFFFFF no-repeat 2px 2px; }
-	#editor td,
-	body#iframe_body td		{ background: #F0F4F8; }
-	#editor th,
-	body#iframe_body th		{ background: #ffffcc; }
+	#editor pre		{ padding:8px 5px 5px; margin:10px; background: #FFFFFF no-repeat 2px 2px;}
+	#editor td		{ background: #F0F4F8;}
+	#editor th		{ background: #ffffcc;}
 	#editor ul,
-	body#iframe_body ul,
-	#editor ol,
-	body#iframe_body ol		{ border-left:20px solid #B9C4D0; padding:0px 5px}
-	#editor caption,
-	body#iframe_body caption	{ background: #E4E4B0; padding: 5px; font-weight: bold; }
-	#editor table,
-	body#iframe_body table		{ font-size: 12px; width: 500px;}
-	#editor td,
-	body#iframe_body td		{ width: 25%}
-	#editor blockquote,
-	body#iframe_body blockquote	{ margin-left: 30px;}
-	#editor pre,
-	body#iframe_body pre		{ background-color:transparent; border: 1px solid white }
+	#editor ol		{ border-left:20px solid #B9C4D0; padding:0px 5px;}
+	#editor caption		{ background: #E4E4B0; padding: 5px; font-weight: bold;}
+	#editor table		{ font-size: 12px; width: 500px;}
+	#editor td		{ width: 25%;}
+	#editor blockquote	{ margin-left: 30px;}
+	#editor pre		{ background-color:transparent; border: 1px solid white;}
 
     /* Gecko min height fix */
-    	body#iframe_body p 	{ min-height: 1em; }
-    	body#iframe_body td	{ height: 1.6em; }
+    	#editor.iframe p 	{ min-height: 1em;}
+    	#editor.iframe td	{ height: 1.6em;}
     
     /* labels */
-    	#editor p,
-    	body#iframe_body p		{ background-image: url(lbl-p.png);}
-	#editor h1,
-	body#iframe_body h1		{ background-image: url(lbl-h1.png);}
-	#editor h2,
-	body#iframe_body h2		{ background-image: url(lbl-h2.png);}
-	#editor h3,
-	body#iframe_body h3		{ background-image: url(lbl-h3.png);}
-	#editor h4,
-	body#iframe_body h4		{ background-image: url(lbl-h4.png);}
-	#editor h5,
-	body#iframe_body h5		{ background-image: url(lbl-h5.png);}
-	#editor h6,
-	body#iframe_body h6		{ background-image: url(lbl-h6.png);}
-       	#editor blockquote,
-       	body#iframe_body blockquote	{ background-image: url(lbl-blockquote.png);}
-       	#editor pre,
-       	body#iframe_body pre		{ background-image: url(lbl-pre.png);}
-	/*#editor dl		{ background-image: url(lbl-dl.png);}*/
+    	#editor p		{ background-image: url(lbl-p.png);}
+	#editor h1		{ background-image: url(lbl-h1.png);}
+	#editor h2		{ background-image: url(lbl-h2.png);}
+	#editor h3		{ background-image: url(lbl-h3.png);}
+	#editor h4		{ background-image: url(lbl-h4.png);}
+	#editor h5		{ background-image: url(lbl-h5.png);}
+	#editor h6		{ background-image: url(lbl-h6.png);}
+       	#editor blockquote	{ background-image: url(lbl-blockquote.png);}
+       	#editor pre		{ background-image: url(lbl-pre.png);}
 
     /* specific HTML elements */
-	#editor	caption		{ text-align: left; }
-	#editor img            	{ margin-right: 5px; border-style: solid; border-color: gray; border-width: 0  }
-	#editor a img		{ border-width: 1px; border-color: blue;  }
-	#editor acronym		{ border: 1px solid gray }
+	#editor	caption		{ text-align: left;}
+	#editor img            	{ margin-right: 5px; border-style: solid; border-color: gray; border-width: 0;}
+	#editor a img		{ border-width: 1px; border-color: blue;}
+	#editor acronym		{ border: 1px solid gray;}
 
     /* custom classes display */
-    	#editor .important,
-    	body#iframe_body .important 	{ color:red; font-weight:bold; border: 1px solid red}
-	#editor	.hidden-note,
-	body#iframe_body .hidden-note	{ color:#aaa; }
-	#editor	.hidden-note *,
-	body#iframe_body .hidden-note	{ border-color: #aaa; }
-	#editor img.border,
-	body#iframe_body img.border	{ padding: 4px; background: #ccc; }
-	#editor p.date,
-	body#iframe_body p.date		{ background-color: #ffffcc;}
-	#editor p.block,
-	body#iframe_body p.block	{ border: 2px solid #aaa; background-position: 4px 4px ; }
-	#editor p.imglegend,
-	body#iframe_body p.imglegend	{ border: 1px solid; padding:5px; margin:10px; background-color: #ccffff; font-style: italic;}
-	#editor p.imglegend img,
-	body#iframe_body img		{ border: 1px solid gray; }
+    	#editor .important 	{ color:red; font-weight:bold; border: 1px solid red;}
+	#editor	.hidden-note	{ color:#aaa;}
+	#editor	.hidden-note *	{ border-color: #aaa;}
+	#editor img.border	{ padding: 4px; background: #ccc;}
+	#editor p.date		{ background-color: #ffffcc;}
+	#editor p.block		{ border: 2px solid #aaa; background-position: 4px 4px ;}
+	#editor p.imglegend	{ border: 1px solid; padding:5px; margin:10px; background-color: #ccffff; font-style: italic;}
+	#editor p.imglegend img	{ border: 1px solid gray;}
 
     /* visual feedback for non-valid nesting of elements*/
     	h1 h1, h1 h2, h1 h3, h1 h4, h1 h5, h1 h6, h1 p, h1 pre, h1 address,
@@ -138,4 +99,4 @@
     	p h1, p h2, p h3, p h4, p h5, p h6, p pre, p address,
 	pre h1, pre h2, pre h3, pre h4, pre h5, pre h6, pre p, pre pre, pre address,
 	address h1, address h2, address h3, address h4, address h5, address h6, address p, address pre, address address
-	{ background-color: #ff9999 !important; border: 1px solid red !important; font-size: 12px !important; font-weight: normal;  }
+	{ background-color: #ff9999 !important; border: 1px solid red !important; font-size: 12px !important; font-weight: normal;}
