@@ -22,6 +22,14 @@
 
 /* EDITOR LAYOUT*/
 
+    /* hide gecko editor in IE*/
+	/*ie5 & ie6*/    
+	* html	#iframe_editor	{ display: none;}
+	/*ie7*/ 	 
+	*+html	#iframe_editor	{ display: none;}
+    /* hide IE editor in gecko + modern browsers*/
+	html>body #editor	{ display: none;}    
+   
     /* basic */
 	.editor			{ text-align: center }
 	.editor #topdiv		{ width: 750px; margin: auto; text-align: left }
@@ -89,5 +97,3 @@
 	
  * html a#m_paste			{ display:none; }
  *+html a#m_paste			{ display:none; }
-
-

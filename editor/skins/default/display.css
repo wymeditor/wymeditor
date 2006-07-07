@@ -26,14 +26,6 @@
 
     /* basic */
     	#editor			{ background: #e1e8f1;}
-	
-	#editor			{ display: none;}
-	#editor.iframe		{ display: block;}
- * html	#editor			{ display: block;}
- *+html	#editor			{ display: block;}
- * html	#editor.iframe		{ display: none;}
- *+html	#editor.iframe		{ display: none;}
- * html iframe			{ display: none;} 
  
     /* make HTML blocs visible */
 	#editor p,
@@ -47,7 +39,7 @@
 	#editor ol,
 	#editor table,
 	#editor blockquote,
-	#editor pre		{ padding:8px 5px 5px; margin:10px; background: #FFFFFF no-repeat 2px 2px;}
+	#editor pre		{ background: #FFFFFF no-repeat 2px 2px; padding:8px 5px 5px; margin:10px; }
 	#editor td		{ background: #F0F4F8;}
 	#editor th		{ background: #ffffcc;}
 	#editor ul,
