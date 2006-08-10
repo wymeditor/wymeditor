@@ -828,7 +828,7 @@ function iframe_keyup_handler(evt)
 		if(blnFound) execCom("formatblock","P");
 	}
 	
-	else if(evt.keyCode!=8 && evt.keyCode!=46) //BACKSPACE AND DELETE
+	else if(evt.keyCode!=8 && evt.keyCode!=46) //NOT BACKSPACE AND NOT DELETE
 	{
 		//cleanup not allowed main containers when deleting a P
 		
@@ -845,6 +845,9 @@ function iframe_keyup_handler(evt)
 			case "PRE":
 			case "BLOCKQUOTE":
 			case "TABLE":
+			case "LI":
+			case "UL":
+			case "OL":
 				break;
 			default:
 				execCom("formatblock","P");
