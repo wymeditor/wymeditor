@@ -272,7 +272,26 @@ function cleanupHTML_moz(sHtml)
 			if(c==">")
 			{
 				flagTag=false;
-				ret+="<"+tag+attr+">";
+				switch(tag)
+				{
+					case "img":
+					case "hr":
+					case "input":
+					case "link":
+					case "base":
+					case "basefont":
+					case "col":
+					case "frame":
+					case "isindex":
+					case "meta":
+					case "param":
+						ret+="<"+tag+attr+"/>";
+						break;
+					default:
+						ret+="<"+tag+attr+">";
+						break;
+				}
+				
 				tag="";
 				attr="";
 			}

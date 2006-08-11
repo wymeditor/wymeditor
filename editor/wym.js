@@ -22,16 +22,27 @@ var bCleanPaste=true;
 //called at body.onload
 function init()
 {
-	getHTML();
-	setImgEvent();
-	displayPasteCleanup(true);
+	getHTML(); //populate the textarea
+	setImgEvent(); //add mouse events on images
+	displayPasteCleanup(true); //paste cleanup is on or off
+	
 	if(moz)
 	{
+		//get the content from parent
+		ed=iframe().contentWindow.parent.document.getElementById('editor');
+		if(ed!=null)iframe().contentDocument.body.innerHTML=ed.innerHTML;
+		getHTML();
+		
+		//editable
 		iframe().contentDocument.designMode="on";
+		
+		//add key and mouse events listeners
 		iframe().contentDocument.addEventListener('keydown',iframe_keydown_handler,false);
 		iframe().contentDocument.addEventListener('keyup',iframe_keyup_handler,false);
 		iframe().contentDocument.addEventListener('mouseup',iframe_mouseup_handler,false);
 		iframe().contentDocument.addEventListener('blur',function(evt){bCleanPaste=false;displayPasteCleanup(true);},false);
+		
+		//disable inline styles
 		execCom("styleWithCSS",false);
 	}
 }
