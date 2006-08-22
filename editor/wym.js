@@ -824,11 +824,12 @@ function iframe_keyup_handler(evt)
 	if(evt.keyCode==13 && !evt.shiftKey) //RETURN key
 	{
 		//cleanup <br><br> between paragraphs
+		
 		nodes=editor().childNodes;
 
 		for(var x=0;x<nodes.length;x++)
 		{
-			if(nodes.item(x).nodeName.toLowerCase()=="br" && nodes.item(x+1).nodeName.toLowerCase()=="br")
+			if(nodes.item(x).nodeName.toLowerCase()=="br")
 			{
 				editor().removeChild(nodes.item(x));
 				blnFound=true;
@@ -836,34 +837,13 @@ function iframe_keyup_handler(evt)
 			}
 		}
 		
-		if(blnFound) execCom("formatblock","P");
 	}
 	
 	else if(evt.keyCode!=8 && evt.keyCode!=46) //NOT BACKSPACE AND NOT DELETE
 	{
-		//cleanup not allowed main containers when deleting a P
-		
-		mainContainer=getMainContainer(getSelectedContainer());
-		switch (mainContainer.tagName)
-		{
-			case "P":
-			case "H1":
-			case "H2":
-			case "H3":
-			case "H4":
-			case "H5":
-			case "H6":
-			case "PRE":
-			case "BLOCKQUOTE":
-			case "TABLE":
-			case "LI":
-			case "UL":
-			case "OL":
-				break;
-			default:
-				execCom("formatblock","P");
-				break;
-		}
+		//text nodes replaced by P
+		container=getSelectedContainer();
+		if(container.tagName.toLowerCase()=="body") execCom("formatblock","P");
 	}
 	
 	displayClasses();
