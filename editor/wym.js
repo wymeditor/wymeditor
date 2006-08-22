@@ -818,9 +818,7 @@ function iframe_keydown_handler(evt)
 }
 
 function iframe_keyup_handler(evt)
-{
-	var blnFound=false;
-	
+{	
 	if(evt.keyCode==13 && !evt.shiftKey) //RETURN key
 	{
 		//cleanup <br><br> between paragraphs
@@ -829,12 +827,7 @@ function iframe_keyup_handler(evt)
 
 		for(var x=0;x<nodes.length;x++)
 		{
-			if(nodes.item(x).nodeName.toLowerCase()=="br")
-			{
-				editor().removeChild(nodes.item(x));
-				blnFound=true;
-				break;
-			}
+			if(nodes.item(x).nodeName.toLowerCase()=="br") editor().removeChild(nodes.item(x));
 		}
 		
 	}
