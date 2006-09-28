@@ -1,6 +1,6 @@
 ﻿<!--
  * WYMeditor : what you see is What You Mean web-based editor
- * Copyright (C) 2006 Jean-François Hovinne - Daniel Reszka
+ * Copyright (C) 2006 H.O.net - http://www.honet.be/
  * Use of WYMeditor is granted by the terms of the MIT License (http://www.opensource.org/licenses/mit-license.php).
  *
  * For further information visit:
