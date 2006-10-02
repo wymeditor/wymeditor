@@ -1,0 +1,18 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>WYMeditor</title>
+<style type="text/css">
+	p { background-color: #f0f0ff; }
+</style>
+<script language="javascript">
+function init()
+{
+	document.body.innerHTML=window.parent.wymeditor_iframeGetContent();
+	document.designMode="on";
+	if(window.parent.moz) document.execCommand("styleWithCSS",'',false);
+}
+</script>
+</head>
+<body class="wymeditor_iframe_body" contentEditable="true" onload="init()"></body>
+</html>
