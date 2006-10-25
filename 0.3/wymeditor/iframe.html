@@ -5,12 +5,12 @@
 <style type="text/css">
 	p { background-color: #f0f0ff; }
 </style>
-<script language="javascript">
+<script type="text/javascript">
 function init()
 {
 	document.body.innerHTML=window.parent.wymeditor_iframeGetContent();
 	document.designMode="on";
-	if(window.parent.moz) document.execCommand("styleWithCSS",'',false);
+	if(window.parent.jQuery.browser.mozilla) document.execCommand("styleWithCSS",'',false);
 }
 </script>
 </head>
