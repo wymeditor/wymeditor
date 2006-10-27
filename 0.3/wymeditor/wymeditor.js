@@ -29,20 +29,41 @@ function wymeditor_submit(elem)
 	$(wymeditor_area).show();
 }
 
-$(document).ready(function() {
+
+jQuery.wymeditor = {
+
+	build : function(options) {
+
+		var settings = {
+			appendCode: "<div class='wymeditor'></div>",
+			loadPage: "wymeditor/wymeditor.html"
+		};
+
+		if(options) jQuery.extend(settings,options);
+
+		return this.each(function(i){
+
+			$(this).after(settings.appendCode);
+			wymeditor_content[i]=$(this).val();
+		
+			var div_editor=$(this).next();
+			$(div_editor).load(settings.loadPage);
+		});
+	}
+
+};
+
+jQuery.fn.wymeditor = jQuery.wymeditor.build;
+
+
+
+$(function() {
 
 	//hide textareas
 	var wymeditor_area=$("textarea.wymeditor");
 	$(wymeditor_area).hide();
-	
-	//create wymeditor instance(s)
-	$(wymeditor_area).each(function(i){
-	
-		$(this).after("<div class='wymeditor'></div>");
-		wymeditor_content[i]=$(this).val();
-		
-		var div_editor=$(this).next();
-		$(div_editor).load("wymeditor/wymeditor.html");
-	
-	});
+	$(wymeditor_area).wymeditor();	//create wymeditor instance(s)
 });
+
+
+
