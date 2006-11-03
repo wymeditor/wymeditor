@@ -8,11 +8,11 @@
 <script type="text/javascript">
 function init()
 {
-	document.body.innerHTML=window.parent.wymeditor_iframeGetContent();
+	document.body.innerHTML=window.parent.wym_instance().html();
 	document.designMode="on";
 	if(window.parent.jQuery.browser.mozilla) document.execCommand("styleWithCSS",'',false);
 }
 </script>
 </head>
-<body class="wymeditor_iframe_body" contentEditable="true" onload="init()"></body>
+<body contentEditable="true" onload="init()"></body>
 </html>

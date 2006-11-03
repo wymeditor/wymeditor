@@ -3,18 +3,41 @@
 <head>
 <title>WYMeditor</title>
 <style type="text/css">
-	.wymeditor_iframe { width: 600px; }
-	.wymeditor_menu ul { padding:0; margin: 0; }
-	.wymeditor_menu li { list-style: none; float: left; margin-right: 0.7em; }
-	.wymeditor_content { clear: both; }
+	.wym_iframe { width: 75%; }
+	.wym_menu ul { padding:0; margin: 0; }
+	.wym_menu li { list-style: none; float: left; margin-right: 0.7em; }
+	.wym_content { clear: both; }
 </style>
 <script type="text/javascript" src="wymeditor/jquery.js"></script>
 <script type="text/javascript" src="wymeditor/wymeditor.js"></script>
+<script type="text/javascript">
+$(function() {
+
+	//create wymeditor instance(s)
+	//we replace each matched element by a Wymeditor instance
+	//this code is customizable
+
+	var elements=$(".wymeditor");
+	var options = {
+  		htmlToInsert: "<div class='wymeditor'></div>",
+  		pageToLoad: "wymeditor/wymeditor.html",
+		iframeClass: ".wym_iframe",
+		execClass: ".wym_exec",
+		toggleClass: ".wym_toggle"
+	}
+
+	$(elements).each(function(i) {
+		var wymeditor=new Wymeditor($(this),i,options);
+	});
+
+});
+</script>
 </head>
 
 <body>
 <textarea id="txt1" rows="8" cols="40" class="wymeditor">&lt;p&gt;First textarea !&lt;/p&gt;</textarea><br/>
-<textarea id="txt2" rows="8" cols="40" class="wymeditor">&lt;p&gt;Second textarea&lt;/p&gt;</textarea>
+<textarea id="txt2" rows="8" cols="40" class="wymeditor">&lt;p&gt;Second textarea&lt;/p&gt;</textarea><br />
+<input type="text" id="txt3" class="wymeditor" value="&lt;p&gt;First input text&lt;/p&gt;" />
 </body>
 
 </html>

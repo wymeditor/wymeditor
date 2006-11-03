@@ -1,69 +1,97 @@
 ﻿/* WYMeditor - http://www.wymeditor.org/ */
 
-var wymeditor_content=new Array();
-var wymeditor_counter=-1;
+//Wymeditor object
+function Wymeditor(elem,index,options) {
 
-function wymeditor_iframeGetContent()
-{
-	wymeditor_counter++;
-	return(wymeditor_content[wymeditor_counter]);
-}
+	var _html=null;
+	var _editor=null;
+	var _wymeditor=this;
 
-function wymeditor_execCom(elem,cmd,opt)
-{
-	var div_editor=$(elem).ancestors("div.wymeditor");
-	var iframe=$(div_editor).find("iframe.wymeditor_iframe").get(0);
-	if(jQuery.browser.mozilla) iframe.contentDocument.execCommand(cmd,'',opt);
-	else if(jQuery.browser.msie) iframe.contentWindow.document.execCommand(cmd);
-}
+	this.version = "0.3-alpha-002";
+	this.element = elem;
 
-function wymeditor_submit(elem)
-{
-	var div_editor=$(elem).ancestors("div.wymeditor");
-	var iframe=$(div_editor).find("iframe.wymeditor_iframe").get(0);
-	var wymeditor_area=$(div_editor).prev();
-	
-	if(jQuery.browser.mozilla) $(wymeditor_area).val(iframe.contentDocument.body.innerHTML);
-	else if(jQuery.browser.msie) $(wymeditor_area).val(iframe.contentWindow.document.body.innerHTML);
-	
-	$(wymeditor_area).show();
-}
+	this.init = function() {
 
-
-jQuery.wymeditor = {
-
-	build : function(options) {
-
-		var settings = {
-			appendCode: "<div class='wymeditor'></div>",
-			loadPage: "wymeditor/wymeditor.html"
-		};
-
-		if(options) jQuery.extend(settings,options);
-
-		return this.each(function(i){
-
-			$(this).after(settings.appendCode);
-			wymeditor_content[i]=$(this).val();
+		this.html(elem.val());
+		elem.hide();
+		elem.after(options.htmlToInsert);
+		wym_instances[index]=this;
 		
-			var div_editor=$(this).next();
-			$(div_editor).load(settings.loadPage);
+		var div_editor=elem.next();
+		this.editor(div_editor);
+		this.element=elem;
+
+		$(div_editor).load(options.pageToLoad,null,function(){
+
+			var iframe=$(div_editor).find(options.iframeClass).get(0);
+			var elem=$(div_editor).prev();
+			var wymeditor=_wymeditor;
+
+			$(div_editor).find(options.execClass).click(function(){
+
+				wymeditor.execCommand(iframe,$(this).name());
+			});
+
+			$(div_editor).find(options.toggleClass).toggle(function(){
+
+				var html=wymeditor.iframeHtml(iframe);
+				wymeditor.html(html)
+				$(elem).val(html);
+
+				$(elem).toggle();
+
+				},function(){
+
+				var html=$(elem).val();
+				wymeditor.html(html);
+				wymeditor.iframeHtml(iframe,html);
+
+				$(elem).toggle();
+			});
 		});
 	}
 
-};
+	this.init();
+}
 
-jQuery.fn.wymeditor = jQuery.wymeditor.build;
+//Set or Get html property
+Wymeditor.prototype.html = function(s) {
+	if(s)this._html=s;
+	else return(this._html);
+}
 
+//Set or Get iframe innerHTML
+Wymeditor.prototype.iframeHtml = function(iframe,s) {
+	if(s) {
+		if(jQuery.browser.mozilla) iframe.contentDocument.body.innerHTML=s;
+		else if(jQuery.browser.msie) iframe.contentWindow.body.innerHTML=s;
+	}
+	else {
+		var html="";
+		if(jQuery.browser.mozilla) html=iframe.contentDocument.body.innerHTML;
+		else if(jQuery.browser.msie) html=iframe.contentWindow.body.innerHTML;
+		return(html);
+	}
+}
 
+//Exec command (bold,italic,...)
+Wymeditor.prototype.execCommand = function(iframe,cmd) {
+	if(jQuery.browser.mozilla) iframe.contentDocument.execCommand(cmd,'',null);
+	else if(jQuery.browser.msie) iframe.contentWindow.document.execCommand(cmd);
+}
 
-$(function() {
+//Set or Get editor property
+Wymeditor.prototype.editor = function(o) {
+	if(o)this._editor=o;
+	else return(this._editor);
+}
 
-	//hide textareas
-	var wymeditor_area=$("textarea.wymeditor");
-	$(wymeditor_area).hide();
-	$(wymeditor_area).wymeditor();	//create wymeditor instance(s)
-});
+//Little hack to set iframe(s) content
+var wym_instances=new Array();
+var wym_counter=-1;
 
-
-
+function wym_instance()
+{
+	wym_counter++;
+	return(wym_instances[wym_counter]);
+}
