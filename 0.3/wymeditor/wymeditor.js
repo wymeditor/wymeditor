@@ -64,12 +64,12 @@ Wymeditor.prototype.html = function(s) {
 Wymeditor.prototype.iframeHtml = function(iframe,s) {
 	if(s) {
 		if(jQuery.browser.mozilla) iframe.contentDocument.body.innerHTML=s;
-		else if(jQuery.browser.msie) iframe.contentWindow.body.innerHTML=s;
+		else if(jQuery.browser.msie) iframe.contentWindow.document.body.innerHTML=s;
 	}
 	else {
 		var html="";
 		if(jQuery.browser.mozilla) html=iframe.contentDocument.body.innerHTML;
-		else if(jQuery.browser.msie) html=iframe.contentWindow.body.innerHTML;
+		else if(jQuery.browser.msie) html=iframe.contentWindow.document.body.innerHTML;
 		return(html);
 	}
 }
