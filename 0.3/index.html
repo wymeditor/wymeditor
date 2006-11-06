@@ -3,10 +3,11 @@
 <head>
 <title>WYMeditor</title>
 <style type="text/css">
-	.wym_iframe { width: 75%; }
-	.wym_menu ul { padding:0; margin: 0; }
-	.wym_menu li { list-style: none; float: left; margin-right: 0.7em; }
-	.wym_content { clear: both; }
+	.wym_iframe	{ width: 75%; }
+	.wym_menu ul	{ padding:0; margin: 0; }
+	.wym_menu li	{ list-style: none; float: left; margin-right: 0.7em; }
+	.wym_dialog	{ clear: both; padding: 0.5em; }
+	.wym_content	{ clear: both; }
 </style>
 <script type="text/javascript" src="wymeditor/jquery.js"></script>
 <script type="text/javascript" src="wymeditor/wymeditor.js"></script>
@@ -17,17 +18,10 @@ $(function() {
 	//we replace each matched element by a Wymeditor instance
 	//this code is customizable
 
-	var elements=$(".wymeditor");
-	var options = {
-  		htmlToInsert: "<div class='wymeditor'></div>",
-  		pageToLoad: "wymeditor/wymeditor.html",
-		iframeClass: ".wym_iframe",
-		execClass: ".wym_exec",
-		toggleClass: ".wym_toggle"
-	}
+	var elements=$(".wymeditor");	
 
 	$(elements).each(function(i) {
-		var wymeditor=new Wymeditor($(this),i,options);
+		var wymeditor=new Wymeditor($(this),i);
 	});
 
 });
