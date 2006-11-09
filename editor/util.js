@@ -321,3 +321,12 @@ function removeLastBr(doc)
 		}
 	}
 }
+
+function populateEmptyElements(doc)
+{
+	var nodes=doc.childNodes;
+	for(x=0;x<nodes.length;x++)
+	{
+		if(nodes.item(x).innerHTML==null || sTrim(nodes.item(x).innerHTML)=="") nodes.item(x).innerHTML="<br />";
+	}
+}
