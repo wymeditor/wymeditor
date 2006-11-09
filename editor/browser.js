@@ -21,34 +21,6 @@ http://www.gnu.org/licenses/lgpl.txt
 
 */
 
-/*************************************************************
-Light version, use for basic browser detection only. Use our
-http://techpatterns.com/downloads/javascript_browser_detection.txt script for more
-complex javascript browser detection.
-
-Remember, always use method or object testing as your first choice, for example, if ( dom ) { statement; };
-
-Let me know if you find an error or a failure to properly detect, or if there
-is a relevant browser that has special needs for detection at our tech forum:
-http://techpatterns.com/forums/forum-11.html
-The main script is separated from the initial netscape 4 detection due to certain bugs in
-netscape 4 when it comes to unknown things like d.getElementById. The variable declarations
-of course are made first to make sure that all the variables are global through the page, 
-otherwise a javascript error will occur because you are trying to use an undeclared variable.
-
-We test for basic browser type (ie, op, or moz/netscape > 6)..
-
-For more in depth discussion of css and browser issues go to:
-http://www.nic.fi/~tapio1/Teaching/DynamicMenusb.php#detections
-http://www.nic.fi/~tapio1/Teaching/FAQ.php3
-
-***************************************************************/
-
-/**************************************************************
-Lite version, tests only for main types and browsers out there, 
-this will cover you in almost all normal situations out there.
-***************************************************************/
-
 var d, dom, ie, ie4, ie5x, moz, mac, win, lin, old, ie5mac, ie5xwin, op;
 
 d = document;
@@ -77,42 +49,3 @@ if ( !d.layers ){
 	ie5mac = ( mac && ie5x );
 	ie5xwin = ( win && ie5x );
 }
-
-/********************************************************
-here is a sample use of the browser detector, it would load a browser specific stylesheet
-for certain unsupported or improperly supported mac ie 5 css styles. The depth variable
-is used so that the javascript library file can be used from anywhere in the website, you simply
-insert the depth of the file like this, 
-...
- <head>
- <title>Browser information Page</title>
-
- <meta http-equiv = "Content-Type" content = "text/html; charset = iso-8859-1" />
- <link rel = "stylesheet" type = "text/css" href = "/css/main.css" />
- <script type = "text/javascript" src = "/js/browser_detection.js"> </script>
- <script type = "text/javascript>browser_css( '/'); </script>
- </head>
-
-in the head of the web page after the js file is loaded.
-Or if you are always referring your site to the root, you wouldn't need that
- and could delete the depth variable and just use the absolute path to the root.
-
-function browser_css( ) {
-	d = document;// shorthand so we don't have to write out document each time..
-	if ( ie5mac ) {
-		d.write('<link rel = "stylesheet" type = "text\/css" href = "/css/ie5mac.css" />');
-	}
-	else if ( d.layers ){
-		d.write('<link rel = "stylesheet" type = "text\/css" href = "/css/ns4x.css" />');
-	}
-	else if ( ie4 ){
-		d.write('<link rel = "stylesheet" type = "text\/css" href = "/css/ie4.css" />');
-	}
-	else if ( moz ){
-		d.write('<link rel = "stylesheet" type = "text\/css" href = "/css/moz.css" />');
-	}
-	else {
-		d.write('< link rel = "stylesheet" type = "text\/css" href = "/css/moz5.css" />');
-	}
-}
-********************************************************/
