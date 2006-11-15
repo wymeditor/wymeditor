@@ -833,14 +833,27 @@ function iframe_keyup_handler(evt)
 		{
 			if(nodes.item(x).nodeName.toLowerCase()=="br") editor().removeChild(nodes.item(x));
 		}
-		
 	}
 	
 	else if(evt.keyCode!=8 && evt.keyCode!=46) //NOT BACKSPACE AND NOT DELETE
 	{
 		//text nodes replaced by P
 		container=getSelectedContainer();
-		if(container.tagName.toLowerCase()=="body") execCom("formatblock","P");
+		name=container.tagName.toLowerCase();
+
+		//fix forbidden main containers
+		if(
+			name=="strong" ||
+			name=="b" ||
+			name=="em" ||
+			name=="i" ||
+			name=="sub" ||
+			name=="sup" ||
+			name=="a"
+
+		) name=container.parentNode.tagName.toLowerCase();
+
+		if(name=="body") execCom("formatblock","P");
 	}
 	
 	displayClasses();
