@@ -306,18 +306,32 @@ function cleanupHTML_moz(sHtml)
 }
 
 
-//Removes unnecessary <br> nodes
-function removeLastBr(doc)
+//Removes unnecessary nodes when possible and ads some when necessary (moz)...
+function handleNodes(doc)
 {
 	var nodes=doc.childNodes;
+	var nodeName;
 	for(x=0;x<nodes.length;x++)
 	{
-		if(nodes.item(x).nodeName.toLowerCase()=="p" && nodes.item(x).childNodes.length>1)
+		nodeName=nodes.item(x).nodeName.toLowerCase();
+		
+		switch(nodeName)
 		{
-			if(nodes.item(x).lastChild!=null && nodes.item(x).lastChild.nodeName.toLowerCase()=="br")
-			{
-				nodes.item(x).removeChild(nodes.item(x).lastChild);
-			}
+			case "p":
+				if(nodes.item(x).childNodes.length>1)
+				{
+					//remove <br> nodes if possible
+					if(nodes.item(x).lastChild!=null && nodes.item(x).lastChild.nodeName.toLowerCase()=="br")
+						nodes.item(x).removeChild(nodes.item(x).lastChild);
+				}
+				
+				//add nodes if necessary (otherwise the paragraph is uneditable)
+				else if(nodes.item(x).innerHTML==null || sTrim(nodes.item(x).innerHTML)=="")
+						nodes.item(x).innerHTML="<br>"; //<br /> causes problems...
+			break;
+			
+			//other
 		}
+		
 	}
 }

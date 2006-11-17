@@ -37,6 +37,9 @@ function init()
 		//editable
 		iframe().contentDocument.designMode="on";
 		
+		//handles (un)necessary nodes
+		handleNodes(editor());
+		
 		//add key and mouse events listeners
 		iframe().contentDocument.addEventListener('keydown',iframe_keydown_handler,false);
 		iframe().contentDocument.addEventListener('keyup',iframe_keyup_handler,false);
@@ -165,7 +168,7 @@ function getCleanHTML()
 		txthtml().value="";
 		
 		//various cleanups, see util.js
-		removeLastBr(editor());	
+		handleNodes(editor());
 		txthtml().value=cleanupHTML_moz(editor().innerHTML);
 	}
 }
