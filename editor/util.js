@@ -312,22 +312,12 @@ function removeLastBr(doc)
 	var nodes=doc.childNodes;
 	for(x=0;x<nodes.length;x++)
 	{
-		if(nodes.item(x).nodeName.toLowerCase()=="p" && nodes.item(x).hasChildNodes)
+		if(nodes.item(x).nodeName.toLowerCase()=="p" && nodes.item(x).childNodes.length>1)
 		{
 			if(nodes.item(x).lastChild!=null && nodes.item(x).lastChild.nodeName.toLowerCase()=="br")
 			{
 				nodes.item(x).removeChild(nodes.item(x).lastChild);
 			}
 		}
-	}
-}
-
-//Fixes uneditable empty elements bug
-function populateEmptyElements(doc)
-{
-	var nodes=doc.childNodes;
-	for(x=0;x<nodes.length;x++)
-	{
-		if(nodes.item(x).innerHTML==null || sTrim(nodes.item(x).innerHTML)=="") nodes.item(x).innerHTML="<br />";
 	}
 }

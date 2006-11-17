@@ -32,9 +32,6 @@ function init()
 		ed=iframe().contentWindow.parent.document.getElementById('editor');
 		if(ed!=null)iframe().contentDocument.body.innerHTML=ed.innerHTML;
 
-		//fix uneditable empty elements bug
-		populateEmptyElements(iframe().contentDocument.body);
-
 		getHTML();
 		
 		//editable
