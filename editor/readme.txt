@@ -1,7 +1,8 @@
-﻿<!--
+<!--
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2006 H.O.net - http://www.honet.be/
- * Use of WYMeditor is granted by the terms of the MIT License (http://www.opensource.org/licenses/mit-license.php).
+ * Dual licensed under the MIT (MIT-license.txt)
+ * and GPL (GPL-license.txt) licenses.
  *
  * For further information visit:
  * 		http://www.wymeditor.org/
