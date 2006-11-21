@@ -1,18 +1,27 @@
 ﻿/* WYMeditor - http://www.wymeditor.org/ */
 
-//Wymeditor object
-function Wymeditor(elem,index,opt) {
-
-	var options = {
-  		htmlToInsert:		"<div class='wymeditor'></div>",
+//jQuery plugin
+jQuery.fn.wymeditor = function(options) {
+	
+	options = jQuery.extend({
+	
+		htmlToInsert:		"<div class='wymeditor'></div>",
   		pageToLoad:		"wymeditor/wymeditor.html",
 		iframeClass:		".wym_iframe",
 		dialogClass:		".wym_dialog",
 		buttonClass:		".wym_bt",
 		inputClass:		".wym_in"
-	}
 
-	if(opt)options=opt;
+	}, options);
+
+	// create editor object using options
+	return this.each(function(i) {
+		new Wymeditor($(this),i,options);
+	});
+};
+
+//Wymeditor object
+function Wymeditor(elem,index,options) {
 
 	var _html=null;
 	var _editor=null;

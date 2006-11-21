@@ -16,13 +16,8 @@ $(function() {
 
 	//create wymeditor instance(s)
 	//we replace each matched element by a Wymeditor instance
-	//this code is customizable
 
-	var elements=$(".wymeditor");	
-
-	$(elements).each(function(i) {
-		var wymeditor=new Wymeditor($(this),i);
-	});
+	$(".wymeditor").wymeditor();
 
 });
 </script>
