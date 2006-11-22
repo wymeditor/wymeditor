@@ -29,8 +29,8 @@
 	/*ie7*/ 	 
 	*+html	#iframe_editor	{ display: none;}
     /* hide IE editor in gecko + modern browsers*/
-	html>body #editor	{ display: none;}    
-   
+	html>body #editor	{ display: none; *display: block}    
+    
     /* basic */
 	.editor			{ text-align: center }
 	.editor #topdiv		{ width: 750px; margin: auto; text-align: left }
