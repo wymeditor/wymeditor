@@ -751,6 +751,9 @@ function pasteData(sData)
 		//(it will be eventually removed)
 		switch(container.tagName)
 		{
+			case "BODY":
+				parent=container;
+				break;
 			case "P":
 			case "H1":
 			case "H2":
@@ -802,6 +805,10 @@ function pasteData(sData)
 			
 			//remove the temp container (if in a TD)
 			if(tmpContainer!=null)tmpContainer.removeNode();
+
+			//remove remaining BR (moz only)
+			if(moz && editor().childNodes[1]!=null && editor().childNodes[1].tagName=="BR")
+				editor().removeChild(editor().childNodes[1]);
 			
 			getCleanHTML();
 		}
