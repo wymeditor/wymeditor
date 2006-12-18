@@ -836,7 +836,7 @@ function iframe_keyup_handler(evt)
 		}
 	}
 	
-	else if(evt.keyCode!=8 && evt.keyCode!=46) //NOT BACKSPACE AND NOT DELETE
+	else if(evt.keyCode!=8 && evt.keyCode!=46 && !evt.ctrlKey) //NOT BACKSPACE, NOT DELETE, NOT CTRL
 	{
 		//text nodes replaced by P
 		container=getSelectedContainer();
