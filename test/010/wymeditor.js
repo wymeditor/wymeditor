@@ -31,14 +31,17 @@ function Wymeditor(elem,index,options) {
 	
 	this.box = box;
 
-	sHtml =   "<ul class='" + options.menuClass + "'>"
+	sHtml =   "<div class='" + options.menuClass + "'>"
+		+ "<ul>"
 		+ "<li><a class='" + options.execClass + "' href='#' name='Bold'>" + options.strongText + "</a></li>"
 		+ "<li><a class='" + options.execClass + "' href='#' name='Italic'>" + options.emphasisText + "</a></li>"
 		+ "</ul>"
+		+ "</div>"
+		+ "<div class='" + options.iframeClass + "'>"
 		+ "<iframe class='" + options.iframeClass + "' "
 		+ "src='" + options.iframeUrl + "'"
 		+ "onload='window.parent.wym_instances[" + index + "].init(this)' "
-		+ "></iframe>";
+		+ "></iframe></div>";
 
 	$(box).html(sHtml);
 
