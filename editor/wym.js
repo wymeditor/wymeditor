@@ -751,6 +751,9 @@ function pasteData(sData)
 		//(it will be eventually removed)
 		switch(container.tagName)
 		{
+			case "BODY":
+				parent=container;
+				break;
 			case "P":
 			case "H1":
 			case "H2":
@@ -802,6 +805,10 @@ function pasteData(sData)
 			
 			//remove the temp container (if in a TD)
 			if(tmpContainer!=null)tmpContainer.removeNode();
+
+			//remove remaining BR (moz only)
+			if(moz && editor().childNodes[1]!=null && editor().childNodes[1].tagName=="BR")
+				editor().removeChild(editor().childNodes[1]);
 			
 			getCleanHTML();
 		}
@@ -836,7 +843,7 @@ function iframe_keyup_handler(evt)
 		}
 	}
 	
-	else if(evt.keyCode!=8 && evt.keyCode!=46) //NOT BACKSPACE AND NOT DELETE
+	else if(evt.keyCode!=8 && evt.keyCode!=46 && !evt.ctrlKey) //NOT BACKSPACE, NOT DELETE, NOT CTRL
 	{
 		//text nodes replaced by P
 		container=getSelectedContainer();

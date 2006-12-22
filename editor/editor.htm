@@ -51,43 +51,43 @@
 
  	<!-- basic commands -->
 	<div id="m_basic">
-	<a id="m_strong" title="Strong" href="#" onclick="execCom('Bold');getCleanHTML()">Strong</a>
-	<a id="m_italic" title="Italics" href="#" onclick="execCom('Italic');getCleanHTML()">Italic</a>
-	<a id="m_sup" title="Supercript" href="#" onclick="execCom('Superscript');getCleanHTML()">Superscript</a>
-	<a id="m_sub" title="Subscript" href="#" onclick="execCom('Subscript');getCleanHTML()">Subscript</a>
+	<a id="m_strong" title="Strong" href="#" onclick="execCom('Bold');getCleanHTML();return false;">Strong</a>
+	<a id="m_italic" title="Italics" href="#" onclick="execCom('Italic');getCleanHTML();return false;">Italic</a>
+	<a id="m_sup" title="Supercript" href="#" onclick="execCom('Superscript');getCleanHTML();return false;">Superscript</a>
+	<a id="m_sub" title="Subscript" href="#" onclick="execCom('Subscript');getCleanHTML();return false;">Subscript</a>
 	<!-- we must remove class attribute before converting from P to OL or UL -->
-	<a id="m_ordered_list" title="Ordered list" href="#" onclick="removeClassAttr();execCom('InsertOrderedList');getCleanHTML()">Ordered List</a>
-	<a id="m_unordered_list" title="Unordered list" href="#" onclick="removeClassAttr();execCom('InsertUnorderedList');getCleanHTML()">Unordered List</a>
+	<a id="m_ordered_list" title="Ordered list" href="#" onclick="removeClassAttr();execCom('InsertOrderedList');getCleanHTML();return false;">Ordered List</a>
+	<a id="m_unordered_list" title="Unordered list" href="#" onclick="removeClassAttr();execCom('InsertUnorderedList');getCleanHTML();return false;">Unordered List</a>
 	</div>
 	
 	<div id="m_undo_redo">
-	<a id="m_undo" title="Undo" href="#" onclick="execCom('Undo')">Undo</a>
-	<a id="m_redo" title="Redo" href="#" onclick="execCom('Redo')">Redo</a>
+	<a id="m_undo" title="Undo" href="#" onclick="execCom('Undo');return false;">Undo</a>
+	<a id="m_redo" title="Redo" href="#" onclick="execCom('Redo');return false;">Redo</a>
 	</div>
 
 	<!-- objects : link, image, table -->
 	<div id="m_objects">
-	<a id="m_link" title="Create link" href="#" onclick="openDialog('link');getCleanHTML()">Link</a>
-	<a id="m_unlink" title="Unlink" href="#" onclick="execCom('Unlink');getCleanHTML()">Unlink</a>
-	<a id="m_image" title="Insert image" href="#" onclick="openDialog('image');getCleanHTML()">Image</a>
-	<a id="m_table" title="Insert table" href="#" onclick="openDialog('table');getCleanHTML()">Table</a>
+	<a id="m_link" title="Create link" href="#" onclick="openDialog('link');getCleanHTML();return false;">Link</a>
+	<a id="m_unlink" title="Unlink" href="#" onclick="execCom('Unlink');getCleanHTML();return false;">Unlink</a>
+	<a id="m_image" title="Insert image" href="#" onclick="openDialog('image');getCleanHTML();return false;">Image</a>
+	<a id="m_table" title="Insert table" href="#" onclick="openDialog('table');getCleanHTML();return false;">Table</a>
 	</div>
 
 	<!-- table : advanced commands -->
 	<div id="m_table_advanced">
-	<a id="m_table_insert_row_after" title="Insert new row after current row" href="#" onclick="table_insertObject('ROW',false);getCleanHTML()">Insert Row After</a>
-	<a id="m_table_insert_row_before" title="Insert new row before current row" href="#" onclick="table_insertObject('ROW',true);getCleanHTML()">Insert Row Before</a>
-	<a id="m_table_insert_col_after" title="Insert new column after current column" href="#" onclick="table_insertObject('COL',false);getCleanHTML()">Insert Col After</a>
-	<a id="m_table_insert_col_before" title="Insert new column before current column" href="#" onclick="table_insertObject('COL',true);getCleanHTML()">Insert Col Before</a>
-	<a id="m_table_delete_row" title="Delete current row" href="#" onclick="table_deleteObject('ROW');getCleanHTML()">Delete Row</a>
-	<a id="m_table_delete_col" title="Delete current column" href="#" onclick="table_deleteObject('COL');getCleanHTML()">Delete Col</a>
+	<a id="m_table_insert_row_after" title="Insert new row after current row" href="#" onclick="table_insertObject('ROW',false);getCleanHTML();return false;">Insert Row After</a>
+	<a id="m_table_insert_row_before" title="Insert new row before current row" href="#" onclick="table_insertObject('ROW',true);getCleanHTML();return false;">Insert Row Before</a>
+	<a id="m_table_insert_col_after" title="Insert new column after current column" href="#" onclick="table_insertObject('COL',false);getCleanHTML();return false;">Insert Col After</a>
+	<a id="m_table_insert_col_before" title="Insert new column before current column" href="#" onclick="table_insertObject('COL',true);getCleanHTML();return false;">Insert Col Before</a>
+	<a id="m_table_delete_row" title="Delete current row" href="#" onclick="table_deleteObject('ROW');getCleanHTML();return false;">Delete Row</a>
+	<a id="m_table_delete_col" title="Delete current column" href="#" onclick="table_deleteObject('COL');getCleanHTML();return false;">Delete Col</a>
 	</div>
 
 	<!-- advanced commands  -->
 	<div id="m_advanced">
-	<a id="m_paste" title="Paste from Word" href="#" onclick="openDialog('paste');getCleanHTML()">Paste from Word</a>
-	<a id="m_html" title="View source code" href="#" onclick="getCleanHTML();htmlVisible()">Show / Hide HTML</a>
-	<a id="m_preview" title="Open preview" href="#" onclick="openPreview()">Preview</a>
+	<a id="m_paste" title="Paste from Word" href="#" onclick="openDialog('paste');getCleanHTML();return false;">Paste from Word</a>
+	<a id="m_html" title="View source code" href="#" onclick="getCleanHTML();htmlVisible();return false;">Show / Hide HTML</a>
+	<a id="m_preview" title="Open preview" href="#" onclick="openPreview();return false;">Preview</a>
 	</div>
 </div>
 
@@ -95,36 +95,36 @@
 	<!-- containers (h1..h6, pre, ...) -->
 	<div id="m_containers">
 	<h2>Containers</h2>
-	<a id="m_paragraph" href="#" onclick="setContainer('P');getCleanHTML()">Paragraph</a>
-	<a id="m_h1" href="#" onclick="setContainer('H1');getCleanHTML()">Heading 1</a>
-	<a id="m_h2" href="#" onclick="setContainer('H2');getCleanHTML()">Heading 2</a>
-	<a id="m_h3" href="#" onclick="setContainer('H3');getCleanHTML()">Heading 3</a>
-	<a id="m_h4" href="#" onclick="setContainer('H4');getCleanHTML()">Heading 4</a>
-	<a id="m_h5" href="#" onclick="setContainer('H5');getCleanHTML()">Heading 5</a>
-	<a id="m_h6" href="#" onclick="setContainer('H6');getCleanHTML()">Heading 6</a>
-	<a id="m_pre" href="#" onclick="setContainer('PRE');getCleanHTML()">Preformatted</a>
-	<a id="m_blockquote" href="#" onclick="setContainer('BLOCKQUOTE');getCleanHTML()">Blockquote</a>
+	<a id="m_paragraph" href="#" onclick="setContainer('P');getCleanHTML();return false;">Paragraph</a>
+	<a id="m_h1" href="#" onclick="setContainer('H1');getCleanHTML();return false;">Heading 1</a>
+	<a id="m_h2" href="#" onclick="setContainer('H2');getCleanHTML();return false;">Heading 2</a>
+	<a id="m_h3" href="#" onclick="setContainer('H3');getCleanHTML();return false;">Heading 3</a>
+	<a id="m_h4" href="#" onclick="setContainer('H4');getCleanHTML();return false;">Heading 4</a>
+	<a id="m_h5" href="#" onclick="setContainer('H5');getCleanHTML();return false;">Heading 5</a>
+	<a id="m_h6" href="#" onclick="setContainer('H6');getCleanHTML();return false;">Heading 6</a>
+	<a id="m_pre" href="#" onclick="setContainer('PRE');getCleanHTML();return false;">Preformatted</a>
+	<a id="m_blockquote" href="#" onclick="setContainer('BLOCKQUOTE');getCleanHTML();return false;">Blockquote</a>
 	</div>
 
 	<!-- classes : setClass(class name,list of allowed containers,list of conflicting classes) -->
 	<div id="m_class">
 	<h2>Classes</h2>
-	<a id="m_remove_class" href="#" onclick="removeClassAttr();getCleanHTML();displayClasses()">Remove Classes</a>
+	<a id="m_remove_class" href="#" onclick="removeClassAttr();getCleanHTML();displayClasses();return false;">Remove Classes</a>
 	<h3>Common</h3>
-	<a href="#" name="hidden-note" onclick="setClass('hidden-note','*','*');getCleanHTML()">note (hidden)</a>
+	<a href="#" name="hidden-note" onclick="setClass('hidden-note','*','*');getCleanHTML();return false;">note (hidden)</a>
 	<h3>Paragraph</h3>
-	<a href="#" name="important" onclick="setClass('important','P','','*');getCleanHTML()">important</a>
-	<a href="#" name="date" onclick="setClass('date','P,DIV','*');getCleanHTML()">date</a>
-	<a href="#" name="block" onclick="setClass('block','P,DIV','','important');getCleanHTML()">side block</a>
+	<a href="#" name="important" onclick="setClass('important','P','','*');getCleanHTML();return false;">important</a>
+	<a href="#" name="date" onclick="setClass('date','P,DIV','*');getCleanHTML();return false;">date</a>
+	<a href="#" name="block" onclick="setClass('block','P,DIV','','important');getCleanHTML();return false;">side block</a>
 	<h3>Image</h3>
-	<a href="#" name="border" onclick="setClass('border','IMG','');getCleanHTML()">border</a>
+	<a href="#" name="border" onclick="setClass('border','IMG','');getCleanHTML();return false;">border</a>
 	</div>
 
 	<!-- custom panel -->
 	<div id="m_custom">
 	<h2>Special</h2>
-	<a href="#" title="Insert WYMeditor's description" onclick="insertAtCursor(custom_values['wym_editor_description']);getCleanHTML()">Insert WYMeditor's description</a>
-	<a href="#" title="Insert template" onclick="openDialog('template');getCleanHTML()">Insert template</a>
+	<a href="#" title="Insert WYMeditor's description" onclick="insertAtCursor(custom_values['wym_editor_description']);getCleanHTML();return false;">Insert WYMeditor's description</a>
+	<a href="#" title="Insert template" onclick="openDialog('template');getCleanHTML();return false;">Insert template</a>
 	</div>
 	
 	<!-- miscellaneous -->

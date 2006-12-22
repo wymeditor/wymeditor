@@ -312,7 +312,7 @@ function handleNodes(doc)
 {
 	var nodes=doc.childNodes;
 	var nodeName;
-	for(x=0;x<nodes.length;x++)
+	for(var x=0;x<nodes.length;x++)
 	{
 		nodeName=nodes.item(x).nodeName.toLowerCase();
 		
@@ -333,6 +333,45 @@ function handleNodes(doc)
 			
 			//other
 		}
-		
+		handleAttributes(nodes.item(x));
+	}
+}
+
+//Removes unnecessary or deprecated attributes
+//Doesn't conform perfectly to XHTML strict 1.0 for compatibility/logical/other reasons.
+//See cleanAttributes()
+//handleAttributes() is recursive.
+function handleAttributes(node)
+{
+	if(node.hasAttributes()) cleanAttributes(node);
+	if(node.hasChildNodes())
+	{
+		var nodes=node.childNodes;
+		for(var x=0;x<nodes.length;x++){handleAttributes(nodes.item(x));}
+	}
+}
+
+function cleanAttributes(node)
+{
+	var nodeName=node.nodeName.toLowerCase();
+	
+	node.removeAttribute("align");
+	node.removeAttribute("background");
+	node.removeAttribute("bgcolor");
+	node.removeAttribute("border");
+	node.removeAttribute("color");
+	node.removeAttribute("face");
+	node.removeAttribute("noshade");
+	node.removeAttribute("nowrap");
+	node.removeAttribute("style");
+	node.removeAttribute("valign");
+	node.removeAttribute("vlink");
+	
+	switch(nodeName)
+	{
+		case "table":
+			node.removeAttribute("width");
+			node.removeAttribute("height");
+		break;
 	}
 }
