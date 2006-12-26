@@ -1,0 +1,6 @@
+.wym_box		{ padding:0; margin: 0; }
+.wym_menu ul		{ padding:0; margin: 0; }
+.wym_menu li		{ list-style: none; float: left; margin-right: 0.3em; }
+.wym_iframe		{ clear: both; }
+
+body.wym_iframe p 	{ background-color: #f0f0ff; }
