@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!--
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2006 H.O.net - http://www.honet.be/
@@ -58,6 +58,8 @@
 	<!-- we must remove class attribute before converting from P to OL or UL -->
 	<a id="m_ordered_list" title="Ordered list" href="#" onclick="removeClassAttr();execCom('InsertOrderedList');getCleanHTML();return false;">Ordered List</a>
 	<a id="m_unordered_list" title="Unordered list" href="#" onclick="removeClassAttr();execCom('InsertUnorderedList');getCleanHTML();return false;">Unordered List</a>
+	<a id="m_indent" title="Indent" href="#" onclick="execCom('Indent');getCleanHTML();return false;">Indent</a>
+	<a id="m_outdent" title="Outdent" href="#" onclick="execCom('Outdent');getCleanHTML();return false;">Outdent</a>
 	</div>
 	
 	<div id="m_undo_redo">

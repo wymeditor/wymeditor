@@ -215,12 +215,51 @@ function execCom(cmd,opt)
 				}
 				else iframe().contentDocument.execCommand(cmd,'',opt);
 				break;
+			case "indent": case "outdent":
+				break;
 			default:
 				iframe().contentDocument.execCommand(cmd,'',opt);
 				break;
 		}
 	}
-	else if(ie) {document.execCommand(cmd);}
+	else if(ie)
+	{
+		switch(cmd.toLowerCase())
+		{
+			case "indent": case "outdent":
+				break;
+			default:
+				document.execCommand(cmd);
+				break;
+		}
+	}
+	
+	//"indent" and "outdent" commands allowed for list elements only  
+	if(cmd.toLowerCase()=="indent" || cmd.toLowerCase()=="outdent")
+	{
+		container=getSelectedContainer();
+		var tagName=container.tagName.toLowerCase();
+		switch(tagName)
+		{
+			case "li": case "ol": case "ul":
+				if(moz) iframe().contentDocument.execCommand(cmd,'',opt);
+				else if(ie) document.execCommand(cmd);
+				break;
+			default:
+				container=getMainContainer(container);
+				var tagName=container.tagName.toLowerCase();
+				switch(tagName)
+				{
+					case "li": case "ol": case "ul":
+						if(moz) iframe().contentDocument.execCommand(cmd,'',opt);
+						else if(ie) document.execCommand(cmd);
+						break;
+					default:
+						break;
+				}
+				break;
+		}
+	}
 }
 
 //main function to get the current selected container

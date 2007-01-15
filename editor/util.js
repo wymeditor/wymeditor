@@ -1,4 +1,4 @@
-/*
+﻿/*
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2006 H.O.net - http://www.honet.be/
  * Dual licensed under the MIT (MIT-license.txt)
@@ -232,6 +232,7 @@ function cleanupHTML_moz(sHtml)
 {
 	var flagTag=false,begTag=false;
 	var tag="",ret="",attr="";
+	var level=0;
 	
 	for(var x=0;x<sHtml.length;x++)
 	{
@@ -257,6 +258,11 @@ function cleanupHTML_moz(sHtml)
 						break;
 					case "br":
 						tag="br /"
+						break;
+					case "ol": case "ul":
+						level++;
+						if(level>1 && ret.substr(ret.length-5)=="</li>")
+							ret=ret.substr(0,ret.length-5);
 						break;
 					default:
 						break;
@@ -287,6 +293,11 @@ function cleanupHTML_moz(sHtml)
 					case "meta":
 					case "param":
 						ret+="<"+tag+attr+"/>";
+						break;
+					case "/ol": case "/ul":
+						if(level>1)ret+="<"+tag+attr+"></li>";
+						else ret+="<"+tag+attr+">";
+						level--;
 						break;
 					default:
 						ret+="<"+tag+attr+">";
