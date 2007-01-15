@@ -1,4 +1,4 @@
-/*
+﻿/*
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2006 H.O.net - http://www.honet.be/
  * Dual licensed under the MIT (MIT-license.txt)
@@ -772,6 +772,7 @@ function pasteData(sData)
 				container=tmpContainer;
 				break;
 			default:
+				parent=getMainContainer(container).parentNode;
 				break;
 		}
 		
@@ -843,7 +844,7 @@ function iframe_keyup_handler(evt)
 		}
 	}
 	
-	else if(evt.keyCode!=8 && evt.keyCode!=46 && !evt.ctrlKey) //NOT BACKSPACE, NOT DELETE, NOT CTRL
+	else if(evt.keyCode!=8 && evt.keyCode!=46 && evt.keyCode!=17 && !evt.ctrlKey) //NOT BACKSPACE, NOT DELETE, NOT CTRL
 	{
 		//text nodes replaced by P
 		container=getSelectedContainer();
