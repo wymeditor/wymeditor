@@ -1,4 +1,4 @@
-/*
+﻿/*
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2006 H.O.net - http://www.honet.be/
  * Dual licensed under the MIT (MIT-license.txt)
@@ -91,6 +91,8 @@
 	a#m_undo			{ background-position: 0 -504px;}
 	a#m_redo			{ background-position: 0 -528px;}
 	a#m_paste			{ background-position: 0 -552px }
+	a#m_indent			{ background-position: 0 -576px }                     
+	a#m_outdent			{ background-position: 0 -600px }                     
 
     /* special buttons */
 	a#m_paragraph,
