@@ -216,6 +216,14 @@ function execCom(cmd,opt)
 				else iframe().contentDocument.execCommand(cmd,'',opt);
 				break;
 			case "indent": case "outdent":
+				var focusNode=getSelectedNode("focus");
+				var anchorNode=getSelectedNode("anchor");
+				
+				focusNode=getFirstBlockParent(focusNode);
+				anchorNode=getFirstBlockParent(anchorNode);
+								
+				if(focusNode==anchorNode && focusNode.tagName.toLowerCase()=="li")
+					iframe().contentDocument.execCommand(cmd,'',opt);
 				break;
 			default:
 				iframe().contentDocument.execCommand(cmd,'',opt);
@@ -227,36 +235,11 @@ function execCom(cmd,opt)
 		switch(cmd.toLowerCase())
 		{
 			case "indent": case "outdent":
+				container=getSelectedContainer();
+				if(container.tagName.toLowerCase()=="li") document.execCommand(cmd);
 				break;
 			default:
 				document.execCommand(cmd);
-				break;
-		}
-	}
-	
-	//"indent" and "outdent" commands allowed for list elements only  
-	if(cmd.toLowerCase()=="indent" || cmd.toLowerCase()=="outdent")
-	{
-		container=getSelectedContainer();
-		var tagName=container.tagName.toLowerCase();
-		switch(tagName)
-		{
-			case "li": case "ol": case "ul":
-				if(moz) iframe().contentDocument.execCommand(cmd,'',opt);
-				else if(ie) document.execCommand(cmd);
-				break;
-			default:
-				container=getMainContainer(container);
-				var tagName=container.tagName.toLowerCase();
-				switch(tagName)
-				{
-					case "li": case "ol": case "ul":
-						if(moz) iframe().contentDocument.execCommand(cmd,'',opt);
-						else if(ie) document.execCommand(cmd);
-						break;
-					default:
-						break;
-				}
 				break;
 		}
 	}
@@ -286,6 +269,18 @@ function getSelectedContainer()
 	else return(selectedElement);
 }
 
+//returns the selected anchor or focus node
+function getSelectedNode(sType)
+{
+	if(moz)
+	{
+		var sel=iframe().contentWindow.getSelection();
+		if(sType=="focus") node=sel.focusNode;
+		else if(sType=="anchor") node=sel.anchorNode;
+		if(node.nodeName=="#text")return(node.parentNode);
+		else return(node);
+	}
+}
 //get the top container (the first editor's child which contains the element)
 function getMainContainer(elem)
 {
@@ -324,6 +319,48 @@ function nodeContains(node,elem)
 	if(parent.tagName.toLowerCase()=="body" || parent.tagName.toLowerCase()=="html")return(false);
 	else if(parent==node)return(true);
 	else return(nodeContains(node,parent));
+}
+
+//recursive function which returns the first block-level element's parent
+function getFirstBlockParent(elem)
+{
+	if(elem!=null && elem.id!="editor")
+	{
+		var tagName=elem.tagName.toLowerCase();
+		switch(tagName)
+		{
+			case "address":
+			case "blockquote":
+			case "div":
+			case "dl":
+			case "fieldset":
+			case "form":
+			case "h1": case "h2": case "h3": case "h4": case "h5": case "h6":
+			case "hr":
+			case "noscript":
+			case "ol":
+			case "p":
+			case "pre":
+			case "table":
+			case "ul":
+			case "dd":
+			case "dt":
+			case "li":
+			case "tbody":
+			case "td":
+			case "tfoot":
+			case "th":
+			case "thead":
+			case "tr":
+				return(elem);
+				break;
+			default:
+				elem=elem.parentNode;
+				return(getFirstBlockParent(elem));
+				break;
+		}
+	}
+	else return(null);	
 }
 
 //recursive function which returns the element's parent having a particular type
