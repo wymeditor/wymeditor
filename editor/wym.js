@@ -195,6 +195,8 @@ function execCom(cmd,opt)
 	{
 		//well, moz sets <b><strong>#text</strong></b> or <i><em>#text</em></i>
 		//in this case, we don't use execCommand: we replace the <strong> or <em> nodes by a textNode
+
+		//nested lists (indent and outdent): moz creates blockquotes around lists, so we (try to) prevent this
 		switch(cmd.toLowerCase())
 		{
 			case "bold":
@@ -221,9 +223,16 @@ function execCom(cmd,opt)
 				
 				focusNode=getFirstBlockParent(focusNode);
 				anchorNode=getFirstBlockParent(anchorNode);
-								
-				if(focusNode==anchorNode && focusNode.tagName.toLowerCase()=="li")
-					iframe().contentDocument.execCommand(cmd,'',opt);
+
+				if(focusNode!=null && focusNode==anchorNode && focusNode.tagName.toLowerCase()=="li")
+				{
+					var ancestor=focusNode.parentNode.parentNode;
+					if(focusNode.parentNode.childNodes.length>1
+						|| ancestor.tagName.toLowerCase()=="ol"
+						|| ancestor.tagName.toLowerCase()=="ul")
+					
+						iframe().contentDocument.execCommand(cmd,'',opt);
+				}
 				break;
 			default:
 				iframe().contentDocument.execCommand(cmd,'',opt);
