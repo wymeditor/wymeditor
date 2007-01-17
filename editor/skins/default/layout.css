@@ -51,16 +51,14 @@
     /* toolbars */
 	#toolbars		{ overflow: hidden; margin: 0 0 12px 0; font-family: verdana, arial, sans-serif; font-size: 11px }
  * html	#toolbars		{ height: 1%; overflow: visible }
-	#toolbars a		{ text-indent: -9999px; text-decoration: none; display: block; float: left; margin: 0 5px; overflow: hidden; height: 24px; width: 24px; background: url(icons.png) no-repeat; }
+	#toolbars a		{ text-indent: -9999px; text-decoration: none; display: block; float: left; margin: 0 2px; overflow: hidden; height: 24px; width: 24px; background: url(icons.png) no-repeat; }
 	#toolbars a:hover	{ background-color: yellow }
 	#toolbars div 		{ float: left; border: 1px solid gray; margin-right: 5px; margin-top: 5px; background: white  }
 	#toolbars #m_advanced	{ border: none; background: transparent  }
 	#m_table_advanced	{ display: none; }
  * html	#m_table_advanced	{ display: block; }
  *+html	#m_table_advanced	{ display: block; }
-        #m_table_advanced       { clear: left;} 
         #toolbars #m_advanced   { float: right; margin-right: 0; }
- * html #m_table_advanced       { width: 217px; /*ie duplicate content bugfix*/}
 
     /* panels */
 	#panels			{ width: 148px; float: right; font-family: verdana, arial, sans-serif; font-size: 11px }
