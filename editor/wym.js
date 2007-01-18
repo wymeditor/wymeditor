@@ -471,6 +471,34 @@ function setContainer(sType)
 	}
 }
 
+//converts a TD to a TH and vice-versa
+function switchCellType()
+{
+	container=getSelectedContainer();
+	if(container!=null)
+	{
+		switch(container.tagName)
+		{
+			case "TD": case "TH":
+				break;
+			default:
+				var aTypes=new Array("TD","TH");
+				container=getContainerOfTypeArray(container,aTypes);
+				break;
+		}
+       	
+		if(container!=null)
+		{
+			var sType=(container.tagName=="TD")? "TH": "TD";
+			var html=container.innerHTML;
+			var newNode=document.createElement(sType);
+			if(ie)container.replaceNode(newNode);
+			else if(moz)container.parentNode.replaceChild(newNode,container);
+			newNode.innerHTML=html;
+		}
+	}
+}
+
 //set the class to the container
 function setClass(sValue,sAllowedContainers,sConflictingClasses,sAllowedClasses)
 {
