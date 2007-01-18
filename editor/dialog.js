@@ -1,4 +1,4 @@
-/*
+﻿/*
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2006 H.O.net - http://www.honet.be/
  * Dual licensed under the MIT (MIT-license.txt)
@@ -317,6 +317,13 @@ function table_sendValue()
 		var rows=getValue("table_rows");
 		var cols=getValue("table_cols");
 		
+		var caption=getValue("table_caption");
+		
+		//we create the caption
+		var newCaption=table.createCaption();
+		newCaption.innerHTML=caption;
+		
+		//we create the rows and cells
 		for(x=0;x<rows;x++)
 		{
 			if(ie) newRow=table.insertRow();
