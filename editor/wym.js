@@ -749,7 +749,8 @@ function table_insertObject(sObjectType,bBefore)
 		if(table!=null)
 		{
 			//find the selected td / tr
-			var td=getContainerOfType(container,"TD");
+			var aTypes=new Array("TD","TH");
+			var td=getContainerOfTypeArray(container,aTypes);
 			var tr=getContainerOfType(container,"TR");
 
 			if(tr!=null && td!=null)
@@ -791,7 +792,8 @@ function table_deleteObject(sObjectType)
 		var table=getContainerOfType(container,"TABLE");
 		if(table!=null)
 		{
-			var td=getContainerOfType(container,"TD");
+			var aTypes=new Array("TD","TH");
+			var td=getContainerOfTypeArray(container,aTypes);
 			var tr=getContainerOfType(container,"TR");
 
 			if(tr!=null && td!=null)
