@@ -70,7 +70,7 @@ function cleanupHTML_ie(sHtml)
 {
 	var iEnt=-1;
 	var flagTag=false,begTag=false,flagAttr=false,begAttr=false,flagEntity=false,begEntity=false,flagLi=false,dropTag=false;
-	var empty=false,unclosed=false,unquoted=false,unopened=false;
+	var empty=false,unclosed=false,unquoted=false,unopened=false,unclosedList=false;
 	var tag="",lastTag="",ret="",entity="",attr="";
 	
 	for(var x=0;x<sHtml.length;x++)
@@ -117,7 +117,12 @@ function cleanupHTML_ie(sHtml)
 						break;
 					case "ol":
 					case "ul":
-						if(lastTag=="/li")unopened=true;
+						if(lastTag=="/li" || lastTag=="ol" || lastTag=="ul")unopened=true;
+						empty=false;
+						break;
+					case "/ol":
+					case "/ul":
+						if(lastTag=="/ol" || lastTag=="/ul")unclosedList=true;
 						empty=false;
 						break;
 					case "font":case "/font":
@@ -199,6 +204,7 @@ function cleanupHTML_ie(sHtml)
 				flagAttr=false;
 				if(unclosed){ret=insertAt(ret,"</"+lastTag+">",ret.lastIndexOf("<"));unclosed=false;}
 				if(unopened){ret=insertAt(ret,"<li>",ret.lastIndexOf("<"));unopened=false;}
+				if(unclosedList){ret=insertAt(ret,"</li>",ret.lastIndexOf("<"));unclosedList=false;}
 				if(dropTag){ret=ret.substr(0,ret.lastIndexOf("<"));dropTag=false;}
 			}
 		}	
