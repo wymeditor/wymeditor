@@ -203,7 +203,7 @@ function cleanupHTML_ie(sHtml)
 				flagTag=false;
 				flagAttr=false;
 				if(unclosed){ret=insertAt(ret,"</"+lastTag+">",ret.lastIndexOf("<"));unclosed=false;}
-				if(unopened){ret=insertAt(ret,"<li>",ret.lastIndexOf("<"));unopened=false;}
+				if(unopened){ret=ret.substr(0,ret.lastIndexOf("</li>")) + "<"+lastTag+">";unopened=false;}
 				if(unclosedList){ret=insertAt(ret,"</li>",ret.lastIndexOf("<"));unclosedList=false;}
 				if(dropTag){ret=ret.substr(0,ret.lastIndexOf("<"));dropTag=false;}
 			}
