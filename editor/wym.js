@@ -462,11 +462,37 @@ function setContainer(sType)
        	
 		if(container!=null)
 		{
-			var html=container.innerHTML;
-			var newNode=document.createElement(sType);
-			if(ie)container.replaceNode(newNode);
-			else if(moz)container.parentNode.replaceChild(newNode,container);
-			newNode.innerHTML=html;
+			var newNode=null;
+
+			//blockquotes must contain a block level element
+			if(sType.toLowerCase()=="blockquote")
+			{
+				var blockquote=getContainerOfType(container,"BLOCKQUOTE");
+				if(blockquote==null)
+				{
+					newNode=document.createElement(sType);
+					container.parentNode.insertBefore(newNode,container);
+					newNode.appendChild(container);
+				}
+				else
+				{
+					var nodes=blockquote.childNodes;
+					var lgt=nodes.length;
+					for(var x=0;x<lgt;x++)
+					{
+						blockquote.parentNode.insertBefore(nodes.item(0),blockquote);
+					}
+					blockquote.parentNode.removeChild(blockquote);
+				}
+			}
+			else
+			{
+				newNode=document.createElement(sType);
+				var html=container.innerHTML;
+				if(ie)container.replaceNode(newNode);
+				else if(moz)container.parentNode.replaceChild(newNode,container);
+				newNode.innerHTML=html;
+			}
 		}
 	}
 }
