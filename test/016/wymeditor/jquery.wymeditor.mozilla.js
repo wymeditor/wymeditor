@@ -20,5 +20,5 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
 	this.doc.designMode="on";
 	this.doc.execCommand("styleWithCSS",'',false);
 
-	$(this.doc.body).html(this.wym.html);
+	$j(this.doc.body).html(this.wym.html);
 };

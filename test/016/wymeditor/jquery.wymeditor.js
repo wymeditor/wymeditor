@@ -48,7 +48,7 @@ $j.fn.wymeditor = function(options) {
 
 	return this.each(function(i) {
 
-		new Wymeditor($(this),i,options);
+		new Wymeditor($j(this),i,options);
 	});
 };
 
@@ -59,7 +59,7 @@ function Wymeditor(elem,index,options) {
 	this.element = elem;
 	this.index = index;
 	this.options = options;
-	this.html = $(elem).val();
+	this.html = $j(elem).val();
 
 	this.init();
 };
