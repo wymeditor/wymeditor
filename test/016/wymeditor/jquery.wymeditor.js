@@ -11,10 +11,12 @@
 
 var $j = jQuery.noConflict();
 
-var sMOZILLA  = 'Mozilla';
-var sSAFARI   = 'Safari';
-var sEXPLORER = 'Explorer';
-var sOPERA    = 'Opera';
+var sWYM_MOZILLA  = 'Mozilla';
+var sWYM_SAFARI   = 'Safari';
+var sWYM_EXPLORER = 'Explorer';
+var sWYM_OPERA    = 'Opera';
+
+var aWYM_INSTANCES = new Array();
 
 /**
  * Replace an HTML element by WYMeditor
@@ -40,6 +42,7 @@ $j.fn.wymeditor = function(options) {
 
 	options = $j.extend({
 
+		sBoxHtml:		"<div class='wym_box'></div>"
 
 	}, options);
 
@@ -50,33 +53,40 @@ $j.fn.wymeditor = function(options) {
 };
 
 function Wymeditor(elem,index,options) {
+
+	aWYM_INSTANCES[index] = this;
+
+	this.element = elem;
+	this.index = index;
+	this.options = options;
+	this.html = $(elem).val();
+
 	this.init();
-	$(elem).text(this.name);
 };
 
 Wymeditor.prototype.browser = function() {
 	
-	if ($j.browser.mozilla) {return sMOZILLA;}
-	else if ($j.browser.safari) {return sSAFARI;}
-	else if ($j.browser.opera) {return sOPERA;}
-	else {return sEXPLORER;}
+	if ($j.browser.mozilla) {return sWYM_MOZILLA;}
+	else if ($j.browser.safari) {return sWYM_SAFARI;}
+	else if ($j.browser.opera) {return sWYM_OPERA;}
+	else {return sWYM_EXPLORER;}
 };
 
 Wymeditor.prototype.init = function() {
 
 	switch (this.browser()) {
-		case sMOZILLA:
-			var WymClass = new WymClassMozilla();
+		case sWYM_MOZILLA:
+			var WymClass = new WymClassMozilla(this);
 		break;
-		case sSAFARI:
-			var WymClass = new WymClassSafari();
+		case sWYM_SAFARI:
+			var WymClass = new WymClassSafari(this);
 		break;
-		case sOPERA:
-			var WymClass = new WymClassOpera();
+		case sWYM_OPERA:
+			var WymClass = new WymClassOpera(this);
 		break;
-		case sEXPLORER:
+		case sWYM_EXPLORER:
 		default:
-			var WymClass = new WymClassExplorer();
+			var WymClass = new WymClassExplorer(this);
 		break;
 	}
 

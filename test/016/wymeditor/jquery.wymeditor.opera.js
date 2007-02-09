@@ -1,3 +1,3 @@
-var WymClassOpera = function() {
-	this.name = sOPERA;
+function WymClassOpera(wym) {
+
 };

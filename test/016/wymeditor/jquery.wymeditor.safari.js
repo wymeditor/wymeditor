@@ -1,3 +1,3 @@
-var WymClassSafari = function() {
-	this.name = sSAFARI;
+function WymClassSafari(wym) {
+
 };

@@ -1,3 +1,3 @@
-var WymClassExplorer = function() {
-	this.name = sEXPLORER;
+function WymClassExplorer(wym) {
+
 };
