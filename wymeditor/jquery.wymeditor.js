@@ -13,7 +13,7 @@
  *		See the documentation for more info.
  *
  * File Authors:
- * 		Jean-François Hovinne (jf.hovinne@wymeditor.org)
+ * 		Jean-Francois Hovinne (jf.hovinne@wymeditor.org)
  */
 
 var $j = jQuery.noConflict();
