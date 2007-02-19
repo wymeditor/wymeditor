@@ -9,11 +9,11 @@
  *
  * File Name:
  *		jquery.wymeditor.mozilla.js
- *		Gecko specific class.
+ *		Gecko specific class and functions.
  *		See the documentation for more info.
  *
  * File Authors:
- * 		Jean-François Hovinne (jf.hovinne@wymeditor.org)
+ * 		Jean-Francois Hovinne (jf.hovinne@wymeditor.org)
  */
 
 function WymClassMozilla(wym) {
