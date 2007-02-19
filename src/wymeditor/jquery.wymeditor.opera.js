@@ -1,0 +1,3 @@
+function WymClassOpera(wym) {
+
+};
