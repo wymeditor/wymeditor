@@ -73,7 +73,7 @@ Wymeditor.prototype.browser = function() {
 
 Wymeditor.prototype.init = function() {
 
-	if ($j.browser.explorer) {
+	if ($j.browser.msie) {
 		var WymClass = new WymClassExplorer(this);
 	}
 	else if ($j.browser.mozilla) {
