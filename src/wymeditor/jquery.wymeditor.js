@@ -162,3 +162,8 @@ Wymeditor.prototype.init = function() {
 Wymeditor.prototype.setContainer = function() {
 
 };
+
+Wymeditor.prototype.openDialog = function(sType) {
+
+	
+};

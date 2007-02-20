@@ -38,12 +38,15 @@ WymClassMozilla.prototype.exec = function(cmd) {
 	switch(cmd) {
 		
 		case "CreateLink":
+			this.openDialog("link");
 		break;
 		
 		case "InsertImage":
+			this.openDialog("image");
 		break;
 		
 		case "InsertTable":
+			this.openDialog("table");
 		break;
 		
 		default:
