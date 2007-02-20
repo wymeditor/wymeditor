@@ -1,4 +1,4 @@
-/*
+﻿/*
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2007 H.O.net - http://www.honet.be/
  * Dual licensed under the MIT (MIT-license.txt)
@@ -38,7 +38,7 @@ var aWYM_INSTANCES = new Array();
  *
  * @type jQuery
  * @cat Plugins/WYMeditor
- * @author Jean-François Hovinne
+ * @author Jean-Francois Hovinne
  */
 $j.fn.wymeditor = function(options) {
 
@@ -122,5 +122,6 @@ Wymeditor.prototype.init = function() {
 	//handle click event on buttons
 	$j(this.box).find(".wym_button").click(function() {
 		wym.exec($(this).attr("name"));
+		return(false);
 	});
 };
