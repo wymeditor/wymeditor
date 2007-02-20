@@ -16,7 +16,7 @@
  * 		Jean-Francois Hovinne (jf.hovinne@wymeditor.org)
  */
 
-var $j = jQuery.noConflict();
+var $j = jQuery;
 
 var aWYM_INSTANCES = new Array();
 
