@@ -19,14 +19,6 @@
 function WymClassExplorer(wym) {
 	
 	this.wym = wym;
-
-	var sIframeHtml = "<iframe "
-			+ "src='wymeditor/wymiframe.html' "
-			+ "onload='window.parent.aWYM_INSTANCES[" + this.wym.index + "].initIframe(this)' "
-			+ "></iframe>";
-
-	this.box = $j(this.wym.element).hide().after(this.wym.options.sBoxHtml).next();
-	$j(this.box).html(sIframeHtml);
 };
 
 WymClassExplorer.prototype.initIframe = function(iframe) {
@@ -39,4 +31,9 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
 	
 	var doc = iframe.contentWindow.document;
 	$j(doc.body).html(this.wym.html);
+};
+
+WymClassExplorer.prototype.exec = function(cmd) {
+
+	this.doc.execCommand(cmd);
 };
