@@ -1,4 +1,4 @@
-/*
+﻿/*
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2007 H.O.net - http://www.honet.be/
  * Dual licensed under the MIT (MIT-license.txt)
@@ -35,5 +35,19 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
 
 WymClassMozilla.prototype.exec = function(cmd) {
 
-	this.doc.execCommand(cmd,'',null);
+	switch(cmd) {
+		
+		case "CreateLink":
+		break;
+		
+		case "InsertImage":
+		break;
+		
+		case "InsertTable":
+		break;
+		
+		default:
+			this.doc.execCommand(cmd,'',null);
+		break;
+	}
 };

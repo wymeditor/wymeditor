@@ -1,4 +1,4 @@
-/*
+﻿/*
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2007 H.O.net - http://www.honet.be/
  * Dual licensed under the MIT (MIT-license.txt)
@@ -17,4 +17,6 @@
  * 		Daniel Reszka (d.reszka@wymeditor.org)
 */
 
-p	{ background-color: #f0f0ff; }
+p			{ background-color: #f0f0ff; }
+.wym_menu ul		{ padding: 0; margin: 0; }
+.wym_menu li		{ list-style: none; float: left; margin-right: 0.3em; }

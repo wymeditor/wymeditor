@@ -110,12 +110,40 @@ Wymeditor.prototype.init = function() {
 	//load the menu
 	$j(this.box).find(".wym_iframe").before("<div class='wym_menu'></div>");
 	
+	//this will become a parameter
 	var sMenuHtml 	= "<div class='wym_buttons'>"
 			+ "<ul>"
 			+ "<li><a href='#' class='wym_button' name='Bold'>Strong</a></li>"
 			+ "<li><a href='#' class='wym_button' name='Italic'>Emphasis</a></li>"
+			+ "<li><a href='#' class='wym_button' name='Superscript'>Superscript</a></li>"
+			+ "<li><a href='#' class='wym_button' name='Subscript'>Subscript</a></li>"
+			+ "<li><a href='#' class='wym_button' name='InsertOrderedList'>Ordered List</a></li>"
+			+ "<li><a href='#' class='wym_button' name='InsertUnorderedList'>Unordered List</a></li>"
+			+ "<li><a href='#' class='wym_button' name='Indent'>Indent</a></li>"
+			+ "<li><a href='#' class='wym_button' name='Outdent'>Outdent</a></li>"
+			+ "<li><a href='#' class='wym_button' name='Undo'>Undo</a></li>"
+			+ "<li><a href='#' class='wym_button' name='Redo'>Redo</a></li>"
+			+ "<li><a href='#' class='wym_button' name='CreateLink'>Create Link</a></li>"
+			+ "<li><a href='#' class='wym_button' name='Unlink'>Unlink</a></li>"
+			+ "<li><a href='#' class='wym_button' name='InsertImage'>Image</a></li>"
+			+ "<li><a href='#' class='wym_button' name='InsertTable'></a></li>"
 			+ "</ul>"
-			+ "</div>";
+			+ "</div><br />";
+			
+	sMenuHtml	+="<div class='wym_containers'>"
+			+ "<ul>"
+			+ "<li><a href='#' class='wym_container' name='P'>Paragraph</a></li>"
+			+ "<li><a href='#' class='wym_container' name='H1'>Heading 1</a></li>"
+			+ "<li><a href='#' class='wym_container' name='H2'>Heading 2</a></li>"
+			+ "<li><a href='#' class='wym_container' name='H3'>Heading 3</a></li>"
+			+ "<li><a href='#' class='wym_container' name='H4'>Heading 4</a></li>"
+			+ "<li><a href='#' class='wym_container' name='H5'>Heading 5</a></li>"
+			+ "<li><a href='#' class='wym_container' name='H6'>Heading 6</a></li>"
+			+ "<li><a href='#' class='wym_container' name='PRE'>Preformatted</a></li>"
+			+ "<li><a href='#' class='wym_container' name='BLOCKQUOTE'>Blockquote</a></li>"
+			+ "<li><a href='#' class='wym_container' name='TH'>Table Header</a></li>"
+			+ "</ul>"
+			+ "</div><br />";
 
 	$j(this.box).find(".wym_menu").html(sMenuHtml);
 
@@ -124,4 +152,13 @@ Wymeditor.prototype.init = function() {
 		wym.exec($(this).attr("name"));
 		return(false);
 	});
+	
+	$j(this.box).find(".wym_container").click(function() {
+		wym.setContainer($(this).attr("name"));
+		return(false);
+	});
+};
+
+Wymeditor.prototype.setContainer = function() {
+
 };
