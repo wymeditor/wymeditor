@@ -19,14 +19,6 @@
 function WymClassMozilla(wym) {
 
 	this.wym = wym;
-
-	var sIframeHtml = "<iframe "
-			+ "src='wymeditor/wymiframe.html' "
-			+ "onload='window.parent.aWYM_INSTANCES[" + this.wym.index + "].initIframe(this)' "
-			+ "></iframe>";
-
-	this.box = $j(this.wym.element).hide().after(this.wym.options.sBoxHtml).next();
-	$j(this.box).html(sIframeHtml);
 };
 
 WymClassMozilla.prototype.initIframe = function(iframe) {
@@ -39,4 +31,9 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
 	this.doc.execCommand("styleWithCSS",'',false);
 
 	$j(this.doc.body).html(this.wym.html);
+};
+
+WymClassMozilla.prototype.exec = function(cmd) {
+
+	this.doc.execCommand(cmd,'',null);
 };

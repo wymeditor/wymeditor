@@ -73,6 +73,9 @@ Wymeditor.prototype.browser = function() {
 
 Wymeditor.prototype.init = function() {
 
+	var wym = this;
+
+	//load subclass
 	if ($j.browser.msie) {
 		var WymClass = new WymClassExplorer(this);
 	}
@@ -93,4 +96,31 @@ Wymeditor.prototype.init = function() {
 	for (prop in WymClass) {
 		this[prop] = WymClass[prop];
 	}
+
+	//load the iframe
+	var sIframeHtml = "<iframe "
+			+ "src='wymeditor/wymiframe.html' "
+			+ "class='wym_iframe' "
+			+ "onload='window.parent.aWYM_INSTANCES[" + this.wym.index + "].initIframe(this)' "
+			+ "></iframe>";
+
+	this.box = $j(this.element).hide().after(this.options.sBoxHtml).next();
+	$j(this.box).html(sIframeHtml);
+	
+	//load the menu
+	$j(this.box).find(".wym_iframe").before("<div class='wym_menu'></div>");
+	
+	var sMenuHtml 	= "<div class='wym_buttons'>"
+			+ "<ul>"
+			+ "<li><a href='#' class='wym_button' name='Bold'>Strong</a></li>"
+			+ "<li><a href='#' class='wym_button' name='Italic'>Emphasis</a></li>"
+			+ "</ul>"
+			+ "</div>";
+
+	$j(this.box).find(".wym_menu").html(sMenuHtml);
+
+	//handle click event on buttons
+	$j(this.box).find(".wym_button").click(function() {
+		wym.exec($(this).attr("name"));
+	});
 };
