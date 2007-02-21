@@ -31,9 +31,29 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
 	
 	var doc = iframe.contentWindow.document;
 	$j(doc.body).html(this.wym.html);
+	
+	//handle events
+	var wymexp = this;
+	doc.onbeforedeactivate = function() {wymexp.saveCaret();};
+	doc.onkeyup = function() {wymexp.saveCaret();};
+	doc.onclick = function() {wymexp.saveCaret();};	
 };
 
-WymClassExplorer.prototype.exec = function(cmd) {
+WymClassExplorer.prototype._exec = function(cmd) {
 
 	this.doc.execCommand(cmd);
+};
+
+WymClassExplorer.prototype.getContainer = function() {
+
+	var caretPos = this.iframe.contentWindow.document.caretPos;
+    	if(caretPos!=null) {
+    		if(caretPos.parentElement!=undefined) return(caretPos.parentElement());
+    	}
+};
+
+WymClassExplorer.prototype.saveCaret = function () {
+
+	var doc = this.iframe.contentWindow.document;
+	doc.caretPos = doc.selection.createRange();
 };
