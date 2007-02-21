@@ -110,7 +110,8 @@ Wymeditor.prototype.init = function() {
 	//load the menu
 	$j(this.box).find(".wym_iframe").before("<div class='wym_menu'></div>");
 	
-	//this will become a parameter
+	//this will become a parameter (see options)
+	//perhaps sWymButtons, sWymContainers, sWymClasses, sWymDialogs, sWymStatus
 	var sMenuHtml 	= "<div class='wym_buttons'>"
 			+ "<ul>"
 			+ "<li><a href='#' class='wym_button' name='Bold'>Strong</a></li>"
@@ -143,9 +144,31 @@ Wymeditor.prototype.init = function() {
 			+ "<li><a href='#' class='wym_container' name='BLOCKQUOTE'>Blockquote</a></li>"
 			+ "<li><a href='#' class='wym_container' name='TH'>Table Header</a></li>"
 			+ "</ul>"
+			+ "</div>";
+			
+	sMenuHtml	+="<div class='wym_classes'>"
+			+ "</div>";
+	
+	sMenuHtml	+="<div class='wym_dialogs'>"
+			+ "<div class='wym_dialog wym_dialog_link'>"
+			+ "<h2>Link assistant</h2>"
+			+ "<label>URL: </label>"
+			+ "<input type='text' name='url' />"
+			+ "</div>"
+			+ "<div class='wym_dialog wym_dialog_image'>"
+			+ "<h2>Image assistant</h2>"
+			+ "<label>URL: </label>"
+			+ "<input type='text' name='url' class='wym_dialog_link_url' />"
+			+ "</div>"
+			+ "<a href='#' class='wym_dialog_submit'>Submit</a>"
 			+ "</div><br />";
+			
+	sMenuHtml	+="<div class='wym_status'>"
+			+ "</div><br />";
+	
 
 	$j(this.box).find(".wym_menu").html(sMenuHtml);
+	$j(this.box).find(".wym_dialogs").hide();
 
 	//handle click event on buttons
 	$j(this.box).find(".wym_button").click(function() {
@@ -153,17 +176,58 @@ Wymeditor.prototype.init = function() {
 		return(false);
 	});
 	
+	//handle click event on containers buttons
 	$j(this.box).find(".wym_container").click(function() {
 		wym.setContainer($(this).attr("name"));
 		return(false);
 	});
+	
+	//handle click event on dialog submit button
+	$j(this.box).find(".wym_dialog_submit").click(function() {
+		
+	});
+};
+
+Wymeditor.prototype.exec = function(cmd) {
+	
+	//base function for execCommand
+	//open a dialog or exec
+	switch(cmd) {	
+		case "CreateLink":
+			var container = this.getContainer();
+			this.status("Selection: " + container.tagName);
+			this.openDialog("link");
+		break;
+		
+		case "InsertImage":
+			this.openDialog("image");
+		break;
+		
+		case "InsertTable":
+			this.openDialog("table");
+		break;
+		
+		default:
+			this._exec(cmd);
+		break;
+	}
 };
 
 Wymeditor.prototype.setContainer = function() {
 
+	//set container
 };
 
 Wymeditor.prototype.openDialog = function(sType) {
 
-	
+	//show dialog box
+	$j(this.box).find(".wym_dialogs").show();
+	$j(this.box).find(".wym_dialog").hide();
+	$j(this.box).find(".wym_dialog_" + sType).show();
+};
+
+Wymeditor.prototype.status = function(sMessage) {
+
+	//print status message
+	$j(this.box).find(".wym_status").html(sMessage);
 };

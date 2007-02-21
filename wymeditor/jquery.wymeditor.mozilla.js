@@ -33,24 +33,15 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
 	$j(this.doc.body).html(this.wym.html);
 };
 
-WymClassMozilla.prototype.exec = function(cmd) {
+WymClassMozilla.prototype._exec = function(cmd) {
 
-	switch(cmd) {
-		
-		case "CreateLink":
-			this.openDialog("link");
-		break;
-		
-		case "InsertImage":
-			this.openDialog("image");
-		break;
-		
-		case "InsertTable":
-			this.openDialog("table");
-		break;
-		
-		default:
-			this.doc.execCommand(cmd,'',null);
-		break;
-	}
+	this.doc.execCommand(cmd,'',null);
+};
+
+WymClassMozilla.prototype.getContainer = function() {
+
+	var sel=this.iframe.contentWindow.getSelection();
+	var node=sel.focusNode;
+	if(node.nodeName=="#text")return(node.parentNode);
+	else return(node);
 };

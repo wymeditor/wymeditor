@@ -32,7 +32,15 @@ WymClassOpera.prototype.initIframe = function(iframe) {
 	$j(this.doc.body).html(this.wym.html);
 };
 
-WymClassOpera.prototype.exec = function(cmd) {
+WymClassOpera.prototype._exec = function(cmd) {
 
 	this.doc.execCommand(cmd);
+};
+
+WymClassOpera.prototype.getContainer = function() {
+
+	var sel=this.iframe.contentWindow.getSelection();
+	var node=sel.focusNode;
+	if(node.nodeName=="#text")return(node.parentNode);
+	else return(node);
 };
