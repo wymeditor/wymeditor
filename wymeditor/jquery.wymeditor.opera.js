@@ -18,29 +18,35 @@
 
 function WymClassOpera(wym) {
 
-	this.wym = wym;
+	this._wym = wym;
 };
 
 WymClassOpera.prototype.initIframe = function(iframe) {
 
-	this.iframe = iframe;
-	this.doc = iframe.contentWindow.document;
+	this._iframe = iframe;
+	this._doc = iframe.contentWindow.document;
 
-	this.doc.title = this.wym.index;
-	this.doc.designMode="on";
+	this._doc.title = this._wym._index;
+	this._doc.designMode="on";
 
-	$j(this.doc.body).html(this.wym.html);
+	this.html(this._wym._html);
 };
 
 WymClassOpera.prototype._exec = function(cmd) {
 
-	this.doc.execCommand(cmd);
+	this._doc.execCommand(cmd);
 };
 
-WymClassOpera.prototype.getContainer = function() {
+WymClassOpera.prototype.selected = function() {
 
-	var sel=this.iframe.contentWindow.getSelection();
+	var sel=this._iframe.contentWindow.getSelection();
 	var node=sel.focusNode;
 	if(node.nodeName=="#text")return(node.parentNode);
 	else return(node);
+};
+
+WymClassOpera.prototype.xhtml = function() {
+
+	var sHtml = this._wym.html();
+	return sHtml;
 };

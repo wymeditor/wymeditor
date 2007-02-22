@@ -20,3 +20,5 @@
 p			{ background-color: #f0f0ff; }
 .wym_menu ul		{ padding: 0; margin: 0; }
 .wym_menu li		{ list-style: none; float: left; margin-right: 0.3em; }
+
+.wym_html_val		{ width: 300px; height: 100px; }
