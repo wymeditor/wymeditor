@@ -33,11 +33,11 @@ $j(function() {
 
 	$j(".wymeditor").wymeditor().each(function(i) {
 
-		var elem = this;
 		var wym = $j.wymeditors(i);
 		
 		$j(this).parent().find(".wymsubmit").click(function() {
 			wym.update();
+			alert("Submitting: " + wym.xhtml());
 		});
 	});
 });

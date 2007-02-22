@@ -44,6 +44,7 @@ $j.fn.wymeditor = function(options) {
 
 	options = $j.extend({
 
+		sHtml:			"",
 		sBoxHtml:		"<div class='wym_box'></div>"
 
 	}, options);
@@ -71,6 +72,8 @@ function Wymeditor(elem,index,options) {
 	this._index = index;
 	this._options = options;
 	this._html = $j(elem).val();
+	
+	if(this._options.sHtml) this._html = this._options.sHtml;
 
 	this.init();
 };
