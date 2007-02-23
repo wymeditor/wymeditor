@@ -26,11 +26,11 @@
         .wym_menu ul            { margin: 0; padding: 0;}
         .wym_menu li            { list-style: none;}
     /*iframe*/
-        .wym_iframe				{ width: 100%;}
+        .wym_iframe				{ width: 70%;}
     /*wym_box*/
         .wym_box                { border: 1px solid gray; margin: 20px; padding: 20px  }        
     /*wym_status*/
-        .wym_status             { clear: both; }
+        .wym_status             { Xclear: both; }
     /*wym_menu*/
         .wym_menu li             { margin: 5px; }
 
@@ -43,12 +43,22 @@
 
     /*WYM_MENU*/
       /*wym_menu_toolbar*/
-        .wym_menu_toolbar            { border: 1px solid gray; margin-bottom: 5px; float: left; margin-right: 5px; white-space: nowrap; background: #e2e3e9  }
+        .wym_menu_toolbar            { margin-bottom: 5px; float: left; margin-right: 5px; white-space: nowrap;   }
         .wym_menu_toolbar ul         { overflow: hidden; }
         .wym_menu_toolbar li         { float:left;}
         .wym_menu_toolbar a:hover    { background: yellow }
       /*wym_menu_icons*/
-        .wym_menu_icons a           { display: block; width: 24px; height: 24px; overflow: hidden; background: white; border: 1px solid gray;}
+        .wym_menu_icons a            { display: block; width: 24px; height: 24px; overflow: hidden; background: white; border: 1px solid gray;}
+        .wym_menu_icons a            { text-indent: -9999px; text-decoration: none;}
+      /*wym_menu_panel*/
+        .wym_menu_panel              { width: 20%; float: right; }        
+
+
+
+/*COLORS*/
+    .wym_menu_toolbar,
+    .wym_menu_panel                 { background: #e2e3e9; border: 1px solid gray; }
+    
 
 /*
 .wym_menu ul						{ padding: 0; margin: 0; }
