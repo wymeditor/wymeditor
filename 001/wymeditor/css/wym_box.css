@@ -19,13 +19,22 @@
 
 /*TEMP*/
         .wym_box br                 { display: none;}
+        form                        { border: 1px solid gray; margin: 20px; padding: 20px;}
 
     
 /*=BASE=====================================================================================================*/    
 
+    /*wym_box*/
+        /*auto-clear floats:*/  
+        .wym_box:after 	            { content: "."; display: block; height: 0; clear: both; visibility: hidden;}
+        .wym_box 		            { display: inline-table;}
+ * html .wym_box                    {height: 1%;}
+
     /*wym_menu*/
         .wym_menu ul                { margin: 0; padding: 0; font-size: 80%;}
         .wym_menu li                { list-style: none;}
+        .wym_menu a                 { text-decoration: none; display: block; color: blue;}
+        .wym_menu a:hover           { background: white url() }
 
         .wym_menu h2                { position: absolute; visibility: hidden; font-size: 100%; margin: 0; background: gray; color: white; padding-left: 5px;}
         .wym_menu li                { margin: 5px;}
@@ -35,13 +44,6 @@
     /*iframe*/
         .wym_iframe				    { width: 70%;}
         
-    /*wym_box*/
-        form                        { border: 1px solid gray; margin: 20px; padding: 20px;}
-        /*auto-clear floats:*/  
-        .wym_box:after 	            { content: "."; display: block; height: 0; clear: both; visibility: hidden;}
-        .wym_box 		            { display: inline-table;}
- * html .wym_box                    {height: 1%;}
-
  
     /*wym_status*/
         .wym_status                 { /*clear: both;*/ }
