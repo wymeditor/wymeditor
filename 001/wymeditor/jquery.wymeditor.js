@@ -122,6 +122,10 @@ Wymeditor.prototype.init = function() {
 	//load the menu
 	$j(this._box).find(".wym_iframe").before("<div class='wym_menu'></div>");
 	
+	
+	var sStatusHtml	= "<div class='wym_status'>"
+			+ "</div>";
+	
 	//this will become a parameter (see options)
 	//perhaps sWymButtons, sWymContainers, sWymClasses, sWymDialogs, sWymStatus
 	var sMenuHtml 	= "<div class='wym_buttons'>"
@@ -142,7 +146,7 @@ Wymeditor.prototype.init = function() {
 			+ "<li><a href='#' class='wym_button' name='InsertTable'></a></li>"
 			+ "<li><a href='#' class='wym_button' name='ToggleHtml'>Toggle HTML</a></li>"
 			+ "</ul>"
-			+ "</div><br />";
+			+ "</div>";
 			
 	sMenuHtml	+="<div class='wym_containers'>"
 			+ "<ul>"
@@ -157,20 +161,17 @@ Wymeditor.prototype.init = function() {
 			+ "<li><a href='#' class='wym_container' name='BLOCKQUOTE'>Blockquote</a></li>"
 			+ "<li><a href='#' class='wym_container' name='TH'>Table Header</a></li>"
 			+ "</ul>"
-			+ "</div><br />";
+			+ "</div>";
 			
 	sMenuHtml	+="<div class='wym_classes'>"
-			+ "</div><br />";
-			
-	sMenuHtml	+="<div class='wym_status'>"
-			+ "</div><br />";
-			
+			+ "</div>";
+						
 	sMenuHtml	+="<div class='wym_html'>"
 			+ "<textarea class='wym_html_val'></textarea>"
 			+ "</div>";
 	
 
-	$j(this._box).find(".wym_menu").html(sMenuHtml);
+	$j(this._box).find(".wym_menu").html(sMenuHtml).after(sStatusHtml);
 	$j(this._box).find(".wym_html").hide();
 
 	//handle click event on buttons

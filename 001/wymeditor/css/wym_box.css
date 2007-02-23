@@ -17,6 +17,40 @@
  * 		Daniel Reszka (d.reszka@wymeditor.org)
 */
 
+/*TEMP*/
+        .wym_box br             { display: none;}
+    
+    
+/*BASE*/    
+    /*menu lists*/
+        .wym_menu ul            { margin: 0; padding: 0;}
+        .wym_menu li            { list-style: none;}
+    /*iframe*/
+        .wym_iframe				{ width: 100%;}
+    /*wym_box*/
+        .wym_box                { border: 1px solid gray; margin: 20px; padding: 20px  }        
+    /*wym_status*/
+        .wym_status             { clear: both; }
+    /*wym_menu*/
+        .wym_menu li             { margin: 5px; }
+
+    
+/*VARIANTS*/
+    
+    /*WYM_BOX*/
+      /*wym_box_fixed*/
+        .wym_box_fixed          { width: 600px;}
+
+    /*WYM_MENU*/
+      /*wym_menu_toolbar*/
+        .wym_menu_toolbar            { border: 1px solid gray; margin-bottom: 5px; float: left; margin-right: 5px; white-space: nowrap; background: #e2e3e9  }
+        .wym_menu_toolbar ul         { overflow: hidden; }
+        .wym_menu_toolbar li         { float:left;}
+        .wym_menu_toolbar a:hover    { background: yellow }
+      /*wym_menu_icons*/
+        .wym_menu_icons a           { display: block; width: 24px; height: 24px; overflow: hidden; background: white; border: 1px solid gray;}
+
+/*
 .wym_menu ul						{ padding: 0; margin: 0; }
 .wym_menu li						{ list-style: none; float: left; margin-right: 0.3em; }
 
