@@ -43,9 +43,9 @@ $j(function() {
 	
 	$j(".wym_classes").html('<h2>Classes</h2><ul><li><a href="#">Para: contenu à droite</a></li><li><a href="#">Para: contenu au centre</a></li><li><a href="#">Para: flotter à gauche</a></li><li><a href="#">Para: flotter à droite</a></li><li><a href="#">Forcer nouvelle ligne</a></li><li><a href="#">Image: bordure</a></li></ul>');
 
-	$j(".wym_menu").find("div").eq(0).addClass('wym_menu_toolbar').addClass('wym_menu_icons');
-	$j(".wym_menu").find("div").eq(1).addClass('wym_menu_panel');
-	$j(".wym_menu").find("div").eq(2).addClass('wym_menu_dropdown');
+	$j(".wym_menu").find("div").eq(0).addClass('wym_menu_icons').addClass('wym_menu_toolbar');
+	$j(".wym_menu").find("div").eq(1).addClass('wym_menu_dropdown').addClass('wym_menu_right').addClass('Xwym_menu_right_cleared');
+	$j(".wym_menu").find("div").eq(2).addClass('wym_menu_panel').addClass('Xwym_menu_left').addClass('wym_menu_right_cleared');
 	
 });
 </script>
@@ -53,16 +53,16 @@ $j(function() {
 
 <body>
 <form method="post" action="">
-<textarea class="wymeditor"></textarea>
-<input type="submit" class="wymsubmit" />
+    <textarea class="wymeditor"></textarea>
+    <input type="submit" class="wymsubmit" />
 </form>
 <form method="post" action="">
-<textarea class="wymeditor"></textarea>
-<input type="submit" class="wymsubmit" />
+    <textarea class="wymeditor"></textarea>
+    <input type="submit" class="wymsubmit" />
 </form>
 <form method="post" action="">
-<textarea class="wymeditor"></textarea>
-<input type="submit" class="wymsubmit" />
+    <textarea class="wymeditor"></textarea>
+    <input type="submit" class="wymsubmit" />
 </form>
 </body>
 
