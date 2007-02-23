@@ -129,6 +129,7 @@ Wymeditor.prototype.init = function() {
 	//this will become a parameter (see options)
 	//perhaps sWymButtons, sWymContainers, sWymClasses, sWymDialogs, sWymStatus
 	var sMenuHtml 	= "<div class='wym_buttons'>"
+	        + "<h2>Buttons</h2>"
 			+ "<ul>"
 			+ "<li><a href='#' class='wym_button' name='Bold'>Strong</a></li>"
 			+ "<li><a href='#' class='wym_button' name='Italic'>Emphasis</a></li>"
@@ -149,6 +150,7 @@ Wymeditor.prototype.init = function() {
 			+ "</div>";
 			
 	sMenuHtml	+="<div class='wym_containers'>"
+	        + "<h2>Containers</h2>"
 			+ "<ul>"
 			+ "<li><a href='#' class='wym_container' name='P'>Paragraph</a></li>"
 			+ "<li><a href='#' class='wym_container' name='H1'>Heading 1</a></li>"
@@ -164,6 +166,7 @@ Wymeditor.prototype.init = function() {
 			+ "</div>";
 			
 	sMenuHtml	+="<div class='wym_classes'>"
+	        + "<h2>Classes</h2>"
 			+ "</div>";
 						
 	sMenuHtml	+="<div class='wym_html'>"
