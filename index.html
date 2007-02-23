@@ -31,7 +31,7 @@ var $j = jQuery;
 
 $j(function() {
 
-	$j(".wymeditor").wymeditor().each(function(i) {
+	$j(".wymeditor").wymeditor({sHtml: "<p>Test</p>"}).each(function(i) {
 
 		var wym = $j.wymeditors(i);
 		
