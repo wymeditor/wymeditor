@@ -19,7 +19,7 @@
 <html>
 <head>
 <title>WYMeditor</title>
-<link rel="stylesheet" type="text/css" media="screen" href="wymeditor/css/wymeditor.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="wymeditor/css/wym_box.css" />
 <script type="text/javascript" src="jquery/jquery.js"></script>
 <script type="text/javascript" src="wymeditor/jquery.wymeditor.js"></script>
 <script type="text/javascript" src="wymeditor/jquery.wymeditor.explorer.js"></script>
@@ -40,6 +40,8 @@ $j(function() {
 			alert("Submitting: " + wym.xhtml());
 		});
 	});
+	
+	$j(".wym_classes").html('<ul><li><a href="#">Para: contenu à droite</a></li><li><a href="#">Para: contenu au centre</a></li><li><a href="#">Para: flotter à gauche</a></li><li><a href="#">Para: flotter à droite</a></li><li><a href="#">Forcer nouvelle ligne</a></li><li><a href="#">Image: bordure</a></li></ul>');
 });
 </script>
 </head>
