@@ -40,12 +40,46 @@ $j(function() {
 			alert("Submitting: " + wym.xhtml());
 		});
 	});
-	
-	$j(".wym_classes").html('<h2>Classes</h2><ul><li><a href="#">Para: contenu à droite</a></li><li><a href="#">Para: contenu au centre</a></li><li><a href="#">Para: flotter à gauche</a></li><li><a href="#">Para: flotter à droite</a></li><li><a href="#">Forcer nouvelle ligne</a></li><li><a href="#">Image: bordure</a></li></ul>');
 
-	$j(".wym_menu").find("div").eq(0).addClass('wym_menu_icons').addClass('wym_menu_toolbar');
-	$j(".wym_menu").find("div").eq(1).addClass('wym_menu_dropdown').addClass('wym_menu_right').addClass('Xwym_menu_right_cleared');
-	$j(".wym_menu").find("div").eq(2).addClass('wym_menu_panel').addClass('Xwym_menu_left').addClass('wym_menu_right_cleared');
+    /*TEMP*/
+    
+      //add some dummy classes
+    	$j(".wym_classes").html('<h2>Classes</h2><ul><li><a href="#">Para: contenu à droite</a></li><li><a href="#">Para: contenu au centre</a></li><li><a href="#">Para: flotter à gauche</a></li><li><a href="#">Para: flotter à droite</a></li><li><a href="#">Forcer nouvelle ligne</a></li><li><a href="#">Image: bordure</a></li></ul>');
+
+      //add classes to buttons    	
+    	$j("li/a[@name]").each(function(){
+    	    var value = $(this).attr("name");
+            $(this).parent().addClass("wym_button_" + value);
+        });
+
+      //wrap iframe in a div        
+        $j(".wym_box iframe").wrap('<div class="wym_iframe_wrapper"></div>');
+
+
+    /*INTERFACE CUSTOMIZATION*/
+
+      //first menu
+    	$j(".wym_menu").find("div").eq(0)
+            .addClass('wym_menu_icons')
+            .addClass('wym_menu_toolbar')
+            //.addClass('wym_menu_right')
+            .addClass('wym_menu_maxwidth')
+            ;
+    
+      //second menu
+    	$j(".wym_menu").find("div").eq(1)
+            .addClass('wym_menu_dropdown')
+            .addClass('wym_menu_right')
+            //.addClass('wym_menu_right_cleared')
+            ;
+            
+      //third menu
+    	$j(".wym_menu").find("div").eq(2)
+            .addClass('wym_menu_panel')
+            //.addClass('wym_menu_left')
+            .addClass('wym_menu_right_cleared')
+            ;
+	
 	
 });
 </script>
@@ -53,16 +87,16 @@ $j(function() {
 
 <body>
 <form method="post" action="">
+    <p class="wymsubmit1"><input type="submit" class="wymsubmit" /></p>
     <textarea class="wymeditor"></textarea>
-    <input type="submit" class="wymsubmit" />
 </form>
 <form method="post" action="">
+    <p class="wymsubmit2"><input type="submit" class="wymsubmit" /></p>
     <textarea class="wymeditor"></textarea>
-    <input type="submit" class="wymsubmit" />
 </form>
 <form method="post" action="">
+    <p class="wymsubmit3"><input type="submit" class="wymsubmit" /></p>
     <textarea class="wymeditor"></textarea>
-    <input type="submit" class="wymsubmit" />
 </form>
 </body>
 

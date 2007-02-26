@@ -19,35 +19,37 @@
 
 /*TEMP*/
         .wym_box br                 { display: none;}
-        form                        { border: 1px solid gray; margin: 20px; padding: 20px;}
-
+        form                        { border: 1px solid gray; margin: 20px; padding: 20px; position: relative;}
+        p.wymsubmit1 input           { text-align: right; position: absolute; right: 25px; }
     
 /*=BASE=====================================================================================================*/    
 
+    
+
     /*wym_box*/
         /*auto-clear floats:*/  
-        .wym_box:after 	            { content: "."; display: block; height: 0; clear: both; visibility: hidden;}
+        .wym_box:after 	            { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
         .wym_box 		            { display: inline-table;}
- * html .wym_box                    {height: 1%;}
+ * html .wym_box                    { height: 1%;}
 
     /*wym_menu*/
-        .wym_menu ul                { margin: 0; padding: 0; font-size: 80%;}
+        .wym_menu ul                { margin: 0; font-size: 0.9em; padding: 5px 0; margin-bottom: 0.111em;}
         .wym_menu li                { list-style: none;}
         .wym_menu a                 { text-decoration: none; display: block; color: blue;}
-        .wym_menu a:hover           { background: white url() }
+        .wym_menu a:hover           { background-color: white }
 
-        .wym_menu h2                { position: absolute; visibility: hidden; font-size: 100%; margin: 0; background: gray; color: white; padding-left: 5px;}
-        .wym_menu li                { margin: 5px;}
+        .wym_menu h2                { position: absolute; visibility: hidden; font-size: 90%; margin: 0; background: gray; color: white; padding-left: 5px;}
+        .wym_menu li                { margin: 0 5px;}
         .wym_menu div               { position: relative; margin-right: 5px; margin-bottom: 5px; float: left;}
 
         
     /*iframe*/
-        .wym_iframe				    { width: 70%;}
-        
+        div.wym_iframe_wrapper      { margin-right: 220px; }               
+        .wym_iframe				    { width: 100%; height: 300px}
  
     /*wym_status*/
         .wym_status                 { /*clear: both;*/ }
-        
+
 
     
 /*=VARIANTS=================================================================================================*/
@@ -69,18 +71,36 @@
     /*wym_menu_toolbar*/
         .wym_menu_toolbar           { margin-bottom: 5px; white-space: nowrap;}
         .wym_menu_toolbar li        { float:left;}
-        .wym_menu_toolbar a:hover   { background: yellow;}
+        .wym_menu_toolbar a:hover   { background-color: yellow;}
         /*auto-clear floats:*/
-        .wym_menu_toolbar ul        { overflow: hidden;}
+        .wym_menu_toolbar ul        { overflow: hidden; margin-right: 5px; padding: 0; float: left;}
  * html .wym_menu_toolbar ul        { overflow: visible; height: 1%;}
  
     /*wym_menu_icons*/
-        .wym_menu_icons li          { float: left; }
-        .wym_menu_icons a           { display: block; width: 24px; height: 24px; overflow: hidden; background: white; border: 1px solid gray;}
+        .wym_menu_icons ul          { background: white; }
+        .wym_menu_icons li          { float: left; margin: 0  }
+        .wym_menu_icons a           { display: block; width: 20px; height: 20px; overflow: hidden; background: white; padding: 2px }
         .wym_menu_icons a           { text-indent: -9999px; text-decoration: none;}
         /*auto-clear floats:*/
         .wym_menu_icons ul          { overflow: hidden;}
  * html .wym_menu_icons ul          { overflow: visible; height: 1%;}
+        /*image replacement*/
+        .wym_menu_icons li a                                { background: white url(icons.png) no-repeat} 
+        .wym_menu_icons li.wym_button_Bold a                { background-position: 0 -382px} 
+        .wym_menu_icons li.wym_button_Italic a              { background-position: 0 -22px} 
+        .wym_menu_icons li.wym_button_Superscript a         { background-position: 0 -430px} 
+        .wym_menu_icons li.wym_button_Subscript a           { background-position: 0 -454px} 
+        .wym_menu_icons li.wym_button_InsertOrderedList a   { background-position: 0 -48px} 
+        .wym_menu_icons li.wym_button_InsertUnorderedList a { background-position: 0 -72px} 
+        .wym_menu_icons li.wym_button_Indent a              { background-position: 0 0} 
+        .wym_menu_icons li.wym_button_Outdent a             { background-position: 0 0} 
+        .wym_menu_icons li.wym_button_Undo a                { background-position: 0 -502px;} 
+        .wym_menu_icons li.wym_button_Redo a                { background-position: 0 -526px;} 
+        .wym_menu_icons li.wym_button_CreateLink a          { background-position: 0 -96px} 
+        .wym_menu_icons li.wym_button_Unlink a              { background-position: 0 -168px} 
+        .wym_menu_icons li.wym_button_InsertImage a         { background-position: 0 -121px} 
+        .wym_menu_icons li.wym_button_InsertTable a         { background-position: 0 -144px} 
+        .wym_menu_icons li.wym_button_ToggleHtml a          { background-position: 0 -193px} 
         
     /*wym_menu_panel*/
         .wym_menu_panel             { width: 200px;}      
@@ -90,16 +110,17 @@
     /*wym_menu_dropdown*/
         .wym_menu_dropdown          { width: 200px; }        
         .wym_menu_dropdown h2       { position: static; visibility: visible;} 
-        .wym_menu_dropdown h2:after { content:" >"} 
+        .wym_menu_dropdown h2:after { content:" >"; } 
                
-        .wym_menu_dropdown ul       { float: left; position: absolute; visibility: hidden; width: 200px;}        
+        .wym_menu_dropdown ul       { float: left; position: absolute; visibility: hidden; width: 200px; margin-left: -1px;   }        
         .wym_menu_dropdown:hover ul { visibility: visible; z-index: 100;}        
-
+    /*wym_menu_maxwidth*/
+        .wym_menu_maxwidth          { width: 100%;}
 
 /*COLORS*/
 
-        .wym_menu_toolbar,
+        .wym_menu_toolbar ul,
+        .wym_menu_icons ul,
         .wym_menu_dropdown,
-        .wym_menu_icons,
         .wym_menu_dropdown ul,
         .wym_menu_panel             { background: #e2e3e9; border: 1px solid gray;}
