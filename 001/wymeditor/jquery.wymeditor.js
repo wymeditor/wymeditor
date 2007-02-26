@@ -129,28 +129,28 @@ Wymeditor.prototype.init = function() {
 	//this will become a parameter (see options)
 	//perhaps sWymButtons, sWymContainers, sWymClasses, sWymDialogs, sWymStatus
 	var sMenuHtml 	= "<div class='wym_buttons'>"
-	        + "<h2>Buttons</h2>"
+	        + "<h2>Tools</h2>"
 			+ "<ul>"
 			+ "<li><a href='#' class='wym_button' name='Bold'>Strong</a></li>"
 			+ "<li><a href='#' class='wym_button' name='Italic'>Emphasis</a></li>"
-			+ "</ul><ul>"
+
 			+ "<li><a href='#' class='wym_button' name='Superscript'>Superscript</a></li>"
 			+ "<li><a href='#' class='wym_button' name='Subscript'>Subscript</a></li>"
-			+ "</ul><ul>"
+
 			+ "<li><a href='#' class='wym_button' name='InsertOrderedList'>Ordered List</a></li>"
 			+ "<li><a href='#' class='wym_button' name='InsertUnorderedList'>Unordered List</a></li>"
 			+ "<li><a href='#' class='wym_button' name='Indent'>Indent</a></li>"
 			+ "<li><a href='#' class='wym_button' name='Outdent'>Outdent</a></li>"
-			+ "</ul><ul>"
+
 			+ "<li><a href='#' class='wym_button' name='Undo'>Undo</a></li>"
 			+ "<li><a href='#' class='wym_button' name='Redo'>Redo</a></li>"
-			+ "</ul><ul>"
+
 			+ "<li><a href='#' class='wym_button' name='CreateLink'>Create Link</a></li>"
 			+ "<li><a href='#' class='wym_button' name='Unlink'>Unlink</a></li>"
-			+ "</ul><ul>"
+
 			+ "<li><a href='#' class='wym_button' name='InsertImage'>Image</a></li>"
 			+ "<li><a href='#' class='wym_button' name='InsertTable'></a></li>"
-			+ "</ul><ul>"
+
 			+ "<li><a href='#' class='wym_button' name='ToggleHtml'>Toggle HTML</a></li>"
 			+ "</ul>"
 			+ "</div>";

@@ -60,25 +60,37 @@ $j(function() {
 
       //first menu
     	$j(".wym_menu").find("div").eq(0)
+            .addClass('wym_menu_panel')
             .addClass('wym_menu_icons')
-            .addClass('wym_menu_toolbar')
-            //.addClass('wym_menu_right')
-            .addClass('wym_menu_maxwidth')
+            .addClass('wym_menu_right')
+            //.addClass('wym_menu_left')
+            //.addClass('wym_menu_maxwidth')
             ;
     
       //second menu
     	$j(".wym_menu").find("div").eq(1)
-            .addClass('wym_menu_dropdown')
-            .addClass('wym_menu_right')
-            //.addClass('wym_menu_right_cleared')
+            .addClass('wym_menu_panel')
+            .addClass('wym_menu_right_cleared')
+            //.addClass('wym_menu_maxwidth')
             ;
             
       //third menu
     	$j(".wym_menu").find("div").eq(2)
             .addClass('wym_menu_panel')
-            //.addClass('wym_menu_left')
             .addClass('wym_menu_right_cleared')
+            //.addClass('wym_menu_left')
+            //.addClass('wym_menu_right_cleared')
             ;
+            
+            
+    /*AUTO CLASSES*/
+      //iframe_wrapper auto margin
+        $j("div[@class*='wym_menu_right']").eq(0).each(function(){
+            $(this).parents(".wym_box").find("div.wym_iframe_wrapper").addClass("wym_iframe_wrapper_margin_right");
+        });      
+        $j("div[@class*='wym_menu_left']").eq(0).each(function(){
+            $(this).parents(".wym_box").find("div.wym_iframe_wrapper").addClass("wym_iframe_wrapper_margin_left");
+        });      
 	
 	
 });

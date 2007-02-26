@@ -20,7 +20,7 @@
 /*TEMP*/
         .wym_box br                 { display: none;}
         form                        { border: 1px solid gray; margin: 20px; padding: 20px; position: relative;}
-        p.wymsubmit1 input           { text-align: right; position: absolute; right: 25px; }
+        p.wymsubmit1 input          { text-align: right; Xposition: absolute; right: 20px; }
     
 /*=BASE=====================================================================================================*/    
 
@@ -36,7 +36,7 @@
         .wym_menu ul                { margin: 0; font-size: 0.9em; padding: 5px 0; margin-bottom: 0.111em;}
         .wym_menu li                { list-style: none;}
         .wym_menu a                 { text-decoration: none; display: block; color: blue;}
-        .wym_menu a:hover           { background-color: white }
+        .wym_menu a:hover           { background-color: yellow }
 
         .wym_menu h2                { position: absolute; visibility: hidden; font-size: 90%; margin: 0; background: gray; color: white; padding-left: 5px;}
         .wym_menu li                { margin: 0 5px;}
@@ -44,8 +44,9 @@
 
         
     /*iframe*/
-        div.wym_iframe_wrapper      { margin-right: 220px; }               
-        .wym_iframe				    { width: 100%; height: 300px}
+        div.wym_iframe_wrapper_margin_right      { margin-right: 209px; }               
+        div.wym_iframe_wrapper_margin_left       { margin-left: 207px; }               
+        .wym_iframe				    { width: 100%; height: 300px; border: 1px solid gray}
  
     /*wym_status*/
         .wym_status                 { /*clear: both;*/ }
@@ -62,8 +63,8 @@
 
 /*WYM_MENU*/
     /*wym_menu_right*/
-        .wym_menu .wym_menu_right           { float: right; }
-        .wym_menu .wym_menu_right_cleared   { float: right; clear: right; }
+        .wym_menu .wym_menu_right           { float: right; margin-right: 0; margin-left: 5px; }
+        .wym_menu .wym_menu_right_cleared   { float: right; margin-right: 0; margin-left: 5px; clear: right; }
 
     /*wym_menu_right*/
         .wym_menu .wym_menu_left_cleared    { float: left; clear: left; }
@@ -71,21 +72,20 @@
     /*wym_menu_toolbar*/
         .wym_menu_toolbar           { margin-bottom: 5px; white-space: nowrap;}
         .wym_menu_toolbar li        { float:left;}
-        .wym_menu_toolbar a:hover   { background-color: yellow;}
         /*auto-clear floats:*/
         .wym_menu_toolbar ul        { overflow: hidden; margin-right: 5px; padding: 0; float: left;}
  * html .wym_menu_toolbar ul        { overflow: visible; height: 1%;}
  
     /*wym_menu_icons*/
-        .wym_menu_icons ul          { background: white; }
+        .wym_menu_icons ul          { Xbackground: white; }
         .wym_menu_icons li          { float: left; margin: 0  }
-        .wym_menu_icons a           { display: block; width: 20px; height: 20px; overflow: hidden; background: white; padding: 2px }
+        .wym_menu_icons a           { display: block; width: 20px; height: 20px; overflow: hidden; Xbackground: white; padding: 2px }
         .wym_menu_icons a           { text-indent: -9999px; text-decoration: none;}
         /*auto-clear floats:*/
         .wym_menu_icons ul          { overflow: hidden;}
  * html .wym_menu_icons ul          { overflow: visible; height: 1%;}
         /*image replacement*/
-        .wym_menu_icons li a                                { background: white url(icons.png) no-repeat} 
+        .wym_menu_icons li a                                { background: url(icons.png) no-repeat} 
         .wym_menu_icons li.wym_button_Bold a                { background-position: 0 -382px} 
         .wym_menu_icons li.wym_button_Italic a              { background-position: 0 -22px} 
         .wym_menu_icons li.wym_button_Superscript a         { background-position: 0 -430px} 
@@ -105,7 +105,7 @@
     /*wym_menu_panel*/
         .wym_menu_panel             { width: 200px;}      
         .wym_menu_panel h2          { position: static; visibility: visible; }      
-        .wym_menu_panel ul          { max-height: 150px; overflow: auto;}      
+        .wym_menu_panel ul          { max-height: 60px; overflow: auto;}      
           
     /*wym_menu_dropdown*/
         .wym_menu_dropdown          { width: 200px; }        
@@ -119,8 +119,8 @@
 
 /*COLORS*/
 
-        .wym_menu_toolbar ul,
-        .wym_menu_icons ul,
+        .Xwym_menu_toolbar ul,
+        .wym_menu_icons,
         .wym_menu_dropdown,
         .wym_menu_dropdown ul,
-        .wym_menu_panel             { background: #e2e3e9; border: 1px solid gray;}
+        .wym_menu_panel             { background: #EFF0F7; border: 1px solid gray;}
