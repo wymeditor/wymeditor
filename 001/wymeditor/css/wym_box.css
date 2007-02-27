@@ -92,8 +92,8 @@
         .wym_menu_icons li.wym_button_Subscript a           { background-position: 0 -454px} 
         .wym_menu_icons li.wym_button_InsertOrderedList a   { background-position: 0 -48px} 
         .wym_menu_icons li.wym_button_InsertUnorderedList a { background-position: 0 -72px} 
-        .wym_menu_icons li.wym_button_Indent a              { background-position: 0 0} 
-        .wym_menu_icons li.wym_button_Outdent a             { background-position: 0 0} 
+        .wym_menu_icons li.wym_button_Indent a              { background-position: 0 -574px} 
+        .wym_menu_icons li.wym_button_Outdent a             { background-position: 0 -598px} 
         .wym_menu_icons li.wym_button_Undo a                { background-position: 0 -502px;} 
         .wym_menu_icons li.wym_button_Redo a                { background-position: 0 -526px;} 
         .wym_menu_icons li.wym_button_CreateLink a          { background-position: 0 -96px} 
