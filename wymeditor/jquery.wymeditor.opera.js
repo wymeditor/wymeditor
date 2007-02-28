@@ -32,9 +32,10 @@ WymClassOpera.prototype.initIframe = function(iframe) {
 	this.html(this._wym._html);
 };
 
-WymClassOpera.prototype._exec = function(cmd) {
+WymClassOpera.prototype._exec = function(cmd,param) {
 
-	this._doc.execCommand(cmd);
+	if(param) this._doc.execCommand(cmd,false,param);
+	else this._doc.execCommand(cmd);
 };
 
 WymClassOpera.prototype.selected = function() {

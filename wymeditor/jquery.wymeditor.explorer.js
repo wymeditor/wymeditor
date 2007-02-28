@@ -39,9 +39,10 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
 	doc.onclick = function() {wymexp.saveCaret();};	
 };
 
-WymClassExplorer.prototype._exec = function(cmd) {
+WymClassExplorer.prototype._exec = function(cmd,param) {
 
-	this._doc.execCommand(cmd);
+	if(param) this._doc.execCommand(cmd,false,param);
+	else this._doc.execCommand(cmd);
 };
 
 WymClassExplorer.prototype.selected = function() {
