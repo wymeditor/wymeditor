@@ -16,7 +16,7 @@
  *		Jean-Francois Hovinne (jf.hovinne@wymeditor.org)
  * 		Daniel Reszka (d.reszka@wymeditor.org)
 */
-
+/*
 p,h1,h2,h3,h4,h5,h6,pre,blockquote			{ background-color: #f0f0ff; }
 .wym_menu ul						{ padding: 0; margin: 0; }
 .wym_menu li						{ list-style: none; float: left; margin-right: 0.3em; }
