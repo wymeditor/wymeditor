@@ -33,9 +33,10 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
 	this.html(this._wym._html);
 };
 
-WymClassMozilla.prototype._exec = function(cmd) {
+WymClassMozilla.prototype._exec = function(cmd,param) {
 
-	this._doc.execCommand(cmd,'',null);
+	if(param) this._doc.execCommand(cmd,'',param);
+	else this._doc.execCommand(cmd,'',null);
 };
 
 /* @name selected

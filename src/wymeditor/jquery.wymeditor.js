@@ -45,7 +45,53 @@ $j.fn.wymeditor = function(options) {
 	options = $j.extend({
 
 		sHtml:			"",
-		sBoxHtml:		"<div class='wym_box'></div>"
+		sBoxHtml:		"<div class='wym_box'></div>",
+		sMenuHtml:		"<div class='wym_menu'></div>",
+		sButtonsHtml:		"<div class='wym_buttons'>"
+					+ "<ul>"
+					+ "<li class='wym_buttons_strong'><a href='#' name='Bold'>{Strong}</a></li>"
+					+ "<li class='wym_buttons_emphasis'><a href='#' name='Italic'>{Emphasis}</a></li>"
+					+ "<li class='wym_buttons_superscript'><a href='#' name='Superscript'>{Superscript}</a></li>"
+					+ "<li class='wym_buttons_subscript'><a href='#' name='Subscript'>{Subscript}</a></li>"
+					+ "<li class='wym_buttons_ordered_list'><a href='#' name='InsertOrderedList'>{Ordered_List}</a></li>"
+					+ "<li class='wym_buttons_unordered_list'><a href='#' name='InsertUnorderedList'>{Unordered_List}</a></li>"
+					+ "<li class='wym_buttons_indent'><a href='#' name='Indent'>{Indent}</a></li>"
+					+ "<li class='wym_buttons_outdent'><a href='#' name='Outdent'>{Outdent}</a></li>"
+					+ "<li class='wym_buttons_undo'><a href='#' name='Undo'>{Undo}</a></li>"
+					+ "<li class='wym_buttons_redo'><a href='#' name='Redo'>{Redo}</a></li>"
+					+ "<li class='wym_buttons_link'><a href='#' name='CreateLink'>{Link}</a></li>"
+					+ "<li class='wym_buttons_unlink'><a href='#' name='Unlink'>{Unlink}</a></li>"
+					+ "<li class='wym_buttons_image'><a href='#' name='InsertImage'>{Image}</a></li>"
+					+ "<li class='wym_buttons_table'><a href='#' name='InsertTable'>{Table}</a></li>"
+					+ "<li class='wym_buttons_html'><a href='#' name='ToggleHtml'>{HTML}</a></li>"
+					+ "</ul>"
+					+ "</div>",
+		sContainersHtml:	"<div class='wym_containers'>"
+					+ "<ul>"
+					+ "<li class='wym_containers_p'><a href='#' name='P'>Paragraph</a></li>"
+					+ "<li class='wym_containers_h1'><a href='#' name='H1'>Heading 1</a></li>"
+					+ "<li class='wym_containers_h2'><a href='#' name='H2'>Heading 2</a></li>"
+					+ "<li class='wym_containers_h3'><a href='#' name='H3'>Heading 3</a></li>"
+					+ "<li class='wym_containers_h4'><a href='#' name='H4'>Heading 4</a></li>"
+					+ "<li class='wym_containers_h5'><a href='#' name='H5'>Heading 5</a></li>"
+					+ "<li class='wym_containers_h6'><a href='#' name='H6'>Heading 6</a></li>"
+					+ "<li class='wym_containers_pre'><a href='#' name='PRE'>Preformatted</a></li>"
+					+ "<li class='wym_containers_blockquote'><a href='#' name='BLOCKQUOTE'>Blockquote</a></li>"
+					+ "<li class='wym_containers_th'><a href='#' name='TH'>Table Header</a></li>"
+					+ "</ul>"
+					+ "</div>",
+		sClassesHtml:		"<div class='wym_classes'>"
+					+ "</div>",
+		sStatusHtml:		"<div class='wym_status'>"
+					+ "</div>",
+		sHtmlValHtml:		"<div class='wym_html'>"
+					+ "<textarea class='wym_html_val'></textarea>"
+					+ "</div>",
+		bButtons:		true,
+		bContainers:		true,
+		bClasses:		true,
+		bStatus:		true,
+		bHtmlVal:		true
 
 	}, options);
 
@@ -61,9 +107,15 @@ $j.fn.wymeditor = function(options) {
 $j.extend({
 	wymeditors: function(i) {
 		return (aWYM_INSTANCES[i]);
+	},
+	wymstrings: function(sKey) {
+		return (aWYM_STRINGS[sKey]);
 	}
 });
 
+/* @name Wymeditor
+ * @description WYMeditor class
+ */
 function Wymeditor(elem,index,options) {
 
 	aWYM_INSTANCES[index] = this;
@@ -72,17 +124,25 @@ function Wymeditor(elem,index,options) {
 	this._index = index;
 	this._options = options;
 	this._html = $j(elem).val();
+	this._lng = {};
 	
 	if(this._options.sHtml) this._html = this._options.sHtml;
-
+	
 	this.init();
+	
 };
 
+/* @name browser
+ * @description Returns the browser object
+ */
 Wymeditor.prototype.browser = function() {
 
 	return($j.browser);
 };
 
+/* @name init
+ * @description Initializes a WYMeditor instance
+ */
 Wymeditor.prototype.init = function() {
 
 	var wym = this;
@@ -120,67 +180,31 @@ Wymeditor.prototype.init = function() {
 	$j(this._box).html(sIframeHtml);
 	
 	//load the menu
-	$j(this._box).find(".wym_iframe").before("<div class='wym_menu'></div>");
+	$j(this._box).find(".wym_iframe").before(this._options.sMenuHtml);
 	
 	//this will become a parameter (see options)
 	//perhaps sWymButtons, sWymContainers, sWymClasses, sWymDialogs, sWymStatus
-	var sMenuHtml 	= "<div class='wym_buttons'>"
-			+ "<ul>"
-			+ "<li><a href='#' class='wym_button' name='Bold'>Strong</a></li>"
-			+ "<li><a href='#' class='wym_button' name='Italic'>Emphasis</a></li>"
-			+ "<li><a href='#' class='wym_button' name='Superscript'>Superscript</a></li>"
-			+ "<li><a href='#' class='wym_button' name='Subscript'>Subscript</a></li>"
-			+ "<li><a href='#' class='wym_button' name='InsertOrderedList'>Ordered List</a></li>"
-			+ "<li><a href='#' class='wym_button' name='InsertUnorderedList'>Unordered List</a></li>"
-			+ "<li><a href='#' class='wym_button' name='Indent'>Indent</a></li>"
-			+ "<li><a href='#' class='wym_button' name='Outdent'>Outdent</a></li>"
-			+ "<li><a href='#' class='wym_button' name='Undo'>Undo</a></li>"
-			+ "<li><a href='#' class='wym_button' name='Redo'>Redo</a></li>"
-			+ "<li><a href='#' class='wym_button' name='CreateLink'>Create Link</a></li>"
-			+ "<li><a href='#' class='wym_button' name='Unlink'>Unlink</a></li>"
-			+ "<li><a href='#' class='wym_button' name='InsertImage'>Image</a></li>"
-			+ "<li><a href='#' class='wym_button' name='InsertTable'></a></li>"
-			+ "<li><a href='#' class='wym_button' name='ToggleHtml'>Toggle HTML</a></li>"
-			+ "</ul>"
-			+ "</div><br />";
-			
-	sMenuHtml	+="<div class='wym_containers'>"
-			+ "<ul>"
-			+ "<li><a href='#' class='wym_container' name='P'>Paragraph</a></li>"
-			+ "<li><a href='#' class='wym_container' name='H1'>Heading 1</a></li>"
-			+ "<li><a href='#' class='wym_container' name='H2'>Heading 2</a></li>"
-			+ "<li><a href='#' class='wym_container' name='H3'>Heading 3</a></li>"
-			+ "<li><a href='#' class='wym_container' name='H4'>Heading 4</a></li>"
-			+ "<li><a href='#' class='wym_container' name='H5'>Heading 5</a></li>"
-			+ "<li><a href='#' class='wym_container' name='H6'>Heading 6</a></li>"
-			+ "<li><a href='#' class='wym_container' name='PRE'>Preformatted</a></li>"
-			+ "<li><a href='#' class='wym_container' name='BLOCKQUOTE'>Blockquote</a></li>"
-			+ "<li><a href='#' class='wym_container' name='TH'>Table Header</a></li>"
-			+ "</ul>"
-			+ "</div><br />";
-			
-	sMenuHtml	+="<div class='wym_classes'>"
-			+ "</div><br />";
-			
-	sMenuHtml	+="<div class='wym_status'>"
-			+ "</div><br />";
-			
-	sMenuHtml	+="<div class='wym_html'>"
-			+ "<textarea class='wym_html_val'></textarea>"
-			+ "</div>";
+	var sMenuHtml = "";
 	
+	if(this._options.bButtons)	sMenuHtml += this._options.sButtonsHtml;
+	if(this._options.bContainers)	sMenuHtml += this._options.sContainersHtml;
+	if(this._options.bClasses)	sMenuHtml += this._options.sClassesHtml;
+	if(this._options.bStatus)	sMenuHtml += this._options.sStatusHtml;
+	if(this._options.bValHtml)	sMenuHtml += this._options.sValHtml;
+
+	sMenuHtml = this.replaceStrings(sMenuHtml);
 
 	$j(this._box).find(".wym_menu").html(sMenuHtml);
 	$j(this._box).find(".wym_html").hide();
 
 	//handle click event on buttons
-	$j(this._box).find(".wym_button").click(function() {
+	$j(this._box).find(".wym_buttons a").click(function() {
 		wym.exec($(this).attr("name"));
 		return(false);
 	});
 	
 	//handle click event on containers buttons
-	$j(this._box).find(".wym_container").click(function() {
+	$j(this._box).find(".wym_containers a").click(function() {
 		wym.container($(this).attr("name"));
 		return(false);
 	});
@@ -193,21 +217,29 @@ Wymeditor.prototype.init = function() {
 
 /********** BASE METHODS **********/
 
+/* @name html
+ * @description Get/Set the html value
+ */
 Wymeditor.prototype.html = function(sHtml) {
 
 	if(sHtml) $j(this._doc.body).html(sHtml);
 	else return($j(this._doc.body).html());
 };
 
+/* @name exec
+ * @description Executes a button command
+ */
 Wymeditor.prototype.exec = function(cmd) {
 	
 	//base function for execCommand
 	//open a dialog or exec
 	switch(cmd) {	
 		case "CreateLink":
-			var container = this.selected();
-			this.status("Selection: " + container.tagName);
-			this.dialog("link");
+			var container = this.container();
+			if(container) {
+				this.status("Selection: " + container.tagName);
+				this.dialog("link");
+			}
 		break;
 		
 		case "InsertImage":
@@ -229,6 +261,9 @@ Wymeditor.prototype.exec = function(cmd) {
 	}
 };
 
+/* @name container
+ * @description Get/Set the selected container
+ */
 Wymeditor.prototype.container = function(sType) {
 
 	if(sType) {
@@ -298,6 +333,9 @@ Wymeditor.prototype.container = function(sType) {
 	else return(this.selected());
 };
 
+/* @name extend
+ * @description Returns the WYMeditor instance based on its index
+ */
 Wymeditor.prototype.findUp = function(mFilter) {
 
 	var container = this.container();
@@ -333,6 +371,9 @@ Wymeditor.prototype.findUp = function(mFilter) {
 	else return(null);
 };
 
+/* @name switchTo
+ * @description Switch the node's type
+ */
 Wymeditor.prototype.switchTo = function(node,sType) {
 
 	var newNode = this._doc.createElement(sType);
@@ -343,12 +384,26 @@ Wymeditor.prototype.switchTo = function(node,sType) {
 
 /********** UI RELATED **********/
 
+Wymeditor.prototype.replaceStrings = function(sVal) {
+
+	for (var key in aWYM_STRINGS) {
+		sVal = sVal.replace("{" + key + "}", aWYM_STRINGS[key]);
+	}
+	return(sVal);
+};
+
+/* @name status
+ * @description Prints a status message
+ */
 Wymeditor.prototype.status = function(sMessage) {
 
 	//print status message
 	$j(this._box).find(".wym_status").html(sMessage);
 };
 
+/* @name update
+ * @description Updates the element and textarea values
+ */
 Wymeditor.prototype.update = function() {
 
 	var html = this.xhtml();
@@ -356,11 +411,16 @@ Wymeditor.prototype.update = function() {
 	$j(this._box).find(".wym_html_val").val(html);
 };
 
+/* @name dialog
+ * @description Opens a dialog box
+ */
 Wymeditor.prototype.dialog = function(sType) {
 
-	//open dialog box
 };
 
+/* @name toggleHtml
+ * @description Shows/Hides the HTML
+ */
 Wymeditor.prototype.toggleHtml = function() {
 
 	$j(this._box).find(".wym_html").toggle();
