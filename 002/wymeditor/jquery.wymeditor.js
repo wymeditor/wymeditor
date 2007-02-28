@@ -45,13 +45,12 @@ $j.fn.wymeditor = function(options) {
 	options = $j.extend({
 
 		sHtml:			"",
-		sBoxHtml:		"<div class='wym_box'>"
-                                        + "<div class='wym_section_top'>{sToolsHtml}</div>"
-                                        + "<div class='wym_section_left'>{sContainersHtml}</div>"
-                                        + "<div class='wym_section_right'>{sClassesHtml}</div>"
-                                        + "<div class='wym_section_main'>{sIframeHtml}</div>"
-                                        + "<div class='wym_section_bottom'></div>"
-                                        + "</div>",
+		sBoxHtml:		"<div class='wym_box'></div>",
+        sSectionTopHtml:    		"<div class='wym_section_top'>" + $(this).sToolsHtml + "</div>",   
+        sSectionLeftHtml:   		"<div class='wym_section_left'>LEFT</div>",   
+        sSectionRightHtml:  		"<div class='wym_section_right'>RIGHT</div>",   
+        sSectionMainHtml:   		"<div class='wym_section_main'>MAIN</div>",   
+        sSectionBottomHtml: 		"<div class='wym_section_bottom'>BOTTOM</div>",   
 		sMenuHtml:		"<div class='wym_menu'></div>",
 		sToolsHtml:		"<div class='wym_tools'>"
 					+ "<h2>Tools</h2>"
