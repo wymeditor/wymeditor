@@ -18,7 +18,29 @@
 
 var $j = jQuery;
 
-var aWYM_INSTANCES = new Array();
+var aWYM_INSTANCES 	= new Array();
+var sWYM_NAME 		= "name";
+var sWYM_INDEX		= "{Wym_Index}";
+var sWYM_BODY 		= "body";
+var sWYM_STRING 	= "string";
+var sWYM_P		= "p";
+var sWYM_H1		= "h1";
+var sWYM_H2		= "h2";
+var sWYM_H3		= "h3";
+var sWYM_H4		= "h4";
+var sWYM_H5		= "h5";
+var sWYM_H6		= "h6";
+var sWYM_PRE		= "pre";
+var sWYM_BLOCKQUOTE	= "blockquote";
+var sWYM_TD		= "td";
+var sWYM_TH		= "th";
+var sWYM_LINK		= "link";
+var sWYM_IMAGE		= "image";
+var sWYM_TABLE		= "table";
+var sWYM_CREATE_LINK	= "CreateLink";
+var sWYM_INSERT_IMAGE	= "InsertImage";
+var sWYM_INSERT_TABLE	= "InsertTable";
+var sWYM_TOGGLE_HTML	= "ToggleHtml";
 
 /**
  * Replace an HTML element by WYMeditor
@@ -45,6 +67,11 @@ $j.fn.wymeditor = function(options) {
 	options = $j.extend({
 
 		sHtml:			"",
+		sIframeHtml:		"<iframe "
+					+ "src='wymeditor/wymiframe.html' "
+					+ "class='wym_iframe' "
+					+ "onload='window.parent.aWYM_INSTANCES[" + sWYM_INDEX + "].initIframe(this)' "
+					+ "></iframe>",
 		sBoxHtml:		"<div class='wym_box'></div>",
 		sMenuHtml:		"<div class='wym_menu'></div>",
 		sButtonsHtml:		"<div class='wym_buttons'>"
@@ -84,14 +111,27 @@ $j.fn.wymeditor = function(options) {
 					+ "</div>",
 		sStatusHtml:		"<div class='wym_status'>"
 					+ "</div>",
-		sHtmlValHtml:		"<div class='wym_html'>"
+		sHtmlHtml:		"<div class='wym_html'>"
 					+ "<textarea class='wym_html_val'></textarea>"
 					+ "</div>",
+		sIframeSelector:	".wym_iframe",
+		sBoxSelector:		".wym_box",
+		sMenuSelector:		".wym_menu",
+		sButtonsSelector:	".wym_buttons",
+		sContainersSelector:	".wym_containers",
+		sClassesSelector:	".wym_classes",
+		sStatusSelector:	".wym_status",
+		sHtmlSelector:		".wym_html",
+		sButtonSelector:	".wym_buttons a",
+		sContainerSelector:	".wym_containers a",
+		sHtmlValSelector:	".wym_html_val",
 		bButtons:		true,
 		bContainers:		true,
 		bClasses:		true,
 		bStatus:		true,
-		bHtmlVal:		true
+		bHtml:			true,
+		sStringDelimiterLeft:	"{",
+		sStringDelimiterRight:	"}"
 
 	}, options);
 
@@ -132,22 +172,15 @@ function Wymeditor(elem,index,options) {
 	
 };
 
-/* @name browser
- * @description Returns the browser object
- */
-Wymeditor.prototype.browser = function() {
-
-	return($j.browser);
-};
-
 /* @name init
  * @description Initializes a WYMeditor instance
  */
 Wymeditor.prototype.init = function() {
 
+	//copy the instance
 	var wym = this;
 
-	//load subclass
+	//load subclass - browser specific
 	if ($j.browser.msie) {
 		var WymClass = new WymClassExplorer(this);
 	}
@@ -161,55 +194,57 @@ Wymeditor.prototype.init = function() {
 		var WymClass = new WymClassSafari(this);
 	}
 	else {
-		//unsupported browser
-		alert('Unsupported browser!');
+		//TODO: handle unsupported browsers
 	}
 
+	//copy the subclass methods
 	for (prop in WymClass) {
 		this[prop] = WymClass[prop];
 	}
 
 	//load the iframe
-	var sIframeHtml = "<iframe "
-			+ "src='wymeditor/wymiframe.html' "
-			+ "class='wym_iframe' "
-			+ "onload='window.parent.aWYM_INSTANCES[" + this._wym._index + "].initIframe(this)' "
-			+ "></iframe>";
+	var sIframeHtml = this._options.sIframeHtml;
+	sIframeHtml = sIframeHtml.replace(sWYM_INDEX,this._index);
 
 	this._box = $j(this._element).hide().after(this._options.sBoxHtml).next();
 	$j(this._box).html(sIframeHtml);
 	
 	//load the menu
-	$j(this._box).find(".wym_iframe").before(this._options.sMenuHtml);
+	$j(this._box).find(this._options.sIframeSelector).before(this._options.sMenuHtml);
 	
-	//this will become a parameter (see options)
-	//perhaps sWymButtons, sWymContainers, sWymClasses, sWymDialogs, sWymStatus
+	//construct the menu
+	//see options
 	var sMenuHtml = "";
 	
 	if(this._options.bButtons)	sMenuHtml += this._options.sButtonsHtml;
 	if(this._options.bContainers)	sMenuHtml += this._options.sContainersHtml;
 	if(this._options.bClasses)	sMenuHtml += this._options.sClassesHtml;
 	if(this._options.bStatus)	sMenuHtml += this._options.sStatusHtml;
-	if(this._options.bValHtml)	sMenuHtml += this._options.sValHtml;
+	if(this._options.bHtml)		sMenuHtml += this._options.sHtmlHtml;
 
+	//l10n
 	sMenuHtml = this.replaceStrings(sMenuHtml);
 
-	$j(this._box).find(".wym_menu").html(sMenuHtml);
-	$j(this._box).find(".wym_html").hide();
+	//set the menu html value
+	$j(this._box).find(this._options.sMenuSelector).html(sMenuHtml);
+	
+	//hide the html value
+	$j(this._box).find(this._options.sHtmlSelector).hide();
 
 	//handle click event on buttons
-	$j(this._box).find(".wym_buttons a").click(function() {
-		wym.exec($(this).attr("name"));
+	$j(this._box).find(this._options.sButtonSelector).click(function() {
+		wym.exec($(this).attr(sWYM_NAME));
 		return(false);
 	});
 	
 	//handle click event on containers buttons
-	$j(this._box).find(".wym_containers a").click(function() {
-		wym.container($(this).attr("name"));
+	$j(this._box).find(this._options.sContainerSelector).click(function() {
+		wym.container($(this).attr(sWYM_NAME));
 		return(false);
 	});
 	
-	$j(this._box).find(".wym_html_val").keyup(function() {
+	//handle keyup event on html value: set the editor value
+	$j(this._box).find(this._options.sHtmlValSelector).keyup(function() {
 		$j(wym._doc.body).html($j(this).val());
 	});
 };
@@ -234,23 +269,20 @@ Wymeditor.prototype.exec = function(cmd) {
 	//base function for execCommand
 	//open a dialog or exec
 	switch(cmd) {	
-		case "CreateLink":
+		case sWYM_CREATE_LINK:
 			var container = this.container();
-			if(container) {
-				this.status("Selection: " + container.tagName);
-				this.dialog("link");
-			}
+			if(container) this.dialog(sWYM_LINK);
 		break;
 		
-		case "InsertImage":
-			this.dialog("image");
+		case sWYM_INSERT_IMAGE:
+			this.dialog(sWYM_IMAGE);
 		break;
 		
-		case "InsertTable":
-			this.dialog("table");
+		case sWYM_INSERT_TABLE:
+			this.dialog(sWYM_TABLE);
 		break;
 		
-		case "ToggleHtml":
+		case sWYM_TOGGLE_HTML:
 			this.update();
 			this.toggleHtml();
 		break;
@@ -270,17 +302,17 @@ Wymeditor.prototype.container = function(sType) {
 	
 		var container = null;
 		
-		if(sType.toLowerCase() == "th") {
+		if(sType.toLowerCase() == sWYM_TH) {
 		
 			container = this.container();
 			
 			//find the TD or TH container
 			switch(container.tagName.toLowerCase()) {
 			
-				case "td": case "th":
+				case sWYM_TD: case sWYM_TH:
 					break;
 				default:
-					var aTypes = new Array("td","th");
+					var aTypes = new Array(sWYM_TD,sWYM_TH);
 					container = this.findUp(aTypes);
 					break;
 			}
@@ -288,14 +320,14 @@ Wymeditor.prototype.container = function(sType) {
 			//if it exists, switch
 			if(container!=null) {
 			
-				sType = (container.tagName.toLowerCase() == "td")? "th": "td";
+				sType = (container.tagName.toLowerCase() == sWYM_TD)? sWYM_TH: sWYM_TD;
 				this.switchTo(container,sType);
 				this.update();
 			}
 		} else {
 	
 			//set the container type
-			var aTypes=new Array("p","h1","h2","h3","h4","h5","h6","pre","blockquote");
+			var aTypes=new Array(sWYM_P,sWYM_H1,sWYM_H2,sWYM_H3,sWYM_H4,sWYM_H5,sWYM_H6,sWYM_PRE,sWYM_BLOCKQUOTE);
 			container = this.findUp(aTypes);
 			
 			if(container) {
@@ -303,9 +335,9 @@ Wymeditor.prototype.container = function(sType) {
 				var newNode = null;
 	
 				//blockquotes must contain a block level element
-				if(sType.toLowerCase() == "blockquote") {
+				if(sType.toLowerCase() == sWYM_BLOCKQUOTE) {
 				
-					var blockquote = this.findUp("blockquote");
+					var blockquote = this.findUp(sWYM_BLOCKQUOTE);
 					
 					if(blockquote == null) {
 					
@@ -333,17 +365,19 @@ Wymeditor.prototype.container = function(sType) {
 	else return(this.selected());
 };
 
-/* @name extend
- * @description Returns the WYMeditor instance based on its index
+/* @name finUp
+ * @description Returns the first parent or self container, based on its type
  */
 Wymeditor.prototype.findUp = function(mFilter) {
+
+	//mFilter is a string or an array of strings
 
 	var container = this.container();
 	var tagname = container.tagName.toLowerCase();
 	
-	if(typeof(mFilter) == "string") {
+	if(typeof(mFilter) == sWYM_STRING) {
 
-		while(tagname != mFilter && tagname != "body") {
+		while(tagname != mFilter && tagname != sWYM_BODY) {
 		
 			container = container.parentNode;
 			tagname = container.tagName.toLowerCase();
@@ -353,7 +387,7 @@ Wymeditor.prototype.findUp = function(mFilter) {
 	
 		var bFound = false;
 		
-		while(!bFound && tagname != "body") {
+		while(!bFound && tagname != sWYM_BODY) {
 			for(var i = 0; i<mFilter.length; i++) {
 				if(tagname == mFilter[i]) {
 					bFound = true;
@@ -367,7 +401,7 @@ Wymeditor.prototype.findUp = function(mFilter) {
 		}
 	}
 	
-	if(tagname != "body") return(container);
+	if(tagname != sWYM_BODY) return(container);
 	else return(null);
 };
 
@@ -387,7 +421,7 @@ Wymeditor.prototype.switchTo = function(node,sType) {
 Wymeditor.prototype.replaceStrings = function(sVal) {
 
 	for (var key in aWYM_STRINGS) {
-		sVal = sVal.replace("{" + key + "}", aWYM_STRINGS[key]);
+		sVal = sVal.replace(this._options.sStringDelimiterLeft + key + this._options.sStringDelimiterRight, aWYM_STRINGS[key]);
 	}
 	return(sVal);
 };
@@ -398,7 +432,7 @@ Wymeditor.prototype.replaceStrings = function(sVal) {
 Wymeditor.prototype.status = function(sMessage) {
 
 	//print status message
-	$j(this._box).find(".wym_status").html(sMessage);
+	$j(this._box).find(this._options.sStatusSelector).html(sMessage);
 };
 
 /* @name update
@@ -408,7 +442,7 @@ Wymeditor.prototype.update = function() {
 
 	var html = this.xhtml();
 	$j(this._element).val(html);
-	$j(this._box).find(".wym_html_val").val(html);
+	$j(this._box).find(this._options.sHtmlValSelector).val(html);
 };
 
 /* @name dialog
@@ -423,5 +457,5 @@ Wymeditor.prototype.dialog = function(sType) {
  */
 Wymeditor.prototype.toggleHtml = function() {
 
-	$j(this._box).find(".wym_html").toggle();
+	$j(this._box).find(this._options.sHtmlSelector).toggle();
 };
