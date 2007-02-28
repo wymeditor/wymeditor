@@ -45,49 +45,58 @@ $j.fn.wymeditor = function(options) {
 	options = $j.extend({
 
 		sHtml:			"",
-		sBoxHtml:		"<div class='wym_box'></div>",
+		sBoxHtml:		"<div class='wym_box'>"
+                                        + "<div class='wym_section_top'>{sToolsHtml}</div>"
+                                        + "<div class='wym_section_left'>{sContainersHtml}</div>"
+                                        + "<div class='wym_section_right'>{sClassesHtml}</div>"
+                                        + "<div class='wym_section_main'>{sIframeHtml}</div>"
+                                        + "<div class='wym_section_bottom'></div>"
+                                        + "</div>",
 		sMenuHtml:		"<div class='wym_menu'></div>",
-		sButtonsHtml:		"<div class='wym_buttons'>"
+		sToolsHtml:		"<div class='wym_tools'>"
+					+ "<h2>Tools</h2>"
 					+ "<ul>"
-					+ "<li class='wym_buttons_strong'><a href='#' name='Bold'>{Strong}</a></li>"
-					+ "<li class='wym_buttons_emphasis'><a href='#' name='Italic'>{Emphasis}</a></li>"
-					+ "<li class='wym_buttons_superscript'><a href='#' name='Superscript'>{Superscript}</a></li>"
-					+ "<li class='wym_buttons_subscript'><a href='#' name='Subscript'>{Subscript}</a></li>"
-					+ "<li class='wym_buttons_ordered_list'><a href='#' name='InsertOrderedList'>{Ordered_List}</a></li>"
-					+ "<li class='wym_buttons_unordered_list'><a href='#' name='InsertUnorderedList'>{Unordered_List}</a></li>"
-					+ "<li class='wym_buttons_indent'><a href='#' name='Indent'>{Indent}</a></li>"
-					+ "<li class='wym_buttons_outdent'><a href='#' name='Outdent'>{Outdent}</a></li>"
-					+ "<li class='wym_buttons_undo'><a href='#' name='Undo'>{Undo}</a></li>"
-					+ "<li class='wym_buttons_redo'><a href='#' name='Redo'>{Redo}</a></li>"
-					+ "<li class='wym_buttons_link'><a href='#' name='CreateLink'>{Link}</a></li>"
-					+ "<li class='wym_buttons_unlink'><a href='#' name='Unlink'>{Unlink}</a></li>"
-					+ "<li class='wym_buttons_image'><a href='#' name='InsertImage'>{Image}</a></li>"
-					+ "<li class='wym_buttons_table'><a href='#' name='InsertTable'>{Table}</a></li>"
-					+ "<li class='wym_buttons_html'><a href='#' name='ToggleHtml'>{HTML}</a></li>"
+					+ "<li class='wym_strong'><a href='#' name='Bold'>{Strong}</a></li>"
+					+ "<li class='wym_emphasis'><a href='#' name='Italic'>{Emphasis}</a></li>"
+					+ "<li class='wym_superscript'><a href='#' name='Superscript'>{Superscript}</a></li>"
+					+ "<li class='wym_subscript'><a href='#' name='Subscript'>{Subscript}</a></li>"
+					+ "<li class='wym_ordered_list'><a href='#' name='InsertOrderedList'>{Ordered_List}</a></li>"
+					+ "<li class='wym_unordered_list'><a href='#' name='InsertUnorderedList'>{Unordered_List}</a></li>"
+					+ "<li class='wym_indent'><a href='#' name='Indent'>{Indent}</a></li>"
+					+ "<li class='wym_outdent'><a href='#' name='Outdent'>{Outdent}</a></li>"
+					+ "<li class='wym_undo'><a href='#' name='Undo'>{Undo}</a></li>"
+					+ "<li class='wym_redo'><a href='#' name='Redo'>{Redo}</a></li>"
+					+ "<li class='wym_link'><a href='#' name='CreateLink'>{Link}</a></li>"
+					+ "<li class='wym_unlink'><a href='#' name='Unlink'>{Unlink}</a></li>"
+					+ "<li class='wym_image'><a href='#' name='InsertImage'>{Image}</a></li>"
+					+ "<li class='wym_table'><a href='#' name='InsertTable'>{Table}</a></li>"
+					+ "<li class='wym_html'><a href='#' name='ToggleHtml'>{HTML}</a></li>"
 					+ "</ul>"
 					+ "</div>",
 		sContainersHtml:	"<div class='wym_containers'>"
+					+ "<h2>Containers</h2>"		
 					+ "<ul>"
-					+ "<li class='wym_containers_p'><a href='#' name='P'>Paragraph</a></li>"
-					+ "<li class='wym_containers_h1'><a href='#' name='H1'>Heading 1</a></li>"
-					+ "<li class='wym_containers_h2'><a href='#' name='H2'>Heading 2</a></li>"
-					+ "<li class='wym_containers_h3'><a href='#' name='H3'>Heading 3</a></li>"
-					+ "<li class='wym_containers_h4'><a href='#' name='H4'>Heading 4</a></li>"
-					+ "<li class='wym_containers_h5'><a href='#' name='H5'>Heading 5</a></li>"
-					+ "<li class='wym_containers_h6'><a href='#' name='H6'>Heading 6</a></li>"
-					+ "<li class='wym_containers_pre'><a href='#' name='PRE'>Preformatted</a></li>"
-					+ "<li class='wym_containers_blockquote'><a href='#' name='BLOCKQUOTE'>Blockquote</a></li>"
+					+ "<li class='wym_p'><a href='#' name='P'>Paragraph</a></li>"
+					+ "<li class='wym_h1'><a href='#' name='H1'>Heading 1</a></li>"
+					+ "<li class='wym_h2'><a href='#' name='H2'>Heading 2</a></li>"
+					+ "<li class='wym_h3'><a href='#' name='H3'>Heading 3</a></li>"
+					+ "<li class='wym_h4'><a href='#' name='H4'>Heading 4</a></li>"
+					+ "<li class='wym_h5'><a href='#' name='H5'>Heading 5</a></li>"
+					+ "<li class='wym_h6'><a href='#' name='H6'>Heading 6</a></li>"
+					+ "<li class='wym_pre'><a href='#' name='PRE'>Preformatted</a></li>"
+					+ "<li class='wym_blockquote'><a href='#' name='BLOCKQUOTE'>Blockquote</a></li>"
 					+ "<li class='wym_containers_th'><a href='#' name='TH'>Table Header</a></li>"
 					+ "</ul>"
 					+ "</div>",
 		sClassesHtml:		"<div class='wym_classes'>"
+					+ "<h2>Classes</h2>"		
 					+ "</div>",
-		sStatusHtml:		"<div class='wym_status'>"
+		sStatusHtml:		"<div class='wym_status'>"		
 					+ "</div>",
 		sHtmlValHtml:		"<div class='wym_html'>"
 					+ "<textarea class='wym_html_val'></textarea>"
 					+ "</div>",
-		bButtons:		true,
+		bTools:			true,
 		bContainers:		true,
 		bClasses:		true,
 		bStatus:		true,
@@ -169,6 +178,7 @@ Wymeditor.prototype.init = function() {
 		this[prop] = WymClass[prop];
 	}
 
+/*	
 	//load the iframe
 	var sIframeHtml = "<iframe "
 			+ "src='wymeditor/wymiframe.html' "
@@ -183,10 +193,10 @@ Wymeditor.prototype.init = function() {
 	$j(this._box).find(".wym_iframe").before(this._options.sMenuHtml);
 	
 	//this will become a parameter (see options)
-	//perhaps sWymButtons, sWymContainers, sWymClasses, sWymDialogs, sWymStatus
+	//perhaps sWymTools, sWymContainers, sWymClasses, sWymDialogs, sWymStatus
 	var sMenuHtml = "";
 	
-	if(this._options.bButtons)	sMenuHtml += this._options.sButtonsHtml;
+	if(this._options.bTools)	sMenuHtml += this._options.sToolsHtml;
 	if(this._options.bContainers)	sMenuHtml += this._options.sContainersHtml;
 	if(this._options.bClasses)	sMenuHtml += this._options.sClassesHtml;
 	if(this._options.bStatus)	sMenuHtml += this._options.sStatusHtml;
@@ -196,9 +206,23 @@ Wymeditor.prototype.init = function() {
 
 	$j(this._box).find(".wym_menu").html(sMenuHtml);
 	$j(this._box).find(".wym_html").hide();
+*/
+	//load the box
+		this._box = $j(this._element).hide().after(this._options.sBoxHtml).next();	
+
+		
+		
+		
+	//load the sections
+		$j(this._box)	.append(this._options.sSectionTopHtml)
+				.append(this._options.sSectionLeftHtml)
+				.append(this._options.sSectionRightHtml)
+				.append(this._options.sSectionMainHtml)
+				.append(this._options.sSectionBottomHtml)
+				;
 
 	//handle click event on buttons
-	$j(this._box).find(".wym_buttons a").click(function() {
+	$j(this._box).find(".wym_tools a").click(function() {
 		wym.exec($(this).attr("name"));
 		return(false);
 	});
