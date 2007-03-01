@@ -1,4 +1,6 @@
-﻿/*
+﻿//{{{ 
+//{{{ 
+/*
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2007 H.O.net - http://www.honet.be/
  * Dual licensed under the MIT (MIT-license.txt)
@@ -61,7 +63,7 @@ var sWYM_TOGGLE_HTML	= "ToggleHtml";
  * @type jQuery
  * @cat Plugins/WYMeditor
  * @author Jean-Francois Hovinne
- */
+ */ //}}} //}}}
 $j.fn.wymeditor = function(options) {
 
 	options = $j.extend({
@@ -134,13 +136,14 @@ $j.fn.wymeditor = function(options) {
 		sStringDelimiterRight:	"}"
 
 	}, options);
-
+//{{{ 
 	return this.each(function(i) {
 
 		new Wymeditor($j(this),i,options);
 	});
 };
-
+//}}}
+//{{{ 
 /* @name extend
  * @description Returns the WYMeditor instance based on its index
  */
@@ -152,7 +155,8 @@ $j.extend({
 		return (aWYM_STRINGS[sKey]);
 	}
 });
-
+//}}}
+//{{{ 
 /* @name Wymeditor
  * @description WYMeditor class
  */
@@ -170,8 +174,8 @@ function Wymeditor(elem,index,options) {
 	
 	this.init();
 	
-};
-
+}; //}}}
+//{{{ 
 /* @name init
  * @description Initializes a WYMeditor instance
  */
@@ -201,7 +205,7 @@ Wymeditor.prototype.init = function() {
 	for (prop in WymClass) {
 		this[prop] = WymClass[prop];
 	}
-
+//}}}
 	//load the iframe
 	var sIframeHtml = this._options.sIframeHtml;
 	sIframeHtml = sIframeHtml.replace(sWYM_INDEX,this._index);
@@ -249,7 +253,7 @@ Wymeditor.prototype.init = function() {
 	});
 };
 
-
+//{{{
 /********** BASE METHODS **********/
 
 /* @name html
@@ -261,6 +265,7 @@ Wymeditor.prototype.html = function(sHtml) {
 	else return($j(this._doc.body).html());
 };
 
+ 
 /* @name exec
  * @description Executes a button command
  */
@@ -415,7 +420,7 @@ Wymeditor.prototype.switchTo = function(node,sType) {
 	node.parentNode.replaceChild(newNode,node);
 	$j(newNode).html(html);
 };
-
+//}}}
 /********** UI RELATED **********/
 
 Wymeditor.prototype.replaceStrings = function(sVal) {
@@ -425,7 +430,7 @@ Wymeditor.prototype.replaceStrings = function(sVal) {
 	}
 	return(sVal);
 };
-
+//{{{ 
 /* @name status
  * @description Prints a status message
  */
@@ -457,5 +462,5 @@ Wymeditor.prototype.dialog = function(sType) {
  */
 Wymeditor.prototype.toggleHtml = function() {
 
-	$j(this._box).find(this._options.sHtmlSelector).toggle();
+	$j(this._box).find(this._options.sHtmlSelector).toggle(); //}}}
 };
