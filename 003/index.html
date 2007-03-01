@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+ * WYMeditor : what you see is What You Mean web-based editor
+ * Copyright (C) 2007 H.O.net - http://www.honet.be/
+ * Dual licensed under the MIT (MIT-license.txt)
+ * and GPL (GPL-license.txt) licenses.
+ *
+ * For further information visit:
+ * 		http://www.wymeditor.org/
+ *
+ * File Name:
+ *		index.html
+ *		Editor integration example.
+ *		See the documentation for more info.
+ *
+ * File Authors:
+ * 		Jean-Francois Hovinne (jf.hovinne@wymeditor.org)
+-->
+<html>
+<head>
+<title>WYMeditor</title>
+<link rel="stylesheet" type="text/css" media="screen" href="wymeditor/skins/wymeditor.css" />
+<script type="text/javascript" src="jquery/jquery.js"></script>
+<script type="text/javascript" src="wymeditor/lang/en.js"></script>
+<!--<script type="text/javascript" src="wymeditor/lang/fr.js"></script>-->
+<script type="text/javascript" src="wymeditor/jquery.wymeditor.js"></script>
+<script type="text/javascript" src="wymeditor/jquery.wymeditor.explorer.js"></script>
+<script type="text/javascript" src="wymeditor/jquery.wymeditor.mozilla.js"></script>
+<script type="text/javascript" src="wymeditor/jquery.wymeditor.opera.js"></script>
+<script type="text/javascript" src="wymeditor/jquery.wymeditor.safari.js"></script>
+<script type="text/javascript">
+var $j = jQuery;
+
+$j(function() {
+
+	$j(".wymeditor").wymeditor().each(function(i) {
+		
+		window.setTimeout("callback(" + i + ")", 500);
+		
+		var wym = $j.wymeditors(i);
+		
+		$j(this).parent().find(".wymsubmit").click(function() {
+			wym.update();
+			alert("Submitting: " + wym.xhtml());
+		});
+	});
+});
+
+function callback(i) {
+
+	var wym = $j.wymeditors(i);
+	wym.html("<p>WYMeditor instance " + i + "</p>");
+};
+</script>
+</head>
+
+<body>
+<form method="post" action="">
+<textarea class="wymeditor"></textarea>
+<input type="submit" class="wymsubmit" />
+</form>
+<form method="post" action="">
+<textarea class="wymeditor"></textarea>
+<input type="submit" class="wymsubmit" />
+</form>
+<form method="post" action="">
+<textarea class="wymeditor"></textarea>
+<input type="submit" class="wymsubmit" />
+</form>
+</body>
+
+</html>
