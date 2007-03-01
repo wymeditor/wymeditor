@@ -75,6 +75,11 @@ $j.fn.wymeditor = function(options) {
 					+ "onload='window.parent.aWYM_INSTANCES[" + sWYM_INDEX + "].initIframe(this)' "
 					+ "></iframe>",
 		sBoxHtml:		"<div class='wym_box'></div>",
+		sBoxHtmlContent:	"<div class='wym_section_top'></div>"
+					+ "<div class='wym_section_left'></div>"
+					+ "<div class='wym_section_right'></div>"
+					+ "<div class='wym_section_main'></div>"
+					+ "<div class='wym_section_bottom'></div>",		
 		sMenuHtml:		"<div class='wym_menu'></div>",
 		sButtonsHtml:		"<div class='wym_buttons'>"
 					+ "<ul>"
@@ -95,6 +100,7 @@ $j.fn.wymeditor = function(options) {
 					+ "<li class='wym_buttons_html'><a href='#' name='ToggleHtml'>{HTML}</a></li>"
 					+ "</ul>"
 					+ "</div>",
+		sButtonsHtmlAttachTo:	".wym_section_top",
 		sContainersHtml:	"<div class='wym_containers'>"
 					+ "<ul>"
 					+ "<li class='wym_containers_p'><a href='#' name='P'>Paragraph</a></li>"
@@ -206,16 +212,25 @@ Wymeditor.prototype.init = function() {
 		this[prop] = WymClass[prop];
 	}
 //}}}
+
+
 	//load the iframe
 	var sIframeHtml = this._options.sIframeHtml;
 	sIframeHtml = sIframeHtml.replace(sWYM_INDEX,this._index);
 
 	this._box = $j(this._element).hide().after(this._options.sBoxHtml).next();
-	$j(this._box).html(sIframeHtml);
+
+	//load wym_box sections	
+//	$j(this._box).html(sIframeHtml);
+	$j(this._box).html(this._options.sBoxHtmlContent);
+
+	//attach contents to sections
+	$j(this._box).find(this._options.sButtonsHtmlAttachTo).append(this._options.sButtonsHtml);
 	
 	//load the menu
 	$j(this._box).find(this._options.sIframeSelector).before(this._options.sMenuHtml);
-	
+
+/*	
 	//construct the menu
 	//see options
 	var sMenuHtml = "";
@@ -234,7 +249,9 @@ Wymeditor.prototype.init = function() {
 	
 	//hide the html value
 	$j(this._box).find(this._options.sHtmlSelector).hide();
-
+*/	
+	
+//{{{
 	//handle click event on buttons
 	$j(this._box).find(this._options.sButtonSelector).click(function() {
 		wym.exec($(this).attr(sWYM_NAME));
@@ -252,8 +269,8 @@ Wymeditor.prototype.init = function() {
 		$j(wym._doc.body).html($j(this).val());
 	});
 };
+/**/
 
-//{{{
 /********** BASE METHODS **********/
 
 /* @name html
