@@ -100,7 +100,7 @@ $j.fn.wymeditor = function(options) {
 					+ "<li class='wym_buttons_html'><a href='#' name='ToggleHtml'>{HTML}</a></li>"
 					+ "</ul>"
 					+ "</div>",
-		sButtonsHtmlAttachTo:	".wym_section_top",
+		sButtonsHtmlAttachTo:	".wym_section_top, .wym_section_bottom",
 		sContainersHtml:	"<div class='wym_containers'>"
 					+ "<ul>"
 					+ "<li class='wym_containers_p'><a href='#' name='P'>Paragraph</a></li>"
