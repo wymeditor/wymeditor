@@ -21,6 +21,12 @@ var $j = jQuery;
 var aWYM_INSTANCES 	= new Array();
 var sWYM_NAME 		= "name";
 var sWYM_INDEX		= "{Wym_Index}";
+var sWYM_BUTTONS	= "{Wym_Buttons}";
+var sWYM_CLASSES	= "{Wym_Classes}";
+var sWYM_CONTAINERS	= "{Wym_Containers}";
+var sWYM_HTML		= "{Wym_Html}";
+var sWYM_IFRAME		= "{Wym_Iframe}";
+var sWYM_STATUS		= "{Wym_Status}";
 var sWYM_BODY 		= "body";
 var sWYM_STRING 	= "string";
 var sWYM_P		= "p";
@@ -67,13 +73,21 @@ $j.fn.wymeditor = function(options) {
 	options = $j.extend({
 
 		sHtml:			"",
+
+		sBoxHtml:		"<div class='wym_box'>"
+					+ "<div class='wym_section_top'>" + sWYM_BUTTONS + "</div>"
+					+ "<div class='wym_section_left'></div>"
+					+ "<div class='wym_section_right'>" + sWYM_CONTAINERS + sWYM_CLASSES + "</div>"
+					+ "<div class='wym_section_main'>" + sWYM_HTML + sWYM_IFRAME + "</div>"
+					+ "<div class='wym_section_bottom'>" + sWYM_STATUS + "</div>"
+					+ "</div>",
+
 		sIframeHtml:		"<iframe "
 					+ "src='wymeditor/wymiframe.html' "
 					+ "class='wym_iframe' "
 					+ "onload='window.parent.aWYM_INSTANCES[" + sWYM_INDEX + "].initIframe(this)' "
 					+ "></iframe>",
-		sBoxHtml:		"<div class='wym_box'></div>",
-		sMenuHtml:		"<div class='wym_menu'></div>",
+
 		sButtonsHtml:		"<div class='wym_buttons'>"
 					+ "<ul>"
 					+ "<li class='wym_buttons_strong'><a href='#' name='Bold'>{Strong}</a></li>"
@@ -93,6 +107,7 @@ $j.fn.wymeditor = function(options) {
 					+ "<li class='wym_buttons_html'><a href='#' name='ToggleHtml'>{HTML}</a></li>"
 					+ "</ul>"
 					+ "</div>",
+
 		sContainersHtml:	"<div class='wym_containers'>"
 					+ "<ul>"
 					+ "<li class='wym_containers_p'><a href='#' name='P'>Paragraph</a></li>"
@@ -107,29 +122,28 @@ $j.fn.wymeditor = function(options) {
 					+ "<li class='wym_containers_th'><a href='#' name='TH'>Table Header</a></li>"
 					+ "</ul>"
 					+ "</div>",
+
 		sClassesHtml:		"<div class='wym_classes'>"
 					+ "</div>",
+
 		sStatusHtml:		"<div class='wym_status'>"
 					+ "</div>",
+
 		sHtmlHtml:		"<div class='wym_html'>"
 					+ "<textarea class='wym_html_val'></textarea>"
 					+ "</div>",
-		sIframeSelector:	".wym_iframe",
+
 		sBoxSelector:		".wym_box",
-		sMenuSelector:		".wym_menu",
 		sButtonsSelector:	".wym_buttons",
-		sContainersSelector:	".wym_containers",
 		sClassesSelector:	".wym_classes",
-		sStatusSelector:	".wym_status",
+		sContainersSelector:	".wym_containers",
 		sHtmlSelector:		".wym_html",
+		sIframeSelector:	".wym_iframe",
+		sStatusSelector:	".wym_status",
 		sButtonSelector:	".wym_buttons a",
 		sContainerSelector:	".wym_containers a",
 		sHtmlValSelector:	".wym_html_val",
-		bButtons:		true,
-		bContainers:		true,
-		bClasses:		true,
-		bStatus:		true,
-		bHtml:			true,
+		
 		sStringDelimiterLeft:	"{",
 		sStringDelimiterRight:	"}"
 
@@ -202,31 +216,28 @@ Wymeditor.prototype.init = function() {
 		this[prop] = WymClass[prop];
 	}
 
-	//load the iframe
+	//load wymbox
+	this._box = $j(this._element).hide().after(this._options.sBoxHtml).next();
+	
+	//construct the iframe
 	var sIframeHtml = this._options.sIframeHtml;
 	sIframeHtml = sIframeHtml.replace(sWYM_INDEX,this._index);
-
-	this._box = $j(this._element).hide().after(this._options.sBoxHtml).next();
-	$j(this._box).html(sIframeHtml);
 	
-	//load the menu
-	$j(this._box).find(this._options.sIframeSelector).before(this._options.sMenuHtml);
+	//construct wymbox
+	var sBoxHtml = $j(this._box).html();
 	
-	//construct the menu
-	//see options
-	var sMenuHtml = "";
+	sBoxHtml = sBoxHtml.replace(sWYM_BUTTONS, this._options.sButtonsHtml);
+	sBoxHtml = sBoxHtml.replace(sWYM_CONTAINERS, this._options.sContainersHtml);
+	sBoxHtml = sBoxHtml.replace(sWYM_CLASSES, this._options.sClassesHtml);
+	sBoxHtml = sBoxHtml.replace(sWYM_HTML, this._options.sHtmlHtml);
+	sBoxHtml = sBoxHtml.replace(sWYM_IFRAME, sIframeHtml);
+	sBoxHtml = sBoxHtml.replace(sWYM_STATUS, this._options.sStatusHtml);
 	
-	if(this._options.bButtons)	sMenuHtml += this._options.sButtonsHtml;
-	if(this._options.bContainers)	sMenuHtml += this._options.sContainersHtml;
-	if(this._options.bClasses)	sMenuHtml += this._options.sClassesHtml;
-	if(this._options.bStatus)	sMenuHtml += this._options.sStatusHtml;
-	if(this._options.bHtml)		sMenuHtml += this._options.sHtmlHtml;
-
 	//l10n
-	sMenuHtml = this.replaceStrings(sMenuHtml);
-
-	//set the menu html value
-	$j(this._box).find(this._options.sMenuSelector).html(sMenuHtml);
+	sBoxHtml = this.replaceStrings(sBoxHtml);
+	
+	//load html in wymbox
+	$j(this._box).html(sBoxHtml);
 	
 	//hide the html value
 	$j(this._box).find(this._options.sHtmlSelector).hide();
