@@ -1,0 +1,48 @@
+I just had so far the most painful experience with Safari -- trying to figure out the Safari support for this spec:
+   http://www.w3.org/TR/DOM-Level-2-Traversal-Range/ranges.html
+
+Turned out it was very limited to the point that it didn't make sense, ex. you can create the range (createRange()) but you cannot apply/add it because Selection.addRange(newRange) method does not exist...
+
+I just want to be able to save current selection and then be able to restore it at a later time. I need that because Safari (as well as IE, but to Safari extent) looses selection when the focus is lost off the element (IFrame in my case). Long story short here is a working Safari version:
+
+To save:
+  var oWin = oIframe.contentWindow;
+  var oDoc = oWin.document;
+  var sel = oWin.getSelection();
+
+  oDoc._previous_range = new Object();
+  oDoc._previous_range.baseNode = sel.baseNode;
+  oDoc._previous_range.baseOffset = sel.baseOffset;
+  oDoc._previous_range.extentNode = sel.extentNode;
+  oDoc._previous_range.extentOffset = sel.extentOffset;
+
+To restore:
+  var oWin = oIframe.contentWindow;
+  var oDoc = oWin.document;
+  var sel = oWin.getSelection();
+  sel.setBaseAndExtent(oDoc._previous_range.baseNode,
+                       oDoc._previous_range.baseOffset,
+                       oDoc._previous_range.extentNode,
+                       oDoc._previous_range.extentOffset);
+                       
+WymClassSafari.prototype.CaptureSelection = function() {
+  var oWin = oIframe.contentWindow;
+  var oDoc = oWin.document;
+  var sel = oWin.getSelection();
+
+  oDoc._previous_range = new Object();
+  oDoc._previous_range.baseNode = sel.baseNode;
+  oDoc._previous_range.baseOffset = sel.baseOffset;
+  oDoc._previous_range.extentNode = sel.extentNode;
+  oDoc._previous_range.extentOffset = sel.extentOffset;
+};
+
+WymClassSafari.prototype.RestoreSelection = function() {
+  var oWin = oIframe.contentWindow;
+  var oDoc = oWin.document;
+  var sel = oWin.getSelection();
+  sel.setBaseAndExtent(oDoc._previous_range.baseNode,
+                       oDoc._previous_range.baseOffset,
+                       oDoc._previous_range.extentNode,
+                       oDoc._previous_range.extentOffset);
+};

@@ -1,0 +1,229 @@
+wym:
+[init]=>function () 
+{
+  var wym = this;
+  if ($j.browser.msie)
+    {
+      var WymClass = new WymClassExplorer(this);
+    }
+  else
+    if ($j.browser.mozilla)
+      {
+        var WymClass = new WymClassMozilla(this);
+      }
+    else
+      if ($j.browser.opera)
+        {
+          var WymClass = new WymClassOpera(this);
+        }
+      else
+        if ($j.browser.safari)
+          {
+            var WymClass = new WymClassSafari(this);
+          }
+        else
+          {
+          }
+  for ( in WymClass)
+    {
+      this[prop] = WymClass[prop];
+    }
+  var sIframeHtml = this._options.sIframeHtml;
+  sIframeHtml = sIframeHtml.replace(sWYM_INDEX, this._index);
+  this._box = $j(this._element).hide().after(this._options.sBoxHtml).next();
+  $j(this._box).html(sIframeHtml);
+  $j(this._box).find(this._options.sIframeSelector).before(this._options.sMenuHtml);
+  var sMenuHtml = "";
+  if (this._options.bButtons)
+    sMenuHtml += this._options.sButtonsHtml;
+  if (this._options.bContainers)
+    sMenuHtml += this._options.sContainersHtml;
+  if (this._options.bClasses)
+    sMenuHtml += this._options.sClassesHtml;
+  if (this._options.bStatus)
+    sMenuHtml += this._options.sStatusHtml;
+  if (this._options.bHtml)
+    sMenuHtml += this._options.sHtmlHtml;
+  sMenuHtml = this.replaceStrings(sMenuHtml);
+  $j(this._box).find(this._options.sMenuSelector).html(sMenuHtml);
+  $j(this._box).find(this._options.sHtmlSelector).hide();
+  $j(this._box).find(this._options.sButtonSelector).click(function ()
+  {
+    wym.exec($(this).attr(sWYM_NAME));
+    return false;
+  });
+  $j(this._box).find(this._options.sContainerSelector).click(function ()
+  {
+    wym.container($(this).attr(sWYM_NAME));
+    return false;
+  });
+  $j(this._box).find(this._options.sHtmlValSelector).keyup(function ()
+  {
+    $j(wym._doc.body).html($j(this).val());
+  });
+}
+[html]=>function (sHtml) 
+{
+  if (sHtml)
+    $j(this._doc.body).html(sHtml);
+  else
+    return $j(this._doc.body).html();
+}
+[exec]=>function (cmd) 
+{
+  switch (cmd) {
+    case sWYM_CREATE_LINK:
+      var container = this.container();
+      ShowObj("container", this.container());
+      if (container)
+        this.dialog(sWYM_LINK);
+      break;
+    case sWYM_INSERT_IMAGE:
+      this.dialog(sWYM_IMAGE);
+      break;
+    case sWYM_INSERT_TABLE:
+      this.dialog(sWYM_TABLE);
+      break;
+    case sWYM_TOGGLE_HTML:
+      this.update();
+      this.toggleHtml();
+      break;
+    default:
+      this._exec(cmd);
+      break;
+  }
+}
+[container]=>function (sType) 
+{
+  if (sType)
+    {
+      var container = null;
+      if (sType.toLowerCase() == sWYM_TH)
+        {
+          container = this.container();
+          switch (container.tagName.toLowerCase()) {
+            case sWYM_TD:
+            case sWYM_TH:
+              break;
+            default:
+              var aTypes = new Array(sWYM_TD, sWYM_TH);
+              container = this.findUp(aTypes);
+              break;
+          }
+          if (container != null)
+            {
+              sType = container.tagName.toLowerCase() == sWYM_TD ? sWYM_TH : sWYM_TD;
+              this.switchTo(container, sType);
+              this.update();
+            }
+        }
+      else
+        {
+          var aTypes = new Array(sWYM_P, sWYM_H1, sWYM_H2, sWYM_H3, sWYM_H4, sWYM_H5, sWYM_H6, sWYM_PRE, sWYM_BLOCKQUOTE);
+          container = this.findUp(aTypes);
+          if (container)
+            {
+              var newNode = null;
+              if (sType.toLowerCase() == sWYM_BLOCKQUOTE)
+                {
+                  var blockquote = this.findUp(sWYM_BLOCKQUOTE);
+                  if (blockquote == null)
+                    {
+                      newNode = this._doc.createElement(sType);
+                      container.parentNode.insertBefore(newNode, container);
+                      newNode.appendChild(container);
+                    }
+                  else
+                    {
+                      var nodes = blockquote.childNodes;
+                      var lgt = nodes.length;
+                      for (x = 0; x < lgt; x++)
+                        {
+                          blockquote.parentNode.insertBefore(nodes.item(0), blockquote);
+                        }
+                      blockquote.parentNode.removeChild(blockquote);
+                    }
+                }
+              else
+                this.switchTo(container, sType);
+              this.update();
+            }
+        }
+    }
+  else
+    return this.selected();
+}
+[findUp]=>function (mFilter) 
+{
+  var container = this.container();
+  var tagname = container.tagName.toLowerCase();
+  if (typeof mFilter == sWYM_STRING)
+    {
+      while (tagname != mFilter && tagname != sWYM_BODY)
+        {
+          container = container.parentNode;
+          tagname = container.tagName.toLowerCase();
+        }
+    }
+  else
+    {
+      var bFound = false;
+      while (!bFound && tagname != sWYM_BODY)
+        {
+          for (i = 0; i < mFilter.length; i++)
+            {
+              if (tagname == mFilter[i])
+                {
+                  bFound = true;
+                  break;
+                }
+            }
+          if (!bFound)
+            {
+              container = container.parentNode;
+              tagname = container.tagName.toLowerCase();
+            }
+        }
+    }
+  if (tagname != sWYM_BODY)
+    return container;
+  else
+    return null;
+}
+[switchTo]=>function (node, sType) 
+{
+  var newNode = this._doc.createElement(sType);
+  var html = $j(node).html();
+  node.parentNode.replaceChild(newNode, node);
+  $j(newNode).html(html);
+}
+[replaceStrings]=>function (sVal) 
+{
+  for (var key in aWYM_STRINGS)
+    {
+      sVal = sVal.replace(this._options.sStringDelimiterLeft+key+this._options.sStringDelimiterRight, aWYM_STRINGS[key]);
+    }
+  return sVal;
+}
+[status]=>function (sMessage) 
+{
+  $j(this._box).find(this._options.sStatusSelector).html(sMessage);
+}
+[update]=>function () 
+{
+  var html = this.xhtml();
+  $j(this._element).val(html);
+  $j(this._box).find(this._options.sHtmlValSelector).val(html);
+}
+[dialog]=>function (sType) 
+{
+}
+[toggleHtml]=>function () 
+{
+  $j(this._box).find(this._options.sHtmlSelector).toggle();
+}
+[_element]=>[object Object]
+[_index]=>0
+[_options]=>[object Object]
+[_html]=>
+[_lng]=>[object Object]

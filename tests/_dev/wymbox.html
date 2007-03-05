@@ -1,0 +1,43 @@
+<form method="post" action="">
+  <textarea style="display: none;" class="wymeditor"></textarea>
+  <div class="wym_box">
+    <div class="wym_menu">
+      <div class="wym_buttons">
+        <ul>
+          <li class="wym_buttons_strong"><a href="#" name="Bold">Strong</a></li>
+          <li class="wym_buttons_emphasis"><a href="#" name="Italic">Emphasis</a></li>
+          <li class="wym_buttons_superscript"><a href="#" name="Superscript">Superscript</a></li>
+          <li class="wym_buttons_subscript"><a href="#" name="Subscript">Subscript</a></li>
+          <li class="wym_buttons_ordered_list"><a href="#" name="InsertOrderedList">Ordered List</a></li>
+          <li class="wym_buttons_unordered_list"><a href="#" name="InsertUnorderedList">Unordered List</a></li>
+          <li class="wym_buttons_indent"><a href="#" name="Indent">Indent</a></li>
+          <li class="wym_buttons_outdent"><a href="#" name="Outdent">Outdent</a></li>
+          <li class="wym_buttons_undo"><a href="#" name="Undo">Undo</a></li>
+          <li class="wym_buttons_redo"><a href="#" name="Redo">Redo</a></li>
+          <li class="wym_buttons_link"><a href="#" name="CreateLink">Link</a></li>
+          <li class="wym_buttons_unlink"><a href="#" name="Unlink">Unlink</a></li>
+          <li class="wym_buttons_image"><a href="#" name="InsertImage">Image</a></li>
+          <li class="wym_buttons_table"><a href="#" name="InsertTable">Table</a></li>
+          <li class="wym_buttons_html"><a href="#" name="ToggleHtml">HTML</a></li></ul></div><div class="wym_containers"><ul>
+          <li class="wym_containers_p"><a href="#" name="P">Paragraph</a></li>
+          <li class="wym_containers_h1"><a href="#" name="H1">Heading 1</a></li>
+          <li class="wym_containers_h2"><a href="#" name="H2">Heading 2</a></li>
+          <li class="wym_containers_h3"><a href="#" name="H3">Heading 3</a></li>
+          <li class="wym_containers_h4"><a href="#" name="H4">Heading 4</a></li>
+          <li class="wym_containers_h5"><a href="#" name="H5">Heading 5</a></li>
+          <li class="wym_containers_h6"><a href="#" name="H6">Heading 6</a></li>
+          <li class="wym_containers_pre"><a href="#" name="PRE">Preformatted</a></li>
+          <li class="wym_containers_blockquote"><a href="#" name="BLOCKQUOTE">Blockquote</a></li>
+          <li class="wym_containers_th"><a href="#" name="TH">Table Header</a></li>
+        </ul>
+      </div>
+      <div class="wym_classes"></div>
+      <div class="wym_status"></div>
+      <div style="display: none;" class="wym_html">
+        <textarea class="wym_html_val"></textarea>
+      </div>
+    </div>
+    <iframe src="wymeditor/wymiframe.html" class="wym_iframe" onload="window.parent.aWYM_INSTANCES[0].initIframe(this)"></iframe>
+  </div>
+  <input class="wymsubmit" type="submit">
+</form>

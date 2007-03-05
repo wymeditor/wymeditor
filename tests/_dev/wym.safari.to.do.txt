@@ -1,0 +1,5 @@
+Wymeditor.safari To Do:
+
+- Clicking a button deselects the iframe selection
+- HTML does not update
+- 
