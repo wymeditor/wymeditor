@@ -82,11 +82,12 @@ $j.fn.wymeditor = function(options) {
 					+ "<div class='wym_area_bottom'>" + "</div>"
 					+ "</div>",
 
-		sIframeHtml:		"<iframe "
+		sIframeHtml:		"<div class='wym_iframe wym_section'>"
+					+ "<iframe "
 					+ "src='wymeditor/wymiframe.html' "
-					+ "class='wym_iframe' "
 					+ "onload='window.parent.aWYM_INSTANCES[" + sWYM_INDEX + "].initIframe(this)' "
-					+ "></iframe>",
+					+ "></iframe>"
+					+ "</div>",
 
 		sToolsHtml:		"<div class='wym_tools wym_section'>"
 					+ "<h2>Tools</h2>"
@@ -143,7 +144,7 @@ $j.fn.wymeditor = function(options) {
 		sClassesSelector:	".wym_classes",
 		sContainersSelector:	".wym_containers",
 		sHtmlSelector:		".wym_html",
-		sIframeSelector:	".wym_iframe",
+		sIframeSelector:	".wym_iframe iframe",
 		sStatusSelector:	".wym_status",
 		sToolsSelector:		".wym_tools a",
 		sContainerSelector:	".wym_containers a",
