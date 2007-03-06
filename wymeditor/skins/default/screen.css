@@ -17,17 +17,24 @@
 */
 
 /*TEMP*/
-        .wym_box             { border: 1px solid gray; margin-top: 20px; padding: 5px }
+        
+        .wym_box                { border: 1px solid gray; margin-top: 20px; background: white; Xpadding: 5px }
         .wym_area_top,
         .wym_area_left,
         .wym_area_right,
         .wym_area_main,
-        .wym_area_bottom     { background: #eee; }
+        .wym_area_bottom        { background: #eee; }
+
+/*TYPO*/    
+        .wym_box                { font-size: 62.5%; font-family: Verdana, Arial, sans-serif;}
+        .wym_box h2             { font-size: 110%; /* = 11px */}
+        .wym_box li             { font-size: 100%; /* = 10px */}
+
 
 
 /*IFRAME*/
-        .wym_iframe,
-        .wym_iframe iframe   { width: 100%; }
+        .wym_iframe             { width: 99%;  }
+        .wym_iframe iframe      { width: 100%; }
 
 
 /*WYM_BOX*/
@@ -47,24 +54,31 @@
 /*SECTIONS*/
 
     /*common defaults for all sections*/
-        .wym_section            { border: 1px solid green; margin-bottom: 5px;  }
-        .wym_section h2         { display: none;}
+        .wym_section            { margin-bottom: 5px; }
+        .wym_section h2         { margin: 0; }
         .wym_section ul         { list-style: none; margin: 0; padding: 0;}
-        
-    /*auto-clear sections*/
+        .wym_section a          { display: block; text-decoration: none; }
+        .wym_section a:hover    { background-color: yellow; }
+      /*hide section titles by default*/
+        .wym_section h2         { display: none; }
+      /*disable any margin-collapse*/
+        .wym_section            { padding-top: 1px; padding-bottom: 1px; }    
+      /*auto-clear sections*/
         .wym_section ul:after   { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
  * html .wym_section ul         { height: 1%;}
+
     
-    /*render section as panel*/
+    /*option: render section as panel*/
         .wym_panel              { }
         .wym_panel h2           { display: block; }
 
-    /*render section as buttons*/
+
+    /*option: render section as buttons*/
         .wym_buttons ul         { }
         .wym_buttons li         { float:left;}
-        .wym_buttons a          { display: block; width: 20px; height: 20px; overflow: hidden; padding: 2px }
-        /*image replacements*/
-        .wym_buttons li a                         { background: url(icons.png) no-repeat; text-indent: -9999px; text-decoration: none;} 
+        .wym_buttons a          { width: 20px; height: 20px; overflow: hidden; padding: 2px }
+      /*image replacements*/
+        .wym_buttons li a                         { background: url(icons.png) no-repeat; text-indent: -9999px;} 
         .wym_buttons li.wym_tools_strong a        { background-position: 0 -382px} 
         .wym_buttons li.wym_tools_emphasis a      { background-position: 0 -22px} 
         .wym_buttons li.wym_tools_superscript a   { background-position: 0 -430px} 
