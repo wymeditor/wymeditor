@@ -33,9 +33,13 @@ var $j = jQuery;
 
 $j(function() {
 
-	$j(".wymeditor").wymeditor().each(function(i) {
-		
-		window.setTimeout("callback(" + i + ")", 500);
+	$j(".wymeditor").wymeditor(null,function() {
+	
+		var wym = this;
+		wym.html("<p>WYMeditor instance</p>");
+	
+	
+	}).each(function(i) {
 		
 		var wym = $j.wymeditors(i);
 		
@@ -45,12 +49,6 @@ $j(function() {
 		});
 	});
 });
-
-function callback(i) {
-
-	var wym = $j.wymeditors(i);
-	wym.html("<p>WYMeditor instance " + i + "</p>");
-};
 </script>
 </head>
 
