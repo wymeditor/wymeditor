@@ -21,7 +21,7 @@ var $j = jQuery;
 var aWYM_INSTANCES 	= new Array();
 var sWYM_NAME 		= "name";
 var sWYM_INDEX		= "{Wym_Index}";
-var sWYM_BUTTONS	= "{Wym_Buttons}";
+var swym_tools	= "{wym_tools}";
 var sWYM_CLASSES	= "{Wym_Classes}";
 var sWYM_CONTAINERS	= "{Wym_Containers}";
 var sWYM_HTML		= "{Wym_Html}";
@@ -75,7 +75,7 @@ $j.fn.wymeditor = function(options) {
 		sHtml:			"",
 
 		sBoxHtml:		"<div class='wym_box'>"
-					+ "<div class='wym_section_top'>" + sWYM_BUTTONS + "</div>"
+					+ "<div class='wym_section_top'>" + swym_tools + "</div>"
 					+ "<div class='wym_section_left'></div>"
 					+ "<div class='wym_section_right'>" + sWYM_CONTAINERS + sWYM_CLASSES + "</div>"
 					+ "<div class='wym_section_main'>" + sWYM_HTML + sWYM_IFRAME + "</div>"
@@ -88,23 +88,23 @@ $j.fn.wymeditor = function(options) {
 					+ "onload='window.parent.aWYM_INSTANCES[" + sWYM_INDEX + "].initIframe(this)' "
 					+ "></iframe>",
 
-		sButtonsHtml:		"<div class='wym_buttons'>"
+		sToolsHtml:		"<div class='wym_tools'>"
 					+ "<ul>"
-					+ "<li class='wym_buttons_strong'><a href='#' name='Bold'>{Strong}</a></li>"
-					+ "<li class='wym_buttons_emphasis'><a href='#' name='Italic'>{Emphasis}</a></li>"
-					+ "<li class='wym_buttons_superscript'><a href='#' name='Superscript'>{Superscript}</a></li>"
-					+ "<li class='wym_buttons_subscript'><a href='#' name='Subscript'>{Subscript}</a></li>"
-					+ "<li class='wym_buttons_ordered_list'><a href='#' name='InsertOrderedList'>{Ordered_List}</a></li>"
-					+ "<li class='wym_buttons_unordered_list'><a href='#' name='InsertUnorderedList'>{Unordered_List}</a></li>"
-					+ "<li class='wym_buttons_indent'><a href='#' name='Indent'>{Indent}</a></li>"
-					+ "<li class='wym_buttons_outdent'><a href='#' name='Outdent'>{Outdent}</a></li>"
-					+ "<li class='wym_buttons_undo'><a href='#' name='Undo'>{Undo}</a></li>"
-					+ "<li class='wym_buttons_redo'><a href='#' name='Redo'>{Redo}</a></li>"
-					+ "<li class='wym_buttons_link'><a href='#' name='CreateLink'>{Link}</a></li>"
-					+ "<li class='wym_buttons_unlink'><a href='#' name='Unlink'>{Unlink}</a></li>"
-					+ "<li class='wym_buttons_image'><a href='#' name='InsertImage'>{Image}</a></li>"
-					+ "<li class='wym_buttons_table'><a href='#' name='InsertTable'>{Table}</a></li>"
-					+ "<li class='wym_buttons_html'><a href='#' name='ToggleHtml'>{HTML}</a></li>"
+					+ "<li class='wym_tools_strong'><a href='#' name='Bold'>{Strong}</a></li>"
+					+ "<li class='wym_tools_emphasis'><a href='#' name='Italic'>{Emphasis}</a></li>"
+					+ "<li class='wym_tools_superscript'><a href='#' name='Superscript'>{Superscript}</a></li>"
+					+ "<li class='wym_tools_subscript'><a href='#' name='Subscript'>{Subscript}</a></li>"
+					+ "<li class='wym_tools_ordered_list'><a href='#' name='InsertOrderedList'>{Ordered_List}</a></li>"
+					+ "<li class='wym_tools_unordered_list'><a href='#' name='InsertUnorderedList'>{Unordered_List}</a></li>"
+					+ "<li class='wym_tools_indent'><a href='#' name='Indent'>{Indent}</a></li>"
+					+ "<li class='wym_tools_outdent'><a href='#' name='Outdent'>{Outdent}</a></li>"
+					+ "<li class='wym_tools_undo'><a href='#' name='Undo'>{Undo}</a></li>"
+					+ "<li class='wym_tools_redo'><a href='#' name='Redo'>{Redo}</a></li>"
+					+ "<li class='wym_tools_link'><a href='#' name='CreateLink'>{Link}</a></li>"
+					+ "<li class='wym_tools_unlink'><a href='#' name='Unlink'>{Unlink}</a></li>"
+					+ "<li class='wym_tools_image'><a href='#' name='InsertImage'>{Image}</a></li>"
+					+ "<li class='wym_tools_table'><a href='#' name='InsertTable'>{Table}</a></li>"
+					+ "<li class='wym_tools_html'><a href='#' name='ToggleHtml'>{HTML}</a></li>"
 					+ "</ul>"
 					+ "</div>",
 
@@ -134,13 +134,13 @@ $j.fn.wymeditor = function(options) {
 					+ "</div>",
 
 		sBoxSelector:		".wym_box",
-		sButtonsSelector:	".wym_buttons",
+		sToolsSelector:	    ".wym_tools",
 		sClassesSelector:	".wym_classes",
 		sContainersSelector:	".wym_containers",
 		sHtmlSelector:		".wym_html",
 		sIframeSelector:	".wym_iframe",
 		sStatusSelector:	".wym_status",
-		sButtonSelector:	".wym_buttons a",
+		sToolsSelector:	    ".wym_tools a",
 		sContainerSelector:	".wym_containers a",
 		sHtmlValSelector:	".wym_html_val",
 		
@@ -226,7 +226,7 @@ Wymeditor.prototype.init = function() {
 	//construct wymbox
 	var sBoxHtml = $j(this._box).html();
 	
-	sBoxHtml = sBoxHtml.replace(sWYM_BUTTONS, this._options.sButtonsHtml);
+	sBoxHtml = sBoxHtml.replace(swym_tools, this._options.sToolsHtml);
 	sBoxHtml = sBoxHtml.replace(sWYM_CONTAINERS, this._options.sContainersHtml);
 	sBoxHtml = sBoxHtml.replace(sWYM_CLASSES, this._options.sClassesHtml);
 	sBoxHtml = sBoxHtml.replace(sWYM_HTML, this._options.sHtmlHtml);
@@ -242,8 +242,8 @@ Wymeditor.prototype.init = function() {
 	//hide the html value
 	$j(this._box).find(this._options.sHtmlSelector).hide();
 
-	//handle click event on buttons
-	$j(this._box).find(this._options.sButtonSelector).click(function() {
+	//handle click event on tools buttons
+	$j(this._box).find(this._options.sToolsSelector).click(function() {
 		wym.exec($(this).attr(sWYM_NAME));
 		return(false);
 	});
