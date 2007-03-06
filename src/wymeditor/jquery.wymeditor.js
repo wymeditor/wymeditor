@@ -21,7 +21,7 @@ var $j = jQuery;
 var aWYM_INSTANCES 	= new Array();
 var sWYM_NAME 		= "name";
 var sWYM_INDEX		= "{Wym_Index}";
-var SWYM_TOOLS	= "{wym_tools}";
+var SWYM_TOOLS		= "{wym_tools}";
 var sWYM_CLASSES	= "{Wym_Classes}";
 var sWYM_CONTAINERS	= "{Wym_Containers}";
 var sWYM_HTML		= "{Wym_Html}";
@@ -89,7 +89,7 @@ $j.fn.wymeditor = function(options) {
 					+ "></iframe>",
 
 		sToolsHtml:		"<div class='wym_tools wym_section'>"
-		            + "<h2>Tools</h2>"
+					+ "<h2>Tools</h2>"
 					+ "<ul>"
 					+ "<li class='wym_tools_strong'><a href='#' name='Bold'>{Strong}</a></li>"
 					+ "<li class='wym_tools_emphasis'><a href='#' name='Italic'>{Emphasis}</a></li>"
@@ -110,7 +110,7 @@ $j.fn.wymeditor = function(options) {
 					+ "</div>",
 
 		sContainersHtml:	"<div class='wym_containers wym_section'>"
-		            + "<h2>Containers</h2>"
+					+ "<h2>Containers</h2>"
 					+ "<ul>"
 					+ "<li class='wym_containers_p'><a href='#' name='P'>Paragraph</a></li>"
 					+ "<li class='wym_containers_h1'><a href='#' name='H1'>Heading 1</a></li>"
@@ -126,26 +126,26 @@ $j.fn.wymeditor = function(options) {
 					+ "</div>",
 
 		sClassesHtml:		"<div class='wym_classes wym_section'>"
-		            + "<h2>Classes</h2>"
+					+ "<h2>Classes</h2>"
 					+ "</div>",
 
 		sStatusHtml:		"<div class='wym_status wym_section'>"
-		            + "<h2>Status</h2>"
+					+ "<h2>Status</h2>"
 					+ "</div>",
 
 		sHtmlHtml:		"<div class='wym_html wym_section'>"
-		            + "<h2>Source code</h2>"
+					+ "<h2>Source code</h2>"
 					+ "<textarea class='wym_html_val'></textarea>"
 					+ "</div>",
 
 		sBoxSelector:		".wym_box",
-		sToolsSelector:	    ".wym_tools",
+		sToolsSelector:		".wym_tools",
 		sClassesSelector:	".wym_classes",
 		sContainersSelector:	".wym_containers",
 		sHtmlSelector:		".wym_html",
 		sIframeSelector:	".wym_iframe",
 		sStatusSelector:	".wym_status",
-		sToolsSelector:	    ".wym_tools a",
+		sToolsSelector:		".wym_tools a",
 		sContainerSelector:	".wym_containers a",
 		sHtmlValSelector:	".wym_html_val",
 		
