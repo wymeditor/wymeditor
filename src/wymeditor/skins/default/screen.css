@@ -24,41 +24,41 @@
         .wym_area_main,
         .wym_area_bottom        { background: #eee; }
 
+
 /*IFRAME*/
         .wym_box iframe         { width: 100%; }
-    
-/*LAYOUT BASE*/
-  /*areas*/
-        .wym_area_main          { margin-left: 210px; margin-right: 210px;}
-        .wym_area_left          { width: 200px; float: left;}
-        .wym_area_right         { width: 200px; float: right;}
-        .wym_area_bottom        { clear:both;}
-    
-  /*wym_box auto-clearing*/
+
+
+/*WYM_BOX*/
+
+    /*auto-clear the wym_box*/
         .wym_box:after 	        { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
  * html .wym_box                { height: 1%;}
 
-/*TOOLS*/
-        .wym_tools              {}
+    
+/*AREAS*/
+        .wym_area_main          { margin-left: 160px; margin-right: 160px;}
+        .wym_area_left          { width: 150px; float: left;}
+        .wym_area_right         { width: 150px; float: right;}
+        .wym_area_bottom        { clear:both;}
 
-/*TOOL CONTAINERS OPTIONS*/    
 
-/*RENDER MODES*/
+/*SECTIONS*/
 
-  /*common defaults*/
+    /*common defaults for all sections*/
         .wym_section            { border: 1px solid green; margin-bottom: 5px;  }
         .wym_section h2         { display: none;}
         .wym_section ul         { list-style: none; margin: 0; padding: 0;}
         
-        /*wym_sections auto-clearing*/
+    /*auto-clear sections*/
         .wym_section ul:after 	{ content: "."; display: block; height: 0; clear: both; visibility: hidden; }
  * html .wym_section ul         { height: 1%;}
     
-  /*wym_panel*/
+    /*render section as panel*/
         .wym_panel              { }
         .wym_panel h2           { display: block; }
 
-  /*wym_buttons*/
+    /*render section as buttons*/
         .wym_buttons ul         { }
         .wym_buttons li         { float:left;}
         .wym_buttons a          { display: block;}
