@@ -1,4 +1,4 @@
-﻿/*
+/*
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2007 H.O.net - http://www.honet.be/
  * Dual licensed under the MIT (MIT-license.txt)
@@ -45,7 +45,7 @@
 
     
 /*AREAS*/
-        .wym_area_main          { margin-left: 160px; margin-right: 160px;}
+/*        .wym_area_main          { margin-left: 160px; margin-right: 160px;}*/
         .wym_area_left          { width: 150px; float: left;}
         .wym_area_right         { width: 150px; float: right;}
         .wym_area_bottom        { clear: both;}
