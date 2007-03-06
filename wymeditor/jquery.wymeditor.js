@@ -89,6 +89,7 @@ $j.fn.wymeditor = function(options) {
 					+ "></iframe>",
 
 		sToolsHtml:		"<div class='wym_tools'>"
+		            + "<h2>Tools</h2>"
 					+ "<ul>"
 					+ "<li class='wym_tools_strong'><a href='#' name='Bold'>{Strong}</a></li>"
 					+ "<li class='wym_tools_emphasis'><a href='#' name='Italic'>{Emphasis}</a></li>"
@@ -109,6 +110,7 @@ $j.fn.wymeditor = function(options) {
 					+ "</div>",
 
 		sContainersHtml:	"<div class='wym_containers'>"
+		            + "<h2>Containers</h2>"
 					+ "<ul>"
 					+ "<li class='wym_containers_p'><a href='#' name='P'>Paragraph</a></li>"
 					+ "<li class='wym_containers_h1'><a href='#' name='H1'>Heading 1</a></li>"
@@ -124,9 +126,11 @@ $j.fn.wymeditor = function(options) {
 					+ "</div>",
 
 		sClassesHtml:		"<div class='wym_classes'>"
+		            + "<h2>Classes</h2>"
 					+ "</div>",
 
 		sStatusHtml:		"<div class='wym_status'>"
+		            + "<h2>Status</h2>"
 					+ "</div>",
 
 		sHtmlHtml:		"<div class='wym_html'>"
