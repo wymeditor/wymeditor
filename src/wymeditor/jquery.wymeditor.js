@@ -88,7 +88,7 @@ $j.fn.wymeditor = function(options) {
 					+ "onload='window.parent.aWYM_INSTANCES[" + sWYM_INDEX + "].initIframe(this)' "
 					+ "></iframe>",
 
-		sToolsHtml:		"<div class='wym_tools'>"
+		sToolsHtml:		"<div class='wym_tools wym_section'>"
 		            + "<h2>Tools</h2>"
 					+ "<ul>"
 					+ "<li class='wym_tools_strong'><a href='#' name='Bold'>{Strong}</a></li>"
@@ -109,7 +109,7 @@ $j.fn.wymeditor = function(options) {
 					+ "</ul>"
 					+ "</div>",
 
-		sContainersHtml:	"<div class='wym_containers'>"
+		sContainersHtml:	"<div class='wym_containers wym_section'>"
 		            + "<h2>Containers</h2>"
 					+ "<ul>"
 					+ "<li class='wym_containers_p'><a href='#' name='P'>Paragraph</a></li>"
@@ -125,15 +125,15 @@ $j.fn.wymeditor = function(options) {
 					+ "</ul>"
 					+ "</div>",
 
-		sClassesHtml:		"<div class='wym_classes'>"
+		sClassesHtml:		"<div class='wym_classes wym_section'>"
 		            + "<h2>Classes</h2>"
 					+ "</div>",
 
-		sStatusHtml:		"<div class='wym_status'>"
+		sStatusHtml:		"<div class='wym_status wym_section'>"
 		            + "<h2>Status</h2>"
 					+ "</div>",
 
-		sHtmlHtml:		"<div class='wym_html'>"
+		sHtmlHtml:		"<div class='wym_html wym_section'>"
 		            + "<h2>Source code</h2>"
 					+ "<textarea class='wym_html_val'></textarea>"
 					+ "</div>",
