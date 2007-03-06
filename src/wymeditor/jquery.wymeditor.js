@@ -78,8 +78,8 @@ $j.fn.wymeditor = function(options) {
 					+ "<div class='wym_section_top'>" + swym_tools + "</div>"
 					+ "<div class='wym_section_left'></div>"
 					+ "<div class='wym_section_right'>" + sWYM_CONTAINERS + sWYM_CLASSES + "</div>"
-					+ "<div class='wym_section_main'>" + sWYM_HTML + sWYM_IFRAME + "</div>"
-					+ "<div class='wym_section_bottom'>" + sWYM_STATUS + "</div>"
+					+ "<div class='wym_section_main'>" + sWYM_HTML + sWYM_IFRAME + sWYM_STATUS + "</div>"
+					+ "<div class='wym_section_bottom'>" + "</div>"
 					+ "</div>",
 
 		sIframeHtml:		"<iframe "
@@ -134,6 +134,7 @@ $j.fn.wymeditor = function(options) {
 					+ "</div>",
 
 		sHtmlHtml:		"<div class='wym_html'>"
+		            + "<h2>Source code</h2>"
 					+ "<textarea class='wym_html_val'></textarea>"
 					+ "</div>",
 
