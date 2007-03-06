@@ -18,7 +18,11 @@
 
 /*TEMP*/
     .wym_box                { border: 1px solid gray }
-    .wym_section_top        { background: red url() }
+    .wym_section_top,
+    .wym_section_left,
+    .wym_section_right,
+    .wym_section_main,
+    .wym_section_bottom     { background: #eee }
 
 /*IFRAME*/
     .wym_box iframe         { width: 100%; }
@@ -28,6 +32,8 @@
     .wym_section_main       { margin: 0 210px;}
     .wym_section_left       { width: 200px; float: left;}
     .wym_section_right      { width: 200px; float: right;}
+    .wym_section_bottom     { clear:both}
+    
   /*wym_box auto-clearing*/
         .wym_box:after 	    { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
  * html .wym_box            { height: 1%;}
