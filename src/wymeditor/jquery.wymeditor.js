@@ -75,11 +75,11 @@ $j.fn.wymeditor = function(options) {
 		sHtml:			"",
 
 		sBoxHtml:		"<div class='wym_box'>"
-					+ "<div class='wym_section_top'>" + swym_tools + "</div>"
-					+ "<div class='wym_section_left'></div>"
-					+ "<div class='wym_section_right'>" + sWYM_CONTAINERS + sWYM_CLASSES + "</div>"
-					+ "<div class='wym_section_main'>" + sWYM_HTML + sWYM_IFRAME + sWYM_STATUS + "</div>"
-					+ "<div class='wym_section_bottom'>" + "</div>"
+					+ "<div class='wym_area_top'>" + swym_tools + "</div>"
+					+ "<div class='wym_area_left'></div>"
+					+ "<div class='wym_area_right'>" + sWYM_CONTAINERS + sWYM_CLASSES + "</div>"
+					+ "<div class='wym_area_main'>" + sWYM_HTML + sWYM_IFRAME + sWYM_STATUS + "</div>"
+					+ "<div class='wym_area_bottom'>" + "</div>"
 					+ "</div>",
 
 		sIframeHtml:		"<iframe "
