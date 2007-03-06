@@ -17,7 +17,7 @@
 */
 
 /*TEMP*/
-        .wym_box             { border: 1px solid gray }
+        .wym_box             { border: 1px solid gray; margin-top: 20px; padding: 5px }
         .wym_area_top,
         .wym_area_left,
         .wym_area_right,
