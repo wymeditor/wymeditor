@@ -16,3 +16,18 @@
  * 		Daniel Reszka (d.reszka@wymeditor.org)
 */
 
+/*TEMP*/
+    .wym_box                { border: 1px solid gray }
+
+/*IFRAME*/
+    .wym_box iframe         { width: 100%; }
+    
+/*LAYOUT*/
+    .wym_section_main       { margin: 0 210px;}
+
+/*TOOLS*/
+    .wym_tools              {}
+
+/*TOOL CONTAINERS OPTIONS*/    
+
+        
