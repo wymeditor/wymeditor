@@ -1,4 +1,4 @@
-﻿/*
+/*
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2007 H.O.net - http://www.honet.be/
  * Dual licensed under the MIT (MIT-license.txt)
@@ -18,8 +18,18 @@
 
 $j(function() {
 
-    $j("div.wym_containers").addClass("wym_panel");
-    $j("div.wym_tools").addClass("wym_buttons");
+	//render folllowing sections as panels
+    	$j("div.wym_containers").addClass("wym_panel");
+
+    //render folllowing sections as buttons
+    	$j("div.wym_tools").addClass("wym_buttons");
+
+    //render folllowing sections as dropdown menus
+		//(todo)
+
+    // auto add some margin to the main area sides if left area or right area are not empty (if they contain sections)
+	    $("div.wym_area_right ul").parents("div.wym_box").find("div.wym_area_main").css({ "margin-right": "170px"});
+	    $("div.wym_area_left  ul").parents("div.wym_box").find("div.wym_area_main").css({ "margin-left": "170px"});
 	
 });
     
