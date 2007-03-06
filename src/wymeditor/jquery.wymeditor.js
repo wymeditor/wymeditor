@@ -21,7 +21,7 @@ var $j = jQuery;
 var aWYM_INSTANCES 	= new Array();
 var sWYM_NAME 		= "name";
 var sWYM_INDEX		= "{Wym_Index}";
-var swym_tools	= "{wym_tools}";
+var SWYM_TOOLS	= "{wym_tools}";
 var sWYM_CLASSES	= "{Wym_Classes}";
 var sWYM_CONTAINERS	= "{Wym_Containers}";
 var sWYM_HTML		= "{Wym_Html}";
@@ -75,7 +75,7 @@ $j.fn.wymeditor = function(options) {
 		sHtml:			"",
 
 		sBoxHtml:		"<div class='wym_box'>"
-					+ "<div class='wym_area_top'>" + swym_tools + "</div>"
+					+ "<div class='wym_area_top'>" + SWYM_TOOLS + "</div>"
 					+ "<div class='wym_area_left'></div>"
 					+ "<div class='wym_area_right'>" + sWYM_CONTAINERS + sWYM_CLASSES + "</div>"
 					+ "<div class='wym_area_main'>" + sWYM_HTML + sWYM_IFRAME + sWYM_STATUS + "</div>"
@@ -231,7 +231,7 @@ Wymeditor.prototype.init = function() {
 	//construct wymbox
 	var sBoxHtml = $j(this._box).html();
 	
-	sBoxHtml = sBoxHtml.replace(swym_tools, this._options.sToolsHtml);
+	sBoxHtml = sBoxHtml.replace(SWYM_TOOLS, this._options.sToolsHtml);
 	sBoxHtml = sBoxHtml.replace(sWYM_CONTAINERS, this._options.sContainersHtml);
 	sBoxHtml = sBoxHtml.replace(sWYM_CLASSES, this._options.sClassesHtml);
 	sBoxHtml = sBoxHtml.replace(sWYM_HTML, this._options.sHtmlHtml);
