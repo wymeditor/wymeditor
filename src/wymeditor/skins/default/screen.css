@@ -1,4 +1,4 @@
-/*
+﻿/*
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2007 H.O.net - http://www.honet.be/
  * Dual licensed under the MIT (MIT-license.txt)
@@ -23,18 +23,23 @@
         .wym_area_left,
         .wym_area_right,
         .wym_area_main,
-        .wym_area_bottom        { background: #eee; }
+        .wym_area_bottom,
+        .wym_box                { background: #eee; }
+
+/*HIDDEN BY DEFAULT*/
+        .wym_area_left,
+        .wym_area_right         { display: none; }
+
 
 /*TYPO*/    
-        .wym_box                { font-size: 62.5%; font-family: Verdana, Arial, sans-serif;}
+        .wym_box                { font-size: 62.5%; font-family: Verdana, Arial, sans-serif; padding: 5px }
         .wym_box h2             { font-size: 110%; /* = 11px */}
         .wym_box li             { font-size: 100%; /* = 10px */}
 
 
-
 /*IFRAME*/
-        .wym_iframe             { width: 99%;  }
-        .wym_iframe iframe      { width: 100%; }
+        .wym_iframe             { width: 98%;}
+        .wym_iframe iframe      { width: 100%; border: 1px solid #ddd;  }
 
 
 /*WYM_BOX*/
@@ -72,6 +77,12 @@
         .wym_panel              { }
         .wym_panel h2           { display: block; }
 
+    /*option: render section as dropdown menu*/
+        .wym_dropdown h2        { display: block; }
+        .wym_dropdown ul        { display: none; position: absolute; background: white url()  }
+        .wym_dropdown:hover ul,
+        .wym_dropdown.hover ul  { display: block; }
+
 
     /*option: render section as buttons*/
         .wym_buttons ul         { }
@@ -94,5 +105,3 @@
         .wym_buttons li.wym_tools_image a         { background-position: 0 -121px} 
         .wym_buttons li.wym_tools_table a         { background-position: 0 -144px} 
         .wym_buttons li.wym_tools_html a          { background-position: 0 -193px} 
-         
-        
