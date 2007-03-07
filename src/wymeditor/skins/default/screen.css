@@ -36,10 +36,13 @@
         .wym_box h2             { font-size: 110%; /* = 11px */}
         .wym_box li             { font-size: 100%; /* = 10px */}
 
+/*HTML*/
+        .wym_html               { width: 100%;}
+        .wym_html textarea      { width: 98%; height: 200px; border: 1px solid #bbb; background: white;  }
 
 /*IFRAME*/
         .wym_iframe             { width: 98%;}
-        .wym_iframe iframe      { width: 100%; border: 1px solid #ddd;  }
+        .wym_iframe iframe      { width: 100%; height: 200px; border: 1px solid #bbb; background: white }
 
 
 /*WYM_BOX*/
@@ -50,10 +53,10 @@
 
     
 /*AREAS*/
-/*        .wym_area_main          { margin-left: 160px; margin-right: 160px;}*/
         .wym_area_left          { width: 150px; float: left;}
         .wym_area_right         { width: 150px; float: right;}
         .wym_area_bottom        { clear: both;}
+ * html .wym_area_main          { height: 1%;}
 
 
 /*SECTIONS*/
