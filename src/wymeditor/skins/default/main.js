@@ -40,6 +40,6 @@ $j(function() {
           $(this).removeClass("hover"); 
         });        
 
-    // add some dummy content to wym_classes (temporary)
+    // add some dummy content to the section wym_classes (temporary)
        $("div.wym_classes")    .append('<ul><li><a href="">first class</a></li><li><a href="">second class</a></li><li><a href="">third class</a></li><li><a href="">fourth class</a></li></ul>');
 });
