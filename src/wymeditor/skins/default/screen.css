@@ -16,16 +16,6 @@
  * 		Daniel Reszka (d.reszka@wymeditor.org)
 */
 
-/*TEMP*/
-        
-        .wym_box                { border: 1px solid gray; margin-top: 20px; background: white; Xpadding: 5px }
-        .wym_area_top,
-        .wym_area_left,
-        .wym_area_right,
-        .wym_area_main,
-        .wym_area_bottom,
-        .wym_box                { background: #eee; }
-
 /*HIDDEN BY DEFAULT*/
         .wym_area_left,
         .wym_area_right         { display: none; }
@@ -36,22 +26,25 @@
         .wym_box h2             { font-size: 110%; /* = 11px */}
         .wym_box li             { font-size: 100%; /* = 10px */}
 
-/*HTML*/
-        .wym_html               { width: 100%;}
-        .wym_html textarea      { width: 98%; height: 200px; border: 1px solid #bbb; background: white;  }
-
-/*IFRAME*/
-        .wym_iframe             { width: 98%;}
-        .wym_iframe iframe      { width: 100%; height: 200px; border: 1px solid #bbb; background: white }
-
 
 /*WYM_BOX*/
+        .wym_box                { border: 1px solid gray; background: #eee; }
 
     /*auto-clear the wym_box*/
         .wym_box:after 	        { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
  * html .wym_box                { height: 1%;}
 
-    
+
+/*WYM_HTML*/
+        .wym_html               { width: 100%;}
+        .wym_html textarea      { width: 98%; height: 200px; border: 1px solid #bbb; background: white;  }
+
+
+/*WYM_IFRAME*/
+        .wym_iframe             { width: 98%;}
+        .wym_iframe iframe      { width: 100%; height: 200px; border: 1px solid #bbb; background: white }
+
+
 /*AREAS*/
         .wym_area_left          { width: 150px; float: left;}
         .wym_area_right         { width: 150px; float: right;}
@@ -59,7 +52,7 @@
  * html .wym_area_main          { height: 1%;}
 
 
-/*SECTIONS*/
+/*SECTIONS SYSTEM*/
 
     /*common defaults for all sections*/
         .wym_section            { margin-bottom: 5px; }
@@ -75,20 +68,17 @@
         .wym_section ul:after   { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
  * html .wym_section ul         { height: 1%;}
 
-    
-    /*option: render section as panel*/
+    /*option: add this class to a section to make it render as a panel*/
         .wym_panel              { }
         .wym_panel h2           { display: block; }
 
-    /*option: render section as dropdown menu*/
+    /*option: add this class to a section to make it render as a dropdown menu*/
         .wym_dropdown h2        { display: block; }
         .wym_dropdown ul        { display: none; position: absolute; background: white url()  }
         .wym_dropdown:hover ul,
         .wym_dropdown.hover ul  { display: block; }
 
-
-    /*option: render section as buttons*/
-        .wym_buttons ul         { }
+    /*option: add this class to a section to make its elements render buttons (icons are only available for the wym_tools section for now)*/
         .wym_buttons li         { float:left;}
         .wym_buttons a          { width: 20px; height: 20px; overflow: hidden; padding: 2px }
       /*image replacements*/
