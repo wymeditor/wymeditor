@@ -17,9 +17,8 @@
 */
 
 /*TRYING TO RESET STYLES THAT MAY INTERFERE WITH WYMEDITOR*/
-        .wym_box div, .wym_box p, 
-        .wym_box h2, .wym_box ul, 
-        .wym_box li             { background: transparent url(); margin: 0; padding: 0; border-width:0; }
+        .wym_box p, .wym_box h2, .wym_box h3,
+        .wym_box ul, .wym_box li { background: transparent url(); margin: 0; padding: 0; border-width:0; list-style: none; }
 
 
 /*HIDDEN BY DEFAULT*/
@@ -30,11 +29,12 @@
 /*TYPO*/    
         .wym_box                { font-size: 62.5%; font-family: Verdana, Arial, sans-serif; }
         .wym_box h2             { font-size: 110%; /* = 11px */}
+        .wym_box h3             { font-size: 100%; /* = 10px */}
         .wym_box li             { font-size: 100%; /* = 10px */}
 
 
 /*WYM_BOX*/
-        .wym_box                { border: 1px solid gray; background: #eee; padding: 5px}
+        .wym_box                { border: 1px solid gray; background: #f2f2f2; padding: 5px}
 
     /*auto-clear the wym_box*/
         .wym_box:after 	        { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
@@ -43,12 +43,12 @@
 
 /*WYM_HTML*/
         .wym_html               { width: 100%;}
-        .wym_html textarea      { width: 98%; height: 200px; border: 1px solid #bbb; background: white;  }
+        .wym_html textarea      { width: 98%; height: 200px; border: 1px solid gray; background: white;  }
 
 
 /*WYM_IFRAME*/
         .wym_iframe             { width: 100%;}
-        .wym_iframe iframe      { width: 98%; height: 200px; border: 1px solid #bbb; background: white }
+        .wym_iframe iframe      { width: 98%; height: 200px; border: 1px solid gray; background: white }
 
 
 /*AREAS*/
@@ -62,9 +62,9 @@
 
     /*common defaults for all sections*/
         .wym_section            { margin-bottom: 5px; }
-        .wym_section h2         { margin: 0; }
-        .wym_section ul         { list-style: none; margin: 0; padding: 0;}
-        .wym_section a          { display: block; text-decoration: none; }
+        .wym_section h2,
+        .wym_section h3         { padding: 1px 3px; margin: 0; }
+        .wym_section a          { padding: 0 3px; display: block; text-decoration: none; }
         .wym_section a:hover    { background-color: yellow; }
       /*hide section titles by default*/
         .wym_section h2         { display: none; }
@@ -80,7 +80,7 @@
 
     /*option: add this class to a section to make it render as a dropdown menu*/
         .wym_dropdown h2        { display: block; }
-        .wym_dropdown ul        { display: none; position: absolute; background: white url()  }
+        .wym_dropdown ul        { display: none; position: absolute; background: white; }
         .wym_dropdown:hover ul,
         .wym_dropdown.hover ul  { display: block; }
 
@@ -104,3 +104,12 @@
         .wym_buttons li.wym_tools_image a         { background-position: 0 -121px} 
         .wym_buttons li.wym_tools_table a         { background-position: 0 -144px} 
         .wym_buttons li.wym_tools_html a          { background-position: 0 -193px} 
+
+/*DECORATION*/
+        .wym_section h2             { background: #ddd; border: solid gray; border-width: 0 0 1px;}
+        .wym_section h2 span        { color: gray;}
+        .wym_panel                  { padding: 0; border: solid gray; border-width: 1px; background: white;}    
+        .wym_panel ul               { margin: 2px 0 5px; }        
+        .wym_dropdown               { padding: 0; border: solid gray; border-width: 1px 1px 0 1px; }
+        .wym_dropdown ul            { border: solid gray; border-width: 0 1px 1px 1px; margin-left: -1px; padding: 5px 10px 5px 3px;}
+            

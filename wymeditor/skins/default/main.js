@@ -25,7 +25,7 @@ $j(function() {
         $j("div.wym_tools").addClass("wym_buttons");
 
     //render folllowing sections as dropdown menus
-        $j("div.wym_containers").addClass("wym_dropdown");
+        $j("div.wym_containers").addClass("wym_dropdown").find("h2").append("<span>&nbsp;&gt;</span>");
 
     // auto add some margin to the main area sides if left area or right area are not empty (if they contain sections)
         $("div.wym_area_right ul") .parents("div.wym_area_right").show()
@@ -41,5 +41,16 @@ $j(function() {
         });        
 
     // add some dummy content to the section wym_classes (temporary)
-       $("div.wym_classes")    .append('<ul><li><a href="">first class</a></li><li><a href="">second class</a></li><li><a href="">third class</a></li><li><a href="">fourth class</a></li></ul>');
+       $("div.wym_classes").append('<ul>'
+                                    + '<li><a href="">first class</a></li>'
+                                    + '<li><a href="">second class</a></li>'
+                                    + '<li><a href="">third class</a></li>'
+                                    + '<li><a href="">fourth class</a></li>'
+                                    + '</ul>'
+                                    + '<h3>Special classes</h3>'
+                                    + '<ul>'
+                                    + '<li><a href="#">special class 1</a></li>'
+                                    + '<li><a href="#">special class 2</a></li>'
+                                    + '<li><a href="#">special class 3</a></li>'
+                                    + '</ul>');
 });
