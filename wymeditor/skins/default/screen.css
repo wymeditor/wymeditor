@@ -16,19 +16,25 @@
  * 		Daniel Reszka (d.reszka@wymeditor.org)
 */
 
+/*TRYING TO RESET STYLES THAT MAY INTERFERE WITH WYMEDITOR*/
+        .wym_box div, .wym_box p, 
+        .wym_box h2, .wym_box ul, 
+        .wym_box li             { background: transparent url(); margin: 0; padding: 0; border-width:0; }
+
+
 /*HIDDEN BY DEFAULT*/
         .wym_area_left,
         .wym_area_right         { display: none; }
 
 
 /*TYPO*/    
-        .wym_box                { font-size: 62.5%; font-family: Verdana, Arial, sans-serif; padding: 5px }
+        .wym_box                { font-size: 62.5%; font-family: Verdana, Arial, sans-serif; }
         .wym_box h2             { font-size: 110%; /* = 11px */}
         .wym_box li             { font-size: 100%; /* = 10px */}
 
 
 /*WYM_BOX*/
-        .wym_box                { border: 1px solid gray; background: #eee; }
+        .wym_box                { border: 1px solid gray; background: #eee; padding: 5px}
 
     /*auto-clear the wym_box*/
         .wym_box:after 	        { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
@@ -41,8 +47,8 @@
 
 
 /*WYM_IFRAME*/
-        .wym_iframe             { width: 98%;}
-        .wym_iframe iframe      { width: 100%; height: 200px; border: 1px solid #bbb; background: white }
+        .wym_iframe             { width: 100%;}
+        .wym_iframe iframe      { width: 98%; height: 200px; border: 1px solid #bbb; background: white }
 
 
 /*AREAS*/
