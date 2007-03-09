@@ -42,20 +42,20 @@
 
 
 /*WYM_HTML*/
-        .wym_html               { width: 100%;}
-        .wym_html textarea      { width: 98%; height: 200px; border: 1px solid gray; background: white;  }
+        .wym_html               { width: 98%;}
+        .wym_html textarea      { width: 100%; height: 200px; border: 1px solid gray; background: white;  }
 
 
 /*WYM_IFRAME*/
-        .wym_iframe             { width: 100%;}
-        .wym_iframe iframe      { width: 98%; height: 200px; border: 1px solid gray; background: white }
+        .wym_iframe             { width: 98%;}
+        .wym_iframe iframe      { width: 100%; height: 200px; border: 1px solid gray; background: white }
 
 
 /*AREAS*/
         .wym_area_left          { width: 150px; float: left;}
         .wym_area_right         { width: 150px; float: right;}
         .wym_area_bottom        { clear: both;}
- * html .wym_area_main,
+ * html .wym_area_main          { height: 1%;}
  *+html .wym_area_top           { height: 1%;}
 
 /*SECTIONS SYSTEM*/
