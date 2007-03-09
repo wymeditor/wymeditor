@@ -5,16 +5,16 @@
  * and GPL (GPL-license.txt) licenses.
  *
  * For further information visit:
- * 		http://www.wymeditor.org/
+ *        http://www.wymeditor.org/
  * 
  * File Name:
- *		wymeditor.css
- *		Main editor css file.
- *		See the documentation for more info.
+ *        wymeditor.css
+ *        Main editor css file.
+ *        See the documentation for more info.
  * 
  * File Authors:
- *		Jean-Francois Hovinne (jf.hovinne@wymeditor.org)
- * 		Daniel Reszka (d.reszka@wymeditor.org)
+ *        Jean-Francois Hovinne (jf.hovinne@wymeditor.org)
+ *        Daniel Reszka (d.reszka@wymeditor.org)
 */
 
     p,h1,h2,h3,h4,h5,h6,pre,blockquote  { background-color: #f0f0ff; }

@@ -5,15 +5,15 @@
  * and GPL (GPL-license.txt) licenses.
  *
  * For further information visit:
- * 		http://www.wymeditor.org/
+ *        http://www.wymeditor.org/
  *
  * File Name:
- *		jquery.wymeditor.safari.js
- *		Safari specific class and functions.
- *		See the documentation for more info.
+ *        jquery.wymeditor.safari.js
+ *        Safari specific class and functions.
+ *        See the documentation for more info.
  *
  * File Authors:
- * 		Scott Lewis
+ *        Scott Lewis
  */
 
 function WymClassSafari(wym) {

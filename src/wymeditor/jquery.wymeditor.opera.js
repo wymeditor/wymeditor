@@ -5,50 +5,50 @@
  * and GPL (GPL-license.txt) licenses.
  *
  * For further information visit:
- * 		http://www.wymeditor.org/
+ *        http://www.wymeditor.org/
  *
  * File Name:
- *		jquery.wymeditor.opera.js
- *		Opera specific class and functions.
- *		See the documentation for more info.
+ *        jquery.wymeditor.opera.js
+ *        Opera specific class and functions.
+ *        See the documentation for more info.
  *
  * File Authors:
- * 		Jean-Francois Hovinne (jf.hovinne@wymeditor.org)
+ *        Jean-Francois Hovinne (jf.hovinne@wymeditor.org)
  */
 
 function WymClassOpera(wym) {
 
-	this._wym = wym;
+    this._wym = wym;
 };
 
 WymClassOpera.prototype.initIframe = function(iframe) {
 
-	this._iframe = iframe;
-	this._doc = iframe.contentWindow.document;
+    this._iframe = iframe;
+    this._doc = iframe.contentWindow.document;
 
-	this._doc.title = this._wym._index;
-	this._doc.designMode="on";
+    this._doc.title = this._wym._index;
+    this._doc.designMode="on";
 
-	this.html(this._wym._html);
-	if(this._callback) this._callback();
+    this.html(this._wym._html);
+    if(this._callback) this._callback();
 };
 
 WymClassOpera.prototype._exec = function(cmd,param) {
 
-	if(param) this._doc.execCommand(cmd,false,param);
-	else this._doc.execCommand(cmd);
+    if(param) this._doc.execCommand(cmd,false,param);
+    else this._doc.execCommand(cmd);
 };
 
 WymClassOpera.prototype.selected = function() {
 
-	var sel=this._iframe.contentWindow.getSelection();
-	var node=sel.focusNode;
-	if(node.nodeName=="#text")return(node.parentNode);
-	else return(node);
+    var sel=this._iframe.contentWindow.getSelection();
+    var node=sel.focusNode;
+    if(node.nodeName=="#text")return(node.parentNode);
+    else return(node);
 };
 
 WymClassOpera.prototype.xhtml = function() {
 
-	var sHtml = this._wym.html();
-	return sHtml;
+    var sHtml = this._wym.html();
+    return sHtml;
 };
