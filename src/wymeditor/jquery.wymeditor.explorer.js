@@ -36,7 +36,15 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
 	var wymexp = this;
 	doc.onbeforedeactivate = function() {wymexp.saveCaret();};
 	doc.onkeyup = function() {wymexp.saveCaret();};
-	doc.onclick = function() {wymexp.saveCaret();};	
+	doc.onclick = function() {wymexp.saveCaret();};
+	
+	if(this._callback) this._callback();
+};
+
+WymClassExplorer.prototype.doc = function() {
+	//MSIE needs this weird function, or sometimes you get "Permission denied" if you call this._doc
+	var doc = this._iframe.contentWindow.document;
+	return(doc);
 };
 
 WymClassExplorer.prototype._exec = function(cmd,param) {
