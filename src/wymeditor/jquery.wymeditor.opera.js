@@ -30,7 +30,7 @@ WymClassOpera.prototype.initIframe = function(iframe) {
 	this._doc.designMode="on";
 
 	this.html(this._wym._html);
-	this._callback();
+	if(this._callback) this._callback();
 };
 
 WymClassOpera.prototype._exec = function(cmd,param) {

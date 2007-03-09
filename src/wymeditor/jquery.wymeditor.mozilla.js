@@ -31,7 +31,7 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
 	this._doc.execCommand("styleWithCSS",'',false);
 
 	this.html(this._wym._html);
-	this._callback();
+	if(this._callback) this._callback();
 };
 
 WymClassMozilla.prototype._exec = function(cmd,param) {
