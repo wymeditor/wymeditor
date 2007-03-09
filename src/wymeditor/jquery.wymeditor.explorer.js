@@ -23,6 +23,10 @@ function WymClassExplorer(wym) {
 
 WymClassExplorer.prototype.initIframe = function(iframe) {
 
+    //This function is executed twice, though it is called once!
+    //But MSIE needs that, otherwise designMode won't work.
+    //Weird.
+    
     this._iframe = iframe;
     this._doc = iframe.contentWindow.document;
 
@@ -38,7 +42,9 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
     doc.onkeyup = function() {wymexp.saveCaret();};
     doc.onclick = function() {wymexp.saveCaret();};
     
-    if(this._callback) this._callback();
+    //callback can't be executed twice, so we check
+    if(this._callback && this._initialized) this._callback();
+    this._initialized = true;
 };
 
 WymClassExplorer.prototype.doc = function() {
