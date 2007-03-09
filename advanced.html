@@ -6,15 +6,15 @@
  * and GPL (GPL-license.txt) licenses.
  *
  * For further information visit:
- * 		http://www.wymeditor.org/
+ *        http://www.wymeditor.org/
  *
  * File Name:
- *		index.html
- *		Editor integration example.
- *		See the documentation for more info.
+ *        index.html
+ *        Editor integration example.
+ *        See the documentation for more info.
  *
  * File Authors:
- * 		Jean-Francois Hovinne (jf.hovinne@wymeditor.org)
+ *        Jean-Francois Hovinne (jf.hovinne@wymeditor.org)
 -->
 <html>
 <head>
@@ -22,7 +22,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="wymeditor/skins/default/screen.css" />
 <script type="text/javascript" src="jquery/jquery.js"></script>
 <script type="text/javascript" src="wymeditor/lang/en.js"></script>
-<!--<script type="text/javascript" src="wymeditor/lang/fr.js"></script>-->
 <script type="text/javascript" src="wymeditor/jquery.wymeditor.js"></script>
 <script type="text/javascript" src="wymeditor/jquery.wymeditor.explorer.js"></script>
 <script type="text/javascript" src="wymeditor/jquery.wymeditor.mozilla.js"></script>
@@ -33,21 +32,35 @@ var $j = jQuery;
 
 $j(function() {
 
-	$j(".wymeditor").wymeditor(null,function() {
-	
-		var wym = this;
-		wym.html("<p>WYMeditor instance</p>");
-	
-	
-	}).each(function(i) {
-		
-		var wym = $j.wymeditors(i);
-		
-		$j(this).parent().find(".wymsubmit").click(function() {
-			wym.update();
-			alert("Submitting: " + wym.xhtml());
-		});
-	});
+    $j(".wymeditor").wymeditor(null,function() {
+    
+        var wym = this;
+        wym.html("<p>WYMeditor instance</p>");
+
+        // add some dummy content to the section wym_classes
+        $j(wym.box()).find("div.wym_classes").append('<ul>'
+                                    + '<li><a href="#">first class</a></li>'
+                                    + '<li><a href="#">second class</a></li>'
+                                    + '<li><a href="#">third class</a></li>'
+                                    + '<li><a href="#">fourth class</a></li>'
+                                    + '</ul>'
+                                    + '<h3>Special classes</h3>'
+                                    + '<ul>'
+                                    + '<li><a href="#">special class 1</a></li>'
+                                    + '<li><a href="#">special class 2</a></li>'
+                                    + '<li><a href="#">special class 3</a></li>'
+                                    + '</ul>');
+    
+    
+    }).each(function(i) {
+        
+        var wym = $j.wymeditors(i);
+        
+        $j(this).parent().find(".wymsubmit").click(function() {
+            wym.update();
+            alert("Submitting: " + wym.xhtml());
+        });
+    });
 });
 </script>
 <script type="text/javascript" src="wymeditor/skins/default/main.js"></script>

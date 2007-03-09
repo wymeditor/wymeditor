@@ -38,19 +38,5 @@ $j(function() {
           $(this).addClass("hover"); 
         },function(){ 
           $(this).removeClass("hover"); 
-        });        
-
-    // add some dummy content to the section wym_classes (temporary)
-       $("div.wym_classes").append('<ul>'
-                                    + '<li><a href="">first class</a></li>'
-                                    + '<li><a href="">second class</a></li>'
-                                    + '<li><a href="">third class</a></li>'
-                                    + '<li><a href="">fourth class</a></li>'
-                                    + '</ul>'
-                                    + '<h3>Special classes</h3>'
-                                    + '<ul>'
-                                    + '<li><a href="#">special class 1</a></li>'
-                                    + '<li><a href="#">special class 2</a></li>'
-                                    + '<li><a href="#">special class 3</a></li>'
-                                    + '</ul>');
+        });
 });
