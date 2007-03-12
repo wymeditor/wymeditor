@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <!--
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2007 H.O.net - http://www.honet.be/
@@ -35,21 +35,21 @@ $j(function() {
     $j(".wymeditor").wymeditor(null,function() {
     
         var wym = this;
-        wym.html("<p>WYMeditor instance</p>");
+        wym.html("<p>WYMeditor instance<\/p>");
 
         // add some dummy content to the section wym_classes
         $j(wym.box()).find("div.wym_classes").append('<ul>'
-                                    + '<li><a href="#">first class</a></li>'
-                                    + '<li><a href="#">second class</a></li>'
-                                    + '<li><a href="#">third class</a></li>'
-                                    + '<li><a href="#">fourth class</a></li>'
-                                    + '</ul>'
-                                    + '<h3>Special classes</h3>'
+                                    + '<li><a href="#">first class<\/a><\/li>'
+                                    + '<li><a href="#">second class<\/a><\/li>'
+                                    + '<li><a href="#">third class<\/a><\/li>'
+                                    + '<li><a href="#">fourth class<\/a><\/li>'
+                                    + '<\/ul>'
+                                    + '<h3>Special classes<\/h3>'
                                     + '<ul>'
-                                    + '<li><a href="#">special class 1</a></li>'
-                                    + '<li><a href="#">special class 2</a></li>'
-                                    + '<li><a href="#">special class 3</a></li>'
-                                    + '</ul>');
+                                    + '<li><a href="#">special class 1<\/a><\/li>'
+                                    + '<li><a href="#">special class 2<\/a><\/li>'
+                                    + '<li><a href="#">special class 3<\/a><\/li>'
+                                    + '<\/ul>');
     
     
     }).each(function(i) {
