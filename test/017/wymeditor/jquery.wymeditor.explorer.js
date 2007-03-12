@@ -235,3 +235,16 @@ WymClassExplorer.prototype.xhtml = function() {
     
     return(ret);
 };
+
+/********** SELECTION API **********/
+
+function WymSelExplorer(wym) {
+
+    this._wym = wym;
+};
+
+WymSelExplorer.prototype.isAtStart = function() {
+
+    return("isAtStart from WymSelExplorer");
+    
+};

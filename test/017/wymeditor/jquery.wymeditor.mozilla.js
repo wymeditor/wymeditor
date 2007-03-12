@@ -145,3 +145,16 @@ WymClassMozilla.prototype.xhtml = function() {
     }
     return(ret);    
 };
+
+/********** SELECTION API **********/
+
+function WymSelMozilla(wym) {
+
+    this._wym = wym;
+};
+
+WymSelMozilla.prototype.isAtStart = function() {
+
+    return("isAtStart from WymSelMozilla");
+    
+};

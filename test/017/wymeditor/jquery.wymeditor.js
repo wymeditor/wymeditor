@@ -188,6 +188,8 @@ function Wymeditor(elem,index,options,callback) {
     
     if(this._options.sHtml) this._html = this._options.sHtml;
     
+    this.selection = new WymSelection();
+    
     this.init();
     
 };
@@ -203,9 +205,11 @@ Wymeditor.prototype.init = function() {
     //load subclass - browser specific
     if ($j.browser.msie) {
         var WymClass = new WymClassExplorer(this);
+        var WymSel = new WymSelExplorer(this);
     }
     else if ($j.browser.mozilla) {
         var WymClass = new WymClassMozilla(this);
+        var WymSel = new WymSelMozilla(this);
     }
     else if ($j.browser.opera) {
         var WymClass = new WymClassOpera(this);
@@ -220,6 +224,10 @@ Wymeditor.prototype.init = function() {
     //copy the subclass methods
     for (prop in WymClass) {
         this[prop] = WymClass[prop];
+    }
+    
+    for (prop in WymSel) {
+        this.selection[prop] = WymSel[prop];
     }
 
     //load wymbox
@@ -485,6 +493,9 @@ Wymeditor.prototype.update = function() {
  */
 Wymeditor.prototype.dialog = function(sType) {
 
+    console.log(this.selection.test);
+    console.log(this.selection.isAtStart());
+    console.log(this.selection.myTest());
 };
 
 /* @name toggleHtml
@@ -493,4 +504,21 @@ Wymeditor.prototype.dialog = function(sType) {
 Wymeditor.prototype.toggleHtml = function() {
 
     $j(this._box).find(this._options.sHtmlSelector).toggle();
+};
+
+/********** SELECTION API **********/
+
+function WymSelection() {
+
+    this.test = "test from WymSelection";
+};
+
+WymSelection.prototype.myTest = function() {
+
+    return("myTest from WymSelection");
+};
+
+WymSelection.prototype.isAtStart = function() {
+
+    return("isAtStart from WymSelection");
 };
