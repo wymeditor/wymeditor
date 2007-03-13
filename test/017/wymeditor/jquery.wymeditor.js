@@ -493,9 +493,10 @@ Wymeditor.prototype.update = function() {
  */
 Wymeditor.prototype.dialog = function(sType) {
 
-    console.log(this.selection.test);
-    console.log(this.selection.isAtStart());
-    console.log(this.selection.myTest());
+    console.info(this.selection);
+    console.info(this.selection.test);
+    console.info(this.selection.isAtStart());
+    console.info(this.selection.myTest());
 };
 
 /* @name toggleHtml
