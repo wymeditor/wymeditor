@@ -1,0 +1,84 @@
+﻿/*
+ * WYMeditor : what you see is What You Mean web-based editor
+ * Copyright (C) 2007 H.O.net - http://www.honet.be/
+ * Dual licensed under the MIT (MIT-license.txt)
+ * and GPL (GPL-license.txt) licenses.
+ *
+ * For further information visit:
+ * 		http://www.wymeditor.org/
+ *
+ * File Name:
+ *		screen.css
+ *		main stylesheet for the default WYMeditor skin
+ *		See the documentation for more info.
+ *
+ * File Authors:
+ * 		Daniel Reszka (d.reszka@wymeditor.org)
+*/
+
+/*TEMP*/
+        .wym_box             { border: 1px solid gray; margin-top: 20px; padding: 5px }
+        .wym_area_top,
+        .wym_area_left,
+        .wym_area_right,
+        .wym_area_main,
+        .wym_area_bottom     { background: #eee; }
+
+
+/*IFRAME*/
+        .wym_iframe,
+        .wym_iframe iframe   { width: 100%; }
+
+
+/*WYM_BOX*/
+
+    /*auto-clear the wym_box*/
+        .wym_box:after 	        { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
+ * html .wym_box                { height: 1%;}
+
+    
+/*AREAS*/
+        .wym_area_main          { margin-left: 160px; margin-right: 160px;}
+        .wym_area_left          { width: 150px; float: left;}
+        .wym_area_right         { width: 150px; float: right;}
+        .wym_area_bottom        { clear: both;}
+
+
+/*SECTIONS*/
+
+    /*common defaults for all sections*/
+        .wym_section            { border: 1px solid green; margin-bottom: 5px;  }
+        .wym_section h2         { display: none;}
+        .wym_section ul         { list-style: none; margin: 0; padding: 0;}
+        
+    /*auto-clear sections*/
+        .wym_section ul:after   { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
+ * html .wym_section ul         { height: 1%;}
+    
+    /*render section as panel*/
+        .wym_panel              { }
+        .wym_panel h2           { display: block; }
+
+    /*render section as buttons*/
+        .wym_buttons ul         { }
+        .wym_buttons li         { float:left;}
+        .wym_buttons a          { display: block; width: 20px; height: 20px; overflow: hidden; padding: 2px }
+        /*image replacements*/
+        .wym_buttons li a                         { background: url(icons.png) no-repeat; text-indent: -9999px; text-decoration: none;} 
+        .wym_buttons li.wym_tools_strong a        { background-position: 0 -382px} 
+        .wym_buttons li.wym_tools_emphasis a      { background-position: 0 -22px} 
+        .wym_buttons li.wym_tools_superscript a   { background-position: 0 -430px} 
+        .wym_buttons li.wym_tools_subscript a     { background-position: 0 -454px} 
+        .wym_buttons li.wym_tools_ordered_list a  { background-position: 0 -48px} 
+        .wym_buttons li.wym_tools_unordered_list a{ background-position: 0 -72px} 
+        .wym_buttons li.wym_tools_indent a        { background-position: 0 -574px} 
+        .wym_buttons li.wym_tools_outdent a       { background-position: 0 -598px} 
+        .wym_buttons li.wym_tools_undo a          { background-position: 0 -502px;} 
+        .wym_buttons li.wym_tools_redo a          { background-position: 0 -526px;} 
+        .wym_buttons li.wym_tools_link a          { background-position: 0 -96px} 
+        .wym_buttons li.wym_tools_unlink a        { background-position: 0 -168px} 
+        .wym_buttons li.wym_tools_image a         { background-position: 0 -121px} 
+        .wym_buttons li.wym_tools_table a         { background-position: 0 -144px} 
+        .wym_buttons li.wym_tools_html a          { background-position: 0 -193px} 
+         
+        
