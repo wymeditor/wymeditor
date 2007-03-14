@@ -82,6 +82,55 @@ WymSelOpera.prototype = {
         return this;
     },
 
+    cursorToStart: function(jqexpr)
+    {
+        if (jqexpr.nodeType == aWYM_NODE.TEXT)
+            jqexpr = jqexpr.parentNode;
+
+        var firstTextNode = $(jqexpr)[0];
+
+        while (firstTextNode.nodeType!=aWYM_NODE.TEXT)
+        {
+            if (!firstTextNode.hasChildNodes())
+                break;
+            firstTextNode = firstTextNode.firstChild;
+        }
+
+        if (isPhantomNode(firstTextNode))
+            firstTextNode = firstTextNode.nextSibling;
+
+        // e.g. an <img/>
+        if (firstTextNode.nodeType == aWYM_NODE.ELEMENT)
+            this.original.collapse(firstTextNode.parentNode, 0);
+        else
+            this.original.collapse(firstTextNode, 0);
+    },
+
+    cursorToEnd: function(jqexpr)
+    {
+        if (jqexpr.nodeType == aWYM_NODE.TEXT)
+            jqexpr = jqexpr.parentNode;
+
+        var lastTextNode = $(jqexpr)[0];
+
+        while (lastTextNode.nodeType!=aWYM_NODE.TEXT)
+        {
+            if (!lastTextNode.hasChildNodes())
+                break;
+            lastTextNode = lastTextNode.lastChild;
+        }
+
+        if (isPhantomNode(lastTextNode))
+            lastTextNode = lastTextNode.previousSibling;
+
+        // e.g. an <img/>
+        if (lastTextNode.nodeType == aWYM_NODE.ELEMENT)
+            this.original.collapse(lastTextNode.parentNode,
+                lastTextNode.parentNode.childNodes.length);
+        else
+            this.original.collapse(lastTextNode, lastTextNode.length);
+    },
+
     deleteIfExpanded: function()
     {
         if(!this.original.isCollapsed)

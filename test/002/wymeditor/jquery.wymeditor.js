@@ -333,13 +333,13 @@ Wymeditor.prototype.handleKeydown = function(evt) {
 
     var _wym = evt.data.wym;
     var _sel = _wym.selection.getSelection();
-/*
 
+/*
     // some small tests
     if (_sel.isAtStart(sContainers))
-        alert("isAtStart");
+        alert("isAtStart: "+_sel.startNode.parentNode.nodeName);
     if (_sel.isAtEnd(sContainers))
-        alert("isAtEnd");
+        alert("isAtEnd: "+_sel.endNode.parentNode.nodeName);
     if (evt.keyCode==aWYM_KEY.DELETE)
         if(_sel.deleteIfExpanded())
             return false;
@@ -716,29 +716,12 @@ WymSelection.prototype = {
             return false;
     },
 
-    cursorToStart: function(jqexpr)
+    collapse: function(start)
     {
-        if (jqexpr.nodeType == aWYM_NODE.TEXT)
-            jqexpr = jqexpr.parentNode;
 
-        var firstTextNode = $(jqexpr)[0];
+    }
 
-        while (firstTextNode.nodeType!=aWYM_NODE.TEXT)
-        {
-            if (!firstTextNode.hasChildNodes())
-                break;
-            firstTextNode = firstTextNode.firstChild;
-        }
-
-        if (isPhantomNode(firstTextNode))
-            firstTextNode = firstTextNode.nextSibling;
-
-        // e.g. an <img/>
-        if (firstTextNode.nodeType == aWYM_NODE.ELEMENT)
-            this.original.collapse(firstTextNode.parentNode, 0);
-        else
-            this.original.collapse(firstTextNode, 0);
-    },
+    cursorToStart: function(jqexpr)
 
     cursorToEnd: function(jqexpr)
     {
@@ -764,8 +747,11 @@ WymSelection.prototype = {
         else
             this.original.collapse(lastTextNode, lastTextNode.length);
     }
-
-    // deleteIfExpanded() is implement in browser specific file
+    /* Implmented in browser specific file:
+     *  - deleteIfExpanded()
+     *  - cursorToStart()
+     *  - cursorToEnd()
+     */
 };
 
 WymSelection.prototype.myTest = function() {
