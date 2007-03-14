@@ -72,7 +72,6 @@ var aWYM_NODE = {
 };
 
 
-
 /**
  * Replace an HTML element by WYMeditor
  *
@@ -614,6 +613,13 @@ WymSelection.prototype = {
      * this.container
      */
 
+    /* The following methods are implemented in browser specific file:
+     *  - deleteIfExpanded()
+     *  - cursorToStart()
+     *  - cursorToEnd()
+     */
+
+
     isAtStart: function(jqexpr)
     {
         var parent = $j(this.startNode).parentsOrSelf(jqexpr);
@@ -715,43 +721,6 @@ WymSelection.prototype = {
         else
             return false;
     },
-
-    collapse: function(start)
-    {
-
-    }
-
-    cursorToStart: function(jqexpr)
-
-    cursorToEnd: function(jqexpr)
-    {
-        if (jqexpr.nodeType == aWYM_NODE.TEXT)
-            jqexpr = jqexpr.parentNode;
-
-        var lastTextNode = $(jqexpr)[0];
-
-        while (lastTextNode.nodeType!=aWYM_NODE.TEXT)
-        {
-            if (!lastTextNode.hasChildNodes())
-                break;
-            lastTextNode = lastTextNode.lastChild;
-        }
-
-        if (isPhantomNode(lastTextNode))
-            lastTextNode = lastTextNode.previousSibling;
-
-        // e.g. an <img/>
-        if (lastTextNode.nodeType == aWYM_NODE.ELEMENT)
-            this.original.collapse(lastTextNode.parentNode,
-                lastTextNode.parentNode.childNodes.length);
-        else
-            this.original.collapse(lastTextNode, lastTextNode.length);
-    }
-    /* Implmented in browser specific file:
-     *  - deleteIfExpanded()
-     *  - cursorToStart()
-     *  - cursorToEnd()
-     */
 };
 
 WymSelection.prototype.myTest = function() {
