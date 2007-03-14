@@ -33,6 +33,8 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
     this.html(this._wym._html);
     if(this._callback) this._callback();
 
+    // handle events within editor
+    // NOTE v.mische this needs to be here and not in the generic fi
     this.handleEvents();
 };
 

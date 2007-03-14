@@ -238,6 +238,7 @@ Wymeditor.prototype.init = function() {
     }
     else if ($j.browser.opera) {
         var WymClass = new WymClassOpera(this);
+        var WymSel = new WymSelOpera(this);
     }
     else if ($j.browser.safari) {
         var WymClass = new WymClassSafari(this);
@@ -312,7 +313,6 @@ Wymeditor.prototype.ready = function() {
 /********** BASE METHODS **********/
 Wymeditor.prototype.handleEvents = function() {
 //    var _wym = this;
-
     $j(this._doc).bind('keydown', {wym: this._wym}, this.handleKeydown);
     $j(this._doc).bind('keypress', {wym: this._wym}, this.handleKeypress);
     $j(this._doc).bind('keyup', {wym: this._wym}, this.handleKeyup);
@@ -333,8 +333,8 @@ Wymeditor.prototype.handleKeydown = function(evt) {
 
     var _wym = evt.data.wym;
     var _sel = _wym.selection.getSelection();
-
 /*
+
     // some small tests
     if (_sel.isAtStart(sContainers))
         alert("isAtStart");
@@ -365,6 +365,7 @@ Wymeditor.prototype.handleMousedown = function(evt) {
 //alert("mouseDown:"+evt.data.wym._index);
 };
 Wymeditor.prototype.handleMouseup = function(evt) {
+//alert("mouseUp:"+evt.data.wym._index);
 };
 
 
