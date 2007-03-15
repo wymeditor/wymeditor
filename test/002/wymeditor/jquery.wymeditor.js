@@ -387,8 +387,8 @@ Wymeditor.prototype.box = function() {
  */
 Wymeditor.prototype.html = function(sHtml) {
 
-    if(sHtml) $j(this.doc().body).html(sHtml);
-    else return($j(this.doc().body).html());
+    if(sHtml) $j(this._doc.body).html(sHtml);
+    else return($j(this._doc.body).html());
 };
 
 /* @name exec
@@ -720,7 +720,7 @@ WymSelection.prototype = {
             return true;
         else
             return false;
-    },
+    }
 };
 
 WymSelection.prototype.myTest = function() {

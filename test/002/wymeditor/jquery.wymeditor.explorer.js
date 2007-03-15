@@ -34,7 +34,7 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
     this._doc.designMode="on";
     
     var doc = iframe.contentWindow.document;
-    $j(doc.body).html(this._wym._html);
+    this.html(this._wym._html);
     
     //handle events
     var wymexp = this;

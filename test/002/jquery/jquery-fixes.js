@@ -150,5 +150,124 @@ $.event.handle = function(event) {
 
 	return returnValue;
 };
+
+
+$.clean = function(a, doc) {
+	var r = [];
+	var doc = doc;
+
+	if ( doc == undefined )
+		doc = document;
+
+	jQuery.each( a, function(i,arg){
+		if ( !arg ) return;
+
+		if ( arg.constructor == Number )
+			arg = arg.toString();
+		
+		 // Convert html string into DOM nodes
+		if ( typeof arg == "string" ) {
+			// Trim whitespace, otherwise indexOf won't work as expected
+			var s = jQuery.trim(arg), div = doc.createElement("div"), tb = [];
+
+			var wrap =
+				 // option or optgroup
+				!s.indexOf("<opt") &&
+				[1, "<select>", "</select>"] ||
+				
+				(!s.indexOf("<thead") || !s.indexOf("<tbody") || !s.indexOf("<tfoot")) &&
+				[1, "<table>", "</table>"] ||
+				
+				!s.indexOf("<tr") &&
+				[2, "<table><tbody>", "</tbody></table>"] ||
+				
+			 	// <thead> matched above
+				(!s.indexOf("<td") || !s.indexOf("<th")) &&
+				[3, "<table><tbody><tr>", "</tr></tbody></table>"] ||
+				
+				[0,"",""];
+
+			// Go to html and back, then peel off extra wrappers
+			div.innerHTML = wrap[1] + s + wrap[2];
+
+			// Move to the right depth
+			while ( wrap[0]-- )
+				div = div.firstChild;
+
+			// Remove IE's autoinserted <tbody> from table fragments
+			if ( jQuery.browser.msie ) {
+				
+				// String was a <table>, *may* have spurious <tbody>
+				if ( !s.indexOf("<table") && s.indexOf("<tbody") < 0 ) 
+					tb = div.firstChild && div.firstChild.childNodes;
+
+				// String was a bare <thead> or <tfoot>
+				else if ( wrap[1] == "<table>" && s.indexOf("<tbody") < 0 )
+					tb = div.childNodes;
+
+				for ( var n = tb.length-1; n >= 0 ; --n )
+					if ( jQuery.nodeName(tb[n], "tbody") && !tb[n].childNodes.length )
+						tb[n].parentNode.removeChild(tb[n]);
+				
+			}
+			
+			arg = [];
+			for (var i=0, l=div.childNodes.length; i<l; i++)
+				arg.push(div.childNodes[i]);
+		}
+
+		if ( arg.length === 0 && !jQuery.nodeName(arg, "form") )
+			return;
+
+		if ( arg[0] == undefined || jQuery.nodeName(arg, "form") )
+			r.push( arg );
+		else
+			r = jQuery.merge( r, arg );
+
+	});
+
+	return r;
+};
+
+
+$.wrap = function() {
+	// The elements to wrap the target around
+	var a = jQuery.clean(arguments, this[0].ownerDocument);
+
+	// Wrap each of the matched elements individually
+	return this.each(function(){
+		// Clone the structure that we're using to wrap
+		var b = a[0].cloneNode(true);
+
+		// Insert it before the element to be wrapped
+		this.parentNode.insertBefore( b, this );
+
+		// Find the deepest point in the wrap structure
+		while ( b.firstChild )
+			b = b.firstChild;
+
+		// Move the matched element to within the wrap structure
+		b.appendChild( this );
+	});
+};
+
+$.fn.domManip = function(args, table, dir, fn){
+	var clone = this.length > 1; 
+	var a = jQuery.clean(args, this[0].ownerDocument);
+	if ( dir < 0 )
+		a.reverse();
+
+	return this.each(function(){
+		var obj = this;
+
+		if ( table && jQuery.nodeName(this, "table") && jQuery.nodeName(a[0], "tr") )
+			obj = this.getElementsByTagName("tbody")[0] || this.appendChild(document.createElement("tbody"));
+
+		jQuery.each( a, function(){
+			fn.apply( obj, [ clone ? this.cloneNode(true) : this ] );
+		});
+
+	});
+};
 })(jQuery);
 
