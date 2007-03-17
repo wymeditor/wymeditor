@@ -1,4 +1,4 @@
-﻿/*
+/*
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2007 H.O.net - http://www.honet.be/
  * Dual licensed under the MIT (MIT-license.txt)
@@ -37,26 +37,28 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
     this._doc = iframe.contentWindow.document;
 
 
-    var doc = iframe.contentWindow.document;
+    //var doc = iframe.contentWindow.document;
     this.html(this._wym._html);
 
     
     //handle events
     var wymexp = this;
-    doc.onbeforedeactivate = function() {wymexp.saveCaret();};
-    doc.onkeyup = function() {wymexp.saveCaret();};
-    doc.onclick = function() {wymexp.saveCaret();};
+    this._doc.onbeforedeactivate = function() {wymexp.saveCaret();};
+    this._doc.onkeyup = function() {wymexp.saveCaret();};
+    this._doc.onclick = function() {wymexp.saveCaret();};
     
     //callback can't be executed twice, so we check
     if(this._callback && this._initialized) this._callback();
     this._initialized = true;
 };
 
+/*
 WymClassExplorer.prototype.doc = function() {
     //MSIE needs this weird function, or sometimes you get "Permission denied" if you call this._doc
     var doc = this._iframe.contentWindow.document;
     return(doc);
 };
+*/
 
 WymClassExplorer.prototype._exec = function(cmd,param) {
 
@@ -74,8 +76,8 @@ WymClassExplorer.prototype.selected = function() {
 
 WymClassExplorer.prototype.saveCaret = function () {
 
-    var doc = this._iframe.contentWindow.document;
-    doc.caretPos = doc.selection.createRange();
+    //var doc = this._iframe.contentWindow.document;
+    this._doc.caretPos = this._doc.selection.createRange();
 };
 
 WymClassExplorer.prototype.xhtml = function() {
