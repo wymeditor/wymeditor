@@ -31,9 +31,15 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
     this._doc = iframe.contentWindow.document;
 
     this._doc.title = this._wym._index;
-    
+
+    this._doc.designMode="on";
+    // Note v.mische needed for Windows XP SP2
+    this._doc = iframe.contentWindow.document;
+
+
     var doc = iframe.contentWindow.document;
     this.html(this._wym._html);
+
     
     //handle events
     var wymexp = this;
@@ -44,8 +50,6 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
     //callback can't be executed twice, so we check
     if(this._callback && this._initialized) this._callback();
     this._initialized = true;
-
-    this._doc.designMode="on";
 };
 
 WymClassExplorer.prototype.doc = function() {
