@@ -31,7 +31,6 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
     this._doc = iframe.contentWindow.document;
 
     this._doc.title = this._wym._index;
-    this._doc.designMode="on";
     
     var doc = iframe.contentWindow.document;
     this.html(this._wym._html);
@@ -45,6 +44,8 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
     //callback can't be executed twice, so we check
     if(this._callback && this._initialized) this._callback();
     this._initialized = true;
+
+    this._doc.designMode="on";
 };
 
 WymClassExplorer.prototype.doc = function() {
