@@ -31,15 +31,13 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
     this._doc = iframe.contentWindow.document;
 
     this._doc.title = this._wym._index;
-    
-    var doc = iframe.contentWindow.document;
-    $j(doc.body).html(this._wym._html);
+    $j(this._doc.body).html(this._wym._html);
     
     //handle events
     var wymexp = this;
-    doc.onbeforedeactivate = function() {wymexp.saveCaret();};
-    doc.onkeyup = function() {wymexp.saveCaret();};
-    doc.onclick = function() {wymexp.saveCaret();};
+    this._doc.onbeforedeactivate = function() {wymexp.saveCaret();};
+    this._doc.onkeyup = function() {wymexp.saveCaret();};
+    this._doc.onclick = function() {wymexp.saveCaret();};
     
     //callback can't be executed twice, so we check
     if(this._callback && this._initialized) this._callback();
@@ -47,12 +45,6 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
     
     this._doc.designMode="on";
     this._doc = iframe.contentWindow.document;
-};
-
-WymClassExplorer.prototype.doc = function() {
-    //MSIE needs this weird function, or sometimes you get "Permission denied" if you call this._doc
-    var doc = this._iframe.contentWindow.document;
-    return(doc);
 };
 
 WymClassExplorer.prototype._exec = function(cmd,param) {
@@ -71,8 +63,7 @@ WymClassExplorer.prototype.selected = function() {
 
 WymClassExplorer.prototype.saveCaret = function () {
 
-    var doc = this._iframe.contentWindow.document;
-    doc.caretPos = doc.selection.createRange();
+    this._doc.caretPos = this._doc.selection.createRange();
 };
 
 WymClassExplorer.prototype.xhtml = function() {
