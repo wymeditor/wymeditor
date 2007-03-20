@@ -273,13 +273,6 @@ Wymeditor.prototype.ready = function() {
 
 /********** BASE METHODS **********/
 
-/* @name doc
- * @description Get the edited document
- */
-Wymeditor.prototype.doc = function() {
-    return(this._doc);
-}
-
 /* @name box
  * @description Get the edited document
  */
@@ -292,8 +285,8 @@ Wymeditor.prototype.box = function() {
  */
 Wymeditor.prototype.html = function(sHtml) {
 
-    if(sHtml) $j(this.doc().body).html(sHtml);
-    else return($j(this.doc().body).html());
+    if(sHtml) $j(this._doc.body).html(sHtml);
+    else return($j(this._doc.body).html());
 };
 
 /* @name exec
