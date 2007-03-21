@@ -48,6 +48,28 @@ var sWYM_INSERT_IMAGE  = "InsertImage";
 var sWYM_INSERT_TABLE  = "InsertTable";
 var sWYM_TOGGLE_HTML   = "ToggleHtml";
 
+var aWYM_CONTAINERS = new Array(sWYM_P,sWYM_H1,sWYM_H2,sWYM_H3,sWYM_H4,
+        sWYM_H5,sWYM_H6,sWYM_PRE,sWYM_BLOCKQUOTE);
+
+var aWYM_KEY = {
+    BACKSPACE: 8,
+    ENTER: 13,
+    END: 35,
+    HOME: 36,
+    LEFT: 37,
+    UP: 38,
+    RIGHT: 39,
+    DOWN: 40,
+    CURSOR: new Array(37, 38, 39, 40),
+    DELETE: 46
+};
+
+var aWYM_NODE = {
+    ELEMENT: 1,
+    ATTRIBUTE: 2,
+    TEXT: 3
+};
+
 /**
  * Replace an HTML element by WYMeditor
  *
@@ -188,6 +210,8 @@ function Wymeditor(elem,index,options,callback) {
     
     if(this._options.sHtml) this._html = this._options.sHtml;
     
+    this.selection = new Wymselection();
+    
     this.init();
     
 };
@@ -206,6 +230,7 @@ Wymeditor.prototype.init = function() {
     }
     else if ($j.browser.mozilla) {
         var WymClass = new WymClassMozilla(this);
+        var WymSel = new WymSelMozilla(this);
     }
     else if ($j.browser.opera) {
         var WymClass = new WymClassOpera(this);
@@ -217,10 +242,9 @@ Wymeditor.prototype.init = function() {
         //TODO: handle unsupported browsers
     }
 
-    //copy the subclass methods
-    for (prop in WymClass) {
-        this[prop] = WymClass[prop];
-    }
+    //extend the Wymeditor object
+    $j.extend(this, WymClass);
+    $j.extend(this.selection, WymSel);
 
     //load wymbox
     this._box = $j(this._element).hide().after(this._options.sBoxHtml).next();
@@ -296,7 +320,7 @@ Wymeditor.prototype.exec = function(cmd) {
     
     //base function for execCommand
     //open a dialog or exec
-    switch(cmd) {    
+    switch(cmd) {
         case sWYM_CREATE_LINK:
             var container = this.container();
             if(container) this.dialog(sWYM_LINK);
@@ -477,7 +501,12 @@ Wymeditor.prototype.update = function() {
  * @description Opens a dialog box
  */
 Wymeditor.prototype.dialog = function(sType) {
-
+        this.selection.getSelection();
+        console.log(this.selection);
+        console.log(this.selection.startNode);
+        console.log(this.selection.endNode);
+        console.log(this.selection.isAtStart("p"));
+        console.log(this.selection.isAtEnd("p"));
 };
 
 /* @name toggleHtml
@@ -486,4 +515,172 @@ Wymeditor.prototype.dialog = function(sType) {
 Wymeditor.prototype.toggleHtml = function() {
 
     $j(this._box).find(this._options.sHtmlSelector).toggle();
+};
+
+
+/********** SELECTION API **********/
+
+function Wymselection() {
+
+/* The following props/methods are defined in the browser specific files
+ * this.original
+ * this.startNode
+ * this.endNode
+ * this.startOffset
+ * this.endOffset
+ * this.collapsed
+ * this.container
+ *
+ * deleteIfExpanded()
+ * cursorToStart()
+ * cursorToEnd()
+ */
+
+};
+
+Wymselection.prototype.isAtStart = function(jqexpr) {
+
+    var parent = $j(this.startNode).parentsOrSelf(jqexpr);
+
+    // jqexpr isn't a parent of the current cursor position
+    if (parent.length==0)
+        return false;
+    else
+        parent = parent[0];
+    
+    for (var n=this.startNode; n!=parent; n=n.parentNode)
+    {
+        //if (n.nodeType == nodeType.TEXT)
+        if (n.nodeType == aWYM_NODE.TEXT)
+        {
+            if (this.startOffset != 0)
+                return false;
+        }
+        var firstChild = n.parentNode.firstChild;
+        // node isn't first child => cursor can't be at the beginning
+        // in gecko there the first child could be a phantom node
+    
+        // sometimes also whitespacenodes which aren't phatom nodes
+        // get stripped, but this is ok, as this is a wysiwym editor
+        if ((firstChild != n
+                || ($(firstChild).isPhantomNode()
+                    && firstChild.nextSibling != n)))
+        {
+            return false;
+        }
+    }
+    
+    if (this.startOffset == 0)
+        return true;
+    else
+        return false;
+};
+
+Wymselection.prototype.isAtEnd = function(jqexpr) {
+
+    var parent = $(this.endNode).parentsOrSelf(jqexpr);
+
+    // jqexpr isn't a parent of the current cursor position
+    if (parent.length==0)
+        return false;
+    else
+        parent = parent[0];
+
+
+    // This is the case if, e.g ("|" = cursor): <p>textnode|<br/></p>,
+    // there the offset of endNode (endOffset) is 1 (behind the first node
+    // of <p>)
+    if (this.endNode == parent)
+    {
+        // NOTE I don't know if it is a good idea to delete the <br>
+        // here, as "atEnd()" probably shouldn't change the dom tree,
+        // but only searching it
+        if (this.endNode.lastChild.nodeName == "BR")
+            this.endNode.removeChild(endNode.lastChild);
+
+        // if cursor is really at the end
+        if (this.endOffset > 0 &&
+                this.endNode.childNodes[this.endOffset-1].nextSibling==null)
+        {
+            return true;
+        }
+    }
+    else
+    {
+        for (var n=this.endNode; n!=parent; n=n.parentNode)
+        {
+            if (n.nodeType == aWYM_NODE.TEXT)
+            {
+                if (this.endOffset != this.endNode.data.length)
+                    return false;
+            }
+            else
+            {
+                var lastChild = n.parentNode.lastChild;
+                // node isn't last child => cursor can't be at the end
+                // (is this true?) in gecko there the last child could be a
+                //     phantom node
+
+                // sometimes also whitespacenodes which aren't phatom nodes
+                // get stripped, but this is ok, as this is a wysiwym editor
+                if ((lastChild != n) ||
+                        ($(lastChild).isPhantomNode()
+                        && lastChild.previousSibling != n))
+                {
+                    return false;
+                }
+            }
+        }
+    }
+
+    if (this.endOffset == this.endNode.length)
+        return true;
+    else
+        return false;
+};
+
+
+/********** HELPERS **********/
+
+// Returns true if it is a text node with whitespaces only
+$.fn.isPhantomNode = function()
+{
+    if (this[0].nodeType == 3)
+        return !(/[^\t\n\r ]/.test(this[0].data));
+
+    return false;
+}
+function isPhantomNode(n)
+{
+    if (n.nodeType == 3)
+        return !(/[^\t\n\r ]/.test(n.data));
+
+    return false;
+}
+
+// Returns the Parents or the node itself
+// jqexpr = a jQuery expression
+$.fn.parentsOrSelf = function(jqexpr)
+{
+    var n = this;
+
+    if (n[0].nodeType == 3)
+        n = n.parents().lt(1);
+
+//    if (n.is(jqexpr)) // XXX should work, but doesn't (probably a jQuery bug)
+    if (n.filter(jqexpr).size() == 1)
+        return n;
+    else
+        return n.parents(jqexpr).lt(1);
+}
+
+// from http://forum.de.selfhtml.org/archiv/2004/3/t76079/#m438193 (2007-02-06)
+Array.prototype.contains = function (elem) {
+//  var i;
+  for (var i = 0; i < this.length; i++) {
+    if (this[i] === elem) {
+      return true;
+    }
+  }
+  return false;
 };
