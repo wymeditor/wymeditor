@@ -14,6 +14,8 @@
  *
  * File Authors:
  *        Jean-Francois Hovinne (jf.hovinne@wymeditor.org)
+ *        Volker Mische (vmx@gmx.de)
+ *        Scott Lewis (scott@bright-crayon.com)
  */
 
 var $j = jQuery;
@@ -507,6 +509,7 @@ Wymeditor.prototype.dialog = function(sType) {
         console.log(this.selection.endNode);
         console.log(this.selection.isAtStart("p"));
         console.log(this.selection.isAtEnd("p"));
+        this.selection.cursorToStart("p");
 };
 
 /* @name toggleHtml
