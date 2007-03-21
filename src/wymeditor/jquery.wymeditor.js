@@ -285,13 +285,13 @@ Wymeditor.prototype.init = function() {
     $j(this._box).find(this._options.sHtmlSelector).hide();
 
     //handle click event on tools buttons
-    $j(this._box).find(this._options.sToolsSelector).click(function() {
+    $j(this._box).find(this._options.sToolsSelector).mousedown(function() {
         wym.exec($(this).attr(sWYM_NAME));
         return(false);
     });
     
     //handle click event on containers buttons
-    $j(this._box).find(this._options.sContainerSelector).click(function() {
+    $j(this._box).find(this._options.sContainerSelector).mousedown(function() {
         wym.container($(this).attr(sWYM_NAME));
         return(false);
     });
