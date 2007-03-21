@@ -45,9 +45,9 @@ WymClassMozilla.prototype._exec = function(cmd,param) {
  */
 WymClassMozilla.prototype.selected = function() {
 
-    var sel=this._iframe.contentWindow.getSelection();
-    var node=sel.focusNode;
-    if(node.nodeName=="#text")return(node.parentNode);
+    var sel = this._iframe.contentWindow.getSelection();
+    var node = sel.focusNode;
+    if(node.nodeName == "#text") return(node.parentNode);
     else return(node);
 };
 
@@ -144,4 +144,28 @@ WymClassMozilla.prototype.xhtml = function() {
         else ret+=c;    
     }
     return(ret);    
+};
+
+
+/********** SELECTION API **********/
+
+function WymSelMozilla(wym) {
+
+    this._wym = wym;
+};
+
+WymSelMozilla.prototype.getSelection = function() {
+
+        var _sel = this._wym._iframe.contentWindow.getSelection();
+        // NOTE v.mische can startNode/endNote be phantom nodes?
+        this.startNode = _sel.getRangeAt(0).startContainer;
+        this.endNode = _sel.getRangeAt(0).endContainer;
+        this.startOffset = _sel.getRangeAt(0).startOffset;
+        this.endOffset = _sel.getRangeAt(0).endOffset;
+        this.isCollapsed = _sel.isCollapsed;
+        this.original = _sel;
+        this.container = $j(this.startNode).parentsOrSelf(
+            aWYM_CONTAINERS.join(","));
+            
+        return(this);
 };
