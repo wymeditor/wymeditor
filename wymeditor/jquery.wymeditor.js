@@ -18,59 +18,65 @@
  *        Scott Lewis (scott@bright-crayon.com)
  */
 
-var $j = jQuery;
 
-var aWYM_INSTANCES     = new Array();
-var sWYM_NAME          = "name";
-var sWYM_INDEX         = "{Wym_Index}";
-var sWYM_TOOLS         = "{wym_tools}";
-var sWYM_CLASSES       = "{Wym_Classes}";
-var sWYM_CONTAINERS    = "{Wym_Containers}";
-var sWYM_HTML          = "{Wym_Html}";
-var sWYM_IFRAME        = "{Wym_Iframe}";
-var sWYM_STATUS        = "{Wym_Status}";
-var sWYM_BODY          = "body";
-var sWYM_STRING        = "string";
-var sWYM_P             = "p";
-var sWYM_H1            = "h1";
-var sWYM_H2            = "h2";
-var sWYM_H3            = "h3";
-var sWYM_H4            = "h4";
-var sWYM_H5            = "h5";
-var sWYM_H6            = "h6";
-var sWYM_PRE           = "pre";
-var sWYM_BLOCKQUOTE    = "blockquote";
-var sWYM_TD            = "td";
-var sWYM_TH            = "th";
-var sWYM_LINK          = "link";
-var sWYM_IMAGE         = "image";
-var sWYM_TABLE         = "table";
-var sWYM_CREATE_LINK   = "CreateLink";
-var sWYM_INSERT_IMAGE  = "InsertImage";
-var sWYM_INSERT_TABLE  = "InsertTable";
-var sWYM_TOGGLE_HTML   = "ToggleHtml";
+/********** CONSTANTS **********/
 
-var aWYM_CONTAINERS = new Array(sWYM_P,sWYM_H1,sWYM_H2,sWYM_H3,sWYM_H4,
-        sWYM_H5,sWYM_H6,sWYM_PRE,sWYM_BLOCKQUOTE);
+        var $j = jQuery;
+        
+        var aWYM_INSTANCES     = new Array();
+        var sWYM_NAME          = "name";
+        var sWYM_INDEX         = "{Wym_Index}";
+        var sWYM_TOOLS         = "{wym_tools}";
+        var sWYM_CLASSES       = "{Wym_Classes}";
+        var sWYM_CONTAINERS    = "{Wym_Containers}";
+        var sWYM_HTML          = "{Wym_Html}";
+        var sWYM_IFRAME        = "{Wym_Iframe}";
+        var sWYM_STATUS        = "{Wym_Status}";
+        var sWYM_BODY          = "body";
+        var sWYM_STRING        = "string";
+        var sWYM_P             = "p";
+        var sWYM_H1            = "h1";
+        var sWYM_H2            = "h2";
+        var sWYM_H3            = "h3";
+        var sWYM_H4            = "h4";
+        var sWYM_H5            = "h5";
+        var sWYM_H6            = "h6";
+        var sWYM_PRE           = "pre";
+        var sWYM_BLOCKQUOTE    = "blockquote";
+        var sWYM_TD            = "td";
+        var sWYM_TH            = "th";
+        var sWYM_LINK          = "link";
+        var sWYM_IMAGE         = "image";
+        var sWYM_TABLE         = "table";
+        var sWYM_CREATE_LINK   = "CreateLink";
+        var sWYM_INSERT_IMAGE  = "InsertImage";
+        var sWYM_INSERT_TABLE  = "InsertTable";
+        var sWYM_TOGGLE_HTML   = "ToggleHtml";
 
-var aWYM_KEY = {
-    BACKSPACE: 8,
-    ENTER: 13,
-    END: 35,
-    HOME: 36,
-    LEFT: 37,
-    UP: 38,
-    RIGHT: 39,
-    DOWN: 40,
-    CURSOR: new Array(37, 38, 39, 40),
-    DELETE: 46
-};
+        var aWYM_CONTAINERS = new Array(sWYM_P,sWYM_H1,sWYM_H2,sWYM_H3,sWYM_H4,
+                sWYM_H5,sWYM_H6,sWYM_PRE,sWYM_BLOCKQUOTE);
 
-var aWYM_NODE = {
-    ELEMENT: 1,
-    ATTRIBUTE: 2,
-    TEXT: 3
-};
+        var aWYM_KEY = {
+            BACKSPACE: 8,
+            ENTER: 13,
+            END: 35,
+            HOME: 36,
+            LEFT: 37,
+            UP: 38,
+            RIGHT: 39,
+            DOWN: 40,
+            CURSOR: new Array(37, 38, 39, 40),
+            DELETE: 46
+        };
+
+        var aWYM_NODE = {
+            ELEMENT: 1,
+            ATTRIBUTE: 2,
+            TEXT: 3
+        };
+
+
+/********** JQUERY **********/
 
 /**
  * Replace an HTML element by WYMeditor
@@ -197,6 +203,9 @@ $j.extend({
     }
 });
 
+
+/********** WYMEDITOR **********/
+
 /* @name Wymeditor
  * @description WYMeditor class
  */
@@ -236,6 +245,7 @@ Wymeditor.prototype.init = function() {
     }
     else if ($j.browser.opera) {
         var WymClass = new WymClassOpera(this);
+        var WymSel = new WymSelOpera(this);
     }
     else if ($j.browser.safari) {
         var WymClass = new WymClassSafari(this);
@@ -297,7 +307,7 @@ Wymeditor.prototype.ready = function() {
 };
 
 
-/********** BASE METHODS **********/
+/********** METHODS **********/
 
 /* @name box
  * @description Get the edited document
@@ -470,8 +480,6 @@ Wymeditor.prototype.switchTo = function(node,sType) {
     $j(newNode).html(html);
 };
 
-/********** UI RELATED **********/
-
 Wymeditor.prototype.replaceStrings = function(sVal) {
 
     for (var key in aWYM_STRINGS) {
@@ -505,10 +513,10 @@ Wymeditor.prototype.update = function() {
 Wymeditor.prototype.dialog = function(sType) {
         this.selection.getSelection();
         console.log(this.selection);
-        console.log(this.selection.startNode);
-        console.log(this.selection.endNode);
-        console.log(this.selection.isAtStart("p"));
-        console.log(this.selection.isAtEnd("p"));
+        console.log("startNode: " + this.selection.startNode);
+        console.log("endNode: " + this.selection.endNode);
+        console.log("isAtStart: " + this.selection.isAtStart("p"));
+        console.log("isAtEnd: " + this.selection.isAtEnd("p"));
         this.selection.cursorToStart("p");
 };
 
@@ -646,25 +654,23 @@ Wymselection.prototype.isAtEnd = function(jqexpr) {
 /********** HELPERS **********/
 
 // Returns true if it is a text node with whitespaces only
-$.fn.isPhantomNode = function()
-{
+$.fn.isPhantomNode = function() {
     if (this[0].nodeType == 3)
         return !(/[^\t\n\r ]/.test(this[0].data));
 
     return false;
-}
-function isPhantomNode(n)
-{
+};
+
+function isPhantomNode(n) {
     if (n.nodeType == 3)
         return !(/[^\t\n\r ]/.test(n.data));
 
     return false;
-}
+};
 
 // Returns the Parents or the node itself
 // jqexpr = a jQuery expression
-$.fn.parentsOrSelf = function(jqexpr)
-{
+$.fn.parentsOrSelf = function(jqexpr) {
     var n = this;
 
     if (n[0].nodeType == 3)
@@ -675,7 +681,7 @@ $.fn.parentsOrSelf = function(jqexpr)
         return n;
     else
         return n.parents(jqexpr).lt(1);
-}
+};
 
 // from http://forum.de.selfhtml.org/archiv/2004/3/t76079/#m438193 (2007-02-06)
 Array.prototype.contains = function (elem) {
