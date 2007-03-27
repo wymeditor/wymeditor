@@ -32,6 +32,15 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
     this._doc.execCommand("styleWithCSS",'',false);
 
     this.html(this._wym._html);
+    
+    this._wym.bindEvents();
+    
+    $j(this._doc).bind("dblclick", function(event) {
+        console.log("event: dblclick");
+        event.preventDefault();
+        event.stopPropagation();
+    });
+    
     if(this._callback) this._callback();
 };
 
