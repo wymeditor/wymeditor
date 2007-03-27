@@ -232,9 +232,6 @@ function Wymeditor(elem,index,options,callback) {
  */
 Wymeditor.prototype.init = function() {
 
-    //copy the instance
-    var wym = this;
-
     //load subclass - browser specific
     if ($j.browser.msie) {
         var WymClass = new WymClassExplorer(this);
@@ -283,7 +280,13 @@ Wymeditor.prototype.init = function() {
     
     //hide the html value
     $j(this._box).find(this._options.sHtmlSelector).hide();
+};
 
+Wymeditor.prototype.bindEvents = function() {
+
+    //copy the instance
+    var wym = this;
+    
     //handle click event on tools buttons
     $j(this._box).find(this._options.sToolsSelector).mousedown(function() {
         wym.exec($(this).attr(sWYM_NAME));
