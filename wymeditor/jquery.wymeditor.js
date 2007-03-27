@@ -515,9 +515,11 @@ Wymeditor.prototype.dialog = function(sType) {
         console.log(this.selection);
         console.log("startNode: " + this.selection.startNode);
         console.log("endNode: " + this.selection.endNode);
+        console.log("startOffset: " + this.selection.startOffset);
+        console.log("endOffset: " + this.selection.endOffset);
         console.log("isAtStart: " + this.selection.isAtStart("p"));
         console.log("isAtEnd: " + this.selection.isAtEnd("p"));
-        this.selection.cursorToStart("p");
+        //this.selection.cursorToStart("p");
 };
 
 /* @name toggleHtml
@@ -601,32 +603,31 @@ Wymselection.prototype.isAtEnd = function(jqexpr) {
     // This is the case if, e.g ("|" = cursor): <p>textnode|<br/></p>,
     // there the offset of endNode (endOffset) is 1 (behind the first node
     // of <p>)
-    if (this.endNode == parent)
-    {
+    if (this.endNode == parent) {
         // NOTE I don't know if it is a good idea to delete the <br>
         // here, as "atEnd()" probably shouldn't change the dom tree,
         // but only searching it
-        if (this.endNode.lastChild.nodeName == "BR")
+
+        // NOTE (jf.hovinne) disabled, see #15
+        /*
+        if (this.endNode.lastChild.nodeName == "BR") {
             this.endNode.removeChild(endNode.lastChild);
+        }
+        */
 
         // if cursor is really at the end
-        if (this.endOffset > 0 &&
-                this.endNode.childNodes[this.endOffset-1].nextSibling==null)
-        {
+        nNext = this.endNode.childNodes[this.endOffset-1].nextSibling;
+        if (this.endOffset > 0 && (nNext==null || nNext.nodeName == "BR"))
             return true;
-        }
-    }
-    else
-    {
-        for (var n=this.endNode; n!=parent; n=n.parentNode)
-        {
-            if (n.nodeType == aWYM_NODE.TEXT)
-            {
+    
+    } else {
+        
+        for (var n=this.endNode; n!=parent; n=n.parentNode) {
+            
+            if (n.nodeType == aWYM_NODE.TEXT) {
                 if (this.endOffset != this.endNode.data.length)
                     return false;
-            }
-            else
-            {
+            } else {
                 var lastChild = n.parentNode.lastChild;
                 // node isn't last child => cursor can't be at the end
                 // (is this true?) in gecko there the last child could be a
@@ -637,9 +638,7 @@ Wymselection.prototype.isAtEnd = function(jqexpr) {
                 if ((lastChild != n) ||
                         ($(lastChild).isPhantomNode()
                         && lastChild.previousSibling != n))
-                {
-                    return false;
-                }
+                            return false;
             }
         }
     }
