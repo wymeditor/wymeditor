@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+ * WYMeditor : what you see is What You Mean web-based editor
+ * Copyright (C) 2007 H.O.net - http://www.honet.be/
+ * Dual licensed under the MIT (MIT-license.txt)
+ * and GPL (GPL-license.txt) licenses.
+ *
+ * For further information visit:
+ *        http://www.wymeditor.org/
+ *
+ * File Name:
+ *        index.html
+ *        Editor integration example.
+ *        See the documentation for more info.
+ *
+ * File Authors:
+ *        Jean-Francois Hovinne (jf.hovinne@wymeditor.org)
+-->
+<html debug="true">
+<head>
+<title>WYMeditor</title>
+<link rel="stylesheet" type="text/css" media="screen" href="wymeditor/skins/default/screen.css" />
+<script type="text/javascript" src="jquery/jquery.js"></script>
+<script type="text/javascript" src="jquery/jquery-fixes.js"></script>
+<script type="text/javascript" src="firebug/firebug.js"></script>
+<script type="text/javascript" src="wymeditor/lang/en.js"></script>
+<script type="text/javascript" src="wymeditor/jquery.wymeditor.js"></script>
+<script type="text/javascript" src="wymeditor/jquery.wymeditor.explorer.js"></script>
+<script type="text/javascript" src="wymeditor/jquery.wymeditor.mozilla.js"></script>
+<script type="text/javascript" src="wymeditor/jquery.wymeditor.opera.js"></script>
+<script type="text/javascript" src="wymeditor/jquery.wymeditor.safari.js"></script>
+<script type="text/javascript">
+var $j = jQuery;
+
+$j(function() {
+
+    $j(".wymeditor").wymeditor(null,function() {
+    
+        var wym = this;
+        wym.html("<p>WYMeditor instance<\/p>");
+
+        // add some dummy content to the section wym_classes
+        $j(wym.box()).find("div.wym_classes").append('<ul>'
+                                    + '<li><a href="#">first class<\/a><\/li>'
+                                    + '<li><a href="#">second class<\/a><\/li>'
+                                    + '<li><a href="#">third class<\/a><\/li>'
+                                    + '<li><a href="#">fourth class<\/a><\/li>'
+                                    + '<\/ul>'
+                                    + '<h3>Special classes<\/h3>'
+                                    + '<ul>'
+                                    + '<li><a href="#">special class 1<\/a><\/li>'
+                                    + '<li><a href="#">special class 2<\/a><\/li>'
+                                    + '<li><a href="#">special class 3<\/a><\/li>'
+                                    + '<\/ul>');
+    
+    
+    }).each(function(i) {
+        
+        var wym = $j.wymeditors(i);
+        
+        $j(this).parent().find(".wymsubmit").click(function() {
+            wym.update();
+            alert("Submitting: " + wym.xhtml());
+        });
+    });
+    
+        //enable the default skin
+        $j(".wym_box").addClass("wym_skin_default");
+});
+</script>
+<script type="text/javascript" src="wymeditor/skins/default/main.js"></script>
+
+</head>
+
+<body>
+<form method="post" action="">
+<textarea class="wymeditor"></textarea>
+<input type="submit" class="wymsubmit" />
+</form>
+<form method="post" action="">
+<textarea class="wymeditor"></textarea>
+<input type="submit" class="wymsubmit" />
+</form>
+<form method="post" action="">
+<textarea class="wymeditor"></textarea>
+<input type="submit" class="wymsubmit" />
+</form>
+</body>
+
+</html>
