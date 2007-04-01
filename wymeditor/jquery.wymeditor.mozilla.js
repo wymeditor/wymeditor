@@ -167,38 +167,72 @@ function WymSelMozilla(wym) {
 WymSelMozilla.prototype.getSelection = function() {
 
     var _sel = this._wym._iframe.contentWindow.getSelection();
-    // NOTE v.mische can startNode/endNote be phantom nodes?
-    this.startNode = _sel.getRangeAt(0).startContainer;
-    this.endNode = _sel.getRangeAt(0).endContainer;
-    this.startOffset = _sel.getRangeAt(0).startOffset;
-    this.endOffset = _sel.getRangeAt(0).endOffset;
-    this.isCollapsed = _sel.isCollapsed;
+    var range = _sel.getRangeAt(0);
+    var bReloadSelection = false;
+
     this.original = _sel;
+    // NOTE v.mische can startNode/endNote be phantom nodes?
+    this.startNode = range.startContainer;
+    this.endNode = range.endContainer;
+    this.startOffset = range.startOffset;
+    this.endOffset = range.endOffset;
+
+    if (this.startNode.nodeName == 'BODY' && ! _sel.isCollapsed)
+    {
+        // NOTE v.mische I assume that body doesn't contain any text nodes,
+        //      there are always element nodes (WYSIWYM)
+        var firstChild = this.startNode.childNodes[this.startOffset];
+
+        if (firstChild.hasChildNodes)
+        {
+            range.setStartBefore(firstChild.firstChild);
+            bReloadSelection = true;
+        }
+    }
+    if (this.startNode.nodeName == 'BODY' && ! _sel.isCollapsed)
+    {
+        // NOTE v.mische I assume that body doesn't contain any text nodes,
+        //      there are always element nodes (WYSIWYM)
+        var lastChild = this.startNode.childNodes[this.endOffset-1];
+
+        if (lastChild.hasChildNodes)
+        {
+            range.setEndAfter(firstChild.lastChild);
+            bReloadSelection = true;
+        }
+    }
+
+    if (bReloadSelection)
+    {
+        console.log("Reload selection");
+        this.getSelection();
+    }
+
+    this.isCollapsed = _sel.isCollapsed;
     this.container = $j(this.startNode).parentsOrSelf(
         aWYM_CONTAINERS.join(","));
-        
+
     return(this);
 };
 
 WymSelMozilla.prototype.cursorToStart = function(jqexpr) {
-    
     if (jqexpr.nodeType == aWYM_NODE.TEXT)
         jqexpr = jqexpr.parentNode;
-    
+
     var firstTextNode = $(this._wym._doc).find(jqexpr)[0];
-    
+
     console.log(firstTextNode);
-    
+
     while (firstTextNode.nodeType != aWYM_NODE.TEXT)
     {
         if (!firstTextNode.hasChildNodes())
             break;
         firstTextNode = firstTextNode.firstChild;
     }
-    
+
     if (isPhantomNode(firstTextNode))
         firstTextNode = firstTextNode.nextSibling;
-    
+
     // e.g. an <img/>
     if (firstTextNode.nodeType == aWYM_NODE.ELEMENT)
         this.original.collapse(firstTextNode.parentNode, 0);

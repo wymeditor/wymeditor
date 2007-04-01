@@ -611,22 +611,22 @@ Wymselection.prototype.isAtEnd = function(jqexpr) {
         // here, as "atEnd()" probably shouldn't change the dom tree,
         // but only searching it
 
-        // NOTE (jf.hovinne) disabled, see #15
-        /*
-        if (this.endNode.lastChild.nodeName == "BR") {
-            this.endNode.removeChild(endNode.lastChild);
+        if (this.endNode.lastChild.nodeName == "BR"
+                && this.endNode.lastChild>1) {
+            this.endNode.removeChild(this.endNode.lastChild);
         }
-        */
 
         // if cursor is really at the end
-        nNext = this.endNode.childNodes[this.endOffset-1].nextSibling;
-        if (this.endOffset > 0 && (nNext==null || nNext.nodeName == "BR"))
-            return true;
-    
+        if (this.endOffset == 0)
+            return false;
+        else {
+            nNext = this.endNode.childNodes[this.endOffset-1].nextSibling;
+            if (nNext==null || nNext.nodeName == "BR")
+                return true;
+        }
+
     } else {
-        
         for (var n=this.endNode; n!=parent; n=n.parentNode) {
-            
             if (n.nodeType == aWYM_NODE.TEXT) {
                 if (this.endOffset != this.endNode.data.length)
                     return false;
