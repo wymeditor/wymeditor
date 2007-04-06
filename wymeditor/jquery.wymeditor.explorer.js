@@ -40,7 +40,12 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
     this._doc.onclick = function() {wymexp.saveCaret();};
     
     //callback can't be executed twice, so we check
-    if(this._callback && this._initialized) this._callback();
+    if(this._initialized) {
+        
+        this._wym.bindEvents();
+        if(this._callback) this._callback();
+    }
+    
     this._initialized = true;
     
     this._doc.designMode="on";
