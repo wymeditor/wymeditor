@@ -221,8 +221,6 @@ function Wymeditor(elem,index,options,callback) {
     
     if(this._options.sHtml) this._html = this._options.sHtml;
     
-    this.selection = new Wymselection();
-    
     this.init();
     
 };
@@ -238,11 +236,9 @@ Wymeditor.prototype.init = function() {
     }
     else if ($j.browser.mozilla) {
         var WymClass = new WymClassMozilla(this);
-        var WymSel = new WymSelMozilla(this);
     }
     else if ($j.browser.opera) {
         var WymClass = new WymClassOpera(this);
-        var WymSel = new WymSelOpera(this);
     }
     else if ($j.browser.safari) {
         var WymClass = new WymClassSafari(this);
@@ -253,7 +249,6 @@ Wymeditor.prototype.init = function() {
 
     //extend the Wymeditor object
     $j.extend(this, WymClass);
-    $j.extend(this.selection, WymSel);
 
     //load wymbox
     this._box = $j(this._element).hide().after(this._options.sBoxHtml).next();
@@ -514,15 +509,7 @@ Wymeditor.prototype.update = function() {
  * @description Opens a dialog box
  */
 Wymeditor.prototype.dialog = function(sType) {
-        this.selection.getSelection();
-        console.log(this.selection);
-        console.log("startNode: " + this.selection.startNode);
-        console.log("endNode: " + this.selection.endNode);
-        console.log("startOffset: " + this.selection.startOffset);
-        console.log("endOffset: " + this.selection.endOffset);
-        console.log("isAtStart: " + this.selection.isAtStart("p"));
-        console.log("isAtEnd: " + this.selection.isAtEnd("p"));
-        //this.selection.cursorToStart("p");
+        
 };
 
 /* @name toggleHtml
@@ -531,125 +518,6 @@ Wymeditor.prototype.dialog = function(sType) {
 Wymeditor.prototype.toggleHtml = function() {
 
     $j(this._box).find(this._options.sHtmlSelector).toggle();
-};
-
-
-/********** SELECTION API **********/
-
-function Wymselection() {
-
-/* The following props/methods are defined in the browser specific files
- * this.original
- * this.startNode
- * this.endNode
- * this.startOffset
- * this.endOffset
- * this.collapsed
- * this.container
- *
- * deleteIfExpanded()
- * cursorToStart()
- * cursorToEnd()
- */
-
-};
-
-Wymselection.prototype.isAtStart = function(jqexpr) {
-
-    var parent = $j(this.startNode).parentsOrSelf(jqexpr);
-
-    // jqexpr isn't a parent of the current cursor position
-    if (parent.length==0)
-        return false;
-    else
-        parent = parent[0];
-    
-    for (var n=this.startNode; n!=parent; n=n.parentNode)
-    {
-        //if (n.nodeType == nodeType.TEXT)
-        if (n.nodeType == aWYM_NODE.TEXT)
-        {
-            if (this.startOffset != 0)
-                return false;
-        }
-        var firstChild = n.parentNode.firstChild;
-        // node isn't first child => cursor can't be at the beginning
-        // in gecko there the first child could be a phantom node
-    
-        // sometimes also whitespacenodes which aren't phatom nodes
-        // get stripped, but this is ok, as this is a wysiwym editor
-        if ((firstChild != n
-                || ($(firstChild).isPhantomNode()
-                    && firstChild.nextSibling != n)))
-        {
-            return false;
-        }
-    }
-    
-    if (this.startOffset == 0)
-        return true;
-    else
-        return false;
-};
-
-Wymselection.prototype.isAtEnd = function(jqexpr) {
-
-    var parent = $(this.endNode).parentsOrSelf(jqexpr);
-
-    // jqexpr isn't a parent of the current cursor position
-    if (parent.length==0)
-        return false;
-    else
-        parent = parent[0];
-
-
-    // This is the case if, e.g ("|" = cursor): <p>textnode|<br/></p>,
-    // there the offset of endNode (endOffset) is 1 (behind the first node
-    // of <p>)
-    if (this.endNode == parent) {
-        // NOTE I don't know if it is a good idea to delete the <br>
-        // here, as "atEnd()" probably shouldn't change the dom tree,
-        // but only searching it
-
-        if (this.endNode.lastChild.nodeName == "BR"
-                && this.endNode.lastChild>1) {
-            this.endNode.removeChild(this.endNode.lastChild);
-        }
-
-        // if cursor is really at the end
-        if (this.endOffset == 0)
-            return false;
-        else {
-            nNext = this.endNode.childNodes[this.endOffset-1].nextSibling;
-            if (nNext==null || nNext.nodeName == "BR")
-                return true;
-        }
-
-    } else {
-        for (var n=this.endNode; n!=parent; n=n.parentNode) {
-            if (n.nodeType == aWYM_NODE.TEXT) {
-                if (this.endOffset != this.endNode.data.length)
-                    return false;
-            } else {
-                var lastChild = n.parentNode.lastChild;
-                // node isn't last child => cursor can't be at the end
-                // (is this true?) in gecko there the last child could be a
-                //     phantom node
-
-                // sometimes also whitespacenodes which aren't phatom nodes
-                // get stripped, but this is ok, as this is a wysiwym editor
-                if ((lastChild != n) ||
-                        ($(lastChild).isPhantomNode()
-                        && lastChild.previousSibling != n))
-                            return false;
-            }
-        }
-    }
-
-    if (this.endOffset == this.endNode.length)
-        return true;
-    else
-        return false;
 };
 
 
