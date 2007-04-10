@@ -13,5 +13,10 @@
     Unlink:         'Unlink',
     Image:          'Image',
     Table:          'Table',
-    HTML:           'HTML'
+    HTML:           'HTML',
+    URL:            'URL',
+    Title:          'Title',
+    Submit:         'Submit',
+    Cancel:         'Cancel',
+    Popup_Blocked:  'Please disable popup blocking on this site in order to access this feature.'
 };

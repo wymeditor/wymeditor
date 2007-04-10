@@ -13,5 +13,10 @@
     Unlink:         'Supprimer le Lien',
     Image:          'Image',
     Table:          'Tableau',
-    HTML:           'HTML'
+    HTML:           'HTML',
+    URL:            'URL',
+    Title:          'Titre',
+    Submit:         'Envoyer',
+    Cancel:         'Annuler',
+    Popup_Blocked:  'Veuillez désactiver votre bloqueur de popups pour accéder à cette fonctionnalité.'
 };
