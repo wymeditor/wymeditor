@@ -45,6 +45,7 @@
     var sWYM_BLOCKQUOTE     = "blockquote";
     var sWYM_TD             = "td";
     var sWYM_TH             = "th";
+    var sWYM_A              = "a";
     var sWYM_LINK           = "link";
     var sWYM_IMAGE          = "image";
     var sWYM_TABLE          = "table";
@@ -640,7 +641,13 @@ Wymeditor.prototype.uniqueStamp = function() {
 function fWYM_INIT_DIALOG(index) {
 
     var wym = window.opener.aWYM_INSTANCES[index];
+    var oSel = wym.selected();
     var sStamp = wym.uniqueStamp();
+    
+    if(oSel) {
+            $j(".wym_href").val($j(oSel).attr("href"));
+            $j(".wym_title").val($j(oSel).attr("title"));
+    }
 
     $j(".wym_dialog_link .wym_submit").mousedown(function() {
         
