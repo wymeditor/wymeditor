@@ -601,8 +601,7 @@ Wymeditor.prototype.dialog = function(sType) {
     'dialog',
     this._wym._options.sDialogFeatures);
 
-  if(!wDialog) alert(this.replaceStrings(sWYM_POPUP_BLOCKED));
-  else {
+  if(wDialog) {
   
     var doc = wDialog.document;
     var wym = this._wym;
