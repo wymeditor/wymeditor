@@ -512,7 +512,7 @@ Wymeditor.prototype.container = function(sType) {
   else return(this.selected());
 };
 
-/* @name finUp
+/* @name findUp
  * @description Returns the first parent or self container, based on its type
  */
 Wymeditor.prototype.findUp = function(mFilter) {
@@ -630,16 +630,27 @@ Wymeditor.prototype.toggleHtml = function() {
   $j(this._box).find(this._options.sHtmlSelector).toggle();
 };
 
+Wymeditor.prototype.uniqueStamp = function() {
+	var now=new Date();
+	return("wym-" + now.getTime());
+};
 
 /********** DIALOGS **********/
 
 function fWYM_INIT_DIALOG(index) {
 
     var wym = window.opener.aWYM_INSTANCES[index];
+    var sStamp = wym.uniqueStamp();
 
-    $j("body.wym_dialog_link .wym_submit").mousedown(function() {
+    $j(".wym_dialog_link .wym_submit").mousedown(function() {
+        
         var sUrl = $j(".wym_href").val();
-        if(sUrl.length > 0) wym._exec('CreateLink',sUrl);
+        if(sUrl.length > 0) {
+            wym._exec('CreateLink', sStamp);
+            var link = $(wym._doc.body).find("a[@href=" + sStamp + "]");
+            link.attr("href", sUrl);
+            link.attr("title", $j(".wym_title").val());
+        }
         window.close();
     });
     
