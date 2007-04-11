@@ -90,7 +90,7 @@ WymClassMozilla.prototype.xhtml = function() {
                         tag="/em";
                         break;
                     case "br":
-                        tag="br /"
+                        tag="br /";
                         break;
                     case "ol": case "ul":
                         level++;

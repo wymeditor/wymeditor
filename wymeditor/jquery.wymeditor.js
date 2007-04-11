@@ -397,7 +397,7 @@ Wymeditor.prototype.ready = function() {
  */
 Wymeditor.prototype.box = function() {
   return(this._box);
-}
+};
 
 /* @name html
  * @description Get/Set the html value
