@@ -145,7 +145,7 @@ WymClassExplorer.prototype.xhtml = function() {
             if(c==";")
             {
                 begEntity=false;
-                iEnt=indexOfArray(entities,entity);
+                iEnt=entities.indexOf(entity);
                 if(iEnt>-1)flagEntity=true;
             }
             else if(c==" " || c=="#")

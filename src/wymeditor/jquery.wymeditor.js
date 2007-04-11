@@ -32,6 +32,8 @@
     var sWYM_HTML           = "{Wym_Html}";
     var sWYM_IFRAME         = "{Wym_Iframe}";
     var sWYM_STATUS         = "{Wym_Status}";
+    var sWYM_DIALOG_TITLE   = "{Wym_Dialog_Title}";
+    var sWYM_DIALOG_BODY    = "{Wym_Dialog_Body}";
     var sWYM_BODY           = "body";
     var sWYM_STRING         = "string";
     var sWYM_P              = "p";
@@ -46,9 +48,9 @@
     var sWYM_TD             = "td";
     var sWYM_TH             = "th";
     var sWYM_A              = "a";
-    var sWYM_LINK           = "link";
-    var sWYM_IMAGE          = "image";
-    var sWYM_TABLE          = "table";
+    var sWYM_LINK           = "Link";
+    var sWYM_IMAGE          = "Image";
+    var sWYM_TABLE          = "Table";
     var sWYM_CREATE_LINK    = "CreateLink";
     var sWYM_INSERT_IMAGE   = "InsertImage";
     var sWYM_INSERT_TABLE   = "InsertTable";
@@ -214,17 +216,17 @@ $j.fn.wymeditor = function(options, callback) {
               + "</div>",
 
     sClassesHtml:       "<div class='wym_classes wym_section'>"
-              + "<h2>Classes</h2>"
-              + "</div>",
+                        + "<h2>Classes</h2>"
+                        + "</div>",
 
     sStatusHtml:        "<div class='wym_status wym_section'>"
-              + "<h2>Status</h2>"
-              + "</div>",
+                        + "<h2>Status</h2>"
+                        + "</div>",
 
     sHtmlHtml:          "<div class='wym_html wym_section'>"
-              + "<h2>Source code</h2>"
-              + "<textarea class='wym_html_val'></textarea>"
-              + "</div>",
+                        + "<h2>Source code</h2>"
+                        + "<textarea class='wym_html_val'></textarea>"
+                        + "</div>",
 
     sBoxSelector:       ".wym_box",
     sToolsSelector:     ".wym_tools",
@@ -240,16 +242,19 @@ $j.fn.wymeditor = function(options, callback) {
     sDialogFeatures:    "menubar=no,titlebar=no,toolbar=no,resizable=no"
                       + ",width=560,height=300,top=0,left=0",
 
-    sDialogLinkHtml:  "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN'"
+    sDialogHtml:      "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN'"
                       + " 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>"
                       + "<html><head>"
-                      + "<title>{Link}</title>"
+                      + "<title>" + sWYM_DIALOG_TITLE + "</title>"
                       + "<script type='text/javascript'"
                       + " src='jquery/jquery.js'></script>"
                       + "<script type='text/javascript'"
                       + " src='wymeditor/jquery.wymeditor.js'></script>"
                       + "</head>"
-                      + "<body class='wym_dialog wym_dialog_link'"
+                      + sWYM_DIALOG_BODY
+                      + "</html>",
+                      
+    sDialogLinkHtml:  "<body class='wym_dialog wym_dialog_link'"
                       + " onload='fWYM_INIT_DIALOG(" + sWYM_INDEX + ")'"
                       + ">"
                       + "<p>"
@@ -263,7 +268,26 @@ $j.fn.wymeditor = function(options, callback) {
                       + " value='{Submit}' />"
                       + "<input class='wym_cancel' type='button'"
                       + "value='{Cancel}' />"
-                      + "</p></body></html>",
+                      + "</p></body>",
+    
+    sDialogImageHtml:  "<body class='wym_dialog wym_dialog_image'"
+                      + " onload='fWYM_INIT_DIALOG(" + sWYM_INDEX + ")'"
+                      + ">"
+                      + "<p>"
+                      + "<label>{URL}</label>"
+                      + "<input type='text' class='wym_src' value='' />"
+                      + "</p><p>"
+                      + "<label>{Alternative_Text}</label>"
+                      + "<input type='text' class='wym_alt' value='' />"
+                      + "</p><p>"
+                      + "<label>{Title}</label>"
+                      + "<input type='text' class='wym_title' value='' />"
+                      + "</p><p>"
+                      + "<input class='wym_submit' type='button'"
+                      + " value='{Submit}' />"
+                      + "<input class='wym_cancel' type='button'"
+                      + "value='{Cancel}' />"
+                      + "</p></body>",
 
     sStringDelimiterLeft: "{",
     sStringDelimiterRight:"}"
@@ -573,6 +597,13 @@ Wymeditor.prototype.replaceStrings = function(sVal) {
   return(sVal);
 };
 
+Wymeditor.prototype.encloseString = function(sVal) {
+
+  return(this._options.sStringDelimiterLeft
+    + sVal
+    + this._options.sStringDelimiterRight);
+};
+
 /* @name status
  * @description Prints a status message
  */
@@ -603,23 +634,33 @@ Wymeditor.prototype.dialog = function(sType) {
     this._wym._options.sDialogFeatures);
 
   if(wDialog) {
-  
-    var doc = wDialog.document;
-    var wym = this._wym;
+
+    var sBodyHtml = "";
     
     switch(sType) {
 
       case(sWYM_LINK):
-
-        //construct the dialog
-        var sDialogHtml = this._options.sDialogLinkHtml;
-        sDialogHtml = sDialogHtml.replace(sWYM_INDEX,wym._index);
-        sDialogHtml = this.replaceStrings(sDialogHtml);
-        doc.write(sDialogHtml);
-        doc.close();
-
+        sBodyHtml = this._options.sDialogLinkHtml;
+      break;
+      case(sWYM_IMAGE):
+        sBodyHtml = this._options.sDialogImageHtml;
+      break;
+      case(sWYM_TABLE):
+        sBodyHtml = this._options.sDialogTableHtml;
       break;
     }
+    
+    //construct the dialog
+    var sDialogHtml = this._options.sDialogHtml;
+    sDialogHtml = sDialogHtml.replace(sWYM_DIALOG_TITLE,
+      this.encloseString(sType));
+    sDialogHtml = sDialogHtml.replace(sWYM_DIALOG_BODY, sBodyHtml);
+    sDialogHtml = sDialogHtml.replace(sWYM_INDEX, this._index);
+    sDialogHtml = this.replaceStrings(sDialogHtml);
+    
+    var doc = wDialog.document;
+    doc.write(sDialogHtml);
+    doc.close();
   }
 };
 
@@ -646,7 +687,9 @@ function fWYM_INIT_DIALOG(index) {
     
     if(oSel) {
             $j(".wym_href").val($j(oSel).attr("href"));
+            $j(".wym_src").val($j(oSel).attr("src"));
             $j(".wym_title").val($j(oSel).attr("title"));
+            $j(".wym_alt").val($j(oSel).attr("alt"));
     }
 
     $j(".wym_dialog_link .wym_submit").mousedown(function() {
@@ -657,6 +700,19 @@ function fWYM_INIT_DIALOG(index) {
             var link = $(wym._doc.body).find("a[@href=" + sStamp + "]");
             link.attr("href", sUrl);
             link.attr("title", $j(".wym_title").val());
+        }
+        window.close();
+    });
+    
+    $j(".wym_dialog_image .wym_submit").click(function() {
+        
+        var sUrl = $j(".wym_src").val();
+        if(sUrl.length > 0) {
+            wym._exec('InsertImage', sStamp);
+            var image = $(wym._doc.body).find("img[@src=" + sStamp + "]");
+            image.attr("src", sUrl);
+            image.attr("title", $j(".wym_title").val());
+            image.attr("alt", $j(".wym_alt").val());
         }
         window.close();
     });
@@ -708,4 +764,14 @@ Array.prototype.contains = function (elem) {
   }
   }
   return false;
+};
+
+Array.prototype.indexOf = function (item) {
+	var ret=-1;
+	for(var x = 0; x < this.length; x++) {
+    if (this[x] == item) {
+      ret=x;break;
+    }
+  }
+	return(ret);
 };
