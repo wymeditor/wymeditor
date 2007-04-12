@@ -48,6 +48,7 @@
     var sWYM_TD             = "td";
     var sWYM_TH             = "th";
     var sWYM_A              = "a";
+    var sWYM_CLASS          = "class";
     var sWYM_LINK           = "Link";
     var sWYM_IMAGE          = "Image";
     var sWYM_TABLE          = "Table";
