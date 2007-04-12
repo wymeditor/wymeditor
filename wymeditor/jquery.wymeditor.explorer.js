@@ -19,6 +19,7 @@
 function WymClassExplorer(wym) {
     
     this._wym = wym;
+    this._class = "className";
 };
 
 WymClassExplorer.prototype.initIframe = function(iframe) {
@@ -42,8 +43,8 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
     //callback can't be executed twice, so we check
     if(this._initialized) {
         
-        this._wym.bindEvents();
         if(this._callback) this._callback();
+        this._wym.bindEvents();
     }
     
     this._initialized = true;

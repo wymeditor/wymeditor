@@ -426,6 +426,15 @@ Wymeditor.prototype.bindEvents = function() {
   $j(this._box).find(this._options.sHtmlValSelector).keyup(function() {
     $j(wym._doc.body).html($j(this).val());
   });
+  
+  //handle click event on classes buttons
+  $j(this._box).find(this._options.sClassesSelector)
+  .find(sWYM_A).mousedown(function() {
+    var oSel = wym.selected();
+    $j(oSel).toggleClass($(this).attr(sWYM_NAME));
+    if(!$j(oSel).attr(sWYM_CLASS)) $j(oSel).removeAttr(wym._class);
+    return(false);
+  });
 };
 
 Wymeditor.prototype.ready = function() {
