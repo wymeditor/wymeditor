@@ -288,6 +288,25 @@ $j.fn.wymeditor = function(options, callback) {
                       + "<input class='wym_cancel' type='button'"
                       + "value='{Cancel}' />"
                       + "</p></body>",
+    
+    sDialogTableHtml:  "<body class='wym_dialog wym_dialog_table'"
+                      + " onload='fWYM_INIT_DIALOG(" + sWYM_INDEX + ")'"
+                      + ">"
+                      + "<p>"
+                      + "<label>{Caption}</label>"
+                      + "<input type='text' class='wym_caption' value='' />"
+                      + "</p><p>"
+                      + "<label>{Number_Of_Rows}</label>"
+                      + "<input type='text' class='wym_rows' value='3' />"
+                      + "</p><p>"
+                      + "<label>{Number_Of_Cols}</label>"
+                      + "<input type='text' class='wym_cols' value='2' />"
+                      + "</p><p>"
+                      + "<input class='wym_submit' type='button'"
+                      + " value='{Submit}' />"
+                      + "<input class='wym_cancel' type='button'"
+                      + "value='{Cancel}' />"
+                      + "</p></body>",
 
     sStringDelimiterLeft: "{",
     sStringDelimiterRight:"}"
@@ -713,6 +732,34 @@ function fWYM_INIT_DIALOG(index) {
             image.attr("src", sUrl);
             image.attr("title", $j(".wym_title").val());
             image.attr("alt", $j(".wym_alt").val());
+        }
+        window.close();
+    });
+    
+    $j(".wym_dialog_table .wym_submit").click(function() {
+        
+        var iRows = $j(".wym_rows").val();
+        var iCols = $j(".wym_cols").val();
+        
+        if(iRows > 0 && iCols > 0) {
+        
+            var table = wym._doc.createElement("TABLE");
+            var newRow = null;
+        		var newCol = null;
+        		
+        		var sCaption = $j(".wym_caption").val();
+        		
+        		//we create the caption
+        		var newCaption = table.createCaption();
+        		newCaption.innerHTML = sCaption;
+        		
+        		//we create the rows and cells
+        		for(x=0; x<iRows; x++) {
+        			newRow = table.insertRow(x);
+        			for(y=0; y<iCols; y++) {newRow.insertCell(y);}
+        		}
+            
+            if(oSel) $j(oSel).after(table);
         }
         window.close();
     });

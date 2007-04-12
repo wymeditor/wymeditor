@@ -18,6 +18,8 @@
 */
 
     p,h1,h2,h3,h4,h5,h6,pre,blockquote  { background-color: #f0f0ff; }
+    table                               { width: 90%; }
+    td                                  { background-color: #f0f4f8; border: 1px solid #ccc; width: 25%; height: 1.6em; }
     .wym_menu ul                        { padding: 0; margin: 0; }
     .wym_menu li                        { list-style: none; float: left; margin-right: 0.3em; }
     .wym_html_val                       { width: 300px; height: 100px; }
