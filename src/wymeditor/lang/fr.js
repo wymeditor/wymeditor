@@ -17,6 +17,9 @@
     URL:              'URL',
     Title:            'Titre',
     Alternative_Text: 'Alternative text',
+    Caption:          'Légende',
+    Number_Of_Rows:   'Nombre de lignes',
+    Number_Of_Cols:   'Nombre de colonnes',
     Submit:           'Envoyer',
     Cancel:           'Annuler'
 };
