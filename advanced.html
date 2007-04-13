@@ -26,30 +26,26 @@
 <script type="text/javascript" src="wymeditor/jquery.wymeditor.explorer.js"></script>
 <script type="text/javascript" src="wymeditor/jquery.wymeditor.mozilla.js"></script>
 <script type="text/javascript" src="wymeditor/jquery.wymeditor.opera.js"></script>
+
 <script type="text/javascript">
+
 var $j = jQuery.noConflict();
 
 $j(function() {
 
-    $j(".wymeditor").wymeditor(null,function() {
-    
-        var wym = this;
-        wym.html("<p>WYMeditor instance<\/p>");
+    $j(".wymeditor").wymeditor({
 
-        // add some dummy content to the section wym_classes
-        $j(wym.box()).find("div.wym_classes").append('<ul>'
-                                    + '<li><a href="#" name="first-class">first class<\/a><\/li>'
-                                    + '<li><a href="#" name="second-class">second class<\/a><\/li>'
-                                    + '<li><a href="#" name="third-class">third class<\/a><\/li>'
-                                    + '<li><a href="#" name="fourth-class">fourth class<\/a><\/li>'
-                                    + '<\/ul>'
-                                    + '<h3>Special classes<\/h3>'
-                                    + '<ul>'
-                                    + '<li><a href="#" name="special-class-1">special class 1<\/a><\/li>'
-                                    + '<li><a href="#" name="special-class-2">special class 2<\/a><\/li>'
-                                    + '<li><a href="#" name="special-class-3">special class 3<\/a><\/li>'
-                                    + '<\/ul>');
-    
+        //options
+        aClassesItems: [
+        {'name': 'myclass', 'title': 'My class'},
+        {'name': 'otherclass', 'title': 'Other class'}
+      ]
+
+    },function() {
+
+        //callback function
+        var wym = this;
+        wym.html("<p>WYMeditor instance " + wym._index + "<\/p>");
     
     }).each(function(i) {
         
@@ -61,15 +57,20 @@ $j(function() {
         });
     });
     
-        //enable the default skin
-        $j(".wym_box").addClass("wym_skin_default");
+    //enable the default skin
+    $j(".wym_box").addClass("wym_skin_default");
 });
+
 </script>
+
+<!-- Advanced skin manipulations -->
 <script type="text/javascript" src="wymeditor/skins/default/main.js"></script>
 
 </head>
 
 <body>
+<h1>WYMeditor advanced integration example</h1>
+<p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
 <form method="post" action="">
 <textarea class="wymeditor"></textarea>
 <input type="submit" class="wymsubmit" />
@@ -82,6 +83,13 @@ $j(function() {
 <textarea class="wymeditor"></textarea>
 <input type="submit" class="wymsubmit" />
 </form>
+
+<p>
+<a href="http://sourceforge.net/projects/wym-editor">
+<img src="http://sflogo.sourceforge.net/sflogo.php?group_id=148869&amp;type=1" border="0" alt="SourceForge logo" title="SourceForge" />
+</a>
+</p>
+
 </body>
 
 </html>

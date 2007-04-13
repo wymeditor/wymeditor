@@ -19,7 +19,7 @@
 function WymClassOpera(wym) {
 
     this._wym = wym;
-    this._class = "className";
+    this._class = "class";
 };
 
 WymClassOpera.prototype.initIframe = function(iframe) {

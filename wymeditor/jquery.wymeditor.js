@@ -28,6 +28,9 @@
     var sWYM_INDEX          = "{Wym_Index}";
     var sWYM_TOOLS          = "{Wym_Tools}";
     var sWYM_CLASSES        = "{Wym_Classes}";
+    var sWYM_CLASSES_ITEMS  = "{Wym_Classes_Items}";
+    var sWYM_CLASS_NAME     = "{Wym_Class_Name}";
+    var sWYM_CLASS_TITLE    = "{Wym_Class_Title}";
     var sWYM_CONTAINERS     = "{Wym_Containers}";
     var sWYM_HTML           = "{Wym_Html}";
     var sWYM_IFRAME         = "{Wym_Iframe}";
@@ -217,8 +220,17 @@ $j.fn.wymeditor = function(options, callback) {
               + "</div>",
 
     sClassesHtml:       "<div class='wym_classes wym_section'>"
-                        + "<h2>Classes</h2>"
-                        + "</div>",
+                        + "<h2>Classes</h2><ul>"
+                        + sWYM_CLASSES_ITEMS
+                        + "</ul></div>",
+
+    sClassesItemHtml:   "<li><a href='#' name='"
+                        + sWYM_CLASS_NAME
+                        + "'>"
+                        + sWYM_CLASS_TITLE
+                        + "</a></li>",
+
+    aClassesItems:      [],
 
     sStatusHtml:        "<div class='wym_status wym_section'>"
                         + "<h2>Status</h2>"
@@ -395,7 +407,21 @@ Wymeditor.prototype.init = function() {
   sBoxHtml = sBoxHtml.replace(sWYM_HTML, this._options.sHtmlHtml);
   sBoxHtml = sBoxHtml.replace(sWYM_IFRAME, sIframeHtml);
   sBoxHtml = sBoxHtml.replace(sWYM_STATUS, this._options.sStatusHtml);
-  
+
+  //construct classes list
+  var aClasses = eval(this._options.aClassesItems);
+  var sClasses = "";
+
+  for(var i = 0; i < aClasses.length; i++) {
+    var oClass = aClasses[i];
+    if(oClass.name && oClass.title)
+      sClasses += this._options.sClassesItemHtml
+      .replace(sWYM_CLASS_NAME, oClass.name)
+      .replace(sWYM_CLASS_TITLE, oClass.title);
+  }
+
+  sBoxHtml = sBoxHtml.replace(sWYM_CLASSES_ITEMS, sClasses);
+
   //l10n
   sBoxHtml = this.replaceStrings(sBoxHtml);
   
@@ -825,9 +851,9 @@ Array.prototype.contains = function (elem) {
 
 Array.prototype.indexOf = function (item) {
 	var ret=-1;
-	for(var x = 0; x < this.length; x++) {
-    if (this[x] == item) {
-      ret=x;break;
+	for(var i = 0; i < this.length; i++) {
+    if (this[i] == item) {
+      ret=i; break;
     }
   }
 	return(ret);

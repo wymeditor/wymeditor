@@ -21,6 +21,7 @@
 <title>WYMeditor</title>
 <link rel="stylesheet" type="text/css" media="screen" href="wymeditor/skins/default/screen.css" />
 <script type="text/javascript" src="jquery/jquery.js"></script>
+<script type="text/javascript" src="firebug/firebug.js"></script>
 <script type="text/javascript" src="wymeditor/lang/en.js"></script>
 <script type="text/javascript" src="wymeditor/jquery.wymeditor.js"></script>
 <script type="text/javascript" src="wymeditor/jquery.wymeditor.explorer.js"></script>
@@ -31,7 +32,12 @@ var $j = jQuery;
 
 $j(function() {
 
-    $j(".wymeditor").wymeditor();
+    $j(".wymeditor").wymeditor({
+      aClassesItems: [
+        {'name': 'myclass', 'title': 'My class'},
+        {'name': 'otherclass', 'title': 'Other class'}
+      ]
+    });
     //enable the default skin
     $j(".wym_box").addClass("wym_skin_default");
 });
@@ -42,10 +48,19 @@ $j(function() {
 </head>
 
 <body>
+<h1>WYMeditor basic integration example</h1>
+<p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
 <form method="post" action="">
 <textarea class="wymeditor">&lt;p&gt;Basic integration example.&lt;/p&gt;</textarea>
 <input type="submit" class="wymsubmit" />
 </form>
+
+<p>
+<a href="http://sourceforge.net/projects/wym-editor">
+<img src="http://sflogo.sourceforge.net/sflogo.php?group_id=148869&amp;type=1" border="0" alt="SourceForge logo" title="SourceForge" />
+</a>
+</p>
+
 </body>
 
 </html>
