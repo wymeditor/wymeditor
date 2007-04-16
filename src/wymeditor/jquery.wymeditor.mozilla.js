@@ -36,7 +36,11 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
     
     if(this._callback) this._callback();
     
-    this._wym.bindEvents();
+    this._wym.bindEvents();    
+    
+    //keyup handler
+    this._doc.addEventListener('keyup',this.keyup,false);
+    
 };
 
 WymClassMozilla.prototype._exec = function(cmd,param) {
@@ -149,4 +153,42 @@ WymClassMozilla.prototype.xhtml = function() {
         else ret+=c;    
     }
     return(ret);    
+};
+
+//keyup handler, mainly used for cleanups
+WymClassMozilla.prototype.keyup = function(evt) {
+
+    //'this' is the doc
+    var wym = aWYM_INSTANCES[this.title];
+
+	if(evt.keyCode == 13 && !evt.shiftKey) {
+	
+	    //RETURN key
+		//cleanup <br><br> between paragraphs
+		$j(wym._doc.body).children("br").remove();
+	}
+	
+	else if(evt.keyCode != 8 && evt.keyCode != 46
+	    && evt.keyCode!=17 && !evt.ctrlKey)	{
+	    
+	    //NOT BACKSPACE, NOT DELETE, NOT CTRL
+		//text nodes replaced by P
+		
+		var container = wym.selected();
+		var name = container.tagName.toLowerCase();
+
+		//fix forbidden main containers
+		if(
+			name == "strong" ||
+			name == "b" ||
+			name == "em" ||
+			name == "i" ||
+			name == "sub" ||
+			name == "sup" ||
+			name == "a"
+
+		) name = container.parentNode.tagName.toLowerCase();
+
+		if(name == "body") wym._exec("formatblock", "P");
+	}
 };
