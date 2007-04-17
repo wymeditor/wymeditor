@@ -36,6 +36,17 @@ $j(function() {
     $j(".wymeditor").wymeditor({
 
         //options
+        
+        aToolsItems: [
+        {'name': 'Bold', 'title': 'Strong', 'class': 'wym_tools_strong'}, 
+        {'name': 'Italic', 'title': 'Emphasis', 'class': 'wym_tools_emphasis'},
+        {'name': 'Undo', 'title': 'Undo', 'class': 'wym_tools_undo'},
+        {'name': 'Redo', 'title': 'Redo', 'class': 'wym_tools_redo'},
+        {'name': 'CreateLink', 'title': 'Link', 'class': 'wym_tools_link'},
+        {'name': 'Unlink', 'title': 'Unlink', 'class': 'wym_tools_unlink'},
+        {'name': 'ToggleHtml', 'title': 'HTML', 'class': 'wym_tools_html'}
+      ],
+        
         aClassesItems: [
         {'name': 'myclass', 'title': 'My class'},
         {'name': 'otherclass', 'title': 'Other class'}

@@ -27,6 +27,10 @@
     var sWYM_NAME           = "name";
     var sWYM_INDEX          = "{Wym_Index}";
     var sWYM_TOOLS          = "{Wym_Tools}";
+    var sWYM_TOOLS_ITEMS    = "{Wym_Tools_Items}";
+    var sWYM_TOOL_NAME      = "{Wym_Tools_Name}";
+    var sWYM_TOOL_TITLE     = "{Wym_Tools_Title}";
+    var sWYM_TOOL_CLASS     = "{Wym_Tools_Class}";
     var sWYM_CLASSES        = "{Wym_Classes}";
     var sWYM_CLASSES_ITEMS  = "{Wym_Classes_Items}";
     var sWYM_CLASS_NAME     = "{Wym_Class_Name}";
@@ -135,53 +139,39 @@ $j.fn.wymeditor = function(options, callback) {
     sToolsHtml: "<div class='wym_tools wym_section'>"
               + "<h2>Tools</h2>"
               + "<ul>"
-              + "<li class='wym_tools_strong'>"
-              + "<a href='#' name='Bold'>{Strong}</a>"
-              + "</li>"
-              + "<li class='wym_tools_emphasis'>"
-              + "<a href='#' name='Italic'>{Emphasis}</a>"
-              + "</li>"
-              + "<li class='wym_tools_superscript'>"
-              + "<a href='#' name='Superscript'>{Superscript}</a>"
-              + "</li>"
-              + "<li class='wym_tools_subscript'>"
-              + "<a href='#' name='Subscript'>{Subscript}</a>"
-              + "</li>"
-              + "<li class='wym_tools_ordered_list'>"
-              + "<a href='#' name='InsertOrderedList'>{Ordered_List}</a>"
-              + "</li>"
-              + "<li class='wym_tools_unordered_list'>"
-              + "<a href='#' name='InsertUnorderedList'>{Unordered_List}</a>"
-              + "</li>"
-              + "<li class='wym_tools_indent'>"
-              + "<a href='#' name='Indent'>{Indent}</a>"
-              + "</li>"
-              + "<li class='wym_tools_outdent'>"
-              + "<a href='#' name='Outdent'>{Outdent}</a>"
-              + "</li>"
-              + "<li class='wym_tools_undo'>"
-              + "<a href='#' name='Undo'>{Undo}</a>"
-              + "</li>"
-              + "<li class='wym_tools_redo'>"
-              + "<a href='#' name='Redo'>{Redo}</a>"
-              + "</li>"
-              + "<li class='wym_tools_link'>"
-              + "<a href='#' name='CreateLink'>{Link}</a>"
-              + "</li>"
-              + "<li class='wym_tools_unlink'>"
-              + "<a href='#' name='Unlink'>{Unlink}</a>"
-              + "</li>"
-              + "<li class='wym_tools_image'>"
-              + "<a href='#' name='InsertImage'>{Image}</a>"
-              + "</li>"
-              + "<li class='wym_tools_table'>"
-              + "<a href='#' name='InsertTable'>{Table}</a>"
-              + "</li>"
-              + "<li class='wym_tools_html'>"
-              + "<a href='#' name='ToggleHtml'>{HTML}</a>"
-              + "</li>"
+              + sWYM_TOOLS_ITEMS
               + "</ul>"
               + "</div>",
+              
+    sToolsItemHtml:   "<li class='"
+                        + sWYM_TOOL_CLASS
+                        + "'><a href='#' name='"
+                        + sWYM_TOOL_NAME
+                        + "'>"
+                        + sWYM_TOOL_TITLE
+                        + "</a></li>",
+
+    aToolsItems: [
+        {'name': 'Bold', 'title': 'Strong', 'class': 'wym_tools_strong'}, 
+        {'name': 'Italic', 'title': 'Emphasis', 'class': 'wym_tools_emphasis'},
+        {'name': 'Superscript', 'title': 'Superscript',
+            'class': 'wym_tools_superscript'},
+        {'name': 'Subscript', 'title': 'Subscript',
+            'class': 'wym_tools_subscript'},
+        {'name': 'InsertOrderedList', 'title': 'Ordered_List',
+            'class': 'wym_tools_ordered_list'},
+        {'name': 'InsertUnorderedList', 'title': 'Unordered_List',
+            'class': 'wym_tools_unordered_list'},
+        {'name': 'Indent', 'title': 'Indent', 'class': 'wym_tools_indent'},
+        {'name': 'Outdent', 'title': 'Outdent', 'class': 'wym_tools_outdent'},
+        {'name': 'Undo', 'title': 'Undo', 'class': 'wym_tools_undo'},
+        {'name': 'Redo', 'title': 'Redo', 'class': 'wym_tools_redo'},
+        {'name': 'CreateLink', 'title': 'Link', 'class': 'wym_tools_link'},
+        {'name': 'Unlink', 'title': 'Unlink', 'class': 'wym_tools_unlink'},
+        {'name': 'InsertImage', 'title': 'Image', 'class': 'wym_tools_image'},
+        {'name': 'InsertTable', 'title': 'Table', 'class': 'wym_tools_table'},
+        {'name': 'ToggleHtml', 'title': 'HTML', 'class': 'wym_tools_html'}
+    ],
 
     sContainersHtml:    "<div class='wym_containers wym_section'>"
               + "<h2>Containers</h2>"
@@ -407,6 +397,24 @@ Wymeditor.prototype.init = function() {
   sBoxHtml = sBoxHtml.replace(sWYM_HTML, this._options.sHtmlHtml);
   sBoxHtml = sBoxHtml.replace(sWYM_IFRAME, sIframeHtml);
   sBoxHtml = sBoxHtml.replace(sWYM_STATUS, this._options.sStatusHtml);
+  
+  //construct tools list
+  var aTools = eval(this._options.aToolsItems);
+  var sTools = "";
+
+  for(var i = 0; i < aTools.length; i++) {
+    var oTool = aTools[i];
+    if(oTool.name && oTool.title)
+      sTools += this._options.sToolsItemHtml
+      .replace(sWYM_TOOL_NAME, oTool.name)
+      .replace(sWYM_TOOL_TITLE, 
+          this._options.sStringDelimiterLeft
+        + oTool.title
+        + this._options.sStringDelimiterRight)
+      .replace(sWYM_TOOL_CLASS, oTool.class);
+  }
+
+  sBoxHtml = sBoxHtml.replace(sWYM_TOOLS_ITEMS, sTools);
 
   //construct classes list
   var aClasses = eval(this._options.aClassesItems);
