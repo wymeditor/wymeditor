@@ -817,7 +817,7 @@ function fWYM_INIT_DIALOG(index) {
 /********** HELPERS **********/
 
 // Returns true if it is a text node with whitespaces only
-$.fn.isPhantomNode = function() {
+$j.fn.isPhantomNode = function() {
   if (this[0].nodeType == 3)
     return !(/[^\t\n\r ]/.test(this[0].data));
 
@@ -833,7 +833,7 @@ function isPhantomNode(n) {
 
 // Returns the Parents or the node itself
 // jqexpr = a jQuery expression
-$.fn.parentsOrSelf = function(jqexpr) {
+$j.fn.parentsOrSelf = function(jqexpr) {
   var n = this;
 
   if (n[0].nodeType == 3)
