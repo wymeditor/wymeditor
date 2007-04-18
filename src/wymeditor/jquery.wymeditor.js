@@ -23,46 +23,50 @@
 
     var $j = jQuery.noConflict();
     
-    var aWYM_INSTANCES      = new Array();
-    var sWYM_NAME           = "name";
-    var sWYM_INDEX          = "{Wym_Index}";
-    var sWYM_TOOLS          = "{Wym_Tools}";
-    var sWYM_TOOLS_ITEMS    = "{Wym_Tools_Items}";
-    var sWYM_TOOL_NAME      = "{Wym_Tools_Name}";
-    var sWYM_TOOL_TITLE     = "{Wym_Tools_Title}";
-    var sWYM_TOOL_CLASS     = "{Wym_Tools_Class}";
-    var sWYM_CLASSES        = "{Wym_Classes}";
-    var sWYM_CLASSES_ITEMS  = "{Wym_Classes_Items}";
-    var sWYM_CLASS_NAME     = "{Wym_Class_Name}";
-    var sWYM_CLASS_TITLE    = "{Wym_Class_Title}";
-    var sWYM_CONTAINERS     = "{Wym_Containers}";
-    var sWYM_HTML           = "{Wym_Html}";
-    var sWYM_IFRAME         = "{Wym_Iframe}";
-    var sWYM_STATUS         = "{Wym_Status}";
-    var sWYM_DIALOG_TITLE   = "{Wym_Dialog_Title}";
-    var sWYM_DIALOG_BODY    = "{Wym_Dialog_Body}";
-    var sWYM_BODY           = "body";
-    var sWYM_STRING         = "string";
-    var sWYM_P              = "p";
-    var sWYM_H1             = "h1";
-    var sWYM_H2             = "h2";
-    var sWYM_H3             = "h3";
-    var sWYM_H4             = "h4";
-    var sWYM_H5             = "h5";
-    var sWYM_H6             = "h6";
-    var sWYM_PRE            = "pre";
-    var sWYM_BLOCKQUOTE     = "blockquote";
-    var sWYM_TD             = "td";
-    var sWYM_TH             = "th";
-    var sWYM_A              = "a";
-    var sWYM_CLASS          = "class";
-    var sWYM_LINK           = "Link";
-    var sWYM_IMAGE          = "Image";
-    var sWYM_TABLE          = "Table";
-    var sWYM_CREATE_LINK    = "CreateLink";
-    var sWYM_INSERT_IMAGE   = "InsertImage";
-    var sWYM_INSERT_TABLE   = "InsertTable";
-    var sWYM_TOGGLE_HTML    = "ToggleHtml";
+    var aWYM_INSTANCES        = new Array();
+    var sWYM_NAME             = "name";
+    var sWYM_INDEX            = "{Wym_Index}";
+    var sWYM_TOOLS            = "{Wym_Tools}";
+    var sWYM_TOOLS_ITEMS      = "{Wym_Tools_Items}";
+    var sWYM_TOOL_NAME        = "{Wym_Tools_Name}";
+    var sWYM_TOOL_TITLE       = "{Wym_Tools_Title}";
+    var sWYM_TOOL_CLASS       = "{Wym_Tools_Class}";
+    var sWYM_CLASSES          = "{Wym_Classes}";
+    var sWYM_CLASSES_ITEMS    = "{Wym_Classes_Items}";
+    var sWYM_CLASS_NAME       = "{Wym_Class_Name}";
+    var sWYM_CLASS_TITLE      = "{Wym_Class_Title}";
+    var sWYM_CONTAINERS       = "{Wym_Containers}";
+    var sWYM_CONTAINERS_ITEMS = "{Wym_Containers_Items}";
+    var sWYM_CONTAINER_NAME   = "{Wym_Container_Name}";
+    var sWYM_CONTAINER_TITLE  = "{Wym_Containers_Title}";
+    var sWYM_CONTAINER_CLASS  = "{Wym_Container_Class}";
+    var sWYM_HTML             = "{Wym_Html}";
+    var sWYM_IFRAME           = "{Wym_Iframe}";
+    var sWYM_STATUS           = "{Wym_Status}";
+    var sWYM_DIALOG_TITLE     = "{Wym_Dialog_Title}";
+    var sWYM_DIALOG_BODY      = "{Wym_Dialog_Body}";
+    var sWYM_BODY             = "body";
+    var sWYM_STRING           = "string";
+    var sWYM_P                = "p";
+    var sWYM_H1               = "h1";
+    var sWYM_H2               = "h2";
+    var sWYM_H3               = "h3";
+    var sWYM_H4               = "h4";
+    var sWYM_H5               = "h5";
+    var sWYM_H6               = "h6";
+    var sWYM_PRE              = "pre";
+    var sWYM_BLOCKQUOTE       = "blockquote";
+    var sWYM_TD               = "td";
+    var sWYM_TH               = "th";
+    var sWYM_A                = "a";
+    var sWYM_CLASS            = "class";
+    var sWYM_LINK             = "Link";
+    var sWYM_IMAGE            = "Image";
+    var sWYM_TABLE            = "Table";
+    var sWYM_CREATE_LINK      = "CreateLink";
+    var sWYM_INSERT_IMAGE     = "InsertImage";
+    var sWYM_INSERT_TABLE     = "InsertTable";
+    var sWYM_TOGGLE_HTML      = "ToggleHtml";
     
     var sWYM_POPUP_BLOCKED  = "{Popup_Blocked}";
 
@@ -174,40 +178,34 @@ $j.fn.wymeditor = function(options, callback) {
     ],
 
     sContainersHtml:    "<div class='wym_containers wym_section'>"
-              + "<h2>Containers</h2>"
-              + "<ul>"
-              + "<li class='wym_containers_p'>"
-              + "<a href='#' name='P'>Paragraph</a>"
-              + "</li>"
-              + "<li class='wym_containers_h1'>"
-              + "<a href='#' name='H1'>Heading 1</a>"
-              + "</li>"
-              + "<li class='wym_containers_h2'>"
-              + "<a href='#' name='H2'>Heading 2</a>"
-              + "</li>"
-              + "<li class='wym_containers_h3'>"
-              + "<a href='#' name='H3'>Heading 3</a>"
-              + "</li>"
-              + "<li class='wym_containers_h4'>"
-              + "<a href='#' name='H4'>Heading 4</a>"
-              + "</li>"
-              + "<li class='wym_containers_h5'>"
-              + "<a href='#' name='H5'>Heading 5</a>"
-              + "</li>"
-              + "<li class='wym_containers_h6'>"
-              + "<a href='#' name='H6'>Heading 6</a>"
-              + "</li>"
-              + "<li class='wym_containers_pre'>"
-              + "<a href='#' name='PRE'>Preformatted</a>"
-              + "</li>"
-              + "<li class='wym_containers_blockquote'>"
-              + "<a href='#' name='BLOCKQUOTE'>Blockquote</a>"
-              + "</li>"
-              + "<li class='wym_containers_th'>"
-              + "<a href='#' name='TH'>Table Header</a>"
-              + "</li>"
-              + "</ul>"
-              + "</div>",
+                        + "<h2>Containers</h2>"
+                        + "<ul>"
+                        + sWYM_CONTAINERS_ITEMS
+                        + "</ul>"
+                        + "</div>",
+                        
+    sContainersItemHtml:"<li class='"
+                        + sWYM_CONTAINER_CLASS
+                        + "'>"
+                        + "<a href='#' name='"
+                        + sWYM_CONTAINER_NAME
+                        + "'>"
+                        + sWYM_CONTAINER_TITLE
+                        + "</a></li>",
+                        
+    aContainersItems: [
+        {'name': 'P', 'title': 'Paragraph', 'css': 'wym_containers_p'},
+        {'name': 'H1', 'title': 'Heading_1', 'css': 'wym_containers_h1'},
+        {'name': 'H2', 'title': 'Heading_2', 'css': 'wym_containers_h2'},
+        {'name': 'H3', 'title': 'Heading_3', 'css': 'wym_containers_h3'},
+        {'name': 'H4', 'title': 'Heading_4', 'css': 'wym_containers_h4'},
+        {'name': 'H5', 'title': 'Heading_5', 'css': 'wym_containers_h5'},
+        {'name': 'H6', 'title': 'Heading_6', 'css': 'wym_containers_h6'},
+        {'name': 'PRE', 'title': 'Preformatted', 'css': 'wym_containers_pre'},
+        {'name': 'BLOCKQUOTE', 'title': 'Blockquote',
+            'css': 'wym_containers_blockquote'},
+        {'name': 'TH', 'title': 'Table_Header', 'css': 'wym_containers_th'}
+    ],
 
     sClassesHtml:       "<div class='wym_classes wym_section'>"
                         + "<h2>Classes</h2><ul>"
@@ -429,6 +427,24 @@ Wymeditor.prototype.init = function() {
   }
 
   sBoxHtml = sBoxHtml.replace(sWYM_CLASSES_ITEMS, sClasses);
+  
+  //construct containers list
+  var aContainers = eval(this._options.aContainersItems);
+  var sContainers = "";
+
+  for(var i = 0; i < aContainers.length; i++) {
+    var oContainer = aContainers[i];
+    if(oContainer.name && oContainer.title)
+      sContainers += this._options.sContainersItemHtml
+      .replace(sWYM_CONTAINER_NAME, oContainer.name)
+      .replace(sWYM_CONTAINER_TITLE,
+          this._options.sStringDelimiterLeft
+        + oContainer.title
+        + this._options.sStringDelimiterRight)
+      .replace(sWYM_CONTAINER_CLASS, oContainer.css);
+  }
+
+  sBoxHtml = sBoxHtml.replace(sWYM_CONTAINERS_ITEMS, sContainers);
 
   //l10n
   sBoxHtml = this.replaceStrings(sBoxHtml);
