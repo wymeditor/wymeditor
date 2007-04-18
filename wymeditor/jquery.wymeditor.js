@@ -152,25 +152,25 @@ $j.fn.wymeditor = function(options, callback) {
                         + "</a></li>",
 
     aToolsItems: [
-        {'name': 'Bold', 'title': 'Strong', 'class': 'wym_tools_strong'}, 
-        {'name': 'Italic', 'title': 'Emphasis', 'class': 'wym_tools_emphasis'},
+        {'name': 'Bold', 'title': 'Strong', 'css': 'wym_tools_strong'}, 
+        {'name': 'Italic', 'title': 'Emphasis', 'css': 'wym_tools_emphasis'},
         {'name': 'Superscript', 'title': 'Superscript',
-            'class': 'wym_tools_superscript'},
+            'css': 'wym_tools_superscript'},
         {'name': 'Subscript', 'title': 'Subscript',
-            'class': 'wym_tools_subscript'},
+            'css': 'wym_tools_subscript'},
         {'name': 'InsertOrderedList', 'title': 'Ordered_List',
-            'class': 'wym_tools_ordered_list'},
+            'css': 'wym_tools_ordered_list'},
         {'name': 'InsertUnorderedList', 'title': 'Unordered_List',
-            'class': 'wym_tools_unordered_list'},
-        {'name': 'Indent', 'title': 'Indent', 'class': 'wym_tools_indent'},
-        {'name': 'Outdent', 'title': 'Outdent', 'class': 'wym_tools_outdent'},
-        {'name': 'Undo', 'title': 'Undo', 'class': 'wym_tools_undo'},
-        {'name': 'Redo', 'title': 'Redo', 'class': 'wym_tools_redo'},
-        {'name': 'CreateLink', 'title': 'Link', 'class': 'wym_tools_link'},
-        {'name': 'Unlink', 'title': 'Unlink', 'class': 'wym_tools_unlink'},
-        {'name': 'InsertImage', 'title': 'Image', 'class': 'wym_tools_image'},
-        {'name': 'InsertTable', 'title': 'Table', 'class': 'wym_tools_table'},
-        {'name': 'ToggleHtml', 'title': 'HTML', 'class': 'wym_tools_html'}
+            'css': 'wym_tools_unordered_list'},
+        {'name': 'Indent', 'title': 'Indent', 'css': 'wym_tools_indent'},
+        {'name': 'Outdent', 'title': 'Outdent', 'css': 'wym_tools_outdent'},
+        {'name': 'Undo', 'title': 'Undo', 'css': 'wym_tools_undo'},
+        {'name': 'Redo', 'title': 'Redo', 'css': 'wym_tools_redo'},
+        {'name': 'CreateLink', 'title': 'Link', 'css': 'wym_tools_link'},
+        {'name': 'Unlink', 'title': 'Unlink', 'css': 'wym_tools_unlink'},
+        {'name': 'InsertImage', 'title': 'Image', 'css': 'wym_tools_image'},
+        {'name': 'InsertTable', 'title': 'Table', 'css': 'wym_tools_table'},
+        {'name': 'ToggleHtml', 'title': 'HTML', 'css': 'wym_tools_html'}
     ],
 
     sContainersHtml:    "<div class='wym_containers wym_section'>"
@@ -411,7 +411,7 @@ Wymeditor.prototype.init = function() {
           this._options.sStringDelimiterLeft
         + oTool.title
         + this._options.sStringDelimiterRight)
-      .replace(sWYM_TOOL_CLASS, oTool.class);
+      .replace(sWYM_TOOL_CLASS, oTool.css);
   }
 
   sBoxHtml = sBoxHtml.replace(sWYM_TOOLS_ITEMS, sTools);
