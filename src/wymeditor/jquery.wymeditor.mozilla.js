@@ -41,12 +41,17 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
     //keyup handler
     this._doc.addEventListener('keyup',this.keyup,false);
     
+    //add event listeners to doc elements
+    this.listen();
+    
 };
 
 WymClassMozilla.prototype._exec = function(cmd,param) {
 
     if(param) this._doc.execCommand(cmd,'',param);
     else this._doc.execCommand(cmd,'',null);
+    
+    this.listen();
 };
 
 /* @name selected
@@ -155,15 +160,27 @@ WymClassMozilla.prototype.xhtml = function() {
     return(ret);    
 };
 
+
+WymClassMozilla.prototype.listen = function() {
+
+    //mouseup handler
+    var wym = this;
+    $j(this._doc.body).find("*").each(function() {
+      $j(this).get(0).addEventListener('mouseup',wym.mouseup,false);
+    });
+}
+
 //keyup handler, mainly used for cleanups
 WymClassMozilla.prototype.keyup = function(evt) {
 
-    //'this' is the doc
-    var wym = aWYM_INSTANCES[this.title];
+  //'this' is the doc
+  var wym = aWYM_INSTANCES[this.title];
+  
+  wym._selected_image = null;
 
 	if(evt.keyCode == 13 && !evt.shiftKey) {
 	
-	    //RETURN key
+	  //RETURN key
 		//cleanup <br><br> between paragraphs
 		$j(wym._doc.body).children("br").remove();
 	}
@@ -171,7 +188,7 @@ WymClassMozilla.prototype.keyup = function(evt) {
 	else if(evt.keyCode != 8 && evt.keyCode != 46
 	    && evt.keyCode!=17 && !evt.ctrlKey)	{
 	    
-	    //NOT BACKSPACE, NOT DELETE, NOT CTRL
+	  //NOT BACKSPACE, NOT DELETE, NOT CTRL
 		//text nodes replaced by P
 		
 		var container = wym.selected();
@@ -191,4 +208,12 @@ WymClassMozilla.prototype.keyup = function(evt) {
 
 		if(name == "body") wym._exec("formatblock", "P");
 	}
+};
+
+//mouseup handler
+WymClassMozilla.prototype.mouseup = function(evt) {
+  var wym = aWYM_INSTANCES[this.ownerDocument.title];
+  if(this.tagName.toLowerCase() == "img") wym._selected_image = this;
+  else wym._selected_image = null;
+  evt.stopPropagation();
 };

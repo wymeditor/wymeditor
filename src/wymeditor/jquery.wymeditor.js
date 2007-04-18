@@ -488,9 +488,22 @@ Wymeditor.prototype.bindEvents = function() {
   
   //handle click event on classes buttons
   $j(this._box).find(this._options.sClassSelector).click(function() {
-    wym.toggleClass($j(this).attr(sWYM_NAME));
+  
+    var aClasses = eval(wym._options.aClassesItems);
+    var sName = $j(this).attr(sWYM_NAME);
+
+    for(var i = 0; i < aClasses.length; i++) {
+    
+      var oClass = aClasses[i];
+      if(oClass.name == sName) {
+
+        jqexpr = oClass.expr;
+        wym.toggleClass(sName, jqexpr);
+      }
+    }
     return(false);
   });
+  
 };
 
 Wymeditor.prototype.ready = function() {
@@ -621,11 +634,16 @@ Wymeditor.prototype.container = function(sType) {
   else return(this.selected());
 };
 
-Wymeditor.prototype.toggleClass = function(sClass) {
+Wymeditor.prototype.toggleClass = function(sClass, jqexpr) {
 
-    var oSel = this.findUp(aWYM_CONTAINERS);
-    $j(oSel).toggleClass(sClass);
-    if(!$j(oSel).attr(sWYM_CLASS)) $j(oSel).removeAttr(this._class);
+  var container = (this._selected_image
+                    ? this._selected_image
+                    : $j(this.selected()));
+  container = $j(container).parentsOrSelf(jqexpr);
+  $j(container).toggleClass(sClass);
+
+  if(!$j(container).attr(sWYM_CLASS)) $j(container).removeAttr(this._class);
+
 };
 
 /* @name findUp

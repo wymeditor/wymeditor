@@ -34,8 +34,10 @@ $j(function() {
 
     $j(".wymeditor").wymeditor({
       aClassesItems: [
-        {'name': 'myclass', 'title': 'My class'},
-        {'name': 'otherclass', 'title': 'Other class'}
+        {'name': 'date', 'title': 'PARA: Date', 'expr': 'P'},
+        {'name': 'hidden-note', 'title': 'PARA: Hidden note', 'expr': 'P'},
+        {'name': 'important', 'title': 'PARA: Important', 'expr': 'P'},
+        {'name': 'border', 'title': 'IMG: Border', 'expr': 'IMG'}
       ]
     });
     //enable the default skin
@@ -51,7 +53,7 @@ $j(function() {
 <h1>WYMeditor basic integration example</h1>
 <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
 <form method="post" action="">
-<textarea class="wymeditor">&lt;p&gt;Basic integration example.&lt;/p&gt;</textarea>
+<textarea class="wymeditor"></textarea>
 <input type="submit" class="wymsubmit" />
 </form>
 
