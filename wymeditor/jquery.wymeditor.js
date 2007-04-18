@@ -94,7 +94,7 @@
 /**
  * Replace an HTML element by WYMeditor
  *
- * @example $(".wymeditor").wymeditor(
+ * @example $j(".wymeditor").wymeditor(
  *        {
  *
  *        }
@@ -447,13 +447,13 @@ Wymeditor.prototype.bindEvents = function() {
   
   //handle click event on tools buttons
   $j(this._box).find(this._options.sToolsSelector).mousedown(function() {
-    wym.exec($(this).attr(sWYM_NAME));
+    wym.exec($j(this).attr(sWYM_NAME));
     return(false);
   });
   
   //handle click event on containers buttons
   $j(this._box).find(this._options.sContainerSelector).mousedown(function() {
-    wym.container($(this).attr(sWYM_NAME));
+    wym.container($j(this).attr(sWYM_NAME));
     return(false);
   });
   
@@ -466,7 +466,7 @@ Wymeditor.prototype.bindEvents = function() {
   $j(this._box).find(this._options.sClassesSelector)
   .find(sWYM_A).mousedown(function() {
     var oSel = wym.selected();
-    $j(oSel).toggleClass($(this).attr(sWYM_NAME));
+    $j(oSel).toggleClass($j(this).attr(sWYM_NAME));
     if(!$j(oSel).attr(sWYM_CLASS)) $j(oSel).removeAttr(wym._class);
     return(false);
   });
@@ -760,7 +760,7 @@ function fWYM_INIT_DIALOG(index) {
         var sUrl = $j(".wym_href").val();
         if(sUrl.length > 0) {
             wym._exec('CreateLink', sStamp);
-            var link = $(wym._doc.body).find("a[@href=" + sStamp + "]");
+            var link = $j(wym._doc.body).find("a[@href=" + sStamp + "]");
             link.attr("href", sUrl);
             link.attr("title", $j(".wym_title").val());
         }
@@ -772,7 +772,7 @@ function fWYM_INIT_DIALOG(index) {
         var sUrl = $j(".wym_src").val();
         if(sUrl.length > 0) {
             wym._exec('InsertImage', sStamp);
-            var image = $(wym._doc.body).find("img[@src=" + sStamp + "]");
+            var image = $j(wym._doc.body).find("img[@src=" + sStamp + "]");
             image.attr("src", sUrl);
             image.attr("title", $j(".wym_title").val());
             image.attr("alt", $j(".wym_alt").val());
