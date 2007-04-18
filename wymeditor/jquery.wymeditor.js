@@ -67,8 +67,6 @@
     var sWYM_INSERT_IMAGE     = "InsertImage";
     var sWYM_INSERT_TABLE     = "InsertTable";
     var sWYM_TOGGLE_HTML      = "ToggleHtml";
-    
-    var sWYM_POPUP_BLOCKED  = "{Popup_Blocked}";
 
     var aWYM_CONTAINERS = new Array(sWYM_P,sWYM_H1,sWYM_H2,sWYM_H3,sWYM_H4,
         sWYM_H5,sWYM_H6,sWYM_PRE,sWYM_BLOCKQUOTE);
@@ -122,14 +120,21 @@ $j.fn.wymeditor = function(options, callback) {
     sHtml:      "",
 
     sBoxHtml:   "<div class='wym_box'>"
-              + "<div class='wym_area_top'>" + sWYM_TOOLS
+              + "<div class='wym_area_top'>"
+              + sWYM_TOOLS
               + "</div>"
               + "<div class='wym_area_left'></div>"
-              + "<div class='wym_area_right'>" + sWYM_CONTAINERS
-              + sWYM_CLASSES + "</div>"
-              + "<div class='wym_area_main'>" + sWYM_HTML
-              + sWYM_IFRAME + sWYM_STATUS + "</div>"
-              + "<div class='wym_area_bottom'>" + "</div>"
+              + "<div class='wym_area_right'>"
+              + sWYM_CONTAINERS
+              + sWYM_CLASSES
+              + "</div>"
+              + "<div class='wym_area_main'>"
+              + sWYM_HTML
+              + sWYM_IFRAME
+              + sWYM_STATUS
+              + "</div>"
+              + "<div class='wym_area_bottom'>"
+              + "</div>"
               + "</div>",
 
     sIframeHtml:"<div class='wym_iframe wym_section'>"
@@ -231,13 +236,14 @@ $j.fn.wymeditor = function(options, callback) {
 
     sBoxSelector:       ".wym_box",
     sToolsSelector:     ".wym_tools",
-    sClassesSelector:   ".wym_classes",
     sContainersSelector:".wym_containers",
+    sClassesSelector:   ".wym_classes",
     sHtmlSelector:      ".wym_html",
     sIframeSelector:    ".wym_iframe iframe",
     sStatusSelector:    ".wym_status",
-    sToolsSelector:     ".wym_tools a",
+    sToolSelector:      ".wym_tools a",
     sContainerSelector: ".wym_containers a",
+    sClassSelector:     ".wym_classes a",
     sHtmlValSelector:   ".wym_html_val",
     
     sDialogFeatures:    "menubar=no,titlebar=no,toolbar=no,resizable=no"
@@ -246,7 +252,9 @@ $j.fn.wymeditor = function(options, callback) {
     sDialogHtml:      "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN'"
                       + " 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>"
                       + "<html><head>"
-                      + "<title>" + sWYM_DIALOG_TITLE + "</title>"
+                      + "<title>"
+                      + sWYM_DIALOG_TITLE
+                      + "</title>"
                       + "<script type='text/javascript'"
                       + " src='jquery/jquery.js'></script>"
                       + "<script type='text/javascript'"
@@ -462,13 +470,13 @@ Wymeditor.prototype.bindEvents = function() {
   var wym = this;
   
   //handle click event on tools buttons
-  $j(this._box).find(this._options.sToolsSelector).mousedown(function() {
+  $j(this._box).find(this._options.sToolSelector).click(function() {
     wym.exec($j(this).attr(sWYM_NAME));
     return(false);
   });
   
   //handle click event on containers buttons
-  $j(this._box).find(this._options.sContainerSelector).mousedown(function() {
+  $j(this._box).find(this._options.sContainerSelector).click(function() {
     wym.container($j(this).attr(sWYM_NAME));
     return(false);
   });
@@ -479,11 +487,8 @@ Wymeditor.prototype.bindEvents = function() {
   });
   
   //handle click event on classes buttons
-  $j(this._box).find(this._options.sClassesSelector)
-  .find(sWYM_A).mousedown(function() {
-    var oSel = wym.selected();
-    $j(oSel).toggleClass($j(this).attr(sWYM_NAME));
-    if(!$j(oSel).attr(sWYM_CLASS)) $j(oSel).removeAttr(wym._class);
+  $j(this._box).find(this._options.sClassSelector).click(function() {
+    wym.toggleClass($j(this).attr(sWYM_NAME));
     return(false);
   });
 };
@@ -614,6 +619,13 @@ Wymeditor.prototype.container = function(sType) {
     }
   }
   else return(this.selected());
+};
+
+Wymeditor.prototype.toggleClass = function(sClass) {
+
+    var oSel = this.findUp(aWYM_CONTAINERS);
+    $j(oSel).toggleClass(sClass);
+    if(!$j(oSel).attr(sWYM_CLASS)) $j(oSel).removeAttr(this._class);
 };
 
 /* @name findUp
