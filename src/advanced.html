@@ -36,14 +36,15 @@ $j(function() {
     $j(".wymeditor").wymeditor({
 
         //options
-        
         aClassesItems: [
-        {'name': 'date', 'title': 'PARA: Date', 'expr': 'P'},
+        {'name': 'info', 'title': 'ALL: Info', 'expr': '*'},
+        {'name': 'date', 'title': 'PARA: Date', 'expr': 'p'},
         {'name': 'hidden-note', 'title': 'PARA: Hidden note',
-         'expr': 'P[@class=""], P[@class="hidden-note"]'},
+         'expr': 'p[@class=""], p[@class="hidden-note"]'},
         {'name': 'important', 'title': 'PARA: Important',
-         'expr': 'P[@class!="hidden-note"]'},
-        {'name': 'border', 'title': 'IMG: Border', 'expr': 'IMG'}
+         'expr': 'p[@class!="hidden-note"]'},
+        {'name': 'border', 'title': 'IMG: Border', 'expr': 'img'},
+        {'name': 'special', 'title': 'LIST: Special', 'expr': 'ul, ol'}
       ]
 
     },function() {
