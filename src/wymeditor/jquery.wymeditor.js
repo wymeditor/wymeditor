@@ -59,10 +59,15 @@
     var sWYM_TD               = "td";
     var sWYM_TH               = "th";
     var sWYM_A                = "a";
+    var sWYM_TABLE            = "table";
     var sWYM_CLASS            = "class";
-    var sWYM_LINK             = "Link";
-    var sWYM_IMAGE            = "Image";
-    var sWYM_TABLE            = "Table";
+    var sWYM_HREF             = "href";
+    var sWYM_SRC              = "src";
+    var sWYM_TITLE            = "title";
+    var sWYM_ALT              = "alt";
+    var sWYM_DIALOG_LINK      = "Link";
+    var sWYM_DIALOG_IMAGE     = "Image";
+    var sWYM_DIALOG_TABLE     = "Table";
     var sWYM_CREATE_LINK      = "CreateLink";
     var sWYM_INSERT_IMAGE     = "InsertImage";
     var sWYM_INSERT_TABLE     = "InsertTable";
@@ -245,6 +250,22 @@ $j.fn.wymeditor = function(options, callback) {
     sContainerSelector: ".wym_containers a",
     sClassSelector:     ".wym_classes a",
     sHtmlValSelector:   ".wym_html_val",
+    
+    sHrefSelector:      ".wym_href",
+    sSrcSelector:       ".wym_src",
+    sTitleSelector:     ".wym_title",
+    sAltSelector:       ".wym_alt",
+    
+    sRowsSelector:      ".wym_rows",
+    sColsSelector:      ".wym_cols",
+    sCaptionSelector:   ".wym_caption",
+    
+    sSubmitSelector:    ".wym_submit",
+    sCancelSelector:    ".wym_cancel",
+    
+    sDialogLinkSelector:  ".wym_dialog_link",
+    sDialogImageSelector: ".wym_dialog_image",
+    sDialogTableSelector: ".wym_dialog_table",
     
     sDialogFeatures:    "menubar=no,titlebar=no,toolbar=no,resizable=no"
                       + ",width=560,height=300,top=0,left=0",
@@ -539,15 +560,15 @@ Wymeditor.prototype.exec = function(cmd) {
   switch(cmd) {
     case sWYM_CREATE_LINK:
       var container = this.container();
-      if(container) this.dialog(sWYM_LINK);
+      if(container) this.dialog(sWYM_DIALOG_LINK);
     break;
     
     case sWYM_INSERT_IMAGE:
-      this.dialog(sWYM_IMAGE);
+      this.dialog(sWYM_DIALOG_IMAGE);
     break;
     
     case sWYM_INSERT_TABLE:
-      this.dialog(sWYM_TABLE);
+      this.dialog(sWYM_DIALOG_TABLE);
     break;
     
     case sWYM_TOGGLE_HTML:
@@ -748,13 +769,13 @@ Wymeditor.prototype.dialog = function(sType) {
     
     switch(sType) {
 
-      case(sWYM_LINK):
+      case(sWYM_DIALOG_LINK):
         sBodyHtml = this._options.sDialogLinkHtml;
       break;
-      case(sWYM_IMAGE):
+      case(sWYM_DIALOG_IMAGE):
         sBodyHtml = this._options.sDialogImageHtml;
       break;
-      case(sWYM_TABLE):
+      case(sWYM_DIALOG_TABLE):
         sBodyHtml = this._options.sDialogTableHtml;
       break;
     }
@@ -795,49 +816,52 @@ function fWYM_INIT_DIALOG(index) {
     var sStamp = wym.uniqueStamp();
     
     if(oSel) {
-            $j(".wym_href").val($j(oSel).attr("href"));
-            $j(".wym_src").val($j(oSel).attr("src"));
-            $j(".wym_title").val($j(oSel).attr("title"));
-            $j(".wym_alt").val($j(oSel).attr("alt"));
+            $j(wym._options.sHrefSelector).val($j(oSel).attr(sWYM_HREF));
+            $j(wym._options.sSrcSelector).val($j(oSel).attr(sWYM_SRC));
+            $j(wym._options.sTitleSelector).val($j(oSel).attr(sWYM_TITLE));
+            $j(wym._options.sAltSelector).val($j(oSel).attr(sWYM_ALT));
     }
 
-    $j(".wym_dialog_link .wym_submit").mousedown(function() {
+    $j(wym._options.sDialogLinkSelector + " "
+        + wym._options.sSubmitSelector).click(function() {
         
-        var sUrl = $j(".wym_href").val();
+        var sUrl = $j(wym._options.sHrefSelector).val();
         if(sUrl.length > 0) {
-            wym._exec('CreateLink', sStamp);
+            wym._exec(sWYM_CREATE_LINK, sStamp);
             var link = $j(wym._doc.body).find("a[@href=" + sStamp + "]");
-            link.attr("href", sUrl);
-            link.attr("title", $j(".wym_title").val());
+            link.attr(sWYM_HREF, sUrl);
+            link.attr(sWYM_TITLE, $j(wym._options.sTitleSelector).val());
         }
         window.close();
     });
     
-    $j(".wym_dialog_image .wym_submit").click(function() {
+    $j(wym._options.sDialogImageSelector + " "
+        + wym._options.sSubmitSelector).click(function() {
         
-        var sUrl = $j(".wym_src").val();
+        var sUrl = $j(wym._options.sSrcSelector).val();
         if(sUrl.length > 0) {
-            wym._exec('InsertImage', sStamp);
+            wym._exec(sWYM_INSERT_IMAGE, sStamp);
             var image = $j(wym._doc.body).find("img[@src=" + sStamp + "]");
-            image.attr("src", sUrl);
-            image.attr("title", $j(".wym_title").val());
-            image.attr("alt", $j(".wym_alt").val());
+            image.attr(sWYM_SRC, sUrl);
+            image.attr(sWYM_TITLE, $j(wym._options.sTitleSelector).val());
+            image.attr(sWYM_ALT, $j(wym._options.sAltSelector).val());
         }
         window.close();
     });
     
-    $j(".wym_dialog_table .wym_submit").click(function() {
+    $j(wym._options.sDialogTableSelector + " "
+        + wym._options.sSubmitSelector).click(function() {
         
-        var iRows = $j(".wym_rows").val();
-        var iCols = $j(".wym_cols").val();
+        var iRows = $j(wym._options.sRowsSelector).val();
+        var iCols = $j(wym._options.sColsSelector).val();
         
         if(iRows > 0 && iCols > 0) {
         
-            var table = wym._doc.createElement("TABLE");
+            var table = wym._doc.createElement(sWYM_TABLE);
             var newRow = null;
         		var newCol = null;
         		
-        		var sCaption = $j(".wym_caption").val();
+        		var sCaption = $j(wym._options.sCaptionSelector).val();
         		
         		//we create the caption
         		var newCaption = table.createCaption();
@@ -854,7 +878,7 @@ function fWYM_INIT_DIALOG(index) {
         window.close();
     });
     
-    $j(".wym_cancel").mousedown(function() {
+    $j(wym._options.sCancelSelector).mousedown(function() {
         window.close();
     });
 };
