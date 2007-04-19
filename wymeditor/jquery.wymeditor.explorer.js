@@ -35,16 +35,20 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
     $j(this._doc.body).html(this._wym._html);
     
     //handle events
-    var wymexp = this;
-    this._doc.onbeforedeactivate = function() {wymexp.saveCaret();};
-    this._doc.onkeyup = function() {wymexp.saveCaret();};
-    this._doc.onclick = function() {wymexp.saveCaret();};
+    var wym = this;
+    this._doc.onbeforedeactivate = function() {wym.saveCaret();};
+    this._doc.onkeyup = function() {
+      wym.saveCaret();
+      wym.keyup();
+    };
+    this._doc.onclick = function() {wym.saveCaret();};
     
     //callback can't be executed twice, so we check
     if(this._initialized) {
         
         if(this._callback) this._callback();
         this._wym.bindEvents();
+        this.listen();
     }
     
     this._initialized = true;
@@ -57,6 +61,8 @@ WymClassExplorer.prototype._exec = function(cmd,param) {
 
     if(param) this._doc.execCommand(cmd,false,param);
     else this._doc.execCommand(cmd);
+    
+    this.listen();
 };
 
 WymClassExplorer.prototype.selected = function() {
@@ -299,4 +305,28 @@ WymClassExplorer.prototype.xhtml = function() {
     ret=ret.replace(rExp,"><");
     
     return(ret);
+};
+
+WymClassExplorer.prototype.listen = function() {
+
+    //mouseup handler
+    var wym = this;
+    $j(this._doc.body).find("*").each(function() {
+      $j(this).get(0).onmouseup = function() {
+        wym.mouseup(this);
+      };
+    });
+};
+
+//keyup handler
+WymClassExplorer.prototype.keyup = function() {
+  this._selected_image = null;
+};
+
+//mouseup handler
+WymClassExplorer.prototype.mouseup = function(elem) {
+  var doc = elem.ownerDocument;
+  if(elem.tagName.toLowerCase() == "img") this._selected_image = elem;
+  else this._selected_image = null;
+  doc.parentWindow.event.cancelBubble = true;
 };

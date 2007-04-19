@@ -34,10 +34,12 @@ $j(function() {
 
     $j(".wymeditor").wymeditor({
       aClassesItems: [
-        {'name': 'date', 'title': 'PARA: Date', 'expr': 'P'},
-        {'name': 'hidden-note', 'title': 'PARA: Hidden note', 'expr': 'P'},
-        {'name': 'important', 'title': 'PARA: Important', 'expr': 'P'},
-        {'name': 'border', 'title': 'IMG: Border', 'expr': 'IMG'}
+        {'name': 'info', 'title': 'ALL: Info', 'expr': '*'},
+        {'name': 'date', 'title': 'PARA: Date', 'expr': 'p'},
+        {'name': 'hidden-note', 'title': 'PARA: Hidden note', 'expr': 'p'},
+        {'name': 'important', 'title': 'PARA: Important', 'expr': 'p'},
+        {'name': 'border', 'title': 'IMG: Border', 'expr': 'img'},
+        {'name': 'special', 'title': 'LIST: Special', 'expr': 'ul, ol'}
       ]
     });
     //enable the default skin

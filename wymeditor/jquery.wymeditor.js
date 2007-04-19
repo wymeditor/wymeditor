@@ -655,6 +655,9 @@ Wymeditor.prototype.container = function(sType) {
   else return(this.selected());
 };
 
+/* @name toggleClass
+ * @description Toggles class on selected element, or one of its parents
+ */
 Wymeditor.prototype.toggleClass = function(sClass, jqexpr) {
 
   var container = (this._selected_image

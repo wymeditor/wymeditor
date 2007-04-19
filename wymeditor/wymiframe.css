@@ -30,9 +30,15 @@
 
 /*VISUAL FEEDBACK TEST*/
 
-    .hidden-note                        { color: #999; }
+    .info                               { background-color: #cfc;
+                                          border: 2px solid #9c9; }
+    .hidden-note                        { color: #999;
+                                          border: 2px solid #ccc; }
     .border                             { border: 4px solid #ccc; }
-    .date                               { background-color: #ff9; }
+    .date                               { background-color: #ff9;
+                                          border: 2px solid #ee9; }
     .important                          { color: red;
                                           font-weight: bold;
-                                          border: 1px solid red; }
+                                          border: 2px solid red; }
+    .special                            { background-color: #fc9;
+                                          border: 2px solid red; }

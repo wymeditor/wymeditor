@@ -168,7 +168,7 @@ WymClassMozilla.prototype.listen = function() {
     $j(this._doc.body).find("*").each(function() {
       $j(this).get(0).addEventListener('mouseup',wym.mouseup,false);
     });
-}
+};
 
 //keyup handler, mainly used for cleanups
 WymClassMozilla.prototype.keyup = function(evt) {
