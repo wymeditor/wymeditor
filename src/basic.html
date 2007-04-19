@@ -21,14 +21,15 @@
 <title>WYMeditor</title>
 <link rel="stylesheet" type="text/css" media="screen" href="wymeditor/skins/default/screen.css" />
 <script type="text/javascript" src="jquery/jquery.js"></script>
-<script type="text/javascript" src="firebug/firebug.js"></script>
 <script type="text/javascript" src="wymeditor/lang/en.js"></script>
 <script type="text/javascript" src="wymeditor/jquery.wymeditor.js"></script>
 <script type="text/javascript" src="wymeditor/jquery.wymeditor.explorer.js"></script>
 <script type="text/javascript" src="wymeditor/jquery.wymeditor.mozilla.js"></script>
 <script type="text/javascript" src="wymeditor/jquery.wymeditor.opera.js"></script>
+
 <script type="text/javascript">
-var $j = jQuery;
+
+var $j = jQuery.noConflict();
 
 $j(function() {
 
@@ -42,13 +43,10 @@ $j(function() {
         {'name': 'special', 'title': 'LIST: Special', 'expr': 'ul, ol'}
       ]
     });
-    //enable the default skin
-    $j(".wym_box").addClass("wym_skin_default");
 });
 
 </script>
 
-<script type="text/javascript" src="wymeditor/skins/default/main.js"></script>
 </head>
 
 <body>
