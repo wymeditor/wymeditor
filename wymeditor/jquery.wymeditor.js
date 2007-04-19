@@ -72,6 +72,8 @@
     var sWYM_INSERT_IMAGE     = "InsertImage";
     var sWYM_INSERT_TABLE     = "InsertTable";
     var sWYM_TOGGLE_HTML      = "ToggleHtml";
+    
+    var sWYM_DEFAULT_SKIN     = "default";
 
     var aWYM_CONTAINERS = new Array(sWYM_P,sWYM_H1,sWYM_H2,sWYM_H3,sWYM_H4,
         sWYM_H5,sWYM_H6,sWYM_PRE,sWYM_BLOCKQUOTE);
@@ -337,6 +339,8 @@ $j.fn.wymeditor = function(options, callback) {
                       + "<input class='wym_cancel' type='button'"
                       + "value='{Cancel}' />"
                       + "</p></body>",
+                      
+    sSkin:            sWYM_DEFAULT_SKIN,
 
     sStringDelimiterLeft: "{",
     sStringDelimiterRight:"}"
@@ -483,6 +487,10 @@ Wymeditor.prototype.init = function() {
   
   //hide the html value
   $j(this._box).find(this._options.sHtmlSelector).hide();
+  
+  //enable the skin
+  this.skin();
+
 };
 
 Wymeditor.prototype.bindEvents = function() {
@@ -808,6 +816,52 @@ Wymeditor.prototype.toggleHtml = function() {
 Wymeditor.prototype.uniqueStamp = function() {
 	var now=new Date();
 	return("wym-" + now.getTime());
+};
+
+/********** SKINS **********/
+
+Wymeditor.prototype.skin = function() {
+
+  switch(this._options.sSkin) {
+  
+    case sWYM_DEFAULT_SKIN:
+    
+      $j(".wym_box").addClass("wym_skin_default");
+      //render folllowing sections as panels
+      $j("div.wym_classes").addClass("wym_panel");
+
+      //render folllowing sections as buttons
+      $j("div.wym_tools").addClass("wym_buttons");
+
+      //render folllowing sections as dropdown menus
+      $j("div.wym_containers").addClass("wym_dropdown")
+          .find("h2").append("<span>&nbsp;&gt;</span>");
+
+      // auto add some margin to the main area sides if left area
+      // or right area are not empty (if they contain sections)
+      $j("div.wym_area_right ul")
+          .parents("div.wym_area_right").show()
+          .parents("div.wym_box")
+          .find("div.wym_area_main")
+          .css({"margin-right": "155px"});
+
+      $j("div.wym_area_left ul")
+          .parents("div.wym_area_left").show()
+          .parents("div.wym_box")
+          .find("div.wym_area_main")
+          .css({"margin-left": "155px"});
+
+      //make hover work under IE < 7
+      $j(".wym_section").hover(function(){ 
+          $j(this).addClass("hover"); 
+      },function(){ 
+          $j(this).removeClass("hover"); 
+      });
+    
+    break;
+  
+  }
+
 };
 
 /********** DIALOGS **********/
