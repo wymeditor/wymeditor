@@ -151,6 +151,8 @@ $j.fn.wymeditor = function(options, callback) {
               + sWYM_INDEX + "].initIframe(this)' "
               + "></iframe>"
               + "</div>",
+              
+    aEditorCss: [],
 
     sToolsHtml: "<div class='wym_tools wym_section'>"
               + "<h2>Tools</h2>"

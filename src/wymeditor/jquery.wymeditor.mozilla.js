@@ -27,6 +27,16 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
 
     this._iframe = iframe;
     this._doc = iframe.contentDocument;
+    
+    var styles = this._doc.styleSheets[0];    
+    var aCss = eval(this._options.aEditorCss);
+
+    for(var i = 0; i < aCss.length; i++) {
+    var oCss = aCss[i];
+    if(oCss.name && oCss.css)
+      styles.insertRule(oCss.name + " {" + oCss.css + "}",
+        styles.cssRules.length);
+    }
 
     this._doc.title = this._wym._index;
     this._doc.designMode="on";
