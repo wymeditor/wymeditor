@@ -57,8 +57,8 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
         
       if($j.isFunction(this._options.fPreBind)) this._options.fPreBind(this);
       this._wym.bindEvents();
-      this.listen();
       if($j.isFunction(this._options.fPostInit)) this._options.fPostInit(this);
+      this.listen();
     }
     
     this._initialized = true;
