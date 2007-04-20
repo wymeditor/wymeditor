@@ -32,9 +32,11 @@ WymClassOpera.prototype.initIframe = function(iframe) {
 
     this.html(this._wym._html);
     
-    if(this._callback) this._callback();
+    if($j.isFunction(this._options.fPreBind)) this._options.fPreBind(this);
     
     this._wym.bindEvents();
+    
+    if($j.isFunction(this._options.fPostInit)) this._options.fPostInit(this);
 };
 
 WymClassOpera.prototype._exec = function(cmd,param) {

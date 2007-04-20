@@ -44,7 +44,7 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
 
     this.html(this._wym._html);
     
-    if(this._callback) this._callback();
+    if($j.isFunction(this._options.fPreBind)) this._options.fPreBind(this);
     
     this._wym.bindEvents();    
     
@@ -53,6 +53,8 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
     
     //add event listeners to doc elements
     this.listen();
+    
+    if($j.isFunction(this._options.fPostInit)) this._options.fPostInit(this);
     
 };
 

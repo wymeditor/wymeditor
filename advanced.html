@@ -33,10 +33,10 @@ var $j = jQuery.noConflict();
 
 $j(function() {
 
-    $j(".wymeditor").wymeditor({
+    $j('.wymeditor').wymeditor({
 
         //options
-        aClassesItems: [
+      aClassesItems: [
         {'name': 'info', 'title': 'ALL: Info', 'expr': '*'},
         {'name': 'date', 'title': 'PARA: Date', 'expr': 'p'},
         {'name': 'hidden-note', 'title': 'PARA: Hidden note',
@@ -47,7 +47,7 @@ $j(function() {
         {'name': 'special', 'title': 'LIST: Special', 'expr': 'ul, ol'}
       ],
       
-        aEditorCss: [
+      aEditorCss: [
         {'name': '.info',
          'css': 'background-color: #cfc; border: 2px solid #9c9;'},
         {'name': '.hidden-note',
@@ -59,27 +59,24 @@ $j(function() {
          'css': 'color: red; font-weight: bold; border: 2px solid red;'},
         {'name': '.special',
          'css': 'background-color: #fc9; border: 2px solid red;'}
-      ]
-
-    },function() {
-
-        //callback function
-        var wym = this;
-        wym.html("<p>WYMeditor instance "
-            + wym._index
-            + "<\/p>"
-            + "<p><img src='http://sflogo.sourceforge.net/sflogo.php"
-            + "?group_id=148869&type=1' \/><\/p>"
-        );
-    
-    }).each(function(i) {
+      ],
+      
+      fPostInit: function(wym) {
+        //set the editor's HTML value
+        wym.html('<p>WYMeditor instance ' + wym._index + '<\/p>');
         
-        var wym = $j.wymeditors(i);
+        //set the status bar value
+        wym.status('&nbsp;');
         
-        $j(this).parent().find(".wymsubmit").click(function() {
-            wym.update();
-            alert("Submitting: " + wym.xhtml());
-        });
+        //bind events on buttons
+        $(wym._box).find('.wym_tools a').hover(
+        function() {
+          wym.status($(this).html());
+        },
+        function() {
+          wym.status('&nbsp;');
+        });        
+      }
     });
 });
 
