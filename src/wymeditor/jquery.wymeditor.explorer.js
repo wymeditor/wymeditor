@@ -55,9 +55,10 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
     //callback can't be executed twice, so we check
     if(this._initialized) {
         
-        if(this._callback) this._callback();
-        this._wym.bindEvents();
-        this.listen();
+      if($j.isFunction(this._options.fPreBind)) this._options.fPreBind(this);
+      this._wym.bindEvents();
+      this.listen();
+      if($j.isFunction(this._options.fPostInit)) this._options.fPostInit(this);
     }
     
     this._initialized = true;

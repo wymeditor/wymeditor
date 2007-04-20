@@ -120,7 +120,7 @@
  * @cat Plugins/WYMeditor
  * @author Jean-Francois Hovinne
  */
-$j.fn.wymeditor = function(options, callback) {
+$j.fn.wymeditor = function(options) {
 
   options = $j.extend({
 
@@ -345,13 +345,17 @@ $j.fn.wymeditor = function(options, callback) {
     sSkin:            sWYM_DEFAULT_SKIN,
 
     sStringDelimiterLeft: "{",
-    sStringDelimiterRight:"}"
+    sStringDelimiterRight:"}",
+    
+    fPreInit: function(wym) {},
+    fPreBind: function(wym) {},
+    fPostInit: function(wym) {}
 
   }, options);
 
   return this.each(function(i) {
 
-    new Wymeditor($j(this),i,options,callback);
+    new Wymeditor($j(this),i,options);
   });
 };
 
@@ -373,7 +377,7 @@ $j.extend({
 /* @name Wymeditor
  * @description WYMeditor class
  */
-function Wymeditor(elem,index,options,callback) {
+function Wymeditor(elem,index,options) {
 
   aWYM_INSTANCES[index] = this;
 
@@ -381,10 +385,10 @@ function Wymeditor(elem,index,options,callback) {
   this._index = index;
   this._options = options;
   this._html = $j(elem).val();
-  this._callback = callback;
   
   if(this._options.sHtml) this._html = this._options.sHtml;
   
+  if($j.isFunction(this._options.fPreInit)) this._options.fPreInit(this);
   this.init();
   
 };
