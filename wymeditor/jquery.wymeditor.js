@@ -526,15 +526,12 @@ Wymeditor.prototype.bindEvents = function() {
   
     var aClasses = eval(wym._options.aClassesItems);
     var sName = $j(this).attr(sWYM_NAME);
-
-    for(var i = 0; i < aClasses.length; i++) {
     
-      var oClass = aClasses[i];
-      if(oClass.name == sName) {
-
-        jqexpr = oClass.expr;
-        wym.toggleClass(sName, jqexpr);
-      }
+    var oClass = aClasses.findByName(sName);
+    
+    if(oClass) {
+      jqexpr = oClass.expr;
+      wym.toggleClass(sName, jqexpr);
     }
     return(false);
   });
@@ -832,33 +829,34 @@ Wymeditor.prototype.skin = function() {
   
     case sWYM_DEFAULT_SKIN:
     
-      $j(".wym_box").addClass("wym_skin_default");
+      $j(this._box).addClass("wym_skin_default");
+      
       //render folllowing sections as panels
-      $j("div.wym_classes").addClass("wym_panel");
+      $j(this._box).find("div.wym_classes").addClass("wym_panel");
 
       //render folllowing sections as buttons
-      $j("div.wym_tools").addClass("wym_buttons");
+      $j(this._box).find("div.wym_tools").addClass("wym_buttons");
 
       //render folllowing sections as dropdown menus
-      $j("div.wym_containers").addClass("wym_dropdown")
+      $j(this._box).find("div.wym_containers").addClass("wym_dropdown")
           .find("h2").append("<span>&nbsp;&gt;</span>");
 
       // auto add some margin to the main area sides if left area
       // or right area are not empty (if they contain sections)
-      $j("div.wym_area_right ul")
+      $j(this._box).find("div.wym_area_right ul")
           .parents("div.wym_area_right").show()
           .parents("div.wym_box")
           .find("div.wym_area_main")
           .css({"margin-right": "155px"});
 
-      $j("div.wym_area_left ul")
+      $j(this._box).find("div.wym_area_left ul")
           .parents("div.wym_area_left").show()
           .parents("div.wym_box")
           .find("div.wym_area_main")
           .css({"margin-left": "155px"});
 
       //make hover work under IE < 7
-      $j(".wym_section").hover(function(){ 
+      $j(this._box).find(".wym_section").hover(function(){ 
           $j(this).addClass("hover"); 
       },function(){ 
           $j(this).removeClass("hover"); 
@@ -998,4 +996,14 @@ Array.prototype.indexOf = function (item) {
     }
   }
 	return(ret);
+};
+
+Array.prototype.findByName = function (name) {
+  for(var i = 0; i < this.length; i++) {
+    var oItem = this[i];
+    if(oItem.name == name) {
+      return(oItem);
+    }
+  }
+  return(null);
 };

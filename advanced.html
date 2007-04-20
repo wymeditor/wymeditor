@@ -37,10 +37,9 @@ $j(function() {
 
         //options
       aClassesItems: [
-        {'name': 'info', 'title': 'ALL: Info', 'expr': '*'},
         {'name': 'date', 'title': 'PARA: Date', 'expr': 'p'},
         {'name': 'hidden-note', 'title': 'PARA: Hidden note',
-         'expr': 'p[@class=""], p[@class="hidden-note"]'},
+         'expr': 'p[@class!="important"]'},
         {'name': 'important', 'title': 'PARA: Important',
          'expr': 'p[@class!="hidden-note"]'},
         {'name': 'border', 'title': 'IMG: Border', 'expr': 'img'},
@@ -48,8 +47,6 @@ $j(function() {
       ],
       
       aEditorCss: [
-        {'name': '.info',
-         'css': 'background-color: #cfc; border: 2px solid #9c9;'},
         {'name': '.hidden-note',
          'css': 'color: #999; border: 2px solid #ccc;'},
         {'name': '.border', 'css': 'border: 4px solid #ccc;'},
@@ -63,19 +60,42 @@ $j(function() {
       
       fPostInit: function(wym) {
         //set the editor's HTML value
-        wym.html('<p>WYMeditor instance ' + wym._index + '<\/p>');
+        wym.html("<p>WYMeditor instance " + wym._index + "<\/p>"
+        + "<p><img alt='SourceForge Logo'"
+        + " src='http://sflogo.sourceforge.net/sflogo.php"
+        + "?group_id=148869&amp;type=1' \/><\/p>"
+        + "<ul><li>One<\/li><li>Two<\/li><li>Three<\/li><\/ul>");
         
         //set the status bar value
         wym.status('&nbsp;');
         
         //bind events on buttons
         $(wym._box).find('.wym_tools a').hover(
-        function() {
-          wym.status($(this).html());
-        },
-        function() {
-          wym.status('&nbsp;');
-        });        
+          function() {
+            wym.status($(this).html());
+          },
+          function() {
+            wym.status('&nbsp;');
+          }
+        );
+        
+        //add/remove a style attr to matching elems
+        //while mouseover/mouseout
+        $(wym._box).find('.wym_classes a').hover(
+          function() {
+            var aClasses = eval(wym._options.aClassesItems);
+            var sName = $j(this).attr(sWYM_NAME);
+            var oClass = aClasses.findByName(sName);
+          
+            if(oClass){
+               jqexpr = oClass.expr;
+               $(wym._doc).find(jqexpr).css('background-color','#cfc');
+            }
+          },
+          function() {
+            $(wym._doc).find('*').removeAttr('style');
+          }
+        );
       }
     });
 });

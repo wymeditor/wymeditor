@@ -51,11 +51,10 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
     //keyup handler
     this._doc.addEventListener('keyup',this.keyup,false);
     
-    //add event listeners to doc elements
-    this.listen();
-    
     if($j.isFunction(this._options.fPostInit)) this._options.fPostInit(this);
     
+    //add event listeners to doc elements
+    this.listen();
 };
 
 WymClassMozilla.prototype._exec = function(cmd,param) {
