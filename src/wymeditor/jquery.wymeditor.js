@@ -59,6 +59,8 @@
     var sWYM_TD               = "td";
     var sWYM_TH               = "th";
     var sWYM_A                = "a";
+    var sWYM_BR               = "br";
+    var sWYM_IMG              = "img";
     var sWYM_TABLE            = "table";
     var sWYM_CLASS            = "class";
     var sWYM_HREF             = "href";
@@ -72,6 +74,7 @@
     var sWYM_INSERT_IMAGE     = "InsertImage";
     var sWYM_INSERT_TABLE     = "InsertTable";
     var sWYM_TOGGLE_HTML      = "ToggleHtml";
+    var sWYM_FORMAT_BLOCK     = "FormatBlock";
     
     var sWYM_DEFAULT_SKIN     = "default";
 
@@ -819,6 +822,22 @@ Wymeditor.prototype.toggleHtml = function() {
 Wymeditor.prototype.uniqueStamp = function() {
 	var now=new Date();
 	return("wym-" + now.getTime());
+};
+
+/********** EVENTS **********/
+
+Wymeditor.prototype.listen = function() {
+
+  $j(this._doc.body).find("*").bind("mouseup", this.mouseup);
+};
+
+//mouseup handler
+Wymeditor.prototype.mouseup = function(evt) {
+  
+  var wym = aWYM_INSTANCES[this.ownerDocument.title];
+  if(this.tagName.toLowerCase() == sWYM_IMG) wym._selected_image = this;
+  else wym._selected_image = null;
+  evt.stopPropagation();
 };
 
 /********** SKINS **********/
