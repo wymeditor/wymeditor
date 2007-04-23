@@ -28,6 +28,7 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
     this._iframe = iframe;
     this._doc = iframe.contentDocument;
     
+    //add css rules from options
     var styles = this._doc.styleSheets[0];    
     var aCss = eval(this._options.aEditorCss);
 
@@ -39,21 +40,27 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
     }
 
     this._doc.title = this._wym._index;
-    this._doc.designMode="on";
-    this._doc.execCommand("styleWithCSS",'',false);
+    
+    //init designMode
+    this._doc.designMode = "on";
+    this._doc.execCommand("styleWithCSS", '', false);
 
+    //init html value
     this.html(this._wym._html);
     
+    //pre-bind functions
     if($j.isFunction(this._options.fPreBind)) this._options.fPreBind(this);
     
-    this._wym.bindEvents();    
+    //bind external events
+    this._wym.bindEvents();
     
-    //keyup handler
-    this._doc.addEventListener('keyup',this.keyup,false);
+    //bind editor events
+    $j(this._doc).bind("keyup", this.keyup);
     
+    //post-init functions
     if($j.isFunction(this._options.fPostInit)) this._options.fPostInit(this);
     
-    //add event listeners to doc elements
+    //add event listeners to doc elements, e.g. images
     this.listen();
 };
 
