@@ -1,4 +1,4 @@
-/*
+﻿/*
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2007 H.O.net - http://www.honet.be/
  * Dual licensed under the MIT (MIT-license.txt)
@@ -67,8 +67,12 @@ WymTidy.prototype.cleanup = function(wym) {
     $j.post(this._options.sUrl, { html: sHtml}, function(data) {
 
         if(data.length > 0 && data != '0') {
-          wym.html(data);
-          wym.status("HTML has been cleaned up.");
+          if(data.indexOf("<?php") == 0) {
+            wym.status("Ooops... Is PHP installed?");
+          } else {
+            wym.html(data);
+            wym.status("HTML has been cleaned up.");
+          }
         } else {
           wym.status("An error occurred.");
         }
