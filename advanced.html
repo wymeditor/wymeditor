@@ -26,8 +26,8 @@
 <script type="text/javascript" src="wymeditor/jquery.wymeditor.explorer.js"></script>
 <script type="text/javascript" src="wymeditor/jquery.wymeditor.mozilla.js"></script>
 <script type="text/javascript" src="wymeditor/jquery.wymeditor.opera.js"></script>
-<script type="text/javascript" src="wymeditor/plugins/hovertools/jquery.wymeditor.hovertools.js">
-</script>
+<script type="text/javascript" src="wymeditor/plugins/hovertools/jquery.wymeditor.hovertools.js"></script>
+<script type="text/javascript" src="wymeditor/plugins/tidy/jquery.wymeditor.tidy.js"></script>
 
 <script type="text/javascript">
 
@@ -61,6 +61,7 @@ $j(function() {
       ],
       
       fPostInit: function(wym) {
+      
         //set the editor's HTML value
         wym.html("<p>WYMeditor instance " + wym._index + "<\/p>"
         + "<p><img alt='SourceForge Logo'"
@@ -70,6 +71,10 @@ $j(function() {
         
         //set the status bar value
         wym.status('&nbsp;');
+        
+        //activate 'tidy' plugin
+        //which cleans up the HTML
+        wym.tidy();
         
         //activate 'hovertools' plugin
         //which gives more feedback to the user
