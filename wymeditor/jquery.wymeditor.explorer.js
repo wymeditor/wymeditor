@@ -31,6 +31,7 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
     this._iframe = iframe;
     this._doc = iframe.contentWindow.document;
     
+    //add css rules from options
     var styles = this._doc.styleSheets[0];
     var aCss = eval(this._options.aEditorCss);
 
@@ -41,6 +42,8 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
     }
 
     this._doc.title = this._wym._index;
+    
+    //init html value
     $j(this._doc.body).html(this._wym._html);
     
     //handle events
@@ -54,15 +57,23 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
     
     //callback can't be executed twice, so we check
     if(this._initialized) {
-        
+      
+      //pre-bind functions
       if($j.isFunction(this._options.fPreBind)) this._options.fPreBind(this);
+      
+      //bind external events
       this._wym.bindEvents();
+      
+      //post-init functions
       if($j.isFunction(this._options.fPostInit)) this._options.fPostInit(this);
+      
+      //add event listeners to doc elements, e.g. images
       this.listen();
     }
     
     this._initialized = true;
     
+    //init designMode
     this._doc.designMode="on";
     this._doc = iframe.contentWindow.document;
 };
@@ -317,26 +328,7 @@ WymClassExplorer.prototype.xhtml = function() {
     return(ret);
 };
 
-WymClassExplorer.prototype.listen = function() {
-
-    //mouseup handler
-    var wym = this;
-    $j(this._doc.body).find("*").each(function() {
-      $j(this).get(0).onmouseup = function() {
-        wym.mouseup(this);
-      };
-    });
-};
-
 //keyup handler
 WymClassExplorer.prototype.keyup = function() {
   this._selected_image = null;
-};
-
-//mouseup handler
-WymClassExplorer.prototype.mouseup = function(elem) {
-  var doc = elem.ownerDocument;
-  if(elem.tagName.toLowerCase() == "img") this._selected_image = elem;
-  else this._selected_image = null;
-  doc.parentWindow.event.cancelBubble = true;
 };

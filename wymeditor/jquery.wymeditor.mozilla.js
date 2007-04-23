@@ -178,16 +178,6 @@ WymClassMozilla.prototype.xhtml = function() {
     return(ret);    
 };
 
-
-WymClassMozilla.prototype.listen = function() {
-
-    //mouseup handler
-    var wym = this;
-    $j(this._doc.body).find("*").each(function() {
-      $j(this).get(0).addEventListener('mouseup',wym.mouseup,false);
-    });
-};
-
 //keyup handler, mainly used for cleanups
 WymClassMozilla.prototype.keyup = function(evt) {
 
@@ -200,7 +190,7 @@ WymClassMozilla.prototype.keyup = function(evt) {
 	
 	  //RETURN key
 		//cleanup <br><br> between paragraphs
-		$j(wym._doc.body).children("br").remove();
+		$j(wym._doc.body).children(sWYM_BR).remove();
 	}
 	
 	else if(evt.keyCode != 8 && evt.keyCode != 46
@@ -224,14 +214,6 @@ WymClassMozilla.prototype.keyup = function(evt) {
 
 		) name = container.parentNode.tagName.toLowerCase();
 
-		if(name == "body") wym._exec("formatblock", "P");
+		if(name == sWYM_BODY) wym._exec(sWYM_FORMAT_BLOCK, sWYM_P);
 	}
-};
-
-//mouseup handler
-WymClassMozilla.prototype.mouseup = function(evt) {
-  var wym = aWYM_INSTANCES[this.ownerDocument.title];
-  if(this.tagName.toLowerCase() == "img") wym._selected_image = this;
-  else wym._selected_image = null;
-  evt.stopPropagation();
 };
