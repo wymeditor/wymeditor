@@ -41,6 +41,7 @@ archive: pack
 	@@cp -a ${SRC_DIR}/wymeditor ${BUILD_DIR}/build/
 	@@rm ${BUILD_DIR}/build/wymeditor/*.js
 	@@cp ${BUILD_DIR}/build/jquery.wymeditor.js ${BUILD_DIR}/build/wymeditor/
+	@@cp ${BUILD_DIR}/build/jquery.wymeditor.pack.js ${BUILD_DIR}/build/wymeditor/
 	@@cp -a ${SRC_DIR}/*.txt ${SRC_DIR}/README ${BUILD_DIR}/build/wymeditor/
 	@@tar -C ${BUILD_DIR}/build -czf ${WE_ARCH} --exclude '.svn' wymeditor
 	@@rm -rf ${BUILD_DIR}/build/wymeditor/

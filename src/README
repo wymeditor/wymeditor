@@ -12,4 +12,20 @@ File Name:
 File Authors:
 		Jean-François Hovinne (jf.hovinne@wymeditor.org)
 
-WYMeditor documentation is available online at http://www.wymeditor.org/
+WYMeditor documentation is available online at http://trac.wymeditor.org/
+
+
+Note for 0.3
+============
+
+WYMeditor 0.3 is still alpha software.
+
+For WYMeditor 0.3 to work, you'll need the latest jQuery (NOT 1.1.2),
+built from SVN.
+For your convenience, a pre-built package is available at:
+http://files.wymeditor.org/wymeditor/trunk/src/jquery/jquery.js
+
+jQuery is copyright (C) 2007 John Resig and the jQuery team
+jQuery source code is available at http://jquery.com/
+
+Please see the documentation at http://trac.wymeditor.org/
