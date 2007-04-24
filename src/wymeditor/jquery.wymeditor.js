@@ -26,6 +26,8 @@
     var aWYM_INSTANCES        = new Array();
     var sWYM_NAME             = "name";
     var sWYM_INDEX            = "{Wym_Index}";
+    var sWYM_BASE_PATH        = "{Wym_Base_Path}";
+    var sWYM_JQUERY_PATH      = "{Wym_Jquery_Path}";
     var sWYM_TOOLS            = "{Wym_Tools}";
     var sWYM_TOOLS_ITEMS      = "{Wym_Tools_Items}";
     var sWYM_TOOL_NAME        = "{Wym_Tools_Name}";
@@ -127,7 +129,11 @@ $j.fn.wymeditor = function(options) {
 
   options = $j.extend({
 
-    sHtml:      "",
+    sHtml:       "",
+    
+    sBasePath:   "wymeditor/",
+    
+    sJqueryPath: "jquery/jquery.js",
 
     sBoxHtml:   "<div class='wym_box'>"
               + "<div class='wym_area_top'>"
@@ -149,7 +155,9 @@ $j.fn.wymeditor = function(options) {
 
     sIframeHtml:"<div class='wym_iframe wym_section'>"
               + "<iframe "
-              + "src='wymeditor/wymiframe.html' "
+              + "src='"
+              + sWYM_BASE_PATH
+              + "wymiframe.html' "
               + "onload='window.parent.aWYM_INSTANCES["
               + sWYM_INDEX + "].initIframe(this)' "
               + "></iframe>"
@@ -284,9 +292,13 @@ $j.fn.wymeditor = function(options) {
                       + sWYM_DIALOG_TITLE
                       + "</title>"
                       + "<script type='text/javascript'"
-                      + " src='jquery/jquery.js'></script>"
+                      + " src='"
+                      + sWYM_JQUERY_PATH
+                      + "'></script>"
                       + "<script type='text/javascript'"
-                      + " src='wymeditor/jquery.wymeditor.js'></script>"
+                      + " src='"
+                      + sWYM_BASE_PATH
+                      + "jquery.wymeditor.js'></script>"
                       + "</head>"
                       + sWYM_DIALOG_BODY
                       + "</html>",
@@ -426,7 +438,9 @@ Wymeditor.prototype.init = function() {
   
   //construct the iframe
   var sIframeHtml = this._options.sIframeHtml;
-  sIframeHtml = sIframeHtml.replace(sWYM_INDEX,this._index);
+  sIframeHtml = sIframeHtml
+    .replace(sWYM_INDEX,this._index)
+    .replace(sWYM_BASE_PATH, this._options.sBasePath);
   
   //construct wymbox
   var sBoxHtml = $j(this._box).html();
@@ -799,10 +813,13 @@ Wymeditor.prototype.dialog = function(sType) {
     
     //construct the dialog
     var sDialogHtml = this._options.sDialogHtml;
-    sDialogHtml = sDialogHtml.replace(sWYM_DIALOG_TITLE,
-      this.encloseString(sType));
-    sDialogHtml = sDialogHtml.replace(sWYM_DIALOG_BODY, sBodyHtml);
-    sDialogHtml = sDialogHtml.replace(sWYM_INDEX, this._index);
+    sDialogHtml = sDialogHtml
+      .replace(sWYM_BASE_PATH, this._options.sBasePath)
+      .replace(sWYM_JQUERY_PATH, this._options.sJqueryPath)
+      .replace(sWYM_DIALOG_TITLE, this.encloseString(sType))
+      .replace(sWYM_DIALOG_BODY, sBodyHtml)
+      .replace(sWYM_INDEX, this._index);
+      
     sDialogHtml = this.replaceStrings(sDialogHtml);
     
     var doc = wDialog.document;
