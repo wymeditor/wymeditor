@@ -17,12 +17,12 @@
 
 //Extend WYMeditor
 Wymeditor.prototype.tidy = function(options) {
-  var tidy = new WymTidy(options);
-  tidy.init(this);
+  var tidy = new WymTidy(options, this);
+  return(tidy);
 };
 
 //WymTidy constructor
-function WymTidy(options) {
+function WymTidy(options, wym) {
 
   options = $j.extend({
 
@@ -33,35 +33,37 @@ function WymTidy(options) {
                  + " url(wymeditor/plugins/tidy/wand.png)'>"
                  + "Clean up HTML"
                  + "</a></li>",
-    sToolsListSelector: " ul",
+    
     sButtonSelector: "li.wym_tools_tidy a"
     
   }, options);
   
   this._options = options;
+  this._wym = wym;
 
 };
 
 //WymTidy initialization
-WymTidy.prototype.init = function(wym) {
+WymTidy.prototype.init = function() {
 
   var tidy = this;
             
-  $j(wym._box).find(
-    wym._options.sToolsSelector + this._options.sToolsListSelector)
+  $j(this._wym._box).find(
+    this._wym._options.sToolsSelector + this._wym._options.sToolsListSelector)
     .append(this._options.sButtonHtml);
   
   //handle click event
-  $j(wym._box).find(this._options.sButtonSelector).click(function() {
-    tidy.cleanup(wym);
+  $j(this._wym._box).find(this._options.sButtonSelector).click(function() {
+    tidy.cleanup();
     return(false);
   });
 
 };
 
 //WymTidy cleanup
-WymTidy.prototype.cleanup = function(wym) {
+WymTidy.prototype.cleanup = function() {
 
+    var wym = this._wym;
     var sHtml = "<html><body>" + wym.xhtml() + "</body></html>";
 
     $j.post(this._options.sUrl, { html: sHtml}, function(data) {
