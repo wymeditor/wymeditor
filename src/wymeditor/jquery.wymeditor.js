@@ -1032,6 +1032,10 @@ $j.fn.parentsOrSelf = function(jqexpr) {
     return n.parents(jqexpr).lt(1);
 };
 
+String.prototype.insertAt = function(sInserted, iPos) {
+  return(this.substring(0,iPos) + sInserted + this.substring(iPos,this.length));
+};
+
 // from http://forum.de.selfhtml.org/archiv/2004/3/t76079/#m438193 (2007-02-06)
 Array.prototype.contains = function (elem) {
 //  var i;

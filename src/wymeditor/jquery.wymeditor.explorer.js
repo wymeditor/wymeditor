@@ -307,11 +307,11 @@ WymClassExplorer.prototype.xhtml = function() {
             {
                 flagTag=false;
                 flagAttr=false;
-                if(unclosed){ret=insertAt(ret,"</"+lastTag+">",
+                if(unclosed){ret=ret.insertAt("</"+lastTag+">",
                   ret.lastIndexOf("<"));unclosed=false;}
                 if(unopened){ret=ret.substr(0,ret.lastIndexOf("</li>"))
                   + "<"+lastTag+">";unopened=false;}
-                if(unclosedList){ret=insertAt(ret,"</li>",
+                if(unclosedList){ret=ret.insertAt("</li>",
                   ret.lastIndexOf("<"));unclosedList=false;}
                 if(dropTag){ret=ret.substr(0,
                   ret.lastIndexOf("<"));dropTag=false;}
