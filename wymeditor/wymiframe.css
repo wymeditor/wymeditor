@@ -18,8 +18,18 @@
 */
 
     p,h1,h2,h3,h4,h5,h6,pre,blockquote  { background-color: #f0f0ff; }
-    table                               { width: 90%; }
-    td                                  { background-color: #f0f4f8; border: 1px solid #ccc; width: 25%; height: 1.6em; }
+    table { width: 90%; }
+    td    { background-color: #f0f4f8;
+            border: 1px solid #ccc; 
+            width: 25%;
+            height: 1.6em; }
+    th    { background-color: #e9e9ff;
+            border: 1px solid #ccc;
+            height: 1.6em; }
+    caption { background-color: #ddf;
+            border: 1px solid #ccc;
+            height: 1.6em;
+            font-weight: bold; }
 
 /*IE*/
-    body                                { border: 0; background: white; }
+    body  { border: 0; background: white; }
