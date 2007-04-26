@@ -74,8 +74,9 @@ $j(function() {
         
         //activate 'tidy' plugin
         //which cleans up the HTML
-        wym.tidy();
-        
+        var wymtidy = wym.tidy();
+        wymtidy.init();
+
         //activate 'hovertools' plugin
         //which gives more feedback to the user
         wym.hovertools();

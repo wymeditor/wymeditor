@@ -256,6 +256,7 @@ $j.fn.wymeditor = function(options) {
 
     sBoxSelector:       ".wym_box",
     sToolsSelector:     ".wym_tools",
+    sToolsListSelector: " ul",
     sContainersSelector:".wym_containers",
     sClassesSelector:   ".wym_classes",
     sHtmlSelector:      ".wym_html",
