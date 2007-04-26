@@ -7,18 +7,19 @@ if(strlen($html) > 0) {
 
   // Specify configuration
   $config = array(
-            'bare'                        => 'true',
-            'clean'                       => 'true',
+            'bare'                        => true,
+            'clean'                       => true,
             'doctype'                     => 'strict',
             'drop-empty-paras'            => true,
             'drop-font-tags'              => true,
-            'drop-proprietary-attributes' => 'true',
+            'drop-proprietary-attributes' => true,
             'enclose-block-text'          => true,
             'indent'                      => false,
+            'join-classes'                => true,
+            'join-styles'                 => true,
             'logical-emphasis'            => true,
             'output-xhtml'                => true,
             'show-body-only'              => true,
-            'word-2000'                   => true,
             'wrap'                        => 0);
 
   // Tidy
