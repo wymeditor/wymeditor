@@ -69,6 +69,12 @@ WymClassMozilla.prototype._exec = function(cmd,param) {
     if(param) this._doc.execCommand(cmd,'',param);
     else this._doc.execCommand(cmd,'',null);
     
+    //set to P if parent = BODY
+    var container = this.selected();
+    if(container.tagName.toLowerCase() == sWYM_BODY)
+      this._exec(sWYM_FORMAT_BLOCK, sWYM_P);
+    
+    //add event handlers on doc elements
     this.listen();
 };
 
