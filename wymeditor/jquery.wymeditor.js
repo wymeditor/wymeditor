@@ -886,35 +886,39 @@ Wymeditor.prototype.skin = function() {
     
       $j(this._box).addClass("wym_skin_default");
       
-      //render folllowing sections as panels
-      $j(this._box).find("div.wym_classes").addClass("wym_panel");
+      //render following sections as panels
+      $j(this._box).find(this._options.sClassesSelector)
+        .addClass("wym_panel");
 
-      //render folllowing sections as buttons
-      $j(this._box).find("div.wym_tools").addClass("wym_buttons");
+      //render following sections as buttons
+      $j(this._box).find(this._options.sToolsSelector)
+        .addClass("wym_buttons");
 
-      //render folllowing sections as dropdown menus
-      $j(this._box).find("div.wym_containers").addClass("wym_dropdown")
-          .find("h2").append("<span>&nbsp;&gt;</span>");
+      //render following sections as dropdown menus
+      $j(this._box).find(this._options.sContainersSelector)
+        .addClass("wym_dropdown")
+        .find(sWYM_H2)
+        .append("<span>&nbsp;&gt;</span>");
 
       // auto add some margin to the main area sides if left area
       // or right area are not empty (if they contain sections)
       $j(this._box).find("div.wym_area_right ul")
-          .parents("div.wym_area_right").show()
-          .parents("div.wym_box")
-          .find("div.wym_area_main")
-          .css({"margin-right": "155px"});
+        .parents("div.wym_area_right").show()
+        .parents(this._options.sBoxSelector)
+        .find("div.wym_area_main")
+        .css({"margin-right": "155px"});
 
       $j(this._box).find("div.wym_area_left ul")
-          .parents("div.wym_area_left").show()
-          .parents("div.wym_box")
-          .find("div.wym_area_main")
-          .css({"margin-left": "155px"});
+        .parents("div.wym_area_left").show()
+        .parents(this._options.sBoxSelector)
+        .find("div.wym_area_main")
+        .css({"margin-left": "155px"});
 
       //make hover work under IE < 7
       $j(this._box).find(".wym_section").hover(function(){ 
-          $j(this).addClass("hover"); 
+        $j(this).addClass("hover"); 
       },function(){ 
-          $j(this).removeClass("hover"); 
+        $j(this).removeClass("hover"); 
       });
     
     break;
