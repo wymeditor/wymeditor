@@ -842,6 +842,24 @@ Wymeditor.prototype.uniqueStamp = function() {
 	return("wym-" + now.getTime());
 };
 
+Wymeditor.prototype.paste = function(sData) {
+
+  var sTmp;
+  var container = this.selected();
+	
+  //split the data, using double newlines as the separator
+  var aP = sData.split("\r\n\r\n");
+
+  //add a P for each item
+  for(x = aP.length - 1; x >= 0; x--) {
+    sTmp = aP[x];
+    //simple newlines are replaced by a break
+    //maybe we need a trim("\r\n")
+    sTmp = sTmp.replace(/\r\n/g,"<br />");
+    $j(container).after("<p>" + sTmp + "</p>");
+  }
+};
+
 /********** EVENTS **********/
 
 Wymeditor.prototype.listen = function() {
