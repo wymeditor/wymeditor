@@ -55,6 +55,15 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
     };
     this._doc.onclick = function() {wym.saveCaret();};
     
+    this._doc.body.onbeforepaste = function() {
+      wym._iframe.contentWindow.event.returnValue = false;
+    };
+    
+    this._doc.body.onpaste = function() {
+      wym._iframe.contentWindow.event.returnValue = false;
+      wym.paste(window.clipboardData.getData("Text"));
+    }    
+    
     //callback can't be executed twice, so we check
     if(this._initialized) {
       
