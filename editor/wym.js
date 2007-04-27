@@ -493,6 +493,8 @@ function setContainer(sType)
 				else if(moz)container.parentNode.replaceChild(newNode,container);
 				newNode.innerHTML=html;
 			}
+			
+			if(moz && newNode) setFocusToNode(newNode);
 		}
 	}
 }
@@ -1017,4 +1019,17 @@ function iframe_mouseup_handler(evt)
 		release();
 	}
 	displayClasses();
+}
+
+//Moxide's patch to re-set the focus on the container
+//while calling setContainer() (Gecko only)
+//see #21
+function setFocusToNode(node)
+{
+    r=document.createRange();
+    r.selectNode(node);
+    sel=iframe().contentWindow.getSelection();
+    sel.addRange(r);
+    sel.collapse(node, 1);
+    iframe().contentWindow.focus();
 }
