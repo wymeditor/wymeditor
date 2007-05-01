@@ -363,9 +363,12 @@ $j.fn.wymeditor = function(options) {
     sStringDelimiterLeft: "{",
     sStringDelimiterRight:"}",
     
-    fPreInit: function(wym) {},
-    fPreBind: function(wym) {},
-    fPostInit: function(wym) {}
+    fPreInit: null,
+    fPreBind: null,
+    fPostInit: null,
+    
+    fPreInitDialog: null,
+    fPostInitDialog: null
 
   }, options);
 
@@ -938,6 +941,10 @@ function fWYM_INIT_DIALOG(index) {
     var oSel = wym.selected();
     var sStamp = wym.uniqueStamp();
     
+    //pre-init functions
+    if($j.isFunction(wym._options.fPreInitDialog))
+      wym._options.fPreInitDialog(wym,window);
+    
     if(oSel) {
             $j(wym._options.sHrefSelector).val($j(oSel).attr(sWYM_HREF));
             $j(wym._options.sSrcSelector).val($j(oSel).attr(sWYM_SRC));
@@ -1004,6 +1011,10 @@ function fWYM_INIT_DIALOG(index) {
     $j(wym._options.sCancelSelector).mousedown(function() {
         window.close();
     });
+    
+    //pre-init functions
+    if($j.isFunction(wym._options.fPostInitDialog))
+      wym._options.fPostInitDialog(wym,window);
 };
 
 
@@ -1040,7 +1051,7 @@ $j.fn.parentsOrSelf = function(jqexpr) {
 };
 
 String.prototype.insertAt = function(sInserted, iPos) {
-  return(this.substring(0,iPos) + sInserted + this.substring(iPos,this.length));
+  return(this.substr(0,iPos) + sInserted + this.substring(iPos));
 };
 
 // from http://forum.de.selfhtml.org/archiv/2004/3/t76079/#m438193 (2007-02-06)
