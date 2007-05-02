@@ -494,7 +494,7 @@ function setContainer(sType)
 				newNode.innerHTML=html;
 			}
 			
-			if(moz && newNode) setFocusToNode(newNode);
+			if(newNode) setFocusToNode(newNode);
 		}
 	}
 }
@@ -1022,14 +1022,24 @@ function iframe_mouseup_handler(evt)
 }
 
 //Moxide's patch to re-set the focus on the container
-//while calling setContainer() (Gecko only)
+//while calling setContainer()
 //see #21
 function setFocusToNode(node)
 {
+  if (ie) {
+    r=document.body.createTextRange();
+    r.moveToElementText(node);
+    r.collapse(false);
+    r.move('character',-1);
+    r.select();
+    node.focus();
+  }
+  else if (moz) {
     r=document.createRange();
     r.selectNode(node);
     sel=iframe().contentWindow.getSelection();
     sel.addRange(r);
-    sel.collapse(node, 1);
+    sel.collapse(node, node.childNodes.length);
     iframe().contentWindow.focus();
+  }
 }
