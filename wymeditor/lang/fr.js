@@ -31,5 +31,6 @@
     Number_Of_Rows:   'Nombre de lignes',
     Number_Of_Cols:   'Nombre de colonnes',
     Submit:           'Envoyer',
-    Cancel:           'Annuler'
+    Cancel:           'Annuler',
+    Choose:           'Choisir'
 };

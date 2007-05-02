@@ -97,21 +97,28 @@ $j(function() {
         
         //add a select box populated with predefined values to the dialog
         
-        var sSelectLink = "<p><select>"
-        + "<option name='wym_choose' selected>Choose...<\/option>"
-        + "<option>WYMeditor http://www.wymeditor.org/<\/option>"
-        + "<option>SourceForge http://www.sourceforge.net/<\/option>"
-        + "<option>GNU http://www.gnu.org/<\/option>"
-        + "<\/select><\/p>";
+        var sSelectLink = "<p>"
+        + "<select class='wym_select_link'>"
+        + "<option selected value='WYMeditor http://www.wymeditor.org/'>"
+        + "WYMeditor<\/option>"
+        + "<option value='SourceForge http://www.sourceforge.net/'>"
+        + "SourceForge<\/option>"
+        + "<option value='GNU http://www.gnu.org/'>"
+        + "GNU<\/option>"
+        + "<\/select>"
+        + "<input class='wym_choose' type='button'"
+        + " value='{Choose}' />"
+        + "<\/p>";
         
         $j(body)
           .filter('.wym_dialog_link')
-          .prepend(sSelectLink)
-          .change(function() {
-            
-            $j(this).find("option[@name='wym_choose']").remove();
-            
-            var sVal = $j(this).find(':selected').val();
+          .prepend(wym.replaceStrings(sSelectLink));
+          
+        $j(body)
+          .find('.wym_choose')
+          .click(function() {
+
+            var sVal = $j(body).find('.wym_select_link').val();
             
             $j(body)
               .find('.wym_href')
