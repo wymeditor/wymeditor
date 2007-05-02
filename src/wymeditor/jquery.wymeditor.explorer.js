@@ -344,7 +344,7 @@ WymClassExplorer.prototype.keyup = function() {
 
 
 WymClassExplorer.prototype.setFocusToNode = function(node) {
-    var range = document.body.createTextRange();
+    var range = this._doc.selection.createRange();
     range.moveToElementText(node);
     range.collapse(false);
     range.move('character',-1);
