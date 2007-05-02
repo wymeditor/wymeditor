@@ -91,3 +91,8 @@ WymClassOpera.prototype.keyup = function(evt) {
   var wym = aWYM_INSTANCES[this.title];
   wym._selected_image = null;
 };
+
+// TODO: implement me
+WymClassOpera.prototype.setFocusToNode = function(node) {
+
+};

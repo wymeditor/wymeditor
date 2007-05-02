@@ -672,15 +672,20 @@ Wymeditor.prototype.container = function(sType) {
             newNode = this._doc.createElement(sType);
             container.parentNode.insertBefore(newNode,container);
             newNode.appendChild(container);
+            this.setFocusToNode(newNode.firstChild);
             
           } else {
           
             var nodes = blockquote.childNodes;
             var lgt = nodes.length;
+            var firstNode = null;
+            
+            if(lgt > 0) firstNode = nodes.item(0);
             for(var x=0; x<lgt; x++) {
               blockquote.parentNode.insertBefore(nodes.item(0),blockquote);
             }
             blockquote.parentNode.removeChild(blockquote);
+            if(firstNode) this.setFocusToNode(firstNode);
           }
         }
         
@@ -757,6 +762,7 @@ Wymeditor.prototype.switchTo = function(node,sType) {
   var html = $j(node).html();
   node.parentNode.replaceChild(newNode,node);
   $j(newNode).html(html);
+  this.setFocusToNode(newNode);
 };
 
 Wymeditor.prototype.replaceStrings = function(sVal) {
@@ -864,7 +870,7 @@ Wymeditor.prototype.paste = function(sData) {
     sTmp = aP[x];
     //simple newlines are replaced by a break
     //maybe we need a trim("\r\n")
-    sTmp = sTmp.replace(/\r\n/g,"<br />");
+    sTmp = sTmp.replace(/\r\n/g, "<br />");
     $j(container).after("<p>" + sTmp + "</p>");
   }
 };

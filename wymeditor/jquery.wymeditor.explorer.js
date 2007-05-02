@@ -341,3 +341,13 @@ WymClassExplorer.prototype.xhtml = function() {
 WymClassExplorer.prototype.keyup = function() {
   this._selected_image = null;
 };
+
+
+WymClassExplorer.prototype.setFocusToNode = function(node) {
+    var range = document.body.createTextRange();
+    range.moveToElementText(node);
+    range.collapse(false);
+    range.move('character',-1);
+    range.select();
+    node.focus();
+};
