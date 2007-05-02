@@ -1,4 +1,4 @@
-﻿/*
+/*
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2007 H.O.net - http://www.honet.be/
  * Dual licensed under the MIT (MIT-license.txt)
@@ -56,6 +56,7 @@
         .wym_skin_default .wym_area_right         { width: 150px; float: right;}
         .wym_skin_default .wym_area_bottom        { clear: both;}
  * html .wym_skin_default .wym_area_main          { height: 1%;}
+ * html .wym_skin_default .wym_area_top           { height: 1%;}
  *+html .wym_skin_default .wym_area_top           { height: 1%;}
 
 /*SECTIONS SYSTEM*/
