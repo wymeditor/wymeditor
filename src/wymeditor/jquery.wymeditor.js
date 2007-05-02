@@ -27,6 +27,7 @@
     var sWYM_NAME             = "name";
     var sWYM_INDEX            = "{Wym_Index}";
     var sWYM_BASE_PATH        = "{Wym_Base_Path}";
+    var sWYM_IFRAME_BASE_PATH = "{Wym_Iframe_Base_Path}";
     var sWYM_JQUERY_PATH      = "{Wym_Jquery_Path}";
     var sWYM_TOOLS            = "{Wym_Tools}";
     var sWYM_TOOLS_ITEMS      = "{Wym_Tools_Items}";
@@ -133,6 +134,8 @@ $j.fn.wymeditor = function(options) {
     
     sBasePath:   "wymeditor/",
     
+    sIframeBasePath: "wymeditor/iframe/default/",
+    
     sJqueryPath: "jquery/jquery.js",
 
     sBoxHtml:   "<div class='wym_box'>"
@@ -156,7 +159,7 @@ $j.fn.wymeditor = function(options) {
     sIframeHtml:"<div class='wym_iframe wym_section'>"
               + "<iframe "
               + "src='"
-              + sWYM_BASE_PATH
+              + sWYM_IFRAME_BASE_PATH
               + "wymiframe.html' "
               + "onload='window.parent.aWYM_INSTANCES["
               + sWYM_INDEX + "].initIframe(this)' "
@@ -444,7 +447,7 @@ Wymeditor.prototype.init = function() {
   var sIframeHtml = this._options.sIframeHtml;
   sIframeHtml = sIframeHtml
     .replace(sWYM_INDEX,this._index)
-    .replace(sWYM_BASE_PATH, this._options.sBasePath);
+    .replace(sWYM_IFRAME_BASE_PATH, this._options.sIframeBasePath);
   
   //construct wymbox
   var sBoxHtml = $j(this._box).html();
