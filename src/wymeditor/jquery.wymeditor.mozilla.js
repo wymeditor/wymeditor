@@ -41,8 +41,12 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
 
     this._doc.title = this._wym._index;
     
-    //init html value and init designMode
+    //init html value
     this.html(this._wym._html);
+    
+    //init designMode
+    this._doc.designMode = "on";
+    this._doc.execCommand("styleWithCSS", '', false);
     
     //pre-bind functions
     if($j.isFunction(this._options.fPreBind)) this._options.fPreBind(this);

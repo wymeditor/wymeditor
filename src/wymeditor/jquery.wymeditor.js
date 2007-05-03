@@ -28,6 +28,7 @@
     var sWYM_INDEX            = "{Wym_Index}";
     var sWYM_BASE_PATH        = "{Wym_Base_Path}";
     var sWYM_IFRAME_BASE_PATH = "{Wym_Iframe_Base_Path}";
+    var sWYM_IFRAME_DEFAULT   = "iframe/default/";
     var sWYM_JQUERY_PATH      = "{Wym_Jquery_Path}";
     var sWYM_TOOLS            = "{Wym_Tools}";
     var sWYM_TOOLS_ITEMS      = "{Wym_Tools_Items}";
@@ -132,9 +133,9 @@ $j.fn.wymeditor = function(options) {
 
     sHtml:       "",
     
-    sBasePath:   "wymeditor/",
+    sBasePath:   false,
     
-    sIframeBasePath: "wymeditor/iframe/default/",
+    sIframeBasePath: false,
     
     sJqueryPath: "jquery/jquery.js",
 
@@ -409,6 +410,9 @@ function Wymeditor(elem,index,options) {
   this._html = $j(elem).val();
   
   if(this._options.sHtml) this._html = this._options.sHtml;
+  this._options.sBasePath = this._options.sBasePath || this.computeBasePath();
+  this._options.sIframeBasePath = this._options.sIframeBasePath
+    || this._options.sBasePath + sWYM_IFRAME_DEFAULT;
   
   if($j.isFunction(this._options.fPreInit)) this._options.fPreInit(this);
   this.init();
@@ -869,6 +873,14 @@ Wymeditor.prototype.paste = function(sData) {
     sTmp = sTmp.replace(/\r\n/g, "<br />");
     $j(container).after("<p>" + sTmp + "</p>");
   }
+};
+
+/********** CONFIGURATION **********/
+
+Wymeditor.prototype.computeBasePath = function() {
+    return $j($j.grep($j('script'), function(s){
+        return (s.src && s.src.match(/jquery\.wymeditor\.js(\?.*)?$/ ))
+    })).attr('src').replace(/jquery\.wymeditor\.js(\?.*)?$/, '');
 };
 
 /********** EVENTS **********/
