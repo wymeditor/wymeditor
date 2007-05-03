@@ -559,10 +559,6 @@ Wymeditor.prototype.bindEvents = function() {
     }
     return(false);
   });
-  
-  $j(this._box).mouseout(function() {
-    wym.update();
-  });
 };
 
 Wymeditor.prototype.ready = function() {

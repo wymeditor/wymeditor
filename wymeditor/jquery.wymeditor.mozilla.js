@@ -41,11 +41,7 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
 
     this._doc.title = this._wym._index;
     
-    //init designMode
-    this._doc.designMode = "on";
-    this._doc.execCommand("styleWithCSS", '', false);
-
-    //init html value
+    //init html value and init designMode
     this.html(this._wym._html);
     
     //pre-bind functions
@@ -62,6 +58,33 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
     
     //add event listeners to doc elements, e.g. images
     this.listen();
+};
+
+/* @name html
+ * @description Get/Set the html value
+ */
+WymClassMozilla.prototype.html = function(sHtml) {
+
+  if(sHtml) {
+  
+    //disable designMode
+    this._doc.designMode = "off";
+    
+    //replace em by i and strong by bold
+    //(designMode issue)
+    sHtml = sHtml.replace(/<em([^>]*)>/gi, "<i$1>")
+      .replace(/<\/em>/gi, "</i>")
+      .replace(/<strong([^>]*)>/gi, "<b$1>")
+      .replace(/<\/strong>/gi, "</b>");
+    
+    //update the html body
+    $j(this._doc.body).html(sHtml);
+    
+    //re-init designMode
+    this._doc.designMode = "on";
+    this._doc.execCommand("styleWithCSS", '', false);
+  }
+  else return($j(this._doc.body).html());
 };
 
 WymClassMozilla.prototype._exec = function(cmd,param) {
