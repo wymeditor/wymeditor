@@ -32,5 +32,5 @@ var aWYM_STRINGS = {
     Number_Of_Cols:   'Número de columnas',
     Submit:           'Enviar',
     Cancel:           'Cancelar',
-    Choose:           'Choose'
+    Choose:           'Seleccionar'
 };
