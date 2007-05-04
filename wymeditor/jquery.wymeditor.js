@@ -287,6 +287,9 @@ $j.fn.wymeditor = function(options) {
     sDialogImageSelector: ".wym_dialog_image",
     sDialogTableSelector: ".wym_dialog_table",
     
+    sUpdateSelector:    ".wymupdate",
+    sUpdateEvent:       "click",
+    
     sDialogFeatures:    "menubar=no,titlebar=no,toolbar=no,resizable=no"
                       + ",width=560,height=300,top=0,left=0",
 
@@ -565,6 +568,12 @@ Wymeditor.prototype.bindEvents = function() {
       wym.toggleClass(sName, jqexpr);
     }
     return(false);
+  });
+  
+  //handle event on update element
+  $j(this._options.sUpdateSelector)
+    .bind(this._options.sUpdateEvent, function() {
+      wym.update();
   });
 };
 
