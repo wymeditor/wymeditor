@@ -137,7 +137,7 @@ $j.fn.wymeditor = function(options) {
     
     sIframeBasePath: false,
     
-    sJqueryPath: "jquery/jquery.js",
+    sJqueryPath: false,
 
     sBoxHtml:   "<div class='wym_box'>"
               + "<div class='wym_area_top'>"
@@ -410,9 +410,12 @@ function Wymeditor(elem,index,options) {
   this._html = $j(elem).val();
   
   if(this._options.sHtml) this._html = this._options.sHtml;
-  this._options.sBasePath = this._options.sBasePath || this.computeBasePath();
+  this._options.sBasePath = this._options.sBasePath
+    || this.computeBasePath();
   this._options.sIframeBasePath = this._options.sIframeBasePath
     || this._options.sBasePath + sWYM_IFRAME_DEFAULT;
+  this._options.sJqueryPath = this._options.sJqueryPath
+    || this.computeJqueryPath();
   
   if($j.isFunction(this._options.fPreInit)) this._options.fPreInit(this);
   this.init();
@@ -881,6 +884,12 @@ Wymeditor.prototype.computeBasePath = function() {
     return $j($j.grep($j('script'), function(s){
         return (s.src && s.src.match(/jquery\.wymeditor\.js(\?.*)?$/ ))
     })).attr('src').replace(/jquery\.wymeditor\.js(\?.*)?$/, '');
+};
+
+Wymeditor.prototype.computeJqueryPath = function() {
+    return $j($j.grep($j('script'), function(s){
+        return (s.src && s.src.match(/jquery\.js(\?.*)?$/ ))
+    })).attr('src');
 };
 
 /********** EVENTS **********/
