@@ -54,6 +54,9 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
     //bind external events
     this._wym.bindEvents();
     
+    // bidn key down events for enabling keyboar shortcuts
+    $j(this._doc).bind("keydown", this.keydown);
+    
     //bind editor events
     $j(this._doc).bind("keyup", this.keyup);
     
@@ -213,12 +216,12 @@ WymClassMozilla.prototype.xhtml = function() {
 
 //keyup handler, mainly used for cleanups
 WymClassMozilla.prototype.keyup = function(evt) {
-
+  
   //'this' is the doc
   var wym = aWYM_INSTANCES[this.title];
   
   wym._selected_image = null;
-
+  
 	if(evt.keyCode == 13 && !evt.shiftKey) {
 	
 	  //RETURN key
@@ -250,6 +253,24 @@ WymClassMozilla.prototype.keyup = function(evt) {
 		if(name == sWYM_BODY) wym._exec(sWYM_FORMAT_BLOCK, sWYM_P);
 	}
 };
+
+//keydown handler,used for keyboard shortcuts
+WymClassMozilla.prototype.keydown = function(evt) {
+  
+  //'this' is the doc
+  var wym = aWYM_INSTANCES[this.title];
+  
+  if(evt.ctrlKey){
+    if(evt.keyCode == 66){
+      wym._exec('Bold');
+      return false;
+    }
+    if(evt.keyCode == 73){
+      wym._exec('Italic');
+      return false;
+    }
+  }
+}
 
 WymClassMozilla.prototype.setFocusToNode = function(node) {
     var range = document.createRange();
