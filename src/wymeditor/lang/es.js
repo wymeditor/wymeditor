@@ -1,4 +1,4 @@
-var aWYM_STRINGS = {
+﻿var aWYM_STRINGS = {
     Strong:           'Resaltar',
     Emphasis:         'Enfatizar',
     Superscript:      'Superindice',
@@ -32,5 +32,7 @@ var aWYM_STRINGS = {
     Number_Of_Cols:   'Número de columnas',
     Submit:           'Enviar',
     Cancel:           'Cancelar',
-    Choose:           'Seleccionar'
+    Choose:           'Seleccionar',
+    Preview:          'Preview',
+    Paste_From_Word:  'Paste from Word'
 };
