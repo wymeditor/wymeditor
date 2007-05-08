@@ -1,4 +1,4 @@
-var aWYM_STRINGS = {
+﻿var aWYM_STRINGS = {
     Strong:           'Viktigt',
     Emphasis:         'Betoning',
     Superscript:      'Upphöjt',
@@ -32,5 +32,7 @@ var aWYM_STRINGS = {
     Number_Of_Cols:   'Antal kolumner',
     Submit:           'Skicka',
     Cancel:           'Avbryt',
-    Choose:           'Välj'
+    Choose:           'Välj',
+    Preview:          'Preview',
+    Paste_From_Word:  'Paste from Word'
 };

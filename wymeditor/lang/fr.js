@@ -32,5 +32,7 @@
     Number_Of_Cols:   'Nombre de colonnes',
     Submit:           'Envoyer',
     Cancel:           'Annuler',
-    Choose:           'Choisir'
+    Choose:           'Choisir',
+    Preview:          'Prévisualisation',
+    Paste_From_Word:  'Copier depuis Word'
 };
