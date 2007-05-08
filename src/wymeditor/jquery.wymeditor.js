@@ -74,6 +74,8 @@
     var sWYM_DIALOG_LINK      = "Link";
     var sWYM_DIALOG_IMAGE     = "Image";
     var sWYM_DIALOG_TABLE     = "Table";
+    var sWYM_BOLD             = "Bold";
+    var sWYM_ITALIC           = "Italic";
     var sWYM_CREATE_LINK      = "CreateLink";
     var sWYM_INSERT_IMAGE     = "InsertImage";
     var sWYM_INSERT_TABLE     = "InsertTable";
