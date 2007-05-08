@@ -33,6 +33,6 @@
     Submit:           'Enviar',
     Cancel:           'Cancelar',
     Choose:           'Seleccionar',
-    Preview:          'Preview',
-    Paste_From_Word:  'Paste from Word'
+    Preview:          'Vista previa',
+    Paste_From_Word:  'Pegar desde Word'
 };
