@@ -16,6 +16,7 @@
  *        Jean-Francois Hovinne (jf.hovinne@wymeditor.org)
  *        Volker Mische (vmx@gmx.de)
  *        Scott Lewis (scott@bright-crayon.com)
+ *        Bermi Ferrer (wymeditor a-t bermi dotorg)
  */
 
 
@@ -305,6 +306,7 @@ $j.fn.wymeditor = function(options) {
                       + "<title>"
                       + sWYM_DIALOG_TITLE
                       + "</title>"
+                      + "<style type='text/css'></style>"
                       + "<script type='text/javascript'"
                       + " src='"
                       + sWYM_JQUERY_PATH
@@ -906,6 +908,16 @@ Wymeditor.prototype.paste = function(sData) {
   }
 };
 
+Wymeditor.prototype.addCssRules = function(doc, aCss) {
+  var styles = doc.styleSheets[0];
+  if(styles) {
+    for(var i = 0; i < aCss.length; i++) {
+      var oCss = aCss[i];
+      if(oCss.name && oCss.css) this.addCssRule(styles, oCss);
+    }
+  }
+};
+
 /********** CONFIGURATION **********/
 
 Wymeditor.prototype.computeBasePath = function() {
@@ -992,12 +1004,19 @@ Wymeditor.prototype.skin = function() {
 function fWYM_INIT_DIALOG(index) {
 
     var wym = window.opener.aWYM_INSTANCES[index];
+    var doc = window.document;
     var oSel = wym.selected();
     var sStamp = wym.uniqueStamp();
     
     //pre-init functions
     if($j.isFunction(wym._options.fPreInitDialog))
       wym._options.fPreInitDialog(wym,window);
+    
+    //add css rules from options
+    var styles = doc.styleSheets[0];
+    var aCss = eval(wym._options.aDialogCss);
+
+    wym.addCssRules(doc, aCss);
     
     if(oSel) {
             $j(wym._options.sHrefSelector).val($j(oSel).attr(sWYM_HREF));
@@ -1143,3 +1162,4 @@ Array.prototype.findByName = function (name) {
   }
   return(null);
 };
+
