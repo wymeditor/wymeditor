@@ -35,11 +35,7 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
     var styles = this._doc.styleSheets[0];
     var aCss = eval(this._options.aEditorCss);
 
-    for(var i = 0; i < aCss.length; i++) {
-    var oCss = aCss[i];
-    if(oCss.name && oCss.css)
-      styles.addRule(oCss.name, oCss.css);
-    }
+    this.addCssRules(this._doc, aCss);
 
     this._doc.title = this._wym._index;
     
@@ -104,9 +100,14 @@ WymClassExplorer.prototype.selected = function() {
         }
 };
 
-WymClassExplorer.prototype.saveCaret = function () {
+WymClassExplorer.prototype.saveCaret = function() {
 
     this._doc.caretPos = this._doc.selection.createRange();
+};
+
+WymClassExplorer.prototype.addCssRule = function(styles, oCss) {
+
+    styles.addRule(oCss.name, oCss.css);
 };
 
 WymClassExplorer.prototype.xhtml = function() {

@@ -31,12 +31,7 @@ WymClassOpera.prototype.initIframe = function(iframe) {
     var styles = this._doc.styleSheets[0];    
     var aCss = eval(this._options.aEditorCss);
 
-    for(var i = 0; i < aCss.length; i++) {
-    var oCss = aCss[i];
-    if(oCss.name && oCss.css)
-      styles.insertRule(oCss.name + " {" + oCss.css + "}",
-        styles.cssRules.length);
-    }
+    this.addCssRules(this._doc, aCss);
 
     this._doc.title = this._wym._index;
     
@@ -76,6 +71,12 @@ WymClassOpera.prototype.selected = function() {
     var node=sel.focusNode;
     if(node.nodeName=="#text")return(node.parentNode);
     else return(node);
+};
+
+WymClassOpera.prototype.addCssRule = function(styles, oCss) {
+
+    styles.insertRule(oCss.name + " {" + oCss.css + "}",
+        styles.cssRules.length);
 };
 
 WymClassOpera.prototype.xhtml = function() {
