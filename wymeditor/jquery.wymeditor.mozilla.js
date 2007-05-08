@@ -54,7 +54,10 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
     //bind external events
     this._wym.bindEvents();
     
-    //bind editor events
+    //bind editor keydown events
+    $j(this._doc).bind("keydown", this.keydown);
+    
+    //bind editor keyup events
     $j(this._doc).bind("keyup", this.keyup);
     
     //post-init functions
@@ -209,6 +212,26 @@ WymClassMozilla.prototype.xhtml = function() {
         else ret+=c;    
     }
     return(ret);    
+};
+
+//keydown handler, mainly used for keyboard shortcuts
+WymClassMozilla.prototype.keydown = function(evt) {
+  
+  //'this' is the doc
+  var wym = aWYM_INSTANCES[this.title];
+  
+  if(evt.ctrlKey){
+    if(evt.keyCode == 66){
+      //CTRL+b => STRONG
+      wym._exec(sWYM_BOLD);
+      return false;
+    }
+    if(evt.keyCode == 73){
+      //CTRL+i => EMPHASIS
+      wym._exec(sWYM_ITALIC);
+      return false;
+    }
+  }
 };
 
 //keyup handler, mainly used for cleanups
