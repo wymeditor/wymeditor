@@ -214,11 +214,9 @@ WymClassMozilla.prototype.xhtml = function() {
     return(ret);    
 };
 
-var bermi = new Array();
 //keyup handler, mainly used for cleanups
 WymClassMozilla.prototype.keyup = function(evt) {
-  
-  bermi[evt.keyCode] = evt;
+    
   //'this' is the doc
   var wym = aWYM_INSTANCES[this.title];
   
@@ -232,10 +230,9 @@ WymClassMozilla.prototype.keyup = function(evt) {
 	}
 	
 	else if(evt.keyCode != 8 && evt.keyCode != 46
-	    && !evt.metaKey && evt.keyCode != 224 && evt.keyCode != 65
-	    && evt.keyCode!=17 && !evt.ctrlKey)	{
-	      console.log(evt.keyCode);
-      
+	    && !evt.metaKey 
+	    && evt.keyCode != 224 
+	    && evt.keyCode!=17 && !evt.ctrlKey)	{      
 	  //NOT BACKSPACE, NOT DELETE, NOT CTRL
 		//text nodes replaced by P
 		
