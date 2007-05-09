@@ -28,6 +28,7 @@
     var sWYM_NAME             = "name";
     var sWYM_INDEX            = "{Wym_Index}";
     var sWYM_BASE_PATH        = "{Wym_Base_Path}";
+    var sWYM_CSS_PATH         = "{Wym_Css_Path}";
     var sWYM_IFRAME_BASE_PATH = "{Wym_Iframe_Base_Path}";
     var sWYM_IFRAME_DEFAULT   = "iframe/default/";
     var sWYM_JQUERY_PATH      = "{Wym_Jquery_Path}";
@@ -75,11 +76,13 @@
     var sWYM_DIALOG_LINK      = "Link";
     var sWYM_DIALOG_IMAGE     = "Image";
     var sWYM_DIALOG_TABLE     = "Table";
+    var sWYM_DIALOG_PASTE     = "Paste_From_Word";
     var sWYM_BOLD             = "Bold";
     var sWYM_ITALIC           = "Italic";
     var sWYM_CREATE_LINK      = "CreateLink";
     var sWYM_INSERT_IMAGE     = "InsertImage";
     var sWYM_INSERT_TABLE     = "InsertTable";
+    var sWYM_PASTE            = "Paste";
     var sWYM_TOGGLE_HTML      = "ToggleHtml";
     var sWYM_FORMAT_BLOCK     = "FormatBlock";
     var sWYM_PREVIEW          = "Preview";
@@ -138,6 +141,8 @@ $j.fn.wymeditor = function(options) {
     sHtml:       "",
     
     sBasePath:   false,
+    
+    sCssPath:    false,
     
     sIframeBasePath: false,
     
@@ -207,6 +212,8 @@ $j.fn.wymeditor = function(options) {
         {'name': 'Unlink', 'title': 'Unlink', 'css': 'wym_tools_unlink'},
         {'name': 'InsertImage', 'title': 'Image', 'css': 'wym_tools_image'},
         {'name': 'InsertTable', 'title': 'Table', 'css': 'wym_tools_table'},
+        {'name': 'Paste', 'title': 'Paste_From_Word',
+            'css': 'wym_tools_paste'},
         {'name': 'ToggleHtml', 'title': 'HTML', 'css': 'wym_tools_html'},
         {'name': 'Preview', 'title': 'Preview', 'css': 'wym_tools_preview'}
     ],
@@ -280,6 +287,7 @@ $j.fn.wymeditor = function(options) {
     sSrcSelector:       ".wym_src",
     sTitleSelector:     ".wym_title",
     sAltSelector:       ".wym_alt",
+    sTextSelector:      ".wym_text",
     
     sRowsSelector:      ".wym_rows",
     sColsSelector:      ".wym_cols",
@@ -292,6 +300,7 @@ $j.fn.wymeditor = function(options) {
     sDialogLinkSelector:    ".wym_dialog_link",
     sDialogImageSelector:   ".wym_dialog_image",
     sDialogTableSelector:   ".wym_dialog_table",
+    sDialogPasteSelector:   ".wym_dialog_paste",
     sDialogPreviewSelector: ".wym_dialog_preview",
     
     sUpdateSelector:    ".wymupdate",
@@ -303,10 +312,13 @@ $j.fn.wymeditor = function(options) {
     sDialogHtml:      "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN'"
                       + " 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>"
                       + "<html><head>"
+                      + "<link rel='stylesheet' type='text/css' media='screen'"
+                      + " href='"
+                      + sWYM_CSS_PATH
+                      + "' />"
                       + "<title>"
                       + sWYM_DIALOG_TITLE
                       + "</title>"
-                      + "<style type='text/css'></style>"
                       + "<script type='text/javascript'"
                       + " src='"
                       + sWYM_JQUERY_PATH
@@ -373,6 +385,19 @@ $j.fn.wymeditor = function(options) {
                       + "value='{Cancel}' />"
                       + "</p></body>",
 
+    sDialogPasteHtml:  "<body class='wym_dialog wym_dialog_paste'"
+                      + " onload='fWYM_INIT_DIALOG(" + sWYM_INDEX + ")'"
+                      + ">"
+                      + "<p>"
+                      + "<label>{Paste_From_Word}</label>"
+                      + "<textarea class='wym_text'></textarea>"
+                      + "</p><p>"
+                      + "<input class='wym_submit' type='button'"
+                      + " value='{Submit}' />"
+                      + "<input class='wym_cancel' type='button'"
+                      + "value='{Cancel}' />"
+                      + "</p></body>",
+
     sDialogPreviewHtml: "<body class='wym_dialog wym_dialog_preview'"
                       + " onload='fWYM_INIT_DIALOG(" + sWYM_INDEX + ")'"
                       + "></body>",
@@ -429,12 +454,15 @@ function Wymeditor(elem,index,options) {
   if(this._options.sHtml) this._html = this._options.sHtml;
   this._options.sBasePath = this._options.sBasePath
     || this.computeBasePath();
+  this._options.sCssPath = this._options.sCssPath
+    || this.computeCssPath();
   this._options.sIframeBasePath = this._options.sIframeBasePath
     || this._options.sBasePath + sWYM_IFRAME_DEFAULT;
   this._options.sJqueryPath = this._options.sJqueryPath
     || this.computeJqueryPath();
   
   if($j.isFunction(this._options.fPreInit)) this._options.fPreInit(this);
+  
   this.init();
   
 };
@@ -635,6 +663,10 @@ Wymeditor.prototype.exec = function(cmd) {
       this.dialog(sWYM_DIALOG_TABLE);
     break;
     
+    case sWYM_PASTE:
+      this.dialog(sWYM_DIALOG_PASTE);
+    break;
+    
     case sWYM_TOGGLE_HTML:
       this.update();
       this.toggleHtml();
@@ -798,8 +830,9 @@ Wymeditor.prototype.switchTo = function(node,sType) {
 Wymeditor.prototype.replaceStrings = function(sVal) {
 
   for (var key in aWYM_STRINGS) {
-    sVal = sVal.replace(this._options.sStringDelimiterLeft + key 
-    + this._options.sStringDelimiterRight, aWYM_STRINGS[key]);
+    var rExp = new RegExp(this._options.sStringDelimiterLeft + key 
+    + this._options.sStringDelimiterRight, "g");
+    sVal = sVal.replace(rExp, aWYM_STRINGS[key]);
   }
   return(sVal);
 };
@@ -855,6 +888,9 @@ Wymeditor.prototype.dialog = function(sType) {
       case(sWYM_DIALOG_TABLE):
         sBodyHtml = this._options.sDialogTableHtml;
       break;
+      case(sWYM_DIALOG_PASTE):
+        sBodyHtml = this._options.sDialogPasteHtml;
+      break;
       case(sWYM_PREVIEW):
         sBodyHtml = this._options.sDialogPreviewHtml;
       break;
@@ -864,6 +900,7 @@ Wymeditor.prototype.dialog = function(sType) {
     var sDialogHtml = this._options.sDialogHtml;
     sDialogHtml = sDialogHtml
       .replace(sWYM_BASE_PATH, this._options.sBasePath)
+      .replace(sWYM_CSS_PATH, this._options.sCssPath)
       .replace(sWYM_JQUERY_PATH, this._options.sJqueryPath)
       .replace(sWYM_DIALOG_TITLE, this.encloseString(sType))
       .replace(sWYM_DIALOG_BODY, sBodyHtml)
@@ -921,15 +958,21 @@ Wymeditor.prototype.addCssRules = function(doc, aCss) {
 /********** CONFIGURATION **********/
 
 Wymeditor.prototype.computeBasePath = function() {
-    return $j($j.grep($j('script'), function(s){
-        return (s.src && s.src.match(/jquery\.wymeditor\.js(\?.*)?$/ ))
-    })).attr('src').replace(/jquery\.wymeditor\.js(\?.*)?$/, '');
+  return $j($j.grep($j('script'), function(s){
+    return (s.src && s.src.match(/jquery\.wymeditor\.js(\?.*)?$/ ))
+  })).attr('src').replace(/jquery\.wymeditor\.js(\?.*)?$/, '');
 };
 
 Wymeditor.prototype.computeJqueryPath = function() {
-    return $j($j.grep($j('script'), function(s){
-        return (s.src && s.src.match(/jquery\.js(\?.*)?$/ ))
-    })).attr('src');
+  return $j($j.grep($j('script'), function(s){
+    return (s.src && s.src.match(/jquery\.js(\?.*)?$/ ))
+  })).attr('src');
+};
+
+Wymeditor.prototype.computeCssPath = function() {
+  return $j($j.grep($j('link'), function(s){
+   return (s.href && s.href.match(/wymeditor\/skins\/(.*)screen\.css(\?.*)?$/ ))
+  })).attr('href');
 };
 
 /********** EVENTS **********/
@@ -1078,6 +1121,14 @@ function fWYM_INIT_DIALOG(index) {
             
             if(oSel) $j(oSel).after(table);
         }
+        window.close();
+    });
+    
+    $j(wym._options.sDialogPasteSelector + " "
+        + wym._options.sSubmitSelector).click(function() {
+        
+        var sText = $j(wym._options.sTextSelector).val();
+        wym.paste(sText);
         window.close();
     });
     
