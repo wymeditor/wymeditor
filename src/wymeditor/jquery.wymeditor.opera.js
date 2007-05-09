@@ -20,6 +20,7 @@ function WymClassOpera(wym) {
 
     this._wym = wym;
     this._class = "class";
+    this._newLine = "\r\n";
 };
 
 WymClassOpera.prototype.initIframe = function(iframe) {

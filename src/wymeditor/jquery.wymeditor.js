@@ -933,14 +933,14 @@ Wymeditor.prototype.paste = function(sData) {
   var container = this.selected();
 	
   //split the data, using double newlines as the separator
-  var aP = sData.split("\r\n\r\n");
+  var aP = sData.split(this._newLine + this._newLine);
+  var rExp = new RegExp(this._newLine, "g");
 
   //add a P for each item
   for(x = aP.length - 1; x >= 0; x--) {
     sTmp = aP[x];
     //simple newlines are replaced by a break
-    //maybe we need a trim("\r\n")
-    sTmp = sTmp.replace(/\r\n/g, "<br />");
+    sTmp = sTmp.replace(rExp, "<br />");
     $j(container).after("<p>" + sTmp + "</p>");
   }
 };
