@@ -22,6 +22,7 @@ function WymClassMozilla(wym) {
 
     this._wym = wym;
     this._class = "class";
+    this._newLine = "\n";
 };
 
 WymClassMozilla.prototype.initIframe = function(iframe) {

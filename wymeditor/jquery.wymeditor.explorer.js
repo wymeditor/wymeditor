@@ -20,6 +20,7 @@ function WymClassExplorer(wym) {
     
     this._wym = wym;
     this._class = "className";
+    this._newLine = "\r\n";
 };
 
 WymClassExplorer.prototype.initIframe = function(iframe) {
