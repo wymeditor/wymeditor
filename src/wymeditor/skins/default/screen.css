@@ -104,7 +104,8 @@
         .wym_skin_default .wym_buttons li.wym_tools_unlink a        { background-position: 0 -168px} 
         .wym_skin_default .wym_buttons li.wym_tools_image a         { background-position: 0 -121px} 
         .wym_skin_default .wym_buttons li.wym_tools_table a         { background-position: 0 -144px} 
-        .wym_skin_default .wym_buttons li.wym_tools_html a          { background-position: 0 -193px} 
+        .wym_skin_default .wym_buttons li.wym_tools_html a          { background-position: 0 -193px}
+        .wym_skin_default .wym_buttons li.wym_tools_preview a       { background-position: 0 -408px} 
 
 /*DECORATION*/
         .wym_skin_default .wym_section h2             { background: #ddd; border: solid gray; border-width: 0 0 1px;}
