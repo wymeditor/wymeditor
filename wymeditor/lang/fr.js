@@ -1,4 +1,6 @@
-﻿var aWYM_STRINGS = {
+﻿if(!aWYM_STRINGS) var aWYM_STRINGS = new Array();
+
+var aWYM_STRINGS_FR = {
     Strong:           'Mise en évidence',
     Emphasis:         'Emphase',
     Superscript:      'Exposant',
@@ -36,3 +38,5 @@
     Preview:          'Prévisualisation',
     Paste_From_Word:  'Copier depuis Word'
 };
+
+aWYM_STRINGS['fr'] = aWYM_STRINGS_FR;

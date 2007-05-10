@@ -1,4 +1,6 @@
-﻿var aWYM_STRINGS = {
+﻿if(!aWYM_STRINGS) var aWYM_STRINGS = new Array();
+
+var aWYM_STRINGS_EN = {
     Strong:           'Strong',
     Emphasis:         'Emphasis',
     Superscript:      'Superscript',
@@ -36,3 +38,5 @@
     Preview:          'Preview',
     Paste_From_Word:  'Paste from Word'
 };
+
+aWYM_STRINGS['en'] = aWYM_STRINGS_EN;
