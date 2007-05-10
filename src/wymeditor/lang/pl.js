@@ -1,4 +1,6 @@
-﻿var aWYM_STRINGS = {
+﻿if(!aWYM_STRINGS) var aWYM_STRINGS = new Array();
+
+var aWYM_STRINGS_PL = {
     Strong:           'Nacisk',
     Emphasis:         'Emfaza',
     Superscript:      'Indeks górny',
@@ -36,3 +38,5 @@
     Preview:          'Preview',
     Paste_From_Word:  'Paste from Word'
 };
+
+aWYM_STRINGS['pl'] = aWYM_STRINGS_PL;

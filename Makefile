@@ -1,7 +1,9 @@
-SRC_DIR = src
+﻿SRC_DIR = src
 BUILD_DIR = build
 
 JS_FILES = ${SRC_DIR}/wymeditor/lang/en.js\
+  ${SRC_DIR}/wymeditor/lang/fr.js\
+  ${SRC_DIR}/wymeditor/lang/es.js\
 	${SRC_DIR}/wymeditor/jquery.wymeditor.js\
 	${SRC_DIR}/wymeditor/jquery.wymeditor.explorer.js\
 	${SRC_DIR}/wymeditor/jquery.wymeditor.mozilla.js\

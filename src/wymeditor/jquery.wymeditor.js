@@ -147,6 +147,8 @@ $j.fn.wymeditor = function(options) {
     sIframeBasePath: false,
     
     sJqueryPath: false,
+    
+    sLang:       "en",
 
     sBoxHtml:   "<div class='wym_box'>"
               + "<div class='wym_area_top'>"
@@ -431,8 +433,8 @@ $j.extend({
   wymeditors: function(i) {
     return (aWYM_INSTANCES[i]);
   },
-  wymstrings: function(sKey) {
-    return (aWYM_STRINGS[sKey]);
+  wymstrings: function(sLang, sKey) {
+    return (aWYM_STRINGS[sLang][sKey]);
   }
 });
 
@@ -829,10 +831,10 @@ Wymeditor.prototype.switchTo = function(node,sType) {
 
 Wymeditor.prototype.replaceStrings = function(sVal) {
 
-  for (var key in aWYM_STRINGS) {
+  for (var key in aWYM_STRINGS[this._options.sLang]) {
     var rExp = new RegExp(this._options.sStringDelimiterLeft + key 
     + this._options.sStringDelimiterRight, "g");
-    sVal = sVal.replace(rExp, aWYM_STRINGS[key]);
+    sVal = sVal.replace(rExp, aWYM_STRINGS[this._options.sLang][key]);
   }
   return(sVal);
 };

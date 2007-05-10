@@ -1,4 +1,6 @@
-﻿var aWYM_STRINGS = {
+﻿if(!aWYM_STRINGS) var aWYM_STRINGS = new Array();
+
+var aWYM_STRINGS_CA = {
     Strong:           'Ressaltar',
     Emphasis:         'Emfatitzar',
     Superscript:      'Superindex', 
@@ -36,3 +38,5 @@
     Preview:          'Vista prèvia',
     Paste_From_Word:  'Pegar des de Word'
 };
+
+aWYM_STRINGS['ca'] = aWYM_STRINGS_CA;
