@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <!--
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2007 H.O.net - http://www.honet.be/
@@ -113,7 +113,7 @@ $j(function() {
         
         //add a select box populated with predefined values to the dialog
         
-        var sSelectLink = "<p>"
+        var sSelectLink = "<div class='row row-indent'>"
         + "<select class='wym_select_link'>"
         + "<option selected value='WYMeditor http://www.wymeditor.org/'>"
         + "WYMeditor<\/option>"
@@ -124,10 +124,10 @@ $j(function() {
         + "<\/select>"
         + "<input class='wym_choose' type='button'"
         + " value='{Choose}' />"
-        + "<\/p>";
+        + "<\/div>";
         
         $j(body)
-          .filter('.wym_dialog_link')
+          .filter('.wym_dialog_link').find('fieldset').eq(0)
           .prepend(wym.replaceStrings(sSelectLink));
           
         $j(body)
