@@ -1,4 +1,4 @@
-﻿/*
+/*
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2007 H.O.net - http://www.honet.be/
  * Dual licensed under the MIT (MIT-license.txt)
@@ -117,5 +117,15 @@
         .wym_skin_default .wym_dropdown ul            { border: solid gray; border-width: 0 1px 1px 1px; margin-left: -1px; padding: 5px 10px 5px 3px;}
         
 /*DIALOGS*/
-        .wym_dialog label {margin-right: 10px; }
+        .wym_dialog div.row         { margin-bottom: 5px;}
+        .wym_dialog div.row input   { margin-right: 5px;}
+        .wym_dialog div.row label   { float: left; width: 150px; display: block; text-align: right; margin-right: 10px; }
+        .wym_dialog div.row-indent  { margin-left: 160px; }
+        /*autoclearing*/        
+        .wym_dialog div.row:after            { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
+        .wym_dialog div.row                  { display: inline-block; }
+            /* Hides from IE-mac \*/
+            * html .wym_dialog div.row       { height: 1%; }
+            .wym_dialog div.row              { display: block; }
+            /* End hide from IE-mac */                
             
