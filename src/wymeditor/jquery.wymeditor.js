@@ -342,11 +342,11 @@ $j.fn.wymeditor = function(options) {
                           + "<legend>{Link}</legend>"
                           + "<div class='row'>"
                           + "<label>{URL}</label>"
-                          + "<input type='text' class='wym_href' value='' size='50' />"
+                          + "<input type='text' class='wym_href' value='' size='40' />"
                           + "</div>"
                           + "<div class='row'>"
                           + "<label>{Title}</label>"
-                          + "<input type='text' class='wym_title' value='' size='50' />"
+                          + "<input type='text' class='wym_title' value='' size='40' />"
                           + "</div>"
                           + "<div class='row row-indent'>"
                           + "<input class='wym_submit' type='button'"
@@ -366,15 +366,15 @@ $j.fn.wymeditor = function(options) {
                           + "<legend>{Image}</legend>"
                           + "<div class='row'>"
                           + "<label>{URL}</label>"
-                          + "<input type='text' class='wym_src' value='' size='50' />"
+                          + "<input type='text' class='wym_src' value='' size='40' />"
                           + "</div>"
                           + "<div class='row'>"
                           + "<label>{Alternative_Text}</label>"
-                          + "<input type='text' class='wym_alt' value='' size='50' />"
+                          + "<input type='text' class='wym_alt' value='' size='40' />"
                           + "</div>"
                           + "<div class='row'>"
                           + "<label>{Title}</label>"
-                          + "<input type='text' class='wym_title' value='' size='50' />"
+                          + "<input type='text' class='wym_title' value='' size='40' />"
                           + "</div>"
                           + "<div class='row row-indent'>"
                           + "<input class='wym_submit' type='button'"
@@ -394,7 +394,7 @@ $j.fn.wymeditor = function(options) {
                           + "<legend>{Table}</legend>"
                           + "<div class='row'>"
                           + "<label>{Caption}</label>"
-                          + "<input type='text' class='wym_caption' value='' size='50' />"
+                          + "<input type='text' class='wym_caption' value='' size='40' />"
                           + "</div>"
                           + "<div class='row'>"
                           + "<label>{Number_Of_Rows}</label>"
@@ -662,7 +662,7 @@ Wymeditor.prototype.ready = function() {
 /********** METHODS **********/
 
 /* @name box
- * @description Get the edited document
+ * @description Returns the WYMeditor container
  */
 Wymeditor.prototype.box = function() {
   return(this._box);
