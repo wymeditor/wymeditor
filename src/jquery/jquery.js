@@ -7,8 +7,8 @@ if(typeof window.jQuery == "undefined") {
  * Dual licensed under the MIT (MIT-LICENSE.txt)
  * and GPL (GPL-LICENSE.txt) licenses.
  *
- * $Date: 2007-05-02 04:41:57 +0200 (mer, 02 mai 2007) $
- * $Rev: 1845 $
+ * $Date: 2007-05-13 19:59:38 +0200 (dim, 13 mai 2007) $
+ * $Rev: 1897 $
  */
 
 // Global undefined variable
@@ -56,7 +56,7 @@ jQuery.fn = jQuery.prototype = {
 
 			// HANDLE: $(arraylike)
 			// Watch for when an array-like object is passed as the selector
-			(a.jquery || a.length && a != window && !a.nodeType && a[0] != undefined && a[0].nodeType) && jQuery.makeArray( a ) ||
+			(a.jquery || a.length && a != window && (!a.nodeType || (jQuery.browser.msie && a.elements)) && a[0] != undefined && a[0].nodeType) && jQuery.makeArray( a ) ||
 
 			// HANDLE: $(*)
 			[ a ] );
@@ -346,7 +346,7 @@ jQuery.extend({
 
 		// internal only, use removeClass("class")
 		remove: function( elem, c ){
-			elem.className = c ?
+			elem.className = c != undefined ?
 				jQuery.grep( elem.className.split(/\s+/), function(cur){
 					return !jQuery.className.has( c, cur );	
 				}).join(" ") : "";
@@ -515,7 +515,7 @@ jQuery.extend({
 			if ( 0 === arg.length && !jQuery(arg).is("form, select") )
 				return;
 
-			if ( arg[0] == undefined || jQuery(arg).is("form, select") )
+			if ( arg[0] == undefined || jQuery.nodeName(arg, "form") || arg.options )
 				r.push( arg );
 			else
 				r = jQuery.merge( r, arg );
@@ -537,7 +537,8 @@ jQuery.extend({
 			disabled: "disabled",
 			checked: "checked",
 			readonly: "readOnly",
-			selected: "selected"
+			selected: "selected",
+			maxlength: "maxLength"
 		};
 		
 		// IE actually uses filters for opacity ... elem is actually elem.style
@@ -674,7 +675,7 @@ new function() {
 
 	// Figure out what browser is being used
 	jQuery.browser = {
-		version: b.match(/.+[xiae][\/ ]([\d.]+)/)[1],
+		version: b.match(/.+(?:rv|it|ra|ie)[\/: ]([\d.]+)/)[1],
 		safari: /webkit/.test(b),
 		opera: /opera/.test(b),
 		msie: /msie/.test(b) && !/opera/.test(b),
@@ -981,7 +982,8 @@ jQuery.extend({
 						
 						// Do a quick check for the existence of the actual ID attribute
 						// to avoid selecting by the name attribute in IE
-						if ( (jQuery.browser.msie||jQuery.browser.opera) && oid && oid.id != m[2] )
+						// also check to insure id is a string to avoid selecting an element with the name of 'id' inside a form
+						if ( (jQuery.browser.msie||jQuery.browser.opera) && oid && typeof oid.id == "string" && oid.id != m[2] )
 							oid = jQuery('[@id="'+m[2]+'"]', elem)[0];
 
 						// Do a quick check for node name (where applicable) so
@@ -1195,7 +1197,7 @@ jQuery.event = {
 		
 		if (!element.$handle)
 			element.$handle = function() {
-				jQuery.event.handle.apply(element, arguments);
+				if(jQuery) jQuery.event.handle.apply(element, arguments);
 			};
 
 		// Get the current list of functions bound to this event
@@ -1308,7 +1310,7 @@ jQuery.event = {
 		// Empty object is for triggered events with no data
 		event = jQuery.event.fix( event || window.event || {} ); 
 
-		var c = this.$events[event.type], args = [].slice.call( arguments, 1 );
+		var c = this.$events && this.$events[event.type], args = [].slice.call( arguments, 1 );
 		args.unshift( event );
 
 		for ( var j in c ) {
@@ -1339,9 +1341,9 @@ jQuery.event = {
 
 		// Calculate pageX/Y if missing and clientX/Y available
 		if ( event.pageX == undefined && event.clientX != undefined ) {
-			var e = document.documentElement, b = document.body;
-			event.pageX = event.clientX + (e.scrollLeft || b.scrollLeft);
-			event.pageY = event.clientY + (e.scrollTop || b.scrollTop);
+			var e = document.documentElement || document.body;
+			event.pageX = event.clientX + e.scrollLeft;
+			event.pageY = event.clientY + e.scrollTop;
 		}
 				
 		// check if target is a textnode (safari)
