@@ -524,9 +524,12 @@ Wymeditor.prototype.init = function() {
     //TODO: handle unsupported browsers
   }
 
+  //load XHTML parser
+  this.parser = new XhtmlParser(new XhtmlSaxListener());
+
   //extend the Wymeditor object
   $j.extend(this, WymClass);
-
+  
   //load wymbox
   this._box = $j(this._element).hide().after(this._options.sBoxHtml).next();
   
@@ -675,6 +678,13 @@ Wymeditor.prototype.html = function(sHtml) {
 
   if(sHtml) $j(this._doc.body).html(sHtml);
   else return($j(this._doc.body).html());
+};
+
+/* @name xhtml
+ * @description Cleans up the HTML
+ */
+Wymeditor.prototype.xhtml = function() {
+    return this.parser.parse(this.html());
 };
 
 /* @name exec
