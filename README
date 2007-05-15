@@ -18,8 +18,6 @@ WYMeditor documentation is available online at http://trac.wymeditor.org/
 Note for 0.3
 ============
 
-WYMeditor 0.3 is still alpha software.
-
 For WYMeditor 0.3 to work, you'll need the latest jQuery (NOT 1.1.2),
 built from SVN.
 For your convenience, a pre-built package is available at:
