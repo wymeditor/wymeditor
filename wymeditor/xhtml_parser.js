@@ -17,14 +17,14 @@
  *        Marcus Baker (http://lastcraft.com) Lexer/Parser
  */
 
-function extendObject(descendant, parent) {
-    var sConstructor = parent.toString();
-    var aMatch = sConstructor.match( /\s*function (.*)\(/ );
-    if ( aMatch != null ) { descendant.prototype[aMatch[1]] = parent; }
-    for (var m in parent.prototype) {
-        descendant.prototype[m] = parent.prototype[m];
+
+Object.prototype.extendObject = function (oSuper) {
+  for (sProperty in oSuper) {
+    if(sProperty != 'type'){
+      this[sProperty] = oSuper[sProperty];
     }
-};
+  }
+}
 
 String.prototype.trim = function() {
   return this.replace(/^(\s*)|(\s*)$/gm,'');
@@ -1401,7 +1401,8 @@ Lexer.prototype._reduce = function(raw)
 */
 function XhtmlLexer(parser)
 {
-  this.Lexer(parser, 'Text');
+  this.extendObject(new Lexer(parser, 'Text'));
+  //this.Lexer(parser, 'Text');
   
   this.mapHandler('Text', 'Text');
 
@@ -1415,7 +1416,7 @@ function XhtmlLexer(parser)
   return this;
 }
 
-extendObject(XhtmlLexer, Lexer);
+
 
 XhtmlLexer.prototype.init = function()
 {
@@ -1716,7 +1717,7 @@ XhtmlParser.prototype.UnquotedAttribute = function(match, state)
 */
 function XhtmlSaxListener()
 {
-  this.xhtml = '';
+  this.output = '';
   this.helper = new XmlHelper();
   this._open_tags = {};
   this.validator = XhtmlValidator;
@@ -1846,7 +1847,7 @@ XhtmlSaxListener.prototype.shouldCloseTagAutomatically = function(tag, now_on_ta
 
 XhtmlSaxListener.prototype.beforeParsing = function(raw)
 {
-  this.xhtml = '';
+  this.output = '';
   return raw;
 }
 
@@ -1874,7 +1875,7 @@ XhtmlSaxListener.prototype.joinRepeatedEntities = function(xhtml)
 
 XhtmlSaxListener.prototype.getResult = function()
 {
-  return this.xhtml;
+  return this.output;
 }
 
 XhtmlSaxListener.prototype.getTagReplacements = function()
@@ -1884,56 +1885,56 @@ XhtmlSaxListener.prototype.getTagReplacements = function()
 
 XhtmlSaxListener.prototype.addContent = function(text)
 {
-  this.xhtml += text;
+  this.output += text;
 }
 
 XhtmlSaxListener.prototype.addComment = function(text)
 {
   if(!this.remove_comments){
-    this.xhtml += text;
+    this.output += text;
   }
 }
 
 XhtmlSaxListener.prototype.addScript = function(text)
 {
   if(!this.remove_scripts){
-    this.xhtml += text;
+    this.output += text;
   }
 }
 
 XhtmlSaxListener.prototype.addCss = function(text)
 {
   if(!this.remove_embeded_styles){
-    this.xhtml += text;
+    this.output += text;
   }
 }
 XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes)
 {
-  this.xhtml += this.helper.tag(tag, this.validator.getValidTagAttributes(tag, attributes), true);    
+  this.output += this.helper.tag(tag, this.validator.getValidTagAttributes(tag, attributes), true);    
 }
 
 XhtmlSaxListener.prototype.inlineTag = function(tag, attributes)
 {
-  this.xhtml += this.helper.tag(tag, this.validator.getValidTagAttributes(tag, attributes));
+  this.output += this.helper.tag(tag, this.validator.getValidTagAttributes(tag, attributes));
 }
 
 XhtmlSaxListener.prototype.openUnknownTag = function(tag, attributes)
 {
-  //this.xhtml += this.helper.tag(tag, attributes, true);
+  //this.output += this.helper.tag(tag, attributes, true);
 }
 
 XhtmlSaxListener.prototype.closeBlockTag = function(tag)
 {
-  this.xhtml += "</"+tag+">";
+  this.output += "</"+tag+">";
 }
 
 XhtmlSaxListener.prototype.closeUnknownTag = function(tag)
 {
-  //this.xhtml += "</"+tag+">";
+  //this.output += "</"+tag+">";
 }
 
 XhtmlSaxListener.prototype.closeUnopenedTag = function(tag)
 {
-  this.xhtml += "</"+tag+">";
+  this.output += "</"+tag+">";
 }
 

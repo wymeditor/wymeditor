@@ -196,3 +196,4 @@ WymClassMozilla.prototype.setFocusToNode = function(node) {
     selected.collapse(node, node.childNodes.length);
     this._iframe.contentWindow.focus();
 };
+

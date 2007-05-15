@@ -497,10 +497,11 @@ function Wymeditor(elem,index,options) {
     || this.computeJqueryPath();
   
   if($j.isFunction(this._options.fPreInit)) this._options.fPreInit(this);
-  
+    
   this.init();
   
 };
+
 
 /* @name init
  * @description Initializes a WYMeditor instance
@@ -525,7 +526,9 @@ Wymeditor.prototype.init = function() {
   }
 
   //load XHTML parser
-  this.parser = new XhtmlParser(new XhtmlSaxListener());
+  var SaxListener = new XhtmlSaxListener();
+  SaxListener.extendObject(WymClass);
+  this.parser = new XhtmlParser(SaxListener);
 
   
   //extend the Wymeditor object

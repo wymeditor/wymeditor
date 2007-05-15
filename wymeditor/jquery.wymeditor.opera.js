@@ -80,12 +80,6 @@ WymClassOpera.prototype.addCssRule = function(styles, oCss) {
         styles.cssRules.length);
 };
 
-WymClassOpera.prototype.xhtml = function() {
-
-    var sHtml = this._wym.html();
-    return sHtml;
-};
-
 //keyup handler
 WymClassOpera.prototype.keyup = function(evt) {
 
