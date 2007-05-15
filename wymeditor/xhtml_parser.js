@@ -17,16 +17,16 @@
  *        Marcus Baker (http://lastcraft.com) Lexer/Parser
  */
 
+function extendObject(descendant, parent) {
+    var sConstructor = parent.toString();
+    var aMatch = sConstructor.match( /\s*function (.*)\(/ );
+    if ( aMatch != null ) { descendant.prototype[aMatch[1]] = parent; }
+    for (var m in parent.prototype) {
+        descendant.prototype[m] = parent.prototype[m];
+    }
+};
 
-Object.prototype.extends = function (oSuper) {
-  for (sProperty in oSuper) {
-    try{
-      this[sProperty] = oSuper[sProperty];
-    }catch(e){}
-  }
-}
-
-String.prototype.trim = function () {
+String.prototype.trim = function() {
   return this.replace(/^(\s*)|(\s*)$/gm,'');
 }
 
@@ -41,6 +41,7 @@ String.prototype.trim = function () {
 function XmlHelper()
 {
   this._entitiesDiv = document.createElement('div');
+  return this;
 }
 
 
@@ -145,8 +146,9 @@ XmlHelper.prototype.tagOptions = function(options)
 
   for (key in options) {
     var formated_options = '';
-    value = options[key];
+    var value = options[key];
     if(typeof value != 'function' && value.length > 0) {
+
       if(parseInt(key) == key && typeof value == 'object'){
         key = value.shift();
         value = value.pop();
@@ -167,6 +169,7 @@ XmlHelper.prototype.tagOptions = function(options)
 */
 XmlHelper.prototype.escapeEntities = function(string, escape_quotes)
 {
+  this._entitiesDiv.innerHTML = string;
   this._entitiesDiv.textContent = string;
   var result = this._entitiesDiv.innerHTML;
   if(typeof escape_quotes == 'undefined'){
@@ -915,6 +918,7 @@ function ParallelRegex(case_sensitive)
   this._patterns = [];
   this._labels = [];
   this._regex = null;
+  return this;
 }
 
 
@@ -1038,6 +1042,7 @@ ParallelRegex.prototype._getPerlMatchingFlags = function()
 function StateStack( start) 
 {
   this._stack = [start];
+  return this;
 }
 
 /**
@@ -1045,7 +1050,7 @@ function StateStack( start)
 *    @return string       State.
 *    @access public
 */
-StateStack.prototype.getCurrent = function () 
+StateStack.prototype.getCurrent = function() 
 {
   return this._stack[this._stack.length - 1];
 }
@@ -1056,7 +1061,7 @@ StateStack.prototype.getCurrent = function ()
 *    @param string state        New state.
 *    @access public
 */
-StateStack.prototype.enter = function (state) 
+StateStack.prototype.enter = function(state) 
 {
   this._stack.push(state);    
 }
@@ -1068,7 +1073,7 @@ StateStack.prototype.enter = function (state)
 *                       the bottom of the list.
 *    @access public
 */
-StateStack.prototype.leave = function () 
+StateStack.prototype.leave = function() 
 {
   if (this._stack.length == 1) {
     return false;
@@ -1111,6 +1116,7 @@ function Lexer(parser, start, case_sensitive)
   this._mode = new StateStack(start);
   this._mode_handlers = {};
   this._mode_handlers[start] = start;
+  return this;
 }
 
 /**
@@ -1124,7 +1130,7 @@ function Lexer(parser, start, case_sensitive)
 *                                this type of input.
 *    @access public
 */
-Lexer.prototype.addPattern = function (pattern, mode) 
+Lexer.prototype.addPattern = function(pattern, mode) 
 {
   var mode = mode || "accept";
   if (this._regexes[mode] == undefined) {    
@@ -1149,7 +1155,7 @@ Lexer.prototype.addPattern = function (pattern, mode)
 *                                nested mode.
 *    @access public
 */
-Lexer.prototype.addEntryPattern = function (pattern, mode, new_mode) 
+Lexer.prototype.addEntryPattern = function(pattern, mode, new_mode) 
 {
   if (this._regexes[mode] == undefined) {
     this._regexes[mode] = new ParallelRegex(this._case);
@@ -1168,7 +1174,7 @@ Lexer.prototype.addEntryPattern = function (pattern, mode, new_mode)
 *    @param string mode         Mode to leave.
 *    @access public
 */
-Lexer.prototype.addExitPattern = function (pattern, mode) 
+Lexer.prototype.addExitPattern = function(pattern, mode) 
 {
   if (this._regexes[mode] == undefined) {
     this._regexes[mode] = new ParallelRegex(this._case);
@@ -1191,7 +1197,7 @@ Lexer.prototype.addExitPattern = function (pattern, mode)
 *    @param string special      Use this mode for this one token.
 *    @access public
 */
-Lexer.prototype.addSpecialPattern =  function (pattern, mode, special) 
+Lexer.prototype.addSpecialPattern =  function(pattern, mode, special) 
 {
   if (this._regexes[mode] == undefined) {
     this._regexes[mode] = new ParallelRegex(this._case);
@@ -1208,7 +1214,7 @@ Lexer.prototype.addSpecialPattern =  function (pattern, mode, special)
 *    @param string handler     New target handler.
 *    @access public
 */
-Lexer.prototype.mapHandler = function (mode, handler) 
+Lexer.prototype.mapHandler = function(mode, handler) 
 {
   this._mode_handlers[mode] = handler;
 }
@@ -1223,11 +1229,12 @@ Lexer.prototype.mapHandler = function (mode, handler)
 *    @return boolean           True on success, else false.
 *    @access public
 */
-Lexer.prototype.parse = function (raw) 
+Lexer.prototype.parse = function(raw) 
 {
   if (this._parser == undefined) {
     return false;
   }
+
   var length = raw.length;
   while (typeof (parsed = this._reduce(raw)) == 'object') {    
     var raw = parsed[0];
@@ -1250,6 +1257,7 @@ Lexer.prototype.parse = function (raw)
   if (! parsed ) {
     return false;
   }
+
   return this._invokeParser(raw, LEXER_UNMATCHED);
 }
 
@@ -1265,12 +1273,14 @@ Lexer.prototype.parse = function (raw)
 *                                from the parser.
 *    @access private
 */
-Lexer.prototype._dispatchTokens = function (unmatched, matched, mode) 
+Lexer.prototype._dispatchTokens = function(unmatched, matched, mode) 
 {
   mode = mode || false;
+
   if (! this._invokeParser(unmatched, LEXER_UNMATCHED)) {
     return false;
   }
+
   if (typeof mode == 'boolean') {
     return this._invokeParser(matched, LEXER_MATCHED);
   }
@@ -1288,6 +1298,7 @@ Lexer.prototype._dispatchTokens = function (unmatched, matched, mode)
     return this._mode.leave();
   }
   this._mode.enter(mode);
+
   return this._invokeParser(matched, LEXER_ENTER);
 }
 
@@ -1299,7 +1310,7 @@ Lexer.prototype._dispatchTokens = function (unmatched, matched, mode)
 *    @return boolean        True if this is the exit mode.
 *    @access private
 */
-Lexer.prototype._isModeEnd = function (mode) 
+Lexer.prototype._isModeEnd = function(mode) 
 {
   return (mode === "__exit");
 }
@@ -1312,9 +1323,9 @@ Lexer.prototype._isModeEnd = function (mode)
 *    @return boolean        True if this is the exit mode.
 *    @access private
 */
-Lexer.prototype._isSpecialMode = function (mode) 
+Lexer.prototype._isSpecialMode = function(mode) 
 {
-  return (mode[0] == "_");
+  return (mode.substring(0,1) == "_");
 }
 
 /**
@@ -1324,7 +1335,7 @@ Lexer.prototype._isSpecialMode = function (mode)
 *    @return string         Underlying mode name.
 *    @access private
 */
-Lexer.prototype._decodeSpecial = function (mode) 
+Lexer.prototype._decodeSpecial = function(mode) 
 {
   return mode.substring(1);
 }
@@ -1338,7 +1349,7 @@ Lexer.prototype._decodeSpecial = function (mode)
 *                                  than unparsed data.
 *    @access private
 */
-Lexer.prototype._invokeParser = function (content, is_match) 
+Lexer.prototype._invokeParser = function(content, is_match) 
 {
 
   if (!/ +/.test(content) && ((content === '') || (content == false))) { 
@@ -1365,7 +1376,7 @@ Lexer.prototype._invokeParser = function (content, is_match)
 *                               is a parsing error.
 *    @access private
 */
-Lexer.prototype._reduce = function (raw) 
+Lexer.prototype._reduce = function(raw) 
 {
   var matched = this._regexes[this._mode.getCurrent()].match(raw);
   var match = matched[1];
@@ -1390,15 +1401,21 @@ Lexer.prototype._reduce = function (raw)
 */
 function XhtmlLexer(parser)
 {
-  this.extends(new Lexer(parser, 'Text'));      
+  this.Lexer(parser, 'Text');
+  
   this.mapHandler('Text', 'Text');
 
   this.addCommentTokens('Text');
   this.addScriptTokens('Text');
   this.addCssTokens('Text');
   this.addTagTokens('Text');
+  
   this.init();
+    
+  return this;
 }
+
+extendObject(XhtmlLexer, Lexer);
 
 XhtmlLexer.prototype.init = function()
 {
@@ -1424,17 +1441,17 @@ XhtmlLexer.prototype.addCssTokens = function(scope)
 
 XhtmlLexer.prototype.addTagTokens = function(scope)
 {
-  this.addSpecialPattern("<\s*[a-z]+\s*>", scope, 'OpeningTag');
+  this.addSpecialPattern("<\\s*[a-z]+\\s*>", scope, 'OpeningTag');
   this.addEntryPattern("<[a-z]+"+'[\\\/ \\\>]+', scope, 'OpeningTag');
   this.addInTagDeclarationTokens('OpeningTag');
 
-  this.addSpecialPattern("</\s*[a-z]+\s*>", scope, 'ClosingTag');
+  this.addSpecialPattern("</\\s*[a-z]+\\s*>", scope, 'ClosingTag');
 
 }
 
 XhtmlLexer.prototype.addInTagDeclarationTokens = function(scope)
 {
-  this.addSpecialPattern('\s+', scope, 'Ignore');
+  this.addSpecialPattern('\\s+', scope, 'Ignore');
 
   this.addAttributeTokens(scope);
 
@@ -1445,17 +1462,17 @@ XhtmlLexer.prototype.addInTagDeclarationTokens = function(scope)
 
 XhtmlLexer.prototype.addAttributeTokens = function(scope)
 {
-  this.addSpecialPattern("\s*[a-z-_0-9]+\s*(?=\=)\s*", scope, 'TagAttributes');
+  this.addSpecialPattern("\\s*[a-z-_0-9]+\\s*(?=\=)\\s*", scope, 'TagAttributes');
 
-  this.addEntryPattern('=\s*"', scope, 'DoubleQuotedAttribute');
+  this.addEntryPattern('=\\s*"', scope, 'DoubleQuotedAttribute');
   this.addPattern("\\\\\"", 'DoubleQuotedAttribute');
   this.addExitPattern('"', 'DoubleQuotedAttribute');
 
-  this.addEntryPattern("=\s*'", scope, 'SingleQuotedAttribute');
+  this.addEntryPattern("=\\s*'", scope, 'SingleQuotedAttribute');
   this.addPattern("\\\\'", 'SingleQuotedAttribute');
   this.addExitPattern("'", 'SingleQuotedAttribute');
 
-  this.addSpecialPattern('=\s*[^>\s]*', scope, 'UnquotedAttribute');
+  this.addSpecialPattern('=\\s*[^>\\s]*', scope, 'UnquotedAttribute');
 }
 
 
@@ -1477,10 +1494,12 @@ function XhtmlParser(Listener, mode)
   this._matches = [];
   this._last_match = '';
   this._current_match = '';
+  
+  return this;
 }
 
 XhtmlParser.prototype.parse = function(raw)
-{
+{  
   this._Lexer.parse(this.beforeParsing(raw));
   return this.afterParsing(this._Listener.getResult());
 }
@@ -1800,6 +1819,8 @@ function XhtmlSaxListener()
 
 
     this.inline_tags = ["br", "hr", "img", "input"];
+    
+    return this;
 }
 
 XhtmlSaxListener.prototype.shouldCloseTagAutomatically = function(tag, now_on_tag, closing)

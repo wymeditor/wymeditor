@@ -527,6 +527,7 @@ Wymeditor.prototype.init = function() {
   //load XHTML parser
   this.parser = new XhtmlParser(new XhtmlSaxListener());
 
+  
   //extend the Wymeditor object
   $j.extend(this, WymClass);
   
