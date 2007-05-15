@@ -1,4 +1,4 @@
-/*
+﻿/*
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2007 H.O.net - http://www.honet.be/
  * Dual licensed under the MIT (MIT-license.txt)
@@ -687,7 +687,7 @@ Wymeditor.prototype.exec = function(cmd) {
   switch(cmd) {
     case sWYM_CREATE_LINK:
       var container = this.container();
-      if(container) this.dialog(sWYM_DIALOG_LINK);
+      if(container || this._selected_image) this.dialog(sWYM_DIALOG_LINK);
     break;
     
     case sWYM_INSERT_IMAGE:
@@ -1085,6 +1085,11 @@ function fWYM_INIT_DIALOG(index) {
     var doc = window.document;
     var selected = wym.selected();
     var sStamp = wym.uniqueStamp();
+    
+    //fix MSIE selection if link image has been clicked
+    if(!selected && wym._selected_image) {
+      selected = $j(wym._selected_image).parentsOrSelf(sWYM_A);
+    }
     
     //pre-init functions
     if($j.isFunction(wym._options.fPreInitDialog))
