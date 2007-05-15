@@ -123,12 +123,6 @@ WymClassMozilla.prototype.addCssRule = function(styles, oCss) {
         styles.cssRules.length);
 };
 
-/* @name xhtml
- * @description Cleans up the HTML
- */
-WymClassMozilla.prototype.xhtml = function() {
-    return this.parser.parse(this._wym.html());
-};
 
 //keydown handler, mainly used for keyboard shortcuts
 WymClassMozilla.prototype.keydown = function(evt) {

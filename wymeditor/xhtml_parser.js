@@ -20,7 +20,9 @@
 
 Object.prototype.extends = function (oSuper) {
   for (sProperty in oSuper) {
-    this[sProperty] = oSuper[sProperty];
+    try{
+      this[sProperty] = oSuper[sProperty];
+    }catch(e){}
   }
 }
 
@@ -204,6 +206,695 @@ XmlHelper.prototype.parseAttributes = function(tag_attributes)
   return result;
 }
 
+/**
+* XhtmlValidator for validating tag attributes
+*
+* @author Bermi Ferrer - http://bermi.org
+*/
+var XhtmlValidator = {
+  "_attributes":
+  {
+    "core":
+    {
+      "except":[
+      "base",
+      "head",
+      "html",
+      "meta",
+      "param",
+      "script",
+      "style",
+      "title"
+      ],
+      "attributes":[
+      "class",
+      "id",
+      "style",
+      "title",
+      "accesskey",
+      "tabindex"
+      ]
+    },
+    "language":
+    {
+      "except":[
+      "base",
+      "br",
+      "hr",
+      "iframe",
+      "param",
+      "script"
+      ],
+      "attributes":
+      {
+        "dir":[
+        "ltr",
+        "rtl"
+        ],
+        "0":"lang",
+        "1":"xml:lang"
+      }
+    },
+    "keyboard":
+    {
+      "attributes":
+      {
+        "accesskey":/^(\w){1}$/,
+        "tabindex":/^(\d)+$/
+      }
+    }
+  },
+  "_events":
+  {
+    "window":
+    {
+      "only":[
+      "body"
+      ],
+      "attributes":[
+      "onload",
+      "onunload"
+      ]
+    },
+    "form":
+    {
+      "only":[
+      "form",
+      "input",
+      "textarea",
+      "select",
+      "a",
+      "label",
+      "button"
+      ],
+      "attributes":[
+      "onchange",
+      "onsubmit",
+      "onreset",
+      "onselect",
+      "onblur",
+      "onfocus"
+      ]
+    },
+    "keyboard":
+    {
+      "except":[
+      "base",
+      "bdo",
+      "br",
+      "frame",
+      "frameset",
+      "head",
+      "html",
+      "iframe",
+      "meta",
+      "param",
+      "script",
+      "style",
+      "title"
+      ],
+      "attributes":[
+      "onkeydown",
+      "onkeypress",
+      "onkeyup"
+      ]
+    },
+    "mouse":
+    {
+      "except":[
+      "base",
+      "bdo",
+      "br",
+      "head",
+      "html",
+      "meta",
+      "param",
+      "script",
+      "style",
+      "title"
+      ],
+      "attributes":[
+      "onclick",
+      "ondblclick",
+      "onmousedown",
+      "onmousemove",
+      "onmouseover",
+      "onmouseout",
+      "onmouseup"
+      ]
+    }
+  },
+  "_tags":
+  {
+    "a":
+    {
+      "attributes":
+      {
+        "0":"charset",
+        "1":"coords",
+        "2":"href",
+        "3":"hreflang",
+        "4":"name",
+        "rel":/^(alternate|designates|stylesheet|start|next|prev|contents|index|glossary|copyright|chapter|section|subsection|appendix|help|bookmark| |shortcut|icon)+$/,
+        "rev":/^(alternate|designates|stylesheet|start|next|prev|contents|index|glossary|copyright|chapter|section|subsection|appendix|help|bookmark| |shortcut|icon)+$/,
+        "shape":/^(rect|rectangle|circ|circle|poly|polygon)$/,
+        "5":"type"
+      }
+    },
+    "0":"abbr",
+    "1":"acronym",
+    "2":"address",
+    "area":
+    {
+      "attributes":
+      {
+        "0":"alt",
+        "1":"coords",
+        "2":"href",
+        "nohref":/^(true|false)$/,
+        "shape":/^(rect|rectangle|circ|circle|poly|polygon)$/
+      },
+      "required":[
+      "alt"
+      ]
+    },
+    "3":"b",
+    "base":
+    {
+      "attributes":[
+      "href"
+      ],
+      "required":[
+      "href"
+      ]
+    },
+    "bdo":
+    {
+      "attributes":
+      {
+        "dir":/^(ltr|rtl)$/
+      },
+      "required":[
+      "dir"
+      ]
+    },
+    "4":"big",
+    "blockquote":
+    {
+      "attributes":[
+      "cite"
+      ]
+    },
+    "5":"body",
+    "6":"br",
+    "button":
+    {
+      "attributes":
+      {
+        "disabled":/^(disabled)$/,
+        "type":/^(button|reset|submit)$/,
+        "0":"value"
+      },
+      "inside":"form"
+    },
+    "7":"caption",
+    "8":"cite",
+    "9":"code",
+    "col":
+    {
+      "attributes":
+      {
+        "align":/^(right|left|center|justify)$/,
+        "0":"char",
+        "1":"charoff",
+        "span":/^(\d)+$/,
+        "valign":/^(top|middle|bottom|baseline)$/,
+        "2":"width"
+      },
+      "inside":"colgroup"
+    },
+    "colgroup":
+    {
+      "attributes":
+      {
+        "align":/^(right|left|center|justify)$/,
+        "0":"char",
+        "1":"charoff",
+        "span":/^(\d)+$/,
+        "valign":/^(top|middle|bottom|baseline)$/,
+        "2":"width"
+      }
+    },
+    "10":"dd",
+    "del":
+    {
+      "attributes":
+      {
+        "0":"cite",
+        "datetime":/^([0-9]){8}/
+      }
+    },
+    "11":"div",
+    "12":"dfn",
+    "13":"dl",
+    "14":"dt",
+    "15":"em",
+    "fieldset":
+    {
+      "inside":"form"
+    },
+    "form":
+    {
+      "attributes":
+      {
+        "0":"action",
+        "1":"accept",
+        "2":"accept-charset",
+        "3":"enctype",
+        "method":/^(get|post)$/
+      },
+      "required":[
+      "action"
+      ]
+    },
+    "head":
+    {
+      "attributes":[
+      "profile"
+      ]
+    },
+    "16":"h1",
+    "17":"h2",
+    "18":"h3",
+    "19":"h4",
+    "20":"h5",
+    "21":"h6",
+    "22":"hr",
+    "html":
+    {
+      "attributes":[
+      "xmlns"
+      ]
+    },
+    "23":"i",
+    "img":
+    {
+      "attributes":[
+      "alt",
+      "src",
+      "height",
+      "ismap",
+      "longdesc",
+      "usemap",
+      "width"
+      ],
+      "required":[
+      "alt",
+      "src"
+      ]
+    },
+    "input":
+    {
+      "attributes":
+      {
+        "0":"accept",
+        "1":"alt",
+        "checked":/^(checked)$/,
+        "disabled":/^(disabled)$/,
+        "maxlength":/^(\d)+$/,
+        "2":"name",
+        "readonly":/^(readonly)$/,
+        "size":/^(\d)+$/,
+        "3":"src",
+        "type":/^(button|checkbox|file|hidden|image|password|radio|reset|submit|text)$/,
+        "4":"value"
+      },
+      "inside":"form"
+    },
+    "ins":
+    {
+      "attributes":
+      {
+        "0":"cite",
+        "datetime":/^([0-9]){8}/
+      }
+    },
+    "24":"kbd",
+    "label":
+    {
+      "attributes":[
+      "for"
+      ],
+      "inside":"form"
+    },
+    "25":"legend",
+    "26":"li",
+    "link":
+    {
+      "attributes":
+      {
+        "0":"charset",
+        "1":"href",
+        "2":"hreflang",
+        "media":/^(all|braille|print|projection|screen|speech|,|;| )+$/i,
+        "rel":/^(alternate|appendix|bookmark|chapter|contents|copyright|glossary|help|home|index|next|prev|section|start|stylesheet|subsection| |shortcut|icon)+$/i,
+        "rev":/^(alternate|appendix|bookmark|chapter|contents|copyright|glossary|help|home|index|next|prev|section|start|stylesheet|subsection| |shortcut|icon)+$/i,
+        "3":"type"
+      },
+      "inside":"head"
+    },
+    "map":
+    {
+      "attributes":[
+      "id",
+      "name"
+      ],
+      "required":[
+      "id"
+      ]
+    },
+    "meta":
+    {
+      "attributes":
+      {
+        "0":"content",
+        "http-equiv":/^(content\-type|expires|refresh|set\-cookie)$/i,
+        "1":"name",
+        "2":"scheme"
+      },
+      "required":[
+      "content"
+      ]
+    },
+    "27":"noscript",
+    "object":
+    {
+      "attributes":[
+      "archive",
+      "classid",
+      "codebase",
+      "codetype",
+      "data",
+      "declare",
+      "height",
+      "name",
+      "standby",
+      "type",
+      "usemap",
+      "width"
+      ]
+    },
+    "28":"ol",
+    "optgroup":
+    {
+      "attributes":
+      {
+        "0":"label",
+        "disabled": /^(disabled)$/
+      },
+      "required":[
+      "label"
+      ]
+    },
+    "option":
+    {
+      "attributes":
+      {
+        "0":"label",
+        "disabled":/^(disabled)$/,
+        "selected":/^(selected)$/,
+        "1":"value"
+      },
+      "inside":"select"
+    },
+    "29":"p",
+    "param":
+    {
+      "attributes":
+      {
+        "0":"type",
+        "valuetype":/^(data|ref|object)$/,
+        "1":"valuetype",
+        "2":"value"
+      },
+      "required":[
+      "name"
+      ]
+    },
+    "30":"pre",
+    "q":
+    {
+      "attributes":[
+      "cite"
+      ]
+    },
+    "31":"samp",
+    "script":
+    {
+      "attributes":
+      {
+        "type":/^(text\/ecmascript|text\/javascript|text\/jscript|text\/vbscript|text\/vbs|text\/xml)$/,
+        "0":"charset",
+        "defer":/^(defer)$/,
+        "1":"src"
+      },
+      "required":[
+      "type"
+      ]
+    },
+    "select":
+    {
+      "attributes":
+      {
+        "disabled":/^(disabled)$/,
+        "multiple":/^(multiple)$/,
+        "0":"name",
+        "1":"size"
+      },
+      "inside":"form"
+    },
+    "32":"small",
+    "33":"span",
+    "34":"strong",
+    "style":
+    {
+      "attributes":
+      {
+        "0":"type",
+        "media":/^(screen|tty|tv|projection|handheld|print|braille|aural|all)$/
+      },
+      "required":[
+      "type"
+      ]
+    },
+    "35":"sub",
+    "36":"sup",
+    "table":
+    {
+      "attributes":
+      {
+        "0":"border",
+        "1":"cellpadding",
+        "2":"cellspacing",
+        "frame":/^(void|above|below|hsides|lhs|rhs|vsides|box|border)$/,
+        "rules":/^(none|groups|rows|cols|all)$/,
+        "3":"summary",
+        "4":"width"
+      }
+    },
+    "tbody":
+    {
+      "attributes":
+      {
+        "align":/^(right|left|center|justify)$/,
+        "0":"char",
+        "1":"charoff",
+        "valign":/^(top|middle|bottom|baseline)$/
+      }
+    },
+    "td":
+    {
+      "attributes":
+      {
+        "0":"abbr",
+        "align":/^(left|right|center|justify|char)$/,
+        "1":"axis",
+        "2":"char",
+        "3":"charoff",
+        "colspan":/^(\d)+$/,
+        "4":"headers",
+        "rowspan":/^(\d)+$/,
+        "scope":/^(col|colgroup|row|rowgroup)$/,
+        "valign":/^(top|middle|bottom|baseline)$/
+      }
+    },
+    "textarea":
+    {
+      "attributes":[
+      "cols",
+      "rows",
+      "disabled",
+      "name",
+      "readonly"
+      ],
+      "required":[
+      "cols",
+      "rows"
+      ],
+      "inside":"form"
+    },
+    "tfoot":
+    {
+      "attributes":
+      {
+        "align":/^(right|left|center|justify)$/,
+        "0":"char",
+        "1":"charoff",
+        "valign":/^(top|middle|bottom)$/,
+        "2":"baseline"
+      }
+    },
+    "th":
+    {
+      "attributes":
+      {
+        "0":"abbr",
+        "align":/^(left|right|center|justify|char)$/,
+        "1":"axis",
+        "2":"char",
+        "3":"charoff",
+        "colspan":/^(\d)+$/,
+        "4":"headers",
+        "rowspan":/^(\d)+$/,
+        "scope":/^(col|colgroup|row|rowgroup)$/,
+        "valign":/^(top|middle|bottom|baseline)$/
+      }
+    },
+    "thead":
+    {
+      "attributes":
+      {
+        "align":/^(right|left|center|justify)$/,
+        "0":"char",
+        "1":"charoff",
+        "valign":/^(top|middle|bottom|baseline)$/
+      }
+    },
+    "37":"title",
+    "tr":
+    {
+      "attributes":
+      {
+        "align":/^(right|left|center|justify|char)$/,
+        "0":"char",
+        "1":"charoff",
+        "valign":/^(top|middle|bottom|baseline)$/
+      }
+    },
+    "38":"tt",
+    "39":"ul",
+    "40":"var"
+  },
+  getValidTagAttributes: function(tag, attributes)
+  {
+    var valid_attributes = {};
+    var possible_attributes = this.getPossibleTagAttributes(tag);
+    for(var attribute in attributes) {
+      var value = attributes[attribute];
+      if (typeof value != 'function' && possible_attributes.contains(attribute)) {
+        if (this.doesAttributeNeedsValidation(tag, attribute)) {
+          if(this.validateAttribute(tag, attribute, value)){
+            valid_attributes[attribute] = value;
+          }
+        }else{
+          valid_attributes[attribute] = value;
+        } 
+      }
+    }
+    return valid_attributes;
+  },
+  getUniqueAttributesAndEventsForTag : function(tag)
+  {
+    var result = [];
+
+    if (this._tags[tag] && this._tags[tag]['attributes']) {
+      for (k in this._tags[tag]['attributes']) {
+        result.push(parseInt(k) == k ? this._tags[tag]['attributes'][k] : k);
+      }
+    }
+    return result;
+  },
+  getDefaultAttributesAndEventsForTags : function()
+  {
+    var result = [];
+    for (var key in this._events){
+      result.push(this._events[key]);
+    }
+    for (var key in this._attributes){
+      result.push(this._attributes[key]);
+    }
+    return result;
+  },
+  isValidTag : function(tag)
+  {
+    if(this._tags[tag]){
+      return true;
+    }
+    for(var key in this._tags){
+      if(this._tags[key] == tag){
+        return true;
+      }
+    }
+    return false;
+  },
+  getDefaultAttributesAndEventsForTag : function(tag)
+  {
+    var default_attributes = [];
+    if (this.isValidTag(tag)) {
+      var default_attributes_and_events = this.getDefaultAttributesAndEventsForTags();
+
+      for(var key in default_attributes_and_events) {
+        var defaults = default_attributes_and_events[key];
+        if(typeof defaults == 'object'){
+
+          if ((defaults['except'] && defaults['except'].contains(tag)) || (defaults['only'] && !defaults['only'].contains(tag))) {
+            continue;
+          }
+
+          var tag_defaults = defaults['attributes'] ? defaults['attributes'] : defaults['events'];
+          for(k in tag_defaults) {
+            default_attributes.push(typeof tag_defaults[k] != 'string' ? k : tag_defaults[k]);
+          }
+        }
+      }
+    }
+    return default_attributes;
+  },
+  doesAttributeNeedsValidation: function(tag, attribute)
+  {
+    return this._tags[tag] && (this._tags[tag]['attributes'] && this._tags[tag]['attributes'][attribute]) || (this._tags[tag]['required']) && this._tags[tag]['required'].contains(attribute);
+  },
+  validateAttribute : function(tag, attribute, value)
+  {
+    if ( this._tags[tag] &&
+      (this._tags[tag]['attributes'] && this._tags[tag]['attributes'][attribute] && value.length > 0 && !value.match(this._tags[tag]['attributes'][attribute])) || // invalid format
+      (this._tags[tag] && this._tags[tag]['required'] && this._tags[tag]['required'].contains(attribute) && value.length == 0) // required attribute
+    ) {
+      return false;
+    }
+    return this._tags[tag] != undefined;
+  },
+  getPossibleTagAttributes : function(tag)
+  {
+    if (!this._possible_tag_attributes) {
+      this._possible_tag_attributes = {};
+    }
+    if (!this._possible_tag_attributes[tag]) {
+      this._possible_tag_attributes[tag] = this.getUniqueAttributesAndEventsForTag(tag).concat(this.getDefaultAttributesAndEventsForTag(tag));;
+    }
+    return this._possible_tag_attributes[tag];
+  }
+}
 
 
 /**
@@ -893,12 +1584,13 @@ XhtmlParser.prototype._callOpenTagListener = function(tag, attributes)
     this._Listener.inlineTag(tag, attributes);
   }else{
     this._Listener.openUnknownTag(tag, attributes);
+    this._increaseOpenTagCounter(tag);
   }
 }
 
 XhtmlParser.prototype._callCloseTagListener = function(tag)
 {
-  if(this._decreaseOpenTagCounter(tag)){
+  if(this._decreaseOpenTagCounter(tag)){    
     this.autoCloseUnclosedBeforeTagClosing(tag);
     if(this._Listener.block_tags.contains(tag)){
       this._Listener.closeBlockTag(tag);
@@ -1005,108 +1697,109 @@ XhtmlParser.prototype.UnquotedAttribute = function(match, state)
 */
 function XhtmlSaxListener()
 {
-this.xhtml = '';
-this.helper = new XmlHelper();
-this._open_tags = {};
+  this.xhtml = '';
+  this.helper = new XmlHelper();
+  this._open_tags = {};
+  this.validator = XhtmlValidator;
+  
+  this.entities = {
+    '&nbsp;':'&#160;','&iexcl;':'&#161;','&cent;':'&#162;',
+    '&pound;':'&#163;','&curren;':'&#164;','&yen;':'&#165;',
+    '&brvbar;':'&#166;','&sect;':'&#167;','&uml;':'&#168;',
+    '&copy;':'&#169;','&ordf;':'&#170;','&laquo;':'&#171;',
+    '&not;':'&#172;','&shy;':'&#173;','&reg;':'&#174;',
+    '&macr;':'&#175;','&deg;':'&#176;','&plusmn;':'&#177;',
+    '&sup2;':'&#178;','&sup3;':'&#179;','&acute;':'&#180;',
+    '&micro;':'&#181;','&para;':'&#182;','&middot;':'&#183;',
+    '&cedil;':'&#184;','&sup1;':'&#185;','&ordm;':'&#186;',
+    '&raquo;':'&#187;','&frac14;':'&#188;','&frac12;':'&#189;',
+    '&frac34;':'&#190;','&iquest;':'&#191;','&Agrave;':'&#192;',
+    '&Aacute;':'&#193;','&Acirc;':'&#194;','&Atilde;':'&#195;',
+    '&Auml;':'&#196;','&Aring;':'&#197;','&AElig;':'&#198;',
+    '&Ccedil;':'&#199;','&Egrave;':'&#200;','&Eacute;':'&#201;',
+    '&Ecirc;':'&#202;','&Euml;':'&#203;','&Igrave;':'&#204;',
+    '&Iacute;':'&#205;','&Icirc;':'&#206;','&Iuml;':'&#207;',
+    '&ETH;':'&#208;','&Ntilde;':'&#209;','&Ograve;':'&#210;',
+    '&Oacute;':'&#211;','&Ocirc;':'&#212;','&Otilde;':'&#213;',
+    '&Ouml;':'&#214;','&times;':'&#215;','&Oslash;':'&#216;',
+    '&Ugrave;':'&#217;','&Uacute;':'&#218;','&Ucirc;':'&#219;',
+    '&Uuml;':'&#220;','&Yacute;':'&#221;','&THORN;':'&#222;',
+    '&szlig;':'&#223;','&agrave;':'&#224;','&aacute;':'&#225;',
+    '&acirc;':'&#226;','&atilde;':'&#227;','&auml;':'&#228;',
+    '&aring;':'&#229;','&aelig;':'&#230;','&ccedil;':'&#231;',
+    '&egrave;':'&#232;','&eacute;':'&#233;','&ecirc;':'&#234;',
+    '&euml;':'&#235;','&igrave;':'&#236;','&iacute;':'&#237;',
+    '&icirc;':'&#238;','&iuml;':'&#239;','&eth;':'&#240;',
+    '&ntilde;':'&#241;','&ograve;':'&#242;','&oacute;':'&#243;',
+    '&ocirc;':'&#244;','&otilde;':'&#245;','&ouml;':'&#246;',
+    '&divide;':'&#247;','&oslash;':'&#248;','&ugrave;':'&#249;',
+    '&uacute;':'&#250;','&ucirc;':'&#251;','&uuml;':'&#252;',
+    '&yacute;':'&#253;','&thorn;':'&#254;','&yuml;':'&#255;',
+    '&OElig;':'&#338;','&oelig;':'&#339;','&Scaron;':'&#352;',
+    '&scaron;':'&#353;','&Yuml;':'&#376;','&fnof;':'&#402;',
+    '&circ;':'&#710;','&tilde;':'&#732;','&Alpha;':'&#913;',
+    '&Beta;':'&#914;','&Gamma;':'&#915;','&Delta;':'&#916;',
+    '&Epsilon;':'&#917;','&Zeta;':'&#918;','&Eta;':'&#919;',
+    '&Theta;':'&#920;','&Iota;':'&#921;','&Kappa;':'&#922;',
+    '&Lambda;':'&#923;','&Mu;':'&#924;','&Nu;':'&#925;',
+    '&Xi;':'&#926;','&Omicron;':'&#927;','&Pi;':'&#928;',
+    '&Rho;':'&#929;','&Sigma;':'&#931;','&Tau;':'&#932;',
+    '&Upsilon;':'&#933;','&Phi;':'&#934;','&Chi;':'&#935;',
+    '&Psi;':'&#936;','&Omega;':'&#937;','&alpha;':'&#945;',
+    '&beta;':'&#946;','&gamma;':'&#947;','&delta;':'&#948;',
+    '&epsilon;':'&#949;','&zeta;':'&#950;','&eta;':'&#951;',
+    '&theta;':'&#952;','&iota;':'&#953;','&kappa;':'&#954;',
+    '&lambda;':'&#955;','&mu;':'&#956;','&nu;':'&#957;',
+    '&xi;':'&#958;','&omicron;':'&#959;','&pi;':'&#960;',
+    '&rho;':'&#961;','&sigmaf;':'&#962;','&sigma;':'&#963;',
+    '&tau;':'&#964;','&upsilon;':'&#965;','&phi;':'&#966;',
+    '&chi;':'&#967;','&psi;':'&#968;','&omega;':'&#969;',
+    '&thetasym;':'&#977;','&upsih;':'&#978;','&piv;':'&#982;',
+    '&ensp;':'&#8194;','&emsp;':'&#8195;','&thinsp;':'&#8201;',
+    '&zwnj;':'&#8204;','&zwj;':'&#8205;','&lrm;':'&#8206;',
+    '&rlm;':'&#8207;','&ndash;':'&#8211;','&mdash;':'&#8212;',
+    '&lsquo;':'&#8216;','&rsquo;':'&#8217;','&sbquo;':'&#8218;',
+    '&ldquo;':'&#8220;','&rdquo;':'&#8221;','&bdquo;':'&#8222;',
+    '&dagger;':'&#8224;','&Dagger;':'&#8225;','&bull;':'&#8226;',
+    '&hellip;':'&#8230;','&permil;':'&#8240;','&prime;':'&#8242;',
+    '&Prime;':'&#8243;','&lsaquo;':'&#8249;','&rsaquo;':'&#8250;',
+    '&oline;':'&#8254;','&frasl;':'&#8260;','&euro;':'&#8364;',
+    '&image;':'&#8465;','&weierp;':'&#8472;','&real;':'&#8476;',
+    '&trade;':'&#8482;','&alefsym;':'&#8501;','&larr;':'&#8592;',
+    '&uarr;':'&#8593;','&rarr;':'&#8594;','&darr;':'&#8595;',
+    '&harr;':'&#8596;','&crarr;':'&#8629;','&lArr;':'&#8656;',
+    '&uArr;':'&#8657;','&rArr;':'&#8658;','&dArr;':'&#8659;',
+    '&hArr;':'&#8660;','&forall;':'&#8704;','&part;':'&#8706;',
+    '&exist;':'&#8707;','&empty;':'&#8709;','&nabla;':'&#8711;',
+    '&isin;':'&#8712;','&notin;':'&#8713;','&ni;':'&#8715;',
+    '&prod;':'&#8719;','&sum;':'&#8721;','&minus;':'&#8722;',
+    '&lowast;':'&#8727;','&radic;':'&#8730;','&prop;':'&#8733;',
+    '&infin;':'&#8734;','&ang;':'&#8736;','&and;':'&#8743;',
+    '&or;':'&#8744;','&cap;':'&#8745;','&cup;':'&#8746;',
+    '&int;':'&#8747;','&there4;':'&#8756;','&sim;':'&#8764;',
+    '&cong;':'&#8773;','&asymp;':'&#8776;','&ne;':'&#8800;',
+    '&equiv;':'&#8801;','&le;':'&#8804;','&ge;':'&#8805;',
+    '&sub;':'&#8834;','&sup;':'&#8835;','&nsub;':'&#8836;',
+    '&sube;':'&#8838;','&supe;':'&#8839;','&oplus;':'&#8853;',
+    '&otimes;':'&#8855;','&perp;':'&#8869;','&sdot;':'&#8901;',
+    '&lceil;':'&#8968;','&rceil;':'&#8969;','&lfloor;':'&#8970;',
+    '&rfloor;':'&#8971;','&lang;':'&#9001;','&rang;':'&#9002;',
+    '&loz;':'&#9674;','&spades;':'&#9824;','&clubs;':'&#9827;',
+    '&hearts;':'&#9829;','&diams;':'&#9830;'};
 
-this.entities = {
-  '&nbsp;':'&#160;','&iexcl;':'&#161;','&cent;':'&#162;',
-  '&pound;':'&#163;','&curren;':'&#164;','&yen;':'&#165;',
-  '&brvbar;':'&#166;','&sect;':'&#167;','&uml;':'&#168;',
-  '&copy;':'&#169;','&ordf;':'&#170;','&laquo;':'&#171;',
-  '&not;':'&#172;','&shy;':'&#173;','&reg;':'&#174;',
-  '&macr;':'&#175;','&deg;':'&#176;','&plusmn;':'&#177;',
-  '&sup2;':'&#178;','&sup3;':'&#179;','&acute;':'&#180;',
-  '&micro;':'&#181;','&para;':'&#182;','&middot;':'&#183;',
-  '&cedil;':'&#184;','&sup1;':'&#185;','&ordm;':'&#186;',
-  '&raquo;':'&#187;','&frac14;':'&#188;','&frac12;':'&#189;',
-  '&frac34;':'&#190;','&iquest;':'&#191;','&Agrave;':'&#192;',
-  '&Aacute;':'&#193;','&Acirc;':'&#194;','&Atilde;':'&#195;',
-  '&Auml;':'&#196;','&Aring;':'&#197;','&AElig;':'&#198;',
-  '&Ccedil;':'&#199;','&Egrave;':'&#200;','&Eacute;':'&#201;',
-  '&Ecirc;':'&#202;','&Euml;':'&#203;','&Igrave;':'&#204;',
-  '&Iacute;':'&#205;','&Icirc;':'&#206;','&Iuml;':'&#207;',
-  '&ETH;':'&#208;','&Ntilde;':'&#209;','&Ograve;':'&#210;',
-  '&Oacute;':'&#211;','&Ocirc;':'&#212;','&Otilde;':'&#213;',
-  '&Ouml;':'&#214;','&times;':'&#215;','&Oslash;':'&#216;',
-  '&Ugrave;':'&#217;','&Uacute;':'&#218;','&Ucirc;':'&#219;',
-  '&Uuml;':'&#220;','&Yacute;':'&#221;','&THORN;':'&#222;',
-  '&szlig;':'&#223;','&agrave;':'&#224;','&aacute;':'&#225;',
-  '&acirc;':'&#226;','&atilde;':'&#227;','&auml;':'&#228;',
-  '&aring;':'&#229;','&aelig;':'&#230;','&ccedil;':'&#231;',
-  '&egrave;':'&#232;','&eacute;':'&#233;','&ecirc;':'&#234;',
-  '&euml;':'&#235;','&igrave;':'&#236;','&iacute;':'&#237;',
-  '&icirc;':'&#238;','&iuml;':'&#239;','&eth;':'&#240;',
-  '&ntilde;':'&#241;','&ograve;':'&#242;','&oacute;':'&#243;',
-  '&ocirc;':'&#244;','&otilde;':'&#245;','&ouml;':'&#246;',
-  '&divide;':'&#247;','&oslash;':'&#248;','&ugrave;':'&#249;',
-  '&uacute;':'&#250;','&ucirc;':'&#251;','&uuml;':'&#252;',
-  '&yacute;':'&#253;','&thorn;':'&#254;','&yuml;':'&#255;',
-  '&OElig;':'&#338;','&oelig;':'&#339;','&Scaron;':'&#352;',
-  '&scaron;':'&#353;','&Yuml;':'&#376;','&fnof;':'&#402;',
-  '&circ;':'&#710;','&tilde;':'&#732;','&Alpha;':'&#913;',
-  '&Beta;':'&#914;','&Gamma;':'&#915;','&Delta;':'&#916;',
-  '&Epsilon;':'&#917;','&Zeta;':'&#918;','&Eta;':'&#919;',
-  '&Theta;':'&#920;','&Iota;':'&#921;','&Kappa;':'&#922;',
-  '&Lambda;':'&#923;','&Mu;':'&#924;','&Nu;':'&#925;',
-  '&Xi;':'&#926;','&Omicron;':'&#927;','&Pi;':'&#928;',
-  '&Rho;':'&#929;','&Sigma;':'&#931;','&Tau;':'&#932;',
-  '&Upsilon;':'&#933;','&Phi;':'&#934;','&Chi;':'&#935;',
-  '&Psi;':'&#936;','&Omega;':'&#937;','&alpha;':'&#945;',
-  '&beta;':'&#946;','&gamma;':'&#947;','&delta;':'&#948;',
-  '&epsilon;':'&#949;','&zeta;':'&#950;','&eta;':'&#951;',
-  '&theta;':'&#952;','&iota;':'&#953;','&kappa;':'&#954;',
-  '&lambda;':'&#955;','&mu;':'&#956;','&nu;':'&#957;',
-  '&xi;':'&#958;','&omicron;':'&#959;','&pi;':'&#960;',
-  '&rho;':'&#961;','&sigmaf;':'&#962;','&sigma;':'&#963;',
-  '&tau;':'&#964;','&upsilon;':'&#965;','&phi;':'&#966;',
-  '&chi;':'&#967;','&psi;':'&#968;','&omega;':'&#969;',
-  '&thetasym;':'&#977;','&upsih;':'&#978;','&piv;':'&#982;',
-  '&ensp;':'&#8194;','&emsp;':'&#8195;','&thinsp;':'&#8201;',
-  '&zwnj;':'&#8204;','&zwj;':'&#8205;','&lrm;':'&#8206;',
-  '&rlm;':'&#8207;','&ndash;':'&#8211;','&mdash;':'&#8212;',
-  '&lsquo;':'&#8216;','&rsquo;':'&#8217;','&sbquo;':'&#8218;',
-  '&ldquo;':'&#8220;','&rdquo;':'&#8221;','&bdquo;':'&#8222;',
-  '&dagger;':'&#8224;','&Dagger;':'&#8225;','&bull;':'&#8226;',
-  '&hellip;':'&#8230;','&permil;':'&#8240;','&prime;':'&#8242;',
-  '&Prime;':'&#8243;','&lsaquo;':'&#8249;','&rsaquo;':'&#8250;',
-  '&oline;':'&#8254;','&frasl;':'&#8260;','&euro;':'&#8364;',
-  '&image;':'&#8465;','&weierp;':'&#8472;','&real;':'&#8476;',
-  '&trade;':'&#8482;','&alefsym;':'&#8501;','&larr;':'&#8592;',
-  '&uarr;':'&#8593;','&rarr;':'&#8594;','&darr;':'&#8595;',
-  '&harr;':'&#8596;','&crarr;':'&#8629;','&lArr;':'&#8656;',
-  '&uArr;':'&#8657;','&rArr;':'&#8658;','&dArr;':'&#8659;',
-  '&hArr;':'&#8660;','&forall;':'&#8704;','&part;':'&#8706;',
-  '&exist;':'&#8707;','&empty;':'&#8709;','&nabla;':'&#8711;',
-  '&isin;':'&#8712;','&notin;':'&#8713;','&ni;':'&#8715;',
-  '&prod;':'&#8719;','&sum;':'&#8721;','&minus;':'&#8722;',
-  '&lowast;':'&#8727;','&radic;':'&#8730;','&prop;':'&#8733;',
-  '&infin;':'&#8734;','&ang;':'&#8736;','&and;':'&#8743;',
-  '&or;':'&#8744;','&cap;':'&#8745;','&cup;':'&#8746;',
-  '&int;':'&#8747;','&there4;':'&#8756;','&sim;':'&#8764;',
-  '&cong;':'&#8773;','&asymp;':'&#8776;','&ne;':'&#8800;',
-  '&equiv;':'&#8801;','&le;':'&#8804;','&ge;':'&#8805;',
-  '&sub;':'&#8834;','&sup;':'&#8835;','&nsub;':'&#8836;',
-  '&sube;':'&#8838;','&supe;':'&#8839;','&oplus;':'&#8853;',
-  '&otimes;':'&#8855;','&perp;':'&#8869;','&sdot;':'&#8901;',
-  '&lceil;':'&#8968;','&rceil;':'&#8969;','&lfloor;':'&#8970;',
-  '&rfloor;':'&#8971;','&lang;':'&#9001;','&rang;':'&#9002;',
-  '&loz;':'&#9674;','&spades;':'&#9824;','&clubs;':'&#9827;',
-  '&hearts;':'&#9829;','&diams;':'&#9830;'};
-
-  this.block_tags = ["a", "abbr", "acronym", "address", "area", "b",
-  "base", "bdo", "big", "blockquote", "body", "button",
-  "caption", "cite", "code", "col", "colgroup", "dd", "del", "div",
-  "dfn", "dl", "dt", "em", "fieldset", "form", "head", "h1", "h2",
-  "h3", "h4", "h5", "h6", "html", "i", "ins",
-  "kbd", "label", "legend", "li", "map", "noscript",
-  "object", "ol", "optgroup", "option", "p", "param", "pre", "q",
-  "samp", "script", "select", "small", "span", "strong", "style",
-  "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "th",
-  "thead", "title", "tr", "tt", "ul", "var", "extends"];
+    this.block_tags = ["a", "abbr", "acronym", "address", "area", "b",
+    "base", "bdo", "big", "blockquote", "body", "button",
+    "caption", "cite", "code", "col", "colgroup", "dd", "del", "div",
+    "dfn", "dl", "dt", "em", "fieldset", "form", "head", "h1", "h2",
+    "h3", "h4", "h5", "h6", "html", "i", "ins",
+    "kbd", "label", "legend", "li", "map", "noscript",
+    "object", "ol", "optgroup", "option", "p", "param", "pre", "q",
+    "samp", "script", "select", "small", "span", "strong", "style",
+    "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "th",
+    "thead", "title", "tr", "tt", "ul", "var", "extends"];
 
 
-  this.inline_tags = ["br", "hr", "img", "input"];
+    this.inline_tags = ["br", "hr", "img", "input"];
 }
 
 XhtmlSaxListener.prototype.shouldCloseTagAutomatically = function(tag, now_on_tag, closing)
@@ -1195,17 +1888,17 @@ XhtmlSaxListener.prototype.addCss = function(text)
 }
 XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes)
 {
-  this.xhtml += this.helper.tag(tag, attributes, true);    
+  this.xhtml += this.helper.tag(tag, this.validator.getValidTagAttributes(tag, attributes), true);    
 }
 
 XhtmlSaxListener.prototype.inlineTag = function(tag, attributes)
 {
-  this.xhtml += this.helper.tag(tag, attributes);
+  this.xhtml += this.helper.tag(tag, this.validator.getValidTagAttributes(tag, attributes));
 }
 
 XhtmlSaxListener.prototype.openUnknownTag = function(tag, attributes)
 {
-  this.xhtml += this.helper.tag(tag, attributes, true);
+  //this.xhtml += this.helper.tag(tag, attributes, true);
 }
 
 XhtmlSaxListener.prototype.closeBlockTag = function(tag)
@@ -1215,7 +1908,7 @@ XhtmlSaxListener.prototype.closeBlockTag = function(tag)
 
 XhtmlSaxListener.prototype.closeUnknownTag = function(tag)
 {
-  this.xhtml += "</"+tag+">";
+  //this.xhtml += "</"+tag+">";
 }
 
 XhtmlSaxListener.prototype.closeUnopenedTag = function(tag)
