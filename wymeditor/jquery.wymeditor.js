@@ -1083,7 +1083,7 @@ function fWYM_INIT_DIALOG(index) {
 
     var wym = window.opener.aWYM_INSTANCES[index];
     var doc = window.document;
-    var oSel = wym.selected();
+    var selected = wym.selected();
     var sStamp = wym.uniqueStamp();
     
     //pre-init functions
@@ -1096,11 +1096,22 @@ function fWYM_INIT_DIALOG(index) {
 
     wym.addCssRules(doc, aCss);
     
-    if(oSel) {
-            $j(wym._options.sHrefSelector).val($j(oSel).attr(sWYM_HREF));
-            $j(wym._options.sSrcSelector).val($j(oSel).attr(sWYM_SRC));
-            $j(wym._options.sTitleSelector).val($j(oSel).attr(sWYM_TITLE));
-            $j(wym._options.sAltSelector).val($j(oSel).attr(sWYM_ALT));
+    //auto populate fields if selected container (e.g. A)
+    if(selected) {
+      $j(wym._options.sHrefSelector).val($j(selected).attr(sWYM_HREF));
+      $j(wym._options.sSrcSelector).val($j(selected).attr(sWYM_SRC));
+      $j(wym._options.sTitleSelector).val($j(selected).attr(sWYM_TITLE));
+      $j(wym._options.sAltSelector).val($j(selected).attr(sWYM_ALT));
+    }
+    
+    //auto populate image fields if selected image
+    if(wym._selected_image) {
+      $j(wym._options.sDialogImageSelector + " " + wym._options.sSrcSelector)
+        .val($j(wym._selected_image).attr(sWYM_SRC));
+      $j(wym._options.sDialogImageSelector + " " + wym._options.sTitleSelector)
+        .val($j(wym._selected_image).attr(sWYM_TITLE));
+      $j(wym._options.sDialogImageSelector + " " + wym._options.sAltSelector)
+        .val($j(wym._selected_image).attr(sWYM_ALT));
     }
 
     $j(wym._options.sDialogLinkSelector + " "
@@ -1153,8 +1164,9 @@ function fWYM_INIT_DIALOG(index) {
         			newRow = table.insertRow(x);
         			for(y=0; y<iCols; y++) {newRow.insertCell(y);}
         		}
-            
-            if(oSel) $j(oSel).after(table);
+        		
+          //append the table after the selected container
+          $j(wym.findUp(aWYM_CONTAINERS)).after(table);
         }
         window.close();
     });
