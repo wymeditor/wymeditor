@@ -7,8 +7,8 @@ function WymCssLexer(parser, only_wym_blocks)
   this.mapHandler('WymCss', 'Ignore');
 
   if(only_wym_blocks == true){    
-    this.addEntryPattern("/\\\x2a\\s*wym[a-z0-9\\s]*\\\x2a/", 'Ignore', 'WymCss');
-    this.addExitPattern("/\\\x2a[a-z0-9\\s]*end[a-z0-9\\s]*wym[a-z0-9\\s]*\\\x2a/", 'WymCss');
+    this.addEntryPattern("/\\\x2a[<\\s]*WYMeditor[>\\s]*\\\x2a/", 'Ignore', 'WymCss');
+    this.addExitPattern("/\\\x2a[<\/\\s]*WYMeditor[>\\s]*\\\x2a/", 'WymCss');
   }
 
   this.addSpecialPattern("\\\x2e[a-z-_0-9]+[\\sa-z]*", 'WymCss', 'WymCssStyleDeclaration');

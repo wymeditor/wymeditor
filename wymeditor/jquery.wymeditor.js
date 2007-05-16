@@ -1009,37 +1009,38 @@ Wymeditor.prototype.computeCssPath = function() {
   })).attr('href');
 };
 
+var __WymBrowserClass;
 Wymeditor.prototype.getBrowserSpecificWymInstance = function()
 {
-  if ($j.browser.msie) {
-    if(typeof WymClassExplorer != 'function' ) {
-      eval($j.ajax({url:this._options.sBasePath+'jquery.wymeditor.explorer.js',async:false}).responseText);
-    }
-    return new WymClassExplorer(this);
-    
-  }else if ($j.browser.mozilla) {
-    if(typeof WymClassMozilla != 'function' ) {
-      eval($j.ajax({url:this._options.sBasePath+'jquery.wymeditor.mozilla.js',async:false}).responseText);
-    }
-    return new WymClassMozilla(this);
-    
-  }else if ($j.browser.opera) {
-    if(typeof WymClassOpera != 'function' ) {
-      eval($j.ajax({url:this._options.sBasePath+'jquery.wymeditor.opera.js',async:false}).responseText);
-    }
-    return new WymClassOpera(this);
-    
-  }else if ($j.browser.safari) {
+  if(typeof __WymBrowserClass == 'function'){
+    return new __WymBrowserClass(this);
+  }
 
-    if(typeof WymClassSafari != 'function' ) {
-      eval($j.ajax({url:this._options.sBasePath+'jquery.wymeditor.safari.js',async:false}).responseText);
+  if(this.loadBrowserSettings()){
+    if(eval('typeof '+this._browserDriverName+" != 'function' ")) {
+      eval($j.ajax({url:this._options.sBasePath+'jquery.wymeditor.'+this._browserName+'.js',async:false}).responseText);
+      __WymBrowserClass = eval(this._browserDriverName);
     }
-    return new WymClassSafari(this);
+    var wym = this;
+    return eval('new '+this._browserDriverName+'(wym)');
   }
   // Todo: handle unsuported browsers
   return false;
 };
 
+Wymeditor.prototype.loadBrowserSettings = function()
+{
+  var driverClasses = {'msie':'WymClassExplorer','mozilla':'WymClassMozilla',
+  'opera':'WymClassOpera','safari':'WymClassSafari'};
+  for(var type in $j.browser){
+    if($j.browser[type] == true && driverClasses[type]){
+      this._browserDriverName = driverClasses[type];
+      this._browserName = type == 'msie' ? 'explorer' : type;
+      return true;
+    }
+  }
+  return false;
+}
 
 Wymeditor.prototype.loadXhtmlParser = function(WymClass)
 {

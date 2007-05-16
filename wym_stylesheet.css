@@ -15,7 +15,7 @@
   
 }
 
-/* WYMeditor styles */
+/* WYMeditor */
 
 /* PARA: Date */
 .date p{
@@ -48,7 +48,7 @@
 }
 
 
-/* end of WYMeditor styles (you just need "end of wym" to close the wym block) */
+/* /WYMeditor */
 
 
 .afterThisPointRulesAreNoLongerParsedByWym{
