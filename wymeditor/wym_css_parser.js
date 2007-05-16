@@ -134,10 +134,10 @@ WymCssParser.prototype.addStyleSetting = function(style_details)
         'title': style_details.title,
         'expr' : (details.expressions||details.tags).join(', ')
       });
-      if(details.feedback_style){        
+      if(details.style){ // feedback_style should be used here in the future
         this.css_settings.aEditorCss.push({
           'name': '.'+details.name.trim(),
-          'css': details.feedback_style
+          'css': details.style
         });        
       }
       if(details.style){
