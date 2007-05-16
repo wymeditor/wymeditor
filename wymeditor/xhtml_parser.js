@@ -875,7 +875,7 @@ var XhtmlValidator = {
   },
   doesAttributeNeedsValidation: function(tag, attribute)
   {
-    return this._tags[tag] && (this._tags[tag]['attributes'] && this._tags[tag]['attributes'][attribute]) || (this._tags[tag]['required']) && this._tags[tag]['required'].contains(attribute);
+    return this._tags[tag] && ((this._tags[tag]['attributes'] && this._tags[tag]['attributes'][attribute]) || (this._tags[tag]['required'] && this._tags[tag]['required'].contains(attribute)));
   },
   validateAttribute : function(tag, attribute, value)
   {
