@@ -525,11 +525,29 @@ Wymeditor.prototype.init = function() {
     //TODO: handle unsupported browsers
   }
 
-  //load XHTML parser
+  // load XHTML parser
   var SaxListener = new XhtmlSaxListener();
   SaxListener.extendObject(WymClass);
   this.parser = new XhtmlParser(SaxListener);
-
+  
+  // Configure editor with a CSS file
+  if(typeof WymCssParser == 'function' && (this._options.sWymCss || this._options.sWymStylesheet)){
+    var CssParser = new WymCssParser();
+    if(this._options.sWymStylesheet){
+      CssParser.parse($j.ajax({url: this._options.sWymStylesheet,async:false}).responseText);
+    }else{
+      CssParser.parse(this._options.sWymCss, false);
+    }
+    if(this._options.aClassesItems.length == 0) {
+      this._options.aClassesItems = CssParser.css_settings.aClassesItems;
+    }
+    if(this._options.aEditorCss.length == 0) {
+      this._options.aEditorCss = CssParser.css_settings.aEditorCss;      
+    }
+    if(this._options.aDialogCss.length == 0) {
+      this._options.aDialogCss = CssParser.css_settings.aDialogCss;
+    }
+  }
   
   //extend the Wymeditor object
   $j.extend(this, WymClass);
