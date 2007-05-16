@@ -1593,11 +1593,12 @@ XhtmlParser.prototype._callOpenTagListener = function(tag, attributes)
 {
   var  attributes = attributes || {};
   this.autoCloseUnclosedBeforeNewOpening(tag);
-
+  
   this._Listener.last_tag = tag;
   this._Listener.last_tag_attributes = attributes;
 
-  if(this._Listener.block_tags.contains(tag)){    
+  if(this._Listener.block_tags.contains(tag)){
+    this._Listener._tag_stack.push(tag);
     this._Listener.openBlockTag(tag, attributes);
     this._increaseOpenTagCounter(tag);
   }else if(this._Listener.inline_tags.contains(tag)){ 
@@ -1612,7 +1613,14 @@ XhtmlParser.prototype._callCloseTagListener = function(tag)
 {
   if(this._decreaseOpenTagCounter(tag)){    
     this.autoCloseUnclosedBeforeTagClosing(tag);
+    
     if(this._Listener.block_tags.contains(tag)){
+      var expected_tag = this._Listener._tag_stack.pop();
+      if(expected_tag == false){
+        return;
+      }else if(expected_tag != tag){
+        tag = expected_tag;
+      }
       this._Listener.closeBlockTag(tag);
     }else{
       this._Listener.closeUnknownTag(tag);
@@ -1721,6 +1729,7 @@ function XhtmlSaxListener()
   this.helper = new XmlHelper();
   this._open_tags = {};
   this.validator = XhtmlValidator;
+  this._tag_stack = [];
   
   this.entities = {
     '&nbsp;':'&#160;','&iexcl;':'&#161;','&cent;':'&#162;',
