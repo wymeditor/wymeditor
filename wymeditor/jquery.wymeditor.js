@@ -991,6 +991,9 @@ Wymeditor.prototype.addCssRules = function(doc, aCss) {
 
 /********** CONFIGURATION **********/
 
+// Creating a link to the document GLOBAL scope
+var __WymGlobal = this;
+
 Wymeditor.prototype.computeBasePath = function() {
   return $j($j.grep($j('script'), function(s){
     return (s.src && s.src.match(/jquery\.wymeditor\.js(\?.*)?$/ ))
@@ -1009,17 +1012,17 @@ Wymeditor.prototype.computeCssPath = function() {
   })).attr('href');
 };
 
-var __WymBrowserClass;
 Wymeditor.prototype.getBrowserSpecificWymInstance = function()
 {
-  if(typeof __WymBrowserClass == 'function'){
-    return new __WymBrowserClass(this);
+  if(typeof __WymGlobal.WymBrowserClass == 'function'){
+    return new __WymGlobal.WymBrowserClass(this);
   }
 
   if(this.loadBrowserSettings()){
     if(eval('typeof '+this._browserDriverName+" != 'function' ")) {
       eval($j.ajax({url:this._options.sBasePath+'jquery.wymeditor.'+this._browserName+'.js',async:false}).responseText);
-      __WymBrowserClass = eval(this._browserDriverName);
+      __WymGlobal.WymBrowserClass = eval(this._browserDriverName);
+      eval('__WymGlobal.'+this._browserDriverName+' = WymBrowserClass');
     }
     var wym = this;
     return eval('new '+this._browserDriverName+'(wym)');
