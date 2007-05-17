@@ -132,7 +132,7 @@ WymCssParser.prototype.addStyleSetting = function(style_details)
       this.css_settings.aClassesItems.push({
         'name': details.name.trim(),
         'title': style_details.title,
-        'expr' : (details.expressions||details.tags).join(', ')
+        'expr' : (details.expressions||details.tags).join(', ').trim()
       });
       if(details.feedback_style){
         this.css_settings.aEditorCss.push({
