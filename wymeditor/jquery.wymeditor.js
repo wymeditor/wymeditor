@@ -1011,9 +1011,10 @@ Wymeditor.prototype.computeCssPath = function() {
 
 Wymeditor.prototype.getBrowserSpecificWymInstance = function()
 {
-  if(this.loadBrowserSettings()){
+  if(this.loadBrowserSettings()){    
     if(eval('typeof '+this._browserDriverName+" != 'function' ")) {
-      $j.globalEval($j.ajax({url:this._options.sBasePath+'jquery.wymeditor.'+this._browserName+'.js',async:false}).responseText);
+      eval($j.ajax({url:this._options.sBasePath+'jquery.wymeditor.'+this._browserName+'.js',async:false}).responseText);
+      window[this._browserDriverName] = eval(this._browserDriverName);
     }
     var wym = this;
     return eval('new '+this._browserDriverName+'(wym)');
@@ -1039,7 +1040,16 @@ Wymeditor.prototype.loadBrowserSettings = function()
 Wymeditor.prototype.loadXhtmlParser = function(WymClass)
 {
   if(typeof XhtmlSaxListener != 'function'){
-    $j.globalEval($j.ajax({url:this._options.sBasePath+'xhtml_parser.js',async:false}).responseText);
+    // This is the only way to get loaded functions in the global scope until jQuery.globalEval works in safari
+    eval($j.ajax({url:this._options.sBasePath+'xhtml_parser.js',async:false}).responseText);    
+    window.XmlHelper = XmlHelper;
+    window.XhtmlValidator = XhtmlValidator;
+    window.ParallelRegex = ParallelRegex;
+    window.StateStack = StateStack;
+    window.Lexer = Lexer;
+    window.XhtmlLexer = XhtmlLexer;
+    window.XhtmlParser = XhtmlParser;
+    window.XhtmlSaxListener = XhtmlSaxListener;
   }
   var SaxListener = new XhtmlSaxListener();
   SaxListener.extendObject(WymClass);
@@ -1049,7 +1059,9 @@ Wymeditor.prototype.loadXhtmlParser = function(WymClass)
 Wymeditor.prototype.configureEditorUsingRawCss = function()
 {
   if(typeof WymCssParser != 'function'){
-    $j.globalEval($j.ajax({url:this._options.sBasePath+'wym_css_parser.js',async:false}).responseText);
+    eval($j.ajax({url:this._options.sBasePath+'wym_css_parser.js',async:false}).responseText);
+    window.WymCssLexer = WymCssLexer;
+    window.WymCssParser = WymCssParser;
   }
   var CssParser = new WymCssParser();
   if(this._options.sWymStylesheet){
@@ -1307,3 +1319,14 @@ Array.prototype.findByName = function (name) {
   return(null);
 };
 
+Object.prototype.extendObject = function (oSuper) {
+  for (sProperty in oSuper) {
+    if(sProperty != 'type'){
+      this[sProperty] = oSuper[sProperty];
+    }
+  }
+};
+
+String.prototype.trim = function() {
+  return this.replace(/^(\s*)|(\s*)$/gm,'');
+};

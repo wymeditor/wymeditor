@@ -66,6 +66,13 @@ WymClassSafari.prototype.initIframe = function(iframe) {
 
     $j(this._box).click(function() { wym.update();});
 
+    $j(this._doc).bind('keydown', this.updateSelection);
+    $j(this._doc).bind('keyup', this.updateSelection);
+    $j(this._doc).bind('mousedown', this.updateSelection);
+    $j(this._doc).bind('mouseup', this.updateSelection);
+    $j(this._doc).bind('mousemove', this.updateSelection);
+    
+    
     //post-init functions
     if($j.isFunction(this._options.fPostInit)) this._options.fPostInit(this);
 
@@ -225,5 +232,13 @@ WymClassSafari.prototype.CreateLink = function(param) {
 
 WymClassSafari.prototype.InsertImage = function(param) {
 
+}
+
+
+
+WymClassSafari.prototype.updateSelection = function() {
+  //console.log(this); return;
+  var range = $(this).getSelection();
+  console.log(range);
 }
 

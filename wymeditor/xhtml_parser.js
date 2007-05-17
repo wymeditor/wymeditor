@@ -18,19 +18,6 @@
  */
 
 
-Object.prototype.extendObject = function (oSuper) {
-  for (sProperty in oSuper) {
-    if(sProperty != 'type'){
-      this[sProperty] = oSuper[sProperty];
-    }
-  }
-}
-
-String.prototype.trim = function() {
-  return this.replace(/^(\s*)|(\s*)$/gm,'');
-}
-
-
 /*
 * @name xml
 * @description Use these methods to generate XML and XHTML compliant tags and 
@@ -1090,12 +1077,12 @@ StateStack.prototype.leave = function()
 }
 
 
-
-var LEXER_ENTER = 1;
-var LEXER_MATCHED = 2;
-var LEXER_UNMATCHED = 3;
-var LEXER_EXIT = 4;
-var LEXER_SPECIAL = 5;
+// GLOBALS 
+window.LEXER_ENTER = 1;
+window.LEXER_MATCHED = 2;
+window.LEXER_UNMATCHED = 3;
+window.LEXER_EXIT = 4;
+window.LEXER_SPECIAL = 5;
 
 
 /**

@@ -58,6 +58,11 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
     //bind editor keyup events
     $j(this._doc).bind("keyup", this.keyup);
     
+    
+    /*keydown(this.updateSelection).
+      keyup(this.updateSelection).mousedown(this.updateSelection).
+      mouseup(this.updateSelection).mousemove(this.updateSelection);    
+    */
     //post-init functions
     if($j.isFunction(this._options.fPostInit)) this._options.fPostInit(this);
     
