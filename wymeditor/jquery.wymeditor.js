@@ -1041,7 +1041,7 @@ Wymeditor.prototype.loadXhtmlParser = function(WymClass)
 {
   if(typeof XhtmlSaxListener != 'function'){
     // This is the only way to get loaded functions in the global scope until jQuery.globalEval works in safari
-    eval($j.ajax({url:this._options.sBasePath+'xhtml_parser.js',async:false}).responseText);    
+   eval($j.ajax({url:this._options.sBasePath+'xhtml_parser.js',async:false}).responseText);
     window.XmlHelper = XmlHelper;
     window.XhtmlValidator = XhtmlValidator;
     window.ParallelRegex = ParallelRegex;
@@ -1050,6 +1050,7 @@ Wymeditor.prototype.loadXhtmlParser = function(WymClass)
     window.XhtmlLexer = XhtmlLexer;
     window.XhtmlParser = XhtmlParser;
     window.XhtmlSaxListener = XhtmlSaxListener;
+   
   }
   var SaxListener = new XhtmlSaxListener();
   SaxListener.extendObject(WymClass);

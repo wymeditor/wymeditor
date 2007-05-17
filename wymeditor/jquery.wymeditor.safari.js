@@ -64,14 +64,18 @@ WymClassSafari.prototype.initIframe = function(iframe) {
 
     this.bindEvents();
 
-    $j(this._box).click(function() { wym.update();});
-
+    $j(this._box).click(function() { wym.update(); });
+    
+    $j(this._doc).bind('click', this.avoidFollowingLinks);
+    
+    
+/*
     $j(this._doc).bind('keydown', this.updateSelection);
     $j(this._doc).bind('keyup', this.updateSelection);
     $j(this._doc).bind('mousedown', this.updateSelection);
     $j(this._doc).bind('mouseup', this.updateSelection);
     $j(this._doc).bind('mousemove', this.updateSelection);
-    
+*/    
     
     //post-init functions
     if($j.isFunction(this._options.fPostInit)) this._options.fPostInit(this);
@@ -85,9 +89,7 @@ WymClassSafari.prototype.initIframe = function(iframe) {
 
 WymClassSafari.prototype._exec = function(cmd,param) {
   param = param || null;
-  var emulateCommand = false;
-  eval("emulateCommand = typeof this."+cmd+" != 'undefined'");
-  if(!emulateCommand){
+  if(eval("typeof this."+cmd+" == 'undefined'")){
     this._doc.execCommand(cmd,false,param);
   }else{
     var wym = this;
@@ -234,11 +236,9 @@ WymClassSafari.prototype.InsertImage = function(param) {
 
 }
 
-
-
-WymClassSafari.prototype.updateSelection = function() {
-  //console.log(this); return;
-  var range = $(this).getSelection();
-  console.log(range);
+WymClassSafari.prototype.avoidFollowingLinks = function(evt) {
+  var node = evt.target;
+  if(node.nodeName == "A"){
+    return false;
+  }
 }
-
