@@ -991,9 +991,6 @@ Wymeditor.prototype.addCssRules = function(doc, aCss) {
 
 /********** CONFIGURATION **********/
 
-// Creating a link to the document GLOBAL scope
-var __WymGlobal = this;
-
 Wymeditor.prototype.computeBasePath = function() {
   return $j($j.grep($j('script'), function(s){
     return (s.src && s.src.match(/jquery\.wymeditor\.js(\?.*)?$/ ))
@@ -1014,15 +1011,9 @@ Wymeditor.prototype.computeCssPath = function() {
 
 Wymeditor.prototype.getBrowserSpecificWymInstance = function()
 {
-  if(typeof __WymGlobal.WymBrowserClass == 'function'){
-    return new __WymGlobal.WymBrowserClass(this);
-  }
-
   if(this.loadBrowserSettings()){
     if(eval('typeof '+this._browserDriverName+" != 'function' ")) {
-      eval($j.ajax({url:this._options.sBasePath+'jquery.wymeditor.'+this._browserName+'.js',async:false}).responseText);
-      __WymGlobal.WymBrowserClass = eval(this._browserDriverName);
-      eval('__WymGlobal.'+this._browserDriverName+' = WymBrowserClass');
+      $j.globalEval($j.ajax({url:this._options.sBasePath+'jquery.wymeditor.'+this._browserName+'.js',async:false}).responseText);
     }
     var wym = this;
     return eval('new '+this._browserDriverName+'(wym)');
@@ -1047,6 +1038,9 @@ Wymeditor.prototype.loadBrowserSettings = function()
 
 Wymeditor.prototype.loadXhtmlParser = function(WymClass)
 {
+  if(typeof XhtmlSaxListener != 'function'){
+    $j.globalEval($j.ajax({url:this._options.sBasePath+'xhtml_parser.js',async:false}).responseText);
+  }
   var SaxListener = new XhtmlSaxListener();
   SaxListener.extendObject(WymClass);
   this.parser = new XhtmlParser(SaxListener);
@@ -1055,7 +1049,7 @@ Wymeditor.prototype.loadXhtmlParser = function(WymClass)
 Wymeditor.prototype.configureEditorUsingRawCss = function()
 {
   if(typeof WymCssParser != 'function'){
-    eval($j.ajax({url:this._options.sBasePath+'wym_css_parser.js',async:false}).responseText);
+    $j.globalEval($j.ajax({url:this._options.sBasePath+'wym_css_parser.js',async:false}).responseText);
   }
   var CssParser = new WymCssParser();
   if(this._options.sWymStylesheet){
