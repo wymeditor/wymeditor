@@ -109,9 +109,7 @@ WymClassSafari.prototype.beforeParsing = function(raw)
   this.output = '';
   return raw.
   // Remove safari place holders
-  replace(/([^>]*)<(\w+)><BR class\="khtml-block-placeholder"><\/\2>([^<]*)/g, "<$2>$1$3</$2>").
-  // replace links to avoid loading them on the design mode iframe
-  replace(/ href=/i, ' href="#" wym_href=');
+  replace(/([^>]*)<(\w+)><BR class\="khtml-block-placeholder"><\/\2>([^<]*)/g, "<$2>$1$3</$2>");
 }
 
 
@@ -152,7 +150,7 @@ WymClassSafari.prototype.addWymHacksForEditMode = function(xhtml) {
 }
 
 WymClassSafari.prototype.removeWymAttributesFromXhtml = function(xhtml) {
-  return xhtml.replace('/ href="#" wym_',' ').replace(/<span id="wym_safari_select_all_hack"[^>]*>safari-hack<\/span>/, '');
+  return xhtml.replace(/<span id="wym_safari_select_all_hack"[^>]*>safari-hack<\/span>/, '');
 }
 
 WymClassSafari.prototype.update = function() {
