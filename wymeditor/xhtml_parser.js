@@ -1425,7 +1425,7 @@ XhtmlLexer.prototype.init = function()
 XhtmlLexer.prototype.addCommentTokens = function(scope)
 {
   this.addEntryPattern("<!--", scope, 'Comment');
-  this.addExitPattern("-.", 'Comment');
+  this.addExitPattern("-->", 'Comment');
 }
 
 XhtmlLexer.prototype.addScriptTokens = function(scope)
@@ -1442,11 +1442,11 @@ XhtmlLexer.prototype.addCssTokens = function(scope)
 
 XhtmlLexer.prototype.addTagTokens = function(scope)
 {
-  this.addSpecialPattern("<\\s*[a-z]+\\s*>", scope, 'OpeningTag');
-  this.addEntryPattern("<[a-z]+"+'[\\\/ \\\>]+', scope, 'OpeningTag');
+  this.addSpecialPattern("<\\s*[a-z:\-]+\\s*>", scope, 'OpeningTag');
+  this.addEntryPattern("<[a-z:\-]+"+'[\\\/ \\\>]+', scope, 'OpeningTag');
   this.addInTagDeclarationTokens('OpeningTag');
 
-  this.addSpecialPattern("</\\s*[a-z]+\\s*>", scope, 'ClosingTag');
+  this.addSpecialPattern("</\\s*[a-z:\-]+\\s*>", scope, 'ClosingTag');
 
 }
 
@@ -1899,7 +1899,7 @@ XhtmlSaxListener.prototype.addContent = function(text)
 
 XhtmlSaxListener.prototype.addComment = function(text)
 {
-  if(!this.remove_comments){
+  if(this.remove_comments){
     this.output += text;
   }
 }
