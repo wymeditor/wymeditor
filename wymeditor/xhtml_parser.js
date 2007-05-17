@@ -798,20 +798,27 @@ var XhtmlValidator = {
     "39":"ul",
     "40":"var"
   },
+  
+  // Temporary skiped attributes
+  skiped_attributes : [],
+  skiped_attribute_values : [],
+
   getValidTagAttributes: function(tag, attributes)
   {
     var valid_attributes = {};
     var possible_attributes = this.getPossibleTagAttributes(tag);
     for(var attribute in attributes) {
       var value = attributes[attribute];
-      if (typeof value != 'function' && possible_attributes.contains(attribute)) {
-        if (this.doesAttributeNeedsValidation(tag, attribute)) {
-          if(this.validateAttribute(tag, attribute, value)){
+      if(!this.skiped_attributes.contains(attribute) && !this.skiped_attribute_values.contains(value)){
+        if (typeof value != 'function' && possible_attributes.contains(attribute)) {
+          if (this.doesAttributeNeedsValidation(tag, attribute)) {
+            if(this.validateAttribute(tag, attribute, value)){
+              valid_attributes[attribute] = value;
+            }
+          }else{
             valid_attributes[attribute] = value;
-          }
-        }else{
-          valid_attributes[attribute] = value;
-        } 
+          } 
+        }
       }
     }
     return valid_attributes;
@@ -1442,11 +1449,11 @@ XhtmlLexer.prototype.addCssTokens = function(scope)
 
 XhtmlLexer.prototype.addTagTokens = function(scope)
 {
-  this.addSpecialPattern("<\\s*[a-z:\-]+\\s*>", scope, 'OpeningTag');
-  this.addEntryPattern("<[a-z:\-]+"+'[\\\/ \\\>]+', scope, 'OpeningTag');
+  this.addSpecialPattern("<\\s*[a-z0-9:\-]+\\s*>", scope, 'OpeningTag');
+  this.addEntryPattern("<[a-z0-9:\-]+"+'[\\\/ \\\>]+', scope, 'OpeningTag');
   this.addInTagDeclarationTokens('OpeningTag');
 
-  this.addSpecialPattern("</\\s*[a-z:\-]+\\s*>", scope, 'ClosingTag');
+  this.addSpecialPattern("</\\s*[a-z0-9:\-]+\\s*>", scope, 'ClosingTag');
 
 }
 
@@ -1507,11 +1514,18 @@ XhtmlParser.prototype.parse = function(raw)
 
 XhtmlParser.prototype.beforeParsing = function(raw)
 {
+  if(raw.match(/class="MsoNormal"/)){
+    // Usefull for cleaning up content pasted from other sources (MSWord)
+    this._Listener.avoidStylingTagsAndAttributes(); 
+  }
   return this._Listener.beforeParsing(raw);
 }
 
 XhtmlParser.prototype.afterParsing = function(parsed)
 {
+  if(this._Listener._avoiding_tags_implicitly){
+    this._Listener.allowStylingTagsAndAttributes();
+  }
   return this._Listener.afterParsing(parsed);
 }
 
@@ -1597,11 +1611,11 @@ XhtmlParser.prototype._callOpenTagListener = function(tag, attributes)
   this._Listener.last_tag = tag;
   this._Listener.last_tag_attributes = attributes;
 
-  if(this._Listener.block_tags.contains(tag)){
+  if(this._Listener.isBlockTag(tag)){
     this._Listener._tag_stack.push(tag);
     this._Listener.openBlockTag(tag, attributes);
     this._increaseOpenTagCounter(tag);
-  }else if(this._Listener.inline_tags.contains(tag)){ 
+  }else if(this._Listener.isInlineTag(tag)){ 
     this._Listener.inlineTag(tag, attributes);
   }else{
     this._Listener.openUnknownTag(tag, attributes);
@@ -1614,7 +1628,7 @@ XhtmlParser.prototype._callCloseTagListener = function(tag)
   if(this._decreaseOpenTagCounter(tag)){    
     this.autoCloseUnclosedBeforeTagClosing(tag);
     
-    if(this._Listener.block_tags.contains(tag)){
+    if(this._Listener.isBlockTag(tag)){
       var expected_tag = this._Listener._tag_stack.pop();
       if(expected_tag == false){
         return;
@@ -1730,6 +1744,7 @@ function XhtmlSaxListener()
   this._open_tags = {};
   this.validator = XhtmlValidator;
   this._tag_stack = [];
+  this.avoided_tags = [];
   
   this.entities = {
     '&nbsp;':'&#160;','&iexcl;':'&#161;','&cent;':'&#162;',
@@ -1947,3 +1962,28 @@ XhtmlSaxListener.prototype.closeUnopenedTag = function(tag)
   this.output += "</"+tag+">";
 }
 
+XhtmlSaxListener.prototype.avoidStylingTagsAndAttributes = function()
+{
+  this.avoided_tags = ['div','span'];
+  this.validator.skiped_attributes = ['style'];
+  this.validator.skiped_attribute_values = ['MsoNormal','main1']; // MS Word attributes for class
+  this._avoiding_tags_implicitly = true;
+}
+
+XhtmlSaxListener.prototype.allowStylingTagsAndAttributes = function()
+{
+  this.avoided_tags = [];
+  this.validator.skiped_attributes = [];
+  this.validator.skiped_attribute_values = [];
+  this._avoiding_tags_implicitly = false;
+}
+
+XhtmlSaxListener.prototype.isBlockTag = function(tag)
+{
+  return !this.avoided_tags.contains(tag) && this.block_tags.contains(tag);
+}
+
+XhtmlSaxListener.prototype.isInlineTag = function(tag)
+{
+  return !this.avoided_tags.contains(tag) && this.inline_tags.contains(tag);
+}
