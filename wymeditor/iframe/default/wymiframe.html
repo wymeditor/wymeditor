@@ -21,9 +21,11 @@
 <title>WYMeditor iframe</title>
 <link rel="stylesheet" type="text/css" media="screen" href="wymiframe.css" />
 <script type="text/javascript">
+// this._iframe.contentWindow.getSelection(); doesn't work on Safari
 function safariGetSelection() {
   return window.getSelection();
 }
+// this._doc.createrange(); doesn't work on Safari
 function safariCreateRange() {
   return document.createRange();
 }

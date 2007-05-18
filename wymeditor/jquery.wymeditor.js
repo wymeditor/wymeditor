@@ -516,6 +516,8 @@ Wymeditor.prototype.init = function() {
     this.configureEditorUsingRawCss();
   }
   
+  this.helper = new XmlHelper();
+  
   //extend the Wymeditor object
   $j.extend(this, WymClass);
   
@@ -1331,3 +1333,4 @@ Object.prototype.extendObject = function (oSuper) {
 String.prototype.trim = function() {
   return this.replace(/^(\s*)|(\s*)$/gm,'');
 };
+
