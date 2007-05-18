@@ -21,7 +21,9 @@ function WymClassSafari(wym) {
 
   this._wym = wym;
   this.currentSelection = '';
+  this.currentRange;
   this.selectedText = '';
+  this.selectedHtml = '';
   this._class = "WymClassSafari";
 };
 
@@ -209,6 +211,7 @@ WymClassSafari.prototype.bindEvents = function() {
 
 WymClassSafari.prototype.InsertOrderedList = function(param) {
   console.log(this.selectedText);
+  console.log(this.selectedHtml);
 }
 
 WymClassSafari.prototype.InsertUnorderedList = function(param) {
@@ -236,8 +239,31 @@ WymClassSafari.prototype.InsertImage = function(param) {
 }
 
 WymClassSafari.prototype.updateSelection = function() {
-  this._wym.currentSelection = this.safariGetSelection();
+  var s = this.safariGetSelection();
+  this._wym.currentSelection = s;  
   this._wym.selectedText = this._wym.currentSelection+'';
+  var range = this.safariCreateRange();
+  
+  // Selecting from bottom/right to top/left
+  if(s.anchorOffset < s.focusOffset){
+    range.setStart(s.anchorNode, s.anchorOffset);
+    range.setEnd(s.focusNode, s.focusOffset);  
+  
+  // Selecting from top/left to bottom/right
+  }else{
+    range.setStart(s.focusNode, s.focusOffset);
+    range.setEnd(s.anchorNode, s.anchorOffset);  
+  }
+    
+  var selectedRange = range.cloneContents();
+  this._wym.selectedHtml = false;
+  if(selectedRange){
+    var div = document.createElement("div");
+    div.appendChild(selectedRange);
+    this._wym.selectedHtml = div.innerHTML == '' ? false : div.innerHTML;
+  }
+  
+  this._wym.currentRange = range;  
 }
 
 WymClassSafari.prototype.avoidFollowingLinks = function(evt) {
