@@ -20,12 +20,15 @@
 function WymClassSafari(wym) {
 
   this._wym = wym;
+  this.currentSelection = '';
+  this.selectedText = '';
   this._class = "WymClassSafari";
 };
 
 WymClassSafari.prototype.initIframe = function(iframe) {
 
   this._iframe = iframe;
+  this._iframe._wym = this; // Backreference for selection methods
   this._doc = iframe.document;
 
   //add css rules from options
@@ -69,13 +72,12 @@ WymClassSafari.prototype.initIframe = function(iframe) {
     $j(this._doc).bind('click', this.avoidFollowingLinks);
     
     
-/*
-    $j(this._doc).bind('keydown', this.updateSelection);
-    $j(this._doc).bind('keyup', this.updateSelection);
-    $j(this._doc).bind('mousedown', this.updateSelection);
-    $j(this._doc).bind('mouseup', this.updateSelection);
-    $j(this._doc).bind('mousemove', this.updateSelection);
-*/    
+
+    $j(this._iframe).bind('keydown', this.updateSelection);
+    $j(this._iframe).bind('keyup', this.updateSelection);
+    $j(this._iframe).bind('mousedown', this.updateSelection);
+    $j(this._iframe).bind('mouseup', this.updateSelection);
+    $j(this._iframe).bind('mousemove', this.updateSelection);
     
     //post-init functions
     if($j.isFunction(this._options.fPostInit)) this._options.fPostInit(this);
@@ -89,11 +91,10 @@ WymClassSafari.prototype.initIframe = function(iframe) {
 
 WymClassSafari.prototype._exec = function(cmd,param) {
   param = param || null;
-  if(eval("typeof this."+cmd+" == 'undefined'")){
+  if(typeof this[cmd] == 'undefined'){
     this._doc.execCommand(cmd,false,param);
   }else{
-    var wym = this;
-    eval('wym.'+cmd+"(param);");
+    this[cmd](param);
   }
 };
 
@@ -207,11 +208,11 @@ WymClassSafari.prototype.bindEvents = function() {
 
 
 WymClassSafari.prototype.InsertOrderedList = function(param) {
-
+  console.log(this.selectedText);
 }
 
 WymClassSafari.prototype.InsertUnorderedList = function(param) {
-
+  console.log(this.currentSelection);
 }
 
 WymClassSafari.prototype.Indent = function(param) {
@@ -234,9 +235,17 @@ WymClassSafari.prototype.InsertImage = function(param) {
 
 }
 
+WymClassSafari.prototype.updateSelection = function() {
+  this._wym.currentSelection = this.safariGetSelection();
+  this._wym.selectedText = this._wym.currentSelection+'';
+}
+
 WymClassSafari.prototype.avoidFollowingLinks = function(evt) {
   var node = evt.target;
-  if(node.nodeName == "A"){
+  if(node.nodeName == 'A' || node.nodeName == 'AREA'){    return false;
+  }
+  // TODO handle button value editing
+  if(node.nodeName == "INPUT" && (node.type.toUpperCase == 'SUBMIT' || node.type.toUpperCase == 'BUTTON')){
     return false;
   }
 }
