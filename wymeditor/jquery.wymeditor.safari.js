@@ -229,24 +229,61 @@ WymClassSafari.prototype.selectAll = function(param) {
 }
 
 WymClassSafari.prototype.InsertOrderedList = function(param) {
-  var selected = this.selected();
-  if(selected.tagName == 'LI' && selected.parentNode){
-    var new_content = this.helper.contentTag('p', selected.innerHTML);
-    var parent = selected.parentNode;
-    parent.removeChild(selected);
-    parent.outerHTML += new_content;
-  }else if(selected.tagName == 'P'){
-    var new_content = this.helper.contentTag('ul', this.helper.contentTag('li', selected.innerHTML));
-    selected.outerHTML = new_content;
-  }
+  this._InsertList(param, 'ol');
 }
 
 WymClassSafari.prototype.InsertUnorderedList = function(param) {
-
+  this._InsertList(param, 'ul');
 }
 
-WymClassSafari.prototype.Indent = function(param) {
+WymClassSafari.prototype._InsertList = function(param, type) {
+  var selected = this.selected();
+  var contents = selected.innerHTML;
+  
+  // Last list item
+  if(selected.tagName == 'LI' && selected.parentNode && selected.nextSibling == undefined) {
+    this.insertTagAfter(this.deleteSelectedNode(), 'p', contents);
+  
+    // First list item
+    } else if(selected.tagName == 'LI' && selected.parentNode && selected.previousSibling == undefined){
+      var parent = selected.parentNode;
+    this.deleteNode(selected);
+    this.insertTagBefore(parent, 'p', contents);
+    
+    // inline list item
+    } else if(selected.tagName == 'LI' && selected.parentNode){
+      var parent = selected.parentNode;
+      var before = '';
+      var after = false;
+      for(var i = 0; i < parent.childNodes.length; i++) {
+        if(after === false){
+          if(parent.childNodes[i] == selected){
+            after = '';
+          }else{
+            before += parent.childNodes[i].outerHTML;
+          }
+        } else{
+          after += parent.childNodes[i].outerHTML;
+        }
+      }
+            
+      $(parent).before(this.helper.contentTag(parent.tagName, before));
+      var p_details = this.generateContentTagWithId('p', contents);
+      $(parent).before(p_details.content);
+      var p = this.getById(p_details.id);
+      $(parent).before(this.helper.contentTag(parent.tagName, after));
+      $(parent).remove();
+      this.focusNode(p,1,1);
+      
+  // On a paragraph
+  } else if(selected.tagName == 'P'){
+    this.replaceTagWith(selected, type+'+li', contents);
+  }
+}
 
+
+WymClassSafari.prototype.Indent = function(param) {
+  
 }
 
 WymClassSafari.prototype.Outdent = function(param) {
@@ -275,41 +312,13 @@ WymClassSafari.prototype.handleEnter = function(evt){
       }
       return false;
     }
-    
-    var options = {id:this.tmpId()};
-    
-    // We are on a list item
-    if(selected.tagName == 'LI' && selected.parentNode){
-      
-      // If we access the text on the right of current carret a new list item will be added
-      var movedText = this.isCollapsed ? selected.innerHTML.substring(this.selectionCopy.d) : '';
-      
-      // remove a list item node and insert a new paragraph
-      if(movedText == '' && 
-      // we are selecting all the text in a list item
-      (this.selectedText == selected.innerHTML || selected.innerHTML == this.selectedHtml) || 
-      // We are on a empty list item
-      (selected.innerHTML.replace(this.emptyChar(),'') == '')){
-        var parent = selected.parentNode;
-        if(!this.isCollapsed){ // remove selection, otherwise safari crashes
-         this.currentSelection.setBaseAndExtent(selected, 0, selected, 0);
-        }
-        parent.removeChild(selected);        
-        parent.outerHTML += this.helper.contentTag('p', '', options); // Simpler than DOM looping
-        var p = this.getById(options.id);
-        var wym = this;
-        setTimeout(function(){wym.currentSelection.setBaseAndExtent(p, 0, p, 0);},200);
-        
-      // New list item
-      }else if (movedText == ''){  
-        var li = this._doc.createTextNode(this.emptyChar());
-        selected.appendChild(li);
-        this.currentSelection.setBaseAndExtent(li, 0, li, 0);
-      }
-    }
+    this.handleEnterOnListItem(selected);
+   
   }
   return true;
 }
+
+
 
 WymClassSafari.prototype.handleBackspace = function(){
   var selected = this.selected();
@@ -322,6 +331,143 @@ WymClassSafari.prototype.handleBackspace = function(){
   }
   return true;
 }
+
+WymClassSafari.prototype.handleEnterOnListItem = function(selected)
+{
+  if(selected.tagName == 'LI' && selected.parentNode){
+    // If we access the text on the right of current carret a new list item will be added
+    if((this.isCollapsed && selected.innerHTML && this.selectionCopy.d ? 
+        selected.innerHTML.substring(this.selectionCopy.d) : '') == ''){
+      // remove the last empty list item and insert a new paragraph
+      if(selected.innerHTML.trim() == ''){
+        this.insertTagAfter(this.deleteSelectedNode(), 'p', '');
+      // New list item
+      }else if (this.isCollapsed){
+        this.insertTagAfter(selected, 'li', '');
+
+      // we are selecting all the text in a list item
+      }else if(this.selectedText == selected.innerHTML || selected.innerHTML == this.selectedHtml){
+
+        if(selected.nextSibling == undefined){ // last item
+          this.insertTagAfter(this.deleteSelectedNode(), 'p', '');
+        }else{
+          this.insertTagAfter(this.deleteContents(selected), 'li', '');
+        }
+      }else{
+        // New list item
+        var selectedText = this.selectedHtml || this.selectedText;
+        // selecting text up to the end
+        if(this.selectionCopy.b+selectedText.length == selected.innerHTML.length){
+            this.removeSelection();
+            // replace the HTML with the left of the selection
+            selected.innerHTML = selected.innerHTML.substring(0,this.selectionCopy.b);
+            this.insertTagAfter(selected, 'li', '');
+        }
+
+      }
+    }
+  }
+}
+
+WymClassSafari.prototype.insertTagAfter = function(parentNode, tag, content, options){
+  var insertBefore = parentNode.outerHTML;
+  return this.replaceTagWith(parentNode, tag, content, options, insertBefore);
+}
+
+WymClassSafari.prototype.insertTagBefore = function(parentNode, tag, content, options){
+  var insertAfter = parentNode.outerHTML;
+  return this.replaceTagWith(parentNode, tag, content, options, '', insertAfter);
+}
+
+WymClassSafari.prototype.replaceTagWith = function(targetNode, tag, content, options, insertBefore, insertAfter){
+  var insertBefore = insertBefore || '';
+  var insertAfter = insertAfter || '';
+  this.removeSelection(targetNode);
+  
+  if(tag.indexOf('+')>0){
+    var parentTag = tag.split('+')[0];
+    var tag = tag.split('+')[1];
+    var newTagDetails = this.generateContentTagWithId(tag, content, options);
+    $(targetNode).after(insertBefore+this.helper.contentTag(parentTag,newTagDetails.content)+insertAfter);
+  }else{
+    var newTagDetails = this.generateContentTagWithId(tag, content, options);
+    $(targetNode).after(insertBefore+newTagDetails.content+insertAfter);
+  }
+  
+  $(targetNode).remove();
+  var newNode = this.getById(newTagDetails.id);
+  // If we inserted content the caret will be at the end otherwise at the begining
+  var caretPos = (content.length>0 ? 1 : 0);
+  this.focusNode(newNode, caretPos, caretPos);
+  return newNode;
+}
+
+/*
+*/
+WymClassSafari.prototype.generateContentTagWithId = function(tag, content, options){
+  
+  var options = options || {};
+  options.id = options.id || this.tmpId();
+  
+  if(tag.indexOf('+')>0){
+    var parentTag = tag.split('+')[0];
+    var tag = tag.split('+')[1];
+    var result = this.helper.contentTag(parentTag,this.helper.contentTag(tag, content, options));
+  }else{
+    var result = this.helper.contentTag(tag, content, options);
+  }
+  
+  var wym = this;
+  setTimeout(function(){
+        var newNode = wym.getById(options.id);
+        if(newNode && newNode.id && newNode.id.match(/_wym_tmp_id_/)){
+          newNode.removeAttribute('id');
+        }
+      }, 900);
+
+  return {content:result,id:options.id};
+}
+
+
+WymClassSafari.prototype.focusNode = function(node, start, end){
+  var start = start || 0;
+  var end = end || 0;
+  var wym = this;
+    // Need to delay so safari doesn't duplicate tags
+    setTimeout(function(){wym.currentSelection.setBaseAndExtent(node, start, node, end);}, 200);
+    return node;
+}
+
+
+WymClassSafari.prototype.removeSelection = function(node){
+  if(!this.isCollapsed){
+    this.currentSelection.setBaseAndExtent(node, 0, node, 0);
+  }
+  return node;
+}
+
+
+WymClassSafari.prototype.deleteContents = function(node){
+  this.removeSelection(node).innerHTML = '';
+  this.currentSelection.setBaseAndExtent(node, 0, node, 0);
+  return node;
+}
+
+/* returns parent node
+*/
+WymClassSafari.prototype.deleteSelectedNode = function(){
+  return this.deleteNode(this.selected());
+}
+
+/* returns parent node
+*/
+WymClassSafari.prototype.deleteNode = function(node){
+  var parent = node.parentNode || node.baseOffset;
+  parent.removeChild(this.removeSelection(node));
+  return parent;
+}
+
+
 
 WymClassSafari.prototype.tmpId = function(){
   if(!this.__tmpIdCounter){
@@ -355,10 +501,12 @@ WymClassSafari.prototype.updateSelection = function() {
     range.setEnd(s.focusNode, s.focusOffset);  
     this._wym.selectionCopy = {a:s.anchorNode,b:s.anchorOffset,c:s.focusNode,d:s.focusOffset};
     // Selecting from top/left to bottom/right
-  }else{
-    range.setStart(s.focusNode, s.focusOffset);
-    range.setEnd(s.anchorNode, s.anchorOffset);  
-    this._wym.selectionCopy = {a:s.focusNode,b:s.focusOffset,c:s.anchorNode,d:s.anchorOffset};
+  }else {
+    try{
+      range.setStart(s.focusNode, s.focusOffset);
+      range.setEnd(s.anchorNode, s.anchorOffset);  
+      this._wym.selectionCopy = {a:s.focusNode,b:s.focusOffset,c:s.anchorNode,d:s.anchorOffset};
+    }catch(e){}
   }
 
   var selectedRange = range.cloneContents();

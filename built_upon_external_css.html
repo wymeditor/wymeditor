@@ -30,7 +30,7 @@
 <script type="text/javascript">
 
 var $j = jQuery.noConflict();
-
+var w;
 $j(function() {
   
     $j('.wymeditor').wymeditor({
@@ -63,7 +63,8 @@ $j(function() {
         //activate 'hovertools' plugin
         //which gives more feedback to the user
         wym.hovertools();
-
+        
+        w = wym;
       },
       
       //function called when dialog is ready
