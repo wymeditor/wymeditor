@@ -28,9 +28,11 @@ function WymClassSafari(wym) {
   this.selectedText = '';
   this.selectedHtml = '';
   this.isCollapsed = true; 
+  this.hackChar = '~|~~|~';
 
   this._class = "WymClassSafari";
 };
+
 
 WymClassSafari.prototype.initIframe = function(iframe) {
 
@@ -118,7 +120,7 @@ WymClassSafari.prototype.setFocusToNode = function(node) {
 WymClassSafari.prototype.beforeParsing = function(raw)
 {
   this.output = '';
-  return raw.
+  return this.removeSafarihacks(raw).
   // Remove safari place holders
   replace(/([^>]*)<(\w+)><BR class\="khtml-block-placeholder"><\/\2>([^<]*)/g, "<$2>$1$3</$2>");
 }
@@ -215,6 +217,17 @@ WymClassSafari.prototype.bindEvents = function() {
   });
 };
 
+WymClassSafari.prototype.removeSafarihacks = function(raw_html){
+  if($j.browser.version < 522){
+    raw_html = raw_html.replace(this.hackChar,'');
+  }
+  return raw_html;
+}
+
+WymClassSafari.prototype.selectAll = function(param) {
+  this.currentSelection.setBaseAndExtent(this._doc.body, 0, w._doc.body, w._doc.body.length);
+}
+
 WymClassSafari.prototype.InsertOrderedList = function(param) {
   var selected = this.selected();
   if(selected.tagName == 'LI' && selected.parentNode){
@@ -226,16 +239,10 @@ WymClassSafari.prototype.InsertOrderedList = function(param) {
     var new_content = this.helper.contentTag('ul', this.helper.contentTag('li', selected.innerHTML));
     selected.outerHTML = new_content;
   }
-
-  return;
-  console.log(this.isCollapsed);
-  console.log(this.selectedText);
-  console.log(this.selectedHtml);
-  console.log(selected.innerHTML);
 }
 
 WymClassSafari.prototype.InsertUnorderedList = function(param) {
-  //console.log(this.currentSelection);
+
 }
 
 WymClassSafari.prototype.Indent = function(param) {
@@ -258,23 +265,62 @@ WymClassSafari.prototype.InsertImage = function(param) {
 
 }
 
-WymClassSafari.prototype.handleEnter = function(){
+WymClassSafari.prototype.handleEnter = function(evt){
   var selected = this.selected();
-  if($j.browser.version < 522){
+  if($j.browser.version < 522){    
+    
+    if(evt.shiftKey){
+      if(!this.selectedHtml && this.selectedText == selected.innerHTML){
+        selected.innerHTML = this.emptyChar()+'<br />'+this.emptyChar();
+      }
+      return false;
+    }
+    
     var options = {id:this.tmpId()};
+    
+    // We are on a list item
     if(selected.tagName == 'LI' && selected.parentNode){
-      if(selected.innerHTML.replace(String.fromCharCode(160),'') == ''){
+      
+      // If we access the text on the right of current carret a new list item will be added
+      var movedText = this.isCollapsed ? selected.innerHTML.substring(this.selectionCopy.d) : '';
+      
+      // remove a list item node and insert a new paragraph
+      if(movedText == '' && 
+      // we are selecting all the text in a list item
+      (this.selectedText == selected.innerHTML || selected.innerHTML == this.selectedHtml) || 
+      // We are on a empty list item
+      (selected.innerHTML.replace(this.emptyChar(),'') == '')){
         var parent = selected.parentNode;
-        parent.removeChild(selected);
-        parent.outerHTML += this.helper.contentTag('p', '',options);
+        if(!this.isCollapsed){ // remove selection, otherwise safari crashes
+         this.currentSelection.setBaseAndExtent(selected, 0, selected, 0);
+        }
+        parent.removeChild(selected);        
+        parent.outerHTML += this.helper.contentTag('p', '', options); // Simpler than DOM looping
+        var p = this.getById(options.id);
+        var wym = this;
+        setTimeout(function(){wym.currentSelection.setBaseAndExtent(p, 0, p, 0);},200);
         
-      }else{  
+      // New list item
+      }else if (movedText == ''){  
         var li = this._doc.createTextNode(this.emptyChar());
         selected.appendChild(li);
-        this.currentSelection.setBaseAndExtent(li, 1, li, 1);
+        this.currentSelection.setBaseAndExtent(li, 0, li, 0);
       }
     }
   }
+  return true;
+}
+
+WymClassSafari.prototype.handleBackspace = function(){
+  var selected = this.selected();
+  if($j.browser.version < 522){
+    if(selected.tagName == 'P' && selected.innerHTML == ''){
+      // Todo: move caret to the end of previous sibling
+      var parent = selected.parentNode;
+      parent.removeChild(selected);
+    }
+  }
+  return true;
 }
 
 WymClassSafari.prototype.tmpId = function(){
@@ -287,7 +333,7 @@ WymClassSafari.prototype.tmpId = function(){
 
 WymClassSafari.prototype.emptyChar = function()
 {
-  return String.fromCharCode(160,160);
+  return String.fromCharCode(160);
 }
 
 WymClassSafari.prototype.getById = function(id)
@@ -295,22 +341,11 @@ WymClassSafari.prototype.getById = function(id)
   return this._doc.getElementById(id);
 }
 
-WymClassSafari.prototype.handleBackspace = function(){
-  var selected = this.selected();
-  if($j.browser.version < 522){
-    if(selected.tagName == 'P' && selected.innerHTML == ''){
-      // Todo: move caret to the end of previous sibling
-      var parent = selected.parentNode;
-      parent.removeChild(selected);
-    }
-  }
-}
-
 WymClassSafari.prototype.updateSelection = function() {
 
   var s = this.safariGetSelection();
   this._wym.currentSelection = s;
-  this._wym.selectionCopy = {baseNode:s.baseNode,baseOffset:s.baseOffset,extentNode:s.extentNode,extentOffset:s.extentOffset};
+  
   this._wym.selectedText = this._wym.currentSelection+'';
   var range = this.safariCreateRange();
 
@@ -318,11 +353,12 @@ WymClassSafari.prototype.updateSelection = function() {
   if(s.anchorOffset < s.focusOffset){
     range.setStart(s.anchorNode, s.anchorOffset);
     range.setEnd(s.focusNode, s.focusOffset);  
-
+    this._wym.selectionCopy = {a:s.anchorNode,b:s.anchorOffset,c:s.focusNode,d:s.focusOffset};
     // Selecting from top/left to bottom/right
   }else{
     range.setStart(s.focusNode, s.focusOffset);
     range.setEnd(s.anchorNode, s.anchorOffset);  
+    this._wym.selectionCopy = {a:s.focusNode,b:s.focusOffset,c:s.anchorNode,d:s.anchorOffset};
   }
 
   var selectedRange = range.cloneContents();
@@ -332,7 +368,7 @@ WymClassSafari.prototype.updateSelection = function() {
     div.appendChild(selectedRange);
     this._wym.selectedHtml = div.innerHTML == '' ? false : div.innerHTML;
   }
-
+  
   this._wym.isCollapsed = this._wym.selectedHtml == false && this._wym.selectedText == '';
   this._wym.currentRange = range;  
 };
@@ -357,9 +393,9 @@ WymClassSafari.prototype.keydown = function(evt)
   var wym = aWYM_INSTANCES[this.title];
 
   if(evt.keyCode == 13){ // enter
-    wym.handleEnter();
+      return wym.handleEnter(evt);
     }else if(evt.keyCode == 8){ // backspace
-      wym.handleBackspace();
+      return wym.handleBackspace(evt);
     }
 
   };
