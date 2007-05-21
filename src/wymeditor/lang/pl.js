@@ -35,8 +35,8 @@ var aWYM_STRINGS_PL = {
     Submit:           'Wyślij',
     Cancel:           'Anuluj',
     Choose:           'Wybierz',
-    Preview:          'Preview',
-    Paste_From_Word:  'Paste from Word'
+    Preview:          'Podgląd',
+    Paste_From_Word:  'Wklej z Worda'
 };
 
 aWYM_STRINGS['pl'] = aWYM_STRINGS_PL;

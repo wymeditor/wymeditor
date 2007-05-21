@@ -35,8 +35,8 @@ var aWYM_STRINGS_SV = {
     Submit:           'Skicka',
     Cancel:           'Avbryt',
     Choose:           'Välj',
-    Preview:          'Preview',
-    Paste_From_Word:  'Paste from Word'
+    Preview:          'Förhandsgranska',
+    Paste_From_Word:  'Klistra in från Word'
 };
 
 aWYM_STRINGS['sv'] = aWYM_STRINGS_SV;

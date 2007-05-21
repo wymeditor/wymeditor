@@ -1,14 +1,14 @@
-﻿/* prevent execution of jQuery if included more than once */
+﻿// prevent execution of jQuery if included more than once
 if(typeof window.jQuery == "undefined") {
 /*
- * jQuery 1.1.2 - New Wave Javascript
+ * jQuery 1.1.3a - New Wave Javascript
  *
  * Copyright (c) 2007 John Resig (jquery.com)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
  * and GPL (GPL-LICENSE.txt) licenses.
  *
- * $Date: 2007-05-13 19:59:38 +0200 (dim, 13 mai 2007) $
- * $Rev: 1897 $
+ * $Date: 2007-05-16 18:21:50 +0200 (mer, 16 mai 2007) $
+ * $Rev: 1910 $
  */
 
 // Global undefined variable
@@ -61,7 +61,7 @@ jQuery.fn = jQuery.prototype = {
 			// HANDLE: $(*)
 			[ a ] );
 	},
-	jquery: "1.1.2",
+	jquery: "1.1.3a",
 
 	size: function() {
 		return this.length;
@@ -193,11 +193,30 @@ jQuery.fn = jQuery.prototype = {
 		}) ), t );
 	},
 	clone: function(deep) {
-		return this.pushStack( jQuery.map( this, function(a){
-			a = a.cloneNode( deep != undefined ? deep : true );
-			a.$events = null; // drop $events expando to avoid firing incorrect events
-			return a;
+		// Need to remove events on the element and its descendants
+		var $this = this.add(this.find("*"));
+		$this.each(function() {
+			this._$events = {};
+			for (var type in this.$events)
+				this._$events[type] = jQuery.extend({},this.$events[type]);
+		}).unbind();
+
+		// Do the clone
+		var r = this.pushStack( jQuery.map( this, function(a){
+			return a.cloneNode( deep != undefined ? deep : true );
 		}) );
+
+		// Add the events back to the original and its descendants
+		$this.each(function() {
+			var events = this._$events;
+			for (var type in events)
+				for (var handler in events[type])
+					jQuery.event.add(this, type, events[type][handler], events[type][handler].data);
+			this._$events = null;
+		});
+
+		// Return the cloned set
+		return r;
 	},
 
 	filter: function(t) {
@@ -415,7 +434,7 @@ jQuery.extend({
 			return ret == "" ? "1" : ret;
 		}
 		
-		if (prop == "float" || prop == "cssFloat")
+		if (prop.match(/float/i))
 			prop = jQuery.browser.msie ? "styleFloat" : "cssFloat";
 
 		if (!force && elem.style[prop])
@@ -423,7 +442,7 @@ jQuery.extend({
 
 		else if (document.defaultView && document.defaultView.getComputedStyle) {
 
-			if (prop == "cssFloat" || prop == "styleFloat")
+			if (prop.match(/float/i))
 				prop = "float";
 
 			prop = prop.replace(/([A-Z])/g,"-$1").toLowerCase();
@@ -531,6 +550,7 @@ jQuery.extend({
 			"class": "className",
 			"float": jQuery.browser.msie ? "styleFloat" : "cssFloat",
 			cssFloat: jQuery.browser.msie ? "styleFloat" : "cssFloat",
+			styleFloat: jQuery.browser.msie ? "styleFloat" : "cssFloat",
 			innerHTML: "innerHTML",
 			className: "className",
 			value: "value",
@@ -1197,7 +1217,7 @@ jQuery.event = {
 		
 		if (!element.$handle)
 			element.$handle = function() {
-				if(jQuery) jQuery.event.handle.apply(element, arguments);
+				jQuery.event.handle.apply(element, arguments);
 			};
 
 		// Get the current list of functions bound to this event
@@ -1339,12 +1359,33 @@ jQuery.event = {
 		if ( !event.target && event.srcElement )
 			event.target = event.srcElement;
 
+		// Add relatedTarget, if necessary
+		if ( !event.relatedTarget && event.fromElement )
+			event.relatedTarget = event.fromElement == event.target ? event.toElement : event.fromElement;
+
+		// Add metaKey to non-Mac browsers (use ctrl for PC's and Meta for Macs)
+		if ( event.metaKey == null && event.ctrlKey != null )
+			event.metaKey = event.ctrlKey;
+
+		// Add which for click: 1 == left; 2 == middle; 3 == right
+		// Note: button is not normalized, so don't use it
+		if ( event.which == null && event.button != null )
+			event.which = (event.button & 1 ? 1 : ( event.button & 2 ? 3 : ( event.button & 4 ? 2 : 0 ) ));
+
 		// Calculate pageX/Y if missing and clientX/Y available
-		if ( event.pageX == undefined && event.clientX != undefined ) {
+		if ( event.pageX == null && event.clientX != null ) {
 			var e = document.documentElement || document.body;
 			event.pageX = event.clientX + e.scrollLeft;
 			event.pageY = event.clientY + e.scrollTop;
 		}
+
+		// Add which for keypresses: keyCode
+		if ( (event.which == null || event.type == "keypress") && event.keyCode != null )
+			event.which = event.keyCode;    
+
+		// If it's a keypress event, add charCode to IE
+		if ( event.charCode == null && event.type == "keypress" )
+			event.charCode = event.keyCode;
 				
 		// check if target is a textnode (safari)
 		if (jQuery.browser.safari && event.target.nodeType == 3) {
@@ -1425,7 +1466,7 @@ jQuery.fn.extend({
 		// A private function for handling mouse 'hovering'
 		function handleHover(e) {
 			// Check if mouse(over|out) are still within the same parent element
-			var p = (e.type == "mouseover" ? e.fromElement : e.toElement) || e.relatedTarget;
+			var p = e.relatedTarget;
 	
 			// Traverse up the tree
 			while ( p && p != this ) try { p = p.parentNode } catch(e) { p = this; };
@@ -1941,82 +1982,79 @@ jQuery.extend({
 jQuery.fn.extend({
 
 	show: function(speed,callback){
-		var hidden = this.filter(":hidden");
-		speed ?
-			hidden.animate({
+		return speed ?
+			this.animate({
 				height: "show", width: "show", opacity: "show"
 			}, speed, callback) :
 			
-			hidden.each(function(){
+			this.filter(":hidden").each(function(){
 				this.style.display = this.oldblock ? this.oldblock : "";
 				if ( jQuery.css(this,"display") == "none" )
 					this.style.display = "block";
-			});
-		return this;
+			}).end();
 	},
 
 	hide: function(speed,callback){
-		var visible = this.filter(":visible");
-		speed ?
-			visible.animate({
+		return speed ?
+			this.animate({
 				height: "hide", width: "hide", opacity: "hide"
 			}, speed, callback) :
 			
-			visible.each(function(){
+			this.filter(":visible").each(function(){
 				this.oldblock = this.oldblock || jQuery.css(this,"display");
 				if ( this.oldblock == "none" )
 					this.oldblock = "block";
 				this.style.display = "none";
-			});
-		return this;
+			}).end();
 	},
 
 	// Save the old toggle function
 	_toggle: jQuery.fn.toggle,
 	toggle: function( fn, fn2 ){
-		var args = arguments;
 		return jQuery.isFunction(fn) && jQuery.isFunction(fn2) ?
 			this._toggle( fn, fn2 ) :
-			this.each(function(){
-				jQuery(this)[ jQuery(this).is(":hidden") ? "show" : "hide" ]
-					.apply( jQuery(this), args );
-			});
+			this.animate({
+				height: "toggle", width: "toggle", opacity: "toggle"
+			}, fn, fn2);
 	},
 	slideDown: function(speed,callback){
-		return this.filter(":hidden").animate({height: "show"}, speed, callback).end();
+		return this.animate({height: "show"}, speed, callback);
 	},
 	slideUp: function(speed,callback){
-		return this.filter(":visible").animate({height: "hide"}, speed, callback).end();
+		return this.animate({height: "hide"}, speed, callback);
 	},
 	slideToggle: function(speed, callback){
-		return this.each(function(){
-			var state = jQuery(this).is(":hidden") ? "show" : "hide";
-			jQuery(this).animate({height: state}, speed, callback);
-		});
+		return this.animate({height: "toggle"}, speed, callback);
 	},
 	fadeIn: function(speed, callback){
-		return this.filter(":hidden").animate({opacity: "show"}, speed, callback).end();
+		return this.animate({opacity: "show"}, speed, callback);
 	},
 	fadeOut: function(speed, callback){
-		return this.filter(":visible").animate({opacity: "hide"}, speed, callback).end();
+		return this.animate({opacity: "hide"}, speed, callback);
 	},
 	fadeTo: function(speed,to,callback){
 		return this.animate({opacity: to}, speed, callback);
 	},
 	animate: function( prop, speed, easing, callback ) {
 		return this.queue(function(){
+			var hidden = jQuery(this).is(":hidden");
+			
+			for ( var p in prop )
+				if ( prop[p] == "hide" && hidden ||
+					prop[p] == "show" && !hidden )
+						return;
 		
 			this.curAnim = jQuery.extend({}, prop);
 			var opt = jQuery.speed(speed, easing, callback);
+			var self = this;
 			
-			for ( var p in prop ) {
-				var e = new jQuery.fx( this, opt, p );
-				if ( prop[p].constructor == Number )
-					e.custom( e.cur(), prop[p] );
+			jQuery.each( prop, function(name, val){
+				var e = new jQuery.fx( self, opt, name );
+				if ( val.constructor == Number )
+					e.custom( e.cur(), val );
 				else
-					e[ prop[p] ]( prop );
-			}
-			
+					e[ val == "toggle" ? hidden ? "show" : "hide" : val ]( prop );
+			});
 		});
 	},
 	queue: function(type,fn){
@@ -2151,11 +2189,13 @@ jQuery.extend({
 
 			if ( jQuery.timers.length == 1 ) {
 				var timer = setInterval(function(){
-					jQuery.timers = jQuery.grep( jQuery.timers, function(fn){
-						return fn();
-					});
+					var timers = jQuery.timers;
+					
+					for ( var i = 0; i < timers.length; i++ )
+						if ( !timers[i]() )
+							timers.splice(i--, 1);
 
-					if ( !jQuery.timers.length )
+					if ( !timers.length )
 						clearInterval( timer );
 				}, 13);
 			}
@@ -2173,9 +2213,13 @@ jQuery.extend({
 			// Begin the animation
 			z.custom(0, this.cur());
 
-			// Stupid IE, look what you made me do
+			// Make sure that we start at a small width/height to avoid any
+			// flash of content
 			if ( prop != "opacity" )
 				y[prop] = "1px";
+			
+			// Start by showing the element
+			jQuery(elem).show();
 		};
 
 		// Simple 'hide' function
@@ -2189,30 +2233,6 @@ jQuery.extend({
 
 			// Begin the animation
 			z.custom(this.cur(), 0);
-		};
-		
-		//Simple 'toggle' function
-		z.toggle = function() {
-			if ( !elem.orig ) elem.orig = {};
-
-			// Remember where we started, so that we can go back to it later
-			elem.orig[prop] = jQuery.attr( elem.style, prop );
-
-			if(oldDisplay == "none")  {
-				options.show = true;
-				
-				// Stupid IE, look what you made me do
-				if ( prop != "opacity" )
-					y[prop] = "1px";
-
-				// Begin the animation
-				z.custom(0, this.cur());	
-			} else {
-				options.hide = true;
-
-				// Begin the animation
-				z.custom(this.cur(), 0);
-			}		
 		};
 
 		// Each step of an animation
@@ -2231,18 +2251,18 @@ jQuery.extend({
 						done = false;
 
 				if ( done ) {
-					if ( oldDisplay ) {
+					if ( oldDisplay != null ) {
 						// Reset the overflow
 						y.overflow = oldOverflow;
 					
 						// Reset the display
 						y.display = oldDisplay;
-						if (jQuery.css(elem, "display") == "none")
+						if ( jQuery.css(elem, "display") == "none" )
 							y.display = "block";
 					}
 
 					// Hide the element if the "hide" operation was done
-					if ( options.hide ) 
+					if ( options.hide )
 						y.display = "none";
 
 					// Reset the properties, if the item has been hidden or shown
