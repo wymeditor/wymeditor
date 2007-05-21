@@ -86,8 +86,18 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
 
 WymClassExplorer.prototype._exec = function(cmd,param) {
 
-    if(param) this._doc.execCommand(cmd,false,param);
-    else this._doc.execCommand(cmd);
+    switch(cmd) {
+    
+    case sWYM_INDENT: case sWYM_OUTDENT:
+        container = this.container();
+        if(container.tagName.toLowerCase() == sWYM_LI)
+            this._doc.execCommand(cmd);
+    break;
+    default:
+        if(param) this._doc.execCommand(cmd,false,param);
+        else this._doc.execCommand(cmd);
+    break;
+	}
     
     this.listen();
 };

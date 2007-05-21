@@ -94,15 +94,45 @@ WymClassMozilla.prototype.html = function(sHtml) {
 
 WymClassMozilla.prototype._exec = function(cmd,param) {
 
-    if(param) this._doc.execCommand(cmd,'',param);
-    else this._doc.execCommand(cmd,'',null);
+    switch(cmd) {
+    
+    case sWYM_INDENT: case sWYM_OUTDENT:
+    
+        var focusNode = this.selected();    
+        var sel = this._iframe.contentWindow.getSelection();
+        var anchorNode = sel.anchorNode;
+        if(anchorNode.nodeName == "#text") anchorNode = anchorNode.parentNode;
+        
+        focusNode = this.findUp(focusNode, aWYM_BLOCKS);
+        anchorNode = this.findUp(anchorNode, aWYM_BLOCKS);
+        
+        if(focusNode && focusNode == anchorNode
+          && focusNode.tagName.toLowerCase() == sWYM_LI) {
+        	
+            var ancestor = focusNode.parentNode.parentNode;
+        	
+            if(focusNode.parentNode.childNodes.length>1
+        		|| ancestor.tagName.toLowerCase() == sWYM_OL
+        		|| ancestor.tagName.toLowerCase() == sWYM_UL)
+        		
+                this._doc.execCommand(cmd,'',null);
+        }
+
+    break;
+    
+    default:
+
+        if(param) this._doc.execCommand(cmd,'',param);
+        else this._doc.execCommand(cmd,'',null);
+    }
     
     //set to P if parent = BODY
     var container = this.selected();
     if(container.tagName.toLowerCase() == sWYM_BODY)
-      this._exec(sWYM_FORMAT_BLOCK, sWYM_P);
+        this._exec(sWYM_FORMAT_BLOCK, sWYM_P);
     
     //add event handlers on doc elements
+
     this.listen();
 };
 
