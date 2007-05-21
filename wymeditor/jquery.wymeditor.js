@@ -69,6 +69,9 @@
     var sWYM_BR               = "br";
     var sWYM_IMG              = "img";
     var sWYM_TABLE            = "table";
+    var sWYM_UL               = "ul";
+    var sWYM_OL               = "ol";
+    var sWYM_LI               = "li";
     var sWYM_CLASS            = "class";
     var sWYM_HREF             = "href";
     var sWYM_SRC              = "src";
@@ -84,6 +87,8 @@
     var sWYM_INSERT_IMAGE     = "InsertImage";
     var sWYM_INSERT_TABLE     = "InsertTable";
     var sWYM_PASTE            = "Paste";
+    var sWYM_INDENT           = "Indent";
+    var sWYM_OUTDENT          = "Outdent";
     var sWYM_TOGGLE_HTML      = "ToggleHtml";
     var sWYM_FORMAT_BLOCK     = "FormatBlock";
     var sWYM_PREVIEW          = "Preview";
@@ -92,6 +97,11 @@
 
     var aWYM_CONTAINERS = new Array(sWYM_P,sWYM_H1,sWYM_H2,sWYM_H3,sWYM_H4,
         sWYM_H5,sWYM_H6,sWYM_PRE,sWYM_BLOCKQUOTE);
+
+    var aWYM_BLOCKS = new Array("address", "blockquote", "div", "dl",
+	   "fieldset", "form", "h1", "h2", "h3", "h4", "h5", "h6", "hr",
+	   "noscript", "ol", "p", "pre", "table", "ul", "dd", "dt",
+	   "li", "tbody", "td", "tfoot", "th", "thead", "tr");
 
     var aWYM_KEY = {
       BACKSPACE: 8,
@@ -737,7 +747,7 @@ Wymeditor.prototype.container = function(sType) {
           break;
         default:
           var aTypes = new Array(sWYM_TD,sWYM_TH);
-          container = this.findUp(aTypes);
+          container = this.findUp(this.container(), aTypes);
           break;
       }
       
@@ -753,7 +763,7 @@ Wymeditor.prototype.container = function(sType) {
       //set the container type
       var aTypes=new Array(sWYM_P,sWYM_H1,sWYM_H2,sWYM_H3,sWYM_H4,sWYM_H5,
       sWYM_H6,sWYM_PRE,sWYM_BLOCKQUOTE);
-      container = this.findUp(aTypes);
+      container = this.findUp(this.container(), aTypes);
       
       if(container) {
   
@@ -762,7 +772,7 @@ Wymeditor.prototype.container = function(sType) {
         //blockquotes must contain a block level element
         if(sType.toLowerCase() == sWYM_BLOCKQUOTE) {
         
-          var blockquote = this.findUp(sWYM_BLOCKQUOTE);
+          var blockquote = this.findUp(this.container(), sWYM_BLOCKQUOTE);
           
           if(blockquote == null) {
           
@@ -813,19 +823,18 @@ Wymeditor.prototype.toggleClass = function(sClass, jqexpr) {
 /* @name findUp
  * @description Returns the first parent or self container, based on its type
  */
-Wymeditor.prototype.findUp = function(mFilter) {
+Wymeditor.prototype.findUp = function(node, filter) {
 
-  //mFilter is a string or an array of strings
+  //filter is a string or an array of strings
 
-  var container = this.container();
-  var tagname = container.tagName.toLowerCase();
+  var tagname = node.tagName.toLowerCase();
   
-  if(typeof(mFilter) == sWYM_STRING) {
+  if(typeof(filter) == sWYM_STRING) {
 
-    while(tagname != mFilter && tagname != sWYM_BODY) {
+    while(tagname != filter && tagname != sWYM_BODY) {
     
-      container = container.parentNode;
-      tagname = container.tagName.toLowerCase();
+      node = node.parentNode;
+      tagname = node.tagName.toLowerCase();
     }
   
   } else {
@@ -833,20 +842,20 @@ Wymeditor.prototype.findUp = function(mFilter) {
     var bFound = false;
     
     while(!bFound && tagname != sWYM_BODY) {
-      for(var i = 0; i<mFilter.length; i++) {
-        if(tagname == mFilter[i]) {
+      for(var i = 0; i < filter.length; i++) {
+        if(tagname == filter[i]) {
           bFound = true;
           break;
         }
       }
       if(!bFound) {
-        container = container.parentNode;
-        tagname = container.tagName.toLowerCase();
+        node = node.parentNode;
+        tagname = node.tagName.toLowerCase();
       }
     }
   }
   
-  if(tagname != sWYM_BODY) return(container);
+  if(tagname != sWYM_BODY) return(node);
   else return(null);
 };
 
@@ -1171,7 +1180,7 @@ function fWYM_INIT_DIALOG(index) {
         		}
         		
           //append the table after the selected container
-          $j(wym.findUp(aWYM_CONTAINERS)).after(table);
+          $j(wym.findUp(wym.container(), aWYM_CONTAINERS)).after(table);
         }
         window.close();
     });
