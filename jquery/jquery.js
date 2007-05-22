@@ -635,7 +635,7 @@ jQuery.extend({
 
 		for ( var i = 0, fl = first.length; i < fl; i++ )
 			if ( num != first[i].mergeNum ) {
-				//first[i].mergeNum = num;
+				first[i].mergeNum = num;
 				r.push(first[i]);
 			}
 
