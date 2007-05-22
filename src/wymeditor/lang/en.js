@@ -1,6 +1,6 @@
-﻿if(!aWYM_STRINGS) var aWYM_STRINGS = new Array();
+﻿if(!WYM_STRINGS) var WYM_STRINGS = new Array();
 
-var aWYM_STRINGS_EN = {
+var WYM_STRINGS_EN = {
     Strong:           'Strong',
     Emphasis:         'Emphasis',
     Superscript:      'Superscript',
@@ -39,4 +39,4 @@ var aWYM_STRINGS_EN = {
     Paste_From_Word:  'Paste from Word'
 };
 
-aWYM_STRINGS['en'] = aWYM_STRINGS_EN;
+WYM_STRINGS['en'] = WYM_STRINGS_EN;

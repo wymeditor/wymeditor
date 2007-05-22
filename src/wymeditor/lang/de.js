@@ -1,6 +1,6 @@
-﻿if(!aWYM_STRINGS) var aWYM_STRINGS = new Array();
+﻿if(!WYM_STRINGS) var WYM_STRINGS = new Array();
 
-var aWYM_STRINGS_DE = {
+var WYM_STRINGS_DE = {
     Strong:           'Fett',
     Emphasis:         'Kursiv',
     Superscript:      'Text hochstellen',
@@ -39,4 +39,4 @@ var aWYM_STRINGS_DE = {
     Paste_From_Word:  'Aus Word einfügen'
 };
 
-aWYM_STRINGS['de'] = aWYM_STRINGS_DE;
+WYM_STRINGS['de'] = WYM_STRINGS_DE;

@@ -1,6 +1,6 @@
-﻿if(!aWYM_STRINGS) var aWYM_STRINGS = new Array();
+﻿if(!WYM_STRINGS) var WYM_STRINGS = new Array();
 
-var aWYM_STRINGS_PL = {
+var WYM_STRINGS_PL = {
     Strong:           'Nacisk',
     Emphasis:         'Emfaza',
     Superscript:      'Indeks górny',
@@ -39,4 +39,4 @@ var aWYM_STRINGS_PL = {
     Paste_From_Word:  'Wklej z Worda'
 };
 
-aWYM_STRINGS['pl'] = aWYM_STRINGS_PL;
+WYM_STRINGS['pl'] = WYM_STRINGS_PL;

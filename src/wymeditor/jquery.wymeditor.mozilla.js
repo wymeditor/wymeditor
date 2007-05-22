@@ -96,24 +96,24 @@ WymClassMozilla.prototype._exec = function(cmd,param) {
 
     switch(cmd) {
     
-    case sWYM_INDENT: case sWYM_OUTDENT:
+    case WYM_INDENT: case WYM_OUTDENT:
     
         var focusNode = this.selected();    
         var sel = this._iframe.contentWindow.getSelection();
         var anchorNode = sel.anchorNode;
         if(anchorNode.nodeName == "#text") anchorNode = anchorNode.parentNode;
         
-        focusNode = this.findUp(focusNode, aWYM_BLOCKS);
-        anchorNode = this.findUp(anchorNode, aWYM_BLOCKS);
+        focusNode = this.findUp(focusNode, WYM_BLOCKS);
+        anchorNode = this.findUp(anchorNode, WYM_BLOCKS);
         
         if(focusNode && focusNode == anchorNode
-          && focusNode.tagName.toLowerCase() == sWYM_LI) {
+          && focusNode.tagName.toLowerCase() == WYM_LI) {
         	
             var ancestor = focusNode.parentNode.parentNode;
         	
             if(focusNode.parentNode.childNodes.length>1
-        		|| ancestor.tagName.toLowerCase() == sWYM_OL
-        		|| ancestor.tagName.toLowerCase() == sWYM_UL)
+        		|| ancestor.tagName.toLowerCase() == WYM_OL
+        		|| ancestor.tagName.toLowerCase() == WYM_UL)
         		
                 this._doc.execCommand(cmd,'',null);
         }
@@ -128,8 +128,8 @@ WymClassMozilla.prototype._exec = function(cmd,param) {
     
     //set to P if parent = BODY
     var container = this.selected();
-    if(container.tagName.toLowerCase() == sWYM_BODY)
-        this._exec(sWYM_FORMAT_BLOCK, sWYM_P);
+    if(container.tagName.toLowerCase() == WYM_BODY)
+        this._exec(WYM_FORMAT_BLOCK, WYM_P);
     
     //add event handlers on doc elements
 
@@ -251,17 +251,17 @@ WymClassMozilla.prototype.xhtml = function() {
 WymClassMozilla.prototype.keydown = function(evt) {
   
   //'this' is the doc
-  var wym = aWYM_INSTANCES[this.title];
+  var wym = WYM_INSTANCES[this.title];
   
   if(evt.ctrlKey){
     if(evt.keyCode == 66){
       //CTRL+b => STRONG
-      wym._exec(sWYM_BOLD);
+      wym._exec(WYM_BOLD);
       return false;
     }
     if(evt.keyCode == 73){
       //CTRL+i => EMPHASIS
-      wym._exec(sWYM_ITALIC);
+      wym._exec(WYM_ITALIC);
       return false;
     }
   }
@@ -271,7 +271,7 @@ WymClassMozilla.prototype.keydown = function(evt) {
 WymClassMozilla.prototype.keyup = function(evt) {
 
   //'this' is the doc
-  var wym = aWYM_INSTANCES[this.title];
+  var wym = WYM_INSTANCES[this.title];
   
   wym._selected_image = null;
 
@@ -279,7 +279,7 @@ WymClassMozilla.prototype.keyup = function(evt) {
   
     //RETURN key
     //cleanup <br><br> between paragraphs
-    $j(wym._doc.body).children(sWYM_BR).remove();
+    $j(wym._doc.body).children(WYM_BR).remove();
   }
   
   else if(evt.keyCode != 8
@@ -307,7 +307,7 @@ WymClassMozilla.prototype.keyup = function(evt) {
 
     ) name = container.parentNode.tagName.toLowerCase();
 
-    if(name == sWYM_BODY) wym._exec(sWYM_FORMAT_BLOCK, sWYM_P);
+    if(name == WYM_BODY) wym._exec(WYM_FORMAT_BLOCK, WYM_P);
   }
 };
 

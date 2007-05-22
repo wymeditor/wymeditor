@@ -48,21 +48,21 @@ $j(function() {
       ],
       
       //we customize the XHTML structure of WYMeditor by overwriting 
-      //the value of sBoxHtml. In this example, "sWYM_CONTAINERS" and 
-      //"sWYM_CLASSES" have been moved from "wym_area_right" to "wym_area_top":
+      //the value of sBoxHtml. In this example, "WYM_CONTAINERS" and 
+      //"WYM_CLASSES" have been moved from "wym_area_right" to "wym_area_top":
       sBoxHtml:   "<div class='wym_box'>"
               + "<div class='wym_area_top'>"
-              + sWYM_TOOLS
-              + sWYM_CONTAINERS
-              + sWYM_CLASSES
+              + WYM_TOOLS
+              + WYM_CONTAINERS
+              + WYM_CLASSES
               + "</div>"
               + "<div class='wym_area_left'></div>"
               + "<div class='wym_area_right'>"
               + "</div>"
               + "<div class='wym_area_main'>"
-              + sWYM_HTML
-              + sWYM_IFRAME
-              + sWYM_STATUS
+              + WYM_HTML
+              + WYM_IFRAME
+              + WYM_STATUS
               + "</div>"
               + "<div class='wym_area_bottom'>"
               + "</div>"
@@ -89,7 +89,7 @@ $j(function() {
 
         //add a ">" character to the title of the new dropdown menus (visual cue)
         $j(this._box).find(".wym_tools, .wym_classes ")
-            .find(sWYM_H2)
+            .find(WYM_H2)
             .append("<span>&nbsp;&gt;</span>");
         }
     });
