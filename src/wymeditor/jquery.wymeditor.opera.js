@@ -45,6 +45,12 @@ WymClassOpera.prototype.initIframe = function(iframe) {
     //pre-bind functions
     if($j.isFunction(this._options.fPreBind)) this._options.fPreBind(this);
     
+    //hide indent and outdent until supported
+    $j(this._box).find(this._options.sToolSelector 
+      + '[@name=' + sWYM_INDENT +']').hide();
+    $j(this._box).find(this._options.sToolSelector 
+      + '[@name=' + sWYM_OUTDENT +']').hide();
+    
     //bind external events
     this._wym.bindEvents();
     
@@ -60,8 +66,18 @@ WymClassOpera.prototype.initIframe = function(iframe) {
 
 WymClassOpera.prototype._exec = function(cmd,param) {
 
-    if(param) this._doc.execCommand(cmd,false,param);
-    else this._doc.execCommand(cmd);
+    switch(cmd) {
+    
+    case sWYM_INDENT: case sWYM_OUTDENT:
+        //TODO: support nested lists
+        //Opera creates blockquotes
+        this.status("Unsupported feature.");
+    break;
+    default:
+        if(param) this._doc.execCommand(cmd,false,param);
+        else this._doc.execCommand(cmd);
+    break;
+	}
     
     this.listen();
 };
