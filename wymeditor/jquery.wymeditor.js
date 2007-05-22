@@ -827,36 +827,40 @@ Wymeditor.prototype.findUp = function(node, filter) {
 
   //filter is a string or an array of strings
 
-  var tagname = node.tagName.toLowerCase();
-  
-  if(typeof(filter) == sWYM_STRING) {
+  if(node) {
 
-    while(tagname != filter && tagname != sWYM_BODY) {
+      var tagname = node.tagName.toLowerCase();
+      
+      if(typeof(filter) == sWYM_STRING) {
     
-      node = node.parentNode;
-      tagname = node.tagName.toLowerCase();
-    }
-  
-  } else {
-  
-    var bFound = false;
-    
-    while(!bFound && tagname != sWYM_BODY) {
-      for(var i = 0; i < filter.length; i++) {
-        if(tagname == filter[i]) {
-          bFound = true;
-          break;
+        while(tagname != filter && tagname != sWYM_BODY) {
+        
+          node = node.parentNode;
+          tagname = node.tagName.toLowerCase();
+        }
+      
+      } else {
+      
+        var bFound = false;
+        
+        while(!bFound && tagname != sWYM_BODY) {
+          for(var i = 0; i < filter.length; i++) {
+            if(tagname == filter[i]) {
+              bFound = true;
+              break;
+            }
+          }
+          if(!bFound) {
+            node = node.parentNode;
+            tagname = node.tagName.toLowerCase();
+          }
         }
       }
-      if(!bFound) {
-        node = node.parentNode;
-        tagname = node.tagName.toLowerCase();
-      }
-    }
-  }
-  
-  if(tagname != sWYM_BODY) return(node);
-  else return(null);
+      
+      if(tagname != sWYM_BODY) return(node);
+      else return(null);
+      
+  } else return(null);
 };
 
 /* @name switchTo
