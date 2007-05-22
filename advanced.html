@@ -40,7 +40,7 @@ $j(function() {
       //options
         
       //classes panel
-      aClassesItems: [
+      classesItems: [
         {'name': 'date', 'title': 'PARA: Date', 'expr': 'p'},
         {'name': 'hidden-note', 'title': 'PARA: Hidden note',
          'expr': 'p[@class!="important"]'},
@@ -51,7 +51,7 @@ $j(function() {
       ],
       
       //editor css values for visual feedback
-      aEditorCss: [
+      editorStyles: [
         {'name': '.hidden-note',
          'css': 'color: #999; border: 2px solid #ccc;'},
         {'name': '.border', 'css': 'border: 4px solid #ccc;'},
@@ -64,7 +64,7 @@ $j(function() {
       ],
       
       //dialogs css values
-      aDialogCss: [
+      dialogStyles: [
         {'name': '.hidden-note',
          'css': 'display: none;'},
         {'name': '.border', 'css': 'border: 1px solid #ccc;'},
@@ -78,7 +78,7 @@ $j(function() {
       
       //function called when WYMeditor instance is ready
       //wym is the WYMeditor instance
-      fPostInit: function(wym) {
+      postInit: function(wym) {
       
         //set the editor's HTML value
         wym.html("<p>WYMeditor <em>instance<\/em> "
@@ -107,7 +107,7 @@ $j(function() {
       //function called when dialog is ready
       //wym is the WYMeditor instance
       //wdw is the dialog's window
-      fPostInitDialog: function(wym,wdw) {
+      postInitDialog: function(wym,wdw) {
 
         var body = wdw.document.body;
         

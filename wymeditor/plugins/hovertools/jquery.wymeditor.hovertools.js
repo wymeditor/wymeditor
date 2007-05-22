@@ -34,7 +34,7 @@ Wymeditor.prototype.hovertools = function() {
   //while mouseover/mouseout
   $j(this._box).find('.wym_classes a').hover(
     function() {
-      var aClasses = eval(wym._options.aClassesItems);
+      var aClasses = eval(wym._options.classesItems);
       var sName = $j(this).attr(WYM_NAME);
       var oClass = aClasses.findByName(sName);
 

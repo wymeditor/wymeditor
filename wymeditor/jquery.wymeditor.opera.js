@@ -30,7 +30,7 @@ WymClassOpera.prototype.initIframe = function(iframe) {
     
     //add css rules from options
     var styles = this._doc.styleSheets[0];    
-    var aCss = eval(this._options.aEditorCss);
+    var aCss = eval(this._options.editorStyles);
 
     this.addCssRules(this._doc, aCss);
 
@@ -43,12 +43,12 @@ WymClassOpera.prototype.initIframe = function(iframe) {
     this.html(this._wym._html);
     
     //pre-bind functions
-    if($j.isFunction(this._options.fPreBind)) this._options.fPreBind(this);
+    if($j.isFunction(this._options.preBind)) this._options.preBind(this);
     
     //hide indent and outdent until supported
-    $j(this._box).find(this._options.sToolSelector 
+    $j(this._box).find(this._options.toolSelector 
       + '[@name=' + WYM_INDENT +']').hide();
-    $j(this._box).find(this._options.sToolSelector 
+    $j(this._box).find(this._options.toolSelector 
       + '[@name=' + WYM_OUTDENT +']').hide();
     
     //bind external events
@@ -58,7 +58,7 @@ WymClassOpera.prototype.initIframe = function(iframe) {
     $j(this._doc).bind("keyup", this.keyup);
     
     //post-init functions
-    if($j.isFunction(this._options.fPostInit)) this._options.fPostInit(this);
+    if($j.isFunction(this._options.postInit)) this._options.postInit(this);
     
     //add event listeners to doc elements, e.g. images
     this.listen();
@@ -98,8 +98,8 @@ WymClassOpera.prototype.addCssRule = function(styles, oCss) {
 
 WymClassOpera.prototype.xhtml = function() {
 
-    var sHtml = this._wym.html();
-    return sHtml;
+    var html = this._wym.html();
+    return html;
 };
 
 //keyup handler

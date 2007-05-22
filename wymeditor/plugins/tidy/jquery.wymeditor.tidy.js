@@ -49,7 +49,7 @@ WymTidy.prototype.init = function() {
   var tidy = this;
             
   $j(this._wym._box).find(
-    this._wym._options.sToolsSelector + this._wym._options.sToolsListSelector)
+    this._wym._options.toolsSelector + this._wym._options.toolsListSelector)
     .append(this._options.sButtonHtml);
   
   //handle click event
@@ -64,9 +64,9 @@ WymTidy.prototype.init = function() {
 WymTidy.prototype.cleanup = function() {
 
     var wym = this._wym;
-    var sHtml = "<html><body>" + wym.xhtml() + "</body></html>";
+    var html = "<html><body>" + wym.xhtml() + "</body></html>";
 
-    $j.post(this._options.sUrl, { html: sHtml}, function(data) {
+    $j.post(this._options.sUrl, { html: html}, function(data) {
 
         if(data.length > 0 && data != '0') {
           if(data.indexOf("<?php") == 0) {

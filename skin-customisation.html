@@ -37,7 +37,7 @@ $j(function() {
     $j('.wymeditor').wymeditor({
         
       //classes panel
-      aClassesItems: [
+      classesItems: [
         {'name': 'date', 'title': 'PARA: Date', 'expr': 'p'},
         {'name': 'hidden-note', 'title': 'PARA: Hidden note',
          'expr': 'p[@class!="important"]'},
@@ -48,9 +48,9 @@ $j(function() {
       ],
       
       //we customize the XHTML structure of WYMeditor by overwriting 
-      //the value of sBoxHtml. In this example, "WYM_CONTAINERS" and 
+      //the value of boxHtml. In this example, "WYM_CONTAINERS" and 
       //"WYM_CLASSES" have been moved from "wym_area_right" to "wym_area_top":
-      sBoxHtml:   "<div class='wym_box'>"
+      boxHtml:   "<div class='wym_box'>"
               + "<div class='wym_area_top'>"
               + WYM_TOOLS
               + WYM_CONTAINERS
@@ -68,9 +68,9 @@ $j(function() {
               + "</div>"
               + "</div>",
 
-      //fPostInit is a function called when WYMeditor instance is ready
+      //postInit is a function called when WYMeditor instance is ready
       //wym is the WYMeditor instance
-      fPostInit: function(wym) {
+      postInit: function(wym) {
 
         //we make all sections in area_top render as dropdown menus:
         $j(wym._box)
