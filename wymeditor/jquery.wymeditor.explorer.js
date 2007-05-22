@@ -89,8 +89,9 @@ WymClassExplorer.prototype._exec = function(cmd,param) {
     switch(cmd) {
     
     case sWYM_INDENT: case sWYM_OUTDENT:
-        container = this.container();
-        if(container.tagName.toLowerCase() == sWYM_LI)
+    
+        var container = this.findUp(this.container(), sWYM_LI);
+        if(container)
             this._doc.execCommand(cmd);
     break;
     default:
