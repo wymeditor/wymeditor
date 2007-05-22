@@ -1,6 +1,6 @@
-﻿if(!aWYM_STRINGS) var aWYM_STRINGS = new Array();
+﻿if(!WYM_STRINGS) var WYM_STRINGS = new Array();
 
-var aWYM_STRINGS_SV = {
+var WYM_STRINGS_SV = {
     Strong:           'Viktigt',
     Emphasis:         'Betoning',
     Superscript:      'Upphöjt',
@@ -39,4 +39,4 @@ var aWYM_STRINGS_SV = {
     Paste_From_Word:  'Klistra in från Word'
 };
 
-aWYM_STRINGS['sv'] = aWYM_STRINGS_SV;
+WYM_STRINGS['sv'] = WYM_STRINGS_SV;

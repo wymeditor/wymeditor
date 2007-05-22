@@ -88,9 +88,9 @@ WymClassExplorer.prototype._exec = function(cmd,param) {
 
     switch(cmd) {
     
-    case sWYM_INDENT: case sWYM_OUTDENT:
+    case WYM_INDENT: case WYM_OUTDENT:
     
-        var container = this.findUp(this.container(), sWYM_LI);
+        var container = this.findUp(this.container(), WYM_LI);
         if(container)
             this._doc.execCommand(cmd);
     break;

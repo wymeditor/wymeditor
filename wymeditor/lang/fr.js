@@ -1,6 +1,6 @@
-﻿if(!aWYM_STRINGS) var aWYM_STRINGS = new Array();
+﻿if(!WYM_STRINGS) var WYM_STRINGS = new Array();
 
-var aWYM_STRINGS_FR = {
+var WYM_STRINGS_FR = {
     Strong:           'Mise en évidence',
     Emphasis:         'Emphase',
     Superscript:      'Exposant',
@@ -39,4 +39,4 @@ var aWYM_STRINGS_FR = {
     Paste_From_Word:  'Copier depuis Word'
 };
 
-aWYM_STRINGS['fr'] = aWYM_STRINGS_FR;
+WYM_STRINGS['fr'] = WYM_STRINGS_FR;

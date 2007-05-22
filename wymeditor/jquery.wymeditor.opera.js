@@ -47,9 +47,9 @@ WymClassOpera.prototype.initIframe = function(iframe) {
     
     //hide indent and outdent until supported
     $j(this._box).find(this._options.sToolSelector 
-      + '[@name=' + sWYM_INDENT +']').hide();
+      + '[@name=' + WYM_INDENT +']').hide();
     $j(this._box).find(this._options.sToolSelector 
-      + '[@name=' + sWYM_OUTDENT +']').hide();
+      + '[@name=' + WYM_OUTDENT +']').hide();
     
     //bind external events
     this._wym.bindEvents();
@@ -68,7 +68,7 @@ WymClassOpera.prototype._exec = function(cmd,param) {
 
     switch(cmd) {
     
-    case sWYM_INDENT: case sWYM_OUTDENT:
+    case WYM_INDENT: case WYM_OUTDENT:
         //TODO: support nested lists
         //Opera creates blockquotes
         this.status("Unsupported feature.");
@@ -106,7 +106,7 @@ WymClassOpera.prototype.xhtml = function() {
 WymClassOpera.prototype.keyup = function(evt) {
 
   //'this' is the doc
-  var wym = aWYM_INSTANCES[this.title];
+  var wym = WYM_INSTANCES[this.title];
   wym._selected_image = null;
 };
 
