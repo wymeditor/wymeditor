@@ -34,7 +34,7 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
     
     //add css rules from options
     var styles = this._doc.styleSheets[0];
-    var aCss = eval(this._options.aEditorCss);
+    var aCss = eval(this._options.editorStyles);
 
     this.addCssRules(this._doc, aCss);
 
@@ -65,13 +65,13 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
     if(this._initialized) {
       
       //pre-bind functions
-      if($j.isFunction(this._options.fPreBind)) this._options.fPreBind(this);
+      if($j.isFunction(this._options.preBind)) this._options.preBind(this);
       
       //bind external events
       this._wym.bindEvents();
       
       //post-init functions
-      if($j.isFunction(this._options.fPostInit)) this._options.fPostInit(this);
+      if($j.isFunction(this._options.postInit)) this._options.postInit(this);
       
       //add event listeners to doc elements, e.g. images
       this.listen();
@@ -124,7 +124,7 @@ WymClassExplorer.prototype.addCssRule = function(styles, oCss) {
 
 WymClassExplorer.prototype.xhtml = function() {
 
-    var sHtml = this._wym.html();
+    var html = this._wym.html();
 
     var entities = ['nbsp','iexcl','cent', 'pound','curren','yen','brvbar',
     'sect','uml','copy', 'ordf','laquo','not','shy','reg','macr','deg',
@@ -186,9 +186,9 @@ WymClassExplorer.prototype.xhtml = function() {
     unclosedList=false;
     var tag="",lastTag="",ret="",entity="",attr="";
     
-    for(var x=0;x<sHtml.length;x++)
+    for(var x=0;x<html.length;x++)
     {
-        c=sHtml.charAt(x);
+        c=html.charAt(x);
         
         if(begEntity)
         {
@@ -283,7 +283,7 @@ WymClassExplorer.prototype.xhtml = function() {
                 {
                     if(unquoted)
                     {
-                        if(sHtml.charAt(x-1)!="\"")
+                        if(html.charAt(x-1)!="\"")
                           {ret+="\""+c;flagAttr=false;}
                         else ret+=c;
                     }

@@ -149,19 +149,19 @@ $j.fn.wymeditor = function(options) {
 
   options = $j.extend({
 
-    sHtml:       "",
+    html:       "",
     
-    sBasePath:   false,
+    basePath:   false,
     
-    sCssPath:    false,
+    cssPath:    false,
     
-    sIframeBasePath: false,
+    iframeBasePath: false,
     
-    sJqueryPath: false,
+    jQueryPath: false,
     
-    sLang:       "en",
+    lang:       "en",
 
-    sBoxHtml:   "<div class='wym_box'>"
+    boxHtml:   "<div class='wym_box'>"
               + "<div class='wym_area_top'>"
               + WYM_TOOLS
               + "</div>"
@@ -179,7 +179,7 @@ $j.fn.wymeditor = function(options) {
               + "</div>"
               + "</div>",
 
-    sIframeHtml:"<div class='wym_iframe wym_section'>"
+    iframeHtml:"<div class='wym_iframe wym_section'>"
               + "<iframe "
               + "src='"
               + WYM_IFRAME_BASE_PATH
@@ -189,16 +189,16 @@ $j.fn.wymeditor = function(options) {
               + "></iframe>"
               + "</div>",
               
-    aEditorCss: [],
+    editorStyles: [],
 
-    sToolsHtml: "<div class='wym_tools wym_section'>"
+    toolsHtml: "<div class='wym_tools wym_section'>"
               + "<h2>Tools</h2>"
               + "<ul>"
               + WYM_TOOLS_ITEMS
               + "</ul>"
               + "</div>",
               
-    sToolsItemHtml:   "<li class='"
+    toolsItemHtml:   "<li class='"
                         + WYM_TOOL_CLASS
                         + "'><a href='#' name='"
                         + WYM_TOOL_NAME
@@ -206,7 +206,7 @@ $j.fn.wymeditor = function(options) {
                         + WYM_TOOL_TITLE
                         + "</a></li>",
 
-    aToolsItems: [
+    toolsItems: [
         {'name': 'Bold', 'title': 'Strong', 'css': 'wym_tools_strong'}, 
         {'name': 'Italic', 'title': 'Emphasis', 'css': 'wym_tools_emphasis'},
         {'name': 'Superscript', 'title': 'Superscript',
@@ -231,14 +231,14 @@ $j.fn.wymeditor = function(options) {
         {'name': 'Preview', 'title': 'Preview', 'css': 'wym_tools_preview'}
     ],
 
-    sContainersHtml:    "<div class='wym_containers wym_section'>"
+    containersHtml:    "<div class='wym_containers wym_section'>"
                         + "<h2>Containers</h2>"
                         + "<ul>"
                         + WYM_CONTAINERS_ITEMS
                         + "</ul>"
                         + "</div>",
                         
-    sContainersItemHtml:"<li class='"
+    containersItemHtml:"<li class='"
                         + WYM_CONTAINER_CLASS
                         + "'>"
                         + "<a href='#' name='"
@@ -247,7 +247,7 @@ $j.fn.wymeditor = function(options) {
                         + WYM_CONTAINER_TITLE
                         + "</a></li>",
                         
-    aContainersItems: [
+    containersItems: [
         {'name': 'P', 'title': 'Paragraph', 'css': 'wym_containers_p'},
         {'name': 'H1', 'title': 'Heading_1', 'css': 'wym_containers_h1'},
         {'name': 'H2', 'title': 'Heading_2', 'css': 'wym_containers_h2'},
@@ -261,68 +261,68 @@ $j.fn.wymeditor = function(options) {
         {'name': 'TH', 'title': 'Table_Header', 'css': 'wym_containers_th'}
     ],
 
-    sClassesHtml:       "<div class='wym_classes wym_section'>"
+    classesHtml:       "<div class='wym_classes wym_section'>"
                         + "<h2>Classes</h2><ul>"
                         + WYM_CLASSES_ITEMS
                         + "</ul></div>",
 
-    sClassesItemHtml:   "<li><a href='#' name='"
+    classesItemHtml:   "<li><a href='#' name='"
                         + WYM_CLASS_NAME
                         + "'>"
                         + WYM_CLASS_TITLE
                         + "</a></li>",
 
-    aClassesItems:      [],
+    classesItems:      [],
 
-    sStatusHtml:        "<div class='wym_status wym_section'>"
+    statusHtml:        "<div class='wym_status wym_section'>"
                         + "<h2>Status</h2>"
                         + "</div>",
 
-    sHtmlHtml:          "<div class='wym_html wym_section'>"
+    htmlHtml:          "<div class='wym_html wym_section'>"
                         + "<h2>Source code</h2>"
                         + "<textarea class='wym_html_val'></textarea>"
                         + "</div>",
 
-    sBoxSelector:       ".wym_box",
-    sToolsSelector:     ".wym_tools",
-    sToolsListSelector: " ul",
+    boxSelector:       ".wym_box",
+    toolsSelector:     ".wym_tools",
+    toolsListSelector: " ul",
     sContainersSelector:".wym_containers",
-    sClassesSelector:   ".wym_classes",
-    sHtmlSelector:      ".wym_html",
-    sIframeSelector:    ".wym_iframe iframe",
-    sStatusSelector:    ".wym_status",
-    sToolSelector:      ".wym_tools a",
-    sContainerSelector: ".wym_containers a",
-    sClassSelector:     ".wym_classes a",
-    sHtmlValSelector:   ".wym_html_val",
+    classesSelector:   ".wym_classes",
+    htmlSelector:      ".wym_html",
+    iframeSelector:    ".wym_iframe iframe",
+    statusSelector:    ".wym_status",
+    toolSelector:      ".wym_tools a",
+    containerSelector: ".wym_containers a",
+    classSelector:     ".wym_classes a",
+    htmlValSelector:   ".wym_html_val",
     
-    sHrefSelector:      ".wym_href",
-    sSrcSelector:       ".wym_src",
-    sTitleSelector:     ".wym_title",
-    sAltSelector:       ".wym_alt",
-    sTextSelector:      ".wym_text",
+    hrefSelector:      ".wym_href",
+    srcSelector:       ".wym_src",
+    titleSelector:     ".wym_title",
+    altSelector:       ".wym_alt",
+    textSelector:      ".wym_text",
     
-    sRowsSelector:      ".wym_rows",
-    sColsSelector:      ".wym_cols",
-    sCaptionSelector:   ".wym_caption",
+    rowsSelector:      ".wym_rows",
+    colsSelector:      ".wym_cols",
+    captionSelector:   ".wym_caption",
     
-    sSubmitSelector:    ".wym_submit",
-    sCancelSelector:    ".wym_cancel",
-    sPreviewSelector:   "",
+    submitSelector:    ".wym_submit",
+    cancelSelector:    ".wym_cancel",
+    previewSelector:   "",
     
-    sDialogLinkSelector:    ".wym_dialog_link",
-    sDialogImageSelector:   ".wym_dialog_image",
-    sDialogTableSelector:   ".wym_dialog_table",
-    sDialogPasteSelector:   ".wym_dialog_paste",
-    sDialogPreviewSelector: ".wym_dialog_preview",
+    dialogLinkSelector:    ".wym_dialog_link",
+    dialogImageSelector:   ".wym_dialog_image",
+    dialogTableSelector:   ".wym_dialog_table",
+    dialogPasteSelector:   ".wym_dialog_paste",
+    dialogPreviewSelector: ".wym_dialog_preview",
     
-    sUpdateSelector:    ".wymupdate",
-    sUpdateEvent:       "click",
+    updateSelector:    ".wymupdate",
+    updateEvent:       "click",
     
-    sDialogFeatures:    "menubar=no,titlebar=no,toolbar=no,resizable=no"
+    dialogFeatures:    "menubar=no,titlebar=no,toolbar=no,resizable=no"
                       + ",width=560,height=300,top=0,left=0",
 
-    sDialogHtml:      "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN'"
+    dialogHtml:      "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN'"
                       + " 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>"
                       + "<html><head>"
                       + "<link rel='stylesheet' type='text/css' media='screen'"
@@ -344,122 +344,122 @@ $j.fn.wymeditor = function(options) {
                       + WYM_DIALOG_BODY
                       + "</html>",
                       
-    sDialogLinkHtml:  "<body class='wym_dialog wym_dialog_link'"
-                      + " onload='fWYM_INIT_DIALOG(" + WYM_INDEX + ")'"
-                      + ">"
-                      + "<form>"
-                      + "<fieldset>"
-                          + "<legend>{Link}</legend>"
-                          + "<div class='row'>"
-                          + "<label>{URL}</label>"
-                          + "<input type='text' class='wym_href' value='' size='40' />"
-                          + "</div>"
-                          + "<div class='row'>"
-                          + "<label>{Title}</label>"
-                          + "<input type='text' class='wym_title' value='' size='40' />"
-                          + "</div>"
-                          + "<div class='row row-indent'>"
-                          + "<input class='wym_submit' type='button'"
-                          + " value='{Submit}' />"
-                          + "<input class='wym_cancel' type='button'"
-                          + "value='{Cancel}' />"
-                          + "</div>"
-                      + "</fieldset>"
-                      + "</form>"
-                      + "</body>",
+    dialogLinkHtml:  "<body class='wym_dialog wym_dialog_link'"
+               + " onload='WYM_INIT_DIALOG(" + WYM_INDEX + ")'"
+               + ">"
+               + "<form>"
+               + "<fieldset>"
+               + "<legend>{Link}</legend>"
+               + "<div class='row'>"
+               + "<label>{URL}</label>"
+               + "<input type='text' class='wym_href' value='' size='40' />"
+               + "</div>"
+               + "<div class='row'>"
+               + "<label>{Title}</label>"
+               + "<input type='text' class='wym_title' value='' size='40' />"
+               + "</div>"
+               + "<div class='row row-indent'>"
+               + "<input class='wym_submit' type='button'"
+               + " value='{Submit}' />"
+               + "<input class='wym_cancel' type='button'"
+               + "value='{Cancel}' />"
+               + "</div>"
+               + "</fieldset>"
+               + "</form>"
+               + "</body>",
     
-    sDialogImageHtml:  "<body class='wym_dialog wym_dialog_image'"
-                      + " onload='fWYM_INIT_DIALOG(" + WYM_INDEX + ")'"
-                      + ">"
-                      + "<form>"
-                      + "<fieldset>"
-                          + "<legend>{Image}</legend>"
-                          + "<div class='row'>"
-                          + "<label>{URL}</label>"
-                          + "<input type='text' class='wym_src' value='' size='40' />"
-                          + "</div>"
-                          + "<div class='row'>"
-                          + "<label>{Alternative_Text}</label>"
-                          + "<input type='text' class='wym_alt' value='' size='40' />"
-                          + "</div>"
-                          + "<div class='row'>"
-                          + "<label>{Title}</label>"
-                          + "<input type='text' class='wym_title' value='' size='40' />"
-                          + "</div>"
-                          + "<div class='row row-indent'>"
-                          + "<input class='wym_submit' type='button'"
-                          + " value='{Submit}' />"
-                          + "<input class='wym_cancel' type='button'"
-                          + "value='{Cancel}' />"
-                          + "</div>"
-                      + "</fieldset>"
-                      + "</form>"
-                      + "</body>",
+    dialogImageHtml:  "<body class='wym_dialog wym_dialog_image'"
+               + " onload='WYM_INIT_DIALOG(" + WYM_INDEX + ")'"
+               + ">"
+               + "<form>"
+               + "<fieldset>"
+               + "<legend>{Image}</legend>"
+               + "<div class='row'>"
+               + "<label>{URL}</label>"
+               + "<input type='text' class='wym_src' value='' size='40' />"
+               + "</div>"
+               + "<div class='row'>"
+               + "<label>{Alternative_Text}</label>"
+               + "<input type='text' class='wym_alt' value='' size='40' />"
+               + "</div>"
+               + "<div class='row'>"
+               + "<label>{Title}</label>"
+               + "<input type='text' class='wym_title' value='' size='40' />"
+               + "</div>"
+               + "<div class='row row-indent'>"
+               + "<input class='wym_submit' type='button'"
+               + " value='{Submit}' />"
+               + "<input class='wym_cancel' type='button'"
+               + "value='{Cancel}' />"
+               + "</div>"
+               + "</fieldset>"
+               + "</form>"
+               + "</body>",
     
-    sDialogTableHtml:  "<body class='wym_dialog wym_dialog_table'"
-                      + " onload='fWYM_INIT_DIALOG(" + WYM_INDEX + ")'"
-                      + ">"
-                      + "<form>"
-                      + "<fieldset>"
-                          + "<legend>{Table}</legend>"
-                          + "<div class='row'>"
-                          + "<label>{Caption}</label>"
-                          + "<input type='text' class='wym_caption' value='' size='40' />"
-                          + "</div>"
-                          + "<div class='row'>"
-                          + "<label>{Number_Of_Rows}</label>"
-                          + "<input type='text' class='wym_rows' value='3' size='3' />"
-                          + "</div>"
-                          + "<div class='row'>"
-                          + "<label>{Number_Of_Cols}</label>"
-                          + "<input type='text' class='wym_cols' value='2' size='3' />"
-                          + "</div>"
-                          + "<div class='row row-indent'>"
-                          + "<input class='wym_submit' type='button'"
-                          + " value='{Submit}' />"
-                          + "<input class='wym_cancel' type='button'"
-                          + "value='{Cancel}' />"
-                          + "</div>"
-                      + "</fieldset>"
-                      + "</form>"
-                      + "</body>",
+    dialogTableHtml:  "<body class='wym_dialog wym_dialog_table'"
+               + " onload='WYM_INIT_DIALOG(" + WYM_INDEX + ")'"
+               + ">"
+               + "<form>"
+               + "<fieldset>"
+               + "<legend>{Table}</legend>"
+               + "<div class='row'>"
+               + "<label>{Caption}</label>"
+               + "<input type='text' class='wym_caption' value='' size='40' />"
+               + "</div>"
+               + "<div class='row'>"
+               + "<label>{Number_Of_Rows}</label>"
+               + "<input type='text' class='wym_rows' value='3' size='3' />"
+               + "</div>"
+               + "<div class='row'>"
+               + "<label>{Number_Of_Cols}</label>"
+               + "<input type='text' class='wym_cols' value='2' size='3' />"
+               + "</div>"
+               + "<div class='row row-indent'>"
+               + "<input class='wym_submit' type='button'"
+               + " value='{Submit}' />"
+               + "<input class='wym_cancel' type='button'"
+               + "value='{Cancel}' />"
+               + "</div>"
+               + "</fieldset>"
+               + "</form>"
+               + "</body>",
 
-    sDialogPasteHtml:  "<body class='wym_dialog wym_dialog_paste'"
-                      + " onload='fWYM_INIT_DIALOG(" + WYM_INDEX + ")'"
-                      + ">"
-                      + "<form>"
-                      + "<fieldset>"
-                          + "<legend>{Paste_From_Word}</legend>"
-                          + "<div class='row'>"
-                          + "<textarea class='wym_text' rows='10' cols='50'></textarea>"
-                          + "</div>"
-                          + "<div class='row'>"
-                          + "<input class='wym_submit' type='button'"
-                          + " value='{Submit}' />"
-                          + "<input class='wym_cancel' type='button'"
-                          + "value='{Cancel}' />"
-                          + "</div>"
-                      + "</fieldset>"
-                      + "</form>"
-                      + "</body>",
+    dialogPasteHtml:  "<body class='wym_dialog wym_dialog_paste'"
+               + " onload='WYM_INIT_DIALOG(" + WYM_INDEX + ")'"
+               + ">"
+               + "<form>"
+               + "<fieldset>"
+               + "<legend>{Paste_From_Word}</legend>"
+               + "<div class='row'>"
+               + "<textarea class='wym_text' rows='10' cols='50'></textarea>"
+               + "</div>"
+               + "<div class='row'>"
+               + "<input class='wym_submit' type='button'"
+               + " value='{Submit}' />"
+               + "<input class='wym_cancel' type='button'"
+               + "value='{Cancel}' />"
+               + "</div>"
+               + "</fieldset>"
+               + "</form>"
+               + "</body>",
 
-    sDialogPreviewHtml: "<body class='wym_dialog wym_dialog_preview'"
-                      + " onload='fWYM_INIT_DIALOG(" + WYM_INDEX + ")'"
+    dialogPreviewHtml: "<body class='wym_dialog wym_dialog_preview'"
+                      + " onload='WYM_INIT_DIALOG(" + WYM_INDEX + ")'"
                       + "></body>",
                       
-    aDialogCss: [],
+    dialogStyles: [],
                       
-    sSkin:            WYM_DEFAULT_SKIN,
+    skin:            WYM_DEFAULT_SKIN,
 
-    sStringDelimiterLeft: "{",
-    sStringDelimiterRight:"}",
+    stringDelimiterLeft: "{",
+    stringDelimiterRight:"}",
     
-    fPreInit: null,
-    fPreBind: null,
-    fPostInit: null,
+    preInit: null,
+    preBind: null,
+    postInit: null,
     
-    fPreInitDialog: null,
-    fPostInitDialog: null
+    preInitDialog: null,
+    postInitDialog: null
 
   }, options);
 
@@ -476,8 +476,8 @@ $j.extend({
   wymeditors: function(i) {
     return (WYM_INSTANCES[i]);
   },
-  wymstrings: function(sLang, sKey) {
-    return (WYM_STRINGS[sLang][sKey]);
+  wymstrings: function(lang, sKey) {
+    return (WYM_STRINGS[lang][sKey]);
   }
 });
 
@@ -496,17 +496,17 @@ function Wymeditor(elem,index,options) {
   this._options = options;
   this._html = $j(elem).val();
   
-  if(this._options.sHtml) this._html = this._options.sHtml;
-  this._options.sBasePath = this._options.sBasePath
+  if(this._options.html) this._html = this._options.html;
+  this._options.basePath = this._options.basePath
     || this.computeBasePath();
-  this._options.sCssPath = this._options.sCssPath
+  this._options.cssPath = this._options.cssPath
     || this.computeCssPath();
-  this._options.sIframeBasePath = this._options.sIframeBasePath
-    || this._options.sBasePath + WYM_IFRAME_DEFAULT;
-  this._options.sJqueryPath = this._options.sJqueryPath
+  this._options.iframeBasePath = this._options.iframeBasePath
+    || this._options.basePath + WYM_IFRAME_DEFAULT;
+  this._options.jQueryPath = this._options.jQueryPath
     || this.computeJqueryPath();
   
-  if($j.isFunction(this._options.fPreInit)) this._options.fPreInit(this);
+  if($j.isFunction(this._options.preInit)) this._options.preInit(this);
   
   this.init();
   
@@ -538,82 +538,82 @@ Wymeditor.prototype.init = function() {
   $j.extend(this, WymClass);
 
   //load wymbox
-  this._box = $j(this._element).hide().after(this._options.sBoxHtml).next();
+  this._box = $j(this._element).hide().after(this._options.boxHtml).next();
   
   //construct the iframe
-  var sIframeHtml = this._options.sIframeHtml;
-  sIframeHtml = sIframeHtml
+  var iframeHtml = this._options.iframeHtml;
+  iframeHtml = iframeHtml
     .replace(WYM_INDEX,this._index)
-    .replace(WYM_IFRAME_BASE_PATH, this._options.sIframeBasePath);
+    .replace(WYM_IFRAME_BASE_PATH, this._options.iframeBasePath);
   
   //construct wymbox
-  var sBoxHtml = $j(this._box).html();
+  var boxHtml = $j(this._box).html();
   
-  sBoxHtml = sBoxHtml.replace(WYM_TOOLS, this._options.sToolsHtml);
-  sBoxHtml = sBoxHtml.replace(WYM_CONTAINERS, this._options.sContainersHtml);
-  sBoxHtml = sBoxHtml.replace(WYM_CLASSES, this._options.sClassesHtml);
-  sBoxHtml = sBoxHtml.replace(WYM_HTML, this._options.sHtmlHtml);
-  sBoxHtml = sBoxHtml.replace(WYM_IFRAME, sIframeHtml);
-  sBoxHtml = sBoxHtml.replace(WYM_STATUS, this._options.sStatusHtml);
+  boxHtml = boxHtml.replace(WYM_TOOLS, this._options.toolsHtml);
+  boxHtml = boxHtml.replace(WYM_CONTAINERS, this._options.containersHtml);
+  boxHtml = boxHtml.replace(WYM_CLASSES, this._options.classesHtml);
+  boxHtml = boxHtml.replace(WYM_HTML, this._options.htmlHtml);
+  boxHtml = boxHtml.replace(WYM_IFRAME, iframeHtml);
+  boxHtml = boxHtml.replace(WYM_STATUS, this._options.statusHtml);
   
   //construct tools list
-  var aTools = eval(this._options.aToolsItems);
+  var aTools = eval(this._options.toolsItems);
   var sTools = "";
 
   for(var i = 0; i < aTools.length; i++) {
     var oTool = aTools[i];
     if(oTool.name && oTool.title)
-      sTools += this._options.sToolsItemHtml
+      sTools += this._options.toolsItemHtml
       .replace(WYM_TOOL_NAME, oTool.name)
       .replace(WYM_TOOL_TITLE, 
-          this._options.sStringDelimiterLeft
+          this._options.stringDelimiterLeft
         + oTool.title
-        + this._options.sStringDelimiterRight)
+        + this._options.stringDelimiterRight)
       .replace(WYM_TOOL_CLASS, oTool.css);
   }
 
-  sBoxHtml = sBoxHtml.replace(WYM_TOOLS_ITEMS, sTools);
+  boxHtml = boxHtml.replace(WYM_TOOLS_ITEMS, sTools);
 
   //construct classes list
-  var aClasses = eval(this._options.aClassesItems);
+  var aClasses = eval(this._options.classesItems);
   var sClasses = "";
 
   for(var i = 0; i < aClasses.length; i++) {
     var oClass = aClasses[i];
     if(oClass.name && oClass.title)
-      sClasses += this._options.sClassesItemHtml
+      sClasses += this._options.classesItemHtml
       .replace(WYM_CLASS_NAME, oClass.name)
       .replace(WYM_CLASS_TITLE, oClass.title);
   }
 
-  sBoxHtml = sBoxHtml.replace(WYM_CLASSES_ITEMS, sClasses);
+  boxHtml = boxHtml.replace(WYM_CLASSES_ITEMS, sClasses);
   
   //construct containers list
-  var aContainers = eval(this._options.aContainersItems);
+  var aContainers = eval(this._options.containersItems);
   var sContainers = "";
 
   for(var i = 0; i < aContainers.length; i++) {
     var oContainer = aContainers[i];
     if(oContainer.name && oContainer.title)
-      sContainers += this._options.sContainersItemHtml
+      sContainers += this._options.containersItemHtml
       .replace(WYM_CONTAINER_NAME, oContainer.name)
       .replace(WYM_CONTAINER_TITLE,
-          this._options.sStringDelimiterLeft
+          this._options.stringDelimiterLeft
         + oContainer.title
-        + this._options.sStringDelimiterRight)
+        + this._options.stringDelimiterRight)
       .replace(WYM_CONTAINER_CLASS, oContainer.css);
   }
 
-  sBoxHtml = sBoxHtml.replace(WYM_CONTAINERS_ITEMS, sContainers);
+  boxHtml = boxHtml.replace(WYM_CONTAINERS_ITEMS, sContainers);
 
   //l10n
-  sBoxHtml = this.replaceStrings(sBoxHtml);
+  boxHtml = this.replaceStrings(boxHtml);
   
   //load html in wymbox
-  $j(this._box).html(sBoxHtml);
+  $j(this._box).html(boxHtml);
   
   //hide the html value
-  $j(this._box).find(this._options.sHtmlSelector).hide();
+  $j(this._box).find(this._options.htmlSelector).hide();
   
   //enable the skin
   this.skin();
@@ -626,26 +626,26 @@ Wymeditor.prototype.bindEvents = function() {
   var wym = this;
   
   //handle click event on tools buttons
-  $j(this._box).find(this._options.sToolSelector).click(function() {
+  $j(this._box).find(this._options.toolSelector).click(function() {
     wym.exec($j(this).attr(WYM_NAME));
     return(false);
   });
   
   //handle click event on containers buttons
-  $j(this._box).find(this._options.sContainerSelector).click(function() {
+  $j(this._box).find(this._options.containerSelector).click(function() {
     wym.container($j(this).attr(WYM_NAME));
     return(false);
   });
   
   //handle keyup event on html value: set the editor value
-  $j(this._box).find(this._options.sHtmlValSelector).keyup(function() {
+  $j(this._box).find(this._options.htmlValSelector).keyup(function() {
     $j(wym._doc.body).html($j(this).val());
   });
   
   //handle click event on classes buttons
-  $j(this._box).find(this._options.sClassSelector).click(function() {
+  $j(this._box).find(this._options.classSelector).click(function() {
   
-    var aClasses = eval(wym._options.aClassesItems);
+    var aClasses = eval(wym._options.classesItems);
     var sName = $j(this).attr(WYM_NAME);
     
     var oClass = aClasses.findByName(sName);
@@ -658,8 +658,8 @@ Wymeditor.prototype.bindEvents = function() {
   });
   
   //handle event on update element
-  $j(this._options.sUpdateSelector)
-    .bind(this._options.sUpdateEvent, function() {
+  $j(this._options.updateSelector)
+    .bind(this._options.updateEvent, function() {
       wym.update();
   });
 };
@@ -681,9 +681,9 @@ Wymeditor.prototype.box = function() {
 /* @name html
  * @description Get/Set the html value
  */
-Wymeditor.prototype.html = function(sHtml) {
+Wymeditor.prototype.html = function(html) {
 
-  if(sHtml) $j(this._doc.body).html(sHtml);
+  if(html) $j(this._doc.body).html(html);
   else return($j(this._doc.body).html());
 };
 
@@ -877,19 +877,19 @@ Wymeditor.prototype.switchTo = function(node,sType) {
 
 Wymeditor.prototype.replaceStrings = function(sVal) {
 
-  for (var key in WYM_STRINGS[this._options.sLang]) {
-    var rExp = new RegExp(this._options.sStringDelimiterLeft + key 
-    + this._options.sStringDelimiterRight, "g");
-    sVal = sVal.replace(rExp, WYM_STRINGS[this._options.sLang][key]);
+  for (var key in WYM_STRINGS[this._options.lang]) {
+    var rExp = new RegExp(this._options.stringDelimiterLeft + key 
+    + this._options.stringDelimiterRight, "g");
+    sVal = sVal.replace(rExp, WYM_STRINGS[this._options.lang][key]);
   }
   return(sVal);
 };
 
 Wymeditor.prototype.encloseString = function(sVal) {
 
-  return(this._options.sStringDelimiterLeft
+  return(this._options.stringDelimiterLeft
     + sVal
-    + this._options.sStringDelimiterRight);
+    + this._options.stringDelimiterRight);
 };
 
 /* @name status
@@ -898,7 +898,7 @@ Wymeditor.prototype.encloseString = function(sVal) {
 Wymeditor.prototype.status = function(sMessage) {
 
   //print status message
-  $j(this._box).find(this._options.sStatusSelector).html(sMessage);
+  $j(this._box).find(this._options.statusSelector).html(sMessage);
 };
 
 /* @name update
@@ -908,7 +908,7 @@ Wymeditor.prototype.update = function() {
 
   var html = this.xhtml();
   $j(this._element).val(html);
-  $j(this._box).find(this._options.sHtmlValSelector).val(html);
+  $j(this._box).find(this._options.htmlValSelector).val(html);
 };
 
 /* @name dialog
@@ -919,7 +919,7 @@ Wymeditor.prototype.dialog = function(sType) {
   var wDialog = window.open(
     '',
     'dialog',
-    this._wym._options.sDialogFeatures);
+    this._wym._options.dialogFeatures);
 
   if(wDialog) {
 
@@ -928,36 +928,36 @@ Wymeditor.prototype.dialog = function(sType) {
     switch(sType) {
 
       case(WYM_DIALOG_LINK):
-        sBodyHtml = this._options.sDialogLinkHtml;
+        sBodyHtml = this._options.dialogLinkHtml;
       break;
       case(WYM_DIALOG_IMAGE):
-        sBodyHtml = this._options.sDialogImageHtml;
+        sBodyHtml = this._options.dialogImageHtml;
       break;
       case(WYM_DIALOG_TABLE):
-        sBodyHtml = this._options.sDialogTableHtml;
+        sBodyHtml = this._options.dialogTableHtml;
       break;
       case(WYM_DIALOG_PASTE):
-        sBodyHtml = this._options.sDialogPasteHtml;
+        sBodyHtml = this._options.dialogPasteHtml;
       break;
       case(WYM_PREVIEW):
-        sBodyHtml = this._options.sDialogPreviewHtml;
+        sBodyHtml = this._options.dialogPreviewHtml;
       break;
     }
     
     //construct the dialog
-    var sDialogHtml = this._options.sDialogHtml;
-    sDialogHtml = sDialogHtml
-      .replace(WYM_BASE_PATH, this._options.sBasePath)
-      .replace(WYM_CSS_PATH, this._options.sCssPath)
-      .replace(WYM_JQUERY_PATH, this._options.sJqueryPath)
+    var dialogHtml = this._options.dialogHtml;
+    dialogHtml = dialogHtml
+      .replace(WYM_BASE_PATH, this._options.basePath)
+      .replace(WYM_CSS_PATH, this._options.cssPath)
+      .replace(WYM_JQUERY_PATH, this._options.jQueryPath)
       .replace(WYM_DIALOG_TITLE, this.encloseString(sType))
       .replace(WYM_DIALOG_BODY, sBodyHtml)
       .replace(WYM_INDEX, this._index);
       
-    sDialogHtml = this.replaceStrings(sDialogHtml);
+    dialogHtml = this.replaceStrings(dialogHtml);
     
     var doc = wDialog.document;
-    doc.write(sDialogHtml);
+    doc.write(dialogHtml);
     doc.close();
   }
 };
@@ -967,7 +967,7 @@ Wymeditor.prototype.dialog = function(sType) {
  */
 Wymeditor.prototype.toggleHtml = function() {
 
-  $j(this._box).find(this._options.sHtmlSelector).toggle();
+  $j(this._box).find(this._options.htmlSelector).toggle();
 };
 
 Wymeditor.prototype.uniqueStamp = function() {
@@ -1043,18 +1043,18 @@ Wymeditor.prototype.mouseup = function(evt) {
 
 Wymeditor.prototype.skin = function() {
 
-  switch(this._options.sSkin) {
+  switch(this._options.skin) {
   
     case WYM_DEFAULT_SKIN:
     
       $j(this._box).addClass("wym_skin_default");
       
       //render following sections as panels
-      $j(this._box).find(this._options.sClassesSelector)
+      $j(this._box).find(this._options.classesSelector)
         .addClass("wym_panel");
 
       //render following sections as buttons
-      $j(this._box).find(this._options.sToolsSelector)
+      $j(this._box).find(this._options.toolsSelector)
         .addClass("wym_buttons");
 
       //render following sections as dropdown menus
@@ -1067,13 +1067,13 @@ Wymeditor.prototype.skin = function() {
       // or right area are not empty (if they contain sections)
       $j(this._box).find("div.wym_area_right ul")
         .parents("div.wym_area_right").show()
-        .parents(this._options.sBoxSelector)
+        .parents(this._options.boxSelector)
         .find("div.wym_area_main")
         .css({"margin-right": "155px"});
 
       $j(this._box).find("div.wym_area_left ul")
         .parents("div.wym_area_left").show()
-        .parents(this._options.sBoxSelector)
+        .parents(this._options.boxSelector)
         .find("div.wym_area_main")
         .css({"margin-left": "155px"});
 
@@ -1092,7 +1092,7 @@ Wymeditor.prototype.skin = function() {
 
 /********** DIALOGS **********/
 
-function fWYM_INIT_DIALOG(index) {
+function WYM_INIT_DIALOG(index) {
 
     var wym = window.opener.WYM_INSTANCES[index];
     var doc = window.document;
@@ -1105,65 +1105,65 @@ function fWYM_INIT_DIALOG(index) {
     }
     
     //pre-init functions
-    if($j.isFunction(wym._options.fPreInitDialog))
-      wym._options.fPreInitDialog(wym,window);
+    if($j.isFunction(wym._options.preInitDialog))
+      wym._options.preInitDialog(wym,window);
     
     //add css rules from options
     var styles = doc.styleSheets[0];
-    var aCss = eval(wym._options.aDialogCss);
+    var aCss = eval(wym._options.dialogStyles);
 
     wym.addCssRules(doc, aCss);
     
     //auto populate fields if selected container (e.g. A)
     if(selected) {
-      $j(wym._options.sHrefSelector).val($j(selected).attr(WYM_HREF));
-      $j(wym._options.sSrcSelector).val($j(selected).attr(WYM_SRC));
-      $j(wym._options.sTitleSelector).val($j(selected).attr(WYM_TITLE));
-      $j(wym._options.sAltSelector).val($j(selected).attr(WYM_ALT));
+      $j(wym._options.hrefSelector).val($j(selected).attr(WYM_HREF));
+      $j(wym._options.srcSelector).val($j(selected).attr(WYM_SRC));
+      $j(wym._options.titleSelector).val($j(selected).attr(WYM_TITLE));
+      $j(wym._options.altSelector).val($j(selected).attr(WYM_ALT));
     }
     
     //auto populate image fields if selected image
     if(wym._selected_image) {
-      $j(wym._options.sDialogImageSelector + " " + wym._options.sSrcSelector)
+      $j(wym._options.dialogImageSelector + " " + wym._options.srcSelector)
         .val($j(wym._selected_image).attr(WYM_SRC));
-      $j(wym._options.sDialogImageSelector + " " + wym._options.sTitleSelector)
+      $j(wym._options.dialogImageSelector + " " + wym._options.titleSelector)
         .val($j(wym._selected_image).attr(WYM_TITLE));
-      $j(wym._options.sDialogImageSelector + " " + wym._options.sAltSelector)
+      $j(wym._options.dialogImageSelector + " " + wym._options.altSelector)
         .val($j(wym._selected_image).attr(WYM_ALT));
     }
 
-    $j(wym._options.sDialogLinkSelector + " "
-        + wym._options.sSubmitSelector).click(function() {
+    $j(wym._options.dialogLinkSelector + " "
+        + wym._options.submitSelector).click(function() {
         
-        var sUrl = $j(wym._options.sHrefSelector).val();
+        var sUrl = $j(wym._options.hrefSelector).val();
         if(sUrl.length > 0) {
             wym._exec(WYM_CREATE_LINK, sStamp);
             var link = $j(wym._doc.body).find("a[@href=" + sStamp + "]");
             link.attr(WYM_HREF, sUrl);
-            link.attr(WYM_TITLE, $j(wym._options.sTitleSelector).val());
+            link.attr(WYM_TITLE, $j(wym._options.titleSelector).val());
         }
         window.close();
     });
     
-    $j(wym._options.sDialogImageSelector + " "
-        + wym._options.sSubmitSelector).click(function() {
+    $j(wym._options.dialogImageSelector + " "
+        + wym._options.submitSelector).click(function() {
         
-        var sUrl = $j(wym._options.sSrcSelector).val();
+        var sUrl = $j(wym._options.srcSelector).val();
         if(sUrl.length > 0) {
             wym._exec(WYM_INSERT_IMAGE, sStamp);
             var image = $j(wym._doc.body).find("img[@src=" + sStamp + "]");
             image.attr(WYM_SRC, sUrl);
-            image.attr(WYM_TITLE, $j(wym._options.sTitleSelector).val());
-            image.attr(WYM_ALT, $j(wym._options.sAltSelector).val());
+            image.attr(WYM_TITLE, $j(wym._options.titleSelector).val());
+            image.attr(WYM_ALT, $j(wym._options.altSelector).val());
         }
         window.close();
     });
     
-    $j(wym._options.sDialogTableSelector + " "
-        + wym._options.sSubmitSelector).click(function() {
+    $j(wym._options.dialogTableSelector + " "
+        + wym._options.submitSelector).click(function() {
         
-        var iRows = $j(wym._options.sRowsSelector).val();
-        var iCols = $j(wym._options.sColsSelector).val();
+        var iRows = $j(wym._options.rowsSelector).val();
+        var iCols = $j(wym._options.colsSelector).val();
         
         if(iRows > 0 && iCols > 0) {
         
@@ -1171,7 +1171,7 @@ function fWYM_INIT_DIALOG(index) {
             var newRow = null;
         		var newCol = null;
         		
-        		var sCaption = $j(wym._options.sCaptionSelector).val();
+        		var sCaption = $j(wym._options.captionSelector).val();
         		
         		//we create the caption
         		var newCaption = table.createCaption();
@@ -1189,26 +1189,26 @@ function fWYM_INIT_DIALOG(index) {
         window.close();
     });
     
-    $j(wym._options.sDialogPasteSelector + " "
-        + wym._options.sSubmitSelector).click(function() {
+    $j(wym._options.dialogPasteSelector + " "
+        + wym._options.submitSelector).click(function() {
         
-        var sText = $j(wym._options.sTextSelector).val();
+        var sText = $j(wym._options.textSelector).val();
         wym.paste(sText);
         window.close();
     });
     
-    $j(wym._options.sDialogPreviewSelector + " "
-        + wym._options.sPreviewSelector)
+    $j(wym._options.dialogPreviewSelector + " "
+        + wym._options.previewSelector)
         .html(wym.xhtml());
     
     //cancel button
-    $j(wym._options.sCancelSelector).mousedown(function() {
+    $j(wym._options.cancelSelector).mousedown(function() {
         window.close();
     });
     
     //pre-init functions
-    if($j.isFunction(wym._options.fPostInitDialog))
-      wym._options.fPostInitDialog(wym,window);
+    if($j.isFunction(wym._options.postInitDialog))
+      wym._options.postInitDialog(wym,window);
 };
 
 

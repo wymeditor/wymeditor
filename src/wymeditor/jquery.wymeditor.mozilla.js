@@ -33,7 +33,7 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
     //add css rules from options
     
     var styles = this._doc.styleSheets[0];    
-    var aCss = eval(this._options.aEditorCss);
+    var aCss = eval(this._options.editorStyles);
     
     this.addCssRules(this._doc, aCss);
 
@@ -47,7 +47,7 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
     this._doc.execCommand("styleWithCSS", '', false);
     
     //pre-bind functions
-    if($j.isFunction(this._options.fPreBind)) this._options.fPreBind(this);
+    if($j.isFunction(this._options.preBind)) this._options.preBind(this);
     
     //bind external events
     this._wym.bindEvents();
@@ -59,7 +59,7 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
     $j(this._doc).bind("keyup", this.keyup);
     
     //post-init functions
-    if($j.isFunction(this._options.fPostInit)) this._options.fPostInit(this);
+    if($j.isFunction(this._options.postInit)) this._options.postInit(this);
     
     //add event listeners to doc elements, e.g. images
     this.listen();
@@ -68,22 +68,22 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
 /* @name html
  * @description Get/Set the html value
  */
-WymClassMozilla.prototype.html = function(sHtml) {
+WymClassMozilla.prototype.html = function(html) {
 
-  if(sHtml) {
+  if(html) {
   
     //disable designMode
     this._doc.designMode = "off";
     
     //replace em by i and strong by bold
     //(designMode issue)
-    sHtml = sHtml.replace(/<em([^>]*)>/gi, "<i$1>")
+    html = html.replace(/<em([^>]*)>/gi, "<i$1>")
       .replace(/<\/em>/gi, "</i>")
       .replace(/<strong([^>]*)>/gi, "<b$1>")
       .replace(/<\/strong>/gi, "</b>");
     
     //update the html body
-    $j(this._doc.body).html(sHtml);
+    $j(this._doc.body).html(html);
     
     //re-init designMode
     this._doc.designMode = "on";
@@ -158,15 +158,15 @@ WymClassMozilla.prototype.addCssRule = function(styles, oCss) {
  */
 WymClassMozilla.prototype.xhtml = function() {
 
-    var sHtml = this._wym.html();
+    var html = this._wym.html();
     
     var flagTag=false,begTag=false;
     var tag="",ret="",attr="";
     var level=0;
     
-    for(var x=0;x<sHtml.length;x++)
+    for(var x=0;x<html.length;x++)
     {
-        c=sHtml.charAt(x);
+        c=html.charAt(x);
         
         if(begTag)
         {
