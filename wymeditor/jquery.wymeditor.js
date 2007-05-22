@@ -202,6 +202,8 @@ $j.fn.wymeditor = function(options) {
                         + WYM_TOOL_CLASS
                         + "'><a href='#' name='"
                         + WYM_TOOL_NAME
+                        + "' title='"
+                        + WYM_TOOL_TITLE
                         + "'>"
                         + WYM_TOOL_TITLE
                         + "</a></li>",
@@ -286,7 +288,7 @@ $j.fn.wymeditor = function(options) {
     boxSelector:       ".wym_box",
     toolsSelector:     ".wym_tools",
     toolsListSelector: " ul",
-    sContainersSelector:".wym_containers",
+    containersSelector:".wym_containers",
     classesSelector:   ".wym_classes",
     htmlSelector:      ".wym_html",
     iframeSelector:    ".wym_iframe iframe",
@@ -543,18 +545,18 @@ Wymeditor.prototype.init = function() {
   //construct the iframe
   var iframeHtml = this._options.iframeHtml;
   iframeHtml = iframeHtml
-    .replace(WYM_INDEX,this._index)
-    .replace(WYM_IFRAME_BASE_PATH, this._options.iframeBasePath);
+    .replaceAll(WYM_INDEX,this._index)
+    .replaceAll(WYM_IFRAME_BASE_PATH, this._options.iframeBasePath);
   
   //construct wymbox
   var boxHtml = $j(this._box).html();
   
-  boxHtml = boxHtml.replace(WYM_TOOLS, this._options.toolsHtml);
-  boxHtml = boxHtml.replace(WYM_CONTAINERS, this._options.containersHtml);
-  boxHtml = boxHtml.replace(WYM_CLASSES, this._options.classesHtml);
-  boxHtml = boxHtml.replace(WYM_HTML, this._options.htmlHtml);
-  boxHtml = boxHtml.replace(WYM_IFRAME, iframeHtml);
-  boxHtml = boxHtml.replace(WYM_STATUS, this._options.statusHtml);
+  boxHtml = boxHtml.replaceAll(WYM_TOOLS, this._options.toolsHtml);
+  boxHtml = boxHtml.replaceAll(WYM_CONTAINERS, this._options.containersHtml);
+  boxHtml = boxHtml.replaceAll(WYM_CLASSES, this._options.classesHtml);
+  boxHtml = boxHtml.replaceAll(WYM_HTML, this._options.htmlHtml);
+  boxHtml = boxHtml.replaceAll(WYM_IFRAME, iframeHtml);
+  boxHtml = boxHtml.replaceAll(WYM_STATUS, this._options.statusHtml);
   
   //construct tools list
   var aTools = eval(this._options.toolsItems);
@@ -564,15 +566,15 @@ Wymeditor.prototype.init = function() {
     var oTool = aTools[i];
     if(oTool.name && oTool.title)
       sTools += this._options.toolsItemHtml
-      .replace(WYM_TOOL_NAME, oTool.name)
-      .replace(WYM_TOOL_TITLE, 
+      .replaceAll(WYM_TOOL_NAME, oTool.name)
+      .replaceAll(WYM_TOOL_TITLE,
           this._options.stringDelimiterLeft
         + oTool.title
         + this._options.stringDelimiterRight)
-      .replace(WYM_TOOL_CLASS, oTool.css);
+      .replaceAll(WYM_TOOL_CLASS, oTool.css);
   }
 
-  boxHtml = boxHtml.replace(WYM_TOOLS_ITEMS, sTools);
+  boxHtml = boxHtml.replaceAll(WYM_TOOLS_ITEMS, sTools);
 
   //construct classes list
   var aClasses = eval(this._options.classesItems);
@@ -582,11 +584,11 @@ Wymeditor.prototype.init = function() {
     var oClass = aClasses[i];
     if(oClass.name && oClass.title)
       sClasses += this._options.classesItemHtml
-      .replace(WYM_CLASS_NAME, oClass.name)
-      .replace(WYM_CLASS_TITLE, oClass.title);
+      .replaceAll(WYM_CLASS_NAME, oClass.name)
+      .replaceAll(WYM_CLASS_TITLE, oClass.title);
   }
 
-  boxHtml = boxHtml.replace(WYM_CLASSES_ITEMS, sClasses);
+  boxHtml = boxHtml.replaceAll(WYM_CLASSES_ITEMS, sClasses);
   
   //construct containers list
   var aContainers = eval(this._options.containersItems);
@@ -596,15 +598,15 @@ Wymeditor.prototype.init = function() {
     var oContainer = aContainers[i];
     if(oContainer.name && oContainer.title)
       sContainers += this._options.containersItemHtml
-      .replace(WYM_CONTAINER_NAME, oContainer.name)
-      .replace(WYM_CONTAINER_TITLE,
+      .replaceAll(WYM_CONTAINER_NAME, oContainer.name)
+      .replaceAll(WYM_CONTAINER_TITLE,
           this._options.stringDelimiterLeft
         + oContainer.title
         + this._options.stringDelimiterRight)
-      .replace(WYM_CONTAINER_CLASS, oContainer.css);
+      .replaceAll(WYM_CONTAINER_CLASS, oContainer.css);
   }
 
-  boxHtml = boxHtml.replace(WYM_CONTAINERS_ITEMS, sContainers);
+  boxHtml = boxHtml.replaceAll(WYM_CONTAINERS_ITEMS, sContainers);
 
   //l10n
   boxHtml = this.replaceStrings(boxHtml);
@@ -878,9 +880,8 @@ Wymeditor.prototype.switchTo = function(node,sType) {
 Wymeditor.prototype.replaceStrings = function(sVal) {
 
   for (var key in WYM_STRINGS[this._options.lang]) {
-    var rExp = new RegExp(this._options.stringDelimiterLeft + key 
-    + this._options.stringDelimiterRight, "g");
-    sVal = sVal.replace(rExp, WYM_STRINGS[this._options.lang][key]);
+    sVal = sVal.replaceAll(this._options.stringDelimiterLeft + key 
+    + this._options.stringDelimiterRight, WYM_STRINGS[this._options.lang][key]);
   }
   return(sVal);
 };
@@ -947,12 +948,12 @@ Wymeditor.prototype.dialog = function(sType) {
     //construct the dialog
     var dialogHtml = this._options.dialogHtml;
     dialogHtml = dialogHtml
-      .replace(WYM_BASE_PATH, this._options.basePath)
-      .replace(WYM_CSS_PATH, this._options.cssPath)
-      .replace(WYM_JQUERY_PATH, this._options.jQueryPath)
-      .replace(WYM_DIALOG_TITLE, this.encloseString(sType))
-      .replace(WYM_DIALOG_BODY, sBodyHtml)
-      .replace(WYM_INDEX, this._index);
+      .replaceAll(WYM_BASE_PATH, this._options.basePath)
+      .replaceAll(WYM_CSS_PATH, this._options.cssPath)
+      .replaceAll(WYM_JQUERY_PATH, this._options.jQueryPath)
+      .replaceAll(WYM_DIALOG_TITLE, this.encloseString(sType))
+      .replaceAll(WYM_DIALOG_BODY, sBodyHtml)
+      .replaceAll(WYM_INDEX, this._index);
       
     dialogHtml = this.replaceStrings(dialogHtml);
     
@@ -1058,7 +1059,7 @@ Wymeditor.prototype.skin = function() {
         .addClass("wym_buttons");
 
       //render following sections as dropdown menus
-      $j(this._box).find(this._options.sContainersSelector)
+      $j(this._box).find(this._options.containersSelector)
         .addClass("wym_dropdown")
         .find(WYM_H2)
         .append("<span>&nbsp;&gt;</span>");
@@ -1246,6 +1247,11 @@ $j.fn.parentsOrSelf = function(jqexpr) {
 
 String.prototype.insertAt = function(sInserted, iPos) {
   return(this.substr(0,iPos) + sInserted + this.substring(iPos));
+};
+
+String.prototype.replaceAll = function(old, rep) {
+  var rExp = new RegExp(old, "g");
+  return(this.replace(rExp, rep));
 };
 
 // from http://forum.de.selfhtml.org/archiv/2004/3/t76079/#m438193 (2007-02-06)
