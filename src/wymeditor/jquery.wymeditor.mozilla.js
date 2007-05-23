@@ -16,6 +16,7 @@
  *        Jean-Francois Hovinne (jf.hovinne@wymeditor.org)
  *        Volker Mische (vmx@gmx.de)
  *        Bermi Ferrer (wymeditor a-t bermi dotorg)
+ *        Frédéric Palluel-Lafleur (fpalluel@gmail.com)
  */
 
 function WymClassMozilla(wym) {
@@ -43,8 +44,7 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
     this.html(this._wym._html);
     
     //init designMode
-    this._doc.designMode = "on";
-    this._doc.execCommand("styleWithCSS", '', false);
+    this.enableDesignMode();
     
     //pre-bind functions
     if($j.isFunction(this._options.preBind)) this._options.preBind(this);
@@ -57,6 +57,9 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
     
     //bind editor keyup events
     $j(this._doc).bind("keyup", this.keyup);
+    
+    //bind editor focus events (used to reset designmode - Gecko bug)
+    $j(this._doc).bind("focus", this.enableDesignMode);
     
     //post-init functions
     if($j.isFunction(this._options.postInit)) this._options.postInit(this);
@@ -86,8 +89,7 @@ WymClassMozilla.prototype.html = function(html) {
     $j(this._doc.body).html(html);
     
     //re-init designMode
-    this._doc.designMode = "on";
-    this._doc.execCommand("styleWithCSS", '', false);
+    this.enableDesignMode();
   }
   else return($j(this._doc.body).html());
 };
@@ -309,6 +311,15 @@ WymClassMozilla.prototype.keyup = function(evt) {
 
     if(name == WYM_BODY) wym._exec(WYM_FORMAT_BLOCK, WYM_P);
   }
+};
+
+WymClassMozilla.prototype.enableDesignMode = function() {
+    if(this.designMode == "off") {
+      try {
+        this.designMode = "on";
+        this.execCommand("styleWithCSS", '', false);
+      } catch(e) { }
+    }
 };
 
 WymClassMozilla.prototype.setFocusToNode = function(node) {
