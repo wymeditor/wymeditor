@@ -14,6 +14,8 @@
  *
  * File Authors:
  *        Jean-Francois Hovinne (jf.hovinne@wymeditor.org)
+ *        Bermi Ferrer (wymeditor a-t bermi dotorg)
+ *        Frédéric Palluel-Lafleur (fpalluel@gmail.com)
  */
 
 function WymClassExplorer(wym) {
