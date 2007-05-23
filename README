@@ -18,12 +18,5 @@ WYMeditor documentation is available online at http://trac.wymeditor.org/
 Note for 0.3
 ============
 
-For WYMeditor 0.3 to work, you'll need the latest jQuery (NOT 1.1.2),
-built from SVN.
-For your convenience, a pre-built package is available at:
-http://files.wymeditor.org/wymeditor/trunk/src/jquery/jquery.js
-
-jQuery is copyright (C) 2007 John Resig and the jQuery team
-jQuery source code is available at http://jquery.com/
-
-Please see the documentation at http://trac.wymeditor.org/
+For WYMeditor 0.3 to work, you'll need jQuery 1.1.3+
+See http://trac.wymeditor.org/trac/wiki/0.3/Integration#Requirements
