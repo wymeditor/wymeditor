@@ -622,27 +622,28 @@ jQuery.extend({
 				return i;
 		return -1;
 	},
-	merge: function(first, second) {
+	merge: function(first, second, unique) {
 		// We have to loop this way because IE & Opera overwrite the length
 		// expando of getElementsByTagName
-		for ( var i = 0; second[i]; i++ )
+		for ( var i = 0; second[i]; i++ ) {
+		    if ( unique ) second[i].$merge = true;
 			first.push(second[i]);
+		}
 		return first;
 	},
 
 	unique: function(first) {
-		var r = [], num = jQuery.mergeNum++;
+		var r = [];
 
 		for ( var i = 0, fl = first.length; i < fl; i++ )
-			if ( num != first[i].mergeNum ) {
-				first[i].mergeNum = num;
+			if ( first[i].$merge ) {
+				first[i].removeAttribute("$merge");
 				r.push(first[i]);
 			}
 
 		return r;
 	},
 
-	mergeNum: 0,
 	grep: function(elems, fn, inv) {
 		// If a string is passed in for the function, make a function
 		// for it (a handy shortcut)
@@ -1019,7 +1020,7 @@ jQuery.extend({
 							if ( tag == "*" && ret[i].nodeName.toLowerCase() == "object" )
 								tag = "param";
 
-							r = jQuery.merge( r, ret[i].getElementsByTagName( tag ));
+							r = jQuery.merge( r, ret[i].getElementsByTagName( tag ), true);
 						}
 
 						// It's faster to filter by class and be done with it
