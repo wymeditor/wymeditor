@@ -1284,21 +1284,3 @@ Array.prototype.findByName = function (name) {
   }
   return(null);
 };
-
-
-/********** JQUERY 'FIXES' **********/
-
-//ugly fix for jQuery.unique
-//needed because MSIE adds mergeNum attrs on each matched element
-//see jQuery ticket 1143
-$j.unique = function(first) {
-    var r = [], num = jQuery.mergeNum++;
-    
-    for ( var i = 0, fl = first.length; i < fl; i++ )
-    	if ( num != first[i].mergeNum ) {
-    		if(!$j.browser.msie) first[i].mergeNum = num;
-    		r.push(first[i]);
-    	}
-    
-    return r;
-};
