@@ -34,6 +34,15 @@ var $j = jQuery.noConflict();
 $j(function() {
 
     $j(".wymeditor").wymeditor({
+    
+      html: "<ol><li>One</li><li>Two</li></ol><p>Select</p><p>these</p><p>paragraphs and click on ordered list button</p>",
+      
+      toolsItems: [
+        {'name': 'InsertOrderedList', 'title': 'Ordered_List',
+            'css': 'wym_tools_ordered_list'},
+        {'name': 'ToggleHtml', 'title': 'HTML', 'css': 'wym_tools_html'}
+      ],
+    
       classesItems: [
         {'name': 'info', 'title': 'ALL: Info', 'expr': '*'},
         {'name': 'date', 'title': 'PARA: Date', 'expr': 'p'},

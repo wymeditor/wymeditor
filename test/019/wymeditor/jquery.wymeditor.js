@@ -615,7 +615,8 @@ Wymeditor.prototype.init = function() {
   $j(this._box).html(boxHtml);
   
   //hide the html value
-  $j(this._box).find(this._options.htmlSelector).hide();
+  //$j(this._box).find(this._options.htmlSelector).hide();
+  $j(this._box).find(this._options.htmlValSelector).val(this._options.html);
   
   //enable the skin
   this.skin();
@@ -685,8 +686,11 @@ Wymeditor.prototype.box = function() {
  */
 Wymeditor.prototype.html = function(html) {
 
-  if(html) $j(this._doc.body).html(html);
-  else return($j(this._doc.body).html());
+  //if(html) $j(this._doc.body).html(html);
+  //else return($j(this._doc.body).html());
+  
+  if(html) this._doc.body.innerHTML = html;
+  else return this._doc.body.innerHTML;
 };
 
 /* @name exec
@@ -725,6 +729,7 @@ Wymeditor.prototype.exec = function(cmd) {
     
     default:
       this._exec(cmd);
+      this.update();
     break;
   }
 };

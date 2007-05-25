@@ -7,8 +7,8 @@ if(typeof window.jQuery == "undefined") {
  * Dual licensed under the MIT (MIT-LICENSE.txt)
  * and GPL (GPL-LICENSE.txt) licenses.
  *
- * $Date: 2007-05-16 18:21:50 +0200 (mer, 16 mai 2007) $
- * $Rev: 1910 $
+ * $Date: 2007-05-23 14:48:15 +0200 (mer, 23 mai 2007) $
+ * $Rev: 1961 $
  */
 
 // Global undefined variable
@@ -56,7 +56,7 @@ jQuery.fn = jQuery.prototype = {
 
 			// HANDLE: $(arraylike)
 			// Watch for when an array-like object is passed as the selector
-			(a.jquery || a.length && a != window && (!a.nodeType || (jQuery.browser.msie && a.elements)) && a[0] != undefined && a[0].nodeType) && jQuery.makeArray( a ) ||
+			(a.jquery || a.length && a != window && !a.nodeType && a[0] != undefined && a[0].nodeType) && jQuery.makeArray( a ) ||
 
 			// HANDLE: $(*)
 			[ a ] );
@@ -262,9 +262,18 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	html: function( val ) {
-		return val == undefined ?
-			( this.length ? this[0].innerHTML : null ) :
-			this.empty().append( val );
+		if  (val == undefined ) {
+		if ( this.length ) {
+			if ( jQuery.browser.msie ) {
+				var nodes = this[0].getElementsByTagName("*");
+				for ( var i = 0; nodes[i]; i++)
+					nodes[i].removeAttribute("mergeNum");
+			}
+			return this[0].innerHTML;
+		}
+	}
+	else
+		return this.empty().append( val );
 	},
 	domManip: function(args, table, dir, fn){
 		var clone = this.length > 1, a; 
@@ -476,13 +485,13 @@ jQuery.extend({
 			if ( arg.constructor == Number )
 				arg = arg.toString();
 			
-			 // Convert html string into DOM nodes
+			// Convert html string into DOM nodes
 			if ( typeof arg == "string" ) {
 				// Trim whitespace, otherwise indexOf won't work as expected
 				var s = jQuery.trim(arg).toLowerCase(), div = doc.createElement("div"), tb = [];
 
 				var wrap =
-					 // option or optgroup
+					// option or optgroup
 					!s.indexOf("<opt") &&
 					[1, "<select>", "</select>"] ||
 					
@@ -622,28 +631,26 @@ jQuery.extend({
 				return i;
 		return -1;
 	},
-	merge: function(first, second, unique) {
+	merge: function(first, second) {
 		// We have to loop this way because IE & Opera overwrite the length
 		// expando of getElementsByTagName
-		for ( var i = 0; second[i]; i++ ) {
-		    if ( unique ) second[i].$merge = true;
+		for ( var i = 0; second[i]; i++ )
 			first.push(second[i]);
-		}
 		return first;
 	},
-
 	unique: function(first) {
-		var r = [];
+		var r = [], num = jQuery.mergeNum++;
 
 		for ( var i = 0, fl = first.length; i < fl; i++ )
-			if ( first[i].$merge ) {
-				first[i].removeAttribute("$merge");
+			if ( num != first[i].mergeNum ) {
+				first[i].mergeNum = num;
 				r.push(first[i]);
 			}
 
 		return r;
 	},
 
+	mergeNum: 0,
 	grep: function(elems, fn, inv) {
 		// If a string is passed in for the function, make a function
 		// for it (a handy shortcut)
@@ -666,7 +673,7 @@ jQuery.extend({
 		if ( typeof fn == "string" )
 			fn = new Function("a","return " + fn);
 
-		var result = [], r = [];
+		var result = [];
 
 		// Go through the array, translating each of the items to their
 		// new value (or values).
@@ -1020,7 +1027,7 @@ jQuery.extend({
 							if ( tag == "*" && ret[i].nodeName.toLowerCase() == "object" )
 								tag = "param";
 
-							r = jQuery.merge( r, ret[i].getElementsByTagName( tag ), true);
+							r = jQuery.merge( r, ret[i].getElementsByTagName( tag ));
 						}
 
 						// It's faster to filter by class and be done with it
@@ -1187,6 +1194,10 @@ jQuery.event = {
 		if ( jQuery.browser.msie && element.setInterval != undefined )
 			element = window;
 		
+		// Make sure that the function being executed has a unique ID
+		if ( !handler.guid )
+			handler.guid = this.guid++;
+			
 		// if data is passed, bind to handler 
 		if( data != undefined ) { 
         	// Create temporary function pointer to original handler 
@@ -1203,13 +1214,6 @@ jQuery.event = {
 
 			// Set the guid of unique handler to the same of original handler, so it can be removed 
 			handler.guid = fn.guid;
-		}
-
-		// Make sure that the function being executed has a unique ID
-		if ( !handler.guid ) {
-			handler.guid = this.guid++;
-			// Don't forget to set guid for the original handler function
-			if (fn) fn.guid = handler.guid;
 		}
 
 		// Init the element's event structure
@@ -1522,7 +1526,7 @@ jQuery.extend({
 				// Reset the list of functions
 				jQuery.readyList = null;
 			}
-			// Remove event lisenter to avoid memory leak
+			// Remove event listener to avoid memory leak
 			if ( jQuery.browser.mozilla || jQuery.browser.opera )
 				document.removeEventListener( "DOMContentLoaded", jQuery.ready, false );
 			
@@ -2284,7 +2288,7 @@ jQuery.extend({
 				var p = n / options.duration;
 				
 				// Perform the easing function, defaults to swing
-				z.now = jQuery.easing[options.easing](p, n,  firstNum, (lastNum-firstNum), options.duration);
+				z.now = jQuery.easing[options.easing](p, n, firstNum, (lastNum-firstNum), options.duration);
 
 				// Perform the next step of the animation
 				z.a();
