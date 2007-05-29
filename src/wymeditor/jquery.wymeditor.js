@@ -1147,9 +1147,20 @@ function WYM_INIT_DIALOG(index) {
         var sUrl = $j(wym._options.hrefSelector).val();
         if(sUrl.length > 0) {
             wym._exec(WYM_CREATE_LINK, sStamp);
-            var link = $j(wym._doc.body).find("a[@href=" + sStamp + "]");
-            link.attr(WYM_HREF, sUrl);
-            link.attr(WYM_TITLE, $j(wym._options.titleSelector).val());
+            //don't use jQuery.find() see #JQ1143
+            //var link = $j(wym._doc.body).find("a[@href=" + sStamp + "]");
+            var link = null;
+            var nodes = wym._doc.body.getElementsByTagName(WYM_A);
+            for(var i=0; i < nodes.length; i++) {
+                if($j(nodes[i]).attr(WYM_HREF) == sStamp) {
+                    link = $j(nodes[i]);
+                    break;
+                }
+            }
+            if(link) {
+                link.attr(WYM_HREF, sUrl);
+                link.attr(WYM_TITLE, $j(wym._options.titleSelector).val());
+            }
         }
         window.close();
     });
@@ -1160,10 +1171,21 @@ function WYM_INIT_DIALOG(index) {
         var sUrl = $j(wym._options.srcSelector).val();
         if(sUrl.length > 0) {
             wym._exec(WYM_INSERT_IMAGE, sStamp);
-            var image = $j(wym._doc.body).find("img[@src=" + sStamp + "]");
-            image.attr(WYM_SRC, sUrl);
-            image.attr(WYM_TITLE, $j(wym._options.titleSelector).val());
-            image.attr(WYM_ALT, $j(wym._options.altSelector).val());
+            //don't use jQuery.find() see #JQ1143
+            //var image = $j(wym._doc.body).find("img[@src=" + sStamp + "]");
+            var image = null;
+            var nodes = wym._doc.body.getElementsByTagName(WYM_IMG);
+            for(var i=0; i < nodes.length; i++) {
+                if($j(nodes[i]).attr(WYM_SRC) == sStamp) {
+                    image = $j(nodes[i]);
+                    break;
+                }
+            }
+            if(image) {
+                image.attr(WYM_SRC, sUrl);
+                image.attr(WYM_TITLE, $j(wym._options.titleSelector).val());
+                image.attr(WYM_ALT, $j(wym._options.altSelector).val());
+            }
         }
         window.close();
     });
