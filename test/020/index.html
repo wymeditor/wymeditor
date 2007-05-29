@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>WYMeditor test for MSIE</title>
+<script type="text/javascript" src="jquery-1.1.3a.js"></script>
+
+<script type="text/javascript">
+
+var $j = jQuery.noConflict();
+
+$j(function() {
+
+  ifrm.document.designMode = 'on';
+  
+  $j('body')
+    .find('p.myclass')
+    .html('Modified the parent body with jQuery.find() and jQuery.html().');
+
+});
+
+function updateHTML() {
+  txthtml.innerText = ifrm.document.body.innerHTML;
+}
+
+function showHTML() {
+  updateHTML();
+}
+
+function jqHtml() {
+  $j(ifrm.document.body).html("<p>Test jQuery.html().</p>");
+  updateHTML();
+}
+
+function jqFind() {
+  $j(ifrm.document.body).find("p");
+  updateHTML();
+}
+
+</script>
+
+</head>
+
+<body>
+<h1>Test page for MSIE + jQuery + designMode</h1>
+<a href="#" onclick="showHTML()">Show HTML</a> -
+<a href="#" onclick="jqHtml()">jQuery.html()</a> -
+<a href="#" onclick="jqFind()">jQuery.find()</a><br />
+<textarea id="txthtml" cols="40" rows="10"></textarea><br />
+<iframe src="wymiframe.html" id="ifrm"></iframe>
+<p class="myclass">Test</p>
+</body>
+
+</html>
