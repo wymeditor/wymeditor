@@ -1028,7 +1028,15 @@ Wymeditor.prototype.computeCssPath = function() {
 
 Wymeditor.prototype.listen = function() {
 
-  $j(this._doc.body).find("*").bind("mouseup", this.mouseup);
+  //don't use jQuery.find() on the iframe body
+  //because of MSIE + jQuery + expando issue (#JQ1143)
+  //$j(this._doc.body).find("*").bind("mouseup", this.mouseup);
+  
+  $j(this._doc.body).bind("mouseup", this.mouseup);
+  var images = this._doc.body.getElementsByTagName("img");
+  for(var i=0; i < images.length; i++) {
+    $j(images[i]).bind("mouseup", this.mouseup);
+  }
 };
 
 //mouseup handler
