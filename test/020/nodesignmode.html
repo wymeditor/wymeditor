@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>No designMode</title>
+<script type="text/javascript" src="jquery-1.1.3a.js"></script>
+
+<script type="text/javascript">
+
+var $j = jQuery.noConflict();
+
+$j(function() {
+
+  $j('body').find('p.myclass');
+  alert(document.body.innerHTML);
+
+});
+
+</script>
+
+</head>
+
+<body>
+<h1>Test page for MSIE + jQuery</h1>
+<p class="myclass">Test one.</p>
+<p>Test two.</p>
+</body>
+
+</html>
