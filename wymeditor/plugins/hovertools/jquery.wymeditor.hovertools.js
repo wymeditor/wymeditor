@@ -1,4 +1,4 @@
-/*
+﻿/*
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2007 H.O.net - http://www.honet.be/
  * Dual licensed under the MIT (MIT-license.txt)
@@ -40,11 +40,15 @@ Wymeditor.prototype.hovertools = function() {
 
       if(oClass){
         jqexpr = oClass.expr;
-        $j(wym._doc).find(jqexpr).css('background-color','#cfc');
+        //don't use jQuery.find() on the iframe body
+        //because of MSIE + jQuery + expando issue (#JQ1143)
+        //$j(wym._doc).find(jqexpr).css('background-color','#cfc');
       }
     },
     function() {
-      $j(wym._doc).find('*').removeAttr('style');
+      //don't use jQuery.find() on the iframe body
+      //because of MSIE + jQuery + expando issue (#JQ1143)
+      //$j(wym._doc).find('*').removeAttr('style');
     }
   );
 
