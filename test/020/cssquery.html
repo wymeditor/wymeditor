@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>WYMeditor test for MSIE</title>
+<script type="text/javascript" src="jquery-1.1.3a.js"></script>
+<script type="text/javascript">
+
+var $j = jQuery.noConflict();
+
+function init(iframe) {
+
+    var $q = iframe.contentWindow.cssQuery;
+    
+    $j($q("p.myclass")).html("Updated using jQuery + cssQuery.");
+    
+    var doc = null;
+    if($j.browser.msie || $j.browser.opera) doc = iframe.contentWindow.document;
+    if($j.browser.mozilla) doc = iframe.contentDocument;
+    
+    
+    if(doc) $j("#txthtml").val($j(doc.body).html());
+    
+};
+
+</script>
+
+</head>
+
+<body>
+<h1>Test page for jQuery + designMode + cssQuery</h1>
+<textarea id="txthtml" cols="40" rows="10"></textarea><br />
+<iframe src="cssqueryiframe.html" id="ifrm" onload="window.parent.init(this)"></iframe>
+<p class="myclass">Test</p>
+</body>
+
+</html>
