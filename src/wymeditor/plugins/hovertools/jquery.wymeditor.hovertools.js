@@ -42,13 +42,15 @@ Wymeditor.prototype.hovertools = function() {
         jqexpr = oClass.expr;
         //don't use jQuery.find() on the iframe body
         //because of MSIE + jQuery + expando issue (#JQ1143)
-        //$j(wym._doc).find(jqexpr).css('background-color','#cfc');
+        if(!$j.browser.msie)
+          $j(wym._doc).find(jqexpr).css('background-color','#cfc');
       }
     },
     function() {
       //don't use jQuery.find() on the iframe body
       //because of MSIE + jQuery + expando issue (#JQ1143)
-      //$j(wym._doc).find('*').removeAttr('style');
+      if(!$j.browser.msie)
+        $j(wym._doc).find('*').removeAttr('style');
     }
   );
 
