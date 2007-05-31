@@ -36,7 +36,12 @@ var WYM_STRINGS_SV = {
     Cancel:           'Avbryt',
     Choose:           'Välj',
     Preview:          'Förhandsgranska',
-    Paste_From_Word:  'Klistra in från Word'
+    Paste_From_Word:  'Klistra in från Word',
+    Tools:            'Verktyg',
+    Containers:       'Formatering',
+    Classes:          'Klasser',
+    Status:           'Status',
+    Source_Code:      'Källkod'
 };
 
 WYM_STRINGS['sv'] = WYM_STRINGS_SV;
