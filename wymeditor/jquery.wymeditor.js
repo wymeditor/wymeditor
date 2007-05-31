@@ -192,7 +192,7 @@ $j.fn.wymeditor = function(options) {
     editorStyles: [],
 
     toolsHtml: "<div class='wym_tools wym_section'>"
-              + "<h2>Tools</h2>"
+              + "<h2>{Tools}</h2>"
               + "<ul>"
               + WYM_TOOLS_ITEMS
               + "</ul>"
@@ -234,7 +234,7 @@ $j.fn.wymeditor = function(options) {
     ],
 
     containersHtml:    "<div class='wym_containers wym_section'>"
-                        + "<h2>Containers</h2>"
+                        + "<h2>{Containers}</h2>"
                         + "<ul>"
                         + WYM_CONTAINERS_ITEMS
                         + "</ul>"
@@ -264,7 +264,7 @@ $j.fn.wymeditor = function(options) {
     ],
 
     classesHtml:       "<div class='wym_classes wym_section'>"
-                        + "<h2>Classes</h2><ul>"
+                        + "<h2>{Classes}</h2><ul>"
                         + WYM_CLASSES_ITEMS
                         + "</ul></div>",
 
@@ -277,11 +277,11 @@ $j.fn.wymeditor = function(options) {
     classesItems:      [],
 
     statusHtml:        "<div class='wym_status wym_section'>"
-                        + "<h2>Status</h2>"
+                        + "<h2>{Status}</h2>"
                         + "</div>",
 
     htmlHtml:          "<div class='wym_html wym_section'>"
-                        + "<h2>Source code</h2>"
+                        + "<h2>{Source_Code}</h2>"
                         + "<textarea class='wym_html_val'></textarea>"
                         + "</div>",
 
