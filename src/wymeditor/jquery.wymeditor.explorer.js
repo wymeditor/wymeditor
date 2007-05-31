@@ -47,6 +47,9 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
     
     //handle events
     var wym = this;
+    
+    this._doc.body.onfocus = function()
+      {wym._doc.designMode = "on"; wym._doc = iframe.contentWindow.document;};
     this._doc.onbeforedeactivate = function() {wym.saveCaret();};
     this._doc.onkeyup = function() {
       wym.saveCaret();
