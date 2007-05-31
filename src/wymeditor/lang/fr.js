@@ -38,8 +38,8 @@ var WYM_STRINGS_FR = {
     Preview:          'Prévisualisation',
     Paste_From_Word:  'Copier depuis Word',
     Tools:            'Outils',
-    Containers:       'Type de contenu',
-    Classes:          'Classes',
+    Containers:       'Type de texte',
+    Classes:          'Type de contenu',
     Status:           'Infos',
     Source_Code:      'Code source'
 };
