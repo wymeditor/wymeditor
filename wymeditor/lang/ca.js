@@ -36,7 +36,12 @@ var WYM_STRINGS_CA = {
     Cancel:           'Cancel·lar',
     Choose:           'Triar',
     Preview:          'Vista prèvia',
-    Paste_From_Word:  'Pegar des de Word'
+    Paste_From_Word:  'Pegar des de Word',
+    Tools:            'Tools',
+    Containers:       'Containers',
+    Classes:          'Classes',
+    Status:           'Status',
+    Source_Code:      'Source code'
 };
 
 WYM_STRINGS['ca'] = WYM_STRINGS_CA;

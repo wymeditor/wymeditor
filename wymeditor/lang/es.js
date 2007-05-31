@@ -36,7 +36,12 @@ var WYM_STRINGS_ES = {
     Cancel:           'Cancelar',
     Choose:           'Seleccionar',
     Preview:          'Vista previa',
-    Paste_From_Word:  'Pegar desde Word'
+    Paste_From_Word:  'Pegar desde Word',
+    Tools:            'Tools',
+    Containers:       'Containers',
+    Classes:          'Classes',
+    Status:           'Status',
+    Source_Code:      'Source code'
 };
 
 WYM_STRINGS['es'] = WYM_STRINGS_ES;

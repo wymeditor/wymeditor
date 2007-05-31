@@ -36,7 +36,12 @@ var WYM_STRINGS_FR = {
     Cancel:           'Annuler',
     Choose:           'Choisir',
     Preview:          'Prévisualisation',
-    Paste_From_Word:  'Copier depuis Word'
+    Paste_From_Word:  'Copier depuis Word',
+    Tools:            'Outils',
+    Containers:       'Type de contenu',
+    Classes:          'Classes',
+    Status:           'Infos',
+    Source_Code:      'Code source'
 };
 
 WYM_STRINGS['fr'] = WYM_STRINGS_FR;
