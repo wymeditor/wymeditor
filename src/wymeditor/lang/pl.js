@@ -37,11 +37,11 @@ var WYM_STRINGS_PL = {
     Choose:           'Wybierz',
     Preview:          'Podgląd',
     Paste_From_Word:  'Wklej z Worda',
-    Tools:            'Tools',
-    Containers:       'Containers',
-    Classes:          'Classes',
+    Tools:            'Narzędzia',
+    Containers:       'Format',
+    Classes:          'Styl',
     Status:           'Status',
-    Source_Code:      'Source code'
+    Source_Code:      'Kod źródłowy'
 };
 
 WYM_STRINGS['pl'] = WYM_STRINGS_PL;
