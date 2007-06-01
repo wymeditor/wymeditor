@@ -1,4 +1,4 @@
-if(!WYM_STRINGS) var WYM_STRINGS = new Array();
+﻿if(!WYM_STRINGS) var WYM_STRINGS = new Array();
 
 var WYM_STRINGS_DE = {
     Strong:           'Fett',
