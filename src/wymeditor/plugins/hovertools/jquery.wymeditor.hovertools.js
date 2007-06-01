@@ -21,7 +21,7 @@ Wymeditor.prototype.hovertools = function() {
   var wym = this;
   
   //bind events on buttons
-  $j(this._box).find('.wym_tools a').hover(
+  $j(this._box).find(this._options.toolSelector).hover(
     function() {
       wym.status($j(this).html());
     },
@@ -32,7 +32,7 @@ Wymeditor.prototype.hovertools = function() {
 
   //classes: add/remove a style attr to matching elems
   //while mouseover/mouseout
-  $j(this._box).find('.wym_classes a').hover(
+  $j(this._box).find(this._options.classSelector).hover(
     function() {
       var aClasses = eval(wym._options.classesItems);
       var sName = $j(this).attr(WYM_NAME);
