@@ -37,11 +37,11 @@ var WYM_STRINGS_CA = {
     Choose:           'Triar',
     Preview:          'Vista prèvia',
     Paste_From_Word:  'Pegar des de Word',
-    Tools:            'Tools',
-    Containers:       'Containers',
+    Tools:            'Eines',
+    Containers:       'Contenidors',
     Classes:          'Classes',
-    Status:           'Status',
-    Source_Code:      'Source code'
+    Status:           'Estat',
+    Source_Code:      'Codi font'
 };
 
 WYM_STRINGS['ca'] = WYM_STRINGS_CA;
