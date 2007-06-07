@@ -145,8 +145,10 @@ WymClassMozilla.prototype.selected = function() {
 
     var sel = this._iframe.contentWindow.getSelection();
     var node = sel.focusNode;
-    if(node.nodeName == "#text") return(node.parentNode);
-    else return(node);
+    if(node) {
+        if(node.nodeName == "#text") return(node.parentNode);
+        else return(node);
+    } else return(null);
 };
 
 WymClassMozilla.prototype.addCssRule = function(styles, oCss) {
