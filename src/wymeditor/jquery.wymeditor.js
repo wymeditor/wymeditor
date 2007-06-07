@@ -986,11 +986,21 @@ Wymeditor.prototype.paste = function(sData) {
   var rExp = new RegExp(this._newLine, "g");
 
   //add a P for each item
-  for(x = aP.length - 1; x >= 0; x--) {
-    sTmp = aP[x];
-    //simple newlines are replaced by a break
-    sTmp = sTmp.replace(rExp, "<br />");
-    $j(container).after("<p>" + sTmp + "</p>");
+  if(container && container.tagName.toLowerCase() != WYM_BODY) {
+    for(x = aP.length - 1; x >= 0; x--) {
+        sTmp = aP[x];
+        //simple newlines are replaced by a break
+        sTmp = sTmp.replace(rExp, "<br />");
+        $j(container).after("<p>" + sTmp + "</p>");
+    }
+  } else {
+    for(x = 0; x < aP.length; x++) {
+        sTmp = aP[x];
+        //simple newlines are replaced by a break
+        sTmp = sTmp.replace(rExp, "<br />");
+        $j(this._doc.body).append("<p>" + sTmp + "</p>");
+    }
+  
   }
 };
 
