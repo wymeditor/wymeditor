@@ -535,7 +535,15 @@ Wymeditor.prototype.init = function() {
   else {
     //TODO: handle unsupported browsers
   }
-
+  
+  this.loadXhtmlParser(WymClass);
+  
+  if(this._options.wymCss || this._options.wymStylesheet){
+    this.configureEditorUsingRawCss();
+  }
+  
+  this.helper = new XmlHelper();
+  
   //extend the Wymeditor object
   $j.extend(this, WymClass);
 
@@ -687,6 +695,13 @@ Wymeditor.prototype.html = function(html) {
 
   if(html) $j(this._doc.body).html(html);
   else return($j(this._doc.body).html());
+};
+
+/* @name xhtml
+ * @description Cleans up the HTML
+ */
+Wymeditor.prototype.xhtml = function() {
+    return this.parser.parse(this.html());
 };
 
 /* @name exec
@@ -967,7 +982,6 @@ Wymeditor.prototype.dialog = function(sType) {
  * @description Shows/Hides the HTML
  */
 Wymeditor.prototype.toggleHtml = function() {
-
   $j(this._box).find(this._options.htmlSelector).toggle();
 };
 
@@ -1033,6 +1047,50 @@ Wymeditor.prototype.computeCssPath = function() {
    return (s.href && s.href.match(/wymeditor\/skins\/(.*)screen\.css(\?.*)?$/ ))
   })).attr('href');
 };
+
+Wymeditor.prototype.loadXhtmlParser = function(WymClass)
+{
+  if(typeof XhtmlSaxListener != 'function'){
+    // This is the only way to get loaded functions in the global scope until jQuery.globalEval works in safari
+   eval($j.ajax({url:this._options.basePath+'xhtml_parser.js',async:false}).responseText);
+    window.XmlHelper = XmlHelper;
+    window.XhtmlValidator = XhtmlValidator;
+    window.ParallelRegex = ParallelRegex;
+    window.StateStack = StateStack;
+    window.Lexer = Lexer;
+    window.XhtmlLexer = XhtmlLexer;
+    window.XhtmlParser = XhtmlParser;
+    window.XhtmlSaxListener = XhtmlSaxListener;
+   
+  }
+  var SaxListener = new XhtmlSaxListener();
+  jQuery.extend(SaxListener, WymClass);
+  this.parser = new XhtmlParser(SaxListener);
+}
+
+Wymeditor.prototype.configureEditorUsingRawCss = function()
+{
+  if(typeof WymCssParser != 'function'){
+    eval($j.ajax({url:this._options.basePath+'wym_css_parser.js',async:false}).responseText);
+    window.WymCssLexer = WymCssLexer;
+    window.WymCssParser = WymCssParser;
+  }
+  var CssParser = new WymCssParser();
+  if(this._options.wymStylesheet){
+    CssParser.parse($j.ajax({url: this._options.wymStylesheet,async:false}).responseText);
+  }else{
+    CssParser.parse(this._options.wymCss, false);
+  }
+  if(this._options.classesItems.length == 0) {
+    this._options.classesItems = CssParser.css_settings.classesItems;
+  }
+  if(this._options.editorCss.length == 0) {
+    this._options.editorCss = CssParser.css_settings.editorCss;
+  }
+  if(this._options.dialogCss.length == 0) {
+    this._options.dialogCss = CssParser.css_settings.dialogCss;
+  }
+}
 
 /********** EVENTS **********/
 
@@ -1285,14 +1343,15 @@ $j.fn.parentsOrSelf = function(jqexpr) {
     return n.parents(jqexpr).lt(1);
 };
 
-String.prototype.insertAt = function(sInserted, iPos) {
-  return(this.substr(0,iPos) + sInserted + this.substring(iPos));
+String.prototype.insertAt = function(inserted, pos) {
+  return(this.substr(0,pos) + inserted + this.substring(pos));
 };
 
 String.prototype.replaceAll = function(old, rep) {
   var rExp = new RegExp(old, "g");
   return(this.replace(rExp, rep));
 };
+
 
 // from http://forum.de.selfhtml.org/archiv/2004/3/t76079/#m438193 (2007-02-06)
 Array.prototype.contains = function (elem) {
@@ -1315,12 +1374,17 @@ Array.prototype.indexOf = function (item) {
 	return(ret);
 };
 
+String.prototype.trim = function() {
+  return this.replace(/^(\s*)|(\s*)$/gm,'');
+};
+
 Array.prototype.findByName = function (name) {
   for(var i = 0; i < this.length; i++) {
-    var oItem = this[i];
-    if(oItem.name == name) {
-      return(oItem);
+    var Item = this[i];
+    if(Item.name == name) {
+      return(Item);
     }
   }
   return(null);
 };
+
