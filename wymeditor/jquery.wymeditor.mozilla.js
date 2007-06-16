@@ -157,99 +157,6 @@ WymClassMozilla.prototype.addCssRule = function(styles, oCss) {
         styles.cssRules.length);
 };
 
-/* @name xhtml
- * @description Cleans up the HTML
- */
-WymClassMozilla.prototype.xhtml = function() {
-
-    var html = this._wym.html();
-    
-    var flagTag=false,begTag=false;
-    var tag="",ret="",attr="";
-    var level=0;
-    
-    for(var x=0;x<html.length;x++)
-    {
-        c=html.charAt(x);
-        
-        if(begTag)
-        {
-            if(c==" " || c==">")
-            {
-                switch(tag)
-                {
-                    case "b":
-                        tag="strong";
-                        break;
-                    case "/b":
-                        tag="/strong";
-                        break;
-                    case "i":
-                        tag="em";
-                        break;
-                    case "/i":
-                        tag="/em";
-                        break;
-                    case "br":
-                        tag="br /";
-                        break;
-                    case "ol": case "ul":
-                        level++;
-                        if(level>1 && ret.substr(ret.length-5)=="</li>")
-                            ret=ret.substr(0,ret.length-5);
-                        break;
-                    default:
-                        break;
-                }
-                begTag=false;
-            }
-            else tag+=c;
-        }
-        
-        if(c=="<"){begTag=true;flagTag=true;}
-        
-        if(flagTag)
-        {
-            if(c==">")
-            {
-                flagTag=false;
-                switch(tag)
-                {
-                    case "img":
-                    case "hr":
-                    case "input":
-                    case "link":
-                    case "base":
-                    case "basefont":
-                    case "col":
-                    case "frame":
-                    case "isindex":
-                    case "meta":
-                    case "param":
-                        ret+="<"+tag+attr+"/>";
-                        break;
-                    case "/ol": case "/ul":
-                        if(level>1)ret+="<"+tag+attr+"></li>";
-                        else ret+="<"+tag+attr+">";
-                        level--;
-                        break;
-                    default:
-                        ret+="<"+tag+attr+">";
-                        break;
-                }
-                
-                tag="";
-                attr="";
-            }
-            else if(!begTag)
-            {
-                attr+=c;
-            }
-        }
-        else ret+=c;    
-    }
-    return(ret);    
-};
 
 //keydown handler, mainly used for keyboard shortcuts
 WymClassMozilla.prototype.keydown = function(evt) {
@@ -332,3 +239,5 @@ WymClassMozilla.prototype.setFocusToNode = function(node) {
     selected.collapse(node, node.childNodes.length);
     this._iframe.contentWindow.focus();
 };
+
+
