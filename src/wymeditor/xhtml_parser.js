@@ -1500,7 +1500,7 @@ XhtmlParser.prototype.parse = function(raw)
 
 XhtmlParser.prototype.beforeParsing = function(raw)
 {
-  if(raw.match(/class="MsoNormal"/)){
+  if(raw.match(/class="MsoNormal"/) || raw.match(/ns = "urn:schemas-microsoft-com/)){
     // Usefull for cleaning up content pasted from other sources (MSWord)
     this._Listener.avoidStylingTagsAndAttributes(); 
   }
@@ -1860,6 +1860,7 @@ XhtmlSaxListener.prototype.afterParsing = function(xhtml)
 {
   xhtml = this.replaceNamedEntities(xhtml);
   xhtml = this.joinRepeatedEntities(xhtml);
+  xhtml = this.removeEmptyTags(xhtml);
   return xhtml;
 }
 
@@ -1876,6 +1877,11 @@ XhtmlSaxListener.prototype.joinRepeatedEntities = function(xhtml)
   var tags = 'em|strong|sub|sup|acronym|pre|del|blockquote|address';
   return xhtml.replace(new RegExp('<\/('+tags+')><\\1>' ,''),'').
   replace(new RegExp('(\s*<('+tags+')>\s*){2}(.*)(\s*<\/\\2>\s*){2}' ,''),'<\$2>\$3<\$2>');
+}
+
+XhtmlSaxListener.prototype.removeEmptyTags = function(xhtml)
+{
+  return xhtml.replace(new RegExp('<('+this.block_tags.join("|")+')>(<br \/>|&#160;|&nbsp;|\s)*<\/\\1>' ,'g'),'');
 }
 
 XhtmlSaxListener.prototype.getResult = function()
