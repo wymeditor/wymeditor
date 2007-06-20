@@ -1837,11 +1837,6 @@ function XhtmlSaxListener()
 XhtmlSaxListener.prototype.shouldCloseTagAutomatically = function(tag, now_on_tag, closing)
 {
   var closing = closing || false;
-  if(tag == 'li'){
-    if((closing && (now_on_tag == 'ul' || now_on_tag == 'ol')) || (!closing && now_on_tag == 'li')){
-      return true;
-    }
-  }
   if(tag == 'td'){
     if((closing && now_on_tag == 'tr') || (!closing && now_on_tag == 'td')){
       return true;

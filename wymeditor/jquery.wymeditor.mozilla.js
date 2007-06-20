@@ -240,4 +240,31 @@ WymClassMozilla.prototype.setFocusToNode = function(node) {
     this._iframe.contentWindow.focus();
 };
 
+WymClassMozilla.prototype.openBlockTag = function(tag, attributes)
+{
+  var attributes = this.validator.getValidTagAttributes(tag, attributes);
 
+  // Handle Mozilla styled spans
+  if(tag == 'span' && attributes.style){
+    var new_tag = this.getTagForStyle(attributes.style);
+    if(new_tag){
+      this._tag_stack.pop();
+      var tag = new_tag;
+      this._tag_stack.push(new_tag);
+      attributes.style = '';
+    }else{
+      return;
+    }
+  }
+
+  this.output += this.helper.tag(tag, attributes, true);    
+};
+
+WymClassMozilla.prototype.getTagForStyle = function(style) {
+
+  if(/bold/.test(style)) return 'strong';
+  if(/italic/.test(style)) return 'em';
+  if(/sub/.test(style)) return 'sub';
+  if(/sub/.test(style)) return 'super';
+  return false;
+};
