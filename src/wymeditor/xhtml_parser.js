@@ -1375,7 +1375,7 @@ Lexer.prototype._reduce = function(raw)
   var matched = this._regexes[this._mode.getCurrent()].match(raw);
   var match = matched[1];
   var action = matched[0];
-  if (action) { 
+  if (action) {
     unparsed_character_count = raw.indexOf(match);
     unparsed = raw.substr(0, unparsed_character_count);
     raw = raw.substring(unparsed_character_count + match.length);
@@ -1593,9 +1593,6 @@ XhtmlParser.prototype._callOpenTagListener = function(tag, attributes)
 {
   var  attributes = attributes || {};
   this.autoCloseUnclosedBeforeNewOpening(tag);
-  
-  this._Listener.last_tag = tag;
-  this._Listener.last_tag_attributes = attributes;
 
   if(this._Listener.isBlockTag(tag)){
     this._Listener._tag_stack.push(tag);
@@ -1607,6 +1604,9 @@ XhtmlParser.prototype._callOpenTagListener = function(tag, attributes)
     this._Listener.openUnknownTag(tag, attributes);
     this._increaseOpenTagCounter(tag);
   }
+  this._Listener.last_tag = tag;
+  this._Listener.last_tag_opened = true;
+  this._Listener.last_tag_attributes = attributes;
 }
 
 XhtmlParser.prototype._callCloseTagListener = function(tag)
@@ -1628,6 +1628,8 @@ XhtmlParser.prototype._callCloseTagListener = function(tag)
   }else{
     this._Listener.closeUnopenedTag(tag);
   }
+  this._Listener.last_tag = tag;
+  this._Listener.last_tag_opened = false;
 }
 
 XhtmlParser.prototype._increaseOpenTagCounter = function(tag)
@@ -1936,8 +1938,8 @@ XhtmlSaxListener.prototype.openUnknownTag = function(tag, attributes)
 
 XhtmlSaxListener.prototype.closeBlockTag = function(tag)
 {
-  this.output += "</"+tag+">";
-}
+  this.output += this._getClosingTagContent('before', tag)+"</"+tag+">"+this._getClosingTagContent('after', tag);
+};
 
 XhtmlSaxListener.prototype.closeUnknownTag = function(tag)
 {
@@ -1974,3 +1976,34 @@ XhtmlSaxListener.prototype.isInlineTag = function(tag)
 {
   return !this.avoided_tags.contains(tag) && this.inline_tags.contains(tag);
 }
+
+XhtmlSaxListener.prototype.insertContentAfterClosingTag = function(tag, content)
+{
+  this._insertContentWhenClosingTag('after', tag, content);
+};
+
+XhtmlSaxListener.prototype.insertContentBeforeClosingTag = function(tag, content)
+{
+  this._insertContentWhenClosingTag('before', tag, content);
+};
+
+XhtmlSaxListener.prototype._insertContentWhenClosingTag = function(position, tag, content)
+{
+  if(!this['_insert_'+position+'_closing']){
+    this['_insert_'+position+'_closing'] = [];
+  }
+  if(!this['_insert_'+position+'_closing'][tag]){
+    this['_insert_'+position+'_closing'][tag] = [];
+  }
+  this['_insert_'+position+'_closing'][tag].push(content);
+};
+
+XhtmlSaxListener.prototype._getClosingTagContent = function(position, tag)
+{
+  if( this['_insert_'+position+'_closing'] && 
+      this['_insert_'+position+'_closing'][tag] && 
+      this['_insert_'+position+'_closing'][tag].length > 0){
+        return this['_insert_'+position+'_closing'][tag].pop();
+  }
+  return '';
+};

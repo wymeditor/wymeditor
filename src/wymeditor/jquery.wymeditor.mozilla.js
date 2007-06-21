@@ -110,13 +110,12 @@ WymClassMozilla.prototype._exec = function(cmd,param) {
         
         if(focusNode && focusNode == anchorNode
           && focusNode.tagName.toLowerCase() == WYM_LI) {
-        	
+
             var ancestor = focusNode.parentNode.parentNode;
-        	
+
             if(focusNode.parentNode.childNodes.length>1
-        		|| ancestor.tagName.toLowerCase() == WYM_OL
-        		|| ancestor.tagName.toLowerCase() == WYM_UL)
-        		
+              || ancestor.tagName.toLowerCase() == WYM_OL
+              || ancestor.tagName.toLowerCase() == WYM_UL)
                 this._doc.execCommand(cmd,'',null);
         }
 
@@ -256,8 +255,13 @@ WymClassMozilla.prototype.openBlockTag = function(tag, attributes)
       return;
     }
   }
-
-  this.output += this.helper.tag(tag, attributes, true);    
+  
+  if(tag != 'li' && (tag == 'ul' || tag == 'ol') && this.last_tag && !this.last_tag_opened && this.last_tag == 'li'){
+    this.output = this.output.replace(/<\/li>$/, '');
+    this.insertContentAfterClosingTag(tag, '</li>');
+  }
+  
+  this.output += this.helper.tag(tag, attributes, true);
 };
 
 WymClassMozilla.prototype.getTagForStyle = function(style) {
