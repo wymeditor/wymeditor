@@ -1387,4 +1387,3 @@ Array.prototype.findByName = function (name) {
   }
   return(null);
 };
-
