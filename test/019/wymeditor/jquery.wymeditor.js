@@ -686,11 +686,11 @@ Wymeditor.prototype.box = function() {
  */
 Wymeditor.prototype.html = function(html) {
 
-  //if(html) $j(this._doc.body).html(html);
-  //else return($j(this._doc.body).html());
+  if(html) $j(this._doc.body).html(html);
+  else return($j(this._doc.body).html());
   
-  if(html) this._doc.body.innerHTML = html;
-  else return this._doc.body.innerHTML;
+  //if(html) this._doc.body.innerHTML = html;
+  //else return this._doc.body.innerHTML;
 };
 
 /* @name exec

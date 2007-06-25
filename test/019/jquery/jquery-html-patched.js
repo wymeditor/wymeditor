@@ -1,4 +1,4 @@
-// prevent execution of jQuery if included more than once
+﻿// prevent execution of jQuery if included more than once
 if(typeof window.jQuery == "undefined") {
 /*
  * jQuery 1.1.3a - New Wave Javascript
@@ -262,10 +262,12 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	html: function( val ) {
-		return val == undefined ?
-			( this.length ? this[0].innerHTML : null ) :
-			this.empty().append( val );
+	    return val == undefined ?
+		( this.length ? $(this[0]).find("*").each(function(){
+          this.removeAttribute("mergeNum")}).end()[0].innerHTML : null ) :
+		  this.empty().append( val );
 	},
+	
 	domManip: function(args, table, dir, fn){
 		var clone = this.length > 1, a; 
 

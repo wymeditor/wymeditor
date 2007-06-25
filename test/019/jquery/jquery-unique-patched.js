@@ -1,4 +1,4 @@
-// prevent execution of jQuery if included more than once
+﻿// prevent execution of jQuery if included more than once
 if(typeof window.jQuery == "undefined") {
 /*
  * jQuery 1.1.3a - New Wave Javascript
@@ -633,8 +633,8 @@ jQuery.extend({
 		var r = [], num = jQuery.mergeNum++;
 
 		for ( var i = 0, fl = first.length; i < fl; i++ )
-			if ( num != first[i].mergeNum ) {
-				first[i].mergeNum = num;
+			if ( !first[i].mergeNum || num != first[i].mergeNum[0] ) {
+				first[i].mergeNum = [num];
 				r.push(first[i]);
 			}
 
