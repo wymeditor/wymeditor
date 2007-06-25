@@ -508,8 +508,6 @@ function Wymeditor(elem,index,options) {
   this._options.jQueryPath = this._options.jQueryPath
     || this.computeJqueryPath();
   
-  if($j.isFunction(this._options.preInit)) this._options.preInit(this);
-  
   this.init();
   
 };
@@ -520,6 +518,7 @@ function Wymeditor(elem,index,options) {
 Wymeditor.prototype.init = function() {
 
   //load subclass - browser specific
+  //unsupported browsers: do nothing
   if ($j.browser.msie) {
     var WymClass = new WymClassExplorer(this);
   }
@@ -530,104 +529,107 @@ Wymeditor.prototype.init = function() {
     var WymClass = new WymClassOpera(this);
   }
   else if ($j.browser.safari) {
-    var WymClass = new WymClassSafari(this);
-  }
-  else {
-    //TODO: handle unsupported browsers
+    //commented until supported
+    //var WymClass = new WymClassSafari(this);
   }
   
-  this.loadXhtmlParser(WymClass);
+  if(WymClass) {
   
-  if(this._options.wymCss || this._options.wymStylesheet){
-    this.configureEditorUsingRawCss();
-  }
+      if($j.isFunction(this._options.preInit)) this._options.preInit(this);
   
-  this.helper = new XmlHelper();
-  
-  //extend the Wymeditor object
-  $j.extend(this, WymClass);
+      this.loadXhtmlParser(WymClass);
+      
+      if(this._options.wymCss || this._options.wymStylesheet){
+        this.configureEditorUsingRawCss();
+      }
+      
+      this.helper = new XmlHelper();
+      
+      //extend the Wymeditor object
+      $j.extend(this, WymClass);
 
-  //load wymbox
-  this._box = $j(this._element).hide().after(this._options.boxHtml).next();
-  
-  //construct the iframe
-  var iframeHtml = this._options.iframeHtml;
-  iframeHtml = iframeHtml
-    .replaceAll(WYM_INDEX,this._index)
-    .replaceAll(WYM_IFRAME_BASE_PATH, this._options.iframeBasePath);
-  
-  //construct wymbox
-  var boxHtml = $j(this._box).html();
-  
-  boxHtml = boxHtml.replaceAll(WYM_TOOLS, this._options.toolsHtml);
-  boxHtml = boxHtml.replaceAll(WYM_CONTAINERS, this._options.containersHtml);
-  boxHtml = boxHtml.replaceAll(WYM_CLASSES, this._options.classesHtml);
-  boxHtml = boxHtml.replaceAll(WYM_HTML, this._options.htmlHtml);
-  boxHtml = boxHtml.replaceAll(WYM_IFRAME, iframeHtml);
-  boxHtml = boxHtml.replaceAll(WYM_STATUS, this._options.statusHtml);
-  
-  //construct tools list
-  var aTools = eval(this._options.toolsItems);
-  var sTools = "";
+      //load wymbox
+      this._box = $j(this._element).hide().after(this._options.boxHtml).next();
+      
+      //construct the iframe
+      var iframeHtml = this._options.iframeHtml;
+      iframeHtml = iframeHtml
+        .replaceAll(WYM_INDEX,this._index)
+        .replaceAll(WYM_IFRAME_BASE_PATH, this._options.iframeBasePath);
+      
+      //construct wymbox
+      var boxHtml = $j(this._box).html();
+      
+      boxHtml = boxHtml.replaceAll(WYM_TOOLS, this._options.toolsHtml);
+      boxHtml = boxHtml.replaceAll(WYM_CONTAINERS,this._options.containersHtml);
+      boxHtml = boxHtml.replaceAll(WYM_CLASSES, this._options.classesHtml);
+      boxHtml = boxHtml.replaceAll(WYM_HTML, this._options.htmlHtml);
+      boxHtml = boxHtml.replaceAll(WYM_IFRAME, iframeHtml);
+      boxHtml = boxHtml.replaceAll(WYM_STATUS, this._options.statusHtml);
+      
+      //construct tools list
+      var aTools = eval(this._options.toolsItems);
+      var sTools = "";
 
-  for(var i = 0; i < aTools.length; i++) {
-    var oTool = aTools[i];
-    if(oTool.name && oTool.title)
-      sTools += this._options.toolsItemHtml
-      .replaceAll(WYM_TOOL_NAME, oTool.name)
-      .replaceAll(WYM_TOOL_TITLE,
-          this._options.stringDelimiterLeft
-        + oTool.title
-        + this._options.stringDelimiterRight)
-      .replaceAll(WYM_TOOL_CLASS, oTool.css);
-  }
+      for(var i = 0; i < aTools.length; i++) {
+        var oTool = aTools[i];
+        if(oTool.name && oTool.title)
+          sTools += this._options.toolsItemHtml
+          .replaceAll(WYM_TOOL_NAME, oTool.name)
+          .replaceAll(WYM_TOOL_TITLE,
+              this._options.stringDelimiterLeft
+            + oTool.title
+            + this._options.stringDelimiterRight)
+          .replaceAll(WYM_TOOL_CLASS, oTool.css);
+      }
 
-  boxHtml = boxHtml.replaceAll(WYM_TOOLS_ITEMS, sTools);
+      boxHtml = boxHtml.replaceAll(WYM_TOOLS_ITEMS, sTools);
 
-  //construct classes list
-  var aClasses = eval(this._options.classesItems);
-  var sClasses = "";
+      //construct classes list
+      var aClasses = eval(this._options.classesItems);
+      var sClasses = "";
 
-  for(var i = 0; i < aClasses.length; i++) {
-    var oClass = aClasses[i];
-    if(oClass.name && oClass.title)
-      sClasses += this._options.classesItemHtml
-      .replaceAll(WYM_CLASS_NAME, oClass.name)
-      .replaceAll(WYM_CLASS_TITLE, oClass.title);
-  }
+      for(var i = 0; i < aClasses.length; i++) {
+        var oClass = aClasses[i];
+        if(oClass.name && oClass.title)
+          sClasses += this._options.classesItemHtml
+          .replaceAll(WYM_CLASS_NAME, oClass.name)
+          .replaceAll(WYM_CLASS_TITLE, oClass.title);
+      }
 
-  boxHtml = boxHtml.replaceAll(WYM_CLASSES_ITEMS, sClasses);
-  
-  //construct containers list
-  var aContainers = eval(this._options.containersItems);
-  var sContainers = "";
+      boxHtml = boxHtml.replaceAll(WYM_CLASSES_ITEMS, sClasses);
+      
+      //construct containers list
+      var aContainers = eval(this._options.containersItems);
+      var sContainers = "";
 
-  for(var i = 0; i < aContainers.length; i++) {
-    var oContainer = aContainers[i];
-    if(oContainer.name && oContainer.title)
-      sContainers += this._options.containersItemHtml
-      .replaceAll(WYM_CONTAINER_NAME, oContainer.name)
-      .replaceAll(WYM_CONTAINER_TITLE,
-          this._options.stringDelimiterLeft
-        + oContainer.title
-        + this._options.stringDelimiterRight)
-      .replaceAll(WYM_CONTAINER_CLASS, oContainer.css);
-  }
+      for(var i = 0; i < aContainers.length; i++) {
+        var oContainer = aContainers[i];
+        if(oContainer.name && oContainer.title)
+          sContainers += this._options.containersItemHtml
+          .replaceAll(WYM_CONTAINER_NAME, oContainer.name)
+          .replaceAll(WYM_CONTAINER_TITLE,
+              this._options.stringDelimiterLeft
+            + oContainer.title
+            + this._options.stringDelimiterRight)
+          .replaceAll(WYM_CONTAINER_CLASS, oContainer.css);
+      }
 
-  boxHtml = boxHtml.replaceAll(WYM_CONTAINERS_ITEMS, sContainers);
+      boxHtml = boxHtml.replaceAll(WYM_CONTAINERS_ITEMS, sContainers);
 
-  //l10n
-  boxHtml = this.replaceStrings(boxHtml);
-  
-  //load html in wymbox
-  $j(this._box).html(boxHtml);
-  
-  //hide the html value
-  $j(this._box).find(this._options.htmlSelector).hide();
-  
-  //enable the skin
-  this.skin();
-
+      //l10n
+      boxHtml = this.replaceStrings(boxHtml);
+      
+      //load html in wymbox
+      $j(this._box).html(boxHtml);
+      
+      //hide the html value
+      $j(this._box).find(this._options.htmlSelector).hide();
+      
+      //enable the skin
+      this.skin();
+      
+    }
 };
 
 Wymeditor.prototype.bindEvents = function() {
