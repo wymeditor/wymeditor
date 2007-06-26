@@ -1712,9 +1712,7 @@ XhtmlParser.prototype.SingleQuotedAttribute = function(match, state)
 }
 XhtmlParser.prototype.UnquotedAttribute = function(match, state)
 {
-  if(LEXER_UNMATCHED == state){
-    this._tag_attributes[this._current_attribute] = match;
-  }
+  this._tag_attributes[this._current_attribute] = match.replace(/^=/,'');
   return true;
 }
 
