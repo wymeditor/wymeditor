@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>WYMeditor test for MSIE</title>
+<!--<script type="text/javascript" src="jquery-1.1.3a.js"></script>-->
+<script type="text/javascript" src="jquery-html-patched.js"></script>
+<!--<script type="text/javascript" src="jquery-unique-patched.js"></script>-->
+<!--<script type="text/javascript" src="jquery-no-mergenum.js"></script>-->
+
+<script type="text/javascript">
+
+var $j = jQuery.noConflict();
+
+function showHTML() {
+  txthtml.innerText = $j(ifrm.document.body).html();
+  //txthtml.innerText = ifrm.document.body.innerHTML;
+}
+
+function insertList() {
+  ifrm.document.execCommand("InsertOrderedList");
+  showHTML();
+}
+
+function initIframe(iframe) {
+  var doc = iframe.contentWindow.document;
+  
+  $j(doc.body).html('<ol><li>One</li><li>Two</li></ol><p>Select</p><p>these</p><p>paragraphs and click on ordered list button</p>');
+  $j(doc.body).find('p');
+  doc.designMode = 'on';
+}
+
+</script>
+
+</head>
+
+<body>
+<h1>Test page for MSIE + jQuery + designMode</h1>
+<a href="#" onclick="showHTML()">Show HTML</a> -
+<a href="#" onclick="insertList()">Insert List</a>
+<br />
+<textarea id="txthtml" cols="60" rows="15"></textarea><br />
+<iframe src="jquery-html-patched-iframe.html" id="ifrm" width="500" height="300" onload="window.parent.initIframe(this)"></iframe>
+<p class="myclass">Test</p>
+</body>
+
+</html>
