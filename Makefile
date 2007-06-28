@@ -5,10 +5,13 @@ JS_FILES = ${SRC_DIR}/wymeditor/lang/en.js\
  ${SRC_DIR}/wymeditor/lang/de.js\
  ${SRC_DIR}/wymeditor/lang/es.js\
  ${SRC_DIR}/wymeditor/lang/fr.js\
-	${SRC_DIR}/wymeditor/jquery.wymeditor.js\
-	${SRC_DIR}/wymeditor/jquery.wymeditor.explorer.js\
-	${SRC_DIR}/wymeditor/jquery.wymeditor.mozilla.js\
-	${SRC_DIR}/wymeditor/jquery.wymeditor.opera.js
+ ${SRC_DIR}/wymeditor/jquery.wymeditor.js\
+ ${SRC_DIR}/wymeditor/jquery.wymeditor.explorer.js\
+ ${SRC_DIR}/wymeditor/jquery.wymeditor.mozilla.js\
+ ${SRC_DIR}/wymeditor/jquery.wymeditor.opera.js
+ 
+CSS_PARSER = ${SRC_DIR}/wymeditor/wym_css_parser.js
+XHTML_PARSER = ${SRC_DIR}/wymeditor/xhtml_parser.js
 
 WE = ${BUILD_DIR}/build/jquery.wymeditor.js
 WE_PACK = ${BUILD_DIR}/build/jquery.wymeditor.pack.js
@@ -46,5 +49,6 @@ archive: pack
 	@@cp ${BUILD_DIR}/build/jquery.wymeditor.js ${BUILD_DIR}/build/wymeditor/
 	@@cp ${BUILD_DIR}/build/jquery.wymeditor.pack.js ${BUILD_DIR}/build/wymeditor/
 	@@cp -a ${SRC_DIR}/*.txt ${SRC_DIR}/README ${BUILD_DIR}/build/wymeditor/
+	@@cp ${CSS_PARSER} ${XHTML_PARSER} ${BUILD_DIR}/build/wymeditor/
 	@@tar -C ${BUILD_DIR}/build -czf ${WE_ARCH} --exclude '.svn' wymeditor
 	@@rm -rf ${BUILD_DIR}/build/wymeditor/
