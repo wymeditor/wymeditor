@@ -1285,7 +1285,9 @@ function WYM_INIT_DIALOG(index) {
         		}
         		
           //append the table after the selected container
-          $j(wym.findUp(wym.container(), WYM_MAIN_CONTAINERS)).after(table);
+          var node = $j(wym.findUp(wym.container(),WYM_MAIN_CONTAINERS)).get(0);
+          if(!node || !node.parentNode) $j(wym._doc.body).append(table);
+          else $j(node).after(table);
         }
         window.close();
     });
