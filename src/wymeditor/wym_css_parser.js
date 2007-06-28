@@ -3,7 +3,8 @@ function WymCssLexer(parser, only_wym_blocks)
 {
   var only_wym_blocks = (only_wym_blocks == undefined ? true : only_wym_blocks);
 
-  this.extendObject(new Lexer(parser, (only_wym_blocks?'Ignore':'WymCss')));
+  jQuery.extend(this, new Lexer(parser, (only_wym_blocks?'Ignore':'WymCss')));
+
   this.mapHandler('WymCss', 'Ignore');
 
   if(only_wym_blocks == true){    
@@ -30,7 +31,7 @@ function WymCssParser()
   this._in_style = false;
   this._has_title = false;
   this.only_wym_blocks = true;
-  this.css_settings = {'aClassesItems':[], 'aEditorCss':[], 'aDialogCss':[]};
+  this.css_settings = {'classesItems':[], 'editorStyles':[], 'dialogStyles':[]};
   return this;
 }
 
@@ -129,19 +130,19 @@ WymCssParser.prototype.addStyleSetting = function(style_details)
     var details = style_details[name];
     if(typeof details == 'object' && name != 'title'){
       
-      this.css_settings.aClassesItems.push({
+      this.css_settings.classesItems.push({
         'name': details.name.trim(),
         'title': style_details.title,
         'expr' : (details.expressions||details.tags).join(', ').trim()
       });
       if(details.feedback_style){
-        this.css_settings.aEditorCss.push({
+        this.css_settings.editorStyles.push({
           'name': '.'+details.name.trim(),
           'css': details.feedback_style
         });        
       }
       if(details.style){
-        this.css_settings.aDialogCss.push({
+        this.css_settings.dialogStyles.push({
           'name': '.'+details.name.trim(),
           'css': details.style
         });
