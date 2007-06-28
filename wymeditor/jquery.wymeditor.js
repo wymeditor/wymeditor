@@ -1087,14 +1087,15 @@ Wymeditor.prototype.configureEditorUsingRawCss = function()
   }else{
     CssParser.parse(this._options.styles, false);
   }
+
   if(this._options.classesItems.length == 0) {
     this._options.classesItems = CssParser.css_settings.classesItems;
   }
-  if(this._options.editorCss.length == 0) {
-    this._options.editorCss = CssParser.css_settings.editorCss;
+  if(this._options.editorStyles.length == 0) {
+    this._options.editorStyles = CssParser.css_settings.editorStyles;
   }
-  if(this._options.dialogCss.length == 0) {
-    this._options.dialogCss = CssParser.css_settings.dialogCss;
+  if(this._options.dialogStyles.length == 0) {
+    this._options.dialogStyles = CssParser.css_settings.dialogStyles;
   }
 }
 
