@@ -159,6 +159,10 @@ $j.fn.wymeditor = function(options) {
     
     jQueryPath: false,
     
+    styles: false,
+    
+    stylesheet: false,
+    
     lang:       "en",
 
     boxHtml:   "<div class='wym_box'>"
@@ -539,7 +543,7 @@ Wymeditor.prototype.init = function() {
   
       this.loadXhtmlParser(WymClass);
       
-      if(this._options.wymCss || this._options.wymStylesheet){
+      if(this._options.styles || this._options.stylesheet){
         this.configureEditorUsingRawCss();
       }
       
@@ -1078,10 +1082,10 @@ Wymeditor.prototype.configureEditorUsingRawCss = function()
     window.WymCssParser = WymCssParser;
   }
   var CssParser = new WymCssParser();
-  if(this._options.wymStylesheet){
-    CssParser.parse($j.ajax({url: this._options.wymStylesheet,async:false}).responseText);
+  if(this._options.stylesheet){
+    CssParser.parse($j.ajax({url: this._options.stylesheet,async:false}).responseText);
   }else{
-    CssParser.parse(this._options.wymCss, false);
+    CssParser.parse(this._options.styles, false);
   }
   if(this._options.classesItems.length == 0) {
     this._options.classesItems = CssParser.css_settings.classesItems;
