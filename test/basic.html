@@ -34,15 +34,21 @@ var $j = jQuery.noConflict();
 
 $j(function() {
 
-    $j(".wymeditor").wymeditor({
-      classesItems: [
-        {'name': 'info', 'title': 'ALL: Info', 'expr': '*'},
-        {'name': 'date', 'title': 'PARA: Date', 'expr': 'p'},
-        {'name': 'hidden-note', 'title': 'PARA: Hidden note', 'expr': 'p'},
-        {'name': 'important', 'title': 'PARA: Important', 'expr': 'p'},
-        {'name': 'border', 'title': 'IMG: Border', 'expr': 'img'},
-        {'name': 'special', 'title': 'LIST: Special', 'expr': 'ul, ol'}
-      ]
+    $j('.wymeditor').wymeditor({
+    
+        postInit: function(wym){
+            $j('.wymtoggle').change( function() {
+            
+                if($j(this).val() == 'on') {
+                    $j('.wym_box').show();
+                    $j('.wymeditor').hide();
+                } else {
+                    wym.update();
+                    $j('.wym_box').hide();
+                    $j('.wymeditor').show();
+                }
+            });
+        }
     });
 });
 
@@ -54,6 +60,10 @@ $j(function() {
 <h1>WYMeditor basic integration example</h1>
 <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
 <form method="post" action="">
+<select class="wymtoggle">
+<option value="on">On</option>
+<option value="off">Off</option>
+</select><br />
 <textarea class="wymeditor"></textarea>
 <input type="submit" class="wymsubmit" />
 </form>
