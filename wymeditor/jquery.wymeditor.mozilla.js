@@ -264,6 +264,11 @@ WymClassMozilla.prototype.openBlockTag = function(tag, attributes)
   this.output += this.helper.tag(tag, attributes, true);
 };
 
+WymClassMozilla.prototype.closeBlockTag = function(tag)
+{
+  this.output = this.output.replace(/<br \/>$/, '')+this._getClosingTagContent('before', tag)+"</"+tag+">"+this._getClosingTagContent('after', tag);
+};
+
 WymClassMozilla.prototype.getTagForStyle = function(style) {
 
   if(/bold/.test(style)) return 'strong';
