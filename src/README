@@ -12,11 +12,9 @@ File Name:
 File Authors:
 		Jean-François Hovinne (jf.hovinne@wymeditor.org)
 
-WYMeditor documentation is available online at http://trac.wymeditor.org/
 
+Important Note
+==============
 
-Note for 0.3
-============
-
-For WYMeditor 0.3 to work, you'll need jQuery 1.1.3+
-See http://trac.wymeditor.org/trac/wiki/0.3/Integration#Requirements
+For WYMeditor to work, you'll need at least jQuery 1.1.3
+Please see the documentation for more information: http://trac.wymeditor.org/
