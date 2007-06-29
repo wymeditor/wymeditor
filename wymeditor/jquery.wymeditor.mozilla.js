@@ -15,6 +15,7 @@
  * File Authors:
  *        Jean-Francois Hovinne (jf.hovinne@wymeditor.org)
  *        Volker Mische (vmx@gmx.de)
+ *        Bermi Ferrer (wymeditor a-t bermi dotorg)
  */
 
 function WymClassMozilla(wym) {
@@ -29,15 +30,11 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
     this._doc = iframe.contentDocument;
     
     //add css rules from options
+    
     var styles = this._doc.styleSheets[0];    
     var aCss = eval(this._options.aEditorCss);
-
-    for(var i = 0; i < aCss.length; i++) {
-    var oCss = aCss[i];
-    if(oCss.name && oCss.css)
-      styles.insertRule(oCss.name + " {" + oCss.css + "}",
-        styles.cssRules.length);
-    }
+    
+    this.addCssRules(this._doc, aCss);
 
     this._doc.title = this._wym._index;
     
@@ -54,10 +51,10 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
     //bind external events
     this._wym.bindEvents();
     
-    // bidn key down events for enabling keyboar shortcuts
+    //bind editor keydown events
     $j(this._doc).bind("keydown", this.keydown);
     
-    //bind editor events
+    //bind editor keyup events
     $j(this._doc).bind("keyup", this.keyup);
     
     //post-init functions
@@ -119,6 +116,11 @@ WymClassMozilla.prototype.selected = function() {
     else return(node);
 };
 
+WymClassMozilla.prototype.addCssRule = function(styles, oCss) {
+
+    styles.insertRule(oCss.name + " {" + oCss.css + "}",
+        styles.cssRules.length);
+};
 
 /* @name xhtml
  * @description Cleans up the HTML
@@ -214,48 +216,7 @@ WymClassMozilla.prototype.xhtml = function() {
     return(ret);    
 };
 
-//keyup handler, mainly used for cleanups
-WymClassMozilla.prototype.keyup = function(evt) {
-    
-  //'this' is the doc
-  var wym = aWYM_INSTANCES[this.title];
-  
-  wym._selected_image = null;
-  
-	if(evt.keyCode == 13 && !evt.shiftKey) {
-	
-	  //RETURN key
-		//cleanup <br><br> between paragraphs
-		$j(wym._doc.body).children(sWYM_BR).remove();
-	}
-	
-	else if(evt.keyCode != 8 && evt.keyCode != 46
-	    && !evt.metaKey 
-	    && evt.keyCode != 224 
-	    && evt.keyCode!=17 && !evt.ctrlKey)	{      
-	  //NOT BACKSPACE, NOT DELETE, NOT CTRL
-		//text nodes replaced by P
-		
-		var container = wym.selected();
-		var name = container.tagName.toLowerCase();
-
-		//fix forbidden main containers
-		if(
-			name == "strong" ||
-			name == "b" ||
-			name == "em" ||
-			name == "i" ||
-			name == "sub" ||
-			name == "sup" ||
-			name == "a"
-
-		) name = container.parentNode.tagName.toLowerCase();
-
-		if(name == sWYM_BODY) wym._exec(sWYM_FORMAT_BLOCK, sWYM_P);
-	}
-};
-
-//keydown handler,used for keyboard shortcuts
+//keydown handler, mainly used for keyboard shortcuts
 WymClassMozilla.prototype.keydown = function(evt) {
   
   //'this' is the doc
@@ -263,15 +224,61 @@ WymClassMozilla.prototype.keydown = function(evt) {
   
   if(evt.ctrlKey){
     if(evt.keyCode == 66){
-      wym._exec('Bold');
+      //CTRL+b => STRONG
+      wym._exec(sWYM_BOLD);
       return false;
     }
     if(evt.keyCode == 73){
-      wym._exec('Italic');
+      //CTRL+i => EMPHASIS
+      wym._exec(sWYM_ITALIC);
       return false;
     }
   }
-}
+};
+
+//keyup handler, mainly used for cleanups
+WymClassMozilla.prototype.keyup = function(evt) {
+
+  //'this' is the doc
+  var wym = aWYM_INSTANCES[this.title];
+  
+  wym._selected_image = null;
+
+  if(evt.keyCode == 13 && !evt.shiftKey) {
+  
+    //RETURN key
+    //cleanup <br><br> between paragraphs
+    $j(wym._doc.body).children(sWYM_BR).remove();
+  }
+  
+  else if(evt.keyCode != 8
+       && evt.keyCode != 17
+       && evt.keyCode != 46
+       && evt.keyCode != 224
+       && !evt.metaKey
+       && !evt.ctrlKey) {
+      
+    //NOT BACKSPACE, NOT DELETE, NOT CTRL, NOT COMMAND
+    //text nodes replaced by P
+    
+    var container = wym.selected();
+    var name = container.tagName.toLowerCase();
+
+    //fix forbidden main containers
+    if(
+      name == "strong" ||
+      name == "b" ||
+      name == "em" ||
+      name == "i" ||
+      name == "sub" ||
+      name == "sup" ||
+      name == "a"
+
+    ) name = container.parentNode.tagName.toLowerCase();
+
+    if(name == sWYM_BODY) wym._exec(sWYM_FORMAT_BLOCK, sWYM_P);
+  }
+};
 
 WymClassMozilla.prototype.setFocusToNode = function(node) {
     var range = document.createRange();

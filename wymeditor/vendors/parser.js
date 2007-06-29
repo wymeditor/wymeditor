@@ -1,3 +1,4 @@
+
 Object.prototype.extends = function (oSuper) {
        for (sProperty in oSuper) {
                this[sProperty] = oSuper[sProperty];
@@ -7,6 +8,17 @@ Object.prototype.extends = function (oSuper) {
 String.prototype.trim = function () {
   return this.replace(/^(\s*)|(\s*)$/gm,'');
 }
+
+
+Array.prototype.contains = function (elem) {
+  for (var i = 0; i < this.length; i++) {
+    if (this[i] === elem) {
+      return true;
+    }
+  }
+  return false;
+};
+
 
 /**
 *    Compounded regular expression. Any of
@@ -83,13 +95,42 @@ ParallelRegex.prototype._getCompoundedRegex = function() {
   
   if (this._regex == null) {
       for (i = 0, count = this._patterns.length; i < count; i++) {
-      this._patterns[i] = '(' + this._patterns[i].replace(/([\/\(\)])/g,'\\$1') + ')';
+      this._patterns[i] = '(' + this._untokenizeRegex(this._tokenizeRegex(this._patterns[i]).replace(/([\/\(\)])/g,'\\$1')) + ')';
     }
     this._regex = new RegExp(this._patterns.join("|") ,this._getPerlMatchingFlags());
   }
 
   return this._regex;
 }
+
+/**
+* Escape lookahead/lookbehind blocks
+*/
+ParallelRegex.prototype._tokenizeRegex = function(regex) {
+  return regex.
+  replace(/\(\?(i|m|s|x|U)\)/,     '~~~~~~Tk1\$1~~~~~~').
+  replace(/\(\?(\-[i|m|s|x|U])\)/, '~~~~~~Tk2\$1~~~~~~').  
+  replace(/\(\?\=(.*)\)/,          '~~~~~~Tk3\$1~~~~~~').
+  replace(/\(\?\!(.*)\)/,          '~~~~~~Tk4\$1~~~~~~').
+  replace(/\(\?\<\=(.*)\)/,        '~~~~~~Tk5\$1~~~~~~').
+  replace(/\(\?\<\!(.*)\)/,        '~~~~~~Tk6\$1~~~~~~').
+  replace(/\(\?\:(.*)\)/,          '~~~~~~Tk7\$1~~~~~~');
+}
+
+/**
+* Unscape lookahead/lookbehind blocks
+*/
+ParallelRegex.prototype._untokenizeRegex = function(regex) {
+  return regex.
+  replace(/~~~~~~Tk1(.{1})~~~~~~/,    "(?\$1)").
+  replace(/~~~~~~Tk2(.{2})~~~~~~/,    "(?\$1)").
+  replace(/~~~~~~Tk3(.*)~~~~~~/,      "(?=\$1)").
+  replace(/~~~~~~Tk4(.*)~~~~~~/,      "(?!\$1)").
+  replace(/~~~~~~Tk5(.*)~~~~~~/,      "(?<=\$1)").
+  replace(/~~~~~~Tk6(.*)~~~~~~/,      "(?<!\$1)").
+  replace(/~~~~~~Tk7(.*)~~~~~~/,      "(?:\$1)");
+}
+
 
 /**
 *    Accessor for perl regex mode flags to use.
@@ -285,10 +326,12 @@ Lexer.prototype.mapHandler = function (mode, handler) {
 *    @return boolean           True on success, else false.
 *    @access public
 */
-Lexer.prototype.parse = function (raw) {  
+Lexer.prototype.parse = function (raw) {
+
   if (this._parser == undefined) {
     return false;
   }
+  
   length = raw.length;
   //parsed = this._reduce(raw);
   while (typeof (parsed = this._reduce(raw)) == 'object') {    

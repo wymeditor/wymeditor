@@ -1,341 +1,1221 @@
-/**
-*    Breas XHTML into SAX events.
-*    @package Parser
-*    @subpackage WebTester
+/* Copyright (c) 2007 Bermi Ferrer (http://bermi.org)
+* Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
+* and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
 *
-*    Sets up the lexer with case insensitive matching
-*    and adds the HTML handlers.
-*    @param SaxParser parser  Handling strategy by
-*                                    reference.
-*    @access public
+* Version: 1.0
 */
-function XhtmlLexer(parser) {
-  this.extends(new Lexer(parser, 'text'));
-  this.mapHandler('text', 'acceptTextToken');
-  this._addSkipping();
-  var parsed_tags = this._getParsedTags();
-  for (i = 0, count = parsed_tags.length; i < count; i++) {
-    this._addTag(parsed_tags[i]);
+
+Object.prototype.extends = function (oSuper) {
+  for (sProperty in oSuper) {
+    this[sProperty] = oSuper[sProperty];
   }
-  this._addInTagTokens();
 }
 
-/**
-*    List of parsed tags. Others are ignored.
-*    @return array        List of searched for tags.
-*    @access private
+String.prototype.trim = function () {
+  return this.replace(/^(\s*)|(\s*)$/gm,'');
+}
+
+
+Array.prototype.contains = function (elem) {
+  for (var i = 0; i < this.length; i++) {
+    if (this[i] === elem) {
+      return true;
+    }
+  }
+  return false;
+};
+
+
+/*
+* @name xml
+* @description Use these methods to generate XML and XHTML compliant tags and 
+* escape tag attributes correctly
+* @author Bermi Ferrer - http://bermi.org
+* @author David Heinemeier Hansson http://loudthinking.com
 */
-XhtmlLexer.prototype._getParsedTags =  function () {
-  return ["a", "abbr", "acronym", "address", "area", "b", 
-  "base", "bdo", "big", "blockquote", "body", "br", "button", 
-  "caption", "cite", "code", "col", "colgroup", "dd", "del", "div", 
-  "dfn", "dl", "dt", "em", "fieldset", "form", "head", "h1", "h2", 
-  "h3", "h4", "h5", "h6", "hr", "html", "i", "img", "input", "ins", 
-  "kbd", "label", "legend", "li", "link", "map", "meta", "noscript", 
-  "object", "ol", "optgroup", "option", "p", "param", "pre", "q", 
-  "samp", "script", "select", "small", "span", "strong", "style", 
-  "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "th", 
-  "thead", "title", "tr", "tt", "ul", "var", "extends"];
-}
-
-/**
-*    The lexer has to skip certain sections such
-*    as server code, client code and styles.
-*    @access private
-*/
-XhtmlLexer.prototype._addSkipping = function() {
-  this.mapHandler('css', 'ignore');
-  this.addEntryPattern('<style', 'text', 'css');
-  this.addExitPattern('</style>', 'css');
-  this.mapHandler('js', 'ignore');
-  this.addEntryPattern('<script', 'text', 'js');
-  this.addExitPattern('</script>', 'js');
-  this.mapHandler('comment', 'ignore');
-  this.addEntryPattern('<!--', 'text', 'comment');
-  this.addExitPattern('-->', 'comment');
-}
-
-/**
-*    Pattern matches to start and end a tag.
-*    @param string tag          Name of tag to scan for.
-*    @access private
-*/
-XhtmlLexer.prototype._addTag = function(tag) {
-  this.addSpecialPattern('</'+tag+'>', 'text', 'acceptEndToken');
-  this.addEntryPattern('<'+tag, 'text', 'tag');
-}
-
-/**
-*    Pattern matches to parse the inside of a tag
-*    including the attributes and their quoting.
-*    @access private
-*/
-XhtmlLexer.prototype._addInTagTokens = function() {
-  this.mapHandler('tag', 'acceptStartToken');
-  this.addSpecialPattern('\\s+', 'tag', 'ignore');
-  this._addAttributeTokens();
-  this.addExitPattern('/>', 'tag');
-  this.addExitPattern('>', 'tag');
-}
-
-/**
-*    Matches attributes that are either single quoted,
-*    double quoted or unquoted.
-*    @access private
-*/
-XhtmlLexer.prototype._addAttributeTokens = function() {
-  this.mapHandler('dq_attribute', 'acceptAttributeToken');
-  this.addEntryPattern('=\\s*"', 'tag', 'dq_attribute');
-  this.addPattern("\\\\\"", 'dq_attribute');
-  this.addExitPattern('"', 'dq_attribute');
-  this.mapHandler('sq_attribute', 'acceptAttributeToken');
-  this.addEntryPattern("=\\s*'", 'tag', 'sq_attribute');
-  this.addPattern("\\\\'", 'sq_attribute');
-  this.addExitPattern("'", 'sq_attribute');
-  this.mapHandler('uq_attribute', 'acceptAttributeToken');
-  this.addSpecialPattern('=\\s*[^>\\s]*', 'tag', 'uq_attribute');
+function XmlHelper()
+{
+  this._entitiesDiv = document.createElement('div');
 }
 
 
-/**
-*    Converts HTML tokens into selected SAX evnts.
-*    @package Parser
-*    @subpackage WebTester
+/*
+* @name tag
+* @description
+* Returns an empty HTML tag of type *name* which by default is XHTML
+* compliant. Setting *open* to true will create an open tag compatible
+* with HTML 4.0 and below. Add HTML attributes by passing an attributes
+* array to *options*. For attributes with no value like (disabled and
+* readonly), give it a value of true in the *options* array.
 *
-*    Sets the listener.
-*    @param SaxListener listener    SAX evnt handler.
-*    @access public
+* Examples:
+*
+*   this.tag('br')
+*    # => <br />
+*   this.tag ('br', false, true)
+*    # => <br>
+*   this.tag ('input', $j({type:'text',disabled:true }) )
+*    # => <input type="text" disabled="disabled" />
 */
-function XhtmlSaxParser(listener) {
-  this._listener = listener;
-  this._lexer = this.createLexer(this);
-  this._tag = '';
-  this._attributes = {};
-  this._current_attribute = '';
+XmlHelper.prototype.tag = function(name, options, open)
+{
+  options = options || false;
+  open = open || false;
+  return '<'+name+(options ? this.tagOptions(options) : '')+(open ? '>' : ' />');
 }
 
-/**
-*    Runs the content through the lexer which
-*    should call back to the acceptors.
-*    @param string $raw      Page text to parse.
-*    @return boolean         False if parse error.
-*    @access public
+/*
+* @name contentTag
+* @description
+* Returns a XML block tag of type *name* surrounding the *content*. Add
+* XML attributes by passing an attributes array to *options*. For attributes
+* with no value like (disabled and readonly), give it a value of true in
+* the *options* array. You can use symbols or strings for the attribute names.
+*
+*   this.contentTag ('p', 'Hello world!' )
+*    # => <p>Hello world!</p>
+*   this.contentTag('div', this.contentTag('p', "Hello world!"), $j({class : "strong"}))
+*    # => <div class="strong"><p>Hello world!</p></div>
+*   this.contentTag("select", options, $j({multiple : true}))
+*    # => <select multiple="multiple">...options...</select>
 */
-XhtmlSaxParser.prototype.parse = function (raw) {
-  return this._lexer.parse(raw);
+XmlHelper.prototype.contentTag = function(name, content, options)
+{
+  options = options || false;
+  return '<'+name+(options ? this.tagOptions(options) : '')+'>'+content+'</'+name+'>';
 }
 
-/**
-*    Sets up the matching lexer. Starts in 'text' mode.
-*    @param SaxParser $parser    evnt generator, usually $self.
-*    @return Lexer               Lexer suitable for this parser.
-*    @access public
-*    @static
+/*
+* @name cdataSection
+* @description
+* Returns a CDATA section for the given +content+.  CDATA sections
+* are used to escape blocks of text containing characters which would
+* otherwise be recognized as markup. CDATA sections begin with the string
+* <tt>&lt;![CDATA[</tt> and } with (and may not contain) the string
+* <tt>]]></tt>.
 */
-XhtmlSaxParser.prototype.createLexer = function (parser) {
-  return new XhtmlLexer(parser);
+XmlHelper.prototype.cdataSection = function(content)
+{
+  return '<![CDATA['+content+']]>';
 }
 
-/**
-*    Accepts a token from the tag mode. If the
-*    starting element completes then the element
-*    is dispatched and the current attributes
-*    set back to empty. The element or attribute
-*    name is converted to lower case.
-*    @param string token     Incoming characters.
-*    @param integer evnt    Lexer evnt type.
-*    @return boolean          False if parse error.
-*    @access public
+
+/*
+* @name escapeOnce
+* @description
+* Returns the escaped +xml+ without affecting existing escaped entities.
+*
+*  this.escapeOnce( "1 > 2 &amp; 3")
+*    # => "1 &gt; 2 &amp; 3"
 */
-XhtmlSaxParser.prototype.acceptStartToken = function (token, evnt) {
-  if (evnt == LEXER_ENTER) {
-    this._tag = token.toLowerCase().substring(1);
-    return true;
+XmlHelper.prototype.escapeOnce = function(xml)
+{
+  return this._fixDoubleEscape(this.escapeEntities(xml));
+}
+
+/*
+* @name _fixDoubleEscape
+* @description
+* Fix double-escaped entities, such as &amp;amp;, &amp;#123;, etc.
+*/
+XmlHelper.prototype._fixDoubleEscape = function(escaped)
+{
+  return escaped.replace(/&amp;([a-z]+|(#\d+));/i, "&$1;");
+}
+
+/*
+* @name tagOptions
+* @description
+* Takes an array like the one generated by Tag.parseAttributes
+*  [["src", "http://www.editam.com/?a=b&c=d&amp;f=g"], ["title", "Editam, <Simplified> CMS"]]
+* or an object like {src:"http://www.editam.com/?a=b&c=d&amp;f=g", title:"Editam, <Simplified> CMS"}
+* and returns a string properly escaped like
+* ' src = "http://www.editam.com/?a=b&amp;c=d&amp;f=g" title = "Editam, &lt;Simplified&gt; CMS"'
+* which is valid for strict XHTML
+*/
+XmlHelper.prototype.tagOptions = function(options)
+{
+  var xml = this;
+  xml._formated_options = '';
+
+  for (key in options) {
+    var formated_options = '';
+    value = options[key];
+    if(typeof value != 'function' && value.length > 0) {
+      if(parseInt(key) == key && typeof value == 'object'){
+        key = value.shift();
+        value = value.pop();
+      }
+      if(key != '' && value != ''){
+        xml._formated_options += ' '+key+'="'+xml.escapeOnce(value)+'"';
+      }
+    }
   }
-  if (evnt == LEXER_EXIT) {
-    success = this._listener.startElement(this._tag, this._attributes);
-    this._tag = '';
-    this._attributes = {};
-    return success;
+  return xml._formated_options;
+}
+
+/*
+* @name escapeEntities
+* @description
+* Escapes XML/HTML entities <, >, & and ". If seccond parameter is set to false it
+* will not escape ". If set to true it will also escape '
+*/
+XmlHelper.prototype.escapeEntities = function(string, escape_quotes)
+{
+  this._entitiesDiv.textContent = string;
+  var result = this._entitiesDiv.innerHTML;
+  if(typeof escape_quotes == 'undefined'){
+    if(escape_quotes != false) result = result.replace('"', '&quot;');
+    if(escape_quotes == true)  result = result.replace('"', '&#039;');
   }
-  if (token != '=') {
-    this._current_attribute = this.decodeHtml(token).toLowerCase();
-    this._attributes[this._current_attribute] = '';
+  return result;
+}
+
+/*
+* Parses a string conatining tag attributes and values an returns an array formated like
+*  [["src", "http://www.editam.com"], ["title", "Editam, Simplified CMS"]]
+*/
+XmlHelper.prototype.parseAttributes = function(tag_attributes)
+{
+  // Use a compounded regex to match single quoted, double quoted and unquoted attribute pairs
+  var result = [];
+  var matches = tag_attributes.split(/((=\s*")(")("))|((=\s*\')(\')(\'))|((=\s*[^>\s]*))/g);
+  if(matches.toString() != tag_attributes){
+    for (k in matches) {
+      var v = matches[k];
+      if(typeof v != 'function' && v.length != 0){
+        var re = new RegExp('(\\w+)\\s*'+v);
+        if(match = tag_attributes.match(re) ){
+          var value = v.replace(/^[\s=]+/, "");
+          var delimiter = value.charAt(0);
+          delimiter = delimiter == '"' ? '"' : (delimiter=="'"?"'":'');
+          if(delimiter != ''){
+            value = delimiter == '"' ? value.replace(/^"|"+$/g, '') :  value.replace(/^'|'+$/g, '');
+          }
+          tag_attributes = tag_attributes.replace(match[0],'');
+          result.push([match[1] , value]);
+        }
+      }
+    }
   }
-  return true;
+  return result;
+}
+
+
+
+/**
+*    Compounded regular expression. Any of
+*    the contained patterns could match and
+*    when one does, it's label is returned.
+* 
+*    Constructor. Starts with no patterns.
+*    @param boolean case    True for case sensitive, false
+*                            for insensitive.
+*    @access public
+*    @author Marcus Baker (http://lastcraft.com)
+*    @author Bermi Ferrer (http://bermi.org)
+*/
+function ParallelRegex(case_sensitive) 
+{
+  this._case = case_sensitive;
+  this._patterns = [];
+  this._labels = [];
+  this._regex = null;
+}
+
+
+/**
+*    Adds a pattern with an optional label.
+*    @param string pattern      Perl style regex, but ( and )
+*                                lose the usual meaning.
+*    @param string label        Label of regex to be returned
+*                                on a match.
+*    @access public
+*/
+ParallelRegex.prototype.addPattern = function(pattern, label) 
+{
+  label = label || true;
+  var count = this._patterns.length;
+  this._patterns[count] = pattern;
+  this._labels[count] = label;
+  this._regex = null;
 }
 
 /**
-*    Accepts a token from the end tag mode.
-*    The element name is converted to lower case.
-*    @param string token     Incoming characters.
-*    @param integer evnt    Lexer evnt type.
-*    @return boolean          False if parse error.
+*    Attempts to match all patterns at once against
+*    a string.
+*    @param string subject      String to match against.
+*    
+*    @return boolean             True on success.
+*    @return string match         First matched portion of
+*                                subject.
 *    @access public
 */
-XhtmlSaxParser.prototype.acceptEndToken = function (token, evnt) {
-  matches = token.match(/<\/(.*)>/);
-  if (matches.length == 0) {
+ParallelRegex.prototype.match = function(subject) 
+{
+  if (this._patterns.length == 0) {
+    return [false, ''];
+  }
+  matches = subject.match(this._getCompoundedRegex());
+
+  if(!matches){
+    return [false, ''];
+  }
+  var match = matches[0];
+  for (i = 1; i < matches.length; i++) {
+    if (matches[i]) {
+      return [this._labels[i-1], match];
+    }
+  }
+  return [true, matches[0]];
+}
+
+/**
+*    Compounds the patterns into a single
+*    regular expression separated with the
+*    "or" operator. Caches the regex.
+*    Will automatically escape (, ) and / tokens.
+*    @param array patterns    List of patterns in order.
+*    @access private
+*/
+ParallelRegex.prototype._getCompoundedRegex = function() 
+{
+  if (this._regex == null) {
+    for (i = 0, count = this._patterns.length; i < count; i++) {
+      this._patterns[i] = '(' + this._untokenizeRegex(this._tokenizeRegex(this._patterns[i]).replace(/([\/\(\)])/g,'\\$1')) + ')';
+    }
+    this._regex = new RegExp(this._patterns.join("|") ,this._getPerlMatchingFlags());
+  }
+  return this._regex;
+}
+
+/**
+* Escape lookahead/lookbehind blocks
+*/
+ParallelRegex.prototype._tokenizeRegex = function(regex) 
+{
+  return regex.
+  replace(/\(\?(i|m|s|x|U)\)/,     '~~~~~~Tk1\$1~~~~~~').
+  replace(/\(\?(\-[i|m|s|x|U])\)/, '~~~~~~Tk2\$1~~~~~~').  
+  replace(/\(\?\=(.*)\)/,          '~~~~~~Tk3\$1~~~~~~').
+  replace(/\(\?\!(.*)\)/,          '~~~~~~Tk4\$1~~~~~~').
+  replace(/\(\?\<\=(.*)\)/,        '~~~~~~Tk5\$1~~~~~~').
+  replace(/\(\?\<\!(.*)\)/,        '~~~~~~Tk6\$1~~~~~~').
+  replace(/\(\?\:(.*)\)/,          '~~~~~~Tk7\$1~~~~~~');
+}
+
+/**
+* Unscape lookahead/lookbehind blocks
+*/
+ParallelRegex.prototype._untokenizeRegex = function(regex) 
+{
+  return regex.
+  replace(/~~~~~~Tk1(.{1})~~~~~~/,    "(?\$1)").
+  replace(/~~~~~~Tk2(.{2})~~~~~~/,    "(?\$1)").
+  replace(/~~~~~~Tk3(.*)~~~~~~/,      "(?=\$1)").
+  replace(/~~~~~~Tk4(.*)~~~~~~/,      "(?!\$1)").
+  replace(/~~~~~~Tk5(.*)~~~~~~/,      "(?<=\$1)").
+  replace(/~~~~~~Tk6(.*)~~~~~~/,      "(?<!\$1)").
+  replace(/~~~~~~Tk7(.*)~~~~~~/,      "(?:\$1)");
+}
+
+
+/**
+*    Accessor for perl regex mode flags to use.
+*    @return string       Perl regex flags.
+*    @access private
+*/
+ParallelRegex.prototype._getPerlMatchingFlags = function() 
+{
+  return (this._case ? "m" : "mi");
+}
+
+
+
+/**
+*    States for a stack machine.
+*
+*    Constructor. Starts in named state.
+*    @param string start        Starting state name.
+*    @access public
+*    @author Marcus Baker (http://lastcraft.com)
+*    @author Bermi Ferrer (http://bermi.org)
+*/
+function StateStack( start) 
+{
+  this._stack = [start];
+}
+
+/**
+*    Accessor for current state.
+*    @return string       State.
+*    @access public
+*/
+StateStack.prototype.getCurrent = function () 
+{
+  return this._stack[this._stack.length - 1];
+}
+
+/**
+*    Adds a state to the stack and sets it
+*    to be the current state.
+*    @param string state        New state.
+*    @access public
+*/
+StateStack.prototype.enter = function (state) 
+{
+  this._stack.push(state);    
+}
+
+/**
+*    Leaves the current state and reverts
+*    to the previous one.
+*    @return boolean    False if we drop off
+*                       the bottom of the list.
+*    @access public
+*/
+StateStack.prototype.leave = function () 
+{
+  if (this._stack.length == 1) {
     return false;
   }
-  return this._listener.endElement(matches[1].toLowerCase());
-}
-
-/**
-*    Part of the tag data.
-*    @param string token     Incoming characters.
-*    @param integer evnt    Lexer evnt type.
-*    @return boolean          False if parse error.
-*    @access public
-*/
-XhtmlSaxParser.prototype.acceptAttributeToken = function (token, evnt) {
-  if (evnt == LEXER_UNMATCHED) {
-    this._attributes[this._current_attribute] += this.decodeHtml(token);    
-  }
-  if (evnt == LEXER_SPECIAL) {
-    this._attributes[this._current_attribute] += this.decodeHtml(token).replace(/^=\s*/ , '');
-  }
+  this._stack.pop();
   return true;
 }
 
-/**
-*    A character entity.
-*    @param string token    Incoming characters.
-*    @param integer evnt   Lexer evnt type.
-*    @return boolean         False if parse error.
-*    @access public
-*/
-XhtmlSaxParser.prototype.acceptEntityToken = function (token, evnt) {
-}
+
+
+var LEXER_ENTER = 1;
+var LEXER_MATCHED = 2;
+var LEXER_UNMATCHED = 3;
+var LEXER_EXIT = 4;
+var LEXER_SPECIAL = 5;
+
 
 /**
-*    Character data between tags regarded as
-*    important.
-*    @param string $token     Incoming characters.
-*    @param integer $evnt    Lexer evnt type.
-*    @return boolean          False if parse error.
-*    @access public
-*/
-XhtmlSaxParser.prototype.acceptTextToken = function (token, evnt) {
-  return this._listener.addContent(token);
-}
-
-/**
-*    Incoming data to be ignored.
-*    @param string $token     Incoming characters.
-*    @param integer $evnt    Lexer evnt type.
-*    @return boolean          False if parse error.
-*    @access public
-*/
-XhtmlSaxParser.prototype.ignore = function (token, evnt) {
-  return true;
-}
-
-/**
-*    Decodes any HTML entities.
-*    @param string $html    Incoming HTML.
-*    @return string         Outgoing plain text.
-*    @access public
-*    @static
-*/
-XhtmlSaxParser.prototype.decodeHtml = function (html) {
-  var entities = ['&nbsp;','&iexcl;','&cent;','&pound;','&curren;','&yen;','&brvbar;','&sect;',
-  '&uml;','&copy;','&ordf;','&laquo;','&not;','&shy;','&reg;',
-  '&macr;','&deg;','&plusmn;','&sup2;','&sup3;','&acute;','&micro;',
-  '&para;','&middot;','&cedil;','&sup1;','&ordm;','&raquo;','&frac14;',
-  '&frac12;','&frac34;','&iquest;','&Agrave;','&Aacute;','&Acirc;','&Atilde;',
-  '&Auml;','&Aring;','&AElig;','&Ccedil;','&Egrave;','&Eacute;','&Ecirc;',
-  '&Euml;','&Igrave;','&Iacute;','&Icirc;','&Iuml;','&ETH;','&Ntilde;',
-  '&Ograve;','&Oacute;','&Ocirc;','&Otilde;','&Ouml;','&times;','&Oslash;',
-  '&Ugrave;','&Uacute;','&Ucirc;','&Uuml;','&Yacute;','&THORN;','&szlig;',
-  '&agrave;','&aacute;','&acirc;','&atilde;','&auml;','&aring;','&aelig;',
-  '&ccedil;','&egrave;','&eacute;','&ecirc;','&euml;','&igrave;','&iacute;',
-  '&icirc;','&iuml;','&eth;','&ntilde;','&ograve;','&oacute;','&ocirc;',
-  '&otilde;','&ouml;','&divide;','&oslash;','&ugrave;','&uacute;','&ucirc;',
-  '&uuml;','&yacute;','&thorn;','&yuml;','&quot;','&lt;','&gt;',
-  '&amp;'];
-
-  var chars = ["\xa0","\xa1","\xa2","\xa3","\xa4","\xa5","\xa6","\xa7","\xa8","\xa9","\xaa",
-  "\xab","\xac","\xad","\xae","\xaf","\xb0","\xb1","\xb2","\xb3","\xb4",
-  "\xb5","\xb6","\xb7","\xb8","\xb9","\xba","\xbb","\xbc","\xbd","\xbe",
-  "\xbf","\xc0","\xc1","\xc2","\xc3","\xc4","\xc5","\xc6","\xc7","\xc8",
-  "\xc9","\xca","\xcb","\xcc","\xcd","\xce","\xcf","\xd0","\xd1","\xd2",
-  "\xd3","\xd4","\xd5","\xd6","\xd7","\xd8","\xd9","\xda","\xdb","\xdc",
-  "\xdd","\xde","\xdf","\xe0","\xe1","\xe2","\xe3","\xe4","\xe5","\xe6",
-  "\xe7","\xe8","\xe9","\xea","\xeb","\xec","\xed","\xee","\xef","\xf0",
-  "\xf1","\xf2","\xf3","\xf4","\xf5","\xf6","\xf7","\xf8","\xf9","\xfa",
-  "\xfb","\xfc","\xfd","\xfe","\xff","\x22","\x3c","\x3e","\x26"];
-
-  for(var i = 0; i < entities.length; i++){
-    html = html.replace(entities[i], chars[i]);
-  }
-  return html;
-}
-
-/**
-*    Turns HTML into text browser visible text. Images
-*    are converted to their alt text and tags are supressed.
-*    Entities are converted to their visible representation.
-*    @param string $html        HTML to convert.
-*    @return string             Plain text.
-*    @access public
-*    @static
-*/
-XhtmlSaxParser.prototype.normalise = function (html) {
-  return this.decodeHtml(
-    html.replace(/<!--.*?-./, '').
-    replace(/<img.*?alt\s*=\s*"(.*?)".*?>/, ' \$1 ').
-    replace(/<img.*?alt\s*=\s*\'(.*?)\'.*?>/, ' \$1 ').
-    replace(/<img.*?alt\s*=\s*([a-zA-Z_]+).*?>/, ' \$1 ').
-    replace(/<.*?>/, '')
-  ).
-  replace(/\s+/, ' ').trim();;
-}
-
-/**
-*    SAX evnt handler.
-*    @package Parser
-*    @subpackage WebTester
-*    @abstract
+*    Accepts text and breaks it into tokens.
+*    Some optimisation to make the sure the
+*    content is only scanned by the PHP regex
+*    parser once. Lexer modes must not start
+*    with leading underscores.
 *
-*    Sets the document to write to.
+*    Sets up the lexer in case insensitive matching
+*    by default.
+*    @param Parser parser  Handling strategy by reference.
+*    @param string start            Starting handler.
+*    @param boolean case            True for case sensitive.
 *    @access public
+*    @author Marcus Baker (http://lastcraft.com)
+*    @author Bermi Ferrer (http://bermi.org)
 */
-function SaxListener() {
+function Lexer(parser, start, case_sensitive) 
+{
+  start = start || 'accept';
+  this._case = case_sensitive || false;
+  this._regexes = {};
+  this._parser = parser;
+  this._mode = new StateStack(start);
+  this._mode_handlers = {};
+  this._mode_handlers[start] = start;
 }
 
 /**
-*    Start of element evnt.
-*    @param string $name        Element name.
-*    @param hash $attributes    Name value pairs.
-*                               Attributes without content
-*                               are marked as true.
-*    @return boolean            False on parse error.
+*    Adds a token search pattern for a particular
+*    parsing mode. The pattern does not change the
+*    current mode.
+*    @param string pattern      Perl style regex, but ( and )
+*                                lose the usual meaning.
+*    @param string mode         Should only apply this
+*                                pattern when dealing with
+*                                this type of input.
 *    @access public
 */
-SaxListener.prototype.startElement = function (name, attributes) {
-console.log('start '+name);
-console.log(attributes);
+Lexer.prototype.addPattern = function (pattern, mode) 
+{
+  var mode = mode || "accept";
+  if (this._regexes[mode] == undefined) {    
+    this._regexes[mode] = new ParallelRegex(this._case);
+  }
+  this._regexes[mode].addPattern(pattern);
+  if (this._mode_handlers[mode] == undefined) {
+    this._mode_handlers[mode] = mode;
+  }
 }
 
 /**
-*    End of element evnt.
-*    @param string $name        Element name.
-*    @return boolean            False on parse error.
+*    Adds a pattern that will enter a new parsing
+*    mode. Useful for entering parenthesis, strings,
+*    tags, etc.
+*    @param string pattern      Perl style regex, but ( and )
+*                                lose the usual meaning.
+*    @param string mode         Should only apply this
+*                                pattern when dealing with
+*                                this type of input.
+*    @param string new_mode     Change parsing to this new
+*                                nested mode.
 *    @access public
 */
-SaxListener.prototype.endElement = function (name) {
-console.log('end '+name);
+Lexer.prototype.addEntryPattern = function (pattern, mode, new_mode) 
+{
+  if (this._regexes[mode] == undefined) {
+    this._regexes[mode] = new ParallelRegex(this._case);
+  }
+  this._regexes[mode].addPattern(pattern, new_mode);
+  if (this._mode_handlers[new_mode] == undefined) {
+    this._mode_handlers[new_mode] = new_mode;
+  }
 }
 
 /**
-*    Unparsed, but relevant data.
-*    @param string $text        May include unparsed tags.
-*    @return boolean            False on parse error.
+*    Adds a pattern that will exit the current mode
+*    and re-enter the previous one.
+*    @param string pattern      Perl style regex, but ( and )
+*                                lose the usual meaning.
+*    @param string mode         Mode to leave.
 *    @access public
 */
-SaxListener.prototype.addContent = function (text) {
+Lexer.prototype.addExitPattern = function (pattern, mode) 
+{
+  if (this._regexes[mode] == undefined) {
+    this._regexes[mode] = new ParallelRegex(this._case);
+  }
+  this._regexes[mode].addPattern(pattern, "__exit");
+  if (this._mode_handlers[mode] == undefined) {
+    this._mode_handlers[mode] = mode;
+  }
 }
 
-//var Parser = new XhtmlSaxParser(new SaxListener());
-//Parser.parse(html);
+/**
+*    Adds a pattern that has a special mode. Acts as an entry
+*    and exit pattern in one go, effectively calling a special
+*    parser handler for this token only.
+*    @param string pattern      Perl style regex, but ( and )
+*                                lose the usual meaning.
+*    @param string mode         Should only apply this
+*                                pattern when dealing with
+*                                this type of input.
+*    @param string special      Use this mode for this one token.
+*    @access public
+*/
+Lexer.prototype.addSpecialPattern =  function (pattern, mode, special) 
+{
+  if (this._regexes[mode] == undefined) {
+    this._regexes[mode] = new ParallelRegex(this._case);
+  }
+  this._regexes[mode].addPattern(pattern, '_'+special);
+  if (this._mode_handlers[special] == undefined) {
+    this._mode_handlers[special] = special;
+  }
+}
+
+/**
+*    Adds a mapping from a mode to another handler.
+*    @param string mode        Mode to be remapped.
+*    @param string handler     New target handler.
+*    @access public
+*/
+Lexer.prototype.mapHandler = function (mode, handler) 
+{
+  this._mode_handlers[mode] = handler;
+}
+
+/**
+*    Splits the page text into tokens. Will fail
+*    if the handlers report an error or if no
+*    content is consumed. If successful then each
+*    unparsed and parsed token invokes a call to the
+*    held listener.
+*    @param string raw        Raw HTML text.
+*    @return boolean           True on success, else false.
+*    @access public
+*/
+Lexer.prototype.parse = function (raw) 
+{
+  if (this._parser == undefined) {
+    return false;
+  }
+  var length = raw.length;
+  while (typeof (parsed = this._reduce(raw)) == 'object') {    
+    var raw = parsed[0];
+    var unmatched = parsed[1];
+    var matched = parsed[2];
+    var mode = parsed[3];    
+
+    if (! this._dispatchTokens(unmatched, matched, mode)) {
+      return false;
+    }
+
+    if (raw == '') {
+      return true;
+    }
+    if (raw.length == length) {
+      return false;
+    }
+    length = raw.length;    
+  }
+  if (! parsed ) {
+    return false;
+  }
+  return this._invokeParser(raw, LEXER_UNMATCHED);
+}
+
+/**
+*    Sends the matched token and any leading unmatched
+*    text to the parser changing the lexer to a new
+*    mode if one is listed.
+*    @param string unmatched    Unmatched leading portion.
+*    @param string matched      Actual token match.
+*    @param string mode         Mode after match. A boolean
+*                                false mode causes no change.
+*    @return boolean             False if there was any error
+*                                from the parser.
+*    @access private
+*/
+Lexer.prototype._dispatchTokens = function (unmatched, matched, mode) 
+{
+  mode = mode || false;
+  if (! this._invokeParser(unmatched, LEXER_UNMATCHED)) {
+    return false;
+  }
+  if (typeof mode == 'boolean') {
+    return this._invokeParser(matched, LEXER_MATCHED);
+  }
+  if (this._isModeEnd(mode)) {
+    if (! this._invokeParser(matched, LEXER_EXIT)) {
+      return false;
+    }
+    return this._mode.leave();
+  }
+  if (this._isSpecialMode(mode)) {
+    this._mode.enter(this._decodeSpecial(mode));
+    if (! this._invokeParser(matched, LEXER_SPECIAL)) {
+      return false;
+    }
+    return this._mode.leave();
+  }
+  this._mode.enter(mode);
+  return this._invokeParser(matched, LEXER_ENTER);
+}
+
+/**
+*    Tests to see if the new mode is actually to leave
+*    the current mode and pop an item from the matching
+*    mode stack.
+*    @param string mode    Mode to test.
+*    @return boolean        True if this is the exit mode.
+*    @access private
+*/
+Lexer.prototype._isModeEnd = function (mode) 
+{
+  return (mode === "__exit");
+}
+
+/**
+*    Test to see if the mode is one where this mode
+*    is entered for this token only and automatically
+*    leaves immediately afterwoods.
+*    @param string mode    Mode to test.
+*    @return boolean        True if this is the exit mode.
+*    @access private
+*/
+Lexer.prototype._isSpecialMode = function (mode) 
+{
+  return (mode[0] == "_");
+}
+
+/**
+*    Strips the magic underscore marking single token
+*    modes.
+*    @param string mode    Mode to decode.
+*    @return string         Underlying mode name.
+*    @access private
+*/
+Lexer.prototype._decodeSpecial = function (mode) 
+{
+  return mode.substring(1);
+}
+
+/**
+*    Calls the parser method named after the current
+*    mode. Empty content will be ignored. The lexer
+*    has a parser handler for each mode in the lexer.
+*    @param string content        Text parsed.
+*    @param boolean is_match      Token is recognised rather
+*                                  than unparsed data.
+*    @access private
+*/
+Lexer.prototype._invokeParser = function (content, is_match) 
+{
+
+  if (!/ +/.test(content) && ((content === '') || (content == false))) { 
+    return true;
+  }
+  var current = this._mode.getCurrent();
+  var handler = this._mode_handlers[current];
+  var result;
+  eval('result = this._parser.' + handler + '(content, is_match);')
+  return result;
+}
+
+/**
+*    Tries to match a chunk of text and if successful
+*    removes the recognised chunk and any leading
+*    unparsed data. Empty strings will not be matched.
+*    @param string raw         The subject to parse. This is the
+*                               content that will be eaten.
+*    @return array/boolean      Three item list of unparsed
+*                               content followed by the
+*                               recognised token and finally the
+*                               action the parser is to take.
+*                               True if no match, false if there
+*                               is a parsing error.
+*    @access private
+*/
+Lexer.prototype._reduce = function (raw) 
+{
+  var matched = this._regexes[this._mode.getCurrent()].match(raw);
+  var match = matched[1];
+  var action = matched[0];
+  if (action) { 
+    unparsed_character_count = raw.indexOf(match);
+    unparsed = raw.substr(0, unparsed_character_count);
+    raw = raw.substring(unparsed_character_count + match.length);
+    return [raw, unparsed, match, action];
+  }
+  return true;
+}
+
+
+
+/**
+* This are the rules for breaking the XHTML code into events
+* handled by the provided parser.
+*
+*    @author Marcus Baker (http://lastcraft.com)
+*    @author Bermi Ferrer (http://bermi.org)
+*/
+function XhtmlLexer(parser)
+{
+  this.extends(new Lexer(parser, 'Text'));      
+  this.mapHandler('Text', 'Text');
+
+  this.addCommentTokens('Text');
+  this.addScriptTokens('Text');
+  this.addCssTokens('Text');
+  this.addTagTokens('Text');
+  this.init();
+}
+
+XhtmlLexer.prototype.init = function()
+{
+}
+
+XhtmlLexer.prototype.addCommentTokens = function(scope)
+{
+  this.addEntryPattern("<!--", scope, 'Comment');
+  this.addExitPattern("-.", 'Comment');
+}
+
+XhtmlLexer.prototype.addScriptTokens = function(scope)
+{
+  this.addEntryPattern("<script", scope, 'Script');
+  this.addExitPattern("</script>", 'Script');
+}
+
+XhtmlLexer.prototype.addCssTokens = function(scope)
+{
+  this.addEntryPattern("<style", scope, 'Css');
+  this.addExitPattern("</style>", 'Css');
+}
+
+XhtmlLexer.prototype.addTagTokens = function(scope)
+{
+  this.addSpecialPattern("<\s*[a-z]+\s*>", scope, 'OpeningTag');
+  this.addEntryPattern("<[a-z]+"+'[\\\/ \\\>]+', scope, 'OpeningTag');
+  this.addInTagDeclarationTokens('OpeningTag');
+
+  this.addSpecialPattern("</\s*[a-z]+\s*>", scope, 'ClosingTag');
+
+}
+
+XhtmlLexer.prototype.addInTagDeclarationTokens = function(scope)
+{
+  this.addSpecialPattern('\s+', scope, 'Ignore');
+
+  this.addAttributeTokens(scope);
+
+  this.addExitPattern('/>', scope);
+  this.addExitPattern('>', scope);
+
+}
+
+XhtmlLexer.prototype.addAttributeTokens = function(scope)
+{
+  this.addSpecialPattern("\s*[a-z-_0-9]+\s*(?=\=)\s*", scope, 'TagAttributes');
+
+  this.addEntryPattern('=\s*"', scope, 'DoubleQuotedAttribute');
+  this.addPattern("\\\\\"", 'DoubleQuotedAttribute');
+  this.addExitPattern('"', 'DoubleQuotedAttribute');
+
+  this.addEntryPattern("=\s*'", scope, 'SingleQuotedAttribute');
+  this.addPattern("\\\\'", 'SingleQuotedAttribute');
+  this.addExitPattern("'", 'SingleQuotedAttribute');
+
+  this.addSpecialPattern('=\s*[^>\s]*', scope, 'UnquotedAttribute');
+}
+
+
+
+/**
+* XHTML Parser.
+*
+* This XHTML parser will trigger the events available on on
+* current SaxListener
+*
+*    @author Bermi Ferrer (http://bermi.org)
+*/
+function XhtmlParser(Listener, mode)
+{
+  var mode = mode || 'Text';
+  this._Lexer = new XhtmlLexer(this);
+  this._Listener = Listener;
+  this._mode = mode;
+  this._matches = [];
+  this._last_match = '';
+  this._current_match = '';
+}
+
+XhtmlParser.prototype.parse = function(raw)
+{
+  this._Lexer.parse(this.beforeParsing(raw));
+  return this.afterParsing(this._Listener.getResult());
+}
+
+XhtmlParser.prototype.beforeParsing = function(raw)
+{
+  return this._Listener.beforeParsing(raw);
+}
+
+XhtmlParser.prototype.afterParsing = function(parsed)
+{
+  return this._Listener.afterParsing(parsed);
+}
+
+
+XhtmlParser.prototype.Ignore = function(match, state)
+{
+  return true;
+}
+
+XhtmlParser.prototype.Text = function(text)
+{
+  this._Listener.addContent(text);
+  return true;
+}
+
+XhtmlParser.prototype.Comment = function(match, status)
+{
+  return this._addNonTagBlock(match, status, 'addComment');
+}
+
+XhtmlParser.prototype.Script = function(match, status)
+{
+  return this._addNonTagBlock(match, status, 'addScript');
+}
+
+XhtmlParser.prototype.Css = function(match, status)
+{
+  return this._addNonTagBlock(match, status, 'addCss');
+}
+
+XhtmlParser.prototype._addNonTagBlock = function(match, state, type)
+{
+  switch (state){
+    case LEXER_ENTER:
+    this._non_tag = match;
+    break;
+    case LEXER_UNMATCHED:
+    this._non_tag += match;
+    break;
+    case LEXER_EXIT:
+    switch(type) {
+      case 'addComment':
+      this._Listener.addComment(this._non_tag+match);
+      break;
+      case 'addScript':
+      this._Listener.addScript(this._non_tag+match);
+      break;
+      case 'addCss':
+      this._Listener.addCss(this._non_tag+match);
+      break;
+    }
+  }
+  return true;
+}
+
+XhtmlParser.prototype.OpeningTag = function(match, state)
+{
+  switch (state){
+    case LEXER_ENTER:
+    this._tag = this.normalizeTag(match);
+    this._tag_attributes = {};
+    break;
+    case LEXER_SPECIAL:
+    this._callOpenTagListener(this.normalizeTag(match));
+    break;
+    case LEXER_EXIT:
+    this._callOpenTagListener(this._tag, this._tag_attributes);
+  }
+  return true;
+}
+
+XhtmlParser.prototype.ClosingTag = function(match, state)
+{  
+  this._callCloseTagListener(this.normalizeTag(match));
+  return true;
+}
+
+XhtmlParser.prototype._callOpenTagListener = function(tag, attributes)
+{
+  var  attributes = attributes || {};
+  this.autoCloseUnclosedBeforeNewOpening(tag);
+
+  this._Listener.last_tag = tag;
+  this._Listener.last_tag_attributes = attributes;
+
+  if(this._Listener.block_tags.contains(tag)){    
+    this._Listener.openBlockTag(tag, attributes);
+    this._increaseOpenTagCounter(tag);
+  }else if(this._Listener.inline_tags.contains(tag)){ 
+    this._Listener.inlineTag(tag, attributes);
+  }else{
+    this._Listener.openUnknownTag(tag, attributes);
+  }
+}
+
+XhtmlParser.prototype._callCloseTagListener = function(tag)
+{
+  if(this._decreaseOpenTagCounter(tag)){
+    this.autoCloseUnclosedBeforeTagClosing(tag);
+    if(this._Listener.block_tags.contains(tag)){
+      this._Listener.closeBlockTag(tag);
+    }else{
+      this._Listener.closeUnknownTag(tag);
+    }
+  }else{
+    this._Listener.closeUnopenedTag(tag);
+  }
+}
+
+XhtmlParser.prototype._increaseOpenTagCounter = function(tag)
+{
+  this._Listener._open_tags[tag] = this._Listener._open_tags[tag] || 0;
+  this._Listener._open_tags[tag]++;
+}
+
+XhtmlParser.prototype._decreaseOpenTagCounter = function(tag)
+{
+  if(this._Listener._open_tags[tag]){
+    this._Listener._open_tags[tag]--;
+    if(this._Listener._open_tags[tag] == 0){
+      this._Listener._open_tags[tag] = undefined;
+    }
+    return true;
+  }
+  return false;
+}
+
+XhtmlParser.prototype.autoCloseUnclosedBeforeNewOpening = function(new_tag)
+{
+  this._autoCloseUnclosed(new_tag, false);
+}
+
+XhtmlParser.prototype.autoCloseUnclosedBeforeTagClosing = function(tag)
+{
+  this._autoCloseUnclosed(tag, true);
+}
+
+XhtmlParser.prototype._autoCloseUnclosed = function(new_tag, closing)
+{
+  var closing = closing || false;
+  if(this._Listener._open_tags){
+    for (tag in this._Listener._open_tags) {
+      counter = this._Listener._open_tags[tag];
+      if(counter > 0 && this._Listener.shouldCloseTagAutomatically(tag, new_tag, closing)){
+        this._callCloseTagListener(tag, true);
+      }
+    }
+  }
+}
+
+XhtmlParser.prototype.getTagReplacements = function()
+{
+  return this._Listener.getTagReplacements();
+}
+
+XhtmlParser.prototype.normalizeTag = function(tag)
+{
+  tag = tag.replace(/^([\s<\/>]*)|([\s<\/>]*)$/gm,'').toLowerCase();
+  tags = this._Listener.getTagReplacements();
+  if(tags[tag]){
+    return tags[tag];
+  }
+  return tag;
+}
+
+XhtmlParser.prototype.TagAttributes = function(match, state)
+{
+  if(LEXER_SPECIAL == state){
+    this._current_attribute = match;
+  }
+  return true;
+}
+
+XhtmlParser.prototype.DoubleQuotedAttribute = function(match, state)
+{
+  if(LEXER_UNMATCHED == state){
+    this._tag_attributes[this._current_attribute] = match;
+  }
+  return true;
+}
+XhtmlParser.prototype.SingleQuotedAttribute = function(match, state)
+{
+  if(LEXER_UNMATCHED == state){
+    this._tag_attributes[this._current_attribute] = match;
+  }
+  return true;
+}
+XhtmlParser.prototype.UnquotedAttribute = function(match, state)
+{
+  if(LEXER_UNMATCHED == state){
+    this._tag_attributes[this._current_attribute] = match;
+  }
+  return true;
+}
+
+
+
+/**
+* XHTML Sax parser.
+*
+*    @author Bermi Ferrer (http://bermi.org)
+*/
+function XhtmlSaxListener()
+{
+this.xhtml = '';
+this.helper = new XmlHelper();
+this._open_tags = {};
+
+this.entities = {
+  '&nbsp;':'&#160;','&iexcl;':'&#161;','&cent;':'&#162;',
+  '&pound;':'&#163;','&curren;':'&#164;','&yen;':'&#165;',
+  '&brvbar;':'&#166;','&sect;':'&#167;','&uml;':'&#168;',
+  '&copy;':'&#169;','&ordf;':'&#170;','&laquo;':'&#171;',
+  '&not;':'&#172;','&shy;':'&#173;','&reg;':'&#174;',
+  '&macr;':'&#175;','&deg;':'&#176;','&plusmn;':'&#177;',
+  '&sup2;':'&#178;','&sup3;':'&#179;','&acute;':'&#180;',
+  '&micro;':'&#181;','&para;':'&#182;','&middot;':'&#183;',
+  '&cedil;':'&#184;','&sup1;':'&#185;','&ordm;':'&#186;',
+  '&raquo;':'&#187;','&frac14;':'&#188;','&frac12;':'&#189;',
+  '&frac34;':'&#190;','&iquest;':'&#191;','&Agrave;':'&#192;',
+  '&Aacute;':'&#193;','&Acirc;':'&#194;','&Atilde;':'&#195;',
+  '&Auml;':'&#196;','&Aring;':'&#197;','&AElig;':'&#198;',
+  '&Ccedil;':'&#199;','&Egrave;':'&#200;','&Eacute;':'&#201;',
+  '&Ecirc;':'&#202;','&Euml;':'&#203;','&Igrave;':'&#204;',
+  '&Iacute;':'&#205;','&Icirc;':'&#206;','&Iuml;':'&#207;',
+  '&ETH;':'&#208;','&Ntilde;':'&#209;','&Ograve;':'&#210;',
+  '&Oacute;':'&#211;','&Ocirc;':'&#212;','&Otilde;':'&#213;',
+  '&Ouml;':'&#214;','&times;':'&#215;','&Oslash;':'&#216;',
+  '&Ugrave;':'&#217;','&Uacute;':'&#218;','&Ucirc;':'&#219;',
+  '&Uuml;':'&#220;','&Yacute;':'&#221;','&THORN;':'&#222;',
+  '&szlig;':'&#223;','&agrave;':'&#224;','&aacute;':'&#225;',
+  '&acirc;':'&#226;','&atilde;':'&#227;','&auml;':'&#228;',
+  '&aring;':'&#229;','&aelig;':'&#230;','&ccedil;':'&#231;',
+  '&egrave;':'&#232;','&eacute;':'&#233;','&ecirc;':'&#234;',
+  '&euml;':'&#235;','&igrave;':'&#236;','&iacute;':'&#237;',
+  '&icirc;':'&#238;','&iuml;':'&#239;','&eth;':'&#240;',
+  '&ntilde;':'&#241;','&ograve;':'&#242;','&oacute;':'&#243;',
+  '&ocirc;':'&#244;','&otilde;':'&#245;','&ouml;':'&#246;',
+  '&divide;':'&#247;','&oslash;':'&#248;','&ugrave;':'&#249;',
+  '&uacute;':'&#250;','&ucirc;':'&#251;','&uuml;':'&#252;',
+  '&yacute;':'&#253;','&thorn;':'&#254;','&yuml;':'&#255;',
+  '&OElig;':'&#338;','&oelig;':'&#339;','&Scaron;':'&#352;',
+  '&scaron;':'&#353;','&Yuml;':'&#376;','&fnof;':'&#402;',
+  '&circ;':'&#710;','&tilde;':'&#732;','&Alpha;':'&#913;',
+  '&Beta;':'&#914;','&Gamma;':'&#915;','&Delta;':'&#916;',
+  '&Epsilon;':'&#917;','&Zeta;':'&#918;','&Eta;':'&#919;',
+  '&Theta;':'&#920;','&Iota;':'&#921;','&Kappa;':'&#922;',
+  '&Lambda;':'&#923;','&Mu;':'&#924;','&Nu;':'&#925;',
+  '&Xi;':'&#926;','&Omicron;':'&#927;','&Pi;':'&#928;',
+  '&Rho;':'&#929;','&Sigma;':'&#931;','&Tau;':'&#932;',
+  '&Upsilon;':'&#933;','&Phi;':'&#934;','&Chi;':'&#935;',
+  '&Psi;':'&#936;','&Omega;':'&#937;','&alpha;':'&#945;',
+  '&beta;':'&#946;','&gamma;':'&#947;','&delta;':'&#948;',
+  '&epsilon;':'&#949;','&zeta;':'&#950;','&eta;':'&#951;',
+  '&theta;':'&#952;','&iota;':'&#953;','&kappa;':'&#954;',
+  '&lambda;':'&#955;','&mu;':'&#956;','&nu;':'&#957;',
+  '&xi;':'&#958;','&omicron;':'&#959;','&pi;':'&#960;',
+  '&rho;':'&#961;','&sigmaf;':'&#962;','&sigma;':'&#963;',
+  '&tau;':'&#964;','&upsilon;':'&#965;','&phi;':'&#966;',
+  '&chi;':'&#967;','&psi;':'&#968;','&omega;':'&#969;',
+  '&thetasym;':'&#977;','&upsih;':'&#978;','&piv;':'&#982;',
+  '&ensp;':'&#8194;','&emsp;':'&#8195;','&thinsp;':'&#8201;',
+  '&zwnj;':'&#8204;','&zwj;':'&#8205;','&lrm;':'&#8206;',
+  '&rlm;':'&#8207;','&ndash;':'&#8211;','&mdash;':'&#8212;',
+  '&lsquo;':'&#8216;','&rsquo;':'&#8217;','&sbquo;':'&#8218;',
+  '&ldquo;':'&#8220;','&rdquo;':'&#8221;','&bdquo;':'&#8222;',
+  '&dagger;':'&#8224;','&Dagger;':'&#8225;','&bull;':'&#8226;',
+  '&hellip;':'&#8230;','&permil;':'&#8240;','&prime;':'&#8242;',
+  '&Prime;':'&#8243;','&lsaquo;':'&#8249;','&rsaquo;':'&#8250;',
+  '&oline;':'&#8254;','&frasl;':'&#8260;','&euro;':'&#8364;',
+  '&image;':'&#8465;','&weierp;':'&#8472;','&real;':'&#8476;',
+  '&trade;':'&#8482;','&alefsym;':'&#8501;','&larr;':'&#8592;',
+  '&uarr;':'&#8593;','&rarr;':'&#8594;','&darr;':'&#8595;',
+  '&harr;':'&#8596;','&crarr;':'&#8629;','&lArr;':'&#8656;',
+  '&uArr;':'&#8657;','&rArr;':'&#8658;','&dArr;':'&#8659;',
+  '&hArr;':'&#8660;','&forall;':'&#8704;','&part;':'&#8706;',
+  '&exist;':'&#8707;','&empty;':'&#8709;','&nabla;':'&#8711;',
+  '&isin;':'&#8712;','&notin;':'&#8713;','&ni;':'&#8715;',
+  '&prod;':'&#8719;','&sum;':'&#8721;','&minus;':'&#8722;',
+  '&lowast;':'&#8727;','&radic;':'&#8730;','&prop;':'&#8733;',
+  '&infin;':'&#8734;','&ang;':'&#8736;','&and;':'&#8743;',
+  '&or;':'&#8744;','&cap;':'&#8745;','&cup;':'&#8746;',
+  '&int;':'&#8747;','&there4;':'&#8756;','&sim;':'&#8764;',
+  '&cong;':'&#8773;','&asymp;':'&#8776;','&ne;':'&#8800;',
+  '&equiv;':'&#8801;','&le;':'&#8804;','&ge;':'&#8805;',
+  '&sub;':'&#8834;','&sup;':'&#8835;','&nsub;':'&#8836;',
+  '&sube;':'&#8838;','&supe;':'&#8839;','&oplus;':'&#8853;',
+  '&otimes;':'&#8855;','&perp;':'&#8869;','&sdot;':'&#8901;',
+  '&lceil;':'&#8968;','&rceil;':'&#8969;','&lfloor;':'&#8970;',
+  '&rfloor;':'&#8971;','&lang;':'&#9001;','&rang;':'&#9002;',
+  '&loz;':'&#9674;','&spades;':'&#9824;','&clubs;':'&#9827;',
+  '&hearts;':'&#9829;','&diams;':'&#9830;'};
+
+  this.block_tags = ["a", "abbr", "acronym", "address", "area", "b",
+  "base", "bdo", "big", "blockquote", "body", "button",
+  "caption", "cite", "code", "col", "colgroup", "dd", "del", "div",
+  "dfn", "dl", "dt", "em", "fieldset", "form", "head", "h1", "h2",
+  "h3", "h4", "h5", "h6", "html", "i", "ins",
+  "kbd", "label", "legend", "li", "map", "noscript",
+  "object", "ol", "optgroup", "option", "p", "param", "pre", "q",
+  "samp", "script", "select", "small", "span", "strong", "style",
+  "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "th",
+  "thead", "title", "tr", "tt", "ul", "var", "extends"];
+
+
+  this.inline_tags = ["br", "hr", "img", "input"];
+}
+
+XhtmlSaxListener.prototype.shouldCloseTagAutomatically = function(tag, now_on_tag, closing)
+{
+  var closing = closing || false;
+  if(tag == 'li'){
+    if((closing && (now_on_tag == 'ul' || now_on_tag == 'ol')) || (!closing && now_on_tag == 'li')){
+      return true;
+    }
+  }
+  if(tag == 'td'){
+    if((closing && now_on_tag == 'tr') || (!closing && now_on_tag == 'td')){
+      return true;
+    }
+  }
+  if(tag == 'option'){
+    if((closing && now_on_tag == 'select') || (!closing && now_on_tag == 'option')){
+      return true;
+    }
+  }
+  return false;
+}
+
+XhtmlSaxListener.prototype.beforeParsing = function(raw)
+{
+  return raw;
+}
+
+XhtmlSaxListener.prototype.afterParsing = function(xhtml)
+{
+  xhtml = this.replaceNamedEntities(xhtml);
+  xhtml = this.joinRepeatedEntities(xhtml);
+  return xhtml;
+}
+
+XhtmlSaxListener.prototype.replaceNamedEntities = function(xhtml)
+{
+  for (entity in this.entities) {
+    xhtml = xhtml.replace(entity, this.entities[entity]);
+  }
+  return xhtml;
+}
+
+XhtmlSaxListener.prototype.joinRepeatedEntities = function(xhtml)
+{
+  var tags = 'em|strong|sub|sup|acronym|pre|del|blockquote|address';
+  return xhtml.replace(new RegExp('<\/('+tags+')><\\1>' ,''),'').
+  replace(new RegExp('(\s*<('+tags+')>\s*){2}(.*)(\s*<\/\\2>\s*){2}' ,''),'<\$2>\$3<\$2>');
+}
+
+XhtmlSaxListener.prototype.getResult = function()
+{
+  return this.xhtml;
+}
+
+XhtmlSaxListener.prototype.getTagReplacements = function()
+{
+  return {'b':'strong', 'i':'em'};
+}
+
+XhtmlSaxListener.prototype.addContent = function(text)
+{
+  this.xhtml += text;
+}
+
+XhtmlSaxListener.prototype.addComment = function(text)
+{
+  if(!this.remove_comments){
+    this.xhtml += text;
+  }
+}
+
+XhtmlSaxListener.prototype.addScript = function(text)
+{
+  if(!this.remove_scripts){
+    this.xhtml += text;
+  }
+}
+
+XhtmlSaxListener.prototype.addCss = function(text)
+{
+  if(!this.remove_embeded_styles){
+    this.xhtml += text;
+  }
+}
+XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes)
+{
+  this.xhtml += this.helper.tag(tag, attributes, true);    
+}
+
+XhtmlSaxListener.prototype.inlineTag = function(tag, attributes)
+{
+  this.xhtml += this.helper.tag(tag, attributes);
+}
+
+XhtmlSaxListener.prototype.openUnknownTag = function(tag, attributes)
+{
+  this.xhtml += this.helper.tag(tag, attributes, true);
+}
+
+XhtmlSaxListener.prototype.closeBlockTag = function(tag)
+{
+  this.xhtml += "</"+tag+">";
+}
+
+XhtmlSaxListener.prototype.closeUnknownTag = function(tag)
+{
+  this.xhtml += "</"+tag+">";
+}
+
+XhtmlSaxListener.prototype.closeUnopenedTag = function(tag)
+{
+  this.xhtml += "</"+tag+">";
+}
+

@@ -16,6 +16,7 @@
  *        Jean-Francois Hovinne (jf.hovinne@wymeditor.org)
  *        Volker Mische (vmx@gmx.de)
  *        Scott Lewis (scott@bright-crayon.com)
+ *        Bermi Ferrer (wymeditor a-t bermi dotorg)
  */
 
 
@@ -74,11 +75,14 @@
     var sWYM_DIALOG_LINK      = "Link";
     var sWYM_DIALOG_IMAGE     = "Image";
     var sWYM_DIALOG_TABLE     = "Table";
+    var sWYM_BOLD             = "Bold";
+    var sWYM_ITALIC           = "Italic";
     var sWYM_CREATE_LINK      = "CreateLink";
     var sWYM_INSERT_IMAGE     = "InsertImage";
     var sWYM_INSERT_TABLE     = "InsertTable";
     var sWYM_TOGGLE_HTML      = "ToggleHtml";
     var sWYM_FORMAT_BLOCK     = "FormatBlock";
+    var sWYM_PREVIEW          = "Preview";
     
     var sWYM_DEFAULT_SKIN     = "default";
 
@@ -203,7 +207,8 @@ $j.fn.wymeditor = function(options) {
         {'name': 'Unlink', 'title': 'Unlink', 'css': 'wym_tools_unlink'},
         {'name': 'InsertImage', 'title': 'Image', 'css': 'wym_tools_image'},
         {'name': 'InsertTable', 'title': 'Table', 'css': 'wym_tools_table'},
-        {'name': 'ToggleHtml', 'title': 'HTML', 'css': 'wym_tools_html'}
+        {'name': 'ToggleHtml', 'title': 'HTML', 'css': 'wym_tools_html'},
+        {'name': 'Preview', 'title': 'Preview', 'css': 'wym_tools_preview'}
     ],
 
     sContainersHtml:    "<div class='wym_containers wym_section'>"
@@ -282,10 +287,12 @@ $j.fn.wymeditor = function(options) {
     
     sSubmitSelector:    ".wym_submit",
     sCancelSelector:    ".wym_cancel",
+    sPreviewSelector:   "",
     
-    sDialogLinkSelector:  ".wym_dialog_link",
-    sDialogImageSelector: ".wym_dialog_image",
-    sDialogTableSelector: ".wym_dialog_table",
+    sDialogLinkSelector:    ".wym_dialog_link",
+    sDialogImageSelector:   ".wym_dialog_image",
+    sDialogTableSelector:   ".wym_dialog_table",
+    sDialogPreviewSelector: ".wym_dialog_preview",
     
     sUpdateSelector:    ".wymupdate",
     sUpdateEvent:       "click",
@@ -299,6 +306,7 @@ $j.fn.wymeditor = function(options) {
                       + "<title>"
                       + sWYM_DIALOG_TITLE
                       + "</title>"
+                      + "<style type='text/css'></style>"
                       + "<script type='text/javascript'"
                       + " src='"
                       + sWYM_JQUERY_PATH
@@ -364,6 +372,12 @@ $j.fn.wymeditor = function(options) {
                       + "<input class='wym_cancel' type='button'"
                       + "value='{Cancel}' />"
                       + "</p></body>",
+
+    sDialogPreviewHtml: "<body class='wym_dialog wym_dialog_preview'"
+                      + " onload='fWYM_INIT_DIALOG(" + sWYM_INDEX + ")'"
+                      + "></body>",
+                      
+    aDialogCss: [],
                       
     sSkin:            sWYM_DEFAULT_SKIN,
 
@@ -626,6 +640,10 @@ Wymeditor.prototype.exec = function(cmd) {
       this.toggleHtml();
     break;
     
+    case sWYM_PREVIEW:
+      this.dialog(sWYM_PREVIEW);
+    break;
+    
     default:
       this._exec(cmd);
     break;
@@ -837,6 +855,9 @@ Wymeditor.prototype.dialog = function(sType) {
       case(sWYM_DIALOG_TABLE):
         sBodyHtml = this._options.sDialogTableHtml;
       break;
+      case(sWYM_PREVIEW):
+        sBodyHtml = this._options.sDialogPreviewHtml;
+      break;
     }
     
     //construct the dialog
@@ -884,6 +905,16 @@ Wymeditor.prototype.paste = function(sData) {
     //maybe we need a trim("\r\n")
     sTmp = sTmp.replace(/\r\n/g, "<br />");
     $j(container).after("<p>" + sTmp + "</p>");
+  }
+};
+
+Wymeditor.prototype.addCssRules = function(doc, aCss) {
+  var styles = doc.styleSheets[0];
+  if(styles) {
+    for(var i = 0; i < aCss.length; i++) {
+      var oCss = aCss[i];
+      if(oCss.name && oCss.css) this.addCssRule(styles, oCss);
+    }
   }
 };
 
@@ -973,12 +1004,19 @@ Wymeditor.prototype.skin = function() {
 function fWYM_INIT_DIALOG(index) {
 
     var wym = window.opener.aWYM_INSTANCES[index];
+    var doc = window.document;
     var oSel = wym.selected();
     var sStamp = wym.uniqueStamp();
     
     //pre-init functions
     if($j.isFunction(wym._options.fPreInitDialog))
       wym._options.fPreInitDialog(wym,window);
+    
+    //add css rules from options
+    var styles = doc.styleSheets[0];
+    var aCss = eval(wym._options.aDialogCss);
+
+    wym.addCssRules(doc, aCss);
     
     if(oSel) {
             $j(wym._options.sHrefSelector).val($j(oSel).attr(sWYM_HREF));
@@ -1043,6 +1081,11 @@ function fWYM_INIT_DIALOG(index) {
         window.close();
     });
     
+    $j(wym._options.sDialogPreviewSelector + " "
+        + wym._options.sPreviewSelector)
+        .html(wym.xhtml());
+    
+    //cancel button
     $j(wym._options.sCancelSelector).mousedown(function() {
         window.close();
     });
@@ -1119,3 +1162,4 @@ Array.prototype.findByName = function (name) {
   }
   return(null);
 };
+
