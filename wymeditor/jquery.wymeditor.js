@@ -1054,8 +1054,7 @@ Wymeditor.prototype.computeCssPath = function() {
   })).attr('href');
 };
 
-Wymeditor.prototype.loadXhtmlParser = function(WymClass)
-{
+Wymeditor.prototype.loadXhtmlParser = function(WymClass) {
   if(typeof XhtmlSaxListener != 'function'){
     // This is the only way to get loaded functions in the global scope until jQuery.globalEval works in safari
    eval($j.ajax({url:this._options.basePath+'xhtml_parser.js',async:false}).responseText);
@@ -1072,10 +1071,9 @@ Wymeditor.prototype.loadXhtmlParser = function(WymClass)
   var SaxListener = new XhtmlSaxListener();
   jQuery.extend(SaxListener, WymClass);
   this.parser = new XhtmlParser(SaxListener);
-}
+};
 
-Wymeditor.prototype.configureEditorUsingRawCss = function()
-{
+Wymeditor.prototype.configureEditorUsingRawCss = function() {
   if(typeof WymCssParser != 'function'){
     eval($j.ajax({url:this._options.basePath+'wym_css_parser.js',async:false}).responseText);
     window.WymCssLexer = WymCssLexer;
@@ -1097,7 +1095,7 @@ Wymeditor.prototype.configureEditorUsingRawCss = function()
   if(this._options.dialogStyles.length == 0) {
     this._options.dialogStyles = CssParser.css_settings.dialogStyles;
   }
-}
+};
 
 /********** EVENTS **********/
 
