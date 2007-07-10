@@ -17,17 +17,13 @@ WE = ${BUILD_DIR}/build/jquery.wymeditor.js
 WE_PACK = ${BUILD_DIR}/build/jquery.wymeditor.pack.js
 WE_ARCH = ${BUILD_DIR}/build/wymeditor.tar.gz
 
-REMOVEBOM = sed -i -e '1 s/^\xEF\xBB\xBF//' ${JS_FILES}
-MERGE = cat ${JS_FILES} > ${WE}
+MERGE = sed -s -e '1 s/^\xEF\xBB\xBF//' ${JS_FILES} > ${WE}
 PACKER = perl -I${BUILD_DIR}/packer ${BUILD_DIR}/packer/jsPacker.pl -i ${WE} -o ${WE_PACK} -e0
 
 all: archive
 
 wymeditor:
 	@@echo "Building" ${WE}
-
-	@@echo " - Removing BOMs"
-	@@${REMOVEBOM}
 
 	@@echo " - Merging files"
 	@@${MERGE}
