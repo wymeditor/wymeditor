@@ -18,12 +18,12 @@
 -->
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>WYMeditor</title>
 <link rel="stylesheet" type="text/css" media="screen" href="wymeditor/skins/default/screen.css" />
 <script type="text/javascript" src="../../src/jquery/jquery.js"></script>
 <script type="text/javascript" src="wymeditor/jquery.wymeditor.js"></script>
 <script type="text/javascript" src="wymeditor/plugins/hovertools/jquery.wymeditor.hovertools.js"></script>
-<script type="text/javascript" src="wymeditor/plugins/tidy/jquery.wymeditor.tidy.js"></script>
 
 <script type="text/javascript">
 
@@ -89,11 +89,6 @@ $j(function() {
         
         //set the status bar value
         wym.status('&nbsp;');
-        
-        //activate 'tidy' plugin
-        //which cleans up the HTML
-        var wymtidy = wym.tidy();
-        wymtidy.init();
 
         //activate 'hovertools' plugin
         //which gives more feedback to the user
