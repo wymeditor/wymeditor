@@ -328,7 +328,7 @@ WymSelMozilla.prototype = {
         this.isCollapsed = _sel.isCollapsed;
         this.original = _sel;
         this.container = $j(this.startNode).parentsOrSelf(
-                WYM_MAIN_CONTAINERS.join(","));
+                WYM_MAIN_CONTAINERS.join(","))[0];
 
         return this;
     },
