@@ -30,11 +30,11 @@
 
 <script type="text/javascript">
 
-var $j = jQuery.noConflict();
 
-$j(function() {
 
-    $j('.wymeditor').wymeditor({
+jQuery(function() {
+
+    jQuery('.wymeditor').wymeditor({
 
       //options
       
@@ -62,7 +62,7 @@ $j(function() {
       
       //postInit
       postInit: function(wym) {
-        $j(wym._box).find(wym._options.containersSelector)
+        jQuery(wym._box).find(wym._options.containersSelector)
         .removeClass('wym_dropdown').addClass('wym_panel')
         .find('H2>span').remove();
       }

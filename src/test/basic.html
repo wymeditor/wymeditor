@@ -30,22 +30,22 @@
 
 <script type="text/javascript">
 
-var $j = jQuery.noConflict();
 
-$j(function() {
 
-    $j('.wymeditor').wymeditor({
+jQuery(function() {
+
+    jQuery('.wymeditor').wymeditor({
     
         postInit: function(wym){
-            $j('.wymtoggle').change( function() {
+            jQuery('.wymtoggle').change( function() {
             
-                if($j(this).val() == 'on') {
-                    $j('.wym_box').show();
-                    $j('.wymeditor').hide();
+                if(jQuery(this).val() == 'on') {
+                    jQuery('.wym_box').show();
+                    jQuery('.wymeditor').hide();
                 } else {
                     wym.update();
-                    $j('.wym_box').hide();
-                    $j('.wymeditor').show();
+                    jQuery('.wym_box').hide();
+                    jQuery('.wymeditor').show();
                 }
             });
         }

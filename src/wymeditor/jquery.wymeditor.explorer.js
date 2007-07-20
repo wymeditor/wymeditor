@@ -43,7 +43,7 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
     this._doc.title = this._wym._index;
     
     //init html value
-    $j(this._doc.body).html(this._wym._html);
+    jQuery(this._doc.body).html(this._wym._html);
     
     //handle events
     var wym = this;
@@ -70,13 +70,13 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
     if(this._initialized) {
       
       //pre-bind functions
-      if($j.isFunction(this._options.preBind)) this._options.preBind(this);
+      if(jQuery.isFunction(this._options.preBind)) this._options.preBind(this);
       
       //bind external events
       this._wym.bindEvents();
       
       //post-init functions
-      if($j.isFunction(this._options.postInit)) this._options.postInit(this);
+      if(jQuery.isFunction(this._options.postInit)) this._options.postInit(this);
       
       //add event listeners to doc elements, e.g. images
       this.listen();

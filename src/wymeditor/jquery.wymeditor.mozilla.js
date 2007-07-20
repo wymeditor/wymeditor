@@ -47,22 +47,22 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
     this.enableDesignMode();
     
     //pre-bind functions
-    if($j.isFunction(this._options.preBind)) this._options.preBind(this);
+    if(jQuery.isFunction(this._options.preBind)) this._options.preBind(this);
     
     //bind external events
     this._wym.bindEvents();
     
     //bind editor keydown events
-    $j(this._doc).bind("keydown", this.keydown);
+    jQuery(this._doc).bind("keydown", this.keydown);
     
     //bind editor keyup events
-    $j(this._doc).bind("keyup", this.keyup);
+    jQuery(this._doc).bind("keyup", this.keyup);
     
     //bind editor focus events (used to reset designmode - Gecko bug)
-    $j(this._doc).bind("focus", this.enableDesignMode);
+    jQuery(this._doc).bind("focus", this.enableDesignMode);
     
     //post-init functions
-    if($j.isFunction(this._options.postInit)) this._options.postInit(this);
+    if(jQuery.isFunction(this._options.postInit)) this._options.postInit(this);
     
     //add event listeners to doc elements, e.g. images
     this.listen();
@@ -86,12 +86,12 @@ WymClassMozilla.prototype.html = function(html) {
       .replace(/<\/strong>/gi, "</b>");
     
     //update the html body
-    $j(this._doc.body).html(html);
+    jQuery(this._doc.body).html(html);
     
     //re-init designMode
     this.enableDesignMode();
   }
-  else return($j(this._doc.body).html());
+  else return(jQuery(this._doc.body).html());
 };
 
 WymClassMozilla.prototype._exec = function(cmd,param) {
@@ -189,7 +189,7 @@ WymClassMozilla.prototype.keyup = function(evt) {
   
     //RETURN key
     //cleanup <br><br> between paragraphs
-    $j(wym._doc.body).children(WYM_BR).remove();
+    jQuery(wym._doc.body).children(WYM_BR).remove();
   }
   
   else if(evt.keyCode != 8

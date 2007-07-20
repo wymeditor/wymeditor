@@ -24,7 +24,7 @@ Wymeditor.prototype.tidy = function(options) {
 //WymTidy constructor
 function WymTidy(options, wym) {
 
-  options = $j.extend({
+  options = jQuery.extend({
 
     sUrl:          "wymeditor/plugins/tidy/tidy.php",
     sButtonHtml:   "<li class='wym_tools_tidy'>"
@@ -48,12 +48,12 @@ WymTidy.prototype.init = function() {
 
   var tidy = this;
             
-  $j(this._wym._box).find(
+  jQuery(this._wym._box).find(
     this._wym._options.toolsSelector + this._wym._options.toolsListSelector)
     .append(this._options.sButtonHtml);
   
   //handle click event
-  $j(this._wym._box).find(this._options.sButtonSelector).click(function() {
+  jQuery(this._wym._box).find(this._options.sButtonSelector).click(function() {
     tidy.cleanup();
     return(false);
   });
@@ -66,7 +66,7 @@ WymTidy.prototype.cleanup = function() {
     var wym = this._wym;
     var html = "<html><body>" + wym.xhtml() + "</body></html>";
 
-    $j.post(this._options.sUrl, { html: html}, function(data) {
+    jQuery.post(this._options.sUrl, { html: html}, function(data) {
 
         if(data.length > 0 && data != '0') {
           if(data.indexOf("<?php") == 0) {

@@ -31,11 +31,11 @@
 
 <script type="text/javascript">
 
-var $j = jQuery.noConflict();
 
-$j(function() {
 
-    $j('.wymeditor').wymeditor({
+jQuery(function() {
+
+    jQuery('.wymeditor').wymeditor({
         
       //classes panel
       classesItems: [
@@ -74,7 +74,7 @@ $j(function() {
       postInit: function(wym) {
 
         //we make all sections in area_top render as dropdown menus:
-        $j(wym._box)
+        jQuery(wym._box)
             //first we have to select them:
             .find(".wym_area_top .wym_section")
             //then we remove the existing class which make some of them render as a panels:
@@ -89,7 +89,7 @@ $j(function() {
             .css("width", "140px");
 
         //add a ">" character to the title of the new dropdown menus (visual cue)
-        $j(this._box).find(".wym_tools, .wym_classes ")
+        jQuery(this._box).find(".wym_tools, .wym_classes ")
             .find(WYM_H2)
             .append("<span>&nbsp;&gt;</span>");
         }

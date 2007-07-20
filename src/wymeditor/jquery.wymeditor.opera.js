@@ -43,22 +43,22 @@ WymClassOpera.prototype.initIframe = function(iframe) {
     this.html(this._wym._html);
     
     //pre-bind functions
-    if($j.isFunction(this._options.preBind)) this._options.preBind(this);
+    if(jQuery.isFunction(this._options.preBind)) this._options.preBind(this);
     
     //hide indent and outdent until supported
-    $j(this._box).find(this._options.toolSelector 
+    jQuery(this._box).find(this._options.toolSelector 
       + '[@name=' + WYM_INDENT +']').hide();
-    $j(this._box).find(this._options.toolSelector 
+    jQuery(this._box).find(this._options.toolSelector 
       + '[@name=' + WYM_OUTDENT +']').hide();
     
     //bind external events
     this._wym.bindEvents();
     
     //bind editor events
-    $j(this._doc).bind("keyup", this.keyup);
+    jQuery(this._doc).bind("keyup", this.keyup);
     
     //post-init functions
-    if($j.isFunction(this._options.postInit)) this._options.postInit(this);
+    if(jQuery.isFunction(this._options.postInit)) this._options.postInit(this);
     
     //add event listeners to doc elements, e.g. images
     this.listen();
