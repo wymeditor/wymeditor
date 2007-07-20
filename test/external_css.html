@@ -32,11 +32,11 @@
 
 <script type="text/javascript">
 
-var $j = jQuery.noConflict();
+
 var w;
-$j(function() {
+jQuery(function() {
   
-    $j('.wymeditor').wymeditor({
+    jQuery('.wymeditor').wymeditor({
 
       // External CSS file
       stylesheet: 'wym_stylesheet.css',
@@ -92,28 +92,28 @@ $j(function() {
         + " value='{Choose}' />"
         + "<\/div>";
         
-        $j(body)
+        jQuery(body)
           .filter('.wym_dialog_link').find('fieldset').eq(0)
           .prepend(wym.replaceStrings(sSelectLink));
           
-        $j(body)
+        jQuery(body)
           .find('.wym_choose')
           .click(function() {
 
-            var sVal = $j(body).find('.wym_select_link').val();
+            var sVal = jQuery(body).find('.wym_select_link').val();
             
-            $j(body)
+            jQuery(body)
               .find('.wym_href')
               .val(sVal.substring(sVal.lastIndexOf(' ') + 1));
-            $j(body)
+            jQuery(body)
               .find('.wym_title')
               .val(sVal.substr(0, sVal.lastIndexOf(' ')));
           });
       }
     });
     
-    $j('.wymsubmit').click(function() {
-      alert($j(this).siblings('.wymeditor').val());
+    jQuery('.wymsubmit').click(function() {
+      alert(jQuery(this).siblings('.wymeditor').val());
     });
 });
 

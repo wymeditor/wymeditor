@@ -31,19 +31,19 @@
 
 <script type="text/javascript">
 
-var $j = jQuery.noConflict();
 
-$j(function() {
 
-    $j('.wymeditor').wymeditor({
+jQuery(function() {
+
+    jQuery('.wymeditor').wymeditor({
     
         html: "<p>Test.</p>",
         classesItems: [{'name': 'date', 'title': 'PARA: Date', 'expr': 'p'}]
     
     });
     
-    $j('.toggle-link').click( function() {
-      $j('.wym-wrapper').toggle();
+    jQuery('.toggle-link').click( function() {
+      jQuery('.wym-wrapper').toggle();
     });
 });
 

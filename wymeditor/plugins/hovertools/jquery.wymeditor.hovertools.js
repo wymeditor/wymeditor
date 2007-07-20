@@ -21,9 +21,9 @@ Wymeditor.prototype.hovertools = function() {
   var wym = this;
   
   //bind events on buttons
-  $j(this._box).find(this._options.toolSelector).hover(
+  jQuery(this._box).find(this._options.toolSelector).hover(
     function() {
-      wym.status($j(this).html());
+      wym.status(jQuery(this).html());
     },
     function() {
       wym.status('&nbsp;');
@@ -32,25 +32,25 @@ Wymeditor.prototype.hovertools = function() {
 
   //classes: add/remove a style attr to matching elems
   //while mouseover/mouseout
-  $j(this._box).find(this._options.classSelector).hover(
+  jQuery(this._box).find(this._options.classSelector).hover(
     function() {
       var aClasses = eval(wym._options.classesItems);
-      var sName = $j(this).attr(WYM_NAME);
+      var sName = jQuery(this).attr(WYM_NAME);
       var oClass = aClasses.findByName(sName);
 
       if(oClass){
         jqexpr = oClass.expr;
         //don't use jQuery.find() on the iframe body
         //because of MSIE + jQuery + expando issue (#JQ1143)
-        if(!$j.browser.msie)
-          $j(wym._doc).find(jqexpr).css('background-color','#cfc');
+        if(!jQuery.browser.msie)
+          jQuery(wym._doc).find(jqexpr).css('background-color','#cfc');
       }
     },
     function() {
       //don't use jQuery.find() on the iframe body
       //because of MSIE + jQuery + expando issue (#JQ1143)
-      if(!$j.browser.msie)
-        $j(wym._doc).find('*').removeAttr('style');
+      if(!jQuery.browser.msie)
+        jQuery(wym._doc).find('*').removeAttr('style');
     }
   );
 

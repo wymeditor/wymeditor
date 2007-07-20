@@ -47,7 +47,7 @@ function XmlHelper()
 *    # => <br />
 *   this.tag ('br', false, true)
 *    # => <br>
-*   this.tag ('input', $j({type:'text',disabled:true }) )
+*   this.tag ('input', jQuery({type:'text',disabled:true }) )
 *    # => <input type="text" disabled="disabled" />
 */
 XmlHelper.prototype.tag = function(name, options, open)
@@ -67,9 +67,9 @@ XmlHelper.prototype.tag = function(name, options, open)
 *
 *   this.contentTag ('p', 'Hello world!' )
 *    # => <p>Hello world!</p>
-*   this.contentTag('div', this.contentTag('p', "Hello world!"), $j({class : "strong"}))
+*   this.contentTag('div', this.contentTag('p', "Hello world!"), jQuery({class : "strong"}))
 *    # => <div class="strong"><p>Hello world!</p></div>
-*   this.contentTag("select", options, $j({multiple : true}))
+*   this.contentTag("select", options, jQuery({multiple : true}))
 *    # => <select multiple="multiple">...options...</select>
 */
 XmlHelper.prototype.contentTag = function(name, content, options)
