@@ -1399,20 +1399,24 @@ function XhtmlLexer(parser)
   
   this.mapHandler('Text', 'Text');
 
-  this.addCommentTokens('Text');
-  this.addScriptTokens('Text');
-  this.addCssTokens('Text');
-  this.addTagTokens('Text');
-  
+  this.addTokens();
+
   this.init();
     
   return this;
 }
 
 
-
 XhtmlLexer.prototype.init = function()
 {
+}
+
+XhtmlLexer.prototype.addTokens = function()
+{
+  this.addCommentTokens('Text');
+  this.addScriptTokens('Text');
+  this.addCssTokens('Text');
+  this.addTagTokens('Text');
 }
 
 XhtmlLexer.prototype.addCommentTokens = function(scope)
