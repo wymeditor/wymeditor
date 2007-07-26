@@ -188,7 +188,7 @@ jQuery.fn.wymeditor = function(options) {
               + "src='"
               + WYM_IFRAME_BASE_PATH
               + "wymiframe.html' "
-              + "onload='window.parent.WYM_INSTANCES["
+              + "onload='this.contentWindow.parent.WYM_INSTANCES["
               + WYM_INDEX + "].initIframe(this)' "
               + "></iframe>"
               + "</div>",
