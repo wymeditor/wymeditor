@@ -96,6 +96,8 @@ WymClassMozilla.prototype.html = function(html) {
 
 WymClassMozilla.prototype._exec = function(cmd,param) {
 
+    if(!this.selected()) return(false);
+
     switch(cmd) {
     
     case WYM_INDENT: case WYM_OUTDENT:
