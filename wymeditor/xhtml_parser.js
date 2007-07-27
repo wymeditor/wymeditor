@@ -113,7 +113,7 @@ XmlHelper.prototype.escapeOnce = function(xml)
 */
 XmlHelper.prototype._fixDoubleEscape = function(escaped)
 {
-  return escaped.replace(/&amp;([a-z]+|(#\d+));/i, "&$1;");
+  return escaped.replace(/&amp;([a-z]+|(#\d+));/ig, "&$1;");
 }
 
 /*
