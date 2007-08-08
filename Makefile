@@ -17,7 +17,7 @@ WE = ${BUILD_DIR}/build/jquery.wymeditor.js
 WE_PACK = ${BUILD_DIR}/build/jquery.wymeditor.pack.js
 WE_ARCH = ${BUILD_DIR}/build/wymeditor.tar.gz
 
-MERGE = sed -s -e '1 s/^\xEF\xBB\xBF//' ${JS_FILES} > ${WE}
+MERGE = cat ${JS_FILES} | perl -pe 's/^\xEF\xBB\xBF//g' > ${WE}
 PACKER = perl -I${BUILD_DIR}/packer ${BUILD_DIR}/packer/jsPacker.pl -i ${WE} -o ${WE_PACK} -e0
 
 all: archive
@@ -44,11 +44,11 @@ archive: pack
 	@@echo "Building" ${WE_ARCH}
 
 	@@echo " - Creating archive"
-	@@cp -a ${SRC_DIR}/wymeditor ${BUILD_DIR}/build/
+	@@cp -pR ${SRC_DIR}/wymeditor ${BUILD_DIR}/build/
 	@@rm ${BUILD_DIR}/build/wymeditor/*.js
 	@@cp ${BUILD_DIR}/build/jquery.wymeditor.js ${BUILD_DIR}/build/wymeditor/
 	@@cp ${BUILD_DIR}/build/jquery.wymeditor.pack.js ${BUILD_DIR}/build/wymeditor/
-	@@cp -a ${SRC_DIR}/*.txt ${SRC_DIR}/README ${BUILD_DIR}/build/wymeditor/
+	@@cp -pR ${SRC_DIR}/*.txt ${SRC_DIR}/README ${BUILD_DIR}/build/wymeditor/
 	@@cp ${CSS_PARSER} ${XHTML_PARSER} ${BUILD_DIR}/build/wymeditor/
 	@@tar -C ${BUILD_DIR}/build -czf ${WE_ARCH} --exclude '.svn' wymeditor
 	@@rm -rf ${BUILD_DIR}/build/wymeditor/
