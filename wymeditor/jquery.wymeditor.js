@@ -528,7 +528,7 @@ Wymeditor.prototype.init = function() {
   if ($j.browser.msie) {
     var WymClass = new WymClassExplorer(this);
     //commented until supported
-    //var WymSel = new WymSelExplorer(this);
+    var WymSel = new WymSelExplorer(this);
   }
   else if ($j.browser.mozilla) {
     var WymClass = new WymClassMozilla(this);
