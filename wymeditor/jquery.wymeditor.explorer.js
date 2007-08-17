@@ -336,7 +336,7 @@ WymSelExplorer.prototype = {
         if (direction==1) {
             // text length of the current node
             var nodeLength = 0;
-            var prevNode;
+            var prevNode = node;
 
             while (offset < parentOffset) {
                 nodeLength = this._getTextLength(node);
