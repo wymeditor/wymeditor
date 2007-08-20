@@ -337,11 +337,19 @@ WymSelExplorer.prototype = {
             // text length of the current node
             var nodeLength = 0;
             var prevNode = node;
+			// count <br>s
+            var br = 0;
 
             while (offset < parentOffset) {
                 nodeLength = this._getTextLength(node);
 
                 offset += nodeLength;
+                if (prevNode.nodeName == "BR") {
+                    br++;
+                    // <br>s are 2 characters "long"
+                    offset +=2;
+                    //nodeLength += 2;
+                }
                 prevNode = node;
 
                 if (node.nextSibling)
@@ -350,9 +358,25 @@ WymSelExplorer.prototype = {
                     break;
 
             }
-            node = prevNode;
             offset = parentOffset - (offset - nodeLength);
 
+            // with range.text.legth we can't determine if the cursor is in
+            // front or behind a (several) <br>, as they have length==0.
+            // The range.htmlText.length value needs to be used
+            if (node.nodeName == "BR") {
+                var tmpRange = parentRange.duplicate();
+                tmpRange.collapse(true);
+                tmpRange.moveEnd("character", parentOffset-br);
+                // previous node was a <br> (or some <br>s)
+                if (tmpRange.htmlText.length<parentRange.htmlText.length) {
+                    prevNode = node.nextSibling;
+                    while (prevNode.nodeName == "BR" && prevNode.nextSibling)
+                        prevNode = prevNode.nextSibling;
+                    offset = 0;
+                }
+            }
+
+            node = prevNode;
         }
         // go backwards
         else {
