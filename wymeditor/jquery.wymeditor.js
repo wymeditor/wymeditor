@@ -180,11 +180,8 @@ jQuery.fn.wymeditor = function(options) {
               + WYM_STATUS
               + "</div>"
               + "<div class='wym_area_bottom'>"
-              + "<a class='wym_wymeditor_icon' "
-              + "href='http://www.wymeditor.org/'>"
-              + "<img alt='WYMeditor' width='50' height='15' src='"
-              + "../wymeditor/"
-              + "skins/wymeditor_icon.png' /></a>"
+              + "<a class='wym_wymeditor_link' "
+              + "href='http://www.wymeditor.org/'>WYMeditor</a>"
               + "</div>"
               + "</div>",
 
