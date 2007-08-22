@@ -1051,13 +1051,13 @@ Wymeditor.prototype.addCssRules = function(doc, aCss) {
 
 Wymeditor.prototype.computeBasePath = function() {
   return jQuery(jQuery.grep(jQuery('script'), function(s){
-    return (s.src && s.src.match(/jquery\.wymeditor\.js(\?.*)?$/ ))
-  })).attr('src').replace(/jquery\.wymeditor\.js(\?.*)?$/, '');
+    return (s.src && s.src.match(/jquery\.wymeditor(\.pack){0,1}\.js(\?.*)?$/ ))
+  })).attr('src').replace(/jquery\.wymeditor(\.pack){0,1}\.js(\?.*)?$/, '');
 };
 
 Wymeditor.prototype.computeJqueryPath = function() {
   return jQuery(jQuery.grep(jQuery('script'), function(s){
-    return (s.src && s.src.match(/jquery\.js(\?.*)?$/ ))
+    return (s.src && s.src.match(/jquery(-(.*)){0,1}(\.pack){0,1}\.js(\?.*)?$/ ))
   })).attr('src');
 };
 
