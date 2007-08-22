@@ -316,6 +316,7 @@ jQuery.fn.wymeditor = function(options) {
     cancelSelector:    ".wym_cancel",
     previewSelector:   "",
     
+    dialogTypeSelector:    ".wym_dialog_type",
     dialogLinkSelector:    ".wym_dialog_link",
     dialogImageSelector:   ".wym_dialog_image",
     dialogTableSelector:   ".wym_dialog_table",
@@ -355,6 +356,9 @@ jQuery.fn.wymeditor = function(options) {
                + ">"
                + "<form>"
                + "<fieldset>"
+               + "<input type='hidden' class='wym_dialog_type' value='"
+               + WYM_DIALOG_LINK
+               + "' />"
                + "<legend>{Link}</legend>"
                + "<div class='row'>"
                + "<label>{URL}</label>"
@@ -379,6 +383,9 @@ jQuery.fn.wymeditor = function(options) {
                + ">"
                + "<form>"
                + "<fieldset>"
+               + "<input type='hidden' class='wym_dialog_type' value='"
+               + WYM_DIALOG_IMAGE
+               + "' />"
                + "<legend>{Image}</legend>"
                + "<div class='row'>"
                + "<label>{URL}</label>"
@@ -407,6 +414,9 @@ jQuery.fn.wymeditor = function(options) {
                + ">"
                + "<form>"
                + "<fieldset>"
+               + "<input type='hidden' class='wym_dialog_type' value='"
+               + WYM_DIALOG_TABLE
+               + "' />"
                + "<legend>{Table}</legend>"
                + "<div class='row'>"
                + "<label>{Caption}</label>"
@@ -434,6 +444,9 @@ jQuery.fn.wymeditor = function(options) {
                + " onload='WYM_INIT_DIALOG(" + WYM_INDEX + ")'"
                + ">"
                + "<form>"
+               + "<input type='hidden' class='wym_dialog_type' value='"
+               + WYM_DIALOG_PASTE
+               + "' />"
                + "<fieldset>"
                + "<legend>{Paste_From_Word}</legend>"
                + "<div class='row'>"
@@ -1179,11 +1192,21 @@ function WYM_INIT_DIALOG(index) {
     var wym = window.opener.WYM_INSTANCES[index];
     var doc = window.document;
     var selected = wym.selected();
+    var dialogType = jQuery(wym._options.dialogTypeSelector).val();
     var sStamp = wym.uniqueStamp();
     
-    //fix MSIE selection if link image has been clicked
-    if(!selected && wym._selected_image) {
-      selected = jQuery(wym._selected_image).parentsOrSelf(WYM_A);
+    switch(dialogType) {
+    
+    case WYM_DIALOG_LINK:
+      //ensure that we select the link to populate the fields
+      if(selected && selected.tagName && selected.tagName.toLowerCase != WYM_A)
+        selected = jQuery(selected).parentsOrSelf(WYM_A);
+    
+      //fix MSIE selection if link image has been clicked
+      if(!selected && wym._selected_image)
+        selected = jQuery(wym._selected_image).parentsOrSelf(WYM_A);
+    break;
+
     }
     
     //pre-init functions
