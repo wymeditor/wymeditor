@@ -1,4 +1,4 @@
-﻿/*
+/*
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2007 H.O.net - http://www.honet.be/
  * Dual licensed under the MIT (MIT-license.txt)
@@ -129,3 +129,7 @@
             .wym_dialog div.row              { display: block; }
             /* End hide from IE-mac */                
             
+/*WYMEDITOR_ICON*/
+    a.wym_wymeditor_icon            { float: right; }
+    a.wym_wymeditor_icon img        { border: 1px solid #b4b9bf; }
+    a.wym_wymeditor_icon:hover img  { border-color: gray; }

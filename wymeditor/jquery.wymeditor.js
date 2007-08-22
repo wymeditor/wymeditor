@@ -1,4 +1,4 @@
-﻿/*
+/*
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2007 H.O.net - http://www.honet.be/
  * Dual licensed under the MIT (MIT-license.txt)
@@ -166,7 +166,7 @@ jQuery.fn.wymeditor = function(options) {
     lang:       "en",
 
     boxHtml:   "<div class='wym_box'>"
-              + "<div class='wym_area_top'>"
+              + "<div class='wym_area_top'>" 
               + WYM_TOOLS
               + "</div>"
               + "<div class='wym_area_left'></div>"
@@ -180,6 +180,11 @@ jQuery.fn.wymeditor = function(options) {
               + WYM_STATUS
               + "</div>"
               + "<div class='wym_area_bottom'>"
+              + "<a class='wym_wymeditor_icon' "
+              + "href='http://www.wymeditor.org/'>"
+              + "<img alt='WYMeditor' width='50' height='15' src='"
+              + "../wymeditor/"
+              + "skins/wymeditor_icon.png' /></a>"
               + "</div>"
               + "</div>",
 
