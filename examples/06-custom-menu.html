@@ -9,8 +9,8 @@
  *        http://www.wymeditor.org/
  *
  * File Name:
- *        03-plugin.html
- *        WYMeditor integration example - plugin activation.
+ *        06-custom-menu.html
+ *        WYMeditor integration example - custom menu.
  *        See the documentation for more info.
  *
  * File Authors:
@@ -24,7 +24,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="../wymeditor/skins/default/screen.css" />
 <script type="text/javascript" src="../jquery/jquery.js"></script>
 <script type="text/javascript" src="../wymeditor/jquery.wymeditor.pack.js"></script>
-<script type="text/javascript" src="../wymeditor/plugins/hovertools/jquery.wymeditor.hovertools.js"></script> <!-- load the plugin -->
 
 <script type="text/javascript">
 
@@ -33,17 +32,29 @@ jQuery(function() {
     
         html: '<p>Hello, World!<\/p>',
         stylesheet: 'styles.css',
-        postInit: function(wym) {
         
-            //postInit is executed after WYMeditor initialization
-            //'wym' is the current WYMeditor instance
-            
-            //we generally activate plugins after WYMeditor initialization
-
-            //activate 'hovertools' plugin
-            //which gives advanced feedback to the user:
-            wym.hovertools();
-        }
+        //customize the tools menu with toolsItems option
+        //'name' is the name of the command which will be executed
+        //when the user clicks on the button
+        //'title' is the button's title (automagically localized)
+        //'css' is the button's class name
+        toolsItems: [
+        {'name': 'Bold', 'title': 'Strong', 'css': 'wym_tools_strong'}, 
+        {'name': 'Italic', 'title': 'Emphasis', 'css': 'wym_tools_emphasis'},
+        {'name': 'CreateLink', 'title': 'Link', 'css': 'wym_tools_link'},
+        {'name': 'Unlink', 'title': 'Unlink', 'css': 'wym_tools_unlink'},
+        {'name': 'InsertImage', 'title': 'Image', 'css': 'wym_tools_image'},
+        {'name': 'InsertOrderedList', 'title': 'Ordered_List',
+            'css': 'wym_tools_ordered_list'},
+        {'name': 'InsertUnorderedList', 'title': 'Unordered_List',
+            'css': 'wym_tools_unordered_list'},
+        {'name': 'InsertTable', 'title': 'Table', 'css': 'wym_tools_table'},
+        {'name': 'Paste', 'title': 'Paste_From_Word',
+            'css': 'wym_tools_paste'},
+        {'name': 'Undo', 'title': 'Undo', 'css': 'wym_tools_undo'},
+        {'name': 'Redo', 'title': 'Redo', 'css': 'wym_tools_redo'}
+    ]
+    
     });
 });
 
@@ -52,7 +63,7 @@ jQuery(function() {
 </head>
 
 <body>
-<h1>WYMeditor integration example - plugin activation</h1>
+<h1>WYMeditor integration example - custom menu</h1>
 <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
 <form method="post" action="">
 <textarea class="wymeditor"></textarea>

@@ -9,8 +9,8 @@
  *        http://www.wymeditor.org/
  *
  * File Name:
- *        03-plugin.html
- *        WYMeditor integration example - plugin activation.
+ *        08-custom-panel.html
+ *        WYMeditor integration example - custom panel.
  *        See the documentation for more info.
  *
  * File Authors:
@@ -24,7 +24,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="../wymeditor/skins/default/screen.css" />
 <script type="text/javascript" src="../jquery/jquery.js"></script>
 <script type="text/javascript" src="../wymeditor/jquery.wymeditor.pack.js"></script>
-<script type="text/javascript" src="../wymeditor/plugins/hovertools/jquery.wymeditor.hovertools.js"></script> <!-- load the plugin -->
 
 <script type="text/javascript">
 
@@ -33,16 +32,18 @@ jQuery(function() {
     
         html: '<p>Hello, World!<\/p>',
         stylesheet: 'styles.css',
-        postInit: function(wym) {
         
-            //postInit is executed after WYMeditor initialization
-            //'wym' is the current WYMeditor instance
-            
-            //we generally activate plugins after WYMeditor initialization
-
-            //activate 'hovertools' plugin
-            //which gives advanced feedback to the user:
-            wym.hovertools();
+        postInit: function(wym) {
+            //render the containers box as a panel
+            //and remove the span containing the '>'
+            jQuery(wym._box).find(wym._options.containersSelector)
+                .removeClass('wym_dropdown')
+                .addClass('wym_panel')
+                .find('h2/span')
+                .remove();
+            //adjust the editor's height
+            jQuery(wym._box).find(wym._options.iframeSelector)
+                .css('height', '250px');
         }
     });
 });
@@ -52,7 +53,7 @@ jQuery(function() {
 </head>
 
 <body>
-<h1>WYMeditor integration example - plugin activation</h1>
+<h1>WYMeditor integration example - custom panel</h1>
 <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
 <form method="post" action="">
 <textarea class="wymeditor"></textarea>

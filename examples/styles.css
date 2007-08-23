@@ -8,7 +8,7 @@ h1 {
   font-size: 1.5em;
 }
 
-/* WYMEDITOR RELATED STYLES - CUSTOMIZE FOR YOUR NEEDS */
+/* EDITOR RELATED STYLES - CUSTOMIZE FOR YOUR NEEDS */
 /*
     The classes panel, the visual feedback and the preview
     will be affected by these values.
@@ -19,6 +19,9 @@ h1 {
     - Comments after the class name and before the style declaration ({)
       define the jQuery expression that decides whether this 
       style should be applied or not.
+      
+    Note: the WYMeditor and /WYMeditor comments below are required
+    for the CSS parser to work properly.
 */
 
 /* WYMeditor */
@@ -54,9 +57,8 @@ h1 {
     /* background-color: #fc9; border: 2px solid red; */
 }
 
-
 /* /WYMeditor */
-/* END WYMEDITOR RELATED STYLES */
+/* END EDITOR RELATED STYLES */
 
 
 /* YOU CAN ADD NON-WYMEDITOR RELATED STYLES HERE */
