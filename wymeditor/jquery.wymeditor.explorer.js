@@ -282,6 +282,10 @@ WymSelExplorer.prototype = {
         // the cursor position
         parentRange.moveToElementText(parentElement);
         parentLength = parentRange.text.length;
+        // XXX v.mische fix it
+        var backwardRange = parentRange.duplicate();
+        var searchRange = parentRange.duplicate();
+
 
         parentRange.setEndPoint("EndToStart", range);
         parentOffset = parentRange.text.length;
@@ -297,112 +301,127 @@ WymSelExplorer.prototype = {
         // ratio of the cursor position to the total parentElement text length
         var offsetRatio = parentOffset/parentLength;
 
-        // position of the cursor within its node
+        // offset from start (if search direction==-1: end) to the child node
+        // we are currently at while searching the position
+        // finally: position of the cursor within its node
         var offset = 0;
 
         var childNodes = parentElement.childNodes;
 
         // try to find a better start position for searching
+        //if (childNodes.length>20 && offsetRatio>0.1) {
         if (childNodes.length>20 && offsetRatio>0.1) {
             // range around the appropriate node 
-            var childRange = parentRange.duplicate();
+            var childRange = searchRange.duplicate();
             // length from start to the beginning of a node near the node
             // of the position we are looking for
-            var childOffsetRange = parentRange.duplicate();
+            //var childOffsetRange = parentRange.duplicate();
 
             childPosition = Math.round(offsetRatio * childNodes.length-1);
 
+            if (childPosition <= 0)
+                childPosition = 1;
+
             // moveToElementText doesn't work with text nodes
-            if (childNodes[childPosition].nodeType == WYM_NODE.TEXT)
+            while ((childNodes[childPosition].nodeType == WYM_NODE.TEXT
+                    || childNodes[childPosition].nodeName == "BR")
+                    && childPosition > 0) {
                 childPosition--;
-
-            childRange.moveToElementText(childNodes[childPosition]);
-            childOffsetRange.setEndPoint("EndToStart", childRange);
-
-            // search forward
-            if (parentOffset >= childOffsetRange.text.length) {
-                direction = 1;
-                offset = childOffsetRange.text.length;
             }
-            // search backwards
+
+            if (childPosition > 0) {
+                childRange.moveToElementText(childNodes[childPosition]);
+                // Range from start of parent node to the start of the proposed
+                // child node
+                childRange.setEndPoint("EndToStart", searchRange);
+
+                // search forward
+                if (parentOffset > childRange.text.length) {
+                    direction = 1;
+                    searchRange.setEndPoint("StartToEnd", childRange);
+                    searchRange.setEndPoint("EndToEnd", parentRange);
+                }
+                // search backwards
+                else {
+                    direction = -1;
+                    searchRange.setEndPoint("StartToEnd", parentRange);
+                    searchRange.setEndPoint("EndToEnd", childRange);
+
+                    // caused by ranges
+                    childPosition--;
+                }
+
+            }
+            // start at the beginning
             else {
-                direction = -1;
-                offset = parentLength - (childOffsetRange.text.length + 
-                        this._getTextLength(childNodes[childPosition]));
+                direction = 1;
+                searchRange = parentRange.duplicate();
+            }
+        }
+        else {
+            if (direction == 1)
+                searchRange = parentRange.duplicate();
+            else {
+                searchRange = backwardRange.duplicate();
+                searchRange.setEndPoint("StartToEnd", parentRange);
             }
         }
 
         var node=parentElement.childNodes[childPosition];
+
+
+        var currentOffsetRange = searchRange.duplicate();
         if (direction==1) {
             // text length of the current node
             var nodeLength = 0;
-            var prevNode = node;
-			// count <br>s
             var br = 0;
 
-            while (offset < parentOffset) {
-                nodeLength = this._getTextLength(node);
-
-                offset += nodeLength;
-                if (prevNode.nodeName == "BR") {
+            while (node) {
+                if (node.nodeName == 'BR')
                     br++;
-                    // <br>s are 2 characters "long"
-                    offset +=2;
-                    //nodeLength += 2;
+                nodeLength = this._getTextLength(node);
+                if (currentOffsetRange.text.length > nodeLength) {
+                    currentOffsetRange.moveStart('character', nodeLength + br);
+                    br = 0;
                 }
-                prevNode = node;
-
-                if (node.nextSibling)
-                    node = node.nextSibling
                 else
                     break;
 
+                node = node.nextSibling;
             }
-            offset = parentOffset - (offset - nodeLength);
-
-            // with range.text.legth we can't determine if the cursor is in
-            // front or behind a (several) <br>, as they have length==0.
-            // The range.htmlText.length value needs to be used
-            if (node.nodeName == "BR") {
-                var tmpRange = parentRange.duplicate();
-                tmpRange.collapse(true);
-                tmpRange.moveEnd("character", parentOffset-br);
-                // previous node was a <br> (or some <br>s)
-                if (tmpRange.htmlText.length<parentRange.htmlText.length) {
-                    prevNode = node.nextSibling;
-                    while (prevNode.nodeName == "BR" && prevNode.nextSibling)
-                        prevNode = prevNode.nextSibling;
-                    offset = 0;
-                }
-            }
-
-            node = prevNode;
+            offset = currentOffsetRange.text.length;
         }
         // go backwards
         else {
-            while(parentLength - offset > parentOffset && node) {
-                offset += this._getTextLength(node);
-                node=node.previousSibling;
-            }
+            var nodeLength = 0;
+            var br = 0;
 
-            // calculate the offset from start to the "end" of the previous node
-            // node is the previousSibling o of the cursor position node
-            if (node.nodeType == WYM_NODE.TEXT) {
-                var nextNode = node.nextSibling;
-                if (nextNode) {
-                    childRange.moveToElementText(nextNode);
-                    childOffsetRange.setEndPoint("EndToStart", childRange);
+            while (node) {
+                if (node.nodeName == 'BR')
+                    br++;
+                nodeLength = this._getTextLength(node);
+
+                if (currentOffsetRange.text.length > nodeLength) {
+                    var length = currentOffsetRange.text.length;
+                    currentOffsetRange.moveEnd('character', -(nodeLength+br));
+                    // NOTE v.mische Sometimes the range isn't move as far as
+                    // expected. I don't know whenwhy it happens, but it does
+                    if (br == 0) {
+                        var diff = (length-nodeLength) - currentOffsetRange.text.length;
+                        currentOffsetRange.moveEnd('character', diff);
+                    }
+                    br = 0;
                 }
-                else 
-                    childOffsetRange.collapse(true);
-            }
-            else {
-                childRange.moveToElementText(node);
-                childOffsetRange.setEndPoint("EndToEnd", childRange);
+                else
+                    break;
+
+                if (node.previousSibling)
+                    node = node.previousSibling;
+                else
+                    break;
             }
 
-            offset = parentOffset - childOffsetRange.text.length;
-            node = node.previousSibling;
+            offset = nodeLength - currentOffsetRange.text.length;
         }
 
         return {'node': node, 'offset': offset};
