@@ -15,7 +15,7 @@ WE_PACK = ${BUILD_DIR}/build/jquery.wymeditor.pack.js
 WE_ARCH = ${BUILD_DIR}/build/wymeditor.tar.gz
 
 MERGE = cat ${JS_FILES} | perl -pe 's/^\xEF\xBB\xBF//g' > ${WE}
-PACKER = perl -I${BUILD_DIR}/packer ${BUILD_DIR}/packer/jsPacker.pl -i ${WE} -o ${WE_PACK} -e0
+PACKER = perl -I${BUILD_DIR}/packer ${BUILD_DIR}/packer/jsPacker.pl -i ${WE} -o ${WE_PACK} -e62
 
 all: archive
 
