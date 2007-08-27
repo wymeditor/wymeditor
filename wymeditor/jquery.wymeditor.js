@@ -30,6 +30,7 @@
     var WYM_INDEX            = "{Wym_Index}";
     var WYM_BASE_PATH        = "{Wym_Base_Path}";
     var WYM_CSS_PATH         = "{Wym_Css_Path}";
+    var WYM_WYM_PATH         = "{Wym_Wym_Path}";
     var WYM_IFRAME_BASE_PATH = "{Wym_Iframe_Base_Path}";
     var WYM_IFRAME_DEFAULT   = "iframe/default/";
     var WYM_JQUERY_PATH      = "{Wym_Jquery_Path}";
@@ -154,6 +155,8 @@ jQuery.fn.wymeditor = function(options) {
     basePath:   false,
     
     cssPath:    false,
+    
+    wymPath:    false,
     
     iframeBasePath: false,
     
@@ -347,8 +350,8 @@ jQuery.fn.wymeditor = function(options) {
                       + "'></script>"
                       + "<script type='text/javascript'"
                       + " src='"
-                      + WYM_BASE_PATH
-                      + "jquery.wymeditor.js'></script>"
+                      + WYM_WYM_PATH
+                      + "'></script>"
                       + "</head>"
                       + WYM_DIALOG_BODY
                       + "</html>",
@@ -522,6 +525,8 @@ function Wymeditor(elem,index,options) {
     || this.computeBasePath();
   this._options.cssPath = this._options.cssPath
     || this.computeCssPath();
+  this._options.wymPath = this._options.wymPath
+    || this.computeWymPath();
   this._options.iframeBasePath = this._options.iframeBasePath
     || this._options.basePath + WYM_IFRAME_DEFAULT;
   this._options.jQueryPath = this._options.jQueryPath
@@ -988,6 +993,7 @@ Wymeditor.prototype.dialog = function(sType) {
     dialogHtml = dialogHtml
       .replaceAll(WYM_BASE_PATH, this._options.basePath)
       .replaceAll(WYM_CSS_PATH, this._options.cssPath)
+      .replaceAll(WYM_WYM_PATH, this._options.wymPath)
       .replaceAll(WYM_JQUERY_PATH, this._options.jQueryPath)
       .replaceAll(WYM_DIALOG_TITLE, this.encloseString(sType))
       .replaceAll(WYM_DIALOG_BODY, sBodyHtml)
@@ -1057,6 +1063,12 @@ Wymeditor.prototype.computeBasePath = function() {
   return jQuery(jQuery.grep(jQuery('script'), function(s){
     return (s.src && s.src.match(/jquery\.wymeditor(\.pack){0,1}\.js(\?.*)?$/ ))
   })).attr('src').replace(/jquery\.wymeditor(\.pack){0,1}\.js(\?.*)?$/, '');
+};
+
+Wymeditor.prototype.computeWymPath = function() {
+  return jQuery(jQuery.grep(jQuery('script'), function(s){
+    return (s.src && s.src.match(/jquery\.wymeditor(\.pack){0,1}\.js(\?.*)?$/ ))
+  })).attr('src');
 };
 
 Wymeditor.prototype.computeJqueryPath = function() {
