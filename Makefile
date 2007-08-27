@@ -14,10 +14,15 @@ WE = ${BUILD_DIR}/build/jquery.wymeditor.js
 WE_PACK = ${BUILD_DIR}/build/jquery.wymeditor.pack.js
 WE_ARCH = ${BUILD_DIR}/build/wymeditor.tar.gz
 
+CP_PACK = ${BUILD_DIR}/build/wym_css_parser.pack.js
+XP_PACK = ${BUILD_DIR}/build/xhtml_parser.pack.js
+
 FE = ${BUILD_DIR}/build/fireeditor.xpi
 
 MERGE = cat ${JS_FILES} | perl -pe 's/^\xEF\xBB\xBF//g' > ${WE}
-PACKER = perl -I${BUILD_DIR}/packer ${BUILD_DIR}/packer/jsPacker.pl -i ${WE} -o ${WE_PACK} -e62
+WE_PACKER = perl -I${BUILD_DIR}/packer ${BUILD_DIR}/packer/jsPacker.pl -i ${WE} -o ${WE_PACK} -e62
+CP_PACKER = perl -I${BUILD_DIR}/packer ${BUILD_DIR}/packer/jsPacker.pl -i ${CSS_PARSER} -o ${CP_PACK} -e62
+XP_PACKER = perl -I${BUILD_DIR}/packer ${BUILD_DIR}/packer/jsPacker.pl -i ${XHTML_PARSER} -o ${XP_PACK} -e62
 
 all: archive
 
@@ -34,9 +39,25 @@ pack: wymeditor
 	@@echo "Building" ${WE_PACK}
 
 	@@echo " - Compressing using Packer"
-	@@${PACKER}
-
+	@@${WE_PACKER}
+	
 	@@echo ${WE_PACK} "Built"
+	@@echo
+	
+	@@echo "Building" ${CP_PACK}
+
+	@@echo " - Compressing using Packer"
+	@@${CP_PACKER}
+	
+	@@echo ${CP_PACK} "Built"
+	@@echo
+	
+	@@echo "Building" ${XP_PACK}
+
+	@@echo " - Compressing using Packer"
+	@@${XP_PACKER}
+
+	@@echo ${XP_PACK} "Built"
 	@@echo
 
 archive: pack
@@ -46,8 +67,7 @@ archive: pack
 	@@mkdir ${BUILD_DIR}/build/wymeditor/
 	@@cp -pR ${SRC_DIR}/wymeditor ${BUILD_DIR}/build/wymeditor/
 	@@rm ${BUILD_DIR}/build/wymeditor/wymeditor/*.js
-	@@cp ${BUILD_DIR}/build/jquery.wymeditor.js ${BUILD_DIR}/build/wymeditor/wymeditor/
-	@@cp ${BUILD_DIR}/build/jquery.wymeditor.pack.js ${BUILD_DIR}/build/wymeditor/wymeditor/
+	@@cp ${WE} ${WE_PACK} ${CP_PACK} ${XP_PACK} ${BUILD_DIR}/build/wymeditor/wymeditor/
 	@@cp -pR ${SRC_DIR}/*.txt ${SRC_DIR}/README ${BUILD_DIR}/build/wymeditor/
 	@@cp ${CSS_PARSER} ${XHTML_PARSER} ${BUILD_DIR}/build/wymeditor/wymeditor/
 	@@cp -pR ${SRC_DIR}/examples ${BUILD_DIR}/build/wymeditor/

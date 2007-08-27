@@ -29,7 +29,7 @@ function XmlHelper()
 {
   this._entitiesDiv = document.createElement('div');
   return this;
-}
+};
 
 
 /*
@@ -55,7 +55,7 @@ XmlHelper.prototype.tag = function(name, options, open)
   options = options || false;
   open = open || false;
   return '<'+name+(options ? this.tagOptions(options) : '')+(open ? '>' : ' />');
-}
+};
 
 /*
 * @name contentTag
@@ -76,7 +76,7 @@ XmlHelper.prototype.contentTag = function(name, content, options)
 {
   options = options || false;
   return '<'+name+(options ? this.tagOptions(options) : '')+'>'+content+'</'+name+'>';
-}
+};
 
 /*
 * @name cdataSection
@@ -90,7 +90,7 @@ XmlHelper.prototype.contentTag = function(name, content, options)
 XmlHelper.prototype.cdataSection = function(content)
 {
   return '<![CDATA['+content+']]>';
-}
+};
 
 
 /*
@@ -104,7 +104,7 @@ XmlHelper.prototype.cdataSection = function(content)
 XmlHelper.prototype.escapeOnce = function(xml)
 {
   return this._fixDoubleEscape(this.escapeEntities(xml));
-}
+};
 
 /*
 * @name _fixDoubleEscape
@@ -114,7 +114,7 @@ XmlHelper.prototype.escapeOnce = function(xml)
 XmlHelper.prototype._fixDoubleEscape = function(escaped)
 {
   return escaped.replace(/&amp;([a-z]+|(#\d+));/ig, "&$1;");
-}
+};
 
 /*
 * @name tagOptions
@@ -146,7 +146,7 @@ XmlHelper.prototype.tagOptions = function(options)
     }
   }
   return xml._formated_options;
-}
+};
 
 /*
 * @name escapeEntities
@@ -164,7 +164,7 @@ XmlHelper.prototype.escapeEntities = function(string, escape_quotes)
     if(escape_quotes == true)  result = result.replace('"', '&#039;');
   }
   return result;
-}
+};
 
 /*
 * Parses a string conatining tag attributes and values an returns an array formated like
@@ -194,7 +194,7 @@ XmlHelper.prototype.parseAttributes = function(tag_attributes)
     }
   }
   return result;
-}
+};
 
 /**
 * XhtmlValidator for validating tag attributes
@@ -887,11 +887,11 @@ var XhtmlValidator = {
       this._possible_tag_attributes = {};
     }
     if (!this._possible_tag_attributes[tag]) {
-      this._possible_tag_attributes[tag] = this.getUniqueAttributesAndEventsForTag(tag).concat(this.getDefaultAttributesAndEventsForTag(tag));;
+      this._possible_tag_attributes[tag] = this.getUniqueAttributesAndEventsForTag(tag).concat(this.getDefaultAttributesAndEventsForTag(tag));
     }
     return this._possible_tag_attributes[tag];
   }
-}
+};
 
 
 /**
@@ -913,7 +913,7 @@ function ParallelRegex(case_sensitive)
   this._labels = [];
   this._regex = null;
   return this;
-}
+};
 
 
 /**
@@ -931,7 +931,7 @@ ParallelRegex.prototype.addPattern = function(pattern, label)
   this._patterns[count] = pattern;
   this._labels[count] = label;
   this._regex = null;
-}
+};
 
 /**
 *    Attempts to match all patterns at once against
@@ -960,7 +960,7 @@ ParallelRegex.prototype.match = function(subject)
     }
   }
   return [true, matches[0]];
-}
+};
 
 /**
 *    Compounds the patterns into a single
@@ -979,7 +979,7 @@ ParallelRegex.prototype._getCompoundedRegex = function()
     this._regex = new RegExp(this._patterns.join("|") ,this._getPerlMatchingFlags());
   }
   return this._regex;
-}
+};
 
 /**
 * Escape lookahead/lookbehind blocks
@@ -994,7 +994,7 @@ ParallelRegex.prototype._tokenizeRegex = function(regex)
   replace(/\(\?\<\=(.*)\)/,        '~~~~~~Tk5\$1~~~~~~').
   replace(/\(\?\<\!(.*)\)/,        '~~~~~~Tk6\$1~~~~~~').
   replace(/\(\?\:(.*)\)/,          '~~~~~~Tk7\$1~~~~~~');
-}
+};
 
 /**
 * Unscape lookahead/lookbehind blocks
@@ -1009,7 +1009,7 @@ ParallelRegex.prototype._untokenizeRegex = function(regex)
   replace(/~~~~~~Tk5(.*)~~~~~~/,      "(?<=\$1)").
   replace(/~~~~~~Tk6(.*)~~~~~~/,      "(?<!\$1)").
   replace(/~~~~~~Tk7(.*)~~~~~~/,      "(?:\$1)");
-}
+};
 
 
 /**
@@ -1020,7 +1020,7 @@ ParallelRegex.prototype._untokenizeRegex = function(regex)
 ParallelRegex.prototype._getPerlMatchingFlags = function() 
 {
   return (this._case ? "m" : "mi");
-}
+};
 
 
 
@@ -1037,7 +1037,7 @@ function StateStack( start)
 {
   this._stack = [start];
   return this;
-}
+};
 
 /**
 *    Accessor for current state.
@@ -1047,7 +1047,7 @@ function StateStack( start)
 StateStack.prototype.getCurrent = function() 
 {
   return this._stack[this._stack.length - 1];
-}
+};
 
 /**
 *    Adds a state to the stack and sets it
@@ -1058,7 +1058,7 @@ StateStack.prototype.getCurrent = function()
 StateStack.prototype.enter = function(state) 
 {
   this._stack.push(state);    
-}
+};
 
 /**
 *    Leaves the current state and reverts
@@ -1074,7 +1074,7 @@ StateStack.prototype.leave = function()
   }
   this._stack.pop();
   return true;
-}
+};
 
 
 // GLOBALS 
@@ -1111,7 +1111,7 @@ function Lexer(parser, start, case_sensitive)
   this._mode_handlers = {};
   this._mode_handlers[start] = start;
   return this;
-}
+};
 
 /**
 *    Adds a token search pattern for a particular
@@ -1134,7 +1134,7 @@ Lexer.prototype.addPattern = function(pattern, mode)
   if (this._mode_handlers[mode] == undefined) {
     this._mode_handlers[mode] = mode;
   }
-}
+};
 
 /**
 *    Adds a pattern that will enter a new parsing
@@ -1158,7 +1158,7 @@ Lexer.prototype.addEntryPattern = function(pattern, mode, new_mode)
   if (this._mode_handlers[new_mode] == undefined) {
     this._mode_handlers[new_mode] = new_mode;
   }
-}
+};
 
 /**
 *    Adds a pattern that will exit the current mode
@@ -1177,7 +1177,7 @@ Lexer.prototype.addExitPattern = function(pattern, mode)
   if (this._mode_handlers[mode] == undefined) {
     this._mode_handlers[mode] = mode;
   }
-}
+};
 
 /**
 *    Adds a pattern that has a special mode. Acts as an entry
@@ -1200,7 +1200,7 @@ Lexer.prototype.addSpecialPattern =  function(pattern, mode, special)
   if (this._mode_handlers[special] == undefined) {
     this._mode_handlers[special] = special;
   }
-}
+};
 
 /**
 *    Adds a mapping from a mode to another handler.
@@ -1211,7 +1211,7 @@ Lexer.prototype.addSpecialPattern =  function(pattern, mode, special)
 Lexer.prototype.mapHandler = function(mode, handler) 
 {
   this._mode_handlers[mode] = handler;
-}
+};
 
 /**
 *    Splits the page text into tokens. Will fail
@@ -1253,7 +1253,7 @@ Lexer.prototype.parse = function(raw)
   }
 
   return this._invokeParser(raw, LEXER_UNMATCHED);
-}
+};
 
 /**
 *    Sends the matched token and any leading unmatched
@@ -1294,7 +1294,7 @@ Lexer.prototype._dispatchTokens = function(unmatched, matched, mode)
   this._mode.enter(mode);
 
   return this._invokeParser(matched, LEXER_ENTER);
-}
+};
 
 /**
 *    Tests to see if the new mode is actually to leave
@@ -1307,7 +1307,7 @@ Lexer.prototype._dispatchTokens = function(unmatched, matched, mode)
 Lexer.prototype._isModeEnd = function(mode) 
 {
   return (mode === "__exit");
-}
+};
 
 /**
 *    Test to see if the mode is one where this mode
@@ -1320,7 +1320,7 @@ Lexer.prototype._isModeEnd = function(mode)
 Lexer.prototype._isSpecialMode = function(mode) 
 {
   return (mode.substring(0,1) == "_");
-}
+};
 
 /**
 *    Strips the magic underscore marking single token
@@ -1332,7 +1332,7 @@ Lexer.prototype._isSpecialMode = function(mode)
 Lexer.prototype._decodeSpecial = function(mode) 
 {
   return mode.substring(1);
-}
+};
 
 /**
 *    Calls the parser method named after the current
@@ -1352,9 +1352,9 @@ Lexer.prototype._invokeParser = function(content, is_match)
   var current = this._mode.getCurrent();
   var handler = this._mode_handlers[current];
   var result;
-  eval('result = this._parser.' + handler + '(content, is_match);')
+  eval('result = this._parser.' + handler + '(content, is_match);');
   return result;
-}
+};
 
 /**
 *    Tries to match a chunk of text and if successful
@@ -1382,7 +1382,7 @@ Lexer.prototype._reduce = function(raw)
     return [raw, unparsed, match, action];
   }
   return true;
-}
+};
 
 
 
@@ -1404,12 +1404,12 @@ function XhtmlLexer(parser)
   this.init();
     
   return this;
-}
+};
 
 
 XhtmlLexer.prototype.init = function()
 {
-}
+};
 
 XhtmlLexer.prototype.addTokens = function()
 {
@@ -1417,25 +1417,25 @@ XhtmlLexer.prototype.addTokens = function()
   this.addScriptTokens('Text');
   this.addCssTokens('Text');
   this.addTagTokens('Text');
-}
+};
 
 XhtmlLexer.prototype.addCommentTokens = function(scope)
 {
   this.addEntryPattern("<!--", scope, 'Comment');
   this.addExitPattern("-->", 'Comment');
-}
+};
 
 XhtmlLexer.prototype.addScriptTokens = function(scope)
 {
   this.addEntryPattern("<script", scope, 'Script');
   this.addExitPattern("</script>", 'Script');
-}
+};
 
 XhtmlLexer.prototype.addCssTokens = function(scope)
 {
   this.addEntryPattern("<style", scope, 'Css');
   this.addExitPattern("</style>", 'Css');
-}
+};
 
 XhtmlLexer.prototype.addTagTokens = function(scope)
 {
@@ -1445,7 +1445,7 @@ XhtmlLexer.prototype.addTagTokens = function(scope)
 
   this.addSpecialPattern("</\\s*[a-z0-9:\-]+\\s*>", scope, 'ClosingTag');
 
-}
+};
 
 XhtmlLexer.prototype.addInTagDeclarationTokens = function(scope)
 {
@@ -1456,7 +1456,7 @@ XhtmlLexer.prototype.addInTagDeclarationTokens = function(scope)
   this.addExitPattern('/>', scope);
   this.addExitPattern('>', scope);
 
-}
+};
 
 XhtmlLexer.prototype.addAttributeTokens = function(scope)
 {
@@ -1471,7 +1471,7 @@ XhtmlLexer.prototype.addAttributeTokens = function(scope)
   this.addExitPattern("'", 'SingleQuotedAttribute');
 
   this.addSpecialPattern('=\\s*[^>\\s]*', scope, 'UnquotedAttribute');
-}
+};
 
 
 
@@ -1494,13 +1494,13 @@ function XhtmlParser(Listener, mode)
   this._current_match = '';
   
   return this;
-}
+};
 
 XhtmlParser.prototype.parse = function(raw)
 {  
   this._Lexer.parse(this.beforeParsing(raw));
   return this.afterParsing(this._Listener.getResult());
-}
+};
 
 XhtmlParser.prototype.beforeParsing = function(raw)
 {
@@ -1509,7 +1509,7 @@ XhtmlParser.prototype.beforeParsing = function(raw)
     this._Listener.avoidStylingTagsAndAttributes(); 
   }
   return this._Listener.beforeParsing(raw);
-}
+};
 
 XhtmlParser.prototype.afterParsing = function(parsed)
 {
@@ -1517,34 +1517,34 @@ XhtmlParser.prototype.afterParsing = function(parsed)
     this._Listener.allowStylingTagsAndAttributes();
   }
   return this._Listener.afterParsing(parsed);
-}
+};
 
 
 XhtmlParser.prototype.Ignore = function(match, state)
 {
   return true;
-}
+};
 
 XhtmlParser.prototype.Text = function(text)
 {
   this._Listener.addContent(text);
   return true;
-}
+};
 
 XhtmlParser.prototype.Comment = function(match, status)
 {
   return this._addNonTagBlock(match, status, 'addComment');
-}
+};
 
 XhtmlParser.prototype.Script = function(match, status)
 {
   return this._addNonTagBlock(match, status, 'addScript');
-}
+};
 
 XhtmlParser.prototype.Css = function(match, status)
 {
   return this._addNonTagBlock(match, status, 'addCss');
-}
+};
 
 XhtmlParser.prototype._addNonTagBlock = function(match, state, type)
 {
@@ -1569,7 +1569,7 @@ XhtmlParser.prototype._addNonTagBlock = function(match, state, type)
     }
   }
   return true;
-}
+};
 
 XhtmlParser.prototype.OpeningTag = function(match, state)
 {
@@ -1585,13 +1585,13 @@ XhtmlParser.prototype.OpeningTag = function(match, state)
     this._callOpenTagListener(this._tag, this._tag_attributes);
   }
   return true;
-}
+};
 
 XhtmlParser.prototype.ClosingTag = function(match, state)
 {  
   this._callCloseTagListener(this.normalizeTag(match));
   return true;
-}
+};
 
 XhtmlParser.prototype._callOpenTagListener = function(tag, attributes)
 {
@@ -1611,7 +1611,7 @@ XhtmlParser.prototype._callOpenTagListener = function(tag, attributes)
   this._Listener.last_tag = tag;
   this._Listener.last_tag_opened = true;
   this._Listener.last_tag_attributes = attributes;
-}
+};
 
 XhtmlParser.prototype._callCloseTagListener = function(tag)
 {
@@ -1634,13 +1634,13 @@ XhtmlParser.prototype._callCloseTagListener = function(tag)
   }
   this._Listener.last_tag = tag;
   this._Listener.last_tag_opened = false;
-}
+};
 
 XhtmlParser.prototype._increaseOpenTagCounter = function(tag)
 {
   this._Listener._open_tags[tag] = this._Listener._open_tags[tag] || 0;
   this._Listener._open_tags[tag]++;
-}
+};
 
 XhtmlParser.prototype._decreaseOpenTagCounter = function(tag)
 {
@@ -1652,17 +1652,17 @@ XhtmlParser.prototype._decreaseOpenTagCounter = function(tag)
     return true;
   }
   return false;
-}
+};
 
 XhtmlParser.prototype.autoCloseUnclosedBeforeNewOpening = function(new_tag)
 {
   this._autoCloseUnclosed(new_tag, false);
-}
+};
 
 XhtmlParser.prototype.autoCloseUnclosedBeforeTagClosing = function(tag)
 {
   this._autoCloseUnclosed(tag, true);
-}
+};
 
 XhtmlParser.prototype._autoCloseUnclosed = function(new_tag, closing)
 {
@@ -1675,12 +1675,12 @@ XhtmlParser.prototype._autoCloseUnclosed = function(new_tag, closing)
       }
     }
   }
-}
+};
 
 XhtmlParser.prototype.getTagReplacements = function()
 {
   return this._Listener.getTagReplacements();
-}
+};
 
 XhtmlParser.prototype.normalizeTag = function(tag)
 {
@@ -1690,7 +1690,7 @@ XhtmlParser.prototype.normalizeTag = function(tag)
     return tags[tag];
   }
   return tag;
-}
+};
 
 XhtmlParser.prototype.TagAttributes = function(match, state)
 {
@@ -1698,7 +1698,7 @@ XhtmlParser.prototype.TagAttributes = function(match, state)
     this._current_attribute = match;
   }
   return true;
-}
+};
 
 XhtmlParser.prototype.DoubleQuotedAttribute = function(match, state)
 {
@@ -1706,19 +1706,21 @@ XhtmlParser.prototype.DoubleQuotedAttribute = function(match, state)
     this._tag_attributes[this._current_attribute] = match;
   }
   return true;
-}
+};
+
 XhtmlParser.prototype.SingleQuotedAttribute = function(match, state)
 {
   if(LEXER_UNMATCHED == state){
     this._tag_attributes[this._current_attribute] = match;
   }
   return true;
-}
+};
+
 XhtmlParser.prototype.UnquotedAttribute = function(match, state)
 {
   this._tag_attributes[this._current_attribute] = match.replace(/^=/,'');
   return true;
-}
+};
 
 
 
@@ -1836,7 +1838,7 @@ function XhtmlSaxListener()
     this.inline_tags = ["br", "hr", "img", "input"];
     
     return this;
-}
+};
 
 XhtmlSaxListener.prototype.shouldCloseTagAutomatically = function(tag, now_on_tag, closing)
 {
@@ -1852,13 +1854,13 @@ XhtmlSaxListener.prototype.shouldCloseTagAutomatically = function(tag, now_on_ta
     }
   }
   return false;
-}
+};
 
 XhtmlSaxListener.prototype.beforeParsing = function(raw)
 {
   this.output = '';
   return raw;
-}
+};
 
 XhtmlSaxListener.prototype.afterParsing = function(xhtml)
 {
@@ -1866,7 +1868,7 @@ XhtmlSaxListener.prototype.afterParsing = function(xhtml)
   xhtml = this.joinRepeatedEntities(xhtml);
   xhtml = this.removeEmptyTags(xhtml);
   return xhtml;
-}
+};
 
 XhtmlSaxListener.prototype.replaceNamedEntities = function(xhtml)
 {
@@ -1874,69 +1876,70 @@ XhtmlSaxListener.prototype.replaceNamedEntities = function(xhtml)
     xhtml = xhtml.replace(entity, this.entities[entity]);
   }
   return xhtml;
-}
+};
 
 XhtmlSaxListener.prototype.joinRepeatedEntities = function(xhtml)
 {
   var tags = 'em|strong|sub|sup|acronym|pre|del|blockquote|address';
   return xhtml.replace(new RegExp('<\/('+tags+')><\\1>' ,''),'').
   replace(new RegExp('(\s*<('+tags+')>\s*){2}(.*)(\s*<\/\\2>\s*){2}' ,''),'<\$2>\$3<\$2>');
-}
+};
 
 XhtmlSaxListener.prototype.removeEmptyTags = function(xhtml)
 {
   return xhtml.replace(new RegExp('<('+this.block_tags.join("|")+')>(<br \/>|&#160;|&nbsp;|\s)*<\/\\1>' ,'g'),'');
-}
+};
 
 XhtmlSaxListener.prototype.getResult = function()
 {
   return this.output;
-}
+};
 
 XhtmlSaxListener.prototype.getTagReplacements = function()
 {
   return {'b':'strong', 'i':'em'};
-}
+};
 
 XhtmlSaxListener.prototype.addContent = function(text)
 {
   this.output += text;
-}
+};
 
 XhtmlSaxListener.prototype.addComment = function(text)
 {
   if(this.remove_comments){
     this.output += text;
   }
-}
+};
 
 XhtmlSaxListener.prototype.addScript = function(text)
 {
   if(!this.remove_scripts){
     this.output += text;
   }
-}
+};
 
 XhtmlSaxListener.prototype.addCss = function(text)
 {
   if(!this.remove_embeded_styles){
     this.output += text;
   }
-}
+};
+
 XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes)
 {
   this.output += this.helper.tag(tag, this.validator.getValidTagAttributes(tag, attributes), true);    
-}
+};
 
 XhtmlSaxListener.prototype.inlineTag = function(tag, attributes)
 {
   this.output += this.helper.tag(tag, this.validator.getValidTagAttributes(tag, attributes));
-}
+};
 
 XhtmlSaxListener.prototype.openUnknownTag = function(tag, attributes)
 {
   //this.output += this.helper.tag(tag, attributes, true);
-}
+};
 
 XhtmlSaxListener.prototype.closeBlockTag = function(tag)
 {
@@ -1946,12 +1949,12 @@ XhtmlSaxListener.prototype.closeBlockTag = function(tag)
 XhtmlSaxListener.prototype.closeUnknownTag = function(tag)
 {
   //this.output += "</"+tag+">";
-}
+};
 
 XhtmlSaxListener.prototype.closeUnopenedTag = function(tag)
 {
   this.output += "</"+tag+">";
-}
+};
 
 XhtmlSaxListener.prototype.avoidStylingTagsAndAttributes = function()
 {
@@ -1959,7 +1962,7 @@ XhtmlSaxListener.prototype.avoidStylingTagsAndAttributes = function()
   this.validator.skiped_attributes = ['style'];
   this.validator.skiped_attribute_values = ['MsoNormal','main1']; // MS Word attributes for class
   this._avoiding_tags_implicitly = true;
-}
+};
 
 XhtmlSaxListener.prototype.allowStylingTagsAndAttributes = function()
 {
@@ -1967,17 +1970,17 @@ XhtmlSaxListener.prototype.allowStylingTagsAndAttributes = function()
   this.validator.skiped_attributes = [];
   this.validator.skiped_attribute_values = [];
   this._avoiding_tags_implicitly = false;
-}
+};
 
 XhtmlSaxListener.prototype.isBlockTag = function(tag)
 {
   return !this.avoided_tags.contains(tag) && this.block_tags.contains(tag);
-}
+};
 
 XhtmlSaxListener.prototype.isInlineTag = function(tag)
 {
   return !this.avoided_tags.contains(tag) && this.inline_tags.contains(tag);
-}
+};
 
 XhtmlSaxListener.prototype.insertContentAfterClosingTag = function(tag, content)
 {

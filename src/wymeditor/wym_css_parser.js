@@ -24,7 +24,7 @@ function WymCssLexer(parser, only_wym_blocks)
   this.addExitPattern("\\\x2a/", 'WymCssFeddbackStyle');
 
   return this;
-}
+};
 
 function WymCssParser()
 {
@@ -33,19 +33,19 @@ function WymCssParser()
   this.only_wym_blocks = true;
   this.css_settings = {'classesItems':[], 'editorStyles':[], 'dialogStyles':[]};
   return this;
-}
+};
 
 WymCssParser.prototype.parse = function(raw, only_wym_blocks)
 {
   var only_wym_blocks = (only_wym_blocks == undefined ? this.only_wym_blocks : only_wym_blocks);
   this._Lexer = new WymCssLexer(this, only_wym_blocks);  
   this._Lexer.parse(raw);  
-}
+};
 
 WymCssParser.prototype.Ignore = function(match, state)
 {
   return true;
-}
+};
 
 WymCssParser.prototype.WymCssComment = function(text, status)
 { 
@@ -68,7 +68,7 @@ WymCssParser.prototype.WymCssComment = function(text, status)
     this._in_style = true;
   }
   return true;
-}
+};
 
 WymCssParser.prototype.WymCssStyle = function(match, status)
 {
@@ -83,7 +83,7 @@ WymCssParser.prototype.WymCssStyle = function(match, status)
     this.addStyleSetting(this._current_item);
   }
   return true;
-}
+};
 
 WymCssParser.prototype.WymCssFeddbackStyle = function(match, status)
 { 
@@ -91,7 +91,7 @@ WymCssParser.prototype.WymCssFeddbackStyle = function(match, status)
     this._current_item[this._current_element].feedback_style = match.replace(/^([\s\/\*]*)|([\s\/\*]*)$/gm,'');
   }
   return true;
-}
+};
 
 WymCssParser.prototype.WymCssStyleDeclaration = function(match)
 {
@@ -122,7 +122,7 @@ WymCssParser.prototype.WymCssStyleDeclaration = function(match)
     }
   }
   return true;
-}
+};
 
 WymCssParser.prototype.addStyleSetting = function(style_details)
 {
@@ -149,5 +149,5 @@ WymCssParser.prototype.addStyleSetting = function(style_details)
       }
     }
   }
-}
+};
 
