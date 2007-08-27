@@ -37,6 +37,9 @@ jQuery(function() {
 
     jQuery('.wymeditor').wymeditor({
     
+        xhtmlParser: 'xhtml_parser.js',
+        cssParser:   'wym_css_parser.js',
+      
         html: "<p>Test.</p>",
         classesItems: [{'name': 'date', 'title': 'PARA: Date', 'expr': 'p'}]
     
