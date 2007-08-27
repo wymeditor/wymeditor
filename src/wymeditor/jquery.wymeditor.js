@@ -565,7 +565,9 @@ Wymeditor.prototype.init = function() {
       this.helper = new XmlHelper();
       
       //extend the Wymeditor object
-      jQuery.extend(this, WymClass);
+      //don't use jQuery.extend since 1.1.4
+      //jQuery.extend(this, WymClass);
+      for (prop in WymClass) { this[prop] = WymClass[prop]; }
 
       //load wymbox
       this._box = jQuery(this._element).hide().after(this._options.boxHtml).next();
@@ -1178,7 +1180,7 @@ Wymeditor.prototype.skin = function() {
       jQuery(this._box).find(".wym_section").hover(function(){ 
         jQuery(this).addClass("hover"); 
       },function(){ 
-        jQuery(this).removeClass("hover"); 
+        jQuery(this).removeClass("hover");
       });
     
     break;
@@ -1366,13 +1368,13 @@ jQuery.fn.parentsOrSelf = function(jqexpr) {
   var n = this;
 
   if (n[0].nodeType == 3)
-    n = n.parents().lt(1);
+    n = n.parents().slice(0,1);
 
 //  if (n.is(jqexpr)) // XXX should work, but doesn't (probably a jQuery bug)
   if (n.filter(jqexpr).size() == 1)
     return n;
   else
-    return n.parents(jqexpr).lt(1);
+    return n.parents(jqexpr).slice(0,1);
 };
 
 String.prototype.insertAt = function(inserted, pos) {
