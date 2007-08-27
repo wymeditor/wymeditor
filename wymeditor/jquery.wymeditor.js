@@ -162,6 +162,10 @@ jQuery.fn.wymeditor = function(options) {
     
     jQueryPath: false,
     
+    xhtmlParser: 'xhtml_parser.pack.js',
+    
+    cssParser: 'wym_css_parser.pack.js',
+    
     styles: false,
     
     stylesheet: false,
@@ -1086,7 +1090,8 @@ Wymeditor.prototype.computeCssPath = function() {
 Wymeditor.prototype.loadXhtmlParser = function(WymClass) {
   if(typeof XhtmlSaxListener != 'function'){
     // This is the only way to get loaded functions in the global scope until jQuery.globalEval works in safari
-   eval(jQuery.ajax({url:this._options.basePath+'xhtml_parser.js',async:false}).responseText);
+   eval(jQuery.ajax({url:this._options.basePath
+    + this._options.xhtmlParser, async:false}).responseText);
     window.XmlHelper = XmlHelper;
     window.XhtmlValidator = XhtmlValidator;
     window.ParallelRegex = ParallelRegex;
@@ -1104,7 +1109,8 @@ Wymeditor.prototype.loadXhtmlParser = function(WymClass) {
 
 Wymeditor.prototype.configureEditorUsingRawCss = function() {
   if(typeof WymCssParser != 'function'){
-    eval(jQuery.ajax({url:this._options.basePath+'wym_css_parser.js',async:false}).responseText);
+    eval(jQuery.ajax({url:this._options.basePath
+     + this._options.cssParser, async:false}).responseText);
     window.WymCssLexer = WymCssLexer;
     window.WymCssParser = WymCssParser;
   }
