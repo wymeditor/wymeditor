@@ -20,9 +20,9 @@ XP_PACK = ${BUILD_DIR}/build/xhtml_parser.pack.js
 FE = ${BUILD_DIR}/build/fireeditor.xpi
 
 MERGE = cat ${JS_FILES} | perl -pe 's/^\xEF\xBB\xBF//g' > ${WE}
-WE_PACKER = perl -I${BUILD_DIR}/packer ${BUILD_DIR}/packer/jsPacker.pl -i ${WE} -o ${WE_PACK} -e62
-CP_PACKER = perl -I${BUILD_DIR}/packer ${BUILD_DIR}/packer/jsPacker.pl -i ${CSS_PARSER} -o ${CP_PACK} -e62
-XP_PACKER = perl -I${BUILD_DIR}/packer ${BUILD_DIR}/packer/jsPacker.pl -i ${XHTML_PARSER} -o ${XP_PACK} -e62
+WE_PACKER = perl -I${BUILD_DIR}/packer ${BUILD_DIR}/packer/jsPacker.pl -i ${WE} -o ${WE_PACK} -e62 -f
+CP_PACKER = perl -I${BUILD_DIR}/packer ${BUILD_DIR}/packer/jsPacker.pl -i ${CSS_PARSER} -o ${CP_PACK} -e62 -f
+XP_PACKER = perl -I${BUILD_DIR}/packer ${BUILD_DIR}/packer/jsPacker.pl -i ${XHTML_PARSER} -o ${XP_PACK} -e62 -f
 
 all: archive
 
