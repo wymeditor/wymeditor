@@ -491,9 +491,9 @@ jQuery.fn.wymeditor = function(options) {
 
   }, options);
 
-  return this.each(function(i) {
+  return this.each(function() {
 
-    new Wymeditor(jQuery(this),i,options);
+    new Wymeditor(jQuery(this),options);
   });
 };
 
@@ -515,12 +515,10 @@ jQuery.extend({
 /* @name Wymeditor
  * @description WYMeditor class
  */
-function Wymeditor(elem,index,options) {
+function Wymeditor(elem,options) {
 
-  WYM_INSTANCES[index] = this;
-
+  this._index = WYM_INSTANCES.push(this) - 1;
   this._element = elem;
-  this._index = index;
   this._options = options;
   this._html = jQuery(elem).val();
   
