@@ -103,7 +103,7 @@ WymClassSafari.prototype.initIframe = function(iframe) {
 
 WymClassSafari.prototype._exec = function(cmd,param) {
   param = param || null;
-  if($j.browser.version >= 522 || typeof this[cmd] == 'undefined'){
+  if(true || $j.browser.version >= 10000 || typeof this[cmd] == 'undefined'){
     this._doc.execCommand(cmd,false,param);
   }else{
     this[cmd](param);
@@ -218,7 +218,7 @@ WymClassSafari.prototype.bindEvents = function() {
 };
 
 WymClassSafari.prototype.removeSafarihacks = function(raw_html){
-  if($j.browser.version < 522){
+  if(true || $j.browser.version < 10000){
     raw_html = raw_html.replace(this.hackChar,'');
   }
   return raw_html;
@@ -304,7 +304,7 @@ WymClassSafari.prototype.InsertImage = function(param) {
 
 WymClassSafari.prototype.handleEnter = function(evt){
   var selected = this.selected();
-  if($j.browser.version < 522){    
+  if(true || $j.browser.version < 10000){    
     
     if(evt.shiftKey){
       if(!this.selectedHtml && this.selectedText == selected.innerHTML){
@@ -322,7 +322,7 @@ WymClassSafari.prototype.handleEnter = function(evt){
 
 WymClassSafari.prototype.handleBackspace = function(){
   var selected = this.selected();
-  if($j.browser.version < 522){
+  if(true || $j.browser.version < 10000){
     if(selected.tagName == 'P' && selected.innerHTML == ''){
       // Todo: move caret to the end of previous sibling
       var parent = selected.parentNode;
