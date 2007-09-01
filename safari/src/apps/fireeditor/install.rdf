@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+ xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+  <Description about="urn:mozilla:install-manifest">
+    <em:id>fireeditor@david.wees</em:id>
+    <em:name>FireEditor</em:name>
+    <em:version>1.0</em:version>
+    <em:creator>David Wees</em:creator>
+    <em:description>Adds a code editor to the application.</em:description>
+    <em:homepageURL>http://www.unitorganizer.com/myblog</em:homepageURL>
+    <em:optionsURL>chrome://fireeditor/content/options.xul</em:optionsURL>
+    <em:iconURL>chrome://fireeditor/content/fireeditor.png</em:iconURL>
+    <em:targetApplication>
+      <Description>
+        <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id> <!-- firefox -->
+        <em:minVersion>1.5</em:minVersion>
+        <em:maxVersion>2.0.0.*</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+  </Description>
+</RDF>
