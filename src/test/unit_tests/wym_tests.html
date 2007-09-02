@@ -39,13 +39,25 @@ jQuery(function() {jQuery('.wymeditor').wymeditor({
    
    <script type="text/javascript">
    
-    test("Should escape URL's only once #69.1", function() {
-        var original = "index.php?module=x&func=view&id=1";
-        var expected = "index.php?module=x&amp;func=view&amp;id=1";
-        equals( WymInstance.helper.escapeOnce( original ), expected, "Escape entities");
-        equals( WymInstance.helper.escapeOnce( expected ), expected, "Avoids double entity escaping");
-    });
-   
+   test("Should escape URL's only once #69.1", function() {
+       var original = "index.php?module=x&func=view&id=1";
+       var expected = "index.php?module=x&amp;func=view&amp;id=1";
+       equals( WymInstance.helper.escapeOnce( original ), expected, "Escape entities");
+       equals( WymInstance.helper.escapeOnce( expected ), expected, "Avoids double entity escaping");
+   });
+
+   test("Should correct bad formated lists", function() {
+       var expected = "<ul><li>a<ul><li>a.1</li></ul></li><li>b</li></ul>";
+       
+       // FF
+       var design_mode_pseudo_html = "<ul><li>a</li><ul><li>a.1</li></ul><li>b<br></li></ul>";
+       equals( WymInstance.parser.parse(design_mode_pseudo_html), expected, "on Firefox");
+       
+       // IE
+       var design_mode_pseudo_html = "<UL>\r\n<LI>a</LI>\r\n<UL>\r\n<LI>a.1</LI></UL>\r\n<LI>b</LI></UL>";
+       equals( WymInstance.parser.parse(design_mode_pseudo_html), expected, "on IE");
+   });
+
    </script>
     <ol id="tests"></ol>
 </body>
