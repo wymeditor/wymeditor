@@ -1600,6 +1600,7 @@ XhtmlParser.prototype._callOpenTagListener = function(tag, attributes)
 
   if(this._Listener.isBlockTag(tag)){
     this._Listener._tag_stack.push(tag);
+    this._Listener.fixNestingBeforeOpeningBlockTag(tag, attributes);
     this._Listener.openBlockTag(tag, attributes);
     this._increaseOpenTagCounter(tag);
   }else if(this._Listener.isInlineTag(tag)){ 
@@ -1943,7 +1944,7 @@ XhtmlSaxListener.prototype.openUnknownTag = function(tag, attributes)
 
 XhtmlSaxListener.prototype.closeBlockTag = function(tag)
 {
-  this.output += this._getClosingTagContent('before', tag)+"</"+tag+">"+this._getClosingTagContent('after', tag);
+  this.output = this.output.replace(/<br \/>$/, '')+this._getClosingTagContent('before', tag)+"</"+tag+">"+this._getClosingTagContent('after', tag);
 };
 
 XhtmlSaxListener.prototype.closeUnknownTag = function(tag)
@@ -1991,6 +1992,14 @@ XhtmlSaxListener.prototype.insertContentBeforeClosingTag = function(tag, content
 {
   this._insertContentWhenClosingTag('before', tag, content);
 };
+
+XhtmlSaxListener.prototype.fixNestingBeforeOpeningBlockTag = function(tag, attributes)
+{
+    if(tag != 'li' && (tag == 'ul' || tag == 'ol') && this.last_tag && !this.last_tag_opened && this.last_tag == 'li'){
+      this.output = this.output.replace(/<\/li>$/, '');
+      this.insertContentAfterClosingTag(tag, '</li>');
+    }
+}
 
 XhtmlSaxListener.prototype._insertContentWhenClosingTag = function(position, tag, content)
 {

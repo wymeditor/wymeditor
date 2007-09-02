@@ -258,17 +258,7 @@ WymClassMozilla.prototype.openBlockTag = function(tag, attributes)
     }
   }
   
-  if(tag != 'li' && (tag == 'ul' || tag == 'ol') && this.last_tag && !this.last_tag_opened && this.last_tag == 'li'){
-    this.output = this.output.replace(/<\/li>$/, '');
-    this.insertContentAfterClosingTag(tag, '</li>');
-  }
-  
   this.output += this.helper.tag(tag, attributes, true);
-};
-
-WymClassMozilla.prototype.closeBlockTag = function(tag)
-{
-  this.output = this.output.replace(/<br \/>$/, '')+this._getClosingTagContent('before', tag)+"</"+tag+">"+this._getClosingTagContent('after', tag);
 };
 
 WymClassMozilla.prototype.getTagForStyle = function(style) {
