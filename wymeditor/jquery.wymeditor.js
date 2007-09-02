@@ -541,8 +541,8 @@ Wymeditor.prototype.init = function() {
   }
   else if ($j.browser.safari) {
     //commented until supported
-    //var WymClass = new WymClassSafari(this);
-    //var WymSel = new WymSelSafari(this);
+    var WymClass = new WymClassSafari(this);
+    var WymSel = new WymSelSafari(this);
   }
   
   if(WymClass) {
