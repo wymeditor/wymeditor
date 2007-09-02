@@ -86,7 +86,11 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
     
     //init designMode
     this._doc.designMode="on";
-    this._doc = iframe.contentWindow.document;
+    try{
+        // (bermi's note) noticed when running unit tests on IE6
+        // Is this really needed, it trigger an unexisting property on IE6
+        this._doc = iframe.contentWindow.document; 
+    }catch(e){}
 };
 
 WymClassExplorer.prototype._exec = function(cmd,param) {
@@ -141,3 +145,4 @@ WymClassExplorer.prototype.setFocusToNode = function(node) {
     range.select();
     node.focus();
 };
+
