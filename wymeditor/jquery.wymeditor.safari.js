@@ -162,8 +162,10 @@ WymClassSafari.prototype._exec = function(cmd, param) {
     if(container && container.tagName.toLowerCase() == WYM_BODY)
         this._exec(WYM_FORMAT_BLOCK, WYM_P);
     
-    // add event handlers on doc elements
+    // Update the textarea
+    this.update();
 
+    // add event handlers on doc elements
     this.listen();
 };
 
@@ -644,8 +646,17 @@ WymClassSafari.prototype.selectAll = function(param) {
 WymClassSafari.prototype.update = function() {
   var html = this.xhtml();
   var _html = this.removeWymAttributesFromXhtml(html);
+  _html = this.cleanup(_html);
   $j(this._element).val(_html);
   $j(this._box).find(this._options.htmlValSelector).val(_html);
+};
+
+WymClassSafari.prototype.cleanup = function(xhtml) {
+	// alert(xhtml.match(/<span class\="Apple-style-span">(.*)<\/span>/));
+	// 
+  var _xhtml = xhtml.replace(/<span class="Apple-style-span">(.*)<\/span>/gi, "$1");
+  var _xhtml = _xhtml.replace(/ class="Apple-style-span"/gi, "");	
+  return _xhtml;
 };
 
 WymClassSafari.prototype.Indent = function(focusNode, param) {
