@@ -20,7 +20,9 @@
  *        Scott Lewis (lewiscot@gmail.com)
  */
 
-var WYM_UNLINK           = "Unlink";
+var WYM_UNLINK               = "Unlink";
+var WYM_INSERT_UNORDEREDLIST = "InsertUnorderedList";
+var WYM_INSERT_ORDEREDLIST   = "InsertOrderedList";
 
 function WymClassSafari(wym) {
     this._wym = wym;
@@ -29,6 +31,12 @@ function WymClassSafari(wym) {
     wym._options.updateEvent = "mousedown";
 };
 
+/*
+ * @name initIframe
+ * @description Initializes the iframe document for editing.
+ * @param document iframe An iframe document to initialize.
+ * @return void
+ */
 WymClassSafari.prototype.initIframe = function(iframe) {
 
     this._iframe = iframe;
@@ -54,8 +62,6 @@ WymClassSafari.prototype.initIframe = function(iframe) {
     // pre-bind functions
     if($j.isFunction(this._options.preBind)) this._options.preBind(this);
     
-    $j(this._doc).bind("dblclick", this.dblclick);
-    
     // bind external events
     this._wym.bindEvents();
     
@@ -79,6 +85,8 @@ WymClassSafari.prototype.initIframe = function(iframe) {
 
 /* @name html
  * @description Get/Set the html value
+ * @param string html The string representation of the html being edited.
+ * @return string The html being edited
  */
 WymClassSafari.prototype.html = function(html) {
 
@@ -103,6 +111,15 @@ WymClassSafari.prototype.html = function(html) {
   else return($j(this._doc.body).html());
 };
 
+/* @name _exec
+ * @description Wymeditor's custom execCommand interface. Since certain commands 
+ * are either un-supported or incorrectly implemented, we can re-route the command 
+ * through our own custom handlers.
+ *
+ * @param string cmd The command to be executed
+ * @param string param The parameter needed for the command. What the param is depends 
+ * on the command being executed. (We need a list of commands and parameters).
+ */
 WymClassSafari.prototype._exec = function(cmd, param) {
 
     var focusNode = this.selected();    
@@ -150,6 +167,10 @@ WymClassSafari.prototype._exec = function(cmd, param) {
         case WYM_INSERT_IMAGE:
             this.InsertImage(focusNode, param);
             break;
+
+        case WYM_INSERT_UNORDEREDLIST:
+            this.InsertUnorderedList(focusNode, param);
+            break;
     
         default:
     
@@ -169,26 +190,48 @@ WymClassSafari.prototype._exec = function(cmd, param) {
     this.listen();
 };
 
+/*
+ * @name InsertUnorderedList
+ * @description Inserts an unordered list.
+ * @param object focusNode The parentNode of the current selection
+ * @param string param ...
+ * @return bool Whether or not the command was successfully executed.
+ */
+WymClassSafari.prototype.InsertUnorderedList = function(focusNode, param) {
+	alert(focusNode.nodeName);
+};
+
+/*
+ * @name InsertImage
+ * @description Inserts an image element.
+ * @param object focusNode The parentNode of the current selection
+ * @param string param The 'src' of the image to insert.
+ * @return bool Whether or not the command was successfully executed.
+ */
 WymClassSafari.prototype.InsertImage = function(focusNode, param) {
+  try {
     if (!focusNode)
     {
-        focusNode = this.selection.newNode();
+      focusNode = this.selection.newNode();
     }
     if (focusNode.nodeName.toLowerCase() == WYM_IMG)
     {
         $j(focusNode).attr({"src": param});
-    }
-    else
-    {
+    } else {
         var opts = {src: param};
         $j(focusNode).append(
-            this.helper.tag('img', opts)
+          this.helper.tag('img', opts)
         );
     }
-}
+  } catch(e) {
+    return false;
+  }
+  return true;
+};
 
 /* @name selected
  * @description Returns the selected container
+ * @return object The currently selected container
  */
 WymClassSafari.prototype.selected = function() {
     
@@ -211,7 +254,11 @@ WymClassSafari.prototype.addCssRule = function(styles, oCss) {
         styles.cssRules.length);
 };
 
-// keydown handler, mainly used for keyboard shortcuts
+/*
+ * @name keydown
+ * @description keydown handler, mainly used for keyboard shortcuts
+ * @return bool Whether or not the calling event should be continued
+ */
 WymClassSafari.prototype.keydown = function(evt) {
   
   // 'this' is the doc
@@ -248,7 +295,6 @@ WymClassSafari.prototype.keydown = function(evt) {
     }
 */
 
-
   if(evt.ctrlKey){
     if(evt.keyCode == 66){
       // CTRL+b => STRONG
@@ -263,7 +309,10 @@ WymClassSafari.prototype.keydown = function(evt) {
   }
 };
 
-// keyup handler, mainly used for cleanups
+/*
+ * @name keyup
+ * @description keyup handler, mainly used for cleanups
+ */
 WymClassSafari.prototype.keyup = function(evt) {
 
   // 'this' is the doc
@@ -307,16 +356,24 @@ WymClassSafari.prototype.keyup = function(evt) {
   }
 };
 
+/*
+ * @name enableDesignMode
+ * @description Enables live editing of the iframe document.
+ */
 WymClassSafari.prototype.enableDesignMode = function() {
     
     if(this._doc.designMode == "off") {
       try {
         this._doc.designMode = "on";
-        this._doc.execCommand("styleWithCSS", '', false);
+        this._doc.execCommand("styleWithCSS", false, false);
       } catch(e) { }
     }
 };
 
+/*
+ * @name setFocusToNode
+ * @description Sets the focus to currently selected node.
+ */
 WymClassSafari.prototype.setFocusToNode = function(node) {
     var range = document.createRange();
     range.selectNode(node);
@@ -326,6 +383,10 @@ WymClassSafari.prototype.setFocusToNode = function(node) {
     this._iframe.contentWindow.focus();
 };
 
+/*
+ * @name openBlockTag
+ * @description This function may not currently be in use. (Bermi?)
+ */
 WymClassSafari.prototype.openBlockTag = function(tag, attributes)
 {
   var attributes = this.validator.getValidTagAttributes(tag, attributes);
@@ -351,11 +412,21 @@ WymClassSafari.prototype.openBlockTag = function(tag, attributes)
   this.output += this.helper.tag(tag, attributes, true);
 };
 
+/*
+ * @name closeBlockTag
+ * @description This function may not currently be in use. (Bermi?)
+ */
 WymClassSafari.prototype.closeBlockTag = function(tag)
 {
   this.output = this.output.replace(/<br \/>$/, '')+this._getClosingTagContent('before', tag)+"</"+tag+">"+this._getClosingTagContent('after', tag);
 };
 
+/*
+ * @name getTagForStyle
+ * @description Converts styled tags to the correct (i.e., syntactically valid) xhtml tag.
+ * @param string style The styled tag (?)
+ * @return string|bool Returns the string tag name if matched. False if not matched.
+ */
 WymClassSafari.prototype.getTagForStyle = function(style) {
 
   if(/bold/.test(style)) return 'strong';
@@ -368,14 +439,20 @@ WymClassSafari.prototype.getTagForStyle = function(style) {
 
 /********** SELECTION API **********/
 
+/*
+ * @name WymSelSafari
+ * @description Creates an instance of the SAPI
+ * @param object The current wymeditor instance.
+ * @return void
+ */
 function WymSelSafari(wym) {
     this._wym = wym;
 };
 
-WymClassSafari.prototype.dblclick = function(evt) {
-   window.isDblClick = true;
-};
-
+/*
+* @name WymSelSafari
+* @description The Selection Application Programming Interface (SAPI)
+*/
 WymSelSafari.prototype = {
     getSelection: function() {
         var _sel = this._wym._iframe.contentWindow.getSelection();
@@ -405,7 +482,7 @@ WymSelSafari.prototype = {
         return this._wym._iframe.contentDocument.createRange();
         return range;
     },
-    
+
     _startNode: function(_sel, range) {
         var node;
         if (_sel.baseNode && _sel.basNode == "#text")
@@ -494,6 +571,11 @@ WymSelSafari.prototype = {
     }
 };
 
+/*
+ * @name bindEvents
+ * @description Binds Wymeditor events to window events.
+ * @return void
+ */
 WymClassSafari.prototype.bindEvents = function() {
 
   // copy the instance
@@ -539,6 +621,11 @@ WymClassSafari.prototype.bindEvents = function() {
   });
 };
 
+/*
+ * @name toggleHtml
+ * @description Toggles the display of the HTML textarea
+ * @return void
+ */
 Wymeditor.prototype.toggleHtml = function() {
   var html = this.xhtml();
   $j(this._element).val(html);
@@ -546,6 +633,12 @@ Wymeditor.prototype.toggleHtml = function() {
   $j(this._box).find(this._options.htmlValSelector).val(html);
 };
 
+/*
+ * @name _debug
+ * @description Opens a new window and prints the property names and values.
+ * @param object An object to debug.
+ * @return void
+ */
 _debug = function(obj)
 {
     win2 = window.open();
@@ -558,6 +651,13 @@ _debug = function(obj)
     win2.document.close();
 };
 
+/*
+ * @name _test
+ * @description Dynamically adds a 'test' link to the document so that test events can be attached 
+ * to the link.onClick event.
+ * @param function callback The test function to attach.
+ * @return void
+ */
 _test = function(callback) {
     $j(document.body).append(
         "<p><a href=\"#\" id=\"btn-test\">Test</a></p>"
@@ -565,7 +665,11 @@ _test = function(callback) {
     $j("#btn-test").click(callback);
 };
 
-var canExec = [
+/*
+* @name nativeExecCommands
+* @description An array of execCommands natively supported by the Apple Web-Core browser engine. This list is current as of Web-Core
+*/
+var nativeExecCommands = [
     'BackColor',
     'Bold',
     'Copy',
@@ -597,18 +701,26 @@ var canExec = [
     'Unselect'
 ];
 
+/**
+* @name isNative
+* @description isNative is a Safari-only hack that checks the 'nativeExecCommands' array 
+* for a command name. It determines if a command can be executed by the native 
+* web-core code or if a custom over-ride needs to be called.
+*
+* @param string cmd The command name
+* @return bool Whether or not the command being checked is natively supported.
+*/
 WymClassSafari.prototype.isNative = function(cmd)
 {
-    for (i=0; i<canExec.length; i++)
+    for (i=0; i<nativeExecCommands.length; i++)
     {
-        if (cmd.toLowerCase() == canExec[i].toLowerCase())
+        if (cmd.toLowerCase() == nativeExecCommands[i].toLowerCase())
         {
             return true;
         }
     }
     return false;
 };
-
 
 // Bermi's Functions
 
@@ -618,18 +730,18 @@ WymClassSafari.prototype.addWymHacksForEditMode = function(xhtml) {
     return 
     '<span id="wym_safari_select_all_hack" ' 
     + 'style="height:0.01em;position:absolute;margin-top:-50px;">safari-hack</span>'+xhtml;
-}
+};
 
 WymClassSafari.prototype.removeWymAttributesFromXhtml = function(xhtml) {
   return xhtml.replace(/<span id="wym_safari_select_all_hack"[^>]*>safari-hack<\/span>/, '');
-}
+};
 
 WymClassSafari.prototype.removeSafarihacks = function(raw_html){
   if(true || $j.browser.version < 10000){
     raw_html = raw_html.replace(this.hackChar,'');
   }
   return raw_html;
-}
+};
 
 WymClassSafari.prototype.beforeParsing = function(raw)
 {
@@ -637,26 +749,23 @@ WymClassSafari.prototype.beforeParsing = function(raw)
   return this.removeSafarihacks(raw).
   // Remove safari place holders
   replace(/([^>]*)<(\w+)><BR class\="khtml-block-placeholder"><\/\2>([^<]*)/g, "<$2>$1$3</$2>");
-}
+};
 
 WymClassSafari.prototype.selectAll = function(param) {
   this.currentSelection.setBaseAndExtent(this._doc.body, 0, w._doc.body, w._doc.body.length);
-}
+};
 
 WymClassSafari.prototype.update = function() {
-  var html = this.xhtml();
-  var _html = this.removeWymAttributesFromXhtml(html);
-  _html = this.cleanup(_html);
-  $j(this._element).val(_html);
-  $j(this._box).find(this._options.htmlValSelector).val(_html);
+  var html = this.cleanup(this.removeWymAttributesFromXhtml(this.xhtml()));
+  $j(this._element).val(html);
+  $j(this._box).find(this._options.htmlValSelector).val(html);
 };
 
 WymClassSafari.prototype.cleanup = function(xhtml) {
-	// alert(xhtml.match(/<span class\="Apple-style-span">(.*)<\/span>/));
-	// 
-  var _xhtml = xhtml.replace(/<span class="Apple-style-span">(.*)<\/span>/gi, "$1");
-  var _xhtml = _xhtml.replace(/ class="Apple-style-span"/gi, "");	
-  return _xhtml;
+  // remove Safari style spans
+  return xhtml.replace(/<span class="Apple-style-span">(.*)<\/span>/gi, "$1")
+    // remove any style-span classes from valid elements (e.g., strong, em, etc.)
+    .replace(/ class="Apple-style-span"/gi, "");	
 };
 
 WymClassSafari.prototype.Indent = function(focusNode, param) {
@@ -682,7 +791,7 @@ WymClassSafari.prototype.Indent = function(focusNode, param) {
           || ancestor.tagName.toLowerCase() == WYM_UL)
             this._doc.execCommand(cmd,'',null);
     }
-}
+};
 
 WymClassSafari.prototype.Outdent = function(focusNode, param) {
     var focusNode = this.selected();    
@@ -706,17 +815,17 @@ WymClassSafari.prototype.Outdent = function(focusNode, param) {
           || ancestor.tagName.toLowerCase() == WYM_UL)
             this._doc.execCommand(cmd,'',null);
     }
-}
+};
 
 WymClassSafari.prototype.Unlink = function(focusNode, param) {
     alert('Unlink');
-}
+};
 
 WymClassSafari.prototype.CreateLink = function(focusNode, param) {
     alert('CreateLink');
-}
+};
 
-WymClassSafari.prototype._InsertList = function(param, type) {
+WymClassSafari.prototype.InsertUnorderedList = function(param, type) {
   var selected = this.selected();
   var contents = selected.innerHTML;
   
@@ -759,7 +868,7 @@ WymClassSafari.prototype._InsertList = function(param, type) {
   } else if(selected.tagName == 'P'){
     this.replaceTagWith(selected, type+'+li', contents);
   }
-}
+};
 
 WymClassSafari.prototype.handleEnter = function(evt){
   var selected = this.selected();
@@ -775,7 +884,7 @@ WymClassSafari.prototype.handleEnter = function(evt){
    
   }
   return true;
-}
+};
 
 WymClassSafari.prototype.handleBackspace = function(){
   var selected = this.selected();
@@ -787,11 +896,11 @@ WymClassSafari.prototype.handleBackspace = function(){
     }
   }
   return true;
-}
+};
 
 WymClassSafari.prototype.handleEnterOnListItem = function(selected)
 {
-  if(selected.tagName == 'LI' && selected.parentNode){
+  if(selected.tagName == 'LI' && selected.parentNode) {
     // If we access the text on the right of current carret a new list item will be added
     if((this.isCollapsed && selected.innerHTML && this.selectionCopy.d ? 
         selected.innerHTML.substring(this.selectionCopy.d) : '') == ''){
@@ -824,4 +933,4 @@ WymClassSafari.prototype.handleEnterOnListItem = function(selected)
       }
     }
   }
-}
+};
