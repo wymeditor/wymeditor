@@ -699,7 +699,14 @@ WymClassSafari.prototype.isNative = function(cmd)
  */
 WymClassSafari.prototype.CreateLink = function(focusNode, param) {
   var sel = this._iframe.contentWindow.getSelection();
-  this.wrap(sel, "a", {"href":param});
+  if (sel.focusNode.parentNode.nodeName.toLowerCase() != "a")
+  {
+    this.wrap(sel, "a", {"href":param});
+  }
+  else
+  {
+	sel.focusNode.parentNode.href = param;
+  }
 };
 
 /* @name wrap
