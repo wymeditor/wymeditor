@@ -58,6 +58,9 @@ WymClassSafari.prototype.initIframe = function(iframe) {
     
     // init designMode
     this.enableDesignMode();
+
+    // detect when text is selected via double-click
+    $j(this._doc).bind("dblclick", this.dblclick);
     
     // pre-bind functions
     if($j.isFunction(this._options.preBind)) this._options.preBind(this);
@@ -81,6 +84,10 @@ WymClassSafari.prototype.initIframe = function(iframe) {
     this.listen();
     
     _test(function() {alert(1);});
+};
+
+WymClassSafari.prototype.dblclick = function(evt) {
+   window.isDblClick = true;
 };
 
 /* @name html
@@ -188,45 +195,6 @@ WymClassSafari.prototype._exec = function(cmd, param) {
 
     // add event handlers on doc elements
     this.listen();
-};
-
-/*
- * @name InsertUnorderedList
- * @description Inserts an unordered list.
- * @param object focusNode The parentNode of the current selection
- * @param string param ...
- * @return bool Whether or not the command was successfully executed.
- */
-WymClassSafari.prototype.InsertUnorderedList = function(focusNode, param) {
-	alert(focusNode.nodeName);
-};
-
-/*
- * @name InsertImage
- * @description Inserts an image element.
- * @param object focusNode The parentNode of the current selection
- * @param string param The 'src' of the image to insert.
- * @return bool Whether or not the command was successfully executed.
- */
-WymClassSafari.prototype.InsertImage = function(focusNode, param) {
-  try {
-    if (!focusNode)
-    {
-      focusNode = this.selection.newNode();
-    }
-    if (focusNode.nodeName.toLowerCase() == WYM_IMG)
-    {
-        $j(focusNode).attr({"src": param});
-    } else {
-        var opts = {src: param};
-        $j(focusNode).append(
-          this.helper.tag('img', opts)
-        );
-    }
-  } catch(e) {
-    return false;
-  }
-  return true;
 };
 
 /* @name selected
@@ -479,7 +447,6 @@ WymSelSafari.prototype = {
     _getRange: function()
     {
         return this._wym._iframe.contentDocument.createRange();
-        return range;
     },
 
     _startNode: function(_sel, range) {
@@ -721,6 +688,231 @@ WymClassSafari.prototype.isNative = function(cmd)
     return false;
 };
 
+// WymClassSafari Custom execCommand Handlers
+
+/*
+ * @name CreateLink
+ * @description Wymeditor's custom handler for CreateLink
+ * @param object focusNode The currently selected node
+ * @param string param ...
+ * @return bool Whether or not the command execution was successful
+ */
+WymClassSafari.prototype.CreateLink = function(focusNode, param) {
+  var sel = this._iframe.contentWindow.getSelection();
+  this.wrap(sel, "a", {"href":param});
+};
+
+/* @name wrap
+ * @description Wrap a selection in a container tag
+ * @param object sel The selection object
+ * @param string tag The name of the tag to wrap the selection
+ * @param object options The attributes to apply to the new tag
+ * @return void
+ *
+ * A very special thanks to Brian Donovan (http://dev.lophty.com) for this solution. 
+ * I had the right idea and had it partially working but without his Ahoy code examples 
+ * and thorough explanations, it would have taken me a lot longer to solve (if at all).
+ */
+WymClassSafari.prototype.wrap = function(sel, tag, options) {
+  var _doc = this._iframe.contentDocument;
+  var fragment  = _doc.createDocumentFragment();
+
+  // Create range before selection
+  var preSelectionRange = _doc.createRange();
+  preSelectionRange.setStart(sel.anchorNode, 0);
+  // When text is selected via double-click, Safari jacks the offsets 
+  // so we need to detect the double-click and adjust accordingly.
+  preSelectionRange.setEnd(sel.anchorNode, window.isDblClick ? sel.anchorOffset - 2 : sel.anchorOffset);
+
+  // Create the range for the selection
+  var range = this._iframe.contentDocument.createRange();
+  range.setStart(sel.anchorNode, sel.anchorOffset);
+  range.setEnd(sel.focusNode, sel.focusOffset);
+
+  // Create range after selection
+  var postSelectionRange = _doc.createRange();
+  // When text is selected via double-click, Safari jacks the offsets 
+  // so we need to detect the double-click and adjust accordingly.
+  postSelectionRange.setStart(sel.focusNode, window.isDblClick ? sel.focusOffset + 2 : sel.focusOffset);
+  postSelectionRange.setEnd(sel.focusNode, sel.focusNode.nodeValue.length);
+
+  // Create the new 'wrap' tag
+  var wrapper = this._iframe.contentDocument.createElement(tag);
+  for (prop in options)
+  {
+    wrapper[prop] = options[prop];	
+  }
+  wrapper.appendChild(_doc.createTextNode(sel));
+
+  //---------------------------------------------------
+  // Append the 3 nodes to the document fragment in
+  // consecutive order
+  //---------------------------------------------------
+  fragment.appendChild(_doc.createTextNode(preSelectionRange.toString()));
+  fragment.appendChild(wrapper);
+  fragment.appendChild(_doc.createTextNode(postSelectionRange.toString()));
+
+  //---------------------------------------------------
+  // Replace the text node containing the selection with
+  // the document fragment that we've prepared.
+  //---------------------------------------------------
+  sel.anchorNode.parentNode.replaceChild(fragment, sel.anchorNode.parentNode.childNodes[0]);
+};
+
+/*
+ * @name Indent
+ * @description Wymeditor's custom handler for Indent
+ * @param object focusNode The currently selected node
+ * @param string param ...
+ * @return bool Whether or not the command execution was successful
+ */
+WymClassSafari.prototype.Indent = function(focusNode, param) {
+    var focusNode = this.selected();    
+    var sel = this._iframe.contentWindow.getSelection();
+    
+    if (sel.anchorNode)
+    {
+        var anchorNode = sel.anchorNode;
+        if(anchorNode.nodeName == "#text") anchorNode = anchorNode.parentNode;
+    }
+    
+    focusNode = this.findUp(focusNode, WYM_BLOCKS);
+    anchorNode = this.findUp(anchorNode, WYM_BLOCKS);
+    
+    if(focusNode && focusNode == anchorNode
+      && focusNode.tagName.toLowerCase() == WYM_LI) {
+
+        var ancestor = focusNode.parentNode.parentNode;
+
+        if(focusNode.parentNode.childNodes.length>1
+          || ancestor.tagName.toLowerCase() == WYM_OL
+          || ancestor.tagName.toLowerCase() == WYM_UL)
+            this._doc.execCommand(cmd,'',null);
+    }
+};
+
+/*
+ * @name InsertImage
+ * @description Inserts an image element.
+ * @param object focusNode The parentNode of the current selection
+ * @param string param The 'src' of the image to insert.
+ * @return bool Whether or not the command was successfully executed.
+ */
+WymClassSafari.prototype.InsertImage = function(focusNode, param) {
+  try {
+    if (!focusNode)
+    {
+      focusNode = this.selection.newNode();
+    }
+    if (focusNode.nodeName.toLowerCase() == WYM_IMG)
+    {
+        $j(focusNode).attr({"src": param});
+    } else {
+        var opts = {src: param};
+        $j(focusNode).append(
+          this.helper.tag('img', opts)
+        );
+    }
+  } catch(e) {
+    return false;
+  }
+  return true;
+};
+
+/*
+ * @name InsertUnorderedList
+ * @description Wymeditor's custom handler for InsertUnorderedList
+ * @param object focusNode The currently selected node
+ * @param string param ...
+ * @return bool Whether or not the command execution was successful
+ */
+WymClassSafari.prototype.InsertUnorderedList = function(param, type) {
+  var selected = this.selected();
+  var contents = selected.innerHTML;
+  
+  // Last list item
+  if(selected.tagName == 'LI' && selected.parentNode && selected.nextSibling == undefined) {
+    this.insertTagAfter(this.deleteSelectedNode(), 'p', contents);
+  
+    // First list item
+    } else if(selected.tagName == 'LI' && selected.parentNode && selected.previousSibling == undefined){
+      var parent = selected.parentNode;
+    this.deleteNode(selected);
+    this.insertTagBefore(parent, 'p', contents);
+    
+    // inline list item
+    } else if(selected.tagName == 'LI' && selected.parentNode){
+      var parent = selected.parentNode;
+      var before = '';
+      var after = false;
+      for(var i = 0; i < parent.childNodes.length; i++) {
+        if(after === false){
+          if(parent.childNodes[i] == selected){
+            after = '';
+          }else{
+            before += parent.childNodes[i].outerHTML;
+          }
+        } else{
+          after += parent.childNodes[i].outerHTML;
+        }
+      }
+            
+      $(parent).before(this.helper.contentTag(parent.tagName, before));
+      var p_details = this.generateContentTagWithId('p', contents);
+      $(parent).before(p_details.content);
+      var p = this.getById(p_details.id);
+      $(parent).before(this.helper.contentTag(parent.tagName, after));
+      $(parent).remove();
+      this.focusNode(p,1,1);
+      
+  // On a paragraph
+  } else if(selected.tagName == 'P'){
+    this.replaceTagWith(selected, type+'+li', contents);
+  }
+};
+
+/*
+ * @name Outdent
+ * @description Wymeditor's custom handler for Outdent
+ * @param object focusNode The currently selected node
+ * @param string param ...
+ * @return bool Whether or not the command execution was successful
+ */
+WymClassSafari.prototype.Outdent = function(focusNode, param) {
+    var focusNode = this.selected();    
+    var sel = this._iframe.contentWindow.getSelection();
+    
+    if (sel.anchorNode)
+    {
+        var anchorNode = sel.anchorNode;
+        if(anchorNode.nodeName == "#text") anchorNode = anchorNode.parentNode;
+    }
+    focusNode = this.findUp(focusNode, WYM_BLOCKS);
+    anchorNode = this.findUp(anchorNode, WYM_BLOCKS);
+    
+    if(focusNode && focusNode == anchorNode
+      && focusNode.tagName.toLowerCase() == WYM_LI) {
+
+        var ancestor = focusNode.parentNode.parentNode;
+
+        if(focusNode.parentNode.childNodes.length>1
+          || ancestor.tagName.toLowerCase() == WYM_OL
+          || ancestor.tagName.toLowerCase() == WYM_UL)
+            this._doc.execCommand(cmd,'',null);
+    }
+};
+
+/*
+ * @name Unlink
+ * @description Wymeditor's custom handler for Unlink
+ * @param object focusNode The currently selected node
+ * @param string param ...
+ * @return bool Whether or not the command execution was successful
+ */
+WymClassSafari.prototype.Unlink = function(focusNode, param) {
+    alert('Unlink');
+};
+
 // Bermi's Functions
 
 // This is a workarround for select iframe safari bug
@@ -782,143 +974,6 @@ WymClassSafari.prototype.cleanup = function(xhtml) {
   return xhtml.replace(/<span class="Apple-style-span">(.*)<\/span>/gi, "$1")
     // remove any style-span classes from valid elements (e.g., strong, em, etc.)
     .replace(/ class="Apple-style-span"/gi, "");	
-};
-
-/*
- * @name Indent
- * @description Wymeditor's custom handler for Indent
- * @param object focusNode The currently selected node
- * @param string param ...
- * @return bool Whether or not the command execution was successful
- */
-WymClassSafari.prototype.Indent = function(focusNode, param) {
-    var focusNode = this.selected();    
-    var sel = this._iframe.contentWindow.getSelection();
-    
-    if (sel.anchorNode)
-    {
-        var anchorNode = sel.anchorNode;
-        if(anchorNode.nodeName == "#text") anchorNode = anchorNode.parentNode;
-    }
-    
-    focusNode = this.findUp(focusNode, WYM_BLOCKS);
-    anchorNode = this.findUp(anchorNode, WYM_BLOCKS);
-    
-    if(focusNode && focusNode == anchorNode
-      && focusNode.tagName.toLowerCase() == WYM_LI) {
-
-        var ancestor = focusNode.parentNode.parentNode;
-
-        if(focusNode.parentNode.childNodes.length>1
-          || ancestor.tagName.toLowerCase() == WYM_OL
-          || ancestor.tagName.toLowerCase() == WYM_UL)
-            this._doc.execCommand(cmd,'',null);
-    }
-};
-
-/*
- * @name Outdent
- * @description Wymeditor's custom handler for Outdent
- * @param object focusNode The currently selected node
- * @param string param ...
- * @return bool Whether or not the command execution was successful
- */
-WymClassSafari.prototype.Outdent = function(focusNode, param) {
-    var focusNode = this.selected();    
-    var sel = this._iframe.contentWindow.getSelection();
-    
-    if (sel.anchorNode)
-    {
-        var anchorNode = sel.anchorNode;
-        if(anchorNode.nodeName == "#text") anchorNode = anchorNode.parentNode;
-    }
-    focusNode = this.findUp(focusNode, WYM_BLOCKS);
-    anchorNode = this.findUp(anchorNode, WYM_BLOCKS);
-    
-    if(focusNode && focusNode == anchorNode
-      && focusNode.tagName.toLowerCase() == WYM_LI) {
-
-        var ancestor = focusNode.parentNode.parentNode;
-
-        if(focusNode.parentNode.childNodes.length>1
-          || ancestor.tagName.toLowerCase() == WYM_OL
-          || ancestor.tagName.toLowerCase() == WYM_UL)
-            this._doc.execCommand(cmd,'',null);
-    }
-};
-
-/*
- * @name Unlink
- * @description Wymeditor's custom handler for Unlink
- * @param object focusNode The currently selected node
- * @param string param ...
- * @return bool Whether or not the command execution was successful
- */
-WymClassSafari.prototype.Unlink = function(focusNode, param) {
-    alert('Unlink');
-};
-
-/*
- * @name CreateLink
- * @description Wymeditor's custom handler for CreateLink
- * @param object focusNode The currently selected node
- * @param string param ...
- * @return bool Whether or not the command execution was successful
- */
-WymClassSafari.prototype.CreateLink = function(focusNode, param) {
-    alert('CreateLink');
-};
-
-/*
- * @name InsertUnorderedList
- * @description Wymeditor's custom handler for InsertUnorderedList
- * @param object focusNode The currently selected node
- * @param string param ...
- * @return bool Whether or not the command execution was successful
- */
-WymClassSafari.prototype.InsertUnorderedList = function(param, type) {
-  var selected = this.selected();
-  var contents = selected.innerHTML;
-  
-  // Last list item
-  if(selected.tagName == 'LI' && selected.parentNode && selected.nextSibling == undefined) {
-    this.insertTagAfter(this.deleteSelectedNode(), 'p', contents);
-  
-    // First list item
-    } else if(selected.tagName == 'LI' && selected.parentNode && selected.previousSibling == undefined){
-      var parent = selected.parentNode;
-    this.deleteNode(selected);
-    this.insertTagBefore(parent, 'p', contents);
-    
-    // inline list item
-    } else if(selected.tagName == 'LI' && selected.parentNode){
-      var parent = selected.parentNode;
-      var before = '';
-      var after = false;
-      for(var i = 0; i < parent.childNodes.length; i++) {
-        if(after === false){
-          if(parent.childNodes[i] == selected){
-            after = '';
-          }else{
-            before += parent.childNodes[i].outerHTML;
-          }
-        } else{
-          after += parent.childNodes[i].outerHTML;
-        }
-      }
-            
-      $(parent).before(this.helper.contentTag(parent.tagName, before));
-      var p_details = this.generateContentTagWithId('p', contents);
-      $(parent).before(p_details.content);
-      var p = this.getById(p_details.id);
-      $(parent).before(this.helper.contentTag(parent.tagName, after));
-      $(parent).remove();
-      this.focusNode(p,1,1);
-      
-  // On a paragraph
-  } else if(selected.tagName == 'P'){
-    this.replaceTagWith(selected, type+'+li', contents);
-  }
 };
 
 /*
