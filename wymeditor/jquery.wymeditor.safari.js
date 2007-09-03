@@ -436,7 +436,6 @@ WymClassSafari.prototype.getTagForStyle = function(style) {
   return false;
 };
 
-
 /********** SELECTION API **********/
 
 /*
@@ -743,6 +742,12 @@ WymClassSafari.prototype.removeSafarihacks = function(raw_html){
   return raw_html;
 };
 
+/*
+ * @name beforeParsing
+ * @description Removes Safari's place-holder BR tags in empty paragraphs.
+ * @param string raw The raw HTML
+ * @return string The cleaned-up HTML without place-holders
+ */
 WymClassSafari.prototype.beforeParsing = function(raw)
 {
   this.output = '';
@@ -755,12 +760,23 @@ WymClassSafari.prototype.selectAll = function(param) {
   this.currentSelection.setBaseAndExtent(this._doc.body, 0, w._doc.body, w._doc.body.length);
 };
 
+/*
+ * @name update
+ * @description Updates the HTML textarea with the current version of the iframe document
+ * @return void
+ */
 WymClassSafari.prototype.update = function() {
   var html = this.cleanup(this.removeWymAttributesFromXhtml(this.xhtml()));
   $j(this._element).val(html);
   $j(this._box).find(this._options.htmlValSelector).val(html);
 };
 
+/*
+ * @name cleanup
+ * @description Removes Apple-style-span tags and attributes (currently a bit buggy)
+ * @param string xhtml The xhtml including Apple-span-tag tags and attributes
+ * @return string The clean xhtml
+ */
 WymClassSafari.prototype.cleanup = function(xhtml) {
   // remove Safari style spans
   return xhtml.replace(/<span class="Apple-style-span">(.*)<\/span>/gi, "$1")
@@ -768,6 +784,13 @@ WymClassSafari.prototype.cleanup = function(xhtml) {
     .replace(/ class="Apple-style-span"/gi, "");	
 };
 
+/*
+ * @name Indent
+ * @description Wymeditor's custom handler for Indent
+ * @param object focusNode The currently selected node
+ * @param string param ...
+ * @return bool Whether or not the command execution was successful
+ */
 WymClassSafari.prototype.Indent = function(focusNode, param) {
     var focusNode = this.selected();    
     var sel = this._iframe.contentWindow.getSelection();
@@ -793,6 +816,13 @@ WymClassSafari.prototype.Indent = function(focusNode, param) {
     }
 };
 
+/*
+ * @name Outdent
+ * @description Wymeditor's custom handler for Outdent
+ * @param object focusNode The currently selected node
+ * @param string param ...
+ * @return bool Whether or not the command execution was successful
+ */
 WymClassSafari.prototype.Outdent = function(focusNode, param) {
     var focusNode = this.selected();    
     var sel = this._iframe.contentWindow.getSelection();
@@ -817,14 +847,35 @@ WymClassSafari.prototype.Outdent = function(focusNode, param) {
     }
 };
 
+/*
+ * @name Unlink
+ * @description Wymeditor's custom handler for Unlink
+ * @param object focusNode The currently selected node
+ * @param string param ...
+ * @return bool Whether or not the command execution was successful
+ */
 WymClassSafari.prototype.Unlink = function(focusNode, param) {
     alert('Unlink');
 };
 
+/*
+ * @name CreateLink
+ * @description Wymeditor's custom handler for CreateLink
+ * @param object focusNode The currently selected node
+ * @param string param ...
+ * @return bool Whether or not the command execution was successful
+ */
 WymClassSafari.prototype.CreateLink = function(focusNode, param) {
     alert('CreateLink');
 };
 
+/*
+ * @name InsertUnorderedList
+ * @description Wymeditor's custom handler for InsertUnorderedList
+ * @param object focusNode The currently selected node
+ * @param string param ...
+ * @return bool Whether or not the command execution was successful
+ */
 WymClassSafari.prototype.InsertUnorderedList = function(param, type) {
   var selected = this.selected();
   var contents = selected.innerHTML;
@@ -870,6 +921,12 @@ WymClassSafari.prototype.InsertUnorderedList = function(param, type) {
   }
 };
 
+/*
+ * @name handleEnter
+ * @description Custom case-handling for when the enter key is pressed.
+ * @param event evt The current window event
+ * @return bool Whether or not the current event should be continued
+ */
 WymClassSafari.prototype.handleEnter = function(evt){
   var selected = this.selected();
   if(true || $j.browser.version < 10000){    
@@ -886,6 +943,11 @@ WymClassSafari.prototype.handleEnter = function(evt){
   return true;
 };
 
+/*
+ * @name handleBackspace
+ * @description Custom case-handling for when the back-space key is pressed.
+ * @return bool true (allows the current event to continue)
+ */
 WymClassSafari.prototype.handleBackspace = function(){
   var selected = this.selected();
   if(true || $j.browser.version < 10000){
@@ -898,6 +960,12 @@ WymClassSafari.prototype.handleBackspace = function(){
   return true;
 };
 
+/*
+ * @name handleEnterOnListItem
+ * @description Custom case-handling for when the back-space key is pressed inside a list item 
+ * (not fully implemented)
+ * @return void
+ */
 WymClassSafari.prototype.handleEnterOnListItem = function(selected)
 {
   if(selected.tagName == 'LI' && selected.parentNode) {
