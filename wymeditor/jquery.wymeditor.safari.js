@@ -683,13 +683,29 @@ WymClassSafari.prototype.isNative = function(cmd)
  */
 WymClassSafari.prototype.CreateLink = function(focusNode, param) {
   var sel = this._iframe.contentWindow.getSelection();
-  if (sel.focusNode.parentNode.nodeName.toLowerCase() != "a")
+  var _doc = this._iframe.contentDocument;
+  
+  // If nothing is selected, just exit
+  if (!sel.focusNode.nodeValue && sel.focusNode.nodeName.toLowerCase() != "img") return;
+  
+  // Handle linking of images
+  if (sel.focusNode.nodeName.toLowerCase() == "img")
   {
-    this.wrap(sel, "a", {"href":param});
+	var a = _doc.createElement("A");
+	a.appendChild(sel.focusNode.cloneNode(false));
+	var fragment = _doc.createDocumentFragment();
+	fragment.appendChild(a);
+	sel.focusNode.parentNode.replaceChild(fragment, sel.focusNode);
   }
-  else
+  // Handle updating of an existing link
+  else if (sel.focusNode.parentNode && sel.focusNode.parentNode.nodeName.toLowerCase() == "a")
   {
 	sel.focusNode.parentNode.href = param;
+  }
+  // Link the selected text
+  else
+  {
+	this.wrap(sel, "a", {"href":param});
   }
 };
 
@@ -996,8 +1012,6 @@ WymClassSafari.prototype.wrap = function(sel, tag, options) {
   var _doc = this._iframe.contentDocument;
   var fragment  = _doc.createDocumentFragment();
 
-  // function(doc, sel, startNode, endNode, startOffset, endOffset)
-
   // Create range before selection
   // When text is selected via double-click, Safari jacks the offsets 
   // so we need to detect the double-click and adjust accordingly.
@@ -1026,18 +1040,14 @@ WymClassSafari.prototype.wrap = function(sel, tag, options) {
   }
   wrapper.appendChild(_doc.createTextNode(sel));
 
-  //---------------------------------------------------
   // Append the 3 nodes to the document fragment in
   // consecutive order
-  //---------------------------------------------------
   fragment.appendChild(_doc.createTextNode(preSelectionRange.toString()));
   fragment.appendChild(wrapper);
   fragment.appendChild(_doc.createTextNode(postSelectionRange.toString()));
 
-  //---------------------------------------------------
   // Replace the text node containing the selection with
   // the document fragment that we've prepared.
-  //---------------------------------------------------
   sel.anchorNode.parentNode.replaceChild(fragment, sel.anchorNode.parentNode.childNodes[0]);
 };
 
