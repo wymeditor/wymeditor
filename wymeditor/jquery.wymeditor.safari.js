@@ -31,8 +31,7 @@ function WymClassSafari(wym) {
     wym._options.updateEvent = "mousedown";
 };
 
-/*
- * @name initIframe
+/* @name initIframe
  * @description Initializes the iframe document for editing.
  * @param document iframe An iframe document to initialize.
  * @return void
@@ -222,8 +221,7 @@ WymClassSafari.prototype.addCssRule = function(styles, oCss) {
         styles.cssRules.length);
 };
 
-/*
- * @name keydown
+/* @name keydown
  * @description keydown handler, mainly used for keyboard shortcuts
  * @return bool Whether or not the calling event should be continued
  */
@@ -277,8 +275,7 @@ WymClassSafari.prototype.keydown = function(evt) {
   }
 };
 
-/*
- * @name keyup
+/* @name keyup
  * @description keyup handler, mainly used for cleanups
  */
 WymClassSafari.prototype.keyup = function(evt) {
@@ -324,8 +321,7 @@ WymClassSafari.prototype.keyup = function(evt) {
   }
 };
 
-/*
- * @name enableDesignMode
+/* @name enableDesignMode
  * @description Enables live editing of the iframe document.
  */
 WymClassSafari.prototype.enableDesignMode = function() {
@@ -338,8 +334,7 @@ WymClassSafari.prototype.enableDesignMode = function() {
     }
 };
 
-/*
- * @name setFocusToNode
+/* @name setFocusToNode
  * @description Sets the focus to currently selected node.
  */
 WymClassSafari.prototype.setFocusToNode = function(node) {
@@ -351,8 +346,7 @@ WymClassSafari.prototype.setFocusToNode = function(node) {
     this._iframe.contentWindow.focus();
 };
 
-/*
- * @name openBlockTag
+/* @name openBlockTag
  * @description This function may not currently be in use. (Bermi?)
  */
 WymClassSafari.prototype.openBlockTag = function(tag, attributes)
@@ -380,8 +374,7 @@ WymClassSafari.prototype.openBlockTag = function(tag, attributes)
   this.output += this.helper.tag(tag, attributes, true);
 };
 
-/*
- * @name closeBlockTag
+/* @name closeBlockTag
  * @description This function may not currently be in use. (Bermi?)
  */
 WymClassSafari.prototype.closeBlockTag = function(tag)
@@ -389,8 +382,7 @@ WymClassSafari.prototype.closeBlockTag = function(tag)
   this.output = this.output.replace(/<br \/>$/, '')+this._getClosingTagContent('before', tag)+"</"+tag+">"+this._getClosingTagContent('after', tag);
 };
 
-/*
- * @name getTagForStyle
+/* @name getTagForStyle
  * @description Converts styled tags to the correct (i.e., syntactically valid) xhtml tag.
  * @param string style The styled tag (?)
  * @return string|bool Returns the string tag name if matched. False if not matched.
@@ -406,8 +398,7 @@ WymClassSafari.prototype.getTagForStyle = function(style) {
 
 /********** SELECTION API **********/
 
-/*
- * @name WymSelSafari
+/* @name WymSelSafari
  * @description Creates an instance of the SAPI
  * @param object The current wymeditor instance.
  * @return void
@@ -416,10 +407,9 @@ function WymSelSafari(wym) {
     this._wym = wym;
 };
 
-/*
-* @name WymSelSafari
-* @description The Selection Application Programming Interface (SAPI)
-*/
+/* @name WymSelSafari
+ * @description The Selection Application Programming Interface (SAPI)
+ */
 WymSelSafari.prototype = {
     getSelection: function() {
         var _sel = this._wym._iframe.contentWindow.getSelection();
@@ -537,8 +527,7 @@ WymSelSafari.prototype = {
     }
 };
 
-/*
- * @name bindEvents
+/* @name bindEvents
  * @description Binds Wymeditor events to window events.
  * @return void
  */
@@ -587,8 +576,7 @@ WymClassSafari.prototype.bindEvents = function() {
   });
 };
 
-/*
- * @name toggleHtml
+/* @name toggleHtml
  * @description Toggles the display of the HTML textarea
  * @return void
  */
@@ -599,8 +587,7 @@ Wymeditor.prototype.toggleHtml = function() {
   $j(this._box).find(this._options.htmlValSelector).val(html);
 };
 
-/*
- * @name _debug
+/* @name _debug
  * @description Opens a new window and prints the property names and values.
  * @param object An object to debug.
  * @return void
@@ -617,8 +604,7 @@ _debug = function(obj)
     win2.document.close();
 };
 
-/*
- * @name _test
+/* @name _test
  * @description Dynamically adds a 'test' link to the document so that test events can be attached 
  * to the link.onClick event.
  * @param function callback The test function to attach.
@@ -631,10 +617,10 @@ _test = function(callback) {
     $j("#btn-test").click(callback);
 };
 
-/*
-* @name nativeExecCommands
-* @description An array of execCommands natively supported by the Apple Web-Core browser engine. This list is current as of Web-Core
-*/
+/* @name nativeExecCommands
+ * @description An array of execCommands natively supported by the Apple Web-Core browser engine. 
+ * This list is current as of Web-Core
+ */
 var nativeExecCommands = [
     'BackColor',
     'Bold',
@@ -667,15 +653,14 @@ var nativeExecCommands = [
     'Unselect'
 ];
 
-/**
-* @name isNative
-* @description isNative is a Safari-only hack that checks the 'nativeExecCommands' array 
-* for a command name. It determines if a command can be executed by the native 
-* web-core code or if a custom over-ride needs to be called.
-*
-* @param string cmd The command name
-* @return bool Whether or not the command being checked is natively supported.
-*/
+/* @name isNative
+ * @description isNative is a Safari-only hack that checks the 'nativeExecCommands' array 
+ * for a command name. It determines if a command can be executed by the native 
+ * web-core code or if a custom over-ride needs to be called.
+ *
+ * @param string cmd The command name
+ * @return bool Whether or not the command being checked is natively supported.
+ */
 WymClassSafari.prototype.isNative = function(cmd)
 {
     for (i=0; i<nativeExecCommands.length; i++)
@@ -690,8 +675,7 @@ WymClassSafari.prototype.isNative = function(cmd)
 
 // WymClassSafari Custom execCommand Handlers
 
-/*
- * @name CreateLink
+/* @name CreateLink
  * @description Wymeditor's custom handler for CreateLink
  * @param object focusNode The currently selected node
  * @param string param ...
@@ -709,65 +693,7 @@ WymClassSafari.prototype.CreateLink = function(focusNode, param) {
   }
 };
 
-/* @name wrap
- * @description Wrap a selection in a container tag
- * @param object sel The selection object
- * @param string tag The name of the tag to wrap the selection
- * @param object options The attributes to apply to the new tag
- * @return void
- *
- * A very special thanks to Brian Donovan (http://dev.lophty.com) for this solution. 
- * I had the right idea and had it partially working but without his Ahoy code examples 
- * and thorough explanations, it would have taken me a lot longer to solve (if at all).
- */
-WymClassSafari.prototype.wrap = function(sel, tag, options) {
-  var _doc = this._iframe.contentDocument;
-  var fragment  = _doc.createDocumentFragment();
-
-  // Create range before selection
-  var preSelectionRange = _doc.createRange();
-  preSelectionRange.setStart(sel.anchorNode, 0);
-  // When text is selected via double-click, Safari jacks the offsets 
-  // so we need to detect the double-click and adjust accordingly.
-  preSelectionRange.setEnd(sel.anchorNode, window.isDblClick ? sel.anchorOffset - 2 : sel.anchorOffset);
-
-  // Create the range for the selection
-  var range = this._iframe.contentDocument.createRange();
-  range.setStart(sel.anchorNode, sel.anchorOffset);
-  range.setEnd(sel.focusNode, sel.focusOffset);
-
-  // Create range after selection
-  var postSelectionRange = _doc.createRange();
-  // When text is selected via double-click, Safari jacks the offsets 
-  // so we need to detect the double-click and adjust accordingly.
-  postSelectionRange.setStart(sel.focusNode, window.isDblClick ? sel.focusOffset + 2 : sel.focusOffset);
-  postSelectionRange.setEnd(sel.focusNode, sel.focusNode.nodeValue.length);
-
-  // Create the new 'wrap' tag
-  var wrapper = this._iframe.contentDocument.createElement(tag);
-  for (prop in options)
-  {
-    wrapper[prop] = options[prop];	
-  }
-  wrapper.appendChild(_doc.createTextNode(sel));
-
-  //---------------------------------------------------
-  // Append the 3 nodes to the document fragment in
-  // consecutive order
-  //---------------------------------------------------
-  fragment.appendChild(_doc.createTextNode(preSelectionRange.toString()));
-  fragment.appendChild(wrapper);
-  fragment.appendChild(_doc.createTextNode(postSelectionRange.toString()));
-
-  //---------------------------------------------------
-  // Replace the text node containing the selection with
-  // the document fragment that we've prepared.
-  //---------------------------------------------------
-  sel.anchorNode.parentNode.replaceChild(fragment, sel.anchorNode.parentNode.childNodes[0]);
-};
-
-/*
- * @name Indent
+/* @name Indent
  * @description Wymeditor's custom handler for Indent
  * @param object focusNode The currently selected node
  * @param string param ...
@@ -798,8 +724,7 @@ WymClassSafari.prototype.Indent = function(focusNode, param) {
     }
 };
 
-/*
- * @name InsertImage
+/* @name InsertImage
  * @description Inserts an image element.
  * @param object focusNode The parentNode of the current selection
  * @param string param The 'src' of the image to insert.
@@ -826,8 +751,7 @@ WymClassSafari.prototype.InsertImage = function(focusNode, param) {
   return true;
 };
 
-/*
- * @name InsertUnorderedList
+/* @name InsertUnorderedList
  * @description Wymeditor's custom handler for InsertUnorderedList
  * @param object focusNode The currently selected node
  * @param string param ...
@@ -878,8 +802,7 @@ WymClassSafari.prototype.InsertUnorderedList = function(param, type) {
   }
 };
 
-/*
- * @name Outdent
+/* @name Outdent
  * @description Wymeditor's custom handler for Outdent
  * @param object focusNode The currently selected node
  * @param string param ...
@@ -909,8 +832,7 @@ WymClassSafari.prototype.Outdent = function(focusNode, param) {
     }
 };
 
-/*
- * @name Unlink
+/* @name Unlink
  * @description Wymeditor's custom handler for Unlink
  * @param object focusNode The currently selected node
  * @param string param ...
@@ -941,8 +863,7 @@ WymClassSafari.prototype.removeSafarihacks = function(raw_html){
   return raw_html;
 };
 
-/*
- * @name beforeParsing
+/* @name beforeParsing
  * @description Removes Safari's place-holder BR tags in empty paragraphs.
  * @param string raw The raw HTML
  * @return string The cleaned-up HTML without place-holders
@@ -959,8 +880,7 @@ WymClassSafari.prototype.selectAll = function(param) {
   this.currentSelection.setBaseAndExtent(this._doc.body, 0, w._doc.body, w._doc.body.length);
 };
 
-/*
- * @name update
+/* @name update
  * @description Updates the HTML textarea with the current version of the iframe document
  * @return void
  */
@@ -970,8 +890,7 @@ WymClassSafari.prototype.update = function() {
   $j(this._box).find(this._options.htmlValSelector).val(html);
 };
 
-/*
- * @name cleanup
+/* @name cleanup
  * @description Removes Apple-style-span tags and attributes (currently a bit buggy)
  * @param string xhtml The xhtml including Apple-span-tag tags and attributes
  * @return string The clean xhtml
@@ -983,8 +902,7 @@ WymClassSafari.prototype.cleanup = function(xhtml) {
     .replace(/ class="Apple-style-span"/gi, "");	
 };
 
-/*
- * @name handleEnter
+/* @name handleEnter
  * @description Custom case-handling for when the enter key is pressed.
  * @param event evt The current window event
  * @return bool Whether or not the current event should be continued
@@ -1005,8 +923,7 @@ WymClassSafari.prototype.handleEnter = function(evt){
   return true;
 };
 
-/*
- * @name handleBackspace
+/* @name handleBackspace
  * @description Custom case-handling for when the back-space key is pressed.
  * @return bool true (allows the current event to continue)
  */
@@ -1022,8 +939,7 @@ WymClassSafari.prototype.handleBackspace = function(){
   return true;
 };
 
-/*
- * @name handleEnterOnListItem
+/* @name handleEnterOnListItem
  * @description Custom case-handling for when the back-space key is pressed inside a list item 
  * (not fully implemented)
  * @return void
@@ -1063,4 +979,81 @@ WymClassSafari.prototype.handleEnterOnListItem = function(selected)
       }
     }
   }
+};
+
+/* @name wrap
+ * @description Wrap a selection in a container tag
+ * @param object sel The selection object
+ * @param string tag The name of the tag to wrap the selection
+ * @param object options The attributes to apply to the new tag
+ * @return void
+ *
+ * A hearty thanks to Brian Donovan (http://dev.lophty.com) for this solution. 
+ * I had the right idea and had it partially working but without his Ahoy code examples 
+ * and thorough explanations, it would have taken me a lot longer to solve (if at all).
+ */
+WymClassSafari.prototype.wrap = function(sel, tag, options) {
+  var _doc = this._iframe.contentDocument;
+  var fragment  = _doc.createDocumentFragment();
+
+  // function(doc, sel, startNode, endNode, startOffset, endOffset)
+
+  // Create range before selection
+  // When text is selected via double-click, Safari jacks the offsets 
+  // so we need to detect the double-click and adjust accordingly.
+  var preSelectionRange = this.range(
+    _doc, sel, sel.anchorNode, sel.anchorNode, 0, 
+    window.isDblClick ? sel.anchorOffset - 2 : sel.anchorOffset);
+
+  // Create the range for the selection
+  var range = this.range(
+	_doc, sel, sel.anchorNode, sel.focusNode, 
+	sel.anchorOffset, sel.focusOffset);
+
+  // Create range after selection
+  // When text is selected via double-click, Safari jacks the offsets 
+  // so we need to detect the double-click and adjust accordingly.
+  var postSelectionRange = this.range(
+	_doc, sel, sel.focusNode, sel.focusNode, 
+	window.isDblClick ? sel.focusOffset + 2 : sel.focusOffset,
+	sel.focusNode.nodeValue.length);
+
+  // Create the new 'wrap' tag
+  var wrapper = this._iframe.contentDocument.createElement(tag);
+  for (prop in options)
+  {
+    wrapper[prop] = options[prop];	
+  }
+  wrapper.appendChild(_doc.createTextNode(sel));
+
+  //---------------------------------------------------
+  // Append the 3 nodes to the document fragment in
+  // consecutive order
+  //---------------------------------------------------
+  fragment.appendChild(_doc.createTextNode(preSelectionRange.toString()));
+  fragment.appendChild(wrapper);
+  fragment.appendChild(_doc.createTextNode(postSelectionRange.toString()));
+
+  //---------------------------------------------------
+  // Replace the text node containing the selection with
+  // the document fragment that we've prepared.
+  //---------------------------------------------------
+  sel.anchorNode.parentNode.replaceChild(fragment, sel.anchorNode.parentNode.childNodes[0]);
+};
+
+/* @name range
+ * @description Creates a new range and sets the start and end
+ * @param object doc A document object
+ * @param object sel The selection object
+ * @param object startNode The beginning node of the selection
+ * @param object endNode The end node of the selection
+ * @param int startOffset The beginning offset of the selection
+ * @param int endOffset The end offset of the selection
+ * @return object A range object
+ */
+WymClassSafari.prototype.range = function(doc, sel, startNode, endNode, startOffset, endOffset) {
+  var range = doc.createRange();
+  range.setStart(startNode, startOffset);
+  range.setEnd(endNode, endOffset);
+  return range;	
 };
