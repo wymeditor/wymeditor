@@ -186,12 +186,18 @@ WymClassMozilla.prototype.keyup = function(evt) {
   var wym = WYM_INSTANCES[this.title];
   
   wym._selected_image = null;
+  var container = null;
 
   if(evt.keyCode == 13 && !evt.shiftKey) {
   
     //RETURN key
     //cleanup <br><br> between paragraphs
     jQuery(wym._doc.body).children(WYM_BR).remove();
+    
+    //fix PRE bug #73
+    container = wym.selected();
+    if(container && container.tagName.toLowerCase() == WYM_PRE)
+        wym._exec(WYM_FORMAT_BLOCK, WYM_P); //create P after PRE
   }
   
   else if(evt.keyCode != 8
@@ -204,7 +210,7 @@ WymClassMozilla.prototype.keyup = function(evt) {
     //NOT BACKSPACE, NOT DELETE, NOT CTRL, NOT COMMAND
     //text nodes replaced by P
     
-    var container = wym.selected();
+    container = wym.selected();
     var name = container.tagName.toLowerCase();
 
     //fix forbidden main containers
