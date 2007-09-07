@@ -1999,7 +1999,7 @@ XhtmlSaxListener.prototype.fixNestingBeforeOpeningBlockTag = function(tag, attri
       this.output = this.output.replace(/<\/li>$/, '');
       this.insertContentAfterClosingTag(tag, '</li>');
     }
-}
+};
 
 XhtmlSaxListener.prototype._insertContentWhenClosingTag = function(position, tag, content)
 {
