@@ -1358,22 +1358,27 @@ WymSelection.prototype = {
         var parent = $j(this.startNode).parentsOrSelf(jqexpr);
 
         // 1. jqexpr isn't a parent of the current cursor position
-        // 2. offset needs to be 0 to be at the start (or the previous
-        //    characters are whitespaces
-        if (parent.length==0
-                || (this.startOffset != 0
-                    && !isPhantomString(
-                        this.startNode.data.substring(0, this.startOffset))))
+        if (parent.length==0)
             return false;
 
         var startNode = this.startNode;
         if (startNode.nodeType == WYM_NODE.TEXT) {
-            if (startNode.previousSibling &&
-                    !isPhantomNode(startNode.previousSibling))
+            // 1. startNode ist first child
+            // 2. offset needs to be 0 to be at the start (or the previous
+            //    characters are whitespaces)
+            if ((startNode.previousSibling
+                    && !isPhantomNode(startNode.previousSibling))
+                        || (this.startOffset != 0 && !isPhantomString(
+                            startNode.data.substring(0, this.startOffset))))
                 return false;
             else
                 startNode = startNode.parentNode;
         }
+        // cursor can be at the start of a text node and have a startOffset > 0
+        // (if the node contains trailign whitespaces)
+        else if (this.startOffset != 0)
+            return false;
+
 
         for (var n=$(startNode); n[0]!=parent[0]; n=n.parent()) {
             var firstChild = n.parent().children(':first');
