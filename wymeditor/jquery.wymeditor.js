@@ -1357,36 +1357,35 @@ WymSelection.prototype = {
     isAtStart: function(jqexpr) {
         var parent = $j(this.startNode).parentsOrSelf(jqexpr);
 
-        // jqexpr isn't a parent of the current cursor position
-        if (parent.length==0)
+        // 1. jqexpr isn't a parent of the current cursor position
+        // 2. offset needs to be 0 to be at the start (or the previous
+        //    characters are whitespaces
+        if (parent.length==0
+                || (this.startOffset != 0
+                    && !isPhantomString(
+                        this.startNode.data.substring(0, this.startOffset))))
             return false;
-        else
-            parent = parent[0];
 
-
-        for (var n=this.startNode; n!=parent; n=n.parentNode) {
-            //if (n.nodeType == nodeType.TEXT)
-            if (n.nodeType == WYM_NODE.TEXT) {
-                if (this.startOffset != 0)
-                    return false;
-            }
-            var firstChild = n.parentNode.firstChild;
-            // node isn't first child => cursor can't be at the beginning
-            // in gecko there the first child could be a phantom node
-
-            // sometimes also whitespacenodes which aren't phatom nodes
-            // get stripped, but this is ok, as this is a wysiwym editor
-            if ((firstChild != n
-                    || ($(firstChild).isPhantomNode()
-                        && firstChild.nextSibling != n))) {
+        var startNode = this.startNode;
+        if (startNode.nodeType == WYM_NODE.TEXT) {
+            if (startNode.previousSibling &&
+                    !isPhantomNode(startNode.previousSibling))
                 return false;
-            }
+            else
+                startNode = startNode.parentNode;
         }
 
-        if (this.startOffset == 0)
-            return true;
-        else
-            return false;
+        for (var n=$(startNode); n[0]!=parent[0]; n=n.parent()) {
+            var firstChild = n.parent().children(':first');
+
+            // node isn't first child => cursor can't be at the beginning
+            if (firstChild[0] != n[0]
+                    || (firstChild[0].previousSibling
+                        && !isPhantomNode(firstChild[0].previousSibling)))
+                return false;
+        }
+
+        return true;
     },
 
     isAtEnd: function(jqexpr) {
@@ -1465,6 +1464,10 @@ function isPhantomNode(n) {
 
   return false;
 };
+function isPhantomString(str) {
+    return !(/[^\t\n\r ]/.test(str));
+};
+
 
 // Returns the Parents or the node itself
 // jqexpr = a jQuery expression
