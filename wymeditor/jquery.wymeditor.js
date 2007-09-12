@@ -1357,7 +1357,7 @@ WymSelection.prototype = {
     isAtStart: function(jqexpr) {
         var parent = $j(this.startNode).parentsOrSelf(jqexpr);
 
-        // 1. jqexpr isn't a parent of the current cursor position
+        // jqexpr isn't a parent of the current cursor position
         if (parent.length==0)
             return false;
 
@@ -1417,31 +1417,38 @@ WymSelection.prototype = {
             if (this.endOffset == 0)
                 return false;
             else {
-                nNext = this.endNode.childNodes[this.endOffset-1].nextSibling;
-                if (nNext==null || nNext.nodeName == "BR")
+                for (var nNext=this.endNode.childNodes[this.endOffset-1].nextSibling;
+                        nNext==null || nNext.nodeName == "BR";
+                        nNext=nNext.nextSibling)
+
+                if (nNext==null)
                     return true;
             }
 
         }
         else {
-            for (var n=this.endNode; n!=parent; n=n.parentNode) {
-                if (n.nodeType == WYM_NODE.TEXT) {
-                    if (this.endOffset != this.endNode.data.length)
-                        return false;
-                }
-                else {
-                    var lastChild = n.parentNode.lastChild;
-                    // node isn't last child => cursor can't be at the end
-                    // (is this true?) in gecko there the last child could be a
-                    //     phantom node
+            var endNode = this.endNode;
+            if (endNode.nodeType == WYM_NODE.TEXT) {
+                if ((endNode.nextSibling
+                        && !isPhantomNode(endNode.nextSibling))
+                            || (this.endOffset != endNode.data.length))
+                    return false;
+                else
+                    endNode = endNode.parentNode;
+            }
 
-                    // sometimes also whitespacenodes which aren't phatom nodes
-                    // get stripped, but this is ok, as this is a wysiwym editor
-                    if ((lastChild != n) ||
-                            ($(lastChild).isPhantomNode()
-                            && lastChild.previousSibling != n)) {
-                        return false;
-                    }
+            for (var n=endNode; n!=parent; n=n.parentNode) {
+                var lastChild = n.parentNode.lastChild;
+                // node isn't last child => cursor can't be at the end
+                // (is this true?) in gecko there the last child could be a
+                //     phantom node
+
+                // sometimes also whitespacenodes which aren't phatom nodes
+                // get stripped, but this is ok, as this is a wysiwym editor
+                if ((lastChild != n) ||
+                        (isPhantomNode(lastChild)
+                        && lastChild.previousSibling != n)) {
+                    return false;
                 }
             }
         }
