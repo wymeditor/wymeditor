@@ -448,6 +448,27 @@ WymSelExplorer.prototype = {
             return node.innerText.length;
         else if (node.nodeType == WYM_NODE.TEXT)
             return node.data.length;
+    },
+
+    /*
+    Property: deleteIfExpanded
+        Delete contents of a selection
+
+    Example:
+        (start code)
+        var sel = wym.selection.getSelection();
+        sel.deleteIfExpanded();
+        (end code)
+
+    Returns:
+        (boolean) True if it was expanded and thus deleted
+    */
+    deleteIfExpanded: function() {
+        if(!this.isCollapsed) {
+            this.original.clear();
+            return true;
+        }
+        return false;
     }
 };
 
