@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <!--
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2007 H.O.net - http://www.honet.be/
@@ -35,6 +35,7 @@
 <script type="text/javascript" src="../wymeditor/jquery.wymeditor.explorer.js"></script>
 <script type="text/javascript" src="../wymeditor/jquery.wymeditor.mozilla.js"></script>
 <script type="text/javascript" src="../wymeditor/jquery.wymeditor.opera.js"></script>
+<script type="text/javascript" src="../wymeditor/jquery.wymeditor.safari.js"></script>
 
 <script type="text/javascript">
 
