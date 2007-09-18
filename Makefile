@@ -5,7 +5,8 @@ JS_FILES = ${SRC_DIR}/wymeditor/lang/en.js\
  ${SRC_DIR}/wymeditor/jquery.wymeditor.js\
  ${SRC_DIR}/wymeditor/jquery.wymeditor.explorer.js\
  ${SRC_DIR}/wymeditor/jquery.wymeditor.mozilla.js\
- ${SRC_DIR}/wymeditor/jquery.wymeditor.opera.js
+ ${SRC_DIR}/wymeditor/jquery.wymeditor.opera.js\
+ ${SRC_DIR}/wymeditor/jquery.wymeditor.safari.js
  
 CSS_PARSER = ${SRC_DIR}/wymeditor/wym_css_parser.js
 XHTML_PARSER = ${SRC_DIR}/wymeditor/xhtml_parser.js
