@@ -76,7 +76,7 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
       this._wym.bindEvents();
       
       // NOTE v.mische this part will be changed on event-hacking
-      $j(this._doc).bind("keydown", this.handleKeydown);
+      jQuery(this._doc).bind("keydown", this.handleKeydown);
       
       //post-init functions
       if(jQuery.isFunction(this._options.postInit)) this._options.postInit(this);
@@ -255,7 +255,7 @@ WymSelExplorer.prototype = {
             this.endOffset = selEnd.offset;
         }
 
-        this.container = $j(range.parentElement()).parentsOrSelf(
+        this.container = jQuery(range.parentElement()).parentsOrSelf(
                 WYM_MAIN_CONTAINERS.join(","))[0];
 
         return this;
