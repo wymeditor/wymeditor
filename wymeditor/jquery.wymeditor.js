@@ -533,6 +533,8 @@ function Wymeditor(elem,options) {
     || this._options.basePath + WYM_IFRAME_DEFAULT;
   this._options.jQueryPath = this._options.jQueryPath
     || this.computeJqueryPath();
+    
+  this.selection = new WymSelection();
   
   this.init();
   
@@ -547,16 +549,21 @@ Wymeditor.prototype.init = function() {
   //unsupported browsers: do nothing
   if (jQuery.browser.msie) {
     var WymClass = new WymClassExplorer(this);
+    var WymSel = new WymSelExplorer(this);
   }
   else if (jQuery.browser.mozilla) {
     var WymClass = new WymClassMozilla(this);
+    var WymSel = new WymSelMozilla(this);
   }
   else if (jQuery.browser.opera) {
     var WymClass = new WymClassOpera(this);
+    //commented until supported
+    //var WymSel = new WymSelOpera(this);
   }
   else if (jQuery.browser.safari) {
     //commented until supported
-    //var WymClass = new WymClassSafari(this);
+    var WymClass = new WymClassSafari(this);
+    var WymSel = new WymSelSafari(this);
   }
   
   if(WymClass) {
@@ -657,6 +664,14 @@ Wymeditor.prototype.init = function() {
       //enable the skin
       this.skin();
       
+    }
+    
+    if(WymSel) {
+    
+      //extend the selection object
+      //don't use jQuery.extend since 1.1.4
+      //jQuery.extend(this.selection, WymSel);
+      for (prop in WymSel) { this.selection[prop] = WymSel[prop]; }
     }
 };
 
@@ -1360,6 +1375,137 @@ function WYM_INIT_DIALOG(index) {
       wym._options.postInitDialog(wym,window);
 };
 
+/********** SELECTION API **********/
+
+function WymSelection() {
+    this.test = "test from WymSelection";
+};
+
+
+WymSelection.prototype = {
+    /* The following properties where set in the browser specific file (in
+     * getSelection()):
+     * this.original
+     * this.startNode
+     * this.endNode
+     * this.startOffset
+     * this.endOffset
+     * this.iscollapsed
+     * this.container
+     */
+
+    /* The following methods are implemented in browser specific file:
+     *  - deleteIfExpanded()
+     *  - cursorToStart()
+     *  - cursorToEnd()
+     */
+
+
+    isAtStart: function(jqexpr) {
+        var parent = $j(this.startNode).parentsOrSelf(jqexpr);
+
+        // jqexpr isn't a parent of the current cursor position
+        if (parent.length==0)
+            return false;
+
+        var startNode = this.startNode;
+        if (startNode.nodeType == WYM_NODE.TEXT) {
+            // 1. startNode ist first child
+            // 2. offset needs to be 0 to be at the start (or the previous
+            //    characters are whitespaces)
+            if ((startNode.previousSibling
+                    && !isPhantomNode(startNode.previousSibling))
+                        || (this.startOffset != 0 && !isPhantomString(
+                            startNode.data.substring(0, this.startOffset))))
+                return false;
+            else
+                startNode = startNode.parentNode;
+        }
+        // cursor can be at the start of a text node and have a startOffset > 0
+        // (if the node contains trailign whitespaces)
+        else if (this.startOffset != 0)
+            return false;
+
+
+        for (var n=$(startNode); n[0]!=parent[0]; n=n.parent()) {
+            var firstChild = n.parent().children(':first');
+
+            // node isn't first child => cursor can't be at the beginning
+            if (firstChild[0] != n[0]
+                    || (firstChild[0].previousSibling
+                        && !isPhantomNode(firstChild[0].previousSibling)))
+                return false;
+        }
+
+        return true;
+    },
+
+    isAtEnd: function(jqexpr) {
+        var parent = $(this.endNode).parentsOrSelf(jqexpr);
+
+        // jqexpr isn't a parent of the current cursor position
+        if (parent.length==0)
+            return false;
+        else
+            parent = parent[0];
+
+
+        // This is the case if, e.g ("|" = cursor): <p>textnode|<br/></p>,
+        // there the offset of endNode (endOffset) is 1 (behind the first node
+        // of <p>)
+        if (this.endNode == parent) {
+            // NOTE I don't know if it is a good idea to delete the <br>
+            // here, as "atEnd()" probably shouldn't change the dom tree,
+            // but only searching it
+            if (this.endNode.lastChild.nodeName == "BR")
+                this.endNode.removeChild(endNode.lastChild);
+
+            // if cursor is really at the end
+            if (this.endOffset == 0)
+                return false;
+            else {
+                for (var nNext=this.endNode.childNodes[this.endOffset-1].nextSibling;
+                        nNext==null || nNext.nodeName == "BR";
+                        nNext=nNext.nextSibling)
+
+                if (nNext==null)
+                    return true;
+            }
+
+        }
+        else {
+            var endNode = this.endNode;
+            if (endNode.nodeType == WYM_NODE.TEXT) {
+                if ((endNode.nextSibling
+                        && !isPhantomNode(endNode.nextSibling))
+                            || (this.endOffset != endNode.data.length))
+                    return false;
+                else
+                    endNode = endNode.parentNode;
+            }
+
+            for (var n=endNode; n!=parent; n=n.parentNode) {
+                var lastChild = n.parentNode.lastChild;
+                // node isn't last child => cursor can't be at the end
+                // (is this true?) in gecko there the last child could be a
+                //     phantom node
+
+                // sometimes also whitespacenodes which aren't phatom nodes
+                // get stripped, but this is ok, as this is a wysiwym editor
+                if ((lastChild != n) ||
+                        (isPhantomNode(lastChild)
+                        && lastChild.previousSibling != n)) {
+                    return false;
+                }
+            }
+        }
+
+        if (this.endOffset == this.endNode.length)
+            return true;
+        else
+            return false;
+    }
+};
 
 /********** HELPERS **********/
 
@@ -1376,6 +1522,10 @@ function isPhantomNode(n) {
     return !(/[^\t\n\r ]/.test(n.data));
 
   return false;
+};
+
+function isPhantomString(str) {
+    return !(/[^\t\n\r ]/.test(str));
 };
 
 // Returns the Parents or the node itself
