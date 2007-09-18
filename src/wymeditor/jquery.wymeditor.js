@@ -1402,7 +1402,7 @@ WymSelection.prototype = {
 
 
     isAtStart: function(jqexpr) {
-        var parent = $j(this.startNode).parentsOrSelf(jqexpr);
+        var parent = jQuery(this.startNode).parentsOrSelf(jqexpr);
 
         // jqexpr isn't a parent of the current cursor position
         if (parent.length==0)
@@ -1427,7 +1427,7 @@ WymSelection.prototype = {
             return false;
 
 
-        for (var n=$(startNode); n[0]!=parent[0]; n=n.parent()) {
+        for (var n=jQuery(startNode); n[0]!=parent[0]; n=n.parent()) {
             var firstChild = n.parent().children(':first');
 
             // node isn't first child => cursor can't be at the beginning
@@ -1441,7 +1441,7 @@ WymSelection.prototype = {
     },
 
     isAtEnd: function(jqexpr) {
-        var parent = $(this.endNode).parentsOrSelf(jqexpr);
+        var parent = jQuery(this.endNode).parentsOrSelf(jqexpr);
 
         // jqexpr isn't a parent of the current cursor position
         if (parent.length==0)

@@ -59,25 +59,25 @@ WymClassSafari.prototype.initIframe = function(iframe) {
     this.enableDesignMode();
 
     // detect when text is selected via double-click
-    $j(this._doc).bind("dblclick", this.dblclick);
+    jQuery(this._doc).bind("dblclick", this.dblclick);
     
     // pre-bind functions
-    if($j.isFunction(this._options.preBind)) this._options.preBind(this);
+    if(jQuery.isFunction(this._options.preBind)) this._options.preBind(this);
     
     // bind external events
     this._wym.bindEvents();
     
     // bind editor keydown events
-    $j(this._doc).bind("keydown", this.keydown);
+    jQuery(this._doc).bind("keydown", this.keydown);
     
     // bind editor keyup events
-    $j(this._doc).bind("keyup", this.keyup);
+    jQuery(this._doc).bind("keyup", this.keyup);
     
     // bind editor focus events (used to reset designmode - Gecko bug)
-    $j(this._doc).bind("focus", this.enableDesignMode);
+    jQuery(this._doc).bind("focus", this.enableDesignMode);
     
     // post-init functions
-    if($j.isFunction(this._options.postInit)) this._options.postInit(this);
+    if(jQuery.isFunction(this._options.postInit)) this._options.postInit(this);
     
     // add event listeners to doc elements, e.g. images
     this.listen();
@@ -109,12 +109,12 @@ WymClassSafari.prototype.html = function(html) {
       .replace(/<\/strong>/gi, "</b>");
     
     // update the html body
-    $j(this._doc.body).html(html);
+    jQuery(this._doc.body).html(html);
     
     // re-init designMode
     this.enableDesignMode();
   }
-  else return($j(this._doc.body).html());
+  else return(jQuery(this._doc.body).html());
 };
 
 /* @name _exec
@@ -140,7 +140,7 @@ WymClassSafari.prototype._exec = function(cmd, param) {
     if (focusNode && focusNode.nodeName.toLowerCase() == WYM_BR)
     {
        var _newFocusNode = focusNode.parentNode;
-       $j(focusNode).remove();
+       jQuery(focusNode).remove();
        focusNode = _newFocusNode;
     }
 
@@ -289,7 +289,7 @@ WymClassSafari.prototype.keyup = function(evt) {
   
     // RETURN key
     // cleanup <br><br> between paragraphs
-    $j(wym._doc.body).children(WYM_BR).remove();
+    jQuery(wym._doc.body).children(WYM_BR).remove();
   }
   
   else if(evt.keyCode != 8
@@ -423,14 +423,14 @@ WymSelSafari.prototype = {
         
         this.isCollapsed = _sel.isCollapsed;
         this.original    = _sel;
-        this.container   = $j(this.startNode).parentsOrSelf(WYM_MAIN_CONTAINERS.join(","))[0];
+        this.container   = jQuery(this.startNode).parentsOrSelf(WYM_MAIN_CONTAINERS.join(","))[0];
         
         return this;
     },
     
     newNode: function() {
         var _id = this._wym.uniqueStamp();
-        $j(this._wym._iframe.contentDocument.body).append('<p id="' + _id + '"></p>');
+        jQuery(this._wym._iframe.contentDocument.body).append('<p id="' + _id + '"></p>');
         return this._wym._iframe.contentDocument.getElementById(_id);
     },
     
@@ -537,28 +537,28 @@ WymClassSafari.prototype.bindEvents = function() {
   var wym = this;
   
   // handle click event on tools buttons
-  $j(this._box).find(this._options.toolSelector).mousedown(function() {
-    wym.exec($j(this).attr(WYM_NAME));
+  jQuery(this._box).find(this._options.toolSelector).mousedown(function() {
+    wym.exec(jQuery(this).attr(WYM_NAME));
     return(false);
   });
   
   // handle click event on containers buttons
-  $j(this._box).find(this._options.containerSelector).mousedown(function() {
-    wym.container($j(this).attr(WYM_NAME));
+  jQuery(this._box).find(this._options.containerSelector).mousedown(function() {
+    wym.container(jQuery(this).attr(WYM_NAME));
     return(false);
   });
   
   // handle keyup event on html value: set the editor value
-  $j(this._box).find(this._options.htmlValSelector).keyup(function() {
-    $j(wym._doc.body).html($j(this).val());
-    // $j(wym._doc.body).html(wym.addWymHacksForEditMode($j(this).val()));
+  jQuery(this._box).find(this._options.htmlValSelector).keyup(function() {
+    jQuery(wym._doc.body).html(jQuery(this).val());
+    // jQuery(wym._doc.body).html(wym.addWymHacksForEditMode(jQuery(this).val()));
   });
   
   // handle click event on classes buttons
-  $j(this._box).find(this._options.classSelector).mousedown(function() {
+  jQuery(this._box).find(this._options.classSelector).mousedown(function() {
   
     var aClasses = eval(wym._options.classesItems);
-    var sName = $j(this).attr(WYM_NAME);
+    var sName = jQuery(this).attr(WYM_NAME);
     
     var oClass = aClasses.findByName(sName);
     
@@ -570,7 +570,7 @@ WymClassSafari.prototype.bindEvents = function() {
   });
   
   // handle event on update element
-  $j(this._options.updateSelector)
+  jQuery(this._options.updateSelector)
     .bind(this._options.updateEvent, function() {
       wym.update();
   });
@@ -582,9 +582,9 @@ WymClassSafari.prototype.bindEvents = function() {
  */
 Wymeditor.prototype.toggleHtml = function() {
   var html = this.xhtml();
-  $j(this._element).val(html);
-  $j(this._box).find(this._options.htmlSelector).toggle();
-  $j(this._box).find(this._options.htmlValSelector).val(html);
+  jQuery(this._element).val(html);
+  jQuery(this._box).find(this._options.htmlSelector).toggle();
+  jQuery(this._box).find(this._options.htmlValSelector).val(html);
 };
 
 /* @name _debug
@@ -611,10 +611,10 @@ _debug = function(obj)
  * @return void
  */
 _test = function(callback) {
-    $j(document.body).append(
+    jQuery(document.body).append(
         "<p><a href=\"#\" id=\"btn-test\">Test</a></p>"
     );
-    $j("#btn-test").click(callback);
+    jQuery("#btn-test").click(callback);
 };
 
 /* @name nativeExecCommands
@@ -754,10 +754,10 @@ WymClassSafari.prototype.InsertImage = function(focusNode, param) {
     }
     if (focusNode.nodeName.toLowerCase() == WYM_IMG)
     {
-        $j(focusNode).attr({"src": param});
+        jQuery(focusNode).attr({"src": param});
     } else {
         var opts = {src: param};
-        $j(focusNode).append(
+        jQuery(focusNode).append(
           this.helper.tag('img', opts)
         );
     }
@@ -873,7 +873,7 @@ WymClassSafari.prototype.removeWymAttributesFromXhtml = function(xhtml) {
 };
 
 WymClassSafari.prototype.removeSafarihacks = function(raw_html){
-  if(true || $j.browser.version < 10000){
+  if(true || jQuery.browser.version < 10000){
     raw_html = raw_html.replace(this.hackChar,'');
   }
   return raw_html;
@@ -902,8 +902,8 @@ WymClassSafari.prototype.selectAll = function(param) {
  */
 WymClassSafari.prototype.update = function() {
   var html = this.cleanup(this.removeWymAttributesFromXhtml(this.xhtml()));
-  $j(this._element).val(html);
-  $j(this._box).find(this._options.htmlValSelector).val(html);
+  jQuery(this._element).val(html);
+  jQuery(this._box).find(this._options.htmlValSelector).val(html);
 };
 
 /* @name cleanup
@@ -925,7 +925,7 @@ WymClassSafari.prototype.cleanup = function(xhtml) {
  */
 WymClassSafari.prototype.handleEnter = function(evt){
   var selected = this.selected();
-  if(true || $j.browser.version < 10000){    
+  if(true || jQuery.browser.version < 10000){    
     
     if(evt.shiftKey){
       if(!this.selectedHtml && this.selectedText == selected.innerHTML){
@@ -945,7 +945,7 @@ WymClassSafari.prototype.handleEnter = function(evt){
  */
 WymClassSafari.prototype.handleBackspace = function(){
   var selected = this.selected();
-  if(true || $j.browser.version < 10000){
+  if(true || jQuery.browser.version < 10000){
     if(selected.tagName == 'P' && selected.innerHTML == ''){
       // Todo: move caret to the end of previous sibling
       var parent = selected.parentNode;
