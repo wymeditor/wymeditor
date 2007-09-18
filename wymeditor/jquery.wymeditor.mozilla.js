@@ -323,7 +323,7 @@ WymSelMozilla.prototype = {
         this.endOffset = _sel.getRangeAt(0).endOffset;
         this.isCollapsed = _sel.isCollapsed;
         this.original = _sel;
-        this.container = $j(this.startNode).parentsOrSelf(
+        this.container = jQuery(this.startNode).parentsOrSelf(
                 WYM_MAIN_CONTAINERS.join(","))[0];
 
         return this;
@@ -333,7 +333,7 @@ WymSelMozilla.prototype = {
         if (jqexpr.nodeType == WYM_NODE.TEXT)
             jqexpr = jqexpr.parentNode;
 
-        var firstTextNode = $(jqexpr)[0];
+        var firstTextNode = jQuery(jqexpr)[0];
 
         while (firstTextNode.nodeType!=WYM_NODE.TEXT) {
             if (!firstTextNode.hasChildNodes())
@@ -355,7 +355,7 @@ WymSelMozilla.prototype = {
         if (jqexpr.nodeType == WYM_NODE.TEXT)
             jqexpr = jqexpr.parentNode;
 
-        var lastTextNode = $(jqexpr)[0];
+        var lastTextNode = jQuery(jqexpr)[0];
 
         while (lastTextNode.nodeType!=WYM_NODE.TEXT) {
             if (!lastTextNode.hasChildNodes())
