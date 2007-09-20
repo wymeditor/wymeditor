@@ -557,8 +557,7 @@ Wymeditor.prototype.init = function() {
   }
   else if (jQuery.browser.opera) {
     var WymClass = new WymClassOpera(this);
-    //commented until supported
-    //var WymSel = new WymSelOpera(this);
+    var WymSel = new WymSelOpera(this);
   }
   else if (jQuery.browser.safari) {
     //commented until supported
