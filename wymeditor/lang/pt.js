@@ -16,7 +16,7 @@ var WYM_STRINGS_PT = {
     Image:            'Imagem',
     Table:            'Tabela',
     HTML:             'HTML',
-    Paragraph:        'Paragrafo',
+    Paragraph:        'Parágrafo',
     Heading_1:        'Título 1',
     Heading_2:        'Título 2',
     Heading_3:        'Título 3',
