@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet href="chrome://global/skin/global.css"   type="text/css"?>
+<?xml-stylesheet href="chrome://fireeditor/skin/fireeditor.css" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://fireftp/locale/editor.dtd">
+<window id            = "main-window"
+        title         = "Fire Editor"
+        width         = "800"
+        height        = "600"
+        orient        = "vertical"
+        xmlns         = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        xmlns:html    = "http://www.w3.org/1999/xhtml"
+        persist       = "width height screenX screenY sizemode">
+
+<script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>
+<script type="application/x-javascript" src="chrome://global/content/globalOverlay.js"/>
+<script type="application/x-javascript" src="chrome://global/content/findBar.js"/>
+<script type="application/x-javascript" src="chrome://global/content/printUtils.js"/>
+<script type="application/x-javascript" src="chrome://browser/content/utilityOverlay.js"/>
+<script type="application/x-javascript" src="chrome://browser/content/bookmarks/bookmarks.js"/>
+<script type="application/x-javascript" src="chrome://browser/content/bookmarks/bookmarksMenu.js"/>
+<script type="application/x-javascript" src="chrome://global/content/viewZoomOverlay.js"/>
+<script type="application/x-javascript" src="chrome://browser/content/browser.js"/>
+
+<script type="application/x-javascript" src="chrome://global/content/contentAreaUtils.js"/>
+
+  <hbox flex="1" id="browser">
+    <vbox id="appcontent" flex="1">
+      <browser id="content" disablehistory="true"
+                  flex="1" contenttooltip="aHTMLTooltip"
+                  contentcontextmenu="contentAreaContextMenu"
+                  onnewtab="BrowserOpenTab();"
+                  autocompletepopup="PopupAutoComplete"
+                  ondragdrop="nsDragAndDrop.drop(event, contentAreaDNDObserver);"
+                  onclick="return contentAreaClick(event, false);" src="chrome://fireeditor/content/fireeditor.html"/>
+    </vbox>
+  </hbox> 
+</window>

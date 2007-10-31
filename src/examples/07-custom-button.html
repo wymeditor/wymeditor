@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+ * WYMeditor : what you see is What You Mean web-based editor
+ * Copyright (C) 2007 H.O.net - http://www.honet.be/
+ * Dual licensed under the MIT (MIT-license.txt)
+ * and GPL (GPL-license.txt) licenses.
+ *
+ * For further information visit:
+ *        http://www.wymeditor.org/
+ *
+ * File Name:
+ *        07-custom-button.html
+ *        WYMeditor integration example - custom button.
+ *        See the documentation for more info.
+ *
+ * File Authors:
+ *        Jean-Francois Hovinne - http://www.hovinne.com/
+-->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>WYMeditor</title>
+<link rel="stylesheet" type="text/css" media="screen" href="styles.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="../wymeditor/skins/default/screen.css" />
+<script type="text/javascript" src="../jquery/jquery.js"></script>
+<script type="text/javascript" src="../wymeditor/jquery.wymeditor.pack.js"></script>
+
+<script type="text/javascript">
+
+jQuery(function() {
+    jQuery('.wymeditor').wymeditor({
+    
+        html: '<p>Hello, World!<\/p>',
+        stylesheet: 'styles.css',
+        
+        postInit: function(wym) {
+
+            //construct the button's html
+            var html = "<li class='wym_tools_newbutton'>"
+                     + "<a name='NewButton' href='#'"
+                     + " style='background-image:"
+                     + " url(../wymeditor/skins/default/icons.png)'>"
+                     + "Do something"
+                     + "</a></li>";
+
+            //add the button to the tools box
+            jQuery(wym._box)
+            .find(wym._options.toolsSelector + wym._options.toolsListSelector)
+            .append(html);
+
+            //handle click event
+            jQuery(wym._box)
+            .find('li.wym_tools_newbutton a').click(function() {
+                //do something
+                wym.paste('Lorem ipsum dolor sit amet, consectetuer adipiscing elit.');
+                return(false);
+            });
+        }    
+    });
+});
+
+</script>
+
+</head>
+
+<body>
+<h1>WYMeditor integration example - custom button</h1>
+<p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+<form method="post" action="">
+<textarea class="wymeditor"></textarea>
+<input type="submit" class="wymupdate" />
+</form>
+
+<p>
+<a href="http://sourceforge.net/projects/wym-editor">
+<img src="http://sflogo.sourceforge.net/sflogo.php?group_id=148869&amp;type=1" border="0" alt="SourceForge logo" title="SourceForge" />
+</a>
+</p>
+
+</body>
+
+</html>
