@@ -27,11 +27,13 @@ var WYMEDITOR = {
     
     VERSION          : "0.4.1.",
     INSTANCES        : new Array(),
+	STRINGS			 : new Array(),
     NAME             : "name",
     INDEX            : "{Wym_Index}",
     BASE_PATH        : "{Wym_Base_Path}",
     CSS_PATH         : "{Wym_Css_Path}",
     WYM_PATH         : "{Wym_Wym_Path}",
+	LANG_DEFAULT_PATH: "lang/",
     IFRAME_BASE_PATH : "{Wym_Iframe_Base_Path}",
     IFRAME_DEFAULT   : "iframe/default/",
     JQUERY_PATH      : "{Wym_Jquery_Path}",
@@ -668,7 +670,7 @@ jQuery.extend({
     return (WYMEDITOR.INSTANCES[i]);
   },
   wymstrings: function(lang, sKey) {
-    return (WYM_STRINGS[lang][sKey]);
+    return (WYMEDITOR.STRINGS[lang][sKey]);
   }
 });
 
@@ -692,6 +694,8 @@ function Wymeditor(elem,options) {
     || this.computeCssPath();
   this._options.wymPath = this._options.wymPath
     || this.computeWymPath();
+  this._options.langPath = this._options.langPath
+    || this._options.basePath + WYMEDITOR.LANG_DEFAULT_PATH;
   this._options.iframeBasePath = this._options.iframeBasePath
     || this._options.basePath + WYMEDITOR.IFRAME_DEFAULT;
   this._options.jQueryPath = this._options.jQueryPath
@@ -1100,10 +1104,13 @@ Wymeditor.prototype.switchTo = function(node,sType) {
 };
 
 Wymeditor.prototype.replaceStrings = function(sVal) {
+  if(WYMEDITOR.STRINGS.length==0)
+    eval(jQuery.ajax({url:this._options.langPath
+      + this._options.lang + '.js', async:false}).responseText);
 
-  for (var key in WYM_STRINGS[this._options.lang]) {
+  for (var key in WYMEDITOR.STRINGS) {
     sVal = sVal.replaceAll(this._options.stringDelimiterLeft + key 
-    + this._options.stringDelimiterRight, WYM_STRINGS[this._options.lang][key]);
+    + this._options.stringDelimiterRight, WYMEDITOR.STRINGS[key]);
   }
   return(sVal);
 };

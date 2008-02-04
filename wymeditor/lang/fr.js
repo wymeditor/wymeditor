@@ -1,6 +1,4 @@
-﻿if(!WYM_STRINGS) var WYM_STRINGS = new Array();
-
-var WYM_STRINGS_FR = {
+﻿WYMEDITOR.STRINGS = jQuery.extend({
     Strong:           'Mise en évidence',
     Emphasis:         'Emphase',
     Superscript:      'Exposant',
@@ -42,6 +40,4 @@ var WYM_STRINGS_FR = {
     Classes:          'Type de contenu',
     Status:           'Infos',
     Source_Code:      'Code source'
-};
-
-WYM_STRINGS['fr'] = WYM_STRINGS_FR;
+}, WYMEDITOR.STRINGS);
