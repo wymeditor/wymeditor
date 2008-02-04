@@ -1,6 +1,4 @@
-﻿if(!WYM_STRINGS) var WYM_STRINGS = new Array();
-
-var WYM_STRINGS_HU = {
+﻿WYMEDITOR.STRINGS = jQuery.extend({
     Strong:           'Félkövér',
     Emphasis:         'Kiemelt',
     Superscript:      'Felső index',
@@ -42,6 +40,4 @@ var WYM_STRINGS_HU = {
     Classes:          'Osztályok',
     Status:           'Állapot',
     Source_Code:      'Forráskód'
-};
-
-WYM_STRINGS['hu'] = WYM_STRINGS_HU;
+}, WYMEDITOR.STRINGS);

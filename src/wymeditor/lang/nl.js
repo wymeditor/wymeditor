@@ -1,6 +1,4 @@
-﻿if(!WYM_STRINGS) var WYM_STRINGS = new Array();
-
-var WYM_STRINGS_NL = {
+﻿WYMEDITOR.STRINGS = jQuery.extend({
     Strong:           'Sterk benadrukken',
     Emphasis:         'Benadrukken',
     Superscript:      'Bovenschrift',
@@ -42,6 +40,4 @@ var WYM_STRINGS_NL = {
     Classes:          'Classes',
     Status:           'Status',
     Source_Code:      'Broncode'
-};
-
-WYM_STRINGS['nl'] = WYM_STRINGS_NL;
+}, WYMEDITOR.STRINGS);

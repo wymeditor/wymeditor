@@ -1,6 +1,4 @@
-﻿if(!WYM_STRINGS) var WYM_STRINGS = new Array();
-
-var WYM_STRINGS_PL = {
+﻿WYMEDITOR.STRINGS = jQuery.extend({
     Strong:           'Nacisk',
     Emphasis:         'Emfaza',
     Superscript:      'Indeks górny',
@@ -42,6 +40,4 @@ var WYM_STRINGS_PL = {
     Classes:          'Styl',
     Status:           'Status',
     Source_Code:      'Kod źródłowy'
-};
-
-WYM_STRINGS['pl'] = WYM_STRINGS_PL;
+}, WYMEDITOR.STRINGS);
