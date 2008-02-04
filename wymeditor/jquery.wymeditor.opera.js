@@ -47,9 +47,9 @@ WymClassOpera.prototype.initIframe = function(iframe) {
     
     //hide indent and outdent until supported
     jQuery(this._box).find(this._options.toolSelector 
-      + '[@name=' + WYM_INDENT +']').hide();
+      + '[@name=' + WYMEDITOR.INDENT +']').hide();
     jQuery(this._box).find(this._options.toolSelector 
-      + '[@name=' + WYM_OUTDENT +']').hide();
+      + '[@name=' + WYMEDITOR.OUTDENT +']').hide();
     
     //bind external events
     this._wym.bindEvents();
@@ -71,7 +71,7 @@ WymClassOpera.prototype._exec = function(cmd,param) {
 
     switch(cmd) {
     
-    case WYM_INDENT: case WYM_OUTDENT:
+    case WYMEDITOR.INDENT: case WYMEDITOR.OUTDENT:
         //TODO: support nested lists
         //Opera creates blockquotes
         this.status("Unsupported feature.");
@@ -105,31 +105,31 @@ WymClassOpera.prototype.addCssRule = function(styles, oCss) {
 WymClassOpera.prototype.keydown = function(evt) {
   
   //'this' is the doc
-  var wym = WYM_INSTANCES[this.title];
+  var wym = WYMEDITOR.INSTANCES[this.title];
   
   // "start" Selection API
   var sel = wym.selection.getSelection();
 
 /*
     // some small tests for the Selection API
-    var containers = WYM_MAIN_CONTAINERS.join(",");
+    var containers = WYMEDITOR.MAIN_CONTAINERS.join(",");
     if (sel.isAtStart(containers))
         alert("isAtStart: "+sel.startNode.parentNode.nodeName);
     if (sel.isAtEnd(containers))
         alert("isAtEnd: "+sel.endNode.parentNode.nodeName);
-    if (evt.keyCode==WYM_KEY.DELETE) {
+    if (evt.keyCode==WYMEDITOR.KEY.DELETE) {
         // if deleteIfExpanded wouldn't work, no selected text would be
         // deleted if you press del-key
         if (sel.deleteIfExpanded())
             return false;
     }
-    if (evt.keyCode==WYM_KEY.HOME) {
+    if (evt.keyCode==WYMEDITOR.KEY.HOME) {
         // if cursorToStart won't work, the cursor won't be set to start
         // if you press home-key
         sel.cursorToStart(sel.container);
         return false;
     }
-    if (evt.keyCode==WYM_KEY.END)
+    if (evt.keyCode==WYMEDITOR.KEY.END)
     {
         // if cursorToEnd won't work, the cursor won't be set to the end
         // if you press end-key
@@ -141,14 +141,14 @@ WymClassOpera.prototype.keydown = function(evt) {
 
   //Get a P instead of no container
   if(!sel.container
-      && evt.keyCode != WYM_KEY.ENTER
-      && evt.keyCode != WYM_KEY.LEFT
-      && evt.keyCode != WYM_KEY.UP
-      && evt.keyCode != WYM_KEY.RIGHT
-      && evt.keyCode != WYM_KEY.DOWN
-      && evt.keyCode != WYM_KEY.BACKSPACE
-      && evt.keyCode != WYM_KEY.DELETE)
-      wym._exec(WYM_FORMAT_BLOCK, WYM_P);
+      && evt.keyCode != WYMEDITOR.KEY.ENTER
+      && evt.keyCode != WYMEDITOR.KEY.LEFT
+      && evt.keyCode != WYMEDITOR.KEY.UP
+      && evt.keyCode != WYMEDITOR.KEY.RIGHT
+      && evt.keyCode != WYMEDITOR.KEY.DOWN
+      && evt.keyCode != WYMEDITOR.KEY.BACKSPACE
+      && evt.keyCode != WYMEDITOR.KEY.DELETE)
+      wym._exec(WYMEDITOR.FORMAT_BLOCK, WYMEDITOR.P);
 
 };
 
@@ -156,7 +156,7 @@ WymClassOpera.prototype.keydown = function(evt) {
 WymClassOpera.prototype.keyup = function(evt) {
 
   //'this' is the doc
-  var wym = WYM_INSTANCES[this.title];
+  var wym = WYMEDITOR.INSTANCES[this.title];
   wym._selected_image = null;
 };
 
@@ -182,18 +182,18 @@ WymSelOpera.prototype = {
         this.isCollapsed = _sel.isCollapsed;
         this.original = _sel;
         this.container = jQuery(this.startNode).parentsOrSelf(
-                WYM_MAIN_CONTAINERS.join(","))[0];
+                WYMEDITOR.MAIN_CONTAINERS.join(","))[0];
 
         return this;
     },
 
     cursorToStart: function(jqexpr) {
-        if (jqexpr.nodeType == WYM_NODE.TEXT)
+        if (jqexpr.nodeType == WYMEDITOR.NODE.TEXT)
             jqexpr = jqexpr.parentNode;
 
         var firstTextNode = jQuery(jqexpr)[0];
 
-        while (firstTextNode.nodeType!=WYM_NODE.TEXT) {
+        while (firstTextNode.nodeType!=WYMEDITOR.NODE.TEXT) {
             if (!firstTextNode.hasChildNodes())
                 break;
             firstTextNode = firstTextNode.firstChild;
@@ -203,19 +203,19 @@ WymSelOpera.prototype = {
             firstTextNode = firstTextNode.nextSibling;
 
         // e.g. an <img/>
-        if (firstTextNode.nodeType == WYM_NODE.ELEMENT)
+        if (firstTextNode.nodeType == WYMEDITOR.NODE.ELEMENT)
             this.original.collapse(firstTextNode.parentNode, 0);
         else
             this.original.collapse(firstTextNode, 0);
     },
 
     cursorToEnd: function(jqexpr) {
-        if (jqexpr.nodeType == WYM_NODE.TEXT)
+        if (jqexpr.nodeType == WYMEDITOR.NODE.TEXT)
             jqexpr = jqexpr.parentNode;
 
         var lastTextNode = jQuery(jqexpr)[0];
 
-        while (lastTextNode.nodeType!=WYM_NODE.TEXT) {
+        while (lastTextNode.nodeType!=WYMEDITOR.NODE.TEXT) {
             if (!lastTextNode.hasChildNodes())
                 break;
             lastTextNode = lastTextNode.lastChild;
@@ -225,7 +225,7 @@ WymSelOpera.prototype = {
             lastTextNode = lastTextNode.previousSibling;
 
         // e.g. an <img/>
-        if (lastTextNode.nodeType == WYM_NODE.ELEMENT)
+        if (lastTextNode.nodeType == WYMEDITOR.NODE.ELEMENT)
             this.original.collapse(lastTextNode.parentNode,
                 lastTextNode.parentNode.childNodes.length);
         else

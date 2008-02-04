@@ -100,24 +100,24 @@ WymClassMozilla.prototype._exec = function(cmd,param) {
 
     switch(cmd) {
     
-    case WYM_INDENT: case WYM_OUTDENT:
+    case WYMEDITOR.INDENT: case WYMEDITOR.OUTDENT:
     
         var focusNode = this.selected();    
         var sel = this._iframe.contentWindow.getSelection();
         var anchorNode = sel.anchorNode;
         if(anchorNode.nodeName == "#text") anchorNode = anchorNode.parentNode;
         
-        focusNode = this.findUp(focusNode, WYM_BLOCKS);
-        anchorNode = this.findUp(anchorNode, WYM_BLOCKS);
+        focusNode = this.findUp(focusNode, WYMEDITOR.BLOCKS);
+        anchorNode = this.findUp(anchorNode, WYMEDITOR.BLOCKS);
         
         if(focusNode && focusNode == anchorNode
-          && focusNode.tagName.toLowerCase() == WYM_LI) {
+          && focusNode.tagName.toLowerCase() == WYMEDITOR.LI) {
 
             var ancestor = focusNode.parentNode.parentNode;
 
             if(focusNode.parentNode.childNodes.length>1
-              || ancestor.tagName.toLowerCase() == WYM_OL
-              || ancestor.tagName.toLowerCase() == WYM_UL)
+              || ancestor.tagName.toLowerCase() == WYMEDITOR.OL
+              || ancestor.tagName.toLowerCase() == WYMEDITOR.UL)
                 this._doc.execCommand(cmd,'',null);
         }
 
@@ -131,8 +131,8 @@ WymClassMozilla.prototype._exec = function(cmd,param) {
     
     //set to P if parent = BODY
     var container = this.selected();
-    if(container.tagName.toLowerCase() == WYM_BODY)
-        this._exec(WYM_FORMAT_BLOCK, WYM_P);
+    if(container.tagName.toLowerCase() == WYMEDITOR.BODY)
+        this._exec(WYMEDITOR.FORMAT_BLOCK, WYMEDITOR.P);
     
     //add event handlers on doc elements
 
@@ -163,31 +163,31 @@ WymClassMozilla.prototype.addCssRule = function(styles, oCss) {
 WymClassMozilla.prototype.keydown = function(evt) {
   
   //'this' is the doc
-  var wym = WYM_INSTANCES[this.title];
+  var wym = WYMEDITOR.INSTANCES[this.title];
   
   // "start" Selection API
   var sel = wym.selection.getSelection();
 
 /*
     // some small tests for the Selection API
-    var containers = WYM_MAIN_CONTAINERS.join(",");
+    var containers = WYMEDITOR.MAIN_CONTAINERS.join(",");
     if (sel.isAtStart(containers))
         alert("isAtStart: "+sel.startNode.parentNode.nodeName);
     if (sel.isAtEnd(containers))
         alert("isAtEnd: "+sel.endNode.parentNode.nodeName);
-    if (evt.keyCode==WYM_KEY.DELETE) {
+    if (evt.keyCode==WYMEDITOR.KEY.DELETE) {
         // if deleteIfExpanded wouldn't work, no selected text would be
         // deleted if you press del-key
         if (sel.deleteIfExpanded())
             return false;
     }
-    if (evt.keyCode==WYM_KEY.HOME) {
+    if (evt.keyCode==WYMEDITOR.KEY.HOME) {
         // if cursorToStart won't work, the cursor won't be set to start
         // if you press home-key
         sel.cursorToStart(sel.container);
         return false;
     }
-    if (evt.keyCode==WYM_KEY.END)
+    if (evt.keyCode==WYMEDITOR.KEY.END)
     {
         // if cursorToEnd won't work, the cursor won't be set to the end
         // if you press end-key
@@ -199,12 +199,12 @@ WymClassMozilla.prototype.keydown = function(evt) {
   if(evt.ctrlKey){
     if(evt.keyCode == 66){
       //CTRL+b => STRONG
-      wym._exec(WYM_BOLD);
+      wym._exec(WYMEDITOR.BOLD);
       return false;
     }
     if(evt.keyCode == 73){
       //CTRL+i => EMPHASIS
-      wym._exec(WYM_ITALIC);
+      wym._exec(WYMEDITOR.ITALIC);
       return false;
     }
   }
@@ -214,7 +214,7 @@ WymClassMozilla.prototype.keydown = function(evt) {
 WymClassMozilla.prototype.keyup = function(evt) {
 
   //'this' is the doc
-  var wym = WYM_INSTANCES[this.title];
+  var wym = WYMEDITOR.INSTANCES[this.title];
   
   wym._selected_image = null;
   var container = null;
@@ -223,12 +223,12 @@ WymClassMozilla.prototype.keyup = function(evt) {
   
     //RETURN key
     //cleanup <br><br> between paragraphs
-    jQuery(wym._doc.body).children(WYM_BR).remove();
+    jQuery(wym._doc.body).children(WYMEDITOR.BR).remove();
     
     //fix PRE bug #73
     container = wym.selected();
-    if(container && container.tagName.toLowerCase() == WYM_PRE)
-        wym._exec(WYM_FORMAT_BLOCK, WYM_P); //create P after PRE
+    if(container && container.tagName.toLowerCase() == WYMEDITOR.PRE)
+        wym._exec(WYMEDITOR.FORMAT_BLOCK, WYMEDITOR.P); //create P after PRE
   }
   
   else if(evt.keyCode != 8
@@ -256,7 +256,7 @@ WymClassMozilla.prototype.keyup = function(evt) {
 
     ) name = container.parentNode.tagName.toLowerCase();
 
-    if(name == WYM_BODY) wym._exec(WYM_FORMAT_BLOCK, WYM_P);
+    if(name == WYMEDITOR.BODY) wym._exec(WYMEDITOR.FORMAT_BLOCK, WYMEDITOR.P);
   }
 };
 
@@ -324,18 +324,18 @@ WymSelMozilla.prototype = {
         this.isCollapsed = _sel.isCollapsed;
         this.original = _sel;
         this.container = jQuery(this.startNode).parentsOrSelf(
-                WYM_MAIN_CONTAINERS.join(","))[0];
+                WYMEDITOR.MAIN_CONTAINERS.join(","))[0];
 
         return this;
     },
 
     cursorToStart: function(jqexpr) {
-        if (jqexpr.nodeType == WYM_NODE.TEXT)
+        if (jqexpr.nodeType == WYMEDITOR.NODE.TEXT)
             jqexpr = jqexpr.parentNode;
 
         var firstTextNode = jQuery(jqexpr)[0];
 
-        while (firstTextNode.nodeType!=WYM_NODE.TEXT) {
+        while (firstTextNode.nodeType!=WYMEDITOR.NODE.TEXT) {
             if (!firstTextNode.hasChildNodes())
                 break;
             firstTextNode = firstTextNode.firstChild;
@@ -345,19 +345,19 @@ WymSelMozilla.prototype = {
             firstTextNode = firstTextNode.nextSibling;
 
         // e.g. an <img/>
-        if (firstTextNode.nodeType == WYM_NODE.ELEMENT)
+        if (firstTextNode.nodeType == WYMEDITOR.NODE.ELEMENT)
             this.original.collapse(firstTextNode.parentNode, 0);
         else
             this.original.collapse(firstTextNode, 0);
     },
 
     cursorToEnd: function(jqexpr) {
-        if (jqexpr.nodeType == WYM_NODE.TEXT)
+        if (jqexpr.nodeType == WYMEDITOR.NODE.TEXT)
             jqexpr = jqexpr.parentNode;
 
         var lastTextNode = jQuery(jqexpr)[0];
 
-        while (lastTextNode.nodeType!=WYM_NODE.TEXT) {
+        while (lastTextNode.nodeType!=WYMEDITOR.NODE.TEXT) {
             if (!lastTextNode.hasChildNodes())
                 break;
             lastTextNode = lastTextNode.lastChild;
@@ -367,7 +367,7 @@ WymSelMozilla.prototype = {
             lastTextNode = lastTextNode.previousSibling;
 
         // e.g. an <img/>
-        if (lastTextNode.nodeType == WYM_NODE.ELEMENT)
+        if (lastTextNode.nodeType == WYMEDITOR.NODE.ELEMENT)
             this.original.collapse(lastTextNode.parentNode,
                 lastTextNode.parentNode.childNodes.length);
         else

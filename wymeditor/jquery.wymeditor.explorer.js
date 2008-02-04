@@ -100,9 +100,9 @@ WymClassExplorer.prototype._exec = function(cmd,param) {
 
     switch(cmd) {
     
-    case WYM_INDENT: case WYM_OUTDENT:
+    case WYMEDITOR.INDENT: case WYMEDITOR.OUTDENT:
     
-        var container = this.findUp(this.container(), WYM_LI);
+        var container = this.findUp(this.container(), WYMEDITOR.LI);
         if(container)
             this._doc.execCommand(cmd);
     break;
@@ -151,31 +151,31 @@ WymClassExplorer.prototype.setFocusToNode = function(node) {
 WymClassExplorer.prototype.handleKeydown = function(evt) {
   
   //'this' is the doc
-  var wym = WYM_INSTANCES[this.title];
+  var wym = WYMEDITOR.INSTANCES[this.title];
   
   // "start" Selection API
   var sel = wym.selection.getSelection();
 
 /*
     // some small tests for the Selection API
-    var containers = WYM_MAIN_CONTAINERS.join(",");
+    var containers = WYMEDITOR.MAIN_CONTAINERS.join(",");
     if (sel.isAtStart(containers))
         alert("isAtStart: "+sel.startNode.parentNode.nodeName);
     if (sel.isAtEnd(containers))
         alert("isAtEnd: "+sel.endNode.parentNode.nodeName);
-    if (evt.keyCode==WYM_KEY.DELETE) {
+    if (evt.keyCode==WYMEDITOR.KEY.DELETE) {
         // if deleteIfExpanded wouldn't work, no selected text would be
         // deleted if you press del-key
         if (sel.deleteIfExpanded())
             return false;
     }
-    if (evt.keyCode==WYM_KEY.HOME) {
+    if (evt.keyCode==WYMEDITOR.KEY.HOME) {
         // if cursorToStart won't work, the cursor won't be set to start
         // if you press home-key
         sel.cursorToStart(sel.container);
         return false;
     }
-    if (evt.keyCode==WYM_KEY.END)
+    if (evt.keyCode==WYMEDITOR.KEY.END)
     {
         // if cursorToEnd won't work, the cursor won't be set to the end
         // if you press end-key
@@ -256,7 +256,7 @@ WymSelExplorer.prototype = {
         }
 
         this.container = jQuery(range.parentElement()).parentsOrSelf(
-                WYM_MAIN_CONTAINERS.join(","))[0];
+                WYMEDITOR.MAIN_CONTAINERS.join(","))[0];
 
         return this;
     },
@@ -324,7 +324,7 @@ WymSelExplorer.prototype = {
                 childPosition = 1;
 
             // moveToElementText doesn't work with text nodes
-            while ((childNodes[childPosition].nodeType == WYM_NODE.TEXT
+            while ((childNodes[childPosition].nodeType == WYMEDITOR.NODE.TEXT
                     || childNodes[childPosition].nodeName == "BR")
                     && childPosition > 0) {
                 childPosition--;
@@ -445,9 +445,9 @@ WymSelExplorer.prototype = {
         (int) Length of a DOM node.
     */
     _getTextLength: function(node) {
-        if (node.nodeType == WYM_NODE.ELEMENT)
+        if (node.nodeType == WYMEDITOR.NODE.ELEMENT)
             return node.innerText.length;
-        else if (node.nodeType == WYM_NODE.TEXT)
+        else if (node.nodeType == WYMEDITOR.NODE.TEXT)
             return node.data.length;
     },
 

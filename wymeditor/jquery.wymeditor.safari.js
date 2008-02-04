@@ -20,10 +20,6 @@
  *        Scott Lewis (lewiscot@gmail.com)
  */
 
-var WYM_UNLINK               = "Unlink";
-var WYM_INSERT_UNORDEREDLIST = "InsertUnorderedList";
-var WYM_INSERT_ORDEREDLIST   = "InsertOrderedList";
-
 function WymClassSafari(wym) {
     this._wym = wym;
     this._class = "class";
@@ -137,7 +133,7 @@ WymClassSafari.prototype._exec = function(cmd, param) {
         if(anchorNode.nodeName == "#text") anchorNode = anchorNode.parentNode;
     }
     
-    if (focusNode && focusNode.nodeName.toLowerCase() == WYM_BR)
+    if (focusNode && focusNode.nodeName.toLowerCase() == WYMEDITOR.BR)
     {
        var _newFocusNode = focusNode.parentNode;
        jQuery(focusNode).remove();
@@ -146,35 +142,35 @@ WymClassSafari.prototype._exec = function(cmd, param) {
 
     switch(cmd) {
     
-        case WYM_INDENT:
+        case WYMEDITOR.INDENT:
             this.Outdent(focusNode, param);
             break;
             
-        case WYM_OUTDENT:
+        case WYMEDITOR.OUTDENT:
             this.Indent(focusNode, param);
         break;
         
-        case WYM_OUTDENT:
+        case WYMEDITOR.OUTDENT:
             this.Indent(focusNode, param);
             break;
         
-        case WYM_INDENT:
+        case WYMEDITOR.INDENT:
             this.Indent(focusNode, param);
             break;
         
-        case WYM_CREATE_LINK:
+        case WYMEDITOR.CREATE_LINK:
             this.CreateLink(focusNode, param);
             break;
         
-        case WYM_UNLINK:
+        case WYMEDITOR.UNLINK:
             this.Unlink(focusNode, param);
             break;
         
-        case WYM_INSERT_IMAGE:
+        case WYMEDITOR.INSERT_IMAGE:
             this.InsertImage(focusNode, param);
             break;
 
-        case WYM_INSERT_UNORDEREDLIST:
+        case WYMEDITOR.INSERT_UNORDEREDLIST:
             this.InsertUnorderedList(focusNode, param);
             break;
     
@@ -186,8 +182,8 @@ WymClassSafari.prototype._exec = function(cmd, param) {
     
     // set to P if parent = BODY
     var container = this.selected();
-    if(container && container.tagName.toLowerCase() == WYM_BODY)
-        this._exec(WYM_FORMAT_BLOCK, WYM_P);
+    if(container && container.tagName.toLowerCase() == WYMEDITOR.BODY)
+        this._exec(WYMEDITOR.FORMAT_BLOCK, WYMEDITOR.P);
     
     // Update the textarea
     this.update();
@@ -228,31 +224,31 @@ WymClassSafari.prototype.addCssRule = function(styles, oCss) {
 WymClassSafari.prototype.keydown = function(evt) {
   
   // 'this' is the doc
-  var wym = WYM_INSTANCES[this.title];
+  var wym = WYMEDITOR.INSTANCES[this.title];
   
   //  "start" Selection API
   var sel = wym.selection.getSelection();
 
 /*
     //  some small tests for the Selection API
-    var containers = WYM_MAIN_CONTAINERS.join(",");
+    var containers = WYMEDITOR.MAIN_CONTAINERS.join(",");
     if (sel.isAtStart(containers))
         alert("isAtStart: "+sel.startNode.parentNode.nodeName);
     if (sel.isAtEnd(containers))
         alert("isAtEnd: "+sel.endNode.parentNode.nodeName);
-    if (evt.keyCode==WYM_KEY.DELETE) {
+    if (evt.keyCode==WYMEDITOR.KEY.DELETE) {
         //  if deleteIfExpanded wouldn't work, no selected text would be
         //  deleted if you press del-key
         if (sel.deleteIfExpanded())
             return false;
     }
-    if (evt.keyCode==WYM_KEY.HOME) {
+    if (evt.keyCode==WYMEDITOR.KEY.HOME) {
         //  if cursorToStart won't work, the cursor won't be set to start
         //  if you press home-key
         sel.cursorToStart(sel.container);
         return false;
     }
-    if (evt.keyCode==WYM_KEY.END)
+    if (evt.keyCode==WYMEDITOR.KEY.END)
     {
         //  if cursorToEnd won't work, the cursor won't be set to the end
         //  if you press end-key
@@ -264,12 +260,12 @@ WymClassSafari.prototype.keydown = function(evt) {
   if(evt.ctrlKey){
     if(evt.keyCode == 66){
       // CTRL+b => STRONG
-      wym._exec(WYM_BOLD);
+      wym._exec(WYMEDITOR.BOLD);
       return false;
     }
     if(evt.keyCode == 73){
       // CTRL+i => EMPHASIS
-      wym._exec(WYM_ITALIC);
+      wym._exec(WYMEDITOR.ITALIC);
       return false;
     }
   }
@@ -281,7 +277,7 @@ WymClassSafari.prototype.keydown = function(evt) {
 WymClassSafari.prototype.keyup = function(evt) {
 
   // 'this' is the doc
-  var wym = WYM_INSTANCES[this.title];
+  var wym = WYMEDITOR.INSTANCES[this.title];
   
   wym._selected_image = null;
 
@@ -289,7 +285,7 @@ WymClassSafari.prototype.keyup = function(evt) {
   
     // RETURN key
     // cleanup <br><br> between paragraphs
-    jQuery(wym._doc.body).children(WYM_BR).remove();
+    jQuery(wym._doc.body).children(WYMEDITOR.BR).remove();
   }
   
   else if(evt.keyCode != 8
@@ -317,7 +313,7 @@ WymClassSafari.prototype.keyup = function(evt) {
 
    ) name = container.parentNode.tagName.toLowerCase();
 
-    if(name == WYM_BODY) wym._exec(WYM_FORMAT_BLOCK, WYM_P);
+    if(name == WYMEDITOR.BODY) wym._exec(WYMEDITOR.FORMAT_BLOCK, WYMEDITOR.P);
   }
 };
 
@@ -423,7 +419,7 @@ WymSelSafari.prototype = {
         
         this.isCollapsed = _sel.isCollapsed;
         this.original    = _sel;
-        this.container   = jQuery(this.startNode).parentsOrSelf(WYM_MAIN_CONTAINERS.join(","))[0];
+        this.container   = jQuery(this.startNode).parentsOrSelf(WYMEDITOR.MAIN_CONTAINERS.join(","))[0];
         
         return this;
     },
@@ -474,12 +470,12 @@ WymSelSafari.prototype = {
     },
     
     cursorToStart: function(jqexpr) {
-        if (jqexpr.nodeType == WYM_NODE.TEXT)
+        if (jqexpr.nodeType == WYMEDITOR.NODE.TEXT)
             jqexpr = jqexpr.parentNode;
 
         var firstTextNode = $(jqexpr)[0];
 
-        while (firstTextNode.nodeType!=WYM_NODE.TEXT) {
+        while (firstTextNode.nodeType!=WYMEDITOR.NODE.TEXT) {
             if (!firstTextNode.hasChildNodes())
                 break;
             firstTextNode = firstTextNode.firstChild;
@@ -489,19 +485,19 @@ WymSelSafari.prototype = {
             firstTextNode = firstTextNode.nextSibling;
 
         //  e.g. an <img/>
-        if (firstTextNode.nodeType == WYM_NODE.ELEMENT)
+        if (firstTextNode.nodeType == WYMEDITOR.NODE.ELEMENT)
             this.original.collapse(firstTextNode.parentNode, 0);
         else
             this.original.collapse(firstTextNode, 0);
     },
 
     cursorToEnd: function(jqexpr) {
-        if (jqexpr.nodeType == WYM_NODE.TEXT)
+        if (jqexpr.nodeType == WYMEDITOR.NODE.TEXT)
             jqexpr = jqexpr.parentNode;
 
         var lastTextNode = $(jqexpr)[0];
 
-        while (lastTextNode.nodeType!=WYM_NODE.TEXT) {
+        while (lastTextNode.nodeType!=WYMEDITOR.NODE.TEXT) {
             if (!lastTextNode.hasChildNodes())
                 break;
             lastTextNode = lastTextNode.lastChild;
@@ -511,7 +507,7 @@ WymSelSafari.prototype = {
             lastTextNode = lastTextNode.previousSibling;
 
         //  e.g. an <img/>
-        if (lastTextNode.nodeType == WYM_NODE.ELEMENT)
+        if (lastTextNode.nodeType == WYMEDITOR.NODE.ELEMENT)
             this.original.collapse(lastTextNode.parentNode,
                 lastTextNode.parentNode.childNodes.length);
         else
@@ -538,13 +534,13 @@ WymClassSafari.prototype.bindEvents = function() {
   
   // handle click event on tools buttons
   jQuery(this._box).find(this._options.toolSelector).mousedown(function() {
-    wym.exec(jQuery(this).attr(WYM_NAME));
+    wym.exec(jQuery(this).attr(WYMEDITOR.NAME));
     return(false);
   });
   
   // handle click event on containers buttons
   jQuery(this._box).find(this._options.containerSelector).mousedown(function() {
-    wym.container(jQuery(this).attr(WYM_NAME));
+    wym.container(jQuery(this).attr(WYMEDITOR.NAME));
     return(false);
   });
   
@@ -558,7 +554,7 @@ WymClassSafari.prototype.bindEvents = function() {
   jQuery(this._box).find(this._options.classSelector).mousedown(function() {
   
     var aClasses = eval(wym._options.classesItems);
-    var sName = jQuery(this).attr(WYM_NAME);
+    var sName = jQuery(this).attr(WYMEDITOR.NAME);
     
     var oClass = aClasses.findByName(sName);
     
@@ -725,17 +721,17 @@ WymClassSafari.prototype.Indent = function(focusNode, param) {
         if(anchorNode.nodeName == "#text") anchorNode = anchorNode.parentNode;
     }
     
-    focusNode = this.findUp(focusNode, WYM_BLOCKS);
-    anchorNode = this.findUp(anchorNode, WYM_BLOCKS);
+    focusNode = this.findUp(focusNode, WYMEDITOR.BLOCKS);
+    anchorNode = this.findUp(anchorNode, WYMEDITOR.BLOCKS);
     
     if(focusNode && focusNode == anchorNode
-      && focusNode.tagName.toLowerCase() == WYM_LI) {
+      && focusNode.tagName.toLowerCase() == WYMEDITOR.LI) {
 
         var ancestor = focusNode.parentNode.parentNode;
 
         if(focusNode.parentNode.childNodes.length>1
-          || ancestor.tagName.toLowerCase() == WYM_OL
-          || ancestor.tagName.toLowerCase() == WYM_UL)
+          || ancestor.tagName.toLowerCase() == WYMEDITOR.OL
+          || ancestor.tagName.toLowerCase() == WYMEDITOR.UL)
             this._doc.execCommand(cmd,'',null);
     }
 };
@@ -752,7 +748,7 @@ WymClassSafari.prototype.InsertImage = function(focusNode, param) {
     {
       focusNode = this.selection.newNode();
     }
-    if (focusNode.nodeName.toLowerCase() == WYM_IMG)
+    if (focusNode.nodeName.toLowerCase() == WYMEDITOR.IMG)
     {
         jQuery(focusNode).attr({"src": param});
     } else {
@@ -833,17 +829,17 @@ WymClassSafari.prototype.Outdent = function(focusNode, param) {
         var anchorNode = sel.anchorNode;
         if(anchorNode.nodeName == "#text") anchorNode = anchorNode.parentNode;
     }
-    focusNode = this.findUp(focusNode, WYM_BLOCKS);
-    anchorNode = this.findUp(anchorNode, WYM_BLOCKS);
+    focusNode = this.findUp(focusNode, WYMEDITOR.BLOCKS);
+    anchorNode = this.findUp(anchorNode, WYMEDITOR.BLOCKS);
     
     if(focusNode && focusNode == anchorNode
-      && focusNode.tagName.toLowerCase() == WYM_LI) {
+      && focusNode.tagName.toLowerCase() == WYMEDITOR.LI) {
 
         var ancestor = focusNode.parentNode.parentNode;
 
         if(focusNode.parentNode.childNodes.length>1
-          || ancestor.tagName.toLowerCase() == WYM_OL
-          || ancestor.tagName.toLowerCase() == WYM_UL)
+          || ancestor.tagName.toLowerCase() == WYMEDITOR.OL
+          || ancestor.tagName.toLowerCase() == WYMEDITOR.UL)
             this._doc.execCommand(cmd,'',null);
     }
 };
