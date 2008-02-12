@@ -23,7 +23,7 @@
 
 /********** CONSTANTS **********/
 
-var WYMEDITOR = {
+var WYMeditor = {
     
     VERSION          : "0.4.1.",
     INSTANCES        : new Array(),
@@ -130,11 +130,66 @@ var WYMEDITOR = {
       TEXT: 3
     },
 	
+	editor : function(elem, options) {
+
+        this._index = WYMeditor.INSTANCES.push(this) - 1;
+        this._element = elem;
+        this._options = options;
+        this._html = jQuery(elem).val();
+
+        if(this._options.html) this._html = this._options.html;
+        this._options.basePath = this._options.basePath
+        || this.computeBasePath();
+        this._options.cssPath = this._options.cssPath
+        || this.computeCssPath();
+        this._options.wymPath = this._options.wymPath
+        || this.computeWymPath();
+        this._options.langPath = this._options.langPath
+        || this._options.basePath + WYMeditor.LANG_DEFAULT_PATH;
+        this._options.iframeBasePath = this._options.iframeBasePath
+        || this._options.basePath + WYMeditor.IFRAME_DEFAULT;
+        this._options.jQueryPath = this._options.jQueryPath
+        || this.computeJqueryPath();
+
+        this.selection = new WymSelection();
+
+        this.init();
+	
+	},
+    
+    WymClassExplorer : function(wym) {
+    
+        this._wym = wym;
+        this._class = "className";
+        this._newLine = "\r\n";
+    },
+	
+	WymClassMozilla : function(wym) {
+
+        this._wym = wym;
+        this._class = "class";
+        this._newLine = "\n";
+	},
+    
+    WymClassOpera : function(wym) {
+
+        this._wym = wym;
+        this._class = "class";
+        this._newLine = "\r\n";
+    },
+    
+    WymClassSafari : function(wym) {
+        this._wym = wym;
+        this._class = "class";
+        this._newLine = "\n";
+        wym._options.updateEvent = "mousedown";
+    },
+	
 	/********** DIALOGS **********/
 
 	INIT_DIALOG : function(index) {
 
-    var wym = window.opener.WYMEDITOR.INSTANCES[index];
+    var wym = window.opener.WYMeditor.INSTANCES[index];
     var doc = window.document;
     var selected = wym.selected();
     var dialogType = jQuery(wym._options.dialogTypeSelector).val();
@@ -142,14 +197,14 @@ var WYMEDITOR = {
     
     switch(dialogType) {
     
-    case WYMEDITOR.DIALOG_LINK:
+    case WYMeditor.DIALOG_LINK:
       //ensure that we select the link to populate the fields
-      if(selected && selected.tagName && selected.tagName.toLowerCase != WYMEDITOR.A)
-        selected = jQuery(selected).parentsOrSelf(WYMEDITOR.A);
+      if(selected && selected.tagName && selected.tagName.toLowerCase != WYMeditor.A)
+        selected = jQuery(selected).parentsOrSelf(WYMeditor.A);
     
       //fix MSIE selection if link image has been clicked
       if(!selected && wym._selected_image)
-        selected = jQuery(wym._selected_image).parentsOrSelf(WYMEDITOR.A);
+        selected = jQuery(wym._selected_image).parentsOrSelf(WYMeditor.A);
     break;
 
     }
@@ -166,20 +221,20 @@ var WYMEDITOR = {
     
     //auto populate fields if selected container (e.g. A)
     if(selected) {
-      jQuery(wym._options.hrefSelector).val(jQuery(selected).attr(WYMEDITOR.HREF));
-      jQuery(wym._options.srcSelector).val(jQuery(selected).attr(WYMEDITOR.SRC));
-      jQuery(wym._options.titleSelector).val(jQuery(selected).attr(WYMEDITOR.TITLE));
-      jQuery(wym._options.altSelector).val(jQuery(selected).attr(WYMEDITOR.ALT));
+      jQuery(wym._options.hrefSelector).val(jQuery(selected).attr(WYMeditor.HREF));
+      jQuery(wym._options.srcSelector).val(jQuery(selected).attr(WYMeditor.SRC));
+      jQuery(wym._options.titleSelector).val(jQuery(selected).attr(WYMeditor.TITLE));
+      jQuery(wym._options.altSelector).val(jQuery(selected).attr(WYMeditor.ALT));
     }
     
     //auto populate image fields if selected image
     if(wym._selected_image) {
       jQuery(wym._options.dialogImageSelector + " " + wym._options.srcSelector)
-        .val(jQuery(wym._selected_image).attr(WYMEDITOR.SRC));
+        .val(jQuery(wym._selected_image).attr(WYMeditor.SRC));
       jQuery(wym._options.dialogImageSelector + " " + wym._options.titleSelector)
-        .val(jQuery(wym._selected_image).attr(WYMEDITOR.TITLE));
+        .val(jQuery(wym._selected_image).attr(WYMeditor.TITLE));
       jQuery(wym._options.dialogImageSelector + " " + wym._options.altSelector)
-        .val(jQuery(wym._selected_image).attr(WYMEDITOR.ALT));
+        .val(jQuery(wym._selected_image).attr(WYMeditor.ALT));
     }
 
     jQuery(wym._options.dialogLinkSelector + " "
@@ -187,20 +242,20 @@ var WYMEDITOR = {
         
         var sUrl = jQuery(wym._options.hrefSelector).val();
         if(sUrl.length > 0) {
-            wym._exec(WYMEDITOR.CREATE_LINK, sStamp);
+            wym._exec(WYMeditor.CREATE_LINK, sStamp);
             //don't use jQuery.find() see #JQ1143
             //var link = jQuery(wym._doc.body).find("a[@href=" + sStamp + "]");
             var link = null;
-            var nodes = wym._doc.body.getElementsByTagName(WYMEDITOR.A);
+            var nodes = wym._doc.body.getElementsByTagName(WYMeditor.A);
             for(var i=0; i < nodes.length; i++) {
-                if(jQuery(nodes[i]).attr(WYMEDITOR.HREF) == sStamp) {
+                if(jQuery(nodes[i]).attr(WYMeditor.HREF) == sStamp) {
                     link = jQuery(nodes[i]);
                     break;
                 }
             }
             if(link) {
-                link.attr(WYMEDITOR.HREF, sUrl);
-                link.attr(WYMEDITOR.TITLE, jQuery(wym._options.titleSelector).val());
+                link.attr(WYMeditor.HREF, sUrl);
+                link.attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val());
             }
         }
         window.close();
@@ -211,21 +266,21 @@ var WYMEDITOR = {
         
         var sUrl = jQuery(wym._options.srcSelector).val();
         if(sUrl.length > 0) {
-            wym._exec(WYMEDITOR.INSERT_IMAGE, sStamp);
+            wym._exec(WYMeditor.INSERT_IMAGE, sStamp);
             //don't use jQuery.find() see #JQ1143
             //var image = jQuery(wym._doc.body).find("img[@src=" + sStamp + "]");
             var image = null;
-            var nodes = wym._doc.body.getElementsByTagName(WYMEDITOR.IMG);
+            var nodes = wym._doc.body.getElementsByTagName(WYMeditor.IMG);
             for(var i=0; i < nodes.length; i++) {
-                if(jQuery(nodes[i]).attr(WYMEDITOR.SRC) == sStamp) {
+                if(jQuery(nodes[i]).attr(WYMeditor.SRC) == sStamp) {
                     image = jQuery(nodes[i]);
                     break;
                 }
             }
             if(image) {
-                image.attr(WYMEDITOR.SRC, sUrl);
-                image.attr(WYMEDITOR.TITLE, jQuery(wym._options.titleSelector).val());
-                image.attr(WYMEDITOR.ALT, jQuery(wym._options.altSelector).val());
+                image.attr(WYMeditor.SRC, sUrl);
+                image.attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val());
+                image.attr(WYMeditor.ALT, jQuery(wym._options.altSelector).val());
             }
         }
         window.close();
@@ -239,7 +294,7 @@ var WYMEDITOR = {
         
         if(iRows > 0 && iCols > 0) {
         
-            var table = wym._doc.createElement(WYMEDITOR.TABLE);
+            var table = wym._doc.createElement(WYMeditor.TABLE);
             var newRow = null;
         		var newCol = null;
         		
@@ -256,7 +311,7 @@ var WYMEDITOR = {
         		}
         		
           //append the table after the selected container
-          var node = jQuery(wym.findUp(wym.container(),WYMEDITOR.MAIN_CONTAINERS)).get(0);
+          var node = jQuery(wym.findUp(wym.container(),WYMeditor.MAIN_CONTAINERS)).get(0);
           if(!node || !node.parentNode) jQuery(wym._doc.body).append(table);
           else jQuery(node).after(table);
         }
@@ -339,17 +394,17 @@ jQuery.fn.wymeditor = function(options) {
 
     boxHtml:   "<div class='wym_box'>"
               + "<div class='wym_area_top'>" 
-              + WYMEDITOR.TOOLS
+              + WYMeditor.TOOLS
               + "</div>"
               + "<div class='wym_area_left'></div>"
               + "<div class='wym_area_right'>"
-              + WYMEDITOR.CONTAINERS
-              + WYMEDITOR.CLASSES
+              + WYMeditor.CONTAINERS
+              + WYMeditor.CLASSES
               + "</div>"
               + "<div class='wym_area_main'>"
-              + WYMEDITOR.HTML
-              + WYMEDITOR.IFRAME
-              + WYMEDITOR.STATUS
+              + WYMeditor.HTML
+              + WYMeditor.IFRAME
+              + WYMeditor.STATUS
               + "</div>"
               + "<div class='wym_area_bottom'>"
               + "<a class='wym_wymeditor_link' "
@@ -360,10 +415,10 @@ jQuery.fn.wymeditor = function(options) {
     iframeHtml:"<div class='wym_iframe wym_section'>"
               + "<iframe "
               + "src='"
-              + WYMEDITOR.IFRAME_BASE_PATH
+              + WYMeditor.IFRAME_BASE_PATH
               + "wymiframe.html' "
-              + "onload='this.contentWindow.parent.WYMEDITOR.INSTANCES["
-              + WYMEDITOR.INDEX + "].initIframe(this)' "
+              + "onload='this.contentWindow.parent.WYMeditor.INSTANCES["
+              + WYMeditor.INDEX + "].initIframe(this)' "
               + "></iframe>"
               + "</div>",
               
@@ -372,18 +427,18 @@ jQuery.fn.wymeditor = function(options) {
     toolsHtml: "<div class='wym_tools wym_section'>"
               + "<h2>{Tools}</h2>"
               + "<ul>"
-              + WYMEDITOR.TOOLS_ITEMS
+              + WYMeditor.TOOLS_ITEMS
               + "</ul>"
               + "</div>",
               
     toolsItemHtml:   "<li class='"
-                        + WYMEDITOR.TOOL_CLASS
+                        + WYMeditor.TOOL_CLASS
                         + "'><a href='#' name='"
-                        + WYMEDITOR.TOOL_NAME
+                        + WYMeditor.TOOL_NAME
                         + "' title='"
-                        + WYMEDITOR.TOOL_TITLE
+                        + WYMeditor.TOOL_TITLE
                         + "'>"
-                        + WYMEDITOR.TOOL_TITLE
+                        + WYMeditor.TOOL_TITLE
                         + "</a></li>",
 
     toolsItems: [
@@ -414,17 +469,17 @@ jQuery.fn.wymeditor = function(options) {
     containersHtml:    "<div class='wym_containers wym_section'>"
                         + "<h2>{Containers}</h2>"
                         + "<ul>"
-                        + WYMEDITOR.CONTAINERS_ITEMS
+                        + WYMeditor.CONTAINERS_ITEMS
                         + "</ul>"
                         + "</div>",
                         
     containersItemHtml:"<li class='"
-                        + WYMEDITOR.CONTAINER_CLASS
+                        + WYMeditor.CONTAINER_CLASS
                         + "'>"
                         + "<a href='#' name='"
-                        + WYMEDITOR.CONTAINER_NAME
+                        + WYMeditor.CONTAINER_NAME
                         + "'>"
-                        + WYMEDITOR.CONTAINER_TITLE
+                        + WYMeditor.CONTAINER_TITLE
                         + "</a></li>",
                         
     containersItems: [
@@ -443,13 +498,13 @@ jQuery.fn.wymeditor = function(options) {
 
     classesHtml:       "<div class='wym_classes wym_section'>"
                         + "<h2>{Classes}</h2><ul>"
-                        + WYMEDITOR.CLASSES_ITEMS
+                        + WYMeditor.CLASSES_ITEMS
                         + "</ul></div>",
 
     classesItemHtml:   "<li><a href='#' name='"
-                        + WYMEDITOR.CLASS_NAME
+                        + WYMeditor.CLASS_NAME
                         + "'>"
-                        + WYMEDITOR.CLASS_TITLE
+                        + WYMeditor.CLASS_TITLE
                         + "</a></li>",
 
     classesItems:      [],
@@ -508,30 +563,30 @@ jQuery.fn.wymeditor = function(options) {
                       + "<html><head>"
                       + "<link rel='stylesheet' type='text/css' media='screen'"
                       + " href='"
-                      + WYMEDITOR.CSS_PATH
+                      + WYMeditor.CSS_PATH
                       + "' />"
                       + "<title>"
-                      + WYMEDITOR.DIALOG_TITLE
+                      + WYMeditor.DIALOG_TITLE
                       + "</title>"
                       + "<script type='text/javascript'"
                       + " src='"
-                      + WYMEDITOR.JQUERY_PATH
+                      + WYMeditor.JQUERY_PATH
                       + "'></script>"
                       + "<script type='text/javascript'"
                       + " src='"
-                      + WYMEDITOR.WYM_PATH
+                      + WYMeditor.WYM_PATH
                       + "'></script>"
                       + "</head>"
-                      + WYMEDITOR.DIALOG_BODY
+                      + WYMeditor.DIALOG_BODY
                       + "</html>",
                       
     dialogLinkHtml:  "<body class='wym_dialog wym_dialog_link'"
-               + " onload='WYMEDITOR.INIT_DIALOG(" + WYMEDITOR.INDEX + ")'"
+               + " onload='WYMeditor.INIT_DIALOG(" + WYMeditor.INDEX + ")'"
                + ">"
                + "<form>"
                + "<fieldset>"
                + "<input type='hidden' class='wym_dialog_type' value='"
-               + WYMEDITOR.DIALOG_LINK
+               + WYMeditor.DIALOG_LINK
                + "' />"
                + "<legend>{Link}</legend>"
                + "<div class='row'>"
@@ -553,12 +608,12 @@ jQuery.fn.wymeditor = function(options) {
                + "</body>",
     
     dialogImageHtml:  "<body class='wym_dialog wym_dialog_image'"
-               + " onload='WYMEDITOR.INIT_DIALOG(" + WYMEDITOR.INDEX + ")'"
+               + " onload='WYMeditor.INIT_DIALOG(" + WYMeditor.INDEX + ")'"
                + ">"
                + "<form>"
                + "<fieldset>"
                + "<input type='hidden' class='wym_dialog_type' value='"
-               + WYMEDITOR.DIALOG_IMAGE
+               + WYMeditor.DIALOG_IMAGE
                + "' />"
                + "<legend>{Image}</legend>"
                + "<div class='row'>"
@@ -584,12 +639,12 @@ jQuery.fn.wymeditor = function(options) {
                + "</body>",
     
     dialogTableHtml:  "<body class='wym_dialog wym_dialog_table'"
-               + " onload='WYMEDITOR.INIT_DIALOG(" + WYMEDITOR.INDEX + ")'"
+               + " onload='WYMeditor.INIT_DIALOG(" + WYMeditor.INDEX + ")'"
                + ">"
                + "<form>"
                + "<fieldset>"
                + "<input type='hidden' class='wym_dialog_type' value='"
-               + WYMEDITOR.DIALOG_TABLE
+               + WYMeditor.DIALOG_TABLE
                + "' />"
                + "<legend>{Table}</legend>"
                + "<div class='row'>"
@@ -615,11 +670,11 @@ jQuery.fn.wymeditor = function(options) {
                + "</body>",
 
     dialogPasteHtml:  "<body class='wym_dialog wym_dialog_paste'"
-               + " onload='WYMEDITOR.INIT_DIALOG(" + WYMEDITOR.INDEX + ")'"
+               + " onload='WYMeditor.INIT_DIALOG(" + WYMeditor.INDEX + ")'"
                + ">"
                + "<form>"
                + "<input type='hidden' class='wym_dialog_type' value='"
-               + WYMEDITOR.DIALOG_PASTE
+               + WYMeditor.DIALOG_PASTE
                + "' />"
                + "<fieldset>"
                + "<legend>{Paste_From_Word}</legend>"
@@ -637,12 +692,12 @@ jQuery.fn.wymeditor = function(options) {
                + "</body>",
 
     dialogPreviewHtml: "<body class='wym_dialog wym_dialog_preview'"
-                      + " onload='WYMEDITOR.INIT_DIALOG(" + WYMEDITOR.INDEX + ")'"
+                      + " onload='WYMeditor.INIT_DIALOG(" + WYMeditor.INDEX + ")'"
                       + "></body>",
                       
     dialogStyles: [],
                       
-    skin:            WYMEDITOR.DEFAULT_SKIN,
+    skin:            WYMeditor.DEFAULT_SKIN,
 
     stringDelimiterLeft: "{",
     stringDelimiterRight:"}",
@@ -658,7 +713,7 @@ jQuery.fn.wymeditor = function(options) {
 
   return this.each(function() {
 
-    new Wymeditor(jQuery(this),options);
+    new WYMeditor.editor(jQuery(this),options);
   });
 };
 
@@ -667,68 +722,42 @@ jQuery.fn.wymeditor = function(options) {
  */
 jQuery.extend({
   wymeditors: function(i) {
-    return (WYMEDITOR.INSTANCES[i]);
+    return (WYMeditor.INSTANCES[i]);
   },
   wymstrings: function(lang, sKey) {
-    return (WYMEDITOR.STRINGS[lang][sKey]);
+    return (WYMeditor.STRINGS[lang][sKey]);
   }
 });
 
 
-/********** WYMEDITOR **********/
+/********** WYMeditor **********/
 
 /* @name Wymeditor
  * @description WYMeditor class
  */
-function Wymeditor(elem,options) {
-
-  this._index = WYMEDITOR.INSTANCES.push(this) - 1;
-  this._element = elem;
-  this._options = options;
-  this._html = jQuery(elem).val();
-  
-  if(this._options.html) this._html = this._options.html;
-  this._options.basePath = this._options.basePath
-    || this.computeBasePath();
-  this._options.cssPath = this._options.cssPath
-    || this.computeCssPath();
-  this._options.wymPath = this._options.wymPath
-    || this.computeWymPath();
-  this._options.langPath = this._options.langPath
-    || this._options.basePath + WYMEDITOR.LANG_DEFAULT_PATH;
-  this._options.iframeBasePath = this._options.iframeBasePath
-    || this._options.basePath + WYMEDITOR.IFRAME_DEFAULT;
-  this._options.jQueryPath = this._options.jQueryPath
-    || this.computeJqueryPath();
-    
-  this.selection = new WymSelection();
-  
-  this.init();
-  
-};
 
 /* @name init
  * @description Initializes a WYMeditor instance
  */
-Wymeditor.prototype.init = function() {
+WYMeditor.editor.prototype.init = function() {
 
   //load subclass - browser specific
   //unsupported browsers: do nothing
   if (jQuery.browser.msie) {
-    var WymClass = new WymClassExplorer(this);
+    var WymClass = new WYMeditor.WymClassExplorer(this);
     var WymSel = new WymSelExplorer(this);
   }
   else if (jQuery.browser.mozilla) {
-    var WymClass = new WymClassMozilla(this);
+    var WymClass = new WYMeditor.WymClassMozilla(this);
     var WymSel = new WymSelMozilla(this);
   }
   else if (jQuery.browser.opera) {
-    var WymClass = new WymClassOpera(this);
+    var WymClass = new WYMeditor.WymClassOpera(this);
     var WymSel = new WymSelOpera(this);
   }
   else if (jQuery.browser.safari) {
     //commented until supported
-    var WymClass = new WymClassSafari(this);
+    var WymClass = new WYMeditor.WymClassSafari(this);
     var WymSel = new WymSelSafari(this);
   }
   
@@ -755,18 +784,18 @@ Wymeditor.prototype.init = function() {
       //construct the iframe
       var iframeHtml = this._options.iframeHtml;
       iframeHtml = iframeHtml
-        .replaceAll(WYMEDITOR.INDEX,this._index)
-        .replaceAll(WYMEDITOR.IFRAME_BASE_PATH, this._options.iframeBasePath);
+        .replaceAll(WYMeditor.INDEX,this._index)
+        .replaceAll(WYMeditor.IFRAME_BASE_PATH, this._options.iframeBasePath);
       
       //construct wymbox
       var boxHtml = jQuery(this._box).html();
       
-      boxHtml = boxHtml.replaceAll(WYMEDITOR.TOOLS, this._options.toolsHtml);
-      boxHtml = boxHtml.replaceAll(WYMEDITOR.CONTAINERS,this._options.containersHtml);
-      boxHtml = boxHtml.replaceAll(WYMEDITOR.CLASSES, this._options.classesHtml);
-      boxHtml = boxHtml.replaceAll(WYMEDITOR.HTML, this._options.htmlHtml);
-      boxHtml = boxHtml.replaceAll(WYMEDITOR.IFRAME, iframeHtml);
-      boxHtml = boxHtml.replaceAll(WYMEDITOR.STATUS, this._options.statusHtml);
+      boxHtml = boxHtml.replaceAll(WYMeditor.TOOLS, this._options.toolsHtml);
+      boxHtml = boxHtml.replaceAll(WYMeditor.CONTAINERS,this._options.containersHtml);
+      boxHtml = boxHtml.replaceAll(WYMeditor.CLASSES, this._options.classesHtml);
+      boxHtml = boxHtml.replaceAll(WYMeditor.HTML, this._options.htmlHtml);
+      boxHtml = boxHtml.replaceAll(WYMeditor.IFRAME, iframeHtml);
+      boxHtml = boxHtml.replaceAll(WYMeditor.STATUS, this._options.statusHtml);
       
       //construct tools list
       var aTools = eval(this._options.toolsItems);
@@ -776,15 +805,15 @@ Wymeditor.prototype.init = function() {
         var oTool = aTools[i];
         if(oTool.name && oTool.title)
           sTools += this._options.toolsItemHtml
-          .replaceAll(WYMEDITOR.TOOL_NAME, oTool.name)
-          .replaceAll(WYMEDITOR.TOOL_TITLE,
+          .replaceAll(WYMeditor.TOOL_NAME, oTool.name)
+          .replaceAll(WYMeditor.TOOL_TITLE,
               this._options.stringDelimiterLeft
             + oTool.title
             + this._options.stringDelimiterRight)
-          .replaceAll(WYMEDITOR.TOOL_CLASS, oTool.css);
+          .replaceAll(WYMeditor.TOOL_CLASS, oTool.css);
       }
 
-      boxHtml = boxHtml.replaceAll(WYMEDITOR.TOOLS_ITEMS, sTools);
+      boxHtml = boxHtml.replaceAll(WYMeditor.TOOLS_ITEMS, sTools);
 
       //construct classes list
       var aClasses = eval(this._options.classesItems);
@@ -794,11 +823,11 @@ Wymeditor.prototype.init = function() {
         var oClass = aClasses[i];
         if(oClass.name && oClass.title)
           sClasses += this._options.classesItemHtml
-          .replaceAll(WYMEDITOR.CLASS_NAME, oClass.name)
-          .replaceAll(WYMEDITOR.CLASS_TITLE, oClass.title);
+          .replaceAll(WYMeditor.CLASS_NAME, oClass.name)
+          .replaceAll(WYMeditor.CLASS_TITLE, oClass.title);
       }
 
-      boxHtml = boxHtml.replaceAll(WYMEDITOR.CLASSES_ITEMS, sClasses);
+      boxHtml = boxHtml.replaceAll(WYMeditor.CLASSES_ITEMS, sClasses);
       
       //construct containers list
       var aContainers = eval(this._options.containersItems);
@@ -808,15 +837,15 @@ Wymeditor.prototype.init = function() {
         var oContainer = aContainers[i];
         if(oContainer.name && oContainer.title)
           sContainers += this._options.containersItemHtml
-          .replaceAll(WYMEDITOR.CONTAINER_NAME, oContainer.name)
-          .replaceAll(WYMEDITOR.CONTAINER_TITLE,
+          .replaceAll(WYMeditor.CONTAINER_NAME, oContainer.name)
+          .replaceAll(WYMeditor.CONTAINER_TITLE,
               this._options.stringDelimiterLeft
             + oContainer.title
             + this._options.stringDelimiterRight)
-          .replaceAll(WYMEDITOR.CONTAINER_CLASS, oContainer.css);
+          .replaceAll(WYMeditor.CONTAINER_CLASS, oContainer.css);
       }
 
-      boxHtml = boxHtml.replaceAll(WYMEDITOR.CONTAINERS_ITEMS, sContainers);
+      boxHtml = boxHtml.replaceAll(WYMeditor.CONTAINERS_ITEMS, sContainers);
 
       //l10n
       boxHtml = this.replaceStrings(boxHtml);
@@ -841,20 +870,20 @@ Wymeditor.prototype.init = function() {
     }
 };
 
-Wymeditor.prototype.bindEvents = function() {
+WYMeditor.editor.prototype.bindEvents = function() {
 
   //copy the instance
   var wym = this;
   
   //handle click event on tools buttons
   jQuery(this._box).find(this._options.toolSelector).click(function() {
-    wym.exec(jQuery(this).attr(WYMEDITOR.NAME));
+    wym.exec(jQuery(this).attr(WYMeditor.NAME));
     return(false);
   });
   
   //handle click event on containers buttons
   jQuery(this._box).find(this._options.containerSelector).click(function() {
-    wym.container(jQuery(this).attr(WYMEDITOR.NAME));
+    wym.container(jQuery(this).attr(WYMeditor.NAME));
     return(false);
   });
   
@@ -867,7 +896,7 @@ Wymeditor.prototype.bindEvents = function() {
   jQuery(this._box).find(this._options.classSelector).click(function() {
   
     var aClasses = eval(wym._options.classesItems);
-    var sName = jQuery(this).attr(WYMEDITOR.NAME);
+    var sName = jQuery(this).attr(WYMeditor.NAME);
     
     var oClass = aClasses.findByName(sName);
     
@@ -885,7 +914,7 @@ Wymeditor.prototype.bindEvents = function() {
   });
 };
 
-Wymeditor.prototype.ready = function() {
+WYMeditor.editor.prototype.ready = function() {
   return(this._doc != null);
 };
 
@@ -895,14 +924,14 @@ Wymeditor.prototype.ready = function() {
 /* @name box
  * @description Returns the WYMeditor container
  */
-Wymeditor.prototype.box = function() {
+WYMeditor.editor.prototype.box = function() {
   return(this._box);
 };
 
 /* @name html
  * @description Get/Set the html value
  */
-Wymeditor.prototype.html = function(html) {
+WYMeditor.editor.prototype.html = function(html) {
 
   if(html) jQuery(this._doc.body).html(html);
   else return(jQuery(this._doc.body).html());
@@ -911,42 +940,42 @@ Wymeditor.prototype.html = function(html) {
 /* @name xhtml
  * @description Cleans up the HTML
  */
-Wymeditor.prototype.xhtml = function() {
+WYMeditor.editor.prototype.xhtml = function() {
     return this.parser.parse(this.html());
 };
 
 /* @name exec
  * @description Executes a button command
  */
-Wymeditor.prototype.exec = function(cmd) {
+WYMeditor.editor.prototype.exec = function(cmd) {
   
   //base function for execCommand
   //open a dialog or exec
   switch(cmd) {
-    case WYMEDITOR.CREATE_LINK:
+    case WYMeditor.CREATE_LINK:
       var container = this.container();
-      if(container || this._selected_image) this.dialog(WYMEDITOR.DIALOG_LINK);
+      if(container || this._selected_image) this.dialog(WYMeditor.DIALOG_LINK);
     break;
     
-    case WYMEDITOR.INSERT_IMAGE:
-      this.dialog(WYMEDITOR.DIALOG_IMAGE);
+    case WYMeditor.INSERT_IMAGE:
+      this.dialog(WYMeditor.DIALOG_IMAGE);
     break;
     
-    case WYMEDITOR.INSERT_TABLE:
-      this.dialog(WYMEDITOR.DIALOG_TABLE);
+    case WYMeditor.INSERT_TABLE:
+      this.dialog(WYMeditor.DIALOG_TABLE);
     break;
     
-    case WYMEDITOR.PASTE:
-      this.dialog(WYMEDITOR.DIALOG_PASTE);
+    case WYMeditor.PASTE:
+      this.dialog(WYMeditor.DIALOG_PASTE);
     break;
     
-    case WYMEDITOR.TOGGLE_HTML:
+    case WYMeditor.TOGGLE_HTML:
       this.update();
       this.toggleHtml();
     break;
     
-    case WYMEDITOR.PREVIEW:
-      this.dialog(WYMEDITOR.PREVIEW);
+    case WYMeditor.PREVIEW:
+      this.dialog(WYMeditor.PREVIEW);
     break;
     
     default:
@@ -958,23 +987,23 @@ Wymeditor.prototype.exec = function(cmd) {
 /* @name container
  * @description Get/Set the selected container
  */
-Wymeditor.prototype.container = function(sType) {
+WYMeditor.editor.prototype.container = function(sType) {
 
   if(sType) {
   
     var container = null;
     
-    if(sType.toLowerCase() == WYMEDITOR.TH) {
+    if(sType.toLowerCase() == WYMeditor.TH) {
     
       container = this.container();
       
       //find the TD or TH container
       switch(container.tagName.toLowerCase()) {
       
-        case WYMEDITOR.TD: case WYMEDITOR.TH:
+        case WYMeditor.TD: case WYMeditor.TH:
           break;
         default:
-          var aTypes = new Array(WYMEDITOR.TD,WYMEDITOR.TH);
+          var aTypes = new Array(WYMeditor.TD,WYMeditor.TH);
           container = this.findUp(this.container(), aTypes);
           break;
       }
@@ -982,15 +1011,15 @@ Wymeditor.prototype.container = function(sType) {
       //if it exists, switch
       if(container!=null) {
       
-        sType = (container.tagName.toLowerCase() == WYMEDITOR.TD)? WYMEDITOR.TH: WYMEDITOR.TD;
+        sType = (container.tagName.toLowerCase() == WYMeditor.TD)? WYMeditor.TH: WYMeditor.TD;
         this.switchTo(container,sType);
         this.update();
       }
     } else {
   
       //set the container type
-      var aTypes=new Array(WYMEDITOR.P,WYMEDITOR.H1,WYMEDITOR.H2,WYMEDITOR.H3,WYMEDITOR.H4,WYMEDITOR.H5,
-      WYMEDITOR.H6,WYMEDITOR.PRE,WYMEDITOR.BLOCKQUOTE);
+      var aTypes=new Array(WYMeditor.P,WYMeditor.H1,WYMeditor.H2,WYMeditor.H3,WYMeditor.H4,WYMeditor.H5,
+      WYMeditor.H6,WYMeditor.PRE,WYMeditor.BLOCKQUOTE);
       container = this.findUp(this.container(), aTypes);
       
       if(container) {
@@ -998,9 +1027,9 @@ Wymeditor.prototype.container = function(sType) {
         var newNode = null;
   
         //blockquotes must contain a block level element
-        if(sType.toLowerCase() == WYMEDITOR.BLOCKQUOTE) {
+        if(sType.toLowerCase() == WYMeditor.BLOCKQUOTE) {
         
-          var blockquote = this.findUp(this.container(), WYMEDITOR.BLOCKQUOTE);
+          var blockquote = this.findUp(this.container(), WYMeditor.BLOCKQUOTE);
           
           if(blockquote == null) {
           
@@ -1036,7 +1065,7 @@ Wymeditor.prototype.container = function(sType) {
 /* @name toggleClass
  * @description Toggles class on selected element, or one of its parents
  */
-Wymeditor.prototype.toggleClass = function(sClass, jqexpr) {
+WYMeditor.editor.prototype.toggleClass = function(sClass, jqexpr) {
 
   var container = (this._selected_image
                     ? this._selected_image
@@ -1044,14 +1073,14 @@ Wymeditor.prototype.toggleClass = function(sClass, jqexpr) {
   container = jQuery(container).parentsOrSelf(jqexpr);
   jQuery(container).toggleClass(sClass);
 
-  if(!jQuery(container).attr(WYMEDITOR.CLASS)) jQuery(container).removeAttr(this._class);
+  if(!jQuery(container).attr(WYMeditor.CLASS)) jQuery(container).removeAttr(this._class);
 
 };
 
 /* @name findUp
  * @description Returns the first parent or self container, based on its type
  */
-Wymeditor.prototype.findUp = function(node, filter) {
+WYMeditor.editor.prototype.findUp = function(node, filter) {
 
   //filter is a string or an array of strings
 
@@ -1059,9 +1088,9 @@ Wymeditor.prototype.findUp = function(node, filter) {
 
       var tagname = node.tagName.toLowerCase();
       
-      if(typeof(filter) == WYMEDITOR.STRING) {
+      if(typeof(filter) == WYMeditor.STRING) {
     
-        while(tagname != filter && tagname != WYMEDITOR.BODY) {
+        while(tagname != filter && tagname != WYMeditor.BODY) {
         
           node = node.parentNode;
           tagname = node.tagName.toLowerCase();
@@ -1071,7 +1100,7 @@ Wymeditor.prototype.findUp = function(node, filter) {
       
         var bFound = false;
         
-        while(!bFound && tagname != WYMEDITOR.BODY) {
+        while(!bFound && tagname != WYMeditor.BODY) {
           for(var i = 0; i < filter.length; i++) {
             if(tagname == filter[i]) {
               bFound = true;
@@ -1085,7 +1114,7 @@ Wymeditor.prototype.findUp = function(node, filter) {
         }
       }
       
-      if(tagname != WYMEDITOR.BODY) return(node);
+      if(tagname != WYMeditor.BODY) return(node);
       else return(null);
       
   } else return(null);
@@ -1094,7 +1123,7 @@ Wymeditor.prototype.findUp = function(node, filter) {
 /* @name switchTo
  * @description Switch the node's type
  */
-Wymeditor.prototype.switchTo = function(node,sType) {
+WYMeditor.editor.prototype.switchTo = function(node,sType) {
 
   var newNode = this._doc.createElement(sType);
   var html = jQuery(node).html();
@@ -1103,19 +1132,19 @@ Wymeditor.prototype.switchTo = function(node,sType) {
   this.setFocusToNode(newNode);
 };
 
-Wymeditor.prototype.replaceStrings = function(sVal) {
-  if(WYMEDITOR.STRINGS.length==0)
+WYMeditor.editor.prototype.replaceStrings = function(sVal) {
+  if(WYMeditor.STRINGS.length==0)
     eval(jQuery.ajax({url:this._options.langPath
       + this._options.lang + '.js', async:false}).responseText);
 
-  for (var key in WYMEDITOR.STRINGS) {
+  for (var key in WYMeditor.STRINGS) {
     sVal = sVal.replaceAll(this._options.stringDelimiterLeft + key 
-    + this._options.stringDelimiterRight, WYMEDITOR.STRINGS[key]);
+    + this._options.stringDelimiterRight, WYMeditor.STRINGS[key]);
   }
   return(sVal);
 };
 
-Wymeditor.prototype.encloseString = function(sVal) {
+WYMeditor.editor.prototype.encloseString = function(sVal) {
 
   return(this._options.stringDelimiterLeft
     + sVal
@@ -1125,7 +1154,7 @@ Wymeditor.prototype.encloseString = function(sVal) {
 /* @name status
  * @description Prints a status message
  */
-Wymeditor.prototype.status = function(sMessage) {
+WYMeditor.editor.prototype.status = function(sMessage) {
 
   //print status message
   jQuery(this._box).find(this._options.statusSelector).html(sMessage);
@@ -1134,7 +1163,7 @@ Wymeditor.prototype.status = function(sMessage) {
 /* @name update
  * @description Updates the element and textarea values
  */
-Wymeditor.prototype.update = function() {
+WYMeditor.editor.prototype.update = function() {
 
   var html = this.xhtml();
   jQuery(this._element).val(html);
@@ -1144,7 +1173,7 @@ Wymeditor.prototype.update = function() {
 /* @name dialog
  * @description Opens a dialog box
  */
-Wymeditor.prototype.dialog = function(sType) {
+WYMeditor.editor.prototype.dialog = function(sType) {
   
   var wDialog = window.open(
     '',
@@ -1157,19 +1186,19 @@ Wymeditor.prototype.dialog = function(sType) {
     
     switch(sType) {
 
-      case(WYMEDITOR.DIALOG_LINK):
+      case(WYMeditor.DIALOG_LINK):
         sBodyHtml = this._options.dialogLinkHtml;
       break;
-      case(WYMEDITOR.DIALOG_IMAGE):
+      case(WYMeditor.DIALOG_IMAGE):
         sBodyHtml = this._options.dialogImageHtml;
       break;
-      case(WYMEDITOR.DIALOG_TABLE):
+      case(WYMeditor.DIALOG_TABLE):
         sBodyHtml = this._options.dialogTableHtml;
       break;
-      case(WYMEDITOR.DIALOG_PASTE):
+      case(WYMeditor.DIALOG_PASTE):
         sBodyHtml = this._options.dialogPasteHtml;
       break;
-      case(WYMEDITOR.PREVIEW):
+      case(WYMeditor.PREVIEW):
         sBodyHtml = this._options.dialogPreviewHtml;
       break;
     }
@@ -1177,13 +1206,13 @@ Wymeditor.prototype.dialog = function(sType) {
     //construct the dialog
     var dialogHtml = this._options.dialogHtml;
     dialogHtml = dialogHtml
-      .replaceAll(WYMEDITOR.BASE_PATH, this._options.basePath)
-      .replaceAll(WYMEDITOR.CSS_PATH, this._options.cssPath)
-      .replaceAll(WYMEDITOR.WYM_PATH, this._options.wymPath)
-      .replaceAll(WYMEDITOR.JQUERY_PATH, this._options.jQueryPath)
-      .replaceAll(WYMEDITOR.DIALOG_TITLE, this.encloseString(sType))
-      .replaceAll(WYMEDITOR.DIALOG_BODY, sBodyHtml)
-      .replaceAll(WYMEDITOR.INDEX, this._index);
+      .replaceAll(WYMeditor.BASE_PATH, this._options.basePath)
+      .replaceAll(WYMeditor.CSS_PATH, this._options.cssPath)
+      .replaceAll(WYMeditor.WYM_PATH, this._options.wymPath)
+      .replaceAll(WYMeditor.JQUERY_PATH, this._options.jQueryPath)
+      .replaceAll(WYMeditor.DIALOG_TITLE, this.encloseString(sType))
+      .replaceAll(WYMeditor.DIALOG_BODY, sBodyHtml)
+      .replaceAll(WYMeditor.INDEX, this._index);
       
     dialogHtml = this.replaceStrings(dialogHtml);
     
@@ -1196,16 +1225,16 @@ Wymeditor.prototype.dialog = function(sType) {
 /* @name toggleHtml
  * @description Shows/Hides the HTML
  */
-Wymeditor.prototype.toggleHtml = function() {
+WYMeditor.editor.prototype.toggleHtml = function() {
   jQuery(this._box).find(this._options.htmlSelector).toggle();
 };
 
-Wymeditor.prototype.uniqueStamp = function() {
+WYMeditor.editor.prototype.uniqueStamp = function() {
 	var now=new Date();
 	return("wym-" + now.getTime());
 };
 
-Wymeditor.prototype.paste = function(sData) {
+WYMeditor.editor.prototype.paste = function(sData) {
 
   var sTmp;
   var container = this.selected();
@@ -1215,7 +1244,7 @@ Wymeditor.prototype.paste = function(sData) {
   var rExp = new RegExp(this._newLine, "g");
 
   //add a P for each item
-  if(container && container.tagName.toLowerCase() != WYMEDITOR.BODY) {
+  if(container && container.tagName.toLowerCase() != WYMeditor.BODY) {
     for(x = aP.length - 1; x >= 0; x--) {
         sTmp = aP[x];
         //simple newlines are replaced by a break
@@ -1233,7 +1262,7 @@ Wymeditor.prototype.paste = function(sData) {
   }
 };
 
-Wymeditor.prototype.addCssRules = function(doc, aCss) {
+WYMeditor.editor.prototype.addCssRules = function(doc, aCss) {
   var styles = doc.styleSheets[0];
   if(styles) {
     for(var i = 0; i < aCss.length; i++) {
@@ -1245,31 +1274,31 @@ Wymeditor.prototype.addCssRules = function(doc, aCss) {
 
 /********** CONFIGURATION **********/
 
-Wymeditor.prototype.computeBasePath = function() {
+WYMeditor.editor.prototype.computeBasePath = function() {
   return jQuery(jQuery.grep(jQuery('script'), function(s){
     return (s.src && s.src.match(/jquery\.wymeditor(\.pack){0,1}\.js(\?.*)?$/ ))
   })).attr('src').replace(/jquery\.wymeditor(\.pack){0,1}\.js(\?.*)?$/, '');
 };
 
-Wymeditor.prototype.computeWymPath = function() {
+WYMeditor.editor.prototype.computeWymPath = function() {
   return jQuery(jQuery.grep(jQuery('script'), function(s){
     return (s.src && s.src.match(/jquery\.wymeditor(\.pack){0,1}\.js(\?.*)?$/ ))
   })).attr('src');
 };
 
-Wymeditor.prototype.computeJqueryPath = function() {
+WYMeditor.editor.prototype.computeJqueryPath = function() {
   return jQuery(jQuery.grep(jQuery('script'), function(s){
     return (s.src && s.src.match(/jquery(-(.*)){0,1}(\.pack){0,1}\.js(\?.*)?$/ ))
   })).attr('src');
 };
 
-Wymeditor.prototype.computeCssPath = function() {
+WYMeditor.editor.prototype.computeCssPath = function() {
   return jQuery(jQuery.grep(jQuery('link'), function(s){
    return (s.href && s.href.match(/wymeditor\/skins\/(.*)screen\.css(\?.*)?$/ ))
   })).attr('href');
 };
 
-Wymeditor.prototype.loadXhtmlParser = function(WymClass) {
+WYMeditor.editor.prototype.loadXhtmlParser = function(WymClass) {
   if(typeof XhtmlSaxListener != 'function'){
     // This is the only way to get loaded functions in the global scope until jQuery.globalEval works in safari
    eval(jQuery.ajax({url:this._options.basePath
@@ -1289,7 +1318,7 @@ Wymeditor.prototype.loadXhtmlParser = function(WymClass) {
   this.parser = new XhtmlParser(SaxListener);
 };
 
-Wymeditor.prototype.configureEditorUsingRawCss = function() {
+WYMeditor.editor.prototype.configureEditorUsingRawCss = function() {
   if(typeof WymCssParser != 'function'){
     eval(jQuery.ajax({url:this._options.basePath
      + this._options.cssParser, async:false}).responseText);
@@ -1316,7 +1345,7 @@ Wymeditor.prototype.configureEditorUsingRawCss = function() {
 
 /********** EVENTS **********/
 
-Wymeditor.prototype.listen = function() {
+WYMeditor.editor.prototype.listen = function() {
 
   //don't use jQuery.find() on the iframe body
   //because of MSIE + jQuery + expando issue (#JQ1143)
@@ -1330,21 +1359,21 @@ Wymeditor.prototype.listen = function() {
 };
 
 //mouseup handler
-Wymeditor.prototype.mouseup = function(evt) {
+WYMeditor.editor.prototype.mouseup = function(evt) {
   
-  var wym = WYMEDITOR.INSTANCES[this.ownerDocument.title];
-  if(this.tagName.toLowerCase() == WYMEDITOR.IMG) wym._selected_image = this;
+  var wym = WYMeditor.INSTANCES[this.ownerDocument.title];
+  if(this.tagName.toLowerCase() == WYMeditor.IMG) wym._selected_image = this;
   else wym._selected_image = null;
   evt.stopPropagation();
 };
 
 /********** SKINS **********/
 
-Wymeditor.prototype.skin = function() {
+WYMeditor.editor.prototype.skin = function() {
 
   switch(this._options.skin) {
   
-    case WYMEDITOR.DEFAULT_SKIN:
+    case WYMeditor.DEFAULT_SKIN:
     
       jQuery(this._box).addClass("wym_skin_default");
       
@@ -1359,7 +1388,7 @@ Wymeditor.prototype.skin = function() {
       //render following sections as dropdown menus
       jQuery(this._box).find(this._options.containersSelector)
         .addClass("wym_dropdown")
-        .find(WYMEDITOR.H2)
+        .find(WYMeditor.H2)
         .append("<span>&nbsp;&gt;</span>");
 
       // auto add some margin to the main area sides if left area
@@ -1423,7 +1452,7 @@ WymSelection.prototype = {
             return false;
 
         var startNode = this.startNode;
-        if (startNode.nodeType == WYMEDITOR.NODE.TEXT) {
+        if (startNode.nodeType == WYMeditor.NODE.TEXT) {
             // 1. startNode ist first child
             // 2. offset needs to be 0 to be at the start (or the previous
             //    characters are whitespaces)
@@ -1489,7 +1518,7 @@ WymSelection.prototype = {
         }
         else {
             var endNode = this.endNode;
-            if (endNode.nodeType == WYMEDITOR.NODE.TEXT) {
+            if (endNode.nodeType == WYMeditor.NODE.TEXT) {
                 if ((endNode.nextSibling
                         && !isPhantomNode(endNode.nextSibling))
                             || (this.endOffset != endNode.data.length))

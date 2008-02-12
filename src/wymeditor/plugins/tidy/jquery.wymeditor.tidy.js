@@ -1,4 +1,4 @@
-﻿/*
+/*
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2007 H.O.net - http://www.honet.be/
  * Dual licensed under the MIT (MIT-license.txt)
@@ -16,7 +16,7 @@
  */
 
 //Extend WYMeditor
-Wymeditor.prototype.tidy = function(options) {
+WYMeditor.editor.prototype.tidy = function(options) {
   var tidy = new WymTidy(options, this);
   return(tidy);
 };

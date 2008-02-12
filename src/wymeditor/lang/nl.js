@@ -1,4 +1,4 @@
-﻿WYMEDITOR.STRINGS = jQuery.extend({
+WYMeditor.STRINGS = jQuery.extend({
     Strong:           'Sterk benadrukken',
     Emphasis:         'Benadrukken',
     Superscript:      'Bovenschrift',
@@ -40,4 +40,4 @@
     Classes:          'Classes',
     Status:           'Status',
     Source_Code:      'Broncode'
-}, WYMEDITOR.STRINGS);
+}, WYMeditor.STRINGS);

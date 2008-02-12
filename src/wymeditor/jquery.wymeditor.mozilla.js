@@ -1,4 +1,4 @@
-﻿/*
+/*
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2007 H.O.net - http://www.honet.be/
  * Dual licensed under the MIT (MIT-license.txt)
@@ -19,14 +19,7 @@
  *        Frédéric Palluel-Lafleur (fpalluel@gmail.com)
  */
 
-function WymClassMozilla(wym) {
-
-    this._wym = wym;
-    this._class = "class";
-    this._newLine = "\n";
-};
-
-WymClassMozilla.prototype.initIframe = function(iframe) {
+WYMeditor.WymClassMozilla.prototype.initIframe = function(iframe) {
 
     this._iframe = iframe;
     this._doc = iframe.contentDocument;
@@ -71,7 +64,7 @@ WymClassMozilla.prototype.initIframe = function(iframe) {
 /* @name html
  * @description Get/Set the html value
  */
-WymClassMozilla.prototype.html = function(html) {
+WYMeditor.WymClassMozilla.prototype.html = function(html) {
 
   if(html) {
   
@@ -94,30 +87,30 @@ WymClassMozilla.prototype.html = function(html) {
   else return(jQuery(this._doc.body).html());
 };
 
-WymClassMozilla.prototype._exec = function(cmd,param) {
+WYMeditor.WymClassMozilla.prototype._exec = function(cmd,param) {
 
     if(!this.selected()) return(false);
 
     switch(cmd) {
     
-    case WYMEDITOR.INDENT: case WYMEDITOR.OUTDENT:
+    case WYMeditor.INDENT: case WYMeditor.OUTDENT:
     
         var focusNode = this.selected();    
         var sel = this._iframe.contentWindow.getSelection();
         var anchorNode = sel.anchorNode;
         if(anchorNode.nodeName == "#text") anchorNode = anchorNode.parentNode;
         
-        focusNode = this.findUp(focusNode, WYMEDITOR.BLOCKS);
-        anchorNode = this.findUp(anchorNode, WYMEDITOR.BLOCKS);
+        focusNode = this.findUp(focusNode, WYMeditor.BLOCKS);
+        anchorNode = this.findUp(anchorNode, WYMeditor.BLOCKS);
         
         if(focusNode && focusNode == anchorNode
-          && focusNode.tagName.toLowerCase() == WYMEDITOR.LI) {
+          && focusNode.tagName.toLowerCase() == WYMeditor.LI) {
 
             var ancestor = focusNode.parentNode.parentNode;
 
             if(focusNode.parentNode.childNodes.length>1
-              || ancestor.tagName.toLowerCase() == WYMEDITOR.OL
-              || ancestor.tagName.toLowerCase() == WYMEDITOR.UL)
+              || ancestor.tagName.toLowerCase() == WYMeditor.OL
+              || ancestor.tagName.toLowerCase() == WYMeditor.UL)
                 this._doc.execCommand(cmd,'',null);
         }
 
@@ -131,8 +124,8 @@ WymClassMozilla.prototype._exec = function(cmd,param) {
     
     //set to P if parent = BODY
     var container = this.selected();
-    if(container.tagName.toLowerCase() == WYMEDITOR.BODY)
-        this._exec(WYMEDITOR.FORMAT_BLOCK, WYMEDITOR.P);
+    if(container.tagName.toLowerCase() == WYMeditor.BODY)
+        this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
     
     //add event handlers on doc elements
 
@@ -142,7 +135,7 @@ WymClassMozilla.prototype._exec = function(cmd,param) {
 /* @name selected
  * @description Returns the selected container
  */
-WymClassMozilla.prototype.selected = function() {
+WYMeditor.WymClassMozilla.prototype.selected = function() {
 
     var sel = this._iframe.contentWindow.getSelection();
     var node = sel.focusNode;
@@ -152,7 +145,7 @@ WymClassMozilla.prototype.selected = function() {
     } else return(null);
 };
 
-WymClassMozilla.prototype.addCssRule = function(styles, oCss) {
+WYMeditor.WymClassMozilla.prototype.addCssRule = function(styles, oCss) {
 
     styles.insertRule(oCss.name + " {" + oCss.css + "}",
         styles.cssRules.length);
@@ -160,34 +153,34 @@ WymClassMozilla.prototype.addCssRule = function(styles, oCss) {
 
 
 //keydown handler, mainly used for keyboard shortcuts
-WymClassMozilla.prototype.keydown = function(evt) {
+WYMeditor.WymClassMozilla.prototype.keydown = function(evt) {
   
   //'this' is the doc
-  var wym = WYMEDITOR.INSTANCES[this.title];
+  var wym = WYMeditor.INSTANCES[this.title];
   
   // "start" Selection API
   var sel = wym.selection.getSelection();
 
 /*
     // some small tests for the Selection API
-    var containers = WYMEDITOR.MAIN_CONTAINERS.join(",");
+    var containers = WYMeditor.MAIN_CONTAINERS.join(",");
     if (sel.isAtStart(containers))
         alert("isAtStart: "+sel.startNode.parentNode.nodeName);
     if (sel.isAtEnd(containers))
         alert("isAtEnd: "+sel.endNode.parentNode.nodeName);
-    if (evt.keyCode==WYMEDITOR.KEY.DELETE) {
+    if (evt.keyCode==WYMeditor.KEY.DELETE) {
         // if deleteIfExpanded wouldn't work, no selected text would be
         // deleted if you press del-key
         if (sel.deleteIfExpanded())
             return false;
     }
-    if (evt.keyCode==WYMEDITOR.KEY.HOME) {
+    if (evt.keyCode==WYMeditor.KEY.HOME) {
         // if cursorToStart won't work, the cursor won't be set to start
         // if you press home-key
         sel.cursorToStart(sel.container);
         return false;
     }
-    if (evt.keyCode==WYMEDITOR.KEY.END)
+    if (evt.keyCode==WYMeditor.KEY.END)
     {
         // if cursorToEnd won't work, the cursor won't be set to the end
         // if you press end-key
@@ -199,22 +192,22 @@ WymClassMozilla.prototype.keydown = function(evt) {
   if(evt.ctrlKey){
     if(evt.keyCode == 66){
       //CTRL+b => STRONG
-      wym._exec(WYMEDITOR.BOLD);
+      wym._exec(WYMeditor.BOLD);
       return false;
     }
     if(evt.keyCode == 73){
       //CTRL+i => EMPHASIS
-      wym._exec(WYMEDITOR.ITALIC);
+      wym._exec(WYMeditor.ITALIC);
       return false;
     }
   }
 };
 
 //keyup handler, mainly used for cleanups
-WymClassMozilla.prototype.keyup = function(evt) {
+WYMeditor.WymClassMozilla.prototype.keyup = function(evt) {
 
   //'this' is the doc
-  var wym = WYMEDITOR.INSTANCES[this.title];
+  var wym = WYMeditor.INSTANCES[this.title];
   
   wym._selected_image = null;
   var container = null;
@@ -223,12 +216,12 @@ WymClassMozilla.prototype.keyup = function(evt) {
   
     //RETURN key
     //cleanup <br><br> between paragraphs
-    jQuery(wym._doc.body).children(WYMEDITOR.BR).remove();
+    jQuery(wym._doc.body).children(WYMeditor.BR).remove();
     
     //fix PRE bug #73
     container = wym.selected();
-    if(container && container.tagName.toLowerCase() == WYMEDITOR.PRE)
-        wym._exec(WYMEDITOR.FORMAT_BLOCK, WYMEDITOR.P); //create P after PRE
+    if(container && container.tagName.toLowerCase() == WYMeditor.PRE)
+        wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P); //create P after PRE
   }
   
   else if(evt.keyCode != 8
@@ -256,11 +249,11 @@ WymClassMozilla.prototype.keyup = function(evt) {
 
     ) name = container.parentNode.tagName.toLowerCase();
 
-    if(name == WYMEDITOR.BODY) wym._exec(WYMEDITOR.FORMAT_BLOCK, WYMEDITOR.P);
+    if(name == WYMeditor.BODY) wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
   }
 };
 
-WymClassMozilla.prototype.enableDesignMode = function() {
+WYMeditor.WymClassMozilla.prototype.enableDesignMode = function() {
     if(this.designMode == "off") {
       try {
         this.designMode = "on";
@@ -269,7 +262,7 @@ WymClassMozilla.prototype.enableDesignMode = function() {
     }
 };
 
-WymClassMozilla.prototype.setFocusToNode = function(node) {
+WYMeditor.WymClassMozilla.prototype.setFocusToNode = function(node) {
     var range = document.createRange();
     range.selectNode(node);
     var selected = this._iframe.contentWindow.getSelection();
@@ -278,7 +271,7 @@ WymClassMozilla.prototype.setFocusToNode = function(node) {
     this._iframe.contentWindow.focus();
 };
 
-WymClassMozilla.prototype.openBlockTag = function(tag, attributes)
+WYMeditor.WymClassMozilla.prototype.openBlockTag = function(tag, attributes)
 {
   var attributes = this.validator.getValidTagAttributes(tag, attributes);
 
@@ -298,7 +291,7 @@ WymClassMozilla.prototype.openBlockTag = function(tag, attributes)
   this.output += this.helper.tag(tag, attributes, true);
 };
 
-WymClassMozilla.prototype.getTagForStyle = function(style) {
+WYMeditor.WymClassMozilla.prototype.getTagForStyle = function(style) {
 
   if(/bold/.test(style)) return 'strong';
   if(/italic/.test(style)) return 'em';
@@ -324,18 +317,18 @@ WymSelMozilla.prototype = {
         this.isCollapsed = _sel.isCollapsed;
         this.original = _sel;
         this.container = jQuery(this.startNode).parentsOrSelf(
-                WYMEDITOR.MAIN_CONTAINERS.join(","))[0];
+                WYMeditor.MAIN_CONTAINERS.join(","))[0];
 
         return this;
     },
 
     cursorToStart: function(jqexpr) {
-        if (jqexpr.nodeType == WYMEDITOR.NODE.TEXT)
+        if (jqexpr.nodeType == WYMeditor.NODE.TEXT)
             jqexpr = jqexpr.parentNode;
 
         var firstTextNode = jQuery(jqexpr)[0];
 
-        while (firstTextNode.nodeType!=WYMEDITOR.NODE.TEXT) {
+        while (firstTextNode.nodeType!=WYMeditor.NODE.TEXT) {
             if (!firstTextNode.hasChildNodes())
                 break;
             firstTextNode = firstTextNode.firstChild;
@@ -345,19 +338,19 @@ WymSelMozilla.prototype = {
             firstTextNode = firstTextNode.nextSibling;
 
         // e.g. an <img/>
-        if (firstTextNode.nodeType == WYMEDITOR.NODE.ELEMENT)
+        if (firstTextNode.nodeType == WYMeditor.NODE.ELEMENT)
             this.original.collapse(firstTextNode.parentNode, 0);
         else
             this.original.collapse(firstTextNode, 0);
     },
 
     cursorToEnd: function(jqexpr) {
-        if (jqexpr.nodeType == WYMEDITOR.NODE.TEXT)
+        if (jqexpr.nodeType == WYMeditor.NODE.TEXT)
             jqexpr = jqexpr.parentNode;
 
         var lastTextNode = jQuery(jqexpr)[0];
 
-        while (lastTextNode.nodeType!=WYMEDITOR.NODE.TEXT) {
+        while (lastTextNode.nodeType!=WYMeditor.NODE.TEXT) {
             if (!lastTextNode.hasChildNodes())
                 break;
             lastTextNode = lastTextNode.lastChild;
@@ -367,7 +360,7 @@ WymSelMozilla.prototype = {
             lastTextNode = lastTextNode.previousSibling;
 
         // e.g. an <img/>
-        if (lastTextNode.nodeType == WYMEDITOR.NODE.ELEMENT)
+        if (lastTextNode.nodeType == WYMeditor.NODE.ELEMENT)
             this.original.collapse(lastTextNode.parentNode,
                 lastTextNode.parentNode.childNodes.length);
         else

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2007 H.O.net - http://www.honet.be/
  * Dual licensed under the MIT (MIT-license.txt)
@@ -18,14 +18,7 @@
  *        Frédéric Palluel-Lafleur (fpalluel@gmail.com)
  */
 
-function WymClassExplorer(wym) {
-    
-    this._wym = wym;
-    this._class = "className";
-    this._newLine = "\r\n";
-};
-
-WymClassExplorer.prototype.initIframe = function(iframe) {
+WYMeditor.WymClassExplorer.prototype.initIframe = function(iframe) {
 
     //This function is executed twice, though it is called once!
     //But MSIE needs that, otherwise designMode won't work.
@@ -96,13 +89,13 @@ WymClassExplorer.prototype.initIframe = function(iframe) {
     }catch(e){}
 };
 
-WymClassExplorer.prototype._exec = function(cmd,param) {
+WYMeditor.WymClassExplorer.prototype._exec = function(cmd,param) {
 
     switch(cmd) {
     
-    case WYMEDITOR.INDENT: case WYMEDITOR.OUTDENT:
+    case WYMeditor.INDENT: case WYMeditor.OUTDENT:
     
-        var container = this.findUp(this.container(), WYMEDITOR.LI);
+        var container = this.findUp(this.container(), WYMeditor.LI);
         if(container)
             this._doc.execCommand(cmd);
     break;
@@ -115,7 +108,7 @@ WymClassExplorer.prototype._exec = function(cmd,param) {
     this.listen();
 };
 
-WymClassExplorer.prototype.selected = function() {
+WYMeditor.WymClassExplorer.prototype.selected = function() {
 
     var caretPos = this._iframe.contentWindow.document.caretPos;
         if(caretPos!=null) {
@@ -124,23 +117,23 @@ WymClassExplorer.prototype.selected = function() {
         }
 };
 
-WymClassExplorer.prototype.saveCaret = function() {
+WYMeditor.WymClassExplorer.prototype.saveCaret = function() {
 
     this._doc.caretPos = this._doc.selection.createRange();
 };
 
-WymClassExplorer.prototype.addCssRule = function(styles, oCss) {
+WYMeditor.WymClassExplorer.prototype.addCssRule = function(styles, oCss) {
 
     styles.addRule(oCss.name, oCss.css);
 };
 
 //keyup handler
-WymClassExplorer.prototype.keyup = function() {
+WYMeditor.WymClassExplorer.prototype.keyup = function() {
   this._selected_image = null;
 };
 
 
-WymClassExplorer.prototype.setFocusToNode = function(node) {
+WYMeditor.WymClassExplorer.prototype.setFocusToNode = function(node) {
     var range = this._doc.selection.createRange();
     range.moveToElementText(node);
     range.collapse(false);
@@ -148,34 +141,35 @@ WymClassExplorer.prototype.setFocusToNode = function(node) {
     range.select();
     node.focus();
 };
-WymClassExplorer.prototype.handleKeydown = function(evt) {
+
+WYMeditor.WymClassExplorer.prototype.handleKeydown = function(evt) {
   
   //'this' is the doc
-  var wym = WYMEDITOR.INSTANCES[this.title];
+  var wym = WYMeditor.INSTANCES[this.title];
   
   // "start" Selection API
   var sel = wym.selection.getSelection();
 
 /*
     // some small tests for the Selection API
-    var containers = WYMEDITOR.MAIN_CONTAINERS.join(",");
+    var containers = WYMeditor.MAIN_CONTAINERS.join(",");
     if (sel.isAtStart(containers))
         alert("isAtStart: "+sel.startNode.parentNode.nodeName);
     if (sel.isAtEnd(containers))
         alert("isAtEnd: "+sel.endNode.parentNode.nodeName);
-    if (evt.keyCode==WYMEDITOR.KEY.DELETE) {
+    if (evt.keyCode==WYMeditor.KEY.DELETE) {
         // if deleteIfExpanded wouldn't work, no selected text would be
         // deleted if you press del-key
         if (sel.deleteIfExpanded())
             return false;
     }
-    if (evt.keyCode==WYMEDITOR.KEY.HOME) {
+    if (evt.keyCode==WYMeditor.KEY.HOME) {
         // if cursorToStart won't work, the cursor won't be set to start
         // if you press home-key
         sel.cursorToStart(sel.container);
         return false;
     }
-    if (evt.keyCode==WYMEDITOR.KEY.END)
+    if (evt.keyCode==WYMeditor.KEY.END)
     {
         // if cursorToEnd won't work, the cursor won't be set to the end
         // if you press end-key
@@ -256,7 +250,7 @@ WymSelExplorer.prototype = {
         }
 
         this.container = jQuery(range.parentElement()).parentsOrSelf(
-                WYMEDITOR.MAIN_CONTAINERS.join(","))[0];
+                WYMeditor.MAIN_CONTAINERS.join(","))[0];
 
         return this;
     },
@@ -324,7 +318,7 @@ WymSelExplorer.prototype = {
                 childPosition = 1;
 
             // moveToElementText doesn't work with text nodes
-            while ((childNodes[childPosition].nodeType == WYMEDITOR.NODE.TEXT
+            while ((childNodes[childPosition].nodeType == WYMeditor.NODE.TEXT
                     || childNodes[childPosition].nodeName == "BR")
                     && childPosition > 0) {
                 childPosition--;
@@ -445,9 +439,9 @@ WymSelExplorer.prototype = {
         (int) Length of a DOM node.
     */
     _getTextLength: function(node) {
-        if (node.nodeType == WYMEDITOR.NODE.ELEMENT)
+        if (node.nodeType == WYMeditor.NODE.ELEMENT)
             return node.innerText.length;
-        else if (node.nodeType == WYMEDITOR.NODE.TEXT)
+        else if (node.nodeType == WYMeditor.NODE.TEXT)
             return node.data.length;
     },
 
