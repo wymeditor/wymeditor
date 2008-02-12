@@ -41,3 +41,5 @@ WYMeditor.STRINGS = jQuery.extend({
     Status:           'Állapot',
     Source_Code:      'Forráskód'
 }, WYMeditor.STRINGS);
+
+

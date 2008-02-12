@@ -41,3 +41,5 @@ WYMeditor.STRINGS = jQuery.extend({
     Status:           'Estat',
     Source_Code:      'Codi font'
 }, WYMeditor.STRINGS);
+
+
