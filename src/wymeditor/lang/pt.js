@@ -41,3 +41,5 @@ WYMeditor.STRINGS = jQuery.extend({
     Status:           'Status',
     Source_Code:      'Código Fonte'
 }, WYMeditor.STRINGS);
+
+

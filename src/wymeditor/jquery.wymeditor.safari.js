@@ -1056,3 +1056,5 @@ WYMeditor.WymClassSafari.prototype.range = function(doc, sel, startNode, endNode
   range.setEnd(endNode, endOffset);
   return range;	
 };
+
+
