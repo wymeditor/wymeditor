@@ -1,4 +1,4 @@
-﻿WYMEDITOR.STRINGS = jQuery.extend({
+WYMeditor.STRINGS = jQuery.extend({
     Strong:           'Viktigt',
     Emphasis:         'Betoning',
     Superscript:      'Upphöjt',
@@ -40,4 +40,4 @@
     Classes:          'Klasser',
     Status:           'Status',
     Source_Code:      'Källkod'
-}, WYMEDITOR.STRINGS);
+}, WYMeditor.STRINGS);

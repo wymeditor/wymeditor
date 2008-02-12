@@ -1,4 +1,4 @@
-﻿WYMEDITOR.STRINGS = jQuery.extend({
+WYMeditor.STRINGS = jQuery.extend({
     Strong:           'Ressaltar',
     Emphasis:         'Emfatitzar',
     Superscript:      'Superindex', 
@@ -40,4 +40,4 @@
     Classes:          'Classes',
     Status:           'Estat',
     Source_Code:      'Codi font'
-}, WYMEDITOR.STRINGS);
+}, WYMeditor.STRINGS);

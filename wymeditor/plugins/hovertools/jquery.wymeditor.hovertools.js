@@ -1,4 +1,4 @@
-﻿/*
+/*
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2007 H.O.net - http://www.honet.be/
  * Dual licensed under the MIT (MIT-license.txt)
@@ -16,7 +16,7 @@
  */
 
 //Extend WYMeditor
-Wymeditor.prototype.hovertools = function() {
+WYMeditor.editor.prototype.hovertools = function() {
   
   var wym = this;
   
@@ -35,7 +35,7 @@ Wymeditor.prototype.hovertools = function() {
   jQuery(this._box).find(this._options.classSelector).hover(
     function() {
       var aClasses = eval(wym._options.classesItems);
-      var sName = jQuery(this).attr(WYM_NAME);
+      var sName = jQuery(this).attr(WYMeditor.NAME);
       var oClass = aClasses.findByName(sName);
 
       if(oClass){

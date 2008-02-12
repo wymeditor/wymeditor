@@ -20,19 +20,12 @@
  *        Scott Lewis (lewiscot@gmail.com)
  */
 
-function WymClassSafari(wym) {
-    this._wym = wym;
-    this._class = "class";
-    this._newLine = "\n";
-    wym._options.updateEvent = "mousedown";
-};
-
 /* @name initIframe
  * @description Initializes the iframe document for editing.
  * @param document iframe An iframe document to initialize.
  * @return void
  */
-WymClassSafari.prototype.initIframe = function(iframe) {
+WYMeditor.WymClassSafari.prototype.initIframe = function(iframe) {
 
     this._iframe = iframe;
     this._doc = iframe.contentDocument;
@@ -81,7 +74,7 @@ WymClassSafari.prototype.initIframe = function(iframe) {
     _test(function() {alert(1);});
 };
 
-WymClassSafari.prototype.dblclick = function(evt) {
+WYMeditor.WymClassSafari.prototype.dblclick = function(evt) {
    window.isDblClick = true;
 };
 
@@ -90,7 +83,7 @@ WymClassSafari.prototype.dblclick = function(evt) {
  * @param string html The string representation of the html being edited.
  * @return string The html being edited
  */
-WymClassSafari.prototype.html = function(html) {
+WYMeditor.WymClassSafari.prototype.html = function(html) {
 
   if(html) {
   
@@ -122,7 +115,7 @@ WymClassSafari.prototype.html = function(html) {
  * @param string param The parameter needed for the command. What the param is depends 
  * on the command being executed. (We need a list of commands and parameters).
  */
-WymClassSafari.prototype._exec = function(cmd, param) {
+WYMeditor.WymClassSafari.prototype._exec = function(cmd, param) {
 
     var focusNode = this.selected();    
     var sel = this.selection.getSelection();
@@ -133,7 +126,7 @@ WymClassSafari.prototype._exec = function(cmd, param) {
         if(anchorNode.nodeName == "#text") anchorNode = anchorNode.parentNode;
     }
     
-    if (focusNode && focusNode.nodeName.toLowerCase() == WYMEDITOR.BR)
+    if (focusNode && focusNode.nodeName.toLowerCase() == WYMeditor.BR)
     {
        var _newFocusNode = focusNode.parentNode;
        jQuery(focusNode).remove();
@@ -142,35 +135,35 @@ WymClassSafari.prototype._exec = function(cmd, param) {
 
     switch(cmd) {
     
-        case WYMEDITOR.INDENT:
+        case WYMeditor.INDENT:
             this.Outdent(focusNode, param);
             break;
             
-        case WYMEDITOR.OUTDENT:
+        case WYMeditor.OUTDENT:
             this.Indent(focusNode, param);
         break;
         
-        case WYMEDITOR.OUTDENT:
+        case WYMeditor.OUTDENT:
             this.Indent(focusNode, param);
             break;
         
-        case WYMEDITOR.INDENT:
+        case WYMeditor.INDENT:
             this.Indent(focusNode, param);
             break;
         
-        case WYMEDITOR.CREATE_LINK:
+        case WYMeditor.CREATE_LINK:
             this.CreateLink(focusNode, param);
             break;
         
-        case WYMEDITOR.UNLINK:
+        case WYMeditor.UNLINK:
             this.Unlink(focusNode, param);
             break;
         
-        case WYMEDITOR.INSERT_IMAGE:
+        case WYMeditor.INSERT_IMAGE:
             this.InsertImage(focusNode, param);
             break;
 
-        case WYMEDITOR.INSERT_UNORDEREDLIST:
+        case WYMeditor.INSERT_UNORDEREDLIST:
             this.InsertUnorderedList(focusNode, param);
             break;
     
@@ -182,8 +175,8 @@ WymClassSafari.prototype._exec = function(cmd, param) {
     
     // set to P if parent = BODY
     var container = this.selected();
-    if(container && container.tagName.toLowerCase() == WYMEDITOR.BODY)
-        this._exec(WYMEDITOR.FORMAT_BLOCK, WYMEDITOR.P);
+    if(container && container.tagName.toLowerCase() == WYMeditor.BODY)
+        this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
     
     // Update the textarea
     this.update();
@@ -196,7 +189,7 @@ WymClassSafari.prototype._exec = function(cmd, param) {
  * @description Returns the selected container
  * @return object The currently selected container
  */
-WymClassSafari.prototype.selected = function() {
+WYMeditor.WymClassSafari.prototype.selected = function() {
     
     var sel = this._iframe.contentWindow.getSelection();
     
@@ -211,7 +204,7 @@ WymClassSafari.prototype.selected = function() {
     } else return(null); // this._iframe.contentDocument.body);
 };
 
-WymClassSafari.prototype.addCssRule = function(styles, oCss) {
+WYMeditor.WymClassSafari.prototype.addCssRule = function(styles, oCss) {
 
     styles.insertRule(oCss.name + " {" + oCss.css + "}",
         styles.cssRules.length);
@@ -221,34 +214,34 @@ WymClassSafari.prototype.addCssRule = function(styles, oCss) {
  * @description keydown handler, mainly used for keyboard shortcuts
  * @return bool Whether or not the calling event should be continued
  */
-WymClassSafari.prototype.keydown = function(evt) {
+WYMeditor.WymClassSafari.prototype.keydown = function(evt) {
   
   // 'this' is the doc
-  var wym = WYMEDITOR.INSTANCES[this.title];
+  var wym = WYMeditor.INSTANCES[this.title];
   
   //  "start" Selection API
   var sel = wym.selection.getSelection();
 
 /*
     //  some small tests for the Selection API
-    var containers = WYMEDITOR.MAIN_CONTAINERS.join(",");
+    var containers = WYMeditor.MAIN_CONTAINERS.join(",");
     if (sel.isAtStart(containers))
         alert("isAtStart: "+sel.startNode.parentNode.nodeName);
     if (sel.isAtEnd(containers))
         alert("isAtEnd: "+sel.endNode.parentNode.nodeName);
-    if (evt.keyCode==WYMEDITOR.KEY.DELETE) {
+    if (evt.keyCode==WYMeditor.KEY.DELETE) {
         //  if deleteIfExpanded wouldn't work, no selected text would be
         //  deleted if you press del-key
         if (sel.deleteIfExpanded())
             return false;
     }
-    if (evt.keyCode==WYMEDITOR.KEY.HOME) {
+    if (evt.keyCode==WYMeditor.KEY.HOME) {
         //  if cursorToStart won't work, the cursor won't be set to start
         //  if you press home-key
         sel.cursorToStart(sel.container);
         return false;
     }
-    if (evt.keyCode==WYMEDITOR.KEY.END)
+    if (evt.keyCode==WYMeditor.KEY.END)
     {
         //  if cursorToEnd won't work, the cursor won't be set to the end
         //  if you press end-key
@@ -260,12 +253,12 @@ WymClassSafari.prototype.keydown = function(evt) {
   if(evt.ctrlKey){
     if(evt.keyCode == 66){
       // CTRL+b => STRONG
-      wym._exec(WYMEDITOR.BOLD);
+      wym._exec(WYMeditor.BOLD);
       return false;
     }
     if(evt.keyCode == 73){
       // CTRL+i => EMPHASIS
-      wym._exec(WYMEDITOR.ITALIC);
+      wym._exec(WYMeditor.ITALIC);
       return false;
     }
   }
@@ -274,10 +267,10 @@ WymClassSafari.prototype.keydown = function(evt) {
 /* @name keyup
  * @description keyup handler, mainly used for cleanups
  */
-WymClassSafari.prototype.keyup = function(evt) {
+WYMeditor.WymClassSafari.prototype.keyup = function(evt) {
 
   // 'this' is the doc
-  var wym = WYMEDITOR.INSTANCES[this.title];
+  var wym = WYMeditor.INSTANCES[this.title];
   
   wym._selected_image = null;
 
@@ -285,7 +278,7 @@ WymClassSafari.prototype.keyup = function(evt) {
   
     // RETURN key
     // cleanup <br><br> between paragraphs
-    jQuery(wym._doc.body).children(WYMEDITOR.BR).remove();
+    jQuery(wym._doc.body).children(WYMeditor.BR).remove();
   }
   
   else if(evt.keyCode != 8
@@ -313,14 +306,14 @@ WymClassSafari.prototype.keyup = function(evt) {
 
    ) name = container.parentNode.tagName.toLowerCase();
 
-    if(name == WYMEDITOR.BODY) wym._exec(WYMEDITOR.FORMAT_BLOCK, WYMEDITOR.P);
+    if(name == WYMeditor.BODY) wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
   }
 };
 
 /* @name enableDesignMode
  * @description Enables live editing of the iframe document.
  */
-WymClassSafari.prototype.enableDesignMode = function() {
+WYMeditor.WymClassSafari.prototype.enableDesignMode = function() {
     
     if(this._doc.designMode == "off") {
       try {
@@ -333,7 +326,7 @@ WymClassSafari.prototype.enableDesignMode = function() {
 /* @name setFocusToNode
  * @description Sets the focus to currently selected node.
  */
-WymClassSafari.prototype.setFocusToNode = function(node) {
+WYMeditor.WymClassSafari.prototype.setFocusToNode = function(node) {
     var range = document.createRange();
     range.selectNode(node);
     var selected = this._iframe.contentWindow.getSelection();
@@ -345,7 +338,7 @@ WymClassSafari.prototype.setFocusToNode = function(node) {
 /* @name openBlockTag
  * @description This function may not currently be in use. (Bermi?)
  */
-WymClassSafari.prototype.openBlockTag = function(tag, attributes)
+WYMeditor.WymClassSafari.prototype.openBlockTag = function(tag, attributes)
 {
   var attributes = this.validator.getValidTagAttributes(tag, attributes);
 
@@ -373,7 +366,7 @@ WymClassSafari.prototype.openBlockTag = function(tag, attributes)
 /* @name closeBlockTag
  * @description This function may not currently be in use. (Bermi?)
  */
-WymClassSafari.prototype.closeBlockTag = function(tag)
+WYMeditor.WymClassSafari.prototype.closeBlockTag = function(tag)
 {
   this.output = this.output.replace(/<br \/>$/, '')+this._getClosingTagContent('before', tag)+"</"+tag+">"+this._getClosingTagContent('after', tag);
 };
@@ -383,7 +376,7 @@ WymClassSafari.prototype.closeBlockTag = function(tag)
  * @param string style The styled tag (?)
  * @return string|bool Returns the string tag name if matched. False if not matched.
  */
-WymClassSafari.prototype.getTagForStyle = function(style) {
+WYMeditor.WymClassSafari.prototype.getTagForStyle = function(style) {
 
   if(/bold/.test(style)) return 'strong';
   if(/italic/.test(style)) return 'em';
@@ -419,7 +412,7 @@ WymSelSafari.prototype = {
         
         this.isCollapsed = _sel.isCollapsed;
         this.original    = _sel;
-        this.container   = jQuery(this.startNode).parentsOrSelf(WYMEDITOR.MAIN_CONTAINERS.join(","))[0];
+        this.container   = jQuery(this.startNode).parentsOrSelf(WYMeditor.MAIN_CONTAINERS.join(","))[0];
         
         return this;
     },
@@ -470,12 +463,12 @@ WymSelSafari.prototype = {
     },
     
     cursorToStart: function(jqexpr) {
-        if (jqexpr.nodeType == WYMEDITOR.NODE.TEXT)
+        if (jqexpr.nodeType == WYMeditor.NODE.TEXT)
             jqexpr = jqexpr.parentNode;
 
         var firstTextNode = $(jqexpr)[0];
 
-        while (firstTextNode.nodeType!=WYMEDITOR.NODE.TEXT) {
+        while (firstTextNode.nodeType!=WYMeditor.NODE.TEXT) {
             if (!firstTextNode.hasChildNodes())
                 break;
             firstTextNode = firstTextNode.firstChild;
@@ -485,19 +478,19 @@ WymSelSafari.prototype = {
             firstTextNode = firstTextNode.nextSibling;
 
         //  e.g. an <img/>
-        if (firstTextNode.nodeType == WYMEDITOR.NODE.ELEMENT)
+        if (firstTextNode.nodeType == WYMeditor.NODE.ELEMENT)
             this.original.collapse(firstTextNode.parentNode, 0);
         else
             this.original.collapse(firstTextNode, 0);
     },
 
     cursorToEnd: function(jqexpr) {
-        if (jqexpr.nodeType == WYMEDITOR.NODE.TEXT)
+        if (jqexpr.nodeType == WYMeditor.NODE.TEXT)
             jqexpr = jqexpr.parentNode;
 
         var lastTextNode = $(jqexpr)[0];
 
-        while (lastTextNode.nodeType!=WYMEDITOR.NODE.TEXT) {
+        while (lastTextNode.nodeType!=WYMeditor.NODE.TEXT) {
             if (!lastTextNode.hasChildNodes())
                 break;
             lastTextNode = lastTextNode.lastChild;
@@ -507,7 +500,7 @@ WymSelSafari.prototype = {
             lastTextNode = lastTextNode.previousSibling;
 
         //  e.g. an <img/>
-        if (lastTextNode.nodeType == WYMEDITOR.NODE.ELEMENT)
+        if (lastTextNode.nodeType == WYMeditor.NODE.ELEMENT)
             this.original.collapse(lastTextNode.parentNode,
                 lastTextNode.parentNode.childNodes.length);
         else
@@ -527,20 +520,20 @@ WymSelSafari.prototype = {
  * @description Binds Wymeditor events to window events.
  * @return void
  */
-WymClassSafari.prototype.bindEvents = function() {
+WYMeditor.WymClassSafari.prototype.bindEvents = function() {
 
   // copy the instance
   var wym = this;
   
   // handle click event on tools buttons
   jQuery(this._box).find(this._options.toolSelector).mousedown(function() {
-    wym.exec(jQuery(this).attr(WYMEDITOR.NAME));
+    wym.exec(jQuery(this).attr(WYMeditor.NAME));
     return(false);
   });
   
   // handle click event on containers buttons
   jQuery(this._box).find(this._options.containerSelector).mousedown(function() {
-    wym.container(jQuery(this).attr(WYMEDITOR.NAME));
+    wym.container(jQuery(this).attr(WYMeditor.NAME));
     return(false);
   });
   
@@ -554,7 +547,7 @@ WymClassSafari.prototype.bindEvents = function() {
   jQuery(this._box).find(this._options.classSelector).mousedown(function() {
   
     var aClasses = eval(wym._options.classesItems);
-    var sName = jQuery(this).attr(WYMEDITOR.NAME);
+    var sName = jQuery(this).attr(WYMeditor.NAME);
     
     var oClass = aClasses.findByName(sName);
     
@@ -576,7 +569,7 @@ WymClassSafari.prototype.bindEvents = function() {
  * @description Toggles the display of the HTML textarea
  * @return void
  */
-Wymeditor.prototype.toggleHtml = function() {
+WYMeditor.editor.prototype.toggleHtml = function() {
   var html = this.xhtml();
   jQuery(this._element).val(html);
   jQuery(this._box).find(this._options.htmlSelector).toggle();
@@ -657,7 +650,7 @@ var nativeExecCommands = [
  * @param string cmd The command name
  * @return bool Whether or not the command being checked is natively supported.
  */
-WymClassSafari.prototype.isNative = function(cmd)
+WYMeditor.WymClassSafari.prototype.isNative = function(cmd)
 {
     for (i=0; i<nativeExecCommands.length; i++)
     {
@@ -677,7 +670,7 @@ WymClassSafari.prototype.isNative = function(cmd)
  * @param string param ...
  * @return bool Whether or not the command execution was successful
  */
-WymClassSafari.prototype.CreateLink = function(focusNode, param) {
+WYMeditor.WymClassSafari.prototype.CreateLink = function(focusNode, param) {
   var sel = this._iframe.contentWindow.getSelection();
   var _doc = this._iframe.contentDocument;
   
@@ -711,7 +704,7 @@ WymClassSafari.prototype.CreateLink = function(focusNode, param) {
  * @param string param ...
  * @return bool Whether or not the command execution was successful
  */
-WymClassSafari.prototype.Indent = function(focusNode, param) {
+WYMeditor.WymClassSafari.prototype.Indent = function(focusNode, param) {
     var focusNode = this.selected();    
     var sel = this._iframe.contentWindow.getSelection();
     
@@ -721,17 +714,17 @@ WymClassSafari.prototype.Indent = function(focusNode, param) {
         if(anchorNode.nodeName == "#text") anchorNode = anchorNode.parentNode;
     }
     
-    focusNode = this.findUp(focusNode, WYMEDITOR.BLOCKS);
-    anchorNode = this.findUp(anchorNode, WYMEDITOR.BLOCKS);
+    focusNode = this.findUp(focusNode, WYMeditor.BLOCKS);
+    anchorNode = this.findUp(anchorNode, WYMeditor.BLOCKS);
     
     if(focusNode && focusNode == anchorNode
-      && focusNode.tagName.toLowerCase() == WYMEDITOR.LI) {
+      && focusNode.tagName.toLowerCase() == WYMeditor.LI) {
 
         var ancestor = focusNode.parentNode.parentNode;
 
         if(focusNode.parentNode.childNodes.length>1
-          || ancestor.tagName.toLowerCase() == WYMEDITOR.OL
-          || ancestor.tagName.toLowerCase() == WYMEDITOR.UL)
+          || ancestor.tagName.toLowerCase() == WYMeditor.OL
+          || ancestor.tagName.toLowerCase() == WYMeditor.UL)
             this._doc.execCommand(cmd,'',null);
     }
 };
@@ -742,13 +735,13 @@ WymClassSafari.prototype.Indent = function(focusNode, param) {
  * @param string param The 'src' of the image to insert.
  * @return bool Whether or not the command was successfully executed.
  */
-WymClassSafari.prototype.InsertImage = function(focusNode, param) {
+WYMeditor.WymClassSafari.prototype.InsertImage = function(focusNode, param) {
   try {
     if (!focusNode)
     {
       focusNode = this.selection.newNode();
     }
-    if (focusNode.nodeName.toLowerCase() == WYMEDITOR.IMG)
+    if (focusNode.nodeName.toLowerCase() == WYMeditor.IMG)
     {
         jQuery(focusNode).attr({"src": param});
     } else {
@@ -769,7 +762,7 @@ WymClassSafari.prototype.InsertImage = function(focusNode, param) {
  * @param string param ...
  * @return bool Whether or not the command execution was successful
  */
-WymClassSafari.prototype.InsertUnorderedList = function(param, type) {
+WYMeditor.WymClassSafari.prototype.InsertUnorderedList = function(param, type) {
   var selected = this.selected();
   var contents = selected.innerHTML;
   
@@ -820,7 +813,7 @@ WymClassSafari.prototype.InsertUnorderedList = function(param, type) {
  * @param string param ...
  * @return bool Whether or not the command execution was successful
  */
-WymClassSafari.prototype.Outdent = function(focusNode, param) {
+WYMeditor.WymClassSafari.prototype.Outdent = function(focusNode, param) {
     var focusNode = this.selected();    
     var sel = this._iframe.contentWindow.getSelection();
     
@@ -829,17 +822,17 @@ WymClassSafari.prototype.Outdent = function(focusNode, param) {
         var anchorNode = sel.anchorNode;
         if(anchorNode.nodeName == "#text") anchorNode = anchorNode.parentNode;
     }
-    focusNode = this.findUp(focusNode, WYMEDITOR.BLOCKS);
-    anchorNode = this.findUp(anchorNode, WYMEDITOR.BLOCKS);
+    focusNode = this.findUp(focusNode, WYMeditor.BLOCKS);
+    anchorNode = this.findUp(anchorNode, WYMeditor.BLOCKS);
     
     if(focusNode && focusNode == anchorNode
-      && focusNode.tagName.toLowerCase() == WYMEDITOR.LI) {
+      && focusNode.tagName.toLowerCase() == WYMeditor.LI) {
 
         var ancestor = focusNode.parentNode.parentNode;
 
         if(focusNode.parentNode.childNodes.length>1
-          || ancestor.tagName.toLowerCase() == WYMEDITOR.OL
-          || ancestor.tagName.toLowerCase() == WYMEDITOR.UL)
+          || ancestor.tagName.toLowerCase() == WYMeditor.OL
+          || ancestor.tagName.toLowerCase() == WYMeditor.UL)
             this._doc.execCommand(cmd,'',null);
     }
 };
@@ -850,7 +843,7 @@ WymClassSafari.prototype.Outdent = function(focusNode, param) {
  * @param string param ...
  * @return bool Whether or not the command execution was successful
  */
-WymClassSafari.prototype.Unlink = function(focusNode, param) {
+WYMeditor.WymClassSafari.prototype.Unlink = function(focusNode, param) {
     alert('Unlink');
 };
 
@@ -858,17 +851,17 @@ WymClassSafari.prototype.Unlink = function(focusNode, param) {
 
 // This is a workarround for select iframe safari bug
 
-WymClassSafari.prototype.addWymHacksForEditMode = function(xhtml) {
+WYMeditor.WymClassSafari.prototype.addWymHacksForEditMode = function(xhtml) {
     return 
     '<span id="wym_safari_select_all_hack" ' 
     + 'style="height:0.01em;position:absolute;margin-top:-50px;">safari-hack</span>'+xhtml;
 };
 
-WymClassSafari.prototype.removeWymAttributesFromXhtml = function(xhtml) {
+WYMeditor.WymClassSafari.prototype.removeWymAttributesFromXhtml = function(xhtml) {
   return xhtml.replace(/<span id="wym_safari_select_all_hack"[^>]*>safari-hack<\/span>/, '');
 };
 
-WymClassSafari.prototype.removeSafarihacks = function(raw_html){
+WYMeditor.WymClassSafari.prototype.removeSafarihacks = function(raw_html){
   if(true || jQuery.browser.version < 10000){
     raw_html = raw_html.replace(this.hackChar,'');
   }
@@ -880,7 +873,7 @@ WymClassSafari.prototype.removeSafarihacks = function(raw_html){
  * @param string raw The raw HTML
  * @return string The cleaned-up HTML without place-holders
  */
-WymClassSafari.prototype.beforeParsing = function(raw)
+WYMeditor.WymClassSafari.prototype.beforeParsing = function(raw)
 {
   this.output = '';
   return this.removeSafarihacks(raw).
@@ -888,7 +881,7 @@ WymClassSafari.prototype.beforeParsing = function(raw)
   replace(/([^>]*)<(\w+)><BR class\="khtml-block-placeholder"><\/\2>([^<]*)/g, "<$2>$1$3</$2>");
 };
 
-WymClassSafari.prototype.selectAll = function(param) {
+WYMeditor.WymClassSafari.prototype.selectAll = function(param) {
   this.currentSelection.setBaseAndExtent(this._doc.body, 0, w._doc.body, w._doc.body.length);
 };
 
@@ -896,7 +889,7 @@ WymClassSafari.prototype.selectAll = function(param) {
  * @description Updates the HTML textarea with the current version of the iframe document
  * @return void
  */
-WymClassSafari.prototype.update = function() {
+WYMeditor.WymClassSafari.prototype.update = function() {
   var html = this.cleanup(this.removeWymAttributesFromXhtml(this.xhtml()));
   jQuery(this._element).val(html);
   jQuery(this._box).find(this._options.htmlValSelector).val(html);
@@ -907,7 +900,7 @@ WymClassSafari.prototype.update = function() {
  * @param string xhtml The xhtml including Apple-span-tag tags and attributes
  * @return string The clean xhtml
  */
-WymClassSafari.prototype.cleanup = function(xhtml) {
+WYMeditor.WymClassSafari.prototype.cleanup = function(xhtml) {
   // remove Safari style spans
   return xhtml.replace(/<span class="Apple-style-span">(.*)<\/span>/gi, "$1")
     // remove any style-span classes from valid elements (e.g., strong, em, etc.)
@@ -919,7 +912,7 @@ WymClassSafari.prototype.cleanup = function(xhtml) {
  * @param event evt The current window event
  * @return bool Whether or not the current event should be continued
  */
-WymClassSafari.prototype.handleEnter = function(evt){
+WYMeditor.WymClassSafari.prototype.handleEnter = function(evt){
   var selected = this.selected();
   if(true || jQuery.browser.version < 10000){    
     
@@ -939,7 +932,7 @@ WymClassSafari.prototype.handleEnter = function(evt){
  * @description Custom case-handling for when the back-space key is pressed.
  * @return bool true (allows the current event to continue)
  */
-WymClassSafari.prototype.handleBackspace = function(){
+WYMeditor.WymClassSafari.prototype.handleBackspace = function(){
   var selected = this.selected();
   if(true || jQuery.browser.version < 10000){
     if(selected.tagName == 'P' && selected.innerHTML == ''){
@@ -956,7 +949,7 @@ WymClassSafari.prototype.handleBackspace = function(){
  * (not fully implemented)
  * @return void
  */
-WymClassSafari.prototype.handleEnterOnListItem = function(selected)
+WYMeditor.WymClassSafari.prototype.handleEnterOnListItem = function(selected)
 {
   if(selected.tagName == 'LI' && selected.parentNode) {
     // If we access the text on the right of current carret a new list item will be added
@@ -1004,7 +997,7 @@ WymClassSafari.prototype.handleEnterOnListItem = function(selected)
  * I had the right idea and had it partially working but without his Ahoy code examples 
  * and thorough explanations, it would have taken me a lot longer to solve (if at all).
  */
-WymClassSafari.prototype.wrap = function(sel, tag, options) {
+WYMeditor.WymClassSafari.prototype.wrap = function(sel, tag, options) {
   var _doc = this._iframe.contentDocument;
   var fragment  = _doc.createDocumentFragment();
 
@@ -1057,7 +1050,7 @@ WymClassSafari.prototype.wrap = function(sel, tag, options) {
  * @param int endOffset The end offset of the selection
  * @return object A range object
  */
-WymClassSafari.prototype.range = function(doc, sel, startNode, endNode, startOffset, endOffset) {
+WYMeditor.WymClassSafari.prototype.range = function(doc, sel, startNode, endNode, startOffset, endOffset) {
   var range = doc.createRange();
   range.setStart(startNode, startOffset);
   range.setEnd(endNode, endOffset);
