@@ -20,6 +20,14 @@
  *        Scott Lewis (lewiscot@gmail.com)
  */
 
+WYMeditor.WymClassSafari = function(wym) {
+
+    this._wym = wym;
+    this._class = "class";
+    this._newLine = "\n";
+    wym._options.updateEvent = "mousedown";
+};
+
 /* @name initIframe
  * @description Initializes the iframe document for editing.
  * @param document iframe An iframe document to initialize.
@@ -71,7 +79,7 @@ WYMeditor.WymClassSafari.prototype.initIframe = function(iframe) {
     // add event listeners to doc elements, e.g. images
     this.listen();
     
-    _test(function() {alert(1);});
+    this._test(function() {alert(1);});
 };
 
 WYMeditor.WymClassSafari.prototype.dblclick = function(evt) {
@@ -136,11 +144,11 @@ WYMeditor.WymClassSafari.prototype._exec = function(cmd, param) {
     switch(cmd) {
     
         case WYMeditor.INDENT:
-            this.Outdent(focusNode, param);
+            this.Indent(focusNode, param);
             break;
             
         case WYMeditor.OUTDENT:
-            this.Indent(focusNode, param);
+            this.Outdent(focusNode, param);
         break;
         
         case WYMeditor.OUTDENT:
@@ -392,14 +400,14 @@ WYMeditor.WymClassSafari.prototype.getTagForStyle = function(style) {
  * @param object The current wymeditor instance.
  * @return void
  */
-function WymSelSafari(wym) {
+WYMeditor.WymSelSafari = function(wym) {
     this._wym = wym;
 };
 
 /* @name WymSelSafari
  * @description The Selection Application Programming Interface (SAPI)
  */
-WymSelSafari.prototype = {
+WYMeditor.WymSelSafari.prototype = {
     getSelection: function() {
         var _sel = this._wym._iframe.contentWindow.getSelection();
         var range = this._getRange();
@@ -474,7 +482,7 @@ WymSelSafari.prototype = {
             firstTextNode = firstTextNode.firstChild;
         }
 
-        if (isPhantomNode(firstTextNode))
+        if (WYMeditor.isPhantomNode(firstTextNode))
             firstTextNode = firstTextNode.nextSibling;
 
         //  e.g. an <img/>
@@ -496,7 +504,7 @@ WymSelSafari.prototype = {
             lastTextNode = lastTextNode.lastChild;
         }
 
-        if (isPhantomNode(lastTextNode))
+        if (WYMeditor.isPhantomNode(lastTextNode))
             lastTextNode = lastTextNode.previousSibling;
 
         //  e.g. an <img/>
@@ -581,7 +589,7 @@ WYMeditor.editor.prototype.toggleHtml = function() {
  * @param object An object to debug.
  * @return void
  */
-_debug = function(obj)
+WYMeditor.WymClassSafari.prototype._debug = function(obj)
 {
     win2 = window.open();
     win2.document.write("<pre>");
@@ -599,7 +607,7 @@ _debug = function(obj)
  * @param function callback The test function to attach.
  * @return void
  */
-_test = function(callback) {
+WYMeditor.WymClassSafari.prototype._test = function(callback) {
     jQuery(document.body).append(
         "<p><a href=\"#\" id=\"btn-test\">Test</a></p>"
     );
@@ -610,7 +618,7 @@ _test = function(callback) {
  * @description An array of execCommands natively supported by the Apple Web-Core browser engine. 
  * This list is current as of Web-Core
  */
-var nativeExecCommands = [
+WYMeditor.WymClassSafari.nativeExecCommands = [
     'BackColor',
     'Bold',
     'Copy',
@@ -652,9 +660,9 @@ var nativeExecCommands = [
  */
 WYMeditor.WymClassSafari.prototype.isNative = function(cmd)
 {
-    for (i=0; i<nativeExecCommands.length; i++)
+    for (var i=0; i < this.nativeExecCommands.length; i++)
     {
-        if (cmd.toLowerCase() == nativeExecCommands[i].toLowerCase())
+        if (cmd.toLowerCase() == this.nativeExecCommands[i].toLowerCase())
         {
             return true;
         }
@@ -725,7 +733,7 @@ WYMeditor.WymClassSafari.prototype.Indent = function(focusNode, param) {
         if(focusNode.parentNode.childNodes.length>1
           || ancestor.tagName.toLowerCase() == WYMeditor.OL
           || ancestor.tagName.toLowerCase() == WYMeditor.UL)
-            this._doc.execCommand(cmd,'',null);
+            this._doc.execCommand(WYMeditor.INDENT,'',null);
     }
 };
 
@@ -833,7 +841,7 @@ WYMeditor.WymClassSafari.prototype.Outdent = function(focusNode, param) {
         if(focusNode.parentNode.childNodes.length>1
           || ancestor.tagName.toLowerCase() == WYMeditor.OL
           || ancestor.tagName.toLowerCase() == WYMeditor.UL)
-            this._doc.execCommand(cmd,'',null);
+            this._doc.execCommand(WYMeditor.OUTDENT,'',null);
     }
 };
 

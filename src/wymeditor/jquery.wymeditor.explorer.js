@@ -18,6 +18,13 @@
  *        Frédéric Palluel-Lafleur (fpalluel@gmail.com)
  */
 
+WYMeditor.WymClassExplorer = function(wym) {
+
+    this._wym = wym;
+    this._class = "className";
+    this._newLine = "\r\n";
+};
+
 WYMeditor.WymClassExplorer.prototype.initIframe = function(iframe) {
 
     //This function is executed twice, though it is called once!
@@ -206,11 +213,11 @@ Example:
     endOffset   - 6
     container   - <p>...</p>
 */
-var WymSelExplorer = function(wym) {
+WYMeditor.WymSelExplorer = function(wym) {
     this._wym = wym;
 };
 
-WymSelExplorer.prototype = {
+WYMeditor.WymSelExplorer.prototype = {
     /*
     Property: getSelection
         Return a Selection API object

@@ -19,6 +19,13 @@
  *        Frédéric Palluel-Lafleur (fpalluel@gmail.com)
  */
 
+WYMeditor.WymClassMozilla = function(wym) {
+
+    this._wym = wym;
+    this._class = "class";
+    this._newLine = "\n";
+};
+
 WYMeditor.WymClassMozilla.prototype.initIframe = function(iframe) {
 
     this._iframe = iframe;
@@ -302,11 +309,11 @@ WYMeditor.WymClassMozilla.prototype.getTagForStyle = function(style) {
 
 /********** SELECTION API **********/
 
-function WymSelMozilla(wym) {
+WYMeditor.WymSelMozilla = function(wym) {
     this._wym = wym;
 };
 
-WymSelMozilla.prototype = {
+WYMeditor.WymSelMozilla.prototype = {
     getSelection: function() {
         var _sel = this._wym._iframe.contentWindow.getSelection();
         // NOTE v.mische can startNode/endNote be phantom nodes?
@@ -334,7 +341,7 @@ WymSelMozilla.prototype = {
             firstTextNode = firstTextNode.firstChild;
         }
 
-        if (isPhantomNode(firstTextNode))
+        if (WYMeditor.isPhantomNode(firstTextNode))
             firstTextNode = firstTextNode.nextSibling;
 
         // e.g. an <img/>
@@ -356,7 +363,7 @@ WymSelMozilla.prototype = {
             lastTextNode = lastTextNode.lastChild;
         }
 
-        if (isPhantomNode(lastTextNode))
+        if (WYMeditor.isPhantomNode(lastTextNode))
             lastTextNode = lastTextNode.previousSibling;
 
         // e.g. an <img/>

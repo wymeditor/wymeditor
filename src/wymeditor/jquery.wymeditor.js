@@ -25,7 +25,7 @@
 
 var WYMeditor = {
     
-    VERSION          : "0.4.1.",
+    VERSION          : "0.5-a1",
     INSTANCES        : new Array(),
 	STRINGS			 : new Array(),
     NAME             : "name",
@@ -151,39 +151,11 @@ var WYMeditor = {
         this._options.jQueryPath = this._options.jQueryPath
         || this.computeJqueryPath();
 
-        this.selection = new WymSelection();
+        this.selection = new WYMeditor.WymSelection();
 
         this.init();
 	
 	},
-    
-    WymClassExplorer : function(wym) {
-    
-        this._wym = wym;
-        this._class = "className";
-        this._newLine = "\r\n";
-    },
-	
-	WymClassMozilla : function(wym) {
-
-        this._wym = wym;
-        this._class = "class";
-        this._newLine = "\n";
-	},
-    
-    WymClassOpera : function(wym) {
-
-        this._wym = wym;
-        this._class = "class";
-        this._newLine = "\r\n";
-    },
-    
-    WymClassSafari : function(wym) {
-        this._wym = wym;
-        this._class = "class";
-        this._newLine = "\n";
-        wym._options.updateEvent = "mousedown";
-    },
 	
 	/********** DIALOGS **********/
 
@@ -381,10 +353,6 @@ jQuery.fn.wymeditor = function(options) {
     iframeBasePath: false,
     
     jQueryPath: false,
-    
-    xhtmlParser: 'xhtml_parser.pack.js',
-    
-    cssParser: 'wym_css_parser.pack.js',
     
     styles: false,
     
@@ -724,8 +692,8 @@ jQuery.extend({
   wymeditors: function(i) {
     return (WYMeditor.INSTANCES[i]);
   },
-  wymstrings: function(lang, sKey) {
-    return (WYMeditor.STRINGS[lang][sKey]);
+  wymstrings: function(sKey) {
+    return (WYMeditor.STRINGS[sKey]);
   }
 });
 
@@ -745,38 +713,39 @@ WYMeditor.editor.prototype.init = function() {
   //unsupported browsers: do nothing
   if (jQuery.browser.msie) {
     var WymClass = new WYMeditor.WymClassExplorer(this);
-    var WymSel = new WymSelExplorer(this);
+    var WymSel   = new WYMeditor.WymSelExplorer(this);
   }
   else if (jQuery.browser.mozilla) {
     var WymClass = new WYMeditor.WymClassMozilla(this);
-    var WymSel = new WymSelMozilla(this);
+    var WymSel   = new WYMeditor.WymSelMozilla(this);
   }
   else if (jQuery.browser.opera) {
     var WymClass = new WYMeditor.WymClassOpera(this);
-    var WymSel = new WymSelOpera(this);
+    var WymSel   = new WYMeditor.WymSelOpera(this);
   }
   else if (jQuery.browser.safari) {
-    //commented until supported
     var WymClass = new WYMeditor.WymClassSafari(this);
-    var WymSel = new WymSelSafari(this);
+    var WymSel   = new WYMeditor.WymSelSafari(this);
   }
   
   if(WymClass) {
   
       if(jQuery.isFunction(this._options.preInit)) this._options.preInit(this);
-  
-      this.loadXhtmlParser(WymClass);
+
+      var SaxListener = new WYMeditor.XhtmlSaxListener();
+      jQuery.extend(SaxListener, WymClass);
+      this.parser = new WYMeditor.XhtmlParser(SaxListener);
       
       if(this._options.styles || this._options.stylesheet){
         this.configureEditorUsingRawCss();
       }
       
-      this.helper = new XmlHelper();
+      this.helper = new WYMeditor.XmlHelper();
       
       //extend the Wymeditor object
       //don't use jQuery.extend since 1.1.4
       //jQuery.extend(this, WymClass);
-      for (prop in WymClass) { this[prop] = WymClass[prop]; }
+      for (var prop in WymClass) { this[prop] = WymClass[prop]; }
 
       //load wymbox
       this._box = jQuery(this._element).hide().after(this._options.boxHtml).next();
@@ -1298,34 +1267,9 @@ WYMeditor.editor.prototype.computeCssPath = function() {
   })).attr('href');
 };
 
-WYMeditor.editor.prototype.loadXhtmlParser = function(WymClass) {
-  if(typeof XhtmlSaxListener != 'function'){
-    // This is the only way to get loaded functions in the global scope until jQuery.globalEval works in safari
-   eval(jQuery.ajax({url:this._options.basePath
-    + this._options.xhtmlParser, async:false}).responseText);
-    window.XmlHelper = XmlHelper;
-    window.XhtmlValidator = XhtmlValidator;
-    window.ParallelRegex = ParallelRegex;
-    window.StateStack = StateStack;
-    window.Lexer = Lexer;
-    window.XhtmlLexer = XhtmlLexer;
-    window.XhtmlParser = XhtmlParser;
-    window.XhtmlSaxListener = XhtmlSaxListener;
-   
-  }
-  var SaxListener = new XhtmlSaxListener();
-  jQuery.extend(SaxListener, WymClass);
-  this.parser = new XhtmlParser(SaxListener);
-};
-
 WYMeditor.editor.prototype.configureEditorUsingRawCss = function() {
-  if(typeof WymCssParser != 'function'){
-    eval(jQuery.ajax({url:this._options.basePath
-     + this._options.cssParser, async:false}).responseText);
-    window.WymCssLexer = WymCssLexer;
-    window.WymCssParser = WymCssParser;
-  }
-  var CssParser = new WymCssParser();
+
+  var CssParser = new WYMeditor.WymCssParser();
   if(this._options.stylesheet){
     CssParser.parse(jQuery.ajax({url: this._options.stylesheet,async:false}).responseText);
   }else{
@@ -1420,13 +1364,13 @@ WYMeditor.editor.prototype.skin = function() {
 
 /********** SELECTION API **********/
 
-function WymSelection() {
+WYMeditor.WymSelection = function() {
     this.test = "test from WymSelection";
 };
 
 
-WymSelection.prototype = {
-    /* The following properties where set in the browser specific file (in
+WYMeditor.WymSelection.prototype = {
+    /* The following properties are set in the browser specific file (in
      * getSelection()):
      * this.original
      * this.startNode
@@ -1457,8 +1401,8 @@ WymSelection.prototype = {
             // 2. offset needs to be 0 to be at the start (or the previous
             //    characters are whitespaces)
             if ((startNode.previousSibling
-                    && !isPhantomNode(startNode.previousSibling))
-                        || (this.startOffset != 0 && !isPhantomString(
+                    && !WYMeditor.isPhantomNode(startNode.previousSibling))
+                        || (this.startOffset != 0 && !WYMeditor.isPhantomString(
                             startNode.data.substring(0, this.startOffset))))
                 return false;
             else
@@ -1476,7 +1420,7 @@ WymSelection.prototype = {
             // node isn't first child => cursor can't be at the beginning
             if (firstChild[0] != n[0]
                     || (firstChild[0].previousSibling
-                        && !isPhantomNode(firstChild[0].previousSibling)))
+                        && !WYMeditor.isPhantomNode(firstChild[0].previousSibling)))
                 return false;
         }
 
@@ -1520,7 +1464,7 @@ WymSelection.prototype = {
             var endNode = this.endNode;
             if (endNode.nodeType == WYMeditor.NODE.TEXT) {
                 if ((endNode.nextSibling
-                        && !isPhantomNode(endNode.nextSibling))
+                        && !WYMeditor.isPhantomNode(endNode.nextSibling))
                             || (this.endOffset != endNode.data.length))
                     return false;
                 else
@@ -1536,7 +1480,7 @@ WymSelection.prototype = {
                 // sometimes also whitespacenodes which aren't phatom nodes
                 // get stripped, but this is ok, as this is a wysiwym editor
                 if ((lastChild != n) ||
-                        (isPhantomNode(lastChild)
+                        (WYMeditor.isPhantomNode(lastChild)
                         && lastChild.previousSibling != n)) {
                     return false;
                 }
@@ -1550,6 +1494,2168 @@ WymSelection.prototype = {
     }
 };
 
+/********** XHTML LEXER/PARSER **********/
+
+/*
+* @name xml
+* @description Use these methods to generate XML and XHTML compliant tags and
+* escape tag attributes correctly
+* @author Bermi Ferrer - http://bermi.org
+* @author David Heinemeier Hansson http://loudthinking.com
+*/
+WYMeditor.XmlHelper = function()
+{
+  this._entitiesDiv = document.createElement('div');
+  return this;
+};
+
+
+/*
+* @name tag
+* @description
+* Returns an empty HTML tag of type *name* which by default is XHTML
+* compliant. Setting *open* to true will create an open tag compatible
+* with HTML 4.0 and below. Add HTML attributes by passing an attributes
+* array to *options*. For attributes with no value like (disabled and
+* readonly), give it a value of true in the *options* array.
+*
+* Examples:
+*
+*   this.tag('br')
+*    # => <br />
+*   this.tag ('br', false, true)
+*    # => <br>
+*   this.tag ('input', jQuery({type:'text',disabled:true }) )
+*    # => <input type="text" disabled="disabled" />
+*/
+WYMeditor.XmlHelper.prototype.tag = function(name, options, open)
+{
+  options = options || false;
+  open = open || false;
+  return '<'+name+(options ? this.tagOptions(options) : '')+(open ? '>' : ' />');
+};
+
+/*
+* @name contentTag
+* @description
+* Returns a XML block tag of type *name* surrounding the *content*. Add
+* XML attributes by passing an attributes array to *options*. For attributes
+* with no value like (disabled and readonly), give it a value of true in
+* the *options* array. You can use symbols or strings for the attribute names.
+*
+*   this.contentTag ('p', 'Hello world!' )
+*    # => <p>Hello world!</p>
+*   this.contentTag('div', this.contentTag('p', "Hello world!"), jQuery({class : "strong"}))
+*    # => <div class="strong"><p>Hello world!</p></div>
+*   this.contentTag("select", options, jQuery({multiple : true}))
+*    # => <select multiple="multiple">...options...</select>
+*/
+WYMeditor.XmlHelper.prototype.contentTag = function(name, content, options)
+{
+  options = options || false;
+  return '<'+name+(options ? this.tagOptions(options) : '')+'>'+content+'</'+name+'>';
+};
+
+/*
+* @name cdataSection
+* @description
+* Returns a CDATA section for the given +content+.  CDATA sections
+* are used to escape blocks of text containing characters which would
+* otherwise be recognized as markup. CDATA sections begin with the string
+* <tt>&lt;![CDATA[</tt> and } with (and may not contain) the string
+* <tt>]]></tt>.
+*/
+WYMeditor.XmlHelper.prototype.cdataSection = function(content)
+{
+  return '<![CDATA['+content+']]>';
+};
+
+
+/*
+* @name escapeOnce
+* @description
+* Returns the escaped +xml+ without affecting existing escaped entities.
+*
+*  this.escapeOnce( "1 > 2 &amp; 3")
+*    # => "1 &gt; 2 &amp; 3"
+*/
+WYMeditor.XmlHelper.prototype.escapeOnce = function(xml)
+{
+  return this._fixDoubleEscape(this.escapeEntities(xml));
+};
+
+/*
+* @name _fixDoubleEscape
+* @description
+* Fix double-escaped entities, such as &amp;amp;, &amp;#123;, etc.
+*/
+WYMeditor.XmlHelper.prototype._fixDoubleEscape = function(escaped)
+{
+  return escaped.replace(/&amp;([a-z]+|(#\d+));/ig, "&$1;");
+};
+
+/*
+* @name tagOptions
+* @description
+* Takes an array like the one generated by Tag.parseAttributes
+*  [["src", "http://www.editam.com/?a=b&c=d&amp;f=g"], ["title", "Editam, <Simplified> CMS"]]
+* or an object like {src:"http://www.editam.com/?a=b&c=d&amp;f=g", title:"Editam, <Simplified> CMS"}
+* and returns a string properly escaped like
+* ' src = "http://www.editam.com/?a=b&amp;c=d&amp;f=g" title = "Editam, &lt;Simplified&gt; CMS"'
+* which is valid for strict XHTML
+*/
+WYMeditor.XmlHelper.prototype.tagOptions = function(options)
+{
+  var xml = this;
+  xml._formated_options = '';
+
+  for (var key in options) {
+    var formated_options = '';
+    var value = options[key];
+    if(typeof value != 'function' && value.length > 0) {
+
+      if(parseInt(key) == key && typeof value == 'object'){
+        key = value.shift();
+        value = value.pop();
+      }
+      if(key != '' && value != ''){
+        xml._formated_options += ' '+key+'="'+xml.escapeOnce(value)+'"';
+      }
+    }
+  }
+  return xml._formated_options;
+};
+
+/*
+* @name escapeEntities
+* @description
+* Escapes XML/HTML entities <, >, & and ". If seccond parameter is set to false it
+* will not escape ". If set to true it will also escape '
+*/
+WYMeditor.XmlHelper.prototype.escapeEntities = function(string, escape_quotes)
+{
+  this._entitiesDiv.innerHTML = string;
+  this._entitiesDiv.textContent = string;
+  var result = this._entitiesDiv.innerHTML;
+  if(typeof escape_quotes == 'undefined'){
+    if(escape_quotes != false) result = result.replace('"', '&quot;');
+    if(escape_quotes == true)  result = result.replace('"', '&#039;');
+  }
+  return result;
+};
+
+/*
+* Parses a string conatining tag attributes and values an returns an array formated like
+*  [["src", "http://www.editam.com"], ["title", "Editam, Simplified CMS"]]
+*/
+WYMeditor.XmlHelper.prototype.parseAttributes = function(tag_attributes)
+{
+  // Use a compounded regex to match single quoted, double quoted and unquoted attribute pairs
+  var result = [];
+  var matches = tag_attributes.split(/((=\s*")(")("))|((=\s*\')(\')(\'))|((=\s*[^>\s]*))/g);
+  if(matches.toString() != tag_attributes){
+    for (var k in matches) {
+      var v = matches[k];
+      if(typeof v != 'function' && v.length != 0){
+        var re = new RegExp('(\\w+)\\s*'+v);
+        if(match = tag_attributes.match(re) ){
+          var value = v.replace(/^[\s=]+/, "");
+          var delimiter = value.charAt(0);
+          delimiter = delimiter == '"' ? '"' : (delimiter=="'"?"'":'');
+          if(delimiter != ''){
+            value = delimiter == '"' ? value.replace(/^"|"+$/g, '') :  value.replace(/^'|'+$/g, '');
+          }
+          tag_attributes = tag_attributes.replace(match[0],'');
+          result.push([match[1] , value]);
+        }
+      }
+    }
+  }
+  return result;
+};
+
+/**
+* XhtmlValidator for validating tag attributes
+*
+* @author Bermi Ferrer - http://bermi.org
+*/
+WYMeditor.XhtmlValidator = {
+  "_attributes":
+  {
+    "core":
+    {
+      "except":[
+      "base",
+      "head",
+      "html",
+      "meta",
+      "param",
+      "script",
+      "style",
+      "title"
+      ],
+      "attributes":[
+      "class",
+      "id",
+      "style",
+      "title",
+      "accesskey",
+      "tabindex"
+      ]
+    },
+    "language":
+    {
+      "except":[
+      "base",
+      "br",
+      "hr",
+      "iframe",
+      "param",
+      "script"
+      ],
+      "attributes":
+      {
+        "dir":[
+        "ltr",
+        "rtl"
+        ],
+        "0":"lang",
+        "1":"xml:lang"
+      }
+    },
+    "keyboard":
+    {
+      "attributes":
+      {
+        "accesskey":/^(\w){1}$/,
+        "tabindex":/^(\d)+$/
+      }
+    }
+  },
+  "_events":
+  {
+    "window":
+    {
+      "only":[
+      "body"
+      ],
+      "attributes":[
+      "onload",
+      "onunload"
+      ]
+    },
+    "form":
+    {
+      "only":[
+      "form",
+      "input",
+      "textarea",
+      "select",
+      "a",
+      "label",
+      "button"
+      ],
+      "attributes":[
+      "onchange",
+      "onsubmit",
+      "onreset",
+      "onselect",
+      "onblur",
+      "onfocus"
+      ]
+    },
+    "keyboard":
+    {
+      "except":[
+      "base",
+      "bdo",
+      "br",
+      "frame",
+      "frameset",
+      "head",
+      "html",
+      "iframe",
+      "meta",
+      "param",
+      "script",
+      "style",
+      "title"
+      ],
+      "attributes":[
+      "onkeydown",
+      "onkeypress",
+      "onkeyup"
+      ]
+    },
+    "mouse":
+    {
+      "except":[
+      "base",
+      "bdo",
+      "br",
+      "head",
+      "html",
+      "meta",
+      "param",
+      "script",
+      "style",
+      "title"
+      ],
+      "attributes":[
+      "onclick",
+      "ondblclick",
+      "onmousedown",
+      "onmousemove",
+      "onmouseover",
+      "onmouseout",
+      "onmouseup"
+      ]
+    }
+  },
+  "_tags":
+  {
+    "a":
+    {
+      "attributes":
+      {
+        "0":"charset",
+        "1":"coords",
+        "2":"href",
+        "3":"hreflang",
+        "4":"name",
+        "rel":/^(alternate|designates|stylesheet|start|next|prev|contents|index|glossary|copyright|chapter|section|subsection|appendix|help|bookmark| |shortcut|icon)+$/,
+        "rev":/^(alternate|designates|stylesheet|start|next|prev|contents|index|glossary|copyright|chapter|section|subsection|appendix|help|bookmark| |shortcut|icon)+$/,
+        "shape":/^(rect|rectangle|circ|circle|poly|polygon)$/,
+        "5":"type"
+      }
+    },
+    "0":"abbr",
+    "1":"acronym",
+    "2":"address",
+    "area":
+    {
+      "attributes":
+      {
+        "0":"alt",
+        "1":"coords",
+        "2":"href",
+        "nohref":/^(true|false)$/,
+        "shape":/^(rect|rectangle|circ|circle|poly|polygon)$/
+      },
+      "required":[
+      "alt"
+      ]
+    },
+    "3":"b",
+    "base":
+    {
+      "attributes":[
+      "href"
+      ],
+      "required":[
+      "href"
+      ]
+    },
+    "bdo":
+    {
+      "attributes":
+      {
+        "dir":/^(ltr|rtl)$/
+      },
+      "required":[
+      "dir"
+      ]
+    },
+    "4":"big",
+    "blockquote":
+    {
+      "attributes":[
+      "cite"
+      ]
+    },
+    "5":"body",
+    "6":"br",
+    "button":
+    {
+      "attributes":
+      {
+        "disabled":/^(disabled)$/,
+        "type":/^(button|reset|submit)$/,
+        "0":"value"
+      },
+      "inside":"form"
+    },
+    "7":"caption",
+    "8":"cite",
+    "9":"code",
+    "col":
+    {
+      "attributes":
+      {
+        "align":/^(right|left|center|justify)$/,
+        "0":"char",
+        "1":"charoff",
+        "span":/^(\d)+$/,
+        "valign":/^(top|middle|bottom|baseline)$/,
+        "2":"width"
+      },
+      "inside":"colgroup"
+    },
+    "colgroup":
+    {
+      "attributes":
+      {
+        "align":/^(right|left|center|justify)$/,
+        "0":"char",
+        "1":"charoff",
+        "span":/^(\d)+$/,
+        "valign":/^(top|middle|bottom|baseline)$/,
+        "2":"width"
+      }
+    },
+    "10":"dd",
+    "del":
+    {
+      "attributes":
+      {
+        "0":"cite",
+        "datetime":/^([0-9]){8}/
+      }
+    },
+    "11":"div",
+    "12":"dfn",
+    "13":"dl",
+    "14":"dt",
+    "15":"em",
+    "fieldset":
+    {
+      "inside":"form"
+    },
+    "form":
+    {
+      "attributes":
+      {
+        "0":"action",
+        "1":"accept",
+        "2":"accept-charset",
+        "3":"enctype",
+        "method":/^(get|post)$/
+      },
+      "required":[
+      "action"
+      ]
+    },
+    "head":
+    {
+      "attributes":[
+      "profile"
+      ]
+    },
+    "16":"h1",
+    "17":"h2",
+    "18":"h3",
+    "19":"h4",
+    "20":"h5",
+    "21":"h6",
+    "22":"hr",
+    "html":
+    {
+      "attributes":[
+      "xmlns"
+      ]
+    },
+    "23":"i",
+    "img":
+    {
+      "attributes":[
+      "alt",
+      "src",
+      "height",
+      "ismap",
+      "longdesc",
+      "usemap",
+      "width"
+      ],
+      "required":[
+      "alt",
+      "src"
+      ]
+    },
+    "input":
+    {
+      "attributes":
+      {
+        "0":"accept",
+        "1":"alt",
+        "checked":/^(checked)$/,
+        "disabled":/^(disabled)$/,
+        "maxlength":/^(\d)+$/,
+        "2":"name",
+        "readonly":/^(readonly)$/,
+        "size":/^(\d)+$/,
+        "3":"src",
+        "type":/^(button|checkbox|file|hidden|image|password|radio|reset|submit|text)$/,
+        "4":"value"
+      },
+      "inside":"form"
+    },
+    "ins":
+    {
+      "attributes":
+      {
+        "0":"cite",
+        "datetime":/^([0-9]){8}/
+      }
+    },
+    "24":"kbd",
+    "label":
+    {
+      "attributes":[
+      "for"
+      ],
+      "inside":"form"
+    },
+    "25":"legend",
+    "26":"li",
+    "link":
+    {
+      "attributes":
+      {
+        "0":"charset",
+        "1":"href",
+        "2":"hreflang",
+        "media":/^(all|braille|print|projection|screen|speech|,|;| )+$/i,
+        "rel":/^(alternate|appendix|bookmark|chapter|contents|copyright|glossary|help|home|index|next|prev|section|start|stylesheet|subsection| |shortcut|icon)+$/i,
+        "rev":/^(alternate|appendix|bookmark|chapter|contents|copyright|glossary|help|home|index|next|prev|section|start|stylesheet|subsection| |shortcut|icon)+$/i,
+        "3":"type"
+      },
+      "inside":"head"
+    },
+    "map":
+    {
+      "attributes":[
+      "id",
+      "name"
+      ],
+      "required":[
+      "id"
+      ]
+    },
+    "meta":
+    {
+      "attributes":
+      {
+        "0":"content",
+        "http-equiv":/^(content\-type|expires|refresh|set\-cookie)$/i,
+        "1":"name",
+        "2":"scheme"
+      },
+      "required":[
+      "content"
+      ]
+    },
+    "27":"noscript",
+    "object":
+    {
+      "attributes":[
+      "archive",
+      "classid",
+      "codebase",
+      "codetype",
+      "data",
+      "declare",
+      "height",
+      "name",
+      "standby",
+      "type",
+      "usemap",
+      "width"
+      ]
+    },
+    "28":"ol",
+    "optgroup":
+    {
+      "attributes":
+      {
+        "0":"label",
+        "disabled": /^(disabled)$/
+      },
+      "required":[
+      "label"
+      ]
+    },
+    "option":
+    {
+      "attributes":
+      {
+        "0":"label",
+        "disabled":/^(disabled)$/,
+        "selected":/^(selected)$/,
+        "1":"value"
+      },
+      "inside":"select"
+    },
+    "29":"p",
+    "param":
+    {
+      "attributes":
+      {
+        "0":"type",
+        "valuetype":/^(data|ref|object)$/,
+        "1":"valuetype",
+        "2":"value"
+      },
+      "required":[
+      "name"
+      ]
+    },
+    "30":"pre",
+    "q":
+    {
+      "attributes":[
+      "cite"
+      ]
+    },
+    "31":"samp",
+    "script":
+    {
+      "attributes":
+      {
+        "type":/^(text\/ecmascript|text\/javascript|text\/jscript|text\/vbscript|text\/vbs|text\/xml)$/,
+        "0":"charset",
+        "defer":/^(defer)$/,
+        "1":"src"
+      },
+      "required":[
+      "type"
+      ]
+    },
+    "select":
+    {
+      "attributes":
+      {
+        "disabled":/^(disabled)$/,
+        "multiple":/^(multiple)$/,
+        "0":"name",
+        "1":"size"
+      },
+      "inside":"form"
+    },
+    "32":"small",
+    "33":"span",
+    "34":"strong",
+    "style":
+    {
+      "attributes":
+      {
+        "0":"type",
+        "media":/^(screen|tty|tv|projection|handheld|print|braille|aural|all)$/
+      },
+      "required":[
+      "type"
+      ]
+    },
+    "35":"sub",
+    "36":"sup",
+    "table":
+    {
+      "attributes":
+      {
+        "0":"border",
+        "1":"cellpadding",
+        "2":"cellspacing",
+        "frame":/^(void|above|below|hsides|lhs|rhs|vsides|box|border)$/,
+        "rules":/^(none|groups|rows|cols|all)$/,
+        "3":"summary",
+        "4":"width"
+      }
+    },
+    "tbody":
+    {
+      "attributes":
+      {
+        "align":/^(right|left|center|justify)$/,
+        "0":"char",
+        "1":"charoff",
+        "valign":/^(top|middle|bottom|baseline)$/
+      }
+    },
+    "td":
+    {
+      "attributes":
+      {
+        "0":"abbr",
+        "align":/^(left|right|center|justify|char)$/,
+        "1":"axis",
+        "2":"char",
+        "3":"charoff",
+        "colspan":/^(\d)+$/,
+        "4":"headers",
+        "rowspan":/^(\d)+$/,
+        "scope":/^(col|colgroup|row|rowgroup)$/,
+        "valign":/^(top|middle|bottom|baseline)$/
+      }
+    },
+    "textarea":
+    {
+      "attributes":[
+      "cols",
+      "rows",
+      "disabled",
+      "name",
+      "readonly"
+      ],
+      "required":[
+      "cols",
+      "rows"
+      ],
+      "inside":"form"
+    },
+    "tfoot":
+    {
+      "attributes":
+      {
+        "align":/^(right|left|center|justify)$/,
+        "0":"char",
+        "1":"charoff",
+        "valign":/^(top|middle|bottom)$/,
+        "2":"baseline"
+      }
+    },
+    "th":
+    {
+      "attributes":
+      {
+        "0":"abbr",
+        "align":/^(left|right|center|justify|char)$/,
+        "1":"axis",
+        "2":"char",
+        "3":"charoff",
+        "colspan":/^(\d)+$/,
+        "4":"headers",
+        "rowspan":/^(\d)+$/,
+        "scope":/^(col|colgroup|row|rowgroup)$/,
+        "valign":/^(top|middle|bottom|baseline)$/
+      }
+    },
+    "thead":
+    {
+      "attributes":
+      {
+        "align":/^(right|left|center|justify)$/,
+        "0":"char",
+        "1":"charoff",
+        "valign":/^(top|middle|bottom|baseline)$/
+      }
+    },
+    "37":"title",
+    "tr":
+    {
+      "attributes":
+      {
+        "align":/^(right|left|center|justify|char)$/,
+        "0":"char",
+        "1":"charoff",
+        "valign":/^(top|middle|bottom|baseline)$/
+      }
+    },
+    "38":"tt",
+    "39":"ul",
+    "40":"var"
+  },
+
+  // Temporary skiped attributes
+  skiped_attributes : [],
+  skiped_attribute_values : [],
+
+  getValidTagAttributes: function(tag, attributes)
+  {
+    var valid_attributes = {};
+    var possible_attributes = this.getPossibleTagAttributes(tag);
+    for(var attribute in attributes) {
+      var value = attributes[attribute];
+      if(!this.skiped_attributes.contains(attribute) && !this.skiped_attribute_values.contains(value)){
+        if (typeof value != 'function' && possible_attributes.contains(attribute)) {
+          if (this.doesAttributeNeedsValidation(tag, attribute)) {
+            if(this.validateAttribute(tag, attribute, value)){
+              valid_attributes[attribute] = value;
+            }
+          }else{
+            valid_attributes[attribute] = value;
+          }
+        }
+      }
+    }
+    return valid_attributes;
+  },
+  getUniqueAttributesAndEventsForTag : function(tag)
+  {
+    var result = [];
+
+    if (this._tags[tag] && this._tags[tag]['attributes']) {
+      for (k in this._tags[tag]['attributes']) {
+        result.push(parseInt(k) == k ? this._tags[tag]['attributes'][k] : k);
+      }
+    }
+    return result;
+  },
+  getDefaultAttributesAndEventsForTags : function()
+  {
+    var result = [];
+    for (var key in this._events){
+      result.push(this._events[key]);
+    }
+    for (var key in this._attributes){
+      result.push(this._attributes[key]);
+    }
+    return result;
+  },
+  isValidTag : function(tag)
+  {
+    if(this._tags[tag]){
+      return true;
+    }
+    for(var key in this._tags){
+      if(this._tags[key] == tag){
+        return true;
+      }
+    }
+    return false;
+  },
+  getDefaultAttributesAndEventsForTag : function(tag)
+  {
+    var default_attributes = [];
+    if (this.isValidTag(tag)) {
+      var default_attributes_and_events = this.getDefaultAttributesAndEventsForTags();
+
+      for(var key in default_attributes_and_events) {
+        var defaults = default_attributes_and_events[key];
+        if(typeof defaults == 'object'){
+
+          if ((defaults['except'] && defaults['except'].contains(tag)) || (defaults['only'] && !defaults['only'].contains(tag))) {
+            continue;
+          }
+
+          var tag_defaults = defaults['attributes'] ? defaults['attributes'] : defaults['events'];
+          for(k in tag_defaults) {
+            default_attributes.push(typeof tag_defaults[k] != 'string' ? k : tag_defaults[k]);
+          }
+        }
+      }
+    }
+    return default_attributes;
+  },
+  doesAttributeNeedsValidation: function(tag, attribute)
+  {
+    return this._tags[tag] && ((this._tags[tag]['attributes'] && this._tags[tag]['attributes'][attribute]) || (this._tags[tag]['required'] && this._tags[tag]['required'].contains(attribute)));
+  },
+  validateAttribute : function(tag, attribute, value)
+  {
+    if ( this._tags[tag] &&
+      (this._tags[tag]['attributes'] && this._tags[tag]['attributes'][attribute] && value.length > 0 && !value.match(this._tags[tag]['attributes'][attribute])) || // invalid format
+      (this._tags[tag] && this._tags[tag]['required'] && this._tags[tag]['required'].contains(attribute) && value.length == 0) // required attribute
+    ) {
+      return false;
+    }
+    return this._tags[tag] != undefined;
+  },
+  getPossibleTagAttributes : function(tag)
+  {
+    if (!this._possible_tag_attributes) {
+      this._possible_tag_attributes = {};
+    }
+    if (!this._possible_tag_attributes[tag]) {
+      this._possible_tag_attributes[tag] = this.getUniqueAttributesAndEventsForTag(tag).concat(this.getDefaultAttributesAndEventsForTag(tag));
+    }
+    return this._possible_tag_attributes[tag];
+  }
+};
+
+
+/**
+*    Compounded regular expression. Any of
+*    the contained patterns could match and
+*    when one does, it's label is returned.
+*
+*    Constructor. Starts with no patterns.
+*    @param boolean case    True for case sensitive, false
+*                            for insensitive.
+*    @access public
+*    @author Marcus Baker (http://lastcraft.com)
+*    @author Bermi Ferrer (http://bermi.org)
+*/
+WYMeditor.ParallelRegex = function(case_sensitive)
+{
+  this._case = case_sensitive;
+  this._patterns = [];
+  this._labels = [];
+  this._regex = null;
+  return this;
+};
+
+
+/**
+*    Adds a pattern with an optional label.
+*    @param string pattern      Perl style regex, but ( and )
+*                                lose the usual meaning.
+*    @param string label        Label of regex to be returned
+*                                on a match.
+*    @access public
+*/
+WYMeditor.ParallelRegex.prototype.addPattern = function(pattern, label)
+{
+  label = label || true;
+  var count = this._patterns.length;
+  this._patterns[count] = pattern;
+  this._labels[count] = label;
+  this._regex = null;
+};
+
+/**
+*    Attempts to match all patterns at once against
+*    a string.
+*    @param string subject      String to match against.
+*
+*    @return boolean             True on success.
+*    @return string match         First matched portion of
+*                                subject.
+*    @access public
+*/
+WYMeditor.ParallelRegex.prototype.match = function(subject)
+{
+  if (this._patterns.length == 0) {
+    return [false, ''];
+  }
+  var matches = subject.match(this._getCompoundedRegex());
+
+  if(!matches){
+    return [false, ''];
+  }
+  var match = matches[0];
+  for (var i = 1; i < matches.length; i++) {
+    if (matches[i]) {
+      return [this._labels[i-1], match];
+    }
+  }
+  return [true, matches[0]];
+};
+
+/**
+*    Compounds the patterns into a single
+*    regular expression separated with the
+*    "or" operator. Caches the regex.
+*    Will automatically escape (, ) and / tokens.
+*    @param array patterns    List of patterns in order.
+*    @access private
+*/
+WYMeditor.ParallelRegex.prototype._getCompoundedRegex = function()
+{
+  if (this._regex == null) {
+    for (var i = 0, count = this._patterns.length; i < count; i++) {
+      this._patterns[i] = '(' + this._untokenizeRegex(this._tokenizeRegex(this._patterns[i]).replace(/([\/\(\)])/g,'\\$1')) + ')';
+    }
+    this._regex = new RegExp(this._patterns.join("|") ,this._getPerlMatchingFlags());
+  }
+  return this._regex;
+};
+
+/**
+* Escape lookahead/lookbehind blocks
+*/
+WYMeditor.ParallelRegex.prototype._tokenizeRegex = function(regex)
+{
+  return regex.
+  replace(/\(\?(i|m|s|x|U)\)/,     '~~~~~~Tk1\$1~~~~~~').
+  replace(/\(\?(\-[i|m|s|x|U])\)/, '~~~~~~Tk2\$1~~~~~~').
+  replace(/\(\?\=(.*)\)/,          '~~~~~~Tk3\$1~~~~~~').
+  replace(/\(\?\!(.*)\)/,          '~~~~~~Tk4\$1~~~~~~').
+  replace(/\(\?\<\=(.*)\)/,        '~~~~~~Tk5\$1~~~~~~').
+  replace(/\(\?\<\!(.*)\)/,        '~~~~~~Tk6\$1~~~~~~').
+  replace(/\(\?\:(.*)\)/,          '~~~~~~Tk7\$1~~~~~~');
+};
+
+/**
+* Unscape lookahead/lookbehind blocks
+*/
+WYMeditor.ParallelRegex.prototype._untokenizeRegex = function(regex)
+{
+  return regex.
+  replace(/~~~~~~Tk1(.{1})~~~~~~/,    "(?\$1)").
+  replace(/~~~~~~Tk2(.{2})~~~~~~/,    "(?\$1)").
+  replace(/~~~~~~Tk3(.*)~~~~~~/,      "(?=\$1)").
+  replace(/~~~~~~Tk4(.*)~~~~~~/,      "(?!\$1)").
+  replace(/~~~~~~Tk5(.*)~~~~~~/,      "(?<=\$1)").
+  replace(/~~~~~~Tk6(.*)~~~~~~/,      "(?<!\$1)").
+  replace(/~~~~~~Tk7(.*)~~~~~~/,      "(?:\$1)");
+};
+
+
+/**
+*    Accessor for perl regex mode flags to use.
+*    @return string       Perl regex flags.
+*    @access private
+*/
+WYMeditor.ParallelRegex.prototype._getPerlMatchingFlags = function()
+{
+  return (this._case ? "m" : "mi");
+};
+
+
+
+/**
+*    States for a stack machine.
+*
+*    Constructor. Starts in named state.
+*    @param string start        Starting state name.
+*    @access public
+*    @author Marcus Baker (http://lastcraft.com)
+*    @author Bermi Ferrer (http://bermi.org)
+*/
+WYMeditor.StateStack = function(start)
+{
+  this._stack = [start];
+  return this;
+};
+
+/**
+*    Accessor for current state.
+*    @return string       State.
+*    @access public
+*/
+WYMeditor.StateStack.prototype.getCurrent = function()
+{
+  return this._stack[this._stack.length - 1];
+};
+
+/**
+*    Adds a state to the stack and sets it
+*    to be the current state.
+*    @param string state        New state.
+*    @access public
+*/
+WYMeditor.StateStack.prototype.enter = function(state)
+{
+  this._stack.push(state);
+};
+
+/**
+*    Leaves the current state and reverts
+*    to the previous one.
+*    @return boolean    False if we drop off
+*                       the bottom of the list.
+*    @access public
+*/
+WYMeditor.StateStack.prototype.leave = function()
+{
+  if (this._stack.length == 1) {
+    return false;
+  }
+  this._stack.pop();
+  return true;
+};
+
+
+// GLOBALS
+WYMeditor.LEXER_ENTER = 1;
+WYMeditor.LEXER_MATCHED = 2;
+WYMeditor.LEXER_UNMATCHED = 3;
+WYMeditor.LEXER_EXIT = 4;
+WYMeditor.LEXER_SPECIAL = 5;
+
+
+/**
+*    Accepts text and breaks it into tokens.
+*    Some optimisation to make the sure the
+*    content is only scanned by the PHP regex
+*    parser once. Lexer modes must not start
+*    with leading underscores.
+*
+*    Sets up the lexer in case insensitive matching
+*    by default.
+*    @param Parser parser  Handling strategy by reference.
+*    @param string start            Starting handler.
+*    @param boolean case            True for case sensitive.
+*    @access public
+*    @author Marcus Baker (http://lastcraft.com)
+*    @author Bermi Ferrer (http://bermi.org)
+*/
+WYMeditor.Lexer = function(parser, start, case_sensitive)
+{
+  start = start || 'accept';
+  this._case = case_sensitive || false;
+  this._regexes = {};
+  this._parser = parser;
+  this._mode = new WYMeditor.StateStack(start);
+  this._mode_handlers = {};
+  this._mode_handlers[start] = start;
+  return this;
+};
+
+/**
+*    Adds a token search pattern for a particular
+*    parsing mode. The pattern does not change the
+*    current mode.
+*    @param string pattern      Perl style regex, but ( and )
+*                                lose the usual meaning.
+*    @param string mode         Should only apply this
+*                                pattern when dealing with
+*                                this type of input.
+*    @access public
+*/
+WYMeditor.Lexer.prototype.addPattern = function(pattern, mode)
+{
+  var mode = mode || "accept";
+  if (this._regexes[mode] == undefined) {
+    this._regexes[mode] = new WYMeditor.ParallelRegex(this._case);
+  }
+  this._regexes[mode].addPattern(pattern);
+  if (this._mode_handlers[mode] == undefined) {
+    this._mode_handlers[mode] = mode;
+  }
+};
+
+/**
+*    Adds a pattern that will enter a new parsing
+*    mode. Useful for entering parenthesis, strings,
+*    tags, etc.
+*    @param string pattern      Perl style regex, but ( and )
+*                                lose the usual meaning.
+*    @param string mode         Should only apply this
+*                                pattern when dealing with
+*                                this type of input.
+*    @param string new_mode     Change parsing to this new
+*                                nested mode.
+*    @access public
+*/
+WYMeditor.Lexer.prototype.addEntryPattern = function(pattern, mode, new_mode)
+{
+  if (this._regexes[mode] == undefined) {
+    this._regexes[mode] = new WYMeditor.ParallelRegex(this._case);
+  }
+  this._regexes[mode].addPattern(pattern, new_mode);
+  if (this._mode_handlers[new_mode] == undefined) {
+    this._mode_handlers[new_mode] = new_mode;
+  }
+};
+
+/**
+*    Adds a pattern that will exit the current mode
+*    and re-enter the previous one.
+*    @param string pattern      Perl style regex, but ( and )
+*                                lose the usual meaning.
+*    @param string mode         Mode to leave.
+*    @access public
+*/
+WYMeditor.Lexer.prototype.addExitPattern = function(pattern, mode)
+{
+  if (this._regexes[mode] == undefined) {
+    this._regexes[mode] = new WYMeditor.ParallelRegex(this._case);
+  }
+  this._regexes[mode].addPattern(pattern, "__exit");
+  if (this._mode_handlers[mode] == undefined) {
+    this._mode_handlers[mode] = mode;
+  }
+};
+
+/**
+*    Adds a pattern that has a special mode. Acts as an entry
+*    and exit pattern in one go, effectively calling a special
+*    parser handler for this token only.
+*    @param string pattern      Perl style regex, but ( and )
+*                                lose the usual meaning.
+*    @param string mode         Should only apply this
+*                                pattern when dealing with
+*                                this type of input.
+*    @param string special      Use this mode for this one token.
+*    @access public
+*/
+WYMeditor.Lexer.prototype.addSpecialPattern =  function(pattern, mode, special)
+{
+  if (this._regexes[mode] == undefined) {
+    this._regexes[mode] = new WYMeditor.ParallelRegex(this._case);
+  }
+  this._regexes[mode].addPattern(pattern, '_'+special);
+  if (this._mode_handlers[special] == undefined) {
+    this._mode_handlers[special] = special;
+  }
+};
+
+/**
+*    Adds a mapping from a mode to another handler.
+*    @param string mode        Mode to be remapped.
+*    @param string handler     New target handler.
+*    @access public
+*/
+WYMeditor.Lexer.prototype.mapHandler = function(mode, handler)
+{
+  this._mode_handlers[mode] = handler;
+};
+
+/**
+*    Splits the page text into tokens. Will fail
+*    if the handlers report an error or if no
+*    content is consumed. If successful then each
+*    unparsed and parsed token invokes a call to the
+*    held listener.
+*    @param string raw        Raw HTML text.
+*    @return boolean           True on success, else false.
+*    @access public
+*/
+WYMeditor.Lexer.prototype.parse = function(raw)
+{
+  if (this._parser == undefined) {
+    return false;
+  }
+
+  var length = raw.length;
+  while (typeof (parsed = this._reduce(raw)) == 'object') {
+    var raw = parsed[0];
+    var unmatched = parsed[1];
+    var matched = parsed[2];
+    var mode = parsed[3];
+
+    if (! this._dispatchTokens(unmatched, matched, mode)) {
+      return false;
+    }
+
+    if (raw == '') {
+      return true;
+    }
+    if (raw.length == length) {
+      return false;
+    }
+    length = raw.length;
+  }
+  if (! parsed ) {
+    return false;
+  }
+
+  return this._invokeParser(raw, WYMeditor.LEXER_UNMATCHED);
+};
+
+/**
+*    Sends the matched token and any leading unmatched
+*    text to the parser changing the lexer to a new
+*    mode if one is listed.
+*    @param string unmatched    Unmatched leading portion.
+*    @param string matched      Actual token match.
+*    @param string mode         Mode after match. A boolean
+*                                false mode causes no change.
+*    @return boolean             False if there was any error
+*                                from the parser.
+*    @access private
+*/
+WYMeditor.Lexer.prototype._dispatchTokens = function(unmatched, matched, mode)
+{
+  mode = mode || false;
+
+  if (! this._invokeParser(unmatched, WYMeditor.LEXER_UNMATCHED)) {
+    return false;
+  }
+
+  if (typeof mode == 'boolean') {
+    return this._invokeParser(matched, WYMeditor.LEXER_MATCHED);
+  }
+  if (this._isModeEnd(mode)) {
+    if (! this._invokeParser(matched, WYMeditor.LEXER_EXIT)) {
+      return false;
+    }
+    return this._mode.leave();
+  }
+  if (this._isSpecialMode(mode)) {
+    this._mode.enter(this._decodeSpecial(mode));
+    if (! this._invokeParser(matched, WYMeditor.LEXER_SPECIAL)) {
+      return false;
+    }
+    return this._mode.leave();
+  }
+  this._mode.enter(mode);
+
+  return this._invokeParser(matched, WYMeditor.LEXER_ENTER);
+};
+
+/**
+*    Tests to see if the new mode is actually to leave
+*    the current mode and pop an item from the matching
+*    mode stack.
+*    @param string mode    Mode to test.
+*    @return boolean        True if this is the exit mode.
+*    @access private
+*/
+WYMeditor.Lexer.prototype._isModeEnd = function(mode)
+{
+  return (mode === "__exit");
+};
+
+/**
+*    Test to see if the mode is one where this mode
+*    is entered for this token only and automatically
+*    leaves immediately afterwoods.
+*    @param string mode    Mode to test.
+*    @return boolean        True if this is the exit mode.
+*    @access private
+*/
+WYMeditor.Lexer.prototype._isSpecialMode = function(mode)
+{
+  return (mode.substring(0,1) == "_");
+};
+
+/**
+*    Strips the magic underscore marking single token
+*    modes.
+*    @param string mode    Mode to decode.
+*    @return string         Underlying mode name.
+*    @access private
+*/
+WYMeditor.Lexer.prototype._decodeSpecial = function(mode)
+{
+  return mode.substring(1);
+};
+
+/**
+*    Calls the parser method named after the current
+*    mode. Empty content will be ignored. The lexer
+*    has a parser handler for each mode in the lexer.
+*    @param string content        Text parsed.
+*    @param boolean is_match      Token is recognised rather
+*                                  than unparsed data.
+*    @access private
+*/
+WYMeditor.Lexer.prototype._invokeParser = function(content, is_match)
+{
+
+  if (!/ +/.test(content) && ((content === '') || (content == false))) {
+    return true;
+  }
+  var current = this._mode.getCurrent();
+  var handler = this._mode_handlers[current];
+  var result;
+  eval('result = this._parser.' + handler + '(content, is_match);');
+  return result;
+};
+
+/**
+*    Tries to match a chunk of text and if successful
+*    removes the recognised chunk and any leading
+*    unparsed data. Empty strings will not be matched.
+*    @param string raw         The subject to parse. This is the
+*                               content that will be eaten.
+*    @return array/boolean      Three item list of unparsed
+*                               content followed by the
+*                               recognised token and finally the
+*                               action the parser is to take.
+*                               True if no match, false if there
+*                               is a parsing error.
+*    @access private
+*/
+WYMeditor.Lexer.prototype._reduce = function(raw)
+{
+  var matched = this._regexes[this._mode.getCurrent()].match(raw);
+  var match = matched[1];
+  var action = matched[0];
+  if (action) {
+    unparsed_character_count = raw.indexOf(match);
+    unparsed = raw.substr(0, unparsed_character_count);
+    raw = raw.substring(unparsed_character_count + match.length);
+    return [raw, unparsed, match, action];
+  }
+  return true;
+};
+
+
+
+/**
+* This are the rules for breaking the XHTML code into events
+* handled by the provided parser.
+*
+*    @author Marcus Baker (http://lastcraft.com)
+*    @author Bermi Ferrer (http://bermi.org)
+*/
+WYMeditor.XhtmlLexer = function(parser)
+{
+  jQuery.extend(this, new WYMeditor.Lexer(parser, 'Text'));
+
+  this.mapHandler('Text', 'Text');
+
+  this.addTokens();
+
+  this.init();
+
+  return this;
+};
+
+
+WYMeditor.XhtmlLexer.prototype.init = function()
+{
+};
+
+WYMeditor.XhtmlLexer.prototype.addTokens = function()
+{
+  this.addCommentTokens('Text');
+  this.addScriptTokens('Text');
+  this.addCssTokens('Text');
+  this.addTagTokens('Text');
+};
+
+WYMeditor.XhtmlLexer.prototype.addCommentTokens = function(scope)
+{
+  this.addEntryPattern("<!--", scope, 'Comment');
+  this.addExitPattern("-->", 'Comment');
+};
+
+WYMeditor.XhtmlLexer.prototype.addScriptTokens = function(scope)
+{
+  this.addEntryPattern("<script", scope, 'Script');
+  this.addExitPattern("</script>", 'Script');
+};
+
+WYMeditor.XhtmlLexer.prototype.addCssTokens = function(scope)
+{
+  this.addEntryPattern("<style", scope, 'Css');
+  this.addExitPattern("</style>", 'Css');
+};
+
+WYMeditor.XhtmlLexer.prototype.addTagTokens = function(scope)
+{
+  this.addSpecialPattern("<\\s*[a-z0-9:\-]+\\s*>", scope, 'OpeningTag');
+  this.addEntryPattern("<[a-z0-9:\-]+"+'[\\\/ \\\>]+', scope, 'OpeningTag');
+  this.addInTagDeclarationTokens('OpeningTag');
+
+  this.addSpecialPattern("</\\s*[a-z0-9:\-]+\\s*>", scope, 'ClosingTag');
+
+};
+
+WYMeditor.XhtmlLexer.prototype.addInTagDeclarationTokens = function(scope)
+{
+  this.addSpecialPattern('\\s+', scope, 'Ignore');
+
+  this.addAttributeTokens(scope);
+
+  this.addExitPattern('/>', scope);
+  this.addExitPattern('>', scope);
+
+};
+
+WYMeditor.XhtmlLexer.prototype.addAttributeTokens = function(scope)
+{
+  this.addSpecialPattern("\\s*[a-z-_0-9]+\\s*(?=\=)\\s*", scope, 'TagAttributes');
+
+  this.addEntryPattern('=\\s*"', scope, 'DoubleQuotedAttribute');
+  this.addPattern("\\\\\"", 'DoubleQuotedAttribute');
+  this.addExitPattern('"', 'DoubleQuotedAttribute');
+
+  this.addEntryPattern("=\\s*'", scope, 'SingleQuotedAttribute');
+  this.addPattern("\\\\'", 'SingleQuotedAttribute');
+  this.addExitPattern("'", 'SingleQuotedAttribute');
+
+  this.addSpecialPattern('=\\s*[^>\\s]*', scope, 'UnquotedAttribute');
+};
+
+
+
+/**
+* XHTML Parser.
+*
+* This XHTML parser will trigger the events available on on
+* current SaxListener
+*
+*    @author Bermi Ferrer (http://bermi.org)
+*/
+WYMeditor.XhtmlParser = function(Listener, mode)
+{
+  var mode = mode || 'Text';
+  this._Lexer = new WYMeditor.XhtmlLexer(this);
+  this._Listener = Listener;
+  this._mode = mode;
+  this._matches = [];
+  this._last_match = '';
+  this._current_match = '';
+
+  return this;
+};
+
+WYMeditor.XhtmlParser.prototype.parse = function(raw)
+{
+  this._Lexer.parse(this.beforeParsing(raw));
+  return this.afterParsing(this._Listener.getResult());
+};
+
+WYMeditor.XhtmlParser.prototype.beforeParsing = function(raw)
+{
+  if(raw.match(/class="MsoNormal"/) || raw.match(/ns = "urn:schemas-microsoft-com/)){
+    // Usefull for cleaning up content pasted from other sources (MSWord)
+    this._Listener.avoidStylingTagsAndAttributes();
+  }
+  return this._Listener.beforeParsing(raw);
+};
+
+WYMeditor.XhtmlParser.prototype.afterParsing = function(parsed)
+{
+  if(this._Listener._avoiding_tags_implicitly){
+    this._Listener.allowStylingTagsAndAttributes();
+  }
+  return this._Listener.afterParsing(parsed);
+};
+
+
+WYMeditor.XhtmlParser.prototype.Ignore = function(match, state)
+{
+  return true;
+};
+
+WYMeditor.XhtmlParser.prototype.Text = function(text)
+{
+  this._Listener.addContent(text);
+  return true;
+};
+
+WYMeditor.XhtmlParser.prototype.Comment = function(match, status)
+{
+  return this._addNonTagBlock(match, status, 'addComment');
+};
+
+WYMeditor.XhtmlParser.prototype.Script = function(match, status)
+{
+  return this._addNonTagBlock(match, status, 'addScript');
+};
+
+WYMeditor.XhtmlParser.prototype.Css = function(match, status)
+{
+  return this._addNonTagBlock(match, status, 'addCss');
+};
+
+WYMeditor.XhtmlParser.prototype._addNonTagBlock = function(match, state, type)
+{
+  switch (state){
+    case WYMeditor.LEXER_ENTER:
+    this._non_tag = match;
+    break;
+    case WYMeditor.LEXER_UNMATCHED:
+    this._non_tag += match;
+    break;
+    case WYMeditor.LEXER_EXIT:
+    switch(type) {
+      case 'addComment':
+      this._Listener.addComment(this._non_tag+match);
+      break;
+      case 'addScript':
+      this._Listener.addScript(this._non_tag+match);
+      break;
+      case 'addCss':
+      this._Listener.addCss(this._non_tag+match);
+      break;
+    }
+  }
+  return true;
+};
+
+WYMeditor.XhtmlParser.prototype.OpeningTag = function(match, state)
+{
+  switch (state){
+    case WYMeditor.LEXER_ENTER:
+    this._tag = this.normalizeTag(match);
+    this._tag_attributes = {};
+    break;
+    case WYMeditor.LEXER_SPECIAL:
+    this._callOpenTagListener(this.normalizeTag(match));
+    break;
+    case WYMeditor.LEXER_EXIT:
+    this._callOpenTagListener(this._tag, this._tag_attributes);
+  }
+  return true;
+};
+
+WYMeditor.XhtmlParser.prototype.ClosingTag = function(match, state)
+{
+  this._callCloseTagListener(this.normalizeTag(match));
+  return true;
+};
+
+WYMeditor.XhtmlParser.prototype._callOpenTagListener = function(tag, attributes)
+{
+  var  attributes = attributes || {};
+  this.autoCloseUnclosedBeforeNewOpening(tag);
+
+  if(this._Listener.isBlockTag(tag)){
+    this._Listener._tag_stack.push(tag);
+    this._Listener.fixNestingBeforeOpeningBlockTag(tag, attributes);
+    this._Listener.openBlockTag(tag, attributes);
+    this._increaseOpenTagCounter(tag);
+  }else if(this._Listener.isInlineTag(tag)){
+    this._Listener.inlineTag(tag, attributes);
+  }else{
+    this._Listener.openUnknownTag(tag, attributes);
+    this._increaseOpenTagCounter(tag);
+  }
+  this._Listener.last_tag = tag;
+  this._Listener.last_tag_opened = true;
+  this._Listener.last_tag_attributes = attributes;
+};
+
+WYMeditor.XhtmlParser.prototype._callCloseTagListener = function(tag)
+{
+  if(this._decreaseOpenTagCounter(tag)){
+    this.autoCloseUnclosedBeforeTagClosing(tag);
+
+    if(this._Listener.isBlockTag(tag)){
+      var expected_tag = this._Listener._tag_stack.pop();
+      if(expected_tag == false){
+        return;
+      }else if(expected_tag != tag){
+        tag = expected_tag;
+      }
+      this._Listener.closeBlockTag(tag);
+    }else{
+      this._Listener.closeUnknownTag(tag);
+    }
+  }else{
+    this._Listener.closeUnopenedTag(tag);
+  }
+  this._Listener.last_tag = tag;
+  this._Listener.last_tag_opened = false;
+};
+
+WYMeditor.XhtmlParser.prototype._increaseOpenTagCounter = function(tag)
+{
+  this._Listener._open_tags[tag] = this._Listener._open_tags[tag] || 0;
+  this._Listener._open_tags[tag]++;
+};
+
+WYMeditor.XhtmlParser.prototype._decreaseOpenTagCounter = function(tag)
+{
+  if(this._Listener._open_tags[tag]){
+    this._Listener._open_tags[tag]--;
+    if(this._Listener._open_tags[tag] == 0){
+      this._Listener._open_tags[tag] = undefined;
+    }
+    return true;
+  }
+  return false;
+};
+
+WYMeditor.XhtmlParser.prototype.autoCloseUnclosedBeforeNewOpening = function(new_tag)
+{
+  this._autoCloseUnclosed(new_tag, false);
+};
+
+WYMeditor.XhtmlParser.prototype.autoCloseUnclosedBeforeTagClosing = function(tag)
+{
+  this._autoCloseUnclosed(tag, true);
+};
+
+WYMeditor.XhtmlParser.prototype._autoCloseUnclosed = function(new_tag, closing)
+{
+  var closing = closing || false;
+  if(this._Listener._open_tags){
+    for (tag in this._Listener._open_tags) {
+      var counter = this._Listener._open_tags[tag];
+      if(counter > 0 && this._Listener.shouldCloseTagAutomatically(tag, new_tag, closing)){
+        this._callCloseTagListener(tag, true);
+      }
+    }
+  }
+};
+
+WYMeditor.XhtmlParser.prototype.getTagReplacements = function()
+{
+  return this._Listener.getTagReplacements();
+};
+
+WYMeditor.XhtmlParser.prototype.normalizeTag = function(tag)
+{
+  tag = tag.replace(/^([\s<\/>]*)|([\s<\/>]*)$/gm,'').toLowerCase();
+  tags = this._Listener.getTagReplacements();
+  if(tags[tag]){
+    return tags[tag];
+  }
+  return tag;
+};
+
+WYMeditor.XhtmlParser.prototype.TagAttributes = function(match, state)
+{
+  if(WYMeditor.LEXER_SPECIAL == state){
+    this._current_attribute = match;
+  }
+  return true;
+};
+
+WYMeditor.XhtmlParser.prototype.DoubleQuotedAttribute = function(match, state)
+{
+  if(WYMeditor.LEXER_UNMATCHED == state){
+    this._tag_attributes[this._current_attribute] = match;
+  }
+  return true;
+};
+
+WYMeditor.XhtmlParser.prototype.SingleQuotedAttribute = function(match, state)
+{
+  if(WYMeditor.LEXER_UNMATCHED == state){
+    this._tag_attributes[this._current_attribute] = match;
+  }
+  return true;
+};
+
+WYMeditor.XhtmlParser.prototype.UnquotedAttribute = function(match, state)
+{
+  this._tag_attributes[this._current_attribute] = match.replace(/^=/,'');
+  return true;
+};
+
+
+
+/**
+* XHTML Sax parser.
+*
+*    @author Bermi Ferrer (http://bermi.org)
+*/
+WYMeditor.XhtmlSaxListener = function()
+{
+  this.output = '';
+  this.helper = new WYMeditor.XmlHelper();
+  this._open_tags = {};
+  this.validator = WYMeditor.XhtmlValidator;
+  this._tag_stack = [];
+  this.avoided_tags = [];
+
+  this.entities = {
+    '&nbsp;':'&#160;','&iexcl;':'&#161;','&cent;':'&#162;',
+    '&pound;':'&#163;','&curren;':'&#164;','&yen;':'&#165;',
+    '&brvbar;':'&#166;','&sect;':'&#167;','&uml;':'&#168;',
+    '&copy;':'&#169;','&ordf;':'&#170;','&laquo;':'&#171;',
+    '&not;':'&#172;','&shy;':'&#173;','&reg;':'&#174;',
+    '&macr;':'&#175;','&deg;':'&#176;','&plusmn;':'&#177;',
+    '&sup2;':'&#178;','&sup3;':'&#179;','&acute;':'&#180;',
+    '&micro;':'&#181;','&para;':'&#182;','&middot;':'&#183;',
+    '&cedil;':'&#184;','&sup1;':'&#185;','&ordm;':'&#186;',
+    '&raquo;':'&#187;','&frac14;':'&#188;','&frac12;':'&#189;',
+    '&frac34;':'&#190;','&iquest;':'&#191;','&Agrave;':'&#192;',
+    '&Aacute;':'&#193;','&Acirc;':'&#194;','&Atilde;':'&#195;',
+    '&Auml;':'&#196;','&Aring;':'&#197;','&AElig;':'&#198;',
+    '&Ccedil;':'&#199;','&Egrave;':'&#200;','&Eacute;':'&#201;',
+    '&Ecirc;':'&#202;','&Euml;':'&#203;','&Igrave;':'&#204;',
+    '&Iacute;':'&#205;','&Icirc;':'&#206;','&Iuml;':'&#207;',
+    '&ETH;':'&#208;','&Ntilde;':'&#209;','&Ograve;':'&#210;',
+    '&Oacute;':'&#211;','&Ocirc;':'&#212;','&Otilde;':'&#213;',
+    '&Ouml;':'&#214;','&times;':'&#215;','&Oslash;':'&#216;',
+    '&Ugrave;':'&#217;','&Uacute;':'&#218;','&Ucirc;':'&#219;',
+    '&Uuml;':'&#220;','&Yacute;':'&#221;','&THORN;':'&#222;',
+    '&szlig;':'&#223;','&agrave;':'&#224;','&aacute;':'&#225;',
+    '&acirc;':'&#226;','&atilde;':'&#227;','&auml;':'&#228;',
+    '&aring;':'&#229;','&aelig;':'&#230;','&ccedil;':'&#231;',
+    '&egrave;':'&#232;','&eacute;':'&#233;','&ecirc;':'&#234;',
+    '&euml;':'&#235;','&igrave;':'&#236;','&iacute;':'&#237;',
+    '&icirc;':'&#238;','&iuml;':'&#239;','&eth;':'&#240;',
+    '&ntilde;':'&#241;','&ograve;':'&#242;','&oacute;':'&#243;',
+    '&ocirc;':'&#244;','&otilde;':'&#245;','&ouml;':'&#246;',
+    '&divide;':'&#247;','&oslash;':'&#248;','&ugrave;':'&#249;',
+    '&uacute;':'&#250;','&ucirc;':'&#251;','&uuml;':'&#252;',
+    '&yacute;':'&#253;','&thorn;':'&#254;','&yuml;':'&#255;',
+    '&OElig;':'&#338;','&oelig;':'&#339;','&Scaron;':'&#352;',
+    '&scaron;':'&#353;','&Yuml;':'&#376;','&fnof;':'&#402;',
+    '&circ;':'&#710;','&tilde;':'&#732;','&Alpha;':'&#913;',
+    '&Beta;':'&#914;','&Gamma;':'&#915;','&Delta;':'&#916;',
+    '&Epsilon;':'&#917;','&Zeta;':'&#918;','&Eta;':'&#919;',
+    '&Theta;':'&#920;','&Iota;':'&#921;','&Kappa;':'&#922;',
+    '&Lambda;':'&#923;','&Mu;':'&#924;','&Nu;':'&#925;',
+    '&Xi;':'&#926;','&Omicron;':'&#927;','&Pi;':'&#928;',
+    '&Rho;':'&#929;','&Sigma;':'&#931;','&Tau;':'&#932;',
+    '&Upsilon;':'&#933;','&Phi;':'&#934;','&Chi;':'&#935;',
+    '&Psi;':'&#936;','&Omega;':'&#937;','&alpha;':'&#945;',
+    '&beta;':'&#946;','&gamma;':'&#947;','&delta;':'&#948;',
+    '&epsilon;':'&#949;','&zeta;':'&#950;','&eta;':'&#951;',
+    '&theta;':'&#952;','&iota;':'&#953;','&kappa;':'&#954;',
+    '&lambda;':'&#955;','&mu;':'&#956;','&nu;':'&#957;',
+    '&xi;':'&#958;','&omicron;':'&#959;','&pi;':'&#960;',
+    '&rho;':'&#961;','&sigmaf;':'&#962;','&sigma;':'&#963;',
+    '&tau;':'&#964;','&upsilon;':'&#965;','&phi;':'&#966;',
+    '&chi;':'&#967;','&psi;':'&#968;','&omega;':'&#969;',
+    '&thetasym;':'&#977;','&upsih;':'&#978;','&piv;':'&#982;',
+    '&ensp;':'&#8194;','&emsp;':'&#8195;','&thinsp;':'&#8201;',
+    '&zwnj;':'&#8204;','&zwj;':'&#8205;','&lrm;':'&#8206;',
+    '&rlm;':'&#8207;','&ndash;':'&#8211;','&mdash;':'&#8212;',
+    '&lsquo;':'&#8216;','&rsquo;':'&#8217;','&sbquo;':'&#8218;',
+    '&ldquo;':'&#8220;','&rdquo;':'&#8221;','&bdquo;':'&#8222;',
+    '&dagger;':'&#8224;','&Dagger;':'&#8225;','&bull;':'&#8226;',
+    '&hellip;':'&#8230;','&permil;':'&#8240;','&prime;':'&#8242;',
+    '&Prime;':'&#8243;','&lsaquo;':'&#8249;','&rsaquo;':'&#8250;',
+    '&oline;':'&#8254;','&frasl;':'&#8260;','&euro;':'&#8364;',
+    '&image;':'&#8465;','&weierp;':'&#8472;','&real;':'&#8476;',
+    '&trade;':'&#8482;','&alefsym;':'&#8501;','&larr;':'&#8592;',
+    '&uarr;':'&#8593;','&rarr;':'&#8594;','&darr;':'&#8595;',
+    '&harr;':'&#8596;','&crarr;':'&#8629;','&lArr;':'&#8656;',
+    '&uArr;':'&#8657;','&rArr;':'&#8658;','&dArr;':'&#8659;',
+    '&hArr;':'&#8660;','&forall;':'&#8704;','&part;':'&#8706;',
+    '&exist;':'&#8707;','&empty;':'&#8709;','&nabla;':'&#8711;',
+    '&isin;':'&#8712;','&notin;':'&#8713;','&ni;':'&#8715;',
+    '&prod;':'&#8719;','&sum;':'&#8721;','&minus;':'&#8722;',
+    '&lowast;':'&#8727;','&radic;':'&#8730;','&prop;':'&#8733;',
+    '&infin;':'&#8734;','&ang;':'&#8736;','&and;':'&#8743;',
+    '&or;':'&#8744;','&cap;':'&#8745;','&cup;':'&#8746;',
+    '&int;':'&#8747;','&there4;':'&#8756;','&sim;':'&#8764;',
+    '&cong;':'&#8773;','&asymp;':'&#8776;','&ne;':'&#8800;',
+    '&equiv;':'&#8801;','&le;':'&#8804;','&ge;':'&#8805;',
+    '&sub;':'&#8834;','&sup;':'&#8835;','&nsub;':'&#8836;',
+    '&sube;':'&#8838;','&supe;':'&#8839;','&oplus;':'&#8853;',
+    '&otimes;':'&#8855;','&perp;':'&#8869;','&sdot;':'&#8901;',
+    '&lceil;':'&#8968;','&rceil;':'&#8969;','&lfloor;':'&#8970;',
+    '&rfloor;':'&#8971;','&lang;':'&#9001;','&rang;':'&#9002;',
+    '&loz;':'&#9674;','&spades;':'&#9824;','&clubs;':'&#9827;',
+    '&hearts;':'&#9829;','&diams;':'&#9830;'};
+
+    this.block_tags = ["a", "abbr", "acronym", "address", "area", "b",
+    "base", "bdo", "big", "blockquote", "body", "button",
+    "caption", "cite", "code", "col", "colgroup", "dd", "del", "div",
+    "dfn", "dl", "dt", "em", "fieldset", "form", "head", "h1", "h2",
+    "h3", "h4", "h5", "h6", "html", "i", "ins",
+    "kbd", "label", "legend", "li", "map", "noscript",
+    "object", "ol", "optgroup", "option", "p", "param", "pre", "q",
+    "samp", "script", "select", "small", "span", "strong", "style",
+    "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "th",
+    "thead", "title", "tr", "tt", "ul", "var", "extends"];
+
+
+    this.inline_tags = ["br", "hr", "img", "input"];
+
+    return this;
+};
+
+WYMeditor.XhtmlSaxListener.prototype.shouldCloseTagAutomatically = function(tag, now_on_tag, closing)
+{
+  var closing = closing || false;
+  if(tag == 'td'){
+    if((closing && now_on_tag == 'tr') || (!closing && now_on_tag == 'td')){
+      return true;
+    }
+  }
+  if(tag == 'option'){
+    if((closing && now_on_tag == 'select') || (!closing && now_on_tag == 'option')){
+      return true;
+    }
+  }
+  return false;
+};
+
+WYMeditor.XhtmlSaxListener.prototype.beforeParsing = function(raw)
+{
+  this.output = '';
+  return raw;
+};
+
+WYMeditor.XhtmlSaxListener.prototype.afterParsing = function(xhtml)
+{
+  xhtml = this.replaceNamedEntities(xhtml);
+  xhtml = this.joinRepeatedEntities(xhtml);
+  xhtml = this.removeEmptyTags(xhtml);
+  return xhtml;
+};
+
+WYMeditor.XhtmlSaxListener.prototype.replaceNamedEntities = function(xhtml)
+{
+  for (var entity in this.entities) {
+    xhtml = xhtml.replace(entity, this.entities[entity]);
+  }
+  return xhtml;
+};
+
+WYMeditor.XhtmlSaxListener.prototype.joinRepeatedEntities = function(xhtml)
+{
+  var tags = 'em|strong|sub|sup|acronym|pre|del|blockquote|address';
+  return xhtml.replace(new RegExp('<\/('+tags+')><\\1>' ,''),'').
+  replace(new RegExp('(\s*<('+tags+')>\s*){2}(.*)(\s*<\/\\2>\s*){2}' ,''),'<\$2>\$3<\$2>');
+};
+
+WYMeditor.XhtmlSaxListener.prototype.removeEmptyTags = function(xhtml)
+{
+  return xhtml.replace(new RegExp('<('+this.block_tags.join("|")+')>(<br \/>|&#160;|&nbsp;|\s)*<\/\\1>' ,'g'),'');
+};
+
+WYMeditor.XhtmlSaxListener.prototype.getResult = function()
+{
+  return this.output;
+};
+
+WYMeditor.XhtmlSaxListener.prototype.getTagReplacements = function()
+{
+  return {'b':'strong', 'i':'em'};
+};
+
+WYMeditor.XhtmlSaxListener.prototype.addContent = function(text)
+{
+  this.output += text;
+};
+
+WYMeditor.XhtmlSaxListener.prototype.addComment = function(text)
+{
+  if(this.remove_comments){
+    this.output += text;
+  }
+};
+
+WYMeditor.XhtmlSaxListener.prototype.addScript = function(text)
+{
+  if(!this.remove_scripts){
+    this.output += text;
+  }
+};
+
+WYMeditor.XhtmlSaxListener.prototype.addCss = function(text)
+{
+  if(!this.remove_embeded_styles){
+    this.output += text;
+  }
+};
+
+WYMeditor.XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes)
+{
+  this.output += this.helper.tag(tag, this.validator.getValidTagAttributes(tag, attributes), true);
+};
+
+WYMeditor.XhtmlSaxListener.prototype.inlineTag = function(tag, attributes)
+{
+  this.output += this.helper.tag(tag, this.validator.getValidTagAttributes(tag, attributes));
+};
+
+WYMeditor.XhtmlSaxListener.prototype.openUnknownTag = function(tag, attributes)
+{
+  //this.output += this.helper.tag(tag, attributes, true);
+};
+
+WYMeditor.XhtmlSaxListener.prototype.closeBlockTag = function(tag)
+{
+  this.output = this.output.replace(/<br \/>$/, '')+this._getClosingTagContent('before', tag)+"</"+tag+">"+this._getClosingTagContent('after', tag);
+};
+
+WYMeditor.XhtmlSaxListener.prototype.closeUnknownTag = function(tag)
+{
+  //this.output += "</"+tag+">";
+};
+
+WYMeditor.XhtmlSaxListener.prototype.closeUnopenedTag = function(tag)
+{
+  this.output += "</"+tag+">";
+};
+
+WYMeditor.XhtmlSaxListener.prototype.avoidStylingTagsAndAttributes = function()
+{
+  this.avoided_tags = ['div','span'];
+  this.validator.skiped_attributes = ['style'];
+  this.validator.skiped_attribute_values = ['MsoNormal','main1']; // MS Word attributes for class
+  this._avoiding_tags_implicitly = true;
+};
+
+WYMeditor.XhtmlSaxListener.prototype.allowStylingTagsAndAttributes = function()
+{
+  this.avoided_tags = [];
+  this.validator.skiped_attributes = [];
+  this.validator.skiped_attribute_values = [];
+  this._avoiding_tags_implicitly = false;
+};
+
+WYMeditor.XhtmlSaxListener.prototype.isBlockTag = function(tag)
+{
+  return !this.avoided_tags.contains(tag) && this.block_tags.contains(tag);
+};
+
+WYMeditor.XhtmlSaxListener.prototype.isInlineTag = function(tag)
+{
+  return !this.avoided_tags.contains(tag) && this.inline_tags.contains(tag);
+};
+
+WYMeditor.XhtmlSaxListener.prototype.insertContentAfterClosingTag = function(tag, content)
+{
+  this._insertContentWhenClosingTag('after', tag, content);
+};
+
+WYMeditor.XhtmlSaxListener.prototype.insertContentBeforeClosingTag = function(tag, content)
+{
+  this._insertContentWhenClosingTag('before', tag, content);
+};
+
+WYMeditor.XhtmlSaxListener.prototype.fixNestingBeforeOpeningBlockTag = function(tag, attributes)
+{
+    if(tag != 'li' && (tag == 'ul' || tag == 'ol') && this.last_tag && !this.last_tag_opened && this.last_tag == 'li'){
+      this.output = this.output.replace(/<\/li>$/, '');
+      this.insertContentAfterClosingTag(tag, '</li>');
+    }
+};
+
+WYMeditor.XhtmlSaxListener.prototype._insertContentWhenClosingTag = function(position, tag, content)
+{
+  if(!this['_insert_'+position+'_closing']){
+    this['_insert_'+position+'_closing'] = [];
+  }
+  if(!this['_insert_'+position+'_closing'][tag]){
+    this['_insert_'+position+'_closing'][tag] = [];
+  }
+  this['_insert_'+position+'_closing'][tag].push(content);
+};
+
+WYMeditor.XhtmlSaxListener.prototype._getClosingTagContent = function(position, tag)
+{
+  if( this['_insert_'+position+'_closing'] &&
+      this['_insert_'+position+'_closing'][tag] &&
+      this['_insert_'+position+'_closing'][tag].length > 0){
+        return this['_insert_'+position+'_closing'][tag].pop();
+  }
+  return '';
+};
+
+
+/********** CSS PARSER **********/
+
+
+WYMeditor.WymCssLexer = function(parser, only_wym_blocks)
+{
+  var only_wym_blocks = (only_wym_blocks == undefined ? true : only_wym_blocks);
+
+  jQuery.extend(this, new WYMeditor.Lexer(parser, (only_wym_blocks?'Ignore':'WymCss')));
+
+  this.mapHandler('WymCss', 'Ignore');
+
+  if(only_wym_blocks == true){
+    this.addEntryPattern("/\\\x2a[<\\s]*WYMeditor[>\\s]*\\\x2a/", 'Ignore', 'WymCss');
+    this.addExitPattern("/\\\x2a[<\/\\s]*WYMeditor[>\\s]*\\\x2a/", 'WymCss');
+  }
+
+  this.addSpecialPattern("\\\x2e[a-z-_0-9]+[\\sa-z]*", 'WymCss', 'WymCssStyleDeclaration');
+
+  this.addEntryPattern("/\\\x2a", 'WymCss', 'WymCssComment');
+  this.addExitPattern("\\\x2a/", 'WymCssComment');
+
+  this.addEntryPattern("\x7b", 'WymCss', 'WymCssStyle');
+  this.addExitPattern("\x7d", 'WymCssStyle');
+
+  this.addEntryPattern("/\\\x2a", 'WymCssStyle', 'WymCssFeddbackStyle');
+  this.addExitPattern("\\\x2a/", 'WymCssFeddbackStyle');
+
+  return this;
+};
+
+WYMeditor.WymCssParser = function()
+{
+  this._in_style = false;
+  this._has_title = false;
+  this.only_wym_blocks = true;
+  this.css_settings = {'classesItems':[], 'editorStyles':[], 'dialogStyles':[]};
+  return this;
+};
+
+WYMeditor.WymCssParser.prototype.parse = function(raw, only_wym_blocks)
+{
+  var only_wym_blocks = (only_wym_blocks == undefined ? this.only_wym_blocks : only_wym_blocks);
+  this._Lexer = new WYMeditor.WymCssLexer(this, only_wym_blocks);
+  this._Lexer.parse(raw);
+};
+
+WYMeditor.WymCssParser.prototype.Ignore = function(match, state)
+{
+  return true;
+};
+
+WYMeditor.WymCssParser.prototype.WymCssComment = function(text, status)
+{
+  if(text.match(/end[a-z0-9\s]*wym[a-z0-9\s]*/mi)){
+    return false;
+  }
+  if(status == WYMeditor.LEXER_UNMATCHED){
+    if(!this._in_style){
+      this._has_title = true;
+      this._current_item = {'title':text.trim()};
+    }else{
+      if(this._current_item[this._current_element]){
+        if(!this._current_item[this._current_element].expressions){
+          this._current_item[this._current_element].expressions = [text];
+        }else{
+          this._current_item[this._current_element].expressions.push(text);
+        }
+      }
+    }
+    this._in_style = true;
+  }
+  return true;
+};
+
+WYMeditor.WymCssParser.prototype.WymCssStyle = function(match, status)
+{
+  if(status == WYMeditor.LEXER_UNMATCHED){
+    match = match.trim();
+    if(match != ''){
+      this._current_item[this._current_element].style = match;
+    }
+  }else if (status == WYMeditor.LEXER_EXIT){
+    this._in_style = false;
+    this._has_title = false;
+    this.addStyleSetting(this._current_item);
+  }
+  return true;
+};
+
+WYMeditor.WymCssParser.prototype.WymCssFeddbackStyle = function(match, status)
+{
+  if(status == WYMeditor.LEXER_UNMATCHED){
+    this._current_item[this._current_element].feedback_style = match.replace(/^([\s\/\*]*)|([\s\/\*]*)$/gm,'');
+  }
+  return true;
+};
+
+WYMeditor.WymCssParser.prototype.WymCssStyleDeclaration = function(match)
+{
+  match = match.replace(/^([\s\.]*)|([\s\.*]*)$/gm, '');
+
+  var tag = '';
+  if(match.indexOf(' ') > 0){
+    var parts = match.split(' ');
+    this._current_element = parts[0];
+    var tag = parts[1];
+  }else{
+    this._current_element = match;
+  }
+
+  if(!this._has_title){
+    this._current_item = {'title':(!tag?'':tag.toUpperCase()+': ')+this._current_element};
+    this._has_title = true;
+  }
+
+  if(!this._current_item[this._current_element]){
+    this._current_item[this._current_element] = {'name':this._current_element};
+  }
+  if(tag){
+    if(!this._current_item[this._current_element].tags){
+      this._current_item[this._current_element].tags = [tag];
+    }else{
+      this._current_item[this._current_element].tags.push(tag);
+    }
+  }
+  return true;
+};
+
+WYMeditor.WymCssParser.prototype.addStyleSetting = function(style_details)
+{
+  for (var name in style_details){
+    var details = style_details[name];
+    if(typeof details == 'object' && name != 'title'){
+
+      this.css_settings.classesItems.push({
+        'name': details.name.trim(),
+        'title': style_details.title,
+        'expr' : (details.expressions||details.tags).join(', ').trim()
+      });
+      if(details.feedback_style){
+        this.css_settings.editorStyles.push({
+          'name': '.'+details.name.trim(),
+          'css': details.feedback_style
+        });
+      }
+      if(details.style){
+        this.css_settings.dialogStyles.push({
+          'name': '.'+details.name.trim(),
+          'css': details.style
+        });
+      }
+    }
+  }
+};
+
 /********** HELPERS **********/
 
 // Returns true if it is a text node with whitespaces only
@@ -1560,14 +3666,14 @@ jQuery.fn.isPhantomNode = function() {
   return false;
 };
 
-function isPhantomNode(n) {
+WYMeditor.isPhantomNode = function(n) {
   if (n.nodeType == 3)
     return !(/[^\t\n\r ]/.test(n.data));
 
   return false;
 };
 
-function isPhantomString(str) {
+WYMeditor.isPhantomString = function(str) {
     return !(/[^\t\n\r ]/.test(str));
 };
 
@@ -1586,49 +3692,57 @@ jQuery.fn.parentsOrSelf = function(jqexpr) {
     return n.parents(jqexpr).slice(0,1);
 };
 
-String.prototype.insertAt = function(inserted, pos) {
-  return(this.substr(0,pos) + inserted + this.substring(pos));
+// String helpers
+if(!String.prototype.insertAt) {
+    String.prototype.insertAt = function(inserted, pos) {
+        return(this.substr(0,pos) + inserted + this.substring(pos));
+    };
 };
 
-String.prototype.replaceAll = function(old, rep) {
-  var rExp = new RegExp(old, "g");
-  return(this.replace(rExp, rep));
+if(!String.prototype.replaceAll) {
+    String.prototype.replaceAll = function(old, rep) {
+        var rExp = new RegExp(old, "g");
+        return(this.replace(rExp, rep));
+    };
 };
 
+if(!String.prototype.trim) {
+    String.prototype.trim = function() {
+        return this.replace(/^(\s*)|(\s*)$/gm,'');
+    };
+};
+
+// Array helpers
 
 // from http://forum.de.selfhtml.org/archiv/2004/3/t76079/#m438193 (2007-02-06)
-Array.prototype.contains = function (elem) {
-//  var i;
-  for (var i = 0; i < this.length; i++) {
-  if (this[i] === elem) {
-    return true;
-  }
-  }
-  return false;
+if(!Array.prototype.contains) {
+    Array.prototype.contains = function (elem) {
+        for (var i = 0; i < this.length; i++) {
+            if (this[i] === elem) return true;
+        }
+        return false;
+    };
 };
 
-Array.prototype.indexOf = function (item) {
-	var ret=-1;
-	for(var i = 0; i < this.length; i++) {
-    if (this[i] == item) {
-      ret=i; break;
-    }
-  }
-	return(ret);
+if(!Array.prototype.indexof) {
+    Array.prototype.indexOf = function (item) {
+	    var ret=-1;
+        for(var i = 0; i < this.length; i++) {
+            if (this[i] == item) {
+                ret=i;
+                break;
+            }
+        }
+	    return(ret);
+    };
 };
 
-String.prototype.trim = function() {
-  return this.replace(/^(\s*)|(\s*)$/gm,'');
+if(!Array.prototype.findByName) {
+    Array.prototype.findByName = function (name) {
+        for(var i = 0; i < this.length; i++) {
+            var item = this[i];
+            if(item.name == name) return(item);
+        }
+        return(null);
+    };
 };
-
-Array.prototype.findByName = function (name) {
-  for(var i = 0; i < this.length; i++) {
-    var Item = this[i];
-    if(Item.name == name) {
-      return(Item);
-    }
-  }
-  return(null);
-};
-
-
