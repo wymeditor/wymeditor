@@ -889,9 +889,11 @@ WYMeditor.WymClassSafari.prototype.beforeParsing = function(raw)
   replace(/([^>]*)<(\w+)><BR class\="khtml-block-placeholder"><\/\2>([^<]*)/g, "<$2>$1$3</$2>");
 };
 
+/*
 WYMeditor.WymClassSafari.prototype.selectAll = function(param) {
   this.currentSelection.setBaseAndExtent(this._doc.body, 0, w._doc.body, w._doc.body.length);
 };
+*/
 
 /* @name update
  * @description Updates the HTML textarea with the current version of the iframe document
