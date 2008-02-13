@@ -16,6 +16,13 @@
  *        Jean-Francois Hovinne (jf.hovinne@wymeditor.org)
  */
 
+WYMeditor.WymClassOpera = function(wym) {
+
+    this._wym = wym;
+    this._class = "class";
+    this._newLine = "\r\n";
+};
+
 WYMeditor.WymClassOpera.prototype.initIframe = function(iframe) {
 
     this._iframe = iframe;
@@ -160,11 +167,11 @@ WYMeditor.WymClassOpera.prototype.setFocusToNode = function(node) {
 
 /********** SELECTION API **********/
 
-function WymSelOpera(wym) {
+WYMeditor.WymSelOpera = function(wym) {
     this._wym = wym;
 };
 
-WymSelOpera.prototype = {
+WYMeditor.WymSelOpera.prototype = {
     getSelection: function() {
         var _sel = this._wym._iframe.contentWindow.getSelection();
         // NOTE v.mische can startNode/endNote be phantom nodes?
@@ -192,7 +199,7 @@ WymSelOpera.prototype = {
             firstTextNode = firstTextNode.firstChild;
         }
 
-        if (isPhantomNode(firstTextNode))
+        if (WYMeditor.isPhantomNode(firstTextNode))
             firstTextNode = firstTextNode.nextSibling;
 
         // e.g. an <img/>
@@ -214,7 +221,7 @@ WymSelOpera.prototype = {
             lastTextNode = lastTextNode.lastChild;
         }
 
-        if (isPhantomNode(lastTextNode))
+        if (WYMeditor.isPhantomNode(lastTextNode))
             lastTextNode = lastTextNode.previousSibling;
 
         // e.g. an <img/>

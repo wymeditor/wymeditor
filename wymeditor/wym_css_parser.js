@@ -1,9 +1,9 @@
 
-function WymCssLexer(parser, only_wym_blocks)
+WYMeditor.WymCssLexer = function(parser, only_wym_blocks)
 {
   var only_wym_blocks = (only_wym_blocks == undefined ? true : only_wym_blocks);
 
-  jQuery.extend(this, new Lexer(parser, (only_wym_blocks?'Ignore':'WymCss')));
+  jQuery.extend(this, new WYMeditor.Lexer(parser, (only_wym_blocks?'Ignore':'WymCss')));
 
   this.mapHandler('WymCss', 'Ignore');
 
@@ -26,7 +26,7 @@ function WymCssLexer(parser, only_wym_blocks)
   return this;
 };
 
-function WymCssParser()
+WYMeditor.WymCssParser = function()
 {
   this._in_style = false;
   this._has_title = false;
@@ -35,19 +35,19 @@ function WymCssParser()
   return this;
 };
 
-WymCssParser.prototype.parse = function(raw, only_wym_blocks)
+WYMeditor.WymCssParser.prototype.parse = function(raw, only_wym_blocks)
 {
   var only_wym_blocks = (only_wym_blocks == undefined ? this.only_wym_blocks : only_wym_blocks);
-  this._Lexer = new WymCssLexer(this, only_wym_blocks);  
+  this._Lexer = new WYMeditor.WymCssLexer(this, only_wym_blocks);
   this._Lexer.parse(raw);  
 };
 
-WymCssParser.prototype.Ignore = function(match, state)
+WYMeditor.WymCssParser.prototype.Ignore = function(match, state)
 {
   return true;
 };
 
-WymCssParser.prototype.WymCssComment = function(text, status)
+WYMeditor.WymCssParser.prototype.WymCssComment = function(text, status)
 { 
   if(text.match(/end[a-z0-9\s]*wym[a-z0-9\s]*/mi)){
     return false;
@@ -70,7 +70,7 @@ WymCssParser.prototype.WymCssComment = function(text, status)
   return true;
 };
 
-WymCssParser.prototype.WymCssStyle = function(match, status)
+WYMeditor.WymCssParser.prototype.WymCssStyle = function(match, status)
 {
   if(status == LEXER_UNMATCHED){    
     match = match.trim();
@@ -85,7 +85,7 @@ WymCssParser.prototype.WymCssStyle = function(match, status)
   return true;
 };
 
-WymCssParser.prototype.WymCssFeddbackStyle = function(match, status)
+WYMeditor.WymCssParser.prototype.WymCssFeddbackStyle = function(match, status)
 { 
   if(status == LEXER_UNMATCHED){
     this._current_item[this._current_element].feedback_style = match.replace(/^([\s\/\*]*)|([\s\/\*]*)$/gm,'');
@@ -93,7 +93,7 @@ WymCssParser.prototype.WymCssFeddbackStyle = function(match, status)
   return true;
 };
 
-WymCssParser.prototype.WymCssStyleDeclaration = function(match)
+WYMeditor.WymCssParser.prototype.WymCssStyleDeclaration = function(match)
 {
   match = match.replace(/^([\s\.]*)|([\s\.*]*)$/gm, '');
 
@@ -124,7 +124,7 @@ WymCssParser.prototype.WymCssStyleDeclaration = function(match)
   return true;
 };
 
-WymCssParser.prototype.addStyleSetting = function(style_details)
+WYMeditor.WymCssParser.prototype.addStyleSetting = function(style_details)
 {
   for (var name in style_details){
     var details = style_details[name];
