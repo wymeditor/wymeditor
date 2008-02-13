@@ -870,7 +870,7 @@ WYMeditor.editor.prototype.bindEvents = function() {
     var oClass = aClasses.findByName(sName);
     
     if(oClass) {
-      jqexpr = oClass.expr;
+      var jqexpr = oClass.expr;
       wym.toggleClass(sName, jqexpr);
     }
     return(false);
@@ -1199,7 +1199,7 @@ WYMeditor.editor.prototype.toggleHtml = function() {
 };
 
 WYMeditor.editor.prototype.uniqueStamp = function() {
-	var now=new Date();
+	var now = new Date();
 	return("wym-" + now.getTime());
 };
 
@@ -2337,7 +2337,7 @@ WYMeditor.XhtmlValidator = {
           }
 
           var tag_defaults = defaults['attributes'] ? defaults['attributes'] : defaults['events'];
-          for(k in tag_defaults) {
+          for(var k in tag_defaults) {
             default_attributes.push(typeof tag_defaults[k] != 'string' ? k : tag_defaults[k]);
           }
         }
@@ -2708,6 +2708,7 @@ WYMeditor.Lexer.prototype.parse = function(raw)
   }
 
   var length = raw.length;
+  var parsed;
   while (typeof (parsed = this._reduce(raw)) == 'object') {
     var raw = parsed[0];
     var unmatched = parsed[1];
@@ -2854,8 +2855,8 @@ WYMeditor.Lexer.prototype._reduce = function(raw)
   var match = matched[1];
   var action = matched[0];
   if (action) {
-    unparsed_character_count = raw.indexOf(match);
-    unparsed = raw.substr(0, unparsed_character_count);
+    var unparsed_character_count = raw.indexOf(match);
+    var unparsed = raw.substr(0, unparsed_character_count);
     raw = raw.substring(unparsed_character_count + match.length);
     return [raw, unparsed, match, action];
   }
@@ -3147,7 +3148,7 @@ WYMeditor.XhtmlParser.prototype._autoCloseUnclosed = function(new_tag, closing)
 {
   var closing = closing || false;
   if(this._Listener._open_tags){
-    for (tag in this._Listener._open_tags) {
+    for (var tag in this._Listener._open_tags) {
       var counter = this._Listener._open_tags[tag];
       if(counter > 0 && this._Listener.shouldCloseTagAutomatically(tag, new_tag, closing)){
         this._callCloseTagListener(tag, true);
@@ -3164,7 +3165,7 @@ WYMeditor.XhtmlParser.prototype.getTagReplacements = function()
 WYMeditor.XhtmlParser.prototype.normalizeTag = function(tag)
 {
   tag = tag.replace(/^([\s<\/>]*)|([\s<\/>]*)$/gm,'').toLowerCase();
-  tags = this._Listener.getTagReplacements();
+  var tags = this._Listener.getTagReplacements();
   if(tags[tag]){
     return tags[tag];
   }
