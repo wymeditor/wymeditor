@@ -20,14 +20,13 @@
  *        Daniel Reszka (d.reszka@wymeditor.org)
  */
 
-
 /********** CONSTANTS **********/
+if(!WYMeditor) var WYMeditor = {};
 
-var WYMeditor = {
+jQuery.extend(WYMeditor, {
     
     VERSION          : "0.5-a1",
     INSTANCES        : new Array(),
-	STRINGS			 : new Array(),
     NAME             : "name",
     INDEX            : "{Wym_Index}",
     BASE_PATH        : "{Wym_Base_Path}",
@@ -156,10 +155,10 @@ var WYMeditor = {
         this.init();
 	
 	},
-	
-	/********** DIALOGS **********/
 
-	INIT_DIALOG : function(index) {
+  /********** DIALOGS **********/
+
+  INIT_DIALOG : function(index) {
 
     var wym = window.opener.WYMeditor.INSTANCES[index];
     var doc = window.document;
@@ -310,10 +309,10 @@ var WYMeditor = {
     //pre-init functions
     if(jQuery.isFunction(wym._options.postInitDialog))
       wym._options.postInitDialog(wym,window);
-	
-	}
 
-};
+  }
+
+});
 
 
 /********** JQUERY **********/
@@ -1102,14 +1101,17 @@ WYMeditor.editor.prototype.switchTo = function(node,sType) {
 };
 
 WYMeditor.editor.prototype.replaceStrings = function(sVal) {
-  if(WYMeditor.STRINGS.length==0)
+  //check if the language file has already been loaded
+  //if not, get it via a synchronous ajax call
+  if(!WYMeditor.STRINGS)
     eval(jQuery.ajax({url:this._options.langPath
       + this._options.lang + '.js', async:false}).responseText);
 
+  //replace all the strings in sVal and return it
   for (var key in WYMeditor.STRINGS) {
     sVal = sVal.replaceAll(this._options.stringDelimiterLeft + key 
     + this._options.stringDelimiterRight, WYMeditor.STRINGS[key]);
-  }
+  };
   return(sVal);
 };
 
