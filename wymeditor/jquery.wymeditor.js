@@ -154,163 +154,7 @@ jQuery.extend(WYMeditor, {
 
         this.init();
 	
-	},
-
-  /********** DIALOGS **********/
-
-  INIT_DIALOG : function(index) {
-
-    var wym = window.opener.WYMeditor.INSTANCES[index];
-    var doc = window.document;
-    var selected = wym.selected();
-    var dialogType = jQuery(wym._options.dialogTypeSelector).val();
-    var sStamp = wym.uniqueStamp();
-    
-    switch(dialogType) {
-    
-    case WYMeditor.DIALOG_LINK:
-      //ensure that we select the link to populate the fields
-      if(selected && selected.tagName && selected.tagName.toLowerCase != WYMeditor.A)
-        selected = jQuery(selected).parentsOrSelf(WYMeditor.A);
-    
-      //fix MSIE selection if link image has been clicked
-      if(!selected && wym._selected_image)
-        selected = jQuery(wym._selected_image).parentsOrSelf(WYMeditor.A);
-    break;
-
-    }
-    
-    //pre-init functions
-    if(jQuery.isFunction(wym._options.preInitDialog))
-      wym._options.preInitDialog(wym,window);
-    
-    //add css rules from options
-    var styles = doc.styleSheets[0];
-    var aCss = eval(wym._options.dialogStyles);
-
-    wym.addCssRules(doc, aCss);
-    
-    //auto populate fields if selected container (e.g. A)
-    if(selected) {
-      jQuery(wym._options.hrefSelector).val(jQuery(selected).attr(WYMeditor.HREF));
-      jQuery(wym._options.srcSelector).val(jQuery(selected).attr(WYMeditor.SRC));
-      jQuery(wym._options.titleSelector).val(jQuery(selected).attr(WYMeditor.TITLE));
-      jQuery(wym._options.altSelector).val(jQuery(selected).attr(WYMeditor.ALT));
-    }
-    
-    //auto populate image fields if selected image
-    if(wym._selected_image) {
-      jQuery(wym._options.dialogImageSelector + " " + wym._options.srcSelector)
-        .val(jQuery(wym._selected_image).attr(WYMeditor.SRC));
-      jQuery(wym._options.dialogImageSelector + " " + wym._options.titleSelector)
-        .val(jQuery(wym._selected_image).attr(WYMeditor.TITLE));
-      jQuery(wym._options.dialogImageSelector + " " + wym._options.altSelector)
-        .val(jQuery(wym._selected_image).attr(WYMeditor.ALT));
-    }
-
-    jQuery(wym._options.dialogLinkSelector + " "
-        + wym._options.submitSelector).click(function() {
-        
-        var sUrl = jQuery(wym._options.hrefSelector).val();
-        if(sUrl.length > 0) {
-            wym._exec(WYMeditor.CREATE_LINK, sStamp);
-            //don't use jQuery.find() see #JQ1143
-            //var link = jQuery(wym._doc.body).find("a[@href=" + sStamp + "]");
-            var link = null;
-            var nodes = wym._doc.body.getElementsByTagName(WYMeditor.A);
-            for(var i=0; i < nodes.length; i++) {
-                if(jQuery(nodes[i]).attr(WYMeditor.HREF) == sStamp) {
-                    link = jQuery(nodes[i]);
-                    break;
-                }
-            }
-            if(link) {
-                link.attr(WYMeditor.HREF, sUrl);
-                link.attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val());
-            }
-        }
-        window.close();
-    });
-    
-    jQuery(wym._options.dialogImageSelector + " "
-        + wym._options.submitSelector).click(function() {
-        
-        var sUrl = jQuery(wym._options.srcSelector).val();
-        if(sUrl.length > 0) {
-            wym._exec(WYMeditor.INSERT_IMAGE, sStamp);
-            //don't use jQuery.find() see #JQ1143
-            //var image = jQuery(wym._doc.body).find("img[@src=" + sStamp + "]");
-            var image = null;
-            var nodes = wym._doc.body.getElementsByTagName(WYMeditor.IMG);
-            for(var i=0; i < nodes.length; i++) {
-                if(jQuery(nodes[i]).attr(WYMeditor.SRC) == sStamp) {
-                    image = jQuery(nodes[i]);
-                    break;
-                }
-            }
-            if(image) {
-                image.attr(WYMeditor.SRC, sUrl);
-                image.attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val());
-                image.attr(WYMeditor.ALT, jQuery(wym._options.altSelector).val());
-            }
-        }
-        window.close();
-    });
-    
-    jQuery(wym._options.dialogTableSelector + " "
-        + wym._options.submitSelector).click(function() {
-        
-        var iRows = jQuery(wym._options.rowsSelector).val();
-        var iCols = jQuery(wym._options.colsSelector).val();
-        
-        if(iRows > 0 && iCols > 0) {
-        
-            var table = wym._doc.createElement(WYMeditor.TABLE);
-            var newRow = null;
-        		var newCol = null;
-        		
-        		var sCaption = jQuery(wym._options.captionSelector).val();
-        		
-        		//we create the caption
-        		var newCaption = table.createCaption();
-        		newCaption.innerHTML = sCaption;
-        		
-        		//we create the rows and cells
-        		for(x=0; x<iRows; x++) {
-        			newRow = table.insertRow(x);
-        			for(y=0; y<iCols; y++) {newRow.insertCell(y);}
-        		}
-        		
-          //append the table after the selected container
-          var node = jQuery(wym.findUp(wym.container(),WYMeditor.MAIN_CONTAINERS)).get(0);
-          if(!node || !node.parentNode) jQuery(wym._doc.body).append(table);
-          else jQuery(node).after(table);
-        }
-        window.close();
-    });
-    
-    jQuery(wym._options.dialogPasteSelector + " "
-        + wym._options.submitSelector).click(function() {
-        
-        var sText = jQuery(wym._options.textSelector).val();
-        wym.paste(sText);
-        window.close();
-    });
-    
-    jQuery(wym._options.dialogPreviewSelector + " "
-        + wym._options.previewSelector)
-        .html(wym.xhtml());
-    
-    //cancel button
-    jQuery(wym._options.cancelSelector).mousedown(function() {
-        window.close();
-    });
-    
-    //pre-init functions
-    if(jQuery.isFunction(wym._options.postInitDialog))
-      wym._options.postInitDialog(wym,window);
-
-  }
+	}
 
 });
 
@@ -1363,6 +1207,166 @@ WYMeditor.editor.prototype.skin = function() {
   }
 
 };
+
+
+/********** DIALOGS **********/
+
+WYMeditor.INIT_DIALOG = function(index) {
+
+  var wym = window.opener.WYMeditor.INSTANCES[index];
+  var doc = window.document;
+  var selected = wym.selected();
+  var dialogType = jQuery(wym._options.dialogTypeSelector).val();
+  var sStamp = wym.uniqueStamp();
+
+  switch(dialogType) {
+
+  case WYMeditor.DIALOG_LINK:
+    //ensure that we select the link to populate the fields
+    if(selected && selected.tagName && selected.tagName.toLowerCase != WYMeditor.A)
+      selected = jQuery(selected).parentsOrSelf(WYMeditor.A);
+
+    //fix MSIE selection if link image has been clicked
+    if(!selected && wym._selected_image)
+      selected = jQuery(wym._selected_image).parentsOrSelf(WYMeditor.A);
+  break;
+
+  }
+
+  //pre-init functions
+  if(jQuery.isFunction(wym._options.preInitDialog))
+    wym._options.preInitDialog(wym,window);
+
+  //add css rules from options
+  var styles = doc.styleSheets[0];
+  var aCss = eval(wym._options.dialogStyles);
+
+  wym.addCssRules(doc, aCss);
+
+  //auto populate fields if selected container (e.g. A)
+  if(selected) {
+    jQuery(wym._options.hrefSelector).val(jQuery(selected).attr(WYMeditor.HREF));
+    jQuery(wym._options.srcSelector).val(jQuery(selected).attr(WYMeditor.SRC));
+    jQuery(wym._options.titleSelector).val(jQuery(selected).attr(WYMeditor.TITLE));
+    jQuery(wym._options.altSelector).val(jQuery(selected).attr(WYMeditor.ALT));
+  }
+
+  //auto populate image fields if selected image
+  if(wym._selected_image) {
+    jQuery(wym._options.dialogImageSelector + " " + wym._options.srcSelector)
+      .val(jQuery(wym._selected_image).attr(WYMeditor.SRC));
+    jQuery(wym._options.dialogImageSelector + " " + wym._options.titleSelector)
+      .val(jQuery(wym._selected_image).attr(WYMeditor.TITLE));
+    jQuery(wym._options.dialogImageSelector + " " + wym._options.altSelector)
+      .val(jQuery(wym._selected_image).attr(WYMeditor.ALT));
+  }
+
+  jQuery(wym._options.dialogLinkSelector + " "
+    + wym._options.submitSelector).click(function() {
+
+      var sUrl = jQuery(wym._options.hrefSelector).val();
+      if(sUrl.length > 0) {
+        wym._exec(WYMeditor.CREATE_LINK, sStamp);
+        //don't use jQuery.find() see #JQ1143
+        //var link = jQuery(wym._doc.body).find("a[@href=" + sStamp + "]");
+        var link = null;
+        var nodes = wym._doc.body.getElementsByTagName(WYMeditor.A);
+        for(var i=0; i < nodes.length; i++) {
+            if(jQuery(nodes[i]).attr(WYMeditor.HREF) == sStamp) {
+                link = jQuery(nodes[i]);
+                break;
+            }
+        }
+        if(link) {
+            link.attr(WYMeditor.HREF, sUrl);
+            link.attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val());
+        }
+      }
+      window.close();
+  });
+
+  jQuery(wym._options.dialogImageSelector + " "
+    + wym._options.submitSelector).click(function() {
+
+      var sUrl = jQuery(wym._options.srcSelector).val();
+      if(sUrl.length > 0) {
+        wym._exec(WYMeditor.INSERT_IMAGE, sStamp);
+        //don't use jQuery.find() see #JQ1143
+        //var image = jQuery(wym._doc.body).find("img[@src=" + sStamp + "]");
+        var image = null;
+        var nodes = wym._doc.body.getElementsByTagName(WYMeditor.IMG);
+        for(var i=0; i < nodes.length; i++) {
+            if(jQuery(nodes[i]).attr(WYMeditor.SRC) == sStamp) {
+                image = jQuery(nodes[i]);
+                break;
+            }
+        }
+        if(image) {
+            image.attr(WYMeditor.SRC, sUrl);
+            image.attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val());
+            image.attr(WYMeditor.ALT, jQuery(wym._options.altSelector).val());
+        }
+      }
+      window.close();
+  });
+
+  jQuery(wym._options.dialogTableSelector + " "
+    + wym._options.submitSelector).click(function() {
+
+      var iRows = jQuery(wym._options.rowsSelector).val();
+      var iCols = jQuery(wym._options.colsSelector).val();
+
+      if(iRows > 0 && iCols > 0) {
+
+        var table = wym._doc.createElement(WYMeditor.TABLE);
+        var newRow = null;
+    		var newCol = null;
+
+    		var sCaption = jQuery(wym._options.captionSelector).val();
+
+    		//we create the caption
+    		var newCaption = table.createCaption();
+    		newCaption.innerHTML = sCaption;
+
+    		//we create the rows and cells
+    		for(x=0; x<iRows; x++) {
+    			newRow = table.insertRow(x);
+    			for(y=0; y<iCols; y++) {newRow.insertCell(y);}
+    		}
+
+        //append the table after the selected container
+        var node = jQuery(wym.findUp(wym.container(),
+          WYMeditor.MAIN_CONTAINERS)).get(0);
+        if(!node || !node.parentNode) jQuery(wym._doc.body).append(table);
+        else jQuery(node).after(table);
+      }
+      window.close();
+  });
+
+  jQuery(wym._options.dialogPasteSelector + " "
+    + wym._options.submitSelector).click(function() {
+
+      var sText = jQuery(wym._options.textSelector).val();
+      wym.paste(sText);
+      window.close();
+  });
+
+  jQuery(wym._options.dialogPreviewSelector + " "
+    + wym._options.previewSelector)
+    .html(wym.xhtml());
+
+  //cancel button
+  jQuery(wym._options.cancelSelector).mousedown(function() {
+    window.close();
+  });
+
+  //pre-init functions
+  if(jQuery.isFunction(wym._options.postInitDialog))
+    wym._options.postInitDialog(wym,window);
+
+};
+
+
 
 /********** SELECTION API **********/
 

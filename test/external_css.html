@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <!--
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2007 H.O.net - http://www.honet.be/
@@ -36,16 +36,13 @@ var w;
 jQuery(function() {
   
     jQuery('.wymeditor').wymeditor({
-    
-      xhtmlParser: 'xhtml_parser.js',
-      cssParser:   'wym_css_parser.js',
 
       // External CSS file
       stylesheet: 'wym_stylesheet.css',
       
       //function called when WYMeditor instance is ready
       //wym is the WYMeditor instance
-      fPostInit: function(wym) {
+      postInit: function(wym) {
       
         //set the editor's HTML value
         wym.html("<p>WYMeditor <em>instance<\/em> "
@@ -59,23 +56,17 @@ jQuery(function() {
         
         //set the status bar value
         wym.status('&nbsp;');
-        
-        //activate 'tidy' plugin
-        //which cleans up the HTML
-        var wymtidy = wym.tidy();
-        wymtidy.init();
 
         //activate 'hovertools' plugin
         //which gives more feedback to the user
         wym.hovertools();
         
-        w = wym;
       },
       
       //function called when dialog is ready
       //wym is the WYMeditor instance
       //wdw is the dialog's window
-      fPostInitDialog: function(wym,wdw) {
+      postInitDialog: function(wym,wdw) {
 
         var body = wdw.document.body;
         
