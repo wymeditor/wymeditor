@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <!--
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2007 H.O.net - http://www.honet.be/
@@ -24,7 +24,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="../wymeditor/skins/default/screen.css" />
 <script type="text/javascript" src="../jquery/jquery.js"></script>
 <script type="text/javascript" src="../wymeditor/jquery.wymeditor.js"></script>
-<script type="text/javascript" src="../wymeditor/xhtml_parser.js"></script>
 <script type="text/javascript" src="../wymeditor/jquery.wymeditor.explorer.js"></script>
 <script type="text/javascript" src="../wymeditor/jquery.wymeditor.mozilla.js"></script>
 <script type="text/javascript" src="../wymeditor/jquery.wymeditor.opera.js"></script>
@@ -32,22 +31,33 @@
 
 <script type="text/javascript">
 
-XhtmlLexer.prototype.addTokens = function()
-{
+
+WYMeditor.XhtmlLexer.prototype.addTokens = function() {
   // These tokens are for Radiant CMS radius tags  
   this.addEntryPattern("</?r:", 'Text', 'Text');
-  this.addExitPattern(">", 'Text'); 
-  
+  this.addExitPattern(">", 'Text');
+
   this.addCommentTokens('Text');
   this.addScriptTokens('Text');
   this.addCssTokens('Text');
   this.addTagTokens('Text');
-}
+
+};
+
+WYMeditor.XhtmlValidator._tags["p"] = {
+  'attributes':
+  {
+    'align':/^(right|left|center|justify)$/,
+    '0':'name'
+  }
+};
 
 jQuery(function() {
     jQuery('.wymeditor').wymeditor({
+        stylesheet: 'wym_stylesheet.css',
         postInit: function(wym){
-            wym.html("<p><r:test>This text is inside a radius tag</r:test></p>");
+            wym.html('<p><r:test>This text is inside a radius tag</r:test></p>'
+                   + '<p align="right" name="test">Right aligned</p>');
         }
     });
 });
