@@ -7,12 +7,13 @@
  * For further information visit:
  *        http://www.wymeditor.org/
  *
- * File Name:
- *        jquery.wymeditor.js
+ * File: jquery.wymeditor.js
+ *
  *        Main JS file with core class and functions.
  *        See the documentation for more info.
  *
- * File Authors:
+ * About: authors
+ *
  *        Jean-Francois Hovinne (jf.hovinne@wymeditor.org)
  *        Volker Mische (vmx@gmx.de)
  *        Scott Lewis (scott@bright-crayon.com)
@@ -20,11 +21,83 @@
  *        Daniel Reszka (d.reszka@wymeditor.org)
  */
 
-/********** CONSTANTS **********/
+/*
+   Namespace: WYMeditor
+   Global WYMeditor namespace.
+*/
 if(!WYMeditor) var WYMeditor = {};
 
 jQuery.extend(WYMeditor, {
-    
+
+/*
+    Constants: Global WYMeditor constants.
+
+    VERSION             - Defines WYMeditor version.
+    INSTANCES           - An array of WYMeditor.editor instances.
+    NAME                - The "name" attribute.
+    INDEX               - A string replaced by the instance index.
+    BASE_PATH           - A string replaced by WYMeditor's base path.
+    CSS_PATH            - A string replaced by WYMeditor's CSS path.
+    WYM_PATH            - A string replaced by WYMeditor's main JS file path.
+    LANG_DEFAULT_PATH   - The language files default path.
+    IFRAME_BASE_PATH    - A string replaced by the designmode iframe's base path.
+    IFRAME_DEFAULT      - The iframe's default base path.
+    JQUERY_PATH         - A string replaced by the computed jQuery path.
+    TOOLS               - A string replaced by the toolbar's HTML.
+    TOOLS_ITEMS         - A string replaced by the toolbar items.
+    TOOL_NAME           - A string replaced by a toolbar item's name.
+    TOOL_TITLE          - A string replaced by a toolbar item's title.
+    TOOL_CLASS          - A string replaced by a toolbar item's class.
+    CLASSES             - A string replaced by the classes panel's HTML.
+    CLASSES_ITEMS       - A string replaced by the classes items.
+    CLASS_NAME          - A string replaced by a class item's name.
+    CLASS_TITLE         - A string replaced by a class item's title.
+    CONTAINERS          - A string replaced by the containers panel's HTML.
+    CONTAINERS_ITEMS    - A string replaced by the containers items.
+    CONTAINER_NAME      - A string replaced by a container item's name.
+    CONTAINER_TITLE     - A string replaced by a container item's title.
+    CONTAINER_CLASS     - A string replaced by a container item's class.
+    HTML                - A string replaced by the HTML view panel's HTML.
+    IFRAME              - A string replaced by the designmode iframe.
+    STATUS              - A string replaced by the status panel's HTML.
+    DIALOG_TITLE        - A string replaced by a dialog's title.
+    DIALOG_BODY         - A string replaced by a dialog's HTML body.
+    BODY                - The BODY element.
+    STRING              - The "string" type.
+    BODY,P,
+    H1,H2,H3,H4,H5,H6,
+    PRE,BLOCKQUOTE,
+    A,BR,IMG,
+    TABLE,TD,TH,
+    UL,OL,LI            - HTML elements string representation.
+    CLASS,HREF,SRC,
+    TITLE,ALT           - HTML attributes string representation.
+    DIALOG_LINK         - A link dialog type.
+    DIALOG_IMAGE        - An image dialog type.
+    DIALOG_TABLE        - A table dialog type.
+    DIALOG_PASTE        - A 'Paste from Word' dialog type.
+    BOLD                - Command: (un)set selection to <strong>.
+    ITALIC              - Command: (un)set selection to <em>.
+    CREATE_LINK         - Command: open the link dialog or (un)set link.
+    INSERT_IMAGE        - Command: open the image dialog or insert an image.
+    INSERT_TABLE        - Command: open the table dialog.
+    PASTE               - Command: open the paste dialog.
+    INDENT              - Command: nest a list item.
+    OUTDENT             - Command: unnest a list item.
+    TOGGLE_HTML         - Command: display/hide the HTML view.
+    FORMAT_BLOCK        - Command: set a block element to another type.
+    PREVIEW             - Command: open the preview dialog.
+    DEFAULT_SKIN        - The 'default' skin used by a WYMeditor instance.
+    UNLINK              - Command: unset a link.
+    INSERT_UNORDEREDLIST- Command: insert an unordered list.
+    INSERT_ORDEREDLIST  - Command: insert an ordered list.
+    MAIN_CONTAINERS     - An array of the main HTML containers used in WYMeditor.
+    BLOCKS              - An array of the HTML block elements.
+    KEY                 - Standard key codes.
+    NODE                - Node types.
+
+*/
+
     VERSION          : "0.5-a1",
     INSTANCES        : new Array(),
     NAME             : "name",
@@ -55,8 +128,8 @@ jQuery.extend(WYMeditor, {
     STATUS           : "{Wym_Status}",
     DIALOG_TITLE     : "{Wym_Dialog_Title}",
     DIALOG_BODY      : "{Wym_Dialog_Body}",
-    BODY             : "body",
     STRING           : "string",
+    BODY             : "body",
     P                : "p",
     H1               : "h1",
     H2               : "h2",
@@ -66,12 +139,12 @@ jQuery.extend(WYMeditor, {
     H6               : "h6",
     PRE              : "pre",
     BLOCKQUOTE       : "blockquote",
-    TD               : "td",
-    TH               : "th",
     A                : "a",
     BR               : "br",
     IMG              : "img",
     TABLE            : "table",
+    TD               : "td",
+    TH               : "th",
     UL               : "ul",
     OL               : "ol",
     LI               : "li",
@@ -129,29 +202,67 @@ jQuery.extend(WYMeditor, {
       TEXT: 3
     },
 	
+    /*
+        Class: WYMeditor.editor
+        WYMeditor editor main class, instanciated for each editor occurrence.
+    */
+
 	editor : function(elem, options) {
 
+        /*
+            Constructor: WYMeditor.editor
+
+            Initializes main values (index, elements, paths, ...)
+            and call WYMeditor.editor.init which initializes the editor.
+
+            Parameters:
+
+                elem - The HTML element to be replaced by the editor.
+                options - The hash of options.
+
+            Returns:
+
+                Nothing.
+
+            See Also:
+
+                <WYMeditor.editor.init>
+        */
+
+        //store the instance in the INSTANCES array and store the index
         this._index = WYMeditor.INSTANCES.push(this) - 1;
+        //store the element replaced by the editor
         this._element = elem;
+        //store the options
         this._options = options;
+        //store the element's inner value
         this._html = jQuery(elem).val();
 
+        //store the HTML option, if any
         if(this._options.html) this._html = this._options.html;
+        //get or compute the base path (where the main JS file is located)
         this._options.basePath = this._options.basePath
         || this.computeBasePath();
+        //get or compute the skin CSS path (where the skin CSS is located)
         this._options.cssPath = this._options.cssPath
         || this.computeCssPath();
+        //get or compute the main JS file location
         this._options.wymPath = this._options.wymPath
         || this.computeWymPath();
+        //get or set the language files path
         this._options.langPath = this._options.langPath
         || this._options.basePath + WYMeditor.LANG_DEFAULT_PATH;
+        //get or set the designmode iframe's base path
         this._options.iframeBasePath = this._options.iframeBasePath
         || this._options.basePath + WYMeditor.IFRAME_DEFAULT;
+        //get or compute the jQuery JS file location
         this._options.jQueryPath = this._options.jQueryPath
         || this.computeJqueryPath();
 
+        //instanciate a WYMeditor Selection API class
         this.selection = new WYMeditor.WymSelection();
 
+        //initialize the editor instance
         this.init();
 	
 	}
@@ -2031,6 +2142,8 @@ WYMeditor.XhtmlValidator = {
         "1":"href",
         "2":"hreflang",
         "media":/^(all|braille|print|projection|screen|speech|,|;| )+$/i,
+        //next comment line required by Opera!
+        /*"rel":/^(alternate|appendix|bookmark|chapter|contents|copyright|glossary|help|home|index|next|prev|section|start|stylesheet|subsection| |shortcut|icon)+$/i,*/
         "rel":/^(alternate|appendix|bookmark|chapter|contents|copyright|glossary|help|home|index|next|prev|section|start|stylesheet|subsection| |shortcut|icon)+$/i,
         "rev":/^(alternate|appendix|bookmark|chapter|contents|copyright|glossary|help|home|index|next|prev|section|start|stylesheet|subsection| |shortcut|icon)+$/i,
         "3":"type"
