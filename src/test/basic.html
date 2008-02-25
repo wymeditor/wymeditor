@@ -20,7 +20,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>WYMeditor</title>
-<link rel="stylesheet" type="text/css" media="screen" href="../wymeditor/skins/default/screen.css" />
 <script type="text/javascript" src="../jquery/jquery.js"></script>
 <script type="text/javascript" src="../wymeditor/jquery.wymeditor.js"></script>
 <script type="text/javascript" src="../wymeditor/jquery.wymeditor.explorer.js"></script>
@@ -36,9 +35,8 @@ jQuery(function() {
 
     jQuery('.wymeditor').wymeditor({
     
-        xhtmlParser: 'xhtml_parser.js',
-        cssParser:   'wym_css_parser.js',
-    
+        initSkin: true,
+
         postInit: function(wym){
             jQuery('.wymtoggle').change( function() {
             
