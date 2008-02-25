@@ -37,8 +37,10 @@ jQuery.extend(WYMeditor, {
     NAME                - The "name" attribute.
     INDEX               - A string replaced by the instance index.
     BASE_PATH           - A string replaced by WYMeditor's base path.
-    CSS_PATH            - A string replaced by WYMeditor's CSS path.
+    SKIN_PATH           - A string replaced by WYMeditor's skin path.
     WYM_PATH            - A string replaced by WYMeditor's main JS file path.
+    SKINS_DEFAULT_PATH  - The skins default base path.
+    SKINS_DEFAULT_CSS   - The skins default CSS file.
     LANG_DEFAULT_PATH   - The language files default path.
     IFRAME_BASE_PATH    - A string replaced by the designmode iframe's base path.
     IFRAME_DEFAULT      - The iframe's default base path.
@@ -87,7 +89,6 @@ jQuery.extend(WYMeditor, {
     TOGGLE_HTML         - Command: display/hide the HTML view.
     FORMAT_BLOCK        - Command: set a block element to another type.
     PREVIEW             - Command: open the preview dialog.
-    DEFAULT_SKIN        - The 'default' skin used by a WYMeditor instance.
     UNLINK              - Command: unset a link.
     INSERT_UNORDEREDLIST- Command: insert an unordered list.
     INSERT_ORDEREDLIST  - Command: insert an ordered list.
@@ -98,78 +99,80 @@ jQuery.extend(WYMeditor, {
 
 */
 
-    VERSION          : "0.5-a1",
-    INSTANCES        : new Array(),
-    NAME             : "name",
-    INDEX            : "{Wym_Index}",
-    BASE_PATH        : "{Wym_Base_Path}",
-    CSS_PATH         : "{Wym_Css_Path}",
-    WYM_PATH         : "{Wym_Wym_Path}",
-	LANG_DEFAULT_PATH: "lang/",
-    IFRAME_BASE_PATH : "{Wym_Iframe_Base_Path}",
-    IFRAME_DEFAULT   : "iframe/default/",
-    JQUERY_PATH      : "{Wym_Jquery_Path}",
-    TOOLS            : "{Wym_Tools}",
-    TOOLS_ITEMS      : "{Wym_Tools_Items}",
-    TOOL_NAME        : "{Wym_Tool_Name}",
-    TOOL_TITLE       : "{Wym_Tool_Title}",
-    TOOL_CLASS       : "{Wym_Tool_Class}",
-    CLASSES          : "{Wym_Classes}",
-    CLASSES_ITEMS    : "{Wym_Classes_Items}",
-    CLASS_NAME       : "{Wym_Class_Name}",
-    CLASS_TITLE      : "{Wym_Class_Title}",
-    CONTAINERS       : "{Wym_Containers}",
-    CONTAINERS_ITEMS : "{Wym_Containers_Items}",
-    CONTAINER_NAME   : "{Wym_Container_Name}",
-    CONTAINER_TITLE  : "{Wym_Containers_Title}",
-    CONTAINER_CLASS  : "{Wym_Container_Class}",
-    HTML             : "{Wym_Html}",
-    IFRAME           : "{Wym_Iframe}",
-    STATUS           : "{Wym_Status}",
-    DIALOG_TITLE     : "{Wym_Dialog_Title}",
-    DIALOG_BODY      : "{Wym_Dialog_Body}",
-    STRING           : "string",
-    BODY             : "body",
-    P                : "p",
-    H1               : "h1",
-    H2               : "h2",
-    H3               : "h3",
-    H4               : "h4",
-    H5               : "h5",
-    H6               : "h6",
-    PRE              : "pre",
-    BLOCKQUOTE       : "blockquote",
-    A                : "a",
-    BR               : "br",
-    IMG              : "img",
-    TABLE            : "table",
-    TD               : "td",
-    TH               : "th",
-    UL               : "ul",
-    OL               : "ol",
-    LI               : "li",
-    CLASS            : "class",
-    HREF             : "href",
-    SRC              : "src",
-    TITLE            : "title",
-    ALT              : "alt",
-    DIALOG_LINK      : "Link",
-    DIALOG_IMAGE     : "Image",
-    DIALOG_TABLE     : "Table",
-    DIALOG_PASTE     : "Paste_From_Word",
-    BOLD             : "Bold",
-    ITALIC           : "Italic",
-    CREATE_LINK      : "CreateLink",
-    INSERT_IMAGE     : "InsertImage",
-    INSERT_TABLE     : "InsertTable",
-    PASTE            : "Paste",
-    INDENT           : "Indent",
-    OUTDENT          : "Outdent",
-    TOGGLE_HTML      : "ToggleHtml",
-    FORMAT_BLOCK     : "FormatBlock",
-    PREVIEW          : "Preview",
-    
-    DEFAULT_SKIN     : "default",
+    VERSION             : "0.5-a1",
+    INSTANCES           : [],
+    SKINS               : [],
+    NAME                : "name",
+    INDEX               : "{Wym_Index}",
+    BASE_PATH           : "{Wym_Base_Path}",
+    CSS_PATH            : "{Wym_Css_Path}",
+    WYM_PATH            : "{Wym_Wym_Path}",
+    SKINS_DEFAULT_PATH  : "skins/",
+    SKINS_DEFAULT_CSS   : "skin.css",
+    SKINS_DEFAULT_JS    : "skin.js",
+	LANG_DEFAULT_PATH   : "lang/",
+    IFRAME_BASE_PATH    : "{Wym_Iframe_Base_Path}",
+    IFRAME_DEFAULT      : "iframe/default/",
+    JQUERY_PATH         : "{Wym_Jquery_Path}",
+    TOOLS               : "{Wym_Tools}",
+    TOOLS_ITEMS         : "{Wym_Tools_Items}",
+    TOOL_NAME           : "{Wym_Tool_Name}",
+    TOOL_TITLE          : "{Wym_Tool_Title}",
+    TOOL_CLASS          : "{Wym_Tool_Class}",
+    CLASSES             : "{Wym_Classes}",
+    CLASSES_ITEMS       : "{Wym_Classes_Items}",
+    CLASS_NAME          : "{Wym_Class_Name}",
+    CLASS_TITLE         : "{Wym_Class_Title}",
+    CONTAINERS          : "{Wym_Containers}",
+    CONTAINERS_ITEMS    : "{Wym_Containers_Items}",
+    CONTAINER_NAME      : "{Wym_Container_Name}",
+    CONTAINER_TITLE     : "{Wym_Containers_Title}",
+    CONTAINER_CLASS     : "{Wym_Container_Class}",
+    HTML                : "{Wym_Html}",
+    IFRAME              : "{Wym_Iframe}",
+    STATUS              : "{Wym_Status}",
+    DIALOG_TITLE        : "{Wym_Dialog_Title}",
+    DIALOG_BODY         : "{Wym_Dialog_Body}",
+    STRING              : "string",
+    BODY                : "body",
+    P                   : "p",
+    H1                  : "h1",
+    H2                  : "h2",
+    H3                  : "h3",
+    H4                  : "h4",
+    H5                  : "h5",
+    H6                  : "h6",
+    PRE                 : "pre",
+    BLOCKQUOTE          : "blockquote",
+    A                   : "a",
+    BR                  : "br",
+    IMG                 : "img",
+    TABLE               : "table",
+    TD                  : "td",
+    TH                  : "th",
+    UL                  : "ul",
+    OL                  : "ol",
+    LI                  : "li",
+    CLASS               : "class",
+    HREF                : "href",
+    SRC                 : "src",
+    TITLE               : "title",
+    ALT                 : "alt",
+    DIALOG_LINK         : "Link",
+    DIALOG_IMAGE        : "Image",
+    DIALOG_TABLE        : "Table",
+    DIALOG_PASTE        : "Paste_From_Word",
+    BOLD                : "Bold",
+    ITALIC              : "Italic",
+    CREATE_LINK         : "CreateLink",
+    INSERT_IMAGE        : "InsertImage",
+    INSERT_TABLE        : "InsertTable",
+    PASTE               : "Paste",
+    INDENT              : "Indent",
+    OUTDENT             : "Outdent",
+    TOGGLE_HTML         : "ToggleHtml",
+    FORMAT_BLOCK        : "FormatBlock",
+    PREVIEW             : "Preview",
 	
 	UNLINK			     : "Unlink",
 	INSERT_UNORDEREDLIST : "InsertUnorderedList",
@@ -243,9 +246,10 @@ jQuery.extend(WYMeditor, {
         //get or compute the base path (where the main JS file is located)
         this._options.basePath = this._options.basePath
         || this.computeBasePath();
-        //get or compute the skin CSS path (where the skin CSS is located)
-        this._options.cssPath = this._options.cssPath
-        || this.computeCssPath();
+        //get or set the skin path (where the skin files are located)
+        this._options.skinPath = this._options.skinPath
+        || this._options.basePath + WYMeditor.SKINS_DEFAULT_PATH
+           + this._options.skin + '/';
         //get or compute the main JS file location
         this._options.wymPath = this._options.wymPath
         || this.computeWymPath();
@@ -300,7 +304,7 @@ jQuery.fn.wymeditor = function(options) {
     
     basePath:   false,
     
-    cssPath:    false,
+    skinPath:    false,
     
     wymPath:    false,
     
@@ -312,6 +316,10 @@ jQuery.fn.wymeditor = function(options) {
     
     stylesheet: false,
     
+    skin:       "default",
+    initSkin:   true,
+    loadSkin:   true,
+
     lang:       "en",
 
     boxHtml:   "<div class='wym_box'>"
@@ -618,8 +626,6 @@ jQuery.fn.wymeditor = function(options) {
                       + "></body>",
                       
     dialogStyles: [],
-                      
-    skin:            WYMeditor.DEFAULT_SKIN,
 
     stringDelimiterLeft: "{",
     stringDelimiterRight:"}",
@@ -780,7 +786,7 @@ WYMeditor.editor.prototype.init = function() {
       jQuery(this._box).find(this._options.htmlSelector).hide();
       
       //enable the skin
-      this.skin();
+      this.loadSkin();
       
     }
     
@@ -1133,7 +1139,8 @@ WYMeditor.editor.prototype.dialog = function(sType) {
     var dialogHtml = this._options.dialogHtml;
     dialogHtml = dialogHtml
       .replaceAll(WYMeditor.BASE_PATH, this._options.basePath)
-      .replaceAll(WYMeditor.CSS_PATH, this._options.cssPath)
+      .replaceAll(WYMeditor.CSS_PATH, this._options.skinPath
+        + WYMeditor.SKINS_DEFAULT_CSS)
       .replaceAll(WYMeditor.WYM_PATH, this._options.wymPath)
       .replaceAll(WYMeditor.JQUERY_PATH, this._options.jQueryPath)
       .replaceAll(WYMeditor.DIALOG_TITLE, this.encloseString(sType))
@@ -1270,52 +1277,55 @@ WYMeditor.editor.prototype.mouseup = function(evt) {
 
 /********** SKINS **********/
 
-WYMeditor.editor.prototype.skin = function() {
-
-  switch(this._options.skin) {
-  
-    case WYMeditor.DEFAULT_SKIN:
+/*
+ * Function: WYMeditor.loadCss
+ *      Loads a stylesheet in the document.
+ *
+ * Parameters:
+ *      href - The CSS path.
+ */
+WYMeditor.loadCss = function(href) {
     
-      jQuery(this._box).addClass("wym_skin_default");
-      
-      //render following sections as panels
-      jQuery(this._box).find(this._options.classesSelector)
-        .addClass("wym_panel");
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = href;
 
-      //render following sections as buttons
-      jQuery(this._box).find(this._options.toolsSelector)
-        .addClass("wym_buttons");
+    var head = jQuery('head').get(0);
+    head.appendChild(link);
+};
 
-      //render following sections as dropdown menus
-      jQuery(this._box).find(this._options.containersSelector)
-        .addClass("wym_dropdown")
-        .find(WYMeditor.H2)
-        .append("<span>&nbsp;&gt;</span>");
+/*
+ *  Function: WYMeditor.editor.loadSkin
+ *      Loads the skin CSS and initialization script (if needed).
+ */
+WYMeditor.editor.prototype.loadSkin = function() {
 
-      // auto add some margin to the main area sides if left area
-      // or right area are not empty (if they contain sections)
-      jQuery(this._box).find("div.wym_area_right ul")
-        .parents("div.wym_area_right").show()
-        .parents(this._options.boxSelector)
-        .find("div.wym_area_main")
-        .css({"margin-right": "155px"});
+    //does the user want to automatically load the CSS (default: yes)?
+    //we also test if it hasn't been already loaded by another instance
+    //see TODO below for a better test
+    if(this._options.loadSkin && !WYMeditor.SKINS[this._options.skin]) {
 
-      jQuery(this._box).find("div.wym_area_left ul")
-        .parents("div.wym_area_left").show()
-        .parents(this._options.boxSelector)
-        .find("div.wym_area_main")
-        .css({"margin-left": "155px"});
+        //TODO: check if it hasn't been already loaded
+        //so we don't load it more than once
+        //(check the existing <link> elements)
 
-      //make hover work under IE < 7
-      jQuery(this._box).find(".wym_section").hover(function(){ 
-        jQuery(this).addClass("hover"); 
-      },function(){ 
-        jQuery(this).removeClass("hover");
-      });
-    
-    break;
-  
-  }
+        //load it, using the skin path
+        WYMeditor.loadCss( this._options.skinPath
+            + WYMeditor.SKINS_DEFAULT_CSS );
+    }
+
+    //does the user want to use some JS to initialize the skin (default: yes)?
+    //also check if it hasn't already been loaded by another instance
+    if(this._options.initSkin && !WYMeditor.SKINS[this._options.skin]) {
+
+        eval(jQuery.ajax({url:this._options.skinPath
+            + WYMeditor.SKINS_DEFAULT_JS, async:false}).responseText);
+    }
+
+    //init the skin, if needed
+    if(WYMeditor.SKINS[this._options.skin]
+    && WYMeditor.SKINS[this._options.skin].init)
+       WYMeditor.SKINS[this._options.skin].init(this);
 
 };
 

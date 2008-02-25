@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <!--
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (C) 2007 H.O.net - http://www.honet.be/
@@ -20,7 +20,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>WYMeditor</title>
-<link rel="stylesheet" type="text/css" media="screen" href="../wymeditor/skins/default/screen.css" />
 <style type="text/css">
     div.result {
       width: 50%;
@@ -39,14 +38,9 @@
 <script type="text/javascript">
 
 jQuery(function() {
-    jQuery('.wymeditor').wymeditor({
-        xhtmlParser: 'xhtml_parser.js',
-        cssParser:   'wym_css_parser.js'
-    });
+    jQuery('.wymeditor').wymeditor();
     
     jQuery('.wymeditor2').wymeditor({
-        xhtmlParser: 'xhtml_parser.js',
-        cssParser:   'wym_css_parser.js',
         html:        '<p>Hello, World!<\/p>'
     });
 });

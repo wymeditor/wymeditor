@@ -1,0 +1,19 @@
+div.wym_iframe iframe {
+    width: 90%;
+    height: 200px;
+}
+
+div.wym_section ul {
+    margin: 0;
+}
+
+div.wym_section ul li {
+    float: left;
+    list-style-type: none;
+    margin-right: 5px;
+}
+
+h2 {
+    margin: 0;
+    clear: both;
+}
