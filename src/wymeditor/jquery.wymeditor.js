@@ -348,7 +348,7 @@ jQuery.fn.wymeditor = function(options) {
               + WYMeditor.IFRAME_BASE_PATH
               + "wymiframe.html' "
               + "onload='this.contentWindow.parent.WYMeditor.INSTANCES["
-              + WYMeditor.INDEX + "].initIframe(this)' "
+              + WYMeditor.INDEX + "].initIframe(this)'"
               + "></iframe>"
               + "</div>",
               
@@ -1302,15 +1302,23 @@ WYMeditor.editor.prototype.loadSkin = function() {
 
     //does the user want to automatically load the CSS (default: yes)?
     //we also test if it hasn't been already loaded by another instance
-    //see TODO below for a better test
+    //see below for a better (second) test
     if(this._options.loadSkin && !WYMeditor.SKINS[this._options.skin]) {
 
-        //TODO: check if it hasn't been already loaded
+        //check if it hasn't been already loaded
         //so we don't load it more than once
-        //(check the existing <link> elements)
+        //(we check the existing <link> elements)
+
+        var found = false;
+        var rExp = new RegExp(this._options.skin
+             + '\/' + WYMeditor.SKINS_DEFAULT_CSS + '$');
+
+        jQuery('link').each( function() {
+            if(this.href.match(rExp)) found = true;
+        });
 
         //load it, using the skin path
-        WYMeditor.loadCss( this._options.skinPath
+        if(!found) WYMeditor.loadCss( this._options.skinPath
             + WYMeditor.SKINS_DEFAULT_CSS );
     }
 
