@@ -1,7 +1,6 @@
 WYMeditor.SKINS['default'] = {
 
     init: function(wym) {
-        jQuery(wym._box).addClass("wym_skin_default");
 
         //render following sections as panels
         jQuery(wym._box).find(wym._options.classesSelector)
