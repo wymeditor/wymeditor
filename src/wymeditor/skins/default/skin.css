@@ -22,7 +22,7 @@
 
 
 /*HIDDEN BY DEFAULT*/
-        .wym_skin_default .wym_area_left,
+        .wym_skin_default .wym_area_left          { display: none; }
         .wym_skin_default .wym_area_right         { display: block; }
 
 

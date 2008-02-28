@@ -1322,6 +1322,9 @@ WYMeditor.editor.prototype.loadSkin = function() {
             + WYMeditor.SKINS_DEFAULT_CSS );
     }
 
+    //put the classname (ex. wym_skin_default) on wym_box
+    jQuery(this._box).addClass( "wym_skin_" + this._options.skin );
+
     //does the user want to use some JS to initialize the skin (default: yes)?
     //also check if it hasn't already been loaded by another instance
     if(this._options.initSkin && !WYMeditor.SKINS[this._options.skin]) {

@@ -1,19 +1,19 @@
-div.wym_iframe iframe {
+.wym_skin_minimal div.wym_iframe iframe {
     width: 90%;
     height: 200px;
 }
 
-div.wym_section ul {
+.wym_skin_minimal div.wym_section ul {
     margin: 0;
 }
 
-div.wym_section ul li {
+.wym_skin_minimal div.wym_section ul li {
     float: left;
     list-style-type: none;
     margin-right: 5px;
 }
 
-h2 {
+.wym_skin_minimal h2 {
     margin: 0;
     clear: both;
 }
