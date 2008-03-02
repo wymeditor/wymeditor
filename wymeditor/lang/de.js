@@ -1,4 +1,4 @@
-WYMeditor.STRINGS = jQuery.extend({
+WYMeditor.STRINGS['de'] = {
     Strong:           'Fett',
     Emphasis:         'Kursiv',
     Superscript:      'Text hochstellen',
@@ -40,6 +40,5 @@ WYMeditor.STRINGS = jQuery.extend({
     Classes:          'Klassen',
     Status:           'Status',
     Source_Code:      'Quellcode'
-}, WYMeditor.STRINGS);
-
+};
 

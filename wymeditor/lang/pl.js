@@ -1,4 +1,4 @@
-WYMeditor.STRINGS = jQuery.extend({
+WYMeditor.STRINGS['pl'] = {
     Strong:           'Nacisk',
     Emphasis:         'Emfaza',
     Superscript:      'Indeks górny',
@@ -40,6 +40,5 @@ WYMeditor.STRINGS = jQuery.extend({
     Classes:          'Styl',
     Status:           'Status',
     Source_Code:      'Kod źródłowy'
-}, WYMeditor.STRINGS);
-
+};
 

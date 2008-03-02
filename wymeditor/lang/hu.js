@@ -1,4 +1,4 @@
-WYMeditor.STRINGS = jQuery.extend({
+WYMeditor.STRINGS['hu'] = {
     Strong:           'Félkövér',
     Emphasis:         'Kiemelt',
     Superscript:      'Felső index',
@@ -40,6 +40,5 @@ WYMeditor.STRINGS = jQuery.extend({
     Classes:          'Osztályok',
     Status:           'Állapot',
     Source_Code:      'Forráskód'
-}, WYMeditor.STRINGS);
-
+};
 

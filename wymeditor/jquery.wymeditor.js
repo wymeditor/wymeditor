@@ -33,7 +33,9 @@ jQuery.extend(WYMeditor, {
     Constants: Global WYMeditor constants.
 
     VERSION             - Defines WYMeditor version.
-    INSTANCES           - An array of WYMeditor.editor instances.
+    INSTANCES           - An array of loaded WYMeditor.editor instances.
+    STRINGS             - An array of loaded WYMeditor language pairs/values.
+    SKINS               - An array of loaded WYMeditor skins.
     NAME                - The "name" attribute.
     INDEX               - A string replaced by the instance index.
     BASE_PATH           - A string replaced by WYMeditor's base path.
@@ -101,6 +103,7 @@ jQuery.extend(WYMeditor, {
 
     VERSION             : "0.5-a1",
     INSTANCES           : [],
+    STRINGS             : [],
     SKINS               : [],
     NAME                : "name",
     INDEX               : "{Wym_Index}",
@@ -1064,14 +1067,15 @@ WYMeditor.editor.prototype.switchTo = function(node,sType) {
 WYMeditor.editor.prototype.replaceStrings = function(sVal) {
   //check if the language file has already been loaded
   //if not, get it via a synchronous ajax call
-  if(!WYMeditor.STRINGS)
+  if(!WYMeditor.STRINGS[this._options.lang])
     eval(jQuery.ajax({url:this._options.langPath
       + this._options.lang + '.js', async:false}).responseText);
 
   //replace all the strings in sVal and return it
-  for (var key in WYMeditor.STRINGS) {
+  for (var key in WYMeditor.STRINGS[this._options.lang]) {
     sVal = sVal.replaceAll(this._options.stringDelimiterLeft + key 
-    + this._options.stringDelimiterRight, WYMeditor.STRINGS[key]);
+    + this._options.stringDelimiterRight,
+    WYMeditor.STRINGS[this._options.lang][key]);
   };
   return(sVal);
 };
