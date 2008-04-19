@@ -1,6 +1,6 @@
 /*
  * WYMeditor : what you see is What You Mean web-based editor
- * Copyright (C) 2007 H.O.net - http://www.honet.be/
+ * Copyright (c) 2008 Jean-Francois Hovinne, http://www.wymeditor.org/
  * Dual licensed under the MIT (MIT-license.txt)
  * and GPL (GPL-license.txt) licenses.
  *
@@ -14,11 +14,11 @@
  *
  * About: authors
  *
- *        Jean-Francois Hovinne (jf.hovinne@wymeditor.org)
- *        Volker Mische (vmx@gmx.de)
- *        Scott Lewis (scott@bright-crayon.com)
+ *        Jean-Francois Hovinne (jf.hovinne a-t wymeditor dotorg)
+ *        Volker Mische (vmx a-t gmx dotde)
+ *        Scott Lewis (lewiscot a-t gmail dotcom)
  *        Bermi Ferrer (wymeditor a-t bermi dotorg)
- *        Daniel Reszka (d.reszka@wymeditor.org)
+ *        Daniel Reszka (d.reszka a-t wymeditor dotorg)
  */
 
 /*

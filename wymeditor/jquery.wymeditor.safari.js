@@ -1,6 +1,6 @@
 /*
  * WYMeditor : what you see is What You Mean web-based editor
- * Copyright (C) 2007 H.O.net - http:// www.honet.be/
+ * Copyright (c) 2008 Jean-Francois Hovinne, http://www.wymeditor.org/
  * Dual licensed under the MIT (MIT-license.txt)
  * and GPL (GPL-license.txt) licenses.
  *
@@ -13,11 +13,11 @@
  *        See the documentation for more info.
  *
  * File Authors:
- *        Jean-Francois Hovinne (jf.hovinne@wymeditor.org)
- *        Volker Mische (vmx@gmx.de)
+ *        Jean-Francois Hovinne (jf.hovinne a-t wymeditor dotorg)
+ *        Volker Mische (vmx a-t gmx dotde)
  *        Bermi Ferrer (wymeditor a-t bermi dotorg)
- *        Frédéric Palluel-Lafleur (fpalluel@gmail.com)
- *        Scott Lewis (lewiscot@gmail.com)
+ *        Frédéric Palluel-Lafleur (fpalluel a-t gmail dotcom)
+ *        Scott Lewis (lewiscot a-t gmail dotcom)
  */
 
 WYMeditor.WymClassSafari = function(wym) {

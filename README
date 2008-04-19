@@ -1,5 +1,5 @@
 WYMeditor : what you see is What You Mean web-based editor
-Copyright (C) 2007 H.O.net - http://www.honet.be/
+Copyright (c) 2008 Jean-Francois Hovinne, http://www.wymeditor.org/
 Dual licensed under the MIT (MIT-license.txt)
 and GPL (GPL-license.txt) licenses.
 
@@ -23,7 +23,7 @@ jQuery is available at http://jquery.com/
 WYMeditor is compatible with MSIE 6.0+
 and Gecko-based browsers (e.g. Firefox 1.5+).
 
-Opera compatibility is still buggy/experimental.
+Opera/Safari compatibility is still buggy/experimental.
 Any help to improve it is welcome.
 
 WYMeditor integration examples are available in the 'examples' directory.
