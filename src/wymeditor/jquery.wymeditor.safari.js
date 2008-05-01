@@ -63,27 +63,6 @@ WYMeditor.WymClassSafari.prototype.initIframe = function(iframe) {
     this.listen();
 };
 
-/* @name htmlthis._iframe.contentWindow
- * @description Get/Set the html value
- */
-WYMeditor.WymClassSafari.prototype.html = function(html) {
-
-  if(html) {
-    
-    //replace em by i and strong by bold
-    //(designMode issue)
-    html = html.replace(/<em([^>]*)>/gi, "<i$1>")
-      .replace(/<\/em>/gi, "</i>")
-      .replace(/<strong([^>]*)>/gi, "<b$1>")
-      .replace(/<\/strong>/gi, "</b>");
-    
-    //update the html body
-    jQuery(this._doc.body).html(html);
-
-  }
-  else return(jQuery(this._doc.body).html());
-};
-
 WYMeditor.WymClassSafari.prototype._exec = function(cmd,param) {
 
     if(!this.selected()) return(false);
@@ -119,7 +98,6 @@ WYMeditor.WymClassSafari.prototype._exec = function(cmd,param) {
 
         //Safari creates lists in e.g. paragraphs.
         //Find the container, and remove it.
-        //TODO: remove remaining span
         var focusNode = this.selected();
         var container = this.findUp(focusNode, WYMeditor.MAIN_CONTAINERS);
         if(container) jQuery(container).replaceWith(jQuery(container).html());
@@ -136,9 +114,8 @@ WYMeditor.WymClassSafari.prototype._exec = function(cmd,param) {
     var container = this.selected();
     if(container && container.tagName.toLowerCase() == WYMeditor.BODY)
         this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
-    
-    //add event handlers on doc elements
 
+    //add event handlers on doc elements
     this.listen();
 };
 
@@ -277,15 +254,15 @@ WYMeditor.WymClassSafari.prototype.openBlockTag = function(tag, attributes)
 {
   var attributes = this.validator.getValidTagAttributes(tag, attributes);
 
-  // Handle Mozilla styled spans
-  if(tag == 'span' && attributes.style){
+  // Handle Safari styled spans
+  if(tag == 'span' && attributes.style) {
     var new_tag = this.getTagForStyle(attributes.style);
     if(new_tag){
       this._tag_stack.pop();
       var tag = new_tag;
       this._tag_stack.push(new_tag);
       attributes.style = '';
-    }else{
+    } else {
       return;
     }
   }
@@ -297,9 +274,17 @@ WYMeditor.WymClassSafari.prototype.getTagForStyle = function(style) {
 
   if(/bold/.test(style)) return 'strong';
   if(/italic/.test(style)) return 'em';
-  //if(/sub/.test(style)) return 'sub';
-  //if(/sub/.test(style)) return 'super';
+  if(/sub/.test(style)) return 'sub';
+  if(/super/.test(style)) return 'sup';
   return false;
+};
+
+/* @name xhtml
+ * @description Cleans up the HTML
+ */
+WYMeditor.editor.prototype.xhtml = function() {
+    jQuery('.Apple-style-span', this._doc.body).removeClass('Apple-style-span');
+    return this.parser.parse(this.html());
 };
 
 /********** SELECTION API **********/
