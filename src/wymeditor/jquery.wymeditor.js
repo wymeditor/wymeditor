@@ -9,7 +9,7 @@
  *
  * File: jquery.wymeditor.js
  *
- *        Main JS file with core class and functions.
+ *        Main JS file with core classes and functions.
  *        See the documentation for more info.
  *
  * About: authors
