@@ -134,7 +134,7 @@ WYMeditor.WymClassSafari.prototype._exec = function(cmd,param) {
     
     //set to P if parent = BODY
     var container = this.selected();
-    if(container.tagName.toLowerCase() == WYMeditor.BODY)
+    if(container && container.tagName.toLowerCase() == WYMeditor.BODY)
         this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
     
     //add event handlers on doc elements
@@ -263,13 +263,14 @@ WYMeditor.WymClassSafari.prototype.keyup = function(evt) {
   }
 };
 
+//TODO
 WYMeditor.WymClassSafari.prototype.setFocusToNode = function(node) {
-    var range = document.createRange();
+    /*var range = document.createRange();
     range.selectNode(node);
     var selected = this._iframe.contentWindow.getSelection();
     selected.addRange(range);
     selected.collapse(node, node.childNodes.length);
-    this._iframe.contentWindow.focus();
+    this._iframe.contentWindow.focus();*/
 };
 
 WYMeditor.WymClassSafari.prototype.openBlockTag = function(tag, attributes)
