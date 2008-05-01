@@ -116,9 +116,13 @@ WYMeditor.WymClassSafari.prototype._exec = function(cmd,param) {
     case WYMeditor.INSERT_ORDEREDLIST: case WYMeditor.INSERT_UNORDEREDLIST:
 
         this._doc.execCommand(cmd,'',null);
+
+        //Safari creates lists in e.g. paragraphs.
+        //Find the container, and remove it.
+        //TODO: remove remaining span
         var focusNode = this.selected();
-        var para = this.findUp(focusNode, WYMeditor.P);
-        if(para) jQuery(para).replaceWith(jQuery(para).html());
+        var container = this.findUp(focusNode, WYMeditor.MAIN_CONTAINERS);
+        if(container) jQuery(container).replaceWith(jQuery(container).html());
 
     break;
     
