@@ -181,8 +181,7 @@ jQuery.extend(WYMeditor, {
 	INSERT_UNORDEREDLIST : "InsertUnorderedList",
 	INSERT_ORDEREDLIST	 : "InsertOrderedList",
 
-    MAIN_CONTAINERS : new Array(this.P,this.H1,this.H2,this.H3,this.H4,
-        this.H5,this.H6,this.PRE,this.BLOCKQUOTE),
+    MAIN_CONTAINERS : new Array("p","h1","h2","h3","h4","h5","h6","pre","blockquote"),
 
     BLOCKS : new Array("address", "blockquote", "div", "dl",
 	   "fieldset", "form", "h1", "h2", "h3", "h4", "h5", "h6", "hr",
