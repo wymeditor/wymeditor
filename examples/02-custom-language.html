@@ -20,19 +20,21 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>WYMeditor</title>
-<link rel="stylesheet" type="text/css" media="screen" href="styles.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="../wymeditor/skins/default/screen.css" />
 <script type="text/javascript" src="../jquery/jquery.js"></script>
 <script type="text/javascript" src="../wymeditor/jquery.wymeditor.pack.js"></script>
 
 <script type="text/javascript">
 
+/* Use 3 options, one to set the html content,
+ * one to set the language, and one the set the classes
+ */
+
 jQuery(function() {
     jQuery('.wymeditor').wymeditor({
     
         html: '<p>Hello, World!<\/p>',
-        stylesheet: 'styles.css',
-        lang: 'fr'
+        lang: 'fr',
+        stylesheet: 'styles.css'
     
     });
 });
