@@ -67,9 +67,8 @@ archive: pack
 	@@mkdir ${BUILD_DIR}/build/wymeditor/
 	@@cp -pR ${SRC_DIR}/wymeditor ${BUILD_DIR}/build/wymeditor/
 	@@rm ${BUILD_DIR}/build/wymeditor/wymeditor/*.js
-	@@cp ${WE} ${WE_PACK} ${CP_PACK} ${XP_PACK} ${BUILD_DIR}/build/wymeditor/wymeditor/
+	@@cp ${WE} ${WE_PACK} ${BUILD_DIR}/build/wymeditor/wymeditor/
 	@@cp -pR ${SRC_DIR}/*.txt ${SRC_DIR}/README ${BUILD_DIR}/build/wymeditor/
-	@@cp ${CSS_PARSER} ${XHTML_PARSER} ${BUILD_DIR}/build/wymeditor/wymeditor/
 	@@cp -pR ${SRC_DIR}/examples ${BUILD_DIR}/build/wymeditor/
 	@@cp -pR ${SRC_DIR}/jquery ${BUILD_DIR}/build/wymeditor/
 	@@tar -C ${BUILD_DIR}/build -czf ${WE_ARCH} --exclude '.svn' wymeditor

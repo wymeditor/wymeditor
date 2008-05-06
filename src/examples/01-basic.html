@@ -20,20 +20,23 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>WYMeditor</title>
-<link rel="stylesheet" type="text/css" media="screen" href="styles.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="../wymeditor/skins/default/screen.css" />
+<!-- jQuery library is required, see http://jquery.com/ -->
 <script type="text/javascript" src="../jquery/jquery.js"></script>
+<!-- WYMeditor main JS file, packed version -->
 <script type="text/javascript" src="../wymeditor/jquery.wymeditor.pack.js"></script>
 
 <script type="text/javascript">
 
+/* Here we replace each element with class 'wymeditor'
+ * (typically textareas) by a WYMeditor instance.
+ * 
+ * We could use the 'html' option, to initialize the editor's content.
+ * If this option isn't set, the content is retrieved from
+ * the element being replaced.
+ */
+
 jQuery(function() {
-    jQuery('.wymeditor').wymeditor({
-    
-        html: '<p>Hello, World!<\/p>',
-        stylesheet: 'styles.css'
-    
-    });
+    jQuery('.wymeditor').wymeditor();
 });
 
 </script>
@@ -44,7 +47,7 @@ jQuery(function() {
 <h1>WYMeditor integration example</h1>
 <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
 <form method="post" action="">
-<textarea class="wymeditor"></textarea>
+<textarea class="wymeditor">&lt;p&gt;Hello, World!&lt;/p&gt;</textarea>
 <input type="submit" class="wymupdate" />
 </form>
 
