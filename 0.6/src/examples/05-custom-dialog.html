@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+ * WYMeditor : what you see is What You Mean web-based editor
+ * Copyright (c) 2008 Jean-Francois Hovinne, http://www.wymeditor.org/
+ * Dual licensed under the MIT (MIT-license.txt)
+ * and GPL (GPL-license.txt) licenses.
+ *
+ * For further information visit:
+ *        http://www.wymeditor.org/
+ *
+ * File Name:
+ *        05-custom-dialog.html
+ *        WYMeditor integration example - custom dialog.
+ *        See the documentation for more info.
+ *
+ * File Authors:
+ *        Jean-Francois Hovinne - http://www.hovinne.com/
+-->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>WYMeditor</title>
+<script type="text/javascript" src="../jquery/jquery.js"></script>
+<script type="text/javascript" src="../wymeditor/jquery.wymeditor.pack.js"></script>
+
+<script type="text/javascript">
+
+jQuery(function() {
+    jQuery('.wymeditor').wymeditor({
+    
+        html: '<p>Hello, World!<\/p>',
+        stylesheet: 'styles.css',
+        
+        postInitDialog: function(wym,wdw) {
+        
+            //postInitDialog is executed when the dialog is ready
+        
+            //'wym' is the WYMeditor instance
+            //'wdw' is the dialog's window
+
+            var body = wdw.document.body;
+
+            //add a select box populated with predefined values to the dialog
+
+            //construct the string with the needed controls
+            var selectLink = "<div class='row row-indent'>"
+            + "<select class='wym_select_link'>"
+            + "<option selected value='WYMeditor http://www.wymeditor.org/'>"
+            + "WYMeditor<\/option>"
+            + "<option value='SourceForge http://www.sourceforge.net/'>"
+            + "SourceForge<\/option>"
+            + "<option value='GNU http://www.gnu.org/'>"
+            + "GNU<\/option>"
+            + "<\/select>"
+            + "<input class='wym_choose' type='button'"
+            + " value='{Choose}' />"
+            + "<\/div>";
+
+            //the {Choose} string will automagically be localized
+            //by replaceStrings()
+
+            //add the controls to the dialog
+            jQuery(body)
+                .filter('.wym_dialog_link').find('fieldset').eq(0)
+                .prepend(wym.replaceStrings(selectLink));
+            
+            //bind a function which will populate the URL and title fields
+            //when the user clicks on the wym_choose button
+            jQuery(body)
+                .find('.wym_choose')
+                .click(function() {
+
+                var myval = jQuery(body).find('.wym_select_link').val();
+                
+                //get the URL and the title
+                jQuery(body)
+                    .find('.wym_href')
+                    .val(myval.substring(myval.lastIndexOf(' ') + 1));
+                jQuery(body)
+                    .find('.wym_title')
+                    .val(myval.substr(0, myval.lastIndexOf(' ')));
+                });
+        }
+    
+    });
+});
+
+</script>
+
+</head>
+
+<body>
+<h1>WYMeditor integration example - custom dialog</h1>
+<p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+<form method="post" action="">
+<textarea class="wymeditor"></textarea>
+<input type="submit" class="wymupdate" />
+</form>
+
+<p>
+<a href="http://sourceforge.net/projects/wym-editor">
+<img src="http://sflogo.sourceforge.net/sflogo.php?group_id=148869&amp;type=1" border="0" alt="SourceForge logo" title="SourceForge" />
+</a>
+</p>
+
+</body>
+
+</html>
