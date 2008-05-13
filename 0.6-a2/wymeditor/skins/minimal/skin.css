@@ -1,0 +1,19 @@
+.wym_skin_minimal div.wym_iframe iframe {
+    width: 90%;
+    height: 200px;
+}
+
+.wym_skin_minimal div.wym_section ul {
+    margin: 0;
+}
+
+.wym_skin_minimal div.wym_section ul li {
+    float: left;
+    list-style-type: none;
+    margin-right: 5px;
+}
+
+.wym_skin_minimal h2 {
+    margin: 0;
+    clear: both;
+}

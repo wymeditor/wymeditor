@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+ * WYMeditor : what you see is What You Mean web-based editor
+ * Copyright (c) 2008 Jean-Francois Hovinne, http://www.wymeditor.org/
+ * Dual licensed under the MIT (MIT-license.txt)
+ * and GPL (GPL-license.txt) licenses.
+ *
+ * For further information visit:
+ *        http://www.wymeditor.org/
+ *
+ * File Name:
+ *        basic.html
+ *        Basic editor integration example.
+ *        See the documentation for more info.
+ *
+ * File Authors:
+ *        Jean-Francois Hovinne (jf.hovinne a-t wymeditor dotorg)
+ *        Bermi Ferrer (http://bermi.org)
+-->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>WYMeditor</title>
+<link rel="stylesheet" type="text/css" media="screen" href="../wymeditor/skins/default/screen.css" />
+<script type="text/javascript" src="../jquery/jquery.js"></script>
+<script type="text/javascript" src="../wymeditor/jquery.wymeditor.js"></script>
+<script type="text/javascript" src="../wymeditor/jquery.wymeditor.explorer.js"></script>
+<script type="text/javascript" src="../wymeditor/jquery.wymeditor.mozilla.js"></script>
+<script type="text/javascript" src="../wymeditor/jquery.wymeditor.opera.js"></script>
+<script type="text/javascript" src="../wymeditor/jquery.wymeditor.safari.js"></script>
+
+<script type="text/javascript">
+
+
+WYMeditor.XhtmlLexer.prototype.addTokens = function() {
+  // These tokens are for Radiant CMS radius tags  
+  this.addEntryPattern("</?r:", 'Text', 'Text');
+  this.addExitPattern(">", 'Text');
+
+  this.addCommentTokens('Text');
+  this.addScriptTokens('Text');
+  this.addCssTokens('Text');
+  this.addTagTokens('Text');
+
+};
+
+WYMeditor.XhtmlValidator._tags["p"] = {
+  'attributes':
+  {
+    'align':/^(right|left|center|justify)$/,
+    '0':'name'
+  }
+};
+
+jQuery(function() {
+    jQuery('.wymeditor').wymeditor({
+        stylesheet: 'wym_stylesheet.css',
+        postInit: function(wym){
+            wym.html('<p><r:test>This text is inside a radius tag</r:test></p>'
+                   + '<p align="right" name="test">Right aligned</p>');
+        }
+    });
+});
+
+</script>
+
+</head>
+
+<body>
+<h1>WYMeditor custom XMHTML parser integration example</h1>
+<p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+<form method="post" action="">
+<textarea class="wymeditor"></textarea>
+<input type="submit" class="wymupdate" />
+</form>
+
+<p>
+<a href="http://sourceforge.net/projects/wym-editor">
+<img src="http://sflogo.sourceforge.net/sflogo.php?group_id=148869&amp;type=1" border="0" alt="SourceForge logo" title="SourceForge" />
+</a>
+</p>
+
+</body>
+
+</html>

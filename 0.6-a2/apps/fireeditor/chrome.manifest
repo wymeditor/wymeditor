@@ -1,0 +1,5 @@
+content	fireeditor	content/
+locale	fireeditor	en-US	locale/en-US/
+skin	fireeditor	classic/1.0	skin/
+overlay	chrome://browser/content/browser.xul	chrome://fireeditor/content/firefoxOverlay.xul
+style	chrome://global/content/customizeToolbar.xul	chrome://fireeditor/skin/overlay.css
