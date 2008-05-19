@@ -3082,7 +3082,7 @@ WYMeditor.XhtmlLexer.prototype.addInTagDeclarationTokens = function(scope)
 
 WYMeditor.XhtmlLexer.prototype.addAttributeTokens = function(scope)
 {
-  this.addSpecialPattern("\\s*[a-z-_0-9]+\\s*(?=\=)\\s*", scope, 'TagAttributes');
+  this.addSpecialPattern("\\s*[a-z-_0-9]*:?[a-z-_0-9]+\\s*(?=\=)\\s*", scope, 'TagAttributes');
 
   this.addEntryPattern('=\\s*"', scope, 'DoubleQuotedAttribute');
   this.addPattern("\\\\\"", 'DoubleQuotedAttribute');
