@@ -3510,7 +3510,7 @@ WYMeditor.XhtmlSaxListener.prototype.joinRepeatedEntities = function(xhtml)
 
 WYMeditor.XhtmlSaxListener.prototype.removeEmptyTags = function(xhtml)
 {
-  return xhtml.replace(new RegExp('<('+this.block_tags.join("|")+')>(<br \/>|&#160;|&nbsp;|\s)*<\/\\1>' ,'g'),'');
+  return xhtml.replace(new RegExp('<('+this.block_tags.join("|")+')>(<br \/>|&#160;|&nbsp;|\\s)*<\/\\1>' ,'g'),'');
 };
 
 WYMeditor.XhtmlSaxListener.prototype.getResult = function()
