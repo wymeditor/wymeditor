@@ -73,10 +73,10 @@ WYMeditor.WymClassMozilla.prototype.initIframe = function(iframe) {
  */
 WYMeditor.WymClassMozilla.prototype.html = function(html) {
 
-  if(html) {
+  if(typeof html === 'string') {
   
     //disable designMode
-    this._doc.designMode = "off";
+    try { this._doc.designMode = "off"; } catch(e) { };
     
     //replace em by i and strong by bold
     //(designMode issue)
