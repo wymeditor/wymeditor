@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <script type="text/javascript"></script>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>WYMeditor Toolbars Test</title>
+        
+        <!-- Load jQuery -->
+        <script type="text/javascript" src="js/jquery/jquery.js"></script>
+        
+        <!-- Load jQuery Plugins -->
+        <script type="text/javascript" src="js/modal/jquery.simplemodal.js"></script>
+        
+        <!-- Load WYMeditor -->
+        <script type="text/javascript" src="js/jquery.wymeditor.js"></script>
+        
+        <!-- Load WYMeditor Plugins -->
+        <script type="text/javascript" src="js/plugins/toolbar/toolbar.js"></script>
+        <script type="text/javascript" src="js/plugins/plugin1/test.js"></script>
+        <script type="text/javascript" src="js/plugins/meter/meter.js"></script>
+        <script type="text/javascript" src="js/plugins/sapi/sapi.js"></script>
+
+        <!-- Load WYMeditor Styles -->
+        <link rel="stylesheet" href="css/editor.css" type="text/css" media="screen"/>
+        <link rel="stylesheet" href="js/plugins/skybox/skybox.css" type="text/css" media="screen"/>
+        <link rel="stylesheet" href="js/modal/simplemodal.css" type="text/css" media="screen"/>
+        
+        <script type="text/javascript">
+            (function($) {
+                $(function(e) {
+                    $('#instance-0').wymeditor("config.js");
+                    $('#instance-1').wymeditor();
+                });
+            })(jQuery);
+        </script>
+    </head>
+    <body>
+        <div id="log-wrapper">
+            <div id="log"></div>
+            <div id="performance"></div>
+            <p><strong>Core WYMeditor Files</strong></p>
+            <ul style="clear: both;">
+                <li><a href="js/jquery.wymeditor.js">wymeditor.js</a></li>
+                <li><a href="config/config.js">config.js</a></li>
+                <li><a href="config/config.default.js">config.default.js</a></li>
+                <li><a href="css/editor.css">editor.css</a></li>
+            </ul>
+            <p><strong>Plugin Files</strong></p>
+            <ul style="clear: both;">
+                <li><a href="js/plugins/toolbar/toolbar.js">toolbar.js</a></li>
+                <li><a href="js/plugins/meter/meter.js">meter.js</a></li>
+                <li><a href="js/plugins/plugin1/test.js">test.js</a></li>
+                <li><a href="js/plugins/xml/xml.js">xml.js</a></li>
+                <li><a href="js/plugins/skybox/skybox.js">skybox.js</a></li>
+                <li><a href="js/plugins/sapi/sapi.js">sapi.js</a></li>
+            </ul>
+            <p><strong>Design Docs</strong></p>
+            <ul style="clear: both;">
+                <li><a href="docs/wymeditor.design.doc.txt">wymeditor.design.doc.txt</a></li>
+                <li><a href="docs/appendix.a.gif">appendix.a.gif</a></li>
+                <li><a href="docs/wymeditor.design.doc.v0.1.pdf">wymeditor.design.doc.v0.1.pdf</a></li>
+            </ul>
+        </div>
+        <form action="" method="post">
+            <div class="container">
+				<textarea class="wymeditor" id="instance-0"><p>WYMeditor Instance 0</p></textarea>
+			</div>
+			<div class="container">
+				<textarea class="wymeditor" id="instance-1"><p>WYMeditor Instance 1</p></textarea>
+			</div>
+			<div class="container">
+			    <button class="wym_submit">Save</button>
+			</div>
+        </form>
+        <select>
+            <option>Overlay Covers This</option>
+        </select>
+    </body>
+</html>

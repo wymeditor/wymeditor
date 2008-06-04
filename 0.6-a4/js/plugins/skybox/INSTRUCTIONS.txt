@@ -1,0 +1,20 @@
+INSTALLATION:
+
+1. Copy the entire SkyBox directory to /wymeditor/plugins/
+
+2. Copy and paste the following code into the <head /> block of your page. This code must 
+appear /after/ the WYMeditor code links. Be sure to change the '/path/to/wymeditor/' paths 
+to the actual paths in your links.
+
+<link rel="stylesheet" 
+      type="text/css" 
+      media="screen" 
+      href="/path/to/wymeditor/plugins/skybox/ibox.css" 
+      />
+<script type="text/javascript" 
+        src="/path/to/wymeditor/plugins/skybox/ibox.js">
+</script>
+<script type="text/javascript" 
+        src="/path/to/wymeditor/plugins/skybox/jquery.wymeditor.skybox.js">
+</script>
+

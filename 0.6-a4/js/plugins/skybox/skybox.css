@@ -1,0 +1,238 @@
+#skybox 
+{
+  z-index: 1000000 !important;
+  display: none;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  width: 100%;
+  height: 100%;
+}
+
+#skybox_overlay
+{
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  width: 100% !important;
+  z-index: 999999 !important;
+  background-color: #000 !important;
+  background-image: url(macFFBgHack.png);
+  background-position: 0px 0px;
+  background-repeat: repeat;
+  filter: alpha(opacity=75);
+  -moz-opacity: .75;
+  opacity: .75;
+  overflow: hidden;
+  border: none;
+}
+
+#skybox_loading 
+{
+  z-index: 1000001 !important;
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  margin-top: -50px !important;
+  margin-left: -50px !important;
+}
+
+#skybox_wrapper 
+{
+  position: absolute;
+  top: 0;
+  z-index: 1000001 !important;
+  padding: 0px 0px 10px 0px;
+  display: none;
+  height: auto;
+}
+
+#skybox_content 
+{
+  z-index: 1000002 !important;
+  overflow: auto;
+  height: 100%;
+  position: relative;
+  padding: 2px;
+  text-align: left;
+}
+
+#skybox_content object 
+{
+  display: block;
+}
+
+#skybox_content .skybox_image 
+{
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: block;
+}
+
+#skybox_header_wrapper a 
+{
+  float: right;
+  display: block;
+  outline: 0;
+  margin: 0;
+  padding: 0;
+}
+
+#skybox_header_wrapper 
+{
+  text-align: left;
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+#skybox_header_wrapper 
+{
+  font-weight: bold;
+}
+
+#skybox_header_wrapper a 
+{
+  text-decoration: none !important;
+  color: darkblue;
+  text-transform: lowercase;
+  font-weight: normal;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  display: block;
+  float: right;
+  width: 75px;
+  height: 22px;
+  background-image: url(skybox.close.gif);
+  background-position: top left;
+  background-repeat: no-repeat;
+  background-color: transparent !important;
+  border: none !important;
+}
+
+#skybox_header_wrapper 
+{
+  font-size: 12px;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+#skybox_wrapper 
+{
+  border: none !important;
+  background-image: url(bg.skybox.bottom.gif);
+  background-position: bottom left;
+  background-repeat: no-repeat;
+  background-color: #FFF !important;
+  width: 478px !important;
+  height: auto !important;
+  padding-bottom: 0px !important;
+  position: absolute;
+}
+
+#skybox_wrapper_inner
+{
+  background-image: url(bg.skybox.top.gif);
+  background-position: 0px 0px;
+  background-repeat: no-repeat;
+  padding: 30px 10px 10px 11px;
+  margin: 0px 0px 15px 0px;
+  width: 460px;
+}
+
+#skybox_wrapper, #skybox_header_wrapper a 
+{
+  border: none !important;
+}
+
+#skybox_content 
+{
+  background-color: #fff;
+  border: 0px solid #666;
+}
+
+#skybox_loading img
+{
+  border: 0px solid #000;
+  padding: 0px;
+}
+
+#skybox_loading 
+{
+  padding: 0px;
+  border: 0px solid #000;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  position: absolute;
+}
+
+#skybox_header
+{
+  background: transparent !important;
+  padding-left: 10px !important;
+  padding-top: 3px !important;
+  color: #555 !important;
+}
+
+/** Dialog Styles Forms **/
+
+div.row
+{
+  margin-top: 4px !important;
+  padding: 0px !important;
+  clear: both !important;
+}
+
+div.row label
+{
+  margin: 4px 0px 0px 4px !important;
+  width: 150px !important;
+  height: 36px !important;
+  float: left;
+}
+
+div.row input[type='text'],
+div.row input[type='password']
+{
+  margin: 4px 0px 0px 5px !important;
+  width: 200px !important;
+  border: 1px solid #AAA;
+  padding: 2px;
+}
+
+div.row input[type='submit'],
+div.row input[type='image'],
+div.row input[type='button'],
+div.row button
+{
+  cursor: pointer;
+}
+
+div.row textarea
+{
+  border: 1px solid #AAA;
+}
+
+legend,
+div.row label
+{
+  text-align: left !important;
+  font-family: Verdana, Arial, Sanserif !important;
+  font-size: 12px !important;
+  font-weight: bold;
+}
+
+fieldset
+{
+  border: none;
+  border-top: 1px solid #AAA;
+}

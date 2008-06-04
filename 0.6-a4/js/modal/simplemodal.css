@@ -1,0 +1,39 @@
+/**
+  * SimpleModal Test
+  * http: //code.google.com/p/simplemodal/
+  *
+  * Copyright (c) 2007 Eric Martin - http: //ericmmartin.com
+  *
+  * Revision:  $Id:  simplemodal.css 99 2008-02-04 16: 31: 09Z emartin24 $
+  *
+  */
+
+#modalOverlay 
+{
+  background-color: #000;
+}
+
+#modalContainer 
+{
+  height: auto;
+  width: 500px;
+  left: 50%;
+  top: 15%;
+  margin-left: -250px;
+  background-color: #fff;
+  border: 3px solid #ccc;
+}
+
+a.modalCloseImg 
+{
+  background: url(x.png) no-repeat;
+  width: 25px;
+  height: 29px;
+  display: inline;
+  z-index: 3200;
+  position: absolute;
+  top: -15px;
+  right: -18px;
+  cursor: pointer;
+}
+

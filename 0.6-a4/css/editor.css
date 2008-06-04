@@ -1,0 +1,162 @@
+.anchor
+{
+  border: 1px solid #AAA;
+  background: #CCC;
+  padding: 2px;
+  height: 284px;
+  width: 500px;
+  overflow: hidden;
+}
+
+div.container 
+{
+  width: 500px;
+  margin: 30px auto 0px auto;
+}
+
+/* Editor Styles */
+
+.editor
+{
+  background: #FFF;
+  width: 408px;
+  height: 248px;
+  border: 1px solid #666;
+  font-family: Verdana, Tahoma, Arial;
+  padding: 2px;
+  color: #666;
+  margin-top: 2px;
+}
+
+.wymeditor
+{
+  width: 408px;
+  height: 248px;
+  padding: 2px;
+  color: #000;
+  border: 1px solid #000;
+  font-family: monospace;
+  margin-top: 2px;
+}
+
+#wymeditor-instance-0
+{
+  
+}
+
+/* Toolbar Styles */
+
+.toolbar
+{
+  background: #DDD;
+  border: none;
+}
+
+ul.toolbar-one 
+{
+   width: 500px; 
+   height: 28px; 
+   padding: 0px;
+   margin: 0px;
+}
+    
+ul.toolbar-two 
+{
+  width: 84px;
+  height: 253px;
+  padding: 0px;
+  float: right;
+  margin-top: 2px;
+  margin-right: 0px;
+}
+
+/* Button Styles */
+
+ul.toolbar-two li
+{
+  width: 84px !important;
+}
+
+ul.toolbar-two li a
+{
+  width: 82px !important;
+}
+
+ul.toolbar li 
+{
+  float: left;
+  height: 28px;
+  height: 28px;
+  list-style-type: none;
+  margin-right: 1px;
+}
+
+ul.toolbar li a 
+{
+  background: #EEE;
+  display: block;
+  width: 26px;
+  height: 26px;
+  border: 1px solid #000;
+  font-size: 11px;
+  text-align: center;
+}
+
+ul.toolbar-two li 
+{
+  height: 50px;
+  height: auto;
+  list-style-type: none;
+  margin-bottom: 1px;
+}
+
+ul.toolbar-two li a 
+{
+  display: block;
+  height: auto;
+  width: 78px;
+  padding: 6px 0px;
+}
+
+/* Log Styles */
+
+div#log-wrapper
+{
+  position: absolute;
+  width: 200px;
+  height: 80px;
+  font-size: 11px;
+  font-family: Verdana, Tahoma, Arial;
+  padding: 2px;
+}
+
+div#log
+{
+  width: 198px;
+  height: 50px;
+  border: 1px solid #AAA;
+  font-size: 11px;
+  font-family: Verdana, Tahoma, Arial;
+}
+
+div#log-wrapper ul
+{
+  padding: 0px;
+  list-style-type: none;
+}
+
+.hide
+{
+  display: none;
+}
+
+.toolbar-one .text
+{
+  display: none;
+}
+
+button, 
+input[type="submit"]
+{
+  cursor: pointer;
+}
