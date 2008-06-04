@@ -48,7 +48,7 @@
     
     toolbar.prototype.behavior = function (button, behaviors) {
         var _this = this;
-        for (event in behaviors)
+        for (var event in behaviors)
         {
             $(button).bind(event, _this, behaviors[event]); 
         }
