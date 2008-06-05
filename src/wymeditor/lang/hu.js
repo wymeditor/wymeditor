@@ -28,6 +28,7 @@ WYMeditor.STRINGS['hu'] = {
     Title:            'Megnevezés',
     Alternative_Text: 'Alternatív szöveg',
     Caption:          'Fejléc',
+    Summary:          'Summary',
     Number_Of_Rows:   'Sorok száma',
     Number_Of_Cols:   'Oszlopok száma',
     Submit:           'Elküld',

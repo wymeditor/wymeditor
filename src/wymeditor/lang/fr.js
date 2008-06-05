@@ -28,6 +28,7 @@ WYMeditor.STRINGS['fr'] = {
     Title:            'Titre',
     Alternative_Text: 'Texte alternatif',
     Caption:          'Légende',
+    Summary:          'Résumé',
     Number_Of_Rows:   'Nombre de lignes',
     Number_Of_Cols:   'Nombre de colonnes',
     Submit:           'Envoyer',

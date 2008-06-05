@@ -28,6 +28,7 @@ WYMeditor.STRINGS['sv'] = {
     Title:            'Titel',
     Alternative_Text: 'Alternativ text',
     Caption:          'Överskrift',
+    Summary:          'Summary',
     Number_Of_Rows:   'Antal rader',
     Number_Of_Cols:   'Antal kolumner',
     Submit:           'Skicka',

@@ -28,6 +28,7 @@ WYMeditor.STRINGS['ru'] = {
     Title:            'Заголовок',
     Alternative_Text: 'Альтернативный текст',
     Caption:          'Надпись',
+    Summary:          'Summary',
     Number_Of_Rows:   'Кол-во строк',
     Number_Of_Cols:   'Кол-во столбцов',
     Submit:           'Отправить',

@@ -29,6 +29,7 @@ WYMeditor.STRINGS['fa'] = {
     Title:            'عنوان',//Title
     Alternative_Text: 'متن جایگزین',//Alternative text
     Caption:          'عنوان',//Caption
+    Summary:          'Summary',
     Number_Of_Rows:   'تعداد سطرها',//Number of rows
     Number_Of_Cols:   'تعداد ستون‌ها',//Number of cols
     Submit:           'فرستادن',//Submit

@@ -28,6 +28,7 @@ WYMeditor.STRINGS['zh_cn'] = {
     Title: '提示文字',
     Alternative_Text: '失效文字',
     Caption: '标题',
+    Summary: 'Summary',
     Number_Of_Rows: '行数',
     Number_Of_Cols: '列数',
     Submit: '提交',

@@ -28,6 +28,7 @@ WYMeditor.STRINGS['en'] = {
     Title:            'Title',
     Alternative_Text: 'Alternative text',
     Caption:          'Caption',
+    Summary:          'Summary',
     Number_Of_Rows:   'Number of rows',
     Number_Of_Cols:   'Number of cols',
     Submit:           'Submit',

@@ -28,6 +28,7 @@ WYMeditor.STRINGS['pt'] = {
     Title:            'Título',
     Alternative_Text: 'Texto Alterativo',
     Caption:          'Título Tabela',
+    Summary:          'Summary',
     Number_Of_Rows:   'Número de Linhas',
     Number_Of_Cols:   'Número de Colunas',
     Submit:           'Enviar',

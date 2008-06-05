@@ -472,6 +472,7 @@ jQuery.fn.wymeditor = function(options) {
     rowsSelector:      ".wym_rows",
     colsSelector:      ".wym_cols",
     captionSelector:   ".wym_caption",
+    summarySelector:   ".wym_summary",
     
     submitSelector:    ".wym_submit",
     cancelSelector:    ".wym_cancel",
@@ -582,6 +583,10 @@ jQuery.fn.wymeditor = function(options) {
                + "<div class='row'>"
                + "<label>{Caption}</label>"
                + "<input type='text' class='wym_caption' value='' size='40' />"
+               + "</div>"
+               + "<div class='row'>"
+               + "<label>{Summary}</label>"
+               + "<input type='text' class='wym_summary' value='' size='40' />"
                + "</div>"
                + "<div class='row'>"
                + "<label>{Number_Of_Rows}</label>"
@@ -1455,19 +1460,23 @@ WYMeditor.INIT_DIALOG = function(index) {
 
         var table = wym._doc.createElement(WYMeditor.TABLE);
         var newRow = null;
-    		var newCol = null;
+		var newCol = null;
 
-    		var sCaption = jQuery(wym._options.captionSelector).val();
+		var sCaption = jQuery(wym._options.captionSelector).val();
 
-    		//we create the caption
-    		var newCaption = table.createCaption();
-    		newCaption.innerHTML = sCaption;
+		//we create the caption
+		var newCaption = table.createCaption();
+		newCaption.innerHTML = sCaption;
 
-    		//we create the rows and cells
-    		for(x=0; x<iRows; x++) {
-    			newRow = table.insertRow(x);
-    			for(y=0; y<iCols; y++) {newRow.insertCell(y);}
-    		}
+		//we create the rows and cells
+		for(x=0; x<iRows; x++) {
+			newRow = table.insertRow(x);
+			for(y=0; y<iCols; y++) {newRow.insertCell(y);}
+		}
+
+        //set the summary attr
+        jQuery(table).attr('summary',
+            jQuery(wym._options.summarySelector).val());
 
         //append the table after the selected container
         var node = jQuery(wym.findUp(wym.container(),

@@ -28,6 +28,7 @@ WYMeditor.STRINGS['ca'] = {
     Title:            'Títol',
     Alternative_Text: 'Text alternatiu',
     Caption:          'Llegenda',
+    Summary:          'Summary',
     Number_Of_Rows:   'Nombre de files',
     Number_Of_Cols:   'Nombre de columnes',
     Submit:           'Enviar',

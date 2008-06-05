@@ -28,6 +28,7 @@ WYMeditor.STRINGS['nl'] = {
     Title:            'Titel',
     Alternative_Text: 'Alternatieve tekst',
     Caption:          'Bijschrift',
+    Summary:          'Summary',
     Number_Of_Rows:   'Aantal rijen',
     Number_Of_Cols:   'Aantal kolommen',
     Submit:           'Versturen',
