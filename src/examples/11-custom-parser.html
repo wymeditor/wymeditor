@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+ * WYMeditor : what you see is What You Mean web-based editor
+ * Copyright (c) 2008 Jean-Francois Hovinne, http://www.wymeditor.org/
+ * Dual licensed under the MIT (MIT-license.txt)
+ * and GPL (GPL-license.txt) licenses.
+ *
+ * For further information visit:
+ *        http://www.wymeditor.org/
+ *
+ * File Name:
+ *        11-custom-parser.html
+ *        Custom XHTML parser example.
+ *        See the documentation for more info.
+ *
+ * File Authors:
+ *        Jean-Francois Hovinne - http://www.hovinne.com/
+-->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>WYMeditor</title>
+<script type="text/javascript" src="../jquery/jquery.js"></script>
+<script type="text/javascript" src="../wymeditor/jquery.wymeditor.pack.js"></script>
+
+<script type="text/javascript">
+
+WYMeditor.XhtmlLexer.prototype.addTokens = function() {
+  // These tokens are for Radiant CMS radius tags  
+  this.addEntryPattern("</?r:", 'Text', 'Text');
+  this.addExitPattern(">", 'Text');
+
+  this.addCommentTokens('Text');
+  this.addScriptTokens('Text');
+  this.addCssTokens('Text');
+  this.addTagTokens('Text');
+};
+
+
+//Define allowed attributes and their values for <p>
+WYMeditor.XhtmlValidator._tags['p'] = {
+  'attributes': {
+    'align':/^(right|left|center|justify)$/,
+    '0':'name'
+  }
+};
+
+//Add runat="server" attribute to <a> and <img>
+jQuery.extend(WYMeditor.XhtmlValidator._tags['a']['attributes'], {'runat':/^(server)$/});
+jQuery.extend(WYMeditor.XhtmlValidator._tags['img']['attributes'], {'runat':/^(server)$/});
+
+jQuery(function() {
+    jQuery('.wymeditor').wymeditor({
+        html: '<p><a runat="server"><em>Runat server</em> link.</a></p>'
+            + '<p align="right">Right aligned paragraph.</p>'
+            + '<p><r:test>This text is inside a radius tag.</r:test></p>'
+            + '<p>Nothing special here.</p>'
+    });
+});
+
+</script>
+
+</head>
+
+<body>
+<h1>WYMeditor custom XHTML parser example</h1>
+<p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+<form method="post" action="">
+<textarea class="wymeditor"></textarea>
+<input type="submit" class="wymupdate" />
+</form>
+
+<p>
+<a href="http://sourceforge.net/projects/wym-editor">
+<img src="http://sflogo.sourceforge.net/sflogo.php?group_id=148869&amp;type=1" border="0" alt="SourceForge logo" title="SourceForge" />
+</a>
+</p>
+
+</body>
+
+</html>
