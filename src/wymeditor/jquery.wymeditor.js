@@ -68,7 +68,7 @@ jQuery.extend(WYMeditor, {
     DIALOG_BODY         - A string replaced by a dialog's HTML body.
     BODY                - The BODY element.
     STRING              - The "string" type.
-    BODY,P,
+    BODY,DIV,P,
     H1,H2,H3,H4,H5,H6,
     PRE,BLOCKQUOTE,
     A,BR,IMG,
@@ -138,6 +138,7 @@ jQuery.extend(WYMeditor, {
     DIALOG_BODY         : "{Wym_Dialog_Body}",
     STRING              : "string",
     BODY                : "body",
+    DIV                 : "div",
     P                   : "p",
     H1                  : "h1",
     H2                  : "h2",

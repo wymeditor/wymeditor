@@ -211,7 +211,7 @@ WYMeditor.WymClassSafari.prototype.keyup = function(evt) {
         wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P); //create P after PRE
   }
   
-  else if(evt.keyCode != 8
+  if(evt.keyCode != 8
        && evt.keyCode != 17
        && evt.keyCode != 46
        && evt.keyCode != 224
@@ -232,11 +232,12 @@ WYMeditor.WymClassSafari.prototype.keyup = function(evt) {
       name == "i" ||
       name == "sub" ||
       name == "sup" ||
-      name == "a"
+      name == "a" ||
+      name == "span"
 
     ) name = container.parentNode.tagName.toLowerCase();
 
-    if(name == WYMeditor.BODY) wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
+    if(name == WYMeditor.BODY || name == WYMeditor.DIV) wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
   }
 };
 
