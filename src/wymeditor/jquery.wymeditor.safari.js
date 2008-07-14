@@ -210,6 +210,11 @@ WYMeditor.WymClassSafari.prototype.keyup = function(evt) {
     if(container && container.tagName.toLowerCase() == WYMeditor.PRE)
         wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P); //create P after PRE
   }
+
+  //fix #112
+  if(evt.keyCode == 13 && evt.shiftKey) {
+    wym._exec('InsertLineBreak');
+  }
   
   if(evt.keyCode != 8
        && evt.keyCode != 17
@@ -233,11 +238,11 @@ WYMeditor.WymClassSafari.prototype.keyup = function(evt) {
       name == "sub" ||
       name == "sup" ||
       name == "a" ||
-      name == "span"
+      name == "span" //fix #110
 
     ) name = container.parentNode.tagName.toLowerCase();
 
-    if(name == WYMeditor.BODY || name == WYMeditor.DIV) wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
+    if(name == WYMeditor.BODY || name == WYMeditor.DIV) wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P); //fix #110 for DIV
   }
 };
 
