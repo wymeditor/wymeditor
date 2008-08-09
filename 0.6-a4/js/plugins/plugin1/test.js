@@ -17,24 +17,28 @@
             text: 'Plugin', 
             behaviors: {
                 mouseover: function(e) {
-                    $('#log').html('Plugin for<br /> WYMeditor Instance ' + e.data._index);
+                    // $('#log').html('Plugin for<br /> WYMeditor Instance ' + e.data.parent._index);
                 },
                 mouseout: function(e) {
-                    $('#log').html('');
+                    // $('#log').html('');
                 },
                 click: function(e) {
                     e.preventDefault();
+                    e.data.parent.sapi.cacheSelection();
                     $.get("html/paste.html", function(data) {
                         $.modal(data, {
                             close: true,
                             overlay: 75,
                             onShow: function(dialog) {
-                                $(".wym_dialog .wym_cancel").bind('click', function(e) {
+                                $(".wym_dialog .wym_cancel").bind('click', e.data, function(e) {
+                                    e.preventDefault();
                                     $.modal.close();
+                                    e.data.parent.sapi.restoreSelection();
                                 });
                                 $(".wym_dialog .wym_submit").bind('click', e.data, function(e) {
                                     e.preventDefault();
                                     var editor = e.data.parent;
+                                    editor.sapi.restoreSelection();
                                     var text = $("#paste_text").val();
                                     if ($.trim(text) != "")
                                     {

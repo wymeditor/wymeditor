@@ -220,9 +220,18 @@ Array.prototype.has = function(needle) {
         }
     };
     
+    /**
+    * IMPORTANT: Because the selection/range object is part of the DOM, it is owned by 
+    * the parent window of the document which contains it. Therefore, the selection 
+    * within an editor must be cached within the scope of the parent window of the 
+    * editor. This means that the selection object must be stored in the iframe's 
+    * window.
+    */
+    
     sapi.prototype.cacheSelection = function() {
-        var w = this.parent._iframe.contentWindow;
-        var d = this.parent._doc;
+        $('#log').html('Caching selection<br />');
+        var w = this.parent.docWindow;
+        var d = this.parent.doc;
         if (w.getSelection) {
             var selection = w.getSelection();
             if (selection.rangeCount > 0) {
@@ -247,9 +256,10 @@ Array.prototype.has = function(needle) {
         }
     };
     
-    sapi.prototype.restoreSelection = function(index) {
-        var w = this.parent._iframe.contentWindow;
-        var d = this.parent._doc;
+    sapi.prototype.restoreSelection = function() {
+        $('#log').html($('#log').html()+'Re-storing selection<br />');
+        var w = this.parent.docWindow;
+        var d = this.parent.doc;
         try {jQuery(d).focus();} catch(e) {}
         if (w._selection) {
             if (w.getSelection) {
@@ -268,8 +278,8 @@ Array.prototype.has = function(needle) {
     };
     
     sapi.replaceSelectionText = function(text) {
-        var w = this.parent._iframe.contentWindow;
-        var d = this.parent._doc;
+        var w = this.parent.docWindow;
+        var d = this.parent.doc;
         try {jQuery(d).focus();} catch(e) {}
         if (!w.getSelection && 
             !d.selection && 
@@ -424,21 +434,21 @@ Array.prototype.has = function(needle) {
         if (r1.compareEndPoints) 
         {
             $.extend(p, {
-                method: "compareEndPoints",
+                method:       "compareEndPoints",
                 StartToStart: "StartToStart",
-                StartToEnd: "StartToEnd",
-                EndToEnd: "EndToEnd",
-                EndToStart: "EndToStart"
+                StartToEnd:   "StartToEnd",
+                EndToEnd:     "EndToEnd",
+                EndToStart:   "EndToStart"
             });
         } 
         else if (r1.compareBoundaryPoints) 
         {
             $.extend(p, {
-                method: "compareBoundaryPoints",
+                method:       "compareBoundaryPoints",
                 StartToStart: 0,
-                StartToEnd: 1,
-                EndToEnd: 2,
-                EndToStart: 3
+                StartToEnd:   1,
+                EndToEnd:     2,
+                EndToStart:   3
             });
         }
         return p && !(
