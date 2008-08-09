@@ -267,6 +267,33 @@ Array.prototype.has = function(needle) {
         }
     };
     
+    sapi.replaceSelectionText = function(text) {
+        var w = this.parent._iframe.contentWindow;
+        var d = this.parent._doc;
+        try {jQuery(d).focus();} catch(e) {}
+        if (!w.getSelection && 
+            !d.selection && 
+            !d.body.createTextRange) 
+        {
+            return false;
+        }
+        SBC.restoreSelection(index);
+        if (w.getSelection) {
+          var selection = w.getSelection();
+          var range = selection.getRangeAt(0);
+          range.deleteContents();
+          var textNode = d.createTextNode(text);
+          range.insertNode(textNode);
+          if (textNode.normalize) textNode.normalize();
+        }
+        else if (d.selection && d.body.createTextRange) {
+          var range = d.body.createTextRange();
+          // range.moveToElementText(range.parentElement);
+          // range..move("Character",range.startOffset);
+          range.pasteHTML(text);
+        }
+    };
+    
     sapi.prototype.getKeyBoardEvent = function () {
         return null;  
     };
