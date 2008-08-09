@@ -28,6 +28,10 @@ Array.prototype.has = function(needle) {
             'H5', 'H6', 'BLOCKQUOTE'
         ],
         
+        // Cache for SAPI-sepecific data
+        
+        cache: {},
+        
         // Triggers is an array of UI events to listen for
         
         triggers: ['mouseup', 'keyup'],
@@ -213,6 +217,53 @@ Array.prototype.has = function(needle) {
                 parent = e.data;
                 parent.sapi.update();
             });
+        }
+    };
+    
+    sapi.prototype.cacheSelection = function() {
+        var w = this.parent._iframe.contentWindow;
+        var d = this.parent._doc;
+        if (w.getSelection) {
+            var selection = w.getSelection();
+            if (selection.rangeCount > 0) {
+              var selectedRange = selection.getRangeAt(0);
+              w._selection = selectedRange.cloneRange();
+            }
+            else {
+              return null;
+            }
+          }
+          else if (d.selection) {
+            var selection = d.selection;
+            if (selection.type.toLowerCase() == 'text') {
+              w._selection = selection.createRange().getBookmark();
+            }
+            else {
+              w._selection = null;
+            }
+          }
+          else {
+            w._selection = null;
+        }
+    };
+    
+    sapi.prototype.restoreSelection = function(index) {
+        var w = this.parent._iframe.contentWindow;
+        var d = this.parent._doc;
+        try {jQuery(d).focus();} catch(e) {}
+        if (w._selection) {
+            if (w.getSelection) {
+              var selection = w.getSelection();
+              selection.removeAllRanges();
+              selection.addRange(w._selection);
+              w._selection = null;
+            }
+            else if (d.selection && d.body.createTextRange) {
+              var range = d.body.createTextRange();
+              range.moveToBookmark(w._selection);
+              range.select();
+              w._selection = null;
+            }
         }
     };
     
