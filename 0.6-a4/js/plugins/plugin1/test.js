@@ -17,10 +17,10 @@
             text: 'Plugin', 
             behaviors: {
                 mouseover: function(e) {
-                    // $('#log').html('Plugin for<br /> WYMeditor Instance ' + e.data.parent._index);
+                    // Add mouseover behavior here
                 },
                 mouseout: function(e) {
-                    // $('#log').html('');
+                    // Add mouseout behavior here
                 },
                 click: function(e) {
                     e.preventDefault();

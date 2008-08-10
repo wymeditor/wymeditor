@@ -21,6 +21,19 @@ Array.prototype.has = function(needle) {
         // e.g., mouseclick, dblclick, delete key, etc.
     
         keyBoardEvent: null,
+        
+        // Should keyboard event detection be a separate plugin?
+        // modifierKeys will be an array of the modifier keys (e.g., alt, control, shift) 
+        // that were pressed at the time of the current keyboard event
+        
+        modifierKeys: [],
+        
+        // hasModifierKey is the interface to detect if a specific modifier key 
+        // was down at the time of the current keyboard event
+        
+        hasModifierKey: function (whichModifier) {
+            return this.modifierKeys.has(whichModifier);
+        },
     
         blocks: [
             'DIV', 'P', 'LI', 'UL', 'OL', 
