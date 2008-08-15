@@ -843,7 +843,7 @@ WYMeditor.editor.prototype.bindEvents = function() {
     var aClasses = eval(wym._options.classesItems);
     var sName = jQuery(this).attr(WYMeditor.NAME);
     
-    var oClass = aClasses.findByName(sName);
+    var oClass = WYMeditor.Helper.findByName(aClasses, sName);
     
     if(oClass) {
       var jqexpr = oClass.expr;
@@ -2435,8 +2435,9 @@ WYMeditor.XhtmlValidator = {
     var possible_attributes = this.getPossibleTagAttributes(tag);
     for(var attribute in attributes) {
       var value = attributes[attribute];
-      if(!this.skiped_attributes.contains(attribute) && !this.skiped_attribute_values.contains(value)){
-        if (typeof value != 'function' && possible_attributes.contains(attribute)) {
+      var h = WYMeditor.Helper;
+      if(!h.contains(this.skiped_attributes, attribute) && !h.contains(this.skiped_attribute_values, value)){
+        if (typeof value != 'function' && h.contains(possible_attributes, attribute)) {
           if (this.doesAttributeNeedsValidation(tag, attribute)) {
             if(this.validateAttribute(tag, attribute, value)){
               valid_attributes[attribute] = value;
@@ -2492,8 +2493,8 @@ WYMeditor.XhtmlValidator = {
       for(var key in default_attributes_and_events) {
         var defaults = default_attributes_and_events[key];
         if(typeof defaults == 'object'){
-
-          if ((defaults['except'] && defaults['except'].contains(tag)) || (defaults['only'] && !defaults['only'].contains(tag))) {
+          var h = WYMeditor.Helper;
+          if ((defaults['except'] && h.contains(defaults['except'], tag)) || (defaults['only'] && !h.contains(defaults['only'], tag))) {
             continue;
           }
 
@@ -2508,13 +2509,14 @@ WYMeditor.XhtmlValidator = {
   },
   doesAttributeNeedsValidation: function(tag, attribute)
   {
-    return this._tags[tag] && ((this._tags[tag]['attributes'] && this._tags[tag]['attributes'][attribute]) || (this._tags[tag]['required'] && this._tags[tag]['required'].contains(attribute)));
+    return this._tags[tag] && ((this._tags[tag]['attributes'] && this._tags[tag]['attributes'][attribute]) || (this._tags[tag]['required'] &&
+     WYMeditor.Helper.contains(this._tags[tag]['required'], attribute)));
   },
   validateAttribute : function(tag, attribute, value)
   {
     if ( this._tags[tag] &&
       (this._tags[tag]['attributes'] && this._tags[tag]['attributes'][attribute] && value.length > 0 && !value.match(this._tags[tag]['attributes'][attribute])) || // invalid format
-      (this._tags[tag] && this._tags[tag]['required'] && this._tags[tag]['required'].contains(attribute) && value.length == 0) // required attribute
+      (this._tags[tag] && this._tags[tag]['required'] && WYMeditor.Helper.contains(this._tags[tag]['required'], attribute) && value.length == 0) // required attribute
     ) {
       return false;
     }
@@ -3615,12 +3617,12 @@ WYMeditor.XhtmlSaxListener.prototype.allowStylingTagsAndAttributes = function()
 
 WYMeditor.XhtmlSaxListener.prototype.isBlockTag = function(tag)
 {
-  return !this.avoided_tags.contains(tag) && this.block_tags.contains(tag);
+  return !WYMeditor.Helper.contains(this.avoided_tags, tag) && WYMeditor.Helper.contains(this.block_tags, tag);
 };
 
 WYMeditor.XhtmlSaxListener.prototype.isInlineTag = function(tag)
 {
-  return !this.avoided_tags.contains(tag) && this.inline_tags.contains(tag);
+  return !WYMeditor.Helper.contains(this.avoided_tags, tag) && WYMeditor.Helper.contains(this.inline_tags, tag);
 };
 
 WYMeditor.XhtmlSaxListener.prototype.insertContentAfterClosingTag = function(tag, content)
@@ -3854,56 +3856,54 @@ jQuery.fn.parentsOrSelf = function(jqexpr) {
     return n.parents(jqexpr).slice(0,1);
 };
 
-// String helpers
-if(!String.prototype.insertAt) {
-    String.prototype.insertAt = function(inserted, pos) {
-        return(this.substr(0,pos) + inserted + this.substring(pos));
-    };
-};
+// String & array helpers
 
 WYMeditor.Helper = {
 
+    //replace all instances of 'old' by 'rep' in 'str' string
     replaceAll: function(str, old, rep) {
         var rExp = new RegExp(old, "g");
         return(str.replace(rExp, rep));
     },
 
+    //insert 'inserted' at position 'pos' in 'str' string
+    insertAt: function(str, inserted, pos) {
+        return(str.substr(0,pos) + inserted + str.substring(pos));
+    },
+
+    //trim 'str' string
     trim: function(str) {
         return str.replace(/^(\s*)|(\s*)$/gm,'');
-    }
-};
+    },
 
-// Array helpers
-
-// from http://forum.de.selfhtml.org/archiv/2004/3/t76079/#m438193 (2007-02-06)
-if(!Array.prototype.contains) {
-    Array.prototype.contains = function (elem) {
-        for (var i = 0; i < this.length; i++) {
-            if (this[i] === elem) return true;
+    //return true if 'arr' array contains 'elem', or false
+    contains: function(arr, elem) {
+        for (var i = 0; i < arr.length; i++) {
+            if (arr[i] === elem) return true;
         }
         return false;
-    };
-};
+    },
 
-if(!Array.prototype.indexof) {
-    Array.prototype.indexOf = function (item) {
-	    var ret=-1;
-        for(var i = 0; i < this.length; i++) {
-            if (this[i] == item) {
-                ret=i;
+    //return 'item' position in 'arr' array, or -1
+    indexOf: function(arr, item) {
+        var ret=-1;
+        for(var i = 0; i < arr.length; i++) {
+            if (arr[i] == item) {
+                ret = i;
                 break;
             }
         }
 	    return(ret);
-    };
-};
+    },
 
-if(!Array.prototype.findByName) {
-    Array.prototype.findByName = function (name) {
-        for(var i = 0; i < this.length; i++) {
-            var item = this[i];
+    //return 'item' object in 'arr' array, checking its 'name' property, or null
+    findByName: function(arr, name) {
+        for(var i = 0; i < arr.length; i++) {
+            var item = arr[i];
             if(item.name == name) return(item);
         }
         return(null);
-    };
+    }
 };
+
+

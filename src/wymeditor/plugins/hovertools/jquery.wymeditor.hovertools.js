@@ -36,7 +36,7 @@ WYMeditor.editor.prototype.hovertools = function() {
     function() {
       var aClasses = eval(wym._options.classesItems);
       var sName = jQuery(this).attr(WYMeditor.NAME);
-      var oClass = aClasses.findByName(sName);
+      var oClass = WYMeditor.Helper.findByName(aClasses, sName);
 
       if(oClass){
         jqexpr = oClass.expr;
