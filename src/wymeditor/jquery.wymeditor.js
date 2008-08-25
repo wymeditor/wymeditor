@@ -38,6 +38,7 @@ jQuery.extend(WYMeditor, {
     SKINS               - An array of loaded WYMeditor skins.
     NAME                - The "name" attribute.
     INDEX               - A string replaced by the instance index.
+    WYM_INDEX           - A string used to get/set the instance index.
     BASE_PATH           - A string replaced by WYMeditor's base path.
     SKIN_PATH           - A string replaced by WYMeditor's skin path.
     WYM_PATH            - A string replaced by WYMeditor's main JS file path.
@@ -108,6 +109,7 @@ jQuery.extend(WYMeditor, {
     SKINS               : [],
     NAME                : "name",
     INDEX               : "{Wym_Index}",
+    WYM_INDEX           : "wym_index",
     BASE_PATH           : "{Wym_Base_Path}",
     CSS_PATH            : "{Wym_Css_Path}",
     WYM_PATH            : "{Wym_Wym_Path}",
@@ -721,6 +723,9 @@ WYMeditor.editor.prototype.init = function() {
 
       //load wymbox
       this._box = jQuery(this._element).hide().after(this._options.boxHtml).next();
+
+      //store the instance index in the wymbox element
+      jQuery(this._box).data(WYMeditor.WYM_INDEX, this._index);
       
       var h = WYMeditor.Helper;
 
