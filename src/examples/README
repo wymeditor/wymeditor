@@ -39,3 +39,8 @@ http://subversion.tigris.org/
 
 A Windows Subversion client is available at:
 http://tortoisesvn.tigris.org/
+
+Note: if you test the examples locally with FF3, you'll need to turn off
+security.fileuri.strict_origin_policy (type about:config in the URL and search
+for the value).
+More info: http://kb.mozillazine.org/Security.fileuri.strict_origin_policy
