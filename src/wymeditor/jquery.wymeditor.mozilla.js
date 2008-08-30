@@ -165,37 +165,6 @@ WYMeditor.WymClassMozilla.prototype.keydown = function(evt) {
   //'this' is the doc
   var wym = WYMeditor.INSTANCES[this.title];
   
-  // "start" Selection API
-  var sel = wym.selection.getSelection();
-
-/*
-    // some small tests for the Selection API
-    var containers = WYMeditor.MAIN_CONTAINERS.join(",");
-    if (sel.isAtStart(containers))
-        alert("isAtStart: "+sel.startNode.parentNode.nodeName);
-    if (sel.isAtEnd(containers))
-        alert("isAtEnd: "+sel.endNode.parentNode.nodeName);
-    if (evt.keyCode==WYMeditor.KEY.DELETE) {
-        // if deleteIfExpanded wouldn't work, no selected text would be
-        // deleted if you press del-key
-        if (sel.deleteIfExpanded())
-            return false;
-    }
-    if (evt.keyCode==WYMeditor.KEY.HOME) {
-        // if cursorToStart won't work, the cursor won't be set to start
-        // if you press home-key
-        sel.cursorToStart(sel.container);
-        return false;
-    }
-    if (evt.keyCode==WYMeditor.KEY.END)
-    {
-        // if cursorToEnd won't work, the cursor won't be set to the end
-        // if you press end-key
-        sel.cursorToEnd(sel.container);
-        return false;
-    }
-*/
-  
   if(evt.ctrlKey){
     if(evt.keyCode == 66){
       //CTRL+b => STRONG
@@ -306,81 +275,4 @@ WYMeditor.WymClassMozilla.prototype.getTagForStyle = function(style) {
   if(/sub/.test(style)) return 'super';
   return false;
 };
-
-/********** SELECTION API **********/
-
-WYMeditor.WymSelMozilla = function(wym) {
-    this._wym = wym;
-};
-
-WYMeditor.WymSelMozilla.prototype = {
-    getSelection: function() {
-        var _sel = this._wym._iframe.contentWindow.getSelection();
-        // NOTE v.mische can startNode/endNote be phantom nodes?
-        this.startNode = _sel.getRangeAt(0).startContainer;
-        this.endNode = _sel.getRangeAt(0).endContainer;
-        this.startOffset = _sel.getRangeAt(0).startOffset;
-        this.endOffset = _sel.getRangeAt(0).endOffset;
-        this.isCollapsed = _sel.isCollapsed;
-        this.original = _sel;
-        this.container = jQuery(this.startNode).parentsOrSelf(
-                WYMeditor.MAIN_CONTAINERS.join(","))[0];
-
-        return this;
-    },
-
-    cursorToStart: function(jqexpr) {
-        if (jqexpr.nodeType == WYMeditor.NODE.TEXT)
-            jqexpr = jqexpr.parentNode;
-
-        var firstTextNode = jQuery(jqexpr)[0];
-
-        while (firstTextNode.nodeType!=WYMeditor.NODE.TEXT) {
-            if (!firstTextNode.hasChildNodes())
-                break;
-            firstTextNode = firstTextNode.firstChild;
-        }
-
-        if (WYMeditor.isPhantomNode(firstTextNode))
-            firstTextNode = firstTextNode.nextSibling;
-
-        // e.g. an <img/>
-        if (firstTextNode.nodeType == WYMeditor.NODE.ELEMENT)
-            this.original.collapse(firstTextNode.parentNode, 0);
-        else
-            this.original.collapse(firstTextNode, 0);
-    },
-
-    cursorToEnd: function(jqexpr) {
-        if (jqexpr.nodeType == WYMeditor.NODE.TEXT)
-            jqexpr = jqexpr.parentNode;
-
-        var lastTextNode = jQuery(jqexpr)[0];
-
-        while (lastTextNode.nodeType!=WYMeditor.NODE.TEXT) {
-            if (!lastTextNode.hasChildNodes())
-                break;
-            lastTextNode = lastTextNode.lastChild;
-        }
-
-        if (WYMeditor.isPhantomNode(lastTextNode))
-            lastTextNode = lastTextNode.previousSibling;
-
-        // e.g. an <img/>
-        if (lastTextNode.nodeType == WYMeditor.NODE.ELEMENT)
-            this.original.collapse(lastTextNode.parentNode,
-                lastTextNode.parentNode.childNodes.length);
-        else
-            this.original.collapse(lastTextNode, lastTextNode.length);
-    },
-
-    deleteIfExpanded: function() {
-        if(!this.original.isCollapsed) {
-            this.original.deleteFromDocument();
-            return true;
-        }
-        return false;
-    }
-};
-
 

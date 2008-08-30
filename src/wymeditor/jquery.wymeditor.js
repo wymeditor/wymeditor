@@ -103,7 +103,7 @@ jQuery.extend(WYMeditor, {
 
 */
 
-    VERSION             : "0.5-a1",
+    VERSION             : "0.5-a2",
     INSTANCES           : [],
     STRINGS             : [],
     SKINS               : [],
@@ -269,9 +269,6 @@ jQuery.extend(WYMeditor, {
         //get or compute the jQuery JS file location
         this._options.jQueryPath = this._options.jQueryPath
         || this.computeJqueryPath();
-
-        //instanciate a WYMeditor Selection API class
-        this.selection = new WYMeditor.WymSelection();
 
         //initialize the editor instance
         this.init();
@@ -687,19 +684,15 @@ WYMeditor.editor.prototype.init = function() {
   //unsupported browsers: do nothing
   if (jQuery.browser.msie) {
     var WymClass = new WYMeditor.WymClassExplorer(this);
-    var WymSel   = new WYMeditor.WymSelExplorer(this);
   }
   else if (jQuery.browser.mozilla) {
     var WymClass = new WYMeditor.WymClassMozilla(this);
-    var WymSel   = new WYMeditor.WymSelMozilla(this);
   }
   else if (jQuery.browser.opera) {
     var WymClass = new WYMeditor.WymClassOpera(this);
-    var WymSel   = new WYMeditor.WymSelOpera(this);
   }
   else if (jQuery.browser.safari) {
     var WymClass = new WYMeditor.WymClassSafari(this);
-    var WymSel   = new WYMeditor.WymSelSafari(this);
   }
   
   if(WymClass) {
@@ -809,14 +802,6 @@ WYMeditor.editor.prototype.init = function() {
       //enable the skin
       this.loadSkin();
       
-    }
-    
-    if(WymSel) {
-    
-      //extend the selection object
-      //don't use jQuery.extend since 1.1.4
-      //jQuery.extend(this.selection, WymSel);
-      for (prop in WymSel) { this.selection[prop] = WymSel[prop]; }
     }
 };
 
@@ -1520,140 +1505,6 @@ WYMeditor.INIT_DIALOG = function(index) {
   if(jQuery.isFunction(wym._options.postInitDialog))
     wym._options.postInitDialog(wym,window);
 
-};
-
-
-
-/********** SELECTION API **********/
-
-WYMeditor.WymSelection = function() {
-    this.test = "test from WymSelection";
-};
-
-
-WYMeditor.WymSelection.prototype = {
-    /* The following properties are set in the browser specific file (in
-     * getSelection()):
-     * this.original
-     * this.startNode
-     * this.endNode
-     * this.startOffset
-     * this.endOffset
-     * this.iscollapsed
-     * this.container
-     */
-
-    /* The following methods are implemented in browser specific file:
-     *  - deleteIfExpanded()
-     *  - cursorToStart()
-     *  - cursorToEnd()
-     */
-
-
-    isAtStart: function(jqexpr) {
-        var parent = jQuery(this.startNode).parentsOrSelf(jqexpr);
-
-        // jqexpr isn't a parent of the current cursor position
-        if (parent.length==0)
-            return false;
-
-        var startNode = this.startNode;
-        if (startNode.nodeType == WYMeditor.NODE.TEXT) {
-            // 1. startNode ist first child
-            // 2. offset needs to be 0 to be at the start (or the previous
-            //    characters are whitespaces)
-            if ((startNode.previousSibling
-                    && !WYMeditor.isPhantomNode(startNode.previousSibling))
-                        || (this.startOffset != 0 && !WYMeditor.isPhantomString(
-                            startNode.data.substring(0, this.startOffset))))
-                return false;
-            else
-                startNode = startNode.parentNode;
-        }
-        // cursor can be at the start of a text node and have a startOffset > 0
-        // (if the node contains trailign whitespaces)
-        else if (this.startOffset != 0)
-            return false;
-
-
-        for (var n=jQuery(startNode); n[0]!=parent[0]; n=n.parent()) {
-            var firstChild = n.parent().children(':first');
-
-            // node isn't first child => cursor can't be at the beginning
-            if (firstChild[0] != n[0]
-                    || (firstChild[0].previousSibling
-                        && !WYMeditor.isPhantomNode(firstChild[0].previousSibling)))
-                return false;
-        }
-
-        return true;
-    },
-
-    isAtEnd: function(jqexpr) {
-        var parent = jQuery(this.endNode).parentsOrSelf(jqexpr);
-
-        // jqexpr isn't a parent of the current cursor position
-        if (parent.length==0)
-            return false;
-        else
-            parent = parent[0];
-
-
-        // This is the case if, e.g ("|" = cursor): <p>textnode|<br/></p>,
-        // there the offset of endNode (endOffset) is 1 (behind the first node
-        // of <p>)
-        if (this.endNode == parent) {
-            // NOTE I don't know if it is a good idea to delete the <br>
-            // here, as "atEnd()" probably shouldn't change the dom tree,
-            // but only searching it
-            if (this.endNode.lastChild.nodeName == "BR")
-                this.endNode.removeChild(endNode.lastChild);
-
-            // if cursor is really at the end
-            if (this.endOffset == 0)
-                return false;
-            else {
-                for (var nNext=this.endNode.childNodes[this.endOffset-1].nextSibling;
-                        nNext==null || nNext.nodeName == "BR";
-                        nNext=nNext.nextSibling)
-
-                if (nNext==null)
-                    return true;
-            }
-
-        }
-        else {
-            var endNode = this.endNode;
-            if (endNode.nodeType == WYMeditor.NODE.TEXT) {
-                if ((endNode.nextSibling
-                        && !WYMeditor.isPhantomNode(endNode.nextSibling))
-                            || (this.endOffset != endNode.data.length))
-                    return false;
-                else
-                    endNode = endNode.parentNode;
-            }
-
-            for (var n=endNode; n!=parent; n=n.parentNode) {
-                var lastChild = n.parentNode.lastChild;
-                // node isn't last child => cursor can't be at the end
-                // (is this true?) in gecko there the last child could be a
-                //     phantom node
-
-                // sometimes also whitespacenodes which aren't phatom nodes
-                // get stripped, but this is ok, as this is a wysiwym editor
-                if ((lastChild != n) ||
-                        (WYMeditor.isPhantomNode(lastChild)
-                        && lastChild.previousSibling != n)) {
-                    return false;
-                }
-            }
-        }
-
-        if (this.endOffset == this.endNode.length)
-            return true;
-        else
-            return false;
-    }
 };
 
 /********** XHTML LEXER/PARSER **********/
