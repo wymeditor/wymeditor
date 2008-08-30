@@ -1281,19 +1281,17 @@ WYMeditor.editor.prototype.listen = function() {
   //because of MSIE + jQuery + expando issue (#JQ1143)
   //jQuery(this._doc.body).find("*").bind("mouseup", this.mouseup);
   
-  jQuery(this._doc.body).bind("mouseup", this.mouseup);
+  jQuery(this._doc.body).bind("mousedown", this.mousedown);
   var images = this._doc.body.getElementsByTagName("img");
   for(var i=0; i < images.length; i++) {
-    jQuery(images[i]).bind("mouseup", this.mouseup);
+    jQuery(images[i]).bind("mousedown", this.mousedown);
   }
 };
 
-//mouseup handler
-WYMeditor.editor.prototype.mouseup = function(evt) {
+WYMeditor.editor.prototype.mousedown = function(evt) {
   
   var wym = WYMeditor.INSTANCES[this.ownerDocument.title];
-  if(this.tagName.toLowerCase() == WYMeditor.IMG) wym._selected_image = this;
-  else wym._selected_image = null;
+  wym._selected_image = (this.tagName.toLowerCase() == WYMeditor.IMG) ? this : null;
   evt.stopPropagation();
 };
 
