@@ -48,6 +48,7 @@ jQuery.extend(WYMeditor, {
     IFRAME_BASE_PATH    - A string replaced by the designmode iframe's base path.
     IFRAME_DEFAULT      - The iframe's default base path.
     JQUERY_PATH         - A string replaced by the computed jQuery path.
+    DIRECTION           - A string replaced by the text direction (rtl or ltr).
     LOGO                - A string replaced by WYMeditor logo.
     TOOLS               - A string replaced by the toolbar's HTML.
     TOOLS_ITEMS         - A string replaced by the toolbar items.
@@ -120,6 +121,7 @@ jQuery.extend(WYMeditor, {
     IFRAME_BASE_PATH    : "{Wym_Iframe_Base_Path}",
     IFRAME_DEFAULT      : "iframe/default/",
     JQUERY_PATH         : "{Wym_Jquery_Path}",
+    DIRECTION           : "{Wym_Direction}",
     LOGO                : "{Wym_Logo}",
     TOOLS               : "{Wym_Tools}",
     TOOLS_ITEMS         : "{Wym_Tools_Items}",
@@ -326,6 +328,8 @@ jQuery.fn.wymeditor = function(options) {
 
     lang:       "en",
 
+    direction:  "ltr",
+
     boxHtml:   "<div class='wym_box'>"
               + "<div class='wym_area_top'>" 
               + WYMeditor.TOOLS
@@ -497,7 +501,9 @@ jQuery.fn.wymeditor = function(options) {
 
     dialogHtml:      "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN'"
                       + " 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>"
-                      + "<html><head>"
+                      + "<html dir='"
+                      + WYMeditor.DIRECTION
+                      + "'><head>"
                       + "<link rel='stylesheet' type='text/css' media='screen'"
                       + " href='"
                       + WYMeditor.CSS_PATH
@@ -1147,6 +1153,7 @@ WYMeditor.editor.prototype.dialog = function(sType) {
     //construct the dialog
     var dialogHtml = this._options.dialogHtml;
     dialogHtml = h.replaceAll(dialogHtml, WYMeditor.BASE_PATH, this._options.basePath);
+    dialogHtml = h.replaceAll(dialogHtml, WYMeditor.DIRECTION, this._options.direction);
     dialogHtml = h.replaceAll(dialogHtml, WYMeditor.CSS_PATH, this._options.skinPath + WYMeditor.SKINS_DEFAULT_CSS);
     dialogHtml = h.replaceAll(dialogHtml, WYMeditor.WYM_PATH, this._options.wymPath);
     dialogHtml = h.replaceAll(dialogHtml, WYMeditor.JQUERY_PATH, this._options.jQueryPath);

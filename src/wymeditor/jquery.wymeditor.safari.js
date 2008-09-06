@@ -38,6 +38,9 @@ WYMeditor.WymClassSafari.prototype.initIframe = function(iframe) {
 
     this._doc.title = this._wym._index;
 
+    //set the text direction
+    jQuery('html', this._doc).attr('dir', this._options.direction);
+
     //init designMode
     this._doc.designMode = "on";
     

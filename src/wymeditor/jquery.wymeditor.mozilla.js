@@ -39,6 +39,9 @@ WYMeditor.WymClassMozilla.prototype.initIframe = function(iframe) {
     this.addCssRules(this._doc, aCss);
 
     this._doc.title = this._wym._index;
+
+    //set the text direction
+    jQuery('html', this._doc).attr('dir', this._options.direction);
     
     //init html value
     this.html(this._wym._html);
