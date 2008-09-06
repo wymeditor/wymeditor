@@ -2374,7 +2374,7 @@ WYMeditor.XhtmlValidator = {
     ) {
       return false;
     }
-    return this._tags[tag] != undefined;
+    return typeof this._tags[tag] != 'undefined';
   },
   getPossibleTagAttributes : function(tag)
   {
@@ -2622,11 +2622,11 @@ WYMeditor.Lexer = function(parser, start, case_sensitive)
 WYMeditor.Lexer.prototype.addPattern = function(pattern, mode)
 {
   var mode = mode || "accept";
-  if (this._regexes[mode] == undefined) {
+  if (typeof this._regexes[mode] == 'undefined') {
     this._regexes[mode] = new WYMeditor.ParallelRegex(this._case);
   }
   this._regexes[mode].addPattern(pattern);
-  if (this._mode_handlers[mode] == undefined) {
+  if (typeof this._mode_handlers[mode] == 'undefined') {
     this._mode_handlers[mode] = mode;
   }
 };
@@ -2646,11 +2646,11 @@ WYMeditor.Lexer.prototype.addPattern = function(pattern, mode)
 */
 WYMeditor.Lexer.prototype.addEntryPattern = function(pattern, mode, new_mode)
 {
-  if (this._regexes[mode] == undefined) {
+  if (typeof this._regexes[mode] == 'undefined') {
     this._regexes[mode] = new WYMeditor.ParallelRegex(this._case);
   }
   this._regexes[mode].addPattern(pattern, new_mode);
-  if (this._mode_handlers[new_mode] == undefined) {
+  if (typeof this._mode_handlers[new_mode] == 'undefined') {
     this._mode_handlers[new_mode] = new_mode;
   }
 };
@@ -2665,11 +2665,11 @@ WYMeditor.Lexer.prototype.addEntryPattern = function(pattern, mode, new_mode)
 */
 WYMeditor.Lexer.prototype.addExitPattern = function(pattern, mode)
 {
-  if (this._regexes[mode] == undefined) {
+  if (typeof this._regexes[mode] == 'undefined') {
     this._regexes[mode] = new WYMeditor.ParallelRegex(this._case);
   }
   this._regexes[mode].addPattern(pattern, "__exit");
-  if (this._mode_handlers[mode] == undefined) {
+  if (typeof this._mode_handlers[mode] == 'undefined') {
     this._mode_handlers[mode] = mode;
   }
 };
@@ -2688,11 +2688,11 @@ WYMeditor.Lexer.prototype.addExitPattern = function(pattern, mode)
 */
 WYMeditor.Lexer.prototype.addSpecialPattern =  function(pattern, mode, special)
 {
-  if (this._regexes[mode] == undefined) {
+  if (typeof this._regexes[mode] == 'undefined') {
     this._regexes[mode] = new WYMeditor.ParallelRegex(this._case);
   }
   this._regexes[mode].addPattern(pattern, '_'+special);
-  if (this._mode_handlers[special] == undefined) {
+  if (typeof this._mode_handlers[special] == 'undefined') {
     this._mode_handlers[special] = special;
   }
 };
@@ -2720,7 +2720,7 @@ WYMeditor.Lexer.prototype.mapHandler = function(mode, handler)
 */
 WYMeditor.Lexer.prototype.parse = function(raw)
 {
-  if (this._parser == undefined) {
+  if (typeof this._parser == 'undefined') {
     return false;
   }
 
@@ -3524,7 +3524,7 @@ WYMeditor.XhtmlSaxListener.prototype._getClosingTagContent = function(position, 
 
 WYMeditor.WymCssLexer = function(parser, only_wym_blocks)
 {
-  var only_wym_blocks = (only_wym_blocks == undefined ? true : only_wym_blocks);
+  var only_wym_blocks = (typeof only_wym_blocks == 'undefined' ? true : only_wym_blocks);
 
   jQuery.extend(this, new WYMeditor.Lexer(parser, (only_wym_blocks?'Ignore':'WymCss')));
 
@@ -3560,7 +3560,7 @@ WYMeditor.WymCssParser = function()
 
 WYMeditor.WymCssParser.prototype.parse = function(raw, only_wym_blocks)
 {
-  var only_wym_blocks = (only_wym_blocks == undefined ? this.only_wym_blocks : only_wym_blocks);
+  var only_wym_blocks = (typeof only_wym_blocks == 'undefined' ? this.only_wym_blocks : only_wym_blocks);
   this._Lexer = new WYMeditor.WymCssLexer(this, only_wym_blocks);
   this._Lexer.parse(raw);
 };
