@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+ * WYMeditor : what you see is What You Mean web-based editor
+ * Copyright (c) 2008 Jean-Francois Hovinne, http://www.wymeditor.org/
+ * Dual licensed under the MIT (MIT-license.txt)
+ * and GPL (GPL-license.txt) licenses.
+ *
+ * For further information visit:
+ *        http://www.wymeditor.org/
+ *
+ * File Name:
+ *        test.html
+ *        WYMeditor unit tests.
+ *        See the documentation for more info.
+ *
+ * File Authors:
+ *        Jean-Francois Hovinne (jf.hovinne a-t wymeditor dotorg)
+-->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>WYMeditor Test Suite</title>
+<link rel="stylesheet" href="testsuite.css" type="text/css" media="screen" />
+<script type="text/javascript" src="../../jquery/jquery.js"></script>
+<script type="text/javascript" src="../../wymeditor/jquery.wymeditor.js"></script>
+<script type="text/javascript" src="../../wymeditor/jquery.wymeditor.explorer.js"></script>
+<script type="text/javascript" src="../../wymeditor/jquery.wymeditor.mozilla.js"></script>
+<script type="text/javascript" src="../../wymeditor/jquery.wymeditor.opera.js"></script>
+<script type="text/javascript" src="../../wymeditor/jquery.wymeditor.safari.js"></script>
+<script type="text/javascript" src="testrunner.js"></script>
+<script type="text/javascript">
+
+module("Core");
+
+test("Instantiate", function() {
+    expect(2);
+    jQuery('.wymeditor').wymeditor({
+        stylesheet: 'styles.css'
+    });
+    equals( WYMeditor.INSTANCES.length, 1, "WYMeditor.INSTANCES length" );
+    equals( typeof(jQuery.wymeditors(0)), 'object', "Type of first WYMeditor instance, using jQuery.wymeditors(0)" );
+});
+
+module("CssParser");
+
+test("Configure classes items using CSS", function() {
+    expect(2);
+    ok( jQuery('div.wym_classes ul', jQuery.wymeditors(0)._box).length > 0, "Classes loaded" );
+    equals( jQuery('div.wym_classes a:first-child', jQuery.wymeditors(0)._box).attr('name'), 'date', "First loaded class name" );
+});
+
+module("XmlHelper");
+
+test("Should escape URL's only once #69.1", function() {
+    expect(2);
+    var original = "index.php?module=x&func=view&id=1";
+    var expected = "index.php?module=x&amp;func=view&amp;id=1";
+    equals( jQuery.wymeditors(0).helper.escapeOnce( original ), expected, "Escape entities");
+    equals( jQuery.wymeditors(0).helper.escapeOnce( expected ), expected, "Avoids double entity escaping");
+});
+
+module("XmlParser");
+
+test("Should correct bad formated lists", function() {
+    expect(2);
+    var expected = "<ul><li>a<ul><li>a.1</li></ul></li><li>b</li></ul>";
+    // FF
+    var design_mode_pseudo_html = "<ul><li>a</li><ul><li>a.1</li></ul><li>b<br></li></ul>";
+    equals( jQuery.wymeditors(0).parser.parse(design_mode_pseudo_html), expected, "on Firefox");
+    // IE
+    var design_mode_pseudo_html = "<UL>\r\n<LI>a</LI>\r\n<UL>\r\n<LI>a.1</LI></UL>\r\n<LI>b</LI></UL>";
+    equals( jQuery.wymeditors(0).parser.parse(design_mode_pseudo_html), expected, "on IE");
+});
+
+</script>
+</head>
+
+<body>
+<h1>WYMeditor Test Suite</h1>
+<h2 id="banner"></h2>
+<h2 id="userAgent"></h2>
+<form method="post" action="">
+<textarea class="wymeditor"></textarea>
+<input type="submit" class="wymupdate" />
+<input type="button" class="wymclear" name="Clear" value="Clear" />
+</form>
+<ol id="tests"></ol>
+<div id="main"></div>
+</body>
+</html>
