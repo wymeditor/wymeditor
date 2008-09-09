@@ -41,6 +41,16 @@ test("Instantiate", function() {
     equals( typeof(jQuery.wymeditors(0)), 'object', "Type of first WYMeditor instance, using jQuery.wymeditors(0)" );
 });
 
+module("API");
+
+test("Commands", function() {
+    expect(2);
+    jQuery.wymeditors(0).toggleHtml();
+    equals( jQuery('div.wym_html:visible', jQuery.wymeditors(0)._box).length, 1 );
+    jQuery.wymeditors(0).toggleHtml();
+    equals( jQuery('div.wym_html:visible', jQuery.wymeditors(0)._box).length, 0 );
+});
+
 module("CssParser");
 
 test("Configure classes items using CSS", function() {
