@@ -668,9 +668,6 @@ jQuery.fn.wymeditor = function(options) {
 jQuery.extend({
   wymeditors: function(i) {
     return (WYMeditor.INSTANCES[i]);
-  },
-  wymstrings: function(sKey) {
-    return (WYMeditor.STRINGS[sKey]);
   }
 });
 
@@ -1410,21 +1407,13 @@ WYMeditor.INIT_DIALOG = function(index) {
 
       var sUrl = jQuery(wym._options.hrefSelector).val();
       if(sUrl.length > 0) {
+
         wym._exec(WYMeditor.CREATE_LINK, sStamp);
-        //don't use jQuery.find() see #JQ1143
-        //var link = jQuery(wym._doc.body).find("a[@href=" + sStamp + "]");
-        var link = null;
-        var nodes = wym._doc.body.getElementsByTagName(WYMeditor.A);
-        for(var i=0; i < nodes.length; i++) {
-            if(jQuery(nodes[i]).attr(WYMeditor.HREF) == sStamp) {
-                link = jQuery(nodes[i]);
-                break;
-            }
-        }
-        if(link) {
-            link.attr(WYMeditor.HREF, sUrl);
-            link.attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val());
-        }
+
+        jQuery("a[@href=" + sStamp + "]", wym._doc.body)
+            .attr(WYMeditor.HREF, sUrl)
+            .attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val());
+
       }
       window.close();
   });
@@ -1434,22 +1423,13 @@ WYMeditor.INIT_DIALOG = function(index) {
 
       var sUrl = jQuery(wym._options.srcSelector).val();
       if(sUrl.length > 0) {
+
         wym._exec(WYMeditor.INSERT_IMAGE, sStamp);
-        //don't use jQuery.find() see #JQ1143
-        //var image = jQuery(wym._doc.body).find("img[@src=" + sStamp + "]");
-        var image = null;
-        var nodes = wym._doc.body.getElementsByTagName(WYMeditor.IMG);
-        for(var i=0; i < nodes.length; i++) {
-            if(jQuery(nodes[i]).attr(WYMeditor.SRC) == sStamp) {
-                image = jQuery(nodes[i]);
-                break;
-            }
-        }
-        if(image) {
-            image.attr(WYMeditor.SRC, sUrl);
-            image.attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val());
-            image.attr(WYMeditor.ALT, jQuery(wym._options.altSelector).val());
-        }
+
+        jQuery("img[@src=" + sStamp + "]", wym._doc.body)
+            .attr(WYMeditor.SRC, sUrl)
+            .attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val())
+            .attr(WYMeditor.ALT, jQuery(wym._options.altSelector).val());
       }
       window.close();
   });
