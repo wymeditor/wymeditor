@@ -35,7 +35,8 @@ module("Core");
 test("Instantiate", function() {
     expect(2);
     jQuery('.wymeditor').wymeditor({
-        stylesheet: 'styles.css'
+        stylesheet: 'styles.css',
+        postInit: function() { runPostInitTests() }
     });
     equals( WYMeditor.INSTANCES.length, 1, "WYMeditor.INSTANCES length" );
     equals( typeof(jQuery.wymeditors(0)), 'object', "Type of first WYMeditor instance, using jQuery.wymeditors(0)" );
@@ -81,6 +82,17 @@ test("Should correct bad formated lists", function() {
     var design_mode_pseudo_html = "<UL>\r\n<LI>a</LI>\r\n<UL>\r\n<LI>a.1</LI></UL>\r\n<LI>b</LI></UL>";
     equals( jQuery.wymeditors(0).parser.parse(design_mode_pseudo_html), expected, "on IE");
 });
+
+function runPostInitTests() {
+    module("Post Init");
+
+    test("Commands", function() {
+        expect(1);
+        var testText = '<p>This is some text with which to test.</p>';
+        jQuery.wymeditors(0).html( testText );
+        equals( jQuery.trim( jQuery.wymeditors(0).xhtml() ), testText );
+    });
+};
 
 </script>
 </head>
