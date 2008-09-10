@@ -28,7 +28,7 @@ WYMeditor.STRINGS['he'] = {
     Title:            'כותרת',
     Alternative_Text: 'טקסט חלופי',
     Caption:          'כותרת',
-    Summary:          'Summary',
+    Summary:          'סיכום',
     Number_Of_Rows:   'מספר שורות',
     Number_Of_Cols:   'מספר טורים',
     Submit:           'שלח',
