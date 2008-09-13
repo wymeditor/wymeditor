@@ -74,23 +74,29 @@ module("XmlParser");
 
 test("Should correct bad formated lists", function() {
     expect(2);
-    var expected = "<ul><li>a<ul><li>a.1</li></ul></li><li>b</li></ul>";
+    var expected = "<ul><li>a<ul><li>a.1<\/li><\/ul><\/li><li>b<\/li><\/ul>";
     // FF
-    var design_mode_pseudo_html = "<ul><li>a</li><ul><li>a.1</li></ul><li>b<br></li></ul>";
+    var design_mode_pseudo_html = "<ul><li>a<\/li><ul><li>a.1<\/li><\/ul><li>b<br><\/li><\/ul>";
     equals( jQuery.wymeditors(0).parser.parse(design_mode_pseudo_html), expected, "on Firefox");
     // IE
-    var design_mode_pseudo_html = "<UL>\r\n<LI>a</LI>\r\n<UL>\r\n<LI>a.1</LI></UL>\r\n<LI>b</LI></UL>";
+    var design_mode_pseudo_html = "<UL>\r\n<LI>a<\/LI>\r\n<UL>\r\n<LI>a.1<\/LI><\/UL>\r\n<LI>b<\/LI><\/UL>";
     equals( jQuery.wymeditors(0).parser.parse(design_mode_pseudo_html), expected, "on IE");
 });
 
 function runPostInitTests() {
     module("Post Init");
 
-    test("Commands", function() {
-        expect(1);
-        var testText = '<p>This is some text with which to test.</p>';
-        jQuery.wymeditors(0).html( testText );
-        equals( jQuery.trim( jQuery.wymeditors(0).xhtml() ), testText );
+    test("Commands: html(), paste()", function() {
+        expect(2);
+        var testText1 = '<p>This is some text with which to test.<\/p>';
+        jQuery.wymeditors(0).html( testText1 );
+        equals( jQuery.trim( jQuery.wymeditors(0).xhtml() ), testText1 );
+
+        var testText2 = 'Some <strong>other text<\/strong> with which to test.';
+        jQuery.wymeditors(0)._doc.body.focus();
+        jQuery.wymeditors(0).paste( testText2 );
+        equals( jQuery.trim( jQuery.wymeditors(0).xhtml() ), testText1 + '<p>' + testText2 + '<\/p>' );
+        
     });
 };
 
