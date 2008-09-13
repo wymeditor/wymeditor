@@ -16,6 +16,7 @@
  *        Jean-Francois Hovinne (jf.hovinne a-t wymeditor dotorg)
  *        Bermi Ferrer (wymeditor a-t bermi dotorg)
  *        Frédéric Palluel-Lafleur (fpalluel a-t gmail dotcom)
+ *        Jonatan Lundin (jonatan.lundin _at_ gmail.com)
  */
 
 WYMeditor.WymClassExplorer = function(wym) {
@@ -134,11 +135,27 @@ WYMeditor.WymClassExplorer.prototype.addCssRule = function(styles, oCss) {
     styles.addRule(oCss.name, oCss.css);
 };
 
+WYMeditor.WymClassExplorer.prototype.insert = function(html) {
+
+    // Get the current selection
+    var range = this._doc.selection.createRange();
+
+    // Check if the current selection is inside the editor
+    if ( jQuery(range.parentElement()).parents( this._options.iframeBodySelector ).is('*') ) {
+        try {
+            // Overwrite selection with provided html
+            range.pasteHTML(html);
+        } catch (e) { }
+    } else {
+        // Fall back to the internal paste function if there's no selection
+        this.paste(html);
+    }
+};
+
 //keyup handler
 WYMeditor.WymClassExplorer.prototype.keyup = function() {
   this._selected_image = null;
 };
-
 
 WYMeditor.WymClassExplorer.prototype.setFocusToNode = function(node) {
     var range = this._doc.selection.createRange();

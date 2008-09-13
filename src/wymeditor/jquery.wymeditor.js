@@ -19,6 +19,7 @@
  *        Scott Lewis (lewiscot a-t gmail dotcom)
  *        Bermi Ferrer (wymeditor a-t bermi dotorg)
  *        Daniel Reszka (d.reszka a-t wymeditor dotorg)
+ *        Jonatan Lundin (jonatan.lundin _at_ gmail.com)
  */
 
 /*
@@ -177,6 +178,7 @@ jQuery.extend(WYMeditor, {
     CREATE_LINK         : "CreateLink",
     INSERT_IMAGE        : "InsertImage",
     INSERT_TABLE        : "InsertTable",
+    INSERT_HTML         : "InsertHTML",
     PASTE               : "Paste",
     INDENT              : "Indent",
     OUTDENT             : "Outdent",
@@ -465,6 +467,7 @@ jQuery.fn.wymeditor = function(options) {
     classesSelector:   ".wym_classes",
     htmlSelector:      ".wym_html",
     iframeSelector:    ".wym_iframe iframe",
+    iframeBodySelector:".wym_iframe",
     statusSelector:    ".wym_status",
     toolSelector:      ".wym_tools a",
     containerSelector: ".wym_containers a",
@@ -1204,6 +1207,17 @@ WYMeditor.editor.prototype.paste = function(sData) {
     }
   
   }
+};
+
+WYMeditor.editor.prototype.insert = function(html) {
+    // Do we have a selection?
+    if (this._iframe.contentWindow.getSelection().focusNode != null) {
+        // Overwrite selection with provided html
+        this._exec( WYMeditor.INSERT_HTML, html);
+    } else {
+        // Fall back to the internal paste function if there's no selection
+        this.paste(html)
+    }
 };
 
 WYMeditor.editor.prototype.addCssRules = function(doc, aCss) {
