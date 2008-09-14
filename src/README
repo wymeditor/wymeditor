@@ -20,14 +20,9 @@ README
 For WYMeditor to work, you'll need at least jQuery 1.1.3.x
 jQuery is available at http://jquery.com/
 
-WYMeditor is compatible with MSIE 6.0+
-and Gecko-based browsers (e.g. Firefox 1.5+).
-
-Opera/Safari compatibility is still buggy/experimental.
-Any help to improve it is welcome.
-
-WYMeditor is currently not compatible with Firefox 3 beta versions
-(tested with Firefox 3 beta 5).
+WYMeditor is compatible with MSIE 6.0+,
+Gecko-based browsers (e.g. Firefox 1.5+),
+Opera 9.5+, Safari 3.0+, Google Chrome.
 
 WYMeditor integration examples are available in the 'examples' directory.
 
