@@ -48,12 +48,6 @@ WYMeditor.WymClassOpera.prototype.initIframe = function(iframe) {
     //pre-bind functions
     if(jQuery.isFunction(this._options.preBind)) this._options.preBind(this);
     
-    //hide indent and outdent until supported
-    jQuery(this._box).find(this._options.toolSelector 
-      + '[@name=' + WYMeditor.INDENT +']').hide();
-    jQuery(this._box).find(this._options.toolSelector 
-      + '[@name=' + WYMeditor.OUTDENT +']').hide();
-    
     //bind external events
     this._wym.bindEvents();
     
@@ -72,18 +66,8 @@ WYMeditor.WymClassOpera.prototype.initIframe = function(iframe) {
 
 WYMeditor.WymClassOpera.prototype._exec = function(cmd,param) {
 
-    switch(cmd) {
-    
-    case WYMeditor.INDENT: case WYMeditor.OUTDENT:
-        //TODO: support nested lists
-        //Opera creates blockquotes
-        this.status("Unsupported feature.");
-    break;
-    default:
-        if(param) this._doc.execCommand(cmd,false,param);
-        else this._doc.execCommand(cmd);
-    break;
-	}
+    if(param) this._doc.execCommand(cmd,false,param);
+    else this._doc.execCommand(cmd);
     
     this.listen();
 };
@@ -115,6 +99,7 @@ WYMeditor.WymClassOpera.prototype.keydown = function(evt) {
   //Get a P instead of no container
   if(!jQuery(startNode).parentsOrSelf(
                 WYMeditor.MAIN_CONTAINERS.join(","))[0]
+      && !jQuery(startNode).parentsOrSelf('li')
       && evt.keyCode != WYMeditor.KEY.ENTER
       && evt.keyCode != WYMeditor.KEY.LEFT
       && evt.keyCode != WYMeditor.KEY.UP
