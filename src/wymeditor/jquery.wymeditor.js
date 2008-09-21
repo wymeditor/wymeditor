@@ -1220,6 +1220,22 @@ WYMeditor.editor.prototype.insert = function(html) {
     }
 };
 
+WYMeditor.editor.prototype.wrap = function(left, right) {
+    // Do we have a selection?
+    if (this._iframe.contentWindow.getSelection().focusNode != null) {
+        // Wrap selection with provided html
+        this._exec( WYMeditor.INSERT_HTML, left + this._iframe.contentWindow.getSelection().toString() + right);
+    }
+};
+
+WYMeditor.editor.prototype.unwrap = function() {
+    // Do we have a selection?
+    if (this._iframe.contentWindow.getSelection().focusNode != null) {
+        // Unwrap selection
+        this._exec( WYMeditor.INSERT_HTML, this._iframe.contentWindow.getSelection().toString() );
+    }
+};
+
 WYMeditor.editor.prototype.addCssRules = function(doc, aCss) {
   var styles = doc.styleSheets[0];
   if(styles) {

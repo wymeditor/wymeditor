@@ -152,6 +152,36 @@ WYMeditor.WymClassExplorer.prototype.insert = function(html) {
     }
 };
 
+WYMeditor.WymClassExplorer.prototype.wrap = function(left, right) {
+
+    // Get the current selection
+    var range = this._doc.selection.createRange();
+
+    // Check if the current selection is inside the editor
+    if ( jQuery(range.parentElement()).parents( this._options.iframeBodySelector ).is('*') ) {
+        try {
+            // Overwrite selection with provided html
+            range.pasteHTML(left + range.text + right);
+        } catch (e) { }
+    }
+};
+
+WYMeditor.WymClassExplorer.prototype.unwrap = function() {
+
+    // Get the current selection
+    var range = this._doc.selection.createRange();
+
+    // Check if the current selection is inside the editor
+    if ( jQuery(range.parentElement()).parents( this._options.iframeBodySelector ).is('*') ) {
+        try {
+            // Unwrap selection
+            var text = range.text;
+            this._exec( 'Cut' );
+            range.pasteHTML( text );
+        } catch (e) { }
+    }
+};
+
 //keyup handler
 WYMeditor.WymClassExplorer.prototype.keyup = function() {
   this._selected_image = null;
