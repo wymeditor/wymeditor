@@ -28,6 +28,16 @@
 */
 if(!WYMeditor) var WYMeditor = {};
 
+//Prevent errors with Firebug console
+if (!window.console || !console.firebug) {
+    var names = ["log", "debug", "info", "warn", "error", "assert", "dir", "dirxml",
+    "group", "groupEnd", "time", "timeEnd", "count", "trace", "profile", "profileEnd"];
+
+    window.console = {};
+    for (var i = 0; i < names.length; ++i)
+        window.console[names[i]] = function() {}
+}
+
 jQuery.extend(WYMeditor, {
 
 /*
@@ -1078,9 +1088,15 @@ WYMeditor.editor.prototype.switchTo = function(node,sType) {
 WYMeditor.editor.prototype.replaceStrings = function(sVal) {
   //check if the language file has already been loaded
   //if not, get it via a synchronous ajax call
-  if(!WYMeditor.STRINGS[this._options.lang])
-    eval(jQuery.ajax({url:this._options.langPath
-      + this._options.lang + '.js', async:false}).responseText);
+  if(!WYMeditor.STRINGS[this._options.lang]) {
+    try {
+      eval(jQuery.ajax({url:this._options.langPath
+        + this._options.lang + '.js', async:false}).responseText);
+    } catch(e) {
+        console.error("WYMeditor: error while parsing language file.");
+        return sVal;
+    }
+  }
 
   //replace all the strings in sVal and return it
   for (var key in WYMeditor.STRINGS[this._options.lang]) {
