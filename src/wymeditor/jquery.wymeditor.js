@@ -28,15 +28,18 @@
 */
 if(!WYMeditor) var WYMeditor = {};
 
-//Prevent errors with Firebug console
-if (!window.console || !console.firebug) {
-    var names = ["log", "debug", "info", "warn", "error", "assert", "dir", "dirxml",
-    "group", "groupEnd", "time", "timeEnd", "count", "trace", "profile", "profileEnd"];
+//Wrap the Firebug console in WYMeditor.console
+(function() {
+    if ( !window.console || !console.firebug ) {
+        var names = ["log", "debug", "info", "warn", "error", "assert", "dir", "dirxml",
+        "group", "groupEnd", "time", "timeEnd", "count", "trace", "profile", "profileEnd"];
 
-    window.console = {};
-    for (var i = 0; i < names.length; ++i)
-        window.console[names[i]] = function() {}
-}
+        WYMeditor.console = {};
+        for (var i = 0; i < names.length; ++i)
+            WYMeditor.console[names[i]] = function() {}
+
+    } else WYMeditor.console = window.console;
+})();
 
 jQuery.extend(WYMeditor, {
 
@@ -1093,7 +1096,7 @@ WYMeditor.editor.prototype.replaceStrings = function(sVal) {
       eval(jQuery.ajax({url:this._options.langPath
         + this._options.lang + '.js', async:false}).responseText);
     } catch(e) {
-        console.error("WYMeditor: error while parsing language file.");
+        WYMeditor.console.error("WYMeditor: error while parsing language file.");
         return sVal;
     }
   }
