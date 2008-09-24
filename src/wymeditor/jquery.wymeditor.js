@@ -724,7 +724,9 @@ WYMeditor.editor.prototype.init = function() {
       this._box = jQuery(this._element).hide().after(this._options.boxHtml).next();
 
       //store the instance index in the wymbox element
-      jQuery(this._box).data(WYMeditor.WYM_INDEX, this._index);
+      //but keep it compatible with jQuery < 1.2.3, see #122
+      if( jQuery.isFunction( jQuery.fn.data ) )
+        jQuery(this._box).data(WYMeditor.WYM_INDEX, this._index);
       
       var h = WYMeditor.Helper;
 
