@@ -1139,7 +1139,7 @@ WYMeditor.editor.prototype.update = function() {
 /* @name dialog
  * @description Opens a dialog box
  */
-WYMeditor.editor.prototype.dialog = function(sType) {
+WYMeditor.editor.prototype.dialog = function( dialogType, bodyHtml ) {
   
   var wDialog = window.open(
     '',
@@ -1150,7 +1150,7 @@ WYMeditor.editor.prototype.dialog = function(sType) {
 
     var sBodyHtml = "";
     
-    switch(sType) {
+    switch( dialogType ) {
 
       case(WYMeditor.DIALOG_LINK):
         sBodyHtml = this._options.dialogLinkHtml;
@@ -1167,6 +1167,9 @@ WYMeditor.editor.prototype.dialog = function(sType) {
       case(WYMeditor.PREVIEW):
         sBodyHtml = this._options.dialogPreviewHtml;
       break;
+
+      default:
+        sBodyHtml = bodyHtml;
     }
     
     var h = WYMeditor.Helper;
@@ -1178,7 +1181,7 @@ WYMeditor.editor.prototype.dialog = function(sType) {
     dialogHtml = h.replaceAll(dialogHtml, WYMeditor.CSS_PATH, this._options.skinPath + WYMeditor.SKINS_DEFAULT_CSS);
     dialogHtml = h.replaceAll(dialogHtml, WYMeditor.WYM_PATH, this._options.wymPath);
     dialogHtml = h.replaceAll(dialogHtml, WYMeditor.JQUERY_PATH, this._options.jQueryPath);
-    dialogHtml = h.replaceAll(dialogHtml, WYMeditor.DIALOG_TITLE, this.encloseString(sType));
+    dialogHtml = h.replaceAll(dialogHtml, WYMeditor.DIALOG_TITLE, this.encloseString( dialogType ));
     dialogHtml = h.replaceAll(dialogHtml, WYMeditor.DIALOG_BODY, sBodyHtml);
     dialogHtml = h.replaceAll(dialogHtml, WYMeditor.INDEX, this._index);
       
