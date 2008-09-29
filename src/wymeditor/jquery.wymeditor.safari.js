@@ -240,6 +240,11 @@ WYMeditor.WymClassSafari.prototype.openBlockTag = function(tag, attributes)
       var tag = new_tag;
       this._tag_stack.push(new_tag);
       attributes.style = '';
+      
+      //should fix #125 - also removed the xhtml() override
+      if(typeof attributes['class'] == 'string')
+        attributes['class'] = attributes['class'].replace(/apple-style-span/gi, '');
+    
     } else {
       return;
     }
@@ -256,12 +261,3 @@ WYMeditor.WymClassSafari.prototype.getTagForStyle = function(style) {
   if(/super/.test(style)) return 'sup';
   return false;
 };
-
-/* @name xhtml
- * @description Cleans up the HTML
- */
-WYMeditor.editor.prototype.xhtml = function() {
-    jQuery('.Apple-style-span', this._doc.body).removeClass('Apple-style-span');
-    return this.parser.parse(this.html());
-};
-
