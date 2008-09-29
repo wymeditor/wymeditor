@@ -928,6 +928,10 @@ WYMeditor.editor.prototype.exec = function(cmd) {
     case WYMeditor.TOGGLE_HTML:
       this.update();
       this.toggleHtml();
+
+      //partially fixes #121 when the user manually inserts an image
+      if(!jQuery(this._box).find(this._options.htmlSelector).is(':visible'))
+        this.listen();
     break;
     
     case WYMeditor.PREVIEW:
