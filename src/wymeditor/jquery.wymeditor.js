@@ -3580,7 +3580,7 @@ WYMeditor.WymCssLexer = function(parser, only_wym_blocks)
     this.addExitPattern("/\\\x2a[<\/\\s]*WYMeditor[>\\s]*\\\x2a/", 'WymCss');
   }
 
-  this.addSpecialPattern("\\\x2e[a-z-_0-9]+[\\sa-z]*", 'WymCss', 'WymCssStyleDeclaration');
+  this.addSpecialPattern("\\\x2e[a-z-_0-9]+[\\sa-z1-6]*", 'WymCss', 'WymCssStyleDeclaration');
 
   this.addEntryPattern("/\\\x2a", 'WymCss', 'WymCssComment');
   this.addExitPattern("\\\x2a/", 'WymCssComment');
