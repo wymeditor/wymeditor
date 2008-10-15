@@ -739,7 +739,7 @@ WYMeditor.editor.prototype.init = function() {
       //store the instance index in the wymbox element
       //but keep it compatible with jQuery < 1.2.3, see #122
       if( jQuery.isFunction( jQuery.fn.data ) )
-        jQuery(this._box).data(WYMeditor.WYM_INDEX, this._index);
+        jQuery.data(this._box.get(0), WYMeditor.WYM_INDEX, this._index);
       
       var h = WYMeditor.Helper;
 
@@ -3429,7 +3429,7 @@ WYMeditor.XhtmlSaxListener.prototype.joinRepeatedEntities = function(xhtml)
 
 WYMeditor.XhtmlSaxListener.prototype.removeEmptyTags = function(xhtml)
 {
-  return xhtml.replace(new RegExp('<('+this.block_tags.join("|")+')>(<br \/>|&#160;|&nbsp;|\\s)*<\/\\1>' ,'g'),'');
+  return xhtml.replace(new RegExp('<('+this.block_tags.join("|").replace(/\|td/,'')+')>(<br \/>|&#160;|&nbsp;|\\s)*<\/\\1>' ,'g'),'');
 };
 
 WYMeditor.XhtmlSaxListener.prototype.getResult = function()
