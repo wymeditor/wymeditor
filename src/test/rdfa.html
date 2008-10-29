@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+ * WYMeditor : what you see is What You Mean web-based editor
+ * Copyright (c) 2008 Jean-Francois Hovinne, http://www.wymeditor.org/
+ * Dual licensed under the MIT (MIT-license.txt)
+ * and GPL (GPL-license.txt) licenses.
+ *
+ * For further information visit:
+ *        http://www.wymeditor.org/
+ *
+ * File Name:
+ *        rdfa.html
+ *        RDFa editor implementation.
+ *        See the documentation for more info.
+ *
+ * File Authors:
+ *        Jean-Francois Hovinne (jf.hovinne a-t wymeditor dotorg)
+-->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>WYMeditor</title>
+<script type="text/javascript" src="../jquery/jquery.js"></script>
+<script type="text/javascript" src="../wymeditor/jquery.wymeditor.js"></script>
+<script type="text/javascript" src="../wymeditor/jquery.wymeditor.explorer.js"></script>
+<script type="text/javascript" src="../wymeditor/jquery.wymeditor.mozilla.js"></script>
+<script type="text/javascript" src="../wymeditor/jquery.wymeditor.opera.js"></script>
+<script type="text/javascript" src="../wymeditor/jquery.wymeditor.safari.js"></script>
+
+<script type="text/javascript">
+
+/*EXTEND THE XHTML PARSER*/
+/*************************/
+
+//Add the RDFa attributes
+WYMeditor.XhtmlValidator._attributes['core']['attributes'].push(
+    'rel',
+    'rev',
+    'content',
+    'href',
+    'src',
+    'about',
+    'property',
+    'resource',
+    'datatype',
+    'typeof');
+
+//Add the 'standard' vocabularies
+WYMeditor.XhtmlValidator._attributes['core']['attributes'].push(
+    'xmlns:biblio',
+    'xmlns:cc',
+    'xmlns:dbp',
+    'xmlns:dbr',
+    'xmlns:dc',
+    'xmlns:ex',
+    'xmlns:foaf',
+    'xmlns:rdf',
+    'xmlns:rdfs',
+    'xmlns:taxo',
+    'xmlns:xhv',
+    'xmlns:xsd');
+
+//Overwrite the <a> attributes 'rel' and 'rev'
+WYMeditor.XhtmlValidator._tags['a'] = {
+    "attributes": {
+        "0":"charset",
+        "1":"coords",
+        "2":"href",
+        "3":"hreflang",
+        "4":"name",
+        "5":"rel",
+        "6":"rev",
+        "shape":/^(rect|rectangle|circ|circle|poly|polygon)$/,
+        "7":"type"
+    }
+};
+
+/*END EXTEND*/
+/************/
+
+jQuery(function() {
+
+    jQuery('.wymeditor').wymeditor({
+        stylesheet: 'wym_stylesheet.css'
+    });
+
+});
+
+</script>
+
+</head>
+
+<body>
+<h1>RDFa editor implementation</h1>
+<p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+<form method="post" action="">
+<textarea class="wymeditor"></textarea>
+<input type="submit" class="wymupdate" />
+<input type="button" class="wymclear" name="Clear" value="Clear" />
+</form>
+
+<p>
+<a href="http://sourceforge.net/projects/wym-editor">
+<img src="http://sflogo.sourceforge.net/sflogo.php?group_id=148869&amp;type=1" border="0" alt="SourceForge logo" title="SourceForge" />
+</a>
+</p>
+
+</body>
+
+</html>
