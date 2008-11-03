@@ -50,34 +50,6 @@ jQuery(function() {
 <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
 <?php
 
-function charset_decode_utf_8 ($string) {
-      /* Only do the slow convert if there are 8-bit characters */
-    /* avoid using 0xA0 (\240) in ereg ranges. RH73 does not like that */
-    if (! ereg("[\200-\237]", $string) and ! ereg("[\241-\377]", $string))
-        return $string;
-
-    // decode three byte unicode characters
-    $string = preg_replace("/([\340-\357])([\200-\277])([\200-\277])/e",       
-    "'&#'.((ord('\\1')-224)*4096 + (ord('\\2')-128)*64 + (ord('\\3')-128)).';'",   
-    $string);
-
-    // decode two byte unicode characters
-    $string = preg_replace("/([\300-\337])([\200-\277])/e",
-    "'&#'.((ord('\\1')-192)*64+(ord('\\2')-128)).';'",
-    $string);
-
-    return $string;
-} 
-
-$dbhost = 'localhost';
-$dbuser = 'user1';
-$dbpass = 'user1';
-
-$conn = mysql_connect($dbhost, $dbuser, $dbpass) or die('Error connecting to mysql');
-
-$dbname = 'testdb';
-mysql_select_db($dbname);
-
 if(isset($_POST['wymeditor'])) {
 
     $result = $_POST['wymeditor'];
@@ -85,25 +57,8 @@ if(isset($_POST['wymeditor'])) {
 
     echo("<h2>Result</h2>");
     echo("<div class=\"result\">$result</div>");
-
-    $query = sprintf("INSERT INTO table1 (field1) VALUES ('%s')",
-            mysql_real_escape_string($result));
-    mysql_query($query) or die('Error, insert query failed');
-
 }
-else {
-
-
-
-    $result = mysql_query("SELECT field1 FROM table1 LIMIT 1");
-    if (!$result) {
-        echo 'Could not run query: ' . mysql_error();
-        exit;
-    }
-    $row = mysql_fetch_row($result);
-    echo charset_decode_utf_8($row[0]);
-
-print <<<EOF
+else print <<<EOF
 
 <form method="post" action="">
 <textarea name="wymeditor" class="wymeditor"></textarea>
@@ -111,7 +66,6 @@ print <<<EOF
 </form>
 
 EOF;
-}
 ?>
 <p>
 <a href="http://sourceforge.net/projects/wym-editor">
