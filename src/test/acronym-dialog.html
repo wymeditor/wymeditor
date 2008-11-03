@@ -38,19 +38,22 @@ jQuery(function() {
         postInit: function(wym){
 
             //add the 'Acronym' translation (used here for the dialog's title)
-            jQuery.extend(WYMeditor.STRINGS['en'], { 'Acronym': 'Acronym' });
+            jQuery.extend(WYMeditor.STRINGS['en'], {
+                'Abbreviation': 'Abbreviation',
+                'Acronym': 'Acronym'
+            });
 
             //set the editor's content
-            wym.html("<p>This is some XHTML with which to test.</p>"
-                   + "<p>Select the 'XHTML' acronym and click on the Acronym button.</p>"
+            wym.html("<p>This is some text with which to test.</p>"
+                   + "<p>Select 'some text' and click on the Wrap button.</p>"
                    + "<p>Select it again and click on the Unwrap button.</p>");
 
             //construct the acronym button's html
-            var html = "<li class='wym_tools_acronym'>"
+            var html = "<li class='wym_tools_wrap'>"
                      + "<a href='#'"
                      + " style='background-image:"
                      + " url(../wymeditor/skins/default/icons.png)'>"
-                     + "Acronym"
+                     + "Wrap"
                      + "</a></li>";
 
             //add the button to the tools box
@@ -72,21 +75,29 @@ jQuery(function() {
             .append(html);
 
             //construct the dialog's html
-            html = "<body class='wym_dialog wym_dialog_acronym'"
+            html = "<body class='wym_dialog wym_dialog_wrap'"
                + " onload='WYMeditor.INIT_DIALOG(" + WYMeditor.INDEX + ")'"
                + ">"
                + "<form>"
                + "<fieldset>"
                + "<input type='hidden' class='wym_dialog_type' value='"
-               + "Acronym"
+               + "Wrap"
                + "' />"
-               + "<legend>Acronym</legend>"
+               + "<legend>Wrap</legend>"
                + "<div class='row'>"
+               + "<select class='wym_select_link'>"
+               + "<option selected value='WYMeditor http://www.wymeditor.org/'>"
+               + "WYMeditor<\/option>"
+               + "<option value='SourceForge http://www.sourceforge.net/'>"
+               + "SourceForge<\/option>"
+               + "<option value='GNU http://www.gnu.org/'>"
+               + "GNU<\/option>"
+               + "<\/select>"
                + "<label>Title</label>"
                + "<input type='text' class='wym_title' value='' size='40' />"
                + "</div>"
                + "<div class='row row-indent'>"
-               + "<input class='wym_submit wym_submit_acronym' type='button'"
+               + "<input class='wym_submit wym_submit_' type='button'"
                + " value='{Submit}' />"
                + "<input class='wym_cancel' type='button'"
                + "value='{Cancel}' />"
@@ -127,7 +138,7 @@ jQuery(function() {
                 .click(function() {
                     var title = jQuery(body).find('.wym_title').val();
 
-                    wym.wrap( '<acronym title="' + title + '">', '</acronym>' );
+                    wym.wrap( '<dfn title="' + title + '"><span>', '</span></dfn>' );
                     wdw.close();
 
                 });

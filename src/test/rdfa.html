@@ -10,7 +10,7 @@
  *
  * File Name:
  *        rdfa.html
- *        RDFa editor implementation.
+ *        RDFa editor implementation test page.
  *        See the documentation for more info.
  *
  * File Authors:
@@ -20,6 +20,14 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>WYMeditor</title>
+<style type="text/css">
+    .about         { background-color: #f99; }
+    .dc_creator    { background-color: #9f9; }
+    .dc_title      { background-color: #9ff; }
+    .foaf_Person   { background-color: #69c; }
+    .foaf_name     { background-color: #99c; }
+    .foaf_homepage { background-color: #c9c; }
+</style>
 <script type="text/javascript" src="../jquery/jquery.js"></script>
 <script type="text/javascript" src="../wymeditor/jquery.wymeditor.js"></script>
 <script type="text/javascript" src="../wymeditor/jquery.wymeditor.explorer.js"></script>
@@ -81,9 +89,73 @@ WYMeditor.XhtmlValidator._tags['a'] = {
 jQuery(function() {
 
     jQuery('.wymeditor').wymeditor({
-        stylesheet: 'wym_stylesheet.css'
-    });
+        stylesheet: 'wym_stylesheet.css',
+        postInit: function(wym) {
 
+            //set the classes panel as dropdown
+            jQuery(wym._box).find('div.wym_classes')
+                .addClass('wym_dropdown')
+                .find(WYMeditor.H2)
+                .append("<span>&nbsp;&gt;</span>");
+
+            //construct the panel
+            jQuery(wym._box).find('div.wym_area_right')
+                .append('<div class="wym_attributes wym_section wym_panel"><\/div>')
+                .children(':last')
+                .append('<h2>Attributes<\/h2>')
+                .append('<ul><\/ul>')
+                .children(':last')
+                //store the attribute name/value in the button class (better idea?)
+                .append('<li><a class="about" title="What the data is about." href="#">ABOUT: about #value#<\/a><\/li>')
+                .append('<li><a class="property dc_title" title="A name by which the resource is formally known." href="#">TITLE: prop dc:title<\/a><\/li>')
+                .append('<li><a class="property dc_creator" title="An entity primarily responsible for making the resource." href="#">CREATOR: prop dc:creator<\/a><\/li>')
+                .append('<li><a class="typeof foaf_Person" title="A person." href="#">PERSON: typeof foaf:Person<\/a><\/li>')
+                .append('<li><a class="property foaf_name" title="A name for some thing." href="#">NAME: property foaf:name<\/a><\/li>')
+                .append('<li><a class="rel foaf_homepage" title="A homepage for some thing." href="#">HOMEPAGE: rel foaf:homepage<\/a><\/li>')
+                .find('a')
+                //event handlers
+                .click( function() {
+
+                    //init
+                    var selected  = wym.selected(),                         //selected container (ATM blocks only)
+                        classes   = jQuery(this).attr('class').split(' '),  //clicked button classes
+                        attrName  = classes[0],                             //attribute name, e.g. 'property'
+                        attrValue = classes.length > 1 ? classes[1] : null; //attribute value, if available, e.g. dc_title
+
+                    //the attribute already exists, remove it
+                    if( jQuery(selected).attr(attrName) != undefined ) {
+                        if( classes.length == 1 || jQuery(selected).attr(attrName) == attrValue.replace('_', ':') )
+                            jQuery(selected).removeAttr(attrName).removeClass(attrName).removeClass(attrValue);
+
+                    //else, add it (and the feedback class)
+                    } else {
+                        if( classes.length > 1 ) { //value available
+                            jQuery(selected).attr(attrName, attrValue.replace('_', ':')).addClass(attrValue);
+                        } else { //value not available
+                            attrValue = prompt('Value', '');
+                            if(attrValue != null) jQuery(selected).attr(attrName, attrValue).addClass(attrName);
+                        }
+                    }
+                });
+
+            //feedback css
+            var rules = [
+              { name: '.about',
+                css: 'background-color: #f99;' },
+              { name: '.dc_creator',
+                css: 'background-color: #9f9;' },
+              { name: '.dc_title',
+                css: 'background-color: #9ff;' },
+              { name: '.foaf_Person',
+                css: 'background-color: #69c;' },
+              { name: '.foaf_name',
+                css: 'background-color: #99c;' },
+              { name: '.foaf_homepage',
+                css: 'background-color: #c9c;' }
+            ];
+            wym.addCssRules( wym._doc, rules);
+        }
+    });
 });
 
 </script>
@@ -91,7 +163,7 @@ jQuery(function() {
 </head>
 
 <body>
-<h1>RDFa editor implementation</h1>
+<h1>RDFa editor implementation test page</h1>
 <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
 <form method="post" action="">
 <textarea class="wymeditor"></textarea>
