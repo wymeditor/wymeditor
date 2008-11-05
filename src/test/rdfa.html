@@ -96,7 +96,7 @@ jQuery(function() {
             jQuery(wym._box).find('div.wym_classes')
                 .addClass('wym_dropdown')
                 .find(WYMeditor.H2)
-                .append("<span>&nbsp;&gt;</span>");
+                .append("<span>&nbsp;&gt;<\/span>");
 
             //construct the panel
             jQuery(wym._box).find('div.wym_area_right')
@@ -117,18 +117,20 @@ jQuery(function() {
                 .click( function() {
 
                     //init
-                    var selected  = wym.selected(),                         //selected container (ATM blocks only)
+                    var selected  = wym.selected(),                         //selected container
                         classes   = jQuery(this).attr('class').split(' '),  //clicked button classes
                         attrName  = classes[0],                             //attribute name, e.g. 'property'
                         attrValue = classes.length > 1 ? classes[1] : null; //attribute value, if available, e.g. dc_title
 
                     //the attribute already exists, remove it
-                    if( jQuery(selected).attr(attrName) != undefined ) {
+                    if( jQuery(selected).attr(attrName) != undefined && jQuery(selected).attr(attrName) != '') {
+                        WYMeditor.console.log('attribute already exists, remove it:', attrName, jQuery(selected).attr(attrName));
                         if( classes.length == 1 || jQuery(selected).attr(attrName) == attrValue.replace('_', ':') )
                             jQuery(selected).removeAttr(attrName).removeClass(attrName).removeClass(attrValue);
 
                     //else, add it (and the feedback class)
                     } else {
+                        WYMeditor.console.log('attribute does not exist, add it:', attrName, attrValue);
                         if( classes.length > 1 ) { //value available
                             jQuery(selected).attr(attrName, attrValue.replace('_', ':')).addClass(attrValue);
                         } else { //value not available
@@ -168,7 +170,6 @@ jQuery(function() {
 <form method="post" action="">
 <textarea class="wymeditor"></textarea>
 <input type="submit" class="wymupdate" />
-<input type="button" class="wymclear" name="Clear" value="Clear" />
 </form>
 
 <p>
