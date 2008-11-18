@@ -3422,7 +3422,7 @@ WYMeditor.XhtmlSaxListener.prototype.replaceNamedEntities = function(xhtml)
 
 WYMeditor.XhtmlSaxListener.prototype.joinRepeatedEntities = function(xhtml)
 {
-  var tags = 'em|strong|sub|sup|acronym|pre|del|blockquote|address';
+  var tags = 'em|strong|sub|sup|acronym|pre|del|address';
   return xhtml.replace(new RegExp('<\/('+tags+')><\\1>' ,''),'').
   replace(new RegExp('(\s*<('+tags+')>\s*){2}(.*)(\s*<\/\\2>\s*){2}' ,''),'<\$2>\$3<\$2>');
 };
