@@ -118,7 +118,7 @@ jQuery.extend(WYMeditor, {
 
 */
 
-    VERSION             : "0.5-a2",
+    VERSION             : "0.5-b2",
     INSTANCES           : [],
     STRINGS             : [],
     SKINS               : [],
