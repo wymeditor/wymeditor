@@ -1278,19 +1278,19 @@ WYMeditor.editor.prototype.addCssRules = function(doc, aCss) {
 
 WYMeditor.editor.prototype.computeBasePath = function() {
   return jQuery(jQuery.grep(jQuery('script'), function(s){
-    return (s.src && s.src.match(/jquery\.wymeditor(\.pack){0,1}\.js(\?.*)?$/ ))
-  })).attr('src').replace(/jquery\.wymeditor(\.pack){0,1}\.js(\?.*)?$/, '');
+    return (s.src && s.src.match(/jquery\.wymeditor(\.pack|\.min)?\.js(\?.*)?$/ ))
+  })).attr('src').replace(/jquery\.wymeditor(\.pack|\.min)?\.js(\?.*)?$/, '');
 };
 
 WYMeditor.editor.prototype.computeWymPath = function() {
   return jQuery(jQuery.grep(jQuery('script'), function(s){
-    return (s.src && s.src.match(/jquery\.wymeditor(\.pack){0,1}\.js(\?.*)?$/ ))
+    return (s.src && s.src.match(/jquery\.wymeditor(\.pack|\.min)?\.js(\?.*)?$/ ))
   })).attr('src');
 };
 
 WYMeditor.editor.prototype.computeJqueryPath = function() {
   return jQuery(jQuery.grep(jQuery('script'), function(s){
-    return (s.src && s.src.match(/jquery(-(.*)){0,1}(\.pack){0,1}\.js(\?.*)?$/ ))
+    return (s.src && s.src.match(/jquery(-(.*)){0,1}(\.pack|\.min)?\.js(\?.*)?$/ ))
   })).attr('src');
 };
 
