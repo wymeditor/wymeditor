@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <title>ContentEditable Test</title>
+        <style type="text/css">
+            /*demo page css*/
+            body { font: 75% Verdana, sans-serif; padding:30px 10px 20px; }
+
+            *[contenteditable=true] {
+                background-color: #FFF;
+                border: 1px solid #CCCCCC;
+                padding: 10px;
+                outline: 0;
+            }
+            *[contenteditable=false] {
+                background-color: #FFA6A6;
+                border: 1px solid #FF8C8C;
+                padding: 10px;
+            }
+            table, td, th {
+                border: 1px #ccc solid;
+            }
+            table {
+                border-spacing: 0;
+                border-collapse: collapse;
+            }
+            td, th {
+                margin: 0;
+                padding: 4px;
+            }
+
+        </style>
+    </head>
+    <body>
+        <h1>ContentEditable Test</h1>
+        <p>Content outside the editor...</p>
+        <div contenteditable="true">
+            <p><em>Editable</em> <a href="#">content</a></p>
+            <p>Lorem <del>ipsum</del> <ins>dolor</ins> <strong>sit amet</strong>, <sup>consectetur</sup> <sub>adipiscing</sub> elit.</p>
+            <p contenteditable="false">But can you change me?</p>
+            <h2>An image</h2>
+            <img src="../wymeditor/wymeditor-logo.gif" alt="WYMeditor logo" />
+            <h2>And a table</h2>
+            <table>
+                <tr>
+                    <th>Test</th>
+                    <th>Test2</th>
+                </tr>
+                <tr>
+                    <td>Data</td>
+                    <td>Testing tables</td>
+                </tr>
+                <tr>
+                    <td>Is <strong>contenteditable</strong> working?</td>
+                    <td>Testing...</td>
+                </tr>
+            </table>
+        </div>
+    </body>
+</html>

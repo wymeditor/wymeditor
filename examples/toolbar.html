@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <title>Toolbar test</title>
+
+        <link rel="stylesheet" href="../jquery/theme/ui.all.css" type="text/css" />
+
+        <script type="text/javascript" src="../jquery/jquery-1.3.1.js"></script>
+        <script type="text/javascript" src="../jquery/jquery-ui-personalized-1.6rc6.js"></script>
+
+        <script type="text/javascript" src="../wymeditor/wymeditor.js"></script>
+        <script type="text/javascript" src="../wymeditor/wymeditor.observable.js"></script>
+        <script type="text/javascript" src="../wymeditor/wymeditor.templates.js"></script>
+        <script type="text/javascript" src="../wymeditor/wymeditor.toolbar.js"></script>
+
+        <style type="text/css">
+            /*demo page css*/
+            body { font: 75% Verdana, sans-serif; padding:30px 10px 20px; }
+
+            .wym-button { outline: 0; margin: 0 4px 0 0; padding: .4em 1em; text-decoration:none !important; cursor:pointer; position: relative; text-align: center; zoom: 1; }
+            .wym-button .ui-icon { position: absolute; top: 50%; margin-top: -8px; left: 50%; margin-left: -8px; }
+
+            a.wym-button { float:left; }
+
+            /* remove extra button width in IE */
+            button.wym-button { width:auto; overflow:visible; }
+
+            .wym-button-icon-left { padding-left: 2.1em; }
+            .wym-button-icon-right { padding-right: 2.1em; }
+            .wym-button-icon-left .ui-icon { right: auto; left: .2em; margin-left: 0; }
+            .wym-button-icon-right .ui-icon { left: auto; right: .2em; margin-left: 0; }
+
+            .wym-button-icon { display:block; width:8px; text-indent: -9999px; }     /* solo icon buttons must have block properties for the text-indent to work */
+
+            .wym-buttonset { float:left; }
+            .wym-buttonset .wym-button { float: left; margin-right: -1px;}
+
+            .wym-toolbar { padding: .5em; margin: 0;  }
+            .wym-toolbar .wym-buttonset { margin-right:1.5em; padding-left: 1px; }
+            .wym-toolbar .wym-button { font-size: 1em;  }
+
+            .wym-buttonset .wym-button.ui-state-hover { z-index: 1; }
+            .wym-buttonset .wym-button.ui-state-active { z-index: 2; }
+        </style>
+
+        <script type="text/javascript">
+            $(function(){
+                new Wymeditor.Toolbar({renderTo:'body'});
+                //all hover and click logic for buttons
+                $(".wym-button:not(.ui-state-disabled)")
+                .hover(
+                    function(){
+                        $(this).addClass("ui-state-hover");
+                    },
+                    function(){
+                        $(this).removeClass("ui-state-hover");
+                    }
+                )
+                .mousedown(function(){
+                        $(this).parents('.wym-buttonset-single:first').find(".wym-button.ui-state-active").removeClass("ui-state-active");
+                        if( $(this).is('.ui-state-active.wym-button-toggleable, .wym-buttonset-multi .ui-state-active') ){ $(this).removeClass("ui-state-active"); }
+                        else { $(this).addClass("ui-state-active"); }
+                })
+                .mouseup(function(){
+                    if(! $(this).is('.wym-button-toggleable, .wym-buttonset-single .wym-button,  .wym-buttonset-multi .wym-button') ){
+                        $(this).removeClass("ui-state-active");
+                    }
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <h1>Toolbar test</h1>
+        <p>A test page for the highly experimental toolbar</p>
+        <div class="wym-toolbar ui-widget-header ui-corner-all ui-helper-clearfix">
+            <div class="wym-buttonset ui-helper-clearfix">
+                <a href="#" class="wym-button ui-state-default wym-button-icon ui-corner-left" title="Open"><span class="ui-icon ui-icon-folder-open"></span> Open</a>
+                <a href="#" class="wym-button ui-state-default wym-button-icon" title="Save"><span class="ui-icon ui-icon-disk"></span> Save</a>
+                <a href="#" class="wym-button ui-state-default wym-button-icon ui-corner-right" title="Delete"><span class="ui-icon ui-icon-trash"></span> Delete</a>
+            </div>
+
+            <div class="wym-buttonset wym-buttonset-multi">
+                <button class="wym-button ui-state-default ui-corner-left"><b>B</b></button>
+                <button class="wym-button ui-state-default"><i>I</i></button>
+                <button class="wym-button ui-state-default ui-corner-right"><u>U</u></button>
+            </div>
+            <div class="wym-buttonset ui-helper-clearfix">
+                <a href="#" class="wym-button ui-state-default wym-button-icon ui-corner-left" title="Print"><span class="ui-icon ui-icon-print"></span> Print</a>
+                <a href="#" class="wym-button ui-state-default wym-button-icon ui-corner-right" title="Email"><span class="ui-icon ui-icon-mail-closed"></span> Email</a>
+            </div>
+            <div class="wym-buttonset wym-buttonset-single ui-helper-clearfix">
+                <button class="wym-button ui-state-default ui-priority-primary ui-corner-left ui-state-active">Edit</button>
+                <button class="wym-button ui-state-default ui-priority-primary">Source</button>
+                <button class="wym-button ui-state-default ui-priority-primary ui-corner-right">Preview</button>
+            </div>
+        </div>
+
+    </body>
+</html>

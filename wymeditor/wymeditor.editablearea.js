@@ -1,0 +1,2 @@
+Wymeditor.EditableArea = function (selector) {
+}
