@@ -15,6 +15,7 @@
  *
  * File Authors:
  *        Jean-Francois Hovinne (jf.hovinne a-t wymeditor dotorg)
+ *        Wes Winham
 -->
 <html>
 <head>
@@ -83,6 +84,13 @@ test("Should correct bad formated lists", function() {
     equals( jQuery.wymeditors(0).parser.parse(design_mode_pseudo_html), expected, "on IE");
 });
 
+test("Shouldn't remove empty td elements", function() {
+    expect(1);
+    var expected = '<table><tr><td>Cell1</td><td></td></tr></table>';
+    var empty_cell = '<table><tr><td>Cell1</td><td></td></tr></table>';
+    equals( jQuery.wymeditors(0).parser.parse(empty_cell), expected);
+});
+
 function runPostInitTests() {
     module("Post Init");
 
@@ -96,7 +104,7 @@ function runPostInitTests() {
         jQuery.wymeditors(0)._doc.body.focus();
         jQuery.wymeditors(0).paste( testText2 );
         equals( jQuery.trim( jQuery.wymeditors(0).xhtml() ), testText1 + '<p>' + testText2 + '<\/p>' );
-        
+
     });
 };
 
