@@ -89,13 +89,13 @@ WYMeditor.editor.prototype.resizable = function(options) {
                          jQueryPath + '/jquery.ui.resizable.js'];
     
     // First get the jQuery UI base file
-    $.getScript(jQueryPlugins[0]);
+    jQuery.getScript(jQueryPlugins[0]);
 
     // Get the jQuery UI resizeable plugin and then init the wymeditor resize
     // plugin. It is import to do the initialisation after loading the    
     // necessary jQuery UI files has finished, otherwise the "resizable" method
     // would not be available.
-    $.getScript(jQueryPlugins[1], function() {     
+    jQuery.getScript(jQueryPlugins[1], function() {     
         jQuery(wym._box).resizable(final_options);
     });
 

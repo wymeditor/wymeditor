@@ -35,11 +35,11 @@ WYMeditor.editor.prototype.fullscreen = function() {
   //handle click event
   jQuery(wym._box).find('li.wym_tools_fullscreen a').click(function() {
     if (jQuery(wym._box).css('position') != 'fixed') {
-      $('body').append('<div id="loader"></div>');
+      jQuery('body').append('<div id="loader"></div>');
       jQuery('#loader').css({'position' : 'fixed', 'background-color': 'rgb(0, 0, 0)', 'opacity': '0.8', 'z-index': '98', 'width': '100%', 'height': '100%', 'top': '0px', 'left': '0px'});
       jQuery(wym._box).css({'position' : 'fixed', 'z-index' : '99', 'top': '5%', 'left': '5%', 'width': '90%', 'height': '90%'});
     } else {
-      $('#loader').remove();
+      jQuery('#loader').remove();
       jQuery(wym._box).css({'position' : 'static', 'z-index' : '99', 'height' : '100%', 'width' : '100%', 'top': '0px', 'left': '0px'});
     }
 
