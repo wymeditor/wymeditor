@@ -1484,7 +1484,7 @@ WYMeditor.INIT_DIALOG = function(index) {
 
         wym._exec(WYMeditor.INSERT_IMAGE, sStamp);
 
-        jQuery("img[src=" + sStamp + "]", wym._doc.body)
+        jQuery("img[src$=" + sStamp + "]", wym._doc.body)
             .attr(WYMeditor.SRC, sUrl)
             .attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val())
             .attr(WYMeditor.ALT, jQuery(wym._options.altSelector).val());
