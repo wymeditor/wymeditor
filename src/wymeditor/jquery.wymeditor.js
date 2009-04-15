@@ -734,7 +734,7 @@ WYMeditor.editor.prototype.init = function() {
       for (var prop in WymClass) { this[prop] = WymClass[prop]; }
 
       //load wymbox
-      this._box = jQuery(this._element).hide().after(this._options.boxHtml).next();
+      this._box = jQuery(this._element).hide().after(this._options.boxHtml).next().addClass('wym_box_' + this._index);
 
       //store the instance index in the wymbox element
       //but keep it compatible with jQuery < 1.2.3, see #122
@@ -3580,7 +3580,7 @@ WYMeditor.WymCssLexer = function(parser, only_wym_blocks)
     this.addExitPattern("/\\\x2a[<\/\\s]*WYMeditor[>\\s]*\\\x2a/", 'WymCss');
   }
 
-  this.addSpecialPattern("\\\x2e[a-z-_0-9]+[\\sa-z1-6]*", 'WymCss', 'WymCssStyleDeclaration');
+  this.addSpecialPattern("[\\sa-z1-6]*\\\x2e[a-z-_0-9]+", 'WymCss', 'WymCssStyleDeclaration');
 
   this.addEntryPattern("/\\\x2a", 'WymCss', 'WymCssComment');
   this.addExitPattern("\\\x2a/", 'WymCssComment');
@@ -3588,8 +3588,8 @@ WYMeditor.WymCssLexer = function(parser, only_wym_blocks)
   this.addEntryPattern("\x7b", 'WymCss', 'WymCssStyle');
   this.addExitPattern("\x7d", 'WymCssStyle');
 
-  this.addEntryPattern("/\\\x2a", 'WymCssStyle', 'WymCssFeddbackStyle');
-  this.addExitPattern("\\\x2a/", 'WymCssFeddbackStyle');
+  this.addEntryPattern("/\\\x2a", 'WymCssStyle', 'WymCssFeedbackStyle');
+  this.addExitPattern("\\\x2a/", 'WymCssFeedbackStyle');
 
   return this;
 };
@@ -3653,7 +3653,7 @@ WYMeditor.WymCssParser.prototype.WymCssStyle = function(match, status)
   return true;
 };
 
-WYMeditor.WymCssParser.prototype.WymCssFeddbackStyle = function(match, status)
+WYMeditor.WymCssParser.prototype.WymCssFeedbackStyle = function(match, status)
 {
   if(status == WYMeditor.LEXER_UNMATCHED){
     this._current_item[this._current_element].feedback_style = match.replace(/^([\s\/\*]*)|([\s\/\*]*)$/gm,'');
@@ -3666,10 +3666,10 @@ WYMeditor.WymCssParser.prototype.WymCssStyleDeclaration = function(match)
   match = match.replace(/^([\s\.]*)|([\s\.*]*)$/gm, '');
 
   var tag = '';
-  if(match.indexOf(' ') > 0){
-    var parts = match.split(' ');
-    this._current_element = parts[0];
-    var tag = parts[1];
+  if(match.indexOf('.') > 0){
+    var parts = match.split('.');
+    this._current_element = parts[1];
+    var tag = parts[0];
   }else{
     this._current_element = match;
   }
