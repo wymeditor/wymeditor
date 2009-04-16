@@ -514,6 +514,8 @@ jQuery.fn.wymeditor = function(options) {
     
     dialogFeatures:    "menubar=no,titlebar=no,toolbar=no,resizable=no"
                       + ",width=560,height=300,top=0,left=0",
+    dialogFeaturesPreview: "menubar=no,titlebar=no,toolbar=no,resizable=no"
+                      + ",scrollbars=yes,width=560,height=300,top=0,left=0",
 
     dialogHtml:      "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN'"
                       + " 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>"
@@ -935,7 +937,7 @@ WYMeditor.editor.prototype.exec = function(cmd) {
     break;
     
     case WYMeditor.PREVIEW:
-      this.dialog(WYMeditor.PREVIEW);
+      this.dialog(WYMeditor.PREVIEW, this._options.dialogFeaturesPreview);
     break;
     
     default:
@@ -1143,12 +1145,10 @@ WYMeditor.editor.prototype.update = function() {
 /* @name dialog
  * @description Opens a dialog box
  */
-WYMeditor.editor.prototype.dialog = function( dialogType, bodyHtml ) {
+WYMeditor.editor.prototype.dialog = function( dialogType, dialogFeatures, bodyHtml ) {
   
-  var wDialog = window.open(
-    '',
-    'dialog',
-    this._wym._options.dialogFeatures);
+  var features = dialogFeatures || this._wym._options.dialogFeatures;
+  var wDialog = window.open('', 'dialog', features);
 
   if(wDialog) {
 
