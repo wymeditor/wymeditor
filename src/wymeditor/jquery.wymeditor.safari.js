@@ -218,14 +218,13 @@ WYMeditor.WymClassSafari.prototype.keyup = function(evt) {
   }
 };
 
-//TODO
 WYMeditor.WymClassSafari.prototype.setFocusToNode = function(node) {
-    /*var range = document.createRange();
+    var range = this._iframe.contentDocument.createRange();
     range.selectNode(node);
     var selected = this._iframe.contentWindow.getSelection();
     selected.addRange(range);
     selected.collapse(node, node.childNodes.length);
-    this._iframe.contentWindow.focus();*/
+    this._iframe.contentWindow.focus();
 };
 
 WYMeditor.WymClassSafari.prototype.openBlockTag = function(tag, attributes)
