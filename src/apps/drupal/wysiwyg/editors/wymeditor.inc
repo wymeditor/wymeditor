@@ -1,10 +1,6 @@
 <?php
 // $Id$
 
-/**
- * Drupal WYMeditor integration using Wysiwyg API
- * http://drupal.org/project/wysiwyg
- */
 
 /**
  * Plugin implementation of hook_editor().
@@ -82,10 +78,14 @@ function wysiwyg_wymeditor_version($editor) {
  */
 function wysiwyg_wymeditor_settings($editor, $config, $theme) {
   $settings = array(
-    'lang' => $GLOBALS['language']->language,
     'updateSelector' => ".form-submit",
     'skin' => "compact"
   );
+  
+  // Set language if set in $config
+  if (isset($config['language'])) {
+    $settings['lang'] = $config['language'];
+  }
 
   // Add editor content stylesheet.
   if (isset($config['css_setting'])) {
