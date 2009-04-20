@@ -1,6 +1,11 @@
 // $Id$
 
 /**
+ * Drupal WYMeditor integration using Wysiwyg API
+ * http://drupal.org/project/wysiwyg
+ */
+
+/**
  * Attach this editor to a target element.
  */
 Drupal.wysiwyg.editor.attach.wymeditor = function(context, params, settings) {

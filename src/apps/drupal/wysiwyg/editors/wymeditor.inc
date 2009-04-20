@@ -1,6 +1,10 @@
 <?php
 // $Id$
 
+/**
+ * Drupal WYMeditor integration using Wysiwyg API
+ * http://drupal.org/project/wysiwyg
+ */
 
 /**
  * Plugin implementation of hook_editor().
