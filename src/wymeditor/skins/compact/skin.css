@@ -44,7 +44,7 @@
 
 /*WYM_HTML*/
         .wym_skin_compact .wym_html               { width: 98%;}
-        .wym_skin_compact .wym_html textarea      { width: 120%; height: 200px; border: 1px solid gray; background: white; }
+        .wym_skin_compact .wym_html textarea      { font-size: 120%; width: 100%; height: 200px; border: 1px solid gray; background: white; }
 
 
 /*WYM_IFRAME*/
