@@ -1,15 +1,9 @@
 // $Id$
 
 /**
- * Drupal WYMeditor integration using Wysiwyg API
- * http://drupal.org/project/wysiwyg
- */
-
-/**
  * Attach this editor to a target element.
  */
 Drupal.wysiwyg.editor.attach.wymeditor = function(context, params, settings) {
-  // Attach editor.
   $('#' + params.field).wymeditor(settings);
 };
 
@@ -19,16 +13,18 @@ Drupal.wysiwyg.editor.attach.wymeditor = function(context, params, settings) {
 Drupal.wysiwyg.editor.detach.wymeditor = function(context, params) {
   if (typeof params != 'undefined') {
     var $field = $('#' + params.field);
-    var editor = $field.next().data(WYMeditor.WYM_INDEX);
-    if (typeof editor != 'undefined') {
-      WYMeditor.INSTANCES[editor].update();
+    var instance = $field.next().data(WYMeditor.WYM_INDEX);
+    if (typeof instance != 'undefined') {
+      WYMeditor.INSTANCES[instance].update();
       $field.next().remove();
     }
     $field.show();
-  } else {
-    jQuery.each( WYMeditor.INSTANCES, function() {
+  }
+  else {
+    jQuery.each(WYMeditor.INSTANCES, function() {
       this.update();
-      $(this._box).prev().show().end().remove();
+      $(this._box).prev().show().end()
+        .remove();
     });
   }
 };

@@ -2,9 +2,10 @@
 // $Id$
 
 /**
- * Drupal WYMeditor integration using Wysiwyg API
- * http://drupal.org/project/wysiwyg
+ * @file
+ * Editor integration functions for WYMeditor.
  */
+
 
 /**
  * Plugin implementation of hook_editor().
@@ -15,9 +16,13 @@ function wysiwyg_wymeditor_editor() {
     'title' => 'WYMeditor',
     'vendor url' => 'http://www.wymeditor.org/',
     'download url' => 'http://www.wymeditor.org/download/',
-    'library path' => wysiwyg_get_path('wymeditor'),
+    'library path' => wysiwyg_get_path('wymeditor/wymeditor'),
     'libraries' => array(
-      '' => array(
+      'pack' => array(
+        'title' => 'Packed',
+        'files' => array('jquery.wymeditor.pack.js'),
+      ),
+      'min' => array(
         'title' => 'Minified',
         'files' => array('jquery.wymeditor.min.js'),
       ),
@@ -25,10 +30,6 @@ function wysiwyg_wymeditor_editor() {
         'title' => 'Source',
         'files' => array('jquery.wymeditor.js'),
       ),
-      'pack' => array(
-        'title' => 'Packed',
-        'files' => array('jquery.wymeditor.pack.js'),
-      )
     ),
     'version callback' => 'wysiwyg_wymeditor_version',
     'settings callback' => 'wysiwyg_wymeditor_settings',
@@ -51,19 +52,22 @@ function wysiwyg_wymeditor_editor() {
  *   The installed editor version.
  */
 function wysiwyg_wymeditor_version($editor) {
-  $script = wysiwyg_get_path('wymeditor') . '/jquery.wymeditor.js';
-  $script = fopen($script, 'r');
+  $library = $editor['library path'] . '/jquery.wymeditor.js';
+  if (!file_exists($library)) {
+    return;
+  }
+  $library = fopen($library, 'r');
   $max_lines = 200;
-  while ($max_lines && $line = fgets($script)) {
+  while ($max_lines && $line = fgets($library)) {
     if (strpos($line, 'VERSION             :') !== FALSE) {
       if (preg_match('@VERSION\s*:\s*"([0-9\.]+)@', $line, $version)) {
-        fclose($script);
+        fclose($library);
         return $version[1];
       }
     }
     $max_lines--;
   }
-  fclose($script);
+  fclose($library);
 }
 
 /**
@@ -82,16 +86,14 @@ function wysiwyg_wymeditor_version($editor) {
  */
 function wysiwyg_wymeditor_settings($editor, $config, $theme) {
   $settings = array(
-    'updateSelector' => ".form-submit",
-    'skin' => "compact"
+    'updateSelector' => '.form-submit',
+    'skin' => $theme,
   );
-  
-  // Set language if set in $config
+
   if (isset($config['language'])) {
     $settings['lang'] = $config['language'];
   }
 
-  // Add editor content stylesheet.
   if (isset($config['css_setting'])) {
     if ($config['css_setting'] == 'theme') {
       $css = path_to_theme() .'/style.css';
@@ -105,5 +107,21 @@ function wysiwyg_wymeditor_settings($editor, $config, $theme) {
   }
 
   return $settings;
+}
+
+/**
+ * Determine available editor themes or check/reset a given one.
+ *
+ * @param $editor
+ *   A processed hook_editor() array of editor properties.
+ * @param $profile
+ *   A wysiwyg editor profile.
+ *
+ * @return
+ *   An array of theme names. The first returned name should be the default
+ *   theme name.
+ */
+function wysiwyg_wymeditor_themes($editor, $profile) {
+  return array('default', 'compact', 'minimal', 'silver', 'twopanels');
 }
 
