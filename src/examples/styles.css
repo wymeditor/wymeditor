@@ -27,35 +27,35 @@ h1 {
 /* WYMeditor */
 
 /* PARA: Date */
-.date p /* p */ {
+p.date {
   color: #ccf;
   /* background-color: #ff9; border: 2px solid #ee9; */
 }
 
 /* PARA: Hidden note */
-.hidden-note p /* p[@class!="important"] */ {
+p.hidden-note /* p[@class!="important"] */ {
      display: none;
     /* color: #999; border: 2px solid #ccc; */
 }
 
 /* PARA: Important */
-.important p /* p[@class!="hidden-note"] */ {
+p.important /* p[@class!="hidden-note"] */ {
     color: red; font-weight: bold;
     /* color: red; font-weight: bold; border: 2px solid red; */
 }
 
-/* IMAGE: Border */
-.border img /* img */ {
+img.border {
     border: 1px solid #ccc;
     /* border: 4px solid #ccc; */
 }
 
 /* LIST: Special */
-.special ul,
-.special ol /* ul,ol */ {
+ul.special,
+ol.special {
     color: green;
-    /* background-color: #fc9; border: 2px solid red; */
+    /** / background-color: #fc9; border: 2px solid red; /**/
 }
+
 
 /* /WYMeditor */
 /* END EDITOR RELATED STYLES */
