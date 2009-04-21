@@ -13,18 +13,21 @@ Drupal.wysiwyg.editor.attach.wymeditor = function(context, params, settings) {
 Drupal.wysiwyg.editor.detach.wymeditor = function(context, params) {
   if (typeof params != 'undefined') {
     var $field = $('#' + params.field);
-    var instance = $field.next().data(WYMeditor.WYM_INDEX);
-    if (typeof instance != 'undefined') {
-      WYMeditor.INSTANCES[instance].update();
-      $field.next().remove();
+    var index = $field.data(WYMeditor.WYM_INDEX);
+    if (typeof index != 'undefined') {
+      var editor = WYMeditor.INSTANCES[index];
+      editor.update();
+      $(editor._box).remove();
+      delete editor;
     }
     $field.show();
   }
   else {
     jQuery.each(WYMeditor.INSTANCES, function() {
       this.update();
-      $(this._box).prev().show().end()
-        .remove();
+      $(this._box).remove();
+      $(this._element).show();
+      delete this;
     });
   }
 };
