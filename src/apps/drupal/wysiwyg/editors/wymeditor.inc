@@ -34,7 +34,7 @@ function wysiwyg_wymeditor_editor() {
     'version callback' => 'wysiwyg_wymeditor_version',
     'settings callback' => 'wysiwyg_wymeditor_settings',
     'versions' => array(
-      '0.5' => array(
+      '0.5-b3' => array(
         'js files' => array('wymeditor.js')
       ),
     ),
@@ -52,22 +52,14 @@ function wysiwyg_wymeditor_editor() {
  *   The installed editor version.
  */
 function wysiwyg_wymeditor_version($editor) {
-  $library = $editor['library path'] . '/jquery.wymeditor.js';
-  if (!file_exists($library)) {
-    return;
+  $script = wysiwyg_get_path('wymeditor/wymeditor') . '/jquery.wymeditor.js';
+  $script = fopen($script, 'r');
+  fgets($script);
+  $line = fgets($script);
+  if (preg_match('@version\s([0-9a-z\.\-]+)$@', $line, $version)) {
+    fclose($script);
+    return $version[1];
   }
-  $library = fopen($library, 'r');
-  $max_lines = 200;
-  while ($max_lines && $line = fgets($library)) {
-    if (strpos($line, 'VERSION             :') !== FALSE) {
-      if (preg_match('@VERSION\s*:\s*"([0-9\.]+)@', $line, $version)) {
-        fclose($library);
-        return $version[1];
-      }
-    }
-    $max_lines--;
-  }
-  fclose($library);
 }
 
 /**
