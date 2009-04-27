@@ -94,6 +94,36 @@ function wysiwyg_wymeditor_settings($editor, $config, $theme) {
     $settings['lang'] = $config['language'];
   }
 
+  // Block formats.
+  if (isset($config['block_formats'])) {
+    $block_formats = explode(',', $config['block_formats']);
+    $containers = array(
+      'p' => 'Paragraph',
+      'h1' => 'Heading_1',
+      'h2' => 'Heading_2',
+      'h3' => 'Heading_3',
+      'h4' => 'Heading_4',
+      'h5' => 'Heading_5',
+      'h6' => 'Heading_6',
+      'pre' => 'Preformatted',
+      'blockquote' => 'Blockquote',
+      'th' => 'Table_Header',
+    );
+
+    foreach ($block_formats as $block_format) {
+      if (isset($containers[$block_format])) {
+        $container = array(
+          'name' => strtoupper($block_format),
+          'title' => $containers[$block_format],
+          'css' => 'wym_containers_' . $block_format,
+        );
+        $containersItems[] = $container;
+      }
+    }
+    $settings['containersItems'] = json_encode($containersItems);
+  }
+
+  // CSS classes.
   if (isset($config['css_setting'])) {
     if ($config['css_setting'] == 'theme') {
       $css = path_to_theme() .'/style.css';
