@@ -33,6 +33,7 @@ function wysiwyg_wymeditor_editor() {
     ),
     'version callback' => 'wysiwyg_wymeditor_version',
     'settings callback' => 'wysiwyg_wymeditor_settings',
+    'themes callback' => 'wysiwyg_wymeditor_themes',
     'versions' => array(
       '0.5-b3' => array(
         'js files' => array('wymeditor.js')
@@ -144,6 +145,6 @@ function wysiwyg_wymeditor_settings($editor, $config, $theme) {
  *   theme name.
  */
 function wysiwyg_wymeditor_themes($editor, $profile) {
-  return array('default', 'compact', 'minimal', 'silver', 'twopanels');
+  return array('compact', 'default', 'minimal', 'silver', 'twopanels');
 }
 
