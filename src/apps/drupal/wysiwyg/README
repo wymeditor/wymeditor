@@ -25,8 +25,7 @@ In order to use WYMeditor in Drupal, using the Wysiwyg API module:
 - Copy the file drupal/wysiwyg/editors/js/wymeditor.js in the respective Drupal Wysiwyg module installation's folder
   e.g. sites/all/modules/wysiwyg/editors/js
 - Download the latest WYMeditor build at http://files.wymeditor.org/wymeditor/trunk/build/build/wymeditor.tar.gz
-- Extract the WYMeditor package, and copy the resulting wymeditor/wymeditor folder (containing the jquery.wymeditor.js file)
-  in the modules/wysiwyg folder
+- Extract the WYMeditor package, and copy the resulting wymeditor folder in the modules/wysiwyg folder
 - In Drupal admin at Home >> Administer >> Site configuration >> Wysiwyg, enable WYMeditor in the profile(s) of your choice.
 
 That's it!
