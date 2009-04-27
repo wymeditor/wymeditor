@@ -15,10 +15,10 @@ Drupal.wysiwyg.editor.detach.wymeditor = function(context, params) {
     var $field = $('#' + params.field);
     var index = $field.data(WYMeditor.WYM_INDEX);
     if (typeof index != 'undefined') {
-      var editor = WYMeditor.INSTANCES[index];
-      editor.update();
-      $(editor._box).remove();
-      delete editor;
+      var instance = WYMeditor.INSTANCES[index];
+      instance.update();
+      $(instance._box).remove();
+      delete instance;
     }
     $field.show();
   }
