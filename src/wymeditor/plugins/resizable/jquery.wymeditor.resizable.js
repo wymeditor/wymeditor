@@ -86,5 +86,6 @@ WYMeditor.editor.prototype.resizable = function(options) {
     var final_options = jQuery.extend(default_options, options);
 
     if(jQuery.isFunction( jQuery.fn.resizable )) jQuery(wym._box).resizable(final_options);
+    else WYMeditor.console.error('Oops, jQuery UI.resizable unavailable.');
 
 };
