@@ -39,21 +39,13 @@ print $prolog_type;
 <script type="text/javascript" src="../wymeditor/jquery.wymeditor.safari.js"></script>
 
 <script type="text/javascript">
-
-jQuery(function() {
-
-    try {
-        jQuery('.wymeditor').wymeditor({
+;(function($) {
+    $(function() {
+        $('.wymeditor').wymeditor({
             stylesheet: 'wym_stylesheet.css'
         });
-    } catch(e) {};
-
-    if( jQuery.browser.mozilla || jQuery.browser.safari ) { //fix CSS issue with FF
-        jQuery('div.wym_iframe').css('width', '87%');
-        jQuery('div.wym_area_right').css('width', '12%');
-    }
-});
-
+    });
+})(jQuery);
 </script>
 
 </head>
