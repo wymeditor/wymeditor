@@ -840,6 +840,7 @@ WYMeditor.editor.prototype.bindEvents = function() {
   //handle click event on tools buttons
   jQuery(this._box).find(this._options.toolSelector).click(function() {
     wym.exec(jQuery(this).attr(WYMeditor.NAME));
+    wym._iframe.contentWindow.focus(); //See #154
     return(false);
   });
   
@@ -866,6 +867,7 @@ WYMeditor.editor.prototype.bindEvents = function() {
       var jqexpr = oClass.expr;
       wym.toggleClass(sName, jqexpr);
     }
+    wym._iframe.contentWindow.focus(); //See #154
     return(false);
   });
   
