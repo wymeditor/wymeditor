@@ -839,8 +839,8 @@ WYMeditor.editor.prototype.bindEvents = function() {
   
   //handle click event on tools buttons
   jQuery(this._box).find(this._options.toolSelector).click(function() {
-    wym.exec(jQuery(this).attr(WYMeditor.NAME));
     wym._iframe.contentWindow.focus(); //See #154
+    wym.exec(jQuery(this).attr(WYMeditor.NAME));    
     return(false);
   });
   
