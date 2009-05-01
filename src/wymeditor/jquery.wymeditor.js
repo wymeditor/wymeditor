@@ -3421,7 +3421,7 @@ WYMeditor.XhtmlSaxListener.prototype.afterParsing = function(xhtml)
 WYMeditor.XhtmlSaxListener.prototype.replaceNamedEntities = function(xhtml)
 {
   for (var entity in this.entities) {
-    xhtml = xhtml.replace(entity, this.entities[entity]);
+    xhtml = xhtml.replace(new RegExp(entity, 'g'), this.entities[entity]);
   }
   return xhtml;
 };
