@@ -851,10 +851,12 @@ WYMeditor.editor.prototype.bindEvents = function() {
   });
   
   //handle keyup event on html value: set the editor value
-  jQuery(this._box).find(this._options.htmlValSelector).keyup(function() {
-    jQuery(wym._doc.body).html(jQuery(this).val());
-  });
-  
+  //handle focus/blur events to check if the element has focus, see #147
+  jQuery(this._box).find(this._options.htmlValSelector)
+    .keyup(function() { jQuery(wym._doc.body).html(jQuery(this).val());})
+    .focus(function() { jQuery(this).toggleClass('hasfocus'); })
+    .blur(function() { jQuery(this).toggleClass('hasfocus'); });
+
   //handle click event on classes buttons
   jQuery(this._box).find(this._options.classSelector).click(function() {
   
@@ -1145,7 +1147,7 @@ WYMeditor.editor.prototype.update = function() {
 
   var html = this.xhtml();
   jQuery(this._element).val(html);
-  jQuery(this._box).find(this._options.htmlValSelector).val(html);
+  jQuery(this._box).find(this._options.htmlValSelector).not('.hasfocus').val(html); //#147
 };
 
 /* @name dialog
