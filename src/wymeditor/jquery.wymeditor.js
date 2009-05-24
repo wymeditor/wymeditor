@@ -347,6 +347,8 @@ jQuery.fn.wymeditor = function(options) {
 
     direction:  "ltr",
 
+    replaceBrInPreWith: '&#13;',
+
     boxHtml:   "<div class='wym_box'>"
               + "<div class='wym_area_top'>" 
               + WYMeditor.TOOLS
@@ -907,6 +909,8 @@ WYMeditor.editor.prototype.html = function(html) {
  * @description Cleans up the HTML
  */
 WYMeditor.editor.prototype.xhtml = function() {
+    if(this._options.replaceBrInPreWith)
+      jQuery('pre > br', this._doc.body).replaceWith(this._options.replaceBrInPreWith); //Fix PRE bug #81
     return this.parser.parse(this.html());
 };
 
