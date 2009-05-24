@@ -25,8 +25,6 @@ WYMeditor.WymClassExplorer = function(wym) {
     this._class = "className";
     this._newLine = "\r\n";
 
-    //r623 fix doesn't work in MSIE
-    wym._options.replaceBrInPreWith = false;
 };
 
 WYMeditor.WymClassExplorer.prototype.initIframe = function(iframe) {

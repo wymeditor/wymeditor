@@ -347,8 +347,6 @@ jQuery.fn.wymeditor = function(options) {
 
     direction:  "ltr",
 
-    replaceBrInPreWith: '&#13;',
-
     boxHtml:   "<div class='wym_box'>"
               + "<div class='wym_area_top'>" 
               + WYMeditor.TOOLS
@@ -909,8 +907,6 @@ WYMeditor.editor.prototype.html = function(html) {
  * @description Cleans up the HTML
  */
 WYMeditor.editor.prototype.xhtml = function() {
-    if(this._options.replaceBrInPreWith)
-      jQuery('pre > br', this._doc.body).replaceWith(this._options.replaceBrInPreWith); //Fix PRE bug #81
     return this.parser.parse(this.html());
 };
 
@@ -3421,6 +3417,7 @@ WYMeditor.XhtmlSaxListener.prototype.afterParsing = function(xhtml)
   xhtml = this.replaceNamedEntities(xhtml);
   xhtml = this.joinRepeatedEntities(xhtml);
   xhtml = this.removeEmptyTags(xhtml);
+  xhtml = this.removeBrInPre(xhtml);
   return xhtml;
 };
 
@@ -3442,6 +3439,15 @@ WYMeditor.XhtmlSaxListener.prototype.joinRepeatedEntities = function(xhtml)
 WYMeditor.XhtmlSaxListener.prototype.removeEmptyTags = function(xhtml)
 {
   return xhtml.replace(new RegExp('<('+this.block_tags.join("|").replace(/\|td/,'').replace(/\|th/, '')+')>(<br \/>|&#160;|&nbsp;|\\s)*<\/\\1>' ,'g'),'');
+};
+
+WYMeditor.XhtmlSaxListener.prototype.removeBrInPre = function(xhtml)
+{
+  var matches = xhtml.match(new RegExp('<pre[^>]*>(.*?)<\/pre>','gmi'));
+  for(var i=0; i<matches.length; i++) {
+    xhtml = xhtml.replace(matches[i], matches[i].replace(new RegExp('<br \/>', 'g'), String.fromCharCode(13,10)));
+  }
+  return xhtml;
 };
 
 WYMeditor.XhtmlSaxListener.prototype.getResult = function()
