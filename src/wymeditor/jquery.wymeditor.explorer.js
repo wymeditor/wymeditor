@@ -105,8 +105,13 @@ WYMeditor.WymClassExplorer.prototype._exec = function(cmd,param) {
     case WYMeditor.INDENT: case WYMeditor.OUTDENT:
     
         var container = this.findUp(this.container(), WYMeditor.LI);
-        if(container)
-            this._doc.execCommand(cmd);
+        if(container) {
+            var ancestor = container.parentNode.parentNode;
+            if(container.parentNode.childNodes.length>1
+              || ancestor.tagName.toLowerCase() == WYMeditor.OL
+              || ancestor.tagName.toLowerCase() == WYMeditor.UL)
+              this._doc.execCommand(cmd);
+        }
     break;
     default:
         if(param) this._doc.execCommand(cmd,false,param);
