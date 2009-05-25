@@ -3444,8 +3444,10 @@ WYMeditor.XhtmlSaxListener.prototype.removeEmptyTags = function(xhtml)
 WYMeditor.XhtmlSaxListener.prototype.removeBrInPre = function(xhtml)
 {
   var matches = xhtml.match(new RegExp('<pre[^>]*>(.*?)<\/pre>','gmi'));
-  for(var i=0; i<matches.length; i++) {
-    xhtml = xhtml.replace(matches[i], matches[i].replace(new RegExp('<br \/>', 'g'), String.fromCharCode(13,10)));
+  if(matches) {
+    for(var i=0; i<matches.length; i++) {
+      xhtml = xhtml.replace(matches[i], matches[i].replace(new RegExp('<br \/>', 'g'), String.fromCharCode(13,10)));
+    }
   }
   return xhtml;
 };
