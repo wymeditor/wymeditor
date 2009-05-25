@@ -91,6 +91,13 @@ test("Shouldn't remove empty td elements", function() {
     equals( jQuery.wymeditors(0).parser.parse(empty_cell), expected);
 });
 
+test("Should remove PRE line breaks (BR)", function() {
+    expect(1);
+    var original = "<pre>One<br>Two<br>Three</pre><p>Test</p><pre>Three<br>Four<br>Five</pre>";
+    var expected = "<pre>One\r\nTwo\r\nThree</pre><p>Test</p><pre>Three\r\nFour\r\nFive</pre>";
+    equals( jQuery.wymeditors(0).parser.parse(original), expected, "Remove BR in PRE" );
+});
+
 function runPostInitTests() {
     module("Post Init");
 
