@@ -1,5 +1,5 @@
 /**
- * @version 0.5-b3
+ * @version 0.5-rc1
  *
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (c) 2005 - 2009 Jean-Francois Hovinne, http://www.wymeditor.org/
@@ -120,7 +120,7 @@ jQuery.extend(WYMeditor, {
 
 */
 
-    VERSION             : "0.5-b3",
+    VERSION             : "0.5-rc1",
     INSTANCES           : [],
     STRINGS             : [],
     SKINS               : [],
@@ -133,7 +133,7 @@ jQuery.extend(WYMeditor, {
     SKINS_DEFAULT_PATH  : "skins/",
     SKINS_DEFAULT_CSS   : "skin.css",
     SKINS_DEFAULT_JS    : "skin.js",
-	LANG_DEFAULT_PATH   : "lang/",
+    LANG_DEFAULT_PATH   : "lang/",
     IFRAME_BASE_PATH    : "{Wym_Iframe_Base_Path}",
     IFRAME_DEFAULT      : "iframe/default/",
     JQUERY_PATH         : "{Wym_Jquery_Path}",
@@ -200,10 +200,9 @@ jQuery.extend(WYMeditor, {
     TOGGLE_HTML         : "ToggleHtml",
     FORMAT_BLOCK        : "FormatBlock",
     PREVIEW             : "Preview",
-	
-	UNLINK			     : "Unlink",
-	INSERT_UNORDEREDLIST : "InsertUnorderedList",
-	INSERT_ORDEREDLIST	 : "InsertOrderedList",
+    UNLINK			        : "Unlink",
+    INSERT_UNORDEREDLIST: "InsertUnorderedList",
+    INSERT_ORDEREDLIST	: "InsertOrderedList",
 
     MAIN_CONTAINERS : new Array("p","h1","h2","h3","h4","h5","h6","pre","blockquote"),
 
