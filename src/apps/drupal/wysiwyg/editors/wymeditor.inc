@@ -35,7 +35,7 @@ function wysiwyg_wymeditor_editor() {
     'settings callback' => 'wysiwyg_wymeditor_settings',
     'themes callback' => 'wysiwyg_wymeditor_themes',
     'versions' => array(
-      '0.5-b3' => array(
+      '0.5-rc1' => array(
         'js files' => array('wymeditor.js')
       ),
     ),
