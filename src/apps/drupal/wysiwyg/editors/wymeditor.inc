@@ -120,10 +120,9 @@ function wysiwyg_wymeditor_settings($editor, $config, $theme) {
   // CSS classes.
   if (isset($config['css_setting'])) {
     if ($config['css_setting'] == 'theme') {
-      $css = path_to_theme() .'/style.css';
-      if (file_exists($css)) {
-        $settings['stylesheet'] = base_path() . $css;
-      }
+      // ATM WYMeditor only supports one CSS file (version 0.5)
+      // so we load the first one returned by wysiwyg_get_css()
+      $settings['stylesheet'] = reset(wysiwyg_get_css());
     }
     else if ($config['css_setting'] == 'self' && isset($config['css_path'])) {
       $settings['stylesheet'] = strtr($config['css_path'], array('%b' => base_path(), '%t' => path_to_theme()));
