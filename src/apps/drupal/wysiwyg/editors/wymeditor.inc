@@ -53,7 +53,7 @@ function wysiwyg_wymeditor_editor() {
  *   The installed editor version.
  */
 function wysiwyg_wymeditor_version($editor) {
-  $script = wysiwyg_get_path('wymeditor/wymeditor') . '/jquery.wymeditor.js';
+  $script = $editor['library path'] . '/jquery.wymeditor.js';
   $script = fopen($script, 'r');
   fgets($script);
   $line = fgets($script);
