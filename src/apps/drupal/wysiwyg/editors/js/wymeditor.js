@@ -18,6 +18,7 @@ Drupal.wysiwyg.editor.detach.wymeditor = function(context, params) {
       var instance = WYMeditor.INSTANCES[index];
       instance.update();
       $(instance._box).remove();
+      $(instance._element).show();
       delete instance;
     }
     $field.show();
