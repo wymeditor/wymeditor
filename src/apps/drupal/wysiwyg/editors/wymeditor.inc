@@ -103,6 +103,7 @@ function wysiwyg_wymeditor_settings($editor, $config, $theme) {
       'th' => 'Table_Header',
     );
 
+    $containers_items = array();
     foreach ($block_formats as $block_format) {
       if (isset($containers[$block_format])) {
         $container = array(
@@ -110,10 +111,10 @@ function wysiwyg_wymeditor_settings($editor, $config, $theme) {
           'title' => $containers[$block_format],
           'css' => 'wym_containers_' . $block_format,
         );
-        $containersItems[] = $container;
+        $containers_items[] = $container;
       }
     }
-    $settings['containersItems'] = json_encode($containersItems);
+    $settings['containersItems'] = json_encode($containers_items);
   }
 
   // CSS classes.
