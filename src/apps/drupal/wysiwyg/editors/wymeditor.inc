@@ -114,7 +114,7 @@ function wysiwyg_wymeditor_settings($editor, $config, $theme) {
         $containers_items[] = $container;
       }
     }
-    $settings['containersItems'] = json_encode($containers_items);
+    $settings['containersItems'] = $containers_items;
   }
 
   // CSS classes.

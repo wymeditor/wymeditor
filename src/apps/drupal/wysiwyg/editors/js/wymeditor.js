@@ -4,7 +4,7 @@
  * Attach this editor to a target element.
  */
 Drupal.wysiwyg.editor.attach.wymeditor = function(context, params, settings) {
-  $('#' + params.field).wymeditor(eval(settings));
+  $('#' + params.field).wymeditor(settings);
 };
 
 /**
