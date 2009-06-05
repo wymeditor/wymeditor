@@ -18,13 +18,13 @@ function wysiwyg_wymeditor_editor() {
     'download url' => 'http://www.wymeditor.org/download/',
     'library path' => wysiwyg_get_path('wymeditor/wymeditor'),
     'libraries' => array(
-      'pack' => array(
-        'title' => 'Packed',
-        'files' => array('jquery.wymeditor.pack.js'),
-      ),
       'min' => array(
         'title' => 'Minified',
         'files' => array('jquery.wymeditor.min.js'),
+      ),
+      'pack' => array(
+        'title' => 'Packed',
+        'files' => array('jquery.wymeditor.pack.js'),
       ),
       'src' => array(
         'title' => 'Source',
