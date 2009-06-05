@@ -79,6 +79,7 @@ function wysiwyg_wymeditor_version($editor) {
  */
 function wysiwyg_wymeditor_settings($editor, $config, $theme) {
   $settings = array(
+    'basePath' => base_path() . $editor['library path'] . '/',
     'updateSelector' => '.form-submit',
     'skin' => $theme,
   );
