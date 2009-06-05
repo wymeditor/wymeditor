@@ -80,6 +80,8 @@ function wysiwyg_wymeditor_version($editor) {
 function wysiwyg_wymeditor_settings($editor, $config, $theme) {
   $settings = array(
     'basePath' => base_path() . $editor['library path'] . '/',
+    'wymPath'    => base_path() . $editor['library path'] . '/' . $editor['libraries']['min']['files'][0],
+    'jQueryPath' => base_path() . 'misc/jquery.js',
     'updateSelector' => '.form-submit',
     'skin' => $theme,
   );
