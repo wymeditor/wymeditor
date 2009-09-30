@@ -457,7 +457,9 @@ jQuery.fn.wymeditor = function(options) {
                         + WYMeditor.CLASSES_ITEMS
                         + "</ul></div>",
 
-    classesItemHtml:   "<li><a href='#' name='"
+    classesItemHtml:   "<li class='wym_classes_"
+                        + WYMeditor.CLASS_NAME
+                        + "'><a href='#' name='"
                         + WYMeditor.CLASS_NAME
                         + "'>"
                         + WYMeditor.CLASS_TITLE
