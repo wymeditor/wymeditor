@@ -118,8 +118,7 @@ WYMeditor.WymClassExplorer.prototype._exec = function(cmd,param) {
         else this._doc.execCommand(cmd);
     break;
 	}
-    
-    this.listen();
+
 };
 
 WYMeditor.WymClassExplorer.prototype.selected = function() {

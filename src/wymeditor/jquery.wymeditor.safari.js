@@ -118,8 +118,6 @@ WYMeditor.WymClassSafari.prototype._exec = function(cmd,param) {
     if(container && container.tagName.toLowerCase() == WYMeditor.BODY)
         this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
 
-    //add event handlers on doc elements
-    this.listen();
 };
 
 /* @name selected

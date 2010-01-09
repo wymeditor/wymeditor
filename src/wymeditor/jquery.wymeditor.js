@@ -939,10 +939,6 @@ WYMeditor.editor.prototype.exec = function(cmd) {
     case WYMeditor.TOGGLE_HTML:
       this.update();
       this.toggleHtml();
-
-      //partially fixes #121 when the user manually inserts an image
-      if(!jQuery(this._box).find(this._options.htmlSelector).is(':visible'))
-        this.listen();
     break;
     
     case WYMeditor.PREVIEW:
@@ -1332,23 +1328,16 @@ WYMeditor.editor.prototype.configureEditorUsingRawCss = function() {
 /********** EVENTS **********/
 
 WYMeditor.editor.prototype.listen = function() {
+    //don't use jQuery.find() on the iframe body
+    //because of MSIE + jQuery + expando issue (#JQ1143)
+    //jQuery(this._doc.body).find("*").bind("mouseup", this.mouseup);
 
-  //don't use jQuery.find() on the iframe body
-  //because of MSIE + jQuery + expando issue (#JQ1143)
-  //jQuery(this._doc.body).find("*").bind("mouseup", this.mouseup);
-  
-  jQuery(this._doc.body).bind("mousedown", this.mousedown);
-  var images = this._doc.body.getElementsByTagName("img");
-  for(var i=0; i < images.length; i++) {
-    jQuery(images[i]).bind("mousedown", this.mousedown);
-  }
+    jQuery(this._doc.body).bind("mousedown", this.mousedown);
 };
 
 WYMeditor.editor.prototype.mousedown = function(evt) {
-  
-  var wym = WYMeditor.INSTANCES[this.ownerDocument.title];
-  wym._selected_image = (this.tagName.toLowerCase() == WYMeditor.IMG) ? this : null;
-  evt.stopPropagation();
+    var wym = WYMeditor.INSTANCES[this.ownerDocument.title];
+    wym._selected_image = (evt.target.tagName.toLowerCase() == WYMeditor.IMG) ? evt.target : null;
 };
 
 /********** SKINS **********/

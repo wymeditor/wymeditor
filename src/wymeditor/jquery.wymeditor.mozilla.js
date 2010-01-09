@@ -136,10 +136,6 @@ WYMeditor.WymClassMozilla.prototype._exec = function(cmd,param) {
     var container = this.selected();
     if(container.tagName.toLowerCase() == WYMeditor.BODY)
         this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
-    
-    //add event handlers on doc elements
-
-    this.listen();
 };
 
 /* @name selected

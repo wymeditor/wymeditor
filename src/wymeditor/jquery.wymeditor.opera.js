@@ -68,8 +68,7 @@ WYMeditor.WymClassOpera.prototype._exec = function(cmd,param) {
 
     if(param) this._doc.execCommand(cmd,false,param);
     else this._doc.execCommand(cmd);
-    
-    this.listen();
+
 };
 
 WYMeditor.WymClassOpera.prototype.selected = function() {
