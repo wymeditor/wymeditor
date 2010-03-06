@@ -278,7 +278,7 @@ WYMeditor.WymClassMozilla.prototype.getTagForStyle = function(style) {
   if(/bold/.test(style)) return 'strong';
   if(/italic/.test(style)) return 'em';
   if(/sub/.test(style)) return 'sub';
-  if(/sub/.test(style)) return 'super';
+  if(/super/.test(style)) return 'sup';
   return false;
 };
 
