@@ -27,7 +27,8 @@ WYMeditor.WymClassMozilla = function(wym) {
 };
 
 WYMeditor.WymClassMozilla.prototype.initIframe = function(iframe) {
-
+    var wym = this;
+    
     this._iframe = iframe;
     this._doc = iframe.contentDocument;
     
@@ -62,7 +63,10 @@ WYMeditor.WymClassMozilla.prototype.initIframe = function(iframe) {
     jQuery(this._doc).bind("keyup", this.keyup);
     
     //bind editor focus events (used to reset designmode - Gecko bug)
-    jQuery(this._doc).bind("focus", this.enableDesignMode);
+    jQuery(this._doc).bind("focus", function () { 
+        // Fix scope
+        wym.enableDesignMode.call(wym);
+    });
     
     //post-init functions
     if(jQuery.isFunction(this._options.postInit)) this._options.postInit(this);
@@ -236,10 +240,10 @@ WYMeditor.WymClassMozilla.prototype.keyup = function(evt) {
 };
 
 WYMeditor.WymClassMozilla.prototype.enableDesignMode = function() {
-    if(this.designMode == "off") {
+    if(this._doc.designMode == "off") {
       try {
-        this.designMode = "on";
-        this.execCommand("styleWithCSS", '', false);
+        this._doc.designMode = "on";
+        this._doc.execCommand("styleWithCSS", '', false);
       } catch(e) { }
     }
 };
