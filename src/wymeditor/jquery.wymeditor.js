@@ -1463,11 +1463,16 @@ WYMeditor.INIT_DIALOG = function(index) {
 
       var sUrl = jQuery(wym._options.hrefSelector).val();
       if(sUrl.length > 0) {
+        var link;
+        
+        if (selected[0] && selected[0].tagName.toLowerCase() == WYMeditor.A) {
+            link = selected;
+        } else {
+            wym._exec(WYMeditor.CREATE_LINK, sStamp);
+            link = jQuery("a[href=" + sStamp + "]", wym._doc.body);
+        }
 
-        wym._exec(WYMeditor.CREATE_LINK, sStamp);
-
-        jQuery("a[href=" + sStamp + "]", wym._doc.body)
-            .attr(WYMeditor.HREF, sUrl)
+        link.attr(WYMeditor.HREF, sUrl)
             .attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val());
 
       }
