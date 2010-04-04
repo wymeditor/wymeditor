@@ -2890,7 +2890,7 @@ WYMeditor.Lexer.prototype._decodeSpecial = function(mode)
 WYMeditor.Lexer.prototype._invokeParser = function(content, is_match)
 {
 
-  if (!/ +/.test(content) && ((content === '') || (content == false))) {
+  if (content === '') {
     return true;
   }
   var current = this._mode.getCurrent();
