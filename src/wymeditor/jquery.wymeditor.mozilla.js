@@ -248,15 +248,6 @@ WYMeditor.WymClassMozilla.prototype.enableDesignMode = function() {
     }
 };
 
-WYMeditor.WymClassMozilla.prototype.setFocusToNode = function(node) {
-    var range = document.createRange();
-    range.selectNode(node);
-    var selected = this._iframe.contentWindow.getSelection();
-    selected.addRange(range);
-    selected.collapse(node, node.childNodes.length);
-    this._iframe.contentWindow.focus();
-};
-
 WYMeditor.WymClassMozilla.prototype.openBlockTag = function(tag, attributes)
 {
   var attributes = this.validator.getValidTagAttributes(tag, attributes);

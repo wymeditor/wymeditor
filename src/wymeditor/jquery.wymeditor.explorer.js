@@ -192,11 +192,12 @@ WYMeditor.WymClassExplorer.prototype.keyup = function() {
   this._selected_image = null;
 };
 
-WYMeditor.WymClassExplorer.prototype.setFocusToNode = function(node) {
+WYMeditor.WymClassExplorer.prototype.setFocusToNode = function(node, toStart) {
     var range = this._doc.selection.createRange();
+    toStart = toStart ? true : false;
+    
     range.moveToElementText(node);
-    range.collapse(false);
-    range.move('character',-1);
+    range.collapse(toStart);
     range.select();
     node.focus();
 };
