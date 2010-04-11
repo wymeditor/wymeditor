@@ -25,9 +25,7 @@ WYMeditor.editor.prototype.fullscreen = function() {
         $overlay = null,
         $window = jQuery(window),
         
-        uiHeight = 0,          // Calculated automatically
-        editorMargin = 15,     // Margin from window (without padding)
-        editorPadding = 0;     // Calculated automatically
+        editorMargin = 15;     // Margin from window (without padding)
 
     
     //construct the button's html
@@ -43,11 +41,18 @@ WYMeditor.editor.prototype.fullscreen = function() {
         .append(html);
         
     function resize () {
-            var screenHeight = $window.height(),
+                // Calculate margins
+            var uiHeight = $box.outerHeight(true) 
+                                - $iframe.outerHeight(true),
+                editorPadding = $box.outerWidth() - $box.width(),
+                
+                // Calculate heights
+                screenHeight = $window.height(),
                 iframeHeight = (screenHeight 
                                     - uiHeight 
                                     - (editorMargin * 2)) + 'px',
                 
+                // Calculate witdths
                 screenWidth = $window.width(),
                 boxWidth = (screenWidth 
                                 - editorPadding
@@ -64,10 +69,6 @@ WYMeditor.editor.prototype.fullscreen = function() {
     //handle click event
     $box.find('li.wym_tools_fullscreen a').click(function() {
         if ($box.css('position') != 'fixed') {
-            // Calculate margins
-            uiHeight = $box.outerHeight(true) - $iframe.outerHeight(true);
-            editorPadding = $box.outerWidth() - $box.width();
-            
             // Create overlay
             $overlay = jQuery('<div id="wym-fullscreen-overlay"></div>')
                 .appendTo('body').css({
@@ -87,14 +88,16 @@ WYMeditor.editor.prototype.fullscreen = function() {
                 'left': editorMargin + 'px'
             });
             
-            // Listen to resize on window
+            // Bind event listeners
             $window.bind('resize', resize);
+            $box.find('li.wym_tools_html a').bind('click', resize);
             
             // Force resize
             resize();
         } else {
-            // Stop listening to resize on window
+            // Unbind event listeners
             $window.unbind('resize', resize);
+            $box.find('li.wym_tools_html a').unbind('click', resize);
             
             // Remove inline styles
             $box.css({
