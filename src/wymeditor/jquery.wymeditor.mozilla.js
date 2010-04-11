@@ -17,6 +17,7 @@
  *        Volker Mische (vmx a-t gmx dotde)
  *        Bermi Ferrer (wymeditor a-t bermi dotorg)
  *        Frédéric Palluel-Lafleur (fpalluel a-t gmail dotcom)
+ *        Jonatan Lundin (jonatan.lundin a-t gmail dotcom)
  */
 
 WYMeditor.WymClassMozilla = function(wym) {

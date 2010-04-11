@@ -21,7 +21,7 @@
  *        Scott Lewis (lewiscot a-t gmail dotcom)
  *        Bermi Ferrer (wymeditor a-t bermi dotorg)
  *        Daniel Reszka (d.reszka a-t wymeditor dotorg)
- *        Jonatan Lundin (jonatan.lundin _at_ gmail.com)
+ *        Jonatan Lundin (jonatan.lundin a-t gmail dotcom)
  */
 
 /*

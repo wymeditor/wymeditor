@@ -16,7 +16,7 @@
  *        Jean-Francois Hovinne (jf.hovinne a-t wymeditor dotorg)
  *        Bermi Ferrer (wymeditor a-t bermi dotorg)
  *        Frédéric Palluel-Lafleur (fpalluel a-t gmail dotcom)
- *        Jonatan Lundin (jonatan.lundin _at_ gmail.com)
+ *        Jonatan Lundin (jonatan.lundin a-t gmail dotcom)
  */
 
 WYMeditor.WymClassExplorer = function(wym) {
