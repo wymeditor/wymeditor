@@ -69,6 +69,10 @@ WYMeditor.editor.prototype.fullscreen = function() {
     //handle click event
     $box.find('li.wym_tools_fullscreen a').click(function() {
         if ($box.css('position') != 'fixed') {
+            // Store previous inline styles
+            $box.data('wym-inline-css', $box.attr('style'));
+            $iframe.data('wym-inline-css', $iframe.attr('style'));
+            
             // Create overlay
             $overlay = jQuery('<div id="wym-fullscreen-overlay"></div>')
                 .appendTo('body').css({
@@ -112,6 +116,10 @@ WYMeditor.editor.prototype.fullscreen = function() {
             // Remove overlay
             $overlay.remove();
             $overlay = null;
+            
+            // Retore previous inline styles
+            $box.attr('style', $box.data('wym-inline-css'));
+            $iframe.attr('style', $iframe.data('wym-inline-css'));
         }
 
         return false;
