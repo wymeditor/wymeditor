@@ -211,7 +211,7 @@ WYMeditor.WymClassMozilla.prototype.keyup = function(evt) {
     jQuery(wym._doc.body).children(WYMeditor.BR).remove();
   }
   
-  else if(evt.keyCode != 8
+  if(evt.keyCode != 8
        && evt.keyCode != 17
        && evt.keyCode != 46
        && evt.keyCode != 224
