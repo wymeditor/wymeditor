@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <title>ContentEditable Test</title>
+        <style type="text/css">
+            /*demo page css*/
+            body { font: 75% Verdana, sans-serif; padding:30px 10px 20px; }
+
+            #editor {
+                background-color: #CCFFCC;
+                border: 1px solid #CCCCCC;
+                padding: 10px;
+                padding-bottom: 0;
+                overflow: hidden;
+            }
+            #editor *[contenteditable=true] {
+                outline: none;
+            }
+            #editor *[contenteditable=false] {
+                background-color: #FFA6A6;
+                border: 1px solid #FF8C8C;
+            }
+           
+            #editor .wym-block { 
+                display:block;
+                background: #FFFFFF no-repeat 2px 2px;
+                padding: 5px;
+                margin: 0 0 10px; 
+            }
+            td            { background: #F0F4F8; }
+            th            { background: #ffffcc; }
+            ul,
+            ol            { border-left:20px solid #B9C4D0; padding:0px 5px; }
+            caption       { background: #E4E4B0; padding: 5px; font-weight: bold; }
+            table         { font-size: 12px; width: 500px; }
+            td            { width: 25%; }
+            blockquote    { margin-left: 30px; }
+            pre           { background-color:transparent; border: 1px solid white; }
+        </style>
+        
+        <script type="text/javascript" src="../jquery/jquery-1.4.2.js"></script>
+        <script type="text/javascript">
+            var u;
+            $(function(){
+                var $e = $('#editor')
+                    KEYS = {
+                        LEFT: 37,
+                        UP: 38,
+                        RIGHT: 39,
+                        DOWN: 40
+                    };
+                    
+                function update() {
+                    $e.children().each(function() {
+                        var $block,
+                            $node,
+                            $this = $(this);
+                        
+                        $node = $this.is('div.wym-element') ? 
+                            $this.children('.wym-element').children() :
+                            $this.wrap('<div class="wym-block" />')
+                                .wrap('<div class="wym-element" />');
+                        
+                        $block = $node.parent().parent();
+                        
+                        $block.children(':not(.wym-element)').remove();
+                        
+                        $('<span/>').text(this.tagName).prependTo(
+                            $block);
+                            
+                        // Make editable
+                        if($node.attr('contenteditable') !== "false")
+                            $node.attr('contenteditable', true);
+                    });
+                        
+                }
+                
+                update();
+                
+                // Reimplement keyboard (arrow) navigation
+                $e.keydown(function(e) {
+                    // Hmmm... This will be hard...
+                    //
+                    // Since text inside elements can span several lines
+                    // it's hard to tell when the carrent should move up
+                    // to the element above instead of just inside the 
+                    // current element...
+                    
+                    console.log(window.getSelection().getRangeAt(0));
+                });
+                
+                // "Enabling" the custom placeholder element in IE 
+                // (doesn't seem to work...)
+                document.createElement('placeholder');
+                
+                u = update;
+            });
+        </script>
+    </head>
+    <body>
+        <h1>ContentEditable Test</h1>
+        <p>Content outside the editor...</p>
+        <div id="editor">
+            <p><em>Editable</em> <a href="#">content</a></p>
+            <p>Lorem <del>ipsum</del> <ins>dolor</ins> <strong>sit amet</strong>, <sup>consectetur</sup> <sub>adipiscing</sub> elit.</p>
+            <p contenteditable="false">But can you change me?</p>
+            <h2>An image</h2>
+            <p><img src="../wymeditor/wymeditor-logo.gif" alt="WYMeditor logo" /></p>
+            <h2>A placeholder</h2>
+            <placeholder>Test</placeholder>
+            <h2>And a table</h2>
+            <table>
+                <tr>
+                    <th>Test</th>
+                    <th>Test2</th>
+                </tr>
+                <tr>
+                    <td>Data</td>
+                    <td>Testing tables</td>
+                </tr>
+                <tr>
+                    <td>Is <strong>contenteditable</strong> working?</td>
+                    <td>Testing...</td>
+                </tr>
+            </table>
+        </div>
+    </body>
+</html>
