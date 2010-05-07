@@ -20,27 +20,25 @@
                 border: 1px solid #FF8C8C;
             }
             
-            #editor {
-                padding-left: 0;
-                border-left: 0;
-            }
             #controls {
-                background-color: #CCFFCC;
-                border: 1px solid #CCCCCC;
+                background: none;
+                border: none;
                 border-right: 0;
-                padding: 10px 0 0 10px;
+                padding: 10px 0 0 0;
                 margin: 0;
                 outline: 0;
-                overflow: hidden;
-                width: 50px;
                 float: left;
-                
                 list-style-type: none;
+                position: relative;
+                width: 40px;
+                left: 10px;
+                margin-right: -50px;
+                overflow: hidden; 
             }
             #controls li {
                 padding: 5px;
                 margin: 0 0 10px; 
-                background-color: #fff;
+                background: none;
             }
             
             #editor > * { 
@@ -48,7 +46,9 @@
                 background: #FFFFFF no-repeat 2px 2px;
                 padding: 5px;
                 margin: 0 0 10px; 
+                padding-left: 50px;
             }
+            
             td            { background: #F0F4F8; }
             th            { background: #ffffcc; }
             ul,
@@ -62,6 +62,9 @@
         
         <script type="text/javascript" src="../jquery/jquery-1.4.2.js"></script>
         <script type="text/javascript">
+            // "Enabling" the custom placeholder element in IE 
+            document.createElement('placeholder');
+
             $(function(){
                 var $c = $('#controls'),
                     $e = $('#editor');
@@ -77,13 +80,13 @@
                     }
                 }
                 
+                // Keep things updated
                 update();
-                //$e.keyup(update);
-                setInterval(update, 50);
+                $e.keyup(update);
+                setInterval(update, 100);
                 
-                // "Enabling" the custom placeholder element in IE 
-                // (doesn't seem to work...)
-                document.createElement('placeholder');
+                // Make images and tables behave (except in IE)
+                document.execCommand("enableObjectResizing", false, false);
             });
         </script>
     </head>
