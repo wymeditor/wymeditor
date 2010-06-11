@@ -113,6 +113,17 @@ function runPostInitTests() {
         equals( jQuery.trim( jQuery.wymeditors(0).xhtml() ), testText1 + '<p>' + testText2 + '<\/p>' );
 
     });
+
+    test("Adding combined CSS selectors", function () {
+        expect(1);
+        
+        var doc = jQuery.wymeditors(0)._doc,
+            styles = doc.styleSheets[0];
+
+        jQuery.wymeditors(0).addCssRule(styles, {name:'p,h1,h2', css:'font-style:italic'});
+        equals(jQuery('p', doc).css('fontStyle'), 'italic', 'Font-style');
+
+    });
 };
 
 </script>

@@ -136,8 +136,11 @@ WYMeditor.WymClassExplorer.prototype.saveCaret = function() {
 };
 
 WYMeditor.WymClassExplorer.prototype.addCssRule = function(styles, oCss) {
-
-    styles.addRule(oCss.name, oCss.css);
+    // IE doesn't handle combined selectors (#196)
+    var selectors = oCss.name.split(',');
+    for (var i in selectors) {
+        styles.addRule(selectors[i], oCss.css);
+    }
 };
 
 WYMeditor.WymClassExplorer.prototype.insert = function(html) {
