@@ -1141,10 +1141,14 @@ WYMeditor.editor.prototype.status = function(sMessage) {
  * @description Updates the element and textarea values
  */
 WYMeditor.editor.prototype.update = function() {
-
-  var html = this.xhtml();
-  jQuery(this._element).val(html);
-  jQuery(this._box).find(this._options.htmlValSelector).not('.hasfocus').val(html); //#147
+    var html;
+    
+    // Dirty fix to remove stray line breaks (#189)
+    jQuery(this._doc.body).children(WYMeditor.BR).remove();
+    
+    html = this.xhtml();
+    jQuery(this._element).val(html);
+    jQuery(this._box).find(this._options.htmlValSelector).not('.hasfocus').val(html); //#147
 };
 
 /* @name dialog
