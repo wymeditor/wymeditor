@@ -503,7 +503,7 @@ jQuery.fn.wymeditor = function(options) {
     captionSelector:   ".wym_caption",
     summarySelector:   ".wym_summary",
     
-    submitSelector:    ".wym_submit",
+    submitSelector:    "form",
     cancelSelector:    ".wym_cancel",
     previewSelector:   "",
     
@@ -568,7 +568,7 @@ jQuery.fn.wymeditor = function(options) {
                + "<input type='text' class='wym_rel' value='' size='40' />"
                + "</div>"
                + "<div class='row row-indent'>"
-               + "<input class='wym_submit' type='button'"
+               + "<input class='wym_submit' type='submit'"
                + " value='{Submit}' />"
                + "<input class='wym_cancel' type='button'"
                + "value='{Cancel}' />"
@@ -599,7 +599,7 @@ jQuery.fn.wymeditor = function(options) {
                + "<input type='text' class='wym_title' value='' size='40' />"
                + "</div>"
                + "<div class='row row-indent'>"
-               + "<input class='wym_submit' type='button'"
+               + "<input class='wym_submit' type='submit'"
                + " value='{Submit}' />"
                + "<input class='wym_cancel' type='button'"
                + "value='{Cancel}' />"
@@ -634,7 +634,7 @@ jQuery.fn.wymeditor = function(options) {
                + "<input type='text' class='wym_cols' value='2' size='3' />"
                + "</div>"
                + "<div class='row row-indent'>"
-               + "<input class='wym_submit' type='button'"
+               + "<input class='wym_submit' type='submit'"
                + " value='{Submit}' />"
                + "<input class='wym_cancel' type='button'"
                + "value='{Cancel}' />"
@@ -656,7 +656,7 @@ jQuery.fn.wymeditor = function(options) {
                + "<textarea class='wym_text' rows='10' cols='50'></textarea>"
                + "</div>"
                + "<div class='row'>"
-               + "<input class='wym_submit' type='button'"
+               + "<input class='wym_submit' type='submit'"
                + " value='{Submit}' />"
                + "<input class='wym_cancel' type='button'"
                + "value='{Cancel}' />"
@@ -1497,7 +1497,7 @@ WYMeditor.INIT_DIALOG = function(index) {
   }
 
   jQuery(wym._options.dialogLinkSelector + " "
-    + wym._options.submitSelector).click(function() {
+    + wym._options.submitSelector).submit(function() {
 
       var sUrl = jQuery(wym._options.hrefSelector).val();
       if(sUrl.length > 0) {
@@ -1519,7 +1519,7 @@ WYMeditor.INIT_DIALOG = function(index) {
   });
 
   jQuery(wym._options.dialogImageSelector + " "
-    + wym._options.submitSelector).click(function() {
+    + wym._options.submitSelector).submit(function() {
 
       var sUrl = jQuery(wym._options.srcSelector).val();
       if(sUrl.length > 0) {
@@ -1535,7 +1535,7 @@ WYMeditor.INIT_DIALOG = function(index) {
   });
 
   jQuery(wym._options.dialogTableSelector + " "
-    + wym._options.submitSelector).click(function() {
+    + wym._options.submitSelector).submit(function() {
 
       var iRows = jQuery(wym._options.rowsSelector).val();
       var iCols = jQuery(wym._options.colsSelector).val();
@@ -1572,7 +1572,7 @@ WYMeditor.INIT_DIALOG = function(index) {
   });
 
   jQuery(wym._options.dialogPasteSelector + " "
-    + wym._options.submitSelector).click(function() {
+    + wym._options.submitSelector).submit(function() {
 
       var sText = jQuery(wym._options.textSelector).val();
       wym.paste(sText);
