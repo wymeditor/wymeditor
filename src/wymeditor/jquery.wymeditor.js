@@ -94,7 +94,7 @@ jQuery.extend(WYMeditor, {
     TABLE,TD,TH,
     UL,OL,LI            - HTML elements string representation.
     CLASS,HREF,SRC,
-    TITLE,ALT           - HTML attributes string representation.
+    TITLE,REL,ALT       - HTML attributes string representation.
     DIALOG_LINK         - A link dialog type.
     DIALOG_IMAGE        - An image dialog type.
     DIALOG_TABLE        - A table dialog type.
@@ -183,6 +183,7 @@ jQuery.extend(WYMeditor, {
     HREF                : "href",
     SRC                 : "src",
     TITLE               : "title",
+    REL                 : "rel",
     ALT                 : "alt",
     DIALOG_LINK         : "Link",
     DIALOG_IMAGE        : "Image",
@@ -493,6 +494,7 @@ jQuery.fn.wymeditor = function(options) {
     hrefSelector:      ".wym_href",
     srcSelector:       ".wym_src",
     titleSelector:     ".wym_title",
+    relSelector:       ".wym_rel",
     altSelector:       ".wym_alt",
     textSelector:      ".wym_text",
     
@@ -560,6 +562,10 @@ jQuery.fn.wymeditor = function(options) {
                + "<div class='row'>"
                + "<label>{Title}</label>"
                + "<input type='text' class='wym_title' value='' size='40' />"
+               + "</div>"
+               + "<div class='row'>"
+               + "<label>{Relationship}</label>"
+               + "<input type='text' class='wym_rel' value='' size='40' />"
                + "</div>"
                + "<div class='row row-indent'>"
                + "<input class='wym_submit' type='button'"
@@ -1476,6 +1482,7 @@ WYMeditor.INIT_DIALOG = function(index) {
     jQuery(wym._options.hrefSelector).val(jQuery(selected).attr(WYMeditor.HREF));
     jQuery(wym._options.srcSelector).val(jQuery(selected).attr(WYMeditor.SRC));
     jQuery(wym._options.titleSelector).val(jQuery(selected).attr(WYMeditor.TITLE));
+    jQuery(wym._options.relSelector).val(jQuery(selected).attr(WYMeditor.REL));
     jQuery(wym._options.altSelector).val(jQuery(selected).attr(WYMeditor.ALT));
   }
 
@@ -1504,7 +1511,8 @@ WYMeditor.INIT_DIALOG = function(index) {
         }
 
         link.attr(WYMeditor.HREF, sUrl)
-            .attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val());
+            .attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val())
+            .attr(WYMeditor.REL, jQuery(wym._options.relSelector).val());
 
       }
       window.close();
@@ -1915,10 +1923,10 @@ WYMeditor.XhtmlValidator = {
         "2":"href",
         "3":"hreflang",
         "4":"name",
-        "rel":/^(alternate|designates|stylesheet|start|next|prev|contents|index|glossary|copyright|chapter|section|subsection|appendix|help|bookmark| |shortcut|icon)+$/,
-        "rev":/^(alternate|designates|stylesheet|start|next|prev|contents|index|glossary|copyright|chapter|section|subsection|appendix|help|bookmark| |shortcut|icon)+$/,
+        "5":"rel",
+        "6":"rev",
         "shape":/^(rect|rectangle|circ|circle|poly|polygon)$/,
-        "5":"type"
+        "7":"type"
       }
     },
     "0":"abbr",

@@ -26,6 +26,7 @@ WYMeditor.STRINGS['en'] = {
     Table_Header:     'Table Header',
     URL:              'URL',
     Title:            'Title',
+    Relationship:     'Relationship',
     Alternative_Text: 'Alternative text',
     Caption:          'Caption',
     Summary:          'Summary',
