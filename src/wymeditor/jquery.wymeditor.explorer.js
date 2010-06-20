@@ -98,6 +98,17 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function(iframe) {
     }catch(e){}
 };
 
+(function(editorLoadSkin) {
+    WYMeditor.WymClassExplorer.prototype.loadSkin = function() {
+        // Mark container items as unselectable (#203)
+        // Fix for issue explained: http://stackoverflow.com/questions/1470932/ie8-iframe-designmode-loses-selection
+        jQuery(this._box).find(this._options.containerSelector)
+            .attr('unselectable', 'on');
+        
+        editorLoadSkin.call(this);
+    };
+})(WYMeditor.editor.prototype.loadSkin);
+
 WYMeditor.WymClassExplorer.prototype._exec = function(cmd,param) {
 
     switch(cmd) {
