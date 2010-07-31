@@ -1270,9 +1270,15 @@ WYMeditor.editor.prototype.paste = function(str) {
 
 WYMeditor.editor.prototype.insert = function(html) {
     // Do we have a selection?
-    if (this._iframe.contentWindow.getSelection().focusNode != null) {
+    var selection = this._iframe.contentWindow.getSelection(),
+        range,
+        node;
+    if (selection.focusNode != null) {
         // Overwrite selection with provided html
-        this._exec( WYMeditor.INSERT_HTML, html);
+        range = selection.getRangeAt(0);
+        node = range.createContextualFragment(html);
+        range.deleteContents();
+        range.insertNode(node);
     } else {
         // Fall back to the internal paste function if there's no selection
         this.paste(html)
@@ -1280,19 +1286,11 @@ WYMeditor.editor.prototype.insert = function(html) {
 };
 
 WYMeditor.editor.prototype.wrap = function(left, right) {
-    // Do we have a selection?
-    if (this._iframe.contentWindow.getSelection().focusNode != null) {
-        // Wrap selection with provided html
-        this._exec( WYMeditor.INSERT_HTML, left + this._iframe.contentWindow.getSelection().toString() + right);
-    }
+    this.insert(left + this._iframe.contentWindow.getSelection().toString() + right);
 };
 
 WYMeditor.editor.prototype.unwrap = function() {
-    // Do we have a selection?
-    if (this._iframe.contentWindow.getSelection().focusNode != null) {
-        // Unwrap selection
-        this._exec( WYMeditor.INSERT_HTML, this._iframe.contentWindow.getSelection().toString() );
-    }
+    this.insert(this._iframe.contentWindow.getSelection().toString());
 };
 
 WYMeditor.editor.prototype.setFocusToNode = function(node, toStart) {
