@@ -141,22 +141,25 @@ WYMeditor.WymClassSafari.prototype.addCssRule = function(styles, oCss) {
 
 
 //keydown handler, mainly used for keyboard shortcuts
-WYMeditor.WymClassSafari.prototype.keydown = function(evt) {
+WYMeditor.WymClassSafari.prototype.keydown = function(e) {
   
   //'this' is the doc
   var wym = WYMeditor.INSTANCES[this.title];
   
-  if(evt.ctrlKey){
-    if(evt.keyCode == 66){
+  if(e.ctrlKey){
+    if(e.keyCode == 66){
       //CTRL+b => STRONG
       wym._exec(WYMeditor.BOLD);
-      return false;
+      e.preventDefault();
     }
-    if(evt.keyCode == 73){
+    if(e.keyCode == 73){
       //CTRL+i => EMPHASIS
       wym._exec(WYMeditor.ITALIC);
-      return false;
+      e.preventDefault();
     }
+  } else if(e.shiftKey && e.keyCode == 13) {
+    wym._exec('InsertLineBreak');
+    e.preventDefault();
   }
 };
 
@@ -179,11 +182,6 @@ WYMeditor.WymClassSafari.prototype.keyup = function(evt) {
     container = wym.selected();
     if(container && container.tagName.toLowerCase() == WYMeditor.PRE)
         wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P); //create P after PRE
-  }
-
-  //fix #112
-  if(evt.keyCode == 13 && evt.shiftKey) {
-    wym._exec('InsertLineBreak');
   }
   
   if(evt.keyCode != 8
