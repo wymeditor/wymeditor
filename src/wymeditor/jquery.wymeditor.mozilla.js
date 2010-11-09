@@ -260,6 +260,8 @@ WYMeditor.WymClassMozilla.prototype.enableDesignMode = function() {
       try {
         this._doc.designMode = "on";
         this._doc.execCommand("styleWithCSS", '', false);
+        this._doc.execCommand("enableObjectResizing", false, false);
+        this._doc.execCommand("enableInlineTableEditing", false, false);
       } catch(e) { }
     }
 };
