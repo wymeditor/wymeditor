@@ -1534,40 +1534,55 @@ WYMeditor.INIT_DIALOG = function(index) {
   });
 
   jQuery(wym._options.dialogTableSelector + " "
-    + wym._options.submitSelector).submit(function() {
+    + wym._options.submitSelector).submit(function()
+  {
+    var rowCount    = jQuery(wym._options.rowsSelector).val()
+      , columnCount = jQuery(wym._options.colsSelector).val();
 
-      var iRows = jQuery(wym._options.rowsSelector).val();
-      var iCols = jQuery(wym._options.colsSelector).val();
+    // TODO: It seems to me we should warn the user when zero columns and/or rows
+    //       were entered.
+    if (0 < rowCount && 0 < columnCount)
+    {
+      var table       = wym._doc.createElement(WYMeditor.TABLE)
+        , caption     = table.createCaption()
+        , summaryText = jQuery(wym._options.summarySelector).val()
+        , container   = jQuery(wym.findUp(wym.container(), WYMeditor.MAIN_CONTAINERS)).get(0);
 
-      if(iRows > 0 && iCols > 0) {
+      if ("" !== summaryText)
+      {
+        jQuery(table).attr('summary', summaryText);
+      }
 
-        var table = wym._doc.createElement(WYMeditor.TABLE);
-        var newRow = null;
-    var newCol = null;
+      caption.innerHTML = jQuery(wym._options.captionSelector).val();
 
-    var sCaption = jQuery(wym._options.captionSelector).val();
+      for (var rowIndex = 0, row; rowIndex < rowCount; rowIndex++)
+      {
+        row = table.insertRow(rowIndex);
 
-    //we create the caption
-    var newCaption = table.createCaption();
-    newCaption.innerHTML = sCaption;
+        for (var cellIndex = 0, cell; cellIndex < columnCount; cellIndex++)
+        {
+          cell = row.insertCell(cellIndex);
 
-    //we create the rows and cells
-    for(x=0; x<iRows; x++) {
-      newRow = table.insertRow(x);
-      for(y=0; y<iCols; y++) {newRow.insertCell(y);}
+          // Mozilla Firefox seems to have problems with empty cells
+          // when inline editing of tables is disabled.
+          cell.innerHTML = '&nbsp;';
+        }
+      }
+
+      // if we could not obtain the current container (because there is none)
+      // append the table to the body
+      if( ! container || ! container.parentNode)
+      {
+        jQuery(wym._doc.body).append(table);
+      }
+      // othwerwise append the table after the currently selected container
+      else
+      {
+        jQuery(container).after(table);
+      }
     }
 
-        //set the summary attr
-        jQuery(table).attr('summary',
-            jQuery(wym._options.summarySelector).val());
-
-        //append the table after the selected container
-        var node = jQuery(wym.findUp(wym.container(),
-          WYMeditor.MAIN_CONTAINERS)).get(0);
-        if(!node || !node.parentNode) jQuery(wym._doc.body).append(table);
-        else jQuery(node).after(table);
-      }
-      window.close();
+    window.close();
   });
 
   jQuery(wym._options.dialogPasteSelector + " "
