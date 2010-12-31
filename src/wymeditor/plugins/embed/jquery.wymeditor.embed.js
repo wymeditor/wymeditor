@@ -15,10 +15,15 @@
  *        Jonatan Lundin (jonatan.lundin a-t gmail dotcom)
  */
 
-/*
- * ISSUES:
- * - The closing object tag seems to be stripped out...
- */
+Array.prototype.remove = function(item)
+{
+    var arrayName = this;
+    for(var i = this.length; i--;) {
+        if(this[i] === item) this.splice(i,1);
+    }
+    return this;
+};
+
 (function() {
     if (WYMeditor && WYMeditor.XhtmlValidator['_tags']['param']['attributes']) {
         
@@ -44,7 +49,9 @@
         var XhtmlSaxListener = WYMeditor.XhtmlSaxListener;
         WYMeditor.XhtmlSaxListener = function () {
             var listener = XhtmlSaxListener.call(this);
-            listener.block_tags.push('embed');
+            listener.block_tags.remove('param');
+            listener.inline_tags.push('param');
+            listener.inline_tags.push('embed');
             return listener;
         };
         WYMeditor.XhtmlSaxListener.prototype = XhtmlSaxListener.prototype;
