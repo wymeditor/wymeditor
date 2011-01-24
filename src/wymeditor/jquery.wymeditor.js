@@ -38,7 +38,7 @@ if(!WYMeditor) var WYMeditor = {};
 
         WYMeditor.console = {};
         for (var i = 0; i < names.length; ++i)
-            WYMeditor.console[names[i]] = function() {}
+            WYMeditor.console[names[i]] = function() {};
 
     } else WYMeditor.console = window.console;
 })();
@@ -713,17 +713,18 @@ WYMeditor.editor.prototype.init = function() {
 
   //load subclass - browser specific
   //unsupported browsers: do nothing
+  var WymClass = false;
   if (jQuery.browser.msie) {
-    var WymClass = new WYMeditor.WymClassExplorer(this);
+    WymClass = new WYMeditor.WymClassExplorer(this);
   }
   else if (jQuery.browser.mozilla) {
-    var WymClass = new WYMeditor.WymClassMozilla(this);
+    WymClass = new WYMeditor.WymClassMozilla(this);
   }
   else if (jQuery.browser.opera) {
-    var WymClass = new WYMeditor.WymClassOpera(this);
+    WymClass = new WYMeditor.WymClassOpera(this);
   }
   else if (jQuery.browser.safari) {
-    var WymClass = new WYMeditor.WymClassSafari(this);
+    WymClass = new WYMeditor.WymClassSafari(this);
   }
 
   if(WymClass) {
@@ -781,7 +782,7 @@ WYMeditor.editor.prototype.init = function() {
         var oTool = aTools[i];
         if(oTool.name && oTool.title)
           var sTool = this._options.toolsItemHtml;
-          var sTool = h.replaceAll(sTool, WYMeditor.TOOL_NAME, oTool.name);
+          sTool = h.replaceAll(sTool, WYMeditor.TOOL_NAME, oTool.name);
           sTool = h.replaceAll(sTool, WYMeditor.TOOL_TITLE, this._options.stringDelimiterLeft
             + oTool.title
             + this._options.stringDelimiterRight);
@@ -795,7 +796,7 @@ WYMeditor.editor.prototype.init = function() {
       var aClasses = eval(this._options.classesItems);
       var sClasses = "";
 
-      for(var i = 0; i < aClasses.length; i++) {
+      for(i = 0; i < aClasses.length; i++) {
         var oClass = aClasses[i];
         if(oClass.name && oClass.title)
           var sClass = this._options.classesItemHtml;
@@ -810,7 +811,7 @@ WYMeditor.editor.prototype.init = function() {
       var aContainers = eval(this._options.containersItems);
       var sContainers = "";
 
-      for(var i = 0; i < aContainers.length; i++) {
+      for(i = 0; i < aContainers.length; i++) {
         var oContainer = aContainers[i];
         if(oContainer.name && oContainer.title)
           var sContainer = this._options.containersItemHtml;
@@ -889,7 +890,7 @@ WYMeditor.editor.prototype.bindEvents = function() {
 };
 
 WYMeditor.editor.prototype.ready = function() {
-  return(this._doc != null);
+  return(this._doc !== null);
 };
 
 
@@ -907,7 +908,7 @@ WYMeditor.editor.prototype.box = function() {
  */
 WYMeditor.editor.prototype.html = function(html) {
 
-  if(typeof html === 'string') jQuery(this._doc.body).html(html);
+  if(typeof html === 'string') return(jQuery(this._doc.body).html(html));
   else return(jQuery(this._doc.body).html());
 };
 
@@ -983,7 +984,7 @@ WYMeditor.editor.prototype.container = function(sType) {
       }
 
       //if it exists, switch
-      if(container!=null) {
+      if(container!==null) {
 
         sType = (container.tagName.toLowerCase() == WYMeditor.TD)? WYMeditor.TH: WYMeditor.TD;
         this.switchTo(container,sType);
@@ -1004,9 +1005,9 @@ WYMeditor.editor.prototype.container = function(sType) {
         if(sType.toLowerCase() == WYMeditor.BLOCKQUOTE) {
 
           var blockquote = this.findUp(this.container(), WYMeditor.BLOCKQUOTE);
-
-          if(blockquote == null) {
-
+          
+          if(blockquote === null) {
+          
             newNode = this._doc.createElement(sType);
             container.parentNode.insertBefore(newNode,container);
             newNode.appendChild(container);
@@ -1034,6 +1035,7 @@ WYMeditor.editor.prototype.container = function(sType) {
     }
   }
   else return(this.selected());
+  return;
 };
 
 /* @name toggleClass
@@ -1124,7 +1126,7 @@ WYMeditor.editor.prototype.replaceStrings = function(sVal) {
     sVal = WYMeditor.Helper.replaceAll(sVal, this._options.stringDelimiterLeft + key
     + this._options.stringDelimiterRight,
     WYMeditor.STRINGS[this._options.lang][key]);
-  };
+  }
   return(sVal);
 };
 
@@ -1190,6 +1192,7 @@ WYMeditor.editor.prototype.dialog = function( dialogType, dialogFeatures, bodyHt
 
       default:
         sBodyHtml = bodyHtml;
+      break;
     }
 
     var h = WYMeditor.Helper;
@@ -1259,8 +1262,9 @@ WYMeditor.editor.prototype.paste = function(str) {
     }
 
     // Do some minor cleanup (#131)
-    if (jQuery(container).text() == '') {
-        jQuery(container).remove();
+
+    if (jQuery(container).text() === '') {
+        jQuery(container).remove(); 
     }
     // And remove br (if editor was empty)
     jQuery('body > br', this._doc).remove();
@@ -1274,7 +1278,7 @@ WYMeditor.editor.prototype.insert = function(html) {
     var selection = this._iframe.contentWindow.getSelection(),
         range,
         node;
-    if (selection.focusNode != null) {
+    if (selection.focusNode !== null) {
         // Overwrite selection with provided html
         range = selection.getRangeAt(0);
         node = range.createContextualFragment(html);
@@ -1282,7 +1286,7 @@ WYMeditor.editor.prototype.insert = function(html) {
         range.insertNode(node);
     } else {
         // Fall back to the internal paste function if there's no selection
-        this.paste(html)
+        this.paste(html);
     }
 };
 
@@ -1319,25 +1323,25 @@ WYMeditor.editor.prototype.addCssRules = function(doc, aCss) {
 
 WYMeditor.editor.prototype.computeBasePath = function() {
   return jQuery(jQuery.grep(jQuery('script'), function(s){
-    return (s.src && s.src.match(/jquery\.wymeditor(\.pack|\.min|\.packed)?\.js(\?.*)?$/ ))
+    return (s.src && s.src.match(/jquery\.wymeditor(\.pack|\.min|\.packed)?\.js(\?.*)?$/ ));
   })).attr('src').replace(/jquery\.wymeditor(\.pack|\.min|\.packed)?\.js(\?.*)?$/, '');
 };
 
 WYMeditor.editor.prototype.computeWymPath = function() {
   return jQuery(jQuery.grep(jQuery('script'), function(s){
-    return (s.src && s.src.match(/jquery\.wymeditor(\.pack|\.min|\.packed)?\.js(\?.*)?$/ ))
+    return (s.src && s.src.match(/jquery\.wymeditor(\.pack|\.min|\.packed)?\.js(\?.*)?$/ ));
   })).attr('src');
 };
 
 WYMeditor.editor.prototype.computeJqueryPath = function() {
   return jQuery(jQuery.grep(jQuery('script'), function(s){
-    return (s.src && s.src.match(/jquery(-(.*)){0,1}(\.pack|\.min|\.packed)?\.js(\?.*)?$/ ))
+    return (s.src && s.src.match(/jquery(-(.*)){0,1}(\.pack|\.min|\.packed)?\.js(\?.*)?$/ ));
   })).attr('src');
 };
 
 WYMeditor.editor.prototype.computeCssPath = function() {
   return jQuery(jQuery.grep(jQuery('link'), function(s){
-   return (s.href && s.href.match(/wymeditor\/skins\/(.*)screen\.css(\?.*)?$/ ))
+   return (s.href && s.href.match(/wymeditor\/skins\/(.*)screen\.css(\?.*)?$/ ));
   })).attr('href');
 };
 
@@ -1350,13 +1354,13 @@ WYMeditor.editor.prototype.configureEditorUsingRawCss = function() {
     CssParser.parse(this._options.styles, false);
   }
 
-  if(this._options.classesItems.length == 0) {
+  if(this._options.classesItems.length === 0) {
     this._options.classesItems = CssParser.css_settings.classesItems;
   }
-  if(this._options.editorStyles.length == 0) {
+  if(this._options.editorStyles.length === 0) {
     this._options.editorStyles = CssParser.css_settings.editorStyles;
   }
-  if(this._options.dialogStyles.length == 0) {
+  if(this._options.dialogStyles.length === 0) {
     this._options.dialogStyles = CssParser.css_settings.dialogStyles;
   }
 };
@@ -1462,6 +1466,9 @@ WYMeditor.INIT_DIALOG = function(index) {
     //fix MSIE selection if link image has been clicked
     if(!selected && wym._selected_image)
       selected = jQuery(wym._selected_image).parentsOrSelf(WYMeditor.A);
+  break;
+
+  default:
   break;
 
   }
@@ -1728,11 +1735,11 @@ WYMeditor.XmlHelper.prototype.tagOptions = function(options)
     var value = options[key];
     if(typeof value != 'function' && value.length > 0) {
 
-      if(parseInt(key) == key && typeof value == 'object'){
+      if(parseInt(key, 10) == key && typeof value == 'object'){
         key = value.shift();
         value = value.pop();
       }
-      if(key != '' && value != ''){
+      if(key !== '' && value !== ''){
         xml._formated_options += ' '+key+'="'+xml.escapeOnce(value)+'"';
       }
     }
@@ -1776,7 +1783,7 @@ WYMeditor.XmlHelper.prototype.parseAttributes = function(tag_attributes)
           var value = v.replace(/^[\s=]+/, "");
           var delimiter = value.charAt(0);
           delimiter = delimiter == '"' ? '"' : (delimiter=="'"?"'":'');
-          if(delimiter != ''){
+          if(delimiter !== ''){
             value = delimiter == '"' ? value.replace(/^"|"+$/g, '') :  value.replace(/^'|'+$/g, '');
           }
           tag_attributes = tag_attributes.replace(match[0],'');
@@ -2411,7 +2418,7 @@ WYMeditor.XhtmlValidator = {
 
     if (this._tags[tag] && this._tags[tag]['attributes']) {
       for (k in this._tags[tag]['attributes']) {
-        result.push(parseInt(k) == k ? this._tags[tag]['attributes'][k] : k);
+        result.push(parseInt(k, 10) == k ? this._tags[tag]['attributes'][k] : k);
       }
     }
     return result;
@@ -2422,7 +2429,7 @@ WYMeditor.XhtmlValidator = {
     for (var key in this._events){
       result.push(this._events[key]);
     }
-    for (var key in this._attributes){
+    for (key in this._attributes){
       result.push(this._attributes[key]);
     }
     return result;
@@ -2471,7 +2478,7 @@ WYMeditor.XhtmlValidator = {
   {
     if ( this._tags[tag] &&
       (this._tags[tag]['attributes'] && this._tags[tag]['attributes'][attribute] && value.length > 0 && !value.match(this._tags[tag]['attributes'][attribute])) || // invalid format
-      (this._tags[tag] && this._tags[tag]['required'] && WYMeditor.Helper.contains(this._tags[tag]['required'], attribute) && value.length == 0) // required attribute
+      (this._tags[tag] && this._tags[tag]['required'] && WYMeditor.Helper.contains(this._tags[tag]['required'], attribute) && value.length === 0) // required attribute
     ) {
       return false;
     }
@@ -2541,7 +2548,7 @@ WYMeditor.ParallelRegex.prototype.addPattern = function(pattern, label)
 */
 WYMeditor.ParallelRegex.prototype.match = function(subject)
 {
-  if (this._patterns.length == 0) {
+  if (this._patterns.length === 0) {
     return [false, ''];
   }
   var matches = subject.match(this._getCompoundedRegex());
@@ -2568,7 +2575,7 @@ WYMeditor.ParallelRegex.prototype.match = function(subject)
 */
 WYMeditor.ParallelRegex.prototype._getCompoundedRegex = function()
 {
-  if (this._regex == null) {
+  if (this._regex === null) {
     for (var i = 0, count = this._patterns.length; i < count; i++) {
       this._patterns[i] = '(' + this._untokenizeRegex(this._tokenizeRegex(this._patterns[i]).replace(/([\/\(\)])/g,'\\$1')) + ')';
     }
@@ -2837,7 +2844,7 @@ WYMeditor.Lexer.prototype.parse = function(raw)
       return false;
     }
 
-    if (raw == '') {
+    if (raw === '') {
       return true;
     }
     if (raw.length == length) {
@@ -3163,7 +3170,12 @@ WYMeditor.XhtmlParser.prototype._addNonTagBlock = function(match, state, type)
       case 'addCss':
       this._Listener.addCss(this._non_tag+match);
       break;
+      default:
+      break;
     }
+    break;
+    default:
+    break;
   }
   return true;
 };
@@ -3180,6 +3192,8 @@ WYMeditor.XhtmlParser.prototype.OpeningTag = function(match, state)
     break;
     case WYMeditor.LEXER_EXIT:
     this._callOpenTagListener(this._tag, this._tag_attributes);
+    default:
+    break;
   }
   return true;
 };
@@ -3192,7 +3206,7 @@ WYMeditor.XhtmlParser.prototype.ClosingTag = function(match, state)
 
 WYMeditor.XhtmlParser.prototype._callOpenTagListener = function(tag, attributes)
 {
-  var  attributes = attributes || {};
+  var attributes = attributes || {};
   this.autoCloseUnclosedBeforeNewOpening(tag);
 
   if(this._Listener.isBlockTag(tag)){
@@ -3218,7 +3232,7 @@ WYMeditor.XhtmlParser.prototype._callCloseTagListener = function(tag)
 
     if(this._Listener.isBlockTag(tag)){
       var expected_tag = this._Listener._tag_stack.pop();
-      if(expected_tag == false){
+      if(expected_tag === false){
         return;
       }else if(expected_tag != tag){
         tag = expected_tag;
@@ -3244,7 +3258,7 @@ WYMeditor.XhtmlParser.prototype._decreaseOpenTagCounter = function(tag)
 {
   if(this._Listener._open_tags[tag]){
     this._Listener._open_tags[tag]--;
-    if(this._Listener._open_tags[tag] == 0){
+    if(this._Listener._open_tags[tag] === 0){
       this._Listener._open_tags[tag] = undefined;
     }
     return true;
@@ -3643,7 +3657,7 @@ WYMeditor.WymCssLexer = function(parser, only_wym_blocks)
 
   this.mapHandler('WymCss', 'Ignore');
 
-  if(only_wym_blocks == true){
+  if(only_wym_blocks === true){
     this.addEntryPattern("/\\\x2a[<\\s]*WYMeditor[>\\s]*\\\x2a/", 'Ignore', 'WymCss');
     this.addExitPattern("/\\\x2a[<\/\\s]*WYMeditor[>\\s]*\\\x2a/", 'WymCss');
   }
@@ -3710,7 +3724,7 @@ WYMeditor.WymCssParser.prototype.WymCssStyle = function(match, status)
 {
   if(status == WYMeditor.LEXER_UNMATCHED){
     match = WYMeditor.Helper.trim(match);
-    if(match != ''){
+    if(match !== ''){
       this._current_item[this._current_element].style = match;
     }
   }else if (status == WYMeditor.LEXER_EXIT){
@@ -3737,7 +3751,7 @@ WYMeditor.WymCssParser.prototype.WymCssStyleDeclaration = function(match)
   if(match.indexOf('.') > 0){
     var parts = match.split('.');
     this._current_element = parts[1];
-    var tag = parts[0];
+    tag = parts[0];
   }else{
     this._current_element = match;
   }
