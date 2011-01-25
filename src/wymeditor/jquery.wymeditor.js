@@ -957,10 +957,11 @@ WYMeditor.editor.prototype.exec = function(cmd) {
 
     default:
       var custom_run = false;
+      var _this = this;
       jQuery.each(this._options.customCommands, function() {
         if(cmd == this.name) {
           custom_run = true;
-          this.run.apply(this);
+          this.run.apply(_this);
           return false;
         }
       });
