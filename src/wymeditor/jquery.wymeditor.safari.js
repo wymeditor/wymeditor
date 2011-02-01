@@ -69,12 +69,13 @@ WYMeditor.WymClassSafari.prototype.initIframe = function(iframe) {
 WYMeditor.WymClassSafari.prototype._exec = function(cmd,param) {
 
     if(!this.selected()) return(false);
+    
+    var focusNode = this.selected();    
 
     switch(cmd) {
     
     case WYMeditor.INDENT: case WYMeditor.OUTDENT:
     
-        var focusNode = this.selected();    
         var sel = this._iframe.contentWindow.getSelection();
         var anchorNode = sel.anchorNode;
         if(anchorNode.nodeName == "#text") anchorNode = anchorNode.parentNode;
@@ -82,14 +83,14 @@ WYMeditor.WymClassSafari.prototype._exec = function(cmd,param) {
         focusNode = this.findUp(focusNode, WYMeditor.BLOCKS);
         anchorNode = this.findUp(anchorNode, WYMeditor.BLOCKS);
         
-        if(focusNode && focusNode == anchorNode
-          && focusNode.tagName.toLowerCase() == WYMeditor.LI) {
+        if(focusNode && focusNode == anchorNode &&
+          focusNode.tagName.toLowerCase() == WYMeditor.LI) {
 
             var ancestor = focusNode.parentNode.parentNode;
 
-            if(focusNode.parentNode.childNodes.length>1
-              || ancestor.tagName.toLowerCase() == WYMeditor.OL
-              || ancestor.tagName.toLowerCase() == WYMeditor.UL)
+            if(focusNode.parentNode.childNodes.length>1 ||
+              ancestor.tagName.toLowerCase() == WYMeditor.OL ||
+              ancestor.tagName.toLowerCase() == WYMeditor.UL)
                 this._doc.execCommand(cmd,'',null);
         }
 
@@ -101,7 +102,6 @@ WYMeditor.WymClassSafari.prototype._exec = function(cmd,param) {
 
         //Safari creates lists in e.g. paragraphs.
         //Find the container, and remove it.
-        var focusNode = this.selected();
         var container = this.findUp(focusNode, WYMeditor.MAIN_CONTAINERS);
         if(container) jQuery(container).replaceWith(jQuery(container).html());
 
@@ -111,12 +111,16 @@ WYMeditor.WymClassSafari.prototype._exec = function(cmd,param) {
 
         if(param) this._doc.execCommand(cmd,'',param);
         else this._doc.execCommand(cmd,'',null);
+
+    break;
     }
     
     //set to P if parent = BODY
-    var container = this.selected();
+    container = this.selected();
     if(container && container.tagName.toLowerCase() == WYMeditor.BODY)
         this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
+    
+    return true;
 
 };
 
@@ -184,12 +188,12 @@ WYMeditor.WymClassSafari.prototype.keyup = function(evt) {
         wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P); //create P after PRE
   }
   
-  if(evt.keyCode != 8
-       && evt.keyCode != 17
-       && evt.keyCode != 46
-       && evt.keyCode != 224
-       && !evt.metaKey
-       && !evt.ctrlKey) {
+  if(evt.keyCode != 8 &&
+       evt.keyCode != 17 &&
+       evt.keyCode != 46 &&
+       evt.keyCode != 224 &&
+       !evt.metaKey &&
+       !evt.ctrlKey) {
       
     //NOT BACKSPACE, NOT DELETE, NOT CTRL, NOT COMMAND
     //text nodes replaced by P
@@ -206,9 +210,9 @@ WYMeditor.WymClassSafari.prototype.keyup = function(evt) {
       name == "sub" ||
       name == "sup" ||
       name == "a" ||
-      name == "span" //fix #110
-
-    ) name = container.parentNode.tagName.toLowerCase();
+      name == "span" /* fix #110 */ ) {
+        name = container.parentNode.tagName.toLowerCase();
+    }
 
     if(name == WYMeditor.BODY || name == WYMeditor.DIV) wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P); //fix #110 for DIV
   }
@@ -216,7 +220,7 @@ WYMeditor.WymClassSafari.prototype.keyup = function(evt) {
 
 WYMeditor.WymClassSafari.prototype.openBlockTag = function(tag, attributes)
 {
-    var attributes = this.validator.getValidTagAttributes(tag, attributes);
+    attributes = this.validator.getValidTagAttributes(tag, attributes);
 
     // Handle Safari styled spans
     if (tag == 'span' && attributes.style) {
