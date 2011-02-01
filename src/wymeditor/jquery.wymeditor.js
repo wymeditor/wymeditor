@@ -389,7 +389,7 @@ jQuery.fn.wymeditor = function(options) {
                      "'><a href='#' name='" +
                      WYMeditor.TOOL_NAME +
                      "' title='" +
-                     WYMeditor.TOO +L_TITLE +
+                     WYMeditor.TOOL_TITLE +
                      "'>" +
                      WYMeditor.TOOL_TITLE +
                      "</a></li>",
