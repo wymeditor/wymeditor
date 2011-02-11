@@ -63,6 +63,9 @@ WYMeditor.WymClassMozilla.prototype.initIframe = function(iframe) {
     //bind editor keyup events
     jQuery(this._doc).bind("keyup", this.keyup);
     
+    //bind editor click events
+    jQuery(this._doc).bind("click", this.click);
+
     //bind editor focus events (used to reset designmode - Gecko bug)
     jQuery(this._doc).bind("focus", function () { 
         // Fix scope
@@ -238,6 +241,19 @@ WYMeditor.WymClassMozilla.prototype.keyup = function(evt) {
 
     if(name == WYMeditor.BODY) wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
   }
+};
+
+//click handler
+WYMeditor.WymClassMozilla.prototype.click = function(evt) {
+
+	var wym = WYMeditor.INSTANCES[this.title];
+	var container = wym.selected();
+
+	if(container && container.tagName.toLowerCase() == WYMeditor.TR) {
+		jQuery(WYMeditor.TD, wym._doc.body).append('<br />');
+	} else if (container && container.tagName.toLowerCase() == WYMeditor.BODY) {
+		wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
+	}
 };
 
 WYMeditor.WymClassMozilla.prototype.enableDesignMode = function() {

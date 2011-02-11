@@ -1,5 +1,5 @@
 /**
- * @version 0.5-rc2
+ * @version 0.5-rc3
  *
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (c) 2005 - 2010 Jean-Francois Hovinne, http://www.wymeditor.org/
@@ -174,6 +174,7 @@ jQuery.extend(WYMeditor, {
     BR                  : "br",
     IMG                 : "img",
     TABLE               : "table",
+    TR                  : "tr",
     TD                  : "td",
     TH                  : "th",
     UL                  : "ul",
