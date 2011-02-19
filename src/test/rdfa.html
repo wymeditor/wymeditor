@@ -10,7 +10,8 @@
  *
  * File Name:
  *        rdfa.html
- *        RDFa editor implementation test page.
+ *        RDFa editor implementation test page
+ *        Using rdfquery - http://code.google.com/p/rdfquery/ by Jeni Tennison & contributors
  *        See the documentation for more info.
  *
  * File Authors:
@@ -29,6 +30,7 @@
     .foaf_homepage { background-color: #c9c; }
 </style>
 <script type="text/javascript" src="../jquery/jquery.js"></script>
+<script type="text/javascript" src="../jquery/jquery.rdfquery.rdfa.min-1.0.js"></script>
 <script type="text/javascript" src="../wymeditor/jquery.wymeditor.js"></script>
 <script type="text/javascript" src="../wymeditor/jquery.wymeditor.explorer.js"></script>
 <script type="text/javascript" src="../wymeditor/jquery.wymeditor.mozilla.js"></script>
@@ -91,6 +93,36 @@ jQuery(function() {
     jQuery('.wymeditor').wymeditor({
         stylesheet: 'wym_stylesheet.css',
         postInit: function(wym) {
+
+            //add the namespaces
+            jQuery('html', wym._doc)
+                .attr('xmlns', 'http://www.w3.org/1999/xhtml')
+                .attr('xmlns:foaf', 'http://xmlns.com/foaf/0.1/')
+                .attr('xmlns:dc', 'http://purl.org/dc/elements/1.1/')
+                .attr('version', 'XHTML+RDFa 1.0')
+                .attr('xml:lang', 'en');
+
+            //construct the RDF export button's html
+            var html = '<li class="wym_tools_rdfexport">'
+                     + '<a href="#"'
+                     + ' style="background-image: none; text-indent: 0px; width: auto;">'
+                     + 'RDF'
+                     + '</a></li>';
+
+            //add the button to the tools box
+            jQuery(wym._box)
+                .find(wym._options.toolsSelector + wym._options.toolsListSelector)
+                .append(html);
+
+            //handle click event on RDF export button
+            //using rdfquery - http://code.google.com/p/rdfquery/
+            jQuery(wym._box)
+                .find('li.wym_tools_rdfexport a')
+                .click(function() {
+                    alert(jQuery(wym._doc.body).rdf()
+                      .databank
+                      .dump({format:'application/rdf+xml', serialize: true}));
+                });
 
             //set the classes panel as dropdown
             jQuery(wym._box).find('div.wym_classes')
