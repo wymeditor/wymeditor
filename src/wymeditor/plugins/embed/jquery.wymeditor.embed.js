@@ -15,16 +15,13 @@
  *        Jonatan Lundin (jonatan.lundin a-t gmail dotcom)
  */
 
-Array.prototype.remove = function(item)
-{
-    var arrayName = this;
-    for(var i = this.length; i--;) {
-        if(this[i] === item) this.splice(i,1);
-    }
-    return this;
-};
-
 (function() {
+    function removeItem (item, arr) {
+        for(var i = arr.length; i--;) {
+            if(arr[i] === item) arr.splice(i,1);
+        }
+        return arr;
+    };
     if (WYMeditor && WYMeditor.XhtmlValidator['_tags']['param']['attributes']) {
         
         WYMeditor.XhtmlValidator['_tags']["embed"] = {
@@ -49,7 +46,7 @@ Array.prototype.remove = function(item)
         var XhtmlSaxListener = WYMeditor.XhtmlSaxListener;
         WYMeditor.XhtmlSaxListener = function () {
             var listener = XhtmlSaxListener.call(this);
-            listener.block_tags.remove('param');
+            removeItem('param', listener.block_tags);
             listener.inline_tags.push('param');
             listener.inline_tags.push('embed');
             return listener;
