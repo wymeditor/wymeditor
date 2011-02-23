@@ -2963,8 +2963,7 @@ WYMeditor.Lexer.prototype._invokeParser = function(content, is_match)
   }
   var current = this._mode.getCurrent();
   var handler = this._mode_handlers[current];
-  var result;
-  eval('result = this._parser.' + handler + '(content, is_match);');
+  var result this._parser[handler](content, is_match);
   return result;
 };
 
