@@ -1,4 +1,4 @@
-Wymeditor.Templates = function () {
+Wymeditor.ui.Templates = function () {
     /*
      * Modified version of John Resig's micro-templating script
      * See http://ejohn.org/blog/javascript-micro-templating/ for more

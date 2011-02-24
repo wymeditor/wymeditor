@@ -1,4 +1,4 @@
-Wymeditor.Toolbar = function (options) {
+Wymeditor.ui.Toolbar = function (options) {
     this._options = jQuery.extend(true, {
         renderTo: '',
         layout: 'default'
