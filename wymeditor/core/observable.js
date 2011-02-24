@@ -12,6 +12,7 @@ Wymeditor.core.Observable.prototype = {
 
         this.listeners[eventName] = this.listeners[eventName] || [];
         this.listeners[eventName].push(callback);
+        return true;
     },
 
     /*
