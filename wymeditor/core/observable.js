@@ -46,7 +46,7 @@ Wymeditor.core.Observable.prototype = {
 
         data = data || {};
         data.name = eventName;
-        data.scope = this;
+        data.source = this;
 
         eventListeners = this.listeners[eventName] || false;
 

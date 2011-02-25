@@ -1,19 +1,27 @@
 Wymeditor.core.EditableArea = function (element) {
     this.element = $(element);
     
-    this.enable();
+    this.init();
 }
 Wymeditor.core.EditableArea.prototype = Wymeditor.utils.extentPrototypeOf(Wymeditor.core.Observable, {
     commands: {
-        
+        wrap: function () {},
+        unwrap: function () {}
+    },
+    
+    init: function () {
+        this.fireEvent('init');
+        this.enable();
+        this.fireEvent('postInit');
     },
     
     enable: function () {
-        this.element.contentEditable = true;
-        
+        this.fireEvent('enable');
+        this.element.attr('contentEditable', true);
     },
     disable: function () {
-        this.element.contentEditable = false;
+        this.fireEvent('disable');
+        this.element.attr('contentEditable',false);
     },
     exec: function (command, options) {
         
