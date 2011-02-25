@@ -132,8 +132,8 @@ WYMeditor.WymClassExplorer.prototype._exec = function(cmd,param) {
 WYMeditor.WymClassExplorer.prototype.selected = function() {
 
     var caretPos = this._iframe.contentWindow.document.caretPos;
-        if(caretPos!==null) {
-            if(caretPos.parentElement!=undefined)
+        if(caretPos) {
+            if(caretPos.parentElement)
               return(caretPos.parentElement());
         }
 };
