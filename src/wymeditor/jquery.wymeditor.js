@@ -1567,10 +1567,6 @@ WYMeditor.INIT_DIALOG = function(index) {
         for (var cellIndex = 0, cell; cellIndex < columnCount; cellIndex++)
         {
           cell = row.insertCell(cellIndex);
-
-          // Mozilla Firefox seems to have problems with empty cells
-          // when inline editing of tables is disabled.
-          cell.innerHTML = '&nbsp;';
         }
       }
 
