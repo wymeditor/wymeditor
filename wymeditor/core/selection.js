@@ -1,7 +1,7 @@
-Wymeditor.core.Range = function () {
+Wymeditor.core.Selection = function () {
     // Rangy-wrapper
 };
-Wymeditor.core.Range.prototype = {
+Wymeditor.core.Selection.prototype = {
     insert: function () {},
     replace: function () {},
 
