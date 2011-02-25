@@ -26,9 +26,9 @@ Project info
 ------------
  - **Web:** http://www.wymeditor.org/
  - **Forum:** http://forum.wymeditor.org/
- - **Source:** http://github.com/mrlundis/wymeditor/
- - **Bug/Feature Tracking:** http://github.com/mrlundis/wymeditor/issues
- - **Wiki:** http://wiki.github.com/mrlundis/wymeditor
+ - **Source:** http://github.com/wymeditor/wymeditor/
+ - **Bug/Feature Tracking:** http://github.com/wymeditor/wymeditor/issues
+ - **Wiki:** http://wiki.github.com/wymeditor/wymeditor
 
 License
 -------
