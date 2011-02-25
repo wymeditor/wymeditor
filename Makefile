@@ -24,6 +24,7 @@ wymeditor:
 	@@echo "Building" ${WE}
 
 	@@echo " - Merging files"
+	@@mkdir -p ${BUILD_DIR}/build
 	@@${MERGE}
 
 	@@echo ${WE} "Built"
