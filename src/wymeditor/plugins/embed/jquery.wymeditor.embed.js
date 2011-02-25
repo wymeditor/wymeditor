@@ -13,13 +13,16 @@
  *
  * File Authors:
  *        Jonatan Lundin (jonatan.lundin a-t gmail dotcom)
+ *        Roger Hu (roger.hu a-t gmail dotcom) 
  */
 
-/*
- * ISSUES:
- * - The closing object tag seems to be stripped out...
- */
 (function() {
+    function removeItem (item, arr) {
+        for(var i = arr.length; i--;) {
+            if(arr[i] === item) arr.splice(i,1);
+        }
+        return arr;
+    };
     if (WYMeditor && WYMeditor.XhtmlValidator['_tags']['param']['attributes']) {
         
         WYMeditor.XhtmlValidator['_tags']["embed"] = {
@@ -44,7 +47,9 @@
         var XhtmlSaxListener = WYMeditor.XhtmlSaxListener;
         WYMeditor.XhtmlSaxListener = function () {
             var listener = XhtmlSaxListener.call(this);
-            listener.block_tags.push('embed');
+            removeItem('param', listener.block_tags);
+            listener.inline_tags.push('param');
+            listener.inline_tags.push('embed');
             return listener;
         };
         WYMeditor.XhtmlSaxListener.prototype = XhtmlSaxListener.prototype;

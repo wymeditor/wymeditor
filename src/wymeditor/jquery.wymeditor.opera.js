@@ -97,15 +97,15 @@ WYMeditor.WymClassOpera.prototype.keydown = function(evt) {
 
   //Get a P instead of no container
   if(!jQuery(startNode).parentsOrSelf(
-                WYMeditor.MAIN_CONTAINERS.join(","))[0]
-      && !jQuery(startNode).parentsOrSelf('li')
-      && evt.keyCode != WYMeditor.KEY.ENTER
-      && evt.keyCode != WYMeditor.KEY.LEFT
-      && evt.keyCode != WYMeditor.KEY.UP
-      && evt.keyCode != WYMeditor.KEY.RIGHT
-      && evt.keyCode != WYMeditor.KEY.DOWN
-      && evt.keyCode != WYMeditor.KEY.BACKSPACE
-      && evt.keyCode != WYMeditor.KEY.DELETE)
+                WYMeditor.MAIN_CONTAINERS.join(","))[0] &&
+      !jQuery(startNode).parentsOrSelf('li') &&
+      evt.keyCode != WYMeditor.KEY.ENTER &&
+      evt.keyCode != WYMeditor.KEY.LEFT &&
+      evt.keyCode != WYMeditor.KEY.UP &&
+      evt.keyCode != WYMeditor.KEY.RIGHT &&
+      evt.keyCode != WYMeditor.KEY.DOWN &&
+      evt.keyCode != WYMeditor.KEY.BACKSPACE &&
+      evt.keyCode != WYMeditor.KEY.DELETE)
       wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
 
 };
