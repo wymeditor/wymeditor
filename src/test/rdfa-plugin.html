@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+ * WYMeditor : what you see is What You Mean web-based editor
+ * Copyright (c) 2005 - 2011 Jean-Francois Hovinne, http://www.wymeditor.org/
+ * Dual licensed under the MIT (MIT-license.txt)
+ * and GPL (GPL-license.txt) licenses.d
+ *
+ * For further information visit:
+ *        http://www.wymeditor.org/
+ *
+ * File Name:
+ *        rdfa-plugin.html
+ *        RDFa plugin implementation test page
+ *        Using rdfquery - http://code.google.com/p/rdfquery/ by Jeni Tennison & contributors
+ *        See the documentation for more info.
+ *
+ * File Authors:
+ *        Jean-Francois Hovinne (jf.hovinne a-t wymeditor dotorg)
+-->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>WYMeditor</title>
+<script type="text/javascript" src="../jquery/jquery.js"></script>
+<script type="text/javascript" src="../jquery/jquery.rdfquery.rdfa.min-1.0.js"></script>
+<script type="text/javascript" src="../wymeditor/jquery.wymeditor.js"></script>
+<script type="text/javascript" src="../wymeditor/jquery.wymeditor.explorer.js"></script>
+<script type="text/javascript" src="../wymeditor/jquery.wymeditor.mozilla.js"></script>
+<script type="text/javascript" src="../wymeditor/jquery.wymeditor.opera.js"></script>
+<script type="text/javascript" src="../wymeditor/jquery.wymeditor.safari.js"></script>
+<script type="text/javascript" src="../wymeditor/plugins/rdfa/jquery.wymeditor.rdfa.js"></script>
+
+<script type="text/javascript">
+jQuery(function() {
+    jQuery('.wymeditor').wymeditor({
+        postInit: function(wym) {
+            var buttons = {
+                foaf: {'typeof': ['Person'], 'rel': ['mbox']},
+                '': {'about': ['']}
+            };
+            rdfa = wym.rdfa({
+                'buttons': buttons
+            });
+        }
+    })
+});
+</script>
+
+</head>
+
+<body>
+<h1>RDFa plugin test page</h1>
+<p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+<form method="post" action="">
+<textarea class="wymeditor"></textarea>
+<input type="submit" class="wymupdate" />
+</form>
+
+</body>
+
+</html>
