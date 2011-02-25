@@ -13,6 +13,7 @@
  *
  * File Authors:
  *        Jonatan Lundin (jonatan.lundin a-t gmail dotcom)
+ *        Roger Hu (roger.hu a-t gmail dotcom) 
  */
 
 (function() {
