@@ -56,7 +56,7 @@ archive: pack min
 	@@cp -pR ${SRC_DIR}/wymeditor ${BUILD_DIR}/build/wymeditor/
 	@@rm ${BUILD_DIR}/build/wymeditor/wymeditor/*.js
 	@@cp ${WE} ${WE_PACK} ${WE_MIN} ${BUILD_DIR}/build/wymeditor/wymeditor/
-	@@cp -pR ${SRC_DIR}/*.txt ${SRC_DIR}/README ${BUILD_DIR}/build/wymeditor/
+	@@cp -pR ${SRC_DIR}/README ${BUILD_DIR}/build/wymeditor/
 	@@cp -pR ${SRC_DIR}/examples ${BUILD_DIR}/build/wymeditor/
 	@@cp -pR ${SRC_DIR}/jquery ${BUILD_DIR}/build/wymeditor/
 	@@tar -C ${BUILD_DIR}/build -czf ${WE_ARCH} --exclude '.svn' wymeditor
