@@ -1,9 +1,10 @@
 Wymeditor.core.EditableArea = function (element) {
+    Wymeditor.core.Observable.call(this);
     this.element = $(element);
     
     this.init();
 }
-Wymeditor.core.EditableArea.prototype = Wymeditor.utils.extentPrototypeOf(Wymeditor.core.Observable, {
+Wymeditor.core.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.core.Observable, {
     commands: {
         wrap: function () {},
         unwrap: function () {}

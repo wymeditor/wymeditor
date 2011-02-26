@@ -1,5 +1,5 @@
 Wymeditor.core.Observable = function () {
-    this.listeners = {};
+    this._listeners = {};
 }
 Wymeditor.core.Observable.prototype = {
     /*
@@ -10,8 +10,8 @@ Wymeditor.core.Observable.prototype = {
             return false;
         eventName = eventName.toLowerCase();
 
-        this.listeners[eventName] = this.listeners[eventName] || [];
-        this.listeners[eventName].push(callback);
+        this._listeners[eventName] = this._listeners[eventName] || [];
+        this._listeners[eventName].push(callback);
         return true;
     },
 
@@ -19,7 +19,7 @@ Wymeditor.core.Observable.prototype = {
      * removeListener
      */
     removeListener: function (eventName, callback) {
-        eventListeners = this.listeners[eventName.toLowerCase()] || false;
+        eventListeners = this._listeners[eventName.toLowerCase()] || false;
 
         if (eventListeners) {
             var a = [];
@@ -40,6 +40,7 @@ Wymeditor.core.Observable.prototype = {
      * fire
      */
     fireEvent: function (eventName, data) {
+        var listener;
         if (!eventName)
             return false;
         eventName = eventName.toLowerCase();
@@ -48,10 +49,11 @@ Wymeditor.core.Observable.prototype = {
         data.name = eventName;
         data.source = this;
 
-        eventListeners = this.listeners[eventName] || false;
+        eventListeners = eventName in this._listeners &&
+                            this._listeners[eventName] || false;
 
         if (eventListeners) {
-            for (listenter in eventListeners) {
+            for (var i = 0; listener = eventListeners[i]; i++) {
                 listener(data);
             };
             return true;
