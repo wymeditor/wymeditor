@@ -96,20 +96,15 @@ WYMeditor.RDFa.prototype.extendXHTMLParser = function() {
 WYMeditor.RDFa.prototype.setButtons = function() {
     var _this = this;
     var list = jQuery(this._wym._box).find('div.wym_classes ul');
-    jQuery.each(this._options.buttons, function(index, ns) {
-        jQuery.each(ns, function(attr, arr) {
-            var attr = attr;
-            jQuery.each(arr, function(i, value) {
-                list
-                  .append('<li></li>')
-                  .children(':last')
-                  .append('<a></a>')
-                  .children(':last')
-                  .attr('href', '#')
-                  .text(attr + ' ' + value)
-                  .bind('click', {instance: _this._wym, button: $(this), ns: index, attr: attr, value: value}, _this.clickButtonHandler);
-            });
-        });
+    jQuery.each(this._options.buttons, function(index, button) {
+      list
+        .append('<li></li>')
+        .children(':last')
+        .append('<a></a>')
+        .children(':last')
+        .attr('href', '#')
+        .text(button.title)
+        .bind('click', {instance: _this._wym, button: button, ns: button.ns, attr: button.attr, value: button.value}, _this.clickButtonHandler);
     });
 };
 

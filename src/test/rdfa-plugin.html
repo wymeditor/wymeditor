@@ -34,10 +34,11 @@
 jQuery(function() {
     jQuery('.wymeditor').wymeditor({
         postInit: function(wym) {
-            var buttons = {
-                foaf: {'typeof': ['Person'], 'rel': ['mbox']},
-                '': {'about': ['']}
-            };
+            var buttons = [
+                { ns: 'foaf', attr: 'typeof', value: 'Person', title: "A person" },
+                { ns: 'foaf', attr: 'rel', value: 'mbox', title: "Link to person's mailbox" },
+                { attr: 'about', title: "What the content is about" }
+            ];
             rdfa = wym.rdfa({
                 'buttons': buttons
             });
