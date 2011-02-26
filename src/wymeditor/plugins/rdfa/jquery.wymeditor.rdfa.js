@@ -24,7 +24,7 @@ WYMeditor.editor.prototype.rdfa = function(options) {
 //RDFa constructor
 WYMeditor.RDFa = function(options, wym) {
     options = jQuery.extend({
-        addNameSpaces: true,
+        setStdNameSpaces: true,
         extendXHTMLParser: true,
         buttons: {}
     }, options);
@@ -36,19 +36,29 @@ WYMeditor.RDFa = function(options, wym) {
 
 //RDFa plugin init
 WYMeditor.RDFa.prototype.init = function() {
-    if(this._options.addNameSpaces) this.addNameSpaces();
+    if(this._options.setStdNameSpaces) this.setStdNameSpaces();
     if(this._options.extendXHTMLParser) this.extendXHTMLParser();
     this.setButtons();
 };
 
 //Adding the namespaces to the document
-WYMeditor.RDFa.prototype.addNameSpaces = function() {
+WYMeditor.RDFa.prototype.setStdNameSpaces = function() {
+    this.addNameSpace('xmlns', 'http://www.w3.org/1999/xhtml');
+    this.addNameSpace('version', 'XHTML+RDFa 1.0');
+};
+
+WYMeditor.RDFa.prototype.addNameSpace = function(attr, value) {
     jQuery('html', this._wym._doc)
-        .attr('xmlns', 'http://www.w3.org/1999/xhtml')
-        .attr('version', 'XHTML+RDFa 1.0');
+        .attr(attr, value);
 };
 
 WYMeditor.RDFa.prototype.extendXHTMLParser = function() {
+    this.extendAttributes();
+    this.setStdVocabularies();
+    this.extendLinkAttributes();
+};
+
+WYMeditor.RDFa.prototype.extendAttributes = function() {
     //Add the RDFa attributes
     WYMeditor.XhtmlValidator._attributes['core']['attributes'].push(
         'rel',
@@ -61,9 +71,12 @@ WYMeditor.RDFa.prototype.extendXHTMLParser = function() {
         'resource',
         'datatype',
         'typeof');
+};
 
+WYMeditor.RDFa.prototype.setStdVocabularies = function() {
+    var _this = this;
     //Add the 'standard' vocabularies
-    WYMeditor.XhtmlValidator._attributes['core']['attributes'].push(
+    vocabularies = [
         'xmlns:biblio',
         'xmlns:cc',
         'xmlns:dbp',
@@ -75,8 +88,18 @@ WYMeditor.RDFa.prototype.extendXHTMLParser = function() {
         'xmlns:rdfs',
         'xmlns:taxo',
         'xmlns:xhv',
-        'xmlns:xsd');
+        'xmlns:xsd'
+    ];
+    jQuery.each(vocabularies, function(index, vocabulary) {
+        _this.addVocabulary(vocabulary);
+    });
+};
 
+WYMeditor.RDFa.prototype.addVocabulary = function(vocabulary) {
+    WYMeditor.XhtmlValidator._attributes['core']['attributes'].push(vocabulary);
+};
+
+WYMeditor.RDFa.prototype.extendLinkAttributes = function() {
     //Overwrite the <a> attributes 'rel' and 'rev'
     WYMeditor.XhtmlValidator._tags['a'] = {
         "attributes": {
@@ -127,4 +150,5 @@ WYMeditor.RDFa.prototype.clickButtonHandler = function(evt) {
             if(evt.data.value != null) jQuery(selected).attr(evt.data.attr, evt.data.value);
         }
     }
+    return false;
 };
