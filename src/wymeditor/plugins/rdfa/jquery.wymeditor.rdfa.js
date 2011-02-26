@@ -138,16 +138,29 @@ WYMeditor.RDFa.prototype.clickButtonHandler = function(evt) {
     //the attribute already exists, remove it
     if( jQuery(selected).attr(evt.data.attr) != undefined && jQuery(selected).attr(evt.data.attr) != '') {
         WYMeditor.console.log('attribute already exists, remove it:', evt.data.attr, jQuery(selected).attr(evt.data.attr));
-        jQuery(selected).removeAttr(evt.data.attr);
+        jQuery(selected)
+            .removeAttr(evt.data.attr)
+            .removeClass(evt.data.ns)
+            .removeClass(evt.data.attr)
+            .removeClass(evt.data.value);
 
     //else, add it
     } else {
         WYMeditor.console.log('attribute does not exist, add it:', evt.data.attr, evt.data.value);
         if(evt.data.value) { //value available
-            jQuery(selected).attr(evt.data.attr, evt.data.ns + ':' + evt.data.value);
+            jQuery(selected)
+                .attr(evt.data.attr, evt.data.ns + ':' + evt.data.value)
+                .addClass(evt.data.ns)
+                .addClass(evt.data.attr)
+                .addClass(evt.data.value);
         } else { //value not available
             evt.data.value = prompt('Value', '');
-            if(evt.data.value != null) jQuery(selected).attr(evt.data.attr, evt.data.value);
+            if(evt.data.value != null)
+                jQuery(selected)
+                    .attr(evt.data.attr, evt.data.value)
+                    .addClass(evt.data.ns)
+                    .addClass(evt.data.attr)
+                    .addClass(evt.data.value);
         }
     }
     return false;
