@@ -1,9 +1,7 @@
 Wymeditor.utils = {
-    array: {
-        slice: function (arr) {
-            return Array.prototype.slice.call(arr, Array.prototype.slice.call(arguments, 1));
-        }
-    },
+	slice: function (arr) {
+		return Array.prototype.slice.call(arr, Array.prototype.slice.call(arguments, 1));
+	},
 	extendPrototypeOf: function (Base, obj) {
 	    function F () {}
 	    F.prototype = Base.prototype;
@@ -21,6 +19,9 @@ Wymeditor.utils = {
 		}
 		return newPrototype;
     },
+	setScope: function (scope, func) {
+		return function() { func.apply(scope, [this].concat(Wymeditor.utils.slice(arguments))) };
+	},
     namespace: function(name, container) {
         var ns = name.split('.'),
             o = container || window,
