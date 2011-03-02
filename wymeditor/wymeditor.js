@@ -3,6 +3,8 @@
         version: "2.0a1",
         utils: {},
         core: {},
-        ui: {}
+        ui: {},
+        
+        TEXT_NODE: 3
     };
 })(jQuery, window);
