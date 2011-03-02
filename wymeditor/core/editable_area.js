@@ -60,9 +60,10 @@ Wymeditor.core.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymedi
         // Should find the nearest parrent that allows block elements
         element = this.element;
         
-        // Node needs content to be selectable in IE and Webkit
+        // Elements needs content to be selectable in IE and Webkit, now we only
+        // need to clean this up...
         return $('<'+type+' />')
-            .append(document.createTextNode(String.fromCharCode('U+FEFF')))
+            .append('<br />')
             .appendTo(element)[0];
     },
     
