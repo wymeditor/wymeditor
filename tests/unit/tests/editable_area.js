@@ -38,7 +38,7 @@ jQuery(function($){
         }
         
         editableArea.splitBlock(setup(), 0);
-        strictEqual(editableArea.html(), '<p><br _wym_placeholder="true"></p><p>Text to break</p>', 'Splitting block elements (index 0)');
+        strictEqual(editableArea.html(), '<p><br _wym_placeholder="true" /></p><p>Text to break</p>', 'Splitting block elements (index 0)');
         
         editableArea.splitBlock(setup(), 2);
         strictEqual(editableArea.html(), '<p>Te</p><p>xt to break</p>', 'Splitting block elements (index 2)');
@@ -46,7 +46,7 @@ jQuery(function($){
         var textNode = setup();
         
         editableArea.splitBlock(textNode, textNode.length);
-        strictEqual(editableArea.html(), '<p>Text to break</p><p><br _wym_placeholder="true"></p>', 'Splitting block elements (index 2)');
+        strictEqual(editableArea.html(), '<p>Text to break</p><p><br _wym_placeholder="true" /></p>', 'Splitting block elements (index 2)');
         
         editableArea.html('');
         
@@ -56,5 +56,8 @@ jQuery(function($){
         
         editableArea.splitBlock(textNode, 2);
         strictEqual(editableArea.html(), '<p>Nested <strong>te</strong></p><p><strong>st</strong></p>', 'Splitting nested elements (index 2)');
+        
+        editableArea.html('');
+        
     });
 });

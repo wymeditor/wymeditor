@@ -5,6 +5,7 @@
         core: {},
         ui: {},
         
-        TEXT_NODE: 3
+        TEXT_NODE: 3,
+        COMMENT_NODE: 8
     };
 })(jQuery, window);
