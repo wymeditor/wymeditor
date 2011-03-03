@@ -47,7 +47,6 @@ Wymeditor.core.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymedi
             event.preventDefault();
             
             range = rangy.getSelection().getRangeAt(0);
-                console.log(range);
             range.deleteContents();
             
             if (event.shiftKey) {
@@ -60,8 +59,12 @@ Wymeditor.core.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymedi
     },
     
     splitTextNode: function (textNode, offset) {
-        textNode.splitText(offset);
-        return textNode.nextSibling;
+        if (offset < textNode.length) {
+            textNode.splitText(offset);
+            return textNode.nextSibling;
+        } else {
+            return $(document.createTextNode('')).insertAfter(textNode)[0];
+        }
     },
     
     splitBlock: function (node, offset, container) {
@@ -78,27 +81,23 @@ Wymeditor.core.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymedi
         
         if (node.parentNode !== container) {
             do {
-                children.push(oldParent.removeChild(child));
-            } while (child = child.nextSibling && child);
+                children.push(child);
+                child = child.nextSibling;
+            } while (child);
             
             for (i = 0; child = children[i]; i++) {
-                newParent.appendChild(child);
-            }
-            
-            if (oldParent.nextSibling) {
-                oldParent.parentNode.insertBefore(newParent, oldParent.nextSibling);
-            } else {
-                oldParent.parentNode.appendChild(newParent);
-            }
-            
-            if (newParent.parentNode !== container) {
-                this.splitBlock(newParent, null, container);
+                newParent.appendChild(oldParent.removeChild(child));
             }
             
             oldParent.normalize();
             newParent.normalize();
             
             $([oldParent, newParent]).filter(':empty').append('<br _wym_placeholder="true" />');
+            $(newParent).insertAfter(oldParent);
+            
+            if (newParent.parentNode !== container) {
+                this.splitBlock(newParent, null, container);
+            }            
             
             return newParent;
         }
