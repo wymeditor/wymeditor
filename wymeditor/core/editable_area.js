@@ -1,5 +1,5 @@
 Wymeditor.EditableArea = function EditableArea (element) {
-    Wymeditor.core.Observable.call(this);
+    Wymeditor.Observable.call(this);
     this.element = $(element);
     
     this.dom = Wymeditor.dom;

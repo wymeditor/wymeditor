@@ -7,8 +7,6 @@ Wymeditor.utils = {
 	    F.prototype = Base.prototype;
 	    var newPrototype = new F();
 		
-		newPrototype.constructor = Base;
-		
 	    // Extend with optional methods and properties
 	    if (obj) {
 	        for (var i in obj) {

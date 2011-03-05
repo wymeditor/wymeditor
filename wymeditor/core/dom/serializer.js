@@ -34,4 +34,6 @@ Wymeditor.ns('dom').serialize = function serialize (node) {
             }
         }
     }
+    
+    return html;
 };
