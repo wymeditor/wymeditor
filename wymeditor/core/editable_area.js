@@ -1,13 +1,14 @@
-Wymeditor.core.EditableArea = function (element) {
+Wymeditor.EditableArea = function EditableArea (element) {
     Wymeditor.core.Observable.call(this);
     this.element = $(element);
     
-    this.selection = Wymeditor.core.selection;
+    this.dom = Wymeditor.dom;
+    this.selection = Wymeditor.selection;
     this.utils = Wymeditor.utils;
     
     this.init();
 }
-Wymeditor.core.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.core.Observable, {
+Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.Observable, {
     commands: {
         wrap: function () {},
         unwrap: function () {}
@@ -135,42 +136,8 @@ Wymeditor.core.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymedi
             this.element.html(html);
             return undefined;
         } else {
-            var childNodes = (typeof html === 'object' && html.tagName) ?
-                    html.childNodes : this.element[0].childNodes,
-                child, i, j,
-                attributes, attribute, attrName, attrValue;
-            
-            html = '';
-            if (childNodes) {
-                for (i=0; child = childNodes[i]; i++) {
-                    if (child.nodeType === Wymeditor.TEXT_NODE) {
-                        html += child.nodeValue.replace(/</g,'&lt;').replace(/>/g,'&gt;');
-                    } else if (child.nodeType === Wymeditor.COMMENT_NODE) {
-                        html += '<!--'+child.nodeValue+'-->';
-                    } else {
-                        html += '<'+child.nodeName.toLowerCase();
-                        attributes = child.attributes;
-                        
-                        for (j=0; attribute = attributes[j]; j++) {
-                            attrName = attribute.nodeName.toLowerCase();
-                            attrValue = attribute.nodeValue;
-                            
-                            if (attrName === 'style' && child.style.cssText) {
-                                html += ' style="'+child.style.cssText.toLowerCase()+'"';
-                            } else if (attrValue && attrName !== 'contenteditable') {
-                                html += ' '+attrName+'="'+attrValue+'"';
-                            }
-                        }
-                        
-                        if (child.childNodes && child.childNodes.length) {
-                            html += '>'+this.html(child);
-                            html += '</'+child.nodeName.toLowerCase()+'>';
-                        } else {
-                            html += ' />';
-                        }
-                    }
-                }
-            }
+            html = this.dom.serialize(this.element[0]);
+            // this.plugin.htmlFormatter.format(html)
             return html;
         }
     },

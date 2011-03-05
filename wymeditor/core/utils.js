@@ -21,14 +21,5 @@ Wymeditor.utils = {
     },
 	setScope: function (scope, func) {
 		return function() { func.apply(scope, [this].concat(Wymeditor.utils.slice(arguments))) };
-	},
-    namespace: function(name, container) {
-        var ns = name.split('.'),
-            o = container || window,
-            i, len;
-        for(i = 0, len = ns.length; i < len; i++){
-            o = o[ns[i]] = o[ns[i]] || {};
-        }
-        return o;
-    }
+	}
 };

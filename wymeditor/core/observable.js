@@ -1,7 +1,7 @@
-Wymeditor.core.Observable = function () {
+Wymeditor.Observable = function Observable () {
     this._listeners = {};
 }
-Wymeditor.core.Observable.prototype = {
+Wymeditor.Observable.prototype = {
     /*
      * listen
      */

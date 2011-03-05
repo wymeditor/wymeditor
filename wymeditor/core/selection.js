@@ -1,4 +1,4 @@
-Wymeditor.core.selection = (function () {
+Wymeditor.selection = (function () {
     return {
         selectNodeContents: function (node, collapse, start) {
             var range = rangy.createRange(),
