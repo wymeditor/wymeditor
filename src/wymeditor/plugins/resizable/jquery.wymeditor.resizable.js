@@ -50,35 +50,18 @@
 WYMeditor.editor.prototype.resizable = function(options) {
   
     var wym = this;
-    var iframe = jQuery(wym._box).find('iframe');
+    var $iframe = jQuery(wym._box).find('iframe');
+    var $iframe_div = jQuery(wym._box).find('.wym_iframe');
     var iframeOriginalSize = {};
 
     // Define some default options
     var default_options = {
-        start: function(e, ui) {               
-            iframeOriginalSize = {
-                width: jQuery(iframe).width(),
-                height: jQuery(iframe).height()
-            }
+        resize: function() {
+          $iframe_div.height($iframe.height());
         },
-
-        // resize is called by the jQuery resizable plugin whenever the
-        // client area was resized.
-        resize: function(e, ui) {                
-            var diff = ui.size.height - ui.originalSize.height;
-            jQuery(iframe).height( iframeOriginalSize.height + diff );
-
-            // If the plugin has horizontal resizing disabled we need to
-            // adjust the "width" attribute of the area css, because the
-            // resizing will set a fixed width (which breaks liquid layout
-            // of the wymeditor area).
-            if( !ui.options.handles['w'] && !ui.options.handles['e'] ) {
-                ui.size.width = "inherit";
-            }
-        },
+        alsoResize: $iframe,
         handles: "s,e,se",
-        minHeight: 250,
-        maxHeight: 600
+        minHeight: 250
     };
 
     // Merge given options with default options. Given options override
