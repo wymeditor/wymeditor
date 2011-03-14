@@ -132,7 +132,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
     },
     
     html: function (html) {
-        if (typeof html === 'string') {
+        if (this.utils.is('String', html)) {
             this.element.html(html);
             return undefined;
         } else {
