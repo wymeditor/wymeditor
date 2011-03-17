@@ -1,5 +1,5 @@
 Wymeditor.selection = (function () {
-    var utils = WYMeditor.utils;
+    var utils = Wymeditor.utils;
     
     return {
         selectNodeContents: function (node, collapse, start) {
@@ -16,10 +16,14 @@ Wymeditor.selection = (function () {
             } else if (collapse) {
                 selection.collapseToEnd();
             }
+            range.detach();
         },
         
         getCommonAncestor: function () {
-            var selection = rangy.getSelection();
+            var selection = rangy.getSelection(),
+                range = selection.getRangeAt(0),
+                commonAncestorContainer = range.commonAncestorContainer;
+            range.detach();
             return commonAncestorContainer;
         },
         
