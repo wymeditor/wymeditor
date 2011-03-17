@@ -121,6 +121,28 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
         return newBlock[0];
     },
     
+    formatBlock: function (target, tagName) {
+        var node,
+            newNode;
+        
+        if (target && (target.nodeName || target[0].nodeName)) {
+            node = $(target);
+        } else if (this.utils.is('String', target)) {
+            tagName = target;
+            node = $(this.selection.getCommonAncestor());
+        }
+        
+        while (!node.is(this.dom.structureManager.getCollectionSelector('block'))) {
+            if (node.is(this.element)) {
+                return;
+            }
+            node = node.parent();
+        }
+        
+        newNode = $('<'+tagName+'/>').append(node.clone().get(0).childNodes);
+        node.replaceWith(newNode);
+    },
+    
     populateEmptyElements: function (elements) {
         elements = elements || this.element;
         $(elements).children().andSelf()

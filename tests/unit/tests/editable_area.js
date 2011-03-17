@@ -60,4 +60,26 @@ jQuery(function($){
         editableArea.html('');
         
     });
+    
+    test('formatBlock', function() {
+        function setup (html) {
+            var node = $(html || '<p>Some text</p>');
+            editableArea.html('');
+            editableArea.element.append(node);
+            return node;
+        }
+        
+        editableArea.formatBlock(setup(), 'h1');
+        strictEqual(editableArea.html(), '<h1>Some text</h1>', 'Block formatting (on element)');
+        
+        editableArea.selection.selectNodeContents(setup()[0]);
+        editableArea.formatBlock('h1');
+        strictEqual(editableArea.html(), '<h1>Some text</h1>', 'Block formatting (on selection)');
+        
+        editableArea.formatBlock($('<em>Inline</em>').appendTo(setup()), 'h1');
+        strictEqual(editableArea.html(), '<h1>Some text<em>Inline</em></h1>', 'Block formatting (inline element)');
+        
+        editableArea.formatBlock(setup('<div><p>Nested</p></div>').children().get(0), 'h1');
+        strictEqual(editableArea.html(), '<div><h1>Nested</h1></div>', 'Block formatting (nested block elements)');
+    });
 });
