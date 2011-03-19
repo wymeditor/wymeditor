@@ -80,7 +80,8 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
         
         container = container || this.element[0];
         
-        if (node.parentNode !== container) {
+        // We're splitting the parentNode
+        if (child.parentNode !== container) {
             do {
                 children.push(child);
                 child = child.nextSibling;
