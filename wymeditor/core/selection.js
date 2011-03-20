@@ -29,8 +29,17 @@ Wymeditor.selection = (function () {
         
         insert: function () {},
         replace: function () {},
-    
-        wrap: function () {},
-        unwrap: function () {}
+        
+        wrap: function (element) {
+            element = $(element)[0];
+            
+            if (range.canSurroundContents()) {
+                range.surroundContents(element);
+            }
+        },
+        unwrap: function (element) {
+            element = $(element);
+            // ...
+        }
     };
 })();
