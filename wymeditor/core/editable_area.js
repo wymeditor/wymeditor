@@ -9,11 +9,6 @@ Wymeditor.EditableArea = function EditableArea (element) {
     this.init();
 }
 Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.Observable, {
-    commands: {
-        wrap: function () {},
-        unwrap: function () {}
-    },
-    
     init: function () {
         this.fireEvent('init');
         this.enable();
@@ -139,6 +134,18 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
         node.replaceWith(newNode);
     },
     
+    formatSelection: function (element) {
+        
+    },
+    
+    unformatSelection: function (element) {
+        
+    },
+    
+    toggleSelectionFormat: function (element) {
+        
+    },
+    
     findParentNode: function (node, filter, container) {
         node = $(node);
         container = container || this.element;
@@ -161,10 +168,6 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
         elements = elements || this.element;
         $(elements).children().andSelf()
             .filter(':empty').append('<br _wym_placeholder="true" />');
-    },
-    
-    exec: function (command, options) {
-        
     },
     
     html: function (html) {
