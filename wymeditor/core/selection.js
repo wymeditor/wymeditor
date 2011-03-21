@@ -1,4 +1,4 @@
-Wymeditor.selection = (function () {
+Wymeditor.selection = (function ($) {
     var utils = Wymeditor.utils;
     
     return {
@@ -27,19 +27,35 @@ Wymeditor.selection = (function () {
             return commonAncestorContainer;
         },
         
-        insert: function () {},
-        replace: function () {},
-        
-        wrap: function (element) {
-            element = $(element)[0];
+        getRanges: function (container) {
+            var selection = rangy.getSelection(),
+                allRanges = selection.getAllRanges(),
+                ranges = [],
+                range,
+                node,
+                i;
             
-            if (range.canSurroundContents()) {
-                range.surroundContents(element);
+            container = $(container);
+            
+            if (!container.length) {
+                return [];
             }
-        },
-        unwrap: function (element) {
-            element = $(element);
-            // ...
+            
+            // Add all ranges inside container
+            for (i = 0; range = allRanges[i]; i++) {
+                node = $(range.commonAncestorContainer);
+                
+                do {
+                    if (node[0] === container[0]) {
+                        ranges.push(range);
+                        break;
+                    } else {
+                        node = node.parent();
+                    }
+                } while (node.length);
+            }
+            
+            return ranges;
         }
     };
-})();
+})(jQuery);

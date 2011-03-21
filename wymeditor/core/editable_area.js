@@ -42,7 +42,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
         if (event.keyCode === 13) {
             event.preventDefault();
             
-            range = rangy.getSelection().getRangeAt(0);
+            range = this.selection.getRanges(this.element)[0];
             range.deleteContents();
             
             if (event.shiftKey) {
@@ -135,15 +135,31 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
     },
     
     formatSelection: function (element) {
+        var ranges = this.selection.getRanges(this.element),
+            range, i;
         
+        for (i = 0; range = ranges[i]; i++) {
+            if (this.utils.is('String', element)) {
+                // Asume we have a tag name
+                element = $('<'+element+'/>')[0];
+            } else {
+                // Make sure we get a DOM Node even if we have a jQuery object
+                // and that we dont try to use the same element twice
+                element = $(element).clone()[0];
+            }
+            
+            if (range.canSurroundContents()) {
+                range.surroundContents(element);
+            }
+        }
     },
     
     unformatSelection: function (element) {
-        
+        var ranges = this.selection.getRanges(this.element);
     },
     
     toggleSelectionFormat: function (element) {
-        
+        var ranges = this.selection.getRanges(this.element);        
     },
     
     findParentNode: function (node, filter, container) {

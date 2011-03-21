@@ -99,4 +99,30 @@ jQuery(function($){
         
         editableArea.html('');
     });
+
+    test('formatSelection', function() {
+        function setup () {
+            var text = document.createTextNode('Text to format'),
+                node = document.createElement('p'),
+                range = rangy.createRange(),
+                selection = rangy.getSelection();
+                
+            node.appendChild(text);
+            editableArea.html('');
+            editableArea.element.append(node);
+            
+            range.setStart(text, 8);
+            range.setEnd(text, 14);
+            
+            selection.setSingleRange(range);
+            
+            return range;
+        }
+        
+        setup();
+        editableArea.formatSelection('strong');
+        strictEqual(editableArea.html(), '<p>Text to <strong>format</strong></p>', 'Selection formatting');
+        
+        editableArea.html('');
+    });
 });
