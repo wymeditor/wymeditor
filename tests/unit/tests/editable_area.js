@@ -121,7 +121,11 @@ jQuery(function($){
         
         setup();
         editableArea.formatSelection('strong');
-        strictEqual(editableArea.html(), '<p>Text to <strong>format</strong></p>', 'Selection formatting');
+        strictEqual(editableArea.html(), '<p>Text to <strong>format</strong></p>', 'Selection formatting (tag name)');
+        
+        setup();
+        editableArea.formatSelection($('<a href="#" title="A link" />'));
+        strictEqual(editableArea.html(), '<p>Text to <a href="#" title="A link">format</a></p>', 'Selection formatting (dom node)');
         
         editableArea.html('');
     });
