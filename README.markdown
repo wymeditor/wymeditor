@@ -16,6 +16,7 @@ Compatability
 -------------
 
 WYMeditor is compatible with:
+
 * IE 6 +
 * Firefox 1.5+
 * Opera 9.5+
@@ -53,11 +54,11 @@ More examples can be found <a href="https://github.com/wymeditor/wymeditor/tree/
 Contributing
 ============
 
-WYMeditor has moved to GitHub! Official branch is at <a href="https://github.com/wymeditor/wymeditor">wymeditor/wymeditor</a>. Fork and issue pull requests. 
+WYMeditor has moved to GitHub! Official branch is at <a href="https://github.com/wymeditor/wymeditor">wymeditor/wymeditor</a>. 
+<a href="https://github.com/ablemike/wymeditor/wiki/Contributing">Read More on contributing</a>.
 TRAC Issues have been imported into Github <a href="https://github.com/wymeditor/wymeditor/issues">Here</a>. 
 
-For more information, please read the documentation, available at:
-http://forum.wymeditor.org/
+For more information, please read the documentation, available <a href="https://github.com/wymeditor/wymeditor/wiki">here</a>.
 
 Copyright
 ---------
