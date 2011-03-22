@@ -21,7 +21,7 @@ WYMeditor is compatible with:
 
 h2. QuickStart
 
-Include the scripts...
+Include the scripts.
 <pre>
   <script type="text/javascript" src="/jquery/jquery.js"></script>
   <script type="text/javascript" src="/wymeditor/jquery.wymeditor.min.js"></script>
