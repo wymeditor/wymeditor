@@ -54,7 +54,7 @@ Contributing
 ============
 
 WYMeditor has moved to GitHub! Official branch is at <a href="https://github.com/wymeditor/wymeditor">wymeditor/wymeditor</a>. Fork and issue pull requests. 
-Issues are tracked on the <a href="http://trac.wymeditor.org/trac/wiki">WYMeditor Trac page</a> (for now). 
+TRAC Issues have been imported into Github <a href="https://github.com/wymeditor/wymeditor/issues">Here</a>. 
 
 For more information, please read the documentation, available at:
 http://forum.wymeditor.org/
