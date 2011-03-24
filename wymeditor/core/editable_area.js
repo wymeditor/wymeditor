@@ -121,7 +121,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
         var node,
             newNode;
         
-        if (target && (target.nodeName || target[0].nodeName)) {
+        if (target && (target.nodeName || (target[0] && target[0].nodeName))) {
             node = $(target);
         } else if (this.utils.is('String', target)) {
             tagName = target;
@@ -207,8 +207,10 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
     
     populateEmptyElements: function (elements) {
         elements = elements || this.element;
-        $(elements).children().andSelf()
-            .filter(':empty').append('<br _wym_placeholder="true" />');
+        $(elements).each(function(){
+            $(this).children().andSelf()
+                .filter(':empty:not(br)').append('<br _wym_placeholder="true" />');
+        });
     },
     
     html: function (html) {
