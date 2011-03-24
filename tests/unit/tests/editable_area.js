@@ -129,4 +129,8 @@ jQuery(function($){
         
         editableArea.html('');
     });
+    
+    test('unformatSelection', function() {
+
+    });
 });

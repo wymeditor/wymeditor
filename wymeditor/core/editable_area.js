@@ -145,7 +145,11 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
             } else {
                 // Make sure we get a DOM Node even if we have a jQuery object
                 // and that we dont try to use the same element twice
-                element = $(element).clone()[0];
+                if (i > 1) {
+                    element = $(element).clone()[0];
+                } else {
+                    element = $(element)[0];
+                }
             }
             
             if (range.canSurroundContents()) {
@@ -154,8 +158,29 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
         }
     },
     
-    unformatSelection: function (element) {
-        var ranges = this.selection.getRanges(this.element);
+    unformatSelection: function unformat (filter) {
+        var i, ranges, nodes, func;
+        
+        if (this.utils.is('String', filter)) {
+            // Asume we have a tag/nodeName
+            filter = filter.toLowercase();
+            func = function (node) {
+                return node.nodeName.toLowecase() === filter;
+            };
+        } else if (filter) {
+            // Asume some kind of element/jQuery object. Use first element.
+            filter = $(filter)[0];
+            func = function (node) {
+                return node === filter;
+            };
+        }
+        
+        ranges = this.selection.getRanges(this.element);
+        
+        for (i = 0; range = ranges[i]; i++) {
+            nodes = range.getNodes(null, func);
+            $(nodes).children().unwrap();
+        }
     },
     
     toggleSelectionFormat: function (element) {
