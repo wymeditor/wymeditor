@@ -53,6 +53,6 @@ Contibuting
 
 Copyright
 ---------
-Copyright (c) 2005 - 20011 Jean-Francois Hovinne, 
+Copyright (c) 2005 - 2011 Jean-Francois Hovinne, 
 Dual licensed under the MIT (MIT-license.txt)
 and GPL (GPL-license.txt) licenses.
