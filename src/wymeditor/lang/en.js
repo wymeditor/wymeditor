@@ -41,5 +41,9 @@ WYMeditor.STRINGS['en'] = {
     Containers:       'Containers',
     Classes:          'Classes',
     Status:           'Status',
-    Source_Code:      'Source code'
+    Source_Code:      'Source code',
+    Upload_Image:     'Upload image',
+    Alignment:        'Alignment',
+    Align_Left:       'Align left',
+    Align_Right:      'Align right'
 };
