@@ -28,16 +28,67 @@ Wymeditor.ns('dom').structureManager = (function(){
     };
 })();
 
+/**
+ * Elements
+ * The element will be expanded with properties from the collections.
+ *
+ * When expanded:
+ * 'p': {
+ *     attributes: {
+ *         'attributeName': true (required) || false (optional) || RegEx
+ *     },
+ *     children: {
+ *         'nodeName': { attributes: {}, children: {} }
+ *     },
+ *     nestSelf: true || false (decides if element is allowed inside itself)
+ * }
+ * 
+ * Collections
+ * By grouping the elements properties can be applied all at once. Some
+ * collections (inline and block) are used extensively inside the editor. Any
+ * references to collections (written like `$name`) will be expanded.
+ * 
+ * Weight
+ * Element > Collection (weight: n) > Collection (weight: n-1)
+ * 
+ */
 Wymeditor.dom.structureManager.load({
-    nodes: {
-        '*': {
-            attributes: ['class', 'id'],
-            next: 'p'
-        }
+    elements: {
+        'b': { replaceWith: 'strong' },
+        'i': { replaceWith: 'em' },
+        'u': { remove: true },
+        'a': { attributes: { href: true } },
+        'div': { children: ['$block'] }
     },
     collections: {
-        block: ['div', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'dl'],
-        inline: ['a', 'span', 'strong', 'em', '#text'],
-        special: []
+        all: {
+            attributes: { 'class': false, 'id': false },
+            nestSelf: false,
+            weight: 0
+        },
+        block: {
+            members: ['div', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'dl', 'li', 'dd'],
+            children: ['$inline'],
+            next: 'p'
+        },
+        inline: {
+            members: ['a', 'span', 'strong', 'em', 'br', '#text'],
+            children: ['$inline']
+        },
+        structuralBlocks: {
+            members: ['div'], // 'article', 'section', 'aside', etc
+            children: ['$block'],
+            nestSelf: true,
+            weight: 2
+        },
+        lists: {
+            members: ['ol', 'ul'],
+            children: ['li'],
+            weight: 2
+        },
+        nestable: {
+            members: ['div', 'ol', 'ul', 'li'],
+            nestSelf: true
+        }
     }
 });
