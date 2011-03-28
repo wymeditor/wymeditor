@@ -14,7 +14,7 @@ Wymeditor.ns('dom').structureManager = (function(){
     
     function getCollection(name) {
         // FIXME: Returns a reference, which is bad...
-        return name in _ruleSet.collections ? _ruleSet.collections[name] : [];
+        return name in _ruleSet.collections ? _ruleSet.collections[name].members : [];
     }
     
     function getCollectionSelector (name) {
