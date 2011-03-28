@@ -27,6 +27,9 @@ WYMeditor.WymClassMozilla = function(wym) {
     this._newLine = "\n";
 };
 
+// Placeholder cell to allow content in TD cells for FF 3.6+
+WYMeditor.WymClassMozilla.CELL_PLACEHOLDER = '<br _moz_dirty="">';
+
 WYMeditor.WymClassMozilla.prototype.initIframe = function(iframe) {
     var wym = this;
 
@@ -264,15 +267,31 @@ WYMeditor.WymClassMozilla.prototype.keyup = function(evt) {
     }
 };
 
-//click handler
 WYMeditor.WymClassMozilla.prototype.click = function(evt) {
 
     var wym = WYMeditor.INSTANCES[this.title];
     var container = wym.selected();
 
-    if (container && container.tagName.toLowerCase() == WYMeditor.TR) {
-        jQuery(WYMeditor.TD, wym._doc.body).append('<br />');
-    } else if (container && container.tagName.toLowerCase() == WYMeditor.BODY) {
+    if ($.browser.version >= '1.9.2') {
+        if (container && container.tagName.toLowerCase() == WYMeditor.TR) {
+            // Starting with FF 3.6, inserted tables need some content in their
+            // cells before they're editable
+            jQuery(WYMeditor.TD, wym._doc.body)
+                .append(WYMeditor.WymClassMozilla.CELL_PLACEHOLDER);
+
+            // The user is still going to need to move out of and then back in
+            // to this cell if the table was inserted via an inner_html call
+            // (like via the manual HTML editor).
+            // TODO: Use rangy or some other selection library to consistently
+            // put the users selection out of and then back in this cell
+            // so that it appears to be instantly editable
+            // Once accomplished, can remove the afterInsertTable handling
+        }
+    }
+
+    if (container && container.tagName.toLowerCase() == WYMeditor.BODY) {
+        // A click in the body means there is no content at all, so we
+        // should automatically create a starter paragraph
         wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
     }
 };
@@ -326,9 +345,9 @@ WYMeditor.WymClassMozilla.prototype.afterInsertTable = function(table) {
     if ($.browser.version >= '1.9.2') {
         // Starting with FF 3.6, inserted tables need some content in their
         // cells before they're editable, otherwise the user has to move focus
-        // in and then out of a cell first.
+        // in and then out of a cell first, even with our click() hack
         $(table).find('td').each(function (index, element) {
-            $(element).append('<br _moz_dirty="">');
+            $(element).append(WYMeditor.WymClassMozilla.CELL_PLACEHOLDER);
         });
     }
 };

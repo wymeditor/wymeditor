@@ -116,16 +116,30 @@ function runPostInitTests() {
 		ok( dm == 'on' || dm == 'On' );
 	});
 
-		// Only FF >= 3.5 seems to require content in <td> for them to be editable
+	// Only FF >= 3.5 seems to require content in <td> for them to be editable
 	if($.browser.mozilla) {
-		test("Table cells have content in FF > 3.5", function() {
-			expect(7);
+		var table_3_2_html = "<table><tbody>" +
+			"<tr>" +
+				"<td></td>" +
+				"<td></td>" +
+			"</tr>" +
+			"<tr>" +
+				"<td></td>" +
+				"<td></td>" +
+			"</tr>" +
+			"<tr>" +
+				"<td></td>" +
+				"<td></td>" +
+			"</tr>" +
+		"</tbody></table>";
+		test("Table cells are editable in FF > 3.5: table insert", function() {
+			expect(12);
 
 			var wymeditor = jQuery.wymeditors(0);
 			wymeditor.html('');
 
 			var $body = $(wymeditor._doc).find('body.wym_iframe');
-			wymeditor.insertTable( 3, 2, '', '' );
+			wymeditor.insertTable(3, 2, '', '');
 
 			$body.find('td').each(function(index, td) {
 				if( $.browser.version >= '1.9.1' ) {
@@ -133,16 +147,43 @@ function runPostInitTests() {
 				} else {
 					equals( td.childNodes.length, 0 );
 				}
+				equals( isContentEditable(td), true );
 			});
 
+		});
+
+		test("Table cells are editable in FF > 3.5: html() insert", function() {
+			expect(12);
+
+			var wymeditor = jQuery.wymeditors(0);
+			var $body = $(wymeditor._doc).find('body.wym_iframe');
+
 			wymeditor.html('');
-			wymeditor.html('<table><tbody><tr><td></td></tr></tbody></table>');
+			wymeditor.html(table_3_2_html);
 			$body.find('td').each(function(index, td) {
 				if( $.browser.version >= '1.9.1' ) {
 					equals( td.childNodes.length, 1 );
 				} else {
 					equals( td.childNodes.length, 0 );
 				}
+				equals( isContentEditable(td), true );
+			});
+		});
+
+		test("Table cells are editable in FF > 3.5: via inner_html", function() {
+			expect(12);
+
+			var wymeditor = jQuery.wymeditors(0);
+			var $body = $(wymeditor._doc).find('body.wym_iframe');
+
+			$body.html(table_3_2_html);
+			$body.find('td').each(function(index, td) {
+				if( $.browser.version >= '1.9.1' ) {
+					equals( td.childNodes.length, 1 );
+				} else {
+					equals( td.childNodes.length, 0 );
+				}
+				equals( isContentEditable(td), true );
 			});
 		});
 	}
