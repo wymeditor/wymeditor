@@ -1008,9 +1008,9 @@ WYMeditor.editor.prototype.container = function(sType) {
         if(sType.toLowerCase() == WYMeditor.BLOCKQUOTE) {
 
           var blockquote = this.findUp(this.container(), WYMeditor.BLOCKQUOTE);
-          
+
           if(blockquote === null) {
-          
+
             newNode = this._doc.createElement(sType);
             container.parentNode.insertBefore(newNode,container);
             newNode.appendChild(container);
@@ -1265,7 +1265,7 @@ WYMeditor.editor.prototype.paste = function(str) {
     // Do some minor cleanup (#131)
 
     if (jQuery(container).text() === '') {
-        jQuery(container).remove(); 
+        jQuery(container).remove();
     }
     // And remove br (if editor was empty)
     jQuery('body > br', this._doc).remove();
@@ -1318,6 +1318,64 @@ WYMeditor.editor.prototype.addCssRules = function(doc, aCss) {
       if(oCss.name && oCss.css) this.addCssRule(styles, oCss);
     }
   }
+};
+
+/********** PLUGIN FUNCTIONS **********/
+
+WYMeditor.editor.prototype.insertTable = function(rows, columns, caption, summary) {
+  if( !(rows > 0) || !(columns > 0) ) {
+    // We need rows and columns to make a table
+
+    // TODO: It seems to me we should warn the user when zero columns and/or
+    // rows were entered.
+    return;
+  }
+
+  var table = this._doc.createElement(WYMeditor.TABLE);
+  var newRow = null;
+  var newCol = null;
+
+  // Create the table caption
+  var newCaption = table.createCaption();
+  newCaption.innerHTML = caption;
+
+  // Create the rows and cells
+  for(var x = 0; x < rows; x++) {
+    newRow = table.insertRow(x);
+    for(var y=0; y < columns; y++) {
+      newRow.insertCell(y);
+    }
+  }
+
+  if(summary !== "") {
+    // Only need to set the summary if we actually have a summary
+    jQuery(table).attr('summary', summary);
+  }
+
+  // Find the currently-selected container
+  var container = jQuery(
+    this.findUp(this.container(), WYMeditor.MAIN_CONTAINERS))
+    .get(0);
+
+  if(!container || !container.parentNode) {
+    // No valid selected container. Put the table at the end.
+    jQuery(this._doc.body).append(table);
+  } else {
+  // Append the table after the currently-selected container
+    jQuery(container).after(table);
+  }
+
+  // Handle any browser-specific cleanup
+  this.afterInsertTable(table);
+
+  return table;
+};
+
+/**
+ * Handle cleanup/normalization after inserting a table. Different browsers
+ * need slightly different tweaks.
+ */
+WYMeditor.editor.prototype.afterInsertTable = function(table) {
 };
 
 /********** CONFIGURATION **********/
@@ -1538,53 +1596,9 @@ WYMeditor.INIT_DIALOG = function(index) {
       window.close();
   });
 
-  jQuery(wym._options.dialogTableSelector + " " +
-    wym._options.submitSelector).submit(function()
-  {
-    var rowCount = jQuery(wym._options.rowsSelector).val();
-    var columnCount = jQuery(wym._options.colsSelector).val();
-
-    // TODO: It seems to me we should warn the user when zero columns and/or rows
-    //       were entered.
-    if (0 < rowCount && 0 < columnCount)
-    {
-      var table       = wym._doc.createElement(WYMeditor.TABLE),
-          caption     = table.createCaption(),
-          summaryText = jQuery(wym._options.summarySelector).val(),
-          container   = jQuery(wym.findUp(wym.container(), WYMeditor.MAIN_CONTAINERS)).get(0);
-
-      if ("" !== summaryText)
-      {
-        jQuery(table).attr('summary', summaryText);
-      }
-
-      caption.innerHTML = jQuery(wym._options.captionSelector).val();
-
-      for (var rowIndex = 0, row; rowIndex < rowCount; rowIndex++)
-      {
-        row = table.insertRow(rowIndex);
-
-        for (var cellIndex = 0, cell; cellIndex < columnCount; cellIndex++)
-        {
-          cell = row.insertCell(cellIndex);
-        }
-      }
-
-      // if we could not obtain the current container (because there is none)
-      // append the table to the body
-      if( ! container || ! container.parentNode)
-      {
-        jQuery(wym._doc.body).append(table);
-      }
-      // othwerwise append the table after the currently selected container
-      else
-      {
-        jQuery(container).after(table);
-      }
-    }
-
-    window.close();
-  });
+  var tableOnClick = WYMeditor.MAKE_TABLE_ONCLICK(wym);
+  jQuery(wym._options.dialogTableSelector + " " + wym._options.submitSelector)
+    .submit(tableOnClick);
 
   jQuery(wym._options.dialogPasteSelector + " " +
       wym._options.submitSelector).submit(function() {
@@ -1606,6 +1620,23 @@ WYMeditor.INIT_DIALOG = function(index) {
   if(jQuery.isFunction(wym._options.postInitDialog))
     wym._options.postInitDialog(wym,window);
 
+};
+
+/********** TABLE DIALOG ONCLICK **********/
+
+WYMeditor.MAKE_TABLE_ONCLICK = function(wym) {
+  var tableOnClick = function() {
+    var numRows = jQuery(wym._options.rowsSelector).val();
+    var numColumns = jQuery(wym._options.colsSelector).val();
+    var caption = jQuery(wym._options.captionSelector).val();
+    var summary = jQuery(wym._options.summarySelector).val();
+
+    var table = wym.insertTable(numRows, numColumns, caption, summary);
+
+    window.close();
+  };
+
+  return tableOnClick;
 };
 
 /********** XHTML LEXER/PARSER **********/
