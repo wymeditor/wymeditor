@@ -27,10 +27,10 @@ WYMeditor.WymClassMozilla = function(wym) {
     this._newLine = "\n";
 };
 
-// Placeholder cell to allow content in TD cells for FF 3.6+
+// Placeholder cell to allow content in TD cells for FF 3.5+
 WYMeditor.WymClassMozilla.CELL_PLACEHOLDER = '<br _moz_dirty="">';
 
-// Firefox 3.6 requires the CELL_PLACEHOLDER and 4.0 doesn't
+// Firefox 3.5 and 3.6 require the CELL_PLACEHOLDER and 4.0 doesn't
 WYMeditor.WymClassMozilla.NEEDS_CELL_FIX = $.browser.version >= '1.9.1'
     && $.browser.version < '2.0';
 
@@ -347,7 +347,7 @@ WYMeditor.WymClassMozilla.prototype.getTagForStyle = function(style) {
  */
 WYMeditor.WymClassMozilla.prototype.afterInsertTable = function(table) {
     if (WYMeditor.WymClassMozilla.NEEDS_CELL_FIX === true) {
-        // With FF 3.6, inserted tables need some content in their
+        // With FF 3.5+, inserted tables need some content in their
         // cells before they're editable, otherwise the user has to move focus
         // in and then out of a cell first, even with our click() hack
         $(table).find('td').each(function (index, element) {
