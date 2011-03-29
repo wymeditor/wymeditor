@@ -1320,7 +1320,7 @@ WYMeditor.editor.prototype.addCssRules = function(doc, aCss) {
   }
 };
 
-/********** PLUGIN FUNCTIONS **********/
+/********** TABLE FUNCTIONS **********/
 
 WYMeditor.editor.prototype.insertTable = function(rows, columns, caption, summary) {
   if( !(rows > 0) || !(columns > 0) ) {
