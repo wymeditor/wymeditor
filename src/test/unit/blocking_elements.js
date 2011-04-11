@@ -15,6 +15,9 @@ function runBlockingElementTests() {
 	// Can't move the selection to a <table> element
 	var no_table_selection_browser = $.browser.webkit || $.browser.msie;
 
+	// keyup/keydown can't be used to fix textnode wrapping
+	var no_keypress_textnode_wrap_browser = $.browser.msie;
+
 	var is_double_br_browser = ($.browser.mozilla
 		|| $.browser.webkit
 		|| $.browser.safari
@@ -499,6 +502,9 @@ function runBlockingElementTests() {
 		// A br should remain in necessary spots even after content is inserted
 		// there. Duplicate brs should also not be created when inserting that
 		// content.
+		if (no_keypress_textnode_wrap_browser) {
+			return;
+		}
 		var wymeditor = jQuery.wymeditors(0);
 		wymeditor.html(tableHtml);
 

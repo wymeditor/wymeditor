@@ -227,9 +227,9 @@ WYMeditor.WymClassExplorer.prototype.keyup = function(evt) {
 
         container = wym.selected();
         var name = '';
-		if (container != null) {
-			name = container.tagName.toLowerCase();
-		}
+        if (container != null) {
+            name = container.tagName.toLowerCase();
+        }
 
         // Fix forbidden main containers
         if (name == "strong"
