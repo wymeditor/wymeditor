@@ -226,7 +226,10 @@ WYMeditor.WymClassExplorer.prototype.keyup = function(evt) {
         // Not BACKSPACE, DELETE, CTRL, or COMMAND key
 
         container = wym.selected();
-        var name = container.tagName.toLowerCase();
+        var name = '';
+		if (container != null) {
+			name = container.tagName.toLowerCase();
+		}
 
         // Fix forbidden main containers
         if (name == "strong"

@@ -143,11 +143,11 @@ function runPostInitTests() {
 
 			$body.find('td').each(function(index, td) {
 				if ($.browser.version >= '1.9.1' && $.browser.version < '2.0') {
-					equals( td.childNodes.length, 1 );
+					equals(td.childNodes.length, 1);
 				} else {
-					equals( td.childNodes.length, 0 );
+					equals(td.childNodes.length, 0);
 				}
-				equals( isContentEditable(td), true );
+				equals(isContentEditable(td), true);
 			});
 
 		});
@@ -162,8 +162,8 @@ function runPostInitTests() {
 			wymeditor.html(table_3_2_html);
 			$body.find('td').each(function(index, td) {
 				// Both FF 3.6 and 4.0 add spacer brs with design mode
-				equals( td.childNodes.length, 1 );
-				equals( isContentEditable(td), true );
+				equals(td.childNodes.length, 1);
+				equals(isContentEditable(td), true);
 			});
 		});
 
@@ -176,11 +176,11 @@ function runPostInitTests() {
 			$body.html(table_3_2_html);
 			$body.find('td').each(function(index, td) {
 				if ($.browser.version >= '1.9.1' && $.browser.version < '2.0') {
-					equals( td.childNodes.length, 1 );
+					equals(td.childNodes.length, 1);
 				} else {
-					equals( td.childNodes.length, 0 );
+					equals(td.childNodes.length, 0);
 				}
-				equals( isContentEditable(td), true );
+				equals(isContentEditable(td), true);
 			});
 		});
 	}
