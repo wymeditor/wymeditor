@@ -134,10 +134,15 @@ WYMeditor.WymClassSafari.prototype.selected = function() {
 
     var sel = this._iframe.contentWindow.getSelection();
     var node = sel.focusNode;
-    if(node) {
-        if(node.nodeName == "#text") return(node.parentNode);
-        else return(node);
-    } else return(null);
+    if (node) {
+        if (node.nodeName == "#text") {
+            return node.parentNode;
+        } else {
+            return node;
+        }
+    } else {
+        return null;
+    }
 };
 
 WYMeditor.WymClassSafari.prototype.addCssRule = function(styles, oCss) {

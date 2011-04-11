@@ -182,7 +182,7 @@ WYMeditor.WymClassMozilla.prototype.selected = function() {
     var sel = this._iframe.contentWindow.getSelection();
     var node = sel.focusNode;
     if (node) {
-        if(node.nodeName == "#text") {
+        if (node.nodeName == "#text") {
             return(node.parentNode);
         } else {
             return node;

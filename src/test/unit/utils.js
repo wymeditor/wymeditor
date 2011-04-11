@@ -91,27 +91,6 @@ function htmlEquals(wymeditor, expected) {
 	equals(normedActual, normedExpected);
 }
 
-/**
-* Move the selection to the start of the given element within the editor.
-*/
-function moveSelector(wymeditor, selectedElement) {
-	var iframeWin = wymeditor._iframe.contentDocument ? wymeditor._iframe.contentDocument.defaultView : wymeditor._iframe.contentWindow;
-	var sel = rangy.getSelection(iframeWin);
-
-	var range = rangy.createRange(wymeditor._doc);
-	range.setStart(selectedElement, 0);
-	range.setEnd(selectedElement, 0);
-	range.collapse(false);
-
-	sel.setSingleRange(range);
-	// IE selection hack
-	if ($.browser.msie) {
-		wymeditor.saveCaret();
-	}
-
-	equals(wymeditor.selected(), selectedElement);
-}
-
 function makeSelection(
 		wymeditor, startElement, endElement, startElementIndex, endElementIndex) {
 	if (startElementIndex == null) {
@@ -126,6 +105,7 @@ function makeSelection(
 	var range = rangy.createRange(wymeditor._doc);
 	range.setStart(startElement, startElementIndex);
 	range.setEnd(endElement, endElementIndex);
+	range.collapse(false);
 
 	sel.setSingleRange(range);
 	// IE selection hack
@@ -133,6 +113,16 @@ function makeSelection(
 		wymeditor.saveCaret();
 	}
 }
+
+/**
+* Move the selection to the start of the given element within the editor.
+*/
+function moveSelector(wymeditor, selectedElement) {
+	makeSelection(wymeditor, selectedElement, selectedElement, 0, 0);
+
+	equals(wymeditor.selected(), selectedElement, "moveSelector");
+}
+
 
 /**
 	* Simulate a keypress, firing off the keydown, keypress and keyup events.

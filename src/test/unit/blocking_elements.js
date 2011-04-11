@@ -4,9 +4,16 @@
 * the start/end of the document.
 */
 
+
 function runBlockingElementTests() {
 	// Should be able to add content before/after/between block elements
 	module("Blocking Elements");
+
+	// Can't move the selection to a <br> element
+	var no_br_selection_browser = $.browser.webkit || $.browser.msie;
+
+	// Can't move the selection to a <table> element
+	var no_table_selection_browser = $.browser.webkit || $.browser.msie;
 
 	var is_double_br_browser = ($.browser.mozilla
 		|| $.browser.webkit
@@ -355,42 +362,32 @@ function runBlockingElementTests() {
 
 		var $body = $(wymeditor._doc).find('body.wym_iframe');
 
-		function checkLayout ( $body ) {
+		function checkLayout ($body) {
 			var children = $body.children();
-			equals( children.length, 5 );
-			if ( children.length == 5 ) {
-				equals( children[0].tagName.toLowerCase(), 'p' );
-				equals( children[1].tagName.toLowerCase(), 'br' );
-				equals( children[2].tagName.toLowerCase(), 'table' );
-				equals( children[3].tagName.toLowerCase(), 'br' );
-				equals( children[4].tagName.toLowerCase(), 'p' );
+			equals(children.length, 5);
+			if (children.length == 5) {
+				equals(children[0].tagName.toLowerCase(), 'p');
+				equals(children[1].tagName.toLowerCase(), 'br');
+				equals(children[2].tagName.toLowerCase(), 'table');
+				equals(children[3].tagName.toLowerCase(), 'br');
+				equals(children[4].tagName.toLowerCase(), 'p');
 			}
 		}
 
 		// Go through each top-level element and hit the DOWN key
-		$body.children().each( function (index, element) {
-			moveSelector(wymeditor, element);
-			simulateKey( 40, wymeditor._doc ); // Send DOWN
-
-			checkLayout($body);
-
-			if( element.nodeName.toLowerCase() == 'br' ) {
-				// When the user has their cursor in the "blank" space
-				// represented by a br, the selection object is actually in the
-				// block level element (usually the body.wym_iframe) above it.
-				// To represent where on the block level element, the anchor
-				// offset is used. Offsets are 0-indexed based on the direct
-				// children
-				var sel = wymeditor._iframe.contentWindow.getSelection();
-				var range = wymeditor._doc.createRange();
-				range.setStart( element.parentNode, index );
-				range.setEnd( element.parentNode, index );
-
-				sel.removeAllRanges();
-				sel.addRange( range );
-
-				simulateKey( 40, wymeditor._doc ); // Send DOWN
+		$body.children().each(function (index, element) {
+			if (no_br_selection_browser && element.nodeName.toLowerCase() == 'br') {
+				// We can't actually reliably select the br element with
+				// javascript in this browser, so we can't test this
+				return;
+			} else if (no_table_selection_browser
+					&& element.nodeName.toLowerCase() == 'table') {
+				// Move to a td element within the table instead
+				element = $(element).find('td')[0];
 			}
+
+			moveSelector(wymeditor, element);
+			simulateKey(40, wymeditor._doc); // Send DOWN
 
 			checkLayout($body);
 		});
@@ -400,10 +397,20 @@ function runBlockingElementTests() {
 		wymeditor.fixBodyHtml();
 
 		// Go through each top-level element and hit the UP key
-		$body.children().each( function (index, element) {
+		$body.children().each(function (index, element) {
+			if (no_br_selection_browser && element.nodeName.toLowerCase() == 'br') {
+				// We can't actually reliably select the br element with
+				// javascript in this browser, so we can't test this
+				return;
+			} else if (no_table_selection_browser
+					&& element.nodeName.toLowerCase() == 'table') {
+				// Move to a td element within the table instead
+				element = $(element).find('td')[0];
+			}
+
 			moveSelector(wymeditor, element);
 
-			simulateKey( 38, wymeditor._doc ); // Send UP
+			simulateKey(38, wymeditor._doc); // Send UP
 
 			checkLayout($body);
 		});
