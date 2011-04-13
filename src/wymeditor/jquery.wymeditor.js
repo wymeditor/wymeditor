@@ -1193,32 +1193,30 @@ WYMeditor.editor.prototype.fixBodyHtml = function() {
  * start/end of the document.
  */
 WYMeditor.editor.prototype.spaceBlockingElements = function() {
-  var blocking_selector = WYMeditor.BLOCKING_ELEMENTS.join(', ');
+  var blockingSelector = WYMeditor.BLOCKING_ELEMENTS.join(', ');
 
   var $body = $(this._doc).find('body.wym_iframe');
   var children = $body.children();
-  var placeholder_node = '<br _moz_editor_bogus_node="TRUE" _moz_dirty="">';
+  var placeholderNode = '<br _moz_editor_bogus_node="TRUE" _moz_dirty="">';
 
   // Make sure that we still have a bogus node at both the begining and end
   if (children.length > 0) {
-    var $first_child = $(children[0]);
-    var $last_child = $(children[children.length - 1]);
+    var $firstChild = $(children[0]);
+    var $lastChild = $(children[children.length - 1]);
 
-    if ($first_child.is(blocking_selector)) {
-      $first_child.before(placeholder_node);
+    if ($firstChild.is(blockingSelector)) {
+      $firstChild.before(placeholderNode);
     }
-    if ($last_child.is(blocking_selector)) {
-      $last_child.after(placeholder_node);
+    if ($lastChild.is(blockingSelector)) {
+      $lastChild.after(placeholderNode);
     }
   }
 
-  if (typeof(this._block_spacers_sel) == 'undefined') {
-    this._buildBlockSepSelector();
-  }
+  var blockSepSelector = this._getBlockSepSelector();
 
   // Put placeholder nodes between consecutive blocking elements and between
   // blocking elements and normal block-level elements
-  $body.find(this._block_spacers_sel).before(placeholder_node);
+  $body.find(blockSepSelector).before(placeholderNode);
 };
 
 /* @name _buildBlockSepSelector
@@ -1227,24 +1225,29 @@ WYMeditor.editor.prototype.spaceBlockingElements = function() {
  * blocking elements and between blocking elements and normal non-blocking
  * elements.
  */
-WYMeditor.editor.prototype._buildBlockSepSelector = function() {
-  var block_combo = new Array();
+WYMeditor.editor.prototype._getBlockSepSelector = function() {
+  if (typeof(this._blockSpacersSel) != 'undefined') {
+    return this._blockSpacersSel;
+  }
+
+  var blockCombo = [];
   // Consecutive blocking elements need separators
-  $.each(WYMeditor.BLOCKING_ELEMENTS, function (index_o, element_o) {
-    $.each(WYMeditor.BLOCKING_ELEMENTS, function (index_i, element_i) {
-      block_combo.push(element_o + ' + ' + element_i);
+  $.each(WYMeditor.BLOCKING_ELEMENTS, function (indexO, elementO) {
+    $.each(WYMeditor.BLOCKING_ELEMENTS, function (indexI, elementI) {
+      blockCombo.push(elementO + ' + ' + elementI);
     });
   });
 
   // A blocking element either followed by or preceeded by a block elements
   // needs separators
-  $.each(WYMeditor.BLOCKING_ELEMENTS, function (index_o, element_o) {
-    $.each(WYMeditor.NON_BLOCKING_ELEMENTS, function (index_i, element_i) {
-      block_combo.push(element_o + ' + ' + element_i);
-      block_combo.push(element_i + ' + ' + element_o);
+  $.each(WYMeditor.BLOCKING_ELEMENTS, function (indexO, elementO) {
+    $.each(WYMeditor.NON_BLOCKING_ELEMENTS, function (indexI, elementI) {
+      blockCombo.push(elementO + ' + ' + elementI);
+      blockCombo.push(elementI + ' + ' + elementO);
     });
   });
-  this._block_spacers_sel = block_combo.join(', ');
+  this._blockSpacersSel = blockCombo.join(', ');
+  return this._blockSpacersSel;
 };
 
 /* @name fixDoubleBr

@@ -124,20 +124,20 @@ function runBlockingElementTests() {
 		var $body = $(wymeditor._doc).find('body.wym_iframe');
 		var children = $body.children();
 
-		if ( is_double_br_browser ) {
+		if (is_double_br_browser) {
 			expect(5);
-			equals( children.length, 3 );
-			if ( children.length == 3 ) {
-				equals( children[0].tagName.toLowerCase(), 'br' );
-				equals( children[1].tagName.toLowerCase(), 'table' );
-				equals( children[2].tagName.toLowerCase(), 'br' );
+			equals(children.length, 3);
+			if (children.length == 3) {
+				equals(children[0].tagName.toLowerCase(), 'br');
+				equals(children[1].tagName.toLowerCase(), 'table');
+				equals(children[2].tagName.toLowerCase(), 'br');
 			}
 		} else {
 			expect(4);
-			equals( children.length, 2 );
-			if ( children.length == 2 ) {
-				equals( children[0].tagName.toLowerCase(), 'br' );
-				equals( children[1].tagName.toLowerCase(), 'table' );
+			equals(children.length, 2);
+			if (children.length == 2) {
+				equals(children[0].tagName.toLowerCase(), 'br');
+				equals(children[1].tagName.toLowerCase(), 'table');
 			}
 		}
 
