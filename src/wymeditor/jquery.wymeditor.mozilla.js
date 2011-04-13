@@ -362,33 +362,11 @@ WYMeditor.WymClassMozilla.prototype.getTagForStyle = function(style) {
  */
 WYMeditor.WymClassMozilla.prototype.afterInsertTable = function(table) {
     if (WYMeditor.WymClassMozilla.NEEDS_CELL_FIX === true) {
-        // With FF 3.5+, inserted tables need some content in their
+        // In certain FF versions, inserted tables need some content in their
         // cells before they're editable, otherwise the user has to move focus
         // in and then out of a cell first, even with our click() hack
         $(table).find('td').each(function (index, element) {
             $(element).append(WYMeditor.WymClassMozilla.CELL_PLACEHOLDER);
         });
-    }
-
-    var $body = $(this._doc).find('body.wym_iframe');
-    var children = $body.children();
-
-    if (children.length > 0) {
-        // The editor has content, depending on the first and/or last block
-        // element, we might need a placeholder node at the beginning/end to
-        // allow us to insert content at the front/end
-        var $first_child = $(children[0]);
-        var $last_child = $(children[children.length - 1]);
-
-        if ($first_child.is('table')) {
-            // First node is a table, need a placeholder in front of it
-            // otherwise the user couldn't insert content at the beginning
-            $first_child.before(WYMeditor.WymClassMozilla.PLACEHOLDER_NODE);
-        }
-        if ($last_child.is('table')) {
-            // Last node is a table, need a placeholder after it
-            // otherwise the user couldn't insert content at the end
-            $last_child.after(WYMeditor.WymClassMozilla.PLACEHOLDER_NODE);
-        }
     }
 };

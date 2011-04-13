@@ -168,6 +168,11 @@ function runPostInitTests() {
 		});
 
 		test("Table cells are editable in FF > 3.5: via inner_html", function() {
+			// This is currently broken. Doing a raw insert in to the editor
+			// body doesn't let us use our fixBodyHtml() fix to add the
+			// appropriate placeholder nodes inside the table cells
+			// Need to figure out another way to detect this and correct
+			// the HTML
 			expect(12);
 
 			var wymeditor = jQuery.wymeditors(0);
