@@ -3765,7 +3765,7 @@ WYMeditor.XhtmlSaxListener.prototype.insertContentBeforeClosingTag = function(ta
 WYMeditor.XhtmlSaxListener.prototype.fixNestingBeforeOpeningBlockTag = function(tag, attributes)
 {
     if(tag != 'li' && (tag == 'ul' || tag == 'ol') && this.last_tag && !this.last_tag_opened && this.last_tag == 'li'){
-      this.output = this.output.replace(/<\/li>$/, '');
+      this.output = this.output.replace(/<\/li>\s*$/, '');
       this.insertContentAfterClosingTag(tag, '</li>');
     }
 };
