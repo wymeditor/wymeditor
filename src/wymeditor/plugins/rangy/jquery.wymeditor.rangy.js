@@ -15,7 +15,7 @@
  *        Samuel Cole <sam@samuelcole.name>
  */
 
-(function() {
+(function($) {
     if (WYMeditor && rangy) {
       /* @name selection
        * @description Returns a rangy selection node
@@ -94,4 +94,4 @@
       };
 
     }
-})();
+})(jQuery);
