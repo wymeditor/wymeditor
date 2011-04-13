@@ -204,7 +204,6 @@ WYMeditor.WymClassMozilla.prototype.keydown = function(evt) {
 
     //'this' is the doc
     var wym = WYMeditor.INSTANCES[this.title];
-    var container = null;
 
     if (evt.ctrlKey) {
         if (evt.keyCode == 66) {
@@ -216,17 +215,6 @@ WYMeditor.WymClassMozilla.prototype.keydown = function(evt) {
             //CTRL+i => EMPHASIS
             wym._exec(WYMeditor.ITALIC);
             return false;
-        }
-    }
-
-    else if (evt.keyCode == 13) {
-        if (!evt.shiftKey) {
-            //fix PRE bug #73
-            container = wym.selected();
-            if (container && container.tagName.toLowerCase() == WYMeditor.PRE) {
-                evt.preventDefault();
-                wym.insert('<p></p>');
-            }
         }
     }
 
