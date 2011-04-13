@@ -4,7 +4,6 @@
 * the start/end of the document.
 */
 
-
 function runBlockingElementTests() {
 	// Should be able to add content before/after/between block elements
 	module("Blocking Elements");
@@ -18,6 +17,8 @@ function runBlockingElementTests() {
 	// keyup/keydown can't be used to fix textnode wrapping
 	var no_keypress_textnode_wrap_browser = $.browser.msie;
 
+	// Double-br browsers need placeholders both before and after blocking
+	// elements. Others just need placeholders before
 	var is_double_br_browser = ($.browser.mozilla
 		|| $.browser.webkit
 		|| $.browser.safari
@@ -338,20 +339,32 @@ function runBlockingElementTests() {
 
 	test("h1 + blockquote + pre has br spacers via .html()", function() {
 		var wymeditor = jQuery.wymeditors(0);
-		wymeditor.html( h1BlockquotePreHtml );
+		wymeditor.html(h1BlockquotePreHtml);
 
 		var $body = $(wymeditor._doc).find('body.wym_iframe');
 		var children = $body.children();
 
-		expect(8);
-		equals( children.length, 6 );
-		if ( children.length == 6 ) {
-			equals( children[0].tagName.toLowerCase(), 'h1' );
-			equals( children[1].tagName.toLowerCase(), 'br' );
-			equals( children[2].tagName.toLowerCase(), 'blockquote' );
-			equals( children[3].tagName.toLowerCase(), 'br' );
-			equals( children[4].tagName.toLowerCase(), 'pre' );
-			equals( children[5].tagName.toLowerCase(), 'br' );
+		if (is_double_br_browser) {
+			expect(8);
+			equals(children.length, 6)
+			if (children.length == 6) {
+				equals(children[0].tagName.toLowerCase(), 'h1');
+				equals(children[1].tagName.toLowerCase(), 'br');
+				equals(children[2].tagName.toLowerCase(), 'blockquote');
+				equals(children[3].tagName.toLowerCase(), 'br');
+				equals(children[4].tagName.toLowerCase(), 'pre');
+				equals(children[5].tagName.toLowerCase(), 'br');
+			}
+		} else {
+			expect(7);
+			equals(children.length, 5)
+			if (children.length == 5) {
+				equals(children[0].tagName.toLowerCase(), 'h1');
+				equals(children[1].tagName.toLowerCase(), 'br');
+				equals(children[2].tagName.toLowerCase(), 'blockquote');
+				equals(children[3].tagName.toLowerCase(), 'br');
+				equals(children[4].tagName.toLowerCase(), 'pre');
+			}
 		}
 
 		htmlEquals(wymeditor, h1BlockquotePreHtml);
@@ -432,12 +445,23 @@ function runBlockingElementTests() {
 
 		var children = $body.children();
 
-		equals(children.length, 4 , "Should have p, br, table, br");
-		if (children.length == 4) {
-			equals(children[0].tagName.toLowerCase(), 'p');
-			equals(children[1].tagName.toLowerCase(), 'br');
-			equals(children[2].tagName.toLowerCase(), 'table');
-			equals(children[3].tagName.toLowerCase(), 'br');
+		if (is_double_br_browser) {
+			expect(6);
+			equals(children.length, 4 , "Should have p, br, table, br");
+			if (children.length == 4) {
+				equals(children[0].tagName.toLowerCase(), 'p');
+				equals(children[1].tagName.toLowerCase(), 'br');
+				equals(children[2].tagName.toLowerCase(), 'table');
+				equals(children[3].tagName.toLowerCase(), 'br');
+			}
+		} else {
+			expect(5);
+			equals(children.length, 3 , "Should have p, br, table");
+			if (children.length == 3) {
+				equals(children[0].tagName.toLowerCase(), 'p');
+				equals(children[1].tagName.toLowerCase(), 'br');
+				equals(children[2].tagName.toLowerCase(), 'table');
+			}
 		}
 
 		htmlEquals(wymeditor, pTableHtml);

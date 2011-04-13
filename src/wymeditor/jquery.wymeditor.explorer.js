@@ -270,3 +270,37 @@ WYMeditor.WymClassExplorer.prototype.setFocusToNode = function(node, toStart) {
     range.select();
     node.focus();
 };
+
+/* @name spaceBlockingElements
+ * @description Insert <br> elements between adjacent blocking elements and
+ * p elements, between block elements or blocking elements and after blocking
+ * elements.
+ */
+WYMeditor.WymClassExplorer.prototype.spaceBlockingElements = function() {
+  var blockingSelector = WYMeditor.BLOCKING_ELEMENTS.join(', ');
+
+  var $body = $(this._doc).find('body.wym_iframe');
+  var children = $body.children();
+  var placeholderNode = '<br>';
+
+  // Make sure we have the appropriate placeholder nodes
+  if (children.length > 0) {
+    var $firstChild = $(children[0]);
+    var $lastChild = $(children[children.length - 1]);
+
+    // Ensure begining placeholder
+    if ($firstChild.is(blockingSelector)) {
+      $firstChild.before(placeholderNode);
+    }
+    if ($.browser.version >= "7.0" && $lastChild.is(blockingSelector)) {
+      $lastChild.after(placeholderNode);
+    }
+  }
+
+  var blockSepSelector = this._getBlockSepSelector();
+
+  // Put placeholder nodes between consecutive blocking elements and between
+  // blocking elements and normal block-level elements
+  $body.find(blockSepSelector).before(placeholderNode);
+};
+

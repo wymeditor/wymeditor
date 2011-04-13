@@ -305,4 +305,23 @@ function runListTests() {
 		testList('li_4', 'indent', nestedListHtml, li_4_indentedHtml);
 		testList('li_4', 'outdent', li_4_indentedHtml, nestedListHtml);
 	});
+
+	test("Should correct invalid list nesting", function() {
+		expect(2);
+
+		var wymeditor = jQuery.wymeditors(0);
+
+		var expected = "<ul><li>a<ul><li>a.1<\/li><\/ul><\/li><li>b<\/li><\/ul>";
+		// FF
+		var invalid_ff_html = "<ul><li>a<\/li><ul><li>a.1<\/li><\/ul><li>b<br><\/li><\/ul>";
+		wymeditor.html(invalid_ff_html);
+		htmlEquals(wymeditor, expected);
+		// IE
+		// IE has invalid sublist nesting
+		var expected = "<ul>\r\n<li>a<ul>\r\n<li>a.1<\/li><\/ul><\/li>\r\n<li>b<\/li><\/ul>";
+		var invalid_ie_html = "<UL>\r\n<LI>a<\/LI>\r\n<UL>\r\n<LI>a.1<\/LI><\/UL>\r\n<LI>b<\/LI><\/UL>";
+		wymeditor.html(invalid_ie_html);
+		htmlEquals(wymeditor, expected);
+	});
+
 }
