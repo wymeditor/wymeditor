@@ -403,7 +403,7 @@ function runBlockingElementTests() {
 			}
 
 			moveSelector(wymeditor, element);
-			simulateKey(40, wymeditor._doc); // Send DOWN
+			simulateKey(WYMeditor.KEY.DOWN, wymeditor._doc); // Send DOWN
 
 			checkLayout($body);
 		});
@@ -426,7 +426,7 @@ function runBlockingElementTests() {
 
 			moveSelector(wymeditor, element);
 
-			simulateKey(38, wymeditor._doc); // Send UP
+			simulateKey(WYMeditor.KEY.UP, wymeditor._doc); // Send UP
 
 			checkLayout($body);
 		});

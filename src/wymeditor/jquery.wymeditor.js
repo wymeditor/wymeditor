@@ -206,16 +206,16 @@ jQuery.extend(WYMeditor, {
     INSERT_UNORDEREDLIST: "InsertUnorderedList",
     INSERT_ORDEREDLIST  : "InsertOrderedList",
 
-    MAIN_CONTAINERS : new Array("p","h1","h2","h3","h4","h5","h6","pre","blockquote"),
+    MAIN_CONTAINERS : ["p","h1","h2","h3","h4","h5","h6","pre","blockquote"],
 
-    BLOCKS : new Array("address", "blockquote", "div", "dl",
+    BLOCKS : ["address", "blockquote", "div", "dl",
      "fieldset", "form", "h1", "h2", "h3", "h4", "h5", "h6", "hr",
      "noscript", "ol", "p", "pre", "table", "ul", "dd", "dt",
-     "li", "tbody", "td", "tfoot", "th", "thead", "tr"),
+     "li", "tbody", "td", "tfoot", "th", "thead", "tr"],
 
-    BLOCKING_ELEMENTS : new Array("table", "blockquote", "pre"),
+    BLOCKING_ELEMENTS : ["table", "blockquote", "pre"],
 
-    NON_BLOCKING_ELEMENTS : new Array("p", "h1", "h2", "h3", "h4", "h5", "h6"),
+    NON_BLOCKING_ELEMENTS : ["p", "h1", "h2", "h3", "h4", "h5", "h6"],
 
     KEY : {
       BACKSPACE: 8,
@@ -223,7 +223,7 @@ jQuery.extend(WYMeditor, {
       CTRL: 17,
       END: 35,
       HOME: 36,
-      CURSOR: new Array(37, 38, 39, 40),
+      CURSOR: [37, 38, 39, 40],
       LEFT: 37,
       UP: 38,
       RIGHT: 39,
@@ -921,7 +921,7 @@ WYMeditor.editor.prototype.html = function(html) {
  */
 WYMeditor.editor.prototype.xhtml = function() {
   // Remove any of the placeholder nodes we've created for start/end content
-  // insertiong
+  // insertion
   jQuery(this._doc.body).children(WYMeditor.BR).remove();
 
   return this.parser.parse(this.html());
@@ -932,8 +932,8 @@ WYMeditor.editor.prototype.xhtml = function() {
  */
 WYMeditor.editor.prototype.exec = function(cmd) {
 
-  //base function for execCommand
-  //open a dialog or exec
+  // Base function for execCommand
+  // Either opens a dialog or calls exec
   switch(cmd) {
     case WYMeditor.CREATE_LINK:
       var container = this.container();
