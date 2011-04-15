@@ -199,6 +199,8 @@ WYMeditor.WymClassSafari.prototype.keyup = function(evt) {
         && evt.keyCode != WYMeditor.KEY.COMMAND
         && evt.keyCode != WYMeditor.KEY.UP
         && evt.keyCode != WYMeditor.KEY.DOWN
+        && evt.keyCode != WYMeditor.KEY.LEFT
+        && evt.keyCode != WYMeditor.KEY.RIGHT
         && evt.keyCode != WYMeditor.KEY.ENTER
         && !evt.metaKey
         && !evt.ctrlKey) {
@@ -232,6 +234,8 @@ WYMeditor.WymClassSafari.prototype.keyup = function(evt) {
     // then we should ensure that they're in the proper format
     if (evt.keyCode == WYMeditor.KEY.UP
         || evt.keyCode == WYMeditor.KEY.DOWN
+        || evt.keyCode == WYMeditor.KEY.LEFT
+        || evt.keyCode == WYMeditor.KEY.RIGHT
         || evt.keyCode == WYMeditor.KEY.BACKSPACE
         || evt.keyCode == WYMeditor.KEY.ENTER) {
 
