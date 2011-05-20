@@ -16,7 +16,7 @@ Wymeditor.selection = (function ($) {
             } else if (collapse) {
                 selection.collapseToEnd();
             }
-            range.detach();
+            //range.detach();
         },
         
         getCommonAncestors: function (container) {
@@ -27,7 +27,7 @@ Wymeditor.selection = (function ($) {
             
             for (i = 0; range = ranges[i]; i++) {
                 ancestors.push(range.commonAncestorContainer);
-                range.detach();
+                //range.detach();
             }
             return ancestors;
         },
@@ -57,7 +57,7 @@ Wymeditor.selection = (function ($) {
                     } else {
                         node = node.parent();
                         if (!node.length) {
-                            range.detach();
+                            //range.detach();
                         }
                     }
                 } while (node.length);
@@ -83,7 +83,7 @@ Wymeditor.selection = (function ($) {
 
         detach: function (ranges) {
             for (var i = 0, range; range = ranges[i]; i++) { 
-                range.detach();
+                //range.detach();
             }
         }
     };

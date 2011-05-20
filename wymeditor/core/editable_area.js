@@ -172,7 +172,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
                 range.surroundContents(element);
             }
 
-            range.detach();
+            //range.detach();
         }
     },
     
@@ -198,7 +198,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
         for (i = 0; range = ranges[i]; i++) {
             nodes = range.getNodes(null, func);
             $(nodes).children().unwrap();
-            range.detach();
+            //range.detach();
         }
     },
     
