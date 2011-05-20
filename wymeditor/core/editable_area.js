@@ -38,17 +38,24 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
     },
     
     handleEnterKey: function (element, event) {
-        var range;
+        var ranges, 
+            range;
         if (event.keyCode === 13) {
             event.preventDefault();
             
-            range = this.selection.getRanges(this.element)[0];
-            range.deleteContents();
-            
-            if (event.shiftKey) {
-                range.insertNode($('<br />')[0]);
-            } else {
-                this.selection.selectNodeContents(this.splitBlock(range.startContainer, range.startOffset));
+            ranges = this.selection.getRanges(this.element);
+
+            if (ranges.length) {
+                range = ranges[0];
+                range.deleteContents();
+                
+                if (event.shiftKey) {
+                    range.insertNode($('<br />')[0]);
+                } else {
+                    this.selection.selectNodeContents(this.splitBlock(range.startContainer, range.startOffset));
+                }
+
+                this.selection.detach(ranges);
             }
         }
         return true;
@@ -125,13 +132,15 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
             node = $(target);
         } else if (this.utils.is('String', target)) {
             tagName = target;
-            node = $(this.selection.getCommonAncestor());
+            node = $(this.selection.getCommonAncestors(this.element)[0]);
         }
         
-        node = this.findParentBlockNode(node);
-        
-        newNode = $('<'+tagName+'/>').append(node.clone().get(0).childNodes);
-        node.replaceWith(newNode);
+        if (node.length) {
+            node = this.findParentBlockNode(node);
+            
+            newNode = $('<'+tagName+'/>').append(node.clone().get(0).childNodes);
+            node.replaceWith(newNode);
+        }
     },
     
     formatSelection: function (element) {
@@ -155,6 +164,8 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
             if (range.canSurroundContents()) {
                 range.surroundContents(element);
             }
+
+            range.detach();
         }
     },
     
@@ -180,11 +191,14 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
         for (i = 0; range = ranges[i]; i++) {
             nodes = range.getNodes(null, func);
             $(nodes).children().unwrap();
+            range.detach();
         }
     },
     
     toggleSelectionFormat: function (element) {
-        var ranges = this.selection.getRanges(this.element);        
+        var ranges = this.selection.getRanges(this.element);
+        
+        this.selection.detach(ranges);      
     },
     
     findParentNode: function (node, filter, container) {

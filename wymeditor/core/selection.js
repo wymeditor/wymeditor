@@ -19,12 +19,17 @@ Wymeditor.selection = (function ($) {
             range.detach();
         },
         
-        getCommonAncestor: function () {
-            var selection = rangy.getSelection(),
-                range = selection.getRangeAt(0),
-                commonAncestorContainer = range.commonAncestorContainer;
-            range.detach();
-            return commonAncestorContainer;
+        getCommonAncestors: function (container) {
+            var ancestors = [],
+                ranges = Wymeditor.selection.getRanges(container),
+                range, 
+                i;
+            
+            for (i = 0; range = ranges[i]; i++) {
+                ancestors.push(range.commonAncestorContainer);
+                range.detach();
+            }
+            return ancestors;
         },
         
         getRanges: function (container) {
@@ -51,11 +56,20 @@ Wymeditor.selection = (function ($) {
                         break;
                     } else {
                         node = node.parent();
+                        if (!node.length) {
+                            range.detach();
+                        }
                     }
                 } while (node.length);
             }
             
             return ranges;
+        },
+
+        detach: function (ranges) {
+            for (var i = 0, range; range = ranges[i]; i++) { 
+                range.detach();
+            }
         }
     };
 })(jQuery);
