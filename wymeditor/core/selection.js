@@ -76,7 +76,9 @@ Wymeditor.selection = (function ($) {
         },
         
         clearSave: function () {
-            rangy.removeMarkers(savedSelection);
+            if (savedSelection) {
+                rangy.removeMarkers(savedSelection);
+            }
         },
 
         detach: function (ranges) {
@@ -85,4 +87,5 @@ Wymeditor.selection = (function ($) {
             }
         }
     };
+    return self;
 })(jQuery);
