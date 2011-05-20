@@ -1,7 +1,7 @@
 Wymeditor.selection = (function ($) {
-    var utils = Wymeditor.utils;
-    
-    return {
+    var utils = Wymeditor.utils,
+        savedSelection,
+        self = {
         selectNodeContents: function (node, collapse, start) {
             var range = rangy.createRange(),
                 selection = rangy.getSelection();
@@ -64,6 +64,19 @@ Wymeditor.selection = (function ($) {
             }
             
             return ranges;
+        },
+
+        save: function () {
+            self.clearSave();
+            savedSelection = rangy.saveSelection();
+        },
+        
+        restore: function () {
+            rangy.restoreSelection(savedSelection, true);
+        },
+        
+        clearSave: function () {
+            rangy.removeMarkers(savedSelection);
         },
 
         detach: function (ranges) {

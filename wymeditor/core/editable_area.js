@@ -136,10 +136,14 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
         }
         
         if (node.length) {
+            this.selection.save();
+
             node = this.findParentBlockNode(node);
             
             newNode = $('<'+tagName+'/>').append(node.clone().get(0).childNodes);
             node.replaceWith(newNode);
+
+            this.selection.restore();
         }
     },
     
