@@ -131,11 +131,11 @@ jQuery(function($){
     });
     
     test('unformatSelection', function() {
-        var range;
+        var node, range, selection;
         function setup () {
-            var node = $('<p>Text to <em>format</em></p>'),
-                range = rangy.createRange(),
-                selection = rangy.getSelection();
+            node = $('<p>Text to <em>format</em></p>');
+            range = rangy.createRange();
+            selection = rangy.getSelection();
                 
             editableArea.html('');
             editableArea.element.append(node);
@@ -143,19 +143,22 @@ jQuery(function($){
             node = node.find('em');
 
             range.selectNodeContents(node[0]);
-            selection.setSingleRange(range);
             
-            return range;
+            return { range: range, selection: selection, node: node };
         }
         
         setup();
+        selection.setSingleRange(range);
         editableArea.unformatSelection('em');
         strictEqual(editableArea.html(), '<p>Text to format</p>', 'Remove formatting (tag name)');
         
-        range = setup();
-
+        setup();
+        
+        range.setStart(node[0].childNodes[0], 2);
+        selection.setSingleRange(range);
+        
         editableArea.unformatSelection('em');
-        strictEqual(editableArea.html(), '<p>Text to format</p>', 'Remove formatting, partial (tag name)');
+        strictEqual(editableArea.html(), '<p>Text to <em>fo</em>rmat</p>', 'Remove formatting, partial (tag name)');
         
         editableArea.html('');
     });

@@ -311,7 +311,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
         });
     },
 
-    normalize: function normalize (node) {
+    normalizeNode: function normalize (node) {
         var next;
         node = $(node)[0];
         next = node.nextSibling;
