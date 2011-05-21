@@ -67,7 +67,7 @@ Wymeditor.dom.structureManager.load({
             weight: 0
         },
         block: {
-            members: ['div', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'dl', 'li', 'dd'],
+            members: ['div', 'blockquote', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'dl', 'li', 'dd'],
             children: ['$inline'],
             next: 'p'
         },
@@ -76,9 +76,8 @@ Wymeditor.dom.structureManager.load({
             children: ['$inline']
         },
         structuralBlocks: {
-            members: ['div'], // 'article', 'section', 'aside', etc
+            members: ['div', 'blockquote'], // 'article', 'section', 'aside', etc
             children: ['$block'],
-            nestSelf: true,
             weight: 2
         },
         lists: {
