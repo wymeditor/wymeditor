@@ -70,17 +70,16 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
         }
     },
     
-    splitBlock: function (node, offset, container) {
-        var firstChild = node.nodeType === Wymeditor.TEXT_NODE ?
+    splitNodes: function (node, offset, container) {
+        var child = node.nodeType === Wymeditor.TEXT_NODE ?
                 this.splitTextNode(node, offset) : node,
-            oldParent = firstChild.parentNode,
+            oldParent = child.parentNode,
             newParent = document.createElement(oldParent.tagName),
             parents = [],
-            child = firstChild,
             children = [],
             i;
         
-        container = container || this.findParentBlockNode(child).parent()[0];
+        container = container || oldParent.parentNode;
         
         // We're splitting the parentNode
         if (child.parentNode !== container) {
@@ -100,12 +99,81 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
             this.populateEmptyElements([oldParent, newParent]);
             
             if (newParent.parentNode !== container) {
-                this.splitBlock(newParent, null, container);
+                this.splitNode(newParent, null, container);
             }            
             
             return newParent;
         }
         return container.children[container.children.length - 1];
+    },
+
+    splitRangeAtBlockBoundaries: function (range) {
+        var filter = this.dom.structureManager.getCollectionSelector('block'),
+            nodes = range.getNodes([3], function (n) { 
+                return $(n).is(filter); }),
+            node,
+            ranges = [],
+            newRange,
+            i;
+        
+        for (i = 0; node = nodes[i]; i++) {
+            newRange = rangy.createRange();
+            newRange.selectNodeContents(node);
+
+            switch (range.compareNode(node)) {
+                // node starts before the range
+                case range.NODE_BEFORE:
+                    newRange.setStart(node, range.startOffset);
+                    ranges.push(range);
+                break; 
+                // node ends after the range
+                case range.NODE_AFTER:
+                    newRange.setEnd(node, range.endOffset);
+                    ranges.push(range);
+                break; 
+                // node is completely contained within the range
+                case range.NODE_INSIDE:
+                    ranges.push(range);
+                break;
+                default:
+                    newRange.detach();
+                    newRange = null; 
+                break;
+            }
+        }
+
+        if (ranges.length) {
+            return ranges;
+        } else {
+            return [range];
+        }
+    },
+
+    splitRangesAtBlockBoundaries: function (ranges) {
+        var newRanges = [], range, i;
+        for (i = 0; range = ranges[i]; i++) {
+            newRanges.concat(this.splitRangeAtBlockBoundaries(range));
+        }
+        return newRanges;
+    },
+
+    splitNodesAtRangeBoundaries: function (ranges) {
+        var range, i;
+
+        // Respect blok elements
+        ranges = this.splitRangesAtBlockBoundaries(ranges);
+        
+        for (i = 0; range = ranges[i]; i++) {
+            this.splitNodes(range.startContainer, range.startOffset, range.commonAncestorContainer);
+            if (!range.collapsed) {
+                this.splitNodes(range.endContainer, range.endOffset, range.commonAncestorContainer);
+            }
+        }
+        return ranges;
+    },
+
+    splitBlock: function (node, offset) {
+        this.splitNodes(this.findParentBlockNode(child).parent()[0);
     },
     
     appendBlock: function (type, element) {
@@ -161,7 +229,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
             } else {
                 // Make sure we get a DOM Node even if we have a jQuery object
                 // and that we dont try to use the same element twice
-                if (i > 1) {
+                if (i !== 0) {
                     element = $(element).clone()[0];
                 } else {
                     element = $(element)[0];
@@ -176,14 +244,15 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
         }
     },
     
-    unformatSelection: function unformat (filter) {
+    unformatSelection: function (filter) {
         var i, ranges, nodes, func;
         
-        if (this.utils.is('String', filter)) {
-            // Asume we have a tag/nodeName
-            filter = filter.toLowercase();
+        if (this.utils.is('Function', filter) {
+            func = filter;
+        } else if (this.utils.is('String', filter)) {
+            // Asume a selector/tagName
             func = function (node) {
-                return node.nodeName.toLowecase() === filter;
+                return $(node).is(filter);
             };
         } else if (filter) {
             // Asume some kind of element/jQuery object. Use first element.
@@ -191,6 +260,8 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
             func = function (node) {
                 return node === filter;
             };
+        } else {
+            // return;
         }
         
         ranges = this.selection.getRanges(this.element);
