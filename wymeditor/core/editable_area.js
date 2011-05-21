@@ -62,7 +62,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
     },
     
     splitTextNode: function (textNode, offset) {
-        if (offset < textNode.length) {
+        if (offset > 0 && offset < textNode.length) {
             textNode.splitText(offset);
             return textNode.nextSibling;
         } else {
@@ -79,7 +79,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
             children = [],
             i;
         
-        container = container || oldParent.parentNode;
+        container = $(container || oldParent.parentNode)[0];
         
         // We're splitting the parentNode
         if (child.parentNode !== container) {
@@ -152,21 +152,21 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
     splitRangesAtBlockBoundaries: function (ranges) {
         var newRanges = [], range, i;
         for (i = 0; range = ranges[i]; i++) {
-            newRanges.concat(this.splitRangeAtBlockBoundaries(range));
+            newRanges = newRanges.concat(this.splitRangeAtBlockBoundaries(range));
         }
         return newRanges;
     },
 
     splitNodesAtRangeBoundaries: function (ranges) {
-        var range, i;
+        var range, container, i;
 
         // Respect blok elements
         ranges = this.splitRangesAtBlockBoundaries(ranges);
-        
         for (i = 0; range = ranges[i]; i++) {
-            this.splitNodes(range.startContainer, range.startOffset, range.commonAncestorContainer);
+            container = this.findParentBlockNode(range.startContainer);
+            this.splitNodes(range.startContainer, range.startOffset, container);
             if (!range.collapsed) {
-                this.splitNodes(range.endContainer, range.endOffset, range.commonAncestorContainer);
+                this.splitNodes(range.endContainer, range.endOffset, container);
             }
         }
         return ranges;
@@ -245,7 +245,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
     },
     
     unformatSelection: function (filter) {
-        var i, ranges, nodes, func;
+        var i, ranges, range, nodes, func;
         
         if (this.utils.is('Function', filter)) {
             func = filter;
@@ -264,13 +264,24 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
             // return;
         }
         
-        ranges = this.selection.getRanges(this.element);
+        ranges = this.splitNodesAtRangeBoundaries(
+            this.selection.getRanges(this.element));
         
         for (i = 0; range = ranges[i]; i++) {
+            // element is child
             nodes = range.getNodes(null, func);
-            $(nodes).children().unwrap();
+            $(nodes).each(function() {
+                $(this.childNodes).unwrap();
+            });
+
+            // element is container
+            $($(range.commonAncestorContainer).filter(function(){ return func(this); })[0]
+                .childNodes).unwrap();
+
             //range.detach();
         }
+
+        // Normalize DOM
     },
     
     toggleSelectionFormat: function (element) {

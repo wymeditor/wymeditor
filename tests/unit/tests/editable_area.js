@@ -131,6 +131,32 @@ jQuery(function($){
     });
     
     test('unformatSelection', function() {
+        var range;
+        function setup () {
+            var node = $('<p>Text to <em>format</em></p>'),
+                range = rangy.createRange(),
+                selection = rangy.getSelection();
+                
+            editableArea.html('');
+            editableArea.element.append(node);
+            
+            node = node.find('em');
 
+            range.selectNodeContents(node[0]);
+            selection.setSingleRange(range);
+            
+            return range;
+        }
+        
+        setup();
+        editableArea.unformatSelection('em');
+        strictEqual(editableArea.html(), '<p>Text to format</p>', 'Remove formatting (tag name)');
+        
+        range = setup();
+
+        editableArea.unformatSelection('em');
+        strictEqual(editableArea.html(), '<p>Text to format</p>', 'Remove formatting, partial (tag name)');
+        
+        editableArea.html('');
     });
 });
