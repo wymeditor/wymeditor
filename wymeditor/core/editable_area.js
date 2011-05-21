@@ -283,7 +283,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
         node = $(node);
         container = container || this.element;
         
-        while (!node.is(filter)) {
+        while (!node.is(filter) && !node.is(container)) {
             node = node.parent();
         }
         if (node.is(container)) {
