@@ -65,6 +65,8 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
         if (offset > 0 && offset < textNode.length) {
             textNode.splitText(offset);
             return textNode.nextSibling;
+        } else if (offset <= 0) {
+            return $(document.createTextNode('')).insertBefore(textNode)[0];
         } else {
             return $(document.createTextNode('')).insertAfter(textNode)[0];
         }
