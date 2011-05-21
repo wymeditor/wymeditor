@@ -133,6 +133,8 @@ jQuery(function($){
     test('unformatSelection', function() {
         var node, range, selection;
         function setup () {
+            try { range.detach(); } catch (e) {}
+
             node = $('<p>Text to <em>format</em></p>');
             range = rangy.createRange();
             selection = rangy.getSelection();

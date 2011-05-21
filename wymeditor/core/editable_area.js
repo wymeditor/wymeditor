@@ -270,10 +270,11 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
                 $(this.childNodes).unwrap();
             });
             //range.detach();
+    
+            this.normalizeNode(this.findParentBlockNode(range.commonAncestorContainer));
 
         }
 
-        // Normalize DOM
 
         this.selection.restore();
     },
@@ -288,14 +289,15 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
         node = $(node);
         container = container || this.element;
         
-        while (!node.is(filter) && !node.is(container)) {
-            node = node.parent();
+        if (container.length) {
+            while (node.length &&!node.is(filter) && !node.is(container)) {
+                node = node.parent();
+            }
+            if (!node.is(container)) {
+                return node;
+            }
         }
-        if (node.is(container)) {
-            return $();
-        } else { 
-            return node;
-        }
+        return $();
     },
     
     findParentBlockNode: function (node, container) {
@@ -312,21 +314,69 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
     },
 
     normalizeNode: function normalize (node) {
-        var next;
-        node = $(node)[0];
-        next = node.nextSibling;
+        var attributes = {}, 
+            equal,
+            next,
+            name, 
+            value,
+            i;
+        node = $(node)[0].childNodes[0];
 
-        while (next) {
+        while (node && (next = node.nextSibling)) {
             if (next.nodeName === node.nodeName) {
                 if (node.nodeType === Wymeditor.TEXT_NODE) {
                     node.appendData(sibling.data);
                     next.parentNode.removeChild(next);
                 } else if (node.nodeType === Wymeditor.ELEMENT_NODE) {
                     // Merge elements if they share the same attributes
+                    if (node.attributes.length === next.attributes.length) {
+                        equal = true;
+                        for (i=0; attribute = node.attributes[i]; i++) {
+                            name = attribute.nodeName.toLowerCase();
+                            value = attribute.nodeValue;
+                            
+                            if (name === 'style' && node.style.cssText) {
+                                attributes[name] = node.style.cssText;
+                            } else if (name !== 'contenteditable' && value !== '') {
+                                attributes[name] = value;
+                            }
+                        }
+                        for (i=0; attribute = next.attributes[i]; i++) {
+                            name = attribute.nodeName.toLowerCase();
+                            value = attribute.nodeValue;
+                            if (
+                                !(name in attributes) ||
+                                (name !== 'contenteditable' && value !== '' && attributes[name] !== value) ||
+                                (name === 'style' && next.style.cssText && attributes[name] !== node.style.cssText)
+                            ) {
+                                equal = false;
+                                break;
+                            }
+                        }
+
+                        if (equal) {
+                            // Merge nodes
+                            for (i = 0; child = next.childNodes[i]; i++) {
+                                node.appendChild(next.removeChild(child));
+                            }
+                        } else {
+                            node = next;
+                        }
+                    } else {
+                        node = next;
+                    }
+
+                    normalize(node);
                 }
+            } else {
+                // Remove empty elements
+                if (node.nodeType === Wymeditor.ELEMENT_NODE && !node.childNodes.length) {
+                    node.parentNode.removeChild(node);
+                }
+                node = next;
             }
-            next = node.nextSibling;
         }
+
     },
     
     html: function (html) {
