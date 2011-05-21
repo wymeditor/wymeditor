@@ -99,7 +99,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
             this.populateEmptyElements([oldParent, newParent]);
             
             if (newParent.parentNode !== container) {
-                this.splitNode(newParent, null, container);
+                this.splitNodes(newParent, null, container);
             }            
             
             return newParent;
@@ -173,7 +173,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
     },
 
     splitBlock: function (node, offset) {
-        this.splitNodes(this.findParentBlockNode(child).parent()[0);
+        this.splitNodes(node, offset, this.findParentBlockNode(node).parent()[0]);
     },
     
     appendBlock: function (type, element) {
@@ -247,7 +247,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
     unformatSelection: function (filter) {
         var i, ranges, nodes, func;
         
-        if (this.utils.is('Function', filter) {
+        if (this.utils.is('Function', filter)) {
             func = filter;
         } else if (this.utils.is('String', filter)) {
             // Asume a selector/tagName
