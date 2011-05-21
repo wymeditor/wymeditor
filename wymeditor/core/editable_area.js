@@ -287,7 +287,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
             node = node.parent();
         }
         if (node.is(container)) {
-                return $();
+            return $();
         } else { 
             return node;
         }
