@@ -2,6 +2,7 @@
     window.Wymeditor = {
         version: "2.0a1",
         
+        ELEMENT_NODE: 1,
         TEXT_NODE: 3,
         COMMENT_NODE: 8,
         

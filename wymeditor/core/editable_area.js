@@ -248,42 +248,34 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
     
     unformatSelection: function (filter) {
         var i, ranges, range, nodes, func;
-        
-        if (this.utils.is('Function', filter)) {
-            func = filter;
-        } else if (this.utils.is('String', filter)) {
-            // Asume a selector/tagName
-            func = function (node) {
-                return $(node).is(filter);
-            };
-        } else if (filter) {
-            // Asume some kind of element/jQuery object. Use first element.
-            filter = $(filter)[0];
-            func = function (node) {
-                return node === filter;
-            };
-        } else {
-            // return;
-        }
-        
+
+        this.selection.save();
+
         ranges = this.splitNodesAtRangeBoundaries(
             this.selection.getRanges(this.element));
         
         for (i = 0; range = ranges[i]; i++) {
             // element is child
-            nodes = range.getNodes(null, func);
-            $(nodes).each(function() {
-                $(this.childNodes).unwrap();
+            nodes = range.getNodes([3], function (node) {
+                return $(node).is(filter);
             });
 
             // element is container
-            $($(range.commonAncestorContainer).filter(function(){ return func(this); })[0]
-                .childNodes).unwrap();
+            nodes = nodes.concat($(range.commonAncestorContainer).filter(filter).toArray());
 
+            // element is parent
+            nodes = nodes.concat(this.findParentNode(range.commonAncestorContainer, filter).toArray());
+
+            $(nodes).each(function() {
+                $(this.childNodes).unwrap();
+            });
             //range.detach();
+
         }
 
         // Normalize DOM
+
+        this.selection.restore();
     },
     
     toggleSelectionFormat: function (element) {
@@ -317,6 +309,24 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
             $(this).children().andSelf()
                 .filter(':empty:not(br)').append('<br _wym_placeholder="true" />');
         });
+    },
+
+    normalize: function normalize (node) {
+        var next;
+        node = $(node)[0];
+        next = node.nextSibling;
+
+        while (next) {
+            if (next.nodeName === node.nodeName) {
+                if (node.nodeType === Wymeditor.TEXT_NODE) {
+                    node.appendData(sibling.data);
+                    next.parentNode.removeChild(next);
+                } else if (node.nodeType === Wymeditor.ELEMENT_NODE) {
+                    // Merge elements if they share the same attributes
+                }
+            }
+            next = node.nextSibling;
+        }
     },
     
     html: function (html) {
