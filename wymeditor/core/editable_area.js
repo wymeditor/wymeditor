@@ -320,7 +320,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
             name, 
             value,
             i;
-        node = $(node)[0].childNodes[0];
+        node = $(node)[0] && $(node)[0].childNodes[0];
 
         while (node && (next = node.nextSibling)) {
             if (next.nodeName === node.nodeName) {
