@@ -553,7 +553,7 @@ jQuery.fn.wymeditor = function(options) {
                "<legend>{Link}</legend>" +
                "<div class='row'>" +
                "<label>{URL}</label>" +
-               "<input type='text' class='wym_href' value='' size='40' />" +
+               "<input type='text' class='wym_href' value='' size='40' autofocus='autofocus' />" +
                "</div>" +
                "<div class='row'>" +
                "<label>{Title}</label>" +
@@ -584,7 +584,7 @@ jQuery.fn.wymeditor = function(options) {
                "<legend>{Image}</legend>" +
                "<div class='row'>" +
                "<label>{URL}</label>" +
-               "<input type='text' class='wym_src' value='' size='40' />" +
+               "<input type='text' class='wym_src' value='' size='40' autofocus='autofocus' />" +
                "</div>" +
                "<div class='row'>" +
                "<label>{Alternative_Text}</label>" +
@@ -649,7 +649,7 @@ jQuery.fn.wymeditor = function(options) {
                "<fieldset>" +
                "<legend>{Paste_From_Word}</legend>" +
                "<div class='row'>" +
-               "<textarea class='wym_text' rows='10' cols='50'></textarea>" +
+               "<textarea class='wym_text' rows='10' cols='50' autofocus='autofocus'></textarea>" +
                "</div>" +
                "<div class='row'>" +
                "<input class='wym_submit' type='submit'" +
