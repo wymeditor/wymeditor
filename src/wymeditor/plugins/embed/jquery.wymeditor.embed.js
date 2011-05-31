@@ -14,6 +14,7 @@
  * File Authors:
  *        Jonatan Lundin (jonatan.lundin a-t gmail dotcom)
  *        Roger Hu (roger.hu a-t gmail dotcom) 
+ *        Scott Nixon (citadelgrad a-t gmail dotcom)
  */
 
 (function() {
@@ -44,12 +45,24 @@
             '3':'value'
         };
         
+	WYMeditor.XhtmlValidator['_tags']['iframe'] = {
+	    "attributes":[
+			  "allowfullscreen",
+			  "width",
+			  "height",
+			  "src",
+			  "title",
+			  "frameborder"
+             ]
+	};
+
         var XhtmlSaxListener = WYMeditor.XhtmlSaxListener;
         WYMeditor.XhtmlSaxListener = function () {
             var listener = XhtmlSaxListener.call(this);
             removeItem('param', listener.block_tags);
             listener.inline_tags.push('param');
             listener.inline_tags.push('embed');
+	    listener.inline_tags.push('iframe');
             return listener;
         };
         WYMeditor.XhtmlSaxListener.prototype = XhtmlSaxListener.prototype;
