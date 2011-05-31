@@ -22,34 +22,39 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>WYMeditor Test Suite</title>
 <link rel="stylesheet" href="qunit.css" type="text/css" media="screen" />
+
 <script type="text/javascript" src="../../jquery/jquery.js"></script>
 <script type="text/javascript" src="../../wymeditor/jquery.wymeditor.js"></script>
 <script type="text/javascript" src="../../wymeditor/jquery.wymeditor.explorer.js"></script>
 <script type="text/javascript" src="../../wymeditor/jquery.wymeditor.mozilla.js"></script>
 <script type="text/javascript" src="../../wymeditor/jquery.wymeditor.opera.js"></script>
 <script type="text/javascript" src="../../wymeditor/jquery.wymeditor.safari.js"></script>
-<script type="text/javascript" src="qunit.js"></script>
 
+<!-- plugins -->
+<script type="text/javascript" src="../../wymeditor/plugins/embed/jquery.wymeditor.embed.js"></script>
+
+<script type="text/javascript" src="qunit.js"></script>
 
 <script type="text/javascript" src="utils.js"></script>
 <script type="text/javascript" src="lists.js"></script>
 <script type="text/javascript" src="blocking_elements.js"></script>
+<script type="text/javascript" src="embed.js"></script>
 
 <script type="text/javascript" src="test.js"></script>
 
 </head>
 
 <body>
-	<h1 id="qunit-header">WYMeditor Test Suite</h1>
-	<h2 id="qunit-banner"></h2>
-	<h2 id="qunit-userAgent"></h2>
-	<div>
-	<form method="post" action="">
-		<textarea class="wymeditor"></textarea>
-		<input type="submit" class="wymupdate" />
-		<input type="button" class="wymclear" name="Clear" value="Clear" />
-	</form>
-	</div>
-	<ol id="qunit-tests"></ol>
+    <h1 id="qunit-header">WYMeditor Test Suite</h1>
+    <h2 id="qunit-banner"></h2>
+    <h2 id="qunit-userAgent"></h2>
+    <div>
+    <form method="post" action="">
+        <textarea class="wymeditor"></textarea>
+        <input type="submit" class="wymupdate" />
+        <input type="button" class="wymclear" name="Clear" value="Clear" />
+    </form>
+    </div>
+    <ol id="qunit-tests"></ol>
 </body>
 </html>
