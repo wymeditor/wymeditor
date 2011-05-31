@@ -67,8 +67,6 @@ test("Should remove PRE line breaks (BR)", function() {
 	equals( jQuery.wymeditors(0).parser.parse(original), expected, "Remove BR in PRE" );
 });
 
-
-
 function runPostInitTests() {
 	module("Post Init");
 
@@ -235,4 +233,6 @@ function runPostInitTests() {
 		expect(1);
 		equals( wymeditor.xhtml(), initHtml);
 	});
+
+	runEmbedPluginTests();
 };
