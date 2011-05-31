@@ -175,7 +175,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
     },
 
     splitBlock: function (node, offset) {
-        this.splitNodes(node, offset, this.findParentBlockNode(node).parent()[0]);
+        return this.splitNodes(node, offset, this.findParentBlockNode(node).parent()[0]);
     },
     
     appendBlock: function (type, element) {
