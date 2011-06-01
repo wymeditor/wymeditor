@@ -6,12 +6,12 @@
  *
  * For further information visit:
  *        http://www.wymeditor.org/
- * 
+ *
  * File Name:
  *        wymeditor.css
  *        Main editor css file.
  *        See the documentation for more info.
- * 
+ *
  * File Authors:
  *        Jean-Francois Hovinne (jf.hovinne a-t wymeditor dotorg)
  *        Daniel Reszka (d.reszka a-t wymeditor dotorg)
@@ -21,7 +21,7 @@
 
 /* basic */
   body  { background: #e1e8f1;}
- 
+
 /* make HTML blocs visible */
   p,
   h1,
@@ -49,7 +49,7 @@
 
 /* Gecko min height fix */
   td            { height: 1.6em; }
- 
+
 /* labels */
   p         { background-image: url(lbl-p.png); }
   h1        { background-image: url(lbl-h1.png); }
@@ -86,3 +86,6 @@
     border: 1px solid red !important;
     font-size: 12px !important;
     font-weight: normal; }
+
+/* Spacer BRs shouldn't add much whitespace */
+br { height: 5px; line-height: 5px; }
