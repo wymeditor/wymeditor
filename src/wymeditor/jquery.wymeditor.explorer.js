@@ -304,3 +304,42 @@ WYMeditor.WymClassExplorer.prototype.spaceBlockingElements = function() {
   $body.find(blockSepSelector).before(placeholderNode);
 };
 
+/* @name paste
+ * @description         Paste text into the editor below the carret,
+ *                      used for "Paste from Word".
+ * @param String str    String to insert, two or more newlines separates
+ *                      paragraphs. May contain inline HTML.
+ */
+WYMeditor.WymClassExplorer.prototype.paste = function(str) {
+    var container = this.selected(),
+        html = '',
+        paragraphs,
+        focusNode;
+
+    // Insert where appropriate
+    if (container && container.tagName.toLowerCase() != WYMeditor.BODY) {
+        // No .last() pre jQuery 1.4
+        //focusNode = jQuery(html).insertAfter(container).last()[0];
+        paragraphs = jQuery(container).append(str);
+        focusNode = paragraphs[paragraphs.length - 1];
+    } else {
+        // Split string into paragraphs by two or more newlines
+        paragraphs = str.split(new RegExp(this._newLine + '{2,}', 'g'));
+
+        // Build html
+        for (var i=0, l=paragraphs.length; i < l; i++) {
+            html += '<p>' +
+                ( paragraphs[i].split(this._newLine).join('<br />') ) +
+                '</p>';
+        }
+
+        paragraphs = jQuery(html, this._doc).appendTo(this._doc.body);
+        focusNode = paragraphs[paragraphs.length - 1];
+    }
+
+    // And remove br (if editor was empty)
+    jQuery('body > br', this._doc).remove();
+
+    // Restore focus
+    this.setFocusToNode(focusNode);
+};
