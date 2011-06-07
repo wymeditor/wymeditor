@@ -85,8 +85,7 @@ function testRowMerge(
 
     // Use rangy to get a cross-browser selection object and perform the actual
     // merge
-    var iframeWin = wymeditor._iframe.contentDocument ? wymeditor._iframe.contentDocument.defaultView : wymeditor._iframe.contentWindow;
-    var sel = rangy.getSelection(iframeWin);
+    var sel = rangy.getIframeSelection(wymeditor._iframe);
     var changesMade = wymeditor.tableEditor.mergeRow(sel);
     equals(changesMade, true);
 

@@ -108,8 +108,7 @@ function makeSelection(
 	if (endElementIndex == null) {
 		endElementIndex = 0;
 	}
-	var iframeWin = wymeditor._iframe.contentDocument ? wymeditor._iframe.contentDocument.defaultView : wymeditor._iframe.contentWindow;
-	var sel = rangy.getSelection(iframeWin);
+	var sel = rangy.getIframeSelection(wymeditor._iframe);
 
 	var range = rangy.createRange(wymeditor._doc);
 	range.setStart(startElement, startElementIndex);

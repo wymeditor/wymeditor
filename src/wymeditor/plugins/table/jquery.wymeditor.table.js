@@ -122,8 +122,7 @@ TableEditor.prototype.bindEvents = function() {
 
     // Handle tool button click
     $(wym._box).find(tableEditor._options.sMergeRowButtonSelector).click(function() {
-        var iframeWin = wym._iframe.contentDocument ? wym._iframe.contentDocument.defaultView : wym._iframe.contentWindow;
-        var sel = rangy.getSelection(iframeWin);
+        var sel = rangy.getIframeSelection(wym._iframe);
         tableEditor.mergeRow(sel);
         return false;
     });
@@ -609,8 +608,7 @@ TableEditor.prototype.selectNextCell = function(elmnt) {
  * Select the given element using rangy selectors.
  */
 TableEditor.prototype.selectElement = function(elmnt) {
-    var iframeWin = this._wym._iframe.contentDocument ? this._wym._iframe.contentDocument.defaultView : this._wym._iframe.contentWindow;
-    var sel = rangy.getSelection(iframeWin);
+    var sel = rangy.getIframeSelection(this._wym._iframe);
 
     var range = rangy.createRange(this._wym._doc);
     range.setStart(elmnt, 0);
