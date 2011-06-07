@@ -1,0 +1,458 @@
+/*
+ * Desktop skin for WYMeditor : what you see is What You Mean web-based editor
+ * Copyright (c) 2011  Calvin Schwenzfeier
+ * Dual licensed under the MIT (MIT-license.txt)
+ * and GPL (GPL-license.txt) licenses.
+ *
+ * File Authors:
+ *      Calvin Schwenzfeier (calvin DOT schwenzfeier A~T gmail dotCOM)
+ */
+
+/*TRYING TO RESET STYLES THAT MAY INTERFERE WITH WYMEDITOR*/
+        .wym_skin_desktop p, .wym_skin_desktop h2, .wym_skin_desktop h3,
+        .wym_skin_desktop ul, .wym_skin_desktop li { background: transparent url(); margin: 0; padding: 0; border-width:0; list-style: none; }
+
+
+/*HIDDEN BY DEFAULT*/
+        .wym_skin_desktop .wym_area_left     { display: none; }
+        .wym_skin_desktop .wym_area_right    { display: block; }
+
+
+/*TYPO*/    
+        .wym_skin_desktop       { font-size: 62.5%; font-family: Verdana, Arial, sans-serif; }
+        .wym_skin_desktop h2    { font-size: 110%; /* = 11px */}
+        .wym_skin_desktop h3    { font-size: 100%; /* = 10px */}
+        .wym_skin_desktop li    { font-size: 100%; /* = 10px */}
+
+
+/*WYM_BOX*/
+        .wym_skin_desktop          { border: 1px solid gray; background: #f2f2f2; padding: 5px}
+
+    /*auto-clear the wym_box*/
+        .wym_skin_desktop:after    { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
+ * html .wym_skin_desktop          { height: 1%;}
+
+
+/*WYM_HTML*/
+        .wym_skin_desktop .wym_html             { width: 98%;}
+        .wym_skin_desktop .wym_html textarea    { width: 100%; height: 200px; border: 1px solid gray; background: white;  }
+
+
+/*WYM_IFRAME*/
+        .wym_skin_desktop .wym_iframe           { width: 98%;}
+        .wym_skin_desktop .wym_iframe iframe    { width: 100%; height: 200px; border: 1px solid gray; background: white }
+
+
+/*AREAS*/
+        .wym_skin_desktop .wym_area_left      { width: 150px; float: left;}
+        .wym_skin_desktop .wym_area_right     { width: 150px; float: right;}
+        .wym_skin_desktop .wym_area_bottom    { height: 1%; clear: both;}
+ * html .wym_skin_desktop .wym_area_main      { height: 1%;}
+ * html .wym_skin_desktop .wym_area_top       { height: 1%;}
+ *+html .wym_skin_desktop .wym_area_top       { height: 1%;}
+
+/*SECTIONS SYSTEM*/
+
+    /*common defaults for all sections*/
+        .wym_skin_desktop .wym_section            { margin-bottom: 5px; }
+        .wym_skin_desktop .wym_section h2,
+        .wym_skin_desktop .wym_section h3         { padding: 1px 3px; margin: 0; }
+        .wym_skin_desktop .wym_section a          { padding: 0 3px; display: block; text-decoration: none; color: black; }
+        .wym_skin_desktop .wym_section a:hover    { background-color: yellow; }
+      /*hide section titles by default*/
+        .wym_skin_desktop .wym_section h2         { display: none; }
+      /*disable any margin-collapse*/
+        .wym_skin_desktop .wym_section            { padding-top: 1px; padding-bottom: 1px; }    
+      /*auto-clear sections*/
+        .wym_skin_desktop .wym_section ul:after   { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
+ * html .wym_skin_desktop .wym_section ul         { height: 1%;}
+
+    /*option: add this class to a section to make it render as a panel*/
+        .wym_skin_desktop .wym_panel       { }
+        .wym_skin_desktop .wym_panel h2    { display: block; }
+
+    /*option: add this class to a section to make it render as a dropdown menu*/
+        .wym_skin_desktop .wym_dropdown h2    { display: block; }
+        .wym_skin_desktop .wym_dropdown ul    { display: none; position: absolute; background: white; }
+        .wym_skin_desktop .wym_dropdown:hover ul,
+        .wym_skin_desktop .wym_dropdown.hover ul  { display: block; }
+    /*option: add this class to a section to make its elements render buttons (icons are only available for the wym_tools section for now)*/
+        .wym_skin_desktop .wym_buttons li      { float:left;}
+        .wym_skin_desktop .wym_buttons a       { width: 20px; height: 20px; overflow: hidden; padding: 2px }
+      /*image replacements*/
+        .wym_skin_desktop .wym_buttons li a    { background: url(icons.png) no-repeat; text-indent: -9999px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_accessories_calculator a    { background-position: 0 0px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_accessories_character_map a    { background-position: 0 -24px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_accessories_dictionary a    { background-position: 0 -48px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_accessories_text_editor a    { background-position: 0 -72px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_applications_accessories a    { background-position: 0 -96px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_applications_certificate a    { background-position: 0 -120px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_applications_development a    { background-position: 0 -144px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_applications_engineering a    { background-position: 0 -168px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_applications_exit a    { background-position: 0 -192px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_applications_games a    { background-position: 0 -216px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_applications_graphics a    { background-position: 0 -240px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_applications_internet a    { background-position: 0 -264px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_applications_logviewer a    { background-position: 0 -288px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_applications_multimedia a    { background-position: 0 -312px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_applications_office a    { background-position: 0 -336px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_applications_other a    { background-position: 0 -360px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_applications_science a    { background-position: 0 -384px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_applications_screen_capture a    { background-position: 0 -408px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_applications_system_monitor a    { background-position: 0 -432px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_applications_system a    { background-position: 0 -456px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_applications_terminal a    { background-position: 0 -480px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_applications_utilities a    { background-position: 0 -504px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_applications_web_browser a    { background-position: 0 -528px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_applications_x_executable a    { background-position: 0 -552px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_audio_card a    { background-position: 0 -576px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_audio_input_microphone a    { background-position: 0 -600px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_audio_volume_high a    { background-position: 0 -624px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_audio_volume_low a    { background-position: 0 -648px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_audio_volume_medium a    { background-position: 0 -672px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_audio_volume_muted a    { background-position: 0 -696px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_battery_ac_adapter a    { background-position: 0 -720px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_battery_caution_charging a    { background-position: 0 -744px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_battery_caution a    { background-position: 0 -768px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_battery_default a    { background-position: 0 -792px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_battery_empty a    { background-position: 0 -816px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_battery_full_charged a    { background-position: 0 -840px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_battery_full_charging a    { background-position: 0 -864px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_battery_full a    { background-position: 0 -888px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_battery_good_charging a    { background-position: 0 -912px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_battery_good a    { background-position: 0 -936px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_battery_low_charging a    { background-position: 0 -960px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_battery_low a    { background-position: 0 -984px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_battery_missing a    { background-position: 0 -1008px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_blank a    { background-position: 0 -1032px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_camera_photo a    { background-position: 0 -1056px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_camera_video a    { background-position: 0 -1080px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_camera_web a    { background-position: 0 -1104px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_data_insert_horizontal_line a    { background-position: 0 -1128px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_data_insert_image a    { background-position: 0 -1152px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_data_insert_link a    { background-position: 0 -1176px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_data_insert_object a    { background-position: 0 -1200px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_data_insert_table_column_left a    { background-position: 0 -1224px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_data_insert_table_column_right a    { background-position: 0 -1248px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_data_insert_table_row_above a    { background-position: 0 -1272px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_data_insert_table_row_below a    { background-position: 0 -1296px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_data_insert_table a    { background-position: 0 -1320px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_data_insert_text a    { background-position: 0 -1344px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_data_remove_link a    { background-position: 0 -1368px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_data_remove_table_column a    { background-position: 0 -1392px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_data_remove_table_row a    { background-position: 0 -1416px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_dialog_error a    { background-position: 0 -1440px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_dialog_information a    { background-position: 0 -1464px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_dialog_password a    { background-position: 0 -1488px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_dialog_question a    { background-position: 0 -1512px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_dialog_warning a    { background-position: 0 -1536px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_document_default a    { background-position: 0 -1560px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_document_new a    { background-position: 0 -1584px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_document_open_recent a    { background-position: 0 -1608px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_document_open a    { background-position: 0 -1632px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_document_page_setup a    { background-position: 0 -1656px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_document_print_preview a    { background-position: 0 -1680px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_document_print a    { background-position: 0 -1704px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_document_properties a    { background-position: 0 -1728px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_document_revert a    { background-position: 0 -1752px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_document_save_as a    { background-position: 0 -1776px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_document_save a    { background-position: 0 -1800px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_document_send a    { background-position: 0 -1824px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_drive_harddisk a    { background-position: 0 -1848px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_drive_optical a    { background-position: 0 -1872px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_drive_removable_media a    { background-position: 0 -1896px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_edit_clear a    { background-position: 0 -1920px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_edit_copy a    { background-position: 0 -1944px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_edit_cut a    { background-position: 0 -1968px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_edit_delete a    { background-position: 0 -1992px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_edit_find_replace a    { background-position: 0 -2016px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_edit_find a    { background-position: 0 -2040px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_edit_paste a    { background-position: 0 -2064px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_edit_redo a    { background-position: 0 -2088px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_edit_select_all a    { background-position: 0 -2112px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_edit_undo a    { background-position: 0 -2136px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_emblem_address_book_new a    { background-position: 0 -2160px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_emblem_bookmark_new a    { background-position: 0 -2184px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_emblem_check_spelling a    { background-position: 0 -2208px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_emblem_contact_new a    { background-position: 0 -2232px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_emblem_default a    { background-position: 0 -2256px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_emblem_documents a    { background-position: 0 -2280px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_emblem_downloads a    { background-position: 0 -2304px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_emblem_favorite a    { background-position: 0 -2328px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_emblem_generic a    { background-position: 0 -2352px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_emblem_important a    { background-position: 0 -2376px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_emblem_mail a    { background-position: 0 -2400px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_emblem_new a    { background-position: 0 -2424px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_emblem_package a    { background-position: 0 -2448px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_emblem_photos a    { background-position: 0 -2472px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_emblem_readonly a    { background-position: 0 -2496px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_emblem_shared a    { background-position: 0 -2520px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_emblem_symbolic_link a    { background-position: 0 -2544px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_emblem_system a    { background-position: 0 -2568px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_emblem_tab_new a    { background-position: 0 -2592px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_emblem_unreadable a    { background-position: 0 -2616px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_emblem_urgent a    { background-position: 0 -2640px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_emblem_web a    { background-position: 0 -2664px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_emblem_window_close a    { background-position: 0 -2688px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_emblem_window_new a    { background-position: 0 -2712px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_face_angel a    { background-position: 0 -2736px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_face_angry a    { background-position: 0 -2760px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_face_cool a    { background-position: 0 -2784px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_face_crying a    { background-position: 0 -2808px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_face_devilish a    { background-position: 0 -2832px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_face_embarrassed a    { background-position: 0 -2856px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_face_glasses a    { background-position: 0 -2880px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_face_kiss a    { background-position: 0 -2904px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_face_laugh a    { background-position: 0 -2928px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_face_monkey a    { background-position: 0 -2952px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_face_plain a    { background-position: 0 -2976px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_face_raspberry a    { background-position: 0 -3000px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_face_sad a    { background-position: 0 -3024px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_face_sick a    { background-position: 0 -3048px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_face_smile_big a    { background-position: 0 -3072px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_face_smile a    { background-position: 0 -3096px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_face_smirk a    { background-position: 0 -3120px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_face_surprise a    { background-position: 0 -3144px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_face_tired a    { background-position: 0 -3168px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_face_uncertain a    { background-position: 0 -3192px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_face_wink a    { background-position: 0 -3216px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_face_worried a    { background-position: 0 -3240px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_file_audio_x_generic a    { background-position: 0 -3264px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_file_font_x_generic a    { background-position: 0 -3288px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_file_image_loading a    { background-position: 0 -3312px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_file_image_missing a    { background-position: 0 -3336px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_file_image_x_generic a    { background-position: 0 -3360px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_file_package_x_generic a    { background-position: 0 -3384px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_file_save_as a    { background-position: 0 -3408px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_file_save a    { background-position: 0 -3432px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_file_text_html a    { background-position: 0 -3456px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_file_text_x_generic_template a    { background-position: 0 -3480px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_file_text_x_generic a    { background-position: 0 -3504px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_file_text_x_preview a    { background-position: 0 -3528px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_file_text_x_script a    { background-position: 0 -3552px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_file_text_xml a    { background-position: 0 -3576px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_file_video_x_generic a    { background-position: 0 -3600px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_file_zip a    { background-position: 0 -3624px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_folder_default a    { background-position: 0 -3648px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_folder_documents a    { background-position: 0 -3672px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_folder_download a    { background-position: 0 -3696px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_folder_drag_accept a    { background-position: 0 -3720px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_folder_music a    { background-position: 0 -3744px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_folder_new a    { background-position: 0 -3768px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_folder_open a    { background-position: 0 -3792px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_folder_pictures a    { background-position: 0 -3816px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_folder_publicshare a    { background-position: 0 -3840px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_folder_remote a    { background-position: 0 -3864px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_folder_saved_search a    { background-position: 0 -3888px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_folder_templates a    { background-position: 0 -3912px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_folder_videos a    { background-position: 0 -3936px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_folder_visiting a    { background-position: 0 -3960px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_format_indent_less a    { background-position: 0 -3984px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_format_indent_more a    { background-position: 0 -4008px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_format_justify_center a    { background-position: 0 -4032px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_format_justify_fill a    { background-position: 0 -4056px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_format_justify_left a    { background-position: 0 -4080px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_format_justify_right a    { background-position: 0 -4104px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_format_subscript a    { background-position: 0 -4128px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_format_superscript a    { background-position: 0 -4152px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_format_text_bold a    { background-position: 0 -4176px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_format_text_direction_ltr a    { background-position: 0 -4200px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_format_text_direction_rtl a    { background-position: 0 -4224px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_format_text_italic a    { background-position: 0 -4248px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_format_text_strikethrough a    { background-position: 0 -4272px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_format_text_underline a    { background-position: 0 -4296px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_help_about a    { background-position: 0 -4320px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_help_browser a    { background-position: 0 -4344px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_help_contents a    { background-position: 0 -4368px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_help_faq a    { background-position: 0 -4392px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_input_gaming a    { background-position: 0 -4416px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_input_keyboard a    { background-position: 0 -4440px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_input_mouse a    { background-position: 0 -4464px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_input_tablet a    { background-position: 0 -4488px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_input_touchpad a    { background-position: 0 -4512px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_list_add a    { background-position: 0 -4536px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_list_bullet a    { background-position: 0 -4560px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_list_enum a    { background-position: 0 -4584px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_list_remove a    { background-position: 0 -4608px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_list_sort_ascending a    { background-position: 0 -4632px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_list_sort_descending a    { background-position: 0 -4656px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_mail_attachment a    { background-position: 0 -4680px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_mail_forward a    { background-position: 0 -4704px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_mail_mark_important a    { background-position: 0 -4728px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_mail_mark_junk a    { background-position: 0 -4752px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_mail_mark_notjunk a    { background-position: 0 -4776px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_mail_mark_read a    { background-position: 0 -4800px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_mail_mark_unread a    { background-position: 0 -4824px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_mail_message_new a    { background-position: 0 -4848px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_mail_read a    { background-position: 0 -4872px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_mail_replied a    { background-position: 0 -4896px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_mail_reply_all a    { background-position: 0 -4920px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_mail_reply_sender a    { background-position: 0 -4944px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_mail_send_receive a    { background-position: 0 -4968px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_mail_send a    { background-position: 0 -4992px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_mail_signed_verified a    { background-position: 0 -5016px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_mail_signed a    { background-position: 0 -5040px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_mail_unread a    { background-position: 0 -5064px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_call_start a    { background-position: 0 -5088px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_call_stop a    { background-position: 0 -5112px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_eject a    { background-position: 0 -5136px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_flash a    { background-position: 0 -5160px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_floppy a    { background-position: 0 -5184px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_go_bottom a    { background-position: 0 -5208px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_go_down a    { background-position: 0 -5232px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_go_first a    { background-position: 0 -5256px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_go_home a    { background-position: 0 -5280px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_go_jump a    { background-position: 0 -5304px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_go_last a    { background-position: 0 -5328px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_go_next a    { background-position: 0 -5352px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_go_previous a    { background-position: 0 -5376px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_go_top a    { background-position: 0 -5400px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_go_up a    { background-position: 0 -5424px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_optical a    { background-position: 0 -5448px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_playback_pause a    { background-position: 0 -5472px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_playback_start a    { background-position: 0 -5496px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_playback_stop a    { background-position: 0 -5520px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_player a    { background-position: 0 -5544px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_playlist_repeat a    { background-position: 0 -5568px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_playlist_shuffle a    { background-position: 0 -5592px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_record a    { background-position: 0 -5616px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_seek_backward a    { background-position: 0 -5640px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_seek_forward a    { background-position: 0 -5664px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_skip_backward a    { background-position: 0 -5688px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_skip_forward a    { background-position: 0 -5712px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_tape a    { background-position: 0 -5736px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_media_volume_control a    { background-position: 0 -5760px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_misc_changes_allow a    { background-position: 0 -5784px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_misc_changes_prevent a    { background-position: 0 -5808px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_misc_computer a    { background-position: 0 -5832px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_misc_pda a    { background-position: 0 -5856px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_misc_phone a    { background-position: 0 -5880px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_misc_process_stop a    { background-position: 0 -5904px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_misc_scanner a    { background-position: 0 -5928px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_misc_start_here a    { background-position: 0 -5952px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_misc_video_display a    { background-position: 0 -5976px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_network_error a    { background-position: 0 -6000px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_network_idle a    { background-position: 0 -6024px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_network_modem a    { background-position: 0 -6048px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_network_offline a    { background-position: 0 -6072px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_network_receive a    { background-position: 0 -6096px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_network_server a    { background-position: 0 -6120px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_network_transmit_receive a    { background-position: 0 -6144px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_network_transmit a    { background-position: 0 -6168px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_network_wired a    { background-position: 0 -6192px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_network_wireless_encrypted a    { background-position: 0 -6216px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_network_wireless a    { background-position: 0 -6240px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_network_workgroup a    { background-position: 0 -6264px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_object_flip_horizontal a    { background-position: 0 -6288px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_object_flip_vertical a    { background-position: 0 -6312px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_object_rotate_left a    { background-position: 0 -6336px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_object_rotate_right a    { background-position: 0 -6360px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_preferences_desktop_accessibility a    { background-position: 0 -6384px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_preferences_desktop_display a    { background-position: 0 -6408px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_preferences_desktop_font a    { background-position: 0 -6432px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_preferences_desktop_keyboard_shortcuts a    { background-position: 0 -6456px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_preferences_desktop_keyboard a    { background-position: 0 -6480px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_preferences_desktop_locale a    { background-position: 0 -6504px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_preferences_desktop_peripherals a    { background-position: 0 -6528px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_preferences_desktop_personal a    { background-position: 0 -6552px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_preferences_desktop_remote_desktop a    { background-position: 0 -6576px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_preferences_desktop_screensaver a    { background-position: 0 -6600px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_preferences_desktop_theme a    { background-position: 0 -6624px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_preferences_desktop_wallpaper a    { background-position: 0 -6648px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_preferences_desktop a    { background-position: 0 -6672px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_preferences_other a    { background-position: 0 -6696px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_preferences_system_network a    { background-position: 0 -6720px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_preferences_system_windows a    { background-position: 0 -6744px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_preferences_system a    { background-position: 0 -6768px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_printer_default a    { background-position: 0 -6792px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_printer_error a    { background-position: 0 -6816px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_printer_printing a    { background-position: 0 -6840px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_reminder_appointment_missed a    { background-position: 0 -6864px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_reminder_appointment_new a    { background-position: 0 -6888px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_reminder_appointment_soon a    { background-position: 0 -6912px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_reminder_task_due a    { background-position: 0 -6936px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_reminder_task_past_due a    { background-position: 0 -6960px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_security_high a    { background-position: 0 -6984px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_security_low a    { background-position: 0 -7008px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_security_medium a    { background-position: 0 -7032px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_security_software_update_available a    { background-position: 0 -7056px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_security_software_update_urgent a    { background-position: 0 -7080px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_system_file_manager a    { background-position: 0 -7104px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_system_font_default a    { background-position: 0 -7128px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_system_fonts a    { background-position: 0 -7152px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_system_help a    { background-position: 0 -7176px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_system_lock_screen a    { background-position: 0 -7200px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_system_log_out a    { background-position: 0 -7224px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_system_run a    { background-position: 0 -7248px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_system_search a    { background-position: 0 -7272px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_system_shutdown a    { background-position: 0 -7296px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_system_software_install a    { background-position: 0 -7320px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_system_software_update a    { background-position: 0 -7344px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_system_users a    { background-position: 0 -7368px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_user_available a    { background-position: 0 -7392px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_user_avatar_default a    { background-position: 0 -7416px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_user_away a    { background-position: 0 -7440px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_user_bookmarks a    { background-position: 0 -7464px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_user_busy a    { background-position: 0 -7488px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_user_desktop a    { background-position: 0 -7512px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_user_home a    { background-position: 0 -7536px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_user_idle a    { background-position: 0 -7560px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_user_info a    { background-position: 0 -7584px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_user_invisible a    { background-position: 0 -7608px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_user_offline a    { background-position: 0 -7632px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_user_trash_full a    { background-position: 0 -7656px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_user_trash a    { background-position: 0 -7680px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_view_fullscreen a    { background-position: 0 -7704px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_view_refresh a    { background-position: 0 -7728px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_view_restore a    { background-position: 0 -7752px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_weather_clear_night a    { background-position: 0 -7776px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_weather_clear a    { background-position: 0 -7800px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_weather_few_clouds_night a    { background-position: 0 -7824px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_weather_few_clouds a    { background-position: 0 -7848px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_weather_fog a    { background-position: 0 -7872px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_weather_overcast a    { background-position: 0 -7896px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_weather_severe_alert a    { background-position: 0 -7920px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_weather_showers_scattered a    { background-position: 0 -7944px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_weather_showers a    { background-position: 0 -7968px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_weather_snow a    { background-position: 0 -7992px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_weather_storm a    { background-position: 0 -8016px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_x_office_address_book a    { background-position: 0 -8040px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_x_office_calendar a    { background-position: 0 -8064px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_x_office_document_template a    { background-position: 0 -8088px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_x_office_document a    { background-position: 0 -8112px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_x_office_drawing_template a    { background-position: 0 -8136px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_x_office_drawing a    { background-position: 0 -8160px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_x_office_presentation_template a    { background-position: 0 -8184px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_x_office_presentation a    { background-position: 0 -8208px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_x_office_spreadsheet_template a    { background-position: 0 -8232px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_x_office_spreadsheet a    { background-position: 0 -8256px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_zoom_fit_best a    { background-position: 0 -8280px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_zoom_in a    { background-position: 0 -8304px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_zoom_original a    { background-position: 0 -8328px;}
+        .wym_skin_desktop .wym_buttons li.wym_tools_zoom_out a    { background-position: 0 -8352px;}
+        
+/*DECORATION*/
+        .wym_skin_desktop .wym_section h2         { background: #ddd; border: solid gray; border-width: 0 0 1px;}
+        .wym_skin_desktop .wym_section h2 span    { color: gray;}
+        .wym_skin_desktop .wym_panel       { padding: 0; border: solid gray; border-width: 1px; background: white;}    
+        .wym_skin_desktop .wym_panel ul    { margin: 2px 0 5px; }        
+        .wym_skin_desktop .wym_dropdown       { padding: 0; border: solid gray; border-width: 1px 1px 0 1px; }
+        .wym_skin_desktop .wym_dropdown ul    { border: solid gray; border-width: 0 1px 1px 1px; margin-left: -1px; padding: 5px 10px 5px 3px;}
+        
+/*DIALOGS*/
+        .wym_dialog div.row         { margin-bottom: 5px;}
+        .wym_dialog div.row input   { margin-right: 5px;}
+        .wym_dialog div.row label   { float: left; width: 120px; display: block; text-align: right; margin-right: 10px; }
+        .wym_dialog div.row-indent  { padding-left: 160px; }
+        /*autoclearing*/        
+        .wym_dialog div.row:after         { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
+        .wym_dialog div.row               { display: inline-block; }
+            /* Hides from IE-mac \*/
+            * html .wym_dialog div.row    { height: 1%; }
+            .wym_dialog div.row           { display: block; }
+            /* End hide from IE-mac */                
+            
+/*WYMEDITOR_LINK*/
+        a.wym_wymeditor_link    { text-indent: -9999px; float: right; display: block; width: 50px; height: 15px; background: url(../wymeditor_icon.png); overflow: hidden; text-decoration: none; }
+        a.wym_desktop_link    { text-indent: -9999px; float: right; display: block; width: 40px; height: 24px; background: url(desktop_logo.png); overflow: hidden; text-decoration: none; }
+
