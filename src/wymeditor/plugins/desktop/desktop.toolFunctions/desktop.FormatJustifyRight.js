@@ -59,12 +59,10 @@ WYMeditor.editor.prototype.desktop.toolFunctions.FormatJustifyRight.change = fun
  * Default event handler for 'click' events on the FormatJustifyRight tool.
  */
 WYMeditor.editor.prototype.desktop.toolFunctions.FormatJustifyRight.click = function(eventObj) {
-    if( (this.selfObject.parent.DEBUG != undefined) &&
-        (typeof(this.selfObject.parent.DEBUG) == "boolean") &&
-        this.selfObject.parent.DEBUG ) {
-        console.log("The FormatJustifyRight tool detected a 'click' event.");
-        console.log(eventObj);
-    }
+    var wym = this.selfObject.parent.parent;
+    var sel = wym.selection();
+    var anchor = sel.anchorNode;
+    anchor.parentNode.innerHTML = '<div style="text-align: right;">' + anchor.parentNode.innerHTML + '</div>';,
 };
 
 /**

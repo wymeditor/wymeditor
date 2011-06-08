@@ -59,12 +59,12 @@ WYMeditor.editor.prototype.desktop.toolFunctions.FormatJustifyCenter.change = fu
  * Default event handler for 'click' events on the FormatJustifyCenter tool.
  */
 WYMeditor.editor.prototype.desktop.toolFunctions.FormatJustifyCenter.click = function(eventObj) {
-    if( (this.selfObject.parent.DEBUG != undefined) &&
-        (typeof(this.selfObject.parent.DEBUG) == "boolean") &&
-        this.selfObject.parent.DEBUG ) {
-        console.log("The FormatJustifyCenter tool detected a 'click' event.");
-        console.log(eventObj);
-    }
+    var wym = this.selfObject.parent.parent;
+    var sel = wym.selection();
+    var anchor = sel.anchorNode;
+    var focus = sel.focusNode;
+    var anchorValue = anchor.nodeValue;
+    anchor.parentNode.innerHTML = '<center>' + anchor.parentNode.innerHTML + '</center>';,
 };
 
 /**

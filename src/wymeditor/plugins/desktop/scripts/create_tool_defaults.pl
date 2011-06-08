@@ -57,15 +57,15 @@ my @names = ();
 }
 close($FILE_FH);
 
-if((not -e "../${prefix}") || (not -d "../${prefix}")) {
-  make_path("../${prefix}/");
+if((not -e "../${prefix}/generated") || (not -d "../${prefix}/generated")) {
+  make_path("../${prefix}/generated/");
 }
 
 # Write the auto-generated default JavaScript handlers.  There is not much to
 # these handlers, they are only good for verifying a given event happened (and
 # even then, only if Desktop debugging is on).
 foreach my $name (@names) {
-  my $filename = "../${prefix}/desktop.${name}.js";
+  my $filename = "../${prefix}/generated/desktop.${name}.js";
   open(my $FILE_FH, '>', $filename) || die "ERROR: Could not open '${filename}' for writing: $!\n";
   print $FILE_FH "/*\n" .
                  " * Desktop plugin for WYMeditor : what you see is What You Mean web-based editor\n" .
