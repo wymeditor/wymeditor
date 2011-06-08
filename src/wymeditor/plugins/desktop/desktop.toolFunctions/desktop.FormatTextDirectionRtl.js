@@ -59,12 +59,13 @@ WYMeditor.editor.prototype.desktop.toolFunctions.FormatTextDirectionRtl.change =
  * Default event handler for 'click' events on the FormatTextDirectionRtl tool.
  */
 WYMeditor.editor.prototype.desktop.toolFunctions.FormatTextDirectionRtl.click = function(eventObj) {
-    if( (this.selfObject.parent.DEBUG != undefined) &&
-        (typeof(this.selfObject.parent.DEBUG) == "boolean") &&
-        this.selfObject.parent.DEBUG ) {
-        console.log("The FormatTextDirectionRtl tool detected a 'click' event.");
-        console.log(eventObj);
-    }
+    var wym = this.selfObject.parent.parent;
+    var sel = wym.selection();
+    var anchor = sel.anchorNode;
+    var focus = sel.focusNode;
+    var anchorValue = anchor.nodeValue;
+    anchor.parentNode.innerHTML = '<div style="unicode-bidi: embed; direction: rtl;">' +
+                                  anchor.parentNode.innerHTML + '</div>';,
 };
 
 /**
