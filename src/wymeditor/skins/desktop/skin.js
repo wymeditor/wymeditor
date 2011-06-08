@@ -39,10 +39,10 @@ WYMeditor.SKINS['desktop'] = {
           .css({"margin-left": "155px"});
 
         // add Desktop logo after WYMeditor logo
-        jQuery(wym._box).find("div.wym_area_bottom a")
+        jQuery(wym._box).find("div.wym_area_bottom a.wym_wymeditor_link")
           .first()
           .after( "<a class='wym_desktop_link' " +
-                  "href='http://https://github.com/cschwenz/wymeditor'>" +
+                  "href='https://github.com/cschwenz/wymeditor/tree/desktop'>" +
                   "Desktop</a>" );
 
         // make hover work under IE < 7
