@@ -219,6 +219,7 @@ jQuery.extend(WYMeditor, {
 
     KEY : {
       BACKSPACE: 8,
+      TAB: 9,
       ENTER: 13,
       CTRL: 17,
       END: 35,
