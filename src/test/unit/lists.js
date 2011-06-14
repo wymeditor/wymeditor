@@ -23,10 +23,13 @@ function runListTests() {
 			buttonSelector = '.wym_tools_outdent a';
 		} else if (action === 'indent') {
 			buttonSelector = '.wym_tools_indent a';
+		} else if (action === 'bullet') {
+			buttonSelector = '.wym_tools_unordered_list a';
 		} else {
 			ok(
 				false,
-				'Improper call to testList. Action must be either "indent" or "outdent"');
+				'Improper call to testList. Action must be either "indent", ' +
+				'"outdent" or "bullet"');
 		}
 
 		var actionButton = jQuery(wymeditor._box)
@@ -306,6 +309,135 @@ function runListTests() {
 		testList('li_4', 'outdent', li_4_indentedHtml, nestedListHtml);
 	});
 
+	module("list-broken_html");
+
+	var doubleIndentHtml = '' +
+	'<ol>' +
+		'<li id="li_1">1' +
+			'<ol>' +
+				'<li>' +
+					'<ol>' +
+						'<li id="li_1_1_1">1_1_1' +
+							'<ol>' +
+								'<li id="li_1_1_1_1">1_1_1_1</li>' +
+								'<li id="li_1_1_1_2">1_1_1_2</li>' +
+								'<li id="li_1_1_1_3">1_1_1_3</li>' +
+								'<li id="li_1_1_1_4">1_1_1_4</li>' +
+							'</ol>' +
+						'</li>' +
+					'</ol>' +
+				'</li>' +
+			'</ol>' +
+		'</li>' +
+	'</ol>';
+	var diFirstOutdentHtml = '' +
+	'<ol>' +
+		'<li id="li_1">1' +
+			'<ol>' +
+				'<li>' +
+					'<ol>' +
+						'<li id="li_1_1_1">1_1_1' +
+							'<ol>' +
+								'<li id="li_1_1_1_1">1_1_1_1</li>' +
+								'<li id="li_1_1_1_2">1_1_1_2</li>' +
+								'<li id="li_1_1_1_3">1_1_1_3</li>' +
+							'</ol>' +
+						'</li>' +
+						'<li id="li_1_1_1_4">1_1_1_4</li>' +
+					'</ol>' +
+				'</li>' +
+			'</ol>' +
+		'</li>' +
+	'</ol>';
+	var diSecondOutdentHtml = '' +
+	'<ol>' +
+		'<li id="li_1">1' +
+			'<ol>' +
+				'<li>' +
+					'<ol>' +
+						'<li id="li_1_1_1">1_1_1' +
+							'<ol>' +
+								'<li id="li_1_1_1_1">1_1_1_1</li>' +
+								'<li id="li_1_1_1_2">1_1_1_2</li>' +
+								'<li id="li_1_1_1_3">1_1_1_3</li>' +
+							'</ol>' +
+						'</li>' +
+					'</ol>' +
+				'</li>' +
+				'<li id="li_1_1_1_4">1_1_1_4</li>' +
+			'</ol>' +
+		'</li>' +
+	'</ol>';
+	var diThirdOutdentHtml = '' +
+	'<ol>' +
+		'<li id="li_1">1' +
+			'<ol>' +
+				'<li>' +
+					'<ol>' +
+						'<li id="li_1_1_1">1_1_1' +
+							'<ol>' +
+								'<li id="li_1_1_1_1">1_1_1_1</li>' +
+								'<li id="li_1_1_1_2">1_1_1_2</li>' +
+								'<li id="li_1_1_1_3">1_1_1_3</li>' +
+							'</ol>' +
+						'</li>' +
+					'</ol>' +
+				'</li>' +
+			'</ol>' +
+		'</li>' +
+		'<li id="li_1_1_1_4">1_1_1_4</li>' +
+	'</ol>';
+
+	test("Triple outdent doesn't break HTML", function() {
+		expect(6);
+
+		testList('li_1_1_1_4', 'outdent', doubleIndentHtml, diFirstOutdentHtml);
+		testList(
+			'li_1_1_1_4', 'outdent', diFirstOutdentHtml, diSecondOutdentHtml);
+		testList(
+			'li_1_1_1_4', 'outdent', diSecondOutdentHtml, diThirdOutdentHtml);
+	});
+
+	var orderedHtml = '' +
+	'<ol>' +
+		'<li id="li_1">1' +
+			'<ol>' +
+				'<li id="li_1_1">1_1' +
+					'<ol>' +
+						'<li id="li_1_1_1">1_1_1' +
+							'<ol>' +
+								'<li id="li_1_1_1_1">1_1_1_1</li>' +
+							'</ol>' +
+						'</li>' +
+					'</ol>' +
+				'</li>' +
+			'</ol>' +
+		'</li>' +
+		'<li id="li_2">2</li>' +
+	'</ol>';
+	var orderedToBulletHtml = '' +
+	'<ol>' +
+		'<li id="li_1">1' +
+			'<ol>' +
+				'<li id="li_1_1">1_1' +
+					'<ul>' +
+						'<li id="li_1_1_1">1_1_1' +
+							'<ol>' +
+								'<li id="li_1_1_1_1">1_1_1_1</li>' +
+							'</ol>' +
+						'</li>' +
+					'</ul>' +
+				'</li>' +
+			'</ol>' +
+		'</li>' +
+		'<li id="li_2">2</li>' +
+	'</ol>';
+	test("Ordered to unordered doesn't break HTML", function() {
+		expect(2);
+
+		testList('li_1_1_1', 'bullet', orderedHtml, orderedToBulletHtml);
+	});
+
 	module("list-correction");
 
 	test("Should correct invalid list nesting", function() {
@@ -324,6 +456,38 @@ function runListTests() {
 		var invalid_ie_html = "<UL>\r\n<LI>a<\/LI>\r\n<UL>\r\n<LI>a.1<\/LI><\/UL>\r\n<LI>b<\/LI><\/UL>";
 		wymeditor.html(invalid_ie_html);
 		htmlEquals(wymeditor, expected);
+	});
+
+	test("Double indent correction", function() {
+		expect(1);
+
+		var wymeditor = jQuery.wymeditors(0);
+
+		var brokenHtml = '' +
+		'<ol>' +
+			'<li id="li_1">1' +
+				'<ol>' +
+					'<ol>' +
+						'<li id="li_1_1_1">1_1_1</li>' +
+					'</ol>' +
+				'</ol>' +
+			'</li>' +
+		'</ol>';
+		var repairedHtml = '' +
+		'<ol>' +
+			'<li id="li_1">1' +
+				'<ol>' +
+					'<li>' +
+						'<ol>' +
+							'<li id="li_1_1_1">1_1_1</li>' +
+						'</ol>' +
+					'</li>' +
+				'</ol>' +
+			'</li>' +
+		'</ol>';
+
+		wymeditor.html(brokenHtml);
+		htmlEquals(wymeditor, repairedHtml);
 	});
 
 	module("list-tabbing");
