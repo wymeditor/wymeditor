@@ -17,12 +17,10 @@ WYMeditor is compatible with:
 Quick Start
 -----------
 
-Include the scripts:
+Download the latest release from [WYMeditor.org](http://www.wymeditor.org/download/) or build it yourself using `make` (recommended). Then include jQuery and the WYMeditor source:
 
     <script type="text/javascript" src="/jquery/jquery.js"></script>
     <script type="text/javascript" src="/wymeditor/jquery.wymeditor.min.js"></script>
-
-WYMeditor only works with jQuery 1.1.3.x or greater. 
 
 Now, get you a textarea prepared:
 
