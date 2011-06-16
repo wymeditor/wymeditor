@@ -1080,6 +1080,10 @@ WYMeditor.editor.prototype.findUp = function(node, filter) {
 
   if(node) {
 
+      if (node.nodeName == "#text") {
+          // For text nodes, we need to look from the nodes container object
+          node = node.parentNode;
+      }
       var tagname = node.tagName.toLowerCase();
 
       if(typeof(filter) == WYMeditor.STRING) {

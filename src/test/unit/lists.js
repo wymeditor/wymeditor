@@ -60,10 +60,11 @@ function runListTests() {
 				'<li id="li_5_1">5_1</li>' +
 				'<li id="li_5_2">5_2</li>' +
 				'<li id="li_5_3">5_3' +
-					'<ol>' +
+					'<ul>' +
 						'<li id="li_5_3_1">5_3_1</li>' +
-					'</ol>' +
+					'</ul>' +
 				'</li>' +
+				'<li id="li_5_4">5_4</li>' +
 			'</ol>' +
 		'</li>' +
 		'<li id="li_6">6</li>' +
@@ -95,10 +96,11 @@ function runListTests() {
 				'<li id="li_5_1">5_1</li>' +
 				'<li id="li_5_2">5_2</li>' +
 				'<li id="li_5_3">5_3' +
-					'<ol>' +
+					'<ul>' +
 						'<li id="li_5_3_1">5_3_1</li>' +
-					'</ol>' +
+					'</ul>' +
 				'</li>' +
+				'<li id="li_5_4">5_4</li>' +
 			'</ol>' +
 		'</li>' +
 		'<li id="li_6">6</li>' +
@@ -126,10 +128,11 @@ function runListTests() {
 				'<li id="li_5_1">5_1</li>' +
 				'<li id="li_5_2">5_2</li>' +
 				'<li id="li_5_3">5_3' +
-					'<ol>' +
+					'<ul>' +
 						'<li id="li_5_3_1">5_3_1</li>' +
-					'</ol>' +
+					'</ul>' +
 				'</li>' +
+				'<li id="li_5_4">5_4</li>' +
 			'</ol>' +
 		'</li>' +
 		'<li id="li_6">6</li>' +
@@ -160,10 +163,40 @@ function runListTests() {
 				'<li id="li_5_1">5_1</li>' +
 				'<li id="li_5_2">5_2</li>' +
 				'<li id="li_5_3">5_3' +
-					'<ol>' +
+					'<ul>' +
 						'<li id="li_5_3_1">5_3_1</li>' +
-					'</ol>' +
+					'</ul>' +
 				'</li>' +
+				'<li id="li_5_4">5_4</li>' +
+			'</ol>' +
+		'</li>' +
+		'<li id="li_6">6</li>' +
+		'<li id="li_7">7</li>' +
+		'<li id="li_8">8</li>' +
+	'</ol>';
+
+	var li_3_indentedHtml = '' +
+	'<ol>' +
+		'<li id="li_1">1</li>' +
+		'<li id="li_2">2' +
+			'<ol>' +
+				'<li id="li_2_1">2_1</li>' +
+				'<li id="li_2_2">2_2</li>' +
+				'<li id="li_3">3</li>' +
+				'<li id="li_3_1">3_1</li>' +
+			'</ol>' +
+		'</li>' +
+		'<li id="li_4">4</li>' +
+		'<li id="li_5">5' +
+			'<ol>' +
+				'<li id="li_5_1">5_1</li>' +
+				'<li id="li_5_2">5_2</li>' +
+				'<li id="li_5_3">5_3' +
+					'<ul>' +
+						'<li id="li_5_3_1">5_3_1</li>' +
+					'</ul>' +
+				'</li>' +
+				'<li id="li_5_4">5_4</li>' +
 			'</ol>' +
 		'</li>' +
 		'<li id="li_6">6</li>' +
@@ -191,10 +224,11 @@ function runListTests() {
 				'<li id="li_5_1">5_1</li>' +
 				'<li id="li_5_2">5_2</li>' +
 				'<li id="li_5_3">5_3' +
-					'<ol>' +
+					'<ul>' +
 						'<li id="li_5_3_1">5_3_1</li>' +
-					'</ol>' +
+					'</ul>' +
 				'</li>' +
+				'<li id="li_5_4">5_4</li>' +
 			'</ol>' +
 		'</li>' +
 		'<li id="li_6">6</li>' +
@@ -221,11 +255,47 @@ function runListTests() {
 			'<ol>' +
 				'<li id="li_5_1">5_1</li>' +
 				'<li id="li_5_2">5_2' +
-					'<ol>' +
+					'<ul>' +
 						'<li id="li_5_3">5_3</li>' +
 						'<li id="li_5_3_1">5_3_1</li>' +
-					'</ol>' +
+					'</ul>' +
 				'</li>' +
+				'<li id="li_5_4">5_4</li>' +
+			'</ol>' +
+		'</li>' +
+		'<li id="li_6">6</li>' +
+		'<li id="li_7">7</li>' +
+		'<li id="li_8">8</li>' +
+	'</ol>';
+
+	var li_5_3_outdentedHtml = '' +
+	'<ol>' +
+		'<li id="li_1">1</li>' +
+		'<li id="li_2">2' +
+			'<ol>' +
+				'<li id="li_2_1">2_1</li>' +
+				'<li id="li_2_2">2_2</li>' +
+			'</ol>' +
+		'</li>' +
+		'<li id="li_3">3' +
+			'<ol>' +
+				'<li id="li_3_1">3_1</li>' +
+			'</ol>' +
+		'</li>' +
+		'<li id="li_4">4</li>' +
+		'<li id="li_5">5' +
+			'<ol>' +
+				'<li id="li_5_1">5_1</li>' +
+				'<li id="li_5_2">5_2</li>' +
+			'</ol>' +
+		'<li id="li_5_3">5_3' +
+			'<ol>' +
+				'<li class="spacer_li">' +
+					'<ul>' +
+						'<li id="li_5_3_1">5_3_1</li>' +
+					'</ul>' +
+				'</li>' +
+				'<li id="li_5_4">5_4</li>' +
 			'</ol>' +
 		'</li>' +
 		'<li id="li_6">6</li>' +
@@ -253,10 +323,11 @@ function runListTests() {
 				'<li id="li_5_1">5_1</li>' +
 				'<li id="li_5_2">5_2</li>' +
 				'<li id="li_5_3">5_3' +
-					'<ol>' +
+					'<ul>' +
 						'<li id="li_5_3_1">5_3_1</li>' +
-					'</ol>' +
+					'</ul>' +
 				'</li>' +
+				'<li id="li_5_4">5_4</li>' +
 			'</ol>' +
 		'</li>' +
 		'<li id="li_6">6' +
@@ -272,6 +343,20 @@ function runListTests() {
 
 		testList('li_2', 'indent', nestedListHtml, li_2_indentedHtml);
 		testList('li_2', 'outdent', li_2_indentedHtml, nestedListHtml);
+	});
+
+	test("First-level w/sublist joins lists indent/outdent", function() {
+		expect(4);
+
+		testList('li_3', 'indent', nestedListHtml, li_3_indentedHtml);
+		testList('li_3', 'outdent', li_3_indentedHtml, nestedListHtml);
+	});
+
+	test("Outdent w/sublist outdent/indent", function() {
+		expect(4);
+
+		testList('li_5_3', 'outdent', nestedListHtml, li_5_3_outdentedHtml);
+		testList('li_5_3', 'indent', li_5_3_outdentedHtml, nestedListHtml);
 	});
 
 	test("Second-level w/sublist indent/outdent", function() {
