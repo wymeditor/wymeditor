@@ -22,6 +22,8 @@ Download the latest release from [WYMeditor.org](http://www.wymeditor.org/downlo
     <script type="text/javascript" src="/jquery/jquery.js"></script>
     <script type="text/javascript" src="/wymeditor/jquery.wymeditor.min.js"></script>
 
+WYMeditor should work with jQuery 1.2.x and up, although using a later jQuery version is preferred. 
+
 Now, get you a textarea prepared:
 
     <textarea class="wymeditor"><p>Hello, World!</p></textarea>
