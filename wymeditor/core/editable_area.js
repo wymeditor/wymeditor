@@ -247,7 +247,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
     },
     
     unformatSelection: function (filter) {
-        var i, ranges, range, nodes, func;
+        var i, ranges, range, nodes, func, normalize = [];
 
         this.selection.save();
 
@@ -270,13 +270,15 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
                 $(this.childNodes).unwrap();
             });
             //range.detach();
-    
-            this.normalizeNode(this.findParentBlockNode(range.commonAncestorContainer));
-
+            
+            // Remember which nodes to normalize
+            normalize.push(this.findParentBlockNode(range.commonAncestorContainer));
         }
 
-
         this.selection.restore();
+
+        this.normalizeNodes(normalize);
+
     },
     
     toggleSelectionFormat: function (element) {
@@ -322,14 +324,26 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
             i;
         node = $(node)[0] && $(node)[0].childNodes[0];
 
-        while (node && (next = node.nextSibling)) {
-            if (next.nodeName === node.nodeName) {
+        while (node) {
+            next = node.nextSibling;
+            
+            // Do we have two nodes of the same type?
+            if (next && next.nodeName === node.nodeName) {
+                
+                // Merge text nodes
                 if (node.nodeType === Wymeditor.TEXT_NODE) {
                     node.appendData(sibling.data);
                     next.parentNode.removeChild(next);
+
                 } else if (node.nodeType === Wymeditor.ELEMENT_NODE) {
-                    // Merge elements if they share the same attributes
+                                        
+                    // Recursion: normalize children
+                    normalize(node);
+
+                    // Merge elements only if they share the same attributes
                     if (node.attributes.length === next.attributes.length) {
+                        
+                        // They have the same number of attributes, lets compare them
                         equal = true;
                         for (i=0; attribute = node.attributes[i]; i++) {
                             name = attribute.nodeName.toLowerCase();
@@ -365,9 +379,9 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
                     } else {
                         node = next;
                     }
-
-                    normalize(node);
                 }
+
+            // We have two different nodes
             } else {
                 // Remove empty elements
                 if (node.nodeType === Wymeditor.ELEMENT_NODE && !node.childNodes.length) {
@@ -377,6 +391,13 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
             }
         }
 
+    },
+
+    normalizeNodes: function (nodes) {
+        nodes = $.unique(nodes);
+        for (var i = 0, node; node = nodes[i]; i++) {
+            this.normalizeNode(node);
+        }
     },
     
     html: function (html) {
