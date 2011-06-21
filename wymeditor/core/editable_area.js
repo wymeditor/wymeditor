@@ -160,15 +160,37 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
     },
 
     splitNodesAtRangeBoundaries: function (ranges) {
-        var range, container, i;
+        var range, container, i, startNode, startOffset, endNode, endOffset;
 
-        // Respect blok elements
+
+        // Respect block elements
         ranges = this.splitRangesAtBlockBoundaries(ranges);
+        
         for (i = 0; range = ranges[i]; i++) {
             container = this.findParentBlockNode(range.startContainer);
-            this.splitNodes(range.startContainer, range.startOffset, container);
+
+            // Save all the positions, because Firefox goes crazy once you modify the DOM. 
+            // Also, manage ranges that start or end between nodes.
+            if (range.startContainer.nodeType === Wymeditor.TEXT_NODE) {
+                startNode = range.startContainer;
+                startOffset = range.startOffset;
+            } else {
+                // Split before starting node
+                startNode = range.startContainer.childNodes[range.startOffset - 1];
+                startOffset = 0;
+            }
+            if (range.endContainer.nodeType === Wymeditor.TEXT_NODE) {
+                endNode = range.endContainer;
+                endOffset = range.endOffset;
+            } else {
+                // Split after end node 
+                endNode = range.endContainer.childNodes[range.endOffset];
+                endOffset = 0;
+            }
+
+            this.splitNodes(startNode, startOffset, container);
             if (!range.collapsed) {
-                this.splitNodes(range.endContainer, range.endOffset, container);
+                this.splitNodes(endNode, endOffset, container);
             }
         }
         return ranges;
@@ -251,12 +273,18 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
 
         this.selection.save();
 
-        ranges = this.splitNodesAtRangeBoundaries(
+        this.splitNodesAtRangeBoundaries(
             this.selection.getRanges(this.element));
         
+        this.selection.restore();
+
+        ranges = this.selection.getRanges(this.element);
+
+        this.selection.save();
+
         for (i = 0; range = ranges[i]; i++) {
             // element is child
-            nodes = range.getNodes([3], function (node) {
+            nodes = range.getNodes([1], function (node) {
                 return $(node).is(filter);
             });
 
@@ -265,6 +293,9 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
 
             // element is parent
             nodes = nodes.concat(this.findParentNode(range.commonAncestorContainer, filter).toArray());
+
+            // Remove any duplicates
+            nodes = $.unique(nodes); 
 
             $(nodes).each(function() {
                 $(this.childNodes).unwrap();
@@ -332,8 +363,10 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
                 
                 // Merge text nodes
                 if (node.nodeType === Wymeditor.TEXT_NODE) {
-                    node.appendData(sibling.data);
+                    node.appendData(next.data);
                     next.parentNode.removeChild(next);
+
+                    continue;
 
                 } else if (node.nodeType === Wymeditor.ELEMENT_NODE) {
                                         
@@ -394,7 +427,6 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
     },
 
     normalizeNodes: function (nodes) {
-        nodes = $.unique(nodes);
         for (var i = 0, node; node = nodes[i]; i++) {
             this.normalizeNode(node);
         }
