@@ -9,9 +9,10 @@ Wymeditor.ns('dom').structureManager = (function(undefined){
         // Copy collections, elements will be added later
         _ruleSet = { 
             elements: {},
-            collections: $.extend(true, {}, _rawRuleSet.collections),
-            collectionsByWeight: _sortCollections()
+            collections: $.extend(true, {}, _rawRuleSet.collections)
         };
+
+        _ruleSet.collectionsByWeight = _sortCollections();
 
         _expandElements();
     };
@@ -22,7 +23,7 @@ Wymeditor.ns('dom').structureManager = (function(undefined){
             key;
 
         for (key in collections) {
-            if (collections.hasOwnProperty(key)) {
+            if (collections.hasOwnProperty(key) && key !== 'all') {
                 result.push(collections[key]);
             }
         }
@@ -37,6 +38,7 @@ Wymeditor.ns('dom').structureManager = (function(undefined){
     function _expandElements () {
         var child,
             collections = _ruleSet.collections,
+            collectionsByWeight = _ruleSet.collectionsByWeight,
             collection, 
             elements = _ruleSet.elements,
             element,
@@ -45,16 +47,16 @@ Wymeditor.ns('dom').structureManager = (function(undefined){
             i, j;
 
         // Merge all collection per element
-        for (i = 0; collection = collections[i]; i++) {
+        for (i = 0; collection = collectionsByWeight[i]; i++) {
             for (j = 0; tagName = collection.members[j]; j++) {
-                elements[tagName] = $.extend((elements[tagName] || {}), collection.properties);
+                elements[tagName] = $.extend(true, (elements[tagName] || {}), collection.properties);
             }
         }
 
         // Add element specific overrides/extensions
         for (tagName in _rawRuleSet.elements) {
             if (_rawRuleSet.elements.hasOwnProperty(tagName)) {
-                elements[tagName] = $.extend((elements[tagName] || {}), _rawRuleSet.elements[tagName]);
+                elements[tagName] = $.extend(true, (elements[tagName] || {}), _rawRuleSet.elements[tagName]);
             }
         }
 
@@ -63,22 +65,34 @@ Wymeditor.ns('dom').structureManager = (function(undefined){
             if (_rawRuleSet.elements.hasOwnProperty(tagName)) {
 
                 // Add the properties from the "all" collection
-                element = elements[tagName] = $.extend({}, collections.all.properties, elements[tagName]);
+                element = elements[tagName] = $.extend(true, {}, collections.all.properties, elements[tagName]);
 
-                // Lets find those $references
-                for (i = 0; child = element.validChildren[i]; i++) {
-                    if (child.substr(0,1) === '$') {
-                        members = getCollection(child.substr(1));
-                        // Remove reference and add collection members
-                        element.validChildren.splice.apply(element.validChildren, [i, 1].concat(members));
+                if (element.validChildren) {
+                    // Lets find those $references
+                    i = 0;
+                    while (child = element.validChildren[i]) {
+                        if (child.substr(0,1) === '$') {
+                            members = getCollection(child.substr(1)).members;
+                            // Remove reference and add collection members
+                            element.validChildren.splice.apply(element.validChildren, [i, 1].concat(members));
 
-                        // Update child to match the new value at index i
-                        child = element.validChildren[i];
+                            // Start over at current index
+                            continue;
+                        }
+                        
+                        if (child === tagName && !element.nestSelf) {
+                            element.validChildren.splice(i, 1);
+                            
+                            // Start over at current index
+                            continue;
+                        }
+
+                        // Add element as a validParent to its validChild
+                        elements[child].validParents = elements[child].validParents || [];
+                        elements[child].validParents.push(tagName);
+
+                        i++;
                     }
-                    
-                    // Add element as a validParent to its validChild
-                    elements[child].validParents = elements[child].validParents || [];
-                    elements[child].validParents.push(tagName);
                 }
             }
         }
