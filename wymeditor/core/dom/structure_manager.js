@@ -57,8 +57,8 @@ Wymeditor.dom.structureManager.load({
         'b': { replaceWith: 'strong' },
         'i': { replaceWith: 'em' },
         'u': { remove: true },
-        'a': { attributes: { href: true } },
-        'div': { children: ['$block'] }
+        'a': { attributes: { href: true, rel: false } },
+        'img': { attributes: { src: true, alt: true, width: false, height: false } }
     },
     collections: {
         all: {
@@ -78,11 +78,13 @@ Wymeditor.dom.structureManager.load({
         structuralBlocks: {
             members: ['div', 'blockquote'], // 'article', 'section', 'aside', etc
             children: ['$block'],
+            forceChild: 'p',
             weight: 2
         },
         lists: {
             members: ['ol', 'ul'],
             children: ['li'],
+            forceChild: 'li',
             weight: 2
         },
         nestable: {
