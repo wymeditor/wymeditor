@@ -1,4 +1,4 @@
-Wymeditor.ns('dom').structureManager = (function(undefined){
+Wymeditor.ns('dom').StructureManager = function (ruleSet) {
     
     var _rawRuleSet,
         _ruleSet;
@@ -62,7 +62,7 @@ Wymeditor.ns('dom').structureManager = (function(undefined){
 
         // Expand collection $references and create corresponding validParents for validChildren
         for (tagName in elements) {
-            if (_rawRuleSet.elements.hasOwnProperty(tagName)) {
+            if (elements.hasOwnProperty(tagName)) {
 
                 // Add the properties from the "all" collection
                 element = elements[tagName] = $.extend(true, {}, collections.all.properties, elements[tagName]);
@@ -113,13 +113,16 @@ Wymeditor.ns('dom').structureManager = (function(undefined){
         return 'members' in collection ? collection.members.join(', ') : '';
     };
     
+
+    loadRuleSet(ruleSet || Wymeditor.dom.StructureManager.DEFAULT_RULESET);
+
     return {
         load: loadRuleSet,
         getElement: getElement,
         getCollection: getCollection,
         getCollectionSelector: getCollectionSelector
     };
-})();
+};
 
 /**
  * Elements
@@ -144,13 +147,14 @@ Wymeditor.ns('dom').structureManager = (function(undefined){
  * Element > Collection (weight: n) > Collection (weight: n-1) > Collection (all)
  * 
  */
-Wymeditor.dom.structureManager.load({
+Wymeditor.dom.StructureManager.DEFAULT_RULESET = {
     elements: {
         'b': { replaceWith: 'strong' },
         'i': { replaceWith: 'em' },
         'u': { remove: true },
         'a': { attributes: { href: true, rel: false } },
-        'img': { attributes: { src: true, alt: true, width: false, height: false } }
+        'img': { attributes: { src: true, alt: true, width: false, height: false } },
+        'br': { validChildren: false } 
     },
     collections: {
         all: {
@@ -196,4 +200,4 @@ Wymeditor.dom.structureManager.load({
             }
         }
     }
-});
+};

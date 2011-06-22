@@ -3,6 +3,7 @@ Wymeditor.EditableArea = function EditableArea (element) {
     this.element = $(element);
     
     this.dom = Wymeditor.dom;
+    this.structureManager = new Wymeditor.dom.StructureManager();
     this.selection = Wymeditor.selection;
     this.utils = Wymeditor.utils;
     
@@ -110,7 +111,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
     },
 
     splitRangeAtBlockBoundaries: function (range) {
-        var filter = this.dom.structureManager.getCollectionSelector('block'),
+        var filter = this.structureManager.getCollectionSelector('block'),
             nodes = range.getNodes([3], function (n) { 
                 return $(n).is(filter); }),
             node,
@@ -335,7 +336,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
     
     findParentBlockNode: function (node, container) {
         return this.findParentNode(node,
-            this.dom.structureManager.getCollectionSelector('block'), container);
+            this.structureManager.getCollectionSelector('block'), container);
     },
     
     populateEmptyElements: function (elements) {

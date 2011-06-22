@@ -1,5 +1,5 @@
 jQuery(function($){
-    module('Editable Area');
+    module('EditableArea');
     
     var element = $('.editable'),
         editableArea = new Wymeditor.EditableArea(element);
