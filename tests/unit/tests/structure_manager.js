@@ -1,13 +1,9 @@
 jQuery(function($){
     module('StructureManager');
-
-    var SM = new Wymeditor.dom.StructureManager()
-    /*
     test('load', function() {
-        SM.load({
+        var SM = new Wymeditor.dom.StructureManager({
             elements: {
-                'u': { remove: true },
-                'a': { attributes: { href: true, rel: false } },
+                'cunstomElement': { customProp: true }
             },
             collections: {
                 all: {
@@ -31,9 +27,26 @@ jQuery(function($){
                 }
             }
         });
-    }); */
+        ok(true, "Pass custom ruleSet to Consructor. We didn't die, so lets say we made it.");
+
+        deepEqual(SM.getElement('cunstomElement'), {
+            "attributes": {
+                "class": false,
+                "id": false
+            },
+            "nestSelf": false,
+            "customProp": true
+        }, 'Get customElement');
+
+        // Restore defaults
+        SM.load(Wymeditor.dom.StructureManager.DEFAULT_RULESET);
+
+        ok(true, "Load ruleSet using the load method. We didn't die, so lets say we made it.");
+    });
 
     test('getElement', function() {
+        var SM = new Wymeditor.dom.StructureManager();
+        
         deepEqual(SM.getElement('u'), {
             "attributes": {
                 "class": false,
@@ -104,6 +117,6 @@ jQuery(function($){
                 "div",
                 "blockquote"
             ]
-        }, 'Inline element with custom properties (a)');
+        }, 'Block element (div)');
     });
 });
