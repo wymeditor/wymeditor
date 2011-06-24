@@ -1,5 +1,5 @@
 function runListTests() {
-	module("Lists");
+	module("list-indent_outdent");
 
 	/**
 	* Run a list manipulation and verify the results.
@@ -306,6 +306,8 @@ function runListTests() {
 		testList('li_4', 'outdent', li_4_indentedHtml, nestedListHtml);
 	});
 
+	module("list-correction");
+
 	test("Should correct invalid list nesting", function() {
 		expect(2);
 
@@ -324,4 +326,73 @@ function runListTests() {
 		htmlEquals(wymeditor, expected);
 	});
 
+	module("list-tabbing");
+
+	test("Tab key indents", function() {
+		expect(2);
+
+		var initHtml = nestedListHtml;
+		var expectedHtml = li_7_indentedHtml;
+		var elmntId = "li_7";
+
+		var wymeditor = jQuery.wymeditors(0);
+		wymeditor.html(initHtml);
+
+		var $body = $(wymeditor._doc).find('body.wym_iframe');
+		var actionElement = $body.find('#'+elmntId)[0];
+
+		moveSelector(wymeditor, actionElement);
+
+		simulateKey(WYMeditor.KEY.TAB, actionElement);
+		htmlEquals(wymeditor, expectedHtml)
+	});
+
+	test("Shift+Tab outdents", function() {
+		expect(2);
+
+		var initHtml = '' +
+		'<ol>' +
+			'<ol>' +
+				'<li id="li_1_1">1_1</li>' +
+			'</ol>' +
+			'<li id="li_2">2</li>' +
+		'</ol>';
+		var expectedHtml = '' +
+		'<ol>' +
+			'<li id="li_1_1">1_1</li>' +
+			'<li id="li_2">2</li>' +
+		'</ol>';
+
+		var elmntId = "li_1_1";
+
+		var wymeditor = jQuery.wymeditors(0);
+		wymeditor.html(initHtml);
+
+		var $body = $(wymeditor._doc).find('body.wym_iframe');
+		var actionElement = $body.find('#'+elmntId)[0];
+
+		moveSelector(wymeditor, actionElement);
+
+		simulateKey(WYMeditor.KEY.TAB, actionElement, {'shiftKey': true});
+		htmlEquals(wymeditor, expectedHtml)
+	});
+
+	test("Tab has no effect outside lists", function() {
+		expect(2);
+
+		var initHtml = '<p id="p_1">test</p>';
+		var expectedHtml = initHtml;
+		var elmntId = "p_1";
+
+		var wymeditor = jQuery.wymeditors(0);
+		wymeditor.html(initHtml);
+
+		var $body = $(wymeditor._doc).find('body.wym_iframe');
+		var actionElement = $body.find('#'+elmntId)[0];
+
+		moveSelector(wymeditor, actionElement);
+
+		simulateKey(WYMeditor.KEY.TAB, actionElement);
+		htmlEquals(wymeditor, expectedHtml)
+	});
 }

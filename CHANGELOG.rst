@@ -17,6 +17,18 @@
 Enhancements
 ---------------
 
+* A list plugin is now available that enables tab for list indent and
+  shift + tab for list outdent.
+
+  It is available at ``wymeditor/plugins/list/jquery.wymeditor.list.js``.
+  To enable the plugin, create a ListPlugin object via the 	
+  ``wymeditor.postInit`` option. eg::
+
+  $('.wymeditor').wymeditor({
+      postInit: function(wym) {
+          var listPlugin = new ListPlugin({}, wym);
+      }
+  }); 
 
 .. _v1-0-0dev-bugfixes:
 
