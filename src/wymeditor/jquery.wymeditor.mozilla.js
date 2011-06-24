@@ -29,6 +29,8 @@ WYMeditor.WymClassMozilla = function(wym) {
 
 // Placeholder cell to allow content in TD cells for FF 3.5+
 WYMeditor.WymClassMozilla.CELL_PLACEHOLDER = '<br _moz_dirty="">';
+// Holds a top-level spot for inserting content
+WYMeditor.WymClassExplorer.PLACEHOLDER_NODE = '<br _moz_editor_bogus_node="TRUE" _moz_dirty="">';
 
 // Firefox 3.5 and 3.6 require the CELL_PLACEHOLDER and 4.0 doesn't
 WYMeditor.WymClassMozilla.NEEDS_CELL_FIX = $.browser.version >= '1.9.1'
@@ -90,10 +92,11 @@ WYMeditor.WymClassMozilla.prototype.initIframe = function(iframe) {
  * @description Get/Set the html value
  */
 WYMeditor.WymClassMozilla.prototype.html = function(html) {
-
-    if(typeof html === 'string') {
+    if (typeof html === 'string') {
         //disable designMode
-        try { this._doc.designMode = "off"; } catch(e) {
+        try {
+            this._doc.designMode = "off";
+        } catch(e) {
             //do nothing
         }
 
@@ -106,6 +109,7 @@ WYMeditor.WymClassMozilla.prototype.html = function(html) {
 
         //update the html body
         jQuery(this._doc.body).html(html);
+        this._wym.fixBodyHtml();
 
         //re-init designMode
         this.enableDesignMode();
@@ -178,7 +182,7 @@ WYMeditor.WymClassMozilla.prototype.selected = function() {
     var sel = this._iframe.contentWindow.getSelection();
     var node = sel.focusNode;
     if (node) {
-        if(node.nodeName == "#text") {
+        if (node.nodeName == "#text") {
             return(node.parentNode);
         } else {
             return node;
@@ -200,7 +204,6 @@ WYMeditor.WymClassMozilla.prototype.keydown = function(evt) {
 
     //'this' is the doc
     var wym = WYMeditor.INSTANCES[this.title];
-    var container = null;
 
     if (evt.ctrlKey) {
         if (evt.keyCode == 66) {
@@ -215,59 +218,62 @@ WYMeditor.WymClassMozilla.prototype.keydown = function(evt) {
         }
     }
 
-    else if (evt.keyCode == 13) {
-        if (!evt.shiftKey) {
-            //fix PRE bug #73
-            container = wym.selected();
-            if (container && container.tagName.toLowerCase() == WYMeditor.PRE) {
-                evt.preventDefault();
-                wym.insert('<p></p>');
-            }
-        }
-    }
-
     return true;
 };
 
-//keyup handler, mainly used for cleanups
+// Keyup handler, mainly used for cleanups
 WYMeditor.WymClassMozilla.prototype.keyup = function(evt) {
-
-    //'this' is the doc
+    // 'this' is the doc
     var wym = WYMeditor.INSTANCES[this.title];
 
     wym._selected_image = null;
     var container = null;
 
-    if (evt.keyCode == 13 && !evt.shiftKey) {
-        //RETURN key
-        //cleanup <br><br> between paragraphs
-        jQuery(wym._doc.body).children(WYMeditor.BR).remove();
-    }
-
-    if (evt.keyCode != 8 && evt.keyCode != 17 && evt.keyCode != 46
-        && evt.keyCode != 224 && !evt.metaKey && !evt.ctrlKey) {
-
-        //NOT BACKSPACE, NOT DELETE, NOT CTRL, NOT COMMAND
-        //text nodes replaced by P
+    if (evt.keyCode != WYMeditor.KEY.BACKSPACE
+        && evt.keyCode != WYMeditor.KEY.CTRL
+        && evt.keyCode != WYMeditor.KEY.DELETE
+        && evt.keyCode != WYMeditor.KEY.COMMAND
+        && evt.keyCode != WYMeditor.KEY.UP
+        && evt.keyCode != WYMeditor.KEY.DOWN
+        && evt.keyCode != WYMeditor.KEY.LEFT
+        && evt.keyCode != WYMeditor.KEY.RIGHT
+        && evt.keyCode != WYMeditor.KEY.ENTER
+        && !evt.metaKey
+        && !evt.ctrlKey) {
+        // Not BACKSPACE, DELETE, CTRL, or COMMAND key
 
         container = wym.selected();
         var name = container.tagName.toLowerCase();
 
         //fix forbidden main containers
-        if (name == "strong" ||
-            name == "b" ||
-            name == "em" ||
-            name == "i" ||
-            name == "sub" ||
-            name == "sup" ||
-            name == "a" ) {
+        if (name == "strong"
+            || name == "b"
+            || name == "em"
+            || name == "i"
+            || name == "sub"
+            || name == "sup"
+            || name == "a") {
 
             name = container.parentNode.tagName.toLowerCase();
         }
 
         if (name == WYMeditor.BODY) {
+            // Replace text nodes with <p> tags
             wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
+            wym.fixBodyHtml();
         }
+    }
+
+    // If we potentially created a new block level element or moved to a new one
+    // then we should ensure that they're in the proper format
+    if (evt.keyCode == WYMeditor.KEY.UP
+        || evt.keyCode == WYMeditor.KEY.DOWN
+        || evt.keyCode == WYMeditor.KEY.LEFT
+        || evt.keyCode == WYMeditor.KEY.RIGHT
+        || evt.keyCode == WYMeditor.KEY.BACKSPACE
+        || evt.keyCode == WYMeditor.KEY.ENTER) {
+
+        wym.fixBodyHtml();
     }
 };
 
@@ -343,11 +349,12 @@ WYMeditor.WymClassMozilla.prototype.getTagForStyle = function(style) {
 };
 
 /*
- * Fix new cell contents.
+ * Fix new cell contents and ability to insert content at the front and end of
+ * the contents.
  */
 WYMeditor.WymClassMozilla.prototype.afterInsertTable = function(table) {
     if (WYMeditor.WymClassMozilla.NEEDS_CELL_FIX === true) {
-        // With FF 3.5+, inserted tables need some content in their
+        // In certain FF versions, inserted tables need some content in their
         // cells before they're editable, otherwise the user has to move focus
         // in and then out of a cell first, even with our click() hack
         $(table).find('td').each(function (index, element) {
