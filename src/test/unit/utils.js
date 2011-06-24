@@ -86,7 +86,16 @@ function trimHtml(html) {
 * expected HTML, accounting for differing whitespace and attribute ordering.
 */
 function htmlEquals(wymeditor, expected) {
-	var normedActual = normalizeHtml($(wymeditor.xhtml())[0]);
+	var xhtml = jQuery.trim(wymeditor.xhtml());
+	if (xhtml == '') {
+		// In jQuery 1.2.x, $('') returns an empty list, so we can't call
+		// normalizeHTML. On 1.3.x or higher upgrade, we can remove this
+		// check for the empty string
+		equals(xhtml, expected);
+		return
+	}
+
+	var normedActual = normalizeHtml($(xhtml)[0]);
 	var normedExpected = normalizeHtml($(expected)[0]);
 	equals(normedActual, normedExpected);
 }
@@ -99,15 +108,21 @@ function makeSelection(
 	if (endElementIndex == null) {
 		endElementIndex = 0;
 	}
-	var iframeWin = wymeditor._iframe.contentDocument ? wymeditor._iframe.contentDocument.defaultView : wymeditor._iframe.contentWindow;
-	var sel = rangy.getSelection(iframeWin);
+	var sel = rangy.getIframeSelection(wymeditor._iframe);
 
 	var range = rangy.createRange(wymeditor._doc);
 	range.setStart(startElement, startElementIndex);
 	range.setEnd(endElement, endElementIndex);
-	range.collapse(false);
+	if (startElement === endElement && startElementIndex == 0 && endElementIndex == 0) {
+		// Only collapse the range if we're selecting the start of one element
+		range.collapse(false);
+	}
 
-	sel.setSingleRange(range);
+	try {
+		sel.setSingleRange(range);
+	} catch(err) {
+		// ie8 can raise an "unkown runtime error" trying to empty the range
+	}
 	// IE selection hack
 	if ($.browser.msie) {
 		wymeditor.saveCaret();

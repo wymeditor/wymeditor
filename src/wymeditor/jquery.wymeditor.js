@@ -232,6 +232,7 @@ jQuery.extend(WYMeditor, {
       DELETE: 46,
       B: 66,
       I: 73,
+      R: 82,
       COMMAND: 224
     },
 
@@ -2535,6 +2536,7 @@ WYMeditor.XhtmlValidator = {
     var possible_attributes = this.getPossibleTagAttributes(tag);
     for(var attribute in attributes) {
       var value = attributes[attribute];
+      attribute = attribute.toLowerCase(); // ie8 uses colSpan
       var h = WYMeditor.Helper;
       if(!h.contains(this.skiped_attributes, attribute) && !h.contains(this.skiped_attribute_values, value)){
         if (typeof value != 'function' && h.contains(possible_attributes, attribute)) {

@@ -24,9 +24,7 @@
         if(window.rangy && !rangy.initialized) rangy.init();
 
         var iframe = this._iframe;
-        var win = (iframe.contentDocument && iframe.contentDocument.defaultView) ?
-          iframe.contentDocument.defaultView : iframe.contentWindow;
-        var sel = rangy.getSelection(win);
+        var sel = rangy.getIframeSelection(iframe);
 
         return(sel);
       };
@@ -50,7 +48,7 @@
       WYMeditor.editor.prototype.selection_collapsed = function() {
         var sel = this.selection();
         var collapsed = false;
-        
+
         $.each(sel.getAllRanges(), function() {
           if(this.collapsed) {
             collapsed = true;
@@ -61,7 +59,7 @@
 
         return(collapsed);
       };
-      
+
       /* @name selected_contains
        * @description Returns an array of nodes that match a jQuery selector
        * within the current selection.
@@ -69,7 +67,7 @@
       WYMeditor.editor.prototype.selected_contains = function(selector) {
         var sel = this.selection();
         var matches = [];
-        
+
         $.each(sel.getAllRanges(), function() {
           $.each(this.getNodes(), function() {
             if($(this).is(selector)) {
