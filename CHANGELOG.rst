@@ -24,4 +24,7 @@ Enhancements
 Bug Fixes
 ---------
 
-* TODO
+* It is now always possible to insert tables, preformatted text and blockquotes
+  at the start and end of documents, as well as in between eachother.
+  Previously, depending on your browser and version, you couldn't do one or more
+  of these things.

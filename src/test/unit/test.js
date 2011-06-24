@@ -141,11 +141,11 @@ function runPostInitTests() {
 
 			$body.find('td').each(function(index, td) {
 				if ($.browser.version >= '1.9.1' && $.browser.version < '2.0') {
-					equals( td.childNodes.length, 1 );
+					equals(td.childNodes.length, 1);
 				} else {
-					equals( td.childNodes.length, 0 );
+					equals(td.childNodes.length, 0);
 				}
-				equals( isContentEditable(td), true );
+				equals(isContentEditable(td), true);
 			});
 
 		});
@@ -160,12 +160,17 @@ function runPostInitTests() {
 			wymeditor.html(table_3_2_html);
 			$body.find('td').each(function(index, td) {
 				// Both FF 3.6 and 4.0 add spacer brs with design mode
-				equals( td.childNodes.length, 1 );
-				equals( isContentEditable(td), true );
+				equals(td.childNodes.length, 1);
+				equals(isContentEditable(td), true);
 			});
 		});
 
 		test("Table cells are editable in FF > 3.5: via inner_html", function() {
+			// This is currently broken. Doing a raw insert in to the editor
+			// body doesn't let us use our fixBodyHtml() fix to add the
+			// appropriate placeholder nodes inside the table cells
+			// Need to figure out another way to detect this and correct
+			// the HTML
 			expect(12);
 
 			var wymeditor = jQuery.wymeditors(0);
@@ -174,11 +179,11 @@ function runPostInitTests() {
 			$body.html(table_3_2_html);
 			$body.find('td').each(function(index, td) {
 				if ($.browser.version >= '1.9.1' && $.browser.version < '2.0') {
-					equals( td.childNodes.length, 1 );
+					equals(td.childNodes.length, 1);
 				} else {
-					equals( td.childNodes.length, 0 );
+					equals(td.childNodes.length, 0);
 				}
-				equals( isContentEditable(td), true );
+				equals(isContentEditable(td), true);
 			});
 		});
 	}

@@ -24,16 +24,19 @@ WYMeditor.WymClassSafari = function(wym) {
     this._newLine = "\n";
 };
 
+// Holds a top-level spot for inserting content
+WYMeditor.WymClassSafari.PLACEHOLDER_NODE = '<br>';
+
 WYMeditor.WymClassSafari.prototype.initIframe = function(iframe) {
 
     this._iframe = iframe;
     this._doc = iframe.contentDocument;
-    
+
     //add css rules from options
-    
-    var styles = this._doc.styleSheets[0];    
+
+    var styles = this._doc.styleSheets[0];
     var aCss = eval(this._options.editorStyles);
-    
+
     this.addCssRules(this._doc, aCss);
 
     this._doc.title = this._wym._index;
@@ -43,25 +46,25 @@ WYMeditor.WymClassSafari.prototype.initIframe = function(iframe) {
 
     //init designMode
     this._doc.designMode = "on";
-    
+
     //init html value
     this.html(this._wym._html);
-    
+
     //pre-bind functions
     if(jQuery.isFunction(this._options.preBind)) this._options.preBind(this);
-    
+
     //bind external events
     this._wym.bindEvents();
-    
+
     //bind editor keydown events
     jQuery(this._doc).bind("keydown", this.keydown);
-    
+
     //bind editor keyup events
     jQuery(this._doc).bind("keyup", this.keyup);
-    
+
     //post-init functions
     if(jQuery.isFunction(this._options.postInit)) this._options.postInit(this);
-    
+
     //add event listeners to doc elements, e.g. images
     this.listen();
 };
@@ -69,20 +72,20 @@ WYMeditor.WymClassSafari.prototype.initIframe = function(iframe) {
 WYMeditor.WymClassSafari.prototype._exec = function(cmd,param) {
 
     if(!this.selected()) return(false);
-    
-    var focusNode = this.selected();    
+
+    var focusNode = this.selected();
 
     switch(cmd) {
-    
+
     case WYMeditor.INDENT: case WYMeditor.OUTDENT:
-    
+
         var sel = this._iframe.contentWindow.getSelection();
         var anchorNode = sel.anchorNode;
         if(anchorNode.nodeName == "#text") anchorNode = anchorNode.parentNode;
-        
+
         focusNode = this.findUp(focusNode, WYMeditor.BLOCKS);
         anchorNode = this.findUp(anchorNode, WYMeditor.BLOCKS);
-        
+
         if(focusNode && focusNode == anchorNode &&
           focusNode.tagName.toLowerCase() == WYMeditor.LI) {
 
@@ -106,7 +109,7 @@ WYMeditor.WymClassSafari.prototype._exec = function(cmd,param) {
         if(container) jQuery(container).replaceWith(jQuery(container).html());
 
     break;
-    
+
     default:
 
         if(param) this._doc.execCommand(cmd,'',param);
@@ -114,12 +117,12 @@ WYMeditor.WymClassSafari.prototype._exec = function(cmd,param) {
 
     break;
     }
-    
+
     //set to P if parent = BODY
     container = this.selected();
     if(container && container.tagName.toLowerCase() == WYMeditor.BODY)
         this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
-    
+
     return true;
 
 };
@@ -131,10 +134,15 @@ WYMeditor.WymClassSafari.prototype.selected = function() {
 
     var sel = this._iframe.contentWindow.getSelection();
     var node = sel.focusNode;
-    if(node) {
-        if(node.nodeName == "#text") return(node.parentNode);
-        else return(node);
-    } else return(null);
+    if (node) {
+        if (node.nodeName == "#text") {
+            return node.parentNode;
+        } else {
+            return node;
+        }
+    } else {
+        return null;
+    }
 };
 
 WYMeditor.WymClassSafari.prototype.addCssRule = function(styles, oCss) {
@@ -146,76 +154,93 @@ WYMeditor.WymClassSafari.prototype.addCssRule = function(styles, oCss) {
 
 //keydown handler, mainly used for keyboard shortcuts
 WYMeditor.WymClassSafari.prototype.keydown = function(e) {
-  
-  //'this' is the doc
-  var wym = WYMeditor.INSTANCES[this.title];
-  
-  if(e.ctrlKey){
-    if(e.keyCode == 66){
-      //CTRL+b => STRONG
-      wym._exec(WYMeditor.BOLD);
-      e.preventDefault();
+    //'this' is the doc
+    var wym = WYMeditor.INSTANCES[this.title];
+
+    if (e.ctrlKey) {
+        if (e.keyCode == WYMeditor.KEY.B) {
+            //CTRL+b => STRONG
+            wym._exec(WYMeditor.BOLD);
+            e.preventDefault();
+        }
+        if (e.keyCode == WYMeditor.KEY.I) {
+          //CTRL+i => EMPHASIS
+          wym._exec(WYMeditor.ITALIC);
+          e.preventDefault();
+        }
+    } else if (e.shiftKey && e.keyCode == WYMeditor.KEY.ENTER) {
+        // Safari 4 and earlier would show a proper linebreak in the editor and
+        // then strip it upon save with the default action in the case of inserting
+        // a new line after bold text
+        wym._exec('InsertLineBreak');
+        e.preventDefault();
     }
-    if(e.keyCode == 73){
-      //CTRL+i => EMPHASIS
-      wym._exec(WYMeditor.ITALIC);
-      e.preventDefault();
-    }
-  } else if(e.shiftKey && e.keyCode == 13) {
-    wym._exec('InsertLineBreak');
-    e.preventDefault();
-  }
 };
 
-//keyup handler, mainly used for cleanups
+// Keyup handler, mainly used for cleanups
 WYMeditor.WymClassSafari.prototype.keyup = function(evt) {
+    //'this' is the doc
+    var wym = WYMeditor.INSTANCES[this.title];
 
-  //'this' is the doc
-  var wym = WYMeditor.INSTANCES[this.title];
-  
-  wym._selected_image = null;
-  var container = null;
+    wym._selected_image = null;
+    var container = null;
 
-  if(evt.keyCode == 13 && !evt.shiftKey) {
-  
-    //RETURN key
-    //cleanup <br><br> between paragraphs
-    jQuery(wym._doc.body).children(WYMeditor.BR).remove();
-    
-    //fix PRE bug #73
-    container = wym.selected();
-    if(container && container.tagName.toLowerCase() == WYMeditor.PRE)
-        wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P); //create P after PRE
-  }
-  
-  if(evt.keyCode != 8 &&
-       evt.keyCode != 17 &&
-       evt.keyCode != 46 &&
-       evt.keyCode != 224 &&
-       !evt.metaKey &&
-       !evt.ctrlKey) {
-      
-    //NOT BACKSPACE, NOT DELETE, NOT CTRL, NOT COMMAND
-    //text nodes replaced by P
-    
-    container = wym.selected();
-    var name = container.tagName.toLowerCase();
-
-    //fix forbidden main containers
-    if(
-      name == "strong" ||
-      name == "b" ||
-      name == "em" ||
-      name == "i" ||
-      name == "sub" ||
-      name == "sup" ||
-      name == "a" ||
-      name == "span" /* fix #110 */ ) {
-        name = container.parentNode.tagName.toLowerCase();
+    // Fix to allow shift + return to insert a line break in older safari
+    if ($.browser.version < 534.1) {
+        // Not needed in AT MAX chrome 6.0. Probably safe earlier
+        if (evt.keyCode == WYMeditor.KEY.ENTER && evt.shiftKey) {
+            wym._exec('InsertLineBreak');
+        }
     }
 
-    if(name == WYMeditor.BODY || name == WYMeditor.DIV) wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P); //fix #110 for DIV
-  }
+    if (evt.keyCode != WYMeditor.KEY.BACKSPACE
+        && evt.keyCode != WYMeditor.KEY.CTRL
+        && evt.keyCode != WYMeditor.KEY.DELETE
+        && evt.keyCode != WYMeditor.KEY.COMMAND
+        && evt.keyCode != WYMeditor.KEY.UP
+        && evt.keyCode != WYMeditor.KEY.DOWN
+        && evt.keyCode != WYMeditor.KEY.LEFT
+        && evt.keyCode != WYMeditor.KEY.RIGHT
+        && evt.keyCode != WYMeditor.KEY.ENTER
+        && !evt.metaKey
+        && !evt.ctrlKey) {
+        // Not BACKSPACE, DELETE, CTRL, or COMMAND key
+
+        container = wym.selected();
+        var name = container.tagName.toLowerCase();
+
+        // Fix forbidden main containers
+        if (name == "strong"
+            || name == "b"
+            || name == "em"
+            || name == "i"
+            || name == "sub"
+            || name == "sup"
+            || name == "a"
+            || name == "span") {
+            // Webkit also tries to use spans as a main container
+
+            name = container.parentNode.tagName.toLowerCase();
+        }
+
+        if (name == WYMeditor.BODY || name == WYMeditor.DIV) {
+            // Replace text nodes with <p> tags
+            wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
+            wym.fixBodyHtml();
+        }
+    }
+
+    // If we potentially created a new block level element or moved to a new one
+    // then we should ensure that they're in the proper format
+    if (evt.keyCode == WYMeditor.KEY.UP
+        || evt.keyCode == WYMeditor.KEY.DOWN
+        || evt.keyCode == WYMeditor.KEY.LEFT
+        || evt.keyCode == WYMeditor.KEY.RIGHT
+        || evt.keyCode == WYMeditor.KEY.BACKSPACE
+        || evt.keyCode == WYMeditor.KEY.ENTER) {
+
+        wym.fixBodyHtml();
+    }
 };
 
 WYMeditor.WymClassSafari.prototype.openBlockTag = function(tag, attributes)

@@ -206,24 +206,32 @@ jQuery.extend(WYMeditor, {
     INSERT_UNORDEREDLIST: "InsertUnorderedList",
     INSERT_ORDEREDLIST  : "InsertOrderedList",
 
-    MAIN_CONTAINERS : new Array("p","h1","h2","h3","h4","h5","h6","pre","blockquote"),
+    MAIN_CONTAINERS : ["p","h1","h2","h3","h4","h5","h6","pre","blockquote"],
 
-    BLOCKS : new Array("address", "blockquote", "div", "dl",
+    BLOCKS : ["address", "blockquote", "div", "dl",
      "fieldset", "form", "h1", "h2", "h3", "h4", "h5", "h6", "hr",
      "noscript", "ol", "p", "pre", "table", "ul", "dd", "dt",
-     "li", "tbody", "td", "tfoot", "th", "thead", "tr"),
+     "li", "tbody", "td", "tfoot", "th", "thead", "tr"],
+
+    BLOCKING_ELEMENTS : ["table", "blockquote", "pre"],
+
+    NON_BLOCKING_ELEMENTS : ["p", "h1", "h2", "h3", "h4", "h5", "h6"],
 
     KEY : {
       BACKSPACE: 8,
       ENTER: 13,
+      CTRL: 17,
       END: 35,
       HOME: 36,
+      CURSOR: [37, 38, 39, 40],
       LEFT: 37,
       UP: 38,
       RIGHT: 39,
       DOWN: 40,
-      CURSOR: new Array(37, 38, 39, 40),
-      DELETE: 46
+      DELETE: 46,
+      B: 66,
+      I: 73,
+      COMMAND: 224
     },
 
     NODE : {
@@ -883,7 +891,7 @@ WYMeditor.editor.prototype.bindEvents = function() {
 };
 
 WYMeditor.editor.prototype.ready = function() {
-  return(this._doc !== null);
+  return this._doc !== null;
 };
 
 
@@ -893,23 +901,30 @@ WYMeditor.editor.prototype.ready = function() {
  * @description Returns the WYMeditor container
  */
 WYMeditor.editor.prototype.box = function() {
-  return(this._box);
+  return this._box;
 };
 
 /* @name html
  * @description Get/Set the html value
  */
 WYMeditor.editor.prototype.html = function(html) {
-
-  if(typeof html === 'string') return(jQuery(this._doc.body).html(html));
-  else return(jQuery(this._doc.body).html());
+  if (typeof html === 'string') {
+    jQuery(this._doc.body).html(html);
+    this.fixBodyHtml();
+  } else {
+    return jQuery(this._doc.body).html();
+  }
 };
 
 /* @name xhtml
  * @description Cleans up the HTML
  */
 WYMeditor.editor.prototype.xhtml = function() {
-    return this.parser.parse(this.html());
+  // Remove any of the placeholder nodes we've created for start/end content
+  // insertion
+  jQuery(this._doc.body).children(WYMeditor.BR).remove();
+
+  return this.parser.parse(this.html());
 };
 
 /* @name exec
@@ -917,8 +932,8 @@ WYMeditor.editor.prototype.xhtml = function() {
  */
 WYMeditor.editor.prototype.exec = function(cmd) {
 
-  //base function for execCommand
-  //open a dialog or exec
+  // Base function for execCommand
+  // Either opens a dialog or calls exec
   switch(cmd) {
     case WYMeditor.CREATE_LINK:
       var container = this.container();
@@ -1151,14 +1166,109 @@ WYMeditor.editor.prototype.status = function(sMessage) {
  * @description Updates the element and textarea values
  */
 WYMeditor.editor.prototype.update = function() {
-    var html;
+  var html;
 
-    // Dirty fix to remove stray line breaks (#189)
-    jQuery(this._doc.body).children(WYMeditor.BR).remove();
+  // Dirty fix to remove stray line breaks (#189)
+  jQuery(this._doc.body).children(WYMeditor.BR).remove();
 
-    html = this.xhtml();
-    jQuery(this._element).val(html);
-    jQuery(this._box).find(this._options.htmlValSelector).not('.hasfocus').val(html); //#147
+  html = this.xhtml();
+  jQuery(this._element).val(html);
+  jQuery(this._box).find(this._options.htmlValSelector).not('.hasfocus').val(html); //#147
+  this.fixBodyHtml();
+};
+
+/* @name fixBodyHtml
+ * @description Adjust the editor body html to account for editing changes where
+ * perfect HTML is not optimal. For instance, <br> elements are useful between
+ * certain block elements.
+ */
+WYMeditor.editor.prototype.fixBodyHtml = function() {
+  this.fixDoubleBr();
+  this.spaceBlockingElements();
+};
+
+/* @name spaceBlockingElements
+ * @description Insert <br> elements between adjacent blocking elements and
+ * p elements, between block elements or blocking elements and the
+ * start/end of the document.
+ */
+WYMeditor.editor.prototype.spaceBlockingElements = function() {
+  var blockingSelector = WYMeditor.BLOCKING_ELEMENTS.join(', ');
+
+  var $body = $(this._doc).find('body.wym_iframe');
+  var children = $body.children();
+  var placeholderNode = '<br _moz_editor_bogus_node="TRUE" _moz_dirty="">';
+
+  // Make sure that we still have a bogus node at both the begining and end
+  if (children.length > 0) {
+    var $firstChild = $(children[0]);
+    var $lastChild = $(children[children.length - 1]);
+
+    if ($firstChild.is(blockingSelector)) {
+      $firstChild.before(placeholderNode);
+    }
+    if ($lastChild.is(blockingSelector)) {
+      $lastChild.after(placeholderNode);
+    }
+  }
+
+  var blockSepSelector = this._getBlockSepSelector();
+
+  // Put placeholder nodes between consecutive blocking elements and between
+  // blocking elements and normal block-level elements
+  $body.find(blockSepSelector).before(placeholderNode);
+};
+
+/* @name _buildBlockSepSelector
+ * @description Build a string representing a jquery selector that will find all
+ * elements which need a spacer <br> before them. This includes all consecutive
+ * blocking elements and between blocking elements and normal non-blocking
+ * elements.
+ */
+WYMeditor.editor.prototype._getBlockSepSelector = function() {
+  if (typeof(this._blockSpacersSel) != 'undefined') {
+    return this._blockSpacersSel;
+  }
+
+  var blockCombo = [];
+  // Consecutive blocking elements need separators
+  $.each(WYMeditor.BLOCKING_ELEMENTS, function (indexO, elementO) {
+    $.each(WYMeditor.BLOCKING_ELEMENTS, function (indexI, elementI) {
+      blockCombo.push(elementO + ' + ' + elementI);
+    });
+  });
+
+  // A blocking element either followed by or preceeded by a block elements
+  // needs separators
+  $.each(WYMeditor.BLOCKING_ELEMENTS, function (indexO, elementO) {
+    $.each(WYMeditor.NON_BLOCKING_ELEMENTS, function (indexI, elementI) {
+      blockCombo.push(elementO + ' + ' + elementI);
+      blockCombo.push(elementI + ' + ' + elementO);
+    });
+  });
+  this._blockSpacersSel = blockCombo.join(', ');
+  return this._blockSpacersSel;
+};
+
+/* @name fixDoubleBr
+ * @description Remove the <br><br> elements that are inserted between
+ * paragraphs, usually after hitting enter from an existing paragraph.
+ */
+WYMeditor.editor.prototype.fixDoubleBr = function() {
+  var $body = $(this._doc).find('body.wym_iframe');
+  // Strip consecutive brs unless they're in a a pre tag
+  $body.children('br + br').filter(':not(pre br)').remove();
+
+  // Also remove any brs between two p's
+  $body.find('p + br').next('p').prev('br').remove();
+
+  // Remove brs floating at the end after a p
+  var $last_br = $body.find('p + br').slice(-1);
+  if ($last_br.length > 0) {
+    if ($last_br.next().length == 0) {
+      $last_br.remove();
+    }
+  }
 };
 
 /* @name dialog
@@ -1367,6 +1477,7 @@ WYMeditor.editor.prototype.insertTable = function(rows, columns, caption, summar
 
   // Handle any browser-specific cleanup
   this.afterInsertTable(table);
+  this.fixBodyHtml();
 
   return table;
 };
