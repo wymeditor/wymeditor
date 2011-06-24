@@ -5,6 +5,33 @@
 .. contents::
     :local:
 
+.. _version-1.0.0dev:
+
+1.0.0dev
+=====
+:release-date: TBA
+:branch: master
+
+.. _v1-0-0dev-enhancements:
+
+Enhancements
+---------------
+
+* The Embed plugin now supports embedding via an iframe.
+
+.. _v1-0-0dev-bugfixes:
+
+Bug Fixes
+---------
+
+* It is now always possible to insert tables, preformatted text and blockquotes
+  at the start and end of documents, as well as in between eachother.
+  Previously, depending on your browser and version, you couldn't do one or more
+  of these things.
+* It is now possible to paste content in to a table when using internet
+  explorer.
+
+
 .. _version-0.5.1:
 
 0.5.1
@@ -19,12 +46,3 @@ Enhancements
 
 * The Embed plugin now supports embedding via an iframe.
 
-.. _v0-5-1-bufixes:
-
-Bug Fixes
----------
-
-* It is now always possible to insert tables, preformatted text and blockquotes
-  at the start and end of documents, as well as in between eachother.
-  Previously, depending on your browser and version, you couldn't do one or more
-  of these things.
