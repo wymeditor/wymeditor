@@ -17,7 +17,6 @@
 Enhancements
 ---------------
 
-* The Embed plugin now supports embedding via an iframe.
 
 .. _v1-0-0dev-bugfixes:
 
@@ -30,6 +29,9 @@ Bug Fixes
   of these things.
 * It is now possible to paste content in to a table when using internet
   explorer.
+* Fixed some problems with ordered and unordered list nesting in Internet
+  Explorer caused by a regex failing to account for IE's insertion of 
+  whitespace in list HTML.
 
 
 .. _version-0.5.1:
