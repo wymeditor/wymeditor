@@ -74,7 +74,7 @@ function runListTests() {
 
 	var li_1_indentedHtml = '' +
 	'<ol>' +
-		'<li>' +
+		'<li class="spacer_li">' +
 			'<ol>' +
 				'<li id="li_1">1</li>' +
 			'</ol>' +
@@ -392,6 +392,16 @@ function runListTests() {
 
 		testList('li_4', 'indent', nestedListHtml, li_4_indentedHtml);
 		testList('li_4', 'outdent', li_4_indentedHtml, nestedListHtml);
+	});
+
+	test("Can't dedent first-level", function() {
+		expect(10);
+
+		testList('li_1', 'outdent', nestedListHtml, nestedListHtml);
+		testList('li_2', 'outdent', nestedListHtml, nestedListHtml);
+		testList('li_6', 'outdent', nestedListHtml, nestedListHtml);
+		testList('li_7', 'outdent', nestedListHtml, nestedListHtml);
+		testList('li_8', 'outdent', nestedListHtml, nestedListHtml);
 	});
 
 	module("list-broken_html");
