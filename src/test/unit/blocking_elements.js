@@ -426,7 +426,7 @@ function runBlockingElementTests() {
 
 			moveSelector(wymeditor, element);
 
-			simulateKey(WYMeditor.KEY.UP, wymeditor._doc); // Send UP
+			simulateKey(WYMeditor.KEY.UP, wymeditor._doc);
 
 			checkLayout($body);
 		});
@@ -441,7 +441,7 @@ function runBlockingElementTests() {
 		// Move the selector to the br before the table
 		makeSelection(wymeditor, $body[0], $body[0], 1, 1);
 
-		simulateKey(38, wymeditor._doc); // DOWN key
+		simulateKey(WYMeditor.KEY.UP, wymeditor._doc);
 
 		var children = $body.children();
 
@@ -476,7 +476,7 @@ function runBlockingElementTests() {
 		// Move the selector to the br after the table
 		makeSelection(wymeditor, $body[0], $body[0], 3, 3);
 
-		simulateKey(40, wymeditor._doc); // UP key
+		simulateKey(WYMeditor.KEY.DOWN, wymeditor._doc);
 
 		var children = $body.children();
 
@@ -507,7 +507,7 @@ function runBlockingElementTests() {
 		$body.children('table').after('<p>yo</p>');
 
 		// Simulate and send the keystroke event to trigger fixing the dom
-		simulateKey(40, wymeditor._doc); // DOWN key
+		simulateKey(WYMeditor.KEY.DOWN, wymeditor._doc);
 
 		var children = $body.children();
 
@@ -538,7 +538,7 @@ function runBlockingElementTests() {
 		moveSelector(wymeditor, $body[0]);
 
 		// Simulate and send the keyup event
-		simulateKey(65, wymeditor._doc); // `a` key
+		simulateKey(WYMeditor.KEY.B, wymeditor._doc);
 
 		var children = $body.children();
 
