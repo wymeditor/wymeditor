@@ -4,7 +4,10 @@ test("Instantiate", function() {
 	expect(2);
 	jQuery('.wymeditor').wymeditor({
 		stylesheet: 'styles.css',
-		postInit: function() { runPostInitTests() }
+		postInit: function(wym) {
+			var listPlugin = new ListPlugin({}, wym);
+			runPostInitTests();
+		}
 	});
 	equals( WYMeditor.INSTANCES.length, 1, "WYMeditor.INSTANCES length" );
 	equals( typeof(jQuery.wymeditors(0)), 'object', "Type of first WYMeditor instance, using jQuery.wymeditors(0)" );
