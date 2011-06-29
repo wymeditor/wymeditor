@@ -24,7 +24,7 @@ Wymeditor.dom.Serializer.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor
 
       Serializes the DOM to a format similar to the one produced by node-htmparser.
 */
-    toArray: function toArray (node) {
+    toArray: function (node) {
         var result = [],
             childNodes = node.childNodes,
             child, i, j, o,
@@ -65,7 +65,7 @@ Wymeditor.dom.Serializer.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor
                     }
 
                     if (child.childNodes && child.childNodes.length) {
-                        o.children = toArray.call(this, child);
+                        o.children = this.toArray(child);
                     }
 
                     result.push(o);
@@ -84,7 +84,7 @@ Wymeditor.dom.Serializer.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor
       Takes an array formated like the node-htmlparser output and turns it in 
       to proper html.
 */
-    arrayToHtml: function arrayToHtml (nodes) {
+    arrayToHtml: function (nodes) {
         var html = '',
             child, i, j,
             attributes, attribute, attrName, attrValue;
@@ -106,7 +106,7 @@ Wymeditor.dom.Serializer.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor
                     }
                     
                     if (child.children && child.children.length) {
-                        html += '>'+arrayToHtml(child.children);
+                        html += '>'+this.arrayToHtml(child.children);
                         html += '</'+child.name+'>';
                     } else {
                         html += ' />';
