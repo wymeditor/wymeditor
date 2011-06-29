@@ -3,7 +3,8 @@ Wymeditor.EditableArea = function EditableArea (element) {
     this.element = $(element);
     
     this.dom = Wymeditor.dom;
-    this.structureManager = new Wymeditor.dom.StructureManager();
+    this.serializer = new this.dom.Serializer();
+    this.structureManager = new this.dom.StructureManager();
     this.selection = Wymeditor.selection;
     this.utils = Wymeditor.utils;
     
@@ -438,7 +439,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
             this.element.html(html);
             return undefined;
         } else {
-            html = this.dom.serialize(this.element[0]);
+            html = this.serializer.toHtml(this.element[0]);
             // this.plugin.htmlFormatter.format(html)
             return html;
         }
