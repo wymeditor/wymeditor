@@ -19,10 +19,10 @@ function runBlockingElementTests() {
 
 	// Double-br browsers need placeholders both before and after blocking
 	// elements. Others just need placeholders before
-	var is_double_br_browser = ($.browser.mozilla
-		|| $.browser.webkit
-		|| $.browser.safari
-		|| ( $.browser.msie && $.browser.version >= "7.0" ));
+	var is_double_br_browser = ($.browser.mozilla ||
+			$.browser.webkit ||
+			$.browser.safari ||
+			($.browser.msie && $.browser.version >= "7.0"));
 
 	var tableHtml = '' +
 	'<table>' +
@@ -112,7 +112,7 @@ function runBlockingElementTests() {
 	'</pre>';
 
 	// Webkit doesn't use \r\n newlines
-	if( $.browser.webkit || $.browser.safari ) {
+	if($.browser.webkit || $.browser.safari) {
 		h1BlockquotePreHtml = h1BlockquotePreHtml.replace(/\r/g, '');
 	}
 
@@ -148,25 +148,25 @@ function runBlockingElementTests() {
 	test("table has br spacers via table insertion", function() {
 		var wymeditor = jQuery.wymeditors(0);
 		wymeditor.html('');
-		wymeditor.insertTable( 2, 3, '', '' );
+		wymeditor.insertTable(2, 3, '', '');
 
 		var $body = $(wymeditor._doc).find('body.wym_iframe');
 		var children = $body.children();
 
-		if ( is_double_br_browser ) {
+		if (is_double_br_browser) {
 			expect(5);
-			equals( children.length, 3 );
-			if ( children.length == 3 ) {
-				equals( children[0].tagName.toLowerCase(), 'br' );
-				equals( children[1].tagName.toLowerCase(), 'table' );
-				equals( children[2].tagName.toLowerCase(), 'br' );
+			equals(children.length, 3);
+			if (children.length == 3) {
+				equals(children[0].tagName.toLowerCase(), 'br');
+				equals(children[1].tagName.toLowerCase(), 'table');
+				equals(children[2].tagName.toLowerCase(), 'br');
 			}
 		} else {
 			expect(4);
-			equals( children.length, 2 );
-			if ( children.length == 2 ) {
-				equals( children[0].tagName.toLowerCase(), 'br' );
-				equals( children[1].tagName.toLowerCase(), 'table' );
+			equals(children.length, 2);
+			if (children.length == 2) {
+				equals(children[0].tagName.toLowerCase(), 'br');
+				equals(children[1].tagName.toLowerCase(), 'table');
 			}
 		}
 
@@ -180,22 +180,22 @@ function runBlockingElementTests() {
 		var $body = $(wymeditor._doc).find('body.wym_iframe');
 		var children = $body.children();
 
-		if ( is_double_br_browser ) {
+		if (is_double_br_browser) {
 			expect(6);
-			equals( children.length, 4 );
-			if ( children.length == 4 ) {
-				equals( children[0].tagName.toLowerCase(), 'p' );
-				equals( children[1].tagName.toLowerCase(), 'br' );
-				equals( children[2].tagName.toLowerCase(), 'table' );
-				equals( children[3].tagName.toLowerCase(), 'br' );
+			equals(children.length, 4);
+			if (children.length == 4) {
+				equals(children[0].tagName.toLowerCase(), 'p');
+				equals(children[1].tagName.toLowerCase(), 'br');
+				equals(children[2].tagName.toLowerCase(), 'table');
+				equals(children[3].tagName.toLowerCase(), 'br');
 			}
 		} else {
 			expect(5);
-			equals( children.length, 3 );
-			if ( children.length == 3 ) {
-				equals( children[0].tagName.toLowerCase(), 'p' );
-				equals( children[1].tagName.toLowerCase(), 'br' );
-				equals( children[2].tagName.toLowerCase(), 'table' );
+			equals(children.length, 3);
+			if (children.length == 3) {
+				equals(children[0].tagName.toLowerCase(), 'p');
+				equals(children[1].tagName.toLowerCase(), 'br');
+				equals(children[2].tagName.toLowerCase(), 'table');
 			}
 		}
 
@@ -212,26 +212,26 @@ function runBlockingElementTests() {
 		var first_p = $body.find('p')[0];
 		moveSelector(wymeditor, first_p);
 
-		wymeditor.insertTable( 2, 3, '', '' );
+		wymeditor.insertTable(2, 3, '', '');
 
 		var children = $body.children();
 
-		if ( is_double_br_browser ) {
+		if (is_double_br_browser) {
 			expect(7);
-			equals( children.length, 4 );
-			if ( children.length == 4 ) {
-				equals( children[0].tagName.toLowerCase(), 'p' );
-				equals( children[1].tagName.toLowerCase(), 'br' );
-				equals( children[2].tagName.toLowerCase(), 'table' );
-				equals( children[3].tagName.toLowerCase(), 'br' );
+			equals(children.length, 4);
+			if (children.length == 4) {
+				equals(children[0].tagName.toLowerCase(), 'p');
+				equals(children[1].tagName.toLowerCase(), 'br');
+				equals(children[2].tagName.toLowerCase(), 'table');
+				equals(children[3].tagName.toLowerCase(), 'br');
 			}
 		} else {
 			expect(6);
-			equals( children.length, 3 );
-			if ( children.length == 3 ) {
-				equals( children[0].tagName.toLowerCase(), 'p' );
-				equals( children[1].tagName.toLowerCase(), 'br' );
-				equals( children[2].tagName.toLowerCase(), 'table' );
+			equals(children.length, 3);
+			if (children.length == 3) {
+				equals(children[0].tagName.toLowerCase(), 'p');
+				equals(children[1].tagName.toLowerCase(), 'br');
+				equals(children[2].tagName.toLowerCase(), 'table');
 			}
 		}
 
@@ -246,13 +246,13 @@ function runBlockingElementTests() {
 		var children = $body.children();
 
 		expect(7);
-		equals( children.length, 5 );
-		if ( children.length == 5 ) {
-			equals( children[0].tagName.toLowerCase(), 'p' );
-			equals( children[1].tagName.toLowerCase(), 'br' );
-			equals( children[2].tagName.toLowerCase(), 'table' );
-			equals( children[3].tagName.toLowerCase(), 'br' );
-			equals( children[4].tagName.toLowerCase(), 'p' );
+		equals(children.length, 5);
+		if (children.length == 5) {
+			equals(children[0].tagName.toLowerCase(), 'p');
+			equals(children[1].tagName.toLowerCase(), 'br');
+			equals(children[2].tagName.toLowerCase(), 'table');
+			equals(children[3].tagName.toLowerCase(), 'br');
+			equals(children[4].tagName.toLowerCase(), 'p');
 		}
 
 		htmlEquals(wymeditor, pTableHtml);
@@ -268,18 +268,18 @@ function runBlockingElementTests() {
 		var first_p = $body.find('p')[0];
 		moveSelector(wymeditor, first_p);
 
-		wymeditor.insertTable( 2, 3, '', '' );
+		wymeditor.insertTable(2, 3, '', '');
 
 		var children = $body.children();
 
 		expect(8);
-		equals( children.length, 5 );
-		if ( children.length == 5 ) {
-			equals( children[0].tagName.toLowerCase(), 'p' );
-			equals( children[1].tagName.toLowerCase(), 'br' );
-			equals( children[2].tagName.toLowerCase(), 'table' );
-			equals( children[3].tagName.toLowerCase(), 'br' );
-			equals( children[4].tagName.toLowerCase(), 'p' );
+		equals(children.length, 5);
+		if (children.length == 5) {
+			equals(children[0].tagName.toLowerCase(), 'p');
+			equals(children[1].tagName.toLowerCase(), 'br');
+			equals(children[2].tagName.toLowerCase(), 'table');
+			equals(children[3].tagName.toLowerCase(), 'br');
+			equals(children[4].tagName.toLowerCase(), 'p');
 		}
 
 		htmlEquals(wymeditor, pTableHtml);
@@ -293,15 +293,15 @@ function runBlockingElementTests() {
 		var children = $body.children();
 
 		expect(9);
-		equals( children.length, 7 );
-		if ( children.length == 7 ) {
-			equals( children[0].tagName.toLowerCase(), 'p' );
-			equals( children[1].tagName.toLowerCase(), 'br' );
-			equals( children[2].tagName.toLowerCase(), 'table' );
-			equals( children[3].tagName.toLowerCase(), 'br' );
-			equals( children[4].tagName.toLowerCase(), 'table' );
-			equals( children[5].tagName.toLowerCase(), 'br' );
-			equals( children[6].tagName.toLowerCase(), 'p' );
+		equals(children.length, 7);
+		if (children.length == 7) {
+			equals(children[0].tagName.toLowerCase(), 'p');
+			equals(children[1].tagName.toLowerCase(), 'br');
+			equals(children[2].tagName.toLowerCase(), 'table');
+			equals(children[3].tagName.toLowerCase(), 'br');
+			equals(children[4].tagName.toLowerCase(), 'table');
+			equals(children[5].tagName.toLowerCase(), 'br');
+			equals(children[6].tagName.toLowerCase(), 'p');
 		}
 
 		htmlEquals(wymeditor, pTableTablePHtml);
@@ -480,7 +480,7 @@ function runBlockingElementTests() {
 
 		var children = $body.children();
 
-		equals( children.length, 5 , "Should have p, br, table, br, p");
+		equals(children.length, 5 , "Should have p, br, table, br, p");
 		if (children.length == 5) {
 			equals(children[0].tagName.toLowerCase(), 'p');
 			equals(children[1].tagName.toLowerCase(), 'br');
