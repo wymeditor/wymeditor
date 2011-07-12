@@ -135,14 +135,14 @@ WYMeditor.WymClassExplorer.prototype._exec = function(cmd,param) {
                 this._doc.execCommand(cmd);
             }
         }
-    break;
+        break;
     default:
         if (param) {
             this._doc.execCommand(cmd, false, param);
         } else {
             this._doc.execCommand(cmd);
         }
-    break;
+        break;
     }
 
 };
