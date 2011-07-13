@@ -302,7 +302,14 @@ WYMeditor.WymClassMozilla.prototype.click = function(evt) {
     if (container && container.tagName.toLowerCase() == WYMeditor.BODY) {
         // A click in the body means there is no content at all, so we
         // should automatically create a starter paragraph
-        wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
+        var sel = wym._iframe.contentWindow.getSelection();
+        if (sel.isCollapsed === true) {
+            // If the selection isn't collapsed, we might have a selection that
+            // drags over the body, but we shouldn't turn everything in to a
+            // paragraph tag. Otherwise, double-clicking in the space to the
+            // right of an h2 tag would turn it in to a paragraph
+            wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
+        }
     }
 };
 
