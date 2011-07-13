@@ -1,154 +1,8 @@
-module("Core");
 
-test("Instantiate", function() {
-    expect(2);
-    jQuery('.wymeditor').wymeditor({
-        stylesheet: 'styles.css',
-        postInit: function(wym) {
-            var listPlugin = new ListPlugin({}, wym);
-            var tableEditor = wym.table();
-            runPostInitTests();
-        }
-    });
-    equals(WYMeditor.INSTANCES.length, 1, "WYMeditor.INSTANCES length");
-    equals(typeof(jQuery.wymeditors(0)), 'object',
-            "Type of first WYMeditor instance, using jQuery.wymeditors(0)");
-});
-
-module("API");
-
-test("Commands", function() {
-    expect(2);
-    jQuery.wymeditors(0).toggleHtml();
-    equals(jQuery('div.wym_html:visible', jQuery.wymeditors(0)._box).length, 1);
-    jQuery.wymeditors(0).toggleHtml();
-    equals(jQuery('div.wym_html:visible', jQuery.wymeditors(0)._box).length, 0);
-});
-
-module("CssParser");
-
-test("Configure classes items using CSS", function() {
-    expect(2);
-    ok(jQuery('div.wym_classes ul', jQuery.wymeditors(0)._box).length > 0,
-            "Classes loaded" );
-    equals(
-            jQuery('div.wym_classes a:first-child', jQuery.wymeditors(0)._box).
-                attr('name'),
-            'date',
-            "First loaded class name" );
-});
-
-module("XmlHelper");
-
-test("Should escape URL's only once #69.1", function() {
-    expect(2);
-    var original = "index.php?module=x&func=view&id=1";
-    var expected = "index.php?module=x&amp;func=view&amp;id=1";
-    equals(jQuery.wymeditors(0).helper.escapeOnce(original), expected,
-            "Escape entities");
-    equals(jQuery.wymeditors(0).helper.escapeOnce(expected), expected,
-            "Avoids double entity escaping");
-});
-
-module("XmlParser");
-
-test("Should correct invalid lists", function() {
-    expect(2);
-    var expected = '' +
-    '<ul>' +
-        '<li>a' +
-            '<ul>' +
-                '<li>a.1<\/li>' +
-            '<\/ul>' +
-        '<\/li>' +
-        '<li>b<\/li>' +
-    '<\/ul>';
-    // FF
-    var design_mode_pseudo_html = '' +
-    '<ul>' +
-        '<li>a<\/li>' +
-        '<ul>' +
-            '<li>a.1<\/li>' +
-        '<\/ul>' +
-        '<li>b<br><\/li>' +
-    '<\/ul>';
-    equals(jQuery.wymeditors(0).parser.parse(design_mode_pseudo_html), expected,
-            "on Firefox");
-    // IE
-    // IE has invalid sublist nesting
-    var expected = '' +
-    '<ul>\r\n' +
-        '<li>a' +
-            '<ul>\r\n' +
-                '<li>a.1<\/li>' +
-            '<\/ul>' +
-        '<\/li>\r\n' +
-        '<li>b<\/li>' +
-    '<\/ul>';
-    var design_mode_pseudo_html = '' +
-    '<UL>\r\n' +
-        '<LI>a<\/LI>\r\n' +
-        '<UL>\r\n' +
-            '<LI>a.1<\/LI>' +
-        '<\/UL>\r\n' +
-        '<LI>b<\/LI>' +
-    '<\/UL>';
-    equals(jQuery.wymeditors(0).parser.parse(design_mode_pseudo_html), expected,
-            "on IE");
-});
-
-test("Shouldn't remove empty td elements", function() {
-    expect(1);
-    var expected = '<table><tr><td>Cell1</td><td></td></tr></table>';
-    var empty_cell = '<table><tr><td>Cell1</td><td></td></tr></table>';
-    equals(jQuery.wymeditors(0).parser.parse(empty_cell), expected);
-});
-
-test("Should remove PRE line breaks (BR)", function() {
-    expect(1);
-    var original = '' +
-    '<pre>One<br>Two<br>Three</pre>' +
-    '<p>Test</p>' +
-    '<pre>Three<br>Four<br>Five</pre>';
-    var expected = '' +
-    '<pre>One\r\nTwo\r\nThree</pre>' +
-    '<p>Test</p>' +
-    '<pre>Three\r\nFour\r\nFive</pre>';
-    equals(jQuery.wymeditors(0).parser.parse(original), expected,
-            "Remove BR in PRE");
-});
-
-test("Shouldn't strip colSpan attributes", function() {
-    // http://trac.wymeditor.org/trac/ticket/223
-    // IE8 uses colSpan for the colspan attribute. WYMeditor shouldn't strip it
-    // just because of the camelCase
-    expect(1);
-    var original = '' +
-    '<table>' +
-        '<tr id="tr_1">' +
-            '<td id="td_1_1" colSpan="2">1_1</td>' +
-        '</tr>' +
-        '<tr id="tr_2">' +
-            '<td id="td_2_1">2_1</td>' +
-            '<td id="td_2_2">2_2</td>' +
-        '</tr>' +
-    '</table>';
-    var expected = '' +
-    '<table>' +
-        '<tr id="tr_1">' +
-            '<td id="td_1_1" colspan="2">1_1</td>' +
-        '</tr>' +
-        '<tr id="tr_2">' +
-            '<td id="td_2_1">2_1</td>' +
-            '<td id="td_2_2">2_2</td>' +
-        '</tr>' +
-    '</table>';
-    equals(
-            jQuery.wymeditors(0).parser.parse(original),
-            expected,
-            "Don't strip colSpan");
-});
-
+/*
+    Tests that require the WYMeditor instance to already be initialized.
+    Calling this funtion as a postInit argument ensures they can pass.
+*/
 function runPostInitTests() {
     module("Post Init");
 
@@ -327,3 +181,154 @@ function runPostInitTests() {
 
     runEmbedPluginTests();
 }
+
+module("Core");
+
+test("Instantiate", function() {
+    expect(2);
+    jQuery('.wymeditor').wymeditor({
+        stylesheet: 'styles.css',
+        postInit: function(wym) {
+            var listPlugin = new ListPlugin({}, wym);
+            var tableEditor = wym.table();
+            runPostInitTests();
+        }
+    });
+    equals(WYMeditor.INSTANCES.length, 1, "WYMeditor.INSTANCES length");
+    equals(typeof(jQuery.wymeditors(0)), 'object',
+            "Type of first WYMeditor instance, using jQuery.wymeditors(0)");
+});
+
+module("API");
+
+test("Commands", function() {
+    expect(2);
+    jQuery.wymeditors(0).toggleHtml();
+    equals(jQuery('div.wym_html:visible', jQuery.wymeditors(0)._box).length, 1);
+    jQuery.wymeditors(0).toggleHtml();
+    equals(jQuery('div.wym_html:visible', jQuery.wymeditors(0)._box).length, 0);
+});
+
+module("CssParser");
+
+test("Configure classes items using CSS", function() {
+    expect(2);
+    ok(jQuery('div.wym_classes ul', jQuery.wymeditors(0)._box).length > 0,
+            "Classes loaded" );
+    equals(
+            jQuery('div.wym_classes a:first-child', jQuery.wymeditors(0)._box).
+                attr('name'),
+            'date',
+            "First loaded class name" );
+});
+
+module("XmlHelper");
+
+test("Should escape URL's only once #69.1", function() {
+    expect(2);
+    var original = "index.php?module=x&func=view&id=1";
+    var expected = "index.php?module=x&amp;func=view&amp;id=1";
+    equals(jQuery.wymeditors(0).helper.escapeOnce(original), expected,
+            "Escape entities");
+    equals(jQuery.wymeditors(0).helper.escapeOnce(expected), expected,
+            "Avoids double entity escaping");
+});
+
+module("XmlParser");
+
+test("Should correct invalid lists", function() {
+    expect(2);
+    var expected = '' +
+    '<ul>' +
+        '<li>a' +
+            '<ul>' +
+                '<li>a.1<\/li>' +
+            '<\/ul>' +
+        '<\/li>' +
+        '<li>b<\/li>' +
+    '<\/ul>';
+    // FF
+    var design_mode_pseudo_html = '' +
+    '<ul>' +
+        '<li>a<\/li>' +
+        '<ul>' +
+            '<li>a.1<\/li>' +
+        '<\/ul>' +
+        '<li>b<br><\/li>' +
+    '<\/ul>';
+    equals(jQuery.wymeditors(0).parser.parse(design_mode_pseudo_html), expected,
+            "on Firefox");
+    // IE
+    // IE has invalid sublist nesting
+    expected = '' +
+    '<ul>\r\n' +
+        '<li>a' +
+            '<ul>\r\n' +
+                '<li>a.1<\/li>' +
+            '<\/ul>' +
+        '<\/li>\r\n' +
+        '<li>b<\/li>' +
+    '<\/ul>';
+    design_mode_pseudo_html = '' +
+    '<UL>\r\n' +
+        '<LI>a<\/LI>\r\n' +
+        '<UL>\r\n' +
+            '<LI>a.1<\/LI>' +
+        '<\/UL>\r\n' +
+        '<LI>b<\/LI>' +
+    '<\/UL>';
+    equals(jQuery.wymeditors(0).parser.parse(design_mode_pseudo_html), expected,
+            "on IE");
+});
+
+test("Shouldn't remove empty td elements", function() {
+    expect(1);
+    var expected = '<table><tr><td>Cell1</td><td></td></tr></table>';
+    var empty_cell = '<table><tr><td>Cell1</td><td></td></tr></table>';
+    equals(jQuery.wymeditors(0).parser.parse(empty_cell), expected);
+});
+
+test("Should remove PRE line breaks (BR)", function() {
+    expect(1);
+    var original = '' +
+    '<pre>One<br>Two<br>Three</pre>' +
+    '<p>Test</p>' +
+    '<pre>Three<br>Four<br>Five</pre>';
+    var expected = '' +
+    '<pre>One\r\nTwo\r\nThree</pre>' +
+    '<p>Test</p>' +
+    '<pre>Three\r\nFour\r\nFive</pre>';
+    equals(jQuery.wymeditors(0).parser.parse(original), expected,
+            "Remove BR in PRE");
+});
+
+test("Shouldn't strip colSpan attributes", function() {
+    // http://trac.wymeditor.org/trac/ticket/223
+    // IE8 uses colSpan for the colspan attribute. WYMeditor shouldn't strip it
+    // just because of the camelCase
+    expect(1);
+    var original = '' +
+    '<table>' +
+        '<tr id="tr_1">' +
+            '<td id="td_1_1" colSpan="2">1_1</td>' +
+        '</tr>' +
+        '<tr id="tr_2">' +
+            '<td id="td_2_1">2_1</td>' +
+            '<td id="td_2_2">2_2</td>' +
+        '</tr>' +
+    '</table>';
+    var expected = '' +
+    '<table>' +
+        '<tr id="tr_1">' +
+            '<td id="td_1_1" colspan="2">1_1</td>' +
+        '</tr>' +
+        '<tr id="tr_2">' +
+            '<td id="td_2_1">2_1</td>' +
+            '<td id="td_2_2">2_2</td>' +
+        '</tr>' +
+    '</table>';
+    equals(
+            jQuery.wymeditors(0).parser.parse(original),
+            expected,
+            "Don't strip colSpan");
+});
