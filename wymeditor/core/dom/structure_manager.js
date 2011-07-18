@@ -118,8 +118,8 @@ Wymeditor.ns('dom').StructureManager = function (ruleSet) {
 
     return {
         load: loadRuleSet,
-        getNode: getNode,
-        getCollection: getCollection,
+        getNodeRules: getNode,
+        getCollectionRules: getCollection,
         getCollectionSelector: getCollectionSelector
     };
 };

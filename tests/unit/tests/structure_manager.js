@@ -29,7 +29,7 @@ jQuery(function($){
         });
         ok(true, "Pass custom ruleSet to Consructor. We didn't die, so lets say we made it.");
 
-        deepEqual(SM.getNode('customElement'), {
+        deepEqual(SM.getNodeRules('customElement'), {
             "attributes": {
                 "class": false,
                 "id": false
@@ -47,7 +47,7 @@ jQuery(function($){
     test('getNode', function() {
         var SM = new Wymeditor.dom.StructureManager();
         
-        deepEqual(SM.getNode('u'), {
+        deepEqual(SM.getNodeRules('u'), {
             "attributes": {
                 "class": false,
                 "id": false
@@ -56,7 +56,7 @@ jQuery(function($){
             "remove": true
         }, 'Single node without collection (u)');
 
-        deepEqual(SM.getNode('a'), {
+        deepEqual(SM.getNodeRules('a'), {
             "attributes": {
                 "class": false,
                 "id": false,
@@ -89,7 +89,7 @@ jQuery(function($){
             ]
         }, 'Inline element with custom properties (a)');
 
-        deepEqual(SM.getNode('div'), {
+        deepEqual(SM.getNodeRules('div'), {
             "attributes": {
                 "class": false,
                 "id": false
