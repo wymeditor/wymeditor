@@ -1,4 +1,4 @@
-WYMeditor.STRINGS['nl'] = {
+WYMeditor.STRINGS.nl = {
     Strong:           'Sterk benadrukken',
     Emphasis:         'Benadrukken',
     Superscript:      'Bovenschrift',

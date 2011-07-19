@@ -19,7 +19,7 @@ ListPlugin.prototype.init = function() {
     this._wym.listPlugin = this;
 
     this.bindEvents();
-}
+};
 
 ListPlugin.prototype.bindEvents = function() {
     var listPlugin = this;
@@ -28,7 +28,7 @@ ListPlugin.prototype.bindEvents = function() {
     // Bind a key listener so we can handle tabs
     // With jQuery 1.3, live() can be used to simplify handler logic
     $(wym._doc).bind('keydown', listPlugin.handleKeyDown);
-}
+};
 
 /**
  * Handle any tab presses when inside list items and indent/outdent.
