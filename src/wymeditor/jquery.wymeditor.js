@@ -1,52 +1,62 @@
+/*jslint evil: true */
 /**
- * @version 0.5-rc3
- *
- * WYMeditor : what you see is What You Mean web-based editor
- * Copyright (c) 2005 - 2010 Jean-Francois Hovinne, http://www.wymeditor.org/
- * Dual licensed under the MIT (MIT-license.txt)
- * and GPL (GPL-license.txt) licenses.
- *
- * For further information visit:
- *        http://www.wymeditor.org/
- *
- * File: jquery.wymeditor.js
- *
- *        Main JS file with core classes and functions.
- *        See the documentation for more info.
- *
- * About: authors
- *
- *        Jean-Francois Hovinne (jf.hovinne a-t wymeditor dotorg)
- *        Volker Mische (vmx a-t gmx dotde)
- *        Scott Lewis (lewiscot a-t gmail dotcom)
- *        Bermi Ferrer (wymeditor a-t bermi dotorg)
- *        Daniel Reszka (d.reszka a-t wymeditor dotorg)
- *        Jonatan Lundin (jonatan.lundin a-t gmail dotcom)
- */
+    WYMeditor
+    =========
 
-/*
-   Namespace: WYMeditor
-   Global WYMeditor namespace.
+    version 1.0dev
+
+    WYMeditor : what you see is What You Mean web-based editor
+
+    Main JS file with core classes and functions.
+
+    Copyright
+    ---------
+
+    Copyright (c) 2005 - 2010 Jean-Francois Hovinne, http://www.wymeditor.org/
+    Dual licensed under the MIT (MIT-license.txt)
+    and GPL (GPL-license.txt) licenses.
+
+    Website
+    -------
+
+    For further information visit:
+    http://www.wymeditor.org/
+
+
+    Authors
+    -------
+
+    See AUTHORS file
 */
-if(!WYMeditor) var WYMeditor = {};
 
-//Wrap the Firebug console in WYMeditor.console
+// Global WYMeditor namespace.
+if (!WYMeditor) {
+    var WYMeditor = {};
+}
+
+// Wrap the Firebug console in WYMeditor.console
 (function() {
-    if ( !window.console || !console.firebug ) {
+    if (!window.console || !console.firebug) {
         var names = ["log", "debug", "info", "warn", "error", "assert", "dir", "dirxml",
         "group", "groupEnd", "time", "timeEnd", "count", "trace", "profile", "profileEnd"];
 
         WYMeditor.console = {};
-        for (var i = 0; i < names.length; ++i)
+        for (var i = 0; i < names.length; ++i) {
             WYMeditor.console[names[i]] = function() {};
+        }
 
-    } else WYMeditor.console = window.console;
+    } else {
+        WYMeditor.console = window.console;
+    }
 })();
 
 jQuery.extend(WYMeditor, {
 
-/*
-    Constants: Global WYMeditor constants.
+/**
+    Constants
+    =========
+
+    Global WYMeditor constants.
 
     VERSION             - Defines WYMeditor version.
     INSTANCES           - An array of loaded WYMeditor.editor instances.
@@ -209,1104 +219,1153 @@ jQuery.extend(WYMeditor, {
     MAIN_CONTAINERS : ["p","h1","h2","h3","h4","h5","h6","pre","blockquote"],
 
     BLOCKS : ["address", "blockquote", "div", "dl",
-     "fieldset", "form", "h1", "h2", "h3", "h4", "h5", "h6", "hr",
-     "noscript", "ol", "p", "pre", "table", "ul", "dd", "dt",
-     "li", "tbody", "td", "tfoot", "th", "thead", "tr"],
+        "fieldset", "form", "h1", "h2", "h3", "h4", "h5", "h6", "hr",
+        "noscript", "ol", "p", "pre", "table", "ul", "dd", "dt",
+        "li", "tbody", "td", "tfoot", "th", "thead", "tr"],
 
     BLOCKING_ELEMENTS : ["table", "blockquote", "pre"],
 
     NON_BLOCKING_ELEMENTS : ["p", "h1", "h2", "h3", "h4", "h5", "h6"],
 
     KEY : {
-      BACKSPACE: 8,
-      TAB: 9,
-      ENTER: 13,
-      CTRL: 17,
-      END: 35,
-      HOME: 36,
-      CURSOR: [37, 38, 39, 40],
-      LEFT: 37,
-      UP: 38,
-      RIGHT: 39,
-      DOWN: 40,
-      DELETE: 46,
-      B: 66,
-      I: 73,
-      R: 82,
-      COMMAND: 224
+        BACKSPACE: 8,
+        TAB: 9,
+        ENTER: 13,
+        CTRL: 17,
+        END: 35,
+        HOME: 36,
+        CURSOR: [37, 38, 39, 40],
+        LEFT: 37,
+        UP: 38,
+        RIGHT: 39,
+        DOWN: 40,
+        DELETE: 46,
+        B: 66,
+        I: 73,
+        R: 82,
+        COMMAND: 224
     },
 
     NODE : {
-      ELEMENT: 1,
-      ATTRIBUTE: 2,
-      TEXT: 3
+        ELEMENT: 1,
+        ATTRIBUTE: 2,
+        TEXT: 3
     },
 
-    /*
-        Class: WYMeditor.editor
-        WYMeditor editor main class, instanciated for each editor occurrence.
+    /**
+        WYMeditor.editor
+        ================
+
+        WYMeditor editor main class, instantiated for each editor occurrence.
+
+        See also: WYMeditor.editor.init
+
+        Use
+        ---
+
+        Initializes main values (index, elements, paths, ...)
+        and calls WYMeditor.editor.init which initializes the editor.
+
+        ### Parameters
+
+        elem - The HTML element to be replaced by the editor.
+
+        options - The hash of options.
+
+        ### Returns
+
+        Nothing.
+
     */
-
-  editor : function(elem, options) {
-
-        /*
-            Constructor: WYMeditor.editor
-
-            Initializes main values (index, elements, paths, ...)
-            and call WYMeditor.editor.init which initializes the editor.
-
-            Parameters:
-
-                elem - The HTML element to be replaced by the editor.
-                options - The hash of options.
-
-            Returns:
-
-                Nothing.
-
-            See Also:
-
-                <WYMeditor.editor.init>
-        */
-
-        //store the instance in the INSTANCES array and store the index
+    editor : function(elem, options) {
+        // Store the instance in the INSTANCES array and store the index
         this._index = WYMeditor.INSTANCES.push(this) - 1;
-        //store the element replaced by the editor
+        // The element replaced by the editor
         this._element = elem;
-        //store the options
         this._options = options;
-        //store the element's inner value
+        // Store the element's inner value
         this._html = jQuery(elem).val();
 
-        //store the HTML option, if any
-        if(this._options.html) this._html = this._options.html;
-        //get or compute the base path (where the main JS file is located)
-        this._options.basePath = this._options.basePath || this.computeBasePath();
-        //get or set the skin path (where the skin files are located)
-        this._options.skinPath = this._options.skinPath || this._options.basePath + WYMeditor.SKINS_DEFAULT_PATH + this._options.skin + '/';
-        //get or compute the main JS file location
+        if (this._options.html) {
+            this._html = this._options.html;
+        }
+        // Path to the main JS files
+        this._options.basePath = this._options.basePath ||
+                this.computeBasePath();
+        // Path to skin files
+        this._options.skinPath = this._options.skinPath ||
+                this._options.basePath + WYMeditor.SKINS_DEFAULT_PATH + this._options.skin + '/';
+        // Path to the main JS file
         this._options.wymPath = this._options.wymPath || this.computeWymPath();
-        //get or set the language files path
-        this._options.langPath = this._options.langPath || this._options.basePath + WYMeditor.LANG_DEFAULT_PATH;
-        //get or set the designmode iframe's base path
-        this._options.iframeBasePath = this._options.iframeBasePath || this._options.basePath + WYMeditor.IFRAME_DEFAULT;
-        //get or compute the jQuery JS file location
-        this._options.jQueryPath = this._options.jQueryPath || this.computeJqueryPath();
+        // Path to the language files
+        this._options.langPath = this._options.langPath ||
+                this._options.basePath + WYMeditor.LANG_DEFAULT_PATH;
+        // The designmode iframe's base path
+        this._options.iframeBasePath = this._options.iframeBasePath ||
+                this._options.basePath + WYMeditor.IFRAME_DEFAULT;
+        // Path to jQuery JS file
+        this._options.jQueryPath = this._options.jQueryPath ||
+                this.computeJqueryPath();
 
-        //initialize the editor instance
+        // Initialize the editor instance
         this.init();
-
-  }
-
+    }
 });
 
 
-/********** JQUERY **********/
+/********** jQuery Plugin Definition **********/
 
 /**
- * Replace an HTML element by WYMeditor
- *
- * @example jQuery(".wymeditor").wymeditor(
- *        {
- *
- *        }
- *      );
- * @desc Example description here
- *
- * @name WYMeditor
- * @description WYMeditor is a web-based WYSIWYM XHTML editor
- * @param Hash hash A hash of parameters
- * @option Integer iExample Description here
- * @option String sExample Description here
- *
- * @type jQuery
- * @cat Plugins/WYMeditor
- * @author Jean-Francois Hovinne
- */
+    wymeditor
+    =========
+
+    jQuery plugin function for replacing an HTML element with a WYMeditor
+    instance.
+
+    Example
+    -------
+
+    `jQuery(".wymeditor").wymeditor({});`
+*/
 jQuery.fn.wymeditor = function(options) {
 
-  options = jQuery.extend({
+    options = jQuery.extend({
 
-    html:       "",
+        html:       "",
+        basePath:   false,
+        skinPath:    false,
+        wymPath:    false,
+        iframeBasePath: false,
+        jQueryPath: false,
+        styles: false,
+        stylesheet: false,
+        skin:       "default",
+        initSkin:   true,
+        loadSkin:   true,
+        lang:       "en",
+        direction:  "ltr",
+        customCommands: [],
+        boxHtml:   "" +
+            "<div class='wym_box'>" +
+                "<div class='wym_area_top'>" +
+                    WYMeditor.TOOLS +
+                "</div>" +
+                "<div class='wym_area_left'></div>" +
+                "<div class='wym_area_right'>" +
+                    WYMeditor.CONTAINERS +
+                    WYMeditor.CLASSES +
+                "</div>" +
+                "<div class='wym_area_main'>" +
+                    WYMeditor.HTML +
+                    WYMeditor.IFRAME +
+                    WYMeditor.STATUS +
+                "</div>" +
+                "<div class='wym_area_bottom'>" +
+                    WYMeditor.LOGO +
+                "</div>" +
+            "</div>",
 
-    basePath:   false,
+        logoHtml:  '' +
+            '<a class="wym_wymeditor_link" ' +
+                'href="http://www.wymeditor.org/">WYMeditor</a>',
 
-    skinPath:    false,
+        iframeHtml: '' +
+            '<div class="wym_iframe wym_section">' +
+                '<iframe src="' + WYMeditor.IFRAME_BASE_PATH + 'wymiframe.html" ' +
+                    'onload="this.contentWindow.parent.WYMeditor.INSTANCES[' +
+                        WYMeditor.INDEX + '].initIframe(this)">' +
+                '</iframe>' +
+            "</div>",
 
-    wymPath:    false,
+        editorStyles: [],
+        toolsHtml: '' +
+            '<div class="wym_tools wym_section">' +
+                '<h2>{Tools}</h2>' +
+                '<ul>' +
+                    WYMeditor.TOOLS_ITEMS +
+                '</ul>' +
+            '</div>',
 
-    iframeBasePath: false,
+        toolsItemHtml: '' +
+            '<li class="' + WYMeditor.TOOL_CLASS + '">' +
+                '<a href="#" name="' + WYMeditor.TOOL_NAME + '"' +
+                        'title="' + WYMeditor.TOOL_TITLE + '">' +
+                    WYMeditor.TOOL_TITLE +
+                '</a>' +
+            '</li>',
 
-    jQueryPath: false,
+        toolsItems: [
+            {'name': 'Bold', 'title': 'Strong', 'css': 'wym_tools_strong'},
+            {'name': 'Italic', 'title': 'Emphasis', 'css': 'wym_tools_emphasis'},
+            {'name': 'Superscript', 'title': 'Superscript',
+                'css': 'wym_tools_superscript'},
+            {'name': 'Subscript', 'title': 'Subscript',
+                'css': 'wym_tools_subscript'},
+            {'name': 'InsertOrderedList', 'title': 'Ordered_List',
+                'css': 'wym_tools_ordered_list'},
+            {'name': 'InsertUnorderedList', 'title': 'Unordered_List',
+                'css': 'wym_tools_unordered_list'},
+            {'name': 'Indent', 'title': 'Indent', 'css': 'wym_tools_indent'},
+            {'name': 'Outdent', 'title': 'Outdent', 'css': 'wym_tools_outdent'},
+            {'name': 'Undo', 'title': 'Undo', 'css': 'wym_tools_undo'},
+            {'name': 'Redo', 'title': 'Redo', 'css': 'wym_tools_redo'},
+            {'name': 'CreateLink', 'title': 'Link', 'css': 'wym_tools_link'},
+            {'name': 'Unlink', 'title': 'Unlink', 'css': 'wym_tools_unlink'},
+            {'name': 'InsertImage', 'title': 'Image', 'css': 'wym_tools_image'},
+            {'name': 'InsertTable', 'title': 'Table', 'css': 'wym_tools_table'},
+            {'name': 'Paste', 'title': 'Paste_From_Word',
+                'css': 'wym_tools_paste'},
+            {'name': 'ToggleHtml', 'title': 'HTML', 'css': 'wym_tools_html'},
+            {'name': 'Preview', 'title': 'Preview', 'css': 'wym_tools_preview'}
+        ],
 
-    styles: false,
+        containersHtml: '' +
+            '<div class="wym_containers wym_section">' +
+                '<h2>{Containers}</h2>' +
+                '<ul>' +
+                    WYMeditor.CONTAINERS_ITEMS +
+                '</ul>' +
+            '</div>',
 
-    stylesheet: false,
+        containersItemHtml: '' +
+            '<li class="' + WYMeditor.CONTAINER_CLASS + '">' +
+                '<a href="#" name="' + WYMeditor.CONTAINER_NAME + '">' +
+                    WYMeditor.CONTAINER_TITLE +
+                '</a>' +
+            '</li>',
 
-    skin:       "default",
-    initSkin:   true,
-    loadSkin:   true,
+        containersItems: [
+            {'name': 'P', 'title': 'Paragraph', 'css': 'wym_containers_p'},
+            {'name': 'H1', 'title': 'Heading_1', 'css': 'wym_containers_h1'},
+            {'name': 'H2', 'title': 'Heading_2', 'css': 'wym_containers_h2'},
+            {'name': 'H3', 'title': 'Heading_3', 'css': 'wym_containers_h3'},
+            {'name': 'H4', 'title': 'Heading_4', 'css': 'wym_containers_h4'},
+            {'name': 'H5', 'title': 'Heading_5', 'css': 'wym_containers_h5'},
+            {'name': 'H6', 'title': 'Heading_6', 'css': 'wym_containers_h6'},
+            {'name': 'PRE', 'title': 'Preformatted', 'css': 'wym_containers_pre'},
+            {'name': 'BLOCKQUOTE', 'title': 'Blockquote',
+                'css': 'wym_containers_blockquote'},
+            {'name': 'TH', 'title': 'Table_Header', 'css': 'wym_containers_th'}
+        ],
 
-    lang:       "en",
+        classesHtml: '' +
+            '<div class="wym_classes wym_section">' +
+                '<h2>{Classes}</h2>' +
+                '<ul>' +
+                    WYMeditor.CLASSES_ITEMS +
+                '</ul>' +
+            '</div>',
 
-    direction:  "ltr",
+        classesItemHtml: '' +
+            '<li class="wym_classes_' + WYMeditor.CLASS_NAME + '">' +
+                '<a href="#" name="' + WYMeditor.CLASS_NAME + '">' +
+                    WYMeditor.CLASS_TITLE +
+                '</a>' +
+            '</li>',
 
-    customCommands: [],
+        classesItems:      [],
+        statusHtml: '' +
+            '<div class="wym_status wym_section">' +
+                '<h2>{Status}</h2>' +
+            '</div>',
 
-    boxHtml:   "<div class='wym_box'>" +
-               "<div class='wym_area_top'>" +
-               WYMeditor.TOOLS +
-               "</div>" +
-               "<div class='wym_area_left'></div>" +
-               "<div class='wym_area_right'>" +
-               WYMeditor.CONTAINERS +
-               WYMeditor.CLASSES +
-               "</div>" +
-               "<div class='wym_area_main'>" +
-               WYMeditor.HTML +
-               WYMeditor.IFRAME +
-               WYMeditor.STATUS +
-               "</div>" +
-               "<div class='wym_area_bottom'>" +
-               WYMeditor.LOGO +
-               "</div>" +
-               "</div>",
+        htmlHtml: '' +
+            '<div class="wym_html wym_section">' +
+                '<h2>{Source_Code}</h2>' +
+                '<textarea class="wym_html_val"></textarea>' +
+            '</div>',
 
-    logoHtml:  "<a class='wym_wymeditor_link' " +
-               "href='http://www.wymeditor.org/'>WYMeditor</a>",
+        boxSelector:       ".wym_box",
+        toolsSelector:     ".wym_tools",
+        toolsListSelector: " ul",
+        containersSelector:".wym_containers",
+        classesSelector:   ".wym_classes",
+        htmlSelector:      ".wym_html",
+        iframeSelector:    ".wym_iframe iframe",
+        iframeBodySelector:".wym_iframe",
+        statusSelector:    ".wym_status",
+        toolSelector:      ".wym_tools a",
+        containerSelector: ".wym_containers a",
+        classSelector:     ".wym_classes a",
+        htmlValSelector:   ".wym_html_val",
 
-    iframeHtml:"<div class='wym_iframe wym_section'>" +
-               "<iframe " +
-               "src='" +
-               WYMeditor.IFRAME_BASE_PATH +
-               "wymiframe.html' " +
-               "onload='this.contentWindow.parent.WYMeditor.INSTANCES[" +
-               WYMeditor.INDEX + "].initIframe(this)'" +
-               "></iframe>" +
-               "</div>",
+        hrefSelector:      ".wym_href",
+        srcSelector:       ".wym_src",
+        titleSelector:     ".wym_title",
+        relSelector:       ".wym_rel",
+        altSelector:       ".wym_alt",
+        textSelector:      ".wym_text",
 
-    editorStyles: [],
+        rowsSelector:      ".wym_rows",
+        colsSelector:      ".wym_cols",
+        captionSelector:   ".wym_caption",
+        summarySelector:   ".wym_summary",
 
-    toolsHtml: "<div class='wym_tools wym_section'>" +
-               "<h2>{Tools}</h2>" +
-               "<ul>" +
-               WYMeditor.TOOLS_ITEMS +
-               "</ul>" +
-               "</div>",
+        submitSelector:    "form",
+        cancelSelector:    ".wym_cancel",
+        previewSelector:   "",
 
-    toolsItemHtml:   "<li class='" +
-                     WYMeditor.TOOL_CLASS +
-                     "'><a href='#' name='" +
-                     WYMeditor.TOOL_NAME +
-                     "' title='" +
-                     WYMeditor.TOOL_TITLE +
-                     "'>" +
-                     WYMeditor.TOOL_TITLE +
-                     "</a></li>",
+        dialogTypeSelector:    ".wym_dialog_type",
+        dialogLinkSelector:    ".wym_dialog_link",
+        dialogImageSelector:   ".wym_dialog_image",
+        dialogTableSelector:   ".wym_dialog_table",
+        dialogPasteSelector:   ".wym_dialog_paste",
+        dialogPreviewSelector: ".wym_dialog_preview",
 
-    toolsItems: [
-        {'name': 'Bold', 'title': 'Strong', 'css': 'wym_tools_strong'},
-        {'name': 'Italic', 'title': 'Emphasis', 'css': 'wym_tools_emphasis'},
-        {'name': 'Superscript', 'title': 'Superscript',
-            'css': 'wym_tools_superscript'},
-        {'name': 'Subscript', 'title': 'Subscript',
-            'css': 'wym_tools_subscript'},
-        {'name': 'InsertOrderedList', 'title': 'Ordered_List',
-            'css': 'wym_tools_ordered_list'},
-        {'name': 'InsertUnorderedList', 'title': 'Unordered_List',
-            'css': 'wym_tools_unordered_list'},
-        {'name': 'Indent', 'title': 'Indent', 'css': 'wym_tools_indent'},
-        {'name': 'Outdent', 'title': 'Outdent', 'css': 'wym_tools_outdent'},
-        {'name': 'Undo', 'title': 'Undo', 'css': 'wym_tools_undo'},
-        {'name': 'Redo', 'title': 'Redo', 'css': 'wym_tools_redo'},
-        {'name': 'CreateLink', 'title': 'Link', 'css': 'wym_tools_link'},
-        {'name': 'Unlink', 'title': 'Unlink', 'css': 'wym_tools_unlink'},
-        {'name': 'InsertImage', 'title': 'Image', 'css': 'wym_tools_image'},
-        {'name': 'InsertTable', 'title': 'Table', 'css': 'wym_tools_table'},
-        {'name': 'Paste', 'title': 'Paste_From_Word',
-            'css': 'wym_tools_paste'},
-        {'name': 'ToggleHtml', 'title': 'HTML', 'css': 'wym_tools_html'},
-        {'name': 'Preview', 'title': 'Preview', 'css': 'wym_tools_preview'}
-    ],
+        updateSelector:    ".wymupdate",
+        updateEvent:       "click",
 
-    containersHtml:    "<div class='wym_containers wym_section'>" +
-                       "<h2>{Containers}</h2>" +
-                       "<ul>" +
-                       WYMeditor.CONTAINERS_ITEMS +
-                       "</ul>" +
-                       "</div>",
+        dialogFeatures:    "menubar=no,titlebar=no,toolbar=no,resizable=no" +
+            ",width=560,height=300,top=0,left=0",
+        dialogFeaturesPreview: "menubar=no,titlebar=no,toolbar=no,resizable=no" +
+            ",scrollbars=yes,width=560,height=300,top=0,left=0",
 
-    containersItemHtml:"<li class='" +
-                        WYMeditor.CONTAINER_CLASS +
-                        "'>" +
-                        "<a href='#' name='" +
-                        WYMeditor.CONTAINER_NAME +
-                        "'>" +
-                        WYMeditor.CONTAINER_TITLE +
-                        "</a></li>",
+        dialogHtml: '' +
+            '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" ' +
+                    '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">' +
+            '<html dir="' + WYMeditor.DIRECTION + '">' +
+                '<head>' +
+                    '<link rel="stylesheet" type="text/css" media="screen" ' +
+                        'href="' + WYMeditor.CSS_PATH + '" />' +
+                    '<title>' + WYMeditor.DIALOG_TITLE + '</title>' +
+                    '<script type="text/javascript" ' +
+                        'src="' + WYMeditor.JQUERY_PATH + '"></script>' +
+                    '<script type="text/javascript" ' +
+                        'src="' + WYMeditor.WYM_PATH + '"></script>' +
+                '</head>' +
+                WYMeditor.DIALOG_BODY +
+            '</html>',
 
-    containersItems: [
-        {'name': 'P', 'title': 'Paragraph', 'css': 'wym_containers_p'},
-        {'name': 'H1', 'title': 'Heading_1', 'css': 'wym_containers_h1'},
-        {'name': 'H2', 'title': 'Heading_2', 'css': 'wym_containers_h2'},
-        {'name': 'H3', 'title': 'Heading_3', 'css': 'wym_containers_h3'},
-        {'name': 'H4', 'title': 'Heading_4', 'css': 'wym_containers_h4'},
-        {'name': 'H5', 'title': 'Heading_5', 'css': 'wym_containers_h5'},
-        {'name': 'H6', 'title': 'Heading_6', 'css': 'wym_containers_h6'},
-        {'name': 'PRE', 'title': 'Preformatted', 'css': 'wym_containers_pre'},
-        {'name': 'BLOCKQUOTE', 'title': 'Blockquote',
-            'css': 'wym_containers_blockquote'},
-        {'name': 'TH', 'title': 'Table_Header', 'css': 'wym_containers_th'}
-    ],
+        dialogLinkHtml: '' +
+            '<body class="wym_dialog wym_dialog_link" ' +
+                    ' onload="WYMeditor.INIT_DIALOG(' + WYMeditor.INDEX + ')">' +
+                '<form>' +
+                    '<fieldset>' +
+                        '<input type="hidden" class="wym_dialog_type" ' +
+                            'value="' + WYMeditor.DIALOG_LINK + '" />' +
+                        '<legend>{Link}</legend>' +
+                        '<div class="row">' +
+                            '<label>{URL}</label>' +
+                            '<input type="text" class="wym_href" value="" ' +
+                                'size="40" autofocus="autofocus" />' +
+                        '</div>' +
+                        '<div class="row">' +
+                            '<label>{Title}</label>' +
+                            '<input type="text" class="wym_title" value="" ' +
+                                'size="40" />' +
+                        '</div>' +
+                        '<div class="row">' +
+                            '<label>{Relationship}</label>' +
+                            '<input type="text" class="wym_rel" value="" ' +
+                                'size="40" />' +
+                        '</div>' +
+                        '<div class="row row-indent">' +
+                            '<input class="wym_submit" type="submit" ' +
+                                'value="{Submit}" />' +
+                            '<input class="wym_cancel" type="button" ' +
+                                'value="{Cancel}" />' +
+                        '</div>' +
+                    '</fieldset>' +
+                '</form>' +
+            '</body>',
 
-    classesHtml:       "<div class='wym_classes wym_section'>" +
-                       "<h2>{Classes}</h2><ul>" +
-                       WYMeditor.CLASSES_ITEMS +
-                       "</ul></div>",
+        dialogImageHtml: '' +
+            '<body class="wym_dialog wym_dialog_image" ' +
+                    'onload="WYMeditor.INIT_DIALOG(' + WYMeditor.INDEX + ')">' +
+                '<form>' +
+                    '<fieldset>' +
+                        '<input type="hidden" class="wym_dialog_type" ' +
+                            'value="' + WYMeditor.DIALOG_IMAGE + '" />' +
+                        '<legend>{Image}</legend>' +
+                        '<div class="row">' +
+                            '<label>{URL}</label>' +
+                            '<input type="text" class="wym_src" value="" ' +
+                                'size="40" autofocus="autofocus" />' +
+                        '</div>' +
+                        '<div class="row">' +
+                            '<label>{Alternative_Text}</label>' +
+                            '<input type="text" class="wym_alt" value="" size="40" />' +
+                        '</div>' +
+                        '<div class="row">' +
+                            '<label>{Title}</label>' +
+                            '<input type="text" class="wym_title" value="" size="40" />' +
+                        '</div>' +
+                        '<div class="row row-indent">' +
+                            '<input class="wym_submit" type="submit" ' +
+                                'value="{Submit}" />' +
+                            '<input class="wym_cancel" type="button" ' +
+                                'value="{Cancel}" />' +
+                        '</div>' +
+                    '</fieldset>' +
+                '</form>' +
+            '</body>',
 
-    classesItemHtml:   "<li class='wym_classes_" +
-                       WYMeditor.CLASS_NAME +
-                       "'><a href='#' name='" +
-                       WYMeditor.CLASS_NAME +
-                       "'>" +
-                       WYMeditor.CLASS_TITLE +
-                       "</a></li>",
+        dialogTableHtml: '' +
+            '<body class="wym_dialog wym_dialog_table" ' +
+                    'onload="WYMeditor.INIT_DIALOG(' + WYMeditor.INDEX + ')">' +
+                '<form>' +
+                    '<fieldset>' +
+                        '<input type="hidden" class="wym_dialog_type" ' +
+                            'value="' + WYMeditor.DIALOG_TABLE + '" />' +
+                        '<legend>{Table}</legend>' +
+                        '<div class="row">' +
+                            '<label>{Caption}</label>' +
+                            '<input type="text" class="wym_caption" value="" ' +
+                                'size="40" />' +
+                        '</div>' +
+                        '<div class="row">' +
+                            '<label>{Summary}</label>' +
+                            '<input type="text" class="wym_summary" value="" ' +
+                                'size="40" />' +
+                        '</div>' +
+                        '<div class="row">' +
+                            '<label>{Number_Of_Rows}</label>' +
+                            '<input type="text" class="wym_rows" value="3" size="3" />' +
+                        '</div>' +
+                        '<div class="row">' +
+                            '<label>{Number_Of_Cols}</label>' +
+                            '<input type="text" class="wym_cols" value="2" size="3" />' +
+                        '</div>' +
+                        '<div class="row row-indent">' +
+                            '<input class="wym_submit" type="submit" ' +
+                                'value="{Submit}" />' +
+                            '<input class="wym_cancel" type="button" ' +
+                                'value="{Cancel}" />' +
+                        '</div>' +
+                    '</fieldset>' +
+                '</form>' +
+            '</body>',
 
-    classesItems:      [],
+        dialogPasteHtml: '' +
+            '<body class="wym_dialog wym_dialog_paste" ' +
+                    'onload="WYMeditor.INIT_DIALOG(' + WYMeditor.INDEX + ')">' +
+                '<form>' +
+                    '<input type="hidden" class="wym_dialog_type" ' +
+                        'value="' + WYMeditor.DIALOG_PASTE + '" />' +
+                    '<fieldset>' +
+                        '<legend>{Paste_From_Word}</legend>' +
+                        '<div class="row">' +
+                            '<textarea class="wym_text" rows="10" cols="50" ' +
+                                'autofocus="autofocus"></textarea>' +
+                        '</div>' +
+                        '<div class="row">' +
+                            '<input class="wym_submit" type="submit" ' +
+                                'value="{Submit}" />' +
+                            '<input class="wym_cancel" type="button" ' +
+                                'value="{Cancel}" />' +
+                        '</div>' +
+                    '</fieldset>' +
+                '</form>' +
+            '</body>',
 
-    statusHtml:        "<div class='wym_status wym_section'>" +
-                       "<h2>{Status}</h2>" +
-                       "</div>",
+        dialogPreviewHtml: '' +
+            '<body class="wym_dialog wym_dialog_preview" ' +
+                'onload="WYMeditor.INIT_DIALOG(' + WYMeditor.INDEX + ')"></body>',
 
-    htmlHtml:          "<div class='wym_html wym_section'>" +
-                       "<h2>{Source_Code}</h2>" +
-                       "<textarea class='wym_html_val'></textarea>" +
-                       "</div>",
+        dialogStyles: [],
 
-    boxSelector:       ".wym_box",
-    toolsSelector:     ".wym_tools",
-    toolsListSelector: " ul",
-    containersSelector:".wym_containers",
-    classesSelector:   ".wym_classes",
-    htmlSelector:      ".wym_html",
-    iframeSelector:    ".wym_iframe iframe",
-    iframeBodySelector:".wym_iframe",
-    statusSelector:    ".wym_status",
-    toolSelector:      ".wym_tools a",
-    containerSelector: ".wym_containers a",
-    classSelector:     ".wym_classes a",
-    htmlValSelector:   ".wym_html_val",
+        stringDelimiterLeft: "{",
+        stringDelimiterRight:"}",
 
-    hrefSelector:      ".wym_href",
-    srcSelector:       ".wym_src",
-    titleSelector:     ".wym_title",
-    relSelector:       ".wym_rel",
-    altSelector:       ".wym_alt",
-    textSelector:      ".wym_text",
+        preInit: null,
+        preBind: null,
+        postInit: null,
 
-    rowsSelector:      ".wym_rows",
-    colsSelector:      ".wym_cols",
-    captionSelector:   ".wym_caption",
-    summarySelector:   ".wym_summary",
+        preInitDialog: null,
+        postInitDialog: null
 
-    submitSelector:    "form",
-    cancelSelector:    ".wym_cancel",
-    previewSelector:   "",
+    }, options);
 
-    dialogTypeSelector:    ".wym_dialog_type",
-    dialogLinkSelector:    ".wym_dialog_link",
-    dialogImageSelector:   ".wym_dialog_image",
-    dialogTableSelector:   ".wym_dialog_table",
-    dialogPasteSelector:   ".wym_dialog_paste",
-    dialogPreviewSelector: ".wym_dialog_preview",
-
-    updateSelector:    ".wymupdate",
-    updateEvent:       "click",
-
-    dialogFeatures:    "menubar=no,titlebar=no,toolbar=no,resizable=no" +
-                       ",width=560,height=300,top=0,left=0",
-    dialogFeaturesPreview: "menubar=no,titlebar=no,toolbar=no,resizable=no" +
-                      ",scrollbars=yes,width=560,height=300,top=0,left=0",
-
-    dialogHtml:      "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN'" +
-                      " 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>" +
-                      "<html dir='" +
-                      WYMeditor.DIRECTION +
-                      "'><head>" +
-                      "<link rel='stylesheet' type='text/css' media='screen'" +
-                      " href='" +
-                      WYMeditor.CSS_PATH +
-                      "' />" +
-                      "<title>" +
-                      WYMeditor.DIALOG_TITLE +
-                      "</title>" +
-                      "<script type='text/javascript'" +
-                      " src='" +
-                      WYMeditor.JQUERY_PATH +
-                      "'></script>" +
-                      "<script type='text/javascript'" +
-                      " src='" +
-                      WYMeditor.WYM_PATH +
-                      "'></script>" +
-                      "</head>" +
-                      WYMeditor.DIALOG_BODY +
-                      "</html>",
-
-    dialogLinkHtml:  "<body class='wym_dialog wym_dialog_link'" +
-               " onload='WYMeditor.INIT_DIALOG(" + WYMeditor.INDEX + ")'" +
-               ">" +
-               "<form>" +
-               "<fieldset>" +
-               "<input type='hidden' class='wym_dialog_type' value='" +
-               WYMeditor.DIALOG_LINK +
-               "' />" +
-               "<legend>{Link}</legend>" +
-               "<div class='row'>" +
-               "<label>{URL}</label>" +
-               "<input type='text' class='wym_href' value='' size='40' autofocus='autofocus' />" +
-               "</div>" +
-               "<div class='row'>" +
-               "<label>{Title}</label>" +
-               "<input type='text' class='wym_title' value='' size='40' />" +
-               "</div>" +
-               "<div class='row'>" +
-               "<label>{Relationship}</label>" +
-               "<input type='text' class='wym_rel' value='' size='40' />" +
-               "</div>" +
-               "<div class='row row-indent'>" +
-               "<input class='wym_submit' type='submit'" +
-               " value='{Submit}' />" +
-               "<input class='wym_cancel' type='button'" +
-               "value='{Cancel}' />" +
-               "</div>" +
-               "</fieldset>" +
-               "</form>" +
-               "</body>",
-
-    dialogImageHtml:  "<body class='wym_dialog wym_dialog_image'" +
-               " onload='WYMeditor.INIT_DIALOG(" + WYMeditor.INDEX + ")'" +
-               ">" +
-               "<form>" +
-               "<fieldset>" +
-               "<input type='hidden' class='wym_dialog_type' value='" +
-               WYMeditor.DIALOG_IMAGE +
-               "' />" +
-               "<legend>{Image}</legend>" +
-               "<div class='row'>" +
-               "<label>{URL}</label>" +
-               "<input type='text' class='wym_src' value='' size='40' autofocus='autofocus' />" +
-               "</div>" +
-               "<div class='row'>" +
-               "<label>{Alternative_Text}</label>" +
-               "<input type='text' class='wym_alt' value='' size='40' />" +
-               "</div>" +
-               "<div class='row'>" +
-               "<label>{Title}</label>" +
-               "<input type='text' class='wym_title' value='' size='40' />" +
-               "</div>" +
-               "<div class='row row-indent'>" +
-               "<input class='wym_submit' type='submit'" +
-               " value='{Submit}' />" +
-               "<input class='wym_cancel' type='button'" +
-               "value='{Cancel}' />" +
-               "</div>" +
-               "</fieldset>" +
-               "</form>" +
-               "</body>",
-
-    dialogTableHtml:  "<body class='wym_dialog wym_dialog_table'" +
-               " onload='WYMeditor.INIT_DIALOG(" + WYMeditor.INDEX + ")'" +
-               ">" +
-               "<form>" +
-               "<fieldset>" +
-               "<input type='hidden' class='wym_dialog_type' value='" +
-               WYMeditor.DIALOG_TABLE +
-               "' />" +
-               "<legend>{Table}</legend>" +
-               "<div class='row'>" +
-               "<label>{Caption}</label>" +
-               "<input type='text' class='wym_caption' value='' size='40' />" +
-               "</div>" +
-               "<div class='row'>" +
-               "<label>{Summary}</label>" +
-               "<input type='text' class='wym_summary' value='' size='40' />" +
-               "</div>" +
-               "<div class='row'>" +
-               "<label>{Number_Of_Rows}</label>" +
-               "<input type='text' class='wym_rows' value='3' size='3' />" +
-               "</div>" +
-               "<div class='row'>" +
-               "<label>{Number_Of_Cols}</label>" +
-               "<input type='text' class='wym_cols' value='2' size='3' />" +
-               "</div>" +
-               "<div class='row row-indent'>" +
-               "<input class='wym_submit' type='submit'" +
-               " value='{Submit}' />" +
-               "<input class='wym_cancel' type='button'" +
-               "value='{Cancel}' />" +
-               "</div>" +
-               "</fieldset>" +
-               "</form>" +
-               "</body>",
-
-    dialogPasteHtml:  "<body class='wym_dialog wym_dialog_paste'" +
-               " onload='WYMeditor.INIT_DIALOG(" + WYMeditor.INDEX + ")'" +
-               ">" +
-               "<form>" +
-               "<input type='hidden' class='wym_dialog_type' value='" +
-               WYMeditor.DIALOG_PASTE +
-               "' />" +
-               "<fieldset>" +
-               "<legend>{Paste_From_Word}</legend>" +
-               "<div class='row'>" +
-               "<textarea class='wym_text' rows='10' cols='50' autofocus='autofocus'></textarea>" +
-               "</div>" +
-               "<div class='row'>" +
-               "<input class='wym_submit' type='submit'" +
-               " value='{Submit}' />" +
-               "<input class='wym_cancel' type='button'" +
-               "value='{Cancel}' />" +
-               "</div>" +
-               "</fieldset>" +
-               "</form>" +
-               "</body>",
-
-    dialogPreviewHtml: "<body class='wym_dialog wym_dialog_preview'" +
-                      " onload='WYMeditor.INIT_DIALOG(" + WYMeditor.INDEX + ")'" +
-                      "></body>",
-
-    dialogStyles: [],
-
-    stringDelimiterLeft: "{",
-    stringDelimiterRight:"}",
-
-    preInit: null,
-    preBind: null,
-    postInit: null,
-
-    preInitDialog: null,
-    postInitDialog: null
-
-  }, options);
-
-  return this.each(function() {
-
-    new WYMeditor.editor(jQuery(this),options);
-  });
+    return this.each(function() {
+        new WYMeditor.editor(jQuery(this), options);
+    });
 };
 
-/* @name extend
- * @description Returns the WYMeditor instance based on its index
- */
+// Enable accessing of wymeditor instances via $.wymeditors
 jQuery.extend({
-  wymeditors: function(i) {
-    return (WYMeditor.INSTANCES[i]);
-  }
+    wymeditors: function(i) {
+        return WYMeditor.INSTANCES[i];
+    }
 });
 
 
 /********** WYMeditor **********/
 
-/* @name Wymeditor
- * @description WYMeditor class
- */
+/**
+    WYMeditor.editor.init
+    =====================
 
-/* @name init
- * @description Initializes a WYMeditor instance
- */
+    Initialize a wymeditor instance, including detecting the
+    current browser and enabling the browser-specific subclass.
+*/
 WYMeditor.editor.prototype.init = function() {
+    // Load the browser-specific subclass
+    // If this browser isn't supported, do nothing
+    var WymClass = false;
+    if (jQuery.browser.msie) {
+        WymClass = new WYMeditor.WymClassExplorer(this);
+    }
+    else if (jQuery.browser.mozilla) {
+        WymClass = new WYMeditor.WymClassMozilla(this);
+    }
+    else if (jQuery.browser.opera) {
+        WymClass = new WYMeditor.WymClassOpera(this);
+    }
+    else if (jQuery.browser.safari) {
+        WymClass = new WYMeditor.WymClassSafari(this);
+    }
 
-  //load subclass - browser specific
-  //unsupported browsers: do nothing
-  var WymClass = false;
-  if (jQuery.browser.msie) {
-    WymClass = new WYMeditor.WymClassExplorer(this);
-  }
-  else if (jQuery.browser.mozilla) {
-    WymClass = new WYMeditor.WymClassMozilla(this);
-  }
-  else if (jQuery.browser.opera) {
-    WymClass = new WYMeditor.WymClassOpera(this);
-  }
-  else if (jQuery.browser.safari) {
-    WymClass = new WYMeditor.WymClassSafari(this);
-  }
+    if (WymClass === false) {
+        return;
+    }
 
-  if(WymClass) {
+    if (jQuery.isFunction(this._options.preInit)) {
+        this._options.preInit(this);
+    }
 
-      if(jQuery.isFunction(this._options.preInit)) this._options.preInit(this);
+    var SaxListener = new WYMeditor.XhtmlSaxListener();
+    jQuery.extend(SaxListener, WymClass);
+    this.parser = new WYMeditor.XhtmlParser(SaxListener);
 
-      var SaxListener = new WYMeditor.XhtmlSaxListener();
-      jQuery.extend(SaxListener, WymClass);
-      this.parser = new WYMeditor.XhtmlParser(SaxListener);
-
-      if(this._options.styles || this._options.stylesheet){
+    if (this._options.styles || this._options.stylesheet) {
         this.configureEditorUsingRawCss();
-      }
+    }
 
-      this.helper = new WYMeditor.XmlHelper();
+    this.helper = new WYMeditor.XmlHelper();
 
-      //extend the Wymeditor object
-      //don't use jQuery.extend since 1.1.4
-      //jQuery.extend(this, WymClass);
-      for (var prop in WymClass) { this[prop] = WymClass[prop]; }
+    // Extend the Wymeditor object
+    // Don't use jQuery.extend since 1.1.4
+    for (var prop in WymClass) {
+        this[prop] = WymClass[prop];
+    }
 
-      //load wymbox
-      this._box = jQuery(this._element).hide().after(this._options.boxHtml).next().addClass('wym_box_' + this._index);
+    // Load wymbox
+    this._box = jQuery(this._element).
+            hide().
+            after(this._options.boxHtml).
+            next().
+            addClass('wym_box_' + this._index);
 
-      //store the instance index in wymbox and element replaced by editor instance
-      //but keep it compatible with jQuery < 1.2.3, see #122
-      if( jQuery.isFunction( jQuery.fn.data ) ) {
+    // Store the instance index and replaced element in wymbox
+    // but keep it compatible with jQuery < 1.2.3, see #122
+    if (jQuery.isFunction(jQuery.fn.data )) {
         jQuery.data(this._box.get(0), WYMeditor.WYM_INDEX, this._index);
         jQuery.data(this._element.get(0), WYMeditor.WYM_INDEX, this._index);
-      }
-
-      var h = WYMeditor.Helper;
-
-      //construct the iframe
-      var iframeHtml = this._options.iframeHtml;
-      iframeHtml = h.replaceAll(iframeHtml, WYMeditor.INDEX, this._index);
-      iframeHtml = h.replaceAll(iframeHtml, WYMeditor.IFRAME_BASE_PATH, this._options.iframeBasePath);
-
-      //construct wymbox
-      var boxHtml = jQuery(this._box).html();
-
-      boxHtml = h.replaceAll(boxHtml, WYMeditor.LOGO, this._options.logoHtml);
-      boxHtml = h.replaceAll(boxHtml, WYMeditor.TOOLS, this._options.toolsHtml);
-      boxHtml = h.replaceAll(boxHtml, WYMeditor.CONTAINERS,this._options.containersHtml);
-      boxHtml = h.replaceAll(boxHtml, WYMeditor.CLASSES, this._options.classesHtml);
-      boxHtml = h.replaceAll(boxHtml, WYMeditor.HTML, this._options.htmlHtml);
-      boxHtml = h.replaceAll(boxHtml, WYMeditor.IFRAME, iframeHtml);
-      boxHtml = h.replaceAll(boxHtml, WYMeditor.STATUS, this._options.statusHtml);
-
-      //construct tools list
-      var aTools = eval(this._options.toolsItems);
-      var sTools = "";
-
-      for(var i = 0; i < aTools.length; i++) {
-        var oTool = aTools[i];
-        if(oTool.name && oTool.title)
-          var sTool = this._options.toolsItemHtml;
-          sTool = h.replaceAll(sTool, WYMeditor.TOOL_NAME, oTool.name);
-          sTool = h.replaceAll(sTool, WYMeditor.TOOL_TITLE, this._options.stringDelimiterLeft +
-            oTool.title + this._options.stringDelimiterRight);
-          sTool = h.replaceAll(sTool, WYMeditor.TOOL_CLASS, oTool.css);
-          sTools += sTool;
-      }
-
-      boxHtml = h.replaceAll(boxHtml, WYMeditor.TOOLS_ITEMS, sTools);
-
-      //construct classes list
-      var aClasses = eval(this._options.classesItems);
-      var sClasses = "";
-
-      for(i = 0; i < aClasses.length; i++) {
-        var oClass = aClasses[i];
-        if(oClass.name && oClass.title)
-          var sClass = this._options.classesItemHtml;
-          sClass = h.replaceAll(sClass, WYMeditor.CLASS_NAME, oClass.name);
-          sClass = h.replaceAll(sClass, WYMeditor.CLASS_TITLE, oClass.title);
-          sClasses += sClass;
-      }
-
-      boxHtml = h.replaceAll(boxHtml, WYMeditor.CLASSES_ITEMS, sClasses);
-
-      //construct containers list
-      var aContainers = eval(this._options.containersItems);
-      var sContainers = "";
-
-      for(i = 0; i < aContainers.length; i++) {
-        var oContainer = aContainers[i];
-        if(oContainer.name && oContainer.title)
-          var sContainer = this._options.containersItemHtml;
-          sContainer = h.replaceAll(sContainer, WYMeditor.CONTAINER_NAME, oContainer.name);
-          sContainer = h.replaceAll(sContainer, WYMeditor.CONTAINER_TITLE,
-              this._options.stringDelimiterLeft +
-              oContainer.title +
-              this._options.stringDelimiterRight);
-          sContainer = h.replaceAll(sContainer, WYMeditor.CONTAINER_CLASS, oContainer.css);
-          sContainers += sContainer;
-      }
-
-      boxHtml = h.replaceAll(boxHtml, WYMeditor.CONTAINERS_ITEMS, sContainers);
-
-      //l10n
-      boxHtml = this.replaceStrings(boxHtml);
-
-      //load html in wymbox
-      jQuery(this._box).html(boxHtml);
-
-      //hide the html value
-      jQuery(this._box).find(this._options.htmlSelector).hide();
-
-      //enable the skin
-      this.loadSkin();
-
     }
+
+    var h = WYMeditor.Helper;
+
+    // Construct the iframe
+    var iframeHtml = this._options.iframeHtml;
+    iframeHtml = h.replaceAll(iframeHtml, WYMeditor.INDEX, this._index);
+    iframeHtml = h.replaceAll(
+        iframeHtml, WYMeditor.IFRAME_BASE_PATH, this._options.iframeBasePath);
+
+    // Construct wymbox
+    var boxHtml = jQuery(this._box).html();
+
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.LOGO, this._options.logoHtml);
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.TOOLS, this._options.toolsHtml);
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.CONTAINERS, this._options.containersHtml);
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.CLASSES, this._options.classesHtml);
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.HTML, this._options.htmlHtml);
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.IFRAME, iframeHtml);
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.STATUS, this._options.statusHtml);
+
+    // Construct the tools list
+    var aTools = eval(this._options.toolsItems);
+    var sTools = "";
+
+    for (var i = 0; i < aTools.length; i++) {
+        var oTool = aTools[i];
+        if (oTool.name && oTool.title) {
+            var sTool = this._options.toolsItemHtml;
+        }
+        sTool = h.replaceAll(sTool, WYMeditor.TOOL_NAME, oTool.name);
+        sTool = h.replaceAll(
+                sTool,
+                WYMeditor.TOOL_TITLE,
+                this._options.stringDelimiterLeft + oTool.title + this._options.stringDelimiterRight);
+        sTool = h.replaceAll(sTool, WYMeditor.TOOL_CLASS, oTool.css);
+        sTools += sTool;
+    }
+
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.TOOLS_ITEMS, sTools);
+
+    // Construct the classes list
+    var aClasses = eval(this._options.classesItems);
+    var sClasses = "";
+
+    for (i = 0; i < aClasses.length; i++) {
+        var oClass = aClasses[i];
+        if (oClass.name && oClass.title) {
+            var sClass = this._options.classesItemHtml;
+        }
+        sClass = h.replaceAll(sClass, WYMeditor.CLASS_NAME, oClass.name);
+        sClass = h.replaceAll(sClass, WYMeditor.CLASS_TITLE, oClass.title);
+        sClasses += sClass;
+    }
+
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.CLASSES_ITEMS, sClasses);
+
+    // Construct the containers list
+    var aContainers = eval(this._options.containersItems);
+    var sContainers = "";
+
+    for (i = 0; i < aContainers.length; i++) {
+        var oContainer = aContainers[i];
+        if (oContainer.name && oContainer.title) {
+            var sContainer = this._options.containersItemHtml;
+        }
+        sContainer = h.replaceAll(
+            sContainer, WYMeditor.CONTAINER_NAME, oContainer.name);
+        sContainer = h.replaceAll(sContainer, WYMeditor.CONTAINER_TITLE,
+            this._options.stringDelimiterLeft +
+            oContainer.title +
+            this._options.stringDelimiterRight);
+        sContainer = h.replaceAll(
+            sContainer, WYMeditor.CONTAINER_CLASS, oContainer.css);
+        sContainers += sContainer;
+    }
+
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.CONTAINERS_ITEMS, sContainers);
+
+    // I10n
+    boxHtml = this.replaceStrings(boxHtml);
+
+    // Load the html in wymbox
+    jQuery(this._box).html(boxHtml);
+
+    // Hide the html value
+    jQuery(this._box).find(this._options.htmlSelector).hide();
+
+    this.loadSkin();
 };
 
+/**
+    WYMeditor.editor.bindEvents
+    ===========================
+
+    Bind all event handlers including tool/container clicks, focus events
+    and change events.
+*/
 WYMeditor.editor.prototype.bindEvents = function() {
+    var wym = this;
 
-  //copy the instance
-  var wym = this;
+    // Handle click events on tools buttons
+    jQuery(this._box).find(this._options.toolSelector).click(function() {
+        wym._iframe.contentWindow.focus(); //See #154
+        wym.exec(jQuery(this).attr(WYMeditor.NAME));
+        return false;
+    });
 
-  //handle click event on tools buttons
-  jQuery(this._box).find(this._options.toolSelector).click(function() {
-    wym._iframe.contentWindow.focus(); //See #154
-    wym.exec(jQuery(this).attr(WYMeditor.NAME));
-    return(false);
-  });
+    // Handle click events on containers buttons
+    jQuery(this._box).find(this._options.containerSelector).click(function() {
+        wym.container(jQuery(this).attr(WYMeditor.NAME));
+        return false;
+    });
 
-  //handle click event on containers buttons
-  jQuery(this._box).find(this._options.containerSelector).click(function() {
-    wym.container(jQuery(this).attr(WYMeditor.NAME));
-    return(false);
-  });
+    // Handle keyup event on html value: set the editor value
+    // Handle focus/blur events to check if the element has focus, see #147
+    var $html_val = jQuery(this._box).find(this._options.htmlValSelector);
+    $html_val.keyup(function() {
+        jQuery(wym._doc.body).html(jQuery(this).val());
+    });
+    $html_val.focus(function() {
+        jQuery(this).toggleClass('hasfocus');
+    });
+    $html_val.blur(function() {
+        jQuery(this).toggleClass('hasfocus');
+    });
 
-  //handle keyup event on html value: set the editor value
-  //handle focus/blur events to check if the element has focus, see #147
-  var $html_val = jQuery(this._box).find(this._options.htmlValSelector);
-  $html_val.keyup(function() { jQuery(wym._doc.body).html(jQuery(this).val());});
-  $html_val.focus(function() { jQuery(this).toggleClass('hasfocus'); });
-  $html_val.blur(function() { jQuery(this).toggleClass('hasfocus'); });
+    // Handle click events on classes buttons
+    jQuery(this._box).find(this._options.classSelector).click(function() {
+        var aClasses = eval(wym._options.classesItems);
+        var sName = jQuery(this).attr(WYMeditor.NAME);
 
-  //handle click event on classes buttons
-  jQuery(this._box).find(this._options.classSelector).click(function() {
+        var oClass = WYMeditor.Helper.findByName(aClasses, sName);
 
-    var aClasses = eval(wym._options.classesItems);
-    var sName = jQuery(this).attr(WYMeditor.NAME);
+        if (oClass) {
+            var jqexpr = oClass.expr;
+            wym.toggleClass(sName, jqexpr);
+        }
+        wym._iframe.contentWindow.focus(); //See #154
+        return false;
+    });
 
-    var oClass = WYMeditor.Helper.findByName(aClasses, sName);
-
-    if(oClass) {
-      var jqexpr = oClass.expr;
-      wym.toggleClass(sName, jqexpr);
-    }
-    wym._iframe.contentWindow.focus(); //See #154
-    return(false);
-  });
-
-  //handle event on update element
-  jQuery(this._options.updateSelector).bind(this._options.updateEvent, function() {
-      wym.update();
-  });
+    // Handle update event on update element
+    jQuery(this._options.updateSelector).bind(this._options.updateEvent, function() {
+        wym.update();
+    });
 };
 
 WYMeditor.editor.prototype.ready = function() {
-  return this._doc !== null;
+    return this._doc !== null;
 };
 
 
 /********** METHODS **********/
 
-/* @name box
- * @description Returns the WYMeditor container
- */
+/**
+    WYMeditor.editor.box
+    ====================
+
+    Get the wymbox container.
+*/
 WYMeditor.editor.prototype.box = function() {
-  return this._box;
+    return this._box;
 };
 
 /* @name html
- * @description Get/Set the html value
- */
+    * @description Get/Set the html value
+    */
+/**
+    WYMeditor.editor.html
+    =====================
+
+    Get or set the wymbox html value.
+*/
 WYMeditor.editor.prototype.html = function(html) {
-  if (typeof html === 'string') {
-    jQuery(this._doc.body).html(html);
-    this.fixBodyHtml();
-  } else {
-    return jQuery(this._doc.body).html();
-  }
+    if (typeof html === 'string') {
+        jQuery(this._doc.body).html(html);
+        this.fixBodyHtml();
+    } else {
+        return jQuery(this._doc.body).html();
+    }
 };
 
-/* @name xhtml
- * @description Cleans up the HTML
- */
-WYMeditor.editor.prototype.xhtml = function() {
-  // Remove any of the placeholder nodes we've created for start/end content
-  // insertion
-  jQuery(this._doc.body).children(WYMeditor.BR).remove();
+/**
+    WYMeditor.editor.xhtml
+    ======================
 
-  return this.parser.parse(this.html());
+    Take the current editor's DOM and apply strict xhtml nesting rules to
+    enforce a valid, well-formed, semantic xhtml result.
+*/
+WYMeditor.editor.prototype.xhtml = function() {
+    // Remove any of the placeholder nodes we've created for start/end content
+    // insertion
+    jQuery(this._doc.body).children(WYMeditor.BR).remove();
+
+    return this.parser.parse(this.html());
 };
 
 /* @name exec
- * @description Executes a button command
- */
-WYMeditor.editor.prototype.exec = function(cmd) {
+    * @description Executes a button command
+    */
+/**
+    WYMeditor.editor.exec
+    =====================
 
-  // Base function for execCommand
-  // Either opens a dialog or calls exec
-  switch(cmd) {
+    Execute a button command on the currently-selected container. The command
+    can be anything from "indent this element" to "open a dialog to create a
+    table."
+
+    `cmd` is a string corresponding to the command that should be run, roughly
+    matching the designMode execCommand strategy (and falling through to
+    execCommand in some cases).
+*/
+WYMeditor.editor.prototype.exec = function(cmd) {
+    switch(cmd) {
+
     case WYMeditor.CREATE_LINK:
-      var container = this.container();
-      if(container || this._selected_image) this.dialog(WYMeditor.DIALOG_LINK);
-    break;
+        var container = this.container();
+        if (container || this._selected_image) {
+            this.dialog(WYMeditor.DIALOG_LINK);
+        }
+        break;
 
     case WYMeditor.INSERT_IMAGE:
-      this.dialog(WYMeditor.DIALOG_IMAGE);
-    break;
+        this.dialog(WYMeditor.DIALOG_IMAGE);
+        break;
 
     case WYMeditor.INSERT_TABLE:
-      this.dialog(WYMeditor.DIALOG_TABLE);
-    break;
+        this.dialog(WYMeditor.DIALOG_TABLE);
+        break;
 
     case WYMeditor.PASTE:
-      this.dialog(WYMeditor.DIALOG_PASTE);
-    break;
+        this.dialog(WYMeditor.DIALOG_PASTE);
+        break;
 
     case WYMeditor.TOGGLE_HTML:
-      this.update();
-      this.toggleHtml();
-    break;
+        this.update();
+        this.toggleHtml();
+        break;
 
     case WYMeditor.PREVIEW:
-      this.dialog(WYMeditor.PREVIEW, this._options.dialogFeaturesPreview);
-    break;
+        this.dialog(WYMeditor.PREVIEW, this._options.dialogFeaturesPreview);
+        break;
 
     default:
-      var custom_run = false;
-      var _this = this;
-      jQuery.each(this._options.customCommands, function() {
-        if(cmd == this.name) {
-          custom_run = true;
-          this.run.apply(_this);
-          return false;
+        var custom_run = false;
+        var _this = this;
+        jQuery.each(this._options.customCommands, function() {
+            if (cmd == this.name) {
+                custom_run = true;
+                this.run.apply(_this);
+                return false;
+            }
+        });
+        if (!custom_run) {
+            this._exec(cmd);
         }
-      });
-      if(!custom_run) this._exec(cmd);
-    break;
-  }
+        break;
+    }
 };
 
-/* @name container
- * @description Get/Set the selected container
- */
-WYMeditor.editor.prototype.container = function(sType) {
+/**
+    WYMeditor.editor.container
+    ==========================
 
-  if(sType) {
+    Get or set the selected container.
+*/
+WYMeditor.editor.prototype.container = function(sType) {
+    if (typeof(sType) === 'undefined') {
+        return this.selected();
+    }
 
     var container = null;
     var aTypes = null;
 
-    if(sType.toLowerCase() == WYMeditor.TH) {
+    if (sType.toLowerCase() == WYMeditor.TH) {
+        container = this.container();
 
-      container = this.container();
-
-      //find the TD or TH container
-      switch(container.tagName.toLowerCase()) {
+        // Find the TD or TH container
+        switch(container.tagName.toLowerCase()) {
 
         case WYMeditor.TD: case WYMeditor.TH:
-          break;
+            break;
         default:
-          aTypes = new Array(WYMeditor.TD,WYMeditor.TH);
-          container = this.findUp(this.container(), aTypes);
-          break;
-      }
+            aTypes = [WYMeditor.TD, WYMeditor.TH];
+            container = this.findUp(this.container(), aTypes);
+            break;
+        }
 
-      //if it exists, switch
-      if(container!==null) {
-
-        sType = (container.tagName.toLowerCase() == WYMeditor.TD)? WYMeditor.TH: WYMeditor.TD;
-        this.switchTo(container,sType);
-        this.update();
-      }
+        // If it exists, switch
+        if (container !== null) {
+            sType = WYMeditor.TD;
+            if (container.tagName.toLowerCase() == WYMeditor.TD) {
+                sType = WYMeditor.TH;
+            }
+            this.switchTo(container, sType);
+            this.update();
+        }
     } else {
+        // Set the container type
+        aTypes = [
+            WYMeditor.P,
+            WYMeditor.H1,
+            WYMeditor.H2,
+            WYMeditor.H3,
+            WYMeditor.H4,
+            WYMeditor.H5,
+            WYMeditor.H6,
+            WYMeditor.PRE,
+            WYMeditor.BLOCKQUOTE
+        ];
+        container = this.findUp(this.container(), aTypes);
 
-      //set the container type
-      aTypes=new Array(WYMeditor.P,WYMeditor.H1,WYMeditor.H2,WYMeditor.H3,WYMeditor.H4,WYMeditor.H5,
-      WYMeditor.H6,WYMeditor.PRE,WYMeditor.BLOCKQUOTE);
-      container = this.findUp(this.container(), aTypes);
+        if (container) {
+            var newNode = null;
 
-      if(container) {
+            if (sType.toLowerCase() == WYMeditor.BLOCKQUOTE) {
+                // Blockquotes must contain a block level element
+                var blockquote = this.findUp(
+                    this.container(), WYMeditor.BLOCKQUOTE);
+                if (blockquote === null) {
+                    newNode = this._doc.createElement(sType);
+                    container.parentNode.insertBefore(newNode,container);
+                    newNode.appendChild(container);
+                    this.setFocusToNode(newNode.firstChild);
+                } else {
+                    var nodes = blockquote.childNodes;
+                    var lgt = nodes.length;
+                    var firstNode = null;
 
-        var newNode = null;
-
-        //blockquotes must contain a block level element
-        if(sType.toLowerCase() == WYMeditor.BLOCKQUOTE) {
-
-          var blockquote = this.findUp(this.container(), WYMeditor.BLOCKQUOTE);
-
-          if(blockquote === null) {
-
-            newNode = this._doc.createElement(sType);
-            container.parentNode.insertBefore(newNode,container);
-            newNode.appendChild(container);
-            this.setFocusToNode(newNode.firstChild);
-
-          } else {
-
-            var nodes = blockquote.childNodes;
-            var lgt = nodes.length;
-            var firstNode = null;
-
-            if(lgt > 0) firstNode = nodes.item(0);
-            for(var x=0; x<lgt; x++) {
-              blockquote.parentNode.insertBefore(nodes.item(0),blockquote);
+                    if (lgt > 0) {
+                        firstNode = nodes.item(0);
+                    }
+                    for (var x=0; x<lgt; x++) {
+                        blockquote.parentNode.insertBefore(
+                            nodes.item(0), blockquote);
+                    }
+                    blockquote.parentNode.removeChild(blockquote);
+                    if (firstNode) {
+                        this.setFocusToNode(firstNode);
+                    }
+                }
+            } else {
+                // Not a blockquote
+                this.switchTo(container, sType);
             }
-            blockquote.parentNode.removeChild(blockquote);
-            if(firstNode) this.setFocusToNode(firstNode);
-          }
+
+            this.update();
         }
-
-        else this.switchTo(container,sType);
-
-        this.update();
-      }
     }
-  }
-  else return(this.selected());
-  return false;
+
+    return false;
 };
 
-/* @name toggleClass
- * @description Toggles class on selected element, or one of its parents
- */
+/**
+    WYMeditor.editor.toggleClass
+    ============================
+
+    Toggle a class on the selected element or one of its parents
+*/
 WYMeditor.editor.prototype.toggleClass = function(sClass, jqexpr) {
+    if (this._selected_image) {
+        var container = this._selected_image;
+    } else {
+        var container = jQuery(this.selected());
+    }
+    container = jQuery(container).parentsOrSelf(jqexpr);
+    jQuery(container).toggleClass(sClass);
 
-  var container = (this._selected_image ? this._selected_image : jQuery(this.selected()));
-  container = jQuery(container).parentsOrSelf(jqexpr);
-  jQuery(container).toggleClass(sClass);
-
-  if(!jQuery(container).attr(WYMeditor.CLASS)) jQuery(container).removeAttr(this._class);
-
+    if (!jQuery(container).attr(WYMeditor.CLASS)) {
+        jQuery(container).removeAttr(this._class);
+    }
 };
 
-/* @name findUp
- * @description Returns the first parent or self container, based on its type
- */
+/**
+    WYMeditor.editor.findUp
+    =======================
+
+    Return the first parent or self container, based on its type
+
+    `filter` is a string or an array of strings on which to filter the container
+*/
 WYMeditor.editor.prototype.findUp = function(node, filter) {
+    if (typeof(node) === 'undefined') {
+        return null;
+    }
 
-  //filter is a string or an array of strings
-
-  if(node) {
-
-      var tagname = node.tagName.toLowerCase();
-
-      if(typeof(filter) == WYMeditor.STRING) {
-
-        while(tagname != filter && tagname != WYMeditor.BODY) {
-
-          node = node.parentNode;
-          tagname = node.tagName.toLowerCase();
-        }
-
-      } else {
-
-        var bFound = false;
-
-        while(!bFound && tagname != WYMeditor.BODY) {
-          for(var i = 0; i < filter.length; i++) {
-            if(tagname == filter[i]) {
-              bFound = true;
-              break;
-            }
-          }
-          if(!bFound) {
+    var tagname = node.tagName.toLowerCase();
+    if (typeof(filter) == WYMeditor.STRING) {
+        while (tagname != filter && tagname != WYMeditor.BODY) {
             node = node.parentNode;
             tagname = node.tagName.toLowerCase();
-          }
         }
-      }
+    } else {
+        var bFound = false;
+        while (!bFound && tagname != WYMeditor.BODY) {
+            for (var i = 0; i < filter.length; i++) {
+                if (tagname == filter[i]) {
+                    bFound = true;
+                    break;
+                }
+            }
+            if (!bFound) {
+                node = node.parentNode;
+                tagname = node.tagName.toLowerCase();
+            }
+        }
+    }
 
-      if(tagname != WYMeditor.BODY) return(node);
-      else return(null);
+    if (tagname == WYMeditor.BODY) {
+        return null
+    }
 
-  } else return(null);
+    return node;
 };
 
-/* @name switchTo
- * @description Switch the node's type
- */
-WYMeditor.editor.prototype.switchTo = function(node,sType) {
+/**
+    WYMeditor.editor.switchTo
+    =========================
 
-  var newNode = this._doc.createElement(sType);
-  var html = jQuery(node).html();
-  node.parentNode.replaceChild(newNode,node);
-  jQuery(newNode).html(html);
-  this.setFocusToNode(newNode);
+    Switch the type of the given `node` to type `sType`
+*/
+WYMeditor.editor.prototype.switchTo = function(node, sType) {
+    var newNode = this._doc.createElement(sType);
+    var html = jQuery(node).html();
+
+    node.parentNode.replaceChild(newNode, node);
+    jQuery(newNode).html(html);
+
+    this.setFocusToNode(newNode);
 };
 
 WYMeditor.editor.prototype.replaceStrings = function(sVal) {
-  //check if the language file has already been loaded
-  //if not, get it via a synchronous ajax call
-  if(!WYMeditor.STRINGS[this._options.lang]) {
-    try {
-      eval(jQuery.ajax({url:this._options.langPath +
-        this._options.lang + '.js', async:false}).responseText);
-    } catch(e) {
-        WYMeditor.console.error("WYMeditor: error while parsing language file.");
-        return sVal;
+    // Check if the language file has already been loaded
+    // if not, get it via a synchronous ajax call
+    if (!WYMeditor.STRINGS[this._options.lang]) {
+        try {
+            eval(jQuery.ajax({url:this._options.langPath +
+                this._options.lang + '.js', async:false}).responseText);
+        } catch(e) {
+            WYMeditor.console.error(
+                "WYMeditor: error while parsing language file.");
+            return sVal;
+        }
     }
-  }
 
-  //replace all the strings in sVal and return it
-  for (var key in WYMeditor.STRINGS[this._options.lang]) {
-    sVal = WYMeditor.Helper.replaceAll(sVal, this._options.stringDelimiterLeft + key +
-      this._options.stringDelimiterRight,
-      WYMeditor.STRINGS[this._options.lang][key]);
-  }
-  return(sVal);
+    //replace all the strings in sVal and return it
+    for (var key in WYMeditor.STRINGS[this._options.lang]) {
+        sVal = WYMeditor.Helper.replaceAll(
+            sVal,
+            this._options.stringDelimiterLeft + key + this._options.stringDelimiterRight,
+            WYMeditor.STRINGS[this._options.lang][key]);
+    }
+    return sVal;
 };
 
 WYMeditor.editor.prototype.encloseString = function(sVal) {
 
-  return(this._options.stringDelimiterLeft +
-    sVal +
-    this._options.stringDelimiterRight);
+    return(this._options.stringDelimiterLeft +
+        sVal +
+        this._options.stringDelimiterRight);
 };
 
 /* @name status
- * @description Prints a status message
- */
+    * @description Prints a status message
+    */
 WYMeditor.editor.prototype.status = function(sMessage) {
 
-  //print status message
-  jQuery(this._box).find(this._options.statusSelector).html(sMessage);
+    //print status message
+    jQuery(this._box).find(this._options.statusSelector).html(sMessage);
 };
 
 /* @name update
- * @description Updates the element and textarea values
- */
+    * @description Updates the element and textarea values
+    */
 WYMeditor.editor.prototype.update = function() {
-  var html;
+    var html;
 
-  // Dirty fix to remove stray line breaks (#189)
-  jQuery(this._doc.body).children(WYMeditor.BR).remove();
+    // Dirty fix to remove stray line breaks (#189)
+    jQuery(this._doc.body).children(WYMeditor.BR).remove();
 
-  html = this.xhtml();
-  jQuery(this._element).val(html);
-  jQuery(this._box).find(this._options.htmlValSelector).not('.hasfocus').val(html); //#147
-  this.fixBodyHtml();
+    html = this.xhtml();
+    jQuery(this._element).val(html);
+    jQuery(this._box).find(this._options.htmlValSelector).not('.hasfocus').val(html); //#147
+    this.fixBodyHtml();
 };
 
 /* @name fixBodyHtml
- * @description Adjust the editor body html to account for editing changes where
- * perfect HTML is not optimal. For instance, <br> elements are useful between
- * certain block elements.
- */
+    * @description Adjust the editor body html to account for editing changes where
+    * perfect HTML is not optimal. For instance, <br> elements are useful between
+    * certain block elements.
+    */
 WYMeditor.editor.prototype.fixBodyHtml = function() {
-  this.fixDoubleBr();
-  this.spaceBlockingElements();
+    this.fixDoubleBr();
+    this.spaceBlockingElements();
 };
 
 /* @name spaceBlockingElements
- * @description Insert <br> elements between adjacent blocking elements and
- * p elements, between block elements or blocking elements and the
- * start/end of the document.
- */
+    * @description Insert <br> elements between adjacent blocking elements and
+    * p elements, between block elements or blocking elements and the
+    * start/end of the document.
+    */
 WYMeditor.editor.prototype.spaceBlockingElements = function() {
-  var blockingSelector = WYMeditor.BLOCKING_ELEMENTS.join(', ');
+    var blockingSelector = WYMeditor.BLOCKING_ELEMENTS.join(', ');
 
-  var $body = $(this._doc).find('body.wym_iframe');
-  var children = $body.children();
-  var placeholderNode = '<br _moz_editor_bogus_node="TRUE" _moz_dirty="">';
+    var $body = $(this._doc).find('body.wym_iframe');
+    var children = $body.children();
+    var placeholderNode = '<br _moz_editor_bogus_node="TRUE" _moz_dirty="">';
 
-  // Make sure that we still have a bogus node at both the begining and end
-  if (children.length > 0) {
-    var $firstChild = $(children[0]);
-    var $lastChild = $(children[children.length - 1]);
+    // Make sure that we still have a bogus node at both the begining and end
+    if (children.length > 0) {
+        var $firstChild = $(children[0]);
+        var $lastChild = $(children[children.length - 1]);
 
     if ($firstChild.is(blockingSelector)) {
-      $firstChild.before(placeholderNode);
+        $firstChild.before(placeholderNode);
     }
     if ($lastChild.is(blockingSelector)) {
-      $lastChild.after(placeholderNode);
+        $lastChild.after(placeholderNode);
     }
-  }
+}
 
-  var blockSepSelector = this._getBlockSepSelector();
+    var blockSepSelector = this._getBlockSepSelector();
 
-  // Put placeholder nodes between consecutive blocking elements and between
-  // blocking elements and normal block-level elements
-  $body.find(blockSepSelector).before(placeholderNode);
+    // Put placeholder nodes between consecutive blocking elements and between
+    // blocking elements and normal block-level elements
+    $body.find(blockSepSelector).before(placeholderNode);
 };
 
 /* @name _buildBlockSepSelector
- * @description Build a string representing a jquery selector that will find all
- * elements which need a spacer <br> before them. This includes all consecutive
- * blocking elements and between blocking elements and normal non-blocking
- * elements.
- */
+    * @description Build a string representing a jquery selector that will find all
+    * elements which need a spacer <br> before them. This includes all consecutive
+    * blocking elements and between blocking elements and normal non-blocking
+    * elements.
+    */
 WYMeditor.editor.prototype._getBlockSepSelector = function() {
-  if (typeof(this._blockSpacersSel) != 'undefined') {
+    if (typeof(this._blockSpacersSel) != 'undefined') {
+        return this._blockSpacersSel;
+    }
+
+    var blockCombo = [];
+    // Consecutive blocking elements need separators
+    $.each(WYMeditor.BLOCKING_ELEMENTS, function (indexO, elementO) {
+        $.each(WYMeditor.BLOCKING_ELEMENTS, function (indexI, elementI) {
+            blockCombo.push(elementO + ' + ' + elementI);
+        });
+    });
+
+    // A blocking element either followed by or preceeded by a block elements
+    // needs separators
+    $.each(WYMeditor.BLOCKING_ELEMENTS, function (indexO, elementO) {
+        $.each(WYMeditor.NON_BLOCKING_ELEMENTS, function (indexI, elementI) {
+            blockCombo.push(elementO + ' + ' + elementI);
+            blockCombo.push(elementI + ' + ' + elementO);
+        });
+    });
+    this._blockSpacersSel = blockCombo.join(', ');
     return this._blockSpacersSel;
-  }
-
-  var blockCombo = [];
-  // Consecutive blocking elements need separators
-  $.each(WYMeditor.BLOCKING_ELEMENTS, function (indexO, elementO) {
-    $.each(WYMeditor.BLOCKING_ELEMENTS, function (indexI, elementI) {
-      blockCombo.push(elementO + ' + ' + elementI);
-    });
-  });
-
-  // A blocking element either followed by or preceeded by a block elements
-  // needs separators
-  $.each(WYMeditor.BLOCKING_ELEMENTS, function (indexO, elementO) {
-    $.each(WYMeditor.NON_BLOCKING_ELEMENTS, function (indexI, elementI) {
-      blockCombo.push(elementO + ' + ' + elementI);
-      blockCombo.push(elementI + ' + ' + elementO);
-    });
-  });
-  this._blockSpacersSel = blockCombo.join(', ');
-  return this._blockSpacersSel;
 };
 
 /* @name fixDoubleBr
- * @description Remove the <br><br> elements that are inserted between
- * paragraphs, usually after hitting enter from an existing paragraph.
- */
+    * @description Remove the <br><br> elements that are inserted between
+    * paragraphs, usually after hitting enter from an existing paragraph.
+    */
 WYMeditor.editor.prototype.fixDoubleBr = function() {
-  var $body = $(this._doc).find('body.wym_iframe');
-  // Strip consecutive brs unless they're in a a pre tag
-  $body.children('br + br').filter(':not(pre br)').remove();
+    var $body = $(this._doc).find('body.wym_iframe');
+    // Strip consecutive brs unless they're in a a pre tag
+    $body.children('br + br').filter(':not(pre br)').remove();
 
-  // Also remove any brs between two p's
-  $body.find('p + br').next('p').prev('br').remove();
+    // Also remove any brs between two p's
+    $body.find('p + br').next('p').prev('br').remove();
 
-  // Remove brs floating at the end after a p
-  var $last_br = $body.find('p + br').slice(-1);
-  if ($last_br.length > 0) {
-    if ($last_br.next().length == 0) {
-      $last_br.remove();
+    // Remove brs floating at the end after a p
+    var $last_br = $body.find('p + br').slice(-1);
+    if ($last_br.length > 0) {
+        if ($last_br.next().length == 0) {
+            $last_br.remove();
+        }
     }
-  }
 };
 
 /* @name dialog
- * @description Opens a dialog box
- */
+    * @description Opens a dialog box
+    */
 WYMeditor.editor.prototype.dialog = function( dialogType, dialogFeatures, bodyHtml ) {
 
-  var features = dialogFeatures || this._wym._options.dialogFeatures;
-  var wDialog = window.open('', 'dialog', features);
+    var features = dialogFeatures || this._wym._options.dialogFeatures;
+    var wDialog = window.open('', 'dialog', features);
 
-  if(wDialog) {
+    if(wDialog) {
 
     var sBodyHtml = "";
 
     switch( dialogType ) {
 
-      case(WYMeditor.DIALOG_LINK):
+    case(WYMeditor.DIALOG_LINK):
         sBodyHtml = this._options.dialogLinkHtml;
-      break;
-      case(WYMeditor.DIALOG_IMAGE):
+    break;
+    case(WYMeditor.DIALOG_IMAGE):
         sBodyHtml = this._options.dialogImageHtml;
-      break;
-      case(WYMeditor.DIALOG_TABLE):
+    break;
+    case(WYMeditor.DIALOG_TABLE):
         sBodyHtml = this._options.dialogTableHtml;
-      break;
-      case(WYMeditor.DIALOG_PASTE):
+    break;
+    case(WYMeditor.DIALOG_PASTE):
         sBodyHtml = this._options.dialogPasteHtml;
-      break;
-      case(WYMeditor.PREVIEW):
+    break;
+    case(WYMeditor.PREVIEW):
         sBodyHtml = this._options.dialogPreviewHtml;
-      break;
+    break;
 
-      default:
+    default:
         sBodyHtml = bodyHtml;
-      break;
-    }
+    break;
+}
 
     var h = WYMeditor.Helper;
 
@@ -1326,27 +1385,27 @@ WYMeditor.editor.prototype.dialog = function( dialogType, dialogFeatures, bodyHt
     var doc = wDialog.document;
     doc.write(dialogHtml);
     doc.close();
-  }
+}
 };
 
 /* @name toggleHtml
- * @description Shows/Hides the HTML
- */
+    * @description Shows/Hides the HTML
+    */
 WYMeditor.editor.prototype.toggleHtml = function() {
-  jQuery(this._box).find(this._options.htmlSelector).toggle();
+    jQuery(this._box).find(this._options.htmlSelector).toggle();
 };
 
 WYMeditor.editor.prototype.uniqueStamp = function() {
-  var now = new Date();
-  return("wym-" + now.getTime());
+    var now = new Date();
+    return("wym-" + now.getTime());
 };
 
 /* @name paste
- * @description         Paste text into the editor below the carret,
- *                      used for "Paste from Word".
- * @param String str    String to insert, two or more newlines separates
- *                      paragraphs. May contain inline HTML.
- */
+    * @description         Paste text into the editor below the carret,
+    *                      used for "Paste from Word".
+    * @param String str    String to insert, two or more newlines separates
+    *                      paragraphs. May contain inline HTML.
+    */
 WYMeditor.editor.prototype.paste = function(str) {
     var container = this.selected(),
         html = '',
@@ -1423,118 +1482,118 @@ WYMeditor.editor.prototype.setFocusToNode = function(node, toStart) {
 };
 
 WYMeditor.editor.prototype.addCssRules = function(doc, aCss) {
-  var styles = doc.styleSheets[0];
-  if(styles) {
-    for(var i = 0; i < aCss.length; i++) {
-      var oCss = aCss[i];
-      if(oCss.name && oCss.css) this.addCssRule(styles, oCss);
+    var styles = doc.styleSheets[0];
+    if(styles) {
+        for(var i = 0; i < aCss.length; i++) {
+            var oCss = aCss[i];
+            if(oCss.name && oCss.css) this.addCssRule(styles, oCss);
+        }
     }
-  }
 };
 
 /********** TABLE FUNCTIONS **********/
 
 WYMeditor.editor.prototype.insertTable = function(rows, columns, caption, summary) {
-  if( !(rows > 0) || !(columns > 0) ) {
-    // We need rows and columns to make a table
+    if( !(rows > 0) || !(columns > 0) ) {
+        // We need rows and columns to make a table
 
     // TODO: It seems to me we should warn the user when zero columns and/or
     // rows were entered.
     return;
-  }
+}
 
-  var table = this._doc.createElement(WYMeditor.TABLE);
-  var newRow = null;
-  var newCol = null;
+    var table = this._doc.createElement(WYMeditor.TABLE);
+    var newRow = null;
+    var newCol = null;
 
-  // Create the table caption
-  var newCaption = table.createCaption();
-  newCaption.innerHTML = caption;
+    // Create the table caption
+    var newCaption = table.createCaption();
+    newCaption.innerHTML = caption;
 
-  // Create the rows and cells
-  for(var x = 0; x < rows; x++) {
-    newRow = table.insertRow(x);
-    for(var y=0; y < columns; y++) {
-      newRow.insertCell(y);
+    // Create the rows and cells
+    for(var x = 0; x < rows; x++) {
+        newRow = table.insertRow(x);
+        for(var y=0; y < columns; y++) {
+            newRow.insertCell(y);
+        }
     }
-  }
 
-  if(summary !== "") {
-    // Only need to set the summary if we actually have a summary
-    jQuery(table).attr('summary', summary);
-  }
+    if(summary !== "") {
+        // Only need to set the summary if we actually have a summary
+        jQuery(table).attr('summary', summary);
+    }
 
-  // Find the currently-selected container
-  var container = jQuery(
-    this.findUp(this.container(), WYMeditor.MAIN_CONTAINERS))
-    .get(0);
+    // Find the currently-selected container
+    var container = jQuery(
+        this.findUp(this.container(), WYMeditor.MAIN_CONTAINERS))
+        .get(0);
 
-  if(!container || !container.parentNode) {
-    // No valid selected container. Put the table at the end.
-    jQuery(this._doc.body).append(table);
-  } else {
-  // Append the table after the currently-selected container
-    jQuery(container).after(table);
-  }
+    if(!container || !container.parentNode) {
+        // No valid selected container. Put the table at the end.
+        jQuery(this._doc.body).append(table);
+    } else {
+    // Append the table after the currently-selected container
+        jQuery(container).after(table);
+    }
 
-  // Handle any browser-specific cleanup
-  this.afterInsertTable(table);
-  this.fixBodyHtml();
+    // Handle any browser-specific cleanup
+    this.afterInsertTable(table);
+    this.fixBodyHtml();
 
-  return table;
+    return table;
 };
 
 /**
- * Handle cleanup/normalization after inserting a table. Different browsers
- * need slightly different tweaks.
- */
+    * Handle cleanup/normalization after inserting a table. Different browsers
+    * need slightly different tweaks.
+    */
 WYMeditor.editor.prototype.afterInsertTable = function(table) {
 };
 
 /********** CONFIGURATION **********/
 
 WYMeditor.editor.prototype.computeBasePath = function() {
-  return jQuery(jQuery.grep(jQuery('script'), function(s){
-    return (s.src && s.src.match(/jquery\.wymeditor(\.pack|\.min|\.packed)?\.js(\?.*)?$/ ));
-  })).attr('src').replace(/jquery\.wymeditor(\.pack|\.min|\.packed)?\.js(\?.*)?$/, '');
+    return jQuery(jQuery.grep(jQuery('script'), function(s){
+        return (s.src && s.src.match(/jquery\.wymeditor(\.pack|\.min|\.packed)?\.js(\?.*)?$/ ));
+    })).attr('src').replace(/jquery\.wymeditor(\.pack|\.min|\.packed)?\.js(\?.*)?$/, '');
 };
 
 WYMeditor.editor.prototype.computeWymPath = function() {
-  return jQuery(jQuery.grep(jQuery('script'), function(s){
-    return (s.src && s.src.match(/jquery\.wymeditor(\.pack|\.min|\.packed)?\.js(\?.*)?$/ ));
-  })).attr('src');
+    return jQuery(jQuery.grep(jQuery('script'), function(s){
+        return (s.src && s.src.match(/jquery\.wymeditor(\.pack|\.min|\.packed)?\.js(\?.*)?$/ ));
+    })).attr('src');
 };
 
 WYMeditor.editor.prototype.computeJqueryPath = function() {
-  return jQuery(jQuery.grep(jQuery('script'), function(s){
-    return (s.src && s.src.match(/jquery(-(.*)){0,1}(\.pack|\.min|\.packed)?\.js(\?.*)?$/ ));
-  })).attr('src');
+    return jQuery(jQuery.grep(jQuery('script'), function(s){
+        return (s.src && s.src.match(/jquery(-(.*)){0,1}(\.pack|\.min|\.packed)?\.js(\?.*)?$/ ));
+    })).attr('src');
 };
 
 WYMeditor.editor.prototype.computeCssPath = function() {
-  return jQuery(jQuery.grep(jQuery('link'), function(s){
-   return (s.href && s.href.match(/wymeditor\/skins\/(.*)screen\.css(\?.*)?$/ ));
-  })).attr('href');
+    return jQuery(jQuery.grep(jQuery('link'), function(s){
+        return (s.href && s.href.match(/wymeditor\/skins\/(.*)screen\.css(\?.*)?$/ ));
+    })).attr('href');
 };
 
 WYMeditor.editor.prototype.configureEditorUsingRawCss = function() {
 
-  var CssParser = new WYMeditor.WymCssParser();
-  if(this._options.stylesheet){
-    CssParser.parse(jQuery.ajax({url: this._options.stylesheet,async:false}).responseText);
-  }else{
-    CssParser.parse(this._options.styles, false);
-  }
+    var CssParser = new WYMeditor.WymCssParser();
+    if(this._options.stylesheet){
+        CssParser.parse(jQuery.ajax({url: this._options.stylesheet,async:false}).responseText);
+    }else{
+        CssParser.parse(this._options.styles, false);
+    }
 
-  if(this._options.classesItems.length === 0) {
-    this._options.classesItems = CssParser.css_settings.classesItems;
-  }
-  if(this._options.editorStyles.length === 0) {
-    this._options.editorStyles = CssParser.css_settings.editorStyles;
-  }
-  if(this._options.dialogStyles.length === 0) {
-    this._options.dialogStyles = CssParser.css_settings.dialogStyles;
-  }
+    if(this._options.classesItems.length === 0) {
+        this._options.classesItems = CssParser.css_settings.classesItems;
+    }
+    if(this._options.editorStyles.length === 0) {
+        this._options.editorStyles = CssParser.css_settings.editorStyles;
+    }
+    if(this._options.dialogStyles.length === 0) {
+        this._options.dialogStyles = CssParser.css_settings.dialogStyles;
+    }
 };
 
 /********** EVENTS **********/
@@ -1555,12 +1614,12 @@ WYMeditor.editor.prototype.mousedown = function(evt) {
 /********** SKINS **********/
 
 /*
- * Function: WYMeditor.loadCss
- *      Loads a stylesheet in the document.
- *
- * Parameters:
- *      href - The CSS path.
- */
+    * Function: WYMeditor.loadCss
+    *      Loads a stylesheet in the document.
+    *
+    * Parameters:
+    *      href - The CSS path.
+    */
 WYMeditor.loadCss = function(href) {
 
     var link = document.createElement('link');
@@ -1572,9 +1631,9 @@ WYMeditor.loadCss = function(href) {
 };
 
 /*
- *  Function: WYMeditor.editor.loadSkin
- *      Loads the skin CSS and initialization script (if needed).
- */
+    *  Function: WYMeditor.editor.loadSkin
+    *      Loads the skin CSS and initialization script (if needed).
+    */
 WYMeditor.editor.prototype.loadSkin = function() {
 
     //does the user want to automatically load the CSS (default: yes)?
@@ -1582,22 +1641,22 @@ WYMeditor.editor.prototype.loadSkin = function() {
     //see below for a better (second) test
     if(this._options.loadSkin && !WYMeditor.SKINS[this._options.skin]) {
 
-        //check if it hasn't been already loaded
-        //so we don't load it more than once
-        //(we check the existing <link> elements)
+    //check if it hasn't been already loaded
+    //so we don't load it more than once
+    //(we check the existing <link> elements)
 
-        var found = false;
-        var rExp = new RegExp(this._options.skin +
-             '\/' + WYMeditor.SKINS_DEFAULT_CSS + '$');
+    var found = false;
+    var rExp = new RegExp(this._options.skin +
+        '\/' + WYMeditor.SKINS_DEFAULT_CSS + '$');
 
-        jQuery('link').each( function() {
-            if(this.href.match(rExp)) found = true;
-        });
+    jQuery('link').each( function() {
+        if(this.href.match(rExp)) found = true;
+    });
 
-        //load it, using the skin path
-        if(!found) WYMeditor.loadCss( this._options.skinPath +
-            WYMeditor.SKINS_DEFAULT_CSS );
-    }
+    //load it, using the skin path
+    if(!found) WYMeditor.loadCss( this._options.skinPath +
+        WYMeditor.SKINS_DEFAULT_CSS );
+}
 
     //put the classname (ex. wym_skin_default) on wym_box
     jQuery(this._box).addClass( "wym_skin_" + this._options.skin );
@@ -1606,13 +1665,13 @@ WYMeditor.editor.prototype.loadSkin = function() {
     //also check if it hasn't already been loaded by another instance
     if(this._options.initSkin && !WYMeditor.SKINS[this._options.skin]) {
 
-        eval(jQuery.ajax({url:this._options.skinPath +
-            WYMeditor.SKINS_DEFAULT_JS, async:false}).responseText);
-    }
+    eval(jQuery.ajax({url:this._options.skinPath +
+        WYMeditor.SKINS_DEFAULT_JS, async:false}).responseText);
+}
 
     //init the skin, if needed
     if(WYMeditor.SKINS[this._options.skin] && WYMeditor.SKINS[this._options.skin].init) {
-      WYMeditor.SKINS[this._options.skin].init(this);
+        WYMeditor.SKINS[this._options.skin].init(this);
     }
 
 };
@@ -1622,134 +1681,134 @@ WYMeditor.editor.prototype.loadSkin = function() {
 
 WYMeditor.INIT_DIALOG = function(index) {
 
-  var wym = window.opener.WYMeditor.INSTANCES[index];
-  var doc = window.document;
-  var selected = wym.selected();
-  var dialogType = jQuery(wym._options.dialogTypeSelector).val();
-  var sStamp = wym.uniqueStamp();
+    var wym = window.opener.WYMeditor.INSTANCES[index];
+    var doc = window.document;
+    var selected = wym.selected();
+    var dialogType = jQuery(wym._options.dialogTypeSelector).val();
+    var sStamp = wym.uniqueStamp();
 
-  switch(dialogType) {
+    switch(dialogType) {
 
-  case WYMeditor.DIALOG_LINK:
-    //ensure that we select the link to populate the fields
-    if(selected && selected.tagName && selected.tagName.toLowerCase != WYMeditor.A)
-      selected = jQuery(selected).parentsOrSelf(WYMeditor.A);
+    case WYMeditor.DIALOG_LINK:
+        //ensure that we select the link to populate the fields
+        if(selected && selected.tagName && selected.tagName.toLowerCase != WYMeditor.A)
+            selected = jQuery(selected).parentsOrSelf(WYMeditor.A);
 
     //fix MSIE selection if link image has been clicked
     if(!selected && wym._selected_image)
-      selected = jQuery(wym._selected_image).parentsOrSelf(WYMeditor.A);
-  break;
+        selected = jQuery(wym._selected_image).parentsOrSelf(WYMeditor.A);
+break;
 
-  default:
-  break;
+    default:
+    break;
 
-  }
+    }
 
-  //pre-init functions
-  if(jQuery.isFunction(wym._options.preInitDialog))
-    wym._options.preInitDialog(wym,window);
+    //pre-init functions
+    if(jQuery.isFunction(wym._options.preInitDialog))
+        wym._options.preInitDialog(wym,window);
 
-  //add css rules from options
-  var styles = doc.styleSheets[0];
-  var aCss = eval(wym._options.dialogStyles);
+    //add css rules from options
+    var styles = doc.styleSheets[0];
+    var aCss = eval(wym._options.dialogStyles);
 
-  wym.addCssRules(doc, aCss);
+    wym.addCssRules(doc, aCss);
 
-  //auto populate fields if selected container (e.g. A)
-  if(selected) {
-    jQuery(wym._options.hrefSelector).val(jQuery(selected).attr(WYMeditor.HREF));
-    jQuery(wym._options.srcSelector).val(jQuery(selected).attr(WYMeditor.SRC));
-    jQuery(wym._options.titleSelector).val(jQuery(selected).attr(WYMeditor.TITLE));
-    jQuery(wym._options.relSelector).val(jQuery(selected).attr(WYMeditor.REL));
-    jQuery(wym._options.altSelector).val(jQuery(selected).attr(WYMeditor.ALT));
-  }
+    //auto populate fields if selected container (e.g. A)
+    if(selected) {
+        jQuery(wym._options.hrefSelector).val(jQuery(selected).attr(WYMeditor.HREF));
+        jQuery(wym._options.srcSelector).val(jQuery(selected).attr(WYMeditor.SRC));
+        jQuery(wym._options.titleSelector).val(jQuery(selected).attr(WYMeditor.TITLE));
+        jQuery(wym._options.relSelector).val(jQuery(selected).attr(WYMeditor.REL));
+        jQuery(wym._options.altSelector).val(jQuery(selected).attr(WYMeditor.ALT));
+    }
 
-  //auto populate image fields if selected image
-  if(wym._selected_image) {
-    jQuery(wym._options.dialogImageSelector + " " + wym._options.srcSelector).val(jQuery(wym._selected_image).attr(WYMeditor.SRC));
-    jQuery(wym._options.dialogImageSelector + " " + wym._options.titleSelector).val(jQuery(wym._selected_image).attr(WYMeditor.TITLE));
-    jQuery(wym._options.dialogImageSelector + " " + wym._options.altSelector).val(jQuery(wym._selected_image).attr(WYMeditor.ALT));
-  }
+    //auto populate image fields if selected image
+    if(wym._selected_image) {
+        jQuery(wym._options.dialogImageSelector + " " + wym._options.srcSelector).val(jQuery(wym._selected_image).attr(WYMeditor.SRC));
+        jQuery(wym._options.dialogImageSelector + " " + wym._options.titleSelector).val(jQuery(wym._selected_image).attr(WYMeditor.TITLE));
+        jQuery(wym._options.dialogImageSelector + " " + wym._options.altSelector).val(jQuery(wym._selected_image).attr(WYMeditor.ALT));
+    }
 
-  jQuery(wym._options.dialogLinkSelector + " " +
-    wym._options.submitSelector).submit(function() {
+    jQuery(wym._options.dialogLinkSelector + " " +
+        wym._options.submitSelector).submit(function() {
 
-      var sUrl = jQuery(wym._options.hrefSelector).val();
-      if(sUrl.length > 0) {
+    var sUrl = jQuery(wym._options.hrefSelector).val();
+    if(sUrl.length > 0) {
         var link;
 
-        if (selected[0] && selected[0].tagName.toLowerCase() == WYMeditor.A) {
-            link = selected;
-        } else {
-            wym._exec(WYMeditor.CREATE_LINK, sStamp);
-            link = jQuery("a[href=" + sStamp + "]", wym._doc.body);
-        }
+    if (selected[0] && selected[0].tagName.toLowerCase() == WYMeditor.A) {
+        link = selected;
+    } else {
+        wym._exec(WYMeditor.CREATE_LINK, sStamp);
+        link = jQuery("a[href=" + sStamp + "]", wym._doc.body);
+    }
 
-        link.attr(WYMeditor.HREF, sUrl);
-        link.attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val());
-        link.attr(WYMeditor.REL, jQuery(wym._options.relSelector).val());
+    link.attr(WYMeditor.HREF, sUrl);
+    link.attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val());
+    link.attr(WYMeditor.REL, jQuery(wym._options.relSelector).val());
 
-      }
-      window.close();
-  });
-
-  jQuery(wym._options.dialogImageSelector + " " +
-    wym._options.submitSelector).submit(function() {
-
-      var sUrl = jQuery(wym._options.srcSelector).val();
-      if(sUrl.length > 0) {
-
-        wym._exec(WYMeditor.INSERT_IMAGE, sStamp);
-
-        var $img = jQuery("img[src$=" + sStamp + "]", wym._doc.body);
-        $img.attr(WYMeditor.SRC, sUrl);
-        $img.attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val());
-        $img.attr(WYMeditor.ALT, jQuery(wym._options.altSelector).val());
-      }
-      window.close();
-  });
-
-  var tableOnClick = WYMeditor.MAKE_TABLE_ONCLICK(wym);
-  jQuery(wym._options.dialogTableSelector + " " + wym._options.submitSelector)
-    .submit(tableOnClick);
-
-  jQuery(wym._options.dialogPasteSelector + " " +
-      wym._options.submitSelector).submit(function() {
-
-      var sText = jQuery(wym._options.textSelector).val();
-      wym.paste(sText);
-      window.close();
-  });
-
-  jQuery(wym._options.dialogPreviewSelector + " " +
-    wym._options.previewSelector).html(wym.xhtml());
-
-  //cancel button
-  jQuery(wym._options.cancelSelector).mousedown(function() {
+    }
     window.close();
-  });
+});
 
-  //pre-init functions
-  if(jQuery.isFunction(wym._options.postInitDialog))
-    wym._options.postInitDialog(wym,window);
+    jQuery(wym._options.dialogImageSelector + " " +
+        wym._options.submitSelector).submit(function() {
+
+    var sUrl = jQuery(wym._options.srcSelector).val();
+    if(sUrl.length > 0) {
+
+    wym._exec(WYMeditor.INSERT_IMAGE, sStamp);
+
+    var $img = jQuery("img[src$=" + sStamp + "]", wym._doc.body);
+    $img.attr(WYMeditor.SRC, sUrl);
+    $img.attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val());
+    $img.attr(WYMeditor.ALT, jQuery(wym._options.altSelector).val());
+}
+window.close();
+});
+
+    var tableOnClick = WYMeditor.MAKE_TABLE_ONCLICK(wym);
+    jQuery(wym._options.dialogTableSelector + " " + wym._options.submitSelector)
+        .submit(tableOnClick);
+
+    jQuery(wym._options.dialogPasteSelector + " " +
+        wym._options.submitSelector).submit(function() {
+
+    var sText = jQuery(wym._options.textSelector).val();
+    wym.paste(sText);
+    window.close();
+});
+
+    jQuery(wym._options.dialogPreviewSelector + " " +
+        wym._options.previewSelector).html(wym.xhtml());
+
+    //cancel button
+    jQuery(wym._options.cancelSelector).mousedown(function() {
+        window.close();
+    });
+
+    //pre-init functions
+    if(jQuery.isFunction(wym._options.postInitDialog))
+        wym._options.postInitDialog(wym,window);
 
 };
 
 /********** TABLE DIALOG ONCLICK **********/
 
 WYMeditor.MAKE_TABLE_ONCLICK = function(wym) {
-  var tableOnClick = function() {
-    var numRows = jQuery(wym._options.rowsSelector).val();
-    var numColumns = jQuery(wym._options.colsSelector).val();
-    var caption = jQuery(wym._options.captionSelector).val();
-    var summary = jQuery(wym._options.summarySelector).val();
+    var tableOnClick = function() {
+        var numRows = jQuery(wym._options.rowsSelector).val();
+        var numColumns = jQuery(wym._options.colsSelector).val();
+        var caption = jQuery(wym._options.captionSelector).val();
+        var summary = jQuery(wym._options.summarySelector).val();
 
     var table = wym.insertTable(numRows, numColumns, caption, summary);
 
     window.close();
-  };
+};
 
-  return tableOnClick;
+    return tableOnClick;
 };
 
 /********** XHTML LEXER/PARSER **********/
@@ -1763,8 +1822,8 @@ WYMeditor.MAKE_TABLE_ONCLICK = function(wym) {
 */
 WYMeditor.XmlHelper = function()
 {
-  this._entitiesDiv = document.createElement('div');
-  return this;
+    this._entitiesDiv = document.createElement('div');
+    return this;
 };
 
 
@@ -1788,9 +1847,9 @@ WYMeditor.XmlHelper = function()
 */
 WYMeditor.XmlHelper.prototype.tag = function(name, options, open)
 {
-  options = options || false;
-  open = open || false;
-  return '<'+name+(options ? this.tagOptions(options) : '')+(open ? '>' : ' />');
+    options = options || false;
+    open = open || false;
+    return '<'+name+(options ? this.tagOptions(options) : '')+(open ? '>' : ' />');
 };
 
 /*
@@ -1810,8 +1869,8 @@ WYMeditor.XmlHelper.prototype.tag = function(name, options, open)
 */
 WYMeditor.XmlHelper.prototype.contentTag = function(name, content, options)
 {
-  options = options || false;
-  return '<'+name+(options ? this.tagOptions(options) : '')+'>'+content+'</'+name+'>';
+    options = options || false;
+    return '<'+name+(options ? this.tagOptions(options) : '')+'>'+content+'</'+name+'>';
 };
 
 /*
@@ -1825,7 +1884,7 @@ WYMeditor.XmlHelper.prototype.contentTag = function(name, content, options)
 */
 WYMeditor.XmlHelper.prototype.cdataSection = function(content)
 {
-  return '<![CDATA['+content+']]>';
+    return '<![CDATA['+content+']]>';
 };
 
 
@@ -1839,7 +1898,7 @@ WYMeditor.XmlHelper.prototype.cdataSection = function(content)
 */
 WYMeditor.XmlHelper.prototype.escapeOnce = function(xml)
 {
-  return this._fixDoubleEscape(this.escapeEntities(xml));
+    return this._fixDoubleEscape(this.escapeEntities(xml));
 };
 
 /*
@@ -1849,7 +1908,7 @@ WYMeditor.XmlHelper.prototype.escapeOnce = function(xml)
 */
 WYMeditor.XmlHelper.prototype._fixDoubleEscape = function(escaped)
 {
-  return escaped.replace(/&amp;([a-z]+|(#\d+));/ig, "&$1;");
+    return escaped.replace(/&amp;([a-z]+|(#\d+));/ig, "&$1;");
 };
 
 /*
@@ -1864,24 +1923,24 @@ WYMeditor.XmlHelper.prototype._fixDoubleEscape = function(escaped)
 */
 WYMeditor.XmlHelper.prototype.tagOptions = function(options)
 {
-  var xml = this;
-  xml._formated_options = '';
+    var xml = this;
+    xml._formated_options = '';
 
-  for (var key in options) {
-    var formated_options = '';
-    var value = options[key];
-    if(typeof value != 'function' && value.length > 0) {
+    for (var key in options) {
+        var formated_options = '';
+        var value = options[key];
+        if(typeof value != 'function' && value.length > 0) {
 
-      if(parseInt(key, 10) == key && typeof value == 'object'){
+    if(parseInt(key, 10) == key && typeof value == 'object'){
         key = value.shift();
         value = value.pop();
-      }
-      if(key !== '' && value !== ''){
-        xml._formated_options += ' '+key+'="'+xml.escapeOnce(value)+'"';
-      }
     }
-  }
-  return xml._formated_options;
+    if(key !== '' && value !== ''){
+        xml._formated_options += ' '+key+'="'+xml.escapeOnce(value)+'"';
+    }
+}
+}
+return xml._formated_options;
 };
 
 /*
@@ -1892,14 +1951,14 @@ WYMeditor.XmlHelper.prototype.tagOptions = function(options)
 */
 WYMeditor.XmlHelper.prototype.escapeEntities = function(string, escape_quotes)
 {
-  this._entitiesDiv.innerHTML = string;
-  this._entitiesDiv.textContent = string;
-  var result = this._entitiesDiv.innerHTML;
-  if(typeof escape_quotes == 'undefined'){
-    if(escape_quotes !== false) result = result.replace('"', '&quot;');
-    if(escape_quotes === true)  result = result.replace('"', '&#039;');
-  }
-  return result;
+    this._entitiesDiv.innerHTML = string;
+    this._entitiesDiv.textContent = string;
+    var result = this._entitiesDiv.innerHTML;
+    if(typeof escape_quotes == 'undefined'){
+        if(escape_quotes !== false) result = result.replace('"', '&quot;');
+        if(escape_quotes === true)  result = result.replace('"', '&#039;');
+    }
+    return result;
 };
 
 /*
@@ -1908,29 +1967,29 @@ WYMeditor.XmlHelper.prototype.escapeEntities = function(string, escape_quotes)
 */
 WYMeditor.XmlHelper.prototype.parseAttributes = function(tag_attributes)
 {
-  // Use a compounded regex to match single quoted, double quoted and unquoted attribute pairs
-  var result = [];
-  var matches = tag_attributes.split(/((=\s*")(")("))|((=\s*\')(\')(\'))|((=\s*[^>\s]*))/g);
-  if(matches.toString() != tag_attributes){
-    for (var k in matches) {
-      var v = matches[k];
-      if(typeof v != 'function' && v.length !== 0){
-        var re = new RegExp('(\\w+)\\s*'+v);
-        var match = tag_attributes.match(re);
-        if(match) {
-          var value = v.replace(/^[\s=]+/, "");
-          var delimiter = value.charAt(0);
-          delimiter = delimiter == '"' ? '"' : (delimiter=="'"?"'":'');
-          if(delimiter !== ''){
-            value = delimiter == '"' ? value.replace(/^"|"+$/g, '') :  value.replace(/^'|'+$/g, '');
-          }
-          tag_attributes = tag_attributes.replace(match[0],'');
-          result.push([match[1] , value]);
+    // Use a compounded regex to match single quoted, double quoted and unquoted attribute pairs
+    var result = [];
+    var matches = tag_attributes.split(/((=\s*")(")("))|((=\s*\')(\')(\'))|((=\s*[^>\s]*))/g);
+    if(matches.toString() != tag_attributes){
+        for (var k in matches) {
+            var v = matches[k];
+            if(typeof v != 'function' && v.length !== 0){
+                var re = new RegExp('(\\w+)\\s*'+v);
+                var match = tag_attributes.match(re);
+                if(match) {
+                    var value = v.replace(/^[\s=]+/, "");
+                    var delimiter = value.charAt(0);
+                    delimiter = delimiter == '"' ? '"' : (delimiter=="'"?"'":'');
+                    if(delimiter !== ''){
+                        value = delimiter == '"' ? value.replace(/^"|"+$/g, '') :  value.replace(/^'|'+$/g, '');
+                    }
+                    tag_attributes = tag_attributes.replace(match[0],'');
+                    result.push([match[1] , value]);
+                }
+            }
         }
-      }
     }
-  }
-  return result;
+    return result;
 };
 
 /**
@@ -1939,710 +1998,710 @@ WYMeditor.XmlHelper.prototype.parseAttributes = function(tag_attributes)
 * @author Bermi Ferrer - http://bermi.org
 */
 WYMeditor.XhtmlValidator = {
-  "_attributes":
-  {
-    "core":
+    "_attributes":
     {
-      "except":[
-      "base",
-      "head",
-      "html",
-      "meta",
-      "param",
-      "script",
-      "style",
-      "title"
-      ],
-      "attributes":[
-      "class",
-      "id",
-      "style",
-      "title",
-      "accesskey",
-      "tabindex",
-      "/^data-.*/"
-      ]
-    },
-    "language":
-    {
-      "except":[
-      "base",
-      "br",
-      "hr",
-      "iframe",
-      "param",
-      "script"
-      ],
-      "attributes":
-      {
-        "dir":[
-        "ltr",
-        "rtl"
-        ],
-        "0":"lang",
-        "1":"xml:lang"
-      }
-    },
-    "keyboard":
-    {
-      "attributes":
-      {
-        "accesskey":/^(\w){1}$/,
-        "tabindex":/^(\d)+$/
-      }
-    }
-  },
-  "_events":
-  {
-    "window":
-    {
-      "only":[
-      "body"
-      ],
-      "attributes":[
-      "onload",
-      "onunload"
-      ]
-    },
-    "form":
-    {
-      "only":[
-      "form",
-      "input",
-      "textarea",
-      "select",
-      "a",
-      "label",
-      "button"
-      ],
-      "attributes":[
-      "onchange",
-      "onsubmit",
-      "onreset",
-      "onselect",
-      "onblur",
-      "onfocus"
-      ]
-    },
-    "keyboard":
-    {
-      "except":[
-      "base",
-      "bdo",
-      "br",
-      "frame",
-      "frameset",
-      "head",
-      "html",
-      "iframe",
-      "meta",
-      "param",
-      "script",
-      "style",
-      "title"
-      ],
-      "attributes":[
-      "onkeydown",
-      "onkeypress",
-      "onkeyup"
-      ]
-    },
-    "mouse":
-    {
-      "except":[
-      "base",
-      "bdo",
-      "br",
-      "head",
-      "html",
-      "meta",
-      "param",
-      "script",
-      "style",
-      "title"
-      ],
-      "attributes":[
-      "onclick",
-      "ondblclick",
-      "onmousedown",
-      "onmousemove",
-      "onmouseover",
-      "onmouseout",
-      "onmouseup"
-      ]
-    }
-  },
-  "_tags":
-  {
-    "a":
-    {
-      "attributes":
-      {
-        "0":"charset",
-        "1":"coords",
-        "2":"href",
-        "3":"hreflang",
-        "4":"name",
-        "5":"rel",
-        "6":"rev",
-        "shape":/^(rect|rectangle|circ|circle|poly|polygon)$/,
-        "7":"type"
-      }
-    },
-    "0":"abbr",
-    "1":"acronym",
-    "2":"address",
-    "area":
-    {
-      "attributes":
-      {
-        "0":"alt",
-        "1":"coords",
-        "2":"href",
-        "nohref":/^(true|false)$/,
-        "shape":/^(rect|rectangle|circ|circle|poly|polygon)$/
-      },
-      "required":[
-      "alt"
-      ]
-    },
-    "3":"b",
-    "base":
-    {
-      "attributes":[
-      "href"
-      ],
-      "required":[
-      "href"
-      ]
-    },
-    "bdo":
-    {
-      "attributes":
-      {
-        "dir":/^(ltr|rtl)$/
-      },
-      "required":[
-      "dir"
-      ]
-    },
-    "4":"big",
-    "blockquote":
-    {
-      "attributes":[
-      "cite"
-      ]
-    },
-    "5":"body",
-    "6":"br",
-    "button":
-    {
-      "attributes":
-      {
-        "disabled":/^(disabled)$/,
-        "type":/^(button|reset|submit)$/,
-        "0":"value"
-      },
-      "inside":"form"
-    },
-    "7":"caption",
-    "8":"cite",
-    "9":"code",
-    "col":
-    {
-      "attributes":
-      {
-        "align":/^(right|left|center|justify)$/,
-        "0":"char",
-        "1":"charoff",
-        "span":/^(\d)+$/,
-        "valign":/^(top|middle|bottom|baseline)$/,
-        "2":"width"
-      },
-      "inside":"colgroup"
-    },
-    "colgroup":
-    {
-      "attributes":
-      {
-        "align":/^(right|left|center|justify)$/,
-        "0":"char",
-        "1":"charoff",
-        "span":/^(\d)+$/,
-        "valign":/^(top|middle|bottom|baseline)$/,
-        "2":"width"
-      }
-    },
-    "10":"dd",
-    "del":
-    {
-      "attributes":
-      {
-        "0":"cite",
-        "datetime":/^([0-9]){8}/
-      }
-    },
-    "11":"div",
-    "12":"dfn",
-    "13":"dl",
-    "14":"dt",
-    "15":"em",
-    "fieldset":
-    {
-      "inside":"form"
-    },
-    "form":
-    {
-      "attributes":
-      {
-        "0":"action",
-        "1":"accept",
-        "2":"accept-charset",
-        "3":"enctype",
-        "method":/^(get|post)$/
-      },
-      "required":[
-      "action"
-      ]
-    },
-    "head":
-    {
-      "attributes":[
-      "profile"
-      ]
-    },
-    "16":"h1",
-    "17":"h2",
-    "18":"h3",
-    "19":"h4",
-    "20":"h5",
-    "21":"h6",
-    "22":"hr",
-    "html":
-    {
-      "attributes":[
-      "xmlns"
-      ]
-    },
-    "23":"i",
-    "img":
-    {
-      "attributes":[
-      "alt",
-      "src",
-      "height",
-      "ismap",
-      "longdesc",
-      "usemap",
-      "width"
-      ],
-      "required":[
-      "alt",
-      "src"
-      ]
-    },
-    "input":
-    {
-      "attributes":
-      {
-        "0":"accept",
-        "1":"alt",
-        "checked":/^(checked)$/,
-        "disabled":/^(disabled)$/,
-        "maxlength":/^(\d)+$/,
-        "2":"name",
-        "readonly":/^(readonly)$/,
-        "size":/^(\d)+$/,
-        "3":"src",
-        "type":/^(button|checkbox|file|hidden|image|password|radio|reset|submit|text)$/,
-        "4":"value"
-      },
-      "inside":"form"
-    },
-    "ins":
-    {
-      "attributes":
-      {
-        "0":"cite",
-        "datetime":/^([0-9]){8}/
-      }
-    },
-    "24":"kbd",
-    "label":
-    {
-      "attributes":[
-      "for"
-      ],
-      "inside":"form"
-    },
-    "25":"legend",
-    "26":"li",
-    "link":
-    {
-      "attributes":
-      {
-        "0":"charset",
-        "1":"href",
-        "2":"hreflang",
-        "media":/^(all|braille|print|projection|screen|speech|,|;| )+$/i,
-        //next comment line required by Opera!
-        /*"rel":/^(alternate|appendix|bookmark|chapter|contents|copyright|glossary|help|home|index|next|prev|section|start|stylesheet|subsection| |shortcut|icon)+$/i,*/
-        "rel":/^(alternate|appendix|bookmark|chapter|contents|copyright|glossary|help|home|index|next|prev|section|start|stylesheet|subsection| |shortcut|icon)+$/i,
-        "rev":/^(alternate|appendix|bookmark|chapter|contents|copyright|glossary|help|home|index|next|prev|section|start|stylesheet|subsection| |shortcut|icon)+$/i,
-        "3":"type"
-      },
-      "inside":"head"
-    },
-    "map":
-    {
-      "attributes":[
-      "id",
-      "name"
-      ],
-      "required":[
-      "id"
-      ]
-    },
-    "meta":
-    {
-      "attributes":
-      {
-        "0":"content",
-        "http-equiv":/^(content\-type|expires|refresh|set\-cookie)$/i,
-        "1":"name",
-        "2":"scheme"
-      },
-      "required":[
-      "content"
-      ]
-    },
-    "27":"noscript",
-    "object":
-    {
-      "attributes":[
-      "archive",
-      "classid",
-      "codebase",
-      "codetype",
-      "data",
-      "declare",
-      "height",
-      "name",
-      "standby",
-      "type",
-      "usemap",
-      "width"
-      ]
-    },
-    "28":"ol",
-    "optgroup":
-    {
-      "attributes":
-      {
-        "0":"label",
-        "disabled": /^(disabled)$/
-      },
-      "required":[
-      "label"
-      ]
-    },
-    "option":
-    {
-      "attributes":
-      {
-        "0":"label",
-        "disabled":/^(disabled)$/,
-        "selected":/^(selected)$/,
-        "1":"value"
-      },
-      "inside":"select"
-    },
-    "29":"p",
-    "param":
-    {
-      "attributes":
-      {
-        "0":"type",
-        "valuetype":/^(data|ref|object)$/,
-        "1":"valuetype",
-        "2":"value"
-      },
-      "required":[
-      "name"
-      ]
-    },
-    "30":"pre",
-    "q":
-    {
-      "attributes":[
-      "cite"
-      ]
-    },
-    "31":"samp",
-    "script":
-    {
-      "attributes":
-      {
-        "type":/^(text\/ecmascript|text\/javascript|text\/jscript|text\/vbscript|text\/vbs|text\/xml)$/,
-        "0":"charset",
-        "defer":/^(defer)$/,
-        "1":"src"
-      },
-      "required":[
-      "type"
-      ]
-    },
-    "select":
-    {
-      "attributes":
-      {
-        "disabled":/^(disabled)$/,
-        "multiple":/^(multiple)$/,
-        "0":"name",
-        "1":"size"
-      },
-      "inside":"form"
-    },
-    "32":"small",
-    "33":"span",
-    "34":"strong",
-    "style":
-    {
-      "attributes":
-      {
-        "0":"type",
-        "media":/^(screen|tty|tv|projection|handheld|print|braille|aural|all)$/
-      },
-      "required":[
-      "type"
-      ]
-    },
-    "35":"sub",
-    "36":"sup",
-    "table":
-    {
-      "attributes":
-      {
-        "0":"border",
-        "1":"cellpadding",
-        "2":"cellspacing",
-        "frame":/^(void|above|below|hsides|lhs|rhs|vsides|box|border)$/,
-        "rules":/^(none|groups|rows|cols|all)$/,
-        "3":"summary",
-        "4":"width"
-      }
-    },
-    "tbody":
-    {
-      "attributes":
-      {
-        "align":/^(right|left|center|justify)$/,
-        "0":"char",
-        "1":"charoff",
-        "valign":/^(top|middle|bottom|baseline)$/
-      }
-    },
-    "td":
-    {
-      "attributes":
-      {
-        "0":"abbr",
-        "align":/^(left|right|center|justify|char)$/,
-        "1":"axis",
-        "2":"char",
-        "3":"charoff",
-        "colspan":/^(\d)+$/,
-        "4":"headers",
-        "rowspan":/^(\d)+$/,
-        "scope":/^(col|colgroup|row|rowgroup)$/,
-        "valign":/^(top|middle|bottom|baseline)$/
-      }
-    },
-    "textarea":
-    {
-      "attributes":[
-      "cols",
-      "rows",
-      "disabled",
-      "name",
-      "readonly"
-      ],
-      "required":[
-      "cols",
-      "rows"
-      ],
-      "inside":"form"
-    },
-    "tfoot":
-    {
-      "attributes":
-      {
-        "align":/^(right|left|center|justify)$/,
-        "0":"char",
-        "1":"charoff",
-        "valign":/^(top|middle|bottom)$/,
-        "2":"baseline"
-      }
-    },
-    "th":
-    {
-      "attributes":
-      {
-        "0":"abbr",
-        "align":/^(left|right|center|justify|char)$/,
-        "1":"axis",
-        "2":"char",
-        "3":"charoff",
-        "colspan":/^(\d)+$/,
-        "4":"headers",
-        "rowspan":/^(\d)+$/,
-        "scope":/^(col|colgroup|row|rowgroup)$/,
-        "valign":/^(top|middle|bottom|baseline)$/
-      }
-    },
-    "thead":
-    {
-      "attributes":
-      {
-        "align":/^(right|left|center|justify)$/,
-        "0":"char",
-        "1":"charoff",
-        "valign":/^(top|middle|bottom|baseline)$/
-      }
-    },
-    "37":"title",
-    "tr":
-    {
-      "attributes":
-      {
-        "align":/^(right|left|center|justify|char)$/,
-        "0":"char",
-        "1":"charoff",
-        "valign":/^(top|middle|bottom|baseline)$/
-      }
-    },
-    "38":"tt",
-    "39":"ul",
-    "40":"var"
-  },
-
-  // Temporary skiped attributes
-  skiped_attributes : [],
-  skiped_attribute_values : [],
-
-  getValidTagAttributes: function(tag, attributes)
-  {
-    var valid_attributes = {};
-    var possible_attributes = this.getPossibleTagAttributes(tag);
-    for(var attribute in attributes) {
-      var value = attributes[attribute];
-      attribute = attribute.toLowerCase(); // ie8 uses colSpan
-      var h = WYMeditor.Helper;
-      if(!h.contains(this.skiped_attributes, attribute) && !h.contains(this.skiped_attribute_values, value)){
-        if (typeof value != 'function' && h.contains(possible_attributes, attribute)) {
-          if (this.doesAttributeNeedsValidation(tag, attribute)) {
-            if(this.validateAttribute(tag, attribute, value)){
-              valid_attributes[attribute] = value;
+        "core":
+        {
+            "except":[
+            "base",
+            "head",
+            "html",
+            "meta",
+            "param",
+            "script",
+            "style",
+            "title"
+            ],
+            "attributes":[
+            "class",
+            "id",
+            "style",
+            "title",
+            "accesskey",
+            "tabindex",
+            "/^data-.*/"
+            ]
+        },
+        "language":
+        {
+            "except":[
+            "base",
+            "br",
+            "hr",
+            "iframe",
+            "param",
+            "script"
+            ],
+            "attributes":
+            {
+                "dir":[
+                "ltr",
+                "rtl"
+                ],
+                "0":"lang",
+                "1":"xml:lang"
             }
-          }else{
-            valid_attributes[attribute] = value;
-          }
-        } else {
-          jQuery.each(possible_attributes, function() {
-            if(this.match(/\/(.*)\//)) {
-              regex = new RegExp(this.match(/\/(.*)\//)[1]);
-              if(regex.test(attribute)) {
-                valid_attributes[attribute] = value;
-              }
+        },
+        "keyboard":
+        {
+            "attributes":
+            {
+                "accesskey":/^(\w){1}$/,
+                "tabindex":/^(\d)+$/
             }
-          });
         }
-      }
-    }
-    return valid_attributes;
-  },
-  getUniqueAttributesAndEventsForTag : function(tag)
-  {
-    var result = [];
+    },
+    "_events":
+    {
+        "window":
+        {
+            "only":[
+            "body"
+            ],
+            "attributes":[
+            "onload",
+            "onunload"
+            ]
+        },
+        "form":
+        {
+            "only":[
+            "form",
+            "input",
+            "textarea",
+            "select",
+            "a",
+            "label",
+            "button"
+            ],
+            "attributes":[
+            "onchange",
+            "onsubmit",
+            "onreset",
+            "onselect",
+            "onblur",
+            "onfocus"
+            ]
+        },
+        "keyboard":
+        {
+            "except":[
+            "base",
+            "bdo",
+            "br",
+            "frame",
+            "frameset",
+            "head",
+            "html",
+            "iframe",
+            "meta",
+            "param",
+            "script",
+            "style",
+            "title"
+            ],
+            "attributes":[
+            "onkeydown",
+            "onkeypress",
+            "onkeyup"
+            ]
+        },
+        "mouse":
+        {
+            "except":[
+            "base",
+            "bdo",
+            "br",
+            "head",
+            "html",
+            "meta",
+            "param",
+            "script",
+            "style",
+            "title"
+            ],
+            "attributes":[
+            "onclick",
+            "ondblclick",
+            "onmousedown",
+            "onmousemove",
+            "onmouseover",
+            "onmouseout",
+            "onmouseup"
+            ]
+        }
+    },
+    "_tags":
+    {
+        "a":
+        {
+            "attributes":
+            {
+                "0":"charset",
+                "1":"coords",
+                "2":"href",
+                "3":"hreflang",
+                "4":"name",
+                "5":"rel",
+                "6":"rev",
+                "shape":/^(rect|rectangle|circ|circle|poly|polygon)$/,
+                "7":"type"
+            }
+        },
+        "0":"abbr",
+        "1":"acronym",
+        "2":"address",
+        "area":
+        {
+            "attributes":
+            {
+                "0":"alt",
+                "1":"coords",
+                "2":"href",
+                "nohref":/^(true|false)$/,
+                "shape":/^(rect|rectangle|circ|circle|poly|polygon)$/
+            },
+            "required":[
+            "alt"
+            ]
+        },
+        "3":"b",
+        "base":
+        {
+            "attributes":[
+            "href"
+            ],
+            "required":[
+            "href"
+            ]
+        },
+        "bdo":
+        {
+            "attributes":
+            {
+                "dir":/^(ltr|rtl)$/
+            },
+            "required":[
+            "dir"
+            ]
+        },
+        "4":"big",
+        "blockquote":
+        {
+            "attributes":[
+            "cite"
+            ]
+        },
+        "5":"body",
+        "6":"br",
+        "button":
+        {
+            "attributes":
+            {
+                "disabled":/^(disabled)$/,
+                "type":/^(button|reset|submit)$/,
+                "0":"value"
+            },
+            "inside":"form"
+        },
+        "7":"caption",
+        "8":"cite",
+        "9":"code",
+        "col":
+        {
+            "attributes":
+            {
+                "align":/^(right|left|center|justify)$/,
+                "0":"char",
+                "1":"charoff",
+                "span":/^(\d)+$/,
+                "valign":/^(top|middle|bottom|baseline)$/,
+                "2":"width"
+            },
+            "inside":"colgroup"
+        },
+        "colgroup":
+        {
+            "attributes":
+            {
+                "align":/^(right|left|center|justify)$/,
+                "0":"char",
+                "1":"charoff",
+                "span":/^(\d)+$/,
+                "valign":/^(top|middle|bottom|baseline)$/,
+                "2":"width"
+            }
+        },
+        "10":"dd",
+        "del":
+        {
+            "attributes":
+            {
+                "0":"cite",
+                "datetime":/^([0-9]){8}/
+            }
+        },
+        "11":"div",
+        "12":"dfn",
+        "13":"dl",
+        "14":"dt",
+        "15":"em",
+        "fieldset":
+        {
+            "inside":"form"
+        },
+        "form":
+        {
+            "attributes":
+            {
+                "0":"action",
+                "1":"accept",
+                "2":"accept-charset",
+                "3":"enctype",
+                "method":/^(get|post)$/
+            },
+            "required":[
+            "action"
+            ]
+        },
+        "head":
+        {
+            "attributes":[
+            "profile"
+            ]
+        },
+        "16":"h1",
+        "17":"h2",
+        "18":"h3",
+        "19":"h4",
+        "20":"h5",
+        "21":"h6",
+        "22":"hr",
+        "html":
+        {
+            "attributes":[
+            "xmlns"
+            ]
+        },
+        "23":"i",
+        "img":
+        {
+            "attributes":[
+            "alt",
+            "src",
+            "height",
+            "ismap",
+            "longdesc",
+            "usemap",
+            "width"
+            ],
+            "required":[
+            "alt",
+            "src"
+            ]
+        },
+        "input":
+        {
+            "attributes":
+            {
+                "0":"accept",
+                "1":"alt",
+                "checked":/^(checked)$/,
+                "disabled":/^(disabled)$/,
+                "maxlength":/^(\d)+$/,
+                "2":"name",
+                "readonly":/^(readonly)$/,
+                "size":/^(\d)+$/,
+                "3":"src",
+                "type":/^(button|checkbox|file|hidden|image|password|radio|reset|submit|text)$/,
+                "4":"value"
+            },
+            "inside":"form"
+        },
+        "ins":
+        {
+            "attributes":
+            {
+                "0":"cite",
+                "datetime":/^([0-9]){8}/
+            }
+        },
+        "24":"kbd",
+        "label":
+        {
+            "attributes":[
+            "for"
+            ],
+            "inside":"form"
+        },
+        "25":"legend",
+        "26":"li",
+        "link":
+        {
+            "attributes":
+            {
+                "0":"charset",
+                "1":"href",
+                "2":"hreflang",
+                "media":/^(all|braille|print|projection|screen|speech|,|;| )+$/i,
+                //next comment line required by Opera!
+                /*"rel":/^(alternate|appendix|bookmark|chapter|contents|copyright|glossary|help|home|index|next|prev|section|start|stylesheet|subsection| |shortcut|icon)+$/i,*/
+                "rel":/^(alternate|appendix|bookmark|chapter|contents|copyright|glossary|help|home|index|next|prev|section|start|stylesheet|subsection| |shortcut|icon)+$/i,
+                "rev":/^(alternate|appendix|bookmark|chapter|contents|copyright|glossary|help|home|index|next|prev|section|start|stylesheet|subsection| |shortcut|icon)+$/i,
+                "3":"type"
+            },
+            "inside":"head"
+        },
+        "map":
+        {
+            "attributes":[
+            "id",
+            "name"
+            ],
+            "required":[
+            "id"
+            ]
+        },
+        "meta":
+        {
+            "attributes":
+            {
+                "0":"content",
+                "http-equiv":/^(content\-type|expires|refresh|set\-cookie)$/i,
+                "1":"name",
+                "2":"scheme"
+            },
+            "required":[
+            "content"
+            ]
+        },
+        "27":"noscript",
+        "object":
+        {
+            "attributes":[
+            "archive",
+            "classid",
+            "codebase",
+            "codetype",
+            "data",
+            "declare",
+            "height",
+            "name",
+            "standby",
+            "type",
+            "usemap",
+            "width"
+            ]
+        },
+        "28":"ol",
+        "optgroup":
+        {
+            "attributes":
+            {
+                "0":"label",
+                "disabled": /^(disabled)$/
+            },
+            "required":[
+            "label"
+            ]
+        },
+        "option":
+        {
+            "attributes":
+            {
+                "0":"label",
+                "disabled":/^(disabled)$/,
+                "selected":/^(selected)$/,
+                "1":"value"
+            },
+            "inside":"select"
+        },
+        "29":"p",
+        "param":
+        {
+            "attributes":
+            {
+                "0":"type",
+                "valuetype":/^(data|ref|object)$/,
+                "1":"valuetype",
+                "2":"value"
+            },
+            "required":[
+            "name"
+            ]
+        },
+        "30":"pre",
+        "q":
+        {
+            "attributes":[
+            "cite"
+            ]
+        },
+        "31":"samp",
+        "script":
+        {
+            "attributes":
+            {
+                "type":/^(text\/ecmascript|text\/javascript|text\/jscript|text\/vbscript|text\/vbs|text\/xml)$/,
+                "0":"charset",
+                "defer":/^(defer)$/,
+                "1":"src"
+            },
+            "required":[
+            "type"
+            ]
+        },
+        "select":
+        {
+            "attributes":
+            {
+                "disabled":/^(disabled)$/,
+                "multiple":/^(multiple)$/,
+                "0":"name",
+                "1":"size"
+            },
+            "inside":"form"
+        },
+        "32":"small",
+        "33":"span",
+        "34":"strong",
+        "style":
+        {
+            "attributes":
+            {
+                "0":"type",
+                "media":/^(screen|tty|tv|projection|handheld|print|braille|aural|all)$/
+            },
+            "required":[
+            "type"
+            ]
+        },
+        "35":"sub",
+        "36":"sup",
+        "table":
+        {
+            "attributes":
+            {
+                "0":"border",
+                "1":"cellpadding",
+                "2":"cellspacing",
+                "frame":/^(void|above|below|hsides|lhs|rhs|vsides|box|border)$/,
+                "rules":/^(none|groups|rows|cols|all)$/,
+                "3":"summary",
+                "4":"width"
+            }
+        },
+        "tbody":
+        {
+            "attributes":
+            {
+                "align":/^(right|left|center|justify)$/,
+                "0":"char",
+                "1":"charoff",
+                "valign":/^(top|middle|bottom|baseline)$/
+            }
+        },
+        "td":
+        {
+            "attributes":
+            {
+                "0":"abbr",
+                "align":/^(left|right|center|justify|char)$/,
+                "1":"axis",
+                "2":"char",
+                "3":"charoff",
+                "colspan":/^(\d)+$/,
+                "4":"headers",
+                "rowspan":/^(\d)+$/,
+                "scope":/^(col|colgroup|row|rowgroup)$/,
+                "valign":/^(top|middle|bottom|baseline)$/
+            }
+        },
+        "textarea":
+        {
+            "attributes":[
+            "cols",
+            "rows",
+            "disabled",
+            "name",
+            "readonly"
+            ],
+            "required":[
+            "cols",
+            "rows"
+            ],
+            "inside":"form"
+        },
+        "tfoot":
+        {
+            "attributes":
+            {
+                "align":/^(right|left|center|justify)$/,
+                "0":"char",
+                "1":"charoff",
+                "valign":/^(top|middle|bottom)$/,
+                "2":"baseline"
+            }
+        },
+        "th":
+        {
+            "attributes":
+            {
+                "0":"abbr",
+                "align":/^(left|right|center|justify|char)$/,
+                "1":"axis",
+                "2":"char",
+                "3":"charoff",
+                "colspan":/^(\d)+$/,
+                "4":"headers",
+                "rowspan":/^(\d)+$/,
+                "scope":/^(col|colgroup|row|rowgroup)$/,
+                "valign":/^(top|middle|bottom|baseline)$/
+            }
+        },
+        "thead":
+        {
+            "attributes":
+            {
+                "align":/^(right|left|center|justify)$/,
+                "0":"char",
+                "1":"charoff",
+                "valign":/^(top|middle|bottom|baseline)$/
+            }
+        },
+        "37":"title",
+        "tr":
+        {
+            "attributes":
+            {
+                "align":/^(right|left|center|justify|char)$/,
+                "0":"char",
+                "1":"charoff",
+                "valign":/^(top|middle|bottom|baseline)$/
+            }
+        },
+        "38":"tt",
+        "39":"ul",
+        "40":"var"
+    },
 
-    if (this._tags[tag] && this._tags[tag]['attributes']) {
-      for (k in this._tags[tag]['attributes']) {
-        result.push(parseInt(k, 10) == k ? this._tags[tag]['attributes'][k] : k);
-      }
-    }
-    return result;
-  },
-  getDefaultAttributesAndEventsForTags : function()
-  {
+    // Temporary skiped attributes
+    skiped_attributes : [],
+    skiped_attribute_values : [],
+
+    getValidTagAttributes: function(tag, attributes)
+    {
+        var valid_attributes = {};
+        var possible_attributes = this.getPossibleTagAttributes(tag);
+        for(var attribute in attributes) {
+            var value = attributes[attribute];
+            attribute = attribute.toLowerCase(); // ie8 uses colSpan
+            var h = WYMeditor.Helper;
+            if(!h.contains(this.skiped_attributes, attribute) && !h.contains(this.skiped_attribute_values, value)){
+                if (typeof value != 'function' && h.contains(possible_attributes, attribute)) {
+                    if (this.doesAttributeNeedsValidation(tag, attribute)) {
+                        if(this.validateAttribute(tag, attribute, value)){
+                            valid_attributes[attribute] = value;
+                        }
+                    }else{
+                        valid_attributes[attribute] = value;
+                    }
+                } else {
+                    jQuery.each(possible_attributes, function() {
+                        if(this.match(/\/(.*)\//)) {
+                            regex = new RegExp(this.match(/\/(.*)\//)[1]);
+                            if(regex.test(attribute)) {
+                                valid_attributes[attribute] = value;
+                            }
+                        }
+                    });
+                }
+            }
+        }
+        return valid_attributes;
+    },
+    getUniqueAttributesAndEventsForTag : function(tag)
+    {
+        var result = [];
+
+        if (this._tags[tag] && this._tags[tag].attributes) {
+            for (var k in this._tags[tag].attributes) {
+                result.push(parseInt(k, 10) == k ? this._tags[tag].attributes[k] : k);
+            }
+        }
+        return result;
+    },
+getDefaultAttributesAndEventsForTags : function()
+{
     var result = [];
     for (var key in this._events){
-      result.push(this._events[key]);
+        result.push(this._events[key]);
     }
     for (key in this._attributes){
-      result.push(this._attributes[key]);
+        result.push(this._attributes[key]);
     }
     return result;
-  },
-  isValidTag : function(tag)
-  {
+},
+isValidTag : function(tag)
+{
     if(this._tags[tag]){
-      return true;
+        return true;
     }
     for(var key in this._tags){
-      if(this._tags[key] == tag){
-        return true;
-      }
+        if(this._tags[key] == tag){
+            return true;
+        }
     }
     return false;
-  },
-  getDefaultAttributesAndEventsForTag : function(tag)
-  {
+},
+getDefaultAttributesAndEventsForTag : function(tag)
+{
     var default_attributes = [];
     if (this.isValidTag(tag)) {
-      var default_attributes_and_events = this.getDefaultAttributesAndEventsForTags();
+        var default_attributes_and_events = this.getDefaultAttributesAndEventsForTags();
 
-      for(var key in default_attributes_and_events) {
+    for(var key in default_attributes_and_events) {
         var defaults = default_attributes_and_events[key];
         if(typeof defaults == 'object'){
-          var h = WYMeditor.Helper;
-          if ((defaults['except'] && h.contains(defaults['except'], tag)) || (defaults['only'] && !h.contains(defaults['only'], tag))) {
-            continue;
-          }
+            var h = WYMeditor.Helper;
+            if ((defaults['except'] && h.contains(defaults['except'], tag)) || (defaults['only'] && !h.contains(defaults['only'], tag))) {
+                continue;
+            }
 
-          var tag_defaults = defaults['attributes'] ? defaults['attributes'] : defaults['events'];
-          for(var k in tag_defaults) {
-            default_attributes.push(typeof tag_defaults[k] != 'string' ? k : tag_defaults[k]);
-          }
-        }
-      }
+    var tag_defaults = defaults['attributes'] ? defaults['attributes'] : defaults['events'];
+    for(var k in tag_defaults) {
+        default_attributes.push(typeof tag_defaults[k] != 'string' ? k : tag_defaults[k]);
     }
-    return default_attributes;
-  },
-  doesAttributeNeedsValidation: function(tag, attribute)
-  {
+}
+}
+}
+return default_attributes;
+},
+doesAttributeNeedsValidation: function(tag, attribute)
+{
     return this._tags[tag] && ((this._tags[tag]['attributes'] && this._tags[tag]['attributes'][attribute]) || (this._tags[tag]['required'] &&
-     WYMeditor.Helper.contains(this._tags[tag]['required'], attribute)));
-  },
-  validateAttribute : function(tag, attribute, value)
-  {
+        WYMeditor.Helper.contains(this._tags[tag]['required'], attribute)));
+},
+validateAttribute : function(tag, attribute, value)
+{
     if ( this._tags[tag] &&
-      (this._tags[tag]['attributes'] && this._tags[tag]['attributes'][attribute] && value.length > 0 && !value.match(this._tags[tag]['attributes'][attribute])) || // invalid format
-      (this._tags[tag] && this._tags[tag]['required'] && WYMeditor.Helper.contains(this._tags[tag]['required'], attribute) && value.length === 0)) // required attribute
+        (this._tags[tag]['attributes'] && this._tags[tag]['attributes'][attribute] && value.length > 0 && !value.match(this._tags[tag]['attributes'][attribute])) || // invalid format
+        (this._tags[tag] && this._tags[tag]['required'] && WYMeditor.Helper.contains(this._tags[tag]['required'], attribute) && value.length === 0)) // required attribute
     {
-      return false;
+        return false;
     }
     return typeof this._tags[tag] != 'undefined';
-  },
-  getPossibleTagAttributes : function(tag)
-  {
+},
+getPossibleTagAttributes : function(tag)
+{
     if (!this._possible_tag_attributes) {
-      this._possible_tag_attributes = {};
+        this._possible_tag_attributes = {};
     }
     if (!this._possible_tag_attributes[tag]) {
-      this._possible_tag_attributes[tag] = this.getUniqueAttributesAndEventsForTag(tag).concat(this.getDefaultAttributesAndEventsForTag(tag));
+        this._possible_tag_attributes[tag] = this.getUniqueAttributesAndEventsForTag(tag).concat(this.getDefaultAttributesAndEventsForTag(tag));
     }
     return this._possible_tag_attributes[tag];
-  }
+}
 };
 
 
@@ -2660,11 +2719,11 @@ WYMeditor.XhtmlValidator = {
 */
 WYMeditor.ParallelRegex = function(case_sensitive)
 {
-  this._case = case_sensitive;
-  this._patterns = [];
-  this._labels = [];
-  this._regex = null;
-  return this;
+    this._case = case_sensitive;
+    this._patterns = [];
+    this._labels = [];
+    this._regex = null;
+    return this;
 };
 
 
@@ -2678,11 +2737,11 @@ WYMeditor.ParallelRegex = function(case_sensitive)
 */
 WYMeditor.ParallelRegex.prototype.addPattern = function(pattern, label)
 {
-  label = label || true;
-  var count = this._patterns.length;
-  this._patterns[count] = pattern;
-  this._labels[count] = label;
-  this._regex = null;
+    label = label || true;
+    var count = this._patterns.length;
+    this._patterns[count] = pattern;
+    this._labels[count] = label;
+    this._regex = null;
 };
 
 /**
@@ -2697,21 +2756,21 @@ WYMeditor.ParallelRegex.prototype.addPattern = function(pattern, label)
 */
 WYMeditor.ParallelRegex.prototype.match = function(subject)
 {
-  if (this._patterns.length === 0) {
-    return [false, ''];
-  }
-  var matches = subject.match(this._getCompoundedRegex());
-
-  if(!matches){
-    return [false, ''];
-  }
-  var match = matches[0];
-  for (var i = 1; i < matches.length; i++) {
-    if (matches[i]) {
-      return [this._labels[i-1], match];
+    if (this._patterns.length === 0) {
+        return [false, ''];
     }
-  }
-  return [true, matches[0]];
+    var matches = subject.match(this._getCompoundedRegex());
+
+    if(!matches){
+        return [false, ''];
+    }
+    var match = matches[0];
+    for (var i = 1; i < matches.length; i++) {
+        if (matches[i]) {
+            return [this._labels[i-1], match];
+        }
+    }
+    return [true, matches[0]];
 };
 
 /**
@@ -2724,13 +2783,13 @@ WYMeditor.ParallelRegex.prototype.match = function(subject)
 */
 WYMeditor.ParallelRegex.prototype._getCompoundedRegex = function()
 {
-  if (this._regex === null) {
-    for (var i = 0, count = this._patterns.length; i < count; i++) {
-      this._patterns[i] = '(' + this._untokenizeRegex(this._tokenizeRegex(this._patterns[i]).replace(/([\/\(\)])/g,'\\$1')) + ')';
+    if (this._regex === null) {
+        for (var i = 0, count = this._patterns.length; i < count; i++) {
+            this._patterns[i] = '(' + this._untokenizeRegex(this._tokenizeRegex(this._patterns[i]).replace(/([\/\(\)])/g,'\\$1')) + ')';
+        }
+        this._regex = new RegExp(this._patterns.join("|") ,this._getPerlMatchingFlags());
     }
-    this._regex = new RegExp(this._patterns.join("|") ,this._getPerlMatchingFlags());
-  }
-  return this._regex;
+    return this._regex;
 };
 
 /**
@@ -2738,14 +2797,14 @@ WYMeditor.ParallelRegex.prototype._getCompoundedRegex = function()
 */
 WYMeditor.ParallelRegex.prototype._tokenizeRegex = function(regex)
 {
-  return regex.
-  replace(/\(\?(i|m|s|x|U)\)/,     '~~~~~~Tk1\$1~~~~~~').
-  replace(/\(\?(\-[i|m|s|x|U])\)/, '~~~~~~Tk2\$1~~~~~~').
-  replace(/\(\?\=(.*)\)/,          '~~~~~~Tk3\$1~~~~~~').
-  replace(/\(\?\!(.*)\)/,          '~~~~~~Tk4\$1~~~~~~').
-  replace(/\(\?\<\=(.*)\)/,        '~~~~~~Tk5\$1~~~~~~').
-  replace(/\(\?\<\!(.*)\)/,        '~~~~~~Tk6\$1~~~~~~').
-  replace(/\(\?\:(.*)\)/,          '~~~~~~Tk7\$1~~~~~~');
+    return regex.
+    replace(/\(\?(i|m|s|x|U)\)/,     '~~~~~~Tk1\$1~~~~~~').
+    replace(/\(\?(\-[i|m|s|x|U])\)/, '~~~~~~Tk2\$1~~~~~~').
+    replace(/\(\?\=(.*)\)/,          '~~~~~~Tk3\$1~~~~~~').
+    replace(/\(\?\!(.*)\)/,          '~~~~~~Tk4\$1~~~~~~').
+    replace(/\(\?\<\=(.*)\)/,        '~~~~~~Tk5\$1~~~~~~').
+    replace(/\(\?\<\!(.*)\)/,        '~~~~~~Tk6\$1~~~~~~').
+    replace(/\(\?\:(.*)\)/,          '~~~~~~Tk7\$1~~~~~~');
 };
 
 /**
@@ -2753,14 +2812,14 @@ WYMeditor.ParallelRegex.prototype._tokenizeRegex = function(regex)
 */
 WYMeditor.ParallelRegex.prototype._untokenizeRegex = function(regex)
 {
-  return regex.
-  replace(/~~~~~~Tk1(.{1})~~~~~~/,    "(?\$1)").
-  replace(/~~~~~~Tk2(.{2})~~~~~~/,    "(?\$1)").
-  replace(/~~~~~~Tk3(.*)~~~~~~/,      "(?=\$1)").
-  replace(/~~~~~~Tk4(.*)~~~~~~/,      "(?!\$1)").
-  replace(/~~~~~~Tk5(.*)~~~~~~/,      "(?<=\$1)").
-  replace(/~~~~~~Tk6(.*)~~~~~~/,      "(?<!\$1)").
-  replace(/~~~~~~Tk7(.*)~~~~~~/,      "(?:\$1)");
+    return regex.
+    replace(/~~~~~~Tk1(.{1})~~~~~~/,    "(?\$1)").
+    replace(/~~~~~~Tk2(.{2})~~~~~~/,    "(?\$1)").
+    replace(/~~~~~~Tk3(.*)~~~~~~/,      "(?=\$1)").
+    replace(/~~~~~~Tk4(.*)~~~~~~/,      "(?!\$1)").
+    replace(/~~~~~~Tk5(.*)~~~~~~/,      "(?<=\$1)").
+    replace(/~~~~~~Tk6(.*)~~~~~~/,      "(?<!\$1)").
+    replace(/~~~~~~Tk7(.*)~~~~~~/,      "(?:\$1)");
 };
 
 
@@ -2771,7 +2830,7 @@ WYMeditor.ParallelRegex.prototype._untokenizeRegex = function(regex)
 */
 WYMeditor.ParallelRegex.prototype._getPerlMatchingFlags = function()
 {
-  return (this._case ? "m" : "mi");
+    return (this._case ? "m" : "mi");
 };
 
 
@@ -2787,8 +2846,8 @@ WYMeditor.ParallelRegex.prototype._getPerlMatchingFlags = function()
 */
 WYMeditor.StateStack = function(start)
 {
-  this._stack = [start];
-  return this;
+    this._stack = [start];
+    return this;
 };
 
 /**
@@ -2798,7 +2857,7 @@ WYMeditor.StateStack = function(start)
 */
 WYMeditor.StateStack.prototype.getCurrent = function()
 {
-  return this._stack[this._stack.length - 1];
+    return this._stack[this._stack.length - 1];
 };
 
 /**
@@ -2809,7 +2868,7 @@ WYMeditor.StateStack.prototype.getCurrent = function()
 */
 WYMeditor.StateStack.prototype.enter = function(state)
 {
-  this._stack.push(state);
+    this._stack.push(state);
 };
 
 /**
@@ -2821,11 +2880,11 @@ WYMeditor.StateStack.prototype.enter = function(state)
 */
 WYMeditor.StateStack.prototype.leave = function()
 {
-  if (this._stack.length == 1) {
-    return false;
-  }
-  this._stack.pop();
-  return true;
+    if (this._stack.length == 1) {
+        return false;
+    }
+    this._stack.pop();
+    return true;
 };
 
 
@@ -2855,14 +2914,14 @@ WYMeditor.LEXER_SPECIAL = 5;
 */
 WYMeditor.Lexer = function(parser, start, case_sensitive)
 {
-  start = start || 'accept';
-  this._case = case_sensitive || false;
-  this._regexes = {};
-  this._parser = parser;
-  this._mode = new WYMeditor.StateStack(start);
-  this._mode_handlers = {};
-  this._mode_handlers[start] = start;
-  return this;
+    start = start || 'accept';
+    this._case = case_sensitive || false;
+    this._regexes = {};
+    this._parser = parser;
+    this._mode = new WYMeditor.StateStack(start);
+    this._mode_handlers = {};
+    this._mode_handlers[start] = start;
+    return this;
 };
 
 /**
@@ -2878,14 +2937,14 @@ WYMeditor.Lexer = function(parser, start, case_sensitive)
 */
 WYMeditor.Lexer.prototype.addPattern = function(pattern, mode)
 {
-  mode = mode || "accept";
-  if (typeof this._regexes[mode] == 'undefined') {
-    this._regexes[mode] = new WYMeditor.ParallelRegex(this._case);
-  }
-  this._regexes[mode].addPattern(pattern);
-  if (typeof this._mode_handlers[mode] == 'undefined') {
-    this._mode_handlers[mode] = mode;
-  }
+    mode = mode || "accept";
+    if (typeof this._regexes[mode] == 'undefined') {
+        this._regexes[mode] = new WYMeditor.ParallelRegex(this._case);
+    }
+    this._regexes[mode].addPattern(pattern);
+    if (typeof this._mode_handlers[mode] == 'undefined') {
+        this._mode_handlers[mode] = mode;
+    }
 };
 
 /**
@@ -2903,13 +2962,13 @@ WYMeditor.Lexer.prototype.addPattern = function(pattern, mode)
 */
 WYMeditor.Lexer.prototype.addEntryPattern = function(pattern, mode, new_mode)
 {
-  if (typeof this._regexes[mode] == 'undefined') {
-    this._regexes[mode] = new WYMeditor.ParallelRegex(this._case);
-  }
-  this._regexes[mode].addPattern(pattern, new_mode);
-  if (typeof this._mode_handlers[new_mode] == 'undefined') {
-    this._mode_handlers[new_mode] = new_mode;
-  }
+    if (typeof this._regexes[mode] == 'undefined') {
+        this._regexes[mode] = new WYMeditor.ParallelRegex(this._case);
+    }
+    this._regexes[mode].addPattern(pattern, new_mode);
+    if (typeof this._mode_handlers[new_mode] == 'undefined') {
+        this._mode_handlers[new_mode] = new_mode;
+    }
 };
 
 /**
@@ -2922,13 +2981,13 @@ WYMeditor.Lexer.prototype.addEntryPattern = function(pattern, mode, new_mode)
 */
 WYMeditor.Lexer.prototype.addExitPattern = function(pattern, mode)
 {
-  if (typeof this._regexes[mode] == 'undefined') {
-    this._regexes[mode] = new WYMeditor.ParallelRegex(this._case);
-  }
-  this._regexes[mode].addPattern(pattern, "__exit");
-  if (typeof this._mode_handlers[mode] == 'undefined') {
-    this._mode_handlers[mode] = mode;
-  }
+    if (typeof this._regexes[mode] == 'undefined') {
+        this._regexes[mode] = new WYMeditor.ParallelRegex(this._case);
+    }
+    this._regexes[mode].addPattern(pattern, "__exit");
+    if (typeof this._mode_handlers[mode] == 'undefined') {
+        this._mode_handlers[mode] = mode;
+    }
 };
 
 /**
@@ -2945,13 +3004,13 @@ WYMeditor.Lexer.prototype.addExitPattern = function(pattern, mode)
 */
 WYMeditor.Lexer.prototype.addSpecialPattern =  function(pattern, mode, special)
 {
-  if (typeof this._regexes[mode] == 'undefined') {
-    this._regexes[mode] = new WYMeditor.ParallelRegex(this._case);
-  }
-  this._regexes[mode].addPattern(pattern, '_'+special);
-  if (typeof this._mode_handlers[special] == 'undefined') {
-    this._mode_handlers[special] = special;
-  }
+    if (typeof this._regexes[mode] == 'undefined') {
+        this._regexes[mode] = new WYMeditor.ParallelRegex(this._case);
+    }
+    this._regexes[mode].addPattern(pattern, '_'+special);
+    if (typeof this._mode_handlers[special] == 'undefined') {
+        this._mode_handlers[special] = special;
+    }
 };
 
 /**
@@ -2962,7 +3021,7 @@ WYMeditor.Lexer.prototype.addSpecialPattern =  function(pattern, mode, special)
 */
 WYMeditor.Lexer.prototype.mapHandler = function(mode, handler)
 {
-  this._mode_handlers[mode] = handler;
+    this._mode_handlers[mode] = handler;
 };
 
 /**
@@ -2977,35 +3036,35 @@ WYMeditor.Lexer.prototype.mapHandler = function(mode, handler)
 */
 WYMeditor.Lexer.prototype.parse = function(raw)
 {
-  if (typeof this._parser == 'undefined') {
-    return false;
-  }
+    if (typeof this._parser == 'undefined') {
+        return false;
+    }
 
-  var length = raw.length;
-  var parsed;
-  while (typeof (parsed = this._reduce(raw)) == 'object') {
-    raw = parsed[0];
-    var unmatched = parsed[1];
-    var matched = parsed[2];
-    var mode = parsed[3];
+    var length = raw.length;
+    var parsed;
+    while (typeof (parsed = this._reduce(raw)) == 'object') {
+        raw = parsed[0];
+        var unmatched = parsed[1];
+        var matched = parsed[2];
+        var mode = parsed[3];
 
     if (! this._dispatchTokens(unmatched, matched, mode)) {
-      return false;
+        return false;
     }
 
     if (raw === '') {
-      return true;
+        return true;
     }
     if (raw.length == length) {
-      return false;
+        return false;
     }
     length = raw.length;
-  }
-  if (! parsed ) {
+}
+if (! parsed ) {
     return false;
-  }
+}
 
-  return this._invokeParser(raw, WYMeditor.LEXER_UNMATCHED);
+    return this._invokeParser(raw, WYMeditor.LEXER_UNMATCHED);
 };
 
 /**
@@ -3022,31 +3081,31 @@ WYMeditor.Lexer.prototype.parse = function(raw)
 */
 WYMeditor.Lexer.prototype._dispatchTokens = function(unmatched, matched, mode)
 {
-  mode = mode || false;
+    mode = mode || false;
 
-  if (! this._invokeParser(unmatched, WYMeditor.LEXER_UNMATCHED)) {
-    return false;
-  }
-
-  if (typeof mode == 'boolean') {
-    return this._invokeParser(matched, WYMeditor.LEXER_MATCHED);
-  }
-  if (this._isModeEnd(mode)) {
-    if (! this._invokeParser(matched, WYMeditor.LEXER_EXIT)) {
-      return false;
+    if (! this._invokeParser(unmatched, WYMeditor.LEXER_UNMATCHED)) {
+        return false;
     }
-    return this._mode.leave();
-  }
-  if (this._isSpecialMode(mode)) {
-    this._mode.enter(this._decodeSpecial(mode));
-    if (! this._invokeParser(matched, WYMeditor.LEXER_SPECIAL)) {
-      return false;
-    }
-    return this._mode.leave();
-  }
-  this._mode.enter(mode);
 
-  return this._invokeParser(matched, WYMeditor.LEXER_ENTER);
+    if (typeof mode == 'boolean') {
+        return this._invokeParser(matched, WYMeditor.LEXER_MATCHED);
+    }
+    if (this._isModeEnd(mode)) {
+        if (! this._invokeParser(matched, WYMeditor.LEXER_EXIT)) {
+            return false;
+        }
+        return this._mode.leave();
+    }
+    if (this._isSpecialMode(mode)) {
+        this._mode.enter(this._decodeSpecial(mode));
+        if (! this._invokeParser(matched, WYMeditor.LEXER_SPECIAL)) {
+            return false;
+        }
+        return this._mode.leave();
+    }
+    this._mode.enter(mode);
+
+    return this._invokeParser(matched, WYMeditor.LEXER_ENTER);
 };
 
 /**
@@ -3059,7 +3118,7 @@ WYMeditor.Lexer.prototype._dispatchTokens = function(unmatched, matched, mode)
 */
 WYMeditor.Lexer.prototype._isModeEnd = function(mode)
 {
-  return (mode === "__exit");
+    return (mode === "__exit");
 };
 
 /**
@@ -3072,7 +3131,7 @@ WYMeditor.Lexer.prototype._isModeEnd = function(mode)
 */
 WYMeditor.Lexer.prototype._isSpecialMode = function(mode)
 {
-  return (mode.substring(0,1) == "_");
+    return (mode.substring(0,1) == "_");
 };
 
 /**
@@ -3084,7 +3143,7 @@ WYMeditor.Lexer.prototype._isSpecialMode = function(mode)
 */
 WYMeditor.Lexer.prototype._decodeSpecial = function(mode)
 {
-  return mode.substring(1);
+    return mode.substring(1);
 };
 
 /**
@@ -3099,13 +3158,13 @@ WYMeditor.Lexer.prototype._decodeSpecial = function(mode)
 WYMeditor.Lexer.prototype._invokeParser = function(content, is_match)
 {
 
-  if (content === '') {
-    return true;
-  }
-  var current = this._mode.getCurrent();
-  var handler = this._mode_handlers[current];
-  var result = this._parser[handler](content, is_match);
-  return result;
+    if (content === '') {
+        return true;
+    }
+    var current = this._mode.getCurrent();
+    var handler = this._mode_handlers[current];
+    var result = this._parser[handler](content, is_match);
+    return result;
 };
 
 /**
@@ -3124,16 +3183,16 @@ WYMeditor.Lexer.prototype._invokeParser = function(content, is_match)
 */
 WYMeditor.Lexer.prototype._reduce = function(raw)
 {
-  var matched = this._regexes[this._mode.getCurrent()].match(raw);
-  var match = matched[1];
-  var action = matched[0];
-  if (action) {
-    var unparsed_character_count = raw.indexOf(match);
-    var unparsed = raw.substr(0, unparsed_character_count);
-    raw = raw.substring(unparsed_character_count + match.length);
-    return [raw, unparsed, match, action];
-  }
-  return true;
+    var matched = this._regexes[this._mode.getCurrent()].match(raw);
+    var match = matched[1];
+    var action = matched[0];
+    if (action) {
+        var unparsed_character_count = raw.indexOf(match);
+        var unparsed = raw.substr(0, unparsed_character_count);
+        raw = raw.substring(unparsed_character_count + match.length);
+        return [raw, unparsed, match, action];
+    }
+    return true;
 };
 
 
@@ -3147,15 +3206,15 @@ WYMeditor.Lexer.prototype._reduce = function(raw)
 */
 WYMeditor.XhtmlLexer = function(parser)
 {
-  jQuery.extend(this, new WYMeditor.Lexer(parser, 'Text'));
+    jQuery.extend(this, new WYMeditor.Lexer(parser, 'Text'));
 
-  this.mapHandler('Text', 'Text');
+    this.mapHandler('Text', 'Text');
 
-  this.addTokens();
+    this.addTokens();
 
-  this.init();
+    this.init();
 
-  return this;
+    return this;
 };
 
 
@@ -3165,64 +3224,64 @@ WYMeditor.XhtmlLexer.prototype.init = function()
 
 WYMeditor.XhtmlLexer.prototype.addTokens = function()
 {
-  this.addCommentTokens('Text');
-  this.addScriptTokens('Text');
-  this.addCssTokens('Text');
-  this.addTagTokens('Text');
+    this.addCommentTokens('Text');
+    this.addScriptTokens('Text');
+    this.addCssTokens('Text');
+    this.addTagTokens('Text');
 };
 
 WYMeditor.XhtmlLexer.prototype.addCommentTokens = function(scope)
 {
-  this.addEntryPattern("<!--", scope, 'Comment');
-  this.addExitPattern("-->", 'Comment');
+    this.addEntryPattern("<!--", scope, 'Comment');
+    this.addExitPattern("-->", 'Comment');
 };
 
 WYMeditor.XhtmlLexer.prototype.addScriptTokens = function(scope)
 {
-  this.addEntryPattern("<script", scope, 'Script');
-  this.addExitPattern("</script>", 'Script');
+    this.addEntryPattern("<script", scope, 'Script');
+    this.addExitPattern("</script>", 'Script');
 };
 
 WYMeditor.XhtmlLexer.prototype.addCssTokens = function(scope)
 {
-  this.addEntryPattern("<style", scope, 'Css');
-  this.addExitPattern("</style>", 'Css');
+    this.addEntryPattern("<style", scope, 'Css');
+    this.addExitPattern("</style>", 'Css');
 };
 
 WYMeditor.XhtmlLexer.prototype.addTagTokens = function(scope)
 {
-  this.addSpecialPattern("<\\s*[a-z0-9:\-]+\\s*>", scope, 'OpeningTag');
-  this.addEntryPattern("<[a-z0-9:\-]+"+'[\\\/ \\\>]+', scope, 'OpeningTag');
-  this.addInTagDeclarationTokens('OpeningTag');
+    this.addSpecialPattern("<\\s*[a-z0-9:\-]+\\s*>", scope, 'OpeningTag');
+    this.addEntryPattern("<[a-z0-9:\-]+"+'[\\\/ \\\>]+', scope, 'OpeningTag');
+    this.addInTagDeclarationTokens('OpeningTag');
 
-  this.addSpecialPattern("</\\s*[a-z0-9:\-]+\\s*>", scope, 'ClosingTag');
+    this.addSpecialPattern("</\\s*[a-z0-9:\-]+\\s*>", scope, 'ClosingTag');
 
 };
 
 WYMeditor.XhtmlLexer.prototype.addInTagDeclarationTokens = function(scope)
 {
-  this.addSpecialPattern('\\s+', scope, 'Ignore');
+    this.addSpecialPattern('\\s+', scope, 'Ignore');
 
-  this.addAttributeTokens(scope);
+    this.addAttributeTokens(scope);
 
-  this.addExitPattern('/>', scope);
-  this.addExitPattern('>', scope);
+    this.addExitPattern('/>', scope);
+    this.addExitPattern('>', scope);
 
 };
 
 WYMeditor.XhtmlLexer.prototype.addAttributeTokens = function(scope)
 {
-  this.addSpecialPattern("\\s*[a-z-_0-9]*:?[a-z-_0-9]+\\s*(?=\=)\\s*", scope, 'TagAttributes');
+    this.addSpecialPattern("\\s*[a-z-_0-9]*:?[a-z-_0-9]+\\s*(?=\=)\\s*", scope, 'TagAttributes');
 
-  this.addEntryPattern('=\\s*"', scope, 'DoubleQuotedAttribute');
-  this.addPattern("\\\\\"", 'DoubleQuotedAttribute');
-  this.addExitPattern('"', 'DoubleQuotedAttribute');
+    this.addEntryPattern('=\\s*"', scope, 'DoubleQuotedAttribute');
+    this.addPattern("\\\\\"", 'DoubleQuotedAttribute');
+    this.addExitPattern('"', 'DoubleQuotedAttribute');
 
-  this.addEntryPattern("=\\s*'", scope, 'SingleQuotedAttribute');
-  this.addPattern("\\\\'", 'SingleQuotedAttribute');
-  this.addExitPattern("'", 'SingleQuotedAttribute');
+    this.addEntryPattern("=\\s*'", scope, 'SingleQuotedAttribute');
+    this.addPattern("\\\\'", 'SingleQuotedAttribute');
+    this.addExitPattern("'", 'SingleQuotedAttribute');
 
-  this.addSpecialPattern('=\\s*[^>\\s]*', scope, 'UnquotedAttribute');
+    this.addSpecialPattern('=\\s*[^>\\s]*', scope, 'UnquotedAttribute');
 };
 
 
@@ -3237,250 +3296,250 @@ WYMeditor.XhtmlLexer.prototype.addAttributeTokens = function(scope)
 */
 WYMeditor.XhtmlParser = function(Listener, mode)
 {
-  mode = mode || 'Text';
-  this._Lexer = new WYMeditor.XhtmlLexer(this);
-  this._Listener = Listener;
-  this._mode = mode;
-  this._matches = [];
-  this._last_match = '';
-  this._current_match = '';
+    mode = mode || 'Text';
+    this._Lexer = new WYMeditor.XhtmlLexer(this);
+    this._Listener = Listener;
+    this._mode = mode;
+    this._matches = [];
+    this._last_match = '';
+    this._current_match = '';
 
-  return this;
+    return this;
 };
 
 WYMeditor.XhtmlParser.prototype.parse = function(raw)
 {
-  this._Lexer.parse(this.beforeParsing(raw));
-  return this.afterParsing(this._Listener.getResult());
+    this._Lexer.parse(this.beforeParsing(raw));
+    return this.afterParsing(this._Listener.getResult());
 };
 
 WYMeditor.XhtmlParser.prototype.beforeParsing = function(raw)
 {
-  if(raw.match(/class="MsoNormal"/) || raw.match(/ns = "urn:schemas-microsoft-com/)){
-    // Usefull for cleaning up content pasted from other sources (MSWord)
-    this._Listener.avoidStylingTagsAndAttributes();
-  }
-  return this._Listener.beforeParsing(raw);
+    if(raw.match(/class="MsoNormal"/) || raw.match(/ns = "urn:schemas-microsoft-com/)){
+        // Usefull for cleaning up content pasted from other sources (MSWord)
+        this._Listener.avoidStylingTagsAndAttributes();
+    }
+    return this._Listener.beforeParsing(raw);
 };
 
 WYMeditor.XhtmlParser.prototype.afterParsing = function(parsed)
 {
-  if(this._Listener._avoiding_tags_implicitly){
-    this._Listener.allowStylingTagsAndAttributes();
-  }
-  return this._Listener.afterParsing(parsed);
+    if(this._Listener._avoiding_tags_implicitly){
+        this._Listener.allowStylingTagsAndAttributes();
+    }
+    return this._Listener.afterParsing(parsed);
 };
 
 
 WYMeditor.XhtmlParser.prototype.Ignore = function(match, state)
 {
-  return true;
+    return true;
 };
 
 WYMeditor.XhtmlParser.prototype.Text = function(text)
 {
-  this._Listener.addContent(text);
-  return true;
+    this._Listener.addContent(text);
+    return true;
 };
 
 WYMeditor.XhtmlParser.prototype.Comment = function(match, status)
 {
-  return this._addNonTagBlock(match, status, 'addComment');
+    return this._addNonTagBlock(match, status, 'addComment');
 };
 
 WYMeditor.XhtmlParser.prototype.Script = function(match, status)
 {
-  return this._addNonTagBlock(match, status, 'addScript');
+    return this._addNonTagBlock(match, status, 'addScript');
 };
 
 WYMeditor.XhtmlParser.prototype.Css = function(match, status)
 {
-  return this._addNonTagBlock(match, status, 'addCss');
+    return this._addNonTagBlock(match, status, 'addCss');
 };
 
 WYMeditor.XhtmlParser.prototype._addNonTagBlock = function(match, state, type)
 {
-  switch (state){
-    case WYMeditor.LEXER_ENTER:
-    this._non_tag = match;
-    break;
-    case WYMeditor.LEXER_UNMATCHED:
-    this._non_tag += match;
-    break;
-    case WYMeditor.LEXER_EXIT:
-    switch(type) {
-      case 'addComment':
-      this._Listener.addComment(this._non_tag+match);
-      break;
-      case 'addScript':
-      this._Listener.addScript(this._non_tag+match);
-      break;
-      case 'addCss':
-      this._Listener.addCss(this._non_tag+match);
-      break;
-      default:
-      break;
+    switch (state){
+        case WYMeditor.LEXER_ENTER:
+        this._non_tag = match;
+        break;
+        case WYMeditor.LEXER_UNMATCHED:
+        this._non_tag += match;
+        break;
+        case WYMeditor.LEXER_EXIT:
+        switch(type) {
+            case 'addComment':
+            this._Listener.addComment(this._non_tag+match);
+            break;
+            case 'addScript':
+            this._Listener.addScript(this._non_tag+match);
+            break;
+            case 'addCss':
+            this._Listener.addCss(this._non_tag+match);
+            break;
+            default:
+            break;
+        }
+        break;
+        default:
+        break;
     }
-    break;
-    default:
-    break;
-  }
-  return true;
+    return true;
 };
 
 WYMeditor.XhtmlParser.prototype.OpeningTag = function(match, state)
 {
-  switch (state){
-    case WYMeditor.LEXER_ENTER:
-    this._tag = this.normalizeTag(match);
-    this._tag_attributes = {};
-    break;
-    case WYMeditor.LEXER_SPECIAL:
-    this._callOpenTagListener(this.normalizeTag(match));
-    break;
-    case WYMeditor.LEXER_EXIT:
-    this._callOpenTagListener(this._tag, this._tag_attributes);
-    break;
-    default:
-    break;
-  }
-  return true;
+    switch (state){
+        case WYMeditor.LEXER_ENTER:
+        this._tag = this.normalizeTag(match);
+        this._tag_attributes = {};
+        break;
+        case WYMeditor.LEXER_SPECIAL:
+        this._callOpenTagListener(this.normalizeTag(match));
+        break;
+        case WYMeditor.LEXER_EXIT:
+        this._callOpenTagListener(this._tag, this._tag_attributes);
+        break;
+        default:
+        break;
+    }
+    return true;
 };
 
 WYMeditor.XhtmlParser.prototype.ClosingTag = function(match, state)
 {
-  this._callCloseTagListener(this.normalizeTag(match));
-  return true;
+    this._callCloseTagListener(this.normalizeTag(match));
+    return true;
 };
 
 WYMeditor.XhtmlParser.prototype._callOpenTagListener = function(tag, attributes)
 {
-  attributes = attributes || {};
-  this.autoCloseUnclosedBeforeNewOpening(tag);
+    attributes = attributes || {};
+    this.autoCloseUnclosedBeforeNewOpening(tag);
 
-  if(this._Listener.isBlockTag(tag)){
-    this._Listener._tag_stack.push(tag);
-    this._Listener.fixNestingBeforeOpeningBlockTag(tag, attributes);
-    this._Listener.openBlockTag(tag, attributes);
-    this._increaseOpenTagCounter(tag);
-  }else if(this._Listener.isInlineTag(tag)){
-    this._Listener.inlineTag(tag, attributes);
-  }else{
-    this._Listener.openUnknownTag(tag, attributes);
-    this._increaseOpenTagCounter(tag);
-  }
-  this._Listener.last_tag = tag;
-  this._Listener.last_tag_opened = true;
-  this._Listener.last_tag_attributes = attributes;
+    if(this._Listener.isBlockTag(tag)){
+        this._Listener._tag_stack.push(tag);
+        this._Listener.fixNestingBeforeOpeningBlockTag(tag, attributes);
+        this._Listener.openBlockTag(tag, attributes);
+        this._increaseOpenTagCounter(tag);
+    }else if(this._Listener.isInlineTag(tag)){
+        this._Listener.inlineTag(tag, attributes);
+    }else{
+        this._Listener.openUnknownTag(tag, attributes);
+        this._increaseOpenTagCounter(tag);
+    }
+    this._Listener.last_tag = tag;
+    this._Listener.last_tag_opened = true;
+    this._Listener.last_tag_attributes = attributes;
 };
 
 WYMeditor.XhtmlParser.prototype._callCloseTagListener = function(tag)
 {
-  if(this._decreaseOpenTagCounter(tag)){
-    this.autoCloseUnclosedBeforeTagClosing(tag);
+    if(this._decreaseOpenTagCounter(tag)){
+        this.autoCloseUnclosedBeforeTagClosing(tag);
 
     if(this._Listener.isBlockTag(tag)){
-      var expected_tag = this._Listener._tag_stack.pop();
-      if(expected_tag === false){
-        return;
-      }else if(expected_tag != tag){
-        tag = expected_tag;
-      }
-      this._Listener.closeBlockTag(tag);
+        var expected_tag = this._Listener._tag_stack.pop();
+        if(expected_tag === false){
+            return;
+        }else if(expected_tag != tag){
+            tag = expected_tag;
+        }
+        this._Listener.closeBlockTag(tag);
     }else{
-      this._Listener.closeUnknownTag(tag);
+        this._Listener.closeUnknownTag(tag);
     }
-  }else{
+}else{
     this._Listener.closeUnopenedTag(tag);
-  }
-  this._Listener.last_tag = tag;
-  this._Listener.last_tag_opened = false;
+}
+this._Listener.last_tag = tag;
+this._Listener.last_tag_opened = false;
 };
 
 WYMeditor.XhtmlParser.prototype._increaseOpenTagCounter = function(tag)
 {
-  this._Listener._open_tags[tag] = this._Listener._open_tags[tag] || 0;
-  this._Listener._open_tags[tag]++;
+    this._Listener._open_tags[tag] = this._Listener._open_tags[tag] || 0;
+    this._Listener._open_tags[tag]++;
 };
 
 WYMeditor.XhtmlParser.prototype._decreaseOpenTagCounter = function(tag)
 {
-  if(this._Listener._open_tags[tag]){
-    this._Listener._open_tags[tag]--;
-    if(this._Listener._open_tags[tag] === 0){
-      this._Listener._open_tags[tag] = undefined;
+    if(this._Listener._open_tags[tag]){
+        this._Listener._open_tags[tag]--;
+        if(this._Listener._open_tags[tag] === 0){
+            this._Listener._open_tags[tag] = undefined;
+        }
+        return true;
     }
-    return true;
-  }
-  return false;
+    return false;
 };
 
 WYMeditor.XhtmlParser.prototype.autoCloseUnclosedBeforeNewOpening = function(new_tag)
 {
-  this._autoCloseUnclosed(new_tag, false);
+    this._autoCloseUnclosed(new_tag, false);
 };
 
 WYMeditor.XhtmlParser.prototype.autoCloseUnclosedBeforeTagClosing = function(tag)
 {
-  this._autoCloseUnclosed(tag, true);
+    this._autoCloseUnclosed(tag, true);
 };
 
 WYMeditor.XhtmlParser.prototype._autoCloseUnclosed = function(new_tag, closing)
 {
-  closing = closing || false;
-  if(this._Listener._open_tags){
-    for (var tag in this._Listener._open_tags) {
-      var counter = this._Listener._open_tags[tag];
-      if(counter > 0 && this._Listener.shouldCloseTagAutomatically(tag, new_tag, closing)){
-        this._callCloseTagListener(tag, true);
-      }
+    closing = closing || false;
+    if(this._Listener._open_tags){
+        for (var tag in this._Listener._open_tags) {
+            var counter = this._Listener._open_tags[tag];
+            if(counter > 0 && this._Listener.shouldCloseTagAutomatically(tag, new_tag, closing)){
+                this._callCloseTagListener(tag, true);
+            }
+        }
     }
-  }
 };
 
 WYMeditor.XhtmlParser.prototype.getTagReplacements = function()
 {
-  return this._Listener.getTagReplacements();
+    return this._Listener.getTagReplacements();
 };
 
 WYMeditor.XhtmlParser.prototype.normalizeTag = function(tag)
 {
-  tag = tag.replace(/^([\s<\/>]*)|([\s<\/>]*)$/gm,'').toLowerCase();
-  var tags = this._Listener.getTagReplacements();
-  if(tags[tag]){
-    return tags[tag];
-  }
-  return tag;
+    tag = tag.replace(/^([\s<\/>]*)|([\s<\/>]*)$/gm,'').toLowerCase();
+    var tags = this._Listener.getTagReplacements();
+    if(tags[tag]){
+        return tags[tag];
+    }
+    return tag;
 };
 
 WYMeditor.XhtmlParser.prototype.TagAttributes = function(match, state)
 {
-  if(WYMeditor.LEXER_SPECIAL == state){
-    this._current_attribute = match;
-  }
-  return true;
+    if(WYMeditor.LEXER_SPECIAL == state){
+        this._current_attribute = match;
+    }
+    return true;
 };
 
 WYMeditor.XhtmlParser.prototype.DoubleQuotedAttribute = function(match, state)
 {
-  if(WYMeditor.LEXER_UNMATCHED == state){
-    this._tag_attributes[this._current_attribute] = match;
-  }
-  return true;
+    if(WYMeditor.LEXER_UNMATCHED == state){
+        this._tag_attributes[this._current_attribute] = match;
+    }
+    return true;
 };
 
 WYMeditor.XhtmlParser.prototype.SingleQuotedAttribute = function(match, state)
 {
-  if(WYMeditor.LEXER_UNMATCHED == state){
-    this._tag_attributes[this._current_attribute] = match;
-  }
-  return true;
+    if(WYMeditor.LEXER_UNMATCHED == state){
+        this._tag_attributes[this._current_attribute] = match;
+    }
+    return true;
 };
 
 WYMeditor.XhtmlParser.prototype.UnquotedAttribute = function(match, state)
 {
-  this._tag_attributes[this._current_attribute] = match.replace(/^=/,'');
-  return true;
+    this._tag_attributes[this._current_attribute] = match.replace(/^=/,'');
+    return true;
 };
 
 
@@ -3492,97 +3551,97 @@ WYMeditor.XhtmlParser.prototype.UnquotedAttribute = function(match, state)
 */
 WYMeditor.XhtmlSaxListener = function()
 {
-  this.output = '';
-  this.helper = new WYMeditor.XmlHelper();
-  this._open_tags = {};
-  this.validator = WYMeditor.XhtmlValidator;
-  this._tag_stack = [];
-  this.avoided_tags = [];
+    this.output = '';
+    this.helper = new WYMeditor.XmlHelper();
+    this._open_tags = {};
+    this.validator = WYMeditor.XhtmlValidator;
+    this._tag_stack = [];
+    this.avoided_tags = [];
 
-  this.entities = {
-    '&nbsp;':'&#160;','&iexcl;':'&#161;','&cent;':'&#162;',
-    '&pound;':'&#163;','&curren;':'&#164;','&yen;':'&#165;',
-    '&brvbar;':'&#166;','&sect;':'&#167;','&uml;':'&#168;',
-    '&copy;':'&#169;','&ordf;':'&#170;','&laquo;':'&#171;',
-    '&not;':'&#172;','&shy;':'&#173;','&reg;':'&#174;',
-    '&macr;':'&#175;','&deg;':'&#176;','&plusmn;':'&#177;',
-    '&sup2;':'&#178;','&sup3;':'&#179;','&acute;':'&#180;',
-    '&micro;':'&#181;','&para;':'&#182;','&middot;':'&#183;',
-    '&cedil;':'&#184;','&sup1;':'&#185;','&ordm;':'&#186;',
-    '&raquo;':'&#187;','&frac14;':'&#188;','&frac12;':'&#189;',
-    '&frac34;':'&#190;','&iquest;':'&#191;','&Agrave;':'&#192;',
-    '&Aacute;':'&#193;','&Acirc;':'&#194;','&Atilde;':'&#195;',
-    '&Auml;':'&#196;','&Aring;':'&#197;','&AElig;':'&#198;',
-    '&Ccedil;':'&#199;','&Egrave;':'&#200;','&Eacute;':'&#201;',
-    '&Ecirc;':'&#202;','&Euml;':'&#203;','&Igrave;':'&#204;',
-    '&Iacute;':'&#205;','&Icirc;':'&#206;','&Iuml;':'&#207;',
-    '&ETH;':'&#208;','&Ntilde;':'&#209;','&Ograve;':'&#210;',
-    '&Oacute;':'&#211;','&Ocirc;':'&#212;','&Otilde;':'&#213;',
-    '&Ouml;':'&#214;','&times;':'&#215;','&Oslash;':'&#216;',
-    '&Ugrave;':'&#217;','&Uacute;':'&#218;','&Ucirc;':'&#219;',
-    '&Uuml;':'&#220;','&Yacute;':'&#221;','&THORN;':'&#222;',
-    '&szlig;':'&#223;','&agrave;':'&#224;','&aacute;':'&#225;',
-    '&acirc;':'&#226;','&atilde;':'&#227;','&auml;':'&#228;',
-    '&aring;':'&#229;','&aelig;':'&#230;','&ccedil;':'&#231;',
-    '&egrave;':'&#232;','&eacute;':'&#233;','&ecirc;':'&#234;',
-    '&euml;':'&#235;','&igrave;':'&#236;','&iacute;':'&#237;',
-    '&icirc;':'&#238;','&iuml;':'&#239;','&eth;':'&#240;',
-    '&ntilde;':'&#241;','&ograve;':'&#242;','&oacute;':'&#243;',
-    '&ocirc;':'&#244;','&otilde;':'&#245;','&ouml;':'&#246;',
-    '&divide;':'&#247;','&oslash;':'&#248;','&ugrave;':'&#249;',
-    '&uacute;':'&#250;','&ucirc;':'&#251;','&uuml;':'&#252;',
-    '&yacute;':'&#253;','&thorn;':'&#254;','&yuml;':'&#255;',
-    '&OElig;':'&#338;','&oelig;':'&#339;','&Scaron;':'&#352;',
-    '&scaron;':'&#353;','&Yuml;':'&#376;','&fnof;':'&#402;',
-    '&circ;':'&#710;','&tilde;':'&#732;','&Alpha;':'&#913;',
-    '&Beta;':'&#914;','&Gamma;':'&#915;','&Delta;':'&#916;',
-    '&Epsilon;':'&#917;','&Zeta;':'&#918;','&Eta;':'&#919;',
-    '&Theta;':'&#920;','&Iota;':'&#921;','&Kappa;':'&#922;',
-    '&Lambda;':'&#923;','&Mu;':'&#924;','&Nu;':'&#925;',
-    '&Xi;':'&#926;','&Omicron;':'&#927;','&Pi;':'&#928;',
-    '&Rho;':'&#929;','&Sigma;':'&#931;','&Tau;':'&#932;',
-    '&Upsilon;':'&#933;','&Phi;':'&#934;','&Chi;':'&#935;',
-    '&Psi;':'&#936;','&Omega;':'&#937;','&alpha;':'&#945;',
-    '&beta;':'&#946;','&gamma;':'&#947;','&delta;':'&#948;',
-    '&epsilon;':'&#949;','&zeta;':'&#950;','&eta;':'&#951;',
-    '&theta;':'&#952;','&iota;':'&#953;','&kappa;':'&#954;',
-    '&lambda;':'&#955;','&mu;':'&#956;','&nu;':'&#957;',
-    '&xi;':'&#958;','&omicron;':'&#959;','&pi;':'&#960;',
-    '&rho;':'&#961;','&sigmaf;':'&#962;','&sigma;':'&#963;',
-    '&tau;':'&#964;','&upsilon;':'&#965;','&phi;':'&#966;',
-    '&chi;':'&#967;','&psi;':'&#968;','&omega;':'&#969;',
-    '&thetasym;':'&#977;','&upsih;':'&#978;','&piv;':'&#982;',
-    '&ensp;':'&#8194;','&emsp;':'&#8195;','&thinsp;':'&#8201;',
-    '&zwnj;':'&#8204;','&zwj;':'&#8205;','&lrm;':'&#8206;',
-    '&rlm;':'&#8207;','&ndash;':'&#8211;','&mdash;':'&#8212;',
-    '&lsquo;':'&#8216;','&rsquo;':'&#8217;','&sbquo;':'&#8218;',
-    '&ldquo;':'&#8220;','&rdquo;':'&#8221;','&bdquo;':'&#8222;',
-    '&dagger;':'&#8224;','&Dagger;':'&#8225;','&bull;':'&#8226;',
-    '&hellip;':'&#8230;','&permil;':'&#8240;','&prime;':'&#8242;',
-    '&Prime;':'&#8243;','&lsaquo;':'&#8249;','&rsaquo;':'&#8250;',
-    '&oline;':'&#8254;','&frasl;':'&#8260;','&euro;':'&#8364;',
-    '&image;':'&#8465;','&weierp;':'&#8472;','&real;':'&#8476;',
-    '&trade;':'&#8482;','&alefsym;':'&#8501;','&larr;':'&#8592;',
-    '&uarr;':'&#8593;','&rarr;':'&#8594;','&darr;':'&#8595;',
-    '&harr;':'&#8596;','&crarr;':'&#8629;','&lArr;':'&#8656;',
-    '&uArr;':'&#8657;','&rArr;':'&#8658;','&dArr;':'&#8659;',
-    '&hArr;':'&#8660;','&forall;':'&#8704;','&part;':'&#8706;',
-    '&exist;':'&#8707;','&empty;':'&#8709;','&nabla;':'&#8711;',
-    '&isin;':'&#8712;','&notin;':'&#8713;','&ni;':'&#8715;',
-    '&prod;':'&#8719;','&sum;':'&#8721;','&minus;':'&#8722;',
-    '&lowast;':'&#8727;','&radic;':'&#8730;','&prop;':'&#8733;',
-    '&infin;':'&#8734;','&ang;':'&#8736;','&and;':'&#8743;',
-    '&or;':'&#8744;','&cap;':'&#8745;','&cup;':'&#8746;',
-    '&int;':'&#8747;','&there4;':'&#8756;','&sim;':'&#8764;',
-    '&cong;':'&#8773;','&asymp;':'&#8776;','&ne;':'&#8800;',
-    '&equiv;':'&#8801;','&le;':'&#8804;','&ge;':'&#8805;',
-    '&sub;':'&#8834;','&sup;':'&#8835;','&nsub;':'&#8836;',
-    '&sube;':'&#8838;','&supe;':'&#8839;','&oplus;':'&#8853;',
-    '&otimes;':'&#8855;','&perp;':'&#8869;','&sdot;':'&#8901;',
-    '&lceil;':'&#8968;','&rceil;':'&#8969;','&lfloor;':'&#8970;',
-    '&rfloor;':'&#8971;','&lang;':'&#9001;','&rang;':'&#9002;',
-    '&loz;':'&#9674;','&spades;':'&#9824;','&clubs;':'&#9827;',
-    '&hearts;':'&#9829;','&diams;':'&#9830;'};
+    this.entities = {
+        '&nbsp;':'&#160;','&iexcl;':'&#161;','&cent;':'&#162;',
+        '&pound;':'&#163;','&curren;':'&#164;','&yen;':'&#165;',
+        '&brvbar;':'&#166;','&sect;':'&#167;','&uml;':'&#168;',
+        '&copy;':'&#169;','&ordf;':'&#170;','&laquo;':'&#171;',
+        '&not;':'&#172;','&shy;':'&#173;','&reg;':'&#174;',
+        '&macr;':'&#175;','&deg;':'&#176;','&plusmn;':'&#177;',
+        '&sup2;':'&#178;','&sup3;':'&#179;','&acute;':'&#180;',
+        '&micro;':'&#181;','&para;':'&#182;','&middot;':'&#183;',
+        '&cedil;':'&#184;','&sup1;':'&#185;','&ordm;':'&#186;',
+        '&raquo;':'&#187;','&frac14;':'&#188;','&frac12;':'&#189;',
+        '&frac34;':'&#190;','&iquest;':'&#191;','&Agrave;':'&#192;',
+        '&Aacute;':'&#193;','&Acirc;':'&#194;','&Atilde;':'&#195;',
+        '&Auml;':'&#196;','&Aring;':'&#197;','&AElig;':'&#198;',
+        '&Ccedil;':'&#199;','&Egrave;':'&#200;','&Eacute;':'&#201;',
+        '&Ecirc;':'&#202;','&Euml;':'&#203;','&Igrave;':'&#204;',
+        '&Iacute;':'&#205;','&Icirc;':'&#206;','&Iuml;':'&#207;',
+        '&ETH;':'&#208;','&Ntilde;':'&#209;','&Ograve;':'&#210;',
+        '&Oacute;':'&#211;','&Ocirc;':'&#212;','&Otilde;':'&#213;',
+        '&Ouml;':'&#214;','&times;':'&#215;','&Oslash;':'&#216;',
+        '&Ugrave;':'&#217;','&Uacute;':'&#218;','&Ucirc;':'&#219;',
+        '&Uuml;':'&#220;','&Yacute;':'&#221;','&THORN;':'&#222;',
+        '&szlig;':'&#223;','&agrave;':'&#224;','&aacute;':'&#225;',
+        '&acirc;':'&#226;','&atilde;':'&#227;','&auml;':'&#228;',
+        '&aring;':'&#229;','&aelig;':'&#230;','&ccedil;':'&#231;',
+        '&egrave;':'&#232;','&eacute;':'&#233;','&ecirc;':'&#234;',
+        '&euml;':'&#235;','&igrave;':'&#236;','&iacute;':'&#237;',
+        '&icirc;':'&#238;','&iuml;':'&#239;','&eth;':'&#240;',
+        '&ntilde;':'&#241;','&ograve;':'&#242;','&oacute;':'&#243;',
+        '&ocirc;':'&#244;','&otilde;':'&#245;','&ouml;':'&#246;',
+        '&divide;':'&#247;','&oslash;':'&#248;','&ugrave;':'&#249;',
+        '&uacute;':'&#250;','&ucirc;':'&#251;','&uuml;':'&#252;',
+        '&yacute;':'&#253;','&thorn;':'&#254;','&yuml;':'&#255;',
+        '&OElig;':'&#338;','&oelig;':'&#339;','&Scaron;':'&#352;',
+        '&scaron;':'&#353;','&Yuml;':'&#376;','&fnof;':'&#402;',
+        '&circ;':'&#710;','&tilde;':'&#732;','&Alpha;':'&#913;',
+        '&Beta;':'&#914;','&Gamma;':'&#915;','&Delta;':'&#916;',
+        '&Epsilon;':'&#917;','&Zeta;':'&#918;','&Eta;':'&#919;',
+        '&Theta;':'&#920;','&Iota;':'&#921;','&Kappa;':'&#922;',
+        '&Lambda;':'&#923;','&Mu;':'&#924;','&Nu;':'&#925;',
+        '&Xi;':'&#926;','&Omicron;':'&#927;','&Pi;':'&#928;',
+        '&Rho;':'&#929;','&Sigma;':'&#931;','&Tau;':'&#932;',
+        '&Upsilon;':'&#933;','&Phi;':'&#934;','&Chi;':'&#935;',
+        '&Psi;':'&#936;','&Omega;':'&#937;','&alpha;':'&#945;',
+        '&beta;':'&#946;','&gamma;':'&#947;','&delta;':'&#948;',
+        '&epsilon;':'&#949;','&zeta;':'&#950;','&eta;':'&#951;',
+        '&theta;':'&#952;','&iota;':'&#953;','&kappa;':'&#954;',
+        '&lambda;':'&#955;','&mu;':'&#956;','&nu;':'&#957;',
+        '&xi;':'&#958;','&omicron;':'&#959;','&pi;':'&#960;',
+        '&rho;':'&#961;','&sigmaf;':'&#962;','&sigma;':'&#963;',
+        '&tau;':'&#964;','&upsilon;':'&#965;','&phi;':'&#966;',
+        '&chi;':'&#967;','&psi;':'&#968;','&omega;':'&#969;',
+        '&thetasym;':'&#977;','&upsih;':'&#978;','&piv;':'&#982;',
+        '&ensp;':'&#8194;','&emsp;':'&#8195;','&thinsp;':'&#8201;',
+        '&zwnj;':'&#8204;','&zwj;':'&#8205;','&lrm;':'&#8206;',
+        '&rlm;':'&#8207;','&ndash;':'&#8211;','&mdash;':'&#8212;',
+        '&lsquo;':'&#8216;','&rsquo;':'&#8217;','&sbquo;':'&#8218;',
+        '&ldquo;':'&#8220;','&rdquo;':'&#8221;','&bdquo;':'&#8222;',
+        '&dagger;':'&#8224;','&Dagger;':'&#8225;','&bull;':'&#8226;',
+        '&hellip;':'&#8230;','&permil;':'&#8240;','&prime;':'&#8242;',
+        '&Prime;':'&#8243;','&lsaquo;':'&#8249;','&rsaquo;':'&#8250;',
+        '&oline;':'&#8254;','&frasl;':'&#8260;','&euro;':'&#8364;',
+        '&image;':'&#8465;','&weierp;':'&#8472;','&real;':'&#8476;',
+        '&trade;':'&#8482;','&alefsym;':'&#8501;','&larr;':'&#8592;',
+        '&uarr;':'&#8593;','&rarr;':'&#8594;','&darr;':'&#8595;',
+        '&harr;':'&#8596;','&crarr;':'&#8629;','&lArr;':'&#8656;',
+        '&uArr;':'&#8657;','&rArr;':'&#8658;','&dArr;':'&#8659;',
+        '&hArr;':'&#8660;','&forall;':'&#8704;','&part;':'&#8706;',
+        '&exist;':'&#8707;','&empty;':'&#8709;','&nabla;':'&#8711;',
+        '&isin;':'&#8712;','&notin;':'&#8713;','&ni;':'&#8715;',
+        '&prod;':'&#8719;','&sum;':'&#8721;','&minus;':'&#8722;',
+        '&lowast;':'&#8727;','&radic;':'&#8730;','&prop;':'&#8733;',
+        '&infin;':'&#8734;','&ang;':'&#8736;','&and;':'&#8743;',
+        '&or;':'&#8744;','&cap;':'&#8745;','&cup;':'&#8746;',
+        '&int;':'&#8747;','&there4;':'&#8756;','&sim;':'&#8764;',
+        '&cong;':'&#8773;','&asymp;':'&#8776;','&ne;':'&#8800;',
+        '&equiv;':'&#8801;','&le;':'&#8804;','&ge;':'&#8805;',
+        '&sub;':'&#8834;','&sup;':'&#8835;','&nsub;':'&#8836;',
+        '&sube;':'&#8838;','&supe;':'&#8839;','&oplus;':'&#8853;',
+        '&otimes;':'&#8855;','&perp;':'&#8869;','&sdot;':'&#8901;',
+        '&lceil;':'&#8968;','&rceil;':'&#8969;','&lfloor;':'&#8970;',
+        '&rfloor;':'&#8971;','&lang;':'&#9001;','&rang;':'&#9002;',
+        '&loz;':'&#9674;','&spades;':'&#9824;','&clubs;':'&#9827;',
+        '&hearts;':'&#9829;','&diams;':'&#9830;'};
 
     this.block_tags = ["a", "abbr", "acronym", "address", "area", "b",
     "base", "bdo", "big", "blockquote", "body", "button",
@@ -3603,195 +3662,195 @@ WYMeditor.XhtmlSaxListener = function()
 
 WYMeditor.XhtmlSaxListener.prototype.shouldCloseTagAutomatically = function(tag, now_on_tag, closing)
 {
-  closing = closing || false;
-  if(tag == 'td'){
-    if((closing && now_on_tag == 'tr') || (!closing && now_on_tag == 'td')){
-      return true;
+    closing = closing || false;
+    if(tag == 'td'){
+        if((closing && now_on_tag == 'tr') || (!closing && now_on_tag == 'td')){
+            return true;
+        }
     }
-  }
-  if(tag == 'option'){
-    if((closing && now_on_tag == 'select') || (!closing && now_on_tag == 'option')){
-      return true;
+    if(tag == 'option'){
+        if((closing && now_on_tag == 'select') || (!closing && now_on_tag == 'option')){
+            return true;
+        }
     }
-  }
-  return false;
+    return false;
 };
 
 WYMeditor.XhtmlSaxListener.prototype.beforeParsing = function(raw)
 {
-  this.output = '';
-  return raw;
+    this.output = '';
+    return raw;
 };
 
 WYMeditor.XhtmlSaxListener.prototype.afterParsing = function(xhtml)
 {
-  xhtml = this.replaceNamedEntities(xhtml);
-  xhtml = this.joinRepeatedEntities(xhtml);
-  xhtml = this.removeEmptyTags(xhtml);
-  xhtml = this.removeBrInPre(xhtml);
-  return xhtml;
+    xhtml = this.replaceNamedEntities(xhtml);
+    xhtml = this.joinRepeatedEntities(xhtml);
+    xhtml = this.removeEmptyTags(xhtml);
+    xhtml = this.removeBrInPre(xhtml);
+    return xhtml;
 };
 
 WYMeditor.XhtmlSaxListener.prototype.replaceNamedEntities = function(xhtml)
 {
-  for (var entity in this.entities) {
-    xhtml = xhtml.replace(new RegExp(entity, 'g'), this.entities[entity]);
-  }
-  return xhtml;
+    for (var entity in this.entities) {
+        xhtml = xhtml.replace(new RegExp(entity, 'g'), this.entities[entity]);
+    }
+    return xhtml;
 };
 
 WYMeditor.XhtmlSaxListener.prototype.joinRepeatedEntities = function(xhtml)
 {
-  var tags = 'em|strong|sub|sup|acronym|pre|del|address';
-  return xhtml.replace(new RegExp('<\/('+tags+')><\\1>' ,''),'').
-  replace(new RegExp('(\s*<('+tags+')>\s*){2}(.*)(\s*<\/\\2>\s*){2}' ,''),'<\$2>\$3<\$2>');
+    var tags = 'em|strong|sub|sup|acronym|pre|del|address';
+    return xhtml.replace(new RegExp('<\/('+tags+')><\\1>' ,''),'').
+    replace(new RegExp('(\s*<('+tags+')>\s*){2}(.*)(\s*<\/\\2>\s*){2}' ,''),'<\$2>\$3<\$2>');
 };
 
 WYMeditor.XhtmlSaxListener.prototype.removeEmptyTags = function(xhtml)
 {
-  return xhtml.replace(new RegExp('<('+this.block_tags.join("|").replace(/\|td/,'').replace(/\|th/, '')+')>(<br \/>|&#160;|&nbsp;|\\s)*<\/\\1>' ,'g'),'');
+    return xhtml.replace(new RegExp('<('+this.block_tags.join("|").replace(/\|td/,'').replace(/\|th/, '')+')>(<br \/>|&#160;|&nbsp;|\\s)*<\/\\1>' ,'g'),'');
 };
 
 WYMeditor.XhtmlSaxListener.prototype.removeBrInPre = function(xhtml)
 {
-  var matches = xhtml.match(new RegExp('<pre[^>]*>(.*?)<\/pre>','gmi'));
-  if(matches) {
-    for(var i=0; i<matches.length; i++) {
-      xhtml = xhtml.replace(matches[i], matches[i].replace(new RegExp('<br \/>', 'g'), String.fromCharCode(13,10)));
+    var matches = xhtml.match(new RegExp('<pre[^>]*>(.*?)<\/pre>','gmi'));
+    if(matches) {
+        for(var i=0; i<matches.length; i++) {
+            xhtml = xhtml.replace(matches[i], matches[i].replace(new RegExp('<br \/>', 'g'), String.fromCharCode(13,10)));
+        }
     }
-  }
-  return xhtml;
+    return xhtml;
 };
 
 WYMeditor.XhtmlSaxListener.prototype.getResult = function()
 {
-  return this.output;
+    return this.output;
 };
 
 WYMeditor.XhtmlSaxListener.prototype.getTagReplacements = function()
 {
-  return {'b':'strong', 'i':'em'};
+    return {'b':'strong', 'i':'em'};
 };
 
 WYMeditor.XhtmlSaxListener.prototype.addContent = function(text)
 {
-  this.output += text;
+    this.output += text;
 };
 
 WYMeditor.XhtmlSaxListener.prototype.addComment = function(text)
 {
-  if(this.remove_comments){
-    this.output += text;
-  }
+    if(this.remove_comments){
+        this.output += text;
+    }
 };
 
 WYMeditor.XhtmlSaxListener.prototype.addScript = function(text)
 {
-  if(!this.remove_scripts){
-    this.output += text;
-  }
+    if(!this.remove_scripts){
+        this.output += text;
+    }
 };
 
 WYMeditor.XhtmlSaxListener.prototype.addCss = function(text)
 {
-  if(!this.remove_embeded_styles){
-    this.output += text;
-  }
+    if(!this.remove_embeded_styles){
+        this.output += text;
+    }
 };
 
 WYMeditor.XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes)
 {
-  this.output += this.helper.tag(tag, this.validator.getValidTagAttributes(tag, attributes), true);
+    this.output += this.helper.tag(tag, this.validator.getValidTagAttributes(tag, attributes), true);
 };
 
 WYMeditor.XhtmlSaxListener.prototype.inlineTag = function(tag, attributes)
 {
-  this.output += this.helper.tag(tag, this.validator.getValidTagAttributes(tag, attributes));
+    this.output += this.helper.tag(tag, this.validator.getValidTagAttributes(tag, attributes));
 };
 
 WYMeditor.XhtmlSaxListener.prototype.openUnknownTag = function(tag, attributes)
 {
-  //this.output += this.helper.tag(tag, attributes, true);
+    //this.output += this.helper.tag(tag, attributes, true);
 };
 
 WYMeditor.XhtmlSaxListener.prototype.closeBlockTag = function(tag)
 {
-  this.output = this.output.replace(/<br \/>$/, '')+this._getClosingTagContent('before', tag)+"</"+tag+">"+this._getClosingTagContent('after', tag);
+    this.output = this.output.replace(/<br \/>$/, '')+this._getClosingTagContent('before', tag)+"</"+tag+">"+this._getClosingTagContent('after', tag);
 };
 
 WYMeditor.XhtmlSaxListener.prototype.closeUnknownTag = function(tag)
 {
-  //this.output += "</"+tag+">";
+    //this.output += "</"+tag+">";
 };
 
 WYMeditor.XhtmlSaxListener.prototype.closeUnopenedTag = function(tag)
 {
-  this.output += "</"+tag+">";
+    this.output += "</"+tag+">";
 };
 
 WYMeditor.XhtmlSaxListener.prototype.avoidStylingTagsAndAttributes = function()
 {
-  this.avoided_tags = ['div','span'];
-  this.validator.skiped_attributes = ['style'];
-  this.validator.skiped_attribute_values = ['MsoNormal','main1']; // MS Word attributes for class
-  this._avoiding_tags_implicitly = true;
+    this.avoided_tags = ['div','span'];
+    this.validator.skiped_attributes = ['style'];
+    this.validator.skiped_attribute_values = ['MsoNormal','main1']; // MS Word attributes for class
+    this._avoiding_tags_implicitly = true;
 };
 
 WYMeditor.XhtmlSaxListener.prototype.allowStylingTagsAndAttributes = function()
 {
-  this.avoided_tags = [];
-  this.validator.skiped_attributes = [];
-  this.validator.skiped_attribute_values = [];
-  this._avoiding_tags_implicitly = false;
+    this.avoided_tags = [];
+    this.validator.skiped_attributes = [];
+    this.validator.skiped_attribute_values = [];
+    this._avoiding_tags_implicitly = false;
 };
 
 WYMeditor.XhtmlSaxListener.prototype.isBlockTag = function(tag)
 {
-  return !WYMeditor.Helper.contains(this.avoided_tags, tag) && WYMeditor.Helper.contains(this.block_tags, tag);
+    return !WYMeditor.Helper.contains(this.avoided_tags, tag) && WYMeditor.Helper.contains(this.block_tags, tag);
 };
 
 WYMeditor.XhtmlSaxListener.prototype.isInlineTag = function(tag)
 {
-  return !WYMeditor.Helper.contains(this.avoided_tags, tag) && WYMeditor.Helper.contains(this.inline_tags, tag);
+    return !WYMeditor.Helper.contains(this.avoided_tags, tag) && WYMeditor.Helper.contains(this.inline_tags, tag);
 };
 
 WYMeditor.XhtmlSaxListener.prototype.insertContentAfterClosingTag = function(tag, content)
 {
-  this._insertContentWhenClosingTag('after', tag, content);
+    this._insertContentWhenClosingTag('after', tag, content);
 };
 
 WYMeditor.XhtmlSaxListener.prototype.insertContentBeforeClosingTag = function(tag, content)
 {
-  this._insertContentWhenClosingTag('before', tag, content);
+    this._insertContentWhenClosingTag('before', tag, content);
 };
 
 WYMeditor.XhtmlSaxListener.prototype.fixNestingBeforeOpeningBlockTag = function(tag, attributes)
 {
     if(tag != 'li' && (tag == 'ul' || tag == 'ol') && this.last_tag && !this.last_tag_opened && this.last_tag == 'li'){
-      this.output = this.output.replace(/<\/li>\s*$/, '');
-      this.insertContentAfterClosingTag(tag, '</li>');
+        this.output = this.output.replace(/<\/li>\s*$/, '');
+        this.insertContentAfterClosingTag(tag, '</li>');
     }
 };
 
 WYMeditor.XhtmlSaxListener.prototype._insertContentWhenClosingTag = function(position, tag, content)
 {
-  if(!this['_insert_'+position+'_closing']){
-    this['_insert_'+position+'_closing'] = [];
-  }
-  if(!this['_insert_'+position+'_closing'][tag]){
-    this['_insert_'+position+'_closing'][tag] = [];
-  }
-  this['_insert_'+position+'_closing'][tag].push(content);
+    if(!this['_insert_'+position+'_closing']){
+        this['_insert_'+position+'_closing'] = [];
+    }
+    if(!this['_insert_'+position+'_closing'][tag]){
+        this['_insert_'+position+'_closing'][tag] = [];
+    }
+    this['_insert_'+position+'_closing'][tag].push(content);
 };
 
 WYMeditor.XhtmlSaxListener.prototype._getClosingTagContent = function(position, tag)
 {
-  if( this['_insert_'+position+'_closing'] &&
-      this['_insert_'+position+'_closing'][tag] &&
-      this['_insert_'+position+'_closing'][tag].length > 0){
-        return this['_insert_'+position+'_closing'][tag].pop();
-  }
-  return '';
+    if( this['_insert_'+position+'_closing'] &&
+        this['_insert_'+position+'_closing'][tag] &&
+        this['_insert_'+position+'_closing'][tag].length > 0){
+            return this['_insert_'+position+'_closing'][tag].pop();
+    }
+    return '';
 };
 
 
@@ -3800,171 +3859,171 @@ WYMeditor.XhtmlSaxListener.prototype._getClosingTagContent = function(position, 
 
 WYMeditor.WymCssLexer = function(parser, only_wym_blocks)
 {
-  only_wym_blocks = (typeof only_wym_blocks == 'undefined' ? true : only_wym_blocks);
+    only_wym_blocks = (typeof only_wym_blocks == 'undefined' ? true : only_wym_blocks);
 
-  jQuery.extend(this, new WYMeditor.Lexer(parser, (only_wym_blocks?'Ignore':'WymCss')));
+    jQuery.extend(this, new WYMeditor.Lexer(parser, (only_wym_blocks?'Ignore':'WymCss')));
 
-  this.mapHandler('WymCss', 'Ignore');
+    this.mapHandler('WymCss', 'Ignore');
 
-  if(only_wym_blocks === true){
-    this.addEntryPattern("/\\\x2a[<\\s]*WYMeditor[>\\s]*\\\x2a/", 'Ignore', 'WymCss');
-    this.addExitPattern("/\\\x2a[<\/\\s]*WYMeditor[>\\s]*\\\x2a/", 'WymCss');
-  }
+    if(only_wym_blocks === true){
+        this.addEntryPattern("/\\\x2a[<\\s]*WYMeditor[>\\s]*\\\x2a/", 'Ignore', 'WymCss');
+        this.addExitPattern("/\\\x2a[<\/\\s]*WYMeditor[>\\s]*\\\x2a/", 'WymCss');
+    }
 
-  this.addSpecialPattern("[\\sa-z1-6]*\\\x2e[a-z-_0-9]+", 'WymCss', 'WymCssStyleDeclaration');
+    this.addSpecialPattern("[\\sa-z1-6]*\\\x2e[a-z-_0-9]+", 'WymCss', 'WymCssStyleDeclaration');
 
-  this.addEntryPattern("/\\\x2a", 'WymCss', 'WymCssComment');
-  this.addExitPattern("\\\x2a/", 'WymCssComment');
+    this.addEntryPattern("/\\\x2a", 'WymCss', 'WymCssComment');
+    this.addExitPattern("\\\x2a/", 'WymCssComment');
 
-  this.addEntryPattern("\x7b", 'WymCss', 'WymCssStyle');
-  this.addExitPattern("\x7d", 'WymCssStyle');
+    this.addEntryPattern("\x7b", 'WymCss', 'WymCssStyle');
+    this.addExitPattern("\x7d", 'WymCssStyle');
 
-  this.addEntryPattern("/\\\x2a", 'WymCssStyle', 'WymCssFeedbackStyle');
-  this.addExitPattern("\\\x2a/", 'WymCssFeedbackStyle');
+    this.addEntryPattern("/\\\x2a", 'WymCssStyle', 'WymCssFeedbackStyle');
+    this.addExitPattern("\\\x2a/", 'WymCssFeedbackStyle');
 
-  return this;
+    return this;
 };
 
 WYMeditor.WymCssParser = function()
 {
-  this._in_style = false;
-  this._has_title = false;
-  this.only_wym_blocks = true;
-  this.css_settings = {'classesItems':[], 'editorStyles':[], 'dialogStyles':[]};
-  return this;
+    this._in_style = false;
+    this._has_title = false;
+    this.only_wym_blocks = true;
+    this.css_settings = {'classesItems':[], 'editorStyles':[], 'dialogStyles':[]};
+    return this;
 };
 
 WYMeditor.WymCssParser.prototype.parse = function(raw, only_wym_blocks)
 {
-  only_wym_blocks = (typeof only_wym_blocks == 'undefined' ? this.only_wym_blocks : only_wym_blocks);
-  this._Lexer = new WYMeditor.WymCssLexer(this, only_wym_blocks);
-  this._Lexer.parse(raw);
+    only_wym_blocks = (typeof only_wym_blocks == 'undefined' ? this.only_wym_blocks : only_wym_blocks);
+    this._Lexer = new WYMeditor.WymCssLexer(this, only_wym_blocks);
+    this._Lexer.parse(raw);
 };
 
 WYMeditor.WymCssParser.prototype.Ignore = function(match, state)
 {
-  return true;
+    return true;
 };
 
 WYMeditor.WymCssParser.prototype.WymCssComment = function(text, status)
 {
-  if(text.match(/end[a-z0-9\s]*wym[a-z0-9\s]*/mi)){
-    return false;
-  }
-  if(status == WYMeditor.LEXER_UNMATCHED){
-    if(!this._in_style){
-      this._has_title = true;
-      this._current_item = {'title':WYMeditor.Helper.trim(text)};
-    }else{
-      if(this._current_item[this._current_element]){
-        if(!this._current_item[this._current_element].expressions){
-          this._current_item[this._current_element].expressions = [text];
-        }else{
-          this._current_item[this._current_element].expressions.push(text);
-        }
-      }
+    if(text.match(/end[a-z0-9\s]*wym[a-z0-9\s]*/mi)){
+        return false;
     }
-    this._in_style = true;
-  }
-  return true;
+    if(status == WYMeditor.LEXER_UNMATCHED){
+        if(!this._in_style){
+            this._has_title = true;
+            this._current_item = {'title':WYMeditor.Helper.trim(text)};
+        }else{
+            if(this._current_item[this._current_element]){
+                if(!this._current_item[this._current_element].expressions){
+                    this._current_item[this._current_element].expressions = [text];
+                }else{
+                    this._current_item[this._current_element].expressions.push(text);
+                }
+            }
+        }
+        this._in_style = true;
+    }
+    return true;
 };
 
 WYMeditor.WymCssParser.prototype.WymCssStyle = function(match, status)
 {
-  if(status == WYMeditor.LEXER_UNMATCHED){
-    match = WYMeditor.Helper.trim(match);
-    if(match !== ''){
-      this._current_item[this._current_element].style = match;
+    if(status == WYMeditor.LEXER_UNMATCHED){
+        match = WYMeditor.Helper.trim(match);
+        if(match !== ''){
+            this._current_item[this._current_element].style = match;
+        }
+    }else if (status == WYMeditor.LEXER_EXIT){
+        this._in_style = false;
+        this._has_title = false;
+        this.addStyleSetting(this._current_item);
     }
-  }else if (status == WYMeditor.LEXER_EXIT){
-    this._in_style = false;
-    this._has_title = false;
-    this.addStyleSetting(this._current_item);
-  }
-  return true;
+    return true;
 };
 
 WYMeditor.WymCssParser.prototype.WymCssFeedbackStyle = function(match, status)
 {
-  if(status == WYMeditor.LEXER_UNMATCHED){
-    this._current_item[this._current_element].feedback_style = match.replace(/^([\s\/\*]*)|([\s\/\*]*)$/gm,'');
-  }
-  return true;
+    if(status == WYMeditor.LEXER_UNMATCHED){
+        this._current_item[this._current_element].feedback_style = match.replace(/^([\s\/\*]*)|([\s\/\*]*)$/gm,'');
+    }
+    return true;
 };
 
 WYMeditor.WymCssParser.prototype.WymCssStyleDeclaration = function(match)
 {
-  match = match.replace(/^([\s\.]*)|([\s\.*]*)$/gm, '');
+    match = match.replace(/^([\s\.]*)|([\s\.*]*)$/gm, '');
 
-  var tag = '';
-  if(match.indexOf('.') > 0){
-    var parts = match.split('.');
-    this._current_element = parts[1];
-    tag = parts[0];
-  }else{
-    this._current_element = match;
-  }
-
-  if(!this._has_title){
-    this._current_item = {'title':(!tag?'':tag.toUpperCase()+': ')+this._current_element};
-    this._has_title = true;
-  }
-
-  if(!this._current_item[this._current_element]){
-    this._current_item[this._current_element] = {'name':this._current_element};
-  }
-  if(tag){
-    if(!this._current_item[this._current_element].tags){
-      this._current_item[this._current_element].tags = [tag];
+    var tag = '';
+    if(match.indexOf('.') > 0){
+        var parts = match.split('.');
+        this._current_element = parts[1];
+        tag = parts[0];
     }else{
-      this._current_item[this._current_element].tags.push(tag);
+        this._current_element = match;
     }
-  }
-  return true;
+
+    if(!this._has_title){
+        this._current_item = {'title':(!tag?'':tag.toUpperCase()+': ')+this._current_element};
+        this._has_title = true;
+    }
+
+    if(!this._current_item[this._current_element]){
+        this._current_item[this._current_element] = {'name':this._current_element};
+    }
+    if(tag){
+        if(!this._current_item[this._current_element].tags){
+            this._current_item[this._current_element].tags = [tag];
+        }else{
+            this._current_item[this._current_element].tags.push(tag);
+        }
+    }
+    return true;
 };
 
 WYMeditor.WymCssParser.prototype.addStyleSetting = function(style_details)
 {
-  for (var name in style_details){
-    var details = style_details[name];
-    if(typeof details == 'object' && name != 'title'){
+    for (var name in style_details){
+        var details = style_details[name];
+        if(typeof details == 'object' && name != 'title'){
 
-      this.css_settings.classesItems.push({
+    this.css_settings.classesItems.push({
         'name': WYMeditor.Helper.trim(details.name),
         'title': style_details.title,
         'expr' : WYMeditor.Helper.trim((details.expressions||details.tags).join(', '))
-      });
-      if(details.feedback_style){
+    });
+    if(details.feedback_style){
         this.css_settings.editorStyles.push({
-          'name': '.'+ WYMeditor.Helper.trim(details.name),
-          'css': details.feedback_style
+            'name': '.'+ WYMeditor.Helper.trim(details.name),
+            'css': details.feedback_style
         });
-      }
-      if(details.style){
-        this.css_settings.dialogStyles.push({
-          'name': '.'+ WYMeditor.Helper.trim(details.name),
-          'css': details.style
-        });
-      }
     }
-  }
+    if(details.style){
+        this.css_settings.dialogStyles.push({
+            'name': '.'+ WYMeditor.Helper.trim(details.name),
+            'css': details.style
+        });
+    }
+}
+}
 };
 
 /********** HELPERS **********/
 
 // Returns true if it is a text node with whitespaces only
 jQuery.fn.isPhantomNode = function() {
-  if (this[0].nodeType == 3)
-    return !(/[^\t\n\r ]/.test(this[0].data));
+    if (this[0].nodeType == 3)
+        return !(/[^\t\n\r ]/.test(this[0].data));
 
-  return false;
+    return false;
 };
 
 WYMeditor.isPhantomNode = function(n) {
-  if (n.nodeType == 3)
-    return !(/[^\t\n\r ]/.test(n.data));
+    if (n.nodeType == 3)
+        return !(/[^\t\n\r ]/.test(n.data));
 
-  return false;
+    return false;
 };
 
 WYMeditor.isPhantomString = function(str) {
@@ -3974,16 +4033,16 @@ WYMeditor.isPhantomString = function(str) {
 // Returns the Parents or the node itself
 // jqexpr = a jQuery expression
 jQuery.fn.parentsOrSelf = function(jqexpr) {
-  var n = this;
+    var n = this;
 
-  if (n[0].nodeType == 3)
-    n = n.parents().slice(0,1);
+    if (n[0].nodeType == 3)
+        n = n.parents().slice(0,1);
 
 //  if (n.is(jqexpr)) // XXX should work, but doesn't (probably a jQuery bug)
-  if (n.filter(jqexpr).size() == 1)
-    return n;
-  else
-    return n.parents(jqexpr).slice(0,1);
+    if (n.filter(jqexpr).size() == 1)
+        return n;
+    else
+        return n.parents(jqexpr).slice(0,1);
 };
 
 // String & array helpers
@@ -4023,7 +4082,7 @@ WYMeditor.Helper = {
                 break;
             }
         }
-      return(ret);
+    return(ret);
     },
 
     //return 'item' object in 'arr' array, checking its 'name' property, or null

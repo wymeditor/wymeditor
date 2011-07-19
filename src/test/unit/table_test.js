@@ -37,17 +37,17 @@ function testTableTab(initialHtml, startSelector, endSelector) {
 
     var $body = $(wymeditor._doc).find('body.wym_iframe');
     var startElmnt = $body.find(startSelector)[0];
-    ok(startElmnt != null, "Selection start element exists");
+    ok(startElmnt !== null, "Selection start element exists");
     moveSelector(wymeditor, startElmnt);
 
     simulateKey(WYMeditor.KEY.TAB, startElmnt);
 
     var actualSelection = wymeditor.selected();
-    if (endSelector == null) {
+    if (endSelector === null) {
         equals(actualSelection, null);
     } else {
         var expectedSelection = $body.find(endSelector);
-        if (expectedSelection.length != 0) {
+        if (expectedSelection.length !== 0) {
             expectedSelection = expectedSelection[0];
         }
 
@@ -78,9 +78,9 @@ function testRowMerge(
     // selection
     var $body = $(wymeditor._doc).find('body.wym_iframe');
     var startElmnt = $body.find(startSelector)[0];
-    ok(startElmnt != null, "Selection start element exists");
+    ok(startElmnt !== null, "Selection start element exists");
     var endElmnt = $body.find(endSelector)[0];
-    ok(endElmnt != null, "Selection end element exists");
+    ok(endElmnt !== null, "Selection end element exists");
     makeSelection(wymeditor, startElmnt, endElmnt);
 
     // Use rangy to get a cross-browser selection object and perform the actual
@@ -95,11 +95,11 @@ function testRowMerge(
     // Verify that our now-current selection matches the expected final
     // selection.
     var actualSelection = wymeditor.selected();
-    if (expectedFinalSelector == null) {
+    if (expectedFinalSelector === null) {
         equals(actualSelection, null);
     } else {
         var expectedSelection = $body.find(expectedFinalSelector);
-        if (expectedSelection.length != 0) {
+        if (expectedSelection.length !== 0) {
             expectedSelection = expectedSelection[0];
         }
 
@@ -843,7 +843,7 @@ function runTableTests() {
         expect(3);
         var expectedSelector = '#td_2_1';
         if (isInnerSelector) {
-            var expectedSelector = '#span_2_1';
+            expectedSelector = '#span_2_1';
         }
         testTableTab(basicTableHtml, '#td_1_3', expectedSelector);
     });
@@ -1352,7 +1352,7 @@ function runTableTests() {
 
         var endSelection = '#td_2_1';
         if (isInnerSelector) {
-            var endSelection = '#span_2_1';
+            endSelection = '#span_2_1';
         }
         testRowMerge(
             mergeTableHtml, mergeSpan21Html, '#span_2_1', '#td_2_2', endSelection);
@@ -1437,4 +1437,4 @@ function runTableTests() {
         testNormalize(mergeTableHtml);
         testNormalize(mergeTd41Html);
     });
-};
+}
