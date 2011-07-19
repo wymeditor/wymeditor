@@ -44,7 +44,7 @@ jQuery(function($){
         ok(true, "Load ruleSet using the load method. We didn't die, so lets say we made it.");
     });
 
-    test('getNode', function() {
+    test('getNodeRules', function() {
         var SM = new Wymeditor.dom.StructureManager();
         
         deepEqual(SM.getNodeRules('u'), {
