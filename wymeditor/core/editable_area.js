@@ -3,8 +3,9 @@ Wymeditor.EditableArea = function EditableArea (element) {
     this.element = $(element);
     
     this.dom = Wymeditor.dom;
-    this.serializer = new this.dom.Serializer();
-    this.structureManager = new this.dom.StructureManager();
+    this.normalizer = this.dom.normalizer;
+    this.serializer = this.dom.serializer;
+    this.structureManager = this.dom.structureManager();
     this.selection = Wymeditor.selection;
     this.utils = Wymeditor.utils;
     
@@ -60,7 +61,6 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
                 this.selection.detach(ranges);
             }
         }
-        return true;
     },
     
     splitTextNode: function (textNode, offset) {
@@ -310,7 +310,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
 
         this.selection.restore();
 
-        this.normalizeNodes(normalize);
+        this.normalizer.normalizeNodes(normalize);
 
     },
     
@@ -348,91 +348,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
         });
     },
 
-    normalizeNode: function normalize (node) {
-        var attributes = {}, 
-            equal,
-            next,
-            name, 
-            value,
-            i;
-        node = $(node)[0] && $(node)[0].childNodes[0];
 
-        while (node) {
-            next = node.nextSibling;
-            
-            // Do we have two nodes of the same type?
-            if (next && next.nodeName === node.nodeName) {
-                
-                // Merge text nodes
-                if (node.nodeType === Wymeditor.TEXT_NODE) {
-                    node.appendData(next.data);
-                    next.parentNode.removeChild(next);
-
-                    continue;
-
-                } else if (node.nodeType === Wymeditor.ELEMENT_NODE) {
-                                        
-                    // Recursion: normalize children
-                    normalize(node);
-
-                    // Merge elements only if they share the same attributes
-                    if (node.attributes.length === next.attributes.length) {
-                        
-                        // They have the same number of attributes, lets compare them
-                        equal = true;
-                        for (i=0; attribute = node.attributes[i]; i++) {
-                            name = attribute.nodeName.toLowerCase();
-                            value = attribute.nodeValue;
-                            
-                            if (name === 'style' && node.style.cssText) {
-                                attributes[name] = node.style.cssText;
-                            } else if (name !== 'contenteditable' && value !== '') {
-                                attributes[name] = value;
-                            }
-                        }
-                        for (i=0; attribute = next.attributes[i]; i++) {
-                            name = attribute.nodeName.toLowerCase();
-                            value = attribute.nodeValue;
-                            if (
-                                !(name in attributes) ||
-                                (name !== 'contenteditable' && value !== '' && attributes[name] !== value) ||
-                                (name === 'style' && next.style.cssText && attributes[name] !== node.style.cssText)
-                            ) {
-                                equal = false;
-                                break;
-                            }
-                        }
-
-                        if (equal) {
-                            // Merge nodes
-                            for (i = 0; child = next.childNodes[i]; i++) {
-                                node.appendChild(next.removeChild(child));
-                            }
-                        } else {
-                            node = next;
-                        }
-                    } else {
-                        node = next;
-                    }
-                }
-
-            // We have two different nodes
-            } else {
-                // Remove empty elements
-                if (node.nodeType === Wymeditor.ELEMENT_NODE && !node.childNodes.length) {
-                    node.parentNode.removeChild(node);
-                }
-                node = next;
-            }
-        }
-
-    },
-
-    normalizeNodes: function (nodes) {
-        for (var i = 0, node; node = nodes[i]; i++) {
-            this.normalizeNode(node);
-        }
-    },
     
     html: function (html) {
         if (this.utils.is('String', html)) {

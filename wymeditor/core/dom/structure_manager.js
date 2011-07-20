@@ -1,4 +1,4 @@
-Wymeditor.ns('dom').StructureManager = function (ruleSet) {
+Wymeditor.ns('dom').structureManager = function (ruleSet) {
     
     var _rawRuleSet,
         _ruleSet;
@@ -114,7 +114,7 @@ Wymeditor.ns('dom').StructureManager = function (ruleSet) {
     };
     
 
-    loadRuleSet(ruleSet || Wymeditor.dom.StructureManager.DEFAULT_RULESET);
+    loadRuleSet(ruleSet || Wymeditor.dom.structureManager.DEFAULT_RULESET);
 
     return {
         load: loadRuleSet,
@@ -147,7 +147,7 @@ Wymeditor.ns('dom').StructureManager = function (ruleSet) {
  * Node > Collection (weight: n) > Collection (weight: n-1) > Collection (all)
  * 
  */
-Wymeditor.dom.StructureManager.DEFAULT_RULESET = {
+Wymeditor.dom.structureManager.DEFAULT_RULESET = {
     nodes: {
         'b': { replaceWith: 'strong' },
         'i': { replaceWith: 'em' },

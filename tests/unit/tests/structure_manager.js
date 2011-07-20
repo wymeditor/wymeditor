@@ -1,7 +1,7 @@
 jQuery(function($){
-    module('StructureManager');
+    module('structureManager');
     test('load', function() {
-        var SM = new Wymeditor.dom.StructureManager({
+        var SM = Wymeditor.dom.structureManager({
             nodes: {
                 'customElement': { customProp: true }
             },
@@ -39,13 +39,13 @@ jQuery(function($){
         }, 'Get customElement');
 
         // Restore defaults
-        SM.load(Wymeditor.dom.StructureManager.DEFAULT_RULESET);
+        SM.load(Wymeditor.dom.structureManager.DEFAULT_RULESET);
 
         ok(true, "Load ruleSet using the load method. We didn't die, so lets say we made it.");
     });
 
     test('getNodeRules', function() {
-        var SM = new Wymeditor.dom.StructureManager();
+        var SM = Wymeditor.dom.structureManager();
         
         deepEqual(SM.getNodeRules('u'), {
             "attributes": {
