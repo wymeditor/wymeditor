@@ -24,7 +24,7 @@ Download the latest release from [WYMeditor.org](http://www.wymeditor.org/downlo
 
 WYMeditor should work with jQuery 1.2.x and up, although using a later jQuery version is preferred. 
 
-Now, get you a textarea prepared:
+Now, prepare yourself a textarea:
 
     <textarea class="wymeditor"><p>Hello, World!</p></textarea>
     <input type="submit" class="wymupdate" />
@@ -47,7 +47,7 @@ Contibuting
  - **Official branch:** https://github.com/wymeditor/wymeditor
  - **Issue tracking:** https://github.com/wymeditor/wymeditor/issues
  - **Wiki/Docs:** https://github.com/wymeditor/wymeditor/wiki
- - **Forum:** http://forum.wymeditor.org
+ - **Forum:** http://community.wymeditor.org
 
 [Read more on contributing](https://github.com/wymeditor/wymeditor/wiki/Contributing). 
 
