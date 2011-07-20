@@ -1,4 +1,4 @@
-WYMeditor.STRINGS['lt'] = {
+WYMeditor.STRINGS.lt = {
     Strong:           'Pusjuodis',
     Emphasis:         'Kursyvas',
     Superscript:      'Viršutinis indeksas',

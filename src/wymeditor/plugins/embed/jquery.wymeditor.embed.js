@@ -25,10 +25,10 @@
             }
         }
         return arr;
-    };
-    if (WYMeditor && WYMeditor.XhtmlValidator['_tags']['param']['attributes']) {
+    }
+    if (WYMeditor && WYMeditor.XhtmlValidator._tags.param.attributes) {
 
-        WYMeditor.XhtmlValidator['_tags']["embed"] = {
+        WYMeditor.XhtmlValidator._tags.embed = {
             "attributes":[
                 "allowscriptaccess",
                 "allowfullscreen",
@@ -39,7 +39,7 @@
             ]
         };
 
-        WYMeditor.XhtmlValidator['_tags']['param']['attributes'] = {
+        WYMeditor.XhtmlValidator._tags.param.attributes = {
             '0':'name',
             '1':'type',
             'valuetype':/^(data|ref|object)$/,
@@ -47,7 +47,7 @@
             '3':'value'
         };
 
-        WYMeditor.XhtmlValidator['_tags']['iframe'] = {
+        WYMeditor.XhtmlValidator._tags.iframe = {
             "attributes":[
                 "allowfullscreen",
                 "width",

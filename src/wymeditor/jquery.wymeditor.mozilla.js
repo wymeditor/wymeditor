@@ -1,3 +1,4 @@
+/*jslint evil: true */
 /*
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (c) 2005 - 2009 Jean-Francois Hovinne, http://www.wymeditor.org/
@@ -21,7 +22,6 @@
  */
 
 WYMeditor.WymClassMozilla = function(wym) {
-
     this._wym = wym;
     this._class = "class";
     this._newLine = "\n";
@@ -33,8 +33,8 @@ WYMeditor.WymClassMozilla.CELL_PLACEHOLDER = '<br _moz_dirty="">';
 WYMeditor.WymClassExplorer.PLACEHOLDER_NODE = '<br _moz_editor_bogus_node="TRUE" _moz_dirty="">';
 
 // Firefox 3.5 and 3.6 require the CELL_PLACEHOLDER and 4.0 doesn't
-WYMeditor.WymClassMozilla.NEEDS_CELL_FIX = $.browser.version >= '1.9.1'
-    && $.browser.version < '2.0';
+WYMeditor.WymClassMozilla.NEEDS_CELL_FIX = $.browser.version >= '1.9.1' &&
+        $.browser.version < '2.0';
 
 WYMeditor.WymClassMozilla.prototype.initIframe = function(iframe) {
     var wym = this;
@@ -61,7 +61,9 @@ WYMeditor.WymClassMozilla.prototype.initIframe = function(iframe) {
     this.enableDesignMode();
 
     //pre-bind functions
-    if(jQuery.isFunction(this._options.preBind)) this._options.preBind(this);
+    if (jQuery.isFunction(this._options.preBind)) {
+        this._options.preBind(this);
+    }
 
     //bind external events
     this._wym.bindEvents();
@@ -82,7 +84,9 @@ WYMeditor.WymClassMozilla.prototype.initIframe = function(iframe) {
     });
 
     //post-init functions
-    if(jQuery.isFunction(this._options.postInit)) this._options.postInit(this);
+    if (jQuery.isFunction(this._options.postInit)) {
+        this._options.postInit(this);
+    }
 
     //add event listeners to doc elements, e.g. images
     this.listen();
@@ -121,15 +125,12 @@ WYMeditor.WymClassMozilla.prototype.html = function(html) {
 };
 
 WYMeditor.WymClassMozilla.prototype._exec = function(cmd,param) {
-
-    if(!this.selected()) {
+    if (!this.selected()) {
         return false;
     }
 
     switch(cmd) {
-
     case WYMeditor.INDENT: case WYMeditor.OUTDENT:
-
         var focusNode = this.selected();
         var sel = this._iframe.contentWindow.getSelection();
         var anchorNode = sel.anchorNode;
@@ -140,15 +141,14 @@ WYMeditor.WymClassMozilla.prototype._exec = function(cmd,param) {
         focusNode = this.findUp(focusNode, WYMeditor.BLOCKS);
         anchorNode = this.findUp(anchorNode, WYMeditor.BLOCKS);
 
-        if (focusNode && focusNode == anchorNode
-            && focusNode.tagName.toLowerCase() == WYMeditor.LI) {
+        if (focusNode && focusNode == anchorNode &&
+                focusNode.tagName.toLowerCase() == WYMeditor.LI) {
 
             var ancestor = focusNode.parentNode.parentNode;
 
-            if (focusNode.parentNode.childNodes.length > 1
-                || ancestor.tagName.toLowerCase() == WYMeditor.OL
-                || ancestor.tagName.toLowerCase() == WYMeditor.UL) {
-
+            if (focusNode.parentNode.childNodes.length > 1 ||
+                    ancestor.tagName.toLowerCase() == WYMeditor.OL ||
+                    ancestor.tagName.toLowerCase() == WYMeditor.UL) {
                 this._doc.execCommand(cmd, '', null);
             }
         }
@@ -156,7 +156,6 @@ WYMeditor.WymClassMozilla.prototype._exec = function(cmd,param) {
         break;
 
     default:
-
         if (param) {
             this._doc.execCommand(cmd, '', param);
         } else {
@@ -174,16 +173,16 @@ WYMeditor.WymClassMozilla.prototype._exec = function(cmd,param) {
     return true;
 };
 
-/* @name selected
-    * @description Returns the selected container
-    */
+/**
+    @name selected
+    @description Returns the selected container
+*/
 WYMeditor.WymClassMozilla.prototype.selected = function() {
-
     var sel = this._iframe.contentWindow.getSelection();
     var node = sel.focusNode;
     if (node) {
         if (node.nodeName == "#text") {
-            return(node.parentNode);
+            return node.parentNode;
         } else {
             return node;
         }
@@ -201,7 +200,6 @@ WYMeditor.WymClassMozilla.prototype.addCssRule = function(styles, oCss) {
 
 //keydown handler, mainly used for keyboard shortcuts
 WYMeditor.WymClassMozilla.prototype.keydown = function(evt) {
-
     //'this' is the doc
     var wym = WYMeditor.INSTANCES[this.title];
 
@@ -229,30 +227,29 @@ WYMeditor.WymClassMozilla.prototype.keyup = function(evt) {
     wym._selected_image = null;
     var container = null;
 
-    if (evt.keyCode != WYMeditor.KEY.BACKSPACE
-        && evt.keyCode != WYMeditor.KEY.CTRL
-        && evt.keyCode != WYMeditor.KEY.DELETE
-        && evt.keyCode != WYMeditor.KEY.COMMAND
-        && evt.keyCode != WYMeditor.KEY.UP
-        && evt.keyCode != WYMeditor.KEY.DOWN
-        && evt.keyCode != WYMeditor.KEY.LEFT
-        && evt.keyCode != WYMeditor.KEY.RIGHT
-        && evt.keyCode != WYMeditor.KEY.ENTER
-        && !evt.metaKey
-        && !evt.ctrlKey) {
-        // Not BACKSPACE, DELETE, CTRL, or COMMAND key
+    if (evt.keyCode != WYMeditor.KEY.BACKSPACE &&
+            evt.keyCode != WYMeditor.KEY.CTRL &&
+            evt.keyCode != WYMeditor.KEY.DELETE &&
+            evt.keyCode != WYMeditor.KEY.COMMAND &&
+            evt.keyCode != WYMeditor.KEY.UP &&
+            evt.keyCode != WYMeditor.KEY.DOWN &&
+            evt.keyCode != WYMeditor.KEY.LEFT &&
+            evt.keyCode != WYMeditor.KEY.RIGHT &&
+            evt.keyCode != WYMeditor.KEY.ENTER &&
+            !evt.metaKey &&
+            !evt.ctrlKey) { // Not BACKSPACE, DELETE, CTRL, or COMMAND key
 
         container = wym.selected();
         var name = container.tagName.toLowerCase();
 
         //fix forbidden main containers
-        if (name == "strong"
-            || name == "b"
-            || name == "em"
-            || name == "i"
-            || name == "sub"
-            || name == "sup"
-            || name == "a") {
+        if (name == "strong" ||
+                name == "b" ||
+                name == "em" ||
+                name == "i" ||
+                name == "sub" ||
+                name == "sup" ||
+                name == "a") {
 
             name = container.parentNode.tagName.toLowerCase();
         }
@@ -266,19 +263,17 @@ WYMeditor.WymClassMozilla.prototype.keyup = function(evt) {
 
     // If we potentially created a new block level element or moved to a new one
     // then we should ensure that they're in the proper format
-    if (evt.keyCode == WYMeditor.KEY.UP
-        || evt.keyCode == WYMeditor.KEY.DOWN
-        || evt.keyCode == WYMeditor.KEY.LEFT
-        || evt.keyCode == WYMeditor.KEY.RIGHT
-        || evt.keyCode == WYMeditor.KEY.BACKSPACE
-        || evt.keyCode == WYMeditor.KEY.ENTER) {
-
+    if (evt.keyCode == WYMeditor.KEY.UP ||
+            evt.keyCode == WYMeditor.KEY.DOWN ||
+            evt.keyCode == WYMeditor.KEY.LEFT ||
+            evt.keyCode == WYMeditor.KEY.RIGHT ||
+            evt.keyCode == WYMeditor.KEY.BACKSPACE ||
+            evt.keyCode == WYMeditor.KEY.ENTER) {
         wym.fixBodyHtml();
     }
 };
 
 WYMeditor.WymClassMozilla.prototype.click = function(evt) {
-
     var wym = WYMeditor.INSTANCES[this.title];
     var container = wym.selected();
 
@@ -287,7 +282,7 @@ WYMeditor.WymClassMozilla.prototype.click = function(evt) {
             // Starting with FF 3.6, inserted tables need some content in their
             // cells before they're editable
             jQuery(WYMeditor.TD, wym._doc.body)
-                .append(WYMeditor.WymClassMozilla.CELL_PLACEHOLDER);
+                    .append(WYMeditor.WymClassMozilla.CELL_PLACEHOLDER);
 
             // The user is still going to need to move out of and then back in
             // to this cell if the table was inserted via an inner_html call
@@ -319,12 +314,11 @@ WYMeditor.WymClassMozilla.prototype.enableDesignMode = function() {
             this._doc.designMode = "on";
             this._doc.execCommand("styleWithCSS", '', false);
             this._doc.execCommand("enableObjectResizing", false, false);
-        } catch(e) { }
+        } catch(e) {}
     }
 };
 
-WYMeditor.WymClassMozilla.prototype.openBlockTag = function(tag, attributes)
-{
+WYMeditor.WymClassMozilla.prototype.openBlockTag = function(tag, attributes) {
     attributes = this.validator.getValidTagAttributes(tag, attributes);
 
     // Handle Mozilla styled spans
