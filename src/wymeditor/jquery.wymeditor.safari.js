@@ -1,3 +1,4 @@
+/*jslint evil: true */
 /*
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (c) 2005 - 2009 Jean-Francois Hovinne, http://www.wymeditor.org/
@@ -18,7 +19,6 @@
  */
 
 WYMeditor.WymClassSafari = function(wym) {
-
     this._wym = wym;
     this._class = "class";
     this._newLine = "\n";
@@ -28,12 +28,10 @@ WYMeditor.WymClassSafari = function(wym) {
 WYMeditor.WymClassSafari.PLACEHOLDER_NODE = '<br>';
 
 WYMeditor.WymClassSafari.prototype.initIframe = function(iframe) {
-
     this._iframe = iframe;
     this._doc = iframe.contentDocument;
 
     //add css rules from options
-
     var styles = this._doc.styleSheets[0];
     var aCss = eval(this._options.editorStyles);
 
@@ -51,7 +49,9 @@ WYMeditor.WymClassSafari.prototype.initIframe = function(iframe) {
     this.html(this._wym._html);
 
     //pre-bind functions
-    if(jQuery.isFunction(this._options.preBind)) this._options.preBind(this);
+    if (jQuery.isFunction(this._options.preBind)) {
+        this._options.preBind(this);
+    }
 
     //bind external events
     this._wym.bindEvents();
@@ -63,25 +63,26 @@ WYMeditor.WymClassSafari.prototype.initIframe = function(iframe) {
     jQuery(this._doc).bind("keyup", this.keyup);
 
     //post-init functions
-    if(jQuery.isFunction(this._options.postInit)) this._options.postInit(this);
+    if (jQuery.isFunction(this._options.postInit)) {
+        this._options.postInit(this);
+    }
 
     //add event listeners to doc elements, e.g. images
     this.listen();
 };
 
 WYMeditor.WymClassSafari.prototype._exec = function(cmd,param) {
-
-    if(!this.selected()) return(false);
+    if (!this.selected()) {
+        return false;
+    }
 
     var focusNode = this.selected();
 
     switch(cmd) {
-
     case WYMeditor.INDENT: case WYMeditor.OUTDENT:
-
-        var focusNode = this.selected();
         var sel = this._iframe.contentWindow.getSelection();
         var anchorNode = sel.anchorNode;
+
         if (anchorNode.nodeName == "#text") {
             anchorNode = anchorNode.parentNode;
         }
@@ -89,21 +90,20 @@ WYMeditor.WymClassSafari.prototype._exec = function(cmd,param) {
         focusNode = this.findUp(focusNode, WYMeditor.BLOCKS);
         anchorNode = this.findUp(anchorNode, WYMeditor.BLOCKS);
 
-        if (focusNode && focusNode == anchorNode
-            && focusNode.tagName.toLowerCase() == WYMeditor.LI) {
+        if (focusNode && focusNode == anchorNode &&
+                focusNode.tagName.toLowerCase() == WYMeditor.LI) {
 
             var ancestor = focusNode.parentNode.parentNode;
 
-            if (focusNode.parentNode.childNodes.length > 1
-                || ancestor.tagName.toLowerCase() == WYMeditor.OL
-                || ancestor.tagName.toLowerCase() == WYMeditor.UL) {
+            if (focusNode.parentNode.childNodes.length > 1 ||
+                    ancestor.tagName.toLowerCase() == WYMeditor.OL ||
+                    ancestor.tagName.toLowerCase() == WYMeditor.UL) {
 
                 this._doc.execCommand(cmd, '', null);
             }
         }
 
-    break;
-
+        break;
     case WYMeditor.INSERT_ORDEREDLIST: case WYMeditor.INSERT_UNORDEREDLIST:
 
         this._doc.execCommand(cmd,'',null);
@@ -111,34 +111,38 @@ WYMeditor.WymClassSafari.prototype._exec = function(cmd,param) {
         //Safari creates lists in e.g. paragraphs.
         //Find the container, and remove it.
         var container = this.findUp(focusNode, WYMeditor.MAIN_CONTAINERS);
-        if(container) jQuery(container).replaceWith(jQuery(container).html());
+        if (container) {
+            jQuery(container).replaceWith(jQuery(container).html());
+        }
 
-    break;
-
+        break;
     default:
+        if (param) {
+            this._doc.execCommand(cmd, '', param);
+        } else {
+            this._doc.execCommand(cmd, '', null);
+        }
 
-        if(param) this._doc.execCommand(cmd,'',param);
-        else this._doc.execCommand(cmd,'',null);
-
-    break;
+        break;
     }
 
     //set to P if parent = BODY
     container = this.selected();
-    if(container && container.tagName.toLowerCase() == WYMeditor.BODY)
+    if (container && container.tagName.toLowerCase() == WYMeditor.BODY) {
         this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
+    }
 
     return true;
-
 };
 
-/* @name selected
- * @description Returns the selected container
- */
+/**
+    @name selected
+    @description Returns the selected container
+*/
 WYMeditor.WymClassSafari.prototype.selected = function() {
-
     var sel = this._iframe.contentWindow.getSelection();
     var node = sel.focusNode;
+
     if (node) {
         if (node.nodeName == "#text") {
             return node.parentNode;
@@ -151,7 +155,6 @@ WYMeditor.WymClassSafari.prototype.selected = function() {
 };
 
 WYMeditor.WymClassSafari.prototype.addCssRule = function(styles, oCss) {
-
     styles.insertRule(oCss.name + " {" + oCss.css + "}",
         styles.cssRules.length);
 };
@@ -198,32 +201,31 @@ WYMeditor.WymClassSafari.prototype.keyup = function(evt) {
         }
     }
 
-    if (evt.keyCode != WYMeditor.KEY.BACKSPACE
-        && evt.keyCode != WYMeditor.KEY.CTRL
-        && evt.keyCode != WYMeditor.KEY.DELETE
-        && evt.keyCode != WYMeditor.KEY.COMMAND
-        && evt.keyCode != WYMeditor.KEY.UP
-        && evt.keyCode != WYMeditor.KEY.DOWN
-        && evt.keyCode != WYMeditor.KEY.LEFT
-        && evt.keyCode != WYMeditor.KEY.RIGHT
-        && evt.keyCode != WYMeditor.KEY.ENTER
-        && !evt.metaKey
-        && !evt.ctrlKey) {
-        // Not BACKSPACE, DELETE, CTRL, or COMMAND key
+    if (evt.keyCode != WYMeditor.KEY.BACKSPACE &&
+            evt.keyCode != WYMeditor.KEY.CTRL &&
+            evt.keyCode != WYMeditor.KEY.DELETE &&
+            evt.keyCode != WYMeditor.KEY.COMMAND &&
+            evt.keyCode != WYMeditor.KEY.UP &&
+            evt.keyCode != WYMeditor.KEY.DOWN &&
+            evt.keyCode != WYMeditor.KEY.LEFT &&
+            evt.keyCode != WYMeditor.KEY.RIGHT &&
+            evt.keyCode != WYMeditor.KEY.ENTER &&
+            !evt.metaKey &&
+            !evt.ctrlKey) {// Not BACKSPACE, DELETE, CTRL, or COMMAND key
 
         container = wym.selected();
         var name = container.tagName.toLowerCase();
 
         // Fix forbidden main containers
-        if (name == "strong"
-            || name == "b"
-            || name == "em"
-            || name == "i"
-            || name == "sub"
-            || name == "sup"
-            || name == "a"
-            || name == "span") {
-            // Webkit also tries to use spans as a main container
+        if (name == "strong" ||
+                name == "b" ||
+                name == "em" ||
+                name == "i" ||
+                name == "sub" ||
+                name == "sup" ||
+                name == "a" ||
+                name == "span") {
+            // Webkit tries to use spans as a main container
 
             name = container.parentNode.tagName.toLowerCase();
         }
@@ -237,19 +239,17 @@ WYMeditor.WymClassSafari.prototype.keyup = function(evt) {
 
     // If we potentially created a new block level element or moved to a new one
     // then we should ensure that they're in the proper format
-    if (evt.keyCode == WYMeditor.KEY.UP
-        || evt.keyCode == WYMeditor.KEY.DOWN
-        || evt.keyCode == WYMeditor.KEY.LEFT
-        || evt.keyCode == WYMeditor.KEY.RIGHT
-        || evt.keyCode == WYMeditor.KEY.BACKSPACE
-        || evt.keyCode == WYMeditor.KEY.ENTER) {
-
+    if (evt.keyCode == WYMeditor.KEY.UP ||
+            evt.keyCode == WYMeditor.KEY.DOWN ||
+            evt.keyCode == WYMeditor.KEY.LEFT ||
+            evt.keyCode == WYMeditor.KEY.RIGHT ||
+            evt.keyCode == WYMeditor.KEY.BACKSPACE ||
+            evt.keyCode == WYMeditor.KEY.ENTER) {
         wym.fixBodyHtml();
     }
 };
 
-WYMeditor.WymClassSafari.prototype.openBlockTag = function(tag, attributes)
-{
+WYMeditor.WymClassSafari.prototype.openBlockTag = function(tag, attributes) {
     attributes = this.validator.getValidTagAttributes(tag, attributes);
 
     // Handle Safari styled spans
@@ -262,8 +262,9 @@ WYMeditor.WymClassSafari.prototype.openBlockTag = function(tag, attributes)
             attributes.style = '';
 
             // Should fix #125 - also removed the xhtml() override
-            if(typeof attributes['class'] == 'string') {
-                attributes['class'] = attributes['class'].replace(/apple-style-span/gi, '');
+            if (typeof attributes['class'] == 'string') {
+                attributes['class'] = attributes['class'].replace(
+                        /apple-style-span/gi, '');
             }
         }
     }
@@ -272,10 +273,15 @@ WYMeditor.WymClassSafari.prototype.openBlockTag = function(tag, attributes)
 };
 
 WYMeditor.WymClassSafari.prototype.getTagForStyle = function(style) {
+    if (/bold/.test(style)) {
+        return 'strong';
+    } else if (/italic/.test(style)) {
+        return 'em';
+    } else if (/sub/.test(style)) {
+        return 'sub';
+    } else if (/super/.test(style)) {
+        return 'sup';
+    }
 
-  if(/bold/.test(style)) return 'strong';
-  if(/italic/.test(style)) return 'em';
-  if(/sub/.test(style)) return 'sub';
-  if(/super/.test(style)) return 'sup';
-  return false;
+    return false;
 };

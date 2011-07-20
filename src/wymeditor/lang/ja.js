@@ -1,4 +1,4 @@
-WYMeditor.STRINGS['ja'] = {
+WYMeditor.STRINGS.ja = {
     Strong: '強調<strong>',
     Emphasis: '強調<em>',
     Superscript: '上付き',

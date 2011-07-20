@@ -36,8 +36,12 @@ WYMeditor.RDFa = function(options, wym) {
 
 //RDFa plugin init
 WYMeditor.RDFa.prototype.init = function() {
-    if(this._options.setStdNameSpaces) this.setStdNameSpaces();
-    if(this._options.extendXHTMLParser) this.extendXHTMLParser();
+    if (this._options.setStdNameSpaces) {
+        this.setStdNameSpaces();
+    }
+    if (this._options.extendXHTMLParser) {
+        this.extendXHTMLParser();
+    }
     this.setButtons();
 };
 
@@ -60,7 +64,7 @@ WYMeditor.RDFa.prototype.extendXHTMLParser = function() {
 
 WYMeditor.RDFa.prototype.extendAttributes = function() {
     //Add the RDFa attributes
-    WYMeditor.XhtmlValidator._attributes['core']['attributes'].push(
+    WYMeditor.XhtmlValidator._attributes.core.attributes.push(
         'rel',
         'rev',
         'content',
@@ -96,12 +100,12 @@ WYMeditor.RDFa.prototype.setStdVocabularies = function() {
 };
 
 WYMeditor.RDFa.prototype.addVocabulary = function(vocabulary) {
-    WYMeditor.XhtmlValidator._attributes['core']['attributes'].push(vocabulary);
+    WYMeditor.XhtmlValidator._attributes.core.attributes.push(vocabulary);
 };
 
 WYMeditor.RDFa.prototype.extendLinkAttributes = function() {
     //Overwrite the <a> attributes 'rel' and 'rev'
-    WYMeditor.XhtmlValidator._tags['a'] = {
+    WYMeditor.XhtmlValidator._tags.a = {
         "attributes": {
             "0":"charset",
             "1":"coords",
@@ -120,14 +124,20 @@ WYMeditor.RDFa.prototype.setButtons = function() {
     var _this = this;
     var list = jQuery(this._wym._box).find('div.wym_classes ul');
     jQuery.each(this._options.buttons, function(index, button) {
-      list
-        .append('<li></li>')
-        .children(':last')
-        .append('<a></a>')
-        .children(':last')
-        .attr('href', '#')
-        .text(button.title)
-        .bind('click', {instance: _this._wym, button: button, ns: button.ns, attr: button.attr, value: button.value}, _this.clickButtonHandler);
+        list
+            .append('<li></li>')
+            .children(':last')
+            .append('<a></a>')
+            .children(':last')
+            .attr('href', '#')
+            .text(button.title)
+            .bind('click',
+                {instance: _this._wym,
+                button: button,
+                ns: button.ns,
+                attr: button.attr,
+                value: button.value},
+                _this.clickButtonHandler);
     });
 };
 
@@ -136,8 +146,12 @@ WYMeditor.RDFa.prototype.clickButtonHandler = function(evt) {
         selected  = wym.selected();
 
     //the attribute already exists, remove it
-    if( jQuery(selected).attr(evt.data.attr) != undefined && jQuery(selected).attr(evt.data.attr) != '') {
-        WYMeditor.console.log('attribute already exists, remove it:', evt.data.attr, jQuery(selected).attr(evt.data.attr));
+    if (typeof(jQuery(selected).attr(evt.data.attr)) !== 'undefined' &&
+            jQuery(selected).attr(evt.data.attr) != '') {
+        WYMeditor.console.log(
+            'attribute already exists, remove it:',
+            evt.data.attr,
+            jQuery(selected).attr(evt.data.attr));
         jQuery(selected)
             .removeAttr(evt.data.attr)
             .removeClass(evt.data.ns)
@@ -147,7 +161,7 @@ WYMeditor.RDFa.prototype.clickButtonHandler = function(evt) {
     //else, add it
     } else {
         WYMeditor.console.log('attribute does not exist, add it:', evt.data.attr, evt.data.value);
-        if(evt.data.value) { //value available
+        if (evt.data.value) { //value available
             jQuery(selected)
                 .attr(evt.data.attr, evt.data.ns + ':' + evt.data.value)
                 .addClass(evt.data.ns)
@@ -155,12 +169,13 @@ WYMeditor.RDFa.prototype.clickButtonHandler = function(evt) {
                 .addClass(evt.data.value);
         } else { //value not available
             evt.data.value = prompt('Value', '');
-            if(evt.data.value != null)
+            if (evt.data.value !== null) {
                 jQuery(selected)
                     .attr(evt.data.attr, evt.data.value)
                     .addClass(evt.data.ns)
                     .addClass(evt.data.attr)
                     .addClass(evt.data.value);
+            }
         }
     }
     return false;

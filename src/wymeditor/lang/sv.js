@@ -1,4 +1,4 @@
-WYMeditor.STRINGS['sv'] = {
+WYMeditor.STRINGS.sv = {
     Strong:           'Viktigt',
     Emphasis:         'Betoning',
     Superscript:      'Upphöjt',

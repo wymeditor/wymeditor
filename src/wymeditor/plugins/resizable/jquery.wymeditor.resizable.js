@@ -45,10 +45,10 @@
  *
  * DEPENDENCIES: jQuery UI, jQuery UI resizable
  *
- * @param options options for the plugin  
+ * @param options options for the plugin
  */
 WYMeditor.editor.prototype.resizable = function(options) {
-  
+
     var wym = this;
     var $iframe = jQuery(wym._box).find('iframe');
     var $iframe_div = jQuery(wym._box).find('.wym_iframe');
@@ -68,7 +68,10 @@ WYMeditor.editor.prototype.resizable = function(options) {
     // default ones.
     var final_options = jQuery.extend(default_options, options);
 
-    if(jQuery.isFunction( jQuery.fn.resizable )) jQuery(wym._box).resizable(final_options);
-    else WYMeditor.console.error('Oops, jQuery UI.resizable unavailable.');
+    if (jQuery.isFunction(jQuery.fn.resizable)) {
+        jQuery(wym._box).resizable(final_options);
+    } else {
+        WYMeditor.console.error('Oops, jQuery UI.resizable unavailable.');
+    }
 
 };
