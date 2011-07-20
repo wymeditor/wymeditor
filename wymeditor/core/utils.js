@@ -46,7 +46,9 @@ Wymeditor.utils = {
 		return newPrototype;
     },
 	setScope: function (scope, func) {
-		return function() { func.apply(scope, [this].concat(Wymeditor.utils.slice(arguments))) };
+		return function() { 
+			func.apply(scope, [this].concat(Wymeditor.utils.slice(arguments))) 
+		};
 	}
 };
 })()

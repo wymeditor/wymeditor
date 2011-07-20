@@ -4,12 +4,12 @@ jQuery(function($){
     var element = $('.editable'),
         editableArea = new Wymeditor.EditableArea(element);
     
-    test('init', 6, function() {
+    test('init', 5, function() {
         ok(editableArea instanceof Wymeditor.EditableArea, 'Create instance');
         
-        ok(editableArea.addListener('disable', function () {
+        editableArea.addListener('disable', function () {
             ok(true, 'Received disable event');
-        }), 'Add event listener');
+        });
         
         editableArea.disable();
         
