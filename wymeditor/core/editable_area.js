@@ -160,43 +160,6 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
         return newRanges;
     },
 
-    splitNodesAtRangeBoundaries: function (ranges) {
-        var range, container, i, startNode, startOffset, endNode, endOffset;
-
-
-        // Respect block elements
-        ranges = this.splitRangesAtBlockBoundaries(ranges);
-        
-        for (i = 0; range = ranges[i]; i++) {
-            container = this.findParentBlockNode(range.startContainer);
-
-            // Save all the positions, because Firefox goes crazy once you modify the DOM. 
-            // Also, manage ranges that start or end between nodes.
-            if (range.startContainer.nodeType === Wymeditor.TEXT_NODE) {
-                startNode = range.startContainer;
-                startOffset = range.startOffset;
-            } else {
-                // Split before starting node
-                startNode = range.startContainer.childNodes[range.startOffset - 1];
-                startOffset = 0;
-            }
-            if (range.endContainer.nodeType === Wymeditor.TEXT_NODE) {
-                endNode = range.endContainer;
-                endOffset = range.endOffset;
-            } else {
-                // Split after end node 
-                endNode = range.endContainer.childNodes[range.endOffset];
-                endOffset = 0;
-            }
-
-            this.splitNodes(startNode, startOffset, container);
-            if (!range.collapsed) {
-                this.splitNodes(endNode, endOffset, container);
-            }
-        }
-        return ranges;
-    },
-
     splitBlock: function (node, offset) {
         return this.splitNodes(node, offset, this.findParentBlockNode(node).parent()[0]);
     },
@@ -267,47 +230,39 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
     },
     
     unformatSelection: function (filter) {
-        var i, ranges, range, nodes, func, normalize = [];
-
-        this.selection.save();
-
-        this.splitNodesAtRangeBoundaries(
-            this.selection.getRanges(this.element));
+        var ranges = this.splitRangesAtBlockBoundaries(
+                this.selection.getRanges(this.element)
+            ), i, j, range, wrapper, node, parent;
         
-        this.selection.restore();
-
-        ranges = this.selection.getRanges(this.element);
-
-        this.selection.save();
-
         for (i = 0; range = ranges[i]; i++) {
-            // element is child
-            nodes = range.getNodes([1], function (node) {
-                return $(node).is(filter);
-            });
-
-            // element is container
-            nodes = nodes.concat($(range.commonAncestorContainer).filter(filter).toArray());
-
-            // element is parent
-            nodes = nodes.concat(this.findParentNode(range.commonAncestorContainer, filter).toArray());
-
-            // Remove any duplicates
-            nodes = $.unique(nodes); 
-
-            $(nodes).each(function() {
-                $(this.childNodes).unwrap();
-            });
-            //range.detach();
+            // Extract selection into a div since Sizzle/jQuery doesn't work
+            // directly on document fragments, yet.
+            // https://github.com/jquery/sizzle/pull/47
+            wrapper = document.createElement('div');
+            wrapper.appendChild(range.extractContents());
             
-            // Remember which nodes to normalize
-            normalize.push(this.findParentBlockNode(range.commonAncestorContainer));
+            $(wrapper).find(filter).children().unwrap();
+            parent = this.findParentNode(range.startContainer, filter);
+
+            for (j = wrapper.childNodes.length -1; j >= 0; j--) {
+                node = wrapper.childNodes[j];
+                range.insertNode(wrapper.removeChild(node));
+            }
+
+            range.setEndAfter(node);
+            
+            if (parent.length) {
+                console.log(parent);
+                this.splitNodes(
+                    range.startContainer.childNodes[range.startOffset], 
+                    0, parent.parent()
+                );
+            }
+
         }
 
-        this.selection.restore();
-
-        this.normalizer.normalizeNodes(normalize);
-
+        this.selection.selectRanges(ranges);
+        //this.normalizer.normalizeNodes(normalize);
     },
     
     toggleSelectionFormat: function (element) {
