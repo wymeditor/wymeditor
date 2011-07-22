@@ -9,8 +9,8 @@
  *
  * Copyright 2011, Tim Down
  * Licensed under the MIT license.
- * Version: 1.1
- * Build date: 14 February 2011
+ * Version: 1.2beta
+ * Build date: 21 July 2011
  */
 rangy.createModule("SaveRestore", function(api, module) {
     api.requireModules( ["DomUtil", "DomRange", "WrappedRange"] );
@@ -24,7 +24,7 @@ rangy.createModule("SaveRestore", function(api, module) {
     }
 
     function insertRangeBoundaryMarker(range, atStart) {
-        var markerId = "selectionBoundary_" + (+new Date()) + "_" + ("" + Math.random()).substr(2);
+        var markerId = "selectionBoundary_" + (+new Date()) + "_" + ("" + Math.random()).slice(2);
         var markerEl;
         var doc = dom.getDocument(range.startContainer);
 
@@ -36,6 +36,7 @@ rangy.createModule("SaveRestore", function(api, module) {
         markerEl = doc.createElement("span");
         markerEl.id = markerId;
         markerEl.style.lineHeight = "0";
+        markerEl.style.display = "none";
         markerEl.appendChild(doc.createTextNode(markerTextChar));
 
         boundaryRange.insertNode(markerEl);
@@ -45,8 +46,12 @@ rangy.createModule("SaveRestore", function(api, module) {
 
     function setRangeBoundary(doc, range, markerId, atStart) {
         var markerEl = gEBI(markerId, doc);
-        range[atStart ? "setStartBefore" : "setEndBefore"](markerEl);
-        markerEl.parentNode.removeChild(markerEl);
+        if (markerEl) {
+            range[atStart ? "setStartBefore" : "setEndBefore"](markerEl);
+            markerEl.parentNode.removeChild(markerEl);
+        } else {
+            module.warn("Marker element has been removed. Cannot restore selection.");
+        }
     }
 
     function compareRanges(r1, r2) {
@@ -56,6 +61,10 @@ rangy.createModule("SaveRestore", function(api, module) {
     function saveSelection(win) {
         win = win || window;
         var doc = win.document;
+        if (!api.isSelectionValid(win)) {
+            module.warn("Cannot save selection. This usually happens when the selection is collapsed and the selection document has lost focus.");
+            return;
+        }
         var sel = api.getSelection(win);
         var ranges = sel.getAllRanges();
         var rangeInfos = [], startEl, endEl, range;
@@ -119,15 +128,20 @@ rangy.createModule("SaveRestore", function(api, module) {
                 range = api.createRange(savedSelection.doc);
                 if (rangeInfo.collapsed) {
                     var markerEl = gEBI(rangeInfo.markerId, savedSelection.doc);
-                    var previousNode = markerEl.previousSibling;
+                    if (markerEl) {
+                        markerEl.style.display = "inline";
+                        var previousNode = markerEl.previousSibling;
 
-                    // Workaround for issue 17
-                    if (previousNode && previousNode.nodeType == 3) {
-                        markerEl.parentNode.removeChild(markerEl);
-                        range.collapseToPoint(previousNode, previousNode.length);
+                        // Workaround for issue 17
+                        if (previousNode && previousNode.nodeType == 3) {
+                            markerEl.parentNode.removeChild(markerEl);
+                            range.collapseToPoint(previousNode, previousNode.length);
+                        } else {
+                            range.collapseBefore(markerEl);
+                            markerEl.parentNode.removeChild(markerEl);
+                        }
                     } else {
-                        range.collapseBefore(markerEl);
-                        markerEl.parentNode.removeChild(markerEl);
+                        module.warn("Marker element has been removed. Cannot restore selection.");
                     }
                 } else {
                     setRangeBoundary(savedSelection.doc, range, rangeInfo.startMarkerId, true);
@@ -164,7 +178,7 @@ rangy.createModule("SaveRestore", function(api, module) {
         var rangeInfos = savedSelection.rangeInfos;
         for (var i = 0, len = rangeInfos.length, rangeInfo; i < len; ++i) {
             rangeInfo = rangeInfos[i];
-            if (savedSelection.collapsed) {
+            if (rangeInfo.collapsed) {
                 removeMarkerElement(savedSelection.doc, rangeInfo.markerId);
             } else {
                 removeMarkerElement(savedSelection.doc, rangeInfo.startMarkerId);
