@@ -232,36 +232,50 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
     unformatSelection: function (filter) {
         var ranges = this.splitRangesAtBlockBoundaries(
                 this.selection.getRanges(this.element)
-            ), i, j, range, wrapper, node, parent;
+            ), range, nodes, node, wrapper, parent, startNode, startOffset,
+            i, j;
         
         for (i = 0; range = ranges[i]; i++) {
+            // Manage ranges that start or end between nodes.
+            if (range.startContainer.nodeType === Wymeditor.TEXT_NODE) {
+                startNode = range.startContainer;
+                startOffset = range.startOffset;
+            // Split before starting node
+            } else {
+                startNode = range.startContainer.childNodes[
+                    range.startOffset > 0 ? range.startOffset - 1 : 0
+                ];
+                startOffset = 0;
+            }
+
             // Extract selection into a div since Sizzle/jQuery doesn't work
             // directly on document fragments, yet.
             // https://github.com/jquery/sizzle/pull/47
             wrapper = document.createElement('div');
             wrapper.appendChild(range.extractContents());
-            
+
             $(wrapper).find(filter).children().unwrap();
+
             parent = this.findParentNode(range.startContainer, filter);
 
-            for (j = wrapper.childNodes.length -1; j >= 0; j--) {
-                node = wrapper.childNodes[j];
-                range.insertNode(wrapper.removeChild(node));
-            }
 
-            range.setEndAfter(node);
-            
             if (parent.length) {
-                console.log(parent);
-                this.splitNodes(
-                    range.startContainer.childNodes[range.startOffset], 
-                    0, parent.parent()
-                );
+                if (parent.is('*:empty') || parent.text() === '') {
+                    parent.replaceWith(wrapper.childNodes);
+                } else {
+                    $(this.splitNodes(startNode, startOffset, parent.parent()))
+                        .before(wrapper.childNodes);
+                }
+            } else {
+                for (j = wrapper.childNodes.length -1; j >= 0; j--) {
+                    node = wrapper.childNodes[j];
+                    range.insertNode(wrapper.removeChild(node));
+                }
+                range.setEndAfter(node);
             }
-
         }
 
-        this.selection.selectRanges(ranges);
+        //this.selection.selectRanges(ranges);
         //this.normalizer.normalizeNodes(normalize);
     },
     
@@ -299,8 +313,6 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
         });
     },
 
-
-    
     html: function (html) {
         if (this.utils.is('String', html)) {
             this.element.html(html);

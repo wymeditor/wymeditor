@@ -138,8 +138,8 @@ jQuery(function($){
         strictEqual(editableArea.html(), '<p>Text <em>to <strong>for</strong></em><strong>mat</strong></p>', 'Selection formatting (different start/end containers)');
 
         setup();
-        editableArea.formatSelection($('<a href="#" />'));
-        strictEqual(editableArea.html(), '<p>Text to <a href="#">format</a></p>', 'Selection formatting (dom node)');
+        editableArea.formatSelection($('<a name="a1" />')[0]);
+        strictEqual(editableArea.html(), '<p>Text to <a name="a1">format</a></p>', 'Selection formatting (dom node)');
 
         editableArea.html('');
     });
@@ -147,7 +147,7 @@ jQuery(function($){
     test('unformatSelection', function() {
         var node, range, selection;
         function setup () {
-            try { range.detach(); } catch (e) {}
+            //try { range.detach(); } catch (e) {}
 
             node = $('<p>Text to <em>format</em></p>');
             range = rangy.createRange();
@@ -171,10 +171,11 @@ jQuery(function($){
         setup();
         
         range.setStart(node[0].childNodes[0], 2);
+        range.setEnd(node[0].childNodes[0], 4);
         selection.setSingleRange(range);
         
         editableArea.unformatSelection('em');
-        strictEqual(editableArea.html(), '<p>Text to <em>fo</em>rmat</p>', 'Remove formatting, partial (tag name)');
+        strictEqual(editableArea.html(), '<p>Text to <em>fo</em>rm<em>at</em></p>', 'Remove formatting, partial (tag name)');
         
         editableArea.html('');
     });
