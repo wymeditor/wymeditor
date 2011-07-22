@@ -113,7 +113,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
 
     splitRangeAtBlockBoundaries: function (range) {
         var filter = this.structureManager.getCollectionSelector('block'),
-            nodes = range.getNodes([3], function (n) { 
+            nodes = range.getNodes([Wymeditor.ELEMENT_NODE], function (n) { 
                 return $(n).is(filter); }),
             node,
             ranges = [],
@@ -121,27 +121,26 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
             i;
         
         for (i = 0; node = nodes[i]; i++) {
-            newRange = rangy.createRange();
-            newRange.selectNodeContents(node);
+            newRange = range.cloneRange();
 
             switch (range.compareNode(node)) {
                 // node starts before the range
                 case range.NODE_BEFORE:
-                    newRange.setStart(node, range.startOffset);
-                    ranges.push(range);
+                    newRange.setEnd(node, node.childNodes.length);
+                    ranges.push(newRange);
                 break; 
                 // node ends after the range
                 case range.NODE_AFTER:
-                    newRange.setEnd(node, range.endOffset);
-                    ranges.push(range);
+                    newRange.setStart(node, 0);
+                    ranges.push(newRange);
                 break; 
                 // node is completely contained within the range
                 case range.NODE_INSIDE:
-                    ranges.push(range);
+                    newRange.selectNodeContents(node);
+                    ranges.push(newRange);
                 break;
                 default:
-                    newRange.detach();
-                    newRange = null; 
+                    ranges.push(newRange);
                 break;
             }
         }
@@ -245,29 +244,26 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
     },
     
     formatSelection: function (element) {
-        var ranges = this.selection.getRanges(this.element),
-            range, i;
-        
-        for (i = 0; range = ranges[i]; i++) {
-            if (this.utils.is('String', element)) {
-                // Assume we have a tag name
-                element = $('<'+element+'/>')[0];
-            } else {
-                // Make sure we get a DOM Node even if we have a jQuery object
-                // and that we don't try to use the same element twice
-                if (i !== 0) {
-                    element = $(element).clone()[0];
-                } else {
-                    element = $(element)[0];
-                }
-            }
-            
-            if (range.canSurroundContents()) {
-                range.surroundContents(element);
-            }
+        var ranges = this.splitRangesAtBlockBoundaries(
+                this.selection.getRanges(this.element)
+            ), i, range, wrapper;
 
-            //range.detach();
+        if (this.utils.is('String', element)) {
+            // Assume we have a tag name
+            element = $('<'+element+'/>');
+        } else {
+            // Let jQuery deal with it
+            element = $(element).first();
         }
+
+        for (i = 0; range = ranges[i]; i++) {
+            wrapper = element.clone()[0];
+            wrapper.appendChild(range.extractContents());
+            range.insertNode(wrapper);
+            range.selectNodeContents(wrapper);
+        }
+
+        this.selection.selectRanges(ranges);
     },
     
     unformatSelection: function (filter) {

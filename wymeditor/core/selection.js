@@ -66,6 +66,11 @@ Wymeditor.selection = (function ($) {
             return ranges;
         },
 
+        selectRanges: function (ranges) {
+            var selection = rangy.getSelection();
+            selection.setRanges(ranges);
+        },
+
         save: function () {
             self.clearSave();
             savedSelection = rangy.saveSelection();

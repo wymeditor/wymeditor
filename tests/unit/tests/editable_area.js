@@ -102,6 +102,8 @@ jQuery(function($){
     });
 
     test('formatSelection', function() {
+        var range;
+
         function setup () {
             var text = document.createTextNode('Text to format'),
                 node = document.createElement('p'),
@@ -123,11 +125,22 @@ jQuery(function($){
         setup();
         editableArea.formatSelection('strong');
         strictEqual(editableArea.html(), '<p>Text to <strong>format</strong></p>', 'Selection formatting (tag name)');
+
+        var pText = $(editableArea.element).find('p')[0].childNodes[0],
+            aText = $(editableArea.element).find('strong')[0].childNodes[0],
+            range = rangy.createRange(),
+            selection = rangy.getSelection();
+        range.setStart(pText, 5);
+        range.setEnd(aText, 3);
+        selection.setSingleRange(range);
         
+        editableArea.formatSelection('em');
+        strictEqual(editableArea.html(), '<p>Text <em>to <strong>for</strong></em><strong>mat</strong></p>', 'Selection formatting (different start/end containers)');
+
         setup();
         editableArea.formatSelection($('<a href="#" />'));
         strictEqual(editableArea.html(), '<p>Text to <a href="#">format</a></p>', 'Selection formatting (dom node)');
-        
+
         editableArea.html('');
     });
     
