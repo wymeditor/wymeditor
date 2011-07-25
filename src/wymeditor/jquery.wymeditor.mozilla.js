@@ -336,22 +336,22 @@ WYMeditor.WymClassMozilla.prototype._canIndent = function(
         focusNode, anchorNode) {
     // Ensure that we're indenting exactly one list item
 
-    if (focusNode && focusNode == anchorNode
-        && focusNode.tagName.toLowerCase() == WYMeditor.LI) {
+    if (focusNode && focusNode == anchorNode &&
+            focusNode.tagName.toLowerCase() == WYMeditor.LI) {
         // This is a single li tag
 
         var ancestor = focusNode.parentNode.parentNode;
 
-        if (focusNode.parentNode.childNodes.length > 1
-            || ancestor.tagName.toLowerCase() == WYMeditor.OL
-            || ancestor.tagName.toLowerCase() == WYMeditor.UL
-            || ancestor.tagName.toLowerCase() == WYMeditor.LI) {
+        if (focusNode.parentNode.childNodes.length > 1 ||
+            ancestor.tagName.toLowerCase() == WYMeditor.OL ||
+            ancestor.tagName.toLowerCase() == WYMeditor.UL ||
+            ancestor.tagName.toLowerCase() == WYMeditor.LI) {
 
             return true;
         }
     }
 
-    return false
+    return false;
 };
 
 WYMeditor.WymClassMozilla.prototype._canOutdent = function(
@@ -359,16 +359,16 @@ WYMeditor.WymClassMozilla.prototype._canOutdent = function(
     // Ensure that we're indenting exactly one list item and it's already
     // indented at least one level
 
-    if (focusNode && focusNode == anchorNode
-        && focusNode.tagName.toLowerCase() == WYMeditor.LI) {
+    if (focusNode && focusNode == anchorNode &&
+            focusNode.tagName.toLowerCase() == WYMeditor.LI) {
         // This is a single li tag
 
         var ancestor = focusNode.parentNode.parentNode;
 
-        if (focusNode.parentNode.childNodes.length > 1
-            || ancestor.tagName.toLowerCase() == WYMeditor.OL
-            || ancestor.tagName.toLowerCase() == WYMeditor.UL
-            || ancestor.tagName.toLowerCase() == WYMeditor.LI) {
+        if (focusNode.parentNode.childNodes.length > 1 ||
+                ancestor.tagName.toLowerCase() == WYMeditor.OL ||
+                ancestor.tagName.toLowerCase() == WYMeditor.UL ||
+                ancestor.tagName.toLowerCase() == WYMeditor.LI) {
 
             // This is a nested list. Now ensure that's already indented
             // at least one level
@@ -378,7 +378,7 @@ WYMeditor.WymClassMozilla.prototype._canOutdent = function(
         }
     }
 
-    return false
+    return false;
 };
 
 /**
@@ -390,6 +390,10 @@ WYMeditor.WymClassMozilla.prototype.indent = function() {
     var sel = this._iframe.contentWindow.getSelection();
     var startOffset = sel.getRangeAt(0).startOffset;
     var anchorNode = sel.anchorNode;
+
+		var $spacerList;
+		var $prevList;
+		var $listContents;
 
     focusNode = this.findUp(focusNode, WYMeditor.BLOCKS);
     anchorNode = this.findUp(anchorNode, WYMeditor.BLOCKS);
@@ -405,10 +409,10 @@ WYMeditor.WymClassMozilla.prototype.indent = function() {
     // back in the list item after it is moved
     var itemContents = $focusNode.contents().not('ol,ul');
 
-    if ($focusNode.prev().length == 0 && $focusNode.parent().not('ul,ol,li')) {
+    if ($focusNode.prev().length === 0 && $focusNode.parent().not('ul,ol,li')) {
         // First item at the root level of a list
         // Going to need a spacer list item
-        var $spacerList = $('' +
+        $spacerList = $('' +
             '<li class="spacer_li">' +
                 '<' + listType + '></' + listType + '>' +
             '</li>');
@@ -419,9 +423,9 @@ WYMeditor.WymClassMozilla.prototype.indent = function() {
     } else if ($focusNode.prev().contents().last().is(listType)) {
         // We have a sublist at the appropriate level as a previous sibling.
         // Leave the children where they are and join the previous sublist
-        var $prevLi = $focusNode.prev();
-        var $prevSubList = $prevLi.contents().last();
-        var $children = $focusNode.children();
+        $prevLi = $focusNode.prev();
+        $prevSubList = $prevLi.contents().last();
+        $children = $focusNode.children();
         $children.unwrap();
         // Join our node at the end of the target sublist
         $prevSubList.append($focusNode);
@@ -436,10 +440,10 @@ WYMeditor.WymClassMozilla.prototype.indent = function() {
             $sublistContents.detach();
             $prevSubList.append($sublistContents);
         }
-    } else if ($focusNode.children('ol,ul').length == 0) {
+    } else if ($focusNode.children('ol,ul').length === 0) {
         // No sublist to join.
         // Leave the children where they are and join the previous list
-        var $prevList = $focusNode.prev().filter('li');
+        $prevList = $focusNode.prev().filter('li');
         $focusNode.children().unwrap();
         var $containerList = $('<' + listType + '></' + listType + '>');
         $containerList.append($focusNode);
@@ -448,7 +452,7 @@ WYMeditor.WymClassMozilla.prototype.indent = function() {
         // We have a sublist to join, so just jump to the front there and leave
         // the children where they are
         var $contents = $focusNode.contents().unwrap();
-        var $spacerList = $('<li class="spacer_li"></li>');
+        $spacerList = $('<li class="spacer_li"></li>');
         $contents.wrapAll($spacerList);
         $contents.filter('ol,ul').first().prepend($focusNode);
     }
@@ -464,14 +468,14 @@ WYMeditor.WymClassMozilla.prototype.indent = function() {
             // The last child (including text nodes) of the previous li is the
             // same type of list that we just had to wrap in a listSpacer.
             // Join them.
-            var $listContents = $focusNode.parent().contents();
+            $listContents = $focusNode.parent().contents();
             $maybeListSpacer.detach();
             $maybePreviousSublist.append($listContents);
         } else if ($maybeListSpacer.next('li').contents().first().is(listType)) {
             // The first child (including text nodes) of the next li is the same
             // type of list we just wrapped in a listSpacer. Join them.
             var $nextSublist = $maybeListSpacer.next('li').children().first();
-            var $listContents = $focusNode.parent().contents();
+            $listContents = $focusNode.parent().contents();
             $maybeListSpacer.detach();
             $nextSublist.prepend($listContents);
         } else if ($maybeListSpacer.prev().is('li')) {
@@ -494,7 +498,7 @@ WYMeditor.WymClassMozilla.prototype.indent = function() {
 
     // Put the selection back on the li element
     var iframeWin = this._iframe.contentWindow;
-    var sel = rangy.getSelection(iframeWin);
+    sel = rangy.getSelection(iframeWin);
 
     var range = rangy.createRange(this._doc);
     range.setStart(focusNode, startOffset);
@@ -557,7 +561,7 @@ WYMeditor.WymClassMozilla.prototype.outdent = function() {
     if ($subsequentItems.length > 0) {
         // Nest the previously-subsequent items inside the list to
         // retain order and their indent level
-        var $sublist = $subsequentItems
+        var $sublist = $subsequentItems;
         $sublist.detach();
 
         var $sublistWrapper = $("<"+listType+"></"+listType+">");
@@ -593,7 +597,7 @@ WYMeditor.WymClassMozilla.prototype.outdent = function() {
 
     // Put the selection back on the li element
     var iframeWin = this._iframe.contentWindow;
-    var sel = rangy.getSelection(iframeWin);
+    sel = rangy.getSelection(iframeWin);
 
     var range = rangy.createRange(this._doc);
     range.setStart($focusNode[0], startOffset);
