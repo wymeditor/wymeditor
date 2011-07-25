@@ -23,6 +23,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
                     .addClass('wym-editable');
         
         this.element.bind('keydown.wym', this.utils.setScope(this, this.onKeyDown));
+        this.element.bind('keyup.wym mouseup.wym DOMSubtreeModified.wym', this.utils.setScope(this, this.possibleChange));
         this.fireEvent('enable');
     },
     disable: function () {
@@ -39,6 +40,20 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
         
         this.handleEnterKey(element, event);
     },
+
+    possibleChange: (function () {
+        var lastLocation,
+            timer;
+        return function (element, event) {
+            var self = this;
+            // Should figure out if anything actually changed
+            // Also, introduce a small delay not to be overly spammy
+            function fire () { self.fireEvent('change'); };
+            clearTimeout(timer);
+            timer = setTimeout(fire, 100);
+        };
+
+    })(),
     
     handleEnterKey: function (element, event) {
         var ranges, 
@@ -227,13 +242,17 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
         }
 
         this.selection.selectRanges(ranges);
+
+        this.possibleChange();
     },
     
     unformatSelection: function (filter) {
         var ranges = this.splitRangesAtBlockBoundaries(
                 this.selection.getRanges(this.element)
-            ), range, nodes, node, wrapper, parent, startNode, startOffset,
-            i, j;
+            ), 
+            select = [],
+            range, nodes, node, wrapper, parent, startNode, startOffset,
+            firstChild, lastChild, i, j;
         
         for (i = 0; range = ranges[i]; i++) {
             // Manage ranges that start or end between nodes.
@@ -257,7 +276,8 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
             $(wrapper).find(filter).children().unwrap();
 
             parent = this.findParentNode(range.startContainer, filter);
-
+            firstChild = wrapper.childNodes[0];
+            lastChild = wrapper.childNodes[wrapper.childNodes.length - 1];
 
             if (parent.length) {
                 if (parent.is('*:empty') || parent.text() === '') {
@@ -271,9 +291,18 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
                     node = wrapper.childNodes[j];
                     range.insertNode(wrapper.removeChild(node));
                 }
-                range.setEndAfter(node);
             }
+            range = rangy.createRange();
+            range.setStart(firstChild, 0);
+            if (lastChild.nodeType === Wymeditor.TEXT_NODE) {
+                range.setEndAfter(lastChild);
+            } else {
+                range.setEnd(lastChild, lastChild.childNodes.length);
+            }
+
+            select.push(range);
         }
+        this.selection.selectRanges(select);
 
         //this.selection.selectRanges(ranges);
         //this.normalizer.normalizeNodes(normalize);
@@ -285,6 +314,36 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
         this.selection.detach(ranges);      
     },
     
+    getNodeFormat: function (node, container) {
+        var stack = [];
+        node = $(node);
+        container = container || this.element;
+        
+        if (container.length) {
+            while (node.length && !node.is(container)) {
+                if (node[0].nodeType === Wymeditor.ELEMENT_NODE) {
+                    stack.push(node[0].nodeName.toLowerCase());
+                }
+                node = node.parent();
+            }
+            return stack;
+        } else {
+            throw new Error('Invalid container');
+        }
+    },
+
+    getSelectionFormat: function (container) {
+        var result = [], ranges, range, i;
+        container = container || this.element;
+        ranges = this.selection.getRanges(container)
+
+        for (i = 0; range = ranges[i]; i++) {
+            result.push(this.getNodeFormat(range.startContainer));
+        }
+
+        return result;
+    },
+
     findParentNode: function (node, filter, container) {
         node = $(node);
         container = container || this.element;
