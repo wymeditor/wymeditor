@@ -996,6 +996,15 @@ WYMeditor.editor.prototype.exec = function(cmd) {
         this.dialog(WYMeditor.PREVIEW, this._options.dialogFeaturesPreview);
         break;
 
+    case WYMeditor.INDENT:
+        this.indent();
+        break;
+
+    case WYMeditor.OUTDENT:
+        this.outdent();
+        break;
+
+
     default:
         var custom_run = false;
         var _this = this;
@@ -1497,6 +1506,284 @@ WYMeditor.editor.prototype.addCssRules = function(doc, aCss) {
         }
     }
 };
+
+/********** LIST FUNCTIONS **********/
+
+WYMeditor.editor.prototype._canIndent = function(
+        focusNode, anchorNode) {
+    // Ensure that we're indenting exactly one list item
+
+    if (focusNode && focusNode == anchorNode &&
+            focusNode.tagName.toLowerCase() == WYMeditor.LI) {
+        // This is a single li tag
+
+        var ancestor = focusNode.parentNode.parentNode;
+
+        if (focusNode.parentNode.childNodes.length > 1 ||
+            ancestor.tagName.toLowerCase() == WYMeditor.OL ||
+            ancestor.tagName.toLowerCase() == WYMeditor.UL ||
+            ancestor.tagName.toLowerCase() == WYMeditor.LI) {
+
+            return true;
+        }
+    }
+
+    return false;
+};
+
+WYMeditor.editor.prototype._canOutdent = function(
+        focusNode, anchorNode) {
+    // Ensure that we're indenting exactly one list item and it's already
+    // indented at least one level
+
+    if (focusNode && focusNode == anchorNode &&
+            focusNode.tagName.toLowerCase() == WYMeditor.LI) {
+        // This is a single li tag
+
+        var ancestor = focusNode.parentNode.parentNode;
+
+        if (focusNode.parentNode.childNodes.length > 1 ||
+                ancestor.tagName.toLowerCase() == WYMeditor.OL ||
+                ancestor.tagName.toLowerCase() == WYMeditor.UL ||
+                ancestor.tagName.toLowerCase() == WYMeditor.LI) {
+
+            // This is a nested list. Now ensure that's already indented
+            // at least one level
+            if ($(ancestor).parent().is('ol,ul,li')) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+};
+
+/**
+ * Indent a list item, accounting for firefox bugs to ensure consistent
+ * behavior and valid HTML.
+ */
+WYMeditor.editor.prototype.indent = function() {
+    var focusNode = this.selected();
+    var sel = rangy.getIframeSelection(this._iframe);
+    var startOffset = sel.getRangeAt(0).startOffset;
+    var anchorNode = sel.anchorNode;
+
+    var $spacerList;
+    var $prevList;
+    var $listContents;
+
+    focusNode = this.findUp(focusNode, WYMeditor.BLOCKS);
+    anchorNode = this.findUp(anchorNode, WYMeditor.BLOCKS);
+
+    if (!this._canIndent(focusNode, anchorNode)) {
+        return;
+    }
+
+    var $focusNode = $(focusNode);
+    var listType = $focusNode.parent()[0].tagName.toLowerCase();
+
+    // Extract any non-list children so they can be inserted
+    // back in the list item after it is moved
+    var itemContents = $focusNode.contents().not('ol,ul');
+
+    if ($focusNode.prev().length === 0 && $focusNode.parent().not('ul,ol,li')) {
+        // First item at the root level of a list
+        // Going to need a spacer list item
+        $spacerList = $('' +
+            '<li class="spacer_li">' +
+                '<' + listType + '></' + listType + '>' +
+            '</li>');
+        $focusNode.before($spacerList);
+        $focusNode.children().unwrap();
+        $spacerList.find(listType).append($focusNode);
+
+    } else if ($focusNode.prev().contents().last().is(listType)) {
+        // We have a sublist at the appropriate level as a previous sibling.
+        // Leave the children where they are and join the previous sublist
+        $prevLi = $focusNode.prev();
+        $prevSubList = $prevLi.contents().last();
+        $children = $focusNode.children();
+        $children.unwrap();
+        // Join our node at the end of the target sublist
+        $prevSubList.append($focusNode);
+
+        // Stick all of the children at the end of the previous li
+        $children.detach();
+        $prevLi.append($children);
+        // If the first child is of the same list type, join them
+        if ($children.first().is(listType)) {
+            var $sublistContents = $children.first().children();
+            $sublistContents.unwrap();
+            $sublistContents.detach();
+            $prevSubList.append($sublistContents);
+        }
+    } else if ($focusNode.children('ol,ul').length === 0) {
+        // No sublist to join.
+        // Leave the children where they are and join the previous list
+        $prevList = $focusNode.prev().filter('li');
+        $focusNode.children().unwrap();
+        var $containerList = $('<' + listType + '></' + listType + '>');
+        $containerList.append($focusNode);
+        $prevList.append($containerList);
+    } else {
+        // We have a sublist to join, so just jump to the front there and leave
+        // the children where they are
+        var $contents = $focusNode.contents().unwrap();
+        $spacerList = $('<li class="spacer_li"></li>');
+        $contents.wrapAll($spacerList);
+        $contents.filter('ol,ul').first().prepend($focusNode);
+    }
+
+    // Put the non-list content back inside the li
+    $focusNode.prepend(itemContents);
+
+    // If we just created lists next to eachother, join them
+    var $maybeListSpacer = $focusNode.parent().parent('li.spacer_li');
+    if ($maybeListSpacer.length == 1) {
+        var $maybePreviousSublist = $maybeListSpacer.prev().filter('li').contents().last();
+        if ($maybePreviousSublist.is(listType)) {
+            // The last child (including text nodes) of the previous li is the
+            // same type of list that we just had to wrap in a listSpacer.
+            // Join them.
+            $listContents = $focusNode.parent().contents();
+            $maybeListSpacer.detach();
+            $maybePreviousSublist.append($listContents);
+        } else if ($maybeListSpacer.next('li').contents().first().is(listType)) {
+            // The first child (including text nodes) of the next li is the same
+            // type of list we just wrapped in a listSpacer. Join them.
+            var $nextSublist = $maybeListSpacer.next('li').children().first();
+            $listContents = $focusNode.parent().contents();
+            $maybeListSpacer.detach();
+            $nextSublist.prepend($listContents);
+        } else if ($maybeListSpacer.prev().is('li')) {
+            // There is a normal li before our spacer, but it doesn't have
+            // a proper sublist. Just join their contents
+            $prevList = $maybeListSpacer.prev();
+            $maybeListSpacer.detach();
+            $prevList.append($maybeListSpacer.contents());
+        }
+    }
+
+    // If we eliminated the need for a spacer_li, remove it
+    if ($focusNode.next().is('.spacer_li')) {
+        var $spacer = $focusNode.next('.spacer_li');
+        var $spacerContents = $spacer.contents();
+        $spacerContents.detach();
+        $focusNode.append($spacerContents);
+        $spacer.remove();
+    }
+
+    // Put the selection back on the li element
+    var iframeWin = this._iframe.contentWindow;
+    sel = rangy.getSelection(iframeWin);
+
+    var range = rangy.createRange(this._doc);
+    range.setStart(focusNode, startOffset);
+    range.setEnd(focusNode, startOffset);
+    range.collapse(false);
+
+    sel.setSingleRange(range);
+
+};
+
+/**
+ * Outdent a list item, accounting for firefox bugs to ensure consistent
+ * behavior and valid HTML.
+ */
+WYMeditor.editor.prototype.outdent = function() {
+    var focusNode = this.selected();
+    var sel = rangy.getIframeSelection(this._iframe);
+    var startOffset = sel.getRangeAt(0).startOffset;
+    var anchorNode = sel.anchorNode;
+
+    focusNode = this.findUp(focusNode, WYMeditor.BLOCKS);
+    anchorNode = this.findUp(anchorNode, WYMeditor.BLOCKS);
+
+    if (!this._canOutdent(focusNode, anchorNode)) {
+        return;
+    }
+
+    var $focusNode = $(focusNode);
+    // This item is in a sublist. Firefox doesn't properly dedent this
+    // as it's own item, instead it just tacks its content to the end of
+    // the parent item after the sublist
+
+    var $parentItem = $focusNode.parent().parent('li');
+    var listType = $focusNode.parent()[0].tagName.toLowerCase();
+
+    // If this li has li's following, those will need to be moved as
+    // sublist elements after the outdent
+    var $subsequentItems = $focusNode.nextAll('li');
+
+    $focusNode.detach();
+    $parentItem.after($focusNode);
+
+    // If this node one or more sublist, they will need to be indented
+    // by one with a fake parent to hold their previous position
+    var $childLists = $focusNode.children('ol,ul');
+    if ($childLists.length > 0) {
+        $childLists.each(function(index, childList) {
+            var $childList = $(childList);
+            $childList.detach();
+
+            $spacerList = $('' +
+            '<' + listType + '>' +
+                '<li class="spacer_li"></li>' +
+            '</' + listType + '>');
+            $focusNode.append($spacerList);
+            $spacerList.append($childList);
+        });
+    }
+
+    if ($subsequentItems.length > 0) {
+        // Nest the previously-subsequent items inside the list to
+        // retain order and their indent level
+        var $sublist = $subsequentItems;
+        $sublist.detach();
+
+        var $sublistWrapper = $("<"+listType+"></"+listType+">");
+        $focusNode.append($sublistWrapper);
+        $sublistWrapper.append($subsequentItems);
+
+        // If we just created lists next to eachother, join them
+        var $maybeConsecutiveLists = $focusNode
+            .children(listType + ' + ' + listType);
+        if ($maybeConsecutiveLists.length > 0) {
+            // Join the same-type adjacent lists we found
+            $maybeConsecutiveLists.each(function(index, list) {
+                var $list = $(list);
+                var $listContents = $list.contents();
+                var $prevList = $list.prev();
+
+                $listContents.detach();
+                $list.remove();
+                $prevList.append($listContents);
+            });
+        }
+    }
+
+    // Remove any now-empty lists
+    $parentItem.find('ul:empty,ol:empty').remove();
+
+    // If we eliminated the need for a spacer_li, remove it
+    // Comes after empty list removal so that we only remove
+    // totally empty spacer li's
+    if ($parentItem.is('.spacer_li') && $parentItem.is(':empty')) {
+        $parentItem.remove();
+    }
+
+    // Put the selection back on the li element
+    var iframeWin = this._iframe.contentWindow;
+    sel = rangy.getSelection(iframeWin);
+
+    var range = rangy.createRange(this._doc);
+    range.setStart($focusNode[0], startOffset);
+    range.setEnd($focusNode[0], startOffset);
+    range.collapse(false);
+
+    sel.setSingleRange(range);
+};
+
 
 /********** TABLE FUNCTIONS **********/
 
@@ -3631,8 +3918,7 @@ WYMeditor.XhtmlSaxListener.prototype.shouldCloseTagAutomatically = function(tag,
         if ((closing && now_on_tag == 'tr') || (!closing && now_on_tag == 'td')) {
             return true;
         }
-    }
-    if (tag == 'option') {
+    } else if (tag == 'option') {
         if ((closing && now_on_tag == 'select') || (!closing && now_on_tag == 'option')) {
             return true;
         }
@@ -3699,6 +3985,12 @@ WYMeditor.XhtmlSaxListener.prototype.getTagReplacements = function() {
 };
 
 WYMeditor.XhtmlSaxListener.prototype.addContent = function(text) {
+    if (this.last_tag && this.last_tag == 'li') {
+        // We should strip trailing newlines from text inside li tags because
+        // IE adds random significant newlines inside nested lists
+        text = text.replace(/\n/, '');
+        text = text.replace(/\r/, '');
+    }
     this.output += text;
 };
 
@@ -3798,8 +4090,20 @@ WYMeditor.XhtmlSaxListener.prototype.fixNestingBeforeOpeningBlockTag = function(
         // a li tag parent and shouldn't be directly nested.
 
         // Add an opening li tag before and after this tag
-        this.output +=  this.helper.tag('li', {}, true);
+        this.output += this.helper.tag('li', {}, true);
         this.insertContentAfterClosingTag(tag, '</li>');
+    } else if (tag == 'li' && !this.last_tag_opened) {
+        // Closest open tag that's not this tag
+        if (this._tag_stack.length >= 2) {
+            var closestOpenTag = this._tag_stack[this._tag_stack.length - 2];
+            if (closestOpenTag == 'li'){
+                this.output += '</li>';
+            }
+        }
+        // Opening a new li tag while another li tag is still open.
+        // LI tags aren't allowed to be nested within eachother
+        // It probably means we forgot to close the last LI tag
+        //return true;
     }
 };
 

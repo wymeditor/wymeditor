@@ -86,6 +86,86 @@ function runPostInitTests() {
                 "on IE");
     });
 
+    test("Should correct under-closed lists", function() {
+        expect(1);
+        // Taken from a mistake made during development that uncovered a
+        // parsing issue where if an LI tag was left unclosed, IE did lots of
+        // over-closing to compensate which completey broke list structure
+        var missingClosingLiHtml = '' +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2' +
+                '<ol>' +
+                    '<li id="li_2_1">2_1</li>' +
+                    '<li id="li_2_2">2_2</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_3">3' +
+                '<ol>' +
+                    '<li id="li_3_1">3_1</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_4">4</li>' +
+            '<li id="li_5">5' +
+                '<ol>' +
+                    '<li id="li_5_1">5_1</li>' +
+                    '<li id="li_5_2">5_2</li>' +
+                '</ol>' +
+            // </li> Ommitted closing tag
+            '<li id="li_5_3">5_3' +
+                '<ol>' +
+                    '<li class="spacer_li">' +
+                        '<ul>' +
+                            '<li id="li_5_3_1">5_3_1</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_5_4">5_4</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_6">6</li>' +
+            '<li id="li_7">7</li>' +
+            '<li id="li_8">8</li>' +
+        '</ol>';
+
+        var fixedHtml = '' +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2' +
+                '<ol>' +
+                    '<li id="li_2_1">2_1</li>' +
+                    '<li id="li_2_2">2_2</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_3">3' +
+                '<ol>' +
+                    '<li id="li_3_1">3_1</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_4">4</li>' +
+            '<li id="li_5">5' +
+                '<ol>' +
+                    '<li id="li_5_1">5_1</li>' +
+                    '<li id="li_5_2">5_2</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_5_3">5_3' +
+                '<ol>' +
+                    '<li class="spacer_li">' +
+                        '<ul>' +
+                            '<li id="li_5_3_1">5_3_1</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_5_4">5_4</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_6">6</li>' +
+            '<li id="li_7">7</li>' +
+            '<li id="li_8">8</li>' +
+        '</ol>';
+
+        equals(jQuery.wymeditors(0).parser.parse(missingClosingLiHtml), fixedHtml);
+    });
+
     test("Shouldn't remove empty td elements", function() {
         expect(1);
         var expected = '<table><tr><td>Cell1</td><td></td></tr></table>';

@@ -290,6 +290,7 @@ function runListTests() {
                 '<li id="li_5_1">5_1</li>' +
                 '<li id="li_5_2">5_2</li>' +
             '</ol>' +
+        '</li>' +
         '<li id="li_5_3">5_3' +
             '<ol>' +
                 '<li class="spacer_li">' +
