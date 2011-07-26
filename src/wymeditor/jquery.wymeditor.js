@@ -3785,10 +3785,20 @@ WYMeditor.XhtmlSaxListener.prototype.insertContentBeforeClosingTag = function(ta
 };
 
 WYMeditor.XhtmlSaxListener.prototype.fixNestingBeforeOpeningBlockTag = function(tag, attributes) {
-    if (tag != 'li' && (tag == 'ul' || tag == 'ol') && this.last_tag &&
+    if ((tag == 'ul' || tag == 'ol') && this.last_tag &&
             !this.last_tag_opened && this.last_tag == 'li') {
+        // We have a <li></li><ol>... situation. The new list should be a
+        // child of the li tag. Not a sibling.
 
         this.output = this.output.replace(/<\/li>\s*$/, '');
+        this.insertContentAfterClosingTag(tag, '</li>');
+    } else if ((tag == 'ul' || tag == 'ol') && this.last_tag &&
+            this.last_tag_opened && (this.last_tag == 'ul' || this.last_tag == 'ol')) {
+        // We have a <ol|ul><ol|ul>... situation. The new list should be have
+        // a li tag parent and shouldn't be directly nested.
+
+        // Add an opening li tag before and after this tag
+        this.output +=  this.helper.tag('li', {}, true);
         this.insertContentAfterClosingTag(tag, '</li>');
     }
 };
