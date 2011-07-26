@@ -65,4 +65,4 @@ Wymeditor.Observable.prototype = {
             };
         }
     }
-}
+};
