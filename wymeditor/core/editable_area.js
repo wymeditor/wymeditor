@@ -48,7 +48,10 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
             var self = this;
             // Should figure out if anything actually changed
             // Also, introduce a small delay not to be overly spammy
-            function fire () { self.fireEvent('change'); };
+            function fire () { 
+                Wymeditor.activeArea = self;
+                self.fireEvent('change'); 
+            };
             clearTimeout(timer);
             timer = setTimeout(fire, 100);
         };
