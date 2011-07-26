@@ -391,9 +391,9 @@ WYMeditor.WymClassMozilla.prototype.indent = function() {
     var startOffset = sel.getRangeAt(0).startOffset;
     var anchorNode = sel.anchorNode;
 
-		var $spacerList;
-		var $prevList;
-		var $listContents;
+    var $spacerList;
+    var $prevList;
+    var $listContents;
 
     focusNode = this.findUp(focusNode, WYMeditor.BLOCKS);
     anchorNode = this.findUp(anchorNode, WYMeditor.BLOCKS);
