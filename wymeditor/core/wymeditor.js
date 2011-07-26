@@ -9,6 +9,8 @@
         PARSER_ELEMENT_NODE: 'tag',
         PARSER_TEXT_NODE: 'text',
         PARSER_COMMENT_NODE: 'comment',
+
+        INSTANCES = [],
         
         ns: function(name, container) {
             var ns = name.split('.'),

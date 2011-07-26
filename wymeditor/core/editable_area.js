@@ -1,6 +1,13 @@
 Wymeditor.EditableArea = function EditableArea (element) {
     Wymeditor.Observable.call(this);
     this.element = $(element);
+
+    if (this.element.data('wymeditor')) {
+        return false;
+    }
+
+    Wymeditor.INSTANCES.push(this);
+    this.element.data('wymeditor', this);
     
     this.dom = Wymeditor.dom;
     this.normalizer = this.dom.normalizer;
@@ -24,6 +31,9 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
         
         this.element.bind('keydown.wym', this.utils.setScope(this, this.onKeyDown));
         this.element.bind('keyup.wym mouseup.wym DOMSubtreeModified.wym', this.utils.setScope(this, this.possibleChange));
+
+        Wymeditor.activeArea = this;
+
         this.fireEvent('enable');
     },
     disable: function () {
