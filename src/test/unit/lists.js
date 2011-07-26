@@ -23,13 +23,15 @@ function runListTests() {
             buttonSelector = '.wym_tools_outdent a';
         } else if (action === 'indent') {
             buttonSelector = '.wym_tools_indent a';
-        } else if (action === 'bullet') {
+        } else if (action === 'unordered') {
             buttonSelector = '.wym_tools_unordered_list a';
+        } else if (action === 'ordered') {
+            buttonSelector = '.wym_tools_ordered_list a';
         } else {
             ok(
                 false,
                 'Improper call to testList. Action must be either "indent", ' +
-                '"outdent" or "bullet"');
+                '"outdent", "ordered" or "unordered"');
         }
 
         var actionButton = jQuery(wymeditor._box)
@@ -510,7 +512,24 @@ function runListTests() {
         '</li>' +
         '<li id="li_2">2</li>' +
     '</ol>';
-    var orderedToBulletHtml = '' +
+    var li_2_unorderedHtml= '' +
+    '<ul>' +
+        '<li id="li_1">1' +
+            '<ol>' +
+                '<li id="li_1_1">1_1' +
+                    '<ol>' +
+                        '<li id="li_1_1_1">1_1_1' +
+                            '<ol>' +
+                                '<li id="li_1_1_1_1">1_1_1_1</li>' +
+                            '</ol>' +
+                        '</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+        '<li id="li_2">2</li>' +
+    '</ul>';
+    var li_1_1_1_unorderedHtml = '' +
     '<ol>' +
         '<li id="li_1">1' +
             '<ol>' +
@@ -527,10 +546,41 @@ function runListTests() {
         '</li>' +
         '<li id="li_2">2</li>' +
     '</ol>';
-    test("Ordered to unordered doesn't break HTML", function() {
-        expect(2);
+    var li_1_1_1_1_unorderedHtml = '' +
+    '<ol>' +
+        '<li id="li_1">1' +
+            '<ol>' +
+                '<li id="li_1_1">1_1' +
+                    '<ol>' +
+                        '<li id="li_1_1_1">1_1_1' +
+                            '<ul>' +
+                                '<li id="li_1_1_1_1">1_1_1_1</li>' +
+                            '</ul>' +
+                        '</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+        '<li id="li_2">2</li>' +
+    '</ol>';
 
-        testList('li_1_1_1', 'bullet', orderedHtml, orderedToBulletHtml);
+    test("Ordered to unordered second item", function() {
+        expect(4);
+
+        testList('li_2', 'unordered', orderedHtml, li_2_unorderedHtml);
+        testList('li_2', 'ordered', li_2_unorderedHtml, orderedHtml);
+    });
+    test("Ordered to unordered nested", function() {
+        expect(4);
+
+        testList('li_1_1_1', 'unordered', orderedHtml, li_1_1_1_unorderedHtml);
+        testList('li_1_1_1', 'ordered', li_1_1_1_unorderedHtml, orderedHtml);
+    });
+    test("Ordered to unordered one item", function() {
+        expect(4);
+
+        testList('li_1_1_1_1', 'unordered', orderedHtml, li_1_1_1_1_unorderedHtml);
+        testList('li_1_1_1_1', 'ordered', li_1_1_1_1_unorderedHtml, orderedHtml);
     });
 
     module("list-correction");
