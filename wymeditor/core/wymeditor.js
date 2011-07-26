@@ -10,7 +10,7 @@
         PARSER_TEXT_NODE: 'text',
         PARSER_COMMENT_NODE: 'comment',
 
-        INSTANCES = [],
+        INSTANCES: [],
         
         ns: function(name, container) {
             var ns = name.split('.'),
