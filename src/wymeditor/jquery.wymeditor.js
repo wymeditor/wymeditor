@@ -4097,6 +4097,12 @@ WYMeditor.XhtmlSaxListener.prototype.fixNestingBeforeOpeningBlockTag = function(
         if (this._tag_stack.length >= 2) {
             var closestOpenTag = this._tag_stack[this._tag_stack.length - 2];
             if (closestOpenTag == 'li'){
+                // Pop the tag off of the stack to indicate we closed it
+                this._open_tags['li']--;
+                if (this._open_tags['li'] === 0) {
+                    this._open_tags['li'] = undefined;
+                }
+                this._tag_stack.pop(this._tag_stack.length - 2);
                 this.output += '</li>';
             }
         }
