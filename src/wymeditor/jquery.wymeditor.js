@@ -928,7 +928,6 @@ WYMeditor.editor.prototype.box = function() {
 WYMeditor.editor.prototype.html = function(html) {
     if (typeof html === 'string') {
         jQuery(this._doc.body).html(html);
-        this.fixBodyHtml();
         this.update();
     } else {
         return jQuery(this._doc.body).html();
