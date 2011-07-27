@@ -1588,13 +1588,13 @@ WYMeditor.editor.prototype.indent = function() {
     if ($focusNode.prev().length === 0 && $focusNode.parent().not('ul,ol,li')) {
         // First item at the root level of a list
         // Going to need a spacer list item
-        $spacerList = $('' +
-            '<li class="spacer_li">' +
+        var spacerHtml = '<li class="spacer_li">' +
                 '<' + listType + '></' + listType + '>' +
-            '</li>');
-        $focusNode.before($spacerList);
+            '</li>';
+        $focusNode.before(spacerHtml);
+        $spacerList = $focusNode.prev().find(listType);
         $focusNode.children().unwrap();
-        $spacerList.find(listType).append($focusNode);
+        $spacerList.append($focusNode);
 
     } else if ($focusNode.prev().contents().last().is(listType)) {
         // We have a sublist at the appropriate level as a previous sibling.
@@ -1621,15 +1621,14 @@ WYMeditor.editor.prototype.indent = function() {
         // Leave the children where they are and join the previous list
         $prevList = $focusNode.prev().filter('li');
         $focusNode.children().unwrap();
-        var $containerList = $('<' + listType + '></' + listType + '>');
-        $containerList.append($focusNode);
-        $prevList.append($containerList);
+        var containerHtml = '<' + listType + '></' + listType + '>';
+        $prevList.append(containerHtml);
+        $prevList.children(listType).last().append($focusNode);
     } else {
         // We have a sublist to join, so just jump to the front there and leave
         // the children where they are
         var $contents = $focusNode.contents().unwrap();
-        $spacerList = $('<li class="spacer_li"></li>');
-        $contents.wrapAll($spacerList);
+        $contents.wrapAll('<li class="spacer_li"></li>');
         $contents.filter('ol,ul').first().prepend($focusNode);
     }
 
@@ -1717,7 +1716,7 @@ WYMeditor.editor.prototype.outdent = function() {
     $focusNode.detach();
     $parentItem.after($focusNode);
 
-    // If this node one or more sublist, they will need to be indented
+    // If this node has one or more sublist, they will need to be indented
     // by one with a fake parent to hold their previous position
     var $childLists = $focusNode.children('ol,ul');
     if ($childLists.length > 0) {
@@ -1725,12 +1724,12 @@ WYMeditor.editor.prototype.outdent = function() {
             var $childList = $(childList);
             $childList.detach();
 
-            $spacerList = $('' +
+            var spacerListHtml = '' +
             '<' + listType + '>' +
                 '<li class="spacer_li"></li>' +
-            '</' + listType + '>');
-            $focusNode.append($spacerList);
-            $spacerList.append($childList);
+            '</' + listType + '>';
+            $focusNode.append(spacerListHtml);
+            $focusNode.children(listType).last().children('li').append($childList);
         });
     }
 
@@ -1740,9 +1739,8 @@ WYMeditor.editor.prototype.outdent = function() {
         var $sublist = $subsequentItems;
         $sublist.detach();
 
-        var $sublistWrapper = $("<"+listType+"></"+listType+">");
-        $focusNode.append($sublistWrapper);
-        $sublistWrapper.append($subsequentItems);
+        $focusNode.append("<"+listType+"></"+listType+">");
+        $focusNode.find(listType).last().append($subsequentItems);
 
         // If we just created lists next to eachother, join them
         var $maybeConsecutiveLists = $focusNode

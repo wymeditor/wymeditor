@@ -129,15 +129,10 @@ WYMeditor.WymClassMozilla.prototype._exec = function(cmd,param) {
         return false;
     }
 
-    switch(cmd) {
-
-    default:
-        if (param) {
-            this._doc.execCommand(cmd, '', param);
-        } else {
-            this._doc.execCommand(cmd, '', null);
-        }
-        break;
+    if (param) {
+        this._doc.execCommand(cmd, '', param);
+    } else {
+        this._doc.execCommand(cmd, '', null);
     }
 
     //set to P if parent = BODY
