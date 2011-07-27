@@ -213,11 +213,11 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
             block,
             newBlock;
         
-        if (target && (target.nodeName || (target[0] && target[0].nodeName))) {
-            node = $(target);
-        } else if (this.utils.is('String', target)) {
+        if (this.utils.is('String', target)) {
             tagName = target;
             node = $(this.selection.getCommonAncestors(this.element)[0]);
+        } else if (target && (target.nodeName || (target[0] && target[0].nodeName))) {
+            node = $(target).first();
         }
         
         if (node.length) {
