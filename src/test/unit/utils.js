@@ -36,23 +36,25 @@ function normalizeHtml(node) {
 
         html += '<'+name;
         var attrs = node.attributes;
+        var attr;
         var n = attrs.length;
         if (n) {
             // Node has attributes, order them
             var sortedAttrs = [];
             for (var i = n; --i >= 0;) {
-                sortedAttrs[i] = attrs[i];
+                attr = attrs[i];
+                if (attr.specified) {
+                    // We only care about specified attributes
+                    sortedAttrs.push(attr);
+                }
             }
             sortedAttrs.sort( function (a, b) {
                 return (a.name < b.name) ? -1 : a.name === b.name ? 0 : 1;
             });
             attrs = sortedAttrs;
 
-            for (i = 0; i < n; ++i) {
-                var attr = attrs[i];
-                if (!attr.specified) {
-                    continue;
-                }
+            for (i = 0; i < attrs.length; ++i) {
+                attr = attrs[i];
                 html += ' ' + attr.name.toLowerCase() +
                     '="' + attribToHtml(attr.value) + '"';
             }
