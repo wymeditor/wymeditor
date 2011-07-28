@@ -129,39 +129,10 @@ WYMeditor.WymClassMozilla.prototype._exec = function(cmd,param) {
         return false;
     }
 
-    switch(cmd) {
-    case WYMeditor.INDENT: case WYMeditor.OUTDENT:
-        var focusNode = this.selected();
-        var sel = this._iframe.contentWindow.getSelection();
-        var anchorNode = sel.anchorNode;
-        if (anchorNode.nodeName == "#text") {
-            anchorNode = anchorNode.parentNode;
-        }
-
-        focusNode = this.findUp(focusNode, WYMeditor.BLOCKS);
-        anchorNode = this.findUp(anchorNode, WYMeditor.BLOCKS);
-
-        if (focusNode && focusNode == anchorNode &&
-                focusNode.tagName.toLowerCase() == WYMeditor.LI) {
-
-            var ancestor = focusNode.parentNode.parentNode;
-
-            if (focusNode.parentNode.childNodes.length > 1 ||
-                    ancestor.tagName.toLowerCase() == WYMeditor.OL ||
-                    ancestor.tagName.toLowerCase() == WYMeditor.UL) {
-                this._doc.execCommand(cmd, '', null);
-            }
-        }
-
-        break;
-
-    default:
-        if (param) {
-            this._doc.execCommand(cmd, '', param);
-        } else {
-            this._doc.execCommand(cmd, '', null);
-        }
-        break;
+    if (param) {
+        this._doc.execCommand(cmd, '', param);
+    } else {
+        this._doc.execCommand(cmd, '', null);
     }
 
     //set to P if parent = BODY

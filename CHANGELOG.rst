@@ -17,6 +17,10 @@
 Enhancements
 ---------------
 
+* List indent/outdent has been rewritten to fix several outstanding bugs in
+  various browsers. Indent and outdent are now always opposites of eachother
+  (outdenting what you just indented returns you to your original state) and
+  the behavior is consistent across all supported browsers.
 * A list plugin is now available that enables tab for list indent and
   shift + tab for list outdent.
 
@@ -56,6 +60,12 @@ Enhancements
 Bug Fixes
 ---------
 
+* Several list indent/outdent bugs that could result in invalid HTML and broken
+  lists are now fixed. Users can no-longer break their lists with specific
+  combinations of double indents and outdents.
+* The HTML parser/validator now corrects unclosed <li> tags in lists so that if
+  a piece of HTML has previously been affected by the broken list bug, it will
+  be automatically corrected.
 * It is now always possible to insert tables, preformatted text and blockquotes
   at the start and end of documents, as well as in between eachother.
   Previously, depending on your browser and version, you couldn't do one or more
