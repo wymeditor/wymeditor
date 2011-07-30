@@ -9,6 +9,8 @@
 WYMeditor.editor.prototype.hovertools = function() {
     var wym = this;
 
+    wym.status('&nbsp;');
+
     // Bind events on buttons
     jQuery(this._box).find(this._options.toolSelector).hover(
         function() {
