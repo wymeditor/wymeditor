@@ -60,6 +60,8 @@ Enhancements
 Bug Fixes
 ---------
 
+* The editor height no longer changes height by a few pixels the first time
+  someone hovers over a tool.
 * Several list indent/outdent bugs that could result in invalid HTML and broken
   lists are now fixed. Users can no-longer break their lists with specific
   combinations of double indents and outdents.
