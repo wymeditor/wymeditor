@@ -69,8 +69,11 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
     })(),
     
     handleEnterKey: function (element, event) {
-        var ranges, 
-            range;
+        var blockFilter = this.structureManager.getCollectionSelector('block'),
+            ranges, 
+            range,
+            block;
+
         if (event.keyCode === 13) {
             event.preventDefault();
             
@@ -79,11 +82,20 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
             if (ranges.length) {
                 range = ranges[0];
                 range.deleteContents();
+                element = this.findParentBlockElement(range.startContainer);
                 
                 if (event.shiftKey) {
                     range.insertNode($('<br />')[0]);
+                } else if (element.text() === '' && 
+                    element.parent().not(this.element).is(blockFilter)) {
+                    // Were inside an empty nested block element, hitting enter 
+                    // should take us up a level.
+                    this.selection.selectNodeContents(
+                        $('<p/>').insrtAfter(element.parent()));
                 } else {
-                    this.selection.selectNodeContents(this.splitBlock(range.startContainer, range.startOffset));
+                    // Split the current block element
+                    this.selection.selectNodeContents(
+                        this.splitBlock(range.startContainer, range.startOffset));
                 }
 
                 this.selection.detach(ranges);
@@ -189,7 +201,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
     },
 
     splitBlock: function (node, offset) {
-        return this.splitNodes(node, offset, this.findParentBlockNode(node).parent()[0]);
+        return this.splitNodes(node, offset, this.findParentBlockElement(node).parent()[0]);
     },
     
     appendBlock: function (type, element) {
@@ -223,7 +235,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
         if (node.length) {
             this.selection.save();
 
-            block = this.findParentBlockNode(node);
+            block = this.findParentBlockElement(node);
             
             if (block.length) {
                 newBlock = $('<'+tagName+'/>').append(block.clone().get(0).childNodes);
@@ -357,7 +369,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
         return result;
     },
 
-    findParentNode: function (node, filter, container) {
+    findParentElement: function (node, filter, container) {
         node = $(node);
         container = container || this.element;
         
@@ -372,8 +384,8 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
         return $();
     },
     
-    findParentBlockNode: function (node, container) {
-        return this.findParentNode(node,
+    findParentBlockElement: function (node, container) {
+        return this.findParentElement(node,
             this.structureManager.getCollectionSelector('block'), container);
     },
     
