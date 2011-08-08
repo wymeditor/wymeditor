@@ -1564,6 +1564,7 @@ WYMeditor.editor.prototype._canOutdent = function(
 WYMeditor.editor.prototype.indent = function() {
     var focusNode = this.selected();
     var sel = rangy.getIframeSelection(this._iframe);
+    var startContainer = sel.getRangeAt(0).startContainer;
     var startOffset = sel.getRangeAt(0).startOffset;
     var anchorNode = sel.anchorNode;
 
@@ -1676,8 +1677,8 @@ WYMeditor.editor.prototype.indent = function() {
     sel = rangy.getSelection(iframeWin);
 
     var range = rangy.createRange(this._doc);
-    range.setStart(focusNode, startOffset);
-    range.setEnd(focusNode, startOffset);
+    range.setStart(startContainer, startOffset);
+    range.setEnd(startContainer, startOffset);
     range.collapse(false);
 
     sel.setSingleRange(range);
@@ -1691,6 +1692,7 @@ WYMeditor.editor.prototype.indent = function() {
 WYMeditor.editor.prototype.outdent = function() {
     var focusNode = this.selected();
     var sel = rangy.getIframeSelection(this._iframe);
+    var startContainer = sel.getRangeAt(0).startContainer;
     var startOffset = sel.getRangeAt(0).startOffset;
     var anchorNode = sel.anchorNode;
 
@@ -1774,8 +1776,8 @@ WYMeditor.editor.prototype.outdent = function() {
     sel = rangy.getSelection(iframeWin);
 
     var range = rangy.createRange(this._doc);
-    range.setStart($focusNode[0], startOffset);
-    range.setEnd($focusNode[0], startOffset);
+    range.setStart(startContainer, startOffset);
+    range.setEnd(startContainer, startOffset);
     range.collapse(false);
 
     sel.setSingleRange(range);
