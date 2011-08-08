@@ -269,6 +269,35 @@ var li_5_3_indentedHtml = '' +
     '<li id="li_8">8</li>' +
 '</ol>';
 
+var li_5_3_1_outdentedHtml= '' +
+'<ol>' +
+    '<li id="li_1">1</li>' +
+    '<li id="li_2">2' +
+        '<ol>' +
+            '<li id="li_2_1">2_1</li>' +
+            '<li id="li_2_2">2_2</li>' +
+        '</ol>' +
+    '</li>' +
+    '<li id="li_3">3' +
+        '<ol>' +
+            '<li id="li_3_1">3_1</li>' +
+        '</ol>' +
+    '</li>' +
+    '<li id="li_4">4</li>' +
+    '<li id="li_5">5' +
+        '<ol>' +
+            '<li id="li_5_1">5_1</li>' +
+            '<li id="li_5_2">5_2</li>' +
+            '<li id="li_5_3">5_3</li>' +
+            '<li id="li_5_3_1">5_3_1</li>' +
+            '<li id="li_5_4">5_4</li>' +
+        '</ol>' +
+    '</li>' +
+    '<li id="li_6">6</li>' +
+    '<li id="li_7">7</li>' +
+    '<li id="li_8">8</li>' +
+'</ol>';
+
 var li_5_3_outdentedHtml = '' +
 '<ol>' +
     '<li id="li_1">1</li>' +
@@ -354,6 +383,12 @@ test("First-level w/sublist joins lists indent/outdent", function() {
     testList('li_3', 'outdent', li_3_indentedHtml, nestedListHtml);
 });
 
+test("Outdent joining list with longer content", function() {
+    expect(2);
+
+    testList('li_5_3_1', 'outdent', nestedListHtml, li_5_3_1_outdentedHtml);
+    // Can't go the other way because we've turned a ul to an ol
+});
 test("Outdent w/sublist outdent/indent", function() {
     expect(4);
 
