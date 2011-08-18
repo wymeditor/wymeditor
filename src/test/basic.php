@@ -29,11 +29,11 @@
     }
 </style>
 <script type="text/javascript" src="../jquery/jquery.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.explorer.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.mozilla.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.opera.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.safari.js"></script>
+<script type="text/javascript" src="../wymeditor/core.js"></script>
+<script type="text/javascript" src="../wymeditor/editor/ie.js"></script>
+<script type="text/javascript" src="../wymeditor/editor/firefox.js"></script>
+<script type="text/javascript" src="../wymeditor/editor/opera.js"></script>
+<script type="text/javascript" src="../wymeditor/editor/webkit.js"></script>
 
 <script type="text/javascript">
 

@@ -21,11 +21,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>WYMeditor</title>
 <script type="text/javascript" src="../jquery/jquery.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.explorer.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.mozilla.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.opera.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.safari.js"></script>
+<script type="text/javascript" src="../wymeditor/core.js"></script>
+<script type="text/javascript" src="../wymeditor/editor/ie.js"></script>
+<script type="text/javascript" src="../wymeditor/editor/firefox.js"></script>
+<script type="text/javascript" src="../wymeditor/editor/opera.js"></script>
+<script type="text/javascript" src="../wymeditor/editor/webkit.js"></script>
 <script type="text/javascript" src="../wymeditor/plugins/hovertools/jquery.wymeditor.hovertools.js"></script>
 
 <script type="text/javascript">
@@ -37,11 +37,11 @@ jQuery(function() {
     jQuery('.wymeditor1').wymeditor({
 
       //options
-      
+
       html: '<p>Hello, World!<\/p>'
 
     });
-    
+
     jQuery('.wymeditor2').wymeditor({
 
       //options
@@ -51,16 +51,16 @@ jQuery(function() {
       html: '<p>Bonjour le Monde!<\/p>'
 
     });
-    
+
     jQuery('.wymeditor3').wymeditor({
 
       //options
-      
+
       html: '<p>Orbis, te saluto!<\/p>'
 
     });
-    
-    
+
+
 });
 
 </script>

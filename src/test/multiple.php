@@ -29,11 +29,11 @@
     }
 </style>
 <script type="text/javascript" src="../jquery/jquery.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.explorer.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.mozilla.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.opera.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.safari.js"></script>
+<script type="text/javascript" src="../wymeditor/core.js"></script>
+<script type="text/javascript" src="../wymeditor/editor/ie.js"></script>
+<script type="text/javascript" src="../wymeditor/editor/firefox.js"></script>
+<script type="text/javascript" src="../wymeditor/editor/opera.js"></script>
+<script type="text/javascript" src="../wymeditor/editor/webkit.js"></script>
 
 <script type="text/javascript">
 
@@ -57,13 +57,13 @@ if(isset($_POST['wymeditor_1'])) {
 
     echo("<h2>Result 1</h2>");
     echo("<div class=\"result\">$result_1</div>");
-    
+
     $result_2 = $_POST['wymeditor_2'];
     if(get_magic_quotes_gpc()) $result_2 = stripslashes($result_2);
 
     echo("<h2>Result 2</h2>");
     echo("<div class=\"result\">$result_2</div>");
-    
+
     $result_3 = $_POST['wymeditor_3'];
     if(get_magic_quotes_gpc()) $result_3 = stripslashes($result_3);
 

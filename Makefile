@@ -1,11 +1,11 @@
 SRC_DIR = src
 BUILD_DIR = build
 
-JS_FILES = ${SRC_DIR}/wymeditor/jquery.wymeditor.js\
- ${SRC_DIR}/wymeditor/jquery.wymeditor.explorer.js\
- ${SRC_DIR}/wymeditor/jquery.wymeditor.mozilla.js\
- ${SRC_DIR}/wymeditor/jquery.wymeditor.opera.js\
- ${SRC_DIR}/wymeditor/jquery.wymeditor.safari.js
+JS_FILES = ${SRC_DIR}/wymeditor/core.js\
+ ${SRC_DIR}/wymeditor/editor/ie.js\
+ ${SRC_DIR}/wymeditor/editor/firefox.js\
+ ${SRC_DIR}/wymeditor/editor/opera.js\
+ ${SRC_DIR}/wymeditor/editor/webkit.js
 
 WE = ${BUILD_DIR}/build/jquery.wymeditor.js
 WE_PACK = ${BUILD_DIR}/build/jquery.wymeditor.pack.js

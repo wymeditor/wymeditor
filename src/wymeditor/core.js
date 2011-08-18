@@ -3,7 +3,7 @@
     WYMeditor
     =========
 
-    version 1.0dev
+    version 1.0.0dev
 
     WYMeditor : what you see is What You Mean web-based editor
 
@@ -295,17 +295,12 @@ jQuery.extend(WYMeditor, {
         // Path to skin files
         this._options.skinPath = this._options.skinPath ||
                 this._options.basePath + WYMeditor.SKINS_DEFAULT_PATH + this._options.skin + '/';
-        // Path to the main JS file
-        this._options.wymPath = this._options.wymPath || this.computeWymPath();
         // Path to the language files
         this._options.langPath = this._options.langPath ||
                 this._options.basePath + WYMeditor.LANG_DEFAULT_PATH;
         // The designmode iframe's base path
         this._options.iframeBasePath = this._options.iframeBasePath ||
                 this._options.basePath + WYMeditor.IFRAME_DEFAULT;
-        // Path to jQuery JS file
-        this._options.jQueryPath = this._options.jQueryPath ||
-                this.computeJqueryPath();
 
         // Initialize the editor instance
         this.init();
@@ -1389,8 +1384,6 @@ WYMeditor.editor.prototype.dialog = function( dialogType, dialogFeatures, bodyHt
     dialogHtml = h.replaceAll(dialogHtml, WYMeditor.BASE_PATH, this._options.basePath);
     dialogHtml = h.replaceAll(dialogHtml, WYMeditor.DIRECTION, this._options.direction);
     dialogHtml = h.replaceAll(dialogHtml, WYMeditor.CSS_PATH, this._options.skinPath + WYMeditor.SKINS_DEFAULT_CSS);
-    dialogHtml = h.replaceAll(dialogHtml, WYMeditor.WYM_PATH, this._options.wymPath);
-    dialogHtml = h.replaceAll(dialogHtml, WYMeditor.JQUERY_PATH, this._options.jQueryPath);
     dialogHtml = h.replaceAll(dialogHtml, WYMeditor.DIALOG_TITLE, this.encloseString( dialogType ));
     dialogHtml = h.replaceAll(dialogHtml, WYMeditor.DIALOG_BODY, sBodyHtml);
     dialogHtml = h.replaceAll(dialogHtml, WYMeditor.INDEX, this._index);
@@ -1846,27 +1839,31 @@ WYMeditor.editor.prototype.afterInsertTable = function(table) {
 /********** CONFIGURATION **********/
 
 WYMeditor.editor.prototype.computeBasePath = function() {
-    return jQuery(jQuery.grep(jQuery('script'), function(s){
-        return (s.src && s.src.match(/jquery\.wymeditor(\.pack|\.min|\.packed)?\.js(\?.*)?$/ ));
-    })).attr('src').replace(/jquery\.wymeditor(\.pack|\.min|\.packed)?\.js(\?.*)?$/, '');
-};
-
-WYMeditor.editor.prototype.computeWymPath = function() {
-    return jQuery(jQuery.grep(jQuery('script'), function(s){
-        return (s.src && s.src.match(/jquery\.wymeditor(\.pack|\.min|\.packed)?\.js(\?.*)?$/ ));
-    })).attr('src');
-};
-
-WYMeditor.editor.prototype.computeJqueryPath = function() {
-    return jQuery(jQuery.grep(jQuery('script'), function(s){
-        return (s.src && s.src.match(/jquery(-(.*)){0,1}(\.pack|\.min|\.packed)?\.js(\?.*)?$/ ));
-    })).attr('src');
-};
-
-WYMeditor.editor.prototype.computeCssPath = function() {
-    return jQuery(jQuery.grep(jQuery('link'), function(s){
-        return (s.href && s.href.match(/wymeditor\/skins\/(.*)screen\.css(\?.*)?$/ ));
-    })).attr('href');
+    // Find the path to either core.js or
+    // jquery.wymeditor.(pack/min/packed).js
+    var script = jQuery(
+        jQuery.grep(
+            jQuery('script'),
+            function(s){
+                if (!s.src) {
+                    return null;
+                }
+                return (
+                    s.src.match(
+                        /jquery\.wymeditor(\.pack|\.min|\.packed)?\.js(\?.*)?$/ ) ||
+                    s.src.match(
+                        /core\.js(\?.*)?$/ )
+                );
+            }
+        )
+    )
+    if (script.length > 0) {
+        var src = script.attr('src').replace(
+            /jquery\.wymeditor(\.pack|\.min|\.packed)?\.js(\?.*)?$/,
+            '');
+        return src.replace(/core\.js(\?.*)?$/, '');
+    }
+    return null;
 };
 
 WYMeditor.editor.prototype.configureEditorUsingRawCss = function() {
