@@ -2,6 +2,8 @@ SRC_DIR = src
 BUILD_DIR = build
 
 JS_FILES = ${SRC_DIR}/wymeditor/core.js\
+ ${SRC_DIR}/wymeditor/parser.js\
+ ${SRC_DIR}/wymeditor/editor/base.js\
  ${SRC_DIR}/wymeditor/editor/ie.js\
  ${SRC_DIR}/wymeditor/editor/firefox.js\
  ${SRC_DIR}/wymeditor/editor/opera.js\
