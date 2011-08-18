@@ -16,7 +16,10 @@ WE_ARCH = ${BUILD_DIR}/build/wymeditor.tar.gz
 
 FE = ${BUILD_DIR}/build/fireeditor.xpi
 
-MERGE = cat ${JS_FILES} | perl -pe 's/^\xEF\xBB\xBF//g' > ${WE}
+WYM_VER = $(shell cat version.txt)
+VER = sed "s/@VERSION/$(WYM_VER)/"
+
+MERGE = cat ${JS_FILES} | perl -pe 's/^\xEF\xBB\xBF//g' | ${VER} > ${WE}
 WE_PACKER = perl -I${BUILD_DIR}/packer ${BUILD_DIR}/packer/jsPacker.pl -i ${WE} -o ${WE_PACK} -e62 -f
 WE_MINIFIER = java -jar ${BUILD_DIR}/minifier/yuicompressor-2.4.2.jar ${WE} > ${WE_MIN}
 

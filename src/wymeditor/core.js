@@ -3,7 +3,7 @@
     WYMeditor
     =========
 
-    version 1.0.0dev
+    version @VERSION
 
     WYMeditor : what you see is What You Mean web-based editor
 
@@ -130,7 +130,7 @@ jQuery.extend(WYMeditor, {
 
 */
 
-    VERSION             : "0.5-rc2",
+    VERSION             : "@VERSION",
     INSTANCES           : [],
     STRINGS             : [],
     SKINS               : [],
