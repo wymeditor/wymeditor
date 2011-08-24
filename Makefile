@@ -60,6 +60,7 @@ archive: pack min
 	@@mkdir ${BUILD_DIR}/build/wymeditor/
 	@@cp -pR ${SRC_DIR}/wymeditor ${BUILD_DIR}/build/wymeditor/
 	@@rm ${BUILD_DIR}/build/wymeditor/wymeditor/*.js
+	@@rm -r ${BUILD_DIR}/build/wymeditor/wymeditor/editor/
 	@@cp ${WE} ${WE_PACK} ${WE_MIN} ${BUILD_DIR}/build/wymeditor/wymeditor/
 	@@cp -pR ./README.md ${BUILD_DIR}/build/wymeditor/
 	@@cp -pR ./CHANGELOG.rst ${BUILD_DIR}/build/wymeditor/
