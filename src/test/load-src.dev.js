@@ -14,7 +14,6 @@ function loadWymSrc(srcPath) {
         srcPath + 'wymeditor/editor/firefox.js',
         srcPath + 'wymeditor/editor/opera.js',
         srcPath + 'wymeditor/editor/webkit.js',
-        srcPath + 'wymeditor/parser.js',
         srcPath + 'wymeditor/parser/xml-helper.js',
         srcPath + 'wymeditor/parser/xhtml-validator.js',
         srcPath + 'wymeditor/parser/parallel-regex.js',

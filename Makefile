@@ -2,12 +2,21 @@ SRC_DIR = src
 BUILD_DIR = build
 
 JS_FILES = ${SRC_DIR}/wymeditor/core.js\
- ${SRC_DIR}/wymeditor/parser.js\
  ${SRC_DIR}/wymeditor/editor/base.js\
  ${SRC_DIR}/wymeditor/editor/ie.js\
  ${SRC_DIR}/wymeditor/editor/firefox.js\
  ${SRC_DIR}/wymeditor/editor/opera.js\
- ${SRC_DIR}/wymeditor/editor/webkit.js
+ ${SRC_DIR}/wymeditor/editor/webkit.js\
+ ${SRC_DIR}/wymeditor/parser/xml-helper.js\
+ ${SRC_DIR}/wymeditor/parser/xhtml-validator.js\
+ ${SRC_DIR}/wymeditor/parser/parallel-regex.js\
+ ${SRC_DIR}/wymeditor/parser/state-stack.js\
+ ${SRC_DIR}/wymeditor/parser/lexer.js\
+ ${SRC_DIR}/wymeditor/parser/xhtml-lexer.js\
+ ${SRC_DIR}/wymeditor/parser/xhtml-parser.js\
+ ${SRC_DIR}/wymeditor/parser/xhtml-sax-listener.js\
+ ${SRC_DIR}/wymeditor/parser/css-lexer.js\
+ ${SRC_DIR}/wymeditor/parser/css-parser.js
 
 WE = ${BUILD_DIR}/build/jquery.wymeditor.js
 WE_PACK = ${BUILD_DIR}/build/jquery.wymeditor.pack.js
@@ -61,6 +70,7 @@ archive: pack min
 	@@cp -pR ${SRC_DIR}/wymeditor ${BUILD_DIR}/build/wymeditor/
 	@@rm ${BUILD_DIR}/build/wymeditor/wymeditor/*.js
 	@@rm -r ${BUILD_DIR}/build/wymeditor/wymeditor/editor/
+	@@rm -r ${BUILD_DIR}/build/wymeditor/wymeditor/parser/
 	@@cp ${WE} ${WE_PACK} ${WE_MIN} ${BUILD_DIR}/build/wymeditor/wymeditor/
 	@@cp -pR ./README.md ${BUILD_DIR}/build/wymeditor/
 	@@cp -pR ./CHANGELOG.rst ${BUILD_DIR}/build/wymeditor/
