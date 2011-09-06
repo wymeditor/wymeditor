@@ -20,6 +20,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>WYMeditor</title>
+
 <style type="text/css">
     div.result {
       width: 50%;
@@ -28,23 +29,20 @@
       border: 2px solid #ccc;
     }
 </style>
-<script type="text/javascript" src="../jquery/jquery.js"></script>
-<script type="text/javascript" src="../wymeditor/core.js"></script>
-<script type="text/javascript" src="../wymeditor/editor/ie.js"></script>
-<script type="text/javascript" src="../wymeditor/editor/firefox.js"></script>
-<script type="text/javascript" src="../wymeditor/editor/opera.js"></script>
-<script type="text/javascript" src="../wymeditor/editor/webkit.js"></script>
+<script type="text/javascript" src="head.load.min.js"></script>
+<script type="text/javascript" src="load-src.dev.js"></script>
 
 <script type="text/javascript">
+    loadWymSrc('../');
+    head.js("../wymeditor/plugins/hovertools/jquery.wymeditor.hovertools.js");
 
-jQuery(function() {
-    jQuery('.wymeditor').wymeditor();
+    head.ready(function() {
+        jQuery('.wymeditor').wymeditor();
 
-    jQuery('.wymeditor2').wymeditor({
-        html:        '<p>Hello, World!<\/p>'
+        jQuery('.wymeditor2').wymeditor({
+            html:        '<p>Hello, World!<\/p>'
+        });
     });
-});
-
 </script>
 
 </head>

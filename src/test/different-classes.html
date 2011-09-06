@@ -20,76 +20,59 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>WYMeditor</title>
-<script type="text/javascript" src="../jquery/jquery.js"></script>
-<script type="text/javascript" src="../wymeditor/core.js"></script>
-<script type="text/javascript" src="../wymeditor/editor/ie.js"></script>
-<script type="text/javascript" src="../wymeditor/editor/firefox.js"></script>
-<script type="text/javascript" src="../wymeditor/editor/opera.js"></script>
-<script type="text/javascript" src="../wymeditor/editor/webkit.js"></script>
-<script type="text/javascript" src="../wymeditor/plugins/hovertools/jquery.wymeditor.hovertools.js"></script>
+
+<script type="text/javascript" src="head.load.min.js"></script>
+<script type="text/javascript" src="load-src.dev.js"></script>
 
 <script type="text/javascript">
+    loadWymSrc('../');
+    head.js("../wymeditor/plugins/hovertools/jquery.wymeditor.hovertools.js");
 
+    head.ready(function() {
+        jQuery('.wymeditor1').wymeditor({
+          //options
+          html: '<p>Hello, World!<\/p>'
+        });
 
+        jQuery('.wymeditor2').wymeditor({
+          //options
+          skin: 'minimal',
+          lang: 'fr',
+          html: '<p>Bonjour le Monde!<\/p>'
 
-jQuery(function() {
+        });
 
-    jQuery('.wymeditor1').wymeditor({
-
-      //options
-
-      html: '<p>Hello, World!<\/p>'
-
+        jQuery('.wymeditor3').wymeditor({
+          //options
+          html: '<p>Orbis, te saluto!<\/p>'
+        });
     });
-
-    jQuery('.wymeditor2').wymeditor({
-
-      //options
-
-      skin: 'minimal',
-      lang: 'fr',
-      html: '<p>Bonjour le Monde!<\/p>'
-
-    });
-
-    jQuery('.wymeditor3').wymeditor({
-
-      //options
-
-      html: '<p>Orbis, te saluto!<\/p>'
-
-    });
-
-
-});
-
 </script>
-
-
 </head>
 
 <body>
-<h1>WYMeditor test page for different class names</h1>
-<p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
-<form method="post" action="">
-<textarea class="wymeditor1"></textarea>
-<input type="submit" class="wymupdate" />
-</form>
-<form method="post" action="">
-<textarea class="wymeditor2"></textarea>
-<input type="submit" class="wymupdate" />
-</form>
-<form method="post" action="">
-<textarea class="wymeditor3"></textarea>
-<input type="submit" class="wymupdate" />
-</form>
+    <h1>WYMeditor test page for different class names</h1>
+    <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+    <form method="post" action="">
+        <textarea class="wymeditor1"></textarea>
+        <input type="submit" class="wymupdate" />
+    </form>
+    <form method="post" action="">
+        <textarea class="wymeditor2"></textarea>
+        <input type="submit" class="wymupdate" />
+    </form>
+    <form method="post" action="">
+        <textarea class="wymeditor3"></textarea>
+        <input type="submit" class="wymupdate" />
+    </form>
 
-<p>
-<a href="http://sourceforge.net/projects/wym-editor">
-<img src="http://sflogo.sourceforge.net/sflogo.php?group_id=148869&amp;type=1" border="0" alt="SourceForge logo" title="SourceForge" />
-</a>
-</p>
-
+    <p>
+        <a href="http://sourceforge.net/projects/wym-editor">
+            <img
+            src="http://sflogo.sourceforge.net/sflogo.php?group_id=148869&amp;type=1"
+            border="0" alt="SourceForge logo" title="SourceForge" />
+        </a>
+    </p>
 </body>
 
 </html>

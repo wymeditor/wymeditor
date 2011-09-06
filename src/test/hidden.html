@@ -20,55 +20,48 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>WYMeditor</title>
+
 <link rel="stylesheet" type="text/css" media="screen" href="../wymeditor/skins/default/screen.css" />
 <style>.hidden { display: none }</style>
-<script type="text/javascript" src="../jquery/jquery.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.explorer.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.mozilla.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.opera.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.safari.js"></script>
+
+<script type="text/javascript" src="head.load.min.js"></script>
+<script type="text/javascript" src="load-src.dev.js"></script>
 
 <script type="text/javascript">
+    loadWymSrc('../');
 
+    head.ready(function() {
+        jQuery('.wymeditor').wymeditor({
+            html: "<p>Test.</p>",
+            classesItems: [{'name': 'date', 'title': 'PARA: Date', 'expr': 'p'}]
+        });
 
-
-jQuery(function() {
-
-    jQuery('.wymeditor').wymeditor({
-
-        html: "<p>Test.</p>",
-        classesItems: [{'name': 'date', 'title': 'PARA: Date', 'expr': 'p'}]
-
+        jQuery('.toggle-link').click( function() {
+            jQuery('.wym-wrapper').toggle();
+        });
     });
-
-    jQuery('.toggle-link').click( function() {
-      jQuery('.wym-wrapper').toggle();
-    });
-});
-
 </script>
 
 
 </head>
 
 <body>
-<h1>WYMeditor integration example</h1>
-<p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
-<p><a href="#" class="toggle-link">Show/Hide WYMeditor</a></p>
-<div class="wym-wrapper hidden">
-<form method="post" action="">
-<textarea class="wymeditor"></textarea>
-<input type="submit" class="wymupdate" />
-</form>
-</div>
+    <h1>WYMeditor integration example</h1>
+    <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+    <p><a href="#" class="toggle-link">Show/Hide WYMeditor</a></p>
+    <div class="wym-wrapper hidden">
+        <form method="post" action="">
+            <textarea class="wymeditor"></textarea>
+            <input type="submit" class="wymupdate" />
+        </form>
+    </div>
 
-<p>
-<a href="http://sourceforge.net/projects/wym-editor">
-<img src="http://sflogo.sourceforge.net/sflogo.php?group_id=148869&amp;type=1" border="0" alt="SourceForge logo" title="SourceForge" />
-</a>
-</p>
-
+    <p>
+        <a href="http://sourceforge.net/projects/wym-editor">
+            <img
+                src="http://sflogo.sourceforge.net/sflogo.php?group_id=148869&amp;type=1"
+                border="0" alt="SourceForge logo" title="SourceForge" />
+        </a>
+    </p>
 </body>
-
 </html>

@@ -28,19 +28,14 @@
       border: 2px solid #ccc;
     }
 </style>
-<script type="text/javascript" src="../jquery/jquery.js"></script>
-<script type="text/javascript" src="../wymeditor/core.js"></script>
-<script type="text/javascript" src="../wymeditor/editor/ie.js"></script>
-<script type="text/javascript" src="../wymeditor/editor/firefox.js"></script>
-<script type="text/javascript" src="../wymeditor/editor/opera.js"></script>
-<script type="text/javascript" src="../wymeditor/editor/webkit.js"></script>
+<script type="text/javascript" src="head.load.min.js"></script>
+<script type="text/javascript" src="load-src.dev.js"></script>
 
 <script type="text/javascript">
-
-jQuery(function() {
-    jQuery('.wymeditor').wymeditor();
-});
-
+    loadWymSrc('../');
+    head.ready(function() {
+        jQuery('.wymeditor').wymeditor();
+    });
 </script>
 
 </head>
