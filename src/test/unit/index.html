@@ -23,28 +23,29 @@
 <title>WYMeditor Test Suite</title>
 <link rel="stylesheet" href="qunit.css" type="text/css" media="screen" />
 
-<script type="text/javascript" src="../../jquery/jquery.js"></script>
-<script type="text/javascript" src="../../wymeditor/jquery.wymeditor.js"></script>
-<script type="text/javascript" src="../../wymeditor/jquery.wymeditor.explorer.js"></script>
-<script type="text/javascript" src="../../wymeditor/jquery.wymeditor.mozilla.js"></script>
-<script type="text/javascript" src="../../wymeditor/jquery.wymeditor.opera.js"></script>
-<script type="text/javascript" src="../../wymeditor/jquery.wymeditor.safari.js"></script>
+<script type="text/javascript" src="../head.load.min.js"></script>
+<script type="text/javascript" src="../load-src.dev.js"></script>
 
-<!-- plugins -->
-<script type="text/javascript" src="../../wymeditor/plugins/rangy/rangy-core.js"></script>
-<script type="text/javascript" src="../../wymeditor/plugins/embed/jquery.wymeditor.embed.js"></script>
-<script type="text/javascript" src="../../wymeditor/plugins/list/jquery.wymeditor.list.js"></script>
-<script type="text/javascript" src="../../wymeditor/plugins/table/jquery.wymeditor.table.js"></script>
+<script type="text/javascript">
+    loadWymSrc('../../');
+    head.js(
+        // Plugins
+        "../../wymeditor/plugins/rangy/rangy-core.js",
+        "../../wymeditor/plugins/embed/jquery.wymeditor.embed.js",
+        "../../wymeditor/plugins/list/jquery.wymeditor.list.js",
+        "../../wymeditor/plugins/table/jquery.wymeditor.table.js",
 
-<script type="text/javascript" src="qunit.js"></script>
+        "qunit.js",
 
-<script type="text/javascript" src="utils.js"></script>
-<script type="text/javascript" src="test.js"></script>
-<script type="text/javascript" src="lists.js"></script>
-<script type="text/javascript" src="blocking_elements.js"></script>
-<script type="text/javascript" src="table_test.js"></script>
-<script type="text/javascript" src="embed.js"></script>
-
+        // Test files
+        "utils.js",
+        "test.js",
+        "lists.js",
+        "blocking_elements.js",
+        "table_test.js",
+        "embed.js"
+    );
+</script>
 </head>
 
 <body>

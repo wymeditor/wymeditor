@@ -21,42 +21,44 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>WYMeditor</title>
-<script type="text/javascript" src="../jquery/jquery.js"></script>
+
+<script type="text/javascript" src="head.load.min.js"></script>
+<script type="text/javascript" src="load-src.dev.js"></script>
+
 <script type="text/javascript" src="../jquery/jquery.rdfquery.rdfa.min-1.0.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.explorer.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.mozilla.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.opera.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.safari.js"></script>
 <script type="text/javascript" src="../wymeditor/plugins/rdfa/jquery.wymeditor.rdfa.js"></script>
 
 <script type="text/javascript">
-jQuery(function() {
-    jQuery('.wymeditor').wymeditor({
-        postInit: function(wym) {
-            var buttons = [
-                { ns: 'foaf', attr: 'typeof', value: 'Person', title: "A person" },
-                { ns: 'foaf', attr: 'rel', value: 'mbox', title: "Link to person's mailbox" },
-                { attr: 'about', title: "What the content is about" }
-            ];
-            rdfa = wym.rdfa({
-                'buttons': buttons
-            });
-        }
-    })
-});
+    loadWymSrc('../');
+    head.js(
+            "../jquery/jquery.rdfquery.rdfa.min-1.0.js",
+            "../wymeditor/plugins/rdfa/jquery.wymeditor.rdfa.js");
+
+    head.ready(function() {
+        jQuery('.wymeditor').wymeditor({
+            postInit: function(wym) {
+                var buttons = [
+                    { ns: 'foaf', attr: 'typeof', value: 'Person', title: "A person" },
+                    { ns: 'foaf', attr: 'rel', value: 'mbox', title: "Link to person's mailbox" },
+                    { attr: 'about', title: "What the content is about" }
+                ];
+                rdfa = wym.rdfa({
+                    'buttons': buttons
+                });
+            }
+        })
+    });
 </script>
 
 </head>
 
 <body>
-<h1>RDFa plugin test page</h1>
-<p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
-<form method="post" action="">
-<textarea class="wymeditor"></textarea>
-<input type="submit" class="wymupdate" />
-</form>
-
+    <h1>RDFa plugin test page</h1>
+    <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+    <form method="post" action="">
+        <textarea class="wymeditor"></textarea>
+        <input type="submit" class="wymupdate" />
+    </form>
 </body>
 
 </html>

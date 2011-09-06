@@ -20,44 +20,32 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>WYMeditor</title>
-<script type="text/javascript" src="../jquery/jquery.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.explorer.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.mozilla.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.opera.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.safari.js"></script>
+
+<script type="text/javascript" src="head.load.min.js"></script>
+<script type="text/javascript" src="load-src.dev.js"></script>
 
 <script type="text/javascript">
+    loadWymSrc('../');
 
-jQuery(function() {
+    head.ready(function() {
+        jQuery('.wymeditor').wymeditor({
 
-    jQuery('.wymeditor').wymeditor({
-    
-        stylesheet: 'wym_stylesheet.css',
-        skin: 'twopanels',
-        html: '<p>This is some text with which to test.</p>'
-        
+            stylesheet: 'wym_stylesheet.css',
+            skin: 'twopanels',
+            html: '<p>This is some text with which to test.</p>'
+
+        });
     });
-});
-
 </script>
-
 </head>
 
 <body>
-<h1>WYMeditor basic integration example - two panels</h1>
-<p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
-<form method="post" action="">
-<textarea class="wymeditor"></textarea>
-<input type="submit" class="wymupdate" />
-</form>
-
-<p>
-<a href="http://sourceforge.net/projects/wym-editor">
-<img src="http://sflogo.sourceforge.net/sflogo.php?group_id=148869&amp;type=1" border="0" alt="SourceForge logo" title="SourceForge" />
-</a>
-</p>
-
+    <h1>WYMeditor basic integration example - two panels</h1>
+    <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+    <form method="post" action="">
+        <textarea class="wymeditor"></textarea>
+        <input type="submit" class="wymupdate" />
+    </form>
 </body>
 
 </html>

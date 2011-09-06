@@ -31,40 +31,29 @@ print $prolog_type;
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>WYMeditor</title>
-<script type="text/javascript" src="../jquery/jquery.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.explorer.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.mozilla.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.opera.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.safari.js"></script>
+
+<script type="text/javascript" src="head.load.min.js"></script>
+<script type="text/javascript" src="load-src.dev.js"></script>
 
 <script type="text/javascript">
-;(function($) {
-    $(function() {
+    loadWymSrc('../');
+
+    head.ready(function() {
         $('.wymeditor').wymeditor({
             stylesheet: 'wym_stylesheet.css'
         });
     });
-})(jQuery);
 </script>
-
 </head>
 
 <body>
-<h1>WYMeditor basic integration example</h1>
-<p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
-<form method="post" action="">
-<textarea class="wymeditor"></textarea>
-<input type="submit" class="wymupdate" />
-<input type="button" class="wymclear" name="Clear" value="Clear" />
-</form>
-
-<p>
-<a href="http://sourceforge.net/projects/wym-editor">
-<img src="http://sflogo.sourceforge.net/sflogo.php?group_id=148869&amp;type=1" border="0" alt="SourceForge logo" title="SourceForge" />
-</a>
-</p>
-
+    <h1>WYMeditor basic integration example</h1>
+    <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+    <form method="post" action="">
+        <textarea class="wymeditor"></textarea>
+        <input type="submit" class="wymupdate" />
+        <input type="button" class="wymclear" name="Clear" value="Clear" />
+    </form>
 </body>
 
 </html>
