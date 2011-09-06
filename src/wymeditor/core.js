@@ -673,6 +673,9 @@ jQuery.fn.wymeditor = function(options) {
     }, options);
 
     return this.each(function() {
+        // Assigning to _editor because the return value from new isn't
+        // actually used, but we need to use new to properly change the
+        // prototype
         _editor = new WYMeditor.editor(jQuery(this), options);
     });
 };
