@@ -1,11 +1,22 @@
 SRC_DIR = src
 BUILD_DIR = build
 
-JS_FILES = ${SRC_DIR}/wymeditor/jquery.wymeditor.js\
- ${SRC_DIR}/wymeditor/jquery.wymeditor.explorer.js\
- ${SRC_DIR}/wymeditor/jquery.wymeditor.mozilla.js\
- ${SRC_DIR}/wymeditor/jquery.wymeditor.opera.js\
- ${SRC_DIR}/wymeditor/jquery.wymeditor.safari.js
+JS_FILES = ${SRC_DIR}/wymeditor/core.js\
+ ${SRC_DIR}/wymeditor/editor/base.js\
+ ${SRC_DIR}/wymeditor/editor/ie.js\
+ ${SRC_DIR}/wymeditor/editor/firefox.js\
+ ${SRC_DIR}/wymeditor/editor/opera.js\
+ ${SRC_DIR}/wymeditor/editor/webkit.js\
+ ${SRC_DIR}/wymeditor/parser/xml-helper.js\
+ ${SRC_DIR}/wymeditor/parser/xhtml-validator.js\
+ ${SRC_DIR}/wymeditor/parser/parallel-regex.js\
+ ${SRC_DIR}/wymeditor/parser/state-stack.js\
+ ${SRC_DIR}/wymeditor/parser/lexer.js\
+ ${SRC_DIR}/wymeditor/parser/xhtml-lexer.js\
+ ${SRC_DIR}/wymeditor/parser/xhtml-parser.js\
+ ${SRC_DIR}/wymeditor/parser/xhtml-sax-listener.js\
+ ${SRC_DIR}/wymeditor/parser/css-lexer.js\
+ ${SRC_DIR}/wymeditor/parser/css-parser.js
 
 WE = ${BUILD_DIR}/build/jquery.wymeditor.js
 WE_PACK = ${BUILD_DIR}/build/jquery.wymeditor.pack.js
@@ -14,7 +25,10 @@ WE_ARCH = ${BUILD_DIR}/build/wymeditor.tar.gz
 
 FE = ${BUILD_DIR}/build/fireeditor.xpi
 
-MERGE = cat ${JS_FILES} | perl -pe 's/^\xEF\xBB\xBF//g' > ${WE}
+WYM_VER = $(shell cat version.txt)
+VER = sed "s/@VERSION/$(WYM_VER)/"
+
+MERGE = cat ${JS_FILES} | perl -pe 's/^\xEF\xBB\xBF//g' | ${VER} > ${WE}
 WE_PACKER = perl -I${BUILD_DIR}/packer ${BUILD_DIR}/packer/jsPacker.pl -i ${WE} -o ${WE_PACK} -e62 -f
 WE_MINIFIER = java -jar ${BUILD_DIR}/minifier/yuicompressor-2.4.2.jar ${WE} > ${WE_MIN}
 
@@ -55,6 +69,8 @@ archive: pack min
 	@@mkdir ${BUILD_DIR}/build/wymeditor/
 	@@cp -pR ${SRC_DIR}/wymeditor ${BUILD_DIR}/build/wymeditor/
 	@@rm ${BUILD_DIR}/build/wymeditor/wymeditor/*.js
+	@@rm -r ${BUILD_DIR}/build/wymeditor/wymeditor/editor/
+	@@rm -r ${BUILD_DIR}/build/wymeditor/wymeditor/parser/
 	@@cp ${WE} ${WE_PACK} ${WE_MIN} ${BUILD_DIR}/build/wymeditor/wymeditor/
 	@@cp -pR ./README.md ${BUILD_DIR}/build/wymeditor/
 	@@cp -pR ./CHANGELOG.rst ${BUILD_DIR}/build/wymeditor/

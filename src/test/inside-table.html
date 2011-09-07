@@ -19,51 +19,36 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>WYMeditor</title>
-<script type="text/javascript" src="../jquery/jquery.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.explorer.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.mozilla.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.opera.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.safari.js"></script>
+
+<script type="text/javascript" src="head.load.min.js"></script>
+<script type="text/javascript" src="load-src.dev.js"></script>
 
 <script type="text/javascript">
+    loadWymSrc('../');
 
-jQuery(function() {
-    jQuery('.wymeditor').wymeditor( { skin: 'minimal' } );
-});
-
+    jQuery(function() {
+        jQuery('.wymeditor').wymeditor( { skin: 'minimal' } );
+    });
 </script>
-
 </head>
 
 <body>
-
-<h1>WYMeditor integration example</h1>
-
-      <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
-
-        <table>
-
-          <tr>
-
+    <h1>WYMeditor integration example</h1>
+    <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+    <table>
+        <tr>
             <td>
-
-              <form method="post">
-
-                <textarea rows="0" cols="0" name="content" class="wymeditor"></textarea>
-
-                <input type="submit" class="wymupdate" />
-
-              </form>
-
-              <p><a href="http://sourceforge.net/projects/wym-editor"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=148869&amp;type=1" border="0" alt="SourceForge logo" title="SourceForge" /></a></p>
-
+                <form method="post">
+                    <textarea rows="0" cols="0" name="content" class="wymeditor"></textarea>
+                    <input type="submit" class="wymupdate" />
+                </form>
+                <p>
+                    <a href="http://sourceforge.net/projects/wym-editor">
+                        <img src="http://sflogo.sourceforge.net/sflogo.php?group_id=148869&amp;type=1" border="0" alt="SourceForge logo" title="SourceForge" />
+                    </a>
+                </p>
             </td>
-
-          </tr>
-
-        </table>
-
+        </tr>
+    </table>
 </body>
-
 </html>
