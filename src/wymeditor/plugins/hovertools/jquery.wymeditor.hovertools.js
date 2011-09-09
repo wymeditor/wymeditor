@@ -42,7 +42,7 @@ WYMeditor.editor.prototype.hovertools = function() {
             // Don't use jQuery.find() on the iframe body
             // because of MSIE + jQuery + expando issue (#JQ1143)
             if (!jQuery.browser.msie) {
-                jQuery(wym._doc).find('*').removeAttr('style');
+                jQuery(wym._doc).find('*').attr('style', '').removeAttr('style');
             }
         }
     );
