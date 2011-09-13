@@ -8,6 +8,7 @@
 function loadWymSrc(srcPath) {
     head.js(
         srcPath + 'jquery/jquery.js',
+        srcPath + 'wymeditor/rangy/rangy-core.js',
         srcPath + 'wymeditor/core.js',
         srcPath + 'wymeditor/editor/base.js',
         srcPath + 'wymeditor/editor/ie.js',
