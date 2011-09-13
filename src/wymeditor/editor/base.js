@@ -1307,7 +1307,7 @@ WYMeditor.editor.prototype.insertTable = function(rows, columns, caption, summar
 WYMeditor.editor.prototype.afterInsertTable = function(table) {};
 
 WYMeditor.editor.prototype.computeBasePath = function() {
-    // Find the path to either core.js or
+    // Find the path to either /core.js or
     // jquery.wymeditor.(pack/min/packed).js
     var script = jQuery(
         jQuery.grep(
@@ -1320,7 +1320,7 @@ WYMeditor.editor.prototype.computeBasePath = function() {
                     s.src.match(
                         /jquery\.wymeditor(\.pack|\.min|\.packed)?\.js(\?.*)?$/ ) ||
                     s.src.match(
-                        /core\.js(\?.*)?$/ )
+                        /\/core\.js(\?.*)?$/ )
                 );
             }
         )
