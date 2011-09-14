@@ -829,6 +829,14 @@ WYMeditor.editor.prototype.dialog = function(dialogType, dialogFeatures, bodyHtm
             this._options.skinPath + WYMeditor.SKINS_DEFAULT_CSS);
         dialogHtml = h.replaceAll(
             dialogHtml,
+            WYMeditor.WYM_PATH,
+            this._options.wymPath);
+        dialogHtml = h.replaceAll(
+            dialogHtml,
+            WYMeditor.JQUERY_PATH,
+            this._options.jQueryPath);
+        dialogHtml = h.replaceAll(
+            dialogHtml,
             WYMeditor.DIALOG_TITLE,
             this.encloseString(dialogType));
         dialogHtml = h.replaceAll(
