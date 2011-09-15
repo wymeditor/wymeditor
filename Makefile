@@ -21,7 +21,7 @@ JS_FILES = ${WYM_DIR}/core.js\
 
 WE = ${BUILD_DIR}/jquery.wymeditor.js
 WE_MIN = ${BUILD_DIR}/jquery.wymeditor.min.js
-WE_ARCH = ${BUILD_DIR}/wymeditor.tar.gz
+WE_ARCH = wymeditor.tar.gz
 
 WYM_VER = $(shell cat version.txt)
 VER = sed "s/@VERSION/$(WYM_VER)/"
@@ -66,7 +66,7 @@ archive: min
 	@@cp -pR ${WYM_DIR}/plugins ${BUILD_DIR}/wymeditor/wymeditor
 	@@cp -pR ${WYM_DIR}/skins ${BUILD_DIR}/wymeditor/wymeditor
 
-	@@tar -C ${BUILD_DIR} -czf ${WE_ARCH} wymeditor
+	@@cd ${BUILD_DIR} && tar -czf ${WE_ARCH} wymeditor
 	
 	@@echo ${WE_ARCH} "Built"
 	@@echo
