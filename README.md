@@ -42,6 +42,16 @@ On ready:
 
 More examples can be [found here](https://github.com/wymeditor/wymeditor/tree/master/src/examples) or in your local examples directory.
 
+Building WYMeditor
+------------------
+
+To build WYMeditor you need to have make and the [UglifyJS module](https://github.com/mishoo/UglifyJS/) for Node.js installed. To install UglifyJS using [NPM](http://npmjs.org/) runt the following:
+```npm install -g uglify-js```
+
+Running `make` in the terminal will build WYMeditor for distribution inside the dist catalog, which will be created if if does not already exist. 
+
+Running `make wymeditor` will only merge and minify the the WYMeditor source without packaging it for distribution.
+
 Contibuting
 -----------
  - **Official branch:** https://github.com/wymeditor/wymeditor
