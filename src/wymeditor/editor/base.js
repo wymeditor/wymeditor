@@ -555,7 +555,7 @@ WYMeditor.editor.prototype.toggleClass = function(sClass, jqexpr) {
     `filter` is a string or an array of strings on which to filter the container
 */
 WYMeditor.editor.prototype.findUp = function(node, filter) {
-    if (typeof(node) === 'undefined') {
+    if (typeof(node) === 'undefined' || node === null) {
         return null;
     }
 
@@ -1313,34 +1313,6 @@ WYMeditor.editor.prototype.insertTable = function(rows, columns, caption, summar
     need slightly different tweaks.
 */
 WYMeditor.editor.prototype.afterInsertTable = function(table) {};
-
-WYMeditor.editor.prototype.computeBasePath = function() {
-    // Find the path to either /core.js or
-    // jquery.wymeditor.(pack/min/packed).js
-    var script = jQuery(
-        jQuery.grep(
-            jQuery('script'),
-            function(s){
-                if (!s.src) {
-                    return null;
-                }
-                return (
-                    s.src.match(
-                        /jquery\.wymeditor(\.pack|\.min|\.packed)?\.js(\?.*)?$/ ) ||
-                    s.src.match(
-                        /\/core\.js(\?.*)?$/ )
-                );
-            }
-        )
-    );
-    if (script.length > 0) {
-        var src = script.attr('src').replace(
-            /jquery\.wymeditor(\.pack|\.min|\.packed)?\.js(\?.*)?$/,
-            '');
-        return src.replace(/core\.js(\?.*)?$/, '');
-    }
-    return null;
-};
 
 WYMeditor.editor.prototype.configureEditorUsingRawCss = function() {
     var CssParser = new WYMeditor.WymCssParser();
