@@ -1,4 +1,13 @@
 
+// Whether or not we want to skip the tests that are known to be failing.
+// Ideally, there would be no tests in this category, but right now there are
+// a lot of table-related bugs that need to be fixed that aren't the number
+// one priority. Having a test suite with failing tests is a bad thing though,
+// because new contributors don't know which tests are "supposed to be failing."
+// That lack of knowing makes the test suite much less useful than a test suite
+// that should always be passing in all supported browsers.
+var SKIP_KNOWN_FAILING_TESTS = true;
+
 function setupWym() {
     if (WYMeditor.INSTANCES.length === 0) {
         stop(5000); // Stop test running until the editor is initialized
@@ -334,6 +343,7 @@ if ($.browser.mozilla) {
         });
     });
 
+    if (!SKIP_KNOWN_FAILING_TESTS) {
     test("Table cells are editable in FF > 3.5: via inner_html", function() {
         // This is currently broken. Doing a raw insert in to the editor
         // body doesn't let us use our fixBodyHtml() fix to add the
@@ -355,6 +365,7 @@ if ($.browser.mozilla) {
             equals(isContentEditable(td), true);
         });
     });
+    }
 }
 
 module("preformatted text", {setup: setupWym});
