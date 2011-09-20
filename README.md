@@ -34,7 +34,7 @@ Make sure to include the `wymupdate` class on your submit buttons.
 On ready:
 
     <script>
-      $(function() {
+      $(document).ready(function() {
         $('.wymeditor').wymeditor();
       });
     </script>
@@ -52,7 +52,7 @@ Running `make` in the terminal will build WYMeditor for distribution inside the 
 
 Running `make wymeditor` will only merge and minify the the WYMeditor source without packaging it for distribution.
 
-Contibuting
+Contributing
 -----------
  - **Official branch:** https://github.com/wymeditor/wymeditor
  - **Issue tracking:** https://github.com/wymeditor/wymeditor/issues
