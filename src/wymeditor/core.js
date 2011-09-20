@@ -709,7 +709,7 @@ jQuery.extend({
     * /core.js
 */
 WYMeditor.computeWymPath = function() {
-    return jQuery(
+    var script = jQuery(
         jQuery.grep(
             jQuery('script'),
             function(s){
@@ -724,7 +724,19 @@ WYMeditor.computeWymPath = function() {
                 );
             }
         )
-    ).attr('src');
+    );
+    if (script.length > 0) {
+        return script.attr('src');
+    }
+    // We couldn't locate the base path. This will break language loading,
+    // dialog boxes and other features.
+    WYMeditor.console.warn(
+        "Error determining wymPath. No base WYMeditor file located.");
+    WYMeditor.console.warn("Assuming wymPath to be the current URL");
+    WYMeditor.console.warn("Please pass a correct wymPath option");
+
+    // Guess that the wymPath is the current directory
+    return '';
 };
 
 /**

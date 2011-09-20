@@ -57,6 +57,11 @@ Enhancements
 * Rangy is now included as part of the distribution and used to create
   consistent cross-browser selection objects.
 
+* A console warning message is now created if no wymPath option is provided and
+  it can't be automatically determined. The editor also attempts to continue
+  with the assumption that your wymPath is your current directory, instead of
+  throwing an exception immediately.
+
 
 .. _v1-0-0dev-bugfixes:
 
