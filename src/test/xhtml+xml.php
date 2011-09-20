@@ -32,13 +32,13 @@ print $prolog_type;
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>WYMeditor</title>
 
-<script type="text/javascript" src="head.load.min.js"></script>
 <script type="text/javascript" src="load-src.dev.js"></script>
 
 <script type="text/javascript">
     loadWymSrc('../');
-
-    head.ready(function() {
+</script>
+<script type="text/javascript">
+    jQuery(document).ready(function() {
         $('.wymeditor').wymeditor({
             stylesheet: 'wym_stylesheet.css'
         });

@@ -31,15 +31,15 @@
     .foaf_homepage { background-color: #c9c; }
 </style>
 
-<script type="text/javascript" src="head.load.min.js"></script>
 <script type="text/javascript" src="load-src.dev.js"></script>
 
 <script type="text/javascript">
-    loadWymSrc('../');
-    head.js("../jquery/jquery.rdfquery.rdfa.min-1.0.js");
-
-    head.ready(function() {
-
+    loadWymSrc('../', [
+        "../jquery/jquery.rdfquery.rdfa.min-1.0.js"
+    ]);
+</script>
+<script type="text/javascript">
+    jQuery(document).ready(function() {
         /*EXTEND THE XHTML PARSER*/
         /*************************/
 

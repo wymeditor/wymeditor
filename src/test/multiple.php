@@ -30,13 +30,13 @@
     }
 </style>
 
-<script type="text/javascript" src="head.load.min.js"></script>
 <script type="text/javascript" src="load-src.dev.js"></script>
 
 <script type="text/javascript">
     loadWymSrc('../');
-
-    head.ready(function() {
+</script>
+<script type="text/javascript">
+    jQuery(document).ready(function() {
         jQuery('.wymeditor').wymeditor();
     });
 </script>

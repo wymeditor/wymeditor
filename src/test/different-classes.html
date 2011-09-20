@@ -21,30 +21,30 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>WYMeditor</title>
 
-<script type="text/javascript" src="head.load.min.js"></script>
 <script type="text/javascript" src="load-src.dev.js"></script>
 
 <script type="text/javascript">
-    loadWymSrc('../');
-    head.js("../wymeditor/plugins/hovertools/jquery.wymeditor.hovertools.js");
-
-    head.ready(function() {
+    loadWymSrc('../', [
+        '../wymeditor/plugins/hovertools/jquery.wymeditor.hovertools.js'
+    ]);
+</script>
+<script type="text/javascript">
+    jQuery(document).ready(function() {
         jQuery('.wymeditor1').wymeditor({
-          //options
-          html: '<p>Hello, World!<\/p>'
+              //options
+              html: '<p>Hello, World!<\/p>'
         });
 
         jQuery('.wymeditor2').wymeditor({
-          //options
-          skin: 'minimal',
-          lang: 'fr',
-          html: '<p>Bonjour le Monde!<\/p>'
-
+              //options
+              skin: 'minimal',
+              lang: 'fr',
+              html: '<p>Bonjour le Monde!<\/p>'
         });
 
         jQuery('.wymeditor3').wymeditor({
-          //options
-          html: '<p>Orbis, te saluto!<\/p>'
+              //options
+              html: '<p>Orbis, te saluto!<\/p>'
         });
     });
 </script>

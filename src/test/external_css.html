@@ -23,15 +23,16 @@
 
 <link rel="stylesheet" type="text/css" media="screen" href="../wymeditor/skins/default/screen.css" />
 
-<script type="text/javascript" src="head.load.min.js"></script>
 <script type="text/javascript" src="load-src.dev.js"></script>
 
 <script type="text/javascript">
-    loadWymSrc('../');
-    head.js("../wymeditor/plugins/hovertools/jquery.wymeditor.hovertools.js");
-
+    loadWymSrc('../', [
+        '../wymeditor/plugins/hovertools/jquery.wymeditor.hovertools.js'
+    ]);
+</script>
+<script type="text/javascript">
     var w;
-    head.ready(function() {
+    jQuery(document).ready(function() {
         jQuery('.wymeditor').wymeditor({
           // External CSS file
           stylesheet: 'wym_stylesheet.css',
