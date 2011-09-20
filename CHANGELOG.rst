@@ -54,6 +54,9 @@ Enhancements
         }
     });
 
+* Rangy is now included as part of the distribution and used to create
+  consistent cross-browser selection objects.
+
 
 .. _v1-0-0dev-bugfixes:
 
