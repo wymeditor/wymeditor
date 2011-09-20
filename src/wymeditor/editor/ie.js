@@ -119,32 +119,12 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function(iframe) {
     };
 })(WYMeditor.editor.prototype.loadSkin);
 
-WYMeditor.WymClassExplorer.prototype._exec = function(cmd,param) {
-
-    switch(cmd) {
-
-    case WYMeditor.INDENT: case WYMeditor.OUTDENT:
-
-        var container = this.findUp(this.container(), WYMeditor.LI);
-        if (container) {
-            var ancestor = container.parentNode.parentNode;
-            if (container.parentNode.childNodes.length>1 ||
-                ancestor.tagName.toLowerCase() == WYMeditor.OL ||
-                ancestor.tagName.toLowerCase() == WYMeditor.UL) {
-
-                this._doc.execCommand(cmd);
-            }
-        }
-        break;
-    default:
-        if (param) {
-            this._doc.execCommand(cmd, false, param);
-        } else {
-            this._doc.execCommand(cmd);
-        }
-        break;
+WYMeditor.WymClassExplorer.prototype._exec = function(cmd, param) {
+    if (param) {
+        this._doc.execCommand(cmd, false, param);
+    } else {
+        this._doc.execCommand(cmd);
     }
-
 };
 
 WYMeditor.WymClassExplorer.prototype.selected = function() {

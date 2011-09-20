@@ -704,9 +704,11 @@ test("Shift+Tab outdents", function() {
 
     var initHtml = '' +
     '<ol>' +
-        '<ol>' +
-            '<li id="li_1_1">1_1</li>' +
-        '</ol>' +
+        '<li>' +
+            '<ol>' +
+                '<li id="li_1_1">1_1</li>' +
+            '</ol>' +
+        '</li>' +
         '<li id="li_2">2</li>' +
     '</ol>';
     var expectedHtml = '' +

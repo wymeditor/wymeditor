@@ -124,7 +124,7 @@ WYMeditor.WymClassMozilla.prototype.html = function(html) {
     return false;
 };
 
-WYMeditor.WymClassMozilla.prototype._exec = function(cmd,param) {
+WYMeditor.WymClassMozilla.prototype._exec = function(cmd, param) {
     if (!this.selected()) {
         return false;
     }
