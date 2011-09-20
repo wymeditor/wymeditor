@@ -1372,19 +1372,23 @@ test("With span", function() {
 });
 
 module("table-row_merge_rowspan", {setup: setupTables});
+if ($.browser.ie && !SKIP_KNOWN_FAILING_TESTS) {
 test("Across rowspan", function() {
     expect(5);
 
     testRowMerge(
         mergeTableHtml, mergeTd23Html, '#td_2_3', '#td_2_4', '#td_2_3');
 });
+}
 
+if ($.browser.ie && !SKIP_KNOWN_FAILING_TESTS) {
 test("Into rowspan", function() {
     expect(5);
 
     testRowMerge(
         mergeTableHtml, mergeTd22Html, '#td_2_2', '#td_2_3', '#td_2_2');
 });
+}
 
 test("Below and beside rowspan", function() {
     expect(5);

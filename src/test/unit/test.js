@@ -385,19 +385,23 @@ test("Preformatted text retains spacing", function() {
     var wymeditor = jQuery.wymeditors(0);
     wymeditor.html(preHtml);
 
-    var $body = $(wymeditor._doc).find('body.wym_iframe');
-    var pre_children = $body.children('pre').contents();
+    if ($.browser.mozilla) {
+        // Firefox converts the text inside pre to DOM nodes, where as other
+        // browsers just use plain text
+        var $body = $(wymeditor._doc).find('body.wym_iframe');
+        var pre_children = $body.children('pre').contents();
 
-    expect(8);
-    equals(pre_children.length, 6,
-            "Should have text, br, text, br, br, text");
-    if (pre_children.length == 6) {
-        equals(pre_children[0].nodeName.toLowerCase(), '#text');
-        equals(pre_children[1].nodeName.toLowerCase(), 'br');
-        equals(pre_children[2].nodeName.toLowerCase(), '#text');
-        equals(pre_children[3].nodeName.toLowerCase(), 'br');
-        equals(pre_children[4].nodeName.toLowerCase(), 'br');
-        equals(pre_children[5].nodeName.toLowerCase(), '#text');
+        expect(8);
+        equals(pre_children.length, 6,
+                "Should have text, br, text, br, br, text");
+        if (pre_children.length == 6) {
+            equals(pre_children[0].nodeName.toLowerCase(), '#text');
+            equals(pre_children[1].nodeName.toLowerCase(), 'br');
+            equals(pre_children[2].nodeName.toLowerCase(), '#text');
+            equals(pre_children[3].nodeName.toLowerCase(), 'br');
+            equals(pre_children[4].nodeName.toLowerCase(), 'br');
+            equals(pre_children[5].nodeName.toLowerCase(), '#text');
+        }
     }
 
     equals(wymeditor.xhtml(), preHtml);

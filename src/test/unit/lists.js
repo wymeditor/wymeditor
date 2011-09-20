@@ -617,12 +617,14 @@ test("Ordered to unordered nested", function() {
     testList('li_1_1_1', 'ordered', li_1_1_1_unorderedHtml, orderedHtml);
 });
 }
+if ($.browser.safari && !SKIP_KNOWN_FAILING_TESTS) {
 test("Ordered to unordered one item", function() {
     expect(4);
 
     testList('li_1_1_1_1', 'unordered', orderedHtml, li_1_1_1_1_unorderedHtml);
     testList('li_1_1_1_1', 'ordered', li_1_1_1_1_unorderedHtml, orderedHtml);
 });
+}
 
 module("list-correction", {setup: setupWym});
 

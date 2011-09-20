@@ -549,7 +549,6 @@ WYMeditor.editor.prototype.toggleClass = function(sClass, jqexpr) {
     WYMeditor.editor.findUp
     =======================
 
-
     Return the first parent or self container, based on its type
 
     `filter` is a string or an array of strings on which to filter the container
@@ -558,7 +557,6 @@ WYMeditor.editor.prototype.findUp = function(node, filter) {
     if (typeof(node) === 'undefined' || node === null) {
         return null;
     }
-
 
     if (node.nodeName == "#text") {
         // For text nodes, we need to look from the nodes container object
@@ -581,6 +579,11 @@ WYMeditor.editor.prototype.findUp = function(node, filter) {
             }
             if (!bFound) {
                 node = node.parentNode;
+                if (node === null) {
+                    // No parentNode, so we're not going to find anything
+                    // up the ancestry chain that matches
+                    return null;
+                }
                 tagname = node.tagName.toLowerCase();
             }
         }
