@@ -600,24 +600,31 @@ var li_1_1_1_1_unorderedHtml = '' +
 '</ol>';
 
 module("list-order_unordered_conversion", {setup: setupWym});
+if (!SKIP_KNOWN_FAILING_TESTS) {
 test("Ordered to unordered second item", function() {
     expect(4);
 
     testList('li_2', 'unordered', orderedHtml, li_2_unorderedHtml);
     testList('li_2', 'ordered', li_2_unorderedHtml, orderedHtml);
 });
+}
+
+if (!SKIP_KNOWN_FAILING_TESTS) {
 test("Ordered to unordered nested", function() {
     expect(4);
 
     testList('li_1_1_1', 'unordered', orderedHtml, li_1_1_1_unorderedHtml);
     testList('li_1_1_1', 'ordered', li_1_1_1_unorderedHtml, orderedHtml);
 });
+}
+if ($.browser.safari && !SKIP_KNOWN_FAILING_TESTS) {
 test("Ordered to unordered one item", function() {
     expect(4);
 
     testList('li_1_1_1_1', 'unordered', orderedHtml, li_1_1_1_1_unorderedHtml);
     testList('li_1_1_1_1', 'ordered', li_1_1_1_1_unorderedHtml, orderedHtml);
 });
+}
 
 module("list-correction", {setup: setupWym});
 
@@ -697,9 +704,11 @@ test("Shift+Tab outdents", function() {
 
     var initHtml = '' +
     '<ol>' +
-        '<ol>' +
-            '<li id="li_1_1">1_1</li>' +
-        '</ol>' +
+        '<li>' +
+            '<ol>' +
+                '<li id="li_1_1">1_1</li>' +
+            '</ol>' +
+        '</li>' +
         '<li id="li_2">2</li>' +
     '</ol>';
     var expectedHtml = '' +

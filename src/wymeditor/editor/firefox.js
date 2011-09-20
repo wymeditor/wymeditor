@@ -124,7 +124,7 @@ WYMeditor.WymClassMozilla.prototype.html = function(html) {
     return false;
 };
 
-WYMeditor.WymClassMozilla.prototype._exec = function(cmd,param) {
+WYMeditor.WymClassMozilla.prototype._exec = function(cmd, param) {
     if (!this.selected()) {
         return false;
     }
@@ -144,30 +144,11 @@ WYMeditor.WymClassMozilla.prototype._exec = function(cmd,param) {
     return true;
 };
 
-/**
-    @name selected
-    @description Returns the selected container
-*/
-WYMeditor.WymClassMozilla.prototype.selected = function() {
-    var sel = this._iframe.contentWindow.getSelection();
-    var node = sel.focusNode;
-    if (node) {
-        if (node.nodeName == "#text") {
-            return node.parentNode;
-        } else {
-            return node;
-        }
-    } else {
-        return null;
-    }
-};
-
 WYMeditor.WymClassMozilla.prototype.addCssRule = function(styles, oCss) {
 
     styles.insertRule(oCss.name + " {" + oCss.css + "}",
         styles.cssRules.length);
 };
-
 
 //keydown handler, mainly used for keyboard shortcuts
 WYMeditor.WymClassMozilla.prototype.keydown = function(evt) {

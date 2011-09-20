@@ -24,13 +24,13 @@
 <link rel="stylesheet" type="text/css" media="screen" href="../wymeditor/skins/default/screen.css" />
 <style>.hidden { display: none }</style>
 
-<script type="text/javascript" src="head.load.min.js"></script>
 <script type="text/javascript" src="load-src.dev.js"></script>
 
 <script type="text/javascript">
     loadWymSrc('../');
-
-    head.ready(function() {
+</script>
+<script type="text/javascript">
+    jQuery(document).ready(function() {
         jQuery('.wymeditor').wymeditor({
             html: "<p>Test.</p>",
             classesItems: [{'name': 'date', 'title': 'PARA: Date', 'expr': 'p'}]
@@ -41,8 +41,6 @@
         });
     });
 </script>
-
-
 </head>
 
 <body>

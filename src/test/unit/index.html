@@ -23,14 +23,11 @@
 <title>WYMeditor Test Suite</title>
 <link rel="stylesheet" href="qunit.css" type="text/css" media="screen" />
 
-<script type="text/javascript" src="../head.load.min.js"></script>
 <script type="text/javascript" src="../load-src.dev.js"></script>
 
 <script type="text/javascript">
-    loadWymSrc('../../');
-    head.js(
+    loadWymSrc('../../', [
         // Plugins
-        "../../wymeditor/plugins/rangy/rangy-core.js",
         "../../wymeditor/plugins/embed/jquery.wymeditor.embed.js",
         "../../wymeditor/plugins/list/jquery.wymeditor.list.js",
         "../../wymeditor/plugins/table/jquery.wymeditor.table.js",
@@ -44,7 +41,7 @@
         "blocking_elements.js",
         "table_test.js",
         "embed.js"
-    );
+    ]);
 </script>
 </head>
 

@@ -5,9 +5,10 @@
     Load all of the required WYMeditor source files in parallel using the
     head.js library. Loads relative to the given path to the src/ directory.
 */
-function loadWymSrc(srcPath) {
-    head.js(
+function loadWymSrc(srcPath, extraRequirements) {
+    var requirements = [
         srcPath + 'jquery/jquery.js',
+        srcPath + 'wymeditor/rangy/rangy-core.js',
         srcPath + 'wymeditor/core.js',
         srcPath + 'wymeditor/editor/base.js',
         srcPath + 'wymeditor/editor/ie.js',
@@ -24,6 +25,15 @@ function loadWymSrc(srcPath) {
         srcPath + 'wymeditor/parser/xhtml-sax-listener.js',
         srcPath + 'wymeditor/parser/css-lexer.js',
         srcPath + 'wymeditor/parser/css-parser.js'
-    );
+    ];
+
+    var allRequirements = requirements.concat(extraRequirements);
+    for (var i=0; i < allRequirements.length; i++) {
+        document.write(
+            '<script type="text/javascript" src="' +
+            allRequirements[i] +
+            '"><\/script>'
+        );
+    }
 }
 

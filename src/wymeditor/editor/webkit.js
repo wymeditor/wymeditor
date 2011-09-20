@@ -71,7 +71,7 @@ WYMeditor.WymClassSafari.prototype.initIframe = function(iframe) {
     this.listen();
 };
 
-WYMeditor.WymClassSafari.prototype._exec = function(cmd,param) {
+WYMeditor.WymClassSafari.prototype._exec = function(cmd, param) {
     if (!this.selected()) {
         return false;
     }
@@ -79,31 +79,6 @@ WYMeditor.WymClassSafari.prototype._exec = function(cmd,param) {
     var focusNode = this.selected();
 
     switch(cmd) {
-    case WYMeditor.INDENT: case WYMeditor.OUTDENT:
-        var sel = this._iframe.contentWindow.getSelection();
-        var anchorNode = sel.anchorNode;
-
-        if (anchorNode.nodeName == "#text") {
-            anchorNode = anchorNode.parentNode;
-        }
-
-        focusNode = this.findUp(focusNode, WYMeditor.BLOCKS);
-        anchorNode = this.findUp(anchorNode, WYMeditor.BLOCKS);
-
-        if (focusNode && focusNode == anchorNode &&
-                focusNode.tagName.toLowerCase() == WYMeditor.LI) {
-
-            var ancestor = focusNode.parentNode.parentNode;
-
-            if (focusNode.parentNode.childNodes.length > 1 ||
-                    ancestor.tagName.toLowerCase() == WYMeditor.OL ||
-                    ancestor.tagName.toLowerCase() == WYMeditor.UL) {
-
-                this._doc.execCommand(cmd, '', null);
-            }
-        }
-
-        break;
     case WYMeditor.INSERT_ORDEREDLIST: case WYMeditor.INSERT_UNORDEREDLIST:
 
         this._doc.execCommand(cmd,'',null);
@@ -133,25 +108,6 @@ WYMeditor.WymClassSafari.prototype._exec = function(cmd,param) {
     }
 
     return true;
-};
-
-/**
-    @name selected
-    @description Returns the selected container
-*/
-WYMeditor.WymClassSafari.prototype.selected = function() {
-    var sel = this._iframe.contentWindow.getSelection();
-    var node = sel.focusNode;
-
-    if (node) {
-        if (node.nodeName == "#text") {
-            return node.parentNode;
-        } else {
-            return node;
-        }
-    } else {
-        return null;
-    }
 };
 
 WYMeditor.WymClassSafari.prototype.addCssRule = function(styles, oCss) {

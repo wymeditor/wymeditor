@@ -2,6 +2,7 @@ SRC_DIR = src
 BUILD_DIR = build
 
 JS_FILES = ${SRC_DIR}/wymeditor/core.js\
+ ${SRC_DIR}/wymeditor/rangy/rangy-core.js\
  ${SRC_DIR}/wymeditor/editor/base.js\
  ${SRC_DIR}/wymeditor/editor/ie.js\
  ${SRC_DIR}/wymeditor/editor/firefox.js\
@@ -69,6 +70,7 @@ archive: pack min
 	@@mkdir ${BUILD_DIR}/build/wymeditor/
 	@@cp -pR ${SRC_DIR}/wymeditor ${BUILD_DIR}/build/wymeditor/
 	@@rm ${BUILD_DIR}/build/wymeditor/wymeditor/*.js
+	@@rm -r ${BUILD_DIR}/build/wymeditor/wymeditor/rangy/
 	@@rm -r ${BUILD_DIR}/build/wymeditor/wymeditor/editor/
 	@@rm -r ${BUILD_DIR}/build/wymeditor/wymeditor/parser/
 	@@cp ${WE} ${WE_PACK} ${WE_MIN} ${BUILD_DIR}/build/wymeditor/wymeditor/

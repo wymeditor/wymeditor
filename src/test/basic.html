@@ -20,41 +20,39 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>WYMeditor</title>
-<script type="text/javascript" src="head.load.min.js"></script>
 <script type="text/javascript" src="load-src.dev.js"></script>
 
 <script type="text/javascript">
-
-loadWymSrc('../');
-head.ready(function() {
-    jQuery('.wymeditor').wymeditor({
-        stylesheet: 'wym_stylesheet.css',
-        postInit: function(wym){
-
-            //Set the editor's content
-            wym.html("<p>This is some text with which to test.</p>");
-
-            //Set the 'Clear' button
-            jQuery('.wymclear').click( function() { wym.html(''); } );
-
-            //Set the 'Toggle' select
-            jQuery('.wymtoggle').change( function() {
-
-                if(jQuery(this).val() == 'on') {
-                    jQuery('.wym_box').show();
-                    jQuery('.wymeditor').hide();
-                } else {
-                    wym.update();
-                    jQuery('.wym_box').hide();
-                    jQuery('.wymeditor').show();
-                }
-            });
-        }
-    });
-}); // This is some text with which to test.
-
+    loadWymSrc('../');
 </script>
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        jQuery('.wymeditor').wymeditor({
+            stylesheet: 'wym_stylesheet.css',
+            postInit: function(wym){
 
+                //Set the editor's content
+                wym.html("<p>This is some text with which to test.</p>");
+
+                //Set the 'Clear' button
+                jQuery('.wymclear').click( function() { wym.html(''); } );
+
+                //Set the 'Toggle' select
+                jQuery('.wymtoggle').change( function() {
+
+                    if(jQuery(this).val() == 'on') {
+                        jQuery('.wym_box').show();
+                        jQuery('.wymeditor').hide();
+                    } else {
+                        wym.update();
+                        jQuery('.wym_box').hide();
+                        jQuery('.wymeditor').show();
+                    }
+                });
+            }
+        });
+    });
+</script>
 </head>
 
 <body>
