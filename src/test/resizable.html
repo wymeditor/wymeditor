@@ -21,18 +21,18 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>WYMeditor</title>
 
-<script type="text/javascript" src="head.load.min.js"></script>
 <script type="text/javascript" src="load-src.dev.js"></script>
 
 <link rel="stylesheet" type="text/css" href="../jquery/jquery.ui.resizable.css" />
 
 <script type="text/javascript">
-    loadWymSrc('../');
-    head.js(
-            "../jquery/jquery-ui-1.8.11.custom.min.js",
-            "../wymeditor/plugins/resizable/jquery.wymeditor.resizable.js");
-
-    jQuery(function() {
+    loadWymSrc('../', [
+        "../jquery/jquery-ui-1.8.11.custom.min.js",
+        "../wymeditor/plugins/resizable/jquery.wymeditor.resizable.js"
+    ]);
+</script>
+<script type="text/javascript">
+    jQuery(document).ready(function() {
         jQuery('.wymeditor').wymeditor({
             postInit: function(wym) {
                 wym.resizable({
@@ -42,7 +42,6 @@
         })
     });
 </script>
-
 </head>
 
 <body>

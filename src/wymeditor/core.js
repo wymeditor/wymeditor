@@ -290,9 +290,15 @@ jQuery.extend(WYMeditor, {
         if (this._options.html) {
             this._html = this._options.html;
         }
+        // Path to the WYMeditor core
+        this._options.wymPath = this._options.wymPath ||
+                WYMeditor.computeWymPath();
         // Path to the main JS files
         this._options.basePath = this._options.basePath ||
-                this.computeBasePath();
+                WYMeditor.computeBasePath(this._options.wymPath);
+        // Path to jQuery (for loading in pop-up dialogs)
+        this._options.jQueryPath = this._options.jQueryPath ||
+                WYMeditor.computeJqueryPath();
         // Path to skin files
         this._options.skinPath = this._options.skinPath ||
                 this._options.basePath + WYMeditor.SKINS_DEFAULT_PATH + this._options.skin + '/';
@@ -686,6 +692,85 @@ jQuery.extend({
         return WYMeditor.INSTANCES[i];
     }
 });
+
+/**
+    WYMeditor.computeWymPath
+    ========================
+
+    Get the relative path to the WYMeditor core js file for usage as
+    a src attribute for script inclusion.
+
+    Looks for script tags on the current page and finds the first matching
+    src attribute matching any of these values:
+    * jquery.wymeditor.pack.js
+    * jquery.wymeditor.min.js
+    * jquery.wymeditor.packed.js
+    * jquery.wymeditor.js
+    * /core.js
+*/
+WYMeditor.computeWymPath = function() {
+    return jQuery(
+        jQuery.grep(
+            jQuery('script'),
+            function(s){
+                if (!s.src) {
+                    return null;
+                }
+                return (
+                    s.src.match(
+                        /jquery\.wymeditor(\.pack|\.min|\.packed)?\.js(\?.*)?$/ ) ||
+                    s.src.match(
+                        /\/core\.js(\?.*)?$/ )
+                );
+            }
+        )
+    ).attr('src');
+};
+
+/**
+    WYMeditor.computeBasePath
+    =========================
+
+    Get the relative path to the WYMeditor directory root based on the path to
+    the wymeditor base file. This path is used as the basis for loading:
+    * Language files
+    * Skins
+    *
+*/
+WYMeditor.computeBasePath = function(wymPath) {
+    // Strip everything after the last slash to get the base path
+    var lastSlashIndex = wymPath.lastIndexOf('/');
+    return wymPath.substr(0, lastSlashIndex + 1);
+};
+
+/**
+    WYMeditor.computeJqueryPath
+    ===========================
+
+    Get the relative path to the currently-included jquery javascript file.
+
+    Returns the first script src attribute that matches one of the following
+    patterns:
+
+    * jquery.pack.js
+    * jquery.min.js
+    * jquery.packed.js
+    * Plus the jquery-<version> variants
+*/
+WYMeditor.computeJqueryPath = function() {
+    return jQuery(
+        jQuery.grep(
+            jQuery('script'),
+            function(s) {
+                return (
+                    s.src &&
+                    s.src.match(
+                        /jquery(-(.*)){0,1}(\.pack|\.min|\.packed)?\.js(\?.*)?$/)
+                );
+            }
+        )
+    ).attr('src');
+};
 
 /********** DIALOGS **********/
 
