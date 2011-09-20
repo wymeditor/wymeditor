@@ -252,24 +252,29 @@ module("Post Init", {setup: setupWym});
 test("Commands: html(), paste()", function() {
     expect(2);
     var testText1 = '<p>This is some text with which to test.<\/p>';
-    jQuery.wymeditors(0).html(testText1);
-    equals(jQuery.trim(jQuery.wymeditors(0).xhtml()), testText1);
+    var wymeditor = jQuery.wymeditors(0);
+
+    wymeditor.html(testText1);
+    htmlEquals(wymeditor, testText1);
 
     var testText2 = 'Some <strong>other text<\/strong> with which to test.';
-    jQuery.wymeditors(0)._doc.body.focus();
-    jQuery.wymeditors(0).paste(testText2);
-    equals(jQuery.trim(jQuery.wymeditors(0).xhtml()),
-    testText1 + '<p>' + testText2 + '<\/p>' );
+    wymeditor._doc.body.focus();
+    wymeditor.paste(testText2);
+
+    // The pasted content should be wrapped in a paragraph
+    htmlEquals(
+        wymeditor,
+        testText1 + '<p>' + testText2 + '<\/p>');
 });
 
 test("Adding combined CSS selectors", function () {
     expect(1);
 
-    var doc = jQuery.wymeditors(0)._doc,
+    var wymeditor = jQuery.wymeditors(0);
+    var doc = wymeditor._doc,
     styles = doc.styleSheets[0];
 
-    jQuery.wymeditors(0).addCssRule(
-            styles, {name:'p,h1,h2', css:'font-style:italic'});
+    wymeditor.addCssRule(styles, {name:'p,h1,h2', css:'font-style:italic'});
     equals(jQuery('p', doc).css('fontStyle'), 'italic', 'Font-style');
 });
 
@@ -421,5 +426,5 @@ test("Double soft returns are allowed", function() {
     wymeditor.fixBodyHtml();
 
     expect(1);
-    equals(wymeditor.xhtml(), initHtml);
+    htmlEquals(wymeditor, initHtml);
 });
