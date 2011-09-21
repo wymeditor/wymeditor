@@ -29,8 +29,6 @@ WYMeditor.WymClassMozilla = function(wym) {
 
 // Placeholder cell to allow content in TD cells for FF 3.5+
 WYMeditor.WymClassMozilla.CELL_PLACEHOLDER = '<br _moz_dirty="">';
-// Holds a top-level spot for inserting content
-WYMeditor.WymClassExplorer.PLACEHOLDER_NODE = '<br _moz_editor_bogus_node="TRUE" _moz_dirty="">';
 
 // Firefox 3.5 and 3.6 require the CELL_PLACEHOLDER and 4.0 doesn't
 WYMeditor.WymClassMozilla.NEEDS_CELL_FIX = $.browser.version >= '1.9.1' &&

@@ -267,7 +267,7 @@ WYMeditor.WymClassExplorer.prototype.spaceBlockingElements = function() {
 
     var $body = $(this._doc).find('body.wym_iframe');
     var children = $body.children();
-    var placeholderNode = '<br>';
+    var placeholderNode = WYMeditor.WymClassExplorer.PLACEHOLDER_NODE;
 
     // Make sure we have the appropriate placeholder nodes
     if (children.length > 0) {

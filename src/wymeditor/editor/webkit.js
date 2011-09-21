@@ -24,9 +24,6 @@ WYMeditor.WymClassSafari = function(wym) {
     this._newLine = "\n";
 };
 
-// Holds a top-level spot for inserting content
-WYMeditor.WymClassSafari.PLACEHOLDER_NODE = '<br>';
-
 WYMeditor.WymClassSafari.prototype.initIframe = function(iframe) {
     this._iframe = iframe;
     this._doc = iframe.contentDocument;
