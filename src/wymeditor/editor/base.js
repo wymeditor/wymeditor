@@ -1452,12 +1452,10 @@ WYMeditor.editor.prototype.listen = function () {
 };
 
 WYMeditor.editor.prototype.mousedown = function (evt) {
-    var wym = WYMeditor.INSTANCES[this.ownerDocument.title];
-
     // Store the selected image if we clicked an <img> tag
-    wym._selected_image = null;
+    this._selected_image = null;
     if (evt.target.tagName.toLowerCase() === WYMeditor.IMG) {
-        wym._selected_image = evt.target;
+        this._selected_image = evt.target;
     }
 };
 
