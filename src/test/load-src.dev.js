@@ -7,6 +7,7 @@
 */
 function loadWymSrc(srcPath, extraRequirements) {
     var requirements = [
+        //'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
         srcPath + 'jquery/jquery.js',
         srcPath + 'wymeditor/rangy/rangy-core.js',
         srcPath + 'wymeditor/core.js',
