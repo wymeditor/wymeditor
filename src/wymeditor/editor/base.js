@@ -256,12 +256,24 @@ WYMeditor.editor.prototype.html = function(html) {
     Take the current editor's DOM and apply strict xhtml nesting rules to
     enforce a valid, well-formed, semantic xhtml result.
 */
-WYMeditor.editor.prototype.xhtml = function() {
+WYMeditor.editor.prototype.xhtml = function(update) {
+    var html,
+      returned_html;
+
     // Remove any of the placeholder nodes we've created for start/end content
     // insertion
     jQuery(this._doc.body).children(WYMeditor.BR).remove();
 
-    return this.parser.parse(this.html());
+    html = this.html();
+
+    if($.isFunction(this._options.before_sanitize)) {
+      returned_html = this._options.before_sanitize.apply(this, [ update ]);
+      if (returned_html) {
+        html = returned_html;
+      }
+    }
+
+    return this.parser.parse(html));
 };
 
 /**
@@ -667,7 +679,7 @@ WYMeditor.editor.prototype.update = function() {
     // Dirty fix to remove stray line breaks (#189)
     jQuery(this._doc.body).children(WYMeditor.BR).remove();
 
-    html = this.xhtml();
+    html = this.xhtml(true);
     jQuery(this._element).val(html);
     jQuery(this._box).find(this._options.htmlValSelector).not('.hasfocus').val(html); //#147
     this.fixBodyHtml();
