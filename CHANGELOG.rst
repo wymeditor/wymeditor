@@ -63,6 +63,10 @@ Enhancements
 Bug Fixes
 ---------
 
+* A rare bug affecting ie8 users with certain combinations of CSS attributes
+  has been fixed (with a work-around). This bug would manifest as all content
+  in the editor temporarily and randomly dissappearing after a keypress, only
+  to re-appear when the user moved their mouse.
 * The editor height no longer changes height by a few pixels the first time
   someone hovers over a tool.
 * Several list indent/outdent bugs that could result in invalid HTML and broken
