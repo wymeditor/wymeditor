@@ -60,6 +60,14 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function(iframe) {
         wym.saveCaret();
     };
     $(this._doc).bind('keyup', wym.keyup);
+    // Workaround for an ie8 => ie7 compatibility mode bug triggered
+    // intermittently by certain combinations of CSS on the iframe
+    var ieVersion = parseInt($.browser.version, 10);
+    if (ieVersion >= 8 && ieVersion < 9) {
+        $(this._doc).bind('keydown', function() {
+            wym.fixBluescreenOfDeath();
+        });
+    }
     this._doc.onkeyup = function() {
         wym.saveCaret();
     };
@@ -118,6 +126,31 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function(iframe) {
         editorLoadSkin.call(this);
     };
 })(WYMeditor.editor.prototype.loadSkin);
+
+/**
+    fixBluescreenOfDeath
+    ====================
+
+    In ie8 when using ie7 compatibility mode, certain combinations of CSS on
+    the iframe will trigger a bug that causes the rendering engine to give all
+    block-level editable elements a negative left position that puts them off of
+    the screen. This results in the editor looking blank (just the blue background)
+    and requires the user to move the mouse or manipulate the DOM to force a
+    re-render, which fixes the problem.
+
+    This workaround detects the negative position and then manipulates the DOM
+    to cause a re-render, which puts the elements back in position.
+
+    A real fix would be greatly appreciated.
+*/
+WYMeditor.WymClassExplorer.prototype.fixBluescreenOfDeath = function() {
+    var position = $(this._doc).find('p').eq(0).position();
+    if (typeof(position) !== 'undefined' && position.left < 0) {
+        $(this._box).append('<br id="wym-bluescreen-bug-fix" />');
+        $(this._box).find('#wym-bluescreen-bug-fix').remove();
+    }
+};
+
 
 WYMeditor.WymClassExplorer.prototype._exec = function(cmd, param) {
     if (param) {
