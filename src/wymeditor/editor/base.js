@@ -311,7 +311,7 @@ WYMeditor.editor.prototype.exec = function(cmd) {
         break;
 
     case WYMeditor.TOGGLE_HTML:
-        jQuery(this._box).find(this._options.htmlValSelector).not('.hasfocus').val(html); //#147
+        jQuery(this._box).find(this._options.htmlValSelector).not('.hasfocus').val(this.xhtml()); //#147
         this.toggleHtml();
         break;
 
