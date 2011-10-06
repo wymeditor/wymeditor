@@ -5,10 +5,9 @@
     Load all of the required WYMeditor source files in parallel using the
     head.js library. Loads relative to the given path to the src/ directory.
 */
-function loadWymSrc(srcPath, extraRequirements) {
+function loadWymSrc(srcPath, extraRequirements, jqueryVersion) {
+
     var requirements = [
-        //'https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js',
-        srcPath + 'jquery/jquery.js',
         srcPath + 'wymeditor/rangy/rangy-core.js',
         srcPath + 'wymeditor/core.js',
         srcPath + 'wymeditor/editor/base.js',
@@ -27,6 +26,15 @@ function loadWymSrc(srcPath, extraRequirements) {
         srcPath + 'wymeditor/parser/css-lexer.js',
         srcPath + 'wymeditor/parser/css-parser.js'
     ];
+    var newJquery;
+    if (typeof(jqueryVersion) == 'undefined') {
+        newJquery = [srcPath + 'jquery/jquery.js'];
+        requirements = newJquery.concat(requirements);
+    } else {
+        newJquery = [
+            'https://ajax.googleapis.com/ajax/libs/jquery/' + jqueryVersion + '/jquery.min.js']
+        requirements = newJquery.concat(requirements);
+    }
 
     var allRequirements = requirements.concat(extraRequirements);
     for (var i=0; i < allRequirements.length; i++) {
