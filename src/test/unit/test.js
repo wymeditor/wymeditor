@@ -8,7 +8,7 @@
 // that should always be passing in all supported browsers.
 var SKIP_KNOWN_FAILING_TESTS = true;
 
-function setupWym() {
+function setupWym(extraPostInit) {
     if (WYMeditor.INSTANCES.length === 0) {
         stop(5000); // Stop test running until the editor is initialized
         jQuery('.wymeditor').wymeditor({
@@ -16,6 +16,38 @@ function setupWym() {
             postInit: function(wym) {
                 var listPlugin = new ListPlugin({}, wym);
                 var tableEditor = wym.table();
+
+                /**
+                * Determine if attempting to select a cell with a non-text inner node (a span)
+                * actually selects the inner node or selects the cell itself. FF for example,
+                * selects the cell while webkit selects the inner.
+                */
+                var initialHtml = '' +
+                    '<table>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td id="td_1_1"><span id="span_1_1">span_1_1</span></td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>';
+                var spanSelector = '#span_1_1';
+                var tdSelector = '#td_1_1';
+
+                wym.html(initialHtml);
+
+                var $body = $(wym._doc).find('body.wym_iframe');
+
+                var td = $body.find(tdSelector)[0];
+                var span = $body.find(spanSelector)[0];
+                wym.tableEditor.selectElement($body.find(tdSelector)[0]);
+
+                if (wym.selected() == span) {
+                    WYMeditor._isInnerSelector = true;
+                } else {
+                    WYMeditor._isInnerSelector = false;
+                }
+
+
                 start(); // Re-start test running now that we're finished initializing
             }
         });
@@ -249,6 +281,7 @@ test("Shouldn't strip colSpan attributes", function() {
 
 module("Post Init", {setup: setupWym});
 
+if (!$.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
 test("Commands: html(), paste()", function() {
     expect(2);
     var testText1 = '<p>This is some text with which to test.<\/p>';
@@ -262,11 +295,12 @@ test("Commands: html(), paste()", function() {
     wymeditor.paste(testText2);
 
     // The pasted content should be wrapped in a paragraph
-    htmlEquals(
-        wymeditor,
-        testText1 + '<p>' + testText2 + '<\/p>');
+    var expected = testText1 + '<p>' + testText2 + '<\/p>';
+    htmlEquals(wymeditor, expected);
 });
+}
 
+if (!$.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
 test("Adding combined CSS selectors", function () {
     expect(1);
 
@@ -277,6 +311,7 @@ test("Adding combined CSS selectors", function () {
     wymeditor.addCssRule(styles, {name:'p,h1,h2', css:'font-style:italic'});
     equals(jQuery('p', doc).css('fontStyle'), 'italic', 'Font-style');
 });
+}
 
 module("Table Insertion", {setup: setupWym});
 
