@@ -1292,8 +1292,7 @@ WYMeditor.editor.prototype.outdent = function () {
                 spacerListHtml;
             $childList.detach();
 
-            spacerListHtml = String +
-                '<' + listType + '>' +
+            spacerListHtml = '<' + listType + '>' +
                 '<li class="spacer_li"></li>' +
                 '</' + listType + '>';
             $focusNode.append(spacerListHtml);
