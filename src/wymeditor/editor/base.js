@@ -7,10 +7,29 @@
     Initialize a wymeditor instance, including detecting the
     current browser and enabling the browser-specific subclass.
 */
-WYMeditor.editor.prototype.init = function() {
+WYMeditor.editor.prototype.init = function () {
     // Load the browser-specific subclass
     // If this browser isn't supported, do nothing
-    var WymClass = false;
+    var WymClass = false,
+        SaxListener,
+        prop,
+        h,
+        iframeHtml,
+        boxHtml,
+        aTools,
+        sTools,
+        oTool,
+        sTool,
+        i,
+        aClasses,
+        sClasses,
+        oClass,
+        sClass,
+        aContainers,
+        sContainers,
+        sContainer,
+        oContainer;
+
     if (jQuery.browser.msie) {
         WymClass = new WYMeditor.WymClassExplorer(this);
     } else if (jQuery.browser.mozilla) {
@@ -29,7 +48,7 @@ WYMeditor.editor.prototype.init = function() {
         this._options.preInit(this);
     }
 
-    var SaxListener = new WYMeditor.XhtmlSaxListener();
+    SaxListener = new WYMeditor.XhtmlSaxListener();
     jQuery.extend(SaxListener, WymClass);
     this.parser = new WYMeditor.XhtmlParser(SaxListener);
 
@@ -42,22 +61,21 @@ WYMeditor.editor.prototype.init = function() {
     // Extend the editor object with the browser-specific version.
     // We're not using jQuery.extend because we *want* to copy properties via
     // the prototype chain
-    for (var prop in WymClass) {
-        if (true) {
-            // Explicitly not using hasOwnProperty for the inheritance here
-            // because we want to go up the prototype chain to get all of the
-            // browser-specific editor methods. This is kind of a code smell,
-            // but works just fine.
-            this[prop] = WymClass[prop];
-        }
+    for (prop in WymClass) {
+        /*jslint forin: true */
+        // Explicitly not using hasOwnProperty for the inheritance here
+        // because we want to go up the prototype chain to get all of the
+        // browser-specific editor methods. This is kind of a code smell,
+        // but works just fine.
+        this[prop] = WymClass[prop];
     }
 
     // Load wymbox
     this._box = jQuery(this._element).
-            hide().
-            after(this._options.boxHtml).
-            next().
-            addClass('wym_box_' + this._index);
+        hide().
+        after(this._options.boxHtml).
+        next().
+        addClass('wym_box_' + this._index);
 
     // Store the instance index and replaced element in wymbox
     // but keep it compatible with jQuery < 1.2.3, see #122
@@ -66,16 +84,19 @@ WYMeditor.editor.prototype.init = function() {
         jQuery.data(this._element.get(0), WYMeditor.WYM_INDEX, this._index);
     }
 
-    var h = WYMeditor.Helper;
+    h = WYMeditor.Helper;
 
     // Construct the iframe
-    var iframeHtml = this._options.iframeHtml;
+    iframeHtml = this._options.iframeHtml;
     iframeHtml = h.replaceAll(iframeHtml, WYMeditor.INDEX, this._index);
     iframeHtml = h.replaceAll(
-        iframeHtml, WYMeditor.IFRAME_BASE_PATH, this._options.iframeBasePath);
+        iframeHtml,
+        WYMeditor.IFRAME_BASE_PATH,
+        this._options.iframeBasePath
+    );
 
     // Construct wymbox
-    var boxHtml = jQuery(this._box).html();
+    boxHtml = jQuery(this._box).html();
 
     boxHtml = h.replaceAll(boxHtml, WYMeditor.LOGO, this._options.logoHtml);
     boxHtml = h.replaceAll(boxHtml, WYMeditor.TOOLS, this._options.toolsHtml);
@@ -86,12 +107,10 @@ WYMeditor.editor.prototype.init = function() {
     boxHtml = h.replaceAll(boxHtml, WYMeditor.STATUS, this._options.statusHtml);
 
     // Construct the tools list
-    var aTools = eval(this._options.toolsItems);
-    var sTools = "";
-    var oTool;
-    var sTool;
+    aTools = eval(this._options.toolsItems);
+    sTools = "";
 
-    for (var i = 0; i < aTools.length; i++) {
+    for (i = 0; i < aTools.length; i += 1) {
         oTool = aTools[i];
         sTool = '';
         if (oTool.name && oTool.title) {
@@ -99,9 +118,10 @@ WYMeditor.editor.prototype.init = function() {
         }
         sTool = h.replaceAll(sTool, WYMeditor.TOOL_NAME, oTool.name);
         sTool = h.replaceAll(
-                sTool,
-                WYMeditor.TOOL_TITLE,
-                this._options.stringDelimiterLeft + oTool.title + this._options.stringDelimiterRight);
+            sTool,
+            WYMeditor.TOOL_TITLE,
+            this._options.stringDelimiterLeft + oTool.title + this._options.stringDelimiterRight
+        );
         sTool = h.replaceAll(sTool, WYMeditor.TOOL_CLASS, oTool.css);
         sTools += sTool;
     }
@@ -109,12 +129,10 @@ WYMeditor.editor.prototype.init = function() {
     boxHtml = h.replaceAll(boxHtml, WYMeditor.TOOLS_ITEMS, sTools);
 
     // Construct the classes list
-    var aClasses = eval(this._options.classesItems);
-    var sClasses = "";
-    var oClass;
-    var sClass;
+    aClasses = eval(this._options.classesItems);
+    sClasses = "";
 
-    for (i = 0; i < aClasses.length; i++) {
+    for (i = 0; i < aClasses.length; i += 1) {
         oClass = aClasses[i];
         sClass = '';
         if (oClass.name && oClass.title) {
@@ -128,24 +146,29 @@ WYMeditor.editor.prototype.init = function() {
     boxHtml = h.replaceAll(boxHtml, WYMeditor.CLASSES_ITEMS, sClasses);
 
     // Construct the containers list
-    var aContainers = eval(this._options.containersItems);
-    var sContainers = "";
-    var sContainer;
+    aContainers = eval(this._options.containersItems);
+    sContainers = "";
 
-    for (i = 0; i < aContainers.length; i++) {
-        var oContainer = aContainers[i];
+    for (i = 0; i < aContainers.length; i += 1) {
+        oContainer = aContainers[i];
         sContainer = '';
         if (oContainer.name && oContainer.title) {
             sContainer = this._options.containersItemHtml;
         }
         sContainer = h.replaceAll(
-            sContainer, WYMeditor.CONTAINER_NAME, oContainer.name);
+            sContainer,
+            WYMeditor.CONTAINER_NAME,
+            oContainer.name
+        );
         sContainer = h.replaceAll(sContainer, WYMeditor.CONTAINER_TITLE,
             this._options.stringDelimiterLeft +
             oContainer.title +
             this._options.stringDelimiterRight);
         sContainer = h.replaceAll(
-            sContainer, WYMeditor.CONTAINER_CLASS, oContainer.css);
+            sContainer,
+            WYMeditor.CONTAINER_CLASS,
+            oContainer.css
+        );
         sContainers += sContainer;
     }
 
@@ -170,44 +193,46 @@ WYMeditor.editor.prototype.init = function() {
     Bind all event handlers including tool/container clicks, focus events
     and change events.
 */
-WYMeditor.editor.prototype.bindEvents = function() {
-    var wym = this;
+WYMeditor.editor.prototype.bindEvents = function () {
+    var wym = this,
+        $html_val;
 
     // Handle click events on tools buttons
-    jQuery(this._box).find(this._options.toolSelector).click(function() {
+    jQuery(this._box).find(this._options.toolSelector).click(function () {
         wym._iframe.contentWindow.focus(); //See #154
         wym.exec(jQuery(this).attr(WYMeditor.NAME));
         return false;
     });
 
     // Handle click events on containers buttons
-    jQuery(this._box).find(this._options.containerSelector).click(function() {
+    jQuery(this._box).find(this._options.containerSelector).click(function () {
         wym.container(jQuery(this).attr(WYMeditor.NAME));
         return false;
     });
 
     // Handle keyup event on html value: set the editor value
     // Handle focus/blur events to check if the element has focus, see #147
-    var $html_val = jQuery(this._box).find(this._options.htmlValSelector);
-    $html_val.keyup(function() {
+    $html_val = jQuery(this._box).find(this._options.htmlValSelector);
+    $html_val.keyup(function () {
         jQuery(wym._doc.body).html(jQuery(this).val());
     });
-    $html_val.focus(function() {
+    $html_val.focus(function () {
         jQuery(this).toggleClass('hasfocus');
     });
-    $html_val.blur(function() {
+    $html_val.blur(function () {
         jQuery(this).toggleClass('hasfocus');
     });
 
     // Handle click events on classes buttons
-    jQuery(this._box).find(this._options.classSelector).click(function() {
-        var aClasses = eval(wym._options.classesItems);
-        var sName = jQuery(this).attr(WYMeditor.NAME);
+    jQuery(this._box).find(this._options.classSelector).click(function () {
+        var aClasses = eval(wym._options.classesItems),
+            sName = jQuery(this).attr(WYMeditor.NAME),
 
-        var oClass = WYMeditor.Helper.findByName(aClasses, sName);
+            oClass = WYMeditor.Helper.findByName(aClasses, sName),
+            jqexpr;
 
         if (oClass) {
-            var jqexpr = oClass.expr;
+            jqexpr = oClass.expr;
             wym.toggleClass(sName, jqexpr);
         }
         wym._iframe.contentWindow.focus(); //See #154
@@ -215,12 +240,12 @@ WYMeditor.editor.prototype.bindEvents = function() {
     });
 
     // Handle update event on update element
-    jQuery(this._options.updateSelector).bind(this._options.updateEvent, function() {
+    jQuery(this._options.updateSelector).bind(this._options.updateEvent, function () {
         wym.update();
     });
 };
 
-WYMeditor.editor.prototype.ready = function() {
+WYMeditor.editor.prototype.ready = function () {
     return this._doc !== null;
 };
 
@@ -230,7 +255,7 @@ WYMeditor.editor.prototype.ready = function() {
 
     Get the wymbox container.
 */
-WYMeditor.editor.prototype.box = function() {
+WYMeditor.editor.prototype.box = function () {
     return this._box;
 };
 
@@ -240,7 +265,7 @@ WYMeditor.editor.prototype.box = function() {
 
     Get or set the wymbox html value.
 */
-WYMeditor.editor.prototype.html = function(html) {
+WYMeditor.editor.prototype.html = function (html) {
     if (typeof html === 'string') {
         jQuery(this._doc.body).html(html);
         this.update();
@@ -256,7 +281,9 @@ WYMeditor.editor.prototype.html = function(html) {
     Take the current editor's DOM and apply strict xhtml nesting rules to
     enforce a valid, well-formed, semantic xhtml result.
 */
-WYMeditor.editor.prototype.xhtml = function() {
+WYMeditor.editor.prototype.xhtml = function () {
+    var html;
+
     // Remove any of the placeholder nodes we've created for start/end content
     // insertion
     jQuery(this._doc.body).children(WYMeditor.BR).remove();
@@ -276,11 +303,12 @@ WYMeditor.editor.prototype.xhtml = function() {
     matching the designMode execCommand strategy (and falling through to
     execCommand in some cases).
 */
-WYMeditor.editor.prototype.exec = function(cmd) {
-    switch(cmd) {
+WYMeditor.editor.prototype.exec = function (cmd) {
+    var container, custom_run, _this = this;
+    switch (cmd) {
 
     case WYMeditor.CREATE_LINK:
-        var container = this.container();
+        container = this.container();
         if (container || this._selected_image) {
             this.dialog(WYMeditor.DIALOG_LINK);
         }
@@ -317,10 +345,9 @@ WYMeditor.editor.prototype.exec = function(cmd) {
 
 
     default:
-        var custom_run = false;
-        var _this = this;
-        jQuery.each(this._options.customCommands, function() {
-            if (cmd == this.name) {
+        custom_run = false;
+        jQuery.each(this._options.customCommands, function () {
+            if (cmd === this.name) {
                 custom_run = true;
                 this.run.apply(_this);
                 return false;
@@ -339,13 +366,13 @@ WYMeditor.editor.prototype.exec = function(cmd) {
 
     Override the default selection function to use rangy.
 */
-WYMeditor.editor.prototype.selection = function() {
+WYMeditor.editor.prototype.selection = function () {
     if (window.rangy && !rangy.initialized) {
         rangy.init();
     }
 
-    var iframe = this._iframe;
-    var sel = rangy.getIframeSelection(iframe);
+    var iframe = this._iframe,
+        sel = rangy.getIframeSelection(iframe);
 
     return sel;
 };
@@ -356,12 +383,12 @@ WYMeditor.editor.prototype.selection = function() {
 
     Return the selected node.
 */
-WYMeditor.editor.prototype.selected = function() {
-    var sel = this.selection();
-    var node = sel.focusNode;
+WYMeditor.editor.prototype.selected = function () {
+    var sel = this.selection(),
+        node = sel.focusNode;
 
     if (node) {
-        if (node.nodeName == "#text") {
+        if (node.nodeName === "#text") {
             return node.parentNode;
         } else {
             return node;
@@ -377,11 +404,11 @@ WYMeditor.editor.prototype.selected = function() {
 
     Return true if all selections are collapsed, false otherwise.
 */
-WYMeditor.editor.prototype.selection_collapsed = function() {
-    var sel = this.selection();
-    var collapsed = false;
+WYMeditor.editor.prototype.selection_collapsed = function () {
+    var sel = this.selection(),
+        collapsed = false;
 
-    $.each(sel.getAllRanges(), function() {
+    $.each(sel.getAllRanges(), function () {
         if (this.collapsed) {
             collapsed = true;
             //break
@@ -399,12 +426,12 @@ WYMeditor.editor.prototype.selection_collapsed = function() {
     Return an array of nodes that match a jQuery selector
     within the current selection.
 */
-WYMeditor.editor.prototype.selected_contains = function(selector) {
-    var sel = this.selection();
-    var matches = [];
+WYMeditor.editor.prototype.selected_contains = function (selector) {
+    var sel = this.selection(),
+        matches = [];
 
-    $.each(sel.getAllRanges(), function() {
-        $.each(this.getNodes(), function() {
+    $.each(sel.getAllRanges(), function () {
+        $.each(this.getNodes(), function () {
             if ($(this).is(selector)) {
                 matches.push(this);
             }
@@ -421,9 +448,9 @@ WYMeditor.editor.prototype.selected_contains = function(selector) {
     Return an array of nodes that match the selector within
     the selection's parents.
 */
-WYMeditor.editor.prototype.selected_parents_contains = function(selector) {
-    var $matches = $([]);
-    var $selected = $(this.selected());
+WYMeditor.editor.prototype.selected_parents_contains = function (selector) {
+    var $matches = $([]),
+        $selected = $(this.selected());
     if ($selected.is(selector)) {
         $matches = $matches.add($selected);
     }
@@ -437,21 +464,28 @@ WYMeditor.editor.prototype.selected_parents_contains = function(selector) {
 
     Get or set the selected container.
 */
-WYMeditor.editor.prototype.container = function(sType) {
-    if (typeof(sType) === 'undefined') {
+WYMeditor.editor.prototype.container = function (sType) {
+    if (typeof (sType) === 'undefined') {
         return this.selected();
     }
 
-    var container = null;
-    var aTypes = null;
+    var container = null,
+        aTypes = null,
+        newNode = null,
+        blockquote,
+        nodes,
+        lgt,
+        firstNode = null,
+        x;
 
-    if (sType.toLowerCase() == WYMeditor.TH) {
+    if (sType.toLowerCase() === WYMeditor.TH) {
         container = this.container();
 
         // Find the TD or TH container
-        switch(container.tagName.toLowerCase()) {
+        switch (container.tagName.toLowerCase()) {
 
-        case WYMeditor.TD: case WYMeditor.TH:
+        case WYMeditor.TD:
+        case WYMeditor.TH:
             break;
         default:
             aTypes = [WYMeditor.TD, WYMeditor.TH];
@@ -462,7 +496,7 @@ WYMeditor.editor.prototype.container = function(sType) {
         // If it exists, switch
         if (container !== null) {
             sType = WYMeditor.TD;
-            if (container.tagName.toLowerCase() == WYMeditor.TD) {
+            if (container.tagName.toLowerCase() === WYMeditor.TD) {
                 sType = WYMeditor.TH;
             }
             this.switchTo(container, sType);
@@ -484,28 +518,29 @@ WYMeditor.editor.prototype.container = function(sType) {
         container = this.findUp(this.container(), aTypes);
 
         if (container) {
-            var newNode = null;
-
-            if (sType.toLowerCase() == WYMeditor.BLOCKQUOTE) {
+            if (sType.toLowerCase() === WYMeditor.BLOCKQUOTE) {
                 // Blockquotes must contain a block level element
-                var blockquote = this.findUp(
-                    this.container(), WYMeditor.BLOCKQUOTE);
+                blockquote = this.findUp(
+                    this.container(),
+                    WYMeditor.BLOCKQUOTE
+                );
                 if (blockquote === null) {
                     newNode = this._doc.createElement(sType);
-                    container.parentNode.insertBefore(newNode,container);
+                    container.parentNode.insertBefore(newNode, container);
                     newNode.appendChild(container);
                     this.setFocusToNode(newNode.firstChild);
                 } else {
-                    var nodes = blockquote.childNodes;
-                    var lgt = nodes.length;
-                    var firstNode = null;
+                    nodes = blockquote.childNodes;
+                    lgt = nodes.length;
 
                     if (lgt > 0) {
                         firstNode = nodes.item(0);
                     }
-                    for (var x=0; x<lgt; x++) {
+                    for (x = 0; x < lgt; x += 1) {
                         blockquote.parentNode.insertBefore(
-                            nodes.item(0), blockquote);
+                            nodes.item(0),
+                            blockquote
+                        );
                     }
                     blockquote.parentNode.removeChild(blockquote);
                     if (firstNode) {
@@ -530,7 +565,7 @@ WYMeditor.editor.prototype.container = function(sType) {
 
     Toggle a class on the selected element or one of its parents
 */
-WYMeditor.editor.prototype.toggleClass = function(sClass, jqexpr) {
+WYMeditor.editor.prototype.toggleClass = function (sClass, jqexpr) {
     var container = null;
     if (this._selected_image) {
         container = this._selected_image;
@@ -553,26 +588,28 @@ WYMeditor.editor.prototype.toggleClass = function(sClass, jqexpr) {
 
     `filter` is a string or an array of strings on which to filter the container
 */
-WYMeditor.editor.prototype.findUp = function(node, filter) {
-    if (typeof(node) === 'undefined' || node === null) {
+WYMeditor.editor.prototype.findUp = function (node, filter) {
+    if (typeof (node) === 'undefined' || node === null) {
         return null;
     }
 
-    if (node.nodeName == "#text") {
+    if (node.nodeName === "#text") {
         // For text nodes, we need to look from the nodes container object
         node = node.parentNode;
     }
-    var tagname = node.tagName.toLowerCase();
-    if (typeof(filter) == WYMeditor.STRING) {
-        while (tagname != filter && tagname != WYMeditor.BODY) {
+    var tagname = node.tagName.toLowerCase(),
+        bFound,
+        i;
+    if (typeof (filter) === WYMeditor.STRING) {
+        while (tagname !== filter && tagname !== WYMeditor.BODY) {
             node = node.parentNode;
             tagname = node.tagName.toLowerCase();
         }
     } else {
-        var bFound = false;
-        while (!bFound && tagname != WYMeditor.BODY) {
-            for (var i = 0; i < filter.length; i++) {
-                if (tagname == filter[i]) {
+        bFound = false;
+        while (!bFound && tagname !== WYMeditor.BODY) {
+            for (i = 0; i < filter.length; i += 1) {
+                if (tagname === filter[i]) {
                     bFound = true;
                     break;
                 }
@@ -589,7 +626,7 @@ WYMeditor.editor.prototype.findUp = function(node, filter) {
         }
     }
 
-    if (tagname == WYMeditor.BODY) {
+    if (tagname === WYMeditor.BODY) {
         return null;
     }
 
@@ -602,9 +639,9 @@ WYMeditor.editor.prototype.findUp = function(node, filter) {
 
     Switch the type of the given `node` to type `sType`
 */
-WYMeditor.editor.prototype.switchTo = function(node, sType) {
-    var newNode = this._doc.createElement(sType);
-    var html = jQuery(node).html();
+WYMeditor.editor.prototype.switchTo = function (node, sType) {
+    var newNode = this._doc.createElement(sType),
+        html = jQuery(node).html();
 
     node.parentNode.replaceChild(newNode, node);
     jQuery(newNode).html(html);
@@ -612,33 +649,36 @@ WYMeditor.editor.prototype.switchTo = function(node, sType) {
     this.setFocusToNode(newNode);
 };
 
-WYMeditor.editor.prototype.replaceStrings = function(sVal) {
+WYMeditor.editor.prototype.replaceStrings = function (sVal) {
+    var key;
     // Check if the language file has already been loaded
     // if not, get it via a synchronous ajax call
     if (!WYMeditor.STRINGS[this._options.lang]) {
         try {
-            eval(jQuery.ajax({url:this._options.langPath +
-                this._options.lang + '.js', async:false}).responseText);
-        } catch(e) {
+            eval(jQuery.ajax({url: this._options.langPath +
+                this._options.lang + '.js', async: false}).responseText);
+        } catch (e) {
             WYMeditor.console.error(
-                "WYMeditor: error while parsing language file.");
+                "WYMeditor: error while parsing language file."
+            );
             return sVal;
         }
     }
 
     // Replace all the strings in sVal and return it
-    for (var key in WYMeditor.STRINGS[this._options.lang]) {
+    for (key in WYMeditor.STRINGS[this._options.lang]) {
         if (WYMeditor.STRINGS[this._options.lang].hasOwnProperty(key)) {
             sVal = WYMeditor.Helper.replaceAll(
                 sVal,
                 this._options.stringDelimiterLeft + key + this._options.stringDelimiterRight,
-                WYMeditor.STRINGS[this._options.lang][key]);
+                WYMeditor.STRINGS[this._options.lang][key]
+            );
         }
     }
     return sVal;
 };
 
-WYMeditor.editor.prototype.encloseString = function(sVal) {
+WYMeditor.editor.prototype.encloseString = function (sVal) {
     return this._options.stringDelimiterLeft +
         sVal +
         this._options.stringDelimiterRight;
@@ -650,7 +690,7 @@ WYMeditor.editor.prototype.encloseString = function(sVal) {
 
     Print the given string as a status message.
 */
-WYMeditor.editor.prototype.status = function(sMessage) {
+WYMeditor.editor.prototype.status = function (sMessage) {
     // Print status message
     jQuery(this._box).find(this._options.statusSelector).html(sMessage);
 };
@@ -661,7 +701,7 @@ WYMeditor.editor.prototype.status = function(sMessage) {
 
     Update the element and textarea values.
 */
-WYMeditor.editor.prototype.update = function() {
+WYMeditor.editor.prototype.update = function () {
     var html;
 
     // Dirty fix to remove stray line breaks (#189)
@@ -681,7 +721,7 @@ WYMeditor.editor.prototype.update = function() {
     perfect HTML is not optimal. For instance, <br> elements are useful between
     certain block elements.
 */
-WYMeditor.editor.prototype.fixBodyHtml = function() {
+WYMeditor.editor.prototype.fixBodyHtml = function () {
     this.fixDoubleBr();
     this.spaceBlockingElements();
 };
@@ -694,27 +734,31 @@ WYMeditor.editor.prototype.fixBodyHtml = function() {
     p elements, between block elements or blocking elements and the
     start/end of the document.
 */
-WYMeditor.editor.prototype.spaceBlockingElements = function() {
-    var blockingSelector = WYMeditor.BLOCKING_ELEMENTS.join(', ');
+WYMeditor.editor.prototype.spaceBlockingElements = function () {
+    var blockingSelector = WYMeditor.BLOCKING_ELEMENTS.join(', '),
 
-    var $body = $(this._doc).find('body.wym_iframe');
-    var children = $body.children();
-    var placeholderNode = '<br _moz_editor_bogus_node="TRUE" _moz_dirty="">';
+        $body = $(this._doc).find('body.wym_iframe'),
+        children = $body.children(),
+        placeholderNode = '<br _moz_editor_bogus_node="TRUE" _moz_dirty="">',
+        $firstChild,
+        $lastChild,
+        blockSepSelector;
 
     // Make sure that we still have a bogus node at both the begining and end
     if (children.length > 0) {
-        var $firstChild = $(children[0]);
-        var $lastChild = $(children[children.length - 1]);
+        $firstChild = $(children[0]);
+        $lastChild = $(children[children.length - 1]);
 
-    if ($firstChild.is(blockingSelector)) {
-        $firstChild.before(placeholderNode);
-    }
-    if ($lastChild.is(blockingSelector)) {
-        $lastChild.after(placeholderNode);
-    }
-}
+        if ($firstChild.is(blockingSelector)) {
+            $firstChild.before(placeholderNode);
+        }
 
-    var blockSepSelector = this._getBlockSepSelector();
+        if ($lastChild.is(blockingSelector)) {
+            $lastChild.after(placeholderNode);
+        }
+    }
+
+    blockSepSelector = this._getBlockSepSelector();
 
     // Put placeholder nodes between consecutive blocking elements and between
     // blocking elements and normal block-level elements
@@ -730,8 +774,8 @@ WYMeditor.editor.prototype.spaceBlockingElements = function() {
     blocking elements and between blocking elements and normal non-blocking
     elements.
 */
-WYMeditor.editor.prototype._getBlockSepSelector = function() {
-    if (typeof(this._blockSpacersSel) !== 'undefined') {
+WYMeditor.editor.prototype._getBlockSepSelector = function () {
+    if (typeof (this._blockSpacersSel) !== 'undefined') {
         return this._blockSpacersSel;
     }
 
@@ -762,8 +806,9 @@ WYMeditor.editor.prototype._getBlockSepSelector = function() {
     Remove the <br><br> elements that are inserted between
     paragraphs, usually after hitting enter from an existing paragraph.
 */
-WYMeditor.editor.prototype.fixDoubleBr = function() {
-    var $body = $(this._doc).find('body.wym_iframe');
+WYMeditor.editor.prototype.fixDoubleBr = function () {
+    var $body = $(this._doc).find('body.wym_iframe'),
+        $last_br;
     // Strip consecutive brs unless they're in a a pre tag
     $body.children('br + br').filter(':not(pre br)').remove();
 
@@ -771,7 +816,7 @@ WYMeditor.editor.prototype.fixDoubleBr = function() {
     $body.find('p + br').next('p').prev('br').remove();
 
     // Remove brs floating at the end after a p
-    var $last_br = $body.find('p + br').slice(-1);
+    $last_br = $body.find('p + br').slice(-1);
     if ($last_br.length > 0) {
         if ($last_br.next().length === 0) {
             $last_br.remove();
@@ -785,28 +830,32 @@ WYMeditor.editor.prototype.fixDoubleBr = function() {
 
     Open a dialog box
 */
-WYMeditor.editor.prototype.dialog = function(dialogType, dialogFeatures, bodyHtml) {
-    var features = dialogFeatures || this._wym._options.dialogFeatures;
-    var wDialog = window.open('', 'dialog', features);
+WYMeditor.editor.prototype.dialog = function (dialogType, dialogFeatures, bodyHtml) {
+    var features = dialogFeatures || this._wym._options.dialogFeatures,
+        wDialog = window.open('', 'dialog', features),
+        sBodyHtml,
+        h = WYMeditor.Helper,
+        dialogHtml,
+        doc;
 
     if (wDialog) {
-        var sBodyHtml = "";
+        sBodyHtml = "";
 
-        switch(dialogType) {
+        switch (dialogType) {
 
-        case(WYMeditor.DIALOG_LINK):
+        case (WYMeditor.DIALOG_LINK):
             sBodyHtml = this._options.dialogLinkHtml;
             break;
-        case(WYMeditor.DIALOG_IMAGE):
+        case (WYMeditor.DIALOG_IMAGE):
             sBodyHtml = this._options.dialogImageHtml;
             break;
-        case(WYMeditor.DIALOG_TABLE):
+        case (WYMeditor.DIALOG_TABLE):
             sBodyHtml = this._options.dialogTableHtml;
             break;
-        case(WYMeditor.DIALOG_PASTE):
+        case (WYMeditor.DIALOG_PASTE):
             sBodyHtml = this._options.dialogPasteHtml;
             break;
-        case(WYMeditor.PREVIEW):
+        case (WYMeditor.PREVIEW):
             sBodyHtml = this._options.dialogPreviewHtml;
             break;
         default:
@@ -814,46 +863,52 @@ WYMeditor.editor.prototype.dialog = function(dialogType, dialogFeatures, bodyHtm
             break;
         }
 
-        var h = WYMeditor.Helper;
-
         // Construct the dialog
-        var dialogHtml = this._options.dialogHtml;
+        dialogHtml = this._options.dialogHtml;
         dialogHtml = h.replaceAll(
             dialogHtml,
             WYMeditor.BASE_PATH,
-            this._options.basePath);
+            this._options.basePath
+        );
         dialogHtml = h.replaceAll(
             dialogHtml,
             WYMeditor.DIRECTION,
-            this._options.direction);
+            this._options.direction
+        );
         dialogHtml = h.replaceAll(
             dialogHtml,
             WYMeditor.CSS_PATH,
-            this._options.skinPath + WYMeditor.SKINS_DEFAULT_CSS);
+            this._options.skinPath + WYMeditor.SKINS_DEFAULT_CSS
+        );
         dialogHtml = h.replaceAll(
             dialogHtml,
             WYMeditor.WYM_PATH,
-            this._options.wymPath);
+            this._options.wymPath
+        );
         dialogHtml = h.replaceAll(
             dialogHtml,
             WYMeditor.JQUERY_PATH,
-            this._options.jQueryPath);
+            this._options.jQueryPath
+        );
         dialogHtml = h.replaceAll(
             dialogHtml,
             WYMeditor.DIALOG_TITLE,
-            this.encloseString(dialogType));
+            this.encloseString(dialogType)
+        );
         dialogHtml = h.replaceAll(
             dialogHtml,
             WYMeditor.DIALOG_BODY,
-            sBodyHtml);
+            sBodyHtml
+        );
         dialogHtml = h.replaceAll(
             dialogHtml,
             WYMeditor.INDEX,
-            this._index);
+            this._index
+        );
 
         dialogHtml = this.replaceStrings(dialogHtml);
 
-        var doc = wDialog.document;
+        doc = wDialog.document;
         doc.write(dialogHtml);
         doc.close();
     }
@@ -865,11 +920,11 @@ WYMeditor.editor.prototype.dialog = function(dialogType, dialogFeatures, bodyHtm
 
     Show/Hide the HTML textarea.
 */
-WYMeditor.editor.prototype.toggleHtml = function() {
+WYMeditor.editor.prototype.toggleHtml = function () {
     jQuery(this._box).find(this._options.htmlSelector).toggle();
 };
 
-WYMeditor.editor.prototype.uniqueStamp = function() {
+WYMeditor.editor.prototype.uniqueStamp = function () {
     var now = new Date();
     return "wym-" + now.getTime();
 };
@@ -883,24 +938,26 @@ WYMeditor.editor.prototype.uniqueStamp = function() {
     Takes the string to insert as an argument. Two or more newlines separates
     paragraphs. May contain inline HTML.
 */
-WYMeditor.editor.prototype.paste = function(str) {
+WYMeditor.editor.prototype.paste = function (str) {
     var container = this.selected(),
         html = '',
         paragraphs,
-        focusNode;
+        focusNode,
+        i,
+        l;
 
     // Split string into paragraphs by two or more newlines
     paragraphs = str.split(new RegExp(this._newLine + '{2,}', 'g'));
 
     // Build html
-    for (var i=0, l=paragraphs.length; i < l; i++) {
+    for (i = 0, l = paragraphs.length; i < l; i += 1) {
         html += '<p>' +
-            ( paragraphs[i].split(this._newLine).join('<br />') ) +
+            (paragraphs[i].split(this._newLine).join('<br />')) +
             '</p>';
     }
 
     // Insert where appropriate
-    if (container && container.tagName.toLowerCase() != WYMeditor.BODY) {
+    if (container && container.tagName.toLowerCase() !== WYMeditor.BODY) {
         // No .last() pre jQuery 1.4
         //focusNode = jQuery(html).insertAfter(container).last()[0];
         paragraphs = jQuery(html, this._doc).insertAfter(container);
@@ -922,11 +979,11 @@ WYMeditor.editor.prototype.paste = function(str) {
     this.setFocusToNode(focusNode);
 };
 
-WYMeditor.editor.prototype.insert = function(html) {
+WYMeditor.editor.prototype.insert = function (html) {
     // Do we have a selection?
-    var selection = this._iframe.contentWindow.getSelection();
-    var range;
-    var node;
+    var selection = this._iframe.contentWindow.getSelection(),
+        range,
+        node;
     if (selection.focusNode !== null) {
         // Overwrite selection with provided html
         range = selection.getRangeAt(0);
@@ -939,18 +996,19 @@ WYMeditor.editor.prototype.insert = function(html) {
     }
 };
 
-WYMeditor.editor.prototype.wrap = function(left, right) {
+WYMeditor.editor.prototype.wrap = function (left, right) {
     this.insert(
-        left + this._iframe.contentWindow.getSelection().toString() + right);
+        left + this._iframe.contentWindow.getSelection().toString() + right
+    );
 };
 
-WYMeditor.editor.prototype.unwrap = function() {
+WYMeditor.editor.prototype.unwrap = function () {
     this.insert(this._iframe.contentWindow.getSelection().toString());
 };
 
-WYMeditor.editor.prototype.setFocusToNode = function(node, toStart) {
-    var range = this._doc.createRange();
-    var selection = this._iframe.contentWindow.getSelection();
+WYMeditor.editor.prototype.setFocusToNode = function (node, toStart) {
+    var range = this._doc.createRange(),
+        selection = this._iframe.contentWindow.getSelection();
     toStart = toStart ? 0 : 1;
 
     range.selectNodeContents(node);
@@ -959,11 +1017,13 @@ WYMeditor.editor.prototype.setFocusToNode = function(node, toStart) {
     this._iframe.contentWindow.focus();
 };
 
-WYMeditor.editor.prototype.addCssRules = function(doc, aCss) {
-    var styles = doc.styleSheets[0];
+WYMeditor.editor.prototype.addCssRules = function (doc, aCss) {
+    var styles = doc.styleSheets[0],
+        i,
+        oCss;
     if (styles) {
-        for (var i = 0; i < aCss.length; i++) {
-            var oCss = aCss[i];
+        for (i = 0; i < aCss.length; i += 1) {
+            oCss = aCss[i];
             if (oCss.name && oCss.css) {
                 this.addCssRule(styles, oCss);
             }
@@ -971,20 +1031,19 @@ WYMeditor.editor.prototype.addCssRules = function(doc, aCss) {
     }
 };
 
-WYMeditor.editor.prototype._canIndent = function(
-        focusNode, anchorNode) {
+WYMeditor.editor.prototype._canIndent = function (focusNode, anchorNode) {
     // Ensure that we're indenting exactly one list item
 
-    if (focusNode && focusNode == anchorNode &&
-            focusNode.tagName.toLowerCase() == WYMeditor.LI) {
+    if (focusNode && focusNode === anchorNode &&
+            focusNode.tagName.toLowerCase() === WYMeditor.LI) {
         // This is a single li tag
 
         var ancestor = focusNode.parentNode.parentNode;
 
         if (focusNode.parentNode.childNodes.length > 1 ||
-            ancestor.tagName.toLowerCase() == WYMeditor.OL ||
-            ancestor.tagName.toLowerCase() == WYMeditor.UL ||
-            ancestor.tagName.toLowerCase() == WYMeditor.LI) {
+                ancestor.tagName.toLowerCase() === WYMeditor.OL ||
+                ancestor.tagName.toLowerCase() === WYMeditor.UL ||
+                ancestor.tagName.toLowerCase() === WYMeditor.LI) {
 
             return true;
         }
@@ -993,20 +1052,20 @@ WYMeditor.editor.prototype._canIndent = function(
     return false;
 };
 
-WYMeditor.editor.prototype._canOutdent = function(focusNode, anchorNode) {
+WYMeditor.editor.prototype._canOutdent = function (focusNode, anchorNode) {
     // Ensure that we're indenting exactly one list item and it's already
     // indented at least one level
 
-    if (focusNode && focusNode == anchorNode &&
-            focusNode.tagName.toLowerCase() == WYMeditor.LI) {
+    if (focusNode && focusNode === anchorNode &&
+            focusNode.tagName.toLowerCase() === WYMeditor.LI) {
         // This is a single li tag
 
         var ancestor = focusNode.parentNode.parentNode;
 
         if (focusNode.parentNode.childNodes.length > 1 ||
-                ancestor.tagName.toLowerCase() == WYMeditor.OL ||
-                ancestor.tagName.toLowerCase() == WYMeditor.UL ||
-                ancestor.tagName.toLowerCase() == WYMeditor.LI) {
+                ancestor.tagName.toLowerCase() === WYMeditor.OL ||
+                ancestor.tagName.toLowerCase() === WYMeditor.UL ||
+                ancestor.tagName.toLowerCase() === WYMeditor.LI) {
 
             // This is a nested list. Now ensure that's already indented
             // at least one level
@@ -1026,16 +1085,42 @@ WYMeditor.editor.prototype._canOutdent = function(focusNode, anchorNode) {
     Indent a list item via the dom, ensuring that the selected node moves in
     exactly one level and all other nodes stay at the same level.
  */
-WYMeditor.editor.prototype.indent = function() {
-    var focusNode = this.selected();
-    var sel = rangy.getIframeSelection(this._iframe);
-    var startContainer = sel.getRangeAt(0).startContainer;
-    var startOffset = sel.getRangeAt(0).startOffset;
-    var anchorNode = sel.anchorNode;
+WYMeditor.editor.prototype.indent = function () {
+    var focusNode = this.selected(),
+        sel = rangy.getIframeSelection(this._iframe),
+        startContainer = sel.getRangeAt(0).startContainer,
+        startOffset = sel.getRangeAt(0).startOffset,
+        anchorNode = sel.anchorNode,
 
-    var $spacerList;
-    var $prevList;
-    var $listContents;
+        $spacerList,
+        $prevList,
+        $listContents,
+
+        $focusNode,
+        listType,
+        itemContents,
+        spacerHtml,
+
+        $prevLi,
+        $prevSubList,
+        $children,
+
+        $sublistContents,
+
+        containerHtml,
+
+        $contents,
+
+        $maybeListSpacer,
+        $maybePreviousSublist,
+
+        $nextSublist,
+
+        $spacer,
+        $spacerContents,
+
+        iframeWin,
+        range;
 
     focusNode = this.findUp(focusNode, WYMeditor.BLOCKS);
     anchorNode = this.findUp(anchorNode, WYMeditor.BLOCKS);
@@ -1044,18 +1129,18 @@ WYMeditor.editor.prototype.indent = function() {
         return;
     }
 
-    var $focusNode = $(focusNode);
-    var listType = $focusNode.parent()[0].tagName.toLowerCase();
+    $focusNode = $(focusNode);
+    listType = $focusNode.parent()[0].tagName.toLowerCase();
 
     // Extract any non-list children so they can be inserted
     // back in the list item after it is moved
-    var itemContents = $focusNode.contents().not('ol,ul');
+    itemContents = $focusNode.contents().not('ol,ul');
 
     if ($focusNode.prev().length === 0 && $focusNode.parent().not('ul,ol,li')) {
         // First item at the root level of a list
         // Going to need a spacer list item
-        var spacerHtml = '<li class="spacer_li">' +
-                '<' + listType + '></' + listType + '>' +
+        spacerHtml = '<li class="spacer_li">' +
+            '<' + listType + '></' + listType + '>' +
             '</li>';
         $focusNode.before(spacerHtml);
         $spacerList = $focusNode.prev().find(listType);
@@ -1077,7 +1162,7 @@ WYMeditor.editor.prototype.indent = function() {
         $prevLi.append($children);
         // If the first child is of the same list type, join them
         if ($children.first().is(listType)) {
-            var $sublistContents = $children.first().children();
+            $sublistContents = $children.first().children();
             $sublistContents.unwrap();
             $sublistContents.detach();
             $prevSubList.append($sublistContents);
@@ -1087,13 +1172,13 @@ WYMeditor.editor.prototype.indent = function() {
         // Leave the children where they are and join the previous list
         $prevList = $focusNode.prev().filter('li');
         $focusNode.children().unwrap();
-        var containerHtml = '<' + listType + '></' + listType + '>';
+        containerHtml = '<' + listType + '></' + listType + '>';
         $prevList.append(containerHtml);
         $prevList.children(listType).last().append($focusNode);
     } else {
         // We have a sublist to join, so just jump to the front there and leave
         // the children where they are
-        var $contents = $focusNode.contents().unwrap();
+        $contents = $focusNode.contents().unwrap();
         $contents.wrapAll('<li class="spacer_li"></li>');
         $contents.filter('ol,ul').first().prepend($focusNode);
     }
@@ -1102,9 +1187,9 @@ WYMeditor.editor.prototype.indent = function() {
     $focusNode.prepend(itemContents);
 
     // If we just created lists next to eachother, join them
-    var $maybeListSpacer = $focusNode.parent().parent('li.spacer_li');
-    if ($maybeListSpacer.length == 1) {
-        var $maybePreviousSublist = $maybeListSpacer.prev().filter('li').contents().last();
+    $maybeListSpacer = $focusNode.parent().parent('li.spacer_li');
+    if ($maybeListSpacer.length === 1) {
+        $maybePreviousSublist = $maybeListSpacer.prev().filter('li').contents().last();
         if ($maybePreviousSublist.is(listType)) {
             // The last child (including text nodes) of the previous li is the
             // same type of list that we just had to wrap in a listSpacer.
@@ -1115,7 +1200,7 @@ WYMeditor.editor.prototype.indent = function() {
         } else if ($maybeListSpacer.next('li').contents().first().is(listType)) {
             // The first child (including text nodes) of the next li is the same
             // type of list we just wrapped in a listSpacer. Join them.
-            var $nextSublist = $maybeListSpacer.next('li').children().first();
+            $nextSublist = $maybeListSpacer.next('li').children().first();
             $listContents = $focusNode.parent().contents();
             $maybeListSpacer.detach();
             $nextSublist.prepend($listContents);
@@ -1130,18 +1215,18 @@ WYMeditor.editor.prototype.indent = function() {
 
     // If we eliminated the need for a spacer_li, remove it
     if ($focusNode.next().is('.spacer_li')) {
-        var $spacer = $focusNode.next('.spacer_li');
-        var $spacerContents = $spacer.contents();
+        $spacer = $focusNode.next('.spacer_li');
+        $spacerContents = $spacer.contents();
         $spacerContents.detach();
         $focusNode.append($spacerContents);
         $spacer.remove();
     }
 
     // Put the selection back on the li element
-    var iframeWin = this._iframe.contentWindow;
+    iframeWin = this._iframe.contentWindow;
     sel = rangy.getSelection(iframeWin);
 
-    var range = rangy.createRange(this._doc);
+    range = rangy.createRange(this._doc);
     range.setStart(startContainer, startOffset);
     range.setEnd(startContainer, startOffset);
     range.collapse(false);
@@ -1157,12 +1242,24 @@ WYMeditor.editor.prototype.indent = function() {
     Outdent a list item, accounting for firefox bugs to ensure consistent
     behavior and valid HTML.
 */
-WYMeditor.editor.prototype.outdent = function() {
-    var focusNode = this.selected();
-    var sel = rangy.getIframeSelection(this._iframe);
-    var startContainer = sel.getRangeAt(0).startContainer;
-    var startOffset = sel.getRangeAt(0).startOffset;
-    var anchorNode = sel.anchorNode;
+WYMeditor.editor.prototype.outdent = function () {
+    var focusNode = this.selected(),
+        sel = rangy.getIframeSelection(this._iframe),
+        startContainer = sel.getRangeAt(0).startContainer,
+        startOffset = sel.getRangeAt(0).startOffset,
+        anchorNode = sel.anchorNode,
+        $focusNode,
+        $parentItem,
+        listType,
+
+        $subsequentItems,
+        $childLists,
+
+        $sublist,
+        $maybeConsecutiveLists,
+
+        iframeWin,
+        range;
 
     focusNode = this.findUp(focusNode, WYMeditor.BLOCKS);
     anchorNode = this.findUp(anchorNode, WYMeditor.BLOCKS);
@@ -1171,33 +1268,33 @@ WYMeditor.editor.prototype.outdent = function() {
         return;
     }
 
-    var $focusNode = $(focusNode);
+    $focusNode = $(focusNode);
     // This item is in a sublist. Firefox doesn't properly dedent this
     // as it's own item, instead it just tacks its content to the end of
     // the parent item after the sublist
 
-    var $parentItem = $focusNode.parent().parent('li');
-    var listType = $focusNode.parent()[0].tagName.toLowerCase();
+    $parentItem = $focusNode.parent().parent('li');
+    listType = $focusNode.parent()[0].tagName.toLowerCase();
 
     // If this li has li's following, those will need to be moved as
     // sublist elements after the outdent
-    var $subsequentItems = $focusNode.nextAll('li');
+    $subsequentItems = $focusNode.nextAll('li');
 
     $focusNode.detach();
     $parentItem.after($focusNode);
 
     // If this node has one or more sublist, they will need to be indented
     // by one with a fake parent to hold their previous position
-    var $childLists = $focusNode.children('ol,ul');
+    $childLists = $focusNode.children('ol,ul');
     if ($childLists.length > 0) {
-        $childLists.each(function(index, childList) {
-            var $childList = $(childList);
+        $childLists.each(function (index, childList) {
+            var $childList = $(childList),
+                spacerListHtml;
             $childList.detach();
 
-            var spacerListHtml = '' +
-            '<' + listType + '>' +
+            spacerListHtml = '<' + listType + '>' +
                 '<li class="spacer_li"></li>' +
-            '</' + listType + '>';
+                '</' + listType + '>';
             $focusNode.append(spacerListHtml);
             $focusNode.children(listType).last().children('li').append($childList);
         });
@@ -1206,21 +1303,21 @@ WYMeditor.editor.prototype.outdent = function() {
     if ($subsequentItems.length > 0) {
         // Nest the previously-subsequent items inside the list to
         // retain order and their indent level
-        var $sublist = $subsequentItems;
+        $sublist = $subsequentItems;
         $sublist.detach();
 
-        $focusNode.append("<"+listType+"></"+listType+">");
+        $focusNode.append("<" + listType + "></" + listType + ">");
         $focusNode.find(listType).last().append($subsequentItems);
 
         // If we just created lists next to eachother, join them
-        var $maybeConsecutiveLists = $focusNode
+        $maybeConsecutiveLists = $focusNode
             .children(listType + ' + ' + listType);
         if ($maybeConsecutiveLists.length > 0) {
             // Join the same-type adjacent lists we found
-            $maybeConsecutiveLists.each(function(index, list) {
-                var $list = $(list);
-                var $listContents = $list.contents();
-                var $prevList = $list.prev();
+            $maybeConsecutiveLists.each(function (index, list) {
+                var $list = $(list),
+                    $listContents = $list.contents(),
+                    $prevList = $list.prev();
 
                 $listContents.detach();
                 $list.remove();
@@ -1240,10 +1337,10 @@ WYMeditor.editor.prototype.outdent = function() {
     }
 
     // Put the selection back on the li element
-    var iframeWin = this._iframe.contentWindow;
+    iframeWin = this._iframe.contentWindow;
     sel = rangy.getSelection(iframeWin);
 
-    var range = rangy.createRange(this._doc);
+    range = rangy.createRange(this._doc);
     range.setStart(startContainer, startOffset);
     range.setEnd(startContainer, startOffset);
     range.collapse(false);
@@ -1258,7 +1355,7 @@ WYMeditor.editor.prototype.outdent = function() {
      Insert a table at the current selection with the given number of rows
      and columns and with the given caption and summary text.
 */
-WYMeditor.editor.prototype.insertTable = function(rows, columns, caption, summary) {
+WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summary) {
     if ((rows <= 0) || (columns <= 0)) {
         // We need rows and columns to make a table
 
@@ -1267,18 +1364,24 @@ WYMeditor.editor.prototype.insertTable = function(rows, columns, caption, summar
         return;
     }
 
-    var table = this._doc.createElement(WYMeditor.TABLE);
-    var newRow = null;
-    var newCol = null;
+    var table = this._doc.createElement(WYMeditor.TABLE),
+        newRow = null,
+        newCol = null,
+        newCaption,
+
+        x,
+        y,
+
+        container;
 
     // Create the table caption
-    var newCaption = table.createCaption();
+    newCaption = table.createCaption();
     newCaption.innerHTML = caption;
 
     // Create the rows and cells
-    for (var x = 0; x < rows; x++) {
+    for (x = 0; x < rows; x += 1) {
         newRow = table.insertRow(x);
-        for (var y=0; y < columns; y++) {
+        for (y = 0; y < columns; y += 1) {
             newRow.insertCell(y);
         }
     }
@@ -1289,9 +1392,9 @@ WYMeditor.editor.prototype.insertTable = function(rows, columns, caption, summar
     }
 
     // Find the currently-selected container
-    var container = jQuery(
-        this.findUp(this.container(), WYMeditor.MAIN_CONTAINERS))
-        .get(0);
+    container = jQuery(
+        this.findUp(this.container(), WYMeditor.MAIN_CONTAINERS)
+    ).get(0);
 
     if (!container || !container.parentNode) {
         // No valid selected container. Put the table at the end.
@@ -1315,16 +1418,17 @@ WYMeditor.editor.prototype.insertTable = function(rows, columns, caption, summar
     Handle cleanup/normalization after inserting a table. Different browsers
     need slightly different tweaks.
 */
-WYMeditor.editor.prototype.afterInsertTable = function(table) {};
+WYMeditor.editor.prototype.afterInsertTable = function (table) {};
 
-WYMeditor.editor.prototype.configureEditorUsingRawCss = function() {
+WYMeditor.editor.prototype.configureEditorUsingRawCss = function () {
     var CssParser = new WYMeditor.WymCssParser();
     if (this._options.stylesheet) {
         CssParser.parse(
             jQuery.ajax({
                 url: this._options.stylesheet,
                 async: false
-            }).responseText);
+            }).responseText
+        );
     } else {
         CssParser.parse(this._options.styles, false);
     }
@@ -1340,19 +1444,19 @@ WYMeditor.editor.prototype.configureEditorUsingRawCss = function() {
     }
 };
 
-WYMeditor.editor.prototype.listen = function() {
+WYMeditor.editor.prototype.listen = function () {
     // Don't use jQuery.find() on the iframe body
     // because of MSIE + jQuery + expando issue (#JQ1143)
 
     jQuery(this._doc.body).bind("mousedown", this.mousedown);
 };
 
-WYMeditor.editor.prototype.mousedown = function(evt) {
+WYMeditor.editor.prototype.mousedown = function (evt) {
     var wym = WYMeditor.INSTANCES[this.ownerDocument.title];
 
     // Store the selected image if we clicked an <img> tag
     wym._selected_image = null;
-    if (evt.target.tagName.toLowerCase() == WYMeditor.IMG) {
+    if (evt.target.tagName.toLowerCase() === WYMeditor.IMG) {
         wym._selected_image = evt.target;
     }
 };
@@ -1365,12 +1469,13 @@ WYMeditor.editor.prototype.mousedown = function(evt) {
 
     href - The CSS path.
 */
-WYMeditor.loadCss = function(href) {
-    var link = document.createElement('link');
+WYMeditor.loadCss = function (href) {
+    var link = document.createElement('link'),
+        head;
     link.rel = 'stylesheet';
     link.href = href;
 
-    var head = jQuery('head').get(0);
+    head = jQuery('head').get(0);
     head.appendChild(link);
 };
 
@@ -1380,18 +1485,18 @@ WYMeditor.loadCss = function(href) {
 
     Load the skin CSS and initialization script (if needed).
 */
-WYMeditor.editor.prototype.loadSkin = function() {
+WYMeditor.editor.prototype.loadSkin = function () {
     // Does the user want to automatically load the CSS (default: yes)?
     // We also test if it hasn't been already loaded by another instance
     // see below for a better (second) test
     if (this._options.loadSkin && !WYMeditor.SKINS[this._options.skin]) {
         // Check if it hasn't been already loaded so we don't load it more
         // than once (we check the existing <link> elements)
-        var found = false;
-        var rExp = new RegExp(this._options.skin +
-            '\/' + WYMeditor.SKINS_DEFAULT_CSS + '$');
+        var found = false,
+            rExp = new RegExp(this._options.skin +
+                '\/' + WYMeditor.SKINS_DEFAULT_CSS + '$');
 
-        jQuery('link').each( function() {
+        jQuery('link').each(function () {
             if (this.href.match(rExp)) {
                 found = true;
             }
@@ -1400,7 +1505,8 @@ WYMeditor.editor.prototype.loadSkin = function() {
         // Load it, using the skin path
         if (!found) {
             WYMeditor.loadCss(
-                this._options.skinPath + WYMeditor.SKINS_DEFAULT_CSS);
+                this._options.skinPath + WYMeditor.SKINS_DEFAULT_CSS
+            );
         }
     }
 
@@ -1410,8 +1516,8 @@ WYMeditor.editor.prototype.loadSkin = function() {
     // Does the user want to use some JS to initialize the skin (default: yes)?
     // Also check if it hasn't already been loaded by another instance
     if (this._options.initSkin && !WYMeditor.SKINS[this._options.skin]) {
-        eval(jQuery.ajax({url:this._options.skinPath +
-            WYMeditor.SKINS_DEFAULT_JS, async:false}).responseText);
+        eval(jQuery.ajax({url: this._options.skinPath +
+            WYMeditor.SKINS_DEFAULT_JS, async: false}).responseText);
     }
 
     // Init the skin, if needed
