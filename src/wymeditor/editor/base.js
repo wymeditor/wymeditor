@@ -939,7 +939,7 @@ WYMeditor.editor.prototype.insert = function(html) {
     }
 };
 
-WYMeditor.editor.prototype.insert_next = function(html) {
+WYMeditor.editor.prototype.insertBlockAfter = function(html) {
     // Do we have a selection?
     var selection = this.selected(),
         range,
