@@ -176,16 +176,47 @@ TableEditor.prototype.getNumColumns = function(tr) {
     // colspan. We count the first td because it won't have any rowspan's before
     // it to complicate things
     $(firstTr).children('td,th').each(function(index, elmnt) {
-        var colspan = $(elmnt).attr('colspan');
-        if (colspan === null) {
-            colspan = 1;
-        }
-        numColumns += parseInt(colspan, 10);
+        numColumns += TableEditor.GET_COLSPAN_PROP(elmnt);
     });
 
     return numColumns;
 };
 
+/**
+    TableEditor.GET_COLSPAN_PROP
+    ============================
+
+    Get the integer value of the inferred colspan property on the given cell in
+    a cross-browser compatible way that's also compatible across jquery versions.
+
+    jquery 1.6 changed the way .attr works, which affected certain browsers
+    differently with regard to colspan and rowspan for cells that didn't explcility
+    have that attribue set.
+*/
+TableEditor.GET_COLSPAN_PROP = function(cell) {
+    var colspan = $(cell).attr('colspan');
+    if (typeof(colspan) === 'undefined') {
+        colspan = 1;
+    }
+    return parseInt(colspan, 10);
+};
+
+/**
+    TableEditor.GET_ROWSPAN_PROP
+    ============================
+
+    Get the integer value of the inferred rowspan property on the given cell in
+    a cross-browser compatible way that's also compatible across jquery versions.
+
+    See GET_COLSPAN_PROP for details
+*/
+TableEditor.GET_ROWSPAN_PROP = function(cell) {
+    var rowspan = $(cell).attr('rowspan');
+    if (typeof(rowspan) === 'undefined') {
+        rowspan = 1;
+    }
+    return parseInt(rowspan, 10);
+};
 /**
  * Get the X grid index of the given td or th table cell (0-indexed). This takes
  * in to account all colspans and rowspans.
@@ -202,11 +233,7 @@ TableEditor.prototype.getCellXIndex = function(cell) {
     // we're affected by
     var rowColCount = 0;
     $(parentTr).children('td,th').each(function(index, elmnt) {
-        var colspan = $(elmnt).attr('colspan');
-        if (colspan === null) {
-            colspan = 1;
-        }
-        rowColCount += parseInt(colspan, 10);
+        rowColCount += TableEditor.GET_COLSPAN_PROP(elmnt);
     });
 
     var missingCells = baseRowColumns - rowColCount;
@@ -224,13 +251,10 @@ TableEditor.prototype.getCellXIndex = function(cell) {
         var trChildren = $(checkTr).children('td,th');
         for (var i = 0; i < trChildren.length; i++) {
             var elmnt = trChildren[i];
-            if ($(elmnt).attr('rowspan') && $(elmnt).attr('rowspan') >= rowOffset) {
+            if (TableEditor.GET_ROWSPAN_PROP(elmnt) >= rowOffset) {
                 // Actually affects our source row
                 missingCells -= 1;
-                var colspan = $(elmnt).attr('colspan');
-                if (colspan === null) {
-                    colspan = 1;
-                }
+                var colspan = TableEditor.GET_COLSPAN_PROP(elmnt);
                 rowspanIndexes[tableEditor.getCellXIndex(elmnt)] = colspan;
             }
         }
@@ -256,11 +280,7 @@ TableEditor.prototype.getCellXIndex = function(cell) {
             return;
         }
         // Account for an explicit colspan on this cell
-        var colspan = $(elmnt).attr('colspan');
-        if (colspan === null) {
-            colspan = 1;
-        }
-        indexCounter += parseInt(colspan, 10);
+        indexCounter += TableEditor.GET_COLSPAN_PROP(elmnt);
     });
 
     if (cellIndex === null) {
@@ -293,11 +313,7 @@ TableEditor.prototype.getTotalColumns = function(cells) {
     // Count the number of simple columns, not accounting for rowspans
     var colspanCount = 0;
     $(cells).each(function(index, elmnt) {
-        var colspan = $(elmnt).attr('colspan');
-        if (colspan === null) {
-            colspan = 1;
-        }
-        colspanCount += parseInt(colspan, 10);
+        colspanCount += TableEditor.GET_COLSPAN_PROP(elmnt);
     });
 
     // Determine if we're affected by rowspans. If the number of simple columns
@@ -305,11 +321,7 @@ TableEditor.prototype.getTotalColumns = function(cells) {
     // any rowspans
     var rowColCount = 0;
     $(rootTr).children('td,th').each(function(index, elmnt) {
-        var colspan = $(elmnt).attr('colspan');
-        if (colspan === null) {
-            colspan = 1;
-        }
-        rowColCount += parseInt(colspan, 10);
+        rowColCount += TableEditor.GET_COLSPAN_PROP(elmnt);
     });
 
     if (rowColCount == baseRowColumns) {
@@ -318,11 +330,7 @@ TableEditor.prototype.getTotalColumns = function(cells) {
     } else {
         if (cells.length == 1) {
             // Easy. Just the colspan
-            var colspan = $(cells[0]).attr('colspan');
-            if (colspan === null) {
-                colspan = 1;
-            }
-            return colspan;
+            return TableEditor.GET_COLSPAN_PROP(cells[0]);
         } else {
             var lastCell = $(cells).eq(cells.length - 1)[0];
             var firstCell = $(cells).eq(0)[0];
@@ -368,7 +376,8 @@ TableEditor.prototype.mergeRow = function(sel) {
     // If any of the cells have a rowspan, create the inferred cells
     $(cells).each(function(i, elmnt) {
         var $elmnt = $(elmnt);
-        if ($elmnt.attr('rowspan') === null || $elmnt.attr('rowspan') <= 1) {
+        var rowspanProp = TableEditor.GET_ROWSPAN_PROP(elmnt);
+        if (rowspanProp <= 1) {
             // We don't care about cells without a rowspan
             return;
         }
@@ -380,7 +389,7 @@ TableEditor.prototype.mergeRow = function(sel) {
 
         // Create the previously-inferred cell in the appropriate index
         // with one less rowspan
-        var newRowspan = $elmnt.attr('rowspan') - 1;
+        var newRowspan = rowspanProp - 1;
         var newTd;
         if (newRowspan == 1) {
             newTd = '<td>' + $elmnt.html() + '</td>';
