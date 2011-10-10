@@ -221,7 +221,7 @@ jQuery.extend(WYMeditor, {
     INSERT_UNORDEREDLIST: "InsertUnorderedList",
     INSERT_ORDEREDLIST  : "InsertOrderedList",
 
-    MAIN_CONTAINERS : ["p",  "h1",  "h2",  "h3", "h4", "h5", "h6", "pre", "blockquote"], 
+    MAIN_CONTAINERS : ["p",  "h1",  "h2",  "h3", "h4", "h5", "h6", "pre", "blockquote"],
 
     BLOCKS : ["address", "blockquote", "div", "dl",
         "fieldset", "form", "h1", "h2", "h3", "h4", "h5", "h6", "hr",
@@ -351,7 +351,7 @@ jQuery.fn.wymeditor = function (options) {
         lang:       "en",
         direction:  "ltr",
         customCommands: [],
-        boxHtml: String +
+        boxHtml: String() +
             "<div class='wym_box'>" +
                 "<div class='wym_area_top'>" +
                     WYMeditor.TOOLS +
@@ -371,11 +371,11 @@ jQuery.fn.wymeditor = function (options) {
                 "</div>" +
             "</div>",
 
-        logoHtml: String +
+        logoHtml: String() +
             '<a class="wym_wymeditor_link" ' +
                 'href="http://www.wymeditor.org/">WYMeditor</a>',
 
-        iframeHtml: String +
+        iframeHtml: String() +
             '<div class="wym_iframe wym_section">' +
                 '<iframe src="' + WYMeditor.IFRAME_BASE_PATH + 'wymiframe.html" ' +
                     'onload="this.contentWindow.parent.WYMeditor.INSTANCES[' +
@@ -384,7 +384,7 @@ jQuery.fn.wymeditor = function (options) {
             "</div>",
 
         editorStyles: [],
-        toolsHtml: String +
+        toolsHtml: String() +
             '<div class="wym_tools wym_section">' +
                 '<h2>{Tools}</h2>' +
                 '<ul>' +
@@ -392,7 +392,7 @@ jQuery.fn.wymeditor = function (options) {
                 '</ul>' +
             '</div>',
 
-        toolsItemHtml: String +
+        toolsItemHtml: String() +
             '<li class="' + WYMeditor.TOOL_CLASS + '">' +
                 '<a href="#" name="' + WYMeditor.TOOL_NAME + '"' +
                         'title="' + WYMeditor.TOOL_TITLE + '">' +
@@ -425,7 +425,7 @@ jQuery.fn.wymeditor = function (options) {
             {'name': 'Preview', 'title': 'Preview', 'css': 'wym_tools_preview'}
         ],
 
-        containersHtml: String +
+        containersHtml: String() +
             '<div class="wym_containers wym_section">' +
                 '<h2>{Containers}</h2>' +
                 '<ul>' +
@@ -433,7 +433,7 @@ jQuery.fn.wymeditor = function (options) {
                 '</ul>' +
             '</div>',
 
-        containersItemHtml: String +
+        containersItemHtml: String() +
             '<li class="' + WYMeditor.CONTAINER_CLASS + '">' +
                 '<a href="#" name="' + WYMeditor.CONTAINER_NAME + '">' +
                     WYMeditor.CONTAINER_TITLE +
@@ -454,7 +454,7 @@ jQuery.fn.wymeditor = function (options) {
             {'name': 'TH', 'title': 'Table_Header', 'css': 'wym_containers_th'}
         ],
 
-        classesHtml: String +
+        classesHtml: String() +
             '<div class="wym_classes wym_section">' +
                 '<h2>{Classes}</h2>' +
                 '<ul>' +
@@ -462,7 +462,7 @@ jQuery.fn.wymeditor = function (options) {
                 '</ul>' +
             '</div>',
 
-        classesItemHtml: String +
+        classesItemHtml: String() +
             '<li class="wym_classes_' + WYMeditor.CLASS_NAME + '">' +
                 '<a href="#" name="' + WYMeditor.CLASS_NAME + '">' +
                     WYMeditor.CLASS_TITLE +
@@ -470,12 +470,12 @@ jQuery.fn.wymeditor = function (options) {
             '</li>',
 
         classesItems:      [],
-        statusHtml: String +
+        statusHtml: String() +
             '<div class="wym_status wym_section">' +
                 '<h2>{Status}</h2>' +
             '</div>',
 
-        htmlHtml: String +
+        htmlHtml: String() +
             '<div class="wym_html wym_section">' +
                 '<h2>{Source_Code}</h2>' +
                 '<textarea class="wym_html_val"></textarea>' +
@@ -526,7 +526,7 @@ jQuery.fn.wymeditor = function (options) {
         dialogFeaturesPreview: "menubar=no,titlebar=no,toolbar=no,resizable=no" +
             ",scrollbars=yes,width=560,height=300,top=0,left=0",
 
-        dialogHtml: String +
+        dialogHtml: String() +
             '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" ' +
                     '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">' +
             '<html dir="' + WYMeditor.DIRECTION + '">' +
@@ -542,7 +542,7 @@ jQuery.fn.wymeditor = function (options) {
                 WYMeditor.DIALOG_BODY +
             '</html>',
 
-        dialogLinkHtml: String +
+        dialogLinkHtml: String() +
             '<body class="wym_dialog wym_dialog_link" ' +
                     ' onload="WYMeditor.INIT_DIALOG(' + WYMeditor.INDEX + ')">' +
                 '<form>' +
@@ -575,7 +575,7 @@ jQuery.fn.wymeditor = function (options) {
                 '</form>' +
             '</body>',
 
-        dialogImageHtml: String +
+        dialogImageHtml: String() +
             '<body class="wym_dialog wym_dialog_image" ' +
                     'onload="WYMeditor.INIT_DIALOG(' + WYMeditor.INDEX + ')">' +
                 '<form>' +
@@ -606,7 +606,7 @@ jQuery.fn.wymeditor = function (options) {
                 '</form>' +
             '</body>',
 
-        dialogTableHtml: String +
+        dialogTableHtml: String() +
             '<body class="wym_dialog wym_dialog_table" ' +
                     'onload="WYMeditor.INIT_DIALOG(' + WYMeditor.INDEX + ')">' +
                 '<form>' +
@@ -642,7 +642,7 @@ jQuery.fn.wymeditor = function (options) {
                 '</form>' +
             '</body>',
 
-        dialogPasteHtml: String +
+        dialogPasteHtml: String() +
             '<body class="wym_dialog wym_dialog_paste" ' +
                     'onload="WYMeditor.INIT_DIALOG(' + WYMeditor.INDEX + ')">' +
                 '<form>' +
@@ -664,7 +664,7 @@ jQuery.fn.wymeditor = function (options) {
                 '</form>' +
             '</body>',
 
-        dialogPreviewHtml: String +
+        dialogPreviewHtml: String() +
             '<body class="wym_dialog wym_dialog_preview" ' +
                 'onload="WYMeditor.INIT_DIALOG(' + WYMeditor.INDEX + ')"></body>',
 
