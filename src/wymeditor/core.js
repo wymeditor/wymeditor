@@ -1,4 +1,4 @@
-/*jslint evil: true */
+/*jslint evil: true, indent: 4 */
 /**
     WYMeditor
     =========
@@ -30,26 +30,30 @@
 */
 
 // Global WYMeditor namespace.
-if (typeof(WYMeditor) === 'undefined') {
+if (typeof (WYMeditor) === 'undefined') {
     WYMeditor = {};
 }
 
 // Wrap the Firebug console in WYMeditor.console
-(function() {
-    if (!window.console || !console.firebug) {
-        var names = ["log", "debug", "info", "warn", "error", "assert", "dir", "dirxml",
-        "group", "groupEnd", "time", "timeEnd", "count", "trace", "profile", "profileEnd"];
+(function () {
+    if (!window.console || !window.console.firebug) {
+        var names = [
+                "log", "debug", "info", "warn", "error", "assert", "dir", "dirxml",
+                "group", "groupEnd", "time", "timeEnd", "count", "trace", "profile",
+                "profileEnd"
+            ],
+            noOp = function () {},
+            i;
 
         WYMeditor.console = {};
-        var noOp = function() {};
-        for (var i = 0; i < names.length; ++i) {
+        for (i = 0; i < names.length; i += 1) {
             WYMeditor.console[names[i]] = noOp;
         }
 
     } else {
         WYMeditor.console = window.console;
     }
-})();
+}());
 
 jQuery.extend(WYMeditor, {
 
@@ -217,7 +221,7 @@ jQuery.extend(WYMeditor, {
     INSERT_UNORDEREDLIST: "InsertUnorderedList",
     INSERT_ORDEREDLIST  : "InsertOrderedList",
 
-    MAIN_CONTAINERS : ["p","h1","h2","h3","h4","h5","h6","pre","blockquote"],
+    MAIN_CONTAINERS : ["p",  "h1",  "h2",  "h3", "h4", "h5", "h6", "pre", "blockquote"],
 
     BLOCKS : ["address", "blockquote", "div", "dl",
         "fieldset", "form", "h1", "h2", "h3", "h4", "h5", "h6", "hr",
@@ -278,7 +282,7 @@ jQuery.extend(WYMeditor, {
         Nothing.
 
     */
-    editor : function(elem, options) {
+    editor : function (elem, options) {
         // Store the instance in the INSTANCES array and store the index
         this._index = WYMeditor.INSTANCES.push(this) - 1;
         // The element replaced by the editor
@@ -292,22 +296,22 @@ jQuery.extend(WYMeditor, {
         }
         // Path to the WYMeditor core
         this._options.wymPath = this._options.wymPath ||
-                WYMeditor.computeWymPath();
+            WYMeditor.computeWymPath();
         // Path to the main JS files
         this._options.basePath = this._options.basePath ||
-                WYMeditor.computeBasePath(this._options.wymPath);
+            WYMeditor.computeBasePath(this._options.wymPath);
         // Path to jQuery (for loading in pop-up dialogs)
         this._options.jQueryPath = this._options.jQueryPath ||
-                WYMeditor.computeJqueryPath();
+            WYMeditor.computeJqueryPath();
         // Path to skin files
         this._options.skinPath = this._options.skinPath ||
-                this._options.basePath + WYMeditor.SKINS_DEFAULT_PATH + this._options.skin + '/';
+            this._options.basePath + WYMeditor.SKINS_DEFAULT_PATH + this._options.skin + '/';
         // Path to the language files
         this._options.langPath = this._options.langPath ||
-                this._options.basePath + WYMeditor.LANG_DEFAULT_PATH;
+            this._options.basePath + WYMeditor.LANG_DEFAULT_PATH;
         // The designmode iframe's base path
         this._options.iframeBasePath = this._options.iframeBasePath ||
-                this._options.basePath + WYMeditor.IFRAME_DEFAULT;
+            this._options.basePath + WYMeditor.IFRAME_DEFAULT;
 
         // Initialize the editor instance
         this.init();
@@ -329,7 +333,7 @@ jQuery.extend(WYMeditor, {
 
     `jQuery(".wymeditor").wymeditor({});`
 */
-jQuery.fn.wymeditor = function(options) {
+jQuery.fn.wymeditor = function (options) {
 
     options = jQuery.extend({
 
@@ -347,7 +351,7 @@ jQuery.fn.wymeditor = function(options) {
         lang:       "en",
         direction:  "ltr",
         customCommands: [],
-        boxHtml:   "" +
+        boxHtml: String() +
             "<div class='wym_box'>" +
                 "<div class='wym_area_top'>" +
                     WYMeditor.TOOLS +
@@ -367,11 +371,11 @@ jQuery.fn.wymeditor = function(options) {
                 "</div>" +
             "</div>",
 
-        logoHtml:  '' +
+        logoHtml: String() +
             '<a class="wym_wymeditor_link" ' +
                 'href="http://www.wymeditor.org/">WYMeditor</a>',
 
-        iframeHtml: '' +
+        iframeHtml: String() +
             '<div class="wym_iframe wym_section">' +
                 '<iframe src="' + WYMeditor.IFRAME_BASE_PATH + 'wymiframe.html" ' +
                     'onload="this.contentWindow.parent.WYMeditor.INSTANCES[' +
@@ -380,7 +384,7 @@ jQuery.fn.wymeditor = function(options) {
             "</div>",
 
         editorStyles: [],
-        toolsHtml: '' +
+        toolsHtml: String() +
             '<div class="wym_tools wym_section">' +
                 '<h2>{Tools}</h2>' +
                 '<ul>' +
@@ -388,7 +392,7 @@ jQuery.fn.wymeditor = function(options) {
                 '</ul>' +
             '</div>',
 
-        toolsItemHtml: '' +
+        toolsItemHtml: String() +
             '<li class="' + WYMeditor.TOOL_CLASS + '">' +
                 '<a href="#" name="' + WYMeditor.TOOL_NAME + '"' +
                         'title="' + WYMeditor.TOOL_TITLE + '">' +
@@ -421,7 +425,7 @@ jQuery.fn.wymeditor = function(options) {
             {'name': 'Preview', 'title': 'Preview', 'css': 'wym_tools_preview'}
         ],
 
-        containersHtml: '' +
+        containersHtml: String() +
             '<div class="wym_containers wym_section">' +
                 '<h2>{Containers}</h2>' +
                 '<ul>' +
@@ -429,7 +433,7 @@ jQuery.fn.wymeditor = function(options) {
                 '</ul>' +
             '</div>',
 
-        containersItemHtml: '' +
+        containersItemHtml: String() +
             '<li class="' + WYMeditor.CONTAINER_CLASS + '">' +
                 '<a href="#" name="' + WYMeditor.CONTAINER_NAME + '">' +
                     WYMeditor.CONTAINER_TITLE +
@@ -450,7 +454,7 @@ jQuery.fn.wymeditor = function(options) {
             {'name': 'TH', 'title': 'Table_Header', 'css': 'wym_containers_th'}
         ],
 
-        classesHtml: '' +
+        classesHtml: String() +
             '<div class="wym_classes wym_section">' +
                 '<h2>{Classes}</h2>' +
                 '<ul>' +
@@ -458,7 +462,7 @@ jQuery.fn.wymeditor = function(options) {
                 '</ul>' +
             '</div>',
 
-        classesItemHtml: '' +
+        classesItemHtml: String() +
             '<li class="wym_classes_' + WYMeditor.CLASS_NAME + '">' +
                 '<a href="#" name="' + WYMeditor.CLASS_NAME + '">' +
                     WYMeditor.CLASS_TITLE +
@@ -466,46 +470,46 @@ jQuery.fn.wymeditor = function(options) {
             '</li>',
 
         classesItems:      [],
-        statusHtml: '' +
+        statusHtml: String() +
             '<div class="wym_status wym_section">' +
                 '<h2>{Status}</h2>' +
             '</div>',
 
-        htmlHtml: '' +
+        htmlHtml: String() +
             '<div class="wym_html wym_section">' +
                 '<h2>{Source_Code}</h2>' +
                 '<textarea class="wym_html_val"></textarea>' +
             '</div>',
 
-        boxSelector:       ".wym_box",
-        toolsSelector:     ".wym_tools",
-        toolsListSelector: " ul",
-        containersSelector:".wym_containers",
-        classesSelector:   ".wym_classes",
-        htmlSelector:      ".wym_html",
-        iframeSelector:    ".wym_iframe iframe",
-        iframeBodySelector:".wym_iframe",
-        statusSelector:    ".wym_status",
-        toolSelector:      ".wym_tools a",
-        containerSelector: ".wym_containers a",
-        classSelector:     ".wym_classes a",
-        htmlValSelector:   ".wym_html_val",
+        boxSelector:        ".wym_box",
+        toolsSelector:      ".wym_tools",
+        toolsListSelector:  " ul",
+        containersSelector: ".wym_containers",
+        classesSelector:    ".wym_classes",
+        htmlSelector:       ".wym_html",
+        iframeSelector:     ".wym_iframe iframe",
+        iframeBodySelector: ".wym_iframe",
+        statusSelector:     ".wym_status",
+        toolSelector:       ".wym_tools a",
+        containerSelector:  ".wym_containers a",
+        classSelector:      ".wym_classes a",
+        htmlValSelector:    ".wym_html_val",
 
-        hrefSelector:      ".wym_href",
-        srcSelector:       ".wym_src",
-        titleSelector:     ".wym_title",
-        relSelector:       ".wym_rel",
-        altSelector:       ".wym_alt",
-        textSelector:      ".wym_text",
+        hrefSelector:       ".wym_href",
+        srcSelector:        ".wym_src",
+        titleSelector:      ".wym_title",
+        relSelector:        ".wym_rel",
+        altSelector:        ".wym_alt",
+        textSelector:       ".wym_text",
 
-        rowsSelector:      ".wym_rows",
-        colsSelector:      ".wym_cols",
-        captionSelector:   ".wym_caption",
-        summarySelector:   ".wym_summary",
+        rowsSelector:       ".wym_rows",
+        colsSelector:       ".wym_cols",
+        captionSelector:    ".wym_caption",
+        summarySelector:    ".wym_summary",
 
-        submitSelector:    "form",
-        cancelSelector:    ".wym_cancel",
-        previewSelector:   "",
+        submitSelector:     "form",
+        cancelSelector:     ".wym_cancel",
+        previewSelector:    "",
 
         dialogTypeSelector:    ".wym_dialog_type",
         dialogLinkSelector:    ".wym_dialog_link",
@@ -522,7 +526,7 @@ jQuery.fn.wymeditor = function(options) {
         dialogFeaturesPreview: "menubar=no,titlebar=no,toolbar=no,resizable=no" +
             ",scrollbars=yes,width=560,height=300,top=0,left=0",
 
-        dialogHtml: '' +
+        dialogHtml: String() +
             '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" ' +
                     '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">' +
             '<html dir="' + WYMeditor.DIRECTION + '">' +
@@ -538,7 +542,7 @@ jQuery.fn.wymeditor = function(options) {
                 WYMeditor.DIALOG_BODY +
             '</html>',
 
-        dialogLinkHtml: '' +
+        dialogLinkHtml: String() +
             '<body class="wym_dialog wym_dialog_link" ' +
                     ' onload="WYMeditor.INIT_DIALOG(' + WYMeditor.INDEX + ')">' +
                 '<form>' +
@@ -571,7 +575,7 @@ jQuery.fn.wymeditor = function(options) {
                 '</form>' +
             '</body>',
 
-        dialogImageHtml: '' +
+        dialogImageHtml: String() +
             '<body class="wym_dialog wym_dialog_image" ' +
                     'onload="WYMeditor.INIT_DIALOG(' + WYMeditor.INDEX + ')">' +
                 '<form>' +
@@ -602,7 +606,7 @@ jQuery.fn.wymeditor = function(options) {
                 '</form>' +
             '</body>',
 
-        dialogTableHtml: '' +
+        dialogTableHtml: String() +
             '<body class="wym_dialog wym_dialog_table" ' +
                     'onload="WYMeditor.INIT_DIALOG(' + WYMeditor.INDEX + ')">' +
                 '<form>' +
@@ -638,7 +642,7 @@ jQuery.fn.wymeditor = function(options) {
                 '</form>' +
             '</body>',
 
-        dialogPasteHtml: '' +
+        dialogPasteHtml: String() +
             '<body class="wym_dialog wym_dialog_paste" ' +
                     'onload="WYMeditor.INIT_DIALOG(' + WYMeditor.INDEX + ')">' +
                 '<form>' +
@@ -660,14 +664,14 @@ jQuery.fn.wymeditor = function(options) {
                 '</form>' +
             '</body>',
 
-        dialogPreviewHtml: '' +
+        dialogPreviewHtml: String() +
             '<body class="wym_dialog wym_dialog_preview" ' +
                 'onload="WYMeditor.INIT_DIALOG(' + WYMeditor.INDEX + ')"></body>',
 
         dialogStyles: [],
 
-        stringDelimiterLeft: "{",
-        stringDelimiterRight:"}",
+        stringDelimiterLeft:  "{",
+        stringDelimiterRight: "}",
 
         preInit: null,
         preBind: null,
@@ -678,17 +682,17 @@ jQuery.fn.wymeditor = function(options) {
 
     }, options);
 
-    return this.each(function() {
+    return this.each(function () {
         // Assigning to _editor because the return value from new isn't
         // actually used, but we need to use new to properly change the
         // prototype
-        _editor = new WYMeditor.editor(jQuery(this), options);
+        var _editor = new WYMeditor.editor(jQuery(this), options);
     });
 };
 
 // Enable accessing of wymeditor instances via $.wymeditors
 jQuery.extend({
-    wymeditors: function(i) {
+    wymeditors: function (i) {
         return WYMeditor.INSTANCES[i];
     }
 });
@@ -708,19 +712,21 @@ jQuery.extend({
     * jquery.wymeditor.js
     * /core.js
 */
-WYMeditor.computeWymPath = function() {
+WYMeditor.computeWymPath = function () {
     var script = jQuery(
         jQuery.grep(
             jQuery('script'),
-            function(s){
+            function (s) {
                 if (!s.src) {
                     return null;
                 }
                 return (
                     s.src.match(
-                        /jquery\.wymeditor(\.pack|\.min|\.packed)?\.js(\?.*)?$/ ) ||
+                        /jquery\.wymeditor(\.pack|\.min|\.packed)?\.js(\?.*)?$/
+                    ) ||
                     s.src.match(
-                        /\/core\.js(\?.*)?$/ )
+                            /\/core\.js(\?.*)?$/
+                        )
                 );
             }
         )
@@ -731,7 +737,8 @@ WYMeditor.computeWymPath = function() {
     // We couldn't locate the base path. This will break language loading,
     // dialog boxes and other features.
     WYMeditor.console.warn(
-        "Error determining wymPath. No base WYMeditor file located.");
+        "Error determining wymPath. No base WYMeditor file located."
+    );
     WYMeditor.console.warn("Assuming wymPath to be the current URL");
     WYMeditor.console.warn("Please pass a correct wymPath option");
 
@@ -749,7 +756,7 @@ WYMeditor.computeWymPath = function() {
     * Skins
     *
 */
-WYMeditor.computeBasePath = function(wymPath) {
+WYMeditor.computeBasePath = function (wymPath) {
     // Strip everything after the last slash to get the base path
     var lastSlashIndex = wymPath.lastIndexOf('/');
     return wymPath.substr(0, lastSlashIndex + 1);
@@ -769,15 +776,16 @@ WYMeditor.computeBasePath = function(wymPath) {
     * jquery.packed.js
     * Plus the jquery-<version> variants
 */
-WYMeditor.computeJqueryPath = function() {
+WYMeditor.computeJqueryPath = function () {
     return jQuery(
         jQuery.grep(
             jQuery('script'),
-            function(s) {
+            function (s) {
                 return (
                     s.src &&
                     s.src.match(
-                        /jquery(-(.*)){0,1}(\.pack|\.min|\.packed)?\.js(\?.*)?$/)
+                            /jquery(-(.*)){0,1}(\.pack|\.min|\.packed)?\.js(\?.*)?$/
+                        )
                 );
             }
         )
@@ -786,18 +794,21 @@ WYMeditor.computeJqueryPath = function() {
 
 /********** DIALOGS **********/
 
-WYMeditor.INIT_DIALOG = function(index) {
+WYMeditor.INIT_DIALOG = function (index) {
 
-    var wym = window.opener.WYMeditor.INSTANCES[index];
-    var doc = window.document;
-    var selected = wym.selected();
-    var dialogType = jQuery(wym._options.dialogTypeSelector).val();
-    var sStamp = wym.uniqueStamp();
+    var wym = window.opener.WYMeditor.INSTANCES[index],
+        doc = window.document,
+        selected = wym.selected(),
+        dialogType = jQuery(wym._options.dialogTypeSelector).val(),
+        sStamp = wym.uniqueStamp(),
+        styles,
+        aCss,
+        tableOnClick;
 
-    if (dialogType == WYMeditor.DIALOG_LINK) {
+    if (dialogType === WYMeditor.DIALOG_LINK) {
         // ensure that we select the link to populate the fields
         if (selected && selected.tagName &&
-                selected.tagName.toLowerCase != WYMeditor.A) {
+                selected.tagName.toLowerCase !== WYMeditor.A) {
             selected = jQuery(selected).parentsOrSelf(WYMeditor.A);
         }
 
@@ -813,8 +824,8 @@ WYMeditor.INIT_DIALOG = function(index) {
     }
 
     // add css rules from options
-    var styles = doc.styleSheets[0];
-    var aCss = eval(wym._options.dialogStyles);
+    styles = doc.styleSheets[0];
+    aCss = eval(wym._options.dialogStyles);
 
     wym.addCssRules(doc, aCss);
 
@@ -835,13 +846,13 @@ WYMeditor.INIT_DIALOG = function(index) {
     }
 
     jQuery(wym._options.dialogLinkSelector + " " +
-            wym._options.submitSelector).submit(function() {
+            wym._options.submitSelector).submit(function () {
 
-        var sUrl = jQuery(wym._options.hrefSelector).val();
+        var sUrl = jQuery(wym._options.hrefSelector).val(),
+            link;
         if (sUrl.length > 0) {
-            var link;
 
-            if (selected[0] && selected[0].tagName.toLowerCase() == WYMeditor.A) {
+            if (selected[0] && selected[0].tagName.toLowerCase() === WYMeditor.A) {
                 link = selected;
             } else {
                 wym._exec(WYMeditor.CREATE_LINK, sStamp);
@@ -856,14 +867,15 @@ WYMeditor.INIT_DIALOG = function(index) {
     });
 
     jQuery(wym._options.dialogImageSelector + " " +
-            wym._options.submitSelector).submit(function() {
+            wym._options.submitSelector).submit(function () {
 
-        var sUrl = jQuery(wym._options.srcSelector).val();
+        var sUrl = jQuery(wym._options.srcSelector).val(),
+            $img;
         if (sUrl.length > 0) {
 
             wym._exec(WYMeditor.INSERT_IMAGE, sStamp);
 
-            var $img = jQuery("img[src$=" + sStamp + "]", wym._doc.body);
+            $img = jQuery("img[src$=" + sStamp + "]", wym._doc.body);
             $img.attr(WYMeditor.SRC, sUrl);
             $img.attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val());
             $img.attr(WYMeditor.ALT, jQuery(wym._options.altSelector).val());
@@ -871,12 +883,12 @@ WYMeditor.INIT_DIALOG = function(index) {
         window.close();
     });
 
-    var tableOnClick = WYMeditor.MAKE_TABLE_ONCLICK(wym);
+    tableOnClick = WYMeditor.MAKE_TABLE_ONCLICK(wym);
     jQuery(wym._options.dialogTableSelector + " " + wym._options.submitSelector)
         .submit(tableOnClick);
 
     jQuery(wym._options.dialogPasteSelector + " " +
-            wym._options.submitSelector).submit(function() {
+            wym._options.submitSelector).submit(function () {
 
         var sText = jQuery(wym._options.textSelector).val();
         wym.paste(sText);
@@ -887,7 +899,7 @@ WYMeditor.INIT_DIALOG = function(index) {
         wym._options.previewSelector).html(wym.xhtml());
 
     //cancel button
-    jQuery(wym._options.cancelSelector).mousedown(function() {
+    jQuery(wym._options.cancelSelector).mousedown(function () {
         window.close();
     });
 
@@ -900,14 +912,14 @@ WYMeditor.INIT_DIALOG = function(index) {
 
 /********** TABLE DIALOG ONCLICK **********/
 
-WYMeditor.MAKE_TABLE_ONCLICK = function(wym) {
-    var tableOnClick = function() {
-        var numRows = jQuery(wym._options.rowsSelector).val();
-        var numColumns = jQuery(wym._options.colsSelector).val();
-        var caption = jQuery(wym._options.captionSelector).val();
-        var summary = jQuery(wym._options.summarySelector).val();
+WYMeditor.MAKE_TABLE_ONCLICK = function (wym) {
+    var tableOnClick = function () {
+        var numRows = jQuery(wym._options.rowsSelector).val(),
+            numColumns = jQuery(wym._options.colsSelector).val(),
+            caption = jQuery(wym._options.captionSelector).val(),
+            summary = jQuery(wym._options.summarySelector).val(),
 
-        var table = wym.insertTable(numRows, numColumns, caption, summary);
+            table = wym.insertTable(numRows, numColumns, caption, summary);
 
         window.close();
     };
@@ -919,40 +931,40 @@ WYMeditor.MAKE_TABLE_ONCLICK = function(wym) {
 /********** HELPERS **********/
 
 // Returns true if it is a text node with whitespaces only
-jQuery.fn.isPhantomNode = function() {
-    if (this[0].nodeType == 3) {
+jQuery.fn.isPhantomNode = function () {
+    if (this[0].nodeType === 3) {
         return !(/[^\t\n\r ]/.test(this[0].data));
     }
 
     return false;
 };
 
-WYMeditor.isPhantomNode = function(n) {
-    if (n.nodeType == 3) {
+WYMeditor.isPhantomNode = function (n) {
+    if (n.nodeType === 3) {
         return !(/[^\t\n\r ]/.test(n.data));
     }
 
     return false;
 };
 
-WYMeditor.isPhantomString = function(str) {
+WYMeditor.isPhantomString = function (str) {
     return !(/[^\t\n\r ]/.test(str));
 };
 
 // Returns the Parents or the node itself
 // jqexpr = a jQuery expression
-jQuery.fn.parentsOrSelf = function(jqexpr) {
+jQuery.fn.parentsOrSelf = function (jqexpr) {
     var n = this;
 
-    if (n[0].nodeType == 3) {
-        n = n.parents().slice(0,1);
+    if (n[0].nodeType === 3) {
+        n = n.parents().slice(0, 1);
     }
 
 //  if (n.is(jqexpr)) // XXX should work, but doesn't (probably a jQuery bug)
-    if (n.filter(jqexpr).size() == 1) {
+    if (n.filter(jqexpr).size() === 1) {
         return n;
     } else {
-        return n.parents(jqexpr).slice(0,1);
+        return n.parents(jqexpr).slice(0, 1);
     }
 };
 
@@ -961,24 +973,25 @@ jQuery.fn.parentsOrSelf = function(jqexpr) {
 WYMeditor.Helper = {
 
     //replace all instances of 'old' by 'rep' in 'str' string
-    replaceAll: function(str, old, rep) {
+    replaceAll: function (str, old, rep) {
         var rExp = new RegExp(old, "g");
         return str.replace(rExp, rep);
     },
 
     //insert 'inserted' at position 'pos' in 'str' string
-    insertAt: function(str, inserted, pos) {
-        return str.substr(0,pos) + inserted + str.substring(pos);
+    insertAt: function (str, inserted, pos) {
+        return str.substr(0, pos) + inserted + str.substring(pos);
     },
 
     //trim 'str' string
-    trim: function(str) {
-        return str.replace(/^(\s*)|(\s*)$/gm,'');
+    trim: function (str) {
+        return str.replace(/^(\s*)|(\s*)$/gm, '');
     },
 
     //return true if 'arr' array contains 'elem', or false
-    contains: function(arr, elem) {
-        for (var i = 0; i < arr.length; i++) {
+    contains: function (arr, elem) {
+        var i;
+        for (i = 0; i < arr.length; i += 1) {
             if (arr[i] === elem) {
                 return true;
             }
@@ -987,22 +1000,23 @@ WYMeditor.Helper = {
     },
 
     //return 'item' position in 'arr' array, or -1
-    indexOf: function(arr, item) {
-        var ret=-1;
-        for(var i = 0; i < arr.length; i++) {
-            if (arr[i] == item) {
+    indexOf: function (arr, item) {
+        var ret = -1, i;
+        for (i = 0; i < arr.length; i += 1) {
+            if (arr[i] === item) {
                 ret = i;
                 break;
             }
         }
-    return ret;
+        return ret;
     },
 
     //return 'item' object in 'arr' array, checking its 'name' property, or null
-    findByName: function(arr, name) {
-        for (var i = 0; i < arr.length; i++) {
-            var item = arr[i];
-            if (item.name == name) {
+    findByName: function (arr, name) {
+        var i, item;
+        for (i = 0; i < arr.length; i += 1) {
+            item = arr[i];
+            if (item.name === name) {
                 return item;
             }
         }
