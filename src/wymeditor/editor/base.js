@@ -29,9 +29,11 @@ WYMeditor.editor.prototype.init = function() {
         this._options.preInit(this);
     }
 
-    var SaxListener = new WYMeditor.XhtmlSaxListener();
-    jQuery.extend(SaxListener, WymClass);
-    this.parser = new WYMeditor.XhtmlParser(SaxListener);
+    if(!this._options.disable_sanitization) {
+      var SaxListener = new WYMeditor.XhtmlSaxListener();
+      jQuery.extend(SaxListener, WymClass);
+      this.parser = new WYMeditor.XhtmlParser(SaxListener);
+    }
 
     if (this._options.styles || this._options.stylesheet) {
         this.configureEditorUsingRawCss();
@@ -261,7 +263,13 @@ WYMeditor.editor.prototype.xhtml = function() {
     // insertion
     jQuery(this._doc.body).children(WYMeditor.BR).remove();
 
-    return this.parser.parse(this.html());
+    html = this.html();
+
+    if (!this._options.disable_sanitization) {
+      return this.parser.parse(html);
+   } else {
+     return html;
+   }
 };
 
 /**
