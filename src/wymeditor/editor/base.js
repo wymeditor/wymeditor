@@ -1341,6 +1341,8 @@ WYMeditor.editor.prototype.configureEditorUsingRawCss = function() {
 };
 
 WYMeditor.editor.prototype.listen = function() {
+    var _this = this;
+    
     // Don't use jQuery.find() on the iframe body
     // because of MSIE + jQuery + expando issue (#JQ1143)
 
