@@ -1445,11 +1445,13 @@ WYMeditor.editor.prototype.configureEditorUsingRawCss = function () {
 };
 
 WYMeditor.editor.prototype.listen = function () {
+    var wym = this;
+
     // Don't use jQuery.find() on the iframe body
     // because of MSIE + jQuery + expando issue (#JQ1143)
 
     jQuery(this._doc.body).bind("mousedown", function () {
-        _this.mousedown();
+        wym.mousedown();
     });
 };
 
