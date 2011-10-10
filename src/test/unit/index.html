@@ -26,22 +26,46 @@
 <script type="text/javascript" src="../load-src.dev.js"></script>
 
 <script type="text/javascript">
-    loadWymSrc('../../', [
-        // Plugins
-        "../../wymeditor/plugins/embed/jquery.wymeditor.embed.js",
-        "../../wymeditor/plugins/list/jquery.wymeditor.list.js",
-        "../../wymeditor/plugins/table/jquery.wymeditor.table.js",
 
-        "qunit.js",
+    // Read the URL params to allow switching the version of jquery
+    // Adapted from qunit.js code
+    // To test using jquery 1.6.2 on google's CDN, for example, use:
+    // unit/?jquery=1.6.2
+    var queryString = window.location.search;
+    var params = queryString.slice(1).split("&");
+    var length = params.length;
+    var urlParams = {};
+    var current;
+    if (length > 0) {
+        for (var i = 0; i < length; i++) {
+            current = params[i].split( "=" );
+            current[0] = decodeURIComponent(current[0]);
+            // allow just a key to turn on a flag, e.g., test.html?noglobals
+            current[1] = current[1] ? decodeURIComponent(current[1]) : true;
+            urlParams[current[0]] = current[1];
+        }
+    }
 
-        // Test files
-        "utils.js",
-        "test.js",
-        "lists.js",
-        "blocking_elements.js",
-        "table_test.js",
-        "embed.js"
-    ]);
+    loadWymSrc(
+        '../../',
+        [
+            // Plugins
+            "../../wymeditor/plugins/embed/jquery.wymeditor.embed.js",
+            "../../wymeditor/plugins/list/jquery.wymeditor.list.js",
+            "../../wymeditor/plugins/table/jquery.wymeditor.table.js",
+
+            "qunit.js",
+
+            // Test files
+            "utils.js",
+            "test.js",
+            "lists.js",
+            "blocking_elements.js",
+            "table_test.js",
+            "embed.js"
+        ],
+        urlParams['jquery']
+    );
 </script>
 </head>
 

@@ -118,45 +118,7 @@ function testGetCellXIndex(initialHtml, cellSelector, expectedIndex) {
     equals(actual, expectedIndex);
 }
 
-/**
-* Determine if attempting to select a cell with a non-text inner node (a span)
-* actually selects the inner node or selects the cell itself. FF for example,
-* selects the cell while webkit selects the inner.
-*/
-function browserSelectsInnerContent() {
-    var initialHtml = '' +
-        '<table>' +
-            '<tbody>' +
-                '<tr>' +
-                    '<td id="td_1_1"><span id="span_1_1">span_1_1</span></td>' +
-                '</tr>' +
-            '</tbody>' +
-        '</table>';
-    var spanSelector = '#span_1_1';
-    var tdSelector = '#td_1_1';
-
-    var wymeditor = jQuery.wymeditors(0);
-    wymeditor.html(initialHtml);
-
-    var $body = $(wymeditor._doc).find('body.wym_iframe');
-
-    var td = $body.find(tdSelector)[0];
-    var span = $body.find(spanSelector)[0];
-    wymeditor.tableEditor.selectElement($body.find(tdSelector)[0]);
-
-    if (wymeditor.selected() == span) {
-        return true;
-    }
-    return false;
-}
-
-var isInnerSelector;
-function setupTables() {
-    setupWym();
-    isInnerSelector = browserSelectsInnerContent();
-}
-
-module("Table Modification", {setup: setupTables});
+module("Table Modification", {setup: setupWym});
 
 var basicTableHtml = '' +
 '<table>' +
@@ -685,7 +647,7 @@ var removedColumn3And2Html= '' +
     '</tbody>' +
 '</table>';
 
-module("table- add/remove", {setup: setupTables});
+module("table- add/remove", {setup: setupWym});
 test("no-op on non-table elements", function() {
     expect(4);
 
@@ -739,7 +701,7 @@ test("Deleting all columns removes table", function() {
     testTable('#span_2_1', 'remove', 'column', removedColumn3And2Html, '');
 });
 
-module("table- colspan/rowspan add/remove", {setup: setupTables});
+module("table- colspan/rowspan add/remove", {setup: setupWym});
 test("Row", function() {
     expect(2);
 
@@ -841,7 +803,7 @@ test("Row with TH first th row", function() {
     testTable('#tr_1 + tr td:eq(2)', 'remove', 'row', addRowThTh13Html, thTableHtml);
 });
 
-module("table- tab movement", {setup: setupTables});
+module("table- tab movement", {setup: setupWym});
 test("Tab to cell right", function() {
     expect(3);
     testTableTab(basicTableHtml, '#td_1_1', '#td_1_2');
@@ -855,7 +817,7 @@ test("Tab from th to cell right", function() {
 test("Tab to next row", function() {
     expect(3);
     var expectedSelector = '#td_2_1';
-    if (isInnerSelector) {
+    if (WYMeditor._isInnerSelector) {
         expectedSelector = '#span_2_1';
     }
     testTableTab(basicTableHtml, '#td_1_3', expectedSelector);
@@ -889,7 +851,7 @@ test("Tab outside of table", function() {
     testTableTab(basicTableHtml+'<p id="p_1">p1</p>', '#p_1', '#p_1');
 });
 
-module("table-row_merge", {setup: setupTables});
+module("table-row_merge", {setup: setupWym});
 
 var mergeTableHtml = '' +
 '<table>' +
@@ -1364,15 +1326,15 @@ test("With span", function() {
     expect(5);
 
     var endSelection = '#td_2_1';
-    if (isInnerSelector) {
+    if (WYMeditor._isInnerSelector) {
         endSelection = '#span_2_1';
     }
     testRowMerge(
         mergeTableHtml, mergeSpan21Html, '#span_2_1', '#td_2_2', endSelection);
 });
 
-module("table-row_merge_rowspan", {setup: setupTables});
-if ($.browser.ie && !SKIP_KNOWN_FAILING_TESTS) {
+module("table-row_merge_rowspan", {setup: setupWym});
+if (!$.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
 test("Across rowspan", function() {
     expect(5);
 
@@ -1381,7 +1343,7 @@ test("Across rowspan", function() {
 });
 }
 
-if ($.browser.ie && !SKIP_KNOWN_FAILING_TESTS) {
+if (!$.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
 test("Into rowspan", function() {
     expect(5);
 
@@ -1452,7 +1414,7 @@ test("getCellXIndex test", function() {
     testGetCellXIndex(mergeTableLongRowspanHtml, '#td_4_4', 3);
 });
 
-module("utils", {setup: setupTables});
+module("utils", {setup: setupWym});
 function testNormalize(testHtml) {
     var normed = normalizeHtml($(testHtml)[0]);
     equals(normed, testHtml);
