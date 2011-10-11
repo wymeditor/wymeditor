@@ -463,3 +463,37 @@ test("Double soft returns are allowed", function() {
     expect(1);
     htmlEquals(wymeditor, initHtml);
 });
+
+module("image styling", {setup: setupWym});
+
+test("_selected image is saved on mousedown", function() {
+    var initHtml = String() +
+        '<p id="noimage">Images? We dont need no stinkin images</p>' +
+        '<p>' +
+            '<img id="google" src="http://www.google.com/intl/en_com/images/srpr/logo3w.png" />' +
+        '</p>';
+
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        $noimage,
+        $google;
+
+    expect(3);
+
+    wymeditor.html(initHtml);
+    $body = $(wymeditor._doc).find('body.wym_iframe');
+
+    // Editor starts with no selected image
+    equals(wymeditor._selected_image, null);
+
+    // Clicking on a non-image doesn't change that
+    $noimage = $body.find('#noimage');
+    $noimage.mousedown();
+    equals(wymeditor._selected_image, null);
+
+
+    // Clicking an image does update the selected image
+    $google = $body.find('#google');
+    $google.mousedown();
+    equals(wymeditor._selected_image, $google[0]);
+});
