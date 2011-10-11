@@ -1450,8 +1450,8 @@ WYMeditor.editor.prototype.listen = function () {
     // Don't use jQuery.find() on the iframe body
     // because of MSIE + jQuery + expando issue (#JQ1143)
 
-    jQuery(this._doc.body).bind("mousedown", function () {
-        wym.mousedown();
+    jQuery(this._doc.body).bind("mousedown", function (e) {
+        wym.mousedown(e);
     });
 };
 
