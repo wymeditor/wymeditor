@@ -22,7 +22,7 @@ function setupWym(extraPostInit) {
                 * actually selects the inner node or selects the cell itself. FF for example,
                 * selects the cell while webkit selects the inner.
                 */
-                var initialHtml = '' +
+                var initialHtml = String() +
                     '<table>' +
                         '<tbody>' +
                             '<tr>' +
@@ -41,7 +41,7 @@ function setupWym(extraPostInit) {
                 var span = $body.find(spanSelector)[0];
                 wym.tableEditor.selectElement($body.find(tdSelector)[0]);
 
-                if (wym.selected() == span) {
+                if (wym.selected() === span) {
                     WYMeditor._isInnerSelector = true;
                 } else {
                     WYMeditor._isInnerSelector = false;
@@ -104,7 +104,7 @@ module("XmlParser", {setup: setupWym});
 
 test("Should correct invalid lists", function() {
     expect(2);
-    var expected = '' +
+    var expected = String() +
     '<ul>' +
         '<li>a' +
             '<ul>' +
@@ -114,7 +114,7 @@ test("Should correct invalid lists", function() {
         '<li>b<\/li>' +
     '<\/ul>';
     // FF
-    var design_mode_pseudo_html = '' +
+    var design_mode_pseudo_html = String() +
     '<ul>' +
         '<li>a<\/li>' +
         '<ul>' +
@@ -126,7 +126,7 @@ test("Should correct invalid lists", function() {
             "on Firefox");
     // IE
     // IE has invalid sublist nesting
-    expected = '' +
+    expected = String() +
     '<ul>\r\n' +
         '<li>a' +
             '<ul>\r\n' +
@@ -135,7 +135,7 @@ test("Should correct invalid lists", function() {
         '<\/li>\r\n' +
         '<li>b<\/li>' +
     '<\/ul>';
-    design_mode_pseudo_html = '' +
+    design_mode_pseudo_html = String() +
     '<UL>\r\n' +
         '<LI>a<\/LI>\r\n' +
         '<UL>\r\n' +
@@ -152,7 +152,7 @@ test("Should correct under-closed lists", function() {
     // Taken from a mistake made during development that uncovered a
     // parsing issue where if an LI tag was left unclosed, IE did lots of
     // over-closing to compensate which completey broke list structure
-    var missingClosingLiHtml = '' +
+    var missingClosingLiHtml = String() +
     '<ol>' +
         '<li id="li_1">1</li>' +
         '<li id="li_2">2' +
@@ -188,7 +188,7 @@ test("Should correct under-closed lists", function() {
         '<li id="li_8">8</li>' +
     '</ol>';
 
-    var fixedHtml = '' +
+    var fixedHtml = String() +
     '<ol>' +
         '<li id="li_1">1</li>' +
         '<li id="li_2">2' +
@@ -236,11 +236,11 @@ test("Shouldn't remove empty td elements", function() {
 
 test("Should remove PRE line breaks (BR)", function() {
     expect(1);
-    var original = '' +
+    var original = String() +
     '<pre>One<br>Two<br>Three</pre>' +
     '<p>Test</p>' +
     '<pre>Three<br>Four<br>Five</pre>';
-    var expected = '' +
+    var expected = String() +
     '<pre>One\r\nTwo\r\nThree</pre>' +
     '<p>Test</p>' +
     '<pre>Three\r\nFour\r\nFive</pre>';
@@ -253,7 +253,7 @@ test("Shouldn't strip colSpan attributes", function() {
     // IE8 uses colSpan for the colspan attribute. WYMeditor shouldn't strip it
     // just because of the camelCase
     expect(1);
-    var original = '' +
+    var original = String() +
     '<table>' +
         '<tr id="tr_1">' +
             '<td id="td_1_1" colSpan="2">1_1</td>' +
@@ -263,7 +263,7 @@ test("Shouldn't strip colSpan attributes", function() {
             '<td id="td_2_2">2_2</td>' +
         '</tr>' +
     '</table>';
-    var expected = '' +
+    var expected = String() +
     '<table>' +
         '<tr id="tr_1">' +
             '<td id="td_1_1" colspan="2">1_1</td>' +
@@ -329,7 +329,7 @@ test("Table is editable after insertion", function() {
     });
 
     var dm = wymeditor._doc.designMode;
-    ok(dm == 'on' || dm == 'On');
+    ok(dm === 'on' || dm === 'On');
 });
 
 // Only FF >= 3.5 seems to require content in <td> for them to be editable
@@ -411,7 +411,7 @@ if ($.browser.mozilla) {
 module("preformatted text", {setup: setupWym});
 
 test("Preformatted text retains spacing", function() {
-    var preHtml = '' +
+    var preHtml = String() +
         '<pre>pre1\r\n' +
         'spaced\r\n\r\n' +
         'double  spaced' +
@@ -434,7 +434,7 @@ test("Preformatted text retains spacing", function() {
         expect(8);
         equals(pre_children.length, 6,
                 "Should have text, br, text, br, br, text");
-        if (pre_children.length == 6) {
+        if (pre_children.length === 6) {
             equals(pre_children[0].nodeName.toLowerCase(), '#text');
             equals(pre_children[1].nodeName.toLowerCase(), 'br');
             equals(pre_children[2].nodeName.toLowerCase(), '#text');
@@ -450,7 +450,7 @@ test("Preformatted text retains spacing", function() {
 module("soft return", {setup: setupWym});
 
 test("Double soft returns are allowed", function() {
-    var initHtml = '' +
+    var initHtml = String() +
         '<ul>' +
             '<li>li_1<br /><br />stuff</li>' +
         '</ul>';
@@ -462,4 +462,38 @@ test("Double soft returns are allowed", function() {
 
     expect(1);
     htmlEquals(wymeditor, initHtml);
+});
+
+module("image styling", {setup: setupWym});
+
+test("_selected image is saved on mousedown", function() {
+    var initHtml = String() +
+        '<p id="noimage">Images? We dont need no stinkin images</p>' +
+        '<p>' +
+            '<img id="google" src="http://www.google.com/intl/en_com/images/srpr/logo3w.png" />' +
+        '</p>';
+
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        $noimage,
+        $google;
+
+    expect(3);
+
+    wymeditor.html(initHtml);
+    $body = $(wymeditor._doc).find('body.wym_iframe');
+
+    // Editor starts with no selected image
+    equals(wymeditor._selected_image, null);
+
+    // Clicking on a non-image doesn't change that
+    $noimage = $body.find('#noimage');
+    $noimage.mousedown();
+    equals(wymeditor._selected_image, null);
+
+
+    // Clicking an image does update the selected image
+    $google = $body.find('#google');
+    $google.mousedown();
+    equals(wymeditor._selected_image, $google[0]);
 });

@@ -1445,19 +1445,21 @@ WYMeditor.editor.prototype.configureEditorUsingRawCss = function () {
 };
 
 WYMeditor.editor.prototype.listen = function () {
+    var wym = this;
+
     // Don't use jQuery.find() on the iframe body
     // because of MSIE + jQuery + expando issue (#JQ1143)
 
-    jQuery(this._doc.body).bind("mousedown", this.mousedown);
+    jQuery(this._doc.body).bind("mousedown", function (e) {
+        wym.mousedown(e);
+    });
 };
 
 WYMeditor.editor.prototype.mousedown = function (evt) {
-    var wym = WYMeditor.INSTANCES[this.ownerDocument.title];
-
     // Store the selected image if we clicked an <img> tag
-    wym._selected_image = null;
+    this._selected_image = null;
     if (evt.target.tagName.toLowerCase() === WYMeditor.IMG) {
-        wym._selected_image = evt.target;
+        this._selected_image = evt.target;
     }
 };
 
