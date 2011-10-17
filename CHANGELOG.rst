@@ -5,18 +5,19 @@
 .. contents::
     :local:
 
-.. _version-1.0.0dev:
+.. _version-1.0.0a1:
 
-1.0.0dev
-========
-:release-date: TBA
+1.0.0a1 (Alpha 1)
+=================
+:release-date: October 17, 2011
 :branch: master
 
-.. _v1-0-0dev-enhancements:
+.. _v1-0-0a1-enhancements:
 
 Enhancements
----------------
+------------
 
+* The Embed plugin now supports embedding via an iframe.
 * List indent/outdent has been rewritten to fix several outstanding bugs in
   various browsers. Indent and outdent are now always opposites of eachother
   (outdenting what you just indented returns you to your original state) and
@@ -63,7 +64,7 @@ Enhancements
   throwing an exception immediately.
 
 
-.. _v1-0-0dev-bugfixes:
+.. _v1-0-0a1-bugfixes:
 
 Bug Fixes
 ---------
@@ -92,17 +93,3 @@ Bug Fixes
 * ``colSpan`` and ``rowSpan`` attributes are no longer stripped out in Internet
   Explorer.
 
-
-.. _version-0.5.1:
-
-0.5.1
-=====
-:release-date: TBA
-:branch: 0.5.X
-
-.. _v0-5-1-enhancements:
-
-Enhancements
----------------
-
-* The Embed plugin now supports embedding via an iframe.
