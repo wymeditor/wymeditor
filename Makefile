@@ -57,7 +57,7 @@ archive: min
 	@@echo " - Creating archive"
 	@@mkdir -p ${BUILD_DIR}/wymeditor/wymeditor
 
-	@@cp README.md CHANGELOG.rst AUTHORS *.txt ${BUILD_DIR}/wymeditor
+	@@cp README.md CHANGELOG.md AUTHORS *.txt ${BUILD_DIR}/wymeditor
 	@@cp -pR ${SRC_DIR}/examples ${BUILD_DIR}/wymeditor
 	@@cp -pR ${SRC_DIR}/jquery ${BUILD_DIR}/wymeditor
 
