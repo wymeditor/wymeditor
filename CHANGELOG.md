@@ -1,22 +1,34 @@
-================
- Change history
-================
+# Change History
 
-.. contents::
-    :local:
+This document tracks the enhancements and bug fixes between releases of
+WYMeditor.
 
-.. _version-1.0.0dev:
+## 1.0.0a1 (Alpha 1)
 
-1.0.0dev
-========
-:release-date: TBA
-:branch: master
+*release-date* October 17, 2011
 
-.. _v1-0-0dev-enhancements:
+Finally! It took us a while, but this marks the first significant release since 0.5.0rc2. It comes with:
 
-Enhancements
----------------
+* *8* major bug fixes
+* *6* major enhancements
+* A huge internal code refactor to make maintaining and improving WYMeditor easier
+* A passing unit test suite containing more than 350 tests across all supported browsers
 
+### Upgrade Cycle
+
+This release is an *Alpha Quality* release and we would appreciate any testing
+or feedback. One of the core developers is using this build in production, but
+plugin compatibility issues may exist. Further alpha and eventually beta builds
+will follow as 
+[milestone 1.x issues](https://github.com/wymeditor/wymeditor/issues?milestone=5&sort=created&direction=desc&state=open)
+are completed. Once all blocker tickets are completed, this cycle will
+culminate in a 1.0.0 stable release.  
+
+Any feedback or discussion would be appreciated on the [WYMeditor Forums](http://community.wymeditor.org/).
+
+### Enhancements
+
+* The Embed plugin now supports embedding via an iframe.
 * List indent/outdent has been rewritten to fix several outstanding bugs in
   various browsers. Indent and outdent are now always opposites of eachother
   (outdenting what you just indented returns you to your original state) and
@@ -24,9 +36,9 @@ Enhancements
 * A list plugin is now available that enables tab for list indent and
   shift + tab for list outdent.
 
-  It is available at ``wymeditor/plugins/list/jquery.wymeditor.list.js``.
+  It is available at `wymeditor/plugins/list/jquery.wymeditor.list.js`.
   To enable the plugin, create a ListPlugin object via the
-  ``wymeditor.postInit`` option. eg::
+  `wymeditor.postInit` option. eg::
 
     $('.wymeditor').wymeditor({
         postInit: function(wym) {
@@ -39,13 +51,13 @@ Enhancements
   The table editing plugin enables the following:
 
   * Users can now add and remove rows and columns from existing tables.
-  * Users can merge table cells to create either ``colspan`` or ``rowspan``.
-  * Hitting the ``tab`` key while inside a table now moves the cursor to the
+  * Users can merge table cells to create either `colspan` or `rowspan`.
+  * Hitting the `tab` key while inside a table now moves the cursor to the
     next cell, improving usability when editing tables. This can be disabled
-    by passing ``enableCellTabbing: false`` to the plugin initialization.
+    by passing `enableCellTabbing: false` to the plugin initialization.
 
-  The plugin is available at ``wymeditor/plugins/table/jquery.wymeditor.table.js``.
-  To enable the plugin, instantiate it during the ``wymeditor.postInit`` option.
+  The plugin is available at `wymeditor/plugins/table/jquery.wymeditor.table.js`.
+  To enable the plugin, instantiate it during the `wymeditor.postInit` option.
   eg::
 
     $('.wymeditor').wymeditor({
@@ -63,10 +75,7 @@ Enhancements
   throwing an exception immediately.
 
 
-.. _v1-0-0dev-bugfixes:
-
-Bug Fixes
----------
+### Bug Fixes
 
 * A rare bug affecting ie8 users with certain combinations of CSS attributes
   has been fixed (with a work-around). This bug would manifest as all content
@@ -89,20 +98,6 @@ Bug Fixes
 * Fixed some problems with ordered and unordered list nesting in Internet
   Explorer caused by a regex failing to account for IE's insertion of
   whitespace in list HTML.
-* ``colSpan`` and ``rowSpan`` attributes are no longer stripped out in Internet
+* `colSpan` and `rowSpan` attributes are no longer stripped out in Internet
   Explorer.
 
-
-.. _version-0.5.1:
-
-0.5.1
-=====
-:release-date: TBA
-:branch: 0.5.X
-
-.. _v0-5-1-enhancements:
-
-Enhancements
----------------
-
-* The Embed plugin now supports embedding via an iframe.
