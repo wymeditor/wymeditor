@@ -433,16 +433,18 @@ test("Preformatted text retains spacing", function () {
         'double  spaced' +
         '</pre>';
 
-    // Webkit doesn't use \r\n newlines
-    if ($.browser.webkit || $.browser.safari) {
+    // Only ie and firefox 3.x use \r\n newlines
+    if ($.browser.webkit || $.browser.safari || ($.browser.mozilla && $.browser.version > '2.0')) {
         preHtml = preHtml.replace(/\r/g, '');
     }
 
     var wymeditor = jQuery.wymeditors(0);
     wymeditor.html(preHtml);
 
-    if ($.browser.mozilla) {
-        // Firefox converts the text inside pre to DOM nodes, where as other
+    expect(1);
+
+    if ($.browser.mozilla && $.browser.version < '2.0') {
+        // Firefox 3.x converts the text inside pre to DOM nodes, where as other
         // browsers just use plain text
         var $body = $(wymeditor._doc).find('body.wym_iframe');
         var pre_children = $body.children('pre').contents();

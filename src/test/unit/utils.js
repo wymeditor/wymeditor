@@ -29,26 +29,31 @@ function attribToHtml(str) {
 * Apache license, Copyright (C) 2006 Google Inc.
 */
 function normalizeHtml(node) {
-    var html = '';
+    var html = '',
+        i;
     switch (node.nodeType) {
     case 1:  // an element
-        var name = node.tagName.toLowerCase();
+        var name = node.tagName.toLowerCase(),
+            attrs,
+            attr,
+            n,
+            child,
+            sortedAttrs;
 
-        html += '<'+name;
-        var attrs = node.attributes;
-        var attr;
-        var n = attrs.length;
+        html += '<' + name;
+        attrs = node.attributes;
+        n = attrs.length;
         if (n) {
             // Node has attributes, order them
-            var sortedAttrs = [];
-            for (var i = n; --i >= 0;) {
+            sortedAttrs = [];
+            for (i = n; --i >= 0;) {
                 attr = attrs[i];
                 if (attr.specified) {
                     // We only care about specified attributes
                     sortedAttrs.push(attr);
                 }
             }
-            sortedAttrs.sort( function (a, b) {
+            sortedAttrs.sort(function (a, b) {
                 return (a.name < b.name) ? -1 : a.name === b.name ? 0 : 1;
             });
             attrs = sortedAttrs;
@@ -60,7 +65,7 @@ function normalizeHtml(node) {
             }
         }
         html += '>';
-        for (var child = node.firstChild; child; child = child.nextSibling) {
+        for (child = node.firstChild; child; child = child.nextSibling) {
             html += normalizeHtml(child);
         }
         if (node.firstChild || !/^(?:br|link|img)$/.test(name)) {
@@ -68,7 +73,8 @@ function normalizeHtml(node) {
         }
 
         break;
-    case 3: case 4: // text
+    case 3:
+    case 4: // text
         html += textToHtml(node.nodeValue);
         break;
     }
@@ -82,7 +88,7 @@ function normalizeHtml(node) {
 */
 function htmlEquals(wymeditor, expected) {
     var xhtml = jQuery.trim(wymeditor.xhtml());
-    if (xhtml == '') {
+    if (xhtml === '') {
         // In jQuery 1.2.x, $('') returns an empty list, so we can't call
         // normalizeHTML. On 1.3.x or higher upgrade, we can remove this
         // check for the empty string
@@ -95,8 +101,7 @@ function htmlEquals(wymeditor, expected) {
     equals(normedActual, normedExpected);
 }
 
-function makeSelection(
-        wymeditor, startElement, endElement, startElementIndex, endElementIndex) {
+function makeSelection(wymeditor, startElement, endElement, startElementIndex, endElementIndex) {
     if (startElementIndex === null) {
         startElementIndex = 0;
     }
@@ -116,7 +121,7 @@ function makeSelection(
 
     try {
         sel.setSingleRange(range);
-    } catch(err) {
+    } catch (err) {
         // ie8 can raise an "unkown runtime error" trying to empty the range
     }
     // IE selection hack
@@ -179,12 +184,13 @@ function simulateKey(keyCode, targetElement, options) {
     Mimics https://developer.mozilla.org/en/DOM/element.isContentEditable
 */
 function isContentEditable(element) {
-    if (typeof(element.isContentEditable) !== 'undefined') {
-        // Firefox has a shortcut for us
+    // We can't use isContentEditable in firefox 7 because it doesn't take
+    // in to account designMode like firefox 3 did
+    if (!$.browser.mozilla && typeof element.isContentEditable  !== 'undefined') {
         return element.isContentEditable;
     }
 
-    if (element.contentEditable == '' || element.contentEditable === true) {
+    if (element.contentEditable === '' || element.contentEditable === true) {
         return true;
     } else if (element.contentEditable === false) {
         return false;
