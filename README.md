@@ -25,6 +25,21 @@ customize to provide the specific capabilities your users need, and you want
 users focused on the structure of their content instead of tweaking fonts and
 margins, you should give WYMeditor a try.
 
+Try It
+------
+
+Want to see what WYMeditor can do? Try the [WYMeditor examples](http://wymeditor.no.de/wymeditor/examples/) right now.
+
+These examples use the latest code from the master branch, but they should be stable.
+
+Download
+--------
+
+You can download pre-built archives of both the latest stable release and a bleeding edge version with the code currently in master.
+
+* Stable: [Version 1.0.0a1](https://github.com/downloads/wymeditor/wymeditor/wymeditor-1.0.0a1.tar.gz)
+* Bleeding Edge: [Current Master](http://wymeditor.no.de/wymeditor.tar.gz)
+
 Compatibility
 -------------
 
