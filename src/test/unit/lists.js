@@ -13,7 +13,7 @@ function testList(elmntId, action, startHtml, expectedHtml) {
     wymeditor.html(startHtml);
 
     var $body = $(wymeditor._doc).find('body.wym_iframe');
-    var actionLi = $body.find('#'+elmntId)[0];
+    var actionLi = $body.find('#' + elmntId)[0];
 
     moveSelector(wymeditor, actionLi);
 
@@ -30,7 +30,8 @@ function testList(elmntId, action, startHtml, expectedHtml) {
         ok(
             false,
             'Improper call to testList. Action must be either "indent", ' +
-            '"outdent", "ordered" or "unordered"');
+                '"outdent", "ordered" or "unordered"'
+        );
     }
 
     var actionButton = jQuery(wymeditor._box)
@@ -41,397 +42,397 @@ function testList(elmntId, action, startHtml, expectedHtml) {
     htmlEquals(wymeditor, expectedHtml);
 }
 
-var nestedListHtml = '' +
-'<ol>' +
-    '<li id="li_1">1</li>' +
-    '<li id="li_2">2' +
-        '<ol>' +
-            '<li id="li_2_1">2_1</li>' +
-            '<li id="li_2_2">2_2</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_3">3' +
-        '<ol>' +
-            '<li id="li_3_1">3_1</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_4">4</li>' +
-    '<li id="li_5">5' +
-        '<ol>' +
-            '<li id="li_5_1">5_1</li>' +
-            '<li id="li_5_2">5_2</li>' +
-            '<li id="li_5_3">5_3' +
-                '<ul>' +
-                    '<li id="li_5_3_1">5_3_1</li>' +
-                '</ul>' +
-            '</li>' +
-            '<li id="li_5_4">5_4</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_6">6</li>' +
-    '<li id="li_7">7</li>' +
-    '<li id="li_8">8</li>' +
-'</ol>';
-
-var li_1_indentedHtml = '' +
-'<ol>' +
-    '<li class="spacer_li">' +
+var nestedListHtml = String() +
         '<ol>' +
             '<li id="li_1">1</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_2">2' +
-        '<ol>' +
-            '<li id="li_2_1">2_1</li>' +
-            '<li id="li_2_2">2_2</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_3">3' +
-        '<ol>' +
-            '<li id="li_3_1">3_1</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_4">4</li>' +
-    '<li id="li_5">5' +
-        '<ol>' +
-            '<li id="li_5_1">5_1</li>' +
-            '<li id="li_5_2">5_2</li>' +
-            '<li id="li_5_3">5_3' +
-                '<ul>' +
-                    '<li id="li_5_3_1">5_3_1</li>' +
-                '</ul>' +
-            '</li>' +
-            '<li id="li_5_4">5_4</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_6">6</li>' +
-    '<li id="li_7">7</li>' +
-    '<li id="li_8">8</li>' +
-'</ol>';
-
-var li_2_indentedHtml = '' +
-'<ol>' +
-    '<li id="li_1">1' +
-        '<ol>' +
-            '<li id="li_2">2</li>' +
-            '<li id="li_2_1">2_1</li>' +
-            '<li id="li_2_2">2_2</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_3">3' +
-        '<ol>' +
-            '<li id="li_3_1">3_1</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_4">4</li>' +
-    '<li id="li_5">5' +
-        '<ol>' +
-            '<li id="li_5_1">5_1</li>' +
-            '<li id="li_5_2">5_2</li>' +
-            '<li id="li_5_3">5_3' +
-                '<ul>' +
-                    '<li id="li_5_3_1">5_3_1</li>' +
-                '</ul>' +
-            '</li>' +
-            '<li id="li_5_4">5_4</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_6">6</li>' +
-    '<li id="li_7">7</li>' +
-    '<li id="li_8">8</li>' +
-'</ol>';
-
-var li_2_2_indentedHtml = '' +
-'<ol>' +
-    '<li id="li_1">1</li>' +
-    '<li id="li_2">2' +
-        '<ol>' +
-            '<li id="li_2_1">2_1' +
+            '<li id="li_2">2' +
                 '<ol>' +
+                    '<li id="li_2_1">2_1</li>' +
                     '<li id="li_2_2">2_2</li>' +
                 '</ol>' +
             '</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_3">3' +
-        '<ol>' +
-            '<li id="li_3_1">3_1</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_4">4</li>' +
-    '<li id="li_5">5' +
-        '<ol>' +
-            '<li id="li_5_1">5_1</li>' +
-            '<li id="li_5_2">5_2</li>' +
-            '<li id="li_5_3">5_3' +
-                '<ul>' +
-                    '<li id="li_5_3_1">5_3_1</li>' +
-                '</ul>' +
+            '<li id="li_3">3' +
+                '<ol>' +
+                    '<li id="li_3_1">3_1</li>' +
+                '</ol>' +
             '</li>' +
-            '<li id="li_5_4">5_4</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_6">6</li>' +
-    '<li id="li_7">7</li>' +
-    '<li id="li_8">8</li>' +
-'</ol>';
-
-var li_3_indentedHtml = '' +
-'<ol>' +
-    '<li id="li_1">1</li>' +
-    '<li id="li_2">2' +
-        '<ol>' +
-            '<li id="li_2_1">2_1</li>' +
-            '<li id="li_2_2">2_2</li>' +
-            '<li id="li_3">3</li>' +
-            '<li id="li_3_1">3_1</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_4">4</li>' +
-    '<li id="li_5">5' +
-        '<ol>' +
-            '<li id="li_5_1">5_1</li>' +
-            '<li id="li_5_2">5_2</li>' +
-            '<li id="li_5_3">5_3' +
-                '<ul>' +
-                    '<li id="li_5_3_1">5_3_1</li>' +
-                '</ul>' +
-            '</li>' +
-            '<li id="li_5_4">5_4</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_6">6</li>' +
-    '<li id="li_7">7</li>' +
-    '<li id="li_8">8</li>' +
-'</ol>';
-
-var li_4_indentedHtml = '' +
-'<ol>' +
-    '<li id="li_1">1</li>' +
-    '<li id="li_2">2' +
-        '<ol>' +
-            '<li id="li_2_1">2_1</li>' +
-            '<li id="li_2_2">2_2</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_3">3' +
-        '<ol>' +
-            '<li id="li_3_1">3_1</li>' +
             '<li id="li_4">4</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_5">5' +
-        '<ol>' +
-            '<li id="li_5_1">5_1</li>' +
-            '<li id="li_5_2">5_2</li>' +
-            '<li id="li_5_3">5_3' +
-                '<ul>' +
-                    '<li id="li_5_3_1">5_3_1</li>' +
-                '</ul>' +
+            '<li id="li_5">5' +
+                '<ol>' +
+                    '<li id="li_5_1">5_1</li>' +
+                    '<li id="li_5_2">5_2</li>' +
+                    '<li id="li_5_3">5_3' +
+                        '<ul>' +
+                            '<li id="li_5_3_1">5_3_1</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_5_4">5_4</li>' +
+                '</ol>' +
             '</li>' +
-            '<li id="li_5_4">5_4</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_6">6</li>' +
-    '<li id="li_7">7</li>' +
-    '<li id="li_8">8</li>' +
-'</ol>';
+            '<li id="li_6">6</li>' +
+            '<li id="li_7">7</li>' +
+            '<li id="li_8">8</li>' +
+        '</ol>';
 
-var li_5_3_indentedHtml = '' +
-'<ol>' +
-    '<li id="li_1">1</li>' +
-    '<li id="li_2">2' +
-        '<ol>' +
-            '<li id="li_2_1">2_1</li>' +
-            '<li id="li_2_2">2_2</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_3">3' +
-        '<ol>' +
-            '<li id="li_3_1">3_1</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_4">4</li>' +
-    '<li id="li_5">5' +
-        '<ol>' +
-            '<li id="li_5_1">5_1</li>' +
-            '<li id="li_5_2">5_2' +
-                '<ul>' +
-                    '<li id="li_5_3">5_3</li>' +
-                    '<li id="li_5_3_1">5_3_1</li>' +
-                '</ul>' +
-            '</li>' +
-            '<li id="li_5_4">5_4</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_6">6</li>' +
-    '<li id="li_7">7</li>' +
-    '<li id="li_8">8</li>' +
-'</ol>';
-
-var li_5_3_1_outdentedHtml= '' +
-'<ol>' +
-    '<li id="li_1">1</li>' +
-    '<li id="li_2">2' +
-        '<ol>' +
-            '<li id="li_2_1">2_1</li>' +
-            '<li id="li_2_2">2_2</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_3">3' +
-        '<ol>' +
-            '<li id="li_3_1">3_1</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_4">4</li>' +
-    '<li id="li_5">5' +
-        '<ol>' +
-            '<li id="li_5_1">5_1</li>' +
-            '<li id="li_5_2">5_2</li>' +
-            '<li id="li_5_3">5_3</li>' +
-            '<li id="li_5_3_1">5_3_1</li>' +
-            '<li id="li_5_4">5_4</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_6">6</li>' +
-    '<li id="li_7">7</li>' +
-    '<li id="li_8">8</li>' +
-'</ol>';
-
-var li_5_3_outdentedHtml = '' +
-'<ol>' +
-    '<li id="li_1">1</li>' +
-    '<li id="li_2">2' +
-        '<ol>' +
-            '<li id="li_2_1">2_1</li>' +
-            '<li id="li_2_2">2_2</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_3">3' +
-        '<ol>' +
-            '<li id="li_3_1">3_1</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_4">4</li>' +
-    '<li id="li_5">5' +
-        '<ol>' +
-            '<li id="li_5_1">5_1</li>' +
-            '<li id="li_5_2">5_2</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_5_3">5_3' +
+var li_1_indentedHtml = String() +
         '<ol>' +
             '<li class="spacer_li">' +
-                '<ul>' +
-                    '<li id="li_5_3_1">5_3_1</li>' +
-                '</ul>' +
+                '<ol>' +
+                    '<li id="li_1">1</li>' +
+                '</ol>' +
             '</li>' +
-            '<li id="li_5_4">5_4</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_6">6</li>' +
-    '<li id="li_7">7</li>' +
-    '<li id="li_8">8</li>' +
-'</ol>';
-
-var li_7_indentedHtml = '' +
-'<ol>' +
-    '<li id="li_1">1</li>' +
-    '<li id="li_2">2' +
-        '<ol>' +
-            '<li id="li_2_1">2_1</li>' +
-            '<li id="li_2_2">2_2</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_3">3' +
-        '<ol>' +
-            '<li id="li_3_1">3_1</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_4">4</li>' +
-    '<li id="li_5">5' +
-        '<ol>' +
-            '<li id="li_5_1">5_1</li>' +
-            '<li id="li_5_2">5_2</li>' +
-            '<li id="li_5_3">5_3' +
-                '<ul>' +
-                    '<li id="li_5_3_1">5_3_1</li>' +
-                '</ul>' +
+            '<li id="li_2">2' +
+                '<ol>' +
+                    '<li id="li_2_1">2_1</li>' +
+                    '<li id="li_2_2">2_2</li>' +
+                '</ol>' +
             '</li>' +
-            '<li id="li_5_4">5_4</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_6">6' +
-        '<ol>' +
+            '<li id="li_3">3' +
+                '<ol>' +
+                    '<li id="li_3_1">3_1</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_4">4</li>' +
+            '<li id="li_5">5' +
+                '<ol>' +
+                    '<li id="li_5_1">5_1</li>' +
+                    '<li id="li_5_2">5_2</li>' +
+                    '<li id="li_5_3">5_3' +
+                        '<ul>' +
+                            '<li id="li_5_3_1">5_3_1</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_5_4">5_4</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_6">6</li>' +
             '<li id="li_7">7</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_8">8</li>' +
-'</ol>';
+            '<li id="li_8">8</li>' +
+        '</ol>';
 
-test("First-level w/sublist indent/outdent", function() {
+var li_2_indentedHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1' +
+                '<ol>' +
+                    '<li id="li_2">2</li>' +
+                    '<li id="li_2_1">2_1</li>' +
+                    '<li id="li_2_2">2_2</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_3">3' +
+                '<ol>' +
+                    '<li id="li_3_1">3_1</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_4">4</li>' +
+            '<li id="li_5">5' +
+                '<ol>' +
+                    '<li id="li_5_1">5_1</li>' +
+                    '<li id="li_5_2">5_2</li>' +
+                    '<li id="li_5_3">5_3' +
+                        '<ul>' +
+                            '<li id="li_5_3_1">5_3_1</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_5_4">5_4</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_6">6</li>' +
+            '<li id="li_7">7</li>' +
+            '<li id="li_8">8</li>' +
+        '</ol>';
+
+var li_2_2_indentedHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2' +
+                '<ol>' +
+                    '<li id="li_2_1">2_1' +
+                        '<ol>' +
+                            '<li id="li_2_2">2_2</li>' +
+                        '</ol>' +
+                    '</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_3">3' +
+                '<ol>' +
+                    '<li id="li_3_1">3_1</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_4">4</li>' +
+            '<li id="li_5">5' +
+                '<ol>' +
+                    '<li id="li_5_1">5_1</li>' +
+                    '<li id="li_5_2">5_2</li>' +
+                    '<li id="li_5_3">5_3' +
+                        '<ul>' +
+                            '<li id="li_5_3_1">5_3_1</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_5_4">5_4</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_6">6</li>' +
+            '<li id="li_7">7</li>' +
+            '<li id="li_8">8</li>' +
+        '</ol>';
+
+var li_3_indentedHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2' +
+                '<ol>' +
+                    '<li id="li_2_1">2_1</li>' +
+                    '<li id="li_2_2">2_2</li>' +
+                    '<li id="li_3">3</li>' +
+                    '<li id="li_3_1">3_1</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_4">4</li>' +
+            '<li id="li_5">5' +
+                '<ol>' +
+                    '<li id="li_5_1">5_1</li>' +
+                    '<li id="li_5_2">5_2</li>' +
+                    '<li id="li_5_3">5_3' +
+                        '<ul>' +
+                            '<li id="li_5_3_1">5_3_1</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_5_4">5_4</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_6">6</li>' +
+            '<li id="li_7">7</li>' +
+            '<li id="li_8">8</li>' +
+        '</ol>';
+
+var li_4_indentedHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2' +
+                '<ol>' +
+                    '<li id="li_2_1">2_1</li>' +
+                    '<li id="li_2_2">2_2</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_3">3' +
+                '<ol>' +
+                    '<li id="li_3_1">3_1</li>' +
+                    '<li id="li_4">4</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_5">5' +
+                '<ol>' +
+                    '<li id="li_5_1">5_1</li>' +
+                    '<li id="li_5_2">5_2</li>' +
+                    '<li id="li_5_3">5_3' +
+                        '<ul>' +
+                            '<li id="li_5_3_1">5_3_1</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_5_4">5_4</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_6">6</li>' +
+            '<li id="li_7">7</li>' +
+            '<li id="li_8">8</li>' +
+        '</ol>';
+
+var li_5_3_indentedHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2' +
+                '<ol>' +
+                    '<li id="li_2_1">2_1</li>' +
+                    '<li id="li_2_2">2_2</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_3">3' +
+                '<ol>' +
+                    '<li id="li_3_1">3_1</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_4">4</li>' +
+            '<li id="li_5">5' +
+                '<ol>' +
+                    '<li id="li_5_1">5_1</li>' +
+                    '<li id="li_5_2">5_2' +
+                        '<ul>' +
+                            '<li id="li_5_3">5_3</li>' +
+                            '<li id="li_5_3_1">5_3_1</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_5_4">5_4</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_6">6</li>' +
+            '<li id="li_7">7</li>' +
+            '<li id="li_8">8</li>' +
+        '</ol>';
+
+var li_5_3_1_outdentedHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2' +
+                '<ol>' +
+                    '<li id="li_2_1">2_1</li>' +
+                    '<li id="li_2_2">2_2</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_3">3' +
+                '<ol>' +
+                    '<li id="li_3_1">3_1</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_4">4</li>' +
+            '<li id="li_5">5' +
+                '<ol>' +
+                    '<li id="li_5_1">5_1</li>' +
+                    '<li id="li_5_2">5_2</li>' +
+                    '<li id="li_5_3">5_3</li>' +
+                    '<li id="li_5_3_1">5_3_1</li>' +
+                    '<li id="li_5_4">5_4</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_6">6</li>' +
+            '<li id="li_7">7</li>' +
+            '<li id="li_8">8</li>' +
+        '</ol>';
+
+var li_5_3_outdentedHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2' +
+                '<ol>' +
+                    '<li id="li_2_1">2_1</li>' +
+                    '<li id="li_2_2">2_2</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_3">3' +
+                '<ol>' +
+                    '<li id="li_3_1">3_1</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_4">4</li>' +
+            '<li id="li_5">5' +
+                '<ol>' +
+                    '<li id="li_5_1">5_1</li>' +
+                    '<li id="li_5_2">5_2</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_5_3">5_3' +
+                '<ol>' +
+                    '<li class="spacer_li">' +
+                        '<ul>' +
+                            '<li id="li_5_3_1">5_3_1</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_5_4">5_4</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_6">6</li>' +
+            '<li id="li_7">7</li>' +
+            '<li id="li_8">8</li>' +
+        '</ol>';
+
+var li_7_indentedHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2' +
+                '<ol>' +
+                    '<li id="li_2_1">2_1</li>' +
+                    '<li id="li_2_2">2_2</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_3">3' +
+                '<ol>' +
+                    '<li id="li_3_1">3_1</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_4">4</li>' +
+            '<li id="li_5">5' +
+                '<ol>' +
+                    '<li id="li_5_1">5_1</li>' +
+                    '<li id="li_5_2">5_2</li>' +
+                    '<li id="li_5_3">5_3' +
+                        '<ul>' +
+                            '<li id="li_5_3_1">5_3_1</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_5_4">5_4</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_6">6' +
+                '<ol>' +
+                    '<li id="li_7">7</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_8">8</li>' +
+        '</ol>';
+
+test("First-level w/sublist indent/outdent", function () {
     expect(4);
 
     testList('li_2', 'indent', nestedListHtml, li_2_indentedHtml);
     testList('li_2', 'outdent', li_2_indentedHtml, nestedListHtml);
 });
 
-test("First-level w/sublist joins lists indent/outdent", function() {
+test("First-level w/sublist joins lists indent/outdent", function () {
     expect(4);
 
     testList('li_3', 'indent', nestedListHtml, li_3_indentedHtml);
     testList('li_3', 'outdent', li_3_indentedHtml, nestedListHtml);
 });
 
-test("Outdent joining list with longer content", function() {
+test("Outdent joining list with longer content", function () {
     expect(2);
 
     testList('li_5_3_1', 'outdent', nestedListHtml, li_5_3_1_outdentedHtml);
     // Can't go the other way because we've turned a ul to an ol
 });
-test("Outdent w/sublist outdent/indent", function() {
+test("Outdent w/sublist outdent/indent", function () {
     expect(4);
 
     testList('li_5_3', 'outdent', nestedListHtml, li_5_3_outdentedHtml);
     testList('li_5_3', 'indent', li_5_3_outdentedHtml, nestedListHtml);
 });
 
-test("Second-level w/sublist indent/outdent", function() {
+test("Second-level w/sublist indent/outdent", function () {
     expect(4);
 
     testList('li_5_3', 'indent', nestedListHtml, li_5_3_indentedHtml);
     testList('li_5_3', 'outdent', li_5_3_indentedHtml, nestedListHtml);
 });
 
-test("First-level no-sublist indent/outdent", function() {
+test("First-level no-sublist indent/outdent", function () {
     expect(4);
 
     testList('li_7', 'indent', nestedListHtml, li_7_indentedHtml);
     testList('li_7', 'outdent', li_7_indentedHtml, nestedListHtml);
 });
 
-test("Second-level no-sublist indent/outdent", function() {
+test("Second-level no-sublist indent/outdent", function () {
     expect(4);
 
     testList('li_2_2', 'indent', nestedListHtml, li_2_2_indentedHtml);
     testList('li_2_2', 'outdent', li_2_2_indentedHtml, nestedListHtml);
 });
 
-test("First-level no-sublist first-item indent/outdent", function() {
+test("First-level no-sublist first-item indent/outdent", function () {
     expect(4);
 
     testList('li_1', 'indent', nestedListHtml, li_1_indentedHtml);
     testList('li_1', 'outdent', li_1_indentedHtml, nestedListHtml);
 });
 
-test("First-level no-sublist previous-sublist indent/outdent", function() {
+test("First-level no-sublist previous-sublist indent/outdent", function () {
     expect(4);
 
     testList('li_4', 'indent', nestedListHtml, li_4_indentedHtml);
     testList('li_4', 'outdent', li_4_indentedHtml, nestedListHtml);
 });
 
-test("Can't dedent first-level", function() {
+test("Can't dedent first-level", function () {
     expect(10);
 
     testList('li_1', 'outdent', nestedListHtml, nestedListHtml);
@@ -443,192 +444,200 @@ test("Can't dedent first-level", function() {
 
 module("list-broken_html", {setup: setupWym});
 
-var doubleIndentHtml = '' +
-'<ol>' +
-    '<li id="li_1">1' +
+var doubleIndentHtml = String() +
         '<ol>' +
-            '<li>' +
+            '<li id="li_1">1' +
                 '<ol>' +
-                    '<li id="li_1_1_1">1_1_1' +
+                    '<li>' +
                         '<ol>' +
-                            '<li id="li_1_1_1_1">1_1_1_1</li>' +
-                            '<li id="li_1_1_1_2">1_1_1_2</li>' +
-                            '<li id="li_1_1_1_3">1_1_1_3</li>' +
+                            '<li id="li_1_1_1">1_1_1' +
+                                '<ol>' +
+                                    '<li id="li_1_1_1_1">1_1_1_1</li>' +
+                                    '<li id="li_1_1_1_2">1_1_1_2</li>' +
+                                    '<li id="li_1_1_1_3">1_1_1_3</li>' +
+                                    '<li id="li_1_1_1_4">1_1_1_4</li>' +
+                                '</ol>' +
+                            '</li>' +
+                        '</ol>' +
+                    '</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>';
+var diFirstOutdentHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1' +
+                '<ol>' +
+                    '<li>' +
+                        '<ol>' +
+                            '<li id="li_1_1_1">1_1_1' +
+                                '<ol>' +
+                                    '<li id="li_1_1_1_1">1_1_1_1</li>' +
+                                    '<li id="li_1_1_1_2">1_1_1_2</li>' +
+                                    '<li id="li_1_1_1_3">1_1_1_3</li>' +
+                                '</ol>' +
+                            '</li>' +
                             '<li id="li_1_1_1_4">1_1_1_4</li>' +
                         '</ol>' +
                     '</li>' +
                 '</ol>' +
             '</li>' +
-        '</ol>' +
-    '</li>' +
-'</ol>';
-var diFirstOutdentHtml = '' +
-'<ol>' +
-    '<li id="li_1">1' +
+        '</ol>';
+var diSecondOutdentHtml = String() +
         '<ol>' +
-            '<li>' +
+            '<li id="li_1">1' +
                 '<ol>' +
-                    '<li id="li_1_1_1">1_1_1' +
+                    '<li>' +
                         '<ol>' +
-                            '<li id="li_1_1_1_1">1_1_1_1</li>' +
-                            '<li id="li_1_1_1_2">1_1_1_2</li>' +
-                            '<li id="li_1_1_1_3">1_1_1_3</li>' +
+                            '<li id="li_1_1_1">1_1_1' +
+                                '<ol>' +
+                                    '<li id="li_1_1_1_1">1_1_1_1</li>' +
+                                    '<li id="li_1_1_1_2">1_1_1_2</li>' +
+                                    '<li id="li_1_1_1_3">1_1_1_3</li>' +
+                                '</ol>' +
+                            '</li>' +
                         '</ol>' +
                     '</li>' +
                     '<li id="li_1_1_1_4">1_1_1_4</li>' +
                 '</ol>' +
             '</li>' +
-        '</ol>' +
-    '</li>' +
-'</ol>';
-var diSecondOutdentHtml = '' +
-'<ol>' +
-    '<li id="li_1">1' +
+        '</ol>';
+var diThirdOutdentHtml = String() +
         '<ol>' +
-            '<li>' +
+            '<li id="li_1">1' +
                 '<ol>' +
-                    '<li id="li_1_1_1">1_1_1' +
+                    '<li>' +
                         '<ol>' +
-                            '<li id="li_1_1_1_1">1_1_1_1</li>' +
-                            '<li id="li_1_1_1_2">1_1_1_2</li>' +
-                            '<li id="li_1_1_1_3">1_1_1_3</li>' +
+                            '<li id="li_1_1_1">1_1_1' +
+                                '<ol>' +
+                                    '<li id="li_1_1_1_1">1_1_1_1</li>' +
+                                    '<li id="li_1_1_1_2">1_1_1_2</li>' +
+                                    '<li id="li_1_1_1_3">1_1_1_3</li>' +
+                                '</ol>' +
+                            '</li>' +
                         '</ol>' +
                     '</li>' +
                 '</ol>' +
             '</li>' +
             '<li id="li_1_1_1_4">1_1_1_4</li>' +
-        '</ol>' +
-    '</li>' +
-'</ol>';
-var diThirdOutdentHtml = '' +
-'<ol>' +
-    '<li id="li_1">1' +
-        '<ol>' +
-            '<li>' +
-                '<ol>' +
-                    '<li id="li_1_1_1">1_1_1' +
-                        '<ol>' +
-                            '<li id="li_1_1_1_1">1_1_1_1</li>' +
-                            '<li id="li_1_1_1_2">1_1_1_2</li>' +
-                            '<li id="li_1_1_1_3">1_1_1_3</li>' +
-                        '</ol>' +
-                    '</li>' +
-                '</ol>' +
-            '</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_1_1_1_4">1_1_1_4</li>' +
-'</ol>';
+        '</ol>';
 
-test("Triple outdent doesn't break HTML", function() {
+test("Triple outdent doesn't break HTML", function () {
     expect(6);
 
     testList('li_1_1_1_4', 'outdent', doubleIndentHtml, diFirstOutdentHtml);
     testList(
-        'li_1_1_1_4', 'outdent', diFirstOutdentHtml, diSecondOutdentHtml);
+        'li_1_1_1_4',
+        'outdent',
+        diFirstOutdentHtml,
+        diSecondOutdentHtml
+    );
     testList(
-        'li_1_1_1_4', 'outdent', diSecondOutdentHtml, diThirdOutdentHtml);
+        'li_1_1_1_4',
+        'outdent',
+        diSecondOutdentHtml,
+        diThirdOutdentHtml
+    );
 });
 
-var orderedHtml = '' +
-'<ol>' +
-    '<li id="li_1">1' +
+var orderedHtml = String() +
         '<ol>' +
-            '<li id="li_1_1">1_1' +
+            '<li id="li_1">1' +
                 '<ol>' +
-                    '<li id="li_1_1_1">1_1_1' +
+                    '<li id="li_1_1">1_1' +
                         '<ol>' +
-                            '<li id="li_1_1_1_1">1_1_1_1</li>' +
+                            '<li id="li_1_1_1">1_1_1' +
+                                '<ol>' +
+                                    '<li id="li_1_1_1_1">1_1_1_1</li>' +
+                                '</ol>' +
+                            '</li>' +
                         '</ol>' +
                     '</li>' +
                 '</ol>' +
             '</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_2">2</li>' +
-'</ol>';
-var li_2_unorderedHtml= '' +
-'<ul>' +
-    '<li id="li_1">1' +
-        '<ol>' +
-            '<li id="li_1_1">1_1' +
+            '<li id="li_2">2</li>' +
+        '</ol>';
+var li_2_unorderedHtml = String() +
+        '<ul>' +
+            '<li id="li_1">1' +
                 '<ol>' +
-                    '<li id="li_1_1_1">1_1_1' +
+                    '<li id="li_1_1">1_1' +
                         '<ol>' +
-                            '<li id="li_1_1_1_1">1_1_1_1</li>' +
+                            '<li id="li_1_1_1">1_1_1' +
+                                '<ol>' +
+                                    '<li id="li_1_1_1_1">1_1_1_1</li>' +
+                                '</ol>' +
+                            '</li>' +
                         '</ol>' +
                     '</li>' +
                 '</ol>' +
             '</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_2">2</li>' +
-'</ul>';
-var li_1_1_1_unorderedHtml = '' +
-'<ol>' +
-    '<li id="li_1">1' +
+            '<li id="li_2">2</li>' +
+        '</ul>';
+var li_1_1_1_unorderedHtml = String() +
         '<ol>' +
-            '<li id="li_1_1">1_1' +
-                '<ul>' +
-                    '<li id="li_1_1_1">1_1_1' +
-                        '<ol>' +
-                            '<li id="li_1_1_1_1">1_1_1_1</li>' +
-                        '</ol>' +
-                    '</li>' +
-                '</ul>' +
-            '</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_2">2</li>' +
-'</ol>';
-var li_1_1_1_1_unorderedHtml = '' +
-'<ol>' +
-    '<li id="li_1">1' +
-        '<ol>' +
-            '<li id="li_1_1">1_1' +
+            '<li id="li_1">1' +
                 '<ol>' +
-                    '<li id="li_1_1_1">1_1_1' +
+                    '<li id="li_1_1">1_1' +
                         '<ul>' +
-                            '<li id="li_1_1_1_1">1_1_1_1</li>' +
+                            '<li id="li_1_1_1">1_1_1' +
+                                '<ol>' +
+                                    '<li id="li_1_1_1_1">1_1_1_1</li>' +
+                                '</ol>' +
+                            '</li>' +
                         '</ul>' +
                     '</li>' +
                 '</ol>' +
             '</li>' +
-        '</ol>' +
-    '</li>' +
-    '<li id="li_2">2</li>' +
-'</ol>';
+            '<li id="li_2">2</li>' +
+        '</ol>';
+var li_1_1_1_1_unorderedHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1' +
+                '<ol>' +
+                    '<li id="li_1_1">1_1' +
+                        '<ol>' +
+                            '<li id="li_1_1_1">1_1_1' +
+                                '<ul>' +
+                                    '<li id="li_1_1_1_1">1_1_1_1</li>' +
+                                '</ul>' +
+                            '</li>' +
+                        '</ol>' +
+                    '</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_2">2</li>' +
+        '</ol>';
 
 module("list-order_unordered_conversion", {setup: setupWym});
 if (!SKIP_KNOWN_FAILING_TESTS) {
-test("Ordered to unordered second item", function() {
-    expect(4);
+    test("Ordered to unordered second item", function () {
+        expect(4);
 
-    testList('li_2', 'unordered', orderedHtml, li_2_unorderedHtml);
-    testList('li_2', 'ordered', li_2_unorderedHtml, orderedHtml);
-});
+        testList('li_2', 'unordered', orderedHtml, li_2_unorderedHtml);
+        testList('li_2', 'ordered', li_2_unorderedHtml, orderedHtml);
+    });
 }
 
 if (!SKIP_KNOWN_FAILING_TESTS) {
-test("Ordered to unordered nested", function() {
-    expect(4);
+    test("Ordered to unordered nested", function () {
+        expect(4);
 
-    testList('li_1_1_1', 'unordered', orderedHtml, li_1_1_1_unorderedHtml);
-    testList('li_1_1_1', 'ordered', li_1_1_1_unorderedHtml, orderedHtml);
-});
+        testList('li_1_1_1', 'unordered', orderedHtml, li_1_1_1_unorderedHtml);
+        testList('li_1_1_1', 'ordered', li_1_1_1_unorderedHtml, orderedHtml);
+    });
 }
 if ($.browser.safari && !SKIP_KNOWN_FAILING_TESTS) {
-test("Ordered to unordered one item", function() {
-    expect(4);
+    test("Ordered to unordered one item", function () {
+        expect(4);
 
-    testList('li_1_1_1_1', 'unordered', orderedHtml, li_1_1_1_1_unorderedHtml);
-    testList('li_1_1_1_1', 'ordered', li_1_1_1_1_unorderedHtml, orderedHtml);
-});
+        testList('li_1_1_1_1', 'unordered', orderedHtml, li_1_1_1_1_unorderedHtml);
+        testList('li_1_1_1_1', 'ordered', li_1_1_1_1_unorderedHtml, orderedHtml);
+    });
 }
 
 module("list-correction", {setup: setupWym});
 
-test("Should correct invalid list nesting", function() {
+test("Should correct invalid list nesting", function () {
     expect(2);
 
     var wymeditor = jQuery.wymeditors(0);
@@ -646,33 +655,33 @@ test("Should correct invalid list nesting", function() {
     htmlEquals(wymeditor, expected);
 });
 
-test("Double indent correction", function() {
+test("Double indent correction", function () {
     expect(1);
 
     var wymeditor = jQuery.wymeditors(0);
 
-    var brokenHtml = '' +
-    '<ol>' +
-        '<li id="li_1">1' +
+    var brokenHtml = String() +
             '<ol>' +
-                '<ol>' +
-                    '<li id="li_1_1_1">1_1_1</li>' +
-                '</ol>' +
-            '</ol>' +
-        '</li>' +
-    '</ol>';
-    var repairedHtml = '' +
-    '<ol>' +
-        '<li id="li_1">1' +
-            '<ol>' +
-                '<li>' +
+                '<li id="li_1">1' +
                     '<ol>' +
-                        '<li id="li_1_1_1">1_1_1</li>' +
+                        '<ol>' +
+                            '<li id="li_1_1_1">1_1_1</li>' +
+                        '</ol>' +
                     '</ol>' +
                 '</li>' +
-            '</ol>' +
-        '</li>' +
-    '</ol>';
+            '</ol>';
+    var repairedHtml = String() +
+            '<ol>' +
+                '<li id="li_1">1' +
+                    '<ol>' +
+                        '<li>' +
+                            '<ol>' +
+                                '<li id="li_1_1_1">1_1_1</li>' +
+                            '</ol>' +
+                        '</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>';
 
     wymeditor.html(brokenHtml);
     htmlEquals(wymeditor, repairedHtml);
@@ -680,7 +689,7 @@ test("Double indent correction", function() {
 
 module("list-tabbing", {setup: setupWym});
 
-test("Tab key indents", function() {
+test("Tab key indents", function () {
     expect(2);
 
     var initHtml = nestedListHtml;
@@ -691,7 +700,7 @@ test("Tab key indents", function() {
     wymeditor.html(initHtml);
 
     var $body = $(wymeditor._doc).find('body.wym_iframe');
-    var actionElement = $body.find('#'+elmntId)[0];
+    var actionElement = $body.find('#' + elmntId)[0];
 
     moveSelector(wymeditor, actionElement);
 
@@ -699,23 +708,23 @@ test("Tab key indents", function() {
     htmlEquals(wymeditor, expectedHtml);
 });
 
-test("Shift+Tab outdents", function() {
+test("Shift+Tab outdents", function () {
     expect(2);
 
-    var initHtml = '' +
-    '<ol>' +
-        '<li>' +
+    var initHtml = String() +
+            '<ol>' +
+                '<li>' +
+                    '<ol>' +
+                        '<li id="li_1_1">1_1</li>' +
+                    '</ol>' +
+                '</li>' +
+                '<li id="li_2">2</li>' +
+            '</ol>';
+    var expectedHtml = String() +
             '<ol>' +
                 '<li id="li_1_1">1_1</li>' +
-            '</ol>' +
-        '</li>' +
-        '<li id="li_2">2</li>' +
-    '</ol>';
-    var expectedHtml = '' +
-    '<ol>' +
-        '<li id="li_1_1">1_1</li>' +
-        '<li id="li_2">2</li>' +
-    '</ol>';
+                '<li id="li_2">2</li>' +
+            '</ol>';
 
     var elmntId = "li_1_1";
 
@@ -723,7 +732,7 @@ test("Shift+Tab outdents", function() {
     wymeditor.html(initHtml);
 
     var $body = $(wymeditor._doc).find('body.wym_iframe');
-    var actionElement = $body.find('#'+elmntId)[0];
+    var actionElement = $body.find('#' + elmntId)[0];
 
     moveSelector(wymeditor, actionElement);
 
@@ -731,7 +740,7 @@ test("Shift+Tab outdents", function() {
     htmlEquals(wymeditor, expectedHtml);
 });
 
-test("Tab has no effect outside lists", function() {
+test("Tab has no effect outside lists", function () {
     expect(2);
 
     var initHtml = '<p id="p_1">test</p>';
@@ -742,7 +751,7 @@ test("Tab has no effect outside lists", function() {
     wymeditor.html(initHtml);
 
     var $body = $(wymeditor._doc).find('body.wym_iframe');
-    var actionElement = $body.find('#'+elmntId)[0];
+    var actionElement = $body.find('#' + elmntId)[0];
 
     moveSelector(wymeditor, actionElement);
 
