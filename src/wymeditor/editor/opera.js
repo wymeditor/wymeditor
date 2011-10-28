@@ -20,7 +20,6 @@
 WYMeditor.WymClassOpera = function(wym) {
     this._wym = wym;
     this._class = "class";
-    this._newLine = "\r\n";
 };
 
 WYMeditor.WymClassOpera.prototype.initIframe = function(iframe) {
