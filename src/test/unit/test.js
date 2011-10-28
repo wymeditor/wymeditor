@@ -293,24 +293,65 @@ test("Shouldn't strip colSpan attributes", function () {
 
 module("Post Init", {setup: setupWym});
 
-if (!$.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
-    test("Commands: html(), paste()", function () {
-        expect(2);
-        var testText1 = '<p>This is some text with which to test.<\/p>';
-        var wymeditor = jQuery.wymeditors(0);
+test("Commands: html(), paste()", function () {
+    expect(2);
+    var testText1 = '<p>This is some text with which to test.<\/p>';
+    var wymeditor = jQuery.wymeditors(0);
 
-        wymeditor.html(testText1);
-        htmlEquals(wymeditor, testText1);
+    wymeditor.html(testText1);
+    htmlEquals(wymeditor, testText1);
 
-        var testText2 = 'Some <strong>other text<\/strong> with which to test.';
-        wymeditor._doc.body.focus();
-        wymeditor.paste(testText2);
+    var testText2 = 'Some <strong>other text<\/strong> with which to test.';
+    wymeditor._doc.body.focus();
+    wymeditor.paste(testText2);
 
-        // The pasted content should be wrapped in a paragraph
-        var expected = testText1 + '<p>' + testText2 + '<\/p>';
-        htmlEquals(wymeditor, expected);
-    });
-}
+    // The pasted content should be wrapped in a paragraph
+    var expected = testText1 + '<p>' + testText2 + '<\/p>';
+    htmlEquals(wymeditor, expected);
+});
+
+test("Paste from word", function () {
+    var textText,
+        wymeditor,
+        expected;
+
+    expect(1);
+    testText = 'sentence\r\n' +
+        'sentence2\r\n' +
+        '1.list1\r\n' +
+        '2.list2\r\n' +
+        '3.list3\r\n' +
+        'sentence3\r\n\r\n' +
+        'gap\r\n\r\n' +
+        'gap2';
+    if ($.browser !== 'msie') {
+        testText = testText.replace(/\r/g, '');
+
+    }
+    expectedHtml = String() +
+        '<p>' +
+        'sentence<br />' +
+        'sentence2<br />' +
+        '1.list1<br />' +
+        '2.list2<br />' +
+        '3.list3<br />' +
+        'sentence3' +
+        '</p>' +
+        '<p>' +
+        'gap' +
+        '</p>' +
+        '<p>' +
+        'gap2' +
+        '</p>';
+    wymeditor = jQuery.wymeditors(0);
+    wymeditor.html('');
+
+    wymeditor._doc.body.focus();
+    wymeditor.paste(testText);
+
+    // The pasted content should be wrapped in a paragraph
+    htmlEquals(wymeditor, expectedHtml);
+});
 
 if (!$.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
     test("Adding combined CSS selectors", function () {

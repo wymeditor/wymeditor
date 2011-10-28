@@ -173,6 +173,7 @@ jQuery.extend(WYMeditor, {
     STATUS              : "{Wym_Status}",
     DIALOG_TITLE        : "{Wym_Dialog_Title}",
     DIALOG_BODY         : "{Wym_Dialog_Body}",
+    NEWLINE             : "\n",
     STRING              : "string",
     BODY                : "body",
     DIV                 : "div",

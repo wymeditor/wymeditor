@@ -24,7 +24,6 @@
 WYMeditor.WymClassMozilla = function (wym) {
     this._wym = wym;
     this._class = "class";
-    this._newLine = "\n";
 };
 
 // Placeholder cell to allow content in TD cells for FF 3.5+
