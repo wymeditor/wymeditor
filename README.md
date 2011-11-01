@@ -37,8 +37,8 @@ Download
 
 You can download pre-built archives of both the latest stable release and a bleeding edge version with the code currently in master.
 
-* Stable: [Version 1.0.0a1](https://github.com/downloads/wymeditor/wymeditor/wymeditor-1.0.0a1.tar.gz)
-* Bleeding Edge: [Current Master](http://wymeditor.no.de/wymeditor.tar.gz)
+* Latest Release: [Version 1.0.0a2](https://github.com/downloads/wymeditor/wymeditor/wymeditor-1.0.0a2.tar.gz)
+* Latest Stable: [CI Build](http://jenkins.wymeditor.org/job/wym_master/lastSuccessfulBuild/artifact/dist/wymeditor.tar.gz)
 
 Compatibility
 -------------
@@ -124,6 +124,7 @@ Contributing
  - **Issue tracking:** https://github.com/wymeditor/wymeditor/issues
  - **Wiki/Docs:** https://github.com/wymeditor/wymeditor/wiki
  - **Forum:** http://community.wymeditor.org
+ - **Continous Integration:** http://jenkins.wymeditor.org
 
 [Read more on contributing](https://github.com/wymeditor/wymeditor/wiki/Contributing). 
 
