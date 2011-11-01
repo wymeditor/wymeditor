@@ -947,12 +947,12 @@ WYMeditor.editor.prototype.paste = function (str) {
         l;
 
     // Split string into paragraphs by two or more newlines
-    paragraphs = str.split(new RegExp(this._newLine + '{2,}', 'g'));
+    paragraphs = str.split(new RegExp(WYMeditor.NEWLINE + '{2,}', 'g'));
 
     // Build html
     for (i = 0, l = paragraphs.length; i < l; i += 1) {
         html += '<p>' +
-            (paragraphs[i].split(this._newLine).join('<br />')) +
+            (paragraphs[i].split(WYMeditor.NEWLINE).join('<br />')) +
             '</p>';
     }
 
@@ -968,7 +968,6 @@ WYMeditor.editor.prototype.paste = function (str) {
     }
 
     // Do some minor cleanup (#131)
-
     if (jQuery(container).text() === '') {
         jQuery(container).remove();
     }

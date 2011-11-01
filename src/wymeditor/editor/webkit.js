@@ -21,7 +21,6 @@
 WYMeditor.WymClassSafari = function(wym) {
     this._wym = wym;
     this._class = "class";
-    this._newLine = "\n";
 };
 
 WYMeditor.WymClassSafari.prototype.initIframe = function(iframe) {
