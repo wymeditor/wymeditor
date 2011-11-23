@@ -310,6 +310,24 @@ test("Commands: html(), paste()", function () {
     htmlEquals(wymeditor, expected);
 });
 
+if (!$.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
+    test("Adding combined CSS selectors", function () {
+        expect(1);
+
+        var wymeditor = jQuery.wymeditors(0),
+            doc = wymeditor._doc,
+            styles = doc.styleSheets[0];
+
+        wymeditor.addCssRule(
+            styles,
+            {name: 'p,h1,h2', css: 'font-style:italic'}
+        );
+        equals(jQuery('p', doc).css('fontStyle'), 'italic', 'Font-style');
+    });
+}
+
+
+module("copy-paste", {setup: setupWym});
 test("Paste from word", function () {
     var textText,
         wymeditor,
@@ -353,21 +371,186 @@ test("Paste from word", function () {
     htmlEquals(wymeditor, expectedHtml);
 });
 
-if (!$.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
-    test("Adding combined CSS selectors", function () {
-        expect(1);
+var nestedListHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2' +
+                '<ol>' +
+                    '<li id="li_2_1">2_1</li>' +
+                    '<li id="li_2_2">2_2</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_3">3' +
+                '<ol>' +
+                    '<li id="li_3_1">3_1</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_4">4</li>' +
+        '</ol>';
 
-        var wymeditor = jQuery.wymeditors(0),
-            doc = wymeditor._doc,
-            styles = doc.styleSheets[0];
+var basicTableHtml = String() +
+        '<table>' +
+            '<tbody>' +
+                '<tr id="tr_1">' +
+                    '<td id="td_1_1">1_1</td>' +
+                    '<td id="td_1_2">1_2</td>' +
+                    '<td id="td_1_3">1_3</td>' +
+                '</tr>' +
+                '<tr id="tr_2">' +
+                    '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
+                    '<td id="td_2_2">2_2</td>' +
+                    '<td id="td_2_3">2_3</td>' +
+                '</tr>' +
+                '<tr id="tr_3">' +
+                    '<td id="td_3_1">3_1</td>' +
+                    '<td id="td_3_2">3_2</td>' +
+                    '<td id="td_3_3">3_3</td>' +
+                '</tr>' +
+            '</tbody>' +
+        '</table>';
 
-        wymeditor.addCssRule(
-            styles,
-            {name: 'p,h1,h2', css: 'font-style:italic'}
-        );
-        equals(jQuery('p', doc).css('fontStyle'), 'italic', 'Font-style');
-    });
+var complexCopyText = String() +
+        'sentence\r\n' +
+        'sentence2\r\n' +
+        '1.list1\r\n' +
+        '2.list2\r\n' +
+        '3.list3\r\n' +
+        'sentence3\r\n\r\n' +
+        'gap\r\n\r\n' +
+        'gap2';
+if ($.browser !== 'msie') {
+    complexCopyText = complexCopyText.replace(/\r/g, '');
 }
+
+var td_1_1_complexInsertionHtml = String() +
+        '<td id="td_1_1">' +
+            'sentence<br />' +
+            'sentence2<br />' +
+            '1.list1<br />' +
+            '2.list2<br />' +
+            '3.list3<br />' +
+            'sentence3<br /><br />' +
+            'gap<br /><br />' +
+            'gap21_1' +
+        '</td>';
+
+var span_2_1_complexInsertionHtml = String() +
+        '<td id="td_2_1">' +
+            '<span id="span_2_1">' +
+                'sentence<br />' +
+                'sentence2<br />' +
+                '1.list1<br />' +
+                '2.list2<br />' +
+                '3.list3<br />' +
+                'sentence3<br /><br />' +
+                'gap<br /><br />' +
+                'gap22_1' +
+            '</span>' +
+        '</td>';
+
+var li_1_complexInsertionHtml = String() +
+        '<li id="li_1">' +
+            'sentence<br />' +
+            'sentence2<br />' +
+            '1.list1<br />' +
+            '2.list2<br />' +
+            '3.list3<br />' +
+            'sentence3<br /><br />' +
+            'gap<br /><br />' +
+            'gap21' +
+        '</li>';
+
+var li_2_2_complexInsertionHtml = String() +
+        '<li id="li_2_2">' +
+            'sentence<br />' +
+            'sentence2<br />' +
+            '1.list1<br />' +
+            '2.list2<br />' +
+            '3.list3<br />' +
+            'sentence3<br /><br />' +
+            'gap<br /><br />' +
+            'gap22_2' +
+        '</li>';
+
+/**
+    Paste some copied content in to the given element and verify the results.
+    @param elmntId String id for the item to select for the paste target
+    @param startHtml
+    @param textToPaste
+    @param elmntStartHtml
+    @param elmntExpectedHtml
+*/
+function testPaste(elmntId, startHtml, textToPaste, elmntStartHtml, elmntExpectedHtml) {
+    var $body,
+        elmnt,
+        wymeditor,
+        expectedHtml,
+        elmntRegex;
+
+    wymeditor = jQuery.wymeditors(0);
+    wymeditor.html(startHtml);
+
+    // Escape slashes for the regexp
+    elmntRegex = new RegExp(elmntStartHtml.replace('/', '\\/'), 'g');
+    expectedHtml = startHtml.replace(
+        elmntRegex,
+        elmntExpectedHtml
+    );
+
+    $body = $(wymeditor._doc).find('body.wym_iframe');
+    elmnt = $body.find(elmntId).get(0);
+
+    wymeditor._doc.body.focus();
+    moveSelector(wymeditor, elmnt);
+    wymeditor.paste(textToPaste);
+
+    // The pasted content should be wrapped in a paragraph
+    htmlEquals(wymeditor, expectedHtml);
+}
+
+test("Table- simple row td_1_1", function () {
+    expect(2);
+    testPaste(
+        '#td_1_1',
+        basicTableHtml,
+        complexCopyText,
+        '<td id="td_1_1">1_1_</td>',
+        td_1_1_complexInsertionHtml
+    );
+});
+
+test("Table- inside a span span_2_1", function () {
+    expect(2);
+    testPaste(
+        '#span_2_1',
+        basicTableHtml,
+        complexCopyText,
+        '<td id="td_2_1"><span id="span_2_1">2_1</span></td>',
+        span_2_1_complexInsertionHtml
+    );
+});
+
+test("List- top level li li_1", function () {
+    expect(2);
+    testPaste(
+        '#li_1',
+        nestedListHtml,
+        complexCopyText,
+        '<li id="li_1">1</li>',
+        li_1_complexInsertionHtml
+    );
+});
+
+test("List- 2nd level li li_2_2", function () {
+    expect(2);
+    testPaste(
+        '#li_2_2',
+        nestedListHtml,
+        complexCopyText,
+        '<li id="li_2_2">2_2</li>',
+        li_2_2_complexInsertionHtml
+    );
+});
 
 module("Table Insertion", {setup: setupWym});
 
