@@ -293,21 +293,13 @@ test("Shouldn't strip colSpan attributes", function () {
 
 module("Post Init", {setup: setupWym});
 
-test("Commands: html(), paste()", function () {
-    expect(2);
+test("Sanity check: html()", function () {
+    expect(1);
     var testText1 = '<p>This is some text with which to test.<\/p>';
     var wymeditor = jQuery.wymeditors(0);
 
     wymeditor.html(testText1);
     htmlEquals(wymeditor, testText1);
-
-    var testText2 = 'Some <strong>other text<\/strong> with which to test.';
-    wymeditor._doc.body.focus();
-    wymeditor.paste(testText2);
-
-    // The pasted content should be wrapped in a paragraph
-    var expected = testText1 + '<p>' + testText2 + '<\/p>';
-    htmlEquals(wymeditor, expected);
 });
 
 if (!$.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
@@ -417,6 +409,39 @@ var h2_1_complexInsertionHtml = String() +
             'gap2' +
         '</p>' +
         '<h2>h2_1</h2>';
+
+var h2_1_middle_complexInsertionHtml = String() +
+        '<h2 id="h2_1">' +
+            'h2sentence<br />' +
+            'sentence2<br />' +
+            '1.list1<br />' +
+            '2.list2<br />' +
+            '3.list3<br />' +
+            'sentence3' +
+        '</h2>' +
+        '<p>' +
+            'gap' +
+        '</p>' +
+        '<p>' +
+            'gap2' +
+        '</p>' +
+        '<h2>_1</h2>';
+
+var h2_1_end_complexInsertionHtml = String() +
+        '<h2 id="h2_1">' +
+            'h2_1sentence<br />' +
+            'sentence2<br />' +
+            '1.list1<br />' +
+            '2.list2<br />' +
+            '3.list3<br />' +
+            'sentence3' +
+        '</h2>' +
+        '<p>' +
+            'gap' +
+        '</p>' +
+        '<p>' +
+            'gap2' +
+        '</p>';
 
 var p_2_complexInsertionHtml = String() +
         '<p id="p_2">' +
@@ -553,7 +578,7 @@ function testPaste(pasteStartSelector, startHtml, textToPaste, elmntStartHtml, e
     } else {
         startElmnt = $body.find(pasteStartSelector).get(0);
         endElmnt = $body.find(pasteEndSelector).get(0);
-        makeSelection(wymeditor, startElmnt, endElmnt, pasteStartIndex, pasteEndIndex);
+        makeTextSelection(wymeditor, startElmnt, endElmnt, pasteStartIndex, pasteEndIndex);
         equals(wymeditor.selected(), startElmnt, "moveSelector");
     }
     wymeditor.paste(textToPaste);
@@ -580,6 +605,30 @@ test("Paragraphs- Inside h2_1", function () {
         complexCopyText,
         '<h2 id="h2_1">h2_1</h2>',
         h2_1_complexInsertionHtml
+    );
+});
+
+test("Paragraphs- Inside middle of h2_1", function () {
+    expect(2);
+    testPaste(
+        '#h2_1',
+        basicParagraphsHtml,
+        complexCopyText,
+        '<h2 id="h2_1">h2_1</h2>',
+        h2_1_middle_complexInsertionHtml,
+        2 // cursor at: h2|_1
+    );
+});
+
+test("Paragraphs- End of h2_1", function () {
+    expect(2);
+    testPaste(
+        '#h2_1',
+        basicParagraphsHtml,
+        complexCopyText,
+        '<h2 id="h2_1">h2_1</h2>',
+        h2_1_end_complexInsertionHtml,
+        4 // cursor at: h2_1|
     );
 });
 

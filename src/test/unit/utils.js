@@ -1,4 +1,6 @@
 
+TEXT_NODE_TYPE = 3; // ie doesn't support Node.TEXT_NODE
+
 // Regex expression shortcuts
 var pr_amp = /&/g;
 var pr_lt = /</g;
@@ -141,6 +143,37 @@ function makeSelection(wymeditor, startElement, endElement, startElementIndex, e
         wymeditor.saveCaret();
     }
 }
+
+/**
+    Make a selection between two elements, but assume that the given indexes
+    are to a child TextNode instead of a child DOM node.
+*/
+function makeTextSelection(wymeditor, startElement, endElement, startElementIndex, endElementIndex) {
+    var $startElementContents,
+        $endElementContents;
+
+    if (typeof startElementIndex !== 'undefined' && startElementIndex !== 0) {
+        // We have a non-zero index. Look for a first-child text node and use
+        // that as the startElement for the makeSelection() call
+        $startElementContents = $(startElement).contents();
+        if ($startElementContents.length > 0 &&
+                $startElementContents.get(0).nodeType === TEXT_NODE_TYPE) {
+            startElement = $startElementContents.get(0);
+        }
+    }
+    if (typeof endElementIndex !== 'undefined' && endElementIndex !== 0) {
+        // We have a non-zero index. Look for a first-child text node and use
+        // that as the startElement for the makeSelection() call
+        $endElementContents = $(endElement).contents();
+        if ($endElementContents.length > 0 &&
+                $endElementContents.get(0).nodeType === TEXT_NODE_TYPE) {
+            endElement = $endElementContents.get(0);
+        }
+    }
+
+    makeSelection(wymeditor, startElement, endElement, startElementIndex, endElementIndex);
+}
+
 
 /*
 * Move the selection to the start of the given element within the editor.
