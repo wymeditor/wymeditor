@@ -940,42 +940,89 @@ WYMeditor.editor.prototype.uniqueStamp = function () {
 */
 WYMeditor.editor.prototype.paste = function (str) {
     var container = this.selected(),
+        $container,
         html = '',
         paragraphs,
         focusNode,
         i,
-        l;
+        l,
+        needsParagraphWrapping,
+        shouldInsertAfter,
+        isSingleLine = false,
+        sel = rangy.getIframeSelection(this._iframe),
+        textNode;
+    $container = $(container);
 
     // Split string into paragraphs by two or more newlines
-    paragraphs = str.split(new RegExp(WYMeditor.NEWLINE + '{2,}', 'g'));
+    paragraphStrings = str.split(new RegExp(WYMeditor.NEWLINE + '{2,}', 'g'));
 
-    // Build html
-    for (i = 0, l = paragraphs.length; i < l; i += 1) {
-        html += '<p>' +
-            (paragraphs[i].split(WYMeditor.NEWLINE).join('<br />')) +
-            '</p>';
+    if (paragraphStrings.length === 1) {
+        // This is a one-line paste, which is an easy case.
+        // We try not to wrap these in paragraphs
+        isSingleLine = true;
     }
 
-    // Insert where appropriate
-    if (container && container.tagName.toLowerCase() !== WYMeditor.BODY) {
-        // No .last() pre jQuery 1.4
-        //focusNode = jQuery(html).insertAfter(container).last()[0];
-        paragraphs = jQuery(html, this._doc).insertAfter(container);
-        focusNode = paragraphs[paragraphs.length - 1];
+    if (typeof container === 'undefined' ||
+            (container && container.tagName.toLowerCase() === WYMeditor.BODY)) {
+        // No selection, or body selection. Paste at the end of the document
+        needsParagraphWrapping = true;
+        shouldInsertAfter = false;
+
+        if (isSingleLine) {
+            // Easy case. Wrap the string in p tags
+            paragraphs = jQuery(
+                '<p>' + paragraphStrings[0] + '</p>',
+                this._doc
+            ).appendTo(this._doc.body);
+            return;
+        }
+        // Pasting in a specific section of the body
+        needsParagraphWrapping = true;
+        shouldInsertAfter = false;
     } else {
-        paragraphs = jQuery(html, this._doc).appendTo(this._doc.body);
-        focusNode = paragraphs[paragraphs.length - 1];
-    }
+        // Pasting inside an existing element
+        needsParagraphWrapping = false;
+        shouldInsertAfter = false;
 
-    // Do some minor cleanup (#131)
-    if (jQuery(container).text() === '') {
-        jQuery(container).remove();
+        if (isSingleLine || $container.is('pre')) {
+            // Easy case. Insert a text node at the current selection
+            textNode = this._doc.createTextNode(str);
+            sel.getRangeAt(0).insertNode(textNode);
+        } else if ($container.is('p,h1,h2,h3,h4,h5,h6,li')) {
+            // Just need to split the current container and put new block elements
+            // in between
+            blockSplitter = 'p';
+            if ($container.is('li')) {
+                // Instead of creating paragraphs on line breaks, we'll need to create li's
+                blockSplitter = 'li';
+            }
+            // Build html
+            range = sel.getRangeAt(0);
+            for (i = paragraphStrings.length - 1; i >= 0; i -= 1) {
+                // Going backwards because rangy.insertNode leaves the
+                // selection in front of the inserted node
+                html = '<' + blockSplitter + '>' +
+                    (paragraphStrings[i].split(WYMeditor.NEWLINE).join('<br />')) +
+                    '</' + blockSplitter + '>';
+                range.insertNode($(html).get(0));
+            }
+        } else {
+            // We're in a container that doesn't accept nested paragraphs. Use
+            // <br> separators everywhere instead
+            range = sel.getRangeAt(0);
+            textNodesToInsert = str.split(WYMeditor.NEWLINE);
+            for (i = textNodesToInsert.length - 1; i >= 0; i -= 1) {
+                // Going backwards because rangy.insertNode leaves the
+                // selection in front of the inserted node
+                textNode = this._doc.createTextNode(textNodesToInsert[i]);
+                range.insertNode(textNode);
+                if (i > 0) {
+                    // Don't insert an opening br
+                    range.insertNode($('<br />').get(0));
+                }
+            }
+        }
     }
-    // And remove br (if editor was empty)
-    jQuery('body > br', this._doc).remove();
-
-    // Restore focus
-    this.setFocusToNode(focusNode);
 };
 
 WYMeditor.editor.prototype.insert = function (html) {
