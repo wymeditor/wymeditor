@@ -467,9 +467,16 @@ var li_1_complexInsertionHtml = String() +
             '1.list1<br />' +
             '2.list2<br />' +
             '3.list3<br />' +
-            'sentence3<br /><br />' +
-            'gap<br /><br />' +
-            'gap21' +
+            'sentence3' +
+        '</li>' +
+        '<li>' +
+            'gap' +
+        '</li>' +
+        '<li>' +
+            'gap2' +
+        '</li>' +
+        '<li>' +
+            '1' +
         '</li>';
 
 var li_2_2_complexInsertionHtml = String() +
@@ -479,9 +486,16 @@ var li_2_2_complexInsertionHtml = String() +
             '1.list1<br />' +
             '2.list2<br />' +
             '3.list3<br />' +
-            'sentence3<br /><br />' +
-            'gap<br /><br />' +
-            'gap22_2' +
+            'sentence3' +
+        '</li>' +
+        '<li>' +
+            'gap' +
+        '</li>' +
+        '<li>' +
+            'gap2' +
+        '</li>' +
+        '<li>' +
+            '2_2' +
         '</li>';
 
 /**

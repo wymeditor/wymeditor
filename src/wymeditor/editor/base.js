@@ -946,11 +946,15 @@ WYMeditor.editor.prototype.paste = function (str) {
         focusNode,
         i,
         l,
-        needsParagraphWrapping,
-        shouldInsertAfter,
         isSingleLine = false,
         sel = rangy.getIframeSelection(this._iframe),
-        textNode;
+        textNode,
+        blockParent,
+        blockParentType,
+        leftSide,
+        rightSide,
+        firstParagraphString,
+        insertAfter;
     $container = $(container);
 
     // Split string into paragraphs by two or more newlines
@@ -965,8 +969,6 @@ WYMeditor.editor.prototype.paste = function (str) {
     if (typeof container === 'undefined' ||
             (container && container.tagName.toLowerCase() === WYMeditor.BODY)) {
         // No selection, or body selection. Paste at the end of the document
-        needsParagraphWrapping = true;
-        shouldInsertAfter = false;
 
         if (isSingleLine) {
             // Easy case. Wrap the string in p tags
@@ -974,16 +976,21 @@ WYMeditor.editor.prototype.paste = function (str) {
                 '<p>' + paragraphStrings[0] + '</p>',
                 this._doc
             ).appendTo(this._doc.body);
-            return;
+        } else {
+            // Need to build paragraphs and insert them at the end
+            blockSplitter = 'p';
+            range = sel.getRangeAt(0);
+            for (i = paragraphStrings.length - 1; i >= 0; i -= 1) {
+                // Going backwards because rangy.insertNode leaves the
+                // selection in front of the inserted node
+                html = '<' + blockSplitter + '>' +
+                    (paragraphStrings[i].split(WYMeditor.NEWLINE).join('<br />')) +
+                    '</' + blockSplitter + '>';
+                range.insertNode($(html).get(0));
+            }
         }
-        // Pasting in a specific section of the body
-        needsParagraphWrapping = true;
-        shouldInsertAfter = false;
     } else {
         // Pasting inside an existing element
-        needsParagraphWrapping = false;
-        shouldInsertAfter = false;
-
         if (isSingleLine || $container.is('pre')) {
             // Easy case. Insert a text node at the current selection
             textNode = this._doc.createTextNode(str);
@@ -996,16 +1003,80 @@ WYMeditor.editor.prototype.paste = function (str) {
                 // Instead of creating paragraphs on line breaks, we'll need to create li's
                 blockSplitter = 'li';
             }
-            // Build html
+            // Split the selected element then build and insert the appropriate html
+            // This accounts for cases where the start selection is at the
+            // start of a node or in the middle of a text node by splitting the
+            // text nodes using rangy's splitBoundaries()
             range = sel.getRangeAt(0);
-            for (i = paragraphStrings.length - 1; i >= 0; i -= 1) {
-                // Going backwards because rangy.insertNode leaves the
-                // selection in front of the inserted node
-                html = '<' + blockSplitter + '>' +
-                    (paragraphStrings[i].split(WYMeditor.NEWLINE).join('<br />')) +
-                    '</' + blockSplitter + '>';
-                range.insertNode($(html).get(0));
+            range.splitBoundaries(); // Split any partially-select text nodes
+            blockParent = this.findUp(
+                range.startContainer,
+                ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li']
+            );
+            blockParentType = blockParent.tagName;
+            leftSide = [];
+            rightSide = [];
+            $(blockParent).contents().each(function (index, element) {
+                if (range.compareNode(element) === range.NODE_BEFORE) {
+                    leftSide.push($(element).remove()[0]);
+                } else {
+                    rightSide.push($(element).remove()[0]);
+                }
+            });
+
+            if (leftSide.length === 0 && rightSide.length === 0) {
+                // Insert the first paragraph as content in this empty node
+                firstParagraphString = paragraphStrings.splice(
+                    0,
+                    1
+                )[0];
+                html = firstParagraphString.split(WYMeditor.NEWLINE).join('<br />');
+                $(blockParent).html(html);
+
+                //Subsequent paragraphs are inserted after our block parent
+                $insertAfter = $(blockParent);
+                for (i = 0; i < paragraphStrings.length; i++) {
+                    html = '<' + blockSplitter + '>' +
+                        (paragraphStrings[i].split(WYMeditor.NEWLINE).join('<br />')) +
+                        '</' + blockSplitter + '>';
+                    $insertAfter = $(html).insertAfter($insertAfter);
+                }
+
+            } else if (leftSide.length === 0) {
+                // Split the right side of things off in to another node of the
+                // same type
+                var $splitRightParagraph = $('<' + blockParentType + '>' +
+                    '</' + blockParentType + '>');
+                $splitRightParagraph.insertAfter($(blockParent));
+                $splitRightParagraph.append(rightSide);
+
+                // Insert the first paragraph in to the current node, and then
+                // start appending subsequent paragraphs
+                firstParagraphString = paragraphStrings.splice(
+                    0,
+                    1
+                )[0];
+                html = firstParagraphString.split(WYMeditor.NEWLINE).join('<br />');
+
+                $(blockParent).append(html);
+
+                // Now append all subsequent paragraphs
+                $insertAfter = $(blockParent);
+                for (i = 0; i < paragraphStrings.length; i++) {
+                    html = '<' + blockSplitter + '>' +
+                        (paragraphStrings[i].split(WYMeditor.NEWLINE).join('<br />')) +
+                        '</' + blockSplitter + '>';
+                    $insertAfter = $(html).insertAfter($insertAfter);
+                }
+
+            } else {
+                // We started with a selection at the right edge or in the middle
+                // Insert the first paragraph inside the current node (after the leftSide), then
+                // just insert all subsequent paragraphs afterwards
+                // TODO
+                alert('not implemented not 0 left side');
             }
+
         } else {
             // We're in a container that doesn't accept nested paragraphs. Use
             // <br> separators everywhere instead
