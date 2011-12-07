@@ -87,7 +87,12 @@ function normalizeHtml(node) {
 * expected HTML, accounting for differing whitespace and attribute ordering.
 */
 function htmlEquals(wymeditor, expected) {
-    var xhtml = jQuery.trim(wymeditor.xhtml());
+    var xhtml = '',
+        normedActual = '',
+        normedExpected = '',
+        tmpNodes,
+        i;
+    xhtml = jQuery.trim(wymeditor.xhtml());
     if (xhtml === '') {
         // In jQuery 1.2.x, $('') returns an empty list, so we can't call
         // normalizeHTML. On 1.3.x or higher upgrade, we can remove this
@@ -96,8 +101,15 @@ function htmlEquals(wymeditor, expected) {
         return;
     }
 
-    var normedActual = normalizeHtml($(xhtml)[0]);
-    var normedExpected = normalizeHtml($(expected)[0]);
+    tmpNodes = $(xhtml, wymeditor._doc);
+    for (i = 0; i < tmpNodes.length; i++) {
+        normedActual += normalizeHtml(tmpNodes[i]);
+    }
+    tmpNodes = $(expected, wymeditor._doc);
+    for (i = 0; i < tmpNodes.length; i++) {
+        normedExpected += normalizeHtml(tmpNodes[i]);
+    }
+
     equals(normedActual, normedExpected);
 }
 
