@@ -1027,16 +1027,22 @@ WYMeditor.editor.prototype.paste = function (str) {
             leftSide = [];
             rightSide = [];
             $(blockParent).contents().each(function (index, element) {
+                // Capture all of the dom nodes to the left and right of our
+                // range. We can't remove them in the same step because that
+                // loses the selection in webkit
                 if (range.compareNode(element) === range.NODE_BEFORE) {
-                    leftSide.push($(element).remove()[0]);
+                    leftSide.push(element);
                 } else {
-                    rightSide.push($(element).remove()[0]);
+                    rightSide.push(element);
                 }
-                // Must refresh the range because we've manipulated the DOM
-                sel = rangy.getIframeSelection(wym._iframe);
-                range = sel.getRangeAt(0);
-                range.splitBoundaries(); // Split any partially-select text nodes
             });
+            // Now remove all of the left and right nodes
+            for (i = 0; i < leftSide.length; i++) {
+                $(leftSide[i]).remove();
+            }
+            for (i = 0; i < rightSide.length; i++) {
+                $(rightSide[i]).remove();
+            }
 
             if (leftSide.length === 0 && rightSide.length === 0) {
                 // Insert the first paragraph as content in this empty node
