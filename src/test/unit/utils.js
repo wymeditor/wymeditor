@@ -129,8 +129,9 @@ function makeSelection(wymeditor, startElement, endElement, startElementIndex, e
     range.setEnd(endElement, endElementIndex);
     if (startElement === endElement &&
             startElementIndex === 0 && endElementIndex === 0) {
-        // Only collapse the range if we're selecting the start of one element
-        range.collapse(false);
+        // Only collapse the range to the start if we're selecting the start of
+        // one element
+        range.collapse(true);
     }
 
     try {

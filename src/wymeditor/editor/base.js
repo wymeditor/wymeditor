@@ -955,10 +955,17 @@ WYMeditor.editor.prototype.paste = function (str) {
         rightSide,
         firstParagraphString,
         insertAfter,
-        wym;
+        wym,
+        range;
     wym = this;
     sel = rangy.getIframeSelection(wym._iframe);
+    range = sel.getRangeAt(0);
     $container = $(container);
+
+    // Start by collapsing the range to the start of the selection. We're
+    // punting on implementing a paste that also replaces existing content for
+    // now,
+    range.collapse(true); // Collapse to the the begining of the selection
 
     // Split string into paragraphs by two or more newlines
     paragraphStrings = str.split(new RegExp(WYMeditor.NEWLINE + '{2,}', 'g'));
@@ -982,7 +989,6 @@ WYMeditor.editor.prototype.paste = function (str) {
         } else {
             // Need to build paragraphs and insert them at the end
             blockSplitter = 'p';
-            range = sel.getRangeAt(0);
             for (i = paragraphStrings.length - 1; i >= 0; i -= 1) {
                 // Going backwards because rangy.insertNode leaves the
                 // selection in front of the inserted node
@@ -1004,7 +1010,7 @@ WYMeditor.editor.prototype.paste = function (str) {
         if (isSingleLine || $container.is('pre')) {
             // Easy case. Insert a text node at the current selection
             textNode = this._doc.createTextNode(str);
-            sel.getRangeAt(0).insertNode(textNode);
+            range.insertNode(textNode);
         } else if ($container.is('p,h1,h2,h3,h4,h5,h6,li')) {
             // Just need to split the current container and put new block elements
             // in between
@@ -1017,7 +1023,6 @@ WYMeditor.editor.prototype.paste = function (str) {
             // This accounts for cases where the start selection is at the
             // start of a node or in the middle of a text node by splitting the
             // text nodes using rangy's splitBoundaries()
-            range = sel.getRangeAt(0);
             range.splitBoundaries(); // Split any partially-select text nodes
             blockParent = this.findUp(
                 range.startContainer,
@@ -1026,11 +1031,26 @@ WYMeditor.editor.prototype.paste = function (str) {
             blockParentType = blockParent.tagName;
             leftSide = [];
             rightSide = [];
+            var rangeNodeComparison;
             $(blockParent).contents().each(function (index, element) {
                 // Capture all of the dom nodes to the left and right of our
                 // range. We can't remove them in the same step because that
                 // loses the selection in webkit
-                if (range.compareNode(element) === range.NODE_BEFORE) {
+
+                rangeNodeComparison = range.compareNode(element);
+                if (rangeNodeComparison === range.NODE_BEFORE ||
+                        (rangeNodeComparison === range.NODE_BEFORE_AND_AFTER &&
+                         range.startOffset === range.startContainer.length)) {
+                    // Because of the way splitBoundaries() works, the
+                    // collapsed selection might appear in the right-most index
+                    // of the border node, which means it will show up as
+                    //
+                    // eg. | is the selection and <> are text node boundaries
+                    // <foo|><bar>
+                    //
+                    // We detect that case by counting any
+                    // NODE_BEFORE_AND_AFTER result where the offset is at the
+                    // very end of the node as a member of the left side
                     leftSide.push(element);
                 } else {
                     rightSide.push(element);
@@ -1044,62 +1064,42 @@ WYMeditor.editor.prototype.paste = function (str) {
                 $(rightSide[i]).remove();
             }
 
-            if (leftSide.length === 0 && rightSide.length === 0) {
-                // Insert the first paragraph as content in this empty node
-                firstParagraphString = paragraphStrings.splice(
-                    0,
-                    1
-                )[0];
-                html = firstParagraphString.split(WYMeditor.NEWLINE).join('<br />');
-                $(blockParent).html(html);
-
-                //Subsequent paragraphs are inserted after our block parent
-                $insertAfter = $(blockParent);
-                for (i = 0; i < paragraphStrings.length; i++) {
-                    html = '<' + blockSplitter + '>' +
-                        (paragraphStrings[i].split(WYMeditor.NEWLINE).join('<br />')) +
-                        '</' + blockSplitter + '>';
-                    $insertAfter = $(html, wym._doc).insertAfter($insertAfter);
-                }
-
-            } else if (leftSide.length === 0) {
-                // Split the right side of things off in to another node of the
-                // same type
+            // Rebuild our split nodes and add the inserted content
+            if (leftSide.length > 0) {
+                // We have left-of-selection content
+                // Put the content back inside our blockParent
+                $(blockParent).prepend(leftSide);
+            }
+            if (rightSide.length > 0) {
+                // We have right-of-selection content.
+                // Split it off in to a node of the same type after our
+                // blockParent
                 var $splitRightParagraph = $('<' + blockParentType + '>' +
                     '</' + blockParentType + '>', wym._doc);
                 $splitRightParagraph.insertAfter($(blockParent));
                 $splitRightParagraph.append(rightSide);
-
-                // Insert the first paragraph in to the current node, and then
-                // start appending subsequent paragraphs
-                firstParagraphString = paragraphStrings.splice(
-                    0,
-                    1
-                )[0];
-                html = firstParagraphString.split(WYMeditor.NEWLINE).join('<br />');
-
-                $(blockParent).append(html);
-
-                // Now append all subsequent paragraphs
-                $insertAfter = $(blockParent);
-                for (i = 0; i < paragraphStrings.length; i++) {
-                    html = '<' + blockSplitter + '>' +
-                        (paragraphStrings[i].split(WYMeditor.NEWLINE).join('<br />')) +
-                        '</' + blockSplitter + '>';
-                    $insertAfter = $(html, wym._doc).insertAfter($insertAfter);
-                }
-
-            } else {
-                // We started with a selection at the right edge or in the middle
-                // Insert the first paragraph inside the current node (after the leftSide), then
-                // just insert all subsequent paragraphs afterwards
-                alert('not implemented not 0 left side');
             }
 
+            // Insert the first paragraph in to the current node, and then
+            // start appending subsequent paragraphs
+            firstParagraphString = paragraphStrings.splice(
+                0,
+                1
+            )[0];
+            var firstParagraphHtml = firstParagraphString.split(WYMeditor.NEWLINE).join('<br />');
+            $(blockParent).html($(blockParent).html() + firstParagraphHtml);
+
+            // Now append all subsequent paragraphs
+            $insertAfter = $(blockParent);
+            for (i = 0; i < paragraphStrings.length; i++) {
+                html = '<' + blockSplitter + '>' +
+                    (paragraphStrings[i].split(WYMeditor.NEWLINE).join('<br />')) +
+                    '</' + blockSplitter + '>';
+                $insertAfter = $(html, wym._doc).insertAfter($insertAfter);
+            }
         } else {
             // We're in a container that doesn't accept nested paragraphs (eg. td). Use
             // <br> separators everywhere instead
-            range = sel.getRangeAt(0);
             textNodesToInsert = str.split(WYMeditor.NEWLINE);
             for (i = textNodesToInsert.length - 1; i >= 0; i -= 1) {
                 // Going backwards because rangy.insertNode leaves the
