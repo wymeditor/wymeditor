@@ -947,14 +947,17 @@ WYMeditor.editor.prototype.paste = function (str) {
         i,
         l,
         isSingleLine = false,
-        sel = rangy.getIframeSelection(this._iframe),
+        sel,
         textNode,
         blockParent,
         blockParentType,
         leftSide,
         rightSide,
         firstParagraphString,
-        insertAfter;
+        insertAfter,
+        wym;
+    wym = this;
+    sel = rangy.getIframeSelection(wym._iframe);
     $container = $(container);
 
     // Split string into paragraphs by two or more newlines
@@ -986,7 +989,14 @@ WYMeditor.editor.prototype.paste = function (str) {
                 html = '<' + blockSplitter + '>' +
                     (paragraphStrings[i].split(WYMeditor.NEWLINE).join('<br />')) +
                     '</' + blockSplitter + '>';
-                range.insertNode($(html).get(0));
+                // Build multiple nodes from the HTML because ie6 chokes
+                // creating multiple nodes implicitly via jquery
+                var insertionNodes = $(html, wym._doc);
+                for (j = insertionNodes.length - 1; j >= 0; j--) {
+                    // Loop backwards through all of the nodes because
+                    // insertNode moves that direction
+                    range.insertNode(insertionNodes[j]);
+                }
             }
         }
     } else {
@@ -1022,6 +1032,10 @@ WYMeditor.editor.prototype.paste = function (str) {
                 } else {
                     rightSide.push($(element).remove()[0]);
                 }
+                // Must refresh the range because we've manipulated the DOM
+                sel = rangy.getIframeSelection(wym._iframe);
+                range = sel.getRangeAt(0);
+                range.splitBoundaries(); // Split any partially-select text nodes
             });
 
             if (leftSide.length === 0 && rightSide.length === 0) {
@@ -1039,14 +1053,14 @@ WYMeditor.editor.prototype.paste = function (str) {
                     html = '<' + blockSplitter + '>' +
                         (paragraphStrings[i].split(WYMeditor.NEWLINE).join('<br />')) +
                         '</' + blockSplitter + '>';
-                    $insertAfter = $(html).insertAfter($insertAfter);
+                    $insertAfter = $(html, wym._doc).insertAfter($insertAfter);
                 }
 
             } else if (leftSide.length === 0) {
                 // Split the right side of things off in to another node of the
                 // same type
                 var $splitRightParagraph = $('<' + blockParentType + '>' +
-                    '</' + blockParentType + '>');
+                    '</' + blockParentType + '>', wym._doc);
                 $splitRightParagraph.insertAfter($(blockParent));
                 $splitRightParagraph.append(rightSide);
 
@@ -1066,19 +1080,18 @@ WYMeditor.editor.prototype.paste = function (str) {
                     html = '<' + blockSplitter + '>' +
                         (paragraphStrings[i].split(WYMeditor.NEWLINE).join('<br />')) +
                         '</' + blockSplitter + '>';
-                    $insertAfter = $(html).insertAfter($insertAfter);
+                    $insertAfter = $(html, wym._doc).insertAfter($insertAfter);
                 }
 
             } else {
                 // We started with a selection at the right edge or in the middle
                 // Insert the first paragraph inside the current node (after the leftSide), then
                 // just insert all subsequent paragraphs afterwards
-                // TODO
                 alert('not implemented not 0 left side');
             }
 
         } else {
-            // We're in a container that doesn't accept nested paragraphs. Use
+            // We're in a container that doesn't accept nested paragraphs (eg. td). Use
             // <br> separators everywhere instead
             range = sel.getRangeAt(0);
             textNodesToInsert = str.split(WYMeditor.NEWLINE);
@@ -1089,7 +1102,7 @@ WYMeditor.editor.prototype.paste = function (str) {
                 range.insertNode(textNode);
                 if (i > 0) {
                     // Don't insert an opening br
-                    range.insertNode($('<br />').get(0));
+                    range.insertNode($('<br />', wym._doc).get(0));
                 }
             }
         }
