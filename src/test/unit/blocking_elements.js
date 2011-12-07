@@ -254,7 +254,7 @@ test("p + table + p has br spacers via .html()", function () {
         equals(children[4].tagName.toLowerCase(), 'p');
     }
 
-    htmlEquals(wymeditor, pTableHtml);
+    htmlEquals(wymeditor, pTablePHtml);
 });
 
 test("p + table + p has br spacers via table insertion", function () {
@@ -281,7 +281,7 @@ test("p + table + p has br spacers via table insertion", function () {
         equals(children[4].tagName.toLowerCase(), 'p');
     }
 
-    htmlEquals(wymeditor, pTableHtml);
+    htmlEquals(wymeditor, pTablePHtml);
 });
 
 test("p + table + table + p has br spacers via .html()", function () {
