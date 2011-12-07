@@ -328,48 +328,11 @@ if (!$.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
 
 
 module("copy-paste", {setup: setupWym});
-test("Paste from word", function () {
-    var textText,
-        wymeditor,
-        expected;
 
-    expect(1);
-    testText = 'sentence\r\n' +
-        'sentence2\r\n' +
-        '1.list1\r\n' +
-        '2.list2\r\n' +
-        '3.list3\r\n' +
-        'sentence3\r\n\r\n' +
-        'gap\r\n\r\n' +
-        'gap2';
-    if ($.browser !== 'msie') {
-        testText = testText.replace(/\r/g, '');
-
-    }
-    expectedHtml = String() +
-        '<p>' +
-        'sentence<br />' +
-        'sentence2<br />' +
-        '1.list1<br />' +
-        '2.list2<br />' +
-        '3.list3<br />' +
-        'sentence3' +
-        '</p>' +
-        '<p>' +
-        'gap' +
-        '</p>' +
-        '<p>' +
-        'gap2' +
-        '</p>';
-    wymeditor = jQuery.wymeditors(0);
-    wymeditor.html('');
-
-    wymeditor._doc.body.focus();
-    wymeditor.paste(testText);
-
-    // The pasted content should be wrapped in a paragraph
-    htmlEquals(wymeditor, expectedHtml);
-});
+var basicParagraphsHtml = String() +
+        '<h2 id="h2_1">h2_1</h2>' +
+        '<p id="p_1">p_1</p>' +
+        '<p id="p_2"></p>';
 
 var nestedListHtml = String() +
         '<ol>' +
@@ -421,6 +384,55 @@ var complexCopyText = String() +
 if ($.browser !== 'msie') {
     complexCopyText = complexCopyText.replace(/\r/g, '');
 }
+
+var body_complexInsertionHtml = String() +
+        '<p>' +
+            'sentence<br />' +
+            'sentence2<br />' +
+            '1.list1<br />' +
+            '2.list2<br />' +
+            '3.list3<br />' +
+            'sentence3' +
+        '</p>' +
+        '<p>' +
+            'gap' +
+        '</p>' +
+        '<p>' +
+            'gap2' +
+        '</p>';
+
+var h2_1_complexInsertionHtml = String() +
+        '<h2 id="h2_1">' +
+            'sentence<br />' +
+            'sentence2<br />' +
+            '1.list1<br />' +
+            '2.list2<br />' +
+            '3.list3<br />' +
+            'sentence3' +
+        '</h2>' +
+        '<p>' +
+            'gap' +
+        '</p>' +
+        '<p>' +
+            'gap2' +
+        '</p>' +
+        '<h2>h2_1</h2>';
+
+var p_2_complexInsertionHtml = String() +
+        '<p id="p_2">' +
+            'sentence<br />' +
+            'sentence2<br />' +
+            '1.list1<br />' +
+            '2.list2<br />' +
+            '3.list3<br />' +
+            'sentence3' +
+        '</p>' +
+        '<p>' +
+            'gap' +
+        '</p>' +
+        '<p>' +
+            'gap2' +
+        '</p>';
 
 var td_1_1_complexInsertionHtml = String() +
         '<td id="td_1_1">' +
@@ -498,15 +510,52 @@ function testPaste(elmntId, startHtml, textToPaste, elmntStartHtml, elmntExpecte
     );
 
     $body = $(wymeditor._doc).find('body.wym_iframe');
-    elmnt = $body.find(elmntId).get(0);
 
     wymeditor._doc.body.focus();
-    moveSelector(wymeditor, elmnt);
+    if (elmntId === '') {
+        // Attempting to select the body
+        moveSelector(wymeditor, $body[0]);
+    } else {
+        elmnt = $body.find(elmntId).get(0);
+        moveSelector(wymeditor, elmnt);
+    }
     wymeditor.paste(textToPaste);
 
-    // The pasted content should be wrapped in a paragraph
     htmlEquals(wymeditor, expectedHtml);
 }
+
+test("Body- Direct Paste", function () {
+    expect(2);
+    testPaste(
+        '', // No selector. Just the body
+        '', // No HTML to start
+        complexCopyText,
+        '.*', // Replace everything with our expected HTML
+        body_complexInsertionHtml
+    );
+});
+
+test("Paragraphs- Inside h2_1", function () {
+    expect(2);
+    testPaste(
+        '#h2_1',
+        basicParagraphsHtml,
+        complexCopyText,
+        '<h2 id="h2_1">h2_1</h2>',
+        h2_1_complexInsertionHtml
+    );
+});
+
+test("Paragraphs- Empty p_2", function () {
+    expect(2);
+    testPaste(
+        '#p_2',
+        basicParagraphsHtml,
+        complexCopyText,
+        '<p id="p_2"></p>',
+        p_2_complexInsertionHtml
+    );
+});
 
 test("Table- simple row td_1_1", function () {
     expect(2);
@@ -514,7 +563,7 @@ test("Table- simple row td_1_1", function () {
         '#td_1_1',
         basicTableHtml,
         complexCopyText,
-        '<td id="td_1_1">1_1_</td>',
+        '<td id="td_1_1">1_1</td>',
         td_1_1_complexInsertionHtml
     );
 });
