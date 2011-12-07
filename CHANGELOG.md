@@ -3,6 +3,24 @@
 This document tracks the enhancements and bug fixes between releases of
 WYMeditor.
 
+## 1.0.0a3 (Alpha 3)
+
+*release-date* December 17, 2011
+
+* Fixed a bug making it impossible to use *Paste From Word* inside tables or lists
+
+### Changes Since 1.0.0a2
+
+## 1.0.0a2 (Alpha 2)
+
+*release-date* November 1, 2011
+
+### Changes Since 1.0.0a1
+
+* Fixed bug preventing *Paste From Word* from properly splitting paragraphs in internet explorer
+* Updated the unit tests so that everything is passing under Firefox 7
+* Switched from jslint to jshint for source control static analysis
+
 ## 1.0.0a1 (Alpha 1)
 
 *release-date* October 17, 2011
