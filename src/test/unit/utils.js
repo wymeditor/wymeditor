@@ -114,10 +114,10 @@ function htmlEquals(wymeditor, expected) {
 }
 
 function makeSelection(wymeditor, startElement, endElement, startElementIndex, endElementIndex) {
-    if (startElementIndex === null) {
+    if (typeof startElementIndex === 'undefined') {
         startElementIndex = 0;
     }
-    if (endElementIndex === null) {
+    if (typeof endElementIndex === 'undefined') {
         endElementIndex = 0;
     }
     var sel = rangy.getIframeSelection(wymeditor._iframe);

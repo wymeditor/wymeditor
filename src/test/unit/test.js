@@ -500,18 +500,39 @@ var li_2_2_complexInsertionHtml = String() +
 
 /**
     Paste some copied content in to the given element and verify the results.
-    @param elmntId String id for the item to select for the paste target
+
+    @param pasteStartSelector String jquery selector for the item to select for the paste target
     @param startHtml
     @param textToPaste
     @param elmntStartHtml
     @param elmntExpectedHtml
+    @param pasteStartIndex
+    @param pasteEndSelector String jquery selector for the end item in the paste target selection
+    @param pasteEndIndex
 */
-function testPaste(elmntId, startHtml, textToPaste, elmntStartHtml, elmntExpectedHtml) {
+function testPaste(pasteStartSelector, startHtml, textToPaste, elmntStartHtml, elmntExpectedHtml,
+                   pasteStartIndex, pasteEndSelector, pasteEndIndex) {
     var $body,
-        elmnt,
+        startElmnt,
+        endElmnt,
         wymeditor,
         expectedHtml,
         elmntRegex;
+
+    // Optional arguments
+    if (typeof pasteStartIndex === 'undefined') {
+        pasteStartIndex = 0;
+    }
+    if (typeof pasteEndSelector === 'undefined') {
+        pasteEndSelector = pasteStartSelector;
+    }
+    if (typeof pasteEndIndex === 'undefined') {
+        if (pasteStartSelector === pasteEndSelector) {
+            pasteEndIndex = pasteStartIndex;
+        } else {
+            pasteEndIndex = 0;
+        }
+    }
 
     wymeditor = jQuery.wymeditors(0);
     wymeditor.html(startHtml);
@@ -526,12 +547,14 @@ function testPaste(elmntId, startHtml, textToPaste, elmntStartHtml, elmntExpecte
     $body = $(wymeditor._doc).find('body.wym_iframe');
 
     wymeditor._doc.body.focus();
-    if (elmntId === '') {
+    if (pasteStartSelector === '') {
         // Attempting to select the body
         moveSelector(wymeditor, $body[0]);
     } else {
-        elmnt = $body.find(elmntId).get(0);
-        moveSelector(wymeditor, elmnt);
+        startElmnt = $body.find(pasteStartSelector).get(0);
+        endElmnt = $body.find(pasteEndSelector).get(0);
+        makeSelection(wymeditor, startElmnt, endElmnt, pasteStartIndex, pasteEndIndex);
+        equals(wymeditor.selected(), startElmnt, "moveSelector");
     }
     wymeditor.paste(textToPaste);
 
