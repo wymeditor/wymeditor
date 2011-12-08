@@ -930,6 +930,116 @@ WYMeditor.editor.prototype.uniqueStamp = function () {
 };
 
 /**
+    Paste the given array of paragraph-items at the given range inside the given $container.
+
+    It has already been determined that the paragraph has multiple lines and
+    that the container we're pasting to is a block container capable of accepting
+    further nested blocks.
+*/
+WYMeditor.editor.prototype._handleMultilineBlockContainerPaste = function (wym, $container, range, paragraphStrings) {
+
+    var i,
+        blockSplitter,
+        leftSide,
+        rightSide,
+        rangeNodeComparison,
+        $splitRightParagraph,
+        firstParagraphString,
+        firstParagraphHtml,
+        blockParent,
+        blockParentType;
+
+
+    // Now append all subsequent paragraphs
+    $insertAfter = $(blockParent);
+
+    // Just need to split the current container and put new block elements
+    // in between
+    blockSplitter = 'p';
+    if ($container.is('li')) {
+        // Instead of creating paragraphs on line breaks, we'll need to create li's
+        blockSplitter = 'li';
+    }
+    // Split the selected element then build and insert the appropriate html
+    // This accounts for cases where the start selection is at the
+    // start of a node or in the middle of a text node by splitting the
+    // text nodes using rangy's splitBoundaries()
+    range.splitBoundaries(); // Split any partially-select text nodes
+    blockParent = wym.findUp(
+        range.startContainer,
+        ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li']
+    );
+    blockParentType = blockParent.tagName;
+    leftSide = [];
+    rightSide = [];
+    $(blockParent).contents().each(function (index, element) {
+        // Capture all of the dom nodes to the left and right of our
+        // range. We can't remove them in the same step because that
+        // loses the selection in webkit
+
+        rangeNodeComparison = range.compareNode(element);
+        if (rangeNodeComparison === range.NODE_BEFORE ||
+                (rangeNodeComparison === range.NODE_BEFORE_AND_AFTER &&
+                 range.startOffset === range.startContainer.length)) {
+            // Because of the way splitBoundaries() works, the
+            // collapsed selection might appear in the right-most index
+            // of the border node, which means it will show up as
+            //
+            // eg. | is the selection and <> are text node boundaries
+            // <foo|><bar>
+            //
+            // We detect that case by counting any
+            // NODE_BEFORE_AND_AFTER result where the offset is at the
+            // very end of the node as a member of the left side
+            leftSide.push(element);
+        } else {
+            rightSide.push(element);
+        }
+    });
+    // Now remove all of the left and right nodes
+    for (i = 0; i < leftSide.length; i++) {
+        $(leftSide[i]).remove();
+    }
+    for (i = 0; i < rightSide.length; i++) {
+        $(rightSide[i]).remove();
+    }
+
+    // Rebuild our split nodes and add the inserted content
+    if (leftSide.length > 0) {
+        // We have left-of-selection content
+        // Put the content back inside our blockParent
+        $(blockParent).prepend(leftSide);
+    }
+    if (rightSide.length > 0) {
+        // We have right-of-selection content.
+        // Split it off in to a node of the same type after our
+        // blockParent
+        $splitRightParagraph = $('<' + blockParentType + '>' +
+            '</' + blockParentType + '>', wym._doc);
+        $splitRightParagraph.insertAfter($(blockParent));
+        $splitRightParagraph.append(rightSide);
+    }
+
+    // Insert the first paragraph in to the current node, and then
+    // start appending subsequent paragraphs
+    firstParagraphString = paragraphStrings.splice(
+        0,
+        1
+    )[0];
+    firstParagraphHtml = firstParagraphString.split(WYMeditor.NEWLINE).join('<br />');
+    $(blockParent).html($(blockParent).html() + firstParagraphHtml);
+
+    // Now append all subsequent paragraphs
+    $insertAfter = $(blockParent);
+    for (i = 0; i < paragraphStrings.length; i++) {
+        html = '<' + blockSplitter + '>' +
+            (paragraphStrings[i].split(WYMeditor.NEWLINE).join('<br />')) +
+            '</' + blockSplitter + '>';
+        $insertAfter = $(html, wym._doc).insertAfter($insertAfter);
+    }
+};
+
+/**
     editor.paste
     ============
 
@@ -949,12 +1059,6 @@ WYMeditor.editor.prototype.paste = function (str) {
         isSingleLine = false,
         sel,
         textNode,
-        blockParent,
-        blockParentType,
-        leftSide,
-        rightSide,
-        firstParagraphString,
-        insertAfter,
         wym,
         range;
     wym = this;
@@ -1012,91 +1116,7 @@ WYMeditor.editor.prototype.paste = function (str) {
             textNode = this._doc.createTextNode(str);
             range.insertNode(textNode);
         } else if ($container.is('p,h1,h2,h3,h4,h5,h6,li')) {
-            // Just need to split the current container and put new block elements
-            // in between
-            blockSplitter = 'p';
-            if ($container.is('li')) {
-                // Instead of creating paragraphs on line breaks, we'll need to create li's
-                blockSplitter = 'li';
-            }
-            // Split the selected element then build and insert the appropriate html
-            // This accounts for cases where the start selection is at the
-            // start of a node or in the middle of a text node by splitting the
-            // text nodes using rangy's splitBoundaries()
-            range.splitBoundaries(); // Split any partially-select text nodes
-            blockParent = this.findUp(
-                range.startContainer,
-                ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li']
-            );
-            blockParentType = blockParent.tagName;
-            leftSide = [];
-            rightSide = [];
-            var rangeNodeComparison;
-            $(blockParent).contents().each(function (index, element) {
-                // Capture all of the dom nodes to the left and right of our
-                // range. We can't remove them in the same step because that
-                // loses the selection in webkit
-
-                rangeNodeComparison = range.compareNode(element);
-                if (rangeNodeComparison === range.NODE_BEFORE ||
-                        (rangeNodeComparison === range.NODE_BEFORE_AND_AFTER &&
-                         range.startOffset === range.startContainer.length)) {
-                    // Because of the way splitBoundaries() works, the
-                    // collapsed selection might appear in the right-most index
-                    // of the border node, which means it will show up as
-                    //
-                    // eg. | is the selection and <> are text node boundaries
-                    // <foo|><bar>
-                    //
-                    // We detect that case by counting any
-                    // NODE_BEFORE_AND_AFTER result where the offset is at the
-                    // very end of the node as a member of the left side
-                    leftSide.push(element);
-                } else {
-                    rightSide.push(element);
-                }
-            });
-            // Now remove all of the left and right nodes
-            for (i = 0; i < leftSide.length; i++) {
-                $(leftSide[i]).remove();
-            }
-            for (i = 0; i < rightSide.length; i++) {
-                $(rightSide[i]).remove();
-            }
-
-            // Rebuild our split nodes and add the inserted content
-            if (leftSide.length > 0) {
-                // We have left-of-selection content
-                // Put the content back inside our blockParent
-                $(blockParent).prepend(leftSide);
-            }
-            if (rightSide.length > 0) {
-                // We have right-of-selection content.
-                // Split it off in to a node of the same type after our
-                // blockParent
-                var $splitRightParagraph = $('<' + blockParentType + '>' +
-                    '</' + blockParentType + '>', wym._doc);
-                $splitRightParagraph.insertAfter($(blockParent));
-                $splitRightParagraph.append(rightSide);
-            }
-
-            // Insert the first paragraph in to the current node, and then
-            // start appending subsequent paragraphs
-            firstParagraphString = paragraphStrings.splice(
-                0,
-                1
-            )[0];
-            var firstParagraphHtml = firstParagraphString.split(WYMeditor.NEWLINE).join('<br />');
-            $(blockParent).html($(blockParent).html() + firstParagraphHtml);
-
-            // Now append all subsequent paragraphs
-            $insertAfter = $(blockParent);
-            for (i = 0; i < paragraphStrings.length; i++) {
-                html = '<' + blockSplitter + '>' +
-                    (paragraphStrings[i].split(WYMeditor.NEWLINE).join('<br />')) +
-                    '</' + blockSplitter + '>';
-                $insertAfter = $(html, wym._doc).insertAfter($insertAfter);
-            }
+            wym._handleMultilineBlockContainerPaste(wym, $container, range, paragraphStrings);
         } else {
             // We're in a container that doesn't accept nested paragraphs (eg. td). Use
             // <br> separators everywhere instead
