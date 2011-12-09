@@ -1,4 +1,6 @@
 
+TEXT_NODE_TYPE = 3; // ie doesn't support Node.TEXT_NODE
+
 // Regex expression shortcuts
 var pr_amp = /&/g;
 var pr_lt = /</g;
@@ -87,7 +89,12 @@ function normalizeHtml(node) {
 * expected HTML, accounting for differing whitespace and attribute ordering.
 */
 function htmlEquals(wymeditor, expected) {
-    var xhtml = jQuery.trim(wymeditor.xhtml());
+    var xhtml = '',
+        normedActual = '',
+        normedExpected = '',
+        tmpNodes,
+        i;
+    xhtml = jQuery.trim(wymeditor.xhtml());
     if (xhtml === '') {
         // In jQuery 1.2.x, $('') returns an empty list, so we can't call
         // normalizeHTML. On 1.3.x or higher upgrade, we can remove this
@@ -96,16 +103,23 @@ function htmlEquals(wymeditor, expected) {
         return;
     }
 
-    var normedActual = normalizeHtml($(xhtml)[0]);
-    var normedExpected = normalizeHtml($(expected)[0]);
+    tmpNodes = $(xhtml, wymeditor._doc);
+    for (i = 0; i < tmpNodes.length; i++) {
+        normedActual += normalizeHtml(tmpNodes[i]);
+    }
+    tmpNodes = $(expected, wymeditor._doc);
+    for (i = 0; i < tmpNodes.length; i++) {
+        normedExpected += normalizeHtml(tmpNodes[i]);
+    }
+
     equals(normedActual, normedExpected);
 }
 
 function makeSelection(wymeditor, startElement, endElement, startElementIndex, endElementIndex) {
-    if (startElementIndex === null) {
+    if (typeof startElementIndex === 'undefined') {
         startElementIndex = 0;
     }
-    if (endElementIndex === null) {
+    if (typeof endElementIndex === 'undefined') {
         endElementIndex = 0;
     }
     var sel = rangy.getIframeSelection(wymeditor._iframe);
@@ -115,8 +129,9 @@ function makeSelection(wymeditor, startElement, endElement, startElementIndex, e
     range.setEnd(endElement, endElementIndex);
     if (startElement === endElement &&
             startElementIndex === 0 && endElementIndex === 0) {
-        // Only collapse the range if we're selecting the start of one element
-        range.collapse(false);
+        // Only collapse the range to the start if we're selecting the start of
+        // one element
+        range.collapse(true);
     }
 
     try {
@@ -129,6 +144,37 @@ function makeSelection(wymeditor, startElement, endElement, startElementIndex, e
         wymeditor.saveCaret();
     }
 }
+
+/**
+    Make a selection between two elements, but assume that the given indexes
+    are to a child TextNode instead of a child DOM node.
+*/
+function makeTextSelection(wymeditor, startElement, endElement, startElementIndex, endElementIndex) {
+    var $startElementContents,
+        $endElementContents;
+
+    if (typeof startElementIndex !== 'undefined' && startElementIndex !== 0) {
+        // We have a non-zero index. Look for a first-child text node and use
+        // that as the startElement for the makeSelection() call
+        $startElementContents = $(startElement).contents();
+        if ($startElementContents.length > 0 &&
+                $startElementContents.get(0).nodeType === TEXT_NODE_TYPE) {
+            startElement = $startElementContents.get(0);
+        }
+    }
+    if (typeof endElementIndex !== 'undefined' && endElementIndex !== 0) {
+        // We have a non-zero index. Look for a first-child text node and use
+        // that as the startElement for the makeSelection() call
+        $endElementContents = $(endElement).contents();
+        if ($endElementContents.length > 0 &&
+                $endElementContents.get(0).nodeType === TEXT_NODE_TYPE) {
+            endElement = $endElementContents.get(0);
+        }
+    }
+
+    makeSelection(wymeditor, startElement, endElement, startElementIndex, endElementIndex);
+}
+
 
 /*
 * Move the selection to the start of the given element within the editor.

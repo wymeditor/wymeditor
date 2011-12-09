@@ -930,6 +930,116 @@ WYMeditor.editor.prototype.uniqueStamp = function () {
 };
 
 /**
+    Paste the given array of paragraph-items at the given range inside the given $container.
+
+    It has already been determined that the paragraph has multiple lines and
+    that the container we're pasting to is a block container capable of accepting
+    further nested blocks.
+*/
+WYMeditor.editor.prototype._handleMultilineBlockContainerPaste = function (wym, $container, range, paragraphStrings) {
+
+    var i,
+        blockSplitter,
+        leftSide,
+        rightSide,
+        rangeNodeComparison,
+        $splitRightParagraph,
+        firstParagraphString,
+        firstParagraphHtml,
+        blockParent,
+        blockParentType;
+
+
+    // Now append all subsequent paragraphs
+    $insertAfter = $(blockParent);
+
+    // Just need to split the current container and put new block elements
+    // in between
+    blockSplitter = 'p';
+    if ($container.is('li')) {
+        // Instead of creating paragraphs on line breaks, we'll need to create li's
+        blockSplitter = 'li';
+    }
+    // Split the selected element then build and insert the appropriate html
+    // This accounts for cases where the start selection is at the
+    // start of a node or in the middle of a text node by splitting the
+    // text nodes using rangy's splitBoundaries()
+    range.splitBoundaries(); // Split any partially-select text nodes
+    blockParent = wym.findUp(
+        range.startContainer,
+        ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li']
+    );
+    blockParentType = blockParent.tagName;
+    leftSide = [];
+    rightSide = [];
+    $(blockParent).contents().each(function (index, element) {
+        // Capture all of the dom nodes to the left and right of our
+        // range. We can't remove them in the same step because that
+        // loses the selection in webkit
+
+        rangeNodeComparison = range.compareNode(element);
+        if (rangeNodeComparison === range.NODE_BEFORE ||
+                (rangeNodeComparison === range.NODE_BEFORE_AND_AFTER &&
+                 range.startOffset === range.startContainer.length)) {
+            // Because of the way splitBoundaries() works, the
+            // collapsed selection might appear in the right-most index
+            // of the border node, which means it will show up as
+            //
+            // eg. | is the selection and <> are text node boundaries
+            // <foo|><bar>
+            //
+            // We detect that case by counting any
+            // NODE_BEFORE_AND_AFTER result where the offset is at the
+            // very end of the node as a member of the left side
+            leftSide.push(element);
+        } else {
+            rightSide.push(element);
+        }
+    });
+    // Now remove all of the left and right nodes
+    for (i = 0; i < leftSide.length; i++) {
+        $(leftSide[i]).remove();
+    }
+    for (i = 0; i < rightSide.length; i++) {
+        $(rightSide[i]).remove();
+    }
+
+    // Rebuild our split nodes and add the inserted content
+    if (leftSide.length > 0) {
+        // We have left-of-selection content
+        // Put the content back inside our blockParent
+        $(blockParent).prepend(leftSide);
+    }
+    if (rightSide.length > 0) {
+        // We have right-of-selection content.
+        // Split it off in to a node of the same type after our
+        // blockParent
+        $splitRightParagraph = $('<' + blockParentType + '>' +
+            '</' + blockParentType + '>', wym._doc);
+        $splitRightParagraph.insertAfter($(blockParent));
+        $splitRightParagraph.append(rightSide);
+    }
+
+    // Insert the first paragraph in to the current node, and then
+    // start appending subsequent paragraphs
+    firstParagraphString = paragraphStrings.splice(
+        0,
+        1
+    )[0];
+    firstParagraphHtml = firstParagraphString.split(WYMeditor.NEWLINE).join('<br />');
+    $(blockParent).html($(blockParent).html() + firstParagraphHtml);
+
+    // Now append all subsequent paragraphs
+    $insertAfter = $(blockParent);
+    for (i = 0; i < paragraphStrings.length; i++) {
+        html = '<' + blockSplitter + '>' +
+            (paragraphStrings[i].split(WYMeditor.NEWLINE).join('<br />')) +
+            '</' + blockSplitter + '>';
+        $insertAfter = $(html, wym._doc).insertAfter($insertAfter);
+    }
+};
+
+/**
     editor.paste
     ============
 
@@ -940,42 +1050,89 @@ WYMeditor.editor.prototype.uniqueStamp = function () {
 */
 WYMeditor.editor.prototype.paste = function (str) {
     var container = this.selected(),
+        $container,
         html = '',
         paragraphs,
         focusNode,
         i,
-        l;
+        l,
+        isSingleLine = false,
+        sel,
+        textNode,
+        wym,
+        range;
+    wym = this;
+    sel = rangy.getIframeSelection(wym._iframe);
+    range = sel.getRangeAt(0);
+    $container = $(container);
+
+    // Start by collapsing the range to the start of the selection. We're
+    // punting on implementing a paste that also replaces existing content for
+    // now,
+    range.collapse(true); // Collapse to the the begining of the selection
 
     // Split string into paragraphs by two or more newlines
-    paragraphs = str.split(new RegExp(WYMeditor.NEWLINE + '{2,}', 'g'));
+    paragraphStrings = str.split(new RegExp(WYMeditor.NEWLINE + '{2,}', 'g'));
 
-    // Build html
-    for (i = 0, l = paragraphs.length; i < l; i += 1) {
-        html += '<p>' +
-            (paragraphs[i].split(WYMeditor.NEWLINE).join('<br />')) +
-            '</p>';
+    if (paragraphStrings.length === 1) {
+        // This is a one-line paste, which is an easy case.
+        // We try not to wrap these in paragraphs
+        isSingleLine = true;
     }
 
-    // Insert where appropriate
-    if (container && container.tagName.toLowerCase() !== WYMeditor.BODY) {
-        // No .last() pre jQuery 1.4
-        //focusNode = jQuery(html).insertAfter(container).last()[0];
-        paragraphs = jQuery(html, this._doc).insertAfter(container);
-        focusNode = paragraphs[paragraphs.length - 1];
+    if (typeof container === 'undefined' ||
+            (container && container.tagName.toLowerCase() === WYMeditor.BODY)) {
+        // No selection, or body selection. Paste at the end of the document
+
+        if (isSingleLine) {
+            // Easy case. Wrap the string in p tags
+            paragraphs = jQuery(
+                '<p>' + paragraphStrings[0] + '</p>',
+                this._doc
+            ).appendTo(this._doc.body);
+        } else {
+            // Need to build paragraphs and insert them at the end
+            blockSplitter = 'p';
+            for (i = paragraphStrings.length - 1; i >= 0; i -= 1) {
+                // Going backwards because rangy.insertNode leaves the
+                // selection in front of the inserted node
+                html = '<' + blockSplitter + '>' +
+                    (paragraphStrings[i].split(WYMeditor.NEWLINE).join('<br />')) +
+                    '</' + blockSplitter + '>';
+                // Build multiple nodes from the HTML because ie6 chokes
+                // creating multiple nodes implicitly via jquery
+                var insertionNodes = $(html, wym._doc);
+                for (j = insertionNodes.length - 1; j >= 0; j--) {
+                    // Loop backwards through all of the nodes because
+                    // insertNode moves that direction
+                    range.insertNode(insertionNodes[j]);
+                }
+            }
+        }
     } else {
-        paragraphs = jQuery(html, this._doc).appendTo(this._doc.body);
-        focusNode = paragraphs[paragraphs.length - 1];
+        // Pasting inside an existing element
+        if (isSingleLine || $container.is('pre')) {
+            // Easy case. Insert a text node at the current selection
+            textNode = this._doc.createTextNode(str);
+            range.insertNode(textNode);
+        } else if ($container.is('p,h1,h2,h3,h4,h5,h6,li')) {
+            wym._handleMultilineBlockContainerPaste(wym, $container, range, paragraphStrings);
+        } else {
+            // We're in a container that doesn't accept nested paragraphs (eg. td). Use
+            // <br> separators everywhere instead
+            textNodesToInsert = str.split(WYMeditor.NEWLINE);
+            for (i = textNodesToInsert.length - 1; i >= 0; i -= 1) {
+                // Going backwards because rangy.insertNode leaves the
+                // selection in front of the inserted node
+                textNode = this._doc.createTextNode(textNodesToInsert[i]);
+                range.insertNode(textNode);
+                if (i > 0) {
+                    // Don't insert an opening br
+                    range.insertNode($('<br />', wym._doc).get(0));
+                }
+            }
+        }
     }
-
-    // Do some minor cleanup (#131)
-    if (jQuery(container).text() === '') {
-        jQuery(container).remove();
-    }
-    // And remove br (if editor was empty)
-    jQuery('body > br', this._doc).remove();
-
-    // Restore focus
-    this.setFocusToNode(focusNode);
 };
 
 WYMeditor.editor.prototype.insert = function (html) {

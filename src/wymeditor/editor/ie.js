@@ -144,7 +144,7 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
 */
 WYMeditor.WymClassExplorer.prototype.fixBluescreenOfDeath = function () {
     var position = $(this._doc).find('p').eq(0).position();
-    if (typeof position !== 'undefined' && position.left < 0) {
+    if (position !== null && typeof position !== 'undefined' && position.left < 0) {
         $(this._box).append('<br id="wym-bluescreen-bug-fix" />');
         $(this._box).find('#wym-bluescreen-bug-fix').remove();
     }
