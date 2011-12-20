@@ -1187,32 +1187,6 @@ WYMeditor.editor.prototype.addCssRules = function (doc, aCss) {
     }
 };
 
-WYMeditor.editor.prototype._canOutdent = function (focusNode, anchorNode) {
-    // Ensure that we're indenting exactly one list item and it's already
-    // indented at least one level
-
-    if (focusNode && focusNode === anchorNode &&
-            focusNode.tagName.toLowerCase() === WYMeditor.LI) {
-        // This is a single li tag
-
-        var ancestor = focusNode.parentNode.parentNode;
-
-        if (focusNode.parentNode.childNodes.length > 1 ||
-                ancestor.tagName.toLowerCase() === WYMeditor.OL ||
-                ancestor.tagName.toLowerCase() === WYMeditor.UL ||
-                ancestor.tagName.toLowerCase() === WYMeditor.LI) {
-
-            // This is a nested list. Now ensure that's already indented
-            // at least one level
-            if ($(ancestor).parent().is('ol,ul,li')) {
-                return true;
-            }
-        }
-    }
-
-    return false;
-};
-
 /**
     editor._indentSingleItem
     ========================
@@ -1247,33 +1221,33 @@ WYMeditor.editor.prototype._indentSingleItem = function (listItem) {
         $spacer,
         $spacerContents;
 
-    $LiToIndent = $(listItem);
-    listType = $LiToIndent.parent()[0].tagName.toLowerCase();
+    $liToIndent = $(listItem);
+    listType = $liToIndent.parent()[0].tagName.toLowerCase();
 
     // Extract any non-list children so they can be inserted
     // back in the list item after it is moved
-    itemContents = $LiToIndent.contents().not('ol,ul');
+    itemContents = $liToIndent.contents().not('ol,ul');
 
-    if ($LiToIndent.prev().length === 0 && $LiToIndent.parent().not('ul,ol,li')) {
+    if ($liToIndent.prev().length === 0 && $liToIndent.parent().not('ul,ol,li')) {
         // First item at the root level of a list
         // Going to need a spacer list item
         spacerHtml = '<li class="spacer_li">' +
             '<' + listType + '></' + listType + '>' +
             '</li>';
-        $LiToIndent.before(spacerHtml);
-        $spacerList = $LiToIndent.prev().find(listType);
-        $LiToIndent.children().unwrap();
-        $spacerList.append($LiToIndent);
+        $liToIndent.before(spacerHtml);
+        $spacerList = $liToIndent.prev().find(listType);
+        $liToIndent.children().unwrap();
+        $spacerList.append($liToIndent);
 
-    } else if ($LiToIndent.prev().contents().last().is(listType)) {
+    } else if ($liToIndent.prev().contents().last().is(listType)) {
         // We have a sublist at the appropriate level as a previous sibling.
         // Leave the children where they are and join the previous sublist
-        $prevLi = $LiToIndent.prev();
+        $prevLi = $liToIndent.prev();
         $prevSubList = $prevLi.contents().last();
-        $children = $LiToIndent.children();
+        $children = $liToIndent.children();
         $children.unwrap();
         // Join our node at the end of the target sublist
-        $prevSubList.append($LiToIndent);
+        $prevSubList.append($liToIndent);
 
         // Stick all of the children at the end of the previous li
         $children.detach();
@@ -1285,41 +1259,41 @@ WYMeditor.editor.prototype._indentSingleItem = function (listItem) {
             $sublistContents.detach();
             $prevSubList.append($sublistContents);
         }
-    } else if ($LiToIndent.children('ol,ul').length === 0) {
+    } else if ($liToIndent.children('ol,ul').length === 0) {
         // No sublist to join.
         // Leave the children where they are and join the previous list
-        $prevList = $LiToIndent.prev().filter('li');
-        $LiToIndent.children().unwrap();
+        $prevList = $liToIndent.prev().filter('li');
+        $liToIndent.children().unwrap();
         containerHtml = '<' + listType + '></' + listType + '>';
         $prevList.append(containerHtml);
-        $prevList.children(listType).last().append($LiToIndent);
+        $prevList.children(listType).last().append($liToIndent);
     } else {
         // We have a sublist to join, so just jump to the front there and leave
         // the children where they are
-        $contents = $LiToIndent.contents().unwrap();
+        $contents = $liToIndent.contents().unwrap();
         $contents.wrapAll('<li class="spacer_li"></li>');
-        $contents.filter('ol,ul').first().prepend($LiToIndent);
+        $contents.filter('ol,ul').first().prepend($liToIndent);
     }
 
     // Put the non-list content back inside the li
-    $LiToIndent.prepend(itemContents);
+    $liToIndent.prepend(itemContents);
 
     // If we just created lists next to eachother, join them
-    $maybeListSpacer = $LiToIndent.parent().parent('li.spacer_li');
+    $maybeListSpacer = $liToIndent.parent().parent('li.spacer_li');
     if ($maybeListSpacer.length === 1) {
         $maybePreviousSublist = $maybeListSpacer.prev().filter('li').contents().last();
         if ($maybePreviousSublist.is(listType)) {
             // The last child (including text nodes) of the previous li is the
             // same type of list that we just had to wrap in a listSpacer.
             // Join them.
-            $listContents = $LiToIndent.parent().contents();
+            $listContents = $liToIndent.parent().contents();
             $maybeListSpacer.detach();
             $maybePreviousSublist.append($listContents);
         } else if ($maybeListSpacer.next('li').contents().first().is(listType)) {
             // The first child (including text nodes) of the next li is the same
             // type of list we just wrapped in a listSpacer. Join them.
             $nextSublist = $maybeListSpacer.next('li').children().first();
-            $listContents = $LiToIndent.parent().contents();
+            $listContents = $liToIndent.parent().contents();
             $maybeListSpacer.detach();
             $nextSublist.prepend($listContents);
         } else if ($maybeListSpacer.prev().is('li')) {
@@ -1332,14 +1306,110 @@ WYMeditor.editor.prototype._indentSingleItem = function (listItem) {
     }
 
     // If we eliminated the need for a spacer_li, remove it
-    if ($LiToIndent.next().is('.spacer_li')) {
-        $spacer = $LiToIndent.next('.spacer_li');
+    if ($liToIndent.next().is('.spacer_li')) {
+        $spacer = $liToIndent.next('.spacer_li');
         $spacerContents = $spacer.contents();
         $spacerContents.detach();
-        $LiToIndent.append($spacerContents);
+        $liToIndent.append($spacerContents);
         $spacer.remove();
     }
 
+};
+
+/**
+    editor._outdentSingleItem
+    ========================
+
+    Outdent a single list item via the dom, ensuring that the selected node moves in
+    exactly one level and all other nodes stay at the same level.
+ */
+WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
+    var $liToIndent,
+        $parentItem,
+        listType,
+
+        $subsequentItems,
+        $childLists,
+        $orphannedContent,
+
+        $sublist,
+        $maybeConsecutiveLists;
+
+    $liToIndent = $(listItem);
+
+    // If this list item isn't already indented at least one level, don't allow
+    // outdenting
+    if (!$liToIndent.parent().parent().is('ol,ul,li')) {
+        return;
+    }
+
+    // This item is in a sublist. Firefox doesn't properly dedent this
+    // as it's own item, instead it just tacks its content to the end of
+    // the parent item after the sublist
+    $parentItem = $liToIndent.parent().parent('li');
+    listType = $liToIndent.parent()[0].tagName.toLowerCase();
+
+    // If this li has li's following, those will need to be moved as
+    // sublist elements after the outdent
+    $subsequentItems = $liToIndent.nextAll('li');
+
+    $liToIndent.detach();
+    $parentItem.after($liToIndent);
+
+    // If this node has one or more sublist, they will need to be indented
+    // by one with a fake parent to hold their previous position
+    $childLists = $liToIndent.children('ol,ul');
+    $orphannedContent = $liToIndent.contents().not('ol,ul');
+
+    if ($childLists.length > 0) {
+        $childLists.each(function (index, childList) {
+            var $childList = $(childList),
+                spacerListHtml;
+            $childList.detach();
+
+            spacerListHtml = '<' + listType + '>' +
+                '<li class="spacer_li"></li>' +
+                '</' + listType + '>';
+            $liToIndent.append(spacerListHtml);
+            $liToIndent.children(listType).last().children('li').append($childList);
+        });
+    }
+
+    if ($subsequentItems.length > 0) {
+        // Nest the previously-subsequent items inside the list to
+        // retain order and their indent level
+        $sublist = $subsequentItems;
+        $sublist.detach();
+
+        $liToIndent.append("<" + listType + "></" + listType + ">");
+        $liToIndent.find(listType).last().append($subsequentItems);
+
+        // If we just created lists next to eachother, join them
+        $maybeConsecutiveLists = $liToIndent
+            .children(listType + ' + ' + listType);
+        if ($maybeConsecutiveLists.length > 0) {
+            // Join the same-type adjacent lists we found
+            $maybeConsecutiveLists.each(function (index, list) {
+                var $list = $(list),
+                    $listContents = $list.contents(),
+                    $prevList = $list.prev();
+
+                $listContents.detach();
+                $list.remove();
+                $prevList.append($listContents);
+            });
+        }
+    }
+
+    // Remove any now-empty lists
+    $parentItem.find('ul:empty,ol:empty').remove();
+
+    // If we eliminated the need for a spacer_li, remove it
+    // Comes after empty list removal so that we only remove
+    // totally empty spacer li's
+    if ($parentItem.is('.spacer_li') && $parentItem.is(':empty')) {
+        $parentItem.remove();
+    }
 };
 
 /**
@@ -1400,8 +1470,8 @@ WYMeditor.editor.prototype.indent = function () {
         range = sel.getRangeAt(i);
         if (range.collapsed === true) {
             // Collapsed ranges don't return the range they're in as part of
-            // getNodes, so let's just look at the startContainer
-            nodes = nodes.concat([startContainer]);
+            // getNodes, so let's find the next list item up
+            nodes = nodes.concat([wym.findUp(startContainer, 'li')]);
         } else {
             nodes = nodes.concat(range.getNodes(false));
         }
@@ -1444,109 +1514,55 @@ WYMeditor.editor.prototype.indent = function () {
     behavior and valid HTML.
 */
 WYMeditor.editor.prototype.outdent = function () {
-    var focusNode = this.selected(),
+    var wym = this._wym,
         sel = rangy.getIframeSelection(this._iframe),
+        // Starting selection information for selection restore
         startContainer = sel.getRangeAt(0).startContainer,
         startOffset = sel.getRangeAt(0).startOffset,
-        anchorNode = sel.anchorNode,
-        $focusNode,
-        $parentItem,
-        listType,
+        endContainer = sel.getRangeAt(0).endContainer,
+        endOffset = sel.getRangeAt(0).endOffset,
+        nodes = [],
+        range,
+        listItems,
+        rootList;
 
-        $subsequentItems,
-        $childLists,
-
-        $sublist,
-        $maybeConsecutiveLists,
-
-        iframeWin,
-        range;
-
-    focusNode = this.findUp(focusNode, WYMeditor.BLOCKS);
-    anchorNode = this.findUp(anchorNode, WYMeditor.BLOCKS);
-
-    if (!this._canOutdent(focusNode, anchorNode)) {
-        return;
-    }
-
-    $focusNode = $(focusNode);
-    // This item is in a sublist. Firefox doesn't properly dedent this
-    // as it's own item, instead it just tacks its content to the end of
-    // the parent item after the sublist
-
-    $parentItem = $focusNode.parent().parent('li');
-    listType = $focusNode.parent()[0].tagName.toLowerCase();
-
-    // If this li has li's following, those will need to be moved as
-    // sublist elements after the outdent
-    $subsequentItems = $focusNode.nextAll('li');
-
-    $focusNode.detach();
-    $parentItem.after($focusNode);
-
-    // If this node has one or more sublist, they will need to be indented
-    // by one with a fake parent to hold their previous position
-    $childLists = $focusNode.children('ol,ul');
-    if ($childLists.length > 0) {
-        $childLists.each(function (index, childList) {
-            var $childList = $(childList),
-                spacerListHtml;
-            $childList.detach();
-
-            spacerListHtml = '<' + listType + '>' +
-                '<li class="spacer_li"></li>' +
-                '</' + listType + '>';
-            $focusNode.append(spacerListHtml);
-            $focusNode.children(listType).last().children('li').append($childList);
-        });
-    }
-
-    if ($subsequentItems.length > 0) {
-        // Nest the previously-subsequent items inside the list to
-        // retain order and their indent level
-        $sublist = $subsequentItems;
-        $sublist.detach();
-
-        $focusNode.append("<" + listType + "></" + listType + ">");
-        $focusNode.find(listType).last().append($subsequentItems);
-
-        // If we just created lists next to eachother, join them
-        $maybeConsecutiveLists = $focusNode
-            .children(listType + ' + ' + listType);
-        if ($maybeConsecutiveLists.length > 0) {
-            // Join the same-type adjacent lists we found
-            $maybeConsecutiveLists.each(function (index, list) {
-                var $list = $(list),
-                    $listContents = $list.contents(),
-                    $prevList = $list.prev();
-
-                $listContents.detach();
-                $list.remove();
-                $prevList.append($listContents);
-            });
+    for (i = 0; i < sel.rangeCount; i++) {
+        range = sel.getRangeAt(i);
+        if (range.collapsed === true) {
+            // Collapsed ranges don't return the range they're in as part of
+            // getNodes, so let's find the next list item up
+            nodes = nodes.concat([wym.findUp(startContainer, 'li')]);
+        } else {
+            nodes = nodes.concat(range.getNodes(false));
         }
     }
 
-    // Remove any now-empty lists
-    $parentItem.find('ul:empty,ol:empty').remove();
-
-    // If we eliminated the need for a spacer_li, remove it
-    // Comes after empty list removal so that we only remove
-    // totally empty spacer li's
-    if ($parentItem.is('.spacer_li') && $parentItem.is(':empty')) {
-        $parentItem.remove();
+    // Just use the li nodes
+    listItems = $(nodes).filter('li');
+    if (listItems.length === 0) {
+        return false;
     }
 
-    // Put the selection back on the li element
-    iframeWin = this._iframe.contentWindow;
-    sel = rangy.getSelection(iframeWin);
+    // If the selection is across paragraphs and other items at the root level,
+    // don't indent
+    rootList = wym.getCommonParentList(listItems);
+    if (rootList === null) {
+        return false;
+    }
 
-    range = rangy.createRange(this._doc);
-    range.setStart(startContainer, startOffset);
-    range.setEnd(startContainer, startOffset);
-    range.collapse(false);
+    for (i = 0; i < listItems.length; i++) {
+        wym._outdentSingleItem(listItems[i]);
+    }
 
-    sel.setSingleRange(range);
+    if (listItems.length === 1) {
+        // Put the selection back on the last li element
+        range = rangy.createRange(this._doc);
+        range.setStart(startContainer, startOffset);
+        range.setEnd(endContainer, endOffset);
+        range.collapse(false);
+
+        sel.setSingleRange(range);
+    }
 };
 
 /**

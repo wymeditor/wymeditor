@@ -1,6 +1,4 @@
 
-TEXT_NODE_TYPE = 3; // ie doesn't support Node.TEXT_NODE
-
 // Regex expression shortcuts
 var pr_amp = /&/g;
 var pr_lt = /</g;
@@ -158,7 +156,7 @@ function makeTextSelection(wymeditor, startElement, endElement, startElementInde
         // that as the startElement for the makeSelection() call
         $startElementContents = $(startElement).contents();
         if ($startElementContents.length > 0 &&
-                $startElementContents.get(0).nodeType === TEXT_NODE_TYPE) {
+                $startElementContents.get(0).nodeType === WYMeditor.NODE.TEXT) {
             startElement = $startElementContents.get(0);
         }
     }
@@ -167,7 +165,7 @@ function makeTextSelection(wymeditor, startElement, endElement, startElementInde
         // that as the startElement for the makeSelection() call
         $endElementContents = $(endElement).contents();
         if ($endElementContents.length > 0 &&
-                $endElementContents.get(0).nodeType === TEXT_NODE_TYPE) {
+                $endElementContents.get(0).nodeType === WYMeditor.NODE.TEXT) {
             endElement = $endElementContents.get(0);
         }
     }

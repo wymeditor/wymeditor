@@ -8,16 +8,27 @@ module("list-indent_outdent", {setup: setupWym});
 * @param startHtml The starting HTML
 * @param expectedHtml The expected HTML result.
 */
-function testList(elmntId, action, startHtml, expectedHtml) {
-    var wymeditor = jQuery.wymeditors(0);
+function testList(elmntId, action, startHtml, expectedHtml, isText) {
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        actionLi,
+        buttonSelector,
+        actionButton;
+
     wymeditor.html(startHtml);
 
-    var $body = $(wymeditor._doc).find('body.wym_iframe');
-    var actionLi = $body.find('#' + elmntId)[0];
+    $body = $(wymeditor._doc).find('body.wym_iframe');
+    actionLi = $body.find('#' + elmntId)[0];
 
-    moveSelector(wymeditor, actionLi);
+    if (isText === true) {
+        // Make a text selection inside the target element instead of selecting
+        // the element itself
+        makeTextSelection(wymeditor, actionLi, actionLi, 1, 1);
+    } else {
+        moveSelector(wymeditor, actionLi);
+    }
 
-    var buttonSelector = '';
+    buttonSelector = '';
     if (action === 'outdent') {
         buttonSelector = '.wym_tools_outdent a';
     } else if (action === 'indent') {
@@ -34,7 +45,7 @@ function testList(elmntId, action, startHtml, expectedHtml) {
         );
     }
 
-    var actionButton = jQuery(wymeditor._box)
+    actionButton = jQuery(wymeditor._box)
         .find(wymeditor._options.toolsSelector)
         .find(buttonSelector);
     actionButton.click();
@@ -422,77 +433,116 @@ var li_7_indentedHtml = String() +
             '</li>' +
             '<li id="li_8">8</li>' +
         '</ol>';
-
 test("First-level w/sublist indent/outdent", function () {
-    expect(4);
+    expect(6);
 
     testList('li_2', 'indent', nestedListHtml, li_2_indentedHtml);
     testList('li_2', 'outdent', li_2_indentedHtml, nestedListHtml);
+    // Text selection instead
+    testList('li_2', 'indent', nestedListHtml, li_2_indentedHtml, true);
+    testList('li_2', 'outdent', li_2_indentedHtml, nestedListHtml, true);
 });
 
 test("First-level w/sublist joins lists indent/outdent", function () {
-    expect(4);
+    expect(6);
 
     testList('li_3', 'indent', nestedListHtml, li_3_indentedHtml);
     testList('li_3', 'outdent', li_3_indentedHtml, nestedListHtml);
+    // Via Text selection
+    testList('li_3', 'indent', nestedListHtml, li_3_indentedHtml, true);
+    testList('li_3', 'outdent', li_3_indentedHtml, nestedListHtml, true);
 });
 
 test("Outdent joining list with longer content", function () {
-    expect(2);
+    expect(3);
 
     testList('li_5_3_1', 'outdent', nestedListHtml, li_5_3_1_outdentedHtml);
     // Can't go the other way because we've turned a ul to an ol
+
+    // Via Text selection
+    testList('li_5_3_1', 'outdent', nestedListHtml, li_5_3_1_outdentedHtml, true);
 });
 test("Outdent w/sublist outdent/indent", function () {
-    expect(4);
+    expect(6);
 
     testList('li_5_3', 'outdent', nestedListHtml, li_5_3_outdentedHtml);
     testList('li_5_3', 'indent', li_5_3_outdentedHtml, nestedListHtml);
+
+    // Via Text selection
+    testList('li_5_3', 'outdent', nestedListHtml, li_5_3_outdentedHtml, true);
+    testList('li_5_3', 'indent', li_5_3_outdentedHtml, nestedListHtml, true);
 });
 
 test("Second-level w/sublist indent/outdent", function () {
-    expect(4);
+    expect(6);
 
     testList('li_5_3', 'indent', nestedListHtml, li_5_3_indentedHtml);
     testList('li_5_3', 'outdent', li_5_3_indentedHtml, nestedListHtml);
+
+    // Via Text selection
+    testList('li_5_3', 'indent', nestedListHtml, li_5_3_indentedHtml, true);
+    testList('li_5_3', 'outdent', li_5_3_indentedHtml, nestedListHtml, true);
 });
 
 test("First-level no-sublist indent/outdent", function () {
-    expect(4);
+    expect(6);
 
     testList('li_7', 'indent', nestedListHtml, li_7_indentedHtml);
     testList('li_7', 'outdent', li_7_indentedHtml, nestedListHtml);
+
+    // Via Text selection
+    testList('li_7', 'indent', nestedListHtml, li_7_indentedHtml, true);
+    testList('li_7', 'outdent', li_7_indentedHtml, nestedListHtml, true);
 });
 
 test("Second-level no-sublist indent/outdent", function () {
-    expect(4);
+    expect(6);
 
     testList('li_2_2', 'indent', nestedListHtml, li_2_2_indentedHtml);
     testList('li_2_2', 'outdent', li_2_2_indentedHtml, nestedListHtml);
+
+    // Via Text selection
+    testList('li_2_2', 'indent', nestedListHtml, li_2_2_indentedHtml, true);
+    testList('li_2_2', 'outdent', li_2_2_indentedHtml, nestedListHtml, true);
 });
 
 test("First-level no-sublist first-item indent/outdent", function () {
-    expect(4);
+    expect(6);
 
     testList('li_1', 'indent', nestedListHtml, li_1_indentedHtml);
     testList('li_1', 'outdent', li_1_indentedHtml, nestedListHtml);
+
+    // Via Text selection
+    testList('li_1', 'indent', nestedListHtml, li_1_indentedHtml, true);
+    testList('li_1', 'outdent', li_1_indentedHtml, nestedListHtml, true);
 });
 
 test("First-level no-sublist previous-sublist indent/outdent", function () {
-    expect(4);
+    expect(6);
 
     testList('li_4', 'indent', nestedListHtml, li_4_indentedHtml);
     testList('li_4', 'outdent', li_4_indentedHtml, nestedListHtml);
+
+    // Via Text selection
+    testList('li_4', 'indent', nestedListHtml, li_4_indentedHtml, true);
+    testList('li_4', 'outdent', li_4_indentedHtml, nestedListHtml, true);
 });
 
 test("Can't dedent first-level", function () {
-    expect(10);
+    expect(15);
 
     testList('li_1', 'outdent', nestedListHtml, nestedListHtml);
     testList('li_2', 'outdent', nestedListHtml, nestedListHtml);
     testList('li_6', 'outdent', nestedListHtml, nestedListHtml);
     testList('li_7', 'outdent', nestedListHtml, nestedListHtml);
     testList('li_8', 'outdent', nestedListHtml, nestedListHtml);
+
+    // Via Text selection
+    testList('li_1', 'outdent', nestedListHtml, nestedListHtml, true);
+    testList('li_2', 'outdent', nestedListHtml, nestedListHtml, true);
+    testList('li_6', 'outdent', nestedListHtml, nestedListHtml, true);
+    testList('li_7', 'outdent', nestedListHtml, nestedListHtml, true);
+    testList('li_8', 'outdent', nestedListHtml, nestedListHtml, true);
 });
 
 var li_2_1_to_li_2_2_indentedHtml = String() +
