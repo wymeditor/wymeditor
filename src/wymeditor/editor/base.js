@@ -1378,8 +1378,9 @@ WYMeditor.editor.prototype.getCommonParentList = function (listItems) {
     editor.indent
     =============
 
-    Indent a list item via the dom, ensuring that the selected node moves in
-    exactly one level and all other nodes stay at the same level.
+    Indent the selected list items via the dom.
+
+    Only list items that have a common list will be indented.
  */
 WYMeditor.editor.prototype.indent = function () {
     var wym = this._wym,
@@ -1394,9 +1395,16 @@ WYMeditor.editor.prototype.indent = function () {
         listItems,
         rootList;
 
+
     for (i = 0; i < sel.rangeCount; i++) {
         range = sel.getRangeAt(i);
-        nodes = nodes.concat(range.getNodes(false));
+        if (range.collapsed === true) {
+            // Collapsed ranges don't return the range they're in as part of
+            // getNodes, so let's just look at the startContainer
+            nodes = nodes.concat([startContainer]);
+        } else {
+            nodes = nodes.concat(range.getNodes(false));
+        }
     }
 
     // Just use the li nodes
