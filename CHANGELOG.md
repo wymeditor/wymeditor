@@ -3,6 +3,16 @@
 This document tracks the enhancements and bug fixes between releases of
 WYMeditor.
 
+## 1.0.0a4 (Alpha 4)
+
+*release-date* TBD
+
+* It is once-again possible to adjust an images width and height in FF using
+  the browser-supplied slide and drag handles. This was removed out of purity
+  (there should be a solution that maintains image ratios, uses CSS instead,
+  etc), but in absense of a better solution, it's better than having no ability
+  to control the size of inserted images.
+
 ## 1.0.0a3 (Alpha 3)
 
 *release-date* December 17, 2011
