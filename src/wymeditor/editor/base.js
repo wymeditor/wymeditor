@@ -1505,6 +1505,53 @@ WYMeditor.editor.prototype.outdent = function () {
 };
 
 /**
+     editor.insertAnchor
+     ===================
+
+    Insert an anchor tag at the current selection with the given `href`,
+    `title` and `rel` attributes.
+*/
+WYMeditor.editor.prototype.insertAnchor = function (href, title, rel) {
+    var wym = this,
+        selected,
+        uniqueStamp,
+        anchorToEdit;
+
+    if (href.length === 0) {
+        // href is required, so don't do anything
+        return;
+    }
+    // ensure that we select the link to populate the fields
+    selected = wym.selected();
+    if (selected && selected.tagName &&
+            selected.tagName.toLowerCase !== WYMeditor.A) {
+        selected = jQuery(selected).parentsOrSelf(WYMeditor.A);
+    }
+
+    // fix MSIE selection if link image has been clicked
+    if (!selected && wym._selected_image) {
+        selected = jQuery(wym._selected_image).parentsOrSelf(WYMeditor.A);
+    }
+
+    if (selected[0] && selected[0].tagName.toLowerCase() === WYMeditor.A) {
+        anchorToEdit = selected;
+        console.log("existing anchor");
+        console.log(anchorToEdit);
+    } else {
+        console.log("new anchor");
+        uniqueStamp = wym.uniqueStamp();
+        wym._exec(WYMeditor.CREATE_LINK, uniqueStamp);
+        anchorToEdit = jQuery("a[href=" + uniqueStamp + "]", wym._doc.body);
+    }
+
+    anchorToEdit.attr(WYMeditor.HREF, inputHref);
+    anchorToEdit.attr(WYMeditor.TITLE, inputTitle);
+    anchorToEdit.attr(WYMeditor.REL, inputRel);
+
+    return anchorToEdit;
+};
+
+/**
      editor.insertTable
      ==================
 

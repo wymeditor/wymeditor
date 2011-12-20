@@ -804,7 +804,8 @@ WYMeditor.INIT_DIALOG = function (index) {
         sStamp = wym.uniqueStamp(),
         styles,
         aCss,
-        tableOnClick;
+        tableOnClick,
+        insertAnchorOnClick;
 
     if (dialogType === WYMeditor.DIALOG_LINK) {
         // ensure that we select the link to populate the fields
@@ -846,27 +847,6 @@ WYMeditor.INIT_DIALOG = function (index) {
         jQuery(wym._options.dialogImageSelector + " " + wym._options.altSelector).val(jQuery(wym._selected_image).attr(WYMeditor.ALT));
     }
 
-    jQuery(wym._options.dialogLinkSelector + " " +
-            wym._options.submitSelector).submit(function () {
-
-        var sUrl = jQuery(wym._options.hrefSelector).val(),
-            link;
-        if (sUrl.length > 0) {
-
-            if (selected[0] && selected[0].tagName.toLowerCase() === WYMeditor.A) {
-                link = selected;
-            } else {
-                wym._exec(WYMeditor.CREATE_LINK, sStamp);
-                link = jQuery("a[href=" + sStamp + "]", wym._doc.body);
-            }
-
-            link.attr(WYMeditor.HREF, sUrl);
-            link.attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val());
-            link.attr(WYMeditor.REL, jQuery(wym._options.relSelector).val());
-        }
-        window.close();
-    });
-
     jQuery(wym._options.dialogImageSelector + " " +
             wym._options.submitSelector).submit(function () {
 
@@ -884,6 +864,12 @@ WYMeditor.INIT_DIALOG = function (index) {
         window.close();
     });
 
+    // Link insertion
+    insertAnchorOnClick = WYMeditor.MAKE_ANCHOR_ONCLICK(wym);
+    jQuery(wym._options.dialogLinkSelector + " " + wym._options.submitSelector)
+        .submit(insertAnchorOnClick);
+
+    // Table insertion
     tableOnClick = WYMeditor.MAKE_TABLE_ONCLICK(wym);
     jQuery(wym._options.dialogTableSelector + " " + wym._options.submitSelector)
         .submit(tableOnClick);
@@ -911,7 +897,7 @@ WYMeditor.INIT_DIALOG = function (index) {
 
 };
 
-/********** TABLE DIALOG ONCLICK **********/
+/********** DIALOG OnClick Handlers **********/
 
 WYMeditor.MAKE_TABLE_ONCLICK = function (wym) {
     var tableOnClick = function () {
@@ -928,6 +914,43 @@ WYMeditor.MAKE_TABLE_ONCLICK = function (wym) {
     return tableOnClick;
 };
 
+WYMeditor.MAKE_ANCHOR_ONCLICK = function (wym) {
+    var makeAnchorOnClick = function () {
+        // Used to find the a tag we create via exec
+        var uniqueStamp = wym.uniqueStamp(),
+            // User-input href, title and rel values from the dialog form
+            inputHref,
+            inputTitle,
+            inputRel,
+            selected,
+            anchorToEdit;
+
+        selected = wym.selected();
+
+        // Get the inputs from the dialog form
+        inputHref = jQuery(wym._options.hrefSelector).val();
+        inputTitle = jQuery(wym._options.titleSelector).val();
+        inputRel = jQuery(wym._options.relSelector).val();
+
+        if (inputHref.length > 0) {
+            // We have a valid href, so go ahead and make changes
+
+            if (selected[0] && selected[0].tagName.toLowerCase() === WYMeditor.A) {
+                anchorToEdit = selected;
+            } else {
+                wym._exec(WYMeditor.CREATE_LINK, uniqueStamp);
+                anchorToEdit = jQuery("a[href=" + uniqueStamp + "]", wym._doc.body);
+            }
+
+            anchorToEdit.attr(WYMeditor.HREF, inputHref);
+            anchorToEdit.attr(WYMeditor.TITLE, inputTitle);
+            anchorToEdit.attr(WYMeditor.REL, inputRel);
+        }
+        window.close();
+    };
+
+    return makeAnchorOnClick;
+};
 
 /********** HELPERS **********/
 
