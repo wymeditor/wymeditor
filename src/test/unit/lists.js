@@ -42,6 +42,59 @@ function testList(elmntId, action, startHtml, expectedHtml) {
     htmlEquals(wymeditor, expectedHtml);
 }
 
+/**
+    testListMulti
+    =============
+
+    Run a list indent or outdent manpulation with a selection across multiple list
+    items and verify the results.
+
+    `startElmntId` Element id for the start of the selection
+    `endElmntId` Element id for the end of the selection
+    `action` A string with either 'indent' or 'outdent'
+    `startHtml` The starting HTML
+    `expectedHtml` The expected HTML result.
+*/
+function testListMulti(startElmntId, endElmntId, action, startHtml, expectedHtml) {
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        startLi,
+        endLi,
+        buttonSelector,
+        actionButton;
+    wymeditor.html(startHtml);
+
+    $body = $(wymeditor._doc).find('body.wym_iframe');
+    startLi = $body.find('#' + startElmntId)[0];
+    endLi = $body.find('#' + endElmntId)[0];
+
+    makeSelection(wymeditor, startLi, endLi);
+
+    buttonSelector = '';
+    if (action === 'outdent') {
+        buttonSelector = '.wym_tools_outdent a';
+    } else if (action === 'indent') {
+        buttonSelector = '.wym_tools_indent a';
+    } else if (action === 'unordered') {
+        buttonSelector = '.wym_tools_unordered_list a';
+    } else if (action === 'ordered') {
+        buttonSelector = '.wym_tools_ordered_list a';
+    } else {
+        ok(
+            false,
+            'Improper call to testList. Action must be either "indent", ' +
+                '"outdent", "ordered" or "unordered"'
+        );
+    }
+
+    actionButton = jQuery(wymeditor._box)
+        .find(wymeditor._options.toolsSelector)
+        .find(buttonSelector);
+    actionButton.click();
+
+    htmlEquals(wymeditor, expectedHtml);
+}
+
 var nestedListHtml = String() +
         '<ol>' +
             '<li id="li_1">1</li>' +
@@ -440,6 +493,136 @@ test("Can't dedent first-level", function () {
     testList('li_6', 'outdent', nestedListHtml, nestedListHtml);
     testList('li_7', 'outdent', nestedListHtml, nestedListHtml);
     testList('li_8', 'outdent', nestedListHtml, nestedListHtml);
+});
+
+var li_2_1_to_li_2_2_indentedHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2' +
+                '<ol>' +
+                    '<li class="spacer_li">' +
+                        '<ol>' +
+                            '<li id="li_2_1">2_1</li>' +
+                            '<li id="li_2_2">2_2</li>' +
+                        '</ol>' +
+                    '</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_3">3' +
+                '<ol>' +
+                    '<li id="li_3_1">3_1</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_4">4</li>' +
+            '<li id="li_5">5' +
+                '<ol>' +
+                    '<li id="li_5_1">5_1</li>' +
+                    '<li id="li_5_2">5_2</li>' +
+                    '<li id="li_5_3">5_3' +
+                        '<ul>' +
+                            '<li id="li_5_3_1">5_3_1</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_5_4">5_4</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_6">6</li>' +
+            '<li id="li_7">7</li>' +
+            '<li id="li_8">8</li>' +
+        '</ol>';
+
+var li_6_to_li_8_indentedHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2' +
+                '<ol>' +
+                    '<li id="li_2_1">2_1</li>' +
+                    '<li id="li_2_2">2_2</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_3">3' +
+                '<ol>' +
+                    '<li id="li_3_1">3_1</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_4">4</li>' +
+            '<li id="li_5">5' +
+                '<ol>' +
+                    '<li id="li_5_1">5_1</li>' +
+                    '<li id="li_5_2">5_2</li>' +
+                    '<li id="li_5_3">5_3' +
+                        '<ul>' +
+                            '<li id="li_5_3_1">5_3_1</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_5_4">5_4</li>' +
+                    '<li id="li_6">6</li>' +
+                    '<li id="li_7">7</li>' +
+                    '<li id="li_8">8</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>';
+
+var li_7_to_li_8_indentedHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2' +
+                '<ol>' +
+                    '<li id="li_2_1">2_1</li>' +
+                    '<li id="li_2_2">2_2</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_3">3' +
+                '<ol>' +
+                    '<li id="li_3_1">3_1</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_4">4</li>' +
+            '<li id="li_5">5' +
+                '<ol>' +
+                    '<li id="li_5_1">5_1</li>' +
+                    '<li id="li_5_2">5_2</li>' +
+                    '<li id="li_5_3">5_3' +
+                        '<ul>' +
+                            '<li id="li_5_3_1">5_3_1</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_5_4">5_4</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_6">6' +
+                '<ol>' +
+                    '<li id="li_7">7</li>' +
+                    '<li id="li_8">8</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>';
+
+
+
+
+module("list- multi-selection", {setup: setupWym});
+
+test("Second-level same sublist indent/outdent", function () {
+    expect(2);
+
+    testListMulti('li_2_1', 'li_2_2', 'indent', nestedListHtml, li_2_1_to_li_2_2_indentedHtml);
+    testListMulti('li_2_1', 'li_2_2', 'outdent', li_2_1_to_li_2_2_indentedHtml, nestedListHtml);
+});
+
+test("First-level joins prev sublist indent/outdent", function () {
+    expect(2);
+
+    testListMulti('li_6', 'li_8', 'indent', nestedListHtml, li_6_to_li_8_indentedHtml);
+    testListMulti('li_6', 'li_8', 'outdent', li_6_to_li_8_indentedHtml, nestedListHtml);
+});
+
+
+test("First-level creates and joins prev list indent/outdent", function () {
+    expect(2);
+
+    testListMulti('li_7', 'li_8', 'indent', nestedListHtml, li_7_to_li_8_indentedHtml);
+    testListMulti('li_7', 'li_8', 'outdent', li_7_to_li_8_indentedHtml, nestedListHtml);
 });
 
 module("list-broken_html", {setup: setupWym});

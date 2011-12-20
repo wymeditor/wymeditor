@@ -1187,27 +1187,6 @@ WYMeditor.editor.prototype.addCssRules = function (doc, aCss) {
     }
 };
 
-WYMeditor.editor.prototype._canIndent = function (focusNode, anchorNode) {
-    // Ensure that we're indenting exactly one list item
-
-    if (focusNode && focusNode === anchorNode &&
-            focusNode.tagName.toLowerCase() === WYMeditor.LI) {
-        // This is a single li tag
-
-        var ancestor = focusNode.parentNode.parentNode;
-
-        if (focusNode.parentNode.childNodes.length > 1 ||
-                ancestor.tagName.toLowerCase() === WYMeditor.OL ||
-                ancestor.tagName.toLowerCase() === WYMeditor.UL ||
-                ancestor.tagName.toLowerCase() === WYMeditor.LI) {
-
-            return true;
-        }
-    }
-
-    return false;
-};
-
 WYMeditor.editor.prototype._canOutdent = function (focusNode, anchorNode) {
     // Ensure that we're indenting exactly one list item and it's already
     // indented at least one level
@@ -1235,24 +1214,17 @@ WYMeditor.editor.prototype._canOutdent = function (focusNode, anchorNode) {
 };
 
 /**
-    editor.indent
-    =============
+    editor._indentSingleItem
+    ========================
 
-    Indent a list item via the dom, ensuring that the selected node moves in
+    Indent a single list item via the dom, ensuring that the selected node moves in
     exactly one level and all other nodes stay at the same level.
  */
-WYMeditor.editor.prototype.indent = function () {
-    var focusNode = this.selected(),
-        sel = rangy.getIframeSelection(this._iframe),
-        startContainer = sel.getRangeAt(0).startContainer,
-        startOffset = sel.getRangeAt(0).startOffset,
-        anchorNode = sel.anchorNode,
-
-        $spacerList,
+WYMeditor.editor.prototype._indentSingleItem = function (listItem) {
+    var $spacerList,
         $prevList,
         $listContents,
 
-        $focusNode,
         listType,
         itemContents,
         spacerHtml,
@@ -1273,45 +1245,35 @@ WYMeditor.editor.prototype.indent = function () {
         $nextSublist,
 
         $spacer,
-        $spacerContents,
+        $spacerContents;
 
-        iframeWin,
-        range;
-
-    focusNode = this.findUp(focusNode, WYMeditor.BLOCKS);
-    anchorNode = this.findUp(anchorNode, WYMeditor.BLOCKS);
-
-    if (!this._canIndent(focusNode, anchorNode)) {
-        return;
-    }
-
-    $focusNode = $(focusNode);
-    listType = $focusNode.parent()[0].tagName.toLowerCase();
+    $LiToIndent = $(listItem);
+    listType = $LiToIndent.parent()[0].tagName.toLowerCase();
 
     // Extract any non-list children so they can be inserted
     // back in the list item after it is moved
-    itemContents = $focusNode.contents().not('ol,ul');
+    itemContents = $LiToIndent.contents().not('ol,ul');
 
-    if ($focusNode.prev().length === 0 && $focusNode.parent().not('ul,ol,li')) {
+    if ($LiToIndent.prev().length === 0 && $LiToIndent.parent().not('ul,ol,li')) {
         // First item at the root level of a list
         // Going to need a spacer list item
         spacerHtml = '<li class="spacer_li">' +
             '<' + listType + '></' + listType + '>' +
             '</li>';
-        $focusNode.before(spacerHtml);
-        $spacerList = $focusNode.prev().find(listType);
-        $focusNode.children().unwrap();
-        $spacerList.append($focusNode);
+        $LiToIndent.before(spacerHtml);
+        $spacerList = $LiToIndent.prev().find(listType);
+        $LiToIndent.children().unwrap();
+        $spacerList.append($LiToIndent);
 
-    } else if ($focusNode.prev().contents().last().is(listType)) {
+    } else if ($LiToIndent.prev().contents().last().is(listType)) {
         // We have a sublist at the appropriate level as a previous sibling.
         // Leave the children where they are and join the previous sublist
-        $prevLi = $focusNode.prev();
+        $prevLi = $LiToIndent.prev();
         $prevSubList = $prevLi.contents().last();
-        $children = $focusNode.children();
+        $children = $LiToIndent.children();
         $children.unwrap();
         // Join our node at the end of the target sublist
-        $prevSubList.append($focusNode);
+        $prevSubList.append($LiToIndent);
 
         // Stick all of the children at the end of the previous li
         $children.detach();
@@ -1323,41 +1285,41 @@ WYMeditor.editor.prototype.indent = function () {
             $sublistContents.detach();
             $prevSubList.append($sublistContents);
         }
-    } else if ($focusNode.children('ol,ul').length === 0) {
+    } else if ($LiToIndent.children('ol,ul').length === 0) {
         // No sublist to join.
         // Leave the children where they are and join the previous list
-        $prevList = $focusNode.prev().filter('li');
-        $focusNode.children().unwrap();
+        $prevList = $LiToIndent.prev().filter('li');
+        $LiToIndent.children().unwrap();
         containerHtml = '<' + listType + '></' + listType + '>';
         $prevList.append(containerHtml);
-        $prevList.children(listType).last().append($focusNode);
+        $prevList.children(listType).last().append($LiToIndent);
     } else {
         // We have a sublist to join, so just jump to the front there and leave
         // the children where they are
-        $contents = $focusNode.contents().unwrap();
+        $contents = $LiToIndent.contents().unwrap();
         $contents.wrapAll('<li class="spacer_li"></li>');
-        $contents.filter('ol,ul').first().prepend($focusNode);
+        $contents.filter('ol,ul').first().prepend($LiToIndent);
     }
 
     // Put the non-list content back inside the li
-    $focusNode.prepend(itemContents);
+    $LiToIndent.prepend(itemContents);
 
     // If we just created lists next to eachother, join them
-    $maybeListSpacer = $focusNode.parent().parent('li.spacer_li');
+    $maybeListSpacer = $LiToIndent.parent().parent('li.spacer_li');
     if ($maybeListSpacer.length === 1) {
         $maybePreviousSublist = $maybeListSpacer.prev().filter('li').contents().last();
         if ($maybePreviousSublist.is(listType)) {
             // The last child (including text nodes) of the previous li is the
             // same type of list that we just had to wrap in a listSpacer.
             // Join them.
-            $listContents = $focusNode.parent().contents();
+            $listContents = $LiToIndent.parent().contents();
             $maybeListSpacer.detach();
             $maybePreviousSublist.append($listContents);
         } else if ($maybeListSpacer.next('li').contents().first().is(listType)) {
             // The first child (including text nodes) of the next li is the same
             // type of list we just wrapped in a listSpacer. Join them.
             $nextSublist = $maybeListSpacer.next('li').children().first();
-            $listContents = $focusNode.parent().contents();
+            $listContents = $LiToIndent.parent().contents();
             $maybeListSpacer.detach();
             $nextSublist.prepend($listContents);
         } else if ($maybeListSpacer.prev().is('li')) {
@@ -1370,24 +1332,99 @@ WYMeditor.editor.prototype.indent = function () {
     }
 
     // If we eliminated the need for a spacer_li, remove it
-    if ($focusNode.next().is('.spacer_li')) {
-        $spacer = $focusNode.next('.spacer_li');
+    if ($LiToIndent.next().is('.spacer_li')) {
+        $spacer = $LiToIndent.next('.spacer_li');
         $spacerContents = $spacer.contents();
         $spacerContents.detach();
-        $focusNode.append($spacerContents);
+        $LiToIndent.append($spacerContents);
         $spacer.remove();
     }
 
-    // Put the selection back on the li element
-    iframeWin = this._iframe.contentWindow;
-    sel = rangy.getSelection(iframeWin);
+};
 
-    range = rangy.createRange(this._doc);
-    range.setStart(startContainer, startOffset);
-    range.setEnd(startContainer, startOffset);
-    range.collapse(false);
+/**
+ * Get the common parent ol/ul for the given li nodes. If the closest parent
+ * ol/ul for each cell isn't the same, returns null.
+ */
+WYMeditor.editor.prototype.getCommonParentList = function (listItems) {
+    var firstLi,
+        parentList,
+        rootList;
 
-    sel.setSingleRange(range);
+    listItems = $(listItems).filter('li');
+    if (listItems.length === 0) {
+        return null;
+    }
+    firstLi = listItems[0];
+    parentList = $(firstLi).parent('ol,ul');
+
+    if (parentList.length === 0) {
+        return null;
+    }
+    rootList = parentList[0];
+
+    // Ensure that all of the li's have the same parent list
+    $(listItems).each(function (index, elmnt) {
+        parentList = $(elmnt).parent('ol,ul');
+        if (parentList.length === 0 || parentList[0] !== rootList) {
+            return null;
+        }
+    });
+
+    return rootList;
+};
+
+/**
+    editor.indent
+    =============
+
+    Indent a list item via the dom, ensuring that the selected node moves in
+    exactly one level and all other nodes stay at the same level.
+ */
+WYMeditor.editor.prototype.indent = function () {
+    var wym = this._wym,
+        sel = rangy.getIframeSelection(this._iframe),
+        // Starting selection information for selection restore
+        startContainer = sel.getRangeAt(0).startContainer,
+        startOffset = sel.getRangeAt(0).startOffset,
+        endContainer = sel.getRangeAt(0).endContainer,
+        endOffset = sel.getRangeAt(0).endOffset,
+        nodes = [],
+        range,
+        listItems,
+        rootList;
+
+    for (i = 0; i < sel.rangeCount; i++) {
+        range = sel.getRangeAt(i);
+        nodes = nodes.concat(range.getNodes(false));
+    }
+
+    // Just use the li nodes
+    listItems = $(nodes).filter('li');
+    if (listItems.length === 0) {
+        return false;
+    }
+
+    // If the selection is across paragraphs and other items at the root level,
+    // don't indent
+    rootList = wym.getCommonParentList(listItems);
+    if (rootList === null) {
+        return false;
+    }
+
+    for (i = 0; i < listItems.length; i++) {
+        wym._indentSingleItem(listItems[i]);
+    }
+
+    if (listItems.length === 1) {
+        // Put the selection back on the last li element
+        range = rangy.createRange(this._doc);
+        range.setStart(startContainer, startOffset);
+        range.setEnd(endContainer, endOffset);
+        range.collapse(false);
+
+        sel.setSingleRange(range);
+    }
 
 };
 
