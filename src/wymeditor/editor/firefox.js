@@ -34,15 +34,17 @@ WYMeditor.WymClassMozilla.NEEDS_CELL_FIX = $.browser.version >= '1.9.1' &&
     $.browser.version < '2.0';
 
 WYMeditor.WymClassMozilla.prototype.initIframe = function (iframe) {
-    var wym = this;
+    var wym = this,
+        styles,
+        aCss;
 
     this._iframe = iframe;
     this._doc = iframe.contentDocument;
 
     //add css rules from options
-    var styles = this._doc.styleSheets[0];
+    styles = this._doc.styleSheets[0];
 
-    var aCss = eval(this._options.editorStyles);
+    aCss = eval(this._options.editorStyles);
 
     this.addCssRules(this._doc, aCss);
 
@@ -170,10 +172,12 @@ WYMeditor.WymClassMozilla.prototype.keydown = function (evt) {
 // Keyup handler, mainly used for cleanups
 WYMeditor.WymClassMozilla.prototype.keyup = function (evt) {
     // 'this' is the doc
-    var wym = WYMeditor.INSTANCES[this.title];
+    var wym = WYMeditor.INSTANCES[this.title],
+        container,
+        name;
 
     wym._selected_image = null;
-    var container = null;
+    container = null;
 
     if (evt.keyCode !== WYMeditor.KEY.BACKSPACE &&
             evt.keyCode !== WYMeditor.KEY.CTRL &&
@@ -188,7 +192,7 @@ WYMeditor.WymClassMozilla.prototype.keyup = function (evt) {
             !evt.ctrlKey) { // Not BACKSPACE, DELETE, CTRL, or COMMAND key
 
         container = wym.selected();
-        var name = container.tagName.toLowerCase();
+        name = container.tagName.toLowerCase();
 
         //fix forbidden main containers
         if (name === "strong" ||
@@ -222,8 +226,9 @@ WYMeditor.WymClassMozilla.prototype.keyup = function (evt) {
 };
 
 WYMeditor.WymClassMozilla.prototype.click = function (evt) {
-    var wym = WYMeditor.INSTANCES[this.title];
-    var container = wym.selected();
+    var wym = WYMeditor.INSTANCES[this.title],
+        container = wym.selected(),
+        sel;
 
     if (WYMeditor.WymClassMozilla.NEEDS_CELL_FIX === true) {
         if (container && container.tagName.toLowerCase() === WYMeditor.TR) {
@@ -245,7 +250,7 @@ WYMeditor.WymClassMozilla.prototype.click = function (evt) {
     if (container && container.tagName.toLowerCase() === WYMeditor.BODY) {
         // A click in the body means there is no content at all, so we
         // should automatically create a starter paragraph
-        var sel = wym._iframe.contentWindow.getSelection();
+        sel = wym._iframe.contentWindow.getSelection();
         if (sel.isCollapsed === true) {
             // If the selection isn't collapsed, we might have a selection that
             // drags over the body, but we shouldn't turn everything in to a
@@ -261,7 +266,7 @@ WYMeditor.WymClassMozilla.prototype.enableDesignMode = function () {
         try {
             this._doc.designMode = "on";
             this._doc.execCommand("styleWithCSS", '', false);
-            this._doc.execCommand("enableObjectResizing", false, false);
+            this._doc.execCommand("enableObjectResizing", false, true);
         } catch (e) {}
     }
 };
