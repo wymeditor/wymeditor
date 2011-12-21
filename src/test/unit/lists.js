@@ -7,6 +7,8 @@ module("list-indent_outdent", {setup: setupWym});
 * @param action A string with either 'indent' or 'outdent'
 * @param startHtml The starting HTML
 * @param expectedHtml The expected HTML result.
+* @param isText Should this be considered a text selection (as opposed to a DOM
+  selection). Default is false.
 */
 function testList(elmntId, action, startHtml, expectedHtml, isText) {
     var wymeditor = jQuery.wymeditors(0),
@@ -65,8 +67,9 @@ function testList(elmntId, action, startHtml, expectedHtml, isText) {
     `action` A string with either 'indent' or 'outdent'
     `startHtml` The starting HTML
     `expectedHtml` The expected HTML result.
+    `isText` Is this a Text selection (as opposed to a DOM selection). Defaults to false.
 */
-function testListMulti(startElmntId, endElmntId, action, startHtml, expectedHtml) {
+function testListMulti(startElmntId, endElmntId, action, startHtml, expectedHtml, isText) {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         startLi,
@@ -79,7 +82,13 @@ function testListMulti(startElmntId, endElmntId, action, startHtml, expectedHtml
     startLi = $body.find('#' + startElmntId)[0];
     endLi = $body.find('#' + endElmntId)[0];
 
-    makeSelection(wymeditor, startLi, endLi);
+    if (isText === true) {
+        // Make a text selection inside the target element instead of selecting
+        // the element itself
+        makeTextSelection(wymeditor, startLi, endLi, 1, 1);
+    } else {
+        makeSelection(wymeditor, startLi, endLi);
+    }
 
     buttonSelector = '';
     if (action === 'outdent') {
@@ -433,6 +442,35 @@ var li_7_indentedHtml = String() +
             '</li>' +
             '<li id="li_8">8</li>' +
         '</ol>';
+
+var overhungListHtml = String() +
+        '<ol>' +
+            '<li id="li_2">2' +
+                '<ul>' +
+                    '<li id="li_2_1">2_1' +
+                        '<ul>' +
+                            '<li id="li_2_2">2_2</li>' +
+                        '</ul>' +
+                    '</li>' +
+                '</ul>' +
+            '</li>' +
+            '<li id="li_3">3</li>' +
+        '</ol>';
+
+var li_3_overhungHtml = String() +
+        '<ol>' +
+            '<li id="li_2">2' +
+                '<ul>' +
+                    '<li id="li_2_1">2_1' +
+                        '<ul>' +
+                            '<li id="li_2_2">2_2</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_3">3</li>' +
+                '</ul>' +
+            '</li>' +
+        '</ol>';
+
 test("First-level w/sublist indent/outdent", function () {
     expect(6);
 
@@ -528,6 +566,18 @@ test("First-level no-sublist previous-sublist indent/outdent", function () {
     testList('li_4', 'outdent', li_4_indentedHtml, nestedListHtml, true);
 });
 
+test("Double overhang with different list type indent/outdent", function () {
+    expect(6);
+
+    testList('li_3', 'indent', overhungListHtml, li_3_overhungHtml);
+    testList('li_3', 'outdent', li_3_overhungHtml, overhungListHtml);
+
+    // Via Text selection
+    testList('li_3', 'indent', overhungListHtml, li_3_overhungHtml, true);
+    testList('li_3', 'outdent', li_3_overhungHtml, overhungListHtml, true);
+});
+
+
 test("Can't dedent first-level", function () {
     expect(15);
 
@@ -613,6 +663,38 @@ var li_6_to_li_8_indentedHtml = String() +
             '</li>' +
         '</ol>';
 
+var li_2_2_to_li_3_indentedHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2' +
+                '<ol>' +
+                    '<li id="li_2_1">2_1' +
+                        '<ol>' +
+                            '<li id="li_2_2">2_2</li>' +
+                        '</ol>' +
+                    '</li>' +
+                    '<li id="li_3">3</li>' +
+                    '<li id="li_3_1">3_1</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_4">4</li>' +
+            '<li id="li_5">5' +
+                '<ol>' +
+                    '<li id="li_5_1">5_1</li>' +
+                    '<li id="li_5_2">5_2</li>' +
+                    '<li id="li_5_3">5_3' +
+                        '<ul>' +
+                            '<li id="li_5_3_1">5_3_1</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_5_4">5_4</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_6">6</li>' +
+            '<li id="li_7">7</li>' +
+            '<li id="li_8">8</li>' +
+        '</ol>';
+
 var li_7_to_li_8_indentedHtml = String() +
         '<ol>' +
             '<li id="li_1">1</li>' +
@@ -648,31 +730,97 @@ var li_7_to_li_8_indentedHtml = String() +
             '</li>' +
         '</ol>';
 
-
+var li_5_3_to_li_5_4_indentedHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2' +
+                '<ol>' +
+                    '<li id="li_2_1">2_1</li>' +
+                    '<li id="li_2_2">2_2</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_3">3' +
+                '<ol>' +
+                    '<li id="li_3_1">3_1</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_4">4</li>' +
+            '<li id="li_5">5' +
+                '<ol>' +
+                    '<li id="li_5_1">5_1</li>' +
+                    '<li id="li_5_2">5_2' +
+                        '<ul>' +
+                            '<li id="li_5_3">5_3' +
+                                '<ul>' +
+                                    '<li id="li_5_3_1">5_3_1</li>' +
+                                '</ul>' +
+                            '</li>' +
+                            '<li id="li_5_4">5_4</li>' +
+                        '</ul>' +
+                    '</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_6">6</li>' +
+            '<li id="li_7">7</li>' +
+            '<li id="li_8">8</li>' +
+        '</ol>';
 
 
 module("list- multi-selection", {setup: setupWym});
 
 test("Second-level same sublist indent/outdent", function () {
-    expect(2);
+    expect(4);
 
     testListMulti('li_2_1', 'li_2_2', 'indent', nestedListHtml, li_2_1_to_li_2_2_indentedHtml);
     testListMulti('li_2_1', 'li_2_2', 'outdent', li_2_1_to_li_2_2_indentedHtml, nestedListHtml);
+
+    // Via text selection
+    testListMulti('li_2_1', 'li_2_2', 'indent', nestedListHtml, li_2_1_to_li_2_2_indentedHtml, true);
+    testListMulti('li_2_1', 'li_2_2', 'outdent', li_2_1_to_li_2_2_indentedHtml, nestedListHtml, true);
 });
 
 test("First-level joins prev sublist indent/outdent", function () {
-    expect(2);
+    expect(4);
 
     testListMulti('li_6', 'li_8', 'indent', nestedListHtml, li_6_to_li_8_indentedHtml);
     testListMulti('li_6', 'li_8', 'outdent', li_6_to_li_8_indentedHtml, nestedListHtml);
+
+    // Via text selection
+    testListMulti('li_6', 'li_8', 'indent', nestedListHtml, li_6_to_li_8_indentedHtml, true);
+    testListMulti('li_6', 'li_8', 'outdent', li_6_to_li_8_indentedHtml, nestedListHtml, true);
 });
 
-
 test("First-level creates and joins prev list indent/outdent", function () {
-    expect(2);
+    expect(4);
 
     testListMulti('li_7', 'li_8', 'indent', nestedListHtml, li_7_to_li_8_indentedHtml);
     testListMulti('li_7', 'li_8', 'outdent', li_7_to_li_8_indentedHtml, nestedListHtml);
+
+    // Via text selection
+    testListMulti('li_7', 'li_8', 'indent', nestedListHtml, li_7_to_li_8_indentedHtml, true);
+    testListMulti('li_7', 'li_8', 'outdent', li_7_to_li_8_indentedHtml, nestedListHtml, true);
+});
+
+test("Second-level and down a level", function () {
+    expect(4);
+
+    testListMulti('li_2_2', 'li_3', 'indent', nestedListHtml, li_2_2_to_li_3_indentedHtml);
+    testListMulti('li_2_2', 'li_3', 'outdent', li_2_2_to_li_3_indentedHtml, nestedListHtml);
+
+    // Via text selection
+    testListMulti('li_2_2', 'li_3', 'indent', nestedListHtml, li_2_2_to_li_3_indentedHtml, true);
+    testListMulti('li_2_2', 'li_3', 'outdent', li_2_2_to_li_3_indentedHtml, nestedListHtml, true);
+});
+
+test("Second-level and down a level mixed lists", function () {
+    expect(4);
+
+    testListMulti('li_5_3', 'li_5_4', 'indent', nestedListHtml, li_5_3_to_li_5_4_indentedHtml);
+    testListMulti('li_5_3', 'li_5_4', 'outdent', li_5_3_to_li_5_4_indentedHtml, nestedListHtml);
+
+    // Via text selection
+    testListMulti('li_5_3', 'li_5_4', 'indent', nestedListHtml, li_5_3_to_li_5_4_indentedHtml, true);
+    testListMulti('li_5_3', 'li_5_4', 'outdent', li_5_3_to_li_5_4_indentedHtml, nestedListHtml, true);
 });
 
 module("list-broken_html", {setup: setupWym});

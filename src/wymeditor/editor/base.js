@@ -1264,9 +1264,15 @@ WYMeditor.editor.prototype._indentSingleItem = function (listItem) {
         // Leave the children where they are and join the previous list
         $prevList = $liToIndent.prev().filter('li');
         $liToIndent.children().unwrap();
-        containerHtml = '<' + listType + '></' + listType + '>';
-        $prevList.append(containerHtml);
-        $prevList.children(listType).last().append($liToIndent);
+
+        if ($prevList.children('ol,ul').length === 0) {
+            // The previous list doesn't have a sublist for us to join yet, so
+            // we need to create a spot for our li to nest
+            containerHtml = '<' + listType + '></' + listType + '>';
+            $prevList.append(containerHtml);
+        }
+
+        $prevList.children('ol,ul').last().append($liToIndent);
     } else {
         // We have a sublist to join, so just jump to the front there and leave
         // the children where they are
@@ -1444,6 +1450,78 @@ WYMeditor.editor.prototype.getCommonParentList = function (listItems) {
     return rootList;
 };
 
+WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
+    var wym = this,
+        i,
+        range,
+        nodes = [],
+        containsNodeTextFilter;
+
+    containsNodeTextFilter = function (testNode) {
+        var fullyContainsNodeText;
+        try {
+            fullyContainsNodeText = range.containsNodeText(testNode);
+        } catch (e) {
+            // Rangy throws an exception on an internal
+            // intersection call on the last node that's
+            // actually in the selection
+            return true;
+        }
+
+        if (fullyContainsNodeText === true) {
+            // If we fully contain any text in this node, it's definitely
+            // selected
+            return true;
+        }
+        // We also want to include a node whose text is partially selected
+        // at the start/end of the selection. This happens when the range
+        // startContainer or endContainer is a text node
+        if (rangy.dom.isCharacterDataNode(range.startContainer) === true) {
+            // If this is our text node's parent, then we want to include it
+            if (range.startContainer.parentNode === testNode) {
+                return true;
+            }
+        }
+        // Now handle the same case, only for the end of our selection
+        if (rangy.dom.isCharacterDataNode(range.endContainer) === true) {
+            // If this is our text node's parent, then we want to include it
+            if (range.endContainer.parentNode === testNode) {
+                return true;
+            }
+        }
+    };
+
+    for (i = 0; i < sel.rangeCount; i++) {
+        range = sel.getRangeAt(i);
+        if (range.collapsed === true) {
+            // Collapsed ranges don't return the range they're in as part of
+            // getNodes, so let's find the next list item up
+            nodes = nodes.concat([wym.findUp(range.startContainer, 'li')]);
+        } else {
+            // getNodes includes the parent list item whenever we have our
+            // selection in a sublist. We need to make a distinction between
+            // when the parent list item is actually selected and when it's
+            // only sort of selected because we're selecting a sub-item
+            // (meaning it's partially selected).
+            // In the following case, we don't want `2` as one of our nodes:
+            // 1
+            // 2
+            //   2.1
+            //   2|.2
+            // 3|
+            nodes = nodes.concat(
+                range.getNodes(
+                    [],
+                    containsNodeTextFilter
+                )
+            );
+        }
+    }
+
+    return nodes;
+};
+
+
 /**
     editor.indent
     =============
@@ -1465,17 +1543,7 @@ WYMeditor.editor.prototype.indent = function () {
         listItems,
         rootList;
 
-
-    for (i = 0; i < sel.rangeCount; i++) {
-        range = sel.getRangeAt(i);
-        if (range.collapsed === true) {
-            // Collapsed ranges don't return the range they're in as part of
-            // getNodes, so let's find the next list item up
-            nodes = nodes.concat([wym.findUp(startContainer, 'li')]);
-        } else {
-            nodes = nodes.concat(range.getNodes(false));
-        }
-    }
+    nodes = wym._getSelectedListItems(sel);
 
     // Just use the li nodes
     listItems = $(nodes).filter('li');
@@ -1526,16 +1594,7 @@ WYMeditor.editor.prototype.outdent = function () {
         listItems,
         rootList;
 
-    for (i = 0; i < sel.rangeCount; i++) {
-        range = sel.getRangeAt(i);
-        if (range.collapsed === true) {
-            // Collapsed ranges don't return the range they're in as part of
-            // getNodes, so let's find the next list item up
-            nodes = nodes.concat([wym.findUp(startContainer, 'li')]);
-        } else {
-            nodes = nodes.concat(range.getNodes(false));
-        }
-    }
+    nodes = wym._getSelectedListItems(sel);
 
     // Just use the li nodes
     listItems = $(nodes).filter('li');
