@@ -1450,6 +1450,17 @@ WYMeditor.editor.prototype.getCommonParentList = function (listItems) {
     return rootList;
 };
 
+/**
+    editor._getSelectedListItems
+    ============================
+
+    Based on the given selection, determine which li nodes are "selected" from
+    the user's standpoint. These are the li nodes that they would expect to be
+    affected by an action with the given selection.
+
+    Generally, this means any li which has at least some of its text content
+    highlighted will be returned.
+*/
 WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
     var wym = this,
         i,
@@ -1458,6 +1469,8 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
         containsNodeTextFilter,
         parentsToAdd;
 
+    // Filter function to remove undesired nodes from what rangy.getNodes()
+    // gives
     containsNodeTextFilter = function (testNode) {
         var fullyContainsNodeText;
 
@@ -1482,6 +1495,8 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
         }
     };
 
+    // Iterate through all of the selection ranges and include any li nodes
+    // that are user-selected in each range
     for (i = 0; i < sel.rangeCount; i++) {
         range = sel.getRangeAt(i);
         if (range.collapsed === true) {
@@ -1510,7 +1525,6 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
             // We also need to include the parent li if we selected a non-li, non-list node.
             // eg. if we select text inside an li, the user is actually
             // selecting that entire li
-
             parentsToAdd = [];
             for (j = 0; j < nodes.length; j++) {
                 if (!$(nodes[j]).is('li,ol,ul')) {
@@ -1518,6 +1532,7 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
                 }
             }
             // Add in all of the new parents if they're not already included
+            // (no duplicates)
             for (j = 0; j < parentsToAdd.length; j++) {
                 if ($.inArray(parentsToAdd[j], nodes) === -1) {
                     nodes.push(parentsToAdd[j]);

@@ -7,6 +7,7 @@ WYMeditor.
 
 *release-date* TBD
 
+* It's now possible to indent multiple list items at one time.
 * It is once-again possible to adjust an images width and height in FF using
   the browser-supplied slide and drag handles. This was removed out of purity
   (there should be a solution that maintains image ratios, uses CSS instead,
