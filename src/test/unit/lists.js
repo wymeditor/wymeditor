@@ -806,21 +806,15 @@ test("First-level creates and joins prev list indent/outdent", function () {
 });
 
 test("Second-level and down a level", function () {
-    expect(4);
-
-    testListMulti('li_2_2', 'li_3', 'indent', nestedListHtml, li_2_2_to_li_3_indentedHtml);
-    testListMulti('li_2_2', 'li_3', 'outdent', li_2_2_to_li_3_indentedHtml, nestedListHtml);
+    expect(2);
 
     // Via text selection
     testListMulti('li_2_2', 'li_3', 'indent', nestedListHtml, li_2_2_to_li_3_indentedHtml, true);
     testListMulti('li_2_2', 'li_3', 'outdent', li_2_2_to_li_3_indentedHtml, nestedListHtml, true);
 });
 
-test("Second-level and down a level mixed lists", function () {
-    expect(4);
-
-    testListMulti('li_5_3', 'li_5_4', 'indent', nestedListHtml, li_5_3_to_li_5_4_indentedHtml);
-    testListMulti('li_5_3', 'li_5_4', 'outdent', li_5_3_to_li_5_4_indentedHtml, nestedListHtml);
+test("Second-level with mixed lists and down a level", function () {
+    expect(2);
 
     // Via text selection
     testListMulti('li_5_3', 'li_5_4', 'indent', nestedListHtml, li_5_3_to_li_5_4_indentedHtml, true);
