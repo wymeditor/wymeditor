@@ -1455,10 +1455,17 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
         i,
         range,
         nodes = [],
-        containsNodeTextFilter;
+        containsNodeTextFilter,
+        parentsToAdd;
 
     containsNodeTextFilter = function (testNode) {
         var fullyContainsNodeText;
+
+        // Include any partially-selected textNodes
+        if (rangy.dom.isCharacterDataNode(testNode)) {
+            return testNode;
+        }
+
         try {
             fullyContainsNodeText = range.containsNodeText(testNode);
         } catch (e) {
@@ -1472,22 +1479,6 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
             // If we fully contain any text in this node, it's definitely
             // selected
             return true;
-        }
-        // We also want to include a node whose text is partially selected
-        // at the start/end of the selection. This happens when the range
-        // startContainer or endContainer is a text node
-        if (rangy.dom.isCharacterDataNode(range.startContainer) === true) {
-            // If this is our text node's parent, then we want to include it
-            if (range.startContainer.parentNode === testNode) {
-                return true;
-            }
-        }
-        // Now handle the same case, only for the end of our selection
-        if (rangy.dom.isCharacterDataNode(range.endContainer) === true) {
-            // If this is our text node's parent, then we want to include it
-            if (range.endContainer.parentNode === testNode) {
-                return true;
-            }
         }
     };
 
@@ -1515,6 +1506,25 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
                     containsNodeTextFilter
                 )
             );
+
+            // We also need to include the parent li if we selected a non-li, non-list node.
+            // eg. if we select text inside an li, the user is actually
+            // selecting that entire li
+
+            parentsToAdd = [];
+            for (j = 0; j < nodes.length; j++) {
+                if (!$(nodes[j]).is('li,ol,ul')) {
+                    parentsToAdd.push($(nodes[j]).parent('li').get(0));
+                }
+            }
+            // Add in all of the new parents if they're not already included
+            for (j = 0; j < parentsToAdd.length; j++) {
+                if ($.inArray(parentsToAdd[j], nodes) === -1) {
+                    nodes.push(parentsToAdd[j]);
+                }
+            }
+
+
         }
     }
 

@@ -126,17 +126,18 @@ function makeSelection(wymeditor, startElement, endElement, startElementIndex, e
     range.setStart(startElement, startElementIndex);
     range.setEnd(endElement, endElementIndex);
     if (startElement === endElement &&
-            startElementIndex === 0 && endElementIndex === 0) {
-        // Only collapse the range to the start if we're selecting the start of
-        // one element
+            startElementIndex === endElementIndex) {
+        // Only collapse the range to the start if the start and end are the
+        // exact same
         range.collapse(true);
     }
 
-    try {
-        sel.setSingleRange(range);
-    } catch (err) {
-        // ie8 can raise an "unkown runtime error" trying to empty the range
-    }
+    // ie will raise an error if we try to use a Control range that
+    // encompasses more than one element. See:
+    // http://code.google.com/p/rangy/wiki/RangySelection#Control_selections_in_Internet_Explorer
+    // We need to handle internet explorer selection differently
+    sel.setSingleRange(range);
+
     // IE selection hack
     if ($.browser.msie) {
         wymeditor.saveCaret();
@@ -151,8 +152,8 @@ function makeTextSelection(wymeditor, startElement, endElement, startElementInde
     var $startElementContents,
         $endElementContents;
 
-    if (typeof startElementIndex !== 'undefined' && startElementIndex !== 0) {
-        // We have a non-zero index. Look for a first-child text node and use
+    if (typeof startElementIndex !== 'undefined') {
+        // Look for a first-child text node and use
         // that as the startElement for the makeSelection() call
         $startElementContents = $(startElement).contents();
         if ($startElementContents.length > 0 &&
@@ -160,8 +161,8 @@ function makeTextSelection(wymeditor, startElement, endElement, startElementInde
             startElement = $startElementContents.get(0);
         }
     }
-    if (typeof endElementIndex !== 'undefined' && endElementIndex !== 0) {
-        // We have a non-zero index. Look for a first-child text node and use
+    if (typeof endElementIndex !== 'undefined') {
+        // Look for a first-child text node and use
         // that as the startElement for the makeSelection() call
         $endElementContents = $(endElement).contents();
         if ($endElementContents.length > 0 &&

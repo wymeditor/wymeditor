@@ -25,7 +25,11 @@ function testList(elmntId, action, startHtml, expectedHtml, isText) {
     if (isText === true) {
         // Make a text selection inside the target element instead of selecting
         // the element itself
-        makeTextSelection(wymeditor, actionLi, actionLi, 1, 1);
+        // Selecting from 0 to 1 means we'll select the whole text on
+        // one-character text nodes and we'll partially-select longer nodes.
+        // This allows us to test both without juggling this through all of our
+        // test-cases
+        makeTextSelection(wymeditor, actionLi, actionLi, 0, 1);
     } else {
         moveSelector(wymeditor, actionLi);
     }
@@ -85,7 +89,7 @@ function testListMulti(startElmntId, endElmntId, action, startHtml, expectedHtml
     if (isText === true) {
         // Make a text selection inside the target element instead of selecting
         // the element itself
-        makeTextSelection(wymeditor, startLi, endLi, 1, 1);
+        makeTextSelection(wymeditor, startLi, endLi, 0, 1);
     } else {
         makeSelection(wymeditor, startLi, endLi);
     }
