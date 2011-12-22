@@ -18,18 +18,22 @@
  *        Scott Lewis (lewiscot a-t gmail dotcom)
  */
 
-WYMeditor.WymClassSafari = function(wym) {
+WYMeditor.WymClassSafari = function (wym) {
     this._wym = wym;
     this._class = "class";
 };
 
-WYMeditor.WymClassSafari.prototype.initIframe = function(iframe) {
+WYMeditor.WymClassSafari.prototype.initIframe = function (iframe) {
+    var wym = this,
+        styles,
+        aCss;
+
     this._iframe = iframe;
     this._doc = iframe.contentDocument;
 
     //add css rules from options
-    var styles = this._doc.styleSheets[0];
-    var aCss = eval(this._options.editorStyles);
+    styles = this._doc.styleSheets[0];
+    aCss = eval(this._options.editorStyles);
 
     this.addCssRules(this._doc, aCss);
 
@@ -67,21 +71,23 @@ WYMeditor.WymClassSafari.prototype.initIframe = function(iframe) {
     this.listen();
 };
 
-WYMeditor.WymClassSafari.prototype._exec = function(cmd, param) {
+WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
     if (!this.selected()) {
         return false;
     }
 
-    var focusNode = this.selected();
+    var focusNode = this.selected(),
+        container;
 
-    switch(cmd) {
-    case WYMeditor.INSERT_ORDEREDLIST: case WYMeditor.INSERT_UNORDEREDLIST:
+    switch (cmd) {
+    case WYMeditor.INSERT_ORDEREDLIST:
+    case WYMeditor.INSERT_UNORDEREDLIST:
 
-        this._doc.execCommand(cmd,'',null);
+        this._doc.execCommand(cmd, '', null);
 
         //Safari creates lists in e.g. paragraphs.
         //Find the container, and remove it.
-        var container = this.findUp(focusNode, WYMeditor.MAIN_CONTAINERS);
+        container = this.findUp(focusNode, WYMeditor.MAIN_CONTAINERS);
         if (container) {
             jQuery(container).replaceWith(jQuery(container).html());
         }
@@ -99,36 +105,36 @@ WYMeditor.WymClassSafari.prototype._exec = function(cmd, param) {
 
     //set to P if parent = BODY
     container = this.selected();
-    if (container && container.tagName.toLowerCase() == WYMeditor.BODY) {
+    if (container && container.tagName.toLowerCase() === WYMeditor.BODY) {
         this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
     }
 
     return true;
 };
 
-WYMeditor.WymClassSafari.prototype.addCssRule = function(styles, oCss) {
+WYMeditor.WymClassSafari.prototype.addCssRule = function (styles, oCss) {
     styles.insertRule(oCss.name + " {" + oCss.css + "}",
         styles.cssRules.length);
 };
 
 
 //keydown handler, mainly used for keyboard shortcuts
-WYMeditor.WymClassSafari.prototype.keydown = function(e) {
+WYMeditor.WymClassSafari.prototype.keydown = function (e) {
     //'this' is the doc
     var wym = WYMeditor.INSTANCES[this.title];
 
     if (e.ctrlKey) {
-        if (e.keyCode == WYMeditor.KEY.B) {
+        if (e.keyCode === WYMeditor.KEY.B) {
             //CTRL+b => STRONG
             wym._exec(WYMeditor.BOLD);
             e.preventDefault();
         }
-        if (e.keyCode == WYMeditor.KEY.I) {
-          //CTRL+i => EMPHASIS
-          wym._exec(WYMeditor.ITALIC);
-          e.preventDefault();
+        if (e.keyCode === WYMeditor.KEY.I) {
+            //CTRL+i => EMPHASIS
+            wym._exec(WYMeditor.ITALIC);
+            e.preventDefault();
         }
-    } else if (e.shiftKey && e.keyCode == WYMeditor.KEY.ENTER) {
+    } else if (e.shiftKey && e.keyCode === WYMeditor.KEY.ENTER) {
         // Safari 4 and earlier would show a proper linebreak in the editor and
         // then strip it upon save with the default action in the case of inserting
         // a new line after bold text
@@ -138,51 +144,52 @@ WYMeditor.WymClassSafari.prototype.keydown = function(e) {
 };
 
 // Keyup handler, mainly used for cleanups
-WYMeditor.WymClassSafari.prototype.keyup = function(evt) {
+WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
     //'this' is the doc
-    var wym = WYMeditor.INSTANCES[this.title];
+    var wym = WYMeditor.INSTANCES[this.title],
+        container,
+        name;
 
     wym._selected_image = null;
-    var container = null;
 
     // Fix to allow shift + return to insert a line break in older safari
     if ($.browser.version < 534.1) {
         // Not needed in AT MAX chrome 6.0. Probably safe earlier
-        if (evt.keyCode == WYMeditor.KEY.ENTER && evt.shiftKey) {
+        if (evt.keyCode === WYMeditor.KEY.ENTER && evt.shiftKey) {
             wym._exec('InsertLineBreak');
         }
     }
 
-    if (evt.keyCode != WYMeditor.KEY.BACKSPACE &&
-            evt.keyCode != WYMeditor.KEY.CTRL &&
-            evt.keyCode != WYMeditor.KEY.DELETE &&
-            evt.keyCode != WYMeditor.KEY.COMMAND &&
-            evt.keyCode != WYMeditor.KEY.UP &&
-            evt.keyCode != WYMeditor.KEY.DOWN &&
-            evt.keyCode != WYMeditor.KEY.LEFT &&
-            evt.keyCode != WYMeditor.KEY.RIGHT &&
-            evt.keyCode != WYMeditor.KEY.ENTER &&
+    if (evt.keyCode !== WYMeditor.KEY.BACKSPACE &&
+            evt.keyCode !== WYMeditor.KEY.CTRL &&
+            evt.keyCode !== WYMeditor.KEY.DELETE &&
+            evt.keyCode !== WYMeditor.KEY.COMMAND &&
+            evt.keyCode !== WYMeditor.KEY.UP &&
+            evt.keyCode !== WYMeditor.KEY.DOWN &&
+            evt.keyCode !== WYMeditor.KEY.LEFT &&
+            evt.keyCode !== WYMeditor.KEY.RIGHT &&
+            evt.keyCode !== WYMeditor.KEY.ENTER &&
             !evt.metaKey &&
             !evt.ctrlKey) {// Not BACKSPACE, DELETE, CTRL, or COMMAND key
 
         container = wym.selected();
-        var name = container.tagName.toLowerCase();
+        name = container.tagName.toLowerCase();
 
         // Fix forbidden main containers
-        if (name == "strong" ||
-                name == "b" ||
-                name == "em" ||
-                name == "i" ||
-                name == "sub" ||
-                name == "sup" ||
-                name == "a" ||
-                name == "span") {
+        if (name === "strong" ||
+                name === "b" ||
+                name === "em" ||
+                name === "i" ||
+                name === "sub" ||
+                name === "sup" ||
+                name === "a" ||
+                name === "span") {
             // Webkit tries to use spans as a main container
 
             name = container.parentNode.tagName.toLowerCase();
         }
 
-        if (name == WYMeditor.BODY || name == WYMeditor.DIV) {
+        if (name === WYMeditor.BODY || name === WYMeditor.DIV) {
             // Replace text nodes with <p> tags
             wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
             wym.fixBodyHtml();
@@ -191,22 +198,24 @@ WYMeditor.WymClassSafari.prototype.keyup = function(evt) {
 
     // If we potentially created a new block level element or moved to a new one
     // then we should ensure that they're in the proper format
-    if (evt.keyCode == WYMeditor.KEY.UP ||
-            evt.keyCode == WYMeditor.KEY.DOWN ||
-            evt.keyCode == WYMeditor.KEY.LEFT ||
-            evt.keyCode == WYMeditor.KEY.RIGHT ||
-            evt.keyCode == WYMeditor.KEY.BACKSPACE ||
-            evt.keyCode == WYMeditor.KEY.ENTER) {
+    if (evt.keyCode === WYMeditor.KEY.UP ||
+            evt.keyCode === WYMeditor.KEY.DOWN ||
+            evt.keyCode === WYMeditor.KEY.LEFT ||
+            evt.keyCode === WYMeditor.KEY.RIGHT ||
+            evt.keyCode === WYMeditor.KEY.BACKSPACE ||
+            evt.keyCode === WYMeditor.KEY.ENTER) {
         wym.fixBodyHtml();
     }
 };
 
-WYMeditor.WymClassSafari.prototype.openBlockTag = function(tag, attributes) {
+WYMeditor.WymClassSafari.prototype.openBlockTag = function (tag, attributes) {
+    var new_tag;
+
     attributes = this.validator.getValidTagAttributes(tag, attributes);
 
     // Handle Safari styled spans
-    if (tag == 'span' && attributes.style) {
-        var new_tag = this.getTagForStyle(attributes.style);
+    if (tag === 'span' && attributes.style) {
+        new_tag = this.getTagForStyle(attributes.style);
         if (new_tag) {
             tag = new_tag;
             this._tag_stack.pop();
@@ -214,9 +223,11 @@ WYMeditor.WymClassSafari.prototype.openBlockTag = function(tag, attributes) {
             attributes.style = '';
 
             // Should fix #125 - also removed the xhtml() override
-            if (typeof attributes['class'] == 'string') {
+            if (typeof attributes['class'] === 'string') {
                 attributes['class'] = attributes['class'].replace(
-                        /apple-style-span/gi, '');
+                    /apple-style-span/gi,
+                    ''
+                );
             }
         }
     }
@@ -224,7 +235,7 @@ WYMeditor.WymClassSafari.prototype.openBlockTag = function(tag, attributes) {
     this.output += this.helper.tag(tag, attributes, true);
 };
 
-WYMeditor.WymClassSafari.prototype.getTagForStyle = function(style) {
+WYMeditor.WymClassSafari.prototype.getTagForStyle = function (style) {
     if (/bold/.test(style)) {
         return 'strong';
     } else if (/italic/.test(style)) {
