@@ -7,11 +7,16 @@ WYMeditor.
 
 *release-date* TBD
 
+* It's now possible to indent multiple list items at one time.
 * It is once-again possible to adjust an images width and height in FF using
   the browser-supplied slide and drag handles. This was removed out of purity
   (there should be a solution that maintains image ratios, uses CSS instead,
   etc), but in absense of a better solution, it's better than having no ability
   to control the size of inserted images.
+* Updated the bundled version of Rangy to version 1.2
+* Fixed a list indent bug when indenting a list with a previous list item which
+  had a sublist of a different list type. This used to create a second sublist
+  of the original list type, which isn't what someone would expect.
 
 ## 1.0.0a3 (Alpha 3)
 
