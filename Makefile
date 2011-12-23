@@ -20,12 +20,12 @@ JS_FILES = ${WYM_DIR}/core.js\
  ${WYM_DIR}/parser/css-lexer.js\
  ${WYM_DIR}/parser/css-parser.js
 
-WE = ${BUILD_DIR}/jquery.wymeditor.js
-WE_MIN = ${BUILD_DIR}/jquery.wymeditor.min.js
-WE_ARCH = wymeditor.tar.gz
-
 WYM_VER = $(shell cat version.txt)
 VER = sed "s/@VERSION/$(WYM_VER)/"
+
+WE = ${BUILD_DIR}/jquery.wymeditor.js
+WE_MIN = ${BUILD_DIR}/jquery.wymeditor.min.js
+WE_ARCH = wymeditor-${WYM_VER}.tar.gz
 
 MERGE = cat ${JS_FILES} | perl -pe 's/^\xEF\xBB\xBF//g' | ${VER} > ${WE}
 WE_MINIFIER = uglifyjs ${WE} > ${WE_MIN}
