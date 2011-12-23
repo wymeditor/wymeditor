@@ -37,7 +37,7 @@ Download
 
 You can download pre-built archives of both the latest stable release and a bleeding edge version with the code currently in master.
 
-* Latest Release: [Version 1.0.0a3](https://github.com/downloads/wymeditor/wymeditor/wymeditor-1.0.0a3.tar.gz)
+* Latest Release: [Version 1.0.0a4](https://github.com/downloads/wymeditor/wymeditor/wymeditor-1.0.0a4.tar.gz)
 * Latest Stable: [CI Build](http://jenkins.wymeditor.org/job/wym_master/lastSuccessfulBuild/artifact/dist/wymeditor.tar.gz)
 
 Compatibility
@@ -46,10 +46,10 @@ Compatibility
 WYMeditor is compatible with:
 
 * IE 6+
-* Firefox 3.6, 6 and 7
+* Firefox 3.6, 8 and 9
 * Opera 9.5+
 * Safari 3.0+
-* Google Chrome stable and beta releases
+* Google Chrome 15 and 16
 
 Quick Start
 -----------

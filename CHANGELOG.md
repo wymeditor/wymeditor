@@ -5,7 +5,9 @@ WYMeditor.
 
 ## 1.0.0a4 (Alpha 4)
 
-*release-date* TBD
+*release-date* December 22, 2011
+
+### Changes Since 1.0.0a3
 
 * It's now possible to indent multiple list items at one time.
 * It is once-again possible to adjust an images width and height in FF using
@@ -22,9 +24,9 @@ WYMeditor.
 
 *release-date* December 17, 2011
 
-* Fixed a bug making it impossible to use *Paste From Word* inside tables or lists
-
 ### Changes Since 1.0.0a2
+
+* Fixed a bug making it impossible to use *Paste From Word* inside tables or lists
 
 ## 1.0.0a2 (Alpha 2)
 
