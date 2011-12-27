@@ -89,6 +89,7 @@ sound? A new release isn't much good if nobody knows about it.
   announcing the new release with the title `Version <version> released`.
   Highlight any major changes, link to the changelog and download and maybe
   comment on plans for the next release.
+* Un-sticky any old forum threads.
 * Tweet out the good news to [@wymeditor](http://twitter.com/wymeditor).
 * Call your mother.
 
