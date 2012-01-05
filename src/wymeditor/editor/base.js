@@ -1466,6 +1466,7 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
         i,
         range,
         nodes = [],
+        liNodes = [],
         containsNodeTextFilter,
         parentsToAdd;
 
@@ -1528,6 +1529,7 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
             parentsToAdd = [];
             for (j = 0; j < nodes.length; j++) {
                 if (!$(nodes[j]).is('li,ol,ul')) {
+                    // TODO: Handle sub-nodes inside a list like <li><strong>foo</strong> bar</li>
                     parentsToAdd.push($(nodes[j]).parent('li').get(0));
                 }
             }
@@ -1543,7 +1545,14 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
         }
     }
 
-    return nodes;
+    // Filter out the non-li nodes
+    for (i = 0; i < nodes.length; i++) {
+        if (nodes[i].tagName && nodes[i].tagName === WYMeditor.LI) {
+            liNodes.push(nodes[i]);
+        }
+    }
+
+    return liNodes;
 };
 
 
