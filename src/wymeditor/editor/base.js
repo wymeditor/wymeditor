@@ -1323,6 +1323,34 @@ WYMeditor.editor.prototype._indentSingleItem = function (listItem) {
 };
 
 /**
+    jQuery.fn.nextAllContents
+    ======================
+
+    Acts like jQuery.nextAll() but includes text nodes and comments and only
+    works on the first element in the given jQuery collection..
+
+    Mostly cribbed from the jQuery source.
+*/
+jQuery.fn.nextAllContents = function () {
+    var matched = [],
+        cur = this.get(0);
+
+    if (!cur) {
+        // Called on an empty selector. The sibling of nothing is nothing
+        return $();
+    }
+    // We don't want to include this element, only its siblings
+    cur = cur.nextSibling;
+
+    while (cur) {
+        matched.push(cur);
+        cur = cur.nextSibling;
+    }
+
+    return $(matched);
+};
+
+/**
     editor._outdentSingleItem
     ========================
 
@@ -1334,9 +1362,9 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
         $parentItem,
         listType,
 
+        $siblingSubsequentContent,
         $subsequentItems,
         $childLists,
-        $orphannedContent,
 
         $sublist,
         $maybeConsecutiveLists;
@@ -1359,13 +1387,17 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
     // sublist elements after the outdent
     $subsequentItems = $liToIndent.nextAll('li');
 
+    // Need to keep tabs on any subsequent content to our li's list
+    $siblingSubsequentContent = $liToIndent.parent().nextAllContents();
+
     $liToIndent.detach();
+
     $parentItem.after($liToIndent);
+
 
     // If this node has one or more sublist, they will need to be indented
     // by one with a fake parent to hold their previous position
     $childLists = $liToIndent.children('ol,ul');
-    $orphannedContent = $liToIndent.contents().not('ol,ul');
 
     if ($childLists.length > 0) {
         $childLists.each(function (index, childList) {
@@ -1406,6 +1438,23 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
             });
         }
     }
+
+    // If we have a parentItem with content after our parent list
+    // eg. <ol>
+    //       <li>one
+    //         <ul ...>
+    //         two
+    //         <ul ...>
+    //         three
+    //       </li>
+    //     </ol>
+    // we'll need to split that parentItem to retain proper content ordering
+    if ($siblingSubsequentContent.length > 0) {
+        // Move the subsequent content in to a new list item after our parent li
+        $siblingSubsequentContent.detach();
+        $parentItem.next('li').append($siblingSubsequentContent);
+    }
+
 
     // Remove any now-empty lists
     $parentItem.find('ul:empty,ol:empty').remove();

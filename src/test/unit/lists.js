@@ -617,6 +617,7 @@ var doubleSublistHtml = String() +
                 '<ul>' +
                     '<li id="li_1_7">1_7</li>' +
                 '</ul>' +
+                'endContent' +
             '</li>' +
         '</ol>';
 var li_1_5_doubleSublistOutdentedHtml = String() +
@@ -638,6 +639,7 @@ var li_1_5_doubleSublistOutdentedHtml = String() +
                 '<ul>' +
                     '<li id="li_1_7">1_7</li>' +
                 '</ul>' +
+                'endContent' +
             '</li>' +
         '</ol>';
 var li_1_6_doubleSublistOutdentedHtml = String() +
@@ -657,6 +659,7 @@ var li_1_6_doubleSublistOutdentedHtml = String() +
                 '<ul>' +
                     '<li id="li_1_7">1_7</li>' +
                 '</ul>' +
+                'endContent' +
             '</li>' +
         '</ol>';
 
