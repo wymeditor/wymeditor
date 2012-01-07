@@ -1264,6 +1264,7 @@ WYMeditor.editor.prototype.joinAdjacentLists = function (listOne, listTwo) {
  */
 WYMeditor.editor.prototype._indentSingleItem = function (listItem) {
     var wym = this,
+        $liToIndent,
         listType,
         spacerHtml,
         containerHtml,
@@ -1282,7 +1283,8 @@ WYMeditor.editor.prototype._indentSingleItem = function (listItem) {
     // The algorithm used here is generally:
     // 1. Ensure there's a previous li to put the `liToIndent`.
     // 2. Move the `liToIndent` into a sublist in the previous li.
-    // 3. Re-add the movable list contents we removed in step 1.
+    // 3. If we added a spacer_li after `liToIndent` remove it and move its
+    // contents inside `liToIndent`.
 
     // For step 2, the sublist to use can either be:
     // 1. An existing sublist of the correct type at the end of the previous li.
@@ -1354,34 +1356,6 @@ WYMeditor.editor.prototype._indentSingleItem = function (listItem) {
 };
 
 /**
-    jQuery.fn.nextAllContents
-    ======================
-
-    Acts like jQuery.nextAll() but includes text nodes and comments and only
-    works on the first element in the given jQuery collection..
-
-    Mostly cribbed from the jQuery source.
-*/
-jQuery.fn.nextAllContents = function () {
-    var matched = [],
-        cur = this.get(0);
-
-    if (!cur) {
-        // Called on an empty selector. The sibling of nothing is nothing
-        return $();
-    }
-    // We don't want to include this element, only its siblings
-    cur = cur.nextSibling;
-
-    while (cur) {
-        matched.push(cur);
-        cur = cur.nextSibling;
-    }
-
-    return $(matched);
-};
-
-/**
     editor._outdentSingleItem
     ========================
 
@@ -1389,86 +1363,86 @@ jQuery.fn.nextAllContents = function () {
     exactly one level and all other nodes stay at the same level.
  */
 WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
-    var $liToIndent,
-        $parentItem,
+    var wym = this,
+        $liToOutdent,
         listType,
+        spacerListHtml,
 
-        $siblingSubsequentContent,
-        $subsequentItems,
-        $childLists,
+        splitContent,
+        $itemContents,
+        $sublistContents,
 
-        $prevList,
-        $sublist,
-        $maybeConsecutiveLists;
+        $parentLi,
+        $parentList,
 
-    $liToIndent = $(listItem);
+        $subsequentSiblingContent,
+        $subsequentParentListSiblingContent,
+
+        $sublist;
+
+    // The algorithm used here is generally:
+    // 1. Gather all subsequent sibling content in `liToIndent`s list along
+    // with all subsequent sibling content in `liToIndent`s parent list.
+    // 2. Move `liToIndent` after the li whose sublist it's in.
+    // 3. Create a sublist of the same type of `liToIndent`s parent list inside
+    // `liToIndent`.
+    // 4. If `liToIndent` has a sublist, use a spacer_li and list to hold its
+    // position inside the new sublist.
+    // 5. Append all original subsequent siblings inside the created sublist.
+    // 6. Append all of `liToIndent`s original parent list subsequent sibling
+    // content after the created sublist.
+    // 7. Remove `liToOutdent`'s original parent list and parent li if either
+    // are now empty
+
+    $liToOutdent = $(listItem);
+    listType = $liToOutdent.parent()[0].tagName.toLowerCase();
 
     // If this list item isn't already indented at least one level, don't allow
     // outdenting
-    if (!$liToIndent.parent().parent().is('ol,ul,li')) {
+    if (!$liToOutdent.parent().parent().is('ol,ul,li')) {
         return;
     }
 
-    // This item is in a sublist. Firefox doesn't properly dedent this
-    // as it's own item, instead it just tacks its content to the end of
-    // the parent item after the sublist
-    $parentItem = $liToIndent.parent().parent('li');
-    listType = $liToIndent.parent()[0].tagName.toLowerCase();
+    // Separate out the contents into things that should stay with the li as it
+    // moves and things that should stay at their current level
+    splitContent = wym.splitListItemContents($liToOutdent);
+    $sublistContents = $(splitContent.sublistContents);
+    $itemContents = $(splitContent.itemContents);
 
-    // If this li has li's following, those will need to be moved as
-    // sublist elements after the outdent
-    $subsequentItems = $liToIndent.nextAll('li');
+    // Gather subsequent sinbling and parent sibling content
+    $parentLi = $liToOutdent.parent().parent('li');
+    $parentList = $liToOutdent.parent();
+    $subsequentSiblingContent = $liToOutdent.nextAllContents();
+    $subsequentParentListSiblingContent = $parentList.nextAllContents();
 
-    // Need to keep tabs on any subsequent content to our li's list
-    $siblingSubsequentContent = $liToIndent.parent().nextAllContents();
+    // Move the li to after the parent li
+    $liToOutdent.detach();
+    $parentLi.after($liToOutdent);
 
-    $liToIndent.detach();
-
-    $parentItem.after($liToIndent);
-
-
-    // If this node has one or more sublist, they will need to be indented
+    // If this node has one or more sublists, they will need to be indented
     // by one with a fake parent to hold their previous position
-    $childLists = $liToIndent.children('ol,ul');
-
-    if ($childLists.length > 0) {
-        $childLists.each(function (index, childList) {
-            var $childList = $(childList),
-                spacerListHtml;
-            $childList.detach();
-
-            spacerListHtml = '<' + listType + '>' +
-                '<li class="spacer_li"></li>' +
-                '</' + listType + '>';
-            $liToIndent.append(spacerListHtml);
-            $liToIndent.children(listType).last().children('li').append($childList);
-        });
+    if ($sublistContents.length > 0) {
+        spacerListHtml = '<' + listType + '>' +
+            '<li class="spacer_li"></li>' +
+            '</' + listType + '>';
+        $liToOutdent.append(spacerListHtml);
+        $sublist = $liToOutdent.children().last();
+        // Add all of the sublistContents inside our new spacer li
+        $sublistContents.detach();
+        $sublist.children('li').append($sublistContents);
     }
 
-    if ($subsequentItems.length > 0) {
+    if ($subsequentSiblingContent.length > 0) {
         // Nest the previously-subsequent items inside the list to
         // retain order and their indent level
-        $sublist = $subsequentItems;
-        $sublist.detach();
-
-        $liToIndent.append("<" + listType + "></" + listType + ">");
-        $liToIndent.find(listType).last().append($subsequentItems);
-
-        // If we just created lists next to eachother, join them
-        $maybeConsecutiveLists = $liToIndent
-            .children(listType + ' + ' + listType);
-        if ($maybeConsecutiveLists.length > 0) {
-            // Join the same-type adjacent lists we found
-            $maybeConsecutiveLists.each(function (index, list) {
-                var $list = $(list),
-                    $listContents = $list.contents(),
-                    $prevList = $list.prev();
-
-                $listContents.detach();
-                $list.remove();
-                $prevList.append($listContents);
-            });
+        if (typeof $sublist === 'undefined') {
+            // Insert a sublist if we don't already have one
+            spacerListHtml = '<' + listType + '></' + listType + '>';
+            $liToOutdent.append(spacerListHtml);
+            $sublist = $liToOutdent.children().last();
         }
+        $subsequentSiblingContent.detach();
+        $sublist.append($subsequentSiblingContent);
     }
 
     // If we have a parentItem with content after our parent list
@@ -1481,21 +1455,19 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
     //       </li>
     //     </ol>
     // we'll need to split that parentItem to retain proper content ordering
-    if ($siblingSubsequentContent.length > 0) {
+    if ($subsequentParentListSiblingContent.length > 0) {
         // Move the subsequent content in to a new list item after our parent li
-        $siblingSubsequentContent.detach();
-        $parentItem.next('li').append($siblingSubsequentContent);
+        $subsequentParentListSiblingContent.detach();
+        $liToOutdent.append($subsequentParentListSiblingContent);
     }
 
-
-    // Remove any now-empty lists
-    $parentItem.find('ul:empty,ol:empty').remove();
-
-    // If we eliminated the need for a spacer_li, remove it
-    // Comes after empty list removal so that we only remove
-    // totally empty spacer li's
-    if ($parentItem.is('.spacer_li') && $parentItem.is(':empty')) {
-        $parentItem.remove();
+    // Remove our parentList if it's empty and if we just removed that, the
+    // parentLi is likely to be empty also
+    if ($parentList.contents().length === 0) {
+        $parentList.remove();
+    }
+    if ($parentLi.contents().length === 0) {
+        $parentLi.remove();
     }
 };
 

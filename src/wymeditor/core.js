@@ -940,6 +940,35 @@ jQuery.fn.isPhantomNode = function () {
     return false;
 };
 
+/**
+    jQuery.fn.nextAllContents
+    ======================
+
+    Acts like jQuery.nextAll() but includes text nodes and comments and only
+    works on the first element in the given jQuery collection..
+
+    Mostly cribbed from the jQuery source.
+*/
+jQuery.fn.nextAllContents = function () {
+    var matched = [],
+        cur = this.get(0);
+
+    if (!cur) {
+        // Called on an empty selector. The sibling of nothing is nothing
+        return $();
+    }
+    // We don't want to include this element, only its siblings
+    cur = cur.nextSibling;
+
+    while (cur) {
+        matched.push(cur);
+        cur = cur.nextSibling;
+    }
+
+    return $(matched);
+};
+
+
 WYMeditor.isPhantomNode = function (n) {
     if (n.nodeType === 3) {
         return !(/[^\t\n\r ]/.test(n.data));
