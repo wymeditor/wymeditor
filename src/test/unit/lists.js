@@ -283,6 +283,35 @@ var li_3_indentedHtml = String() +
             '<li id="li_8">8</li>' +
         '</ol>';
 
+var li_3_1_outdentedHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2' +
+                '<ol>' +
+                    '<li id="li_2_1">2_1</li>' +
+                    '<li id="li_2_2">2_2</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_3">3</li>' +
+            '<li id="li_3_1">3_1</li>' +
+            '<li id="li_4">4</li>' +
+            '<li id="li_5">5' +
+                '<ol>' +
+                    '<li id="li_5_1">5_1</li>' +
+                    '<li id="li_5_2">5_2</li>' +
+                    '<li id="li_5_3">5_3' +
+                        '<ul>' +
+                            '<li id="li_5_3_1">5_3_1</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_5_4">5_4</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_6">6</li>' +
+            '<li id="li_7">7</li>' +
+            '<li id="li_8">8</li>' +
+        '</ol>';
+
 var li_4_indentedHtml = String() +
         '<ol>' +
             '<li id="li_1">1</li>' +
@@ -447,35 +476,9 @@ var li_7_indentedHtml = String() +
             '<li id="li_8">8</li>' +
         '</ol>';
 
-var overhungListHtml = String() +
-        '<ol>' +
-            '<li id="li_2">2' +
-                '<ul>' +
-                    '<li id="li_2_1">2_1' +
-                        '<ul>' +
-                            '<li id="li_2_2">2_2</li>' +
-                        '</ul>' +
-                    '</li>' +
-                '</ul>' +
-            '</li>' +
-            '<li id="li_3">3</li>' +
-        '</ol>';
 
-var li_3_overhungHtml = String() +
-        '<ol>' +
-            '<li id="li_2">2' +
-                '<ul>' +
-                    '<li id="li_2_1">2_1' +
-                        '<ul>' +
-                            '<li id="li_2_2">2_2</li>' +
-                        '</ul>' +
-                    '</li>' +
-                    '<li id="li_3">3</li>' +
-                '</ul>' +
-            '</li>' +
-        '</ol>';
 
-test("First-level w/sublist indent/outdent", function () {
+test("First-level w/sublist", function () {
     expect(6);
 
     testList('li_2', 'indent', nestedListHtml, li_2_indentedHtml);
@@ -485,7 +488,7 @@ test("First-level w/sublist indent/outdent", function () {
     testList('li_2', 'outdent', li_2_indentedHtml, nestedListHtml, true);
 });
 
-test("First-level w/sublist joins lists indent/outdent", function () {
+test("First-level w/sublist joins lists", function () {
     expect(6);
 
     testList('li_3', 'indent', nestedListHtml, li_3_indentedHtml);
@@ -504,7 +507,8 @@ test("Outdent joining list with longer content", function () {
     // Via Text selection
     testList('li_5_3_1', 'outdent', nestedListHtml, li_5_3_1_outdentedHtml, true);
 });
-test("Outdent w/sublist outdent/indent", function () {
+
+test("Outdent w/sublist", function () {
     expect(6);
 
     testList('li_5_3', 'outdent', nestedListHtml, li_5_3_outdentedHtml);
@@ -515,7 +519,18 @@ test("Outdent w/sublist outdent/indent", function () {
     testList('li_5_3', 'indent', li_5_3_outdentedHtml, nestedListHtml, true);
 });
 
-test("Second-level w/sublist indent/outdent", function () {
+test("Outdent last element in list", function () {
+    expect(6);
+
+    testList('li_3_1', 'outdent', nestedListHtml, li_3_1_outdentedHtml);
+    testList('li_3_1', 'indent', li_3_1_outdentedHtml, nestedListHtml);
+
+    // Via Text selection
+    testList('li_3_1', 'outdent', nestedListHtml, li_3_1_outdentedHtml, true);
+    testList('li_3_1', 'indent', li_3_1_outdentedHtml, nestedListHtml, true);
+});
+
+test("Second-level w/sublist", function () {
     expect(6);
 
     testList('li_5_3', 'indent', nestedListHtml, li_5_3_indentedHtml);
@@ -526,7 +541,7 @@ test("Second-level w/sublist indent/outdent", function () {
     testList('li_5_3', 'outdent', li_5_3_indentedHtml, nestedListHtml, true);
 });
 
-test("First-level no-sublist indent/outdent", function () {
+test("First-level no-sublist", function () {
     expect(6);
 
     testList('li_7', 'indent', nestedListHtml, li_7_indentedHtml);
@@ -537,7 +552,7 @@ test("First-level no-sublist indent/outdent", function () {
     testList('li_7', 'outdent', li_7_indentedHtml, nestedListHtml, true);
 });
 
-test("Second-level no-sublist indent/outdent", function () {
+test("Second-level no-sublist", function () {
     expect(6);
 
     testList('li_2_2', 'indent', nestedListHtml, li_2_2_indentedHtml);
@@ -548,7 +563,7 @@ test("Second-level no-sublist indent/outdent", function () {
     testList('li_2_2', 'outdent', li_2_2_indentedHtml, nestedListHtml, true);
 });
 
-test("First-level no-sublist first-item indent/outdent", function () {
+test("First-level no-sublist first-item", function () {
     expect(6);
 
     testList('li_1', 'indent', nestedListHtml, li_1_indentedHtml);
@@ -559,7 +574,7 @@ test("First-level no-sublist first-item indent/outdent", function () {
     testList('li_1', 'outdent', li_1_indentedHtml, nestedListHtml, true);
 });
 
-test("First-level no-sublist previous-sublist indent/outdent", function () {
+test("First-level no-sublist previous-sublist", function () {
     expect(6);
 
     testList('li_4', 'indent', nestedListHtml, li_4_indentedHtml);
@@ -569,18 +584,6 @@ test("First-level no-sublist previous-sublist indent/outdent", function () {
     testList('li_4', 'indent', nestedListHtml, li_4_indentedHtml, true);
     testList('li_4', 'outdent', li_4_indentedHtml, nestedListHtml, true);
 });
-
-test("Double overhang with different list type indent/outdent", function () {
-    expect(6);
-
-    testList('li_3', 'indent', overhungListHtml, li_3_overhungHtml);
-    testList('li_3', 'outdent', li_3_overhungHtml, overhungListHtml);
-
-    // Via Text selection
-    testList('li_3', 'indent', overhungListHtml, li_3_overhungHtml, true);
-    testList('li_3', 'outdent', li_3_overhungHtml, overhungListHtml, true);
-});
-
 
 test("Can't dedent first-level", function () {
     expect(15);
@@ -597,6 +600,166 @@ test("Can't dedent first-level", function () {
     testList('li_6', 'outdent', nestedListHtml, nestedListHtml, true);
     testList('li_7', 'outdent', nestedListHtml, nestedListHtml, true);
     testList('li_8', 'outdent', nestedListHtml, nestedListHtml, true);
+});
+
+var nestedFirstItemHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1' +
+                '<ol>' +
+                    '<li id="li_1_1">1_1</li>' +
+                    '<li id="li_1_2">1_2</li>' +
+                '</ol>' +
+                'endcontent' +
+            '</li>' +
+            '<li id="li_2">2</li>' +
+        '</ol>';
+var li_1_indentedNestedFirstItemHtml = String() +
+        '<ol>' +
+            '<li class="spacer_li">' +
+                '<ol>' +
+                    '<li id="li_1">1</li>' +
+                    '<li id="li_1_1">1_1</li>' +
+                    '<li id="li_1_2">1_2</li>' +
+                '</ol>' +
+                'endcontent' +
+            '</li>' +
+            '<li id="li_2">2</li>' +
+        '</ol>';
+
+test("Nested first item", function () {
+    expect(6);
+
+    testList('li_1', 'indent', nestedFirstItemHtml, li_1_indentedNestedFirstItemHtml);
+    testList('li_1', 'outdent', li_1_indentedNestedFirstItemHtml, nestedFirstItemHtml);
+
+    // Via Text selection
+    testList('li_1', 'indent', nestedFirstItemHtml, li_1_indentedNestedFirstItemHtml, true);
+    testList('li_1', 'outdent', li_1_indentedNestedFirstItemHtml, nestedFirstItemHtml, true);
+});
+
+var overhungListHtml = String() +
+        '<ol>' +
+            '<li id="li_2">2' +
+                '<ul>' +
+                    '<li id="li_2_1">2_1' +
+                        '<ul>' +
+                            '<li id="li_2_2">2_2</li>' +
+                        '</ul>' +
+                    '</li>' +
+                '</ul>' +
+            '</li>' +
+            '<li id="li_3">3</li>' +
+        '</ol>';
+var li_3_overhungHtml = String() +
+        '<ol>' +
+            '<li id="li_2">2' +
+                '<ul>' +
+                    '<li id="li_2_1">2_1' +
+                        '<ul>' +
+                            '<li id="li_2_2">2_2</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_3">3</li>' +
+                '</ul>' +
+            '</li>' +
+        '</ol>';
+
+test("Double overhang with different list type indent/outdent", function () {
+    expect(6);
+
+    testList('li_3', 'indent', overhungListHtml, li_3_overhungHtml);
+    testList('li_3', 'outdent', li_3_overhungHtml, overhungListHtml);
+
+    // Via Text selection
+    testList('li_3', 'indent', overhungListHtml, li_3_overhungHtml, true);
+    testList('li_3', 'outdent', li_3_overhungHtml, overhungListHtml, true);
+});
+
+module("list-content_reordering", {setup: setupWym});
+
+var doubleSublistHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1' +
+                '<ol>' +
+                    '<li id="li_1_1">1_1</li>' +
+                    '<li id="li_1_2">1_2</li>' +
+                    '<li id="li_1_3">1_3</li>' +
+                '</ol>' +
+                '<ol>' +
+                    '<li id="li_1_4">1_4</li>' +
+                    '<li id="li_1_5">1_5</li>' +
+                    '<li id="li_1_6">1_6</li>' +
+                '</ol>' +
+                '<ul>' +
+                    '<li id="li_1_7">1_7</li>' +
+                '</ul>' +
+                'endContent' +
+            '</li>' +
+        '</ol>';
+var li_1_5_doubleSublistOutdentedHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1' +
+                '<ol>' +
+                    '<li id="li_1_1">1_1</li>' +
+                    '<li id="li_1_2">1_2</li>' +
+                    '<li id="li_1_3">1_3</li>' +
+                '</ol>' +
+                '<ol>' +
+                    '<li id="li_1_4">1_4</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_1_5">1_5' +
+                '<ol>' +
+                    '<li id="li_1_6">1_6</li>' +
+                '</ol>' +
+                '<ul>' +
+                    '<li id="li_1_7">1_7</li>' +
+                '</ul>' +
+                'endContent' +
+            '</li>' +
+        '</ol>';
+var li_1_6_doubleSublistOutdentedHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1' +
+                '<ol>' +
+                    '<li id="li_1_1">1_1</li>' +
+                    '<li id="li_1_2">1_2</li>' +
+                    '<li id="li_1_3">1_3</li>' +
+                '</ol>' +
+                '<ol>' +
+                    '<li id="li_1_4">1_4</li>' +
+                    '<li id="li_1_5">1_5</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_1_6">1_6' +
+                '<ul>' +
+                    '<li id="li_1_7">1_7</li>' +
+                '</ul>' +
+                'endContent' +
+            '</li>' +
+        '</ol>';
+
+test("Two same-level sublist middle outdent", function () {
+    // Shouldn't re-order content when outdent with two sublists
+    expect(6);
+
+    testList('li_1_5', 'outdent', doubleSublistHtml, li_1_5_doubleSublistOutdentedHtml);
+    testList('li_1_5', 'indent', li_1_5_doubleSublistOutdentedHtml, doubleSublistHtml);
+
+    // Via Text selection
+    testList('li_1_5', 'outdent', doubleSublistHtml, li_1_5_doubleSublistOutdentedHtml, true);
+    testList('li_1_5', 'indent', li_1_5_doubleSublistOutdentedHtml, doubleSublistHtml, true);
+});
+
+test("Two same-level sublist last outdent", function () {
+    expect(6);
+
+    testList('li_1_6', 'outdent', doubleSublistHtml, li_1_6_doubleSublistOutdentedHtml);
+    testList('li_1_6', 'indent', li_1_6_doubleSublistOutdentedHtml, doubleSublistHtml);
+
+    // Via Text selection
+    testList('li_1_6', 'outdent', doubleSublistHtml, li_1_6_doubleSublistOutdentedHtml, true);
+    testList('li_1_6', 'indent', li_1_6_doubleSublistOutdentedHtml, doubleSublistHtml, true);
 });
 
 var li_2_1_to_li_2_2_indentedHtml = String() +
@@ -770,7 +933,7 @@ var li_5_3_to_li_5_4_indentedHtml = String() +
         '</ol>';
 
 
-module("list- multi-selection", {setup: setupWym});
+module("list-multi_selection", {setup: setupWym});
 
 test("Second-level same sublist indent/outdent", function () {
     expect(4);

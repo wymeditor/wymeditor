@@ -3,6 +3,15 @@
 This document tracks the enhancements and bug fixes between releases of
 WYMeditor.
 
+## 1.0.0a5 (Alpha 5)
+
+*release-date* January 6, 2012
+
+### Changes Since 1.0.0a4
+
+* Fixed several related list outdent bugs where content could be re-ordered or
+  where outdent would fail to occur.
+
 ## 1.0.0a4 (Alpha 4)
 
 *release-date* December 22, 2011
