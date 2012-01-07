@@ -75,9 +75,10 @@ of use.
 * Follow the `README.md` instructions to create the `tar.gz` archive.
 * Tag the current version in git using [Semantic Versioning](http://semver.org/) 
   and push the tag to github.
-* Rename the Navigate to the [WYMeditor Downloads](https://github.com/wymeditor/wymeditor/downloads) 
-  page on github and upload the archive. It should be named according to the
-  `wymeditor-<version>.tar.gz` format to ensure the appropriate download URL.  
+* Navigate to the [WYMeditor Downloads](https://github.com/wymeditor/wymeditor/downloads) 
+  page on github and upload the archive. The archive you upload should be named
+  according to the `wymeditor-<version>.tar.gz` format to ensure the appropriate
+  download URL.  
 
 Tell the World
 ==============
