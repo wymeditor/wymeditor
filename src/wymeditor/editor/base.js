@@ -1188,6 +1188,74 @@ WYMeditor.editor.prototype.addCssRules = function (doc, aCss) {
 };
 
 /**
+    editor.splitListItemContents
+    =============================
+
+    Utility
+
+    Splits a list item into the content that should stay with the li as it is
+    indented/outdent and the things that should stay at their current indent level.
+
+    `itemContents` are what a user would consider that list's contents
+    `sublistContents` are the sub-items that are nested inside the li
+    (basically everything after the first ol/ul inclusive).
+
+    The returned object has `itemContents` and `sublistContents` properties.
+*/
+WYMeditor.editor.prototype.splitListItemContents = function ($listItem) {
+    var $allContents,
+        i,
+        elmnt,
+        hitSublist = false,
+        splitObject = {itemContents: [], sublistContents: []};
+
+    $allContents = $listItem.contents();
+
+    for (i = 0; i < $allContents.length; i++) {
+        elmnt = $allContents.get(i);
+        if (hitSublist || $(elmnt).is('ol,ul')) {
+            // We've hit the first sublist. Everything from this point on is
+            // considered `sublistContents`
+            hitSublist = true;
+            splitObject.sublistContents.push(elmnt);
+        } else {
+            splitObject.itemContents.push(elmnt);
+        }
+    }
+
+    return splitObject;
+};
+
+/**
+    editor.joinAdjacentLists
+    ========================
+
+    Utility
+
+    Joins two lists if they are adjacent and are of the same type.
+
+    The end result will be `listTwo`s contents being appended to `listOne`
+*/
+WYMeditor.editor.prototype.joinAdjacentLists = function (listOne, listTwo) {
+    var $listTwoContents;
+
+    if (typeof listOne === 'undefined' ||
+            typeof listTwo === 'undefined') {
+        // Invalid arguments
+        return;
+    }
+    if (listOne.nextSibling !== listTwo ||
+            listOne.tagName.toLowerCase() !== listTwo.tagName.toLowerCase()) {
+        return;
+    }
+
+    $listTwoContents = $(listTwo).contents();
+    $listTwoContents.unwrap(); // Kill listTwo
+    $listTwoContents.detach();
+    $(listOne).append($listTwoContents);
+};
+
+/**
     editor._indentSingleItem
     ========================
 
@@ -1195,120 +1263,83 @@ WYMeditor.editor.prototype.addCssRules = function (doc, aCss) {
     exactly one level and all other nodes stay at the same level.
  */
 WYMeditor.editor.prototype._indentSingleItem = function (listItem) {
-    var $spacerList,
-        $prevList,
-        $listContents,
-
+    var wym = this,
         listType,
-        itemContents,
         spacerHtml,
-
-        $prevLi,
-        $prevSubList,
-        $children,
-
-        $sublistContents,
-
         containerHtml,
 
-        $contents,
+        splitContent,
+        $itemContents,
+        $sublistContents,
 
-        $maybeListSpacer,
-        $maybePreviousSublist,
-
-        $nextSublist,
+        $prevLi,
+        $prevSublist,
+        $firstSublist,
 
         $spacer,
         $spacerContents;
 
+    // The algorithm used here is generally:
+    // 1. Ensure there's a previous li to put the `liToIndent`.
+    // 2. Move the `liToIndent` into a sublist in the previous li.
+    // 3. Re-add the movable list contents we removed in step 1.
+
+    // For step 2, the sublist to use can either be:
+    // 1. An existing sublist of the correct type at the end of the previous li.
+    // 2. An existing sublist inside `liToIndent`.
+    // 3. A new sublist that we create.
+
     $liToIndent = $(listItem);
     listType = $liToIndent.parent()[0].tagName.toLowerCase();
 
-    // Extract any non-list children so they can be inserted
-    // back in the list item after it is moved
-    itemContents = $liToIndent.contents().not('ol,ul');
+    // Separate out the contents into things that should stay with the li as it
+    // moves and things that should stay at their current level
+    splitContent = wym.splitListItemContents($liToIndent);
+    $sublistContents = $(splitContent.sublistContents);
+    $itemContents = $(splitContent.itemContents);
 
-    if ($liToIndent.prev().length === 0 && $liToIndent.parent().not('ul,ol,li')) {
-        // First item at the root level of a list
-        // Going to need a spacer list item
-        spacerHtml = '<li class="spacer_li">' +
-            '<' + listType + '></' + listType + '>' +
-            '</li>';
+    $prevLi = $liToIndent.prev().filter('li');
+    // Ensure we actually have a previous li in which to put the `liToIndent`
+    if ($prevLi.length === 0) {
+        spacerHtml = '<li class="spacer_li"></li>';
         $liToIndent.before(spacerHtml);
-        $spacerList = $liToIndent.prev().find(listType);
-        $liToIndent.children().unwrap();
-        $spacerList.append($liToIndent);
-
-    } else if ($liToIndent.prev().contents().last().is(listType)) {
-        // We have a sublist at the appropriate level as a previous sibling.
-        // Leave the children where they are and join the previous sublist
         $prevLi = $liToIndent.prev();
-        $prevSubList = $prevLi.contents().last();
-        $children = $liToIndent.children();
-        $children.unwrap();
-        // Join our node at the end of the target sublist
-        $prevSubList.append($liToIndent);
-
-        // Stick all of the children at the end of the previous li
-        $children.detach();
-        $prevLi.append($children);
-        // If the first child is of the same list type, join them
-        if ($children.first().is(listType)) {
-            $sublistContents = $children.first().children();
-            $sublistContents.unwrap();
-            $sublistContents.detach();
-            $prevSubList.append($sublistContents);
-        }
-    } else if ($liToIndent.children('ol,ul').length === 0) {
-        // No sublist to join.
-        // Leave the children where they are and join the previous list
-        $prevList = $liToIndent.prev().filter('li');
-        $liToIndent.children().unwrap();
-
-        if ($prevList.children('ol,ul').length === 0) {
-            // The previous list doesn't have a sublist for us to join yet, so
-            // we need to create a spot for our li to nest
-            containerHtml = '<' + listType + '></' + listType + '>';
-            $prevList.append(containerHtml);
-        }
-
-        $prevList.children('ol,ul').last().append($liToIndent);
-    } else {
-        // We have a sublist to join, so just jump to the front there and leave
-        // the children where they are
-        $contents = $liToIndent.contents().unwrap();
-        $contents.wrapAll('<li class="spacer_li"></li>');
-        $contents.filter('ol,ul').first().prepend($liToIndent);
     }
 
-    // Put the non-list content back inside the li
-    $liToIndent.prepend(itemContents);
+    // Move `liToIndent` to a sublist inside its previous sibling li
+    $prevSublist = $prevLi.contents().last().filter('ol,ul');
+    if ($prevSublist.length > 0) {
+        // Case 1: We have a sublist at the appropriate level as a previous
+        // sibling. Leave the sublist contents where they are and join the
+        // previous sublist
 
-    // If we just created lists next to eachother, join them
-    $maybeListSpacer = $liToIndent.parent().parent('li.spacer_li');
-    if ($maybeListSpacer.length === 1) {
-        $maybePreviousSublist = $maybeListSpacer.prev().filter('li').contents().last();
-        if ($maybePreviousSublist.is(listType)) {
-            // The last child (including text nodes) of the previous li is the
-            // same type of list that we just had to wrap in a listSpacer.
-            // Join them.
-            $listContents = $liToIndent.parent().contents();
-            $maybeListSpacer.detach();
-            $maybePreviousSublist.append($listContents);
-        } else if ($maybeListSpacer.next('li').contents().first().is(listType)) {
-            // The first child (including text nodes) of the next li is the same
-            // type of list we just wrapped in a listSpacer. Join them.
-            $nextSublist = $maybeListSpacer.next('li').children().first();
-            $listContents = $liToIndent.parent().contents();
-            $maybeListSpacer.detach();
-            $nextSublist.prepend($listContents);
-        } else if ($maybeListSpacer.prev().is('li')) {
-            // There is a normal li before our spacer, but it doesn't have
-            // a proper sublist. Just join their contents
-            $prevList = $maybeListSpacer.prev();
-            $maybeListSpacer.detach();
-            $prevList.append($maybeListSpacer.contents());
+        // Join our node at the end of the target sublist
+        $prevSublist.append($liToIndent);
+
+        // Stick all of the sublist contents at the end of the previous li
+        $sublistContents.detach();
+        $prevLi.append($sublistContents);
+
+        // If we just moved two lists of the same type next to eachother, join
+        // them
+        $firstSublist = $sublistContents.first();
+        wym.joinAdjacentLists($prevSublist.get(0), $firstSublist.get(0));
+    } else {
+        if ($sublistContents.length > 0) {
+            // Case 2: We need to move our existing sublist to the previous li
+            $sublistContents.detach();
+            $prevLi.append($sublistContents);
+            $prevSublist = $sublistContents.first();
+        } else {
+            // Case 3: Create a spacer sublist in the previous li in which to
+            // place `liToIndent`
+            containerHtml = '<' + listType + '></' + listType + '>';
+            $prevLi.append(containerHtml);
+            $prevSublist = $prevLi.contents().last();
         }
+
+        // Move our li to the start of the sublist
+        $prevSublist.prepend($liToIndent);
     }
 
     // If we eliminated the need for a spacer_li, remove it
@@ -1366,6 +1397,7 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
         $subsequentItems,
         $childLists,
 
+        $prevList,
         $sublist,
         $maybeConsecutiveLists;
 
