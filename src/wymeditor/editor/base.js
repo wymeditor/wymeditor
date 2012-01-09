@@ -1060,7 +1060,8 @@ WYMeditor.editor.prototype.paste = function (str) {
         sel,
         textNode,
         wym,
-        range;
+        range,
+        insertionNodes;
     wym = this;
     sel = rangy.getIframeSelection(wym._iframe);
     range = sel.getRangeAt(0);
@@ -1101,7 +1102,7 @@ WYMeditor.editor.prototype.paste = function (str) {
                     '</' + blockSplitter + '>';
                 // Build multiple nodes from the HTML because ie6 chokes
                 // creating multiple nodes implicitly via jquery
-                var insertionNodes = $(html, wym._doc);
+                insertionNodes = $(html, wym._doc);
                 for (j = insertionNodes.length - 1; j >= 0; j--) {
                     // Loop backwards through all of the nodes because
                     // insertNode moves that direction
