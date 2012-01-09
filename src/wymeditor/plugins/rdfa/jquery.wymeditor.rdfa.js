@@ -16,13 +16,13 @@
  */
 
 //Extend WYMeditor
-WYMeditor.editor.prototype.rdfa = function(options) {
+WYMeditor.editor.prototype.rdfa = function (options) {
     var rdfa = new WYMeditor.RDFa(options, this);
-    return(rdfa);
+    return rdfa;
 };
 
 //RDFa constructor
-WYMeditor.RDFa = function(options, wym) {
+WYMeditor.RDFa = function (options, wym) {
     options = jQuery.extend({
         setStdNameSpaces: true,
         extendXHTMLParser: true,
@@ -35,7 +35,7 @@ WYMeditor.RDFa = function(options, wym) {
 };
 
 //RDFa plugin init
-WYMeditor.RDFa.prototype.init = function() {
+WYMeditor.RDFa.prototype.init = function () {
     if (this._options.setStdNameSpaces) {
         this.setStdNameSpaces();
     }
@@ -46,23 +46,23 @@ WYMeditor.RDFa.prototype.init = function() {
 };
 
 //Adding the namespaces to the document
-WYMeditor.RDFa.prototype.setStdNameSpaces = function() {
+WYMeditor.RDFa.prototype.setStdNameSpaces = function () {
     this.addNameSpace('xmlns', 'http://www.w3.org/1999/xhtml');
     this.addNameSpace('version', 'XHTML+RDFa 1.0');
 };
 
-WYMeditor.RDFa.prototype.addNameSpace = function(attr, value) {
+WYMeditor.RDFa.prototype.addNameSpace = function (attr, value) {
     jQuery('html', this._wym._doc)
         .attr(attr, value);
 };
 
-WYMeditor.RDFa.prototype.extendXHTMLParser = function() {
+WYMeditor.RDFa.prototype.extendXHTMLParser = function () {
     this.extendAttributes();
     this.setStdVocabularies();
     this.extendLinkAttributes();
 };
 
-WYMeditor.RDFa.prototype.extendAttributes = function() {
+WYMeditor.RDFa.prototype.extendAttributes = function () {
     //Add the RDFa attributes
     WYMeditor.XhtmlValidator._attributes.core.attributes.push(
         'rel',
@@ -74,10 +74,11 @@ WYMeditor.RDFa.prototype.extendAttributes = function() {
         'property',
         'resource',
         'datatype',
-        'typeof');
+        'typeof'
+    );
 };
 
-WYMeditor.RDFa.prototype.setStdVocabularies = function() {
+WYMeditor.RDFa.prototype.setStdVocabularies = function () {
     var _this = this;
     //Add the 'standard' vocabularies
     vocabularies = [
@@ -94,36 +95,36 @@ WYMeditor.RDFa.prototype.setStdVocabularies = function() {
         'xmlns:xhv',
         'xmlns:xsd'
     ];
-    jQuery.each(vocabularies, function(index, vocabulary) {
+    jQuery.each(vocabularies, function (index, vocabulary) {
         _this.addVocabulary(vocabulary);
     });
 };
 
-WYMeditor.RDFa.prototype.addVocabulary = function(vocabulary) {
+WYMeditor.RDFa.prototype.addVocabulary = function (vocabulary) {
     WYMeditor.XhtmlValidator._attributes.core.attributes.push(vocabulary);
 };
 
-WYMeditor.RDFa.prototype.extendLinkAttributes = function() {
+WYMeditor.RDFa.prototype.extendLinkAttributes = function () {
     //Overwrite the <a> attributes 'rel' and 'rev'
     WYMeditor.XhtmlValidator._tags.a = {
         "attributes": {
-            "0":"charset",
-            "1":"coords",
-            "2":"href",
-            "3":"hreflang",
-            "4":"name",
-            "5":"rel",
-            "6":"rev",
-            "shape":/^(rect|rectangle|circ|circle|poly|polygon)$/,
-            "7":"type"
+            "0": "charset",
+            "1": "coords",
+            "2": "href",
+            "3": "hreflang",
+            "4": "name",
+            "5": "rel",
+            "6": "rev",
+            "shape": /^(rect|rectangle|circ|circle|poly|polygon)$/,
+            "7": "type"
         }
     };
 };
 
-WYMeditor.RDFa.prototype.setButtons = function() {
-    var _this = this;
-    var list = jQuery(this._wym._box).find('div.wym_classes ul');
-    jQuery.each(this._options.buttons, function(index, button) {
+WYMeditor.RDFa.prototype.setButtons = function () {
+    var _this = this,
+        list = jQuery(this._wym._box).find('div.wym_classes ul');
+    jQuery.each(this._options.buttons, function (index, button) {
         list
             .append('<li></li>')
             .children(':last')
@@ -132,26 +133,29 @@ WYMeditor.RDFa.prototype.setButtons = function() {
             .attr('href', '#')
             .text(button.title)
             .bind('click',
-                {instance: _this._wym,
-                button: button,
-                ns: button.ns,
-                attr: button.attr,
-                value: button.value},
+                {
+                    instance: _this._wym,
+                    button: button,
+                    ns: button.ns,
+                    attr: button.attr,
+                    value: button.value
+                },
                 _this.clickButtonHandler);
     });
 };
 
-WYMeditor.RDFa.prototype.clickButtonHandler = function(evt) {
+WYMeditor.RDFa.prototype.clickButtonHandler = function (evt) {
     var wym = evt.data.instance,
         selected  = wym.selected();
 
     //the attribute already exists, remove it
-    if (typeof(jQuery(selected).attr(evt.data.attr)) !== 'undefined' &&
-            jQuery(selected).attr(evt.data.attr) != '') {
+    if (typeof jQuery(selected).attr(evt.data.attr) !== 'undefined' &&
+            jQuery(selected).attr(evt.data.attr) !== '') {
         WYMeditor.console.log(
             'attribute already exists, remove it:',
             evt.data.attr,
-            jQuery(selected).attr(evt.data.attr));
+            jQuery(selected).attr(evt.data.attr)
+        );
         jQuery(selected)
             .removeAttr(evt.data.attr)
             .removeClass(evt.data.ns)
