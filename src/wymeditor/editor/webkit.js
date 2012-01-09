@@ -89,10 +89,12 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
         //Find the container, and remove it.
         container = this.findUp(focusNode, WYMeditor.MAIN_CONTAINERS);
         if (container) {
-            jQuery(container).replaceWith(jQuery(container).html());
+            $(container).contents().unwrap();
         }
 
-        break;
+        // We don't want to wrap this list in a P tag, even if it's in the
+        // body. Bail out before that code.
+        return true;
     default:
         if (param) {
             this._doc.execCommand(cmd, '', param);
