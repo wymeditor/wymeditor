@@ -963,6 +963,17 @@ test("Second-level with sub-node", function () {
     testListMulti('li_2', 'li_3', 'outdent', li_2_to_li_3_subnodeIndentedHtml, subnodeHtml, true);
 });
 
+test("Second-level with sub-node", function () {
+    expect(4);
+
+    testListMulti('li_2', 'li_3', 'indent', subnodeHtml, li_2_to_li_3_subnodeIndentedHtml);
+    testListMulti('li_2', 'li_3', 'outdent', li_2_to_li_3_subnodeIndentedHtml, subnodeHtml);
+
+    // Via text selection
+    testListMulti('li_2', 'li_3', 'indent', subnodeHtml, li_2_to_li_3_subnodeIndentedHtml, true);
+    testListMulti('li_2', 'li_3', 'outdent', li_2_to_li_3_subnodeIndentedHtml, subnodeHtml, true);
+});
+
 test("Second-level same sublist indent/outdent", function () {
     expect(4);
 
