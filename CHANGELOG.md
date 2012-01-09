@@ -3,6 +3,15 @@
 This document tracks the enhancements and bug fixes between releases of
 WYMeditor.
 
+## 1.0.0a6 (Alpha 6)
+
+*release-date* TBD
+
+### Changes Since 1.0.0a5
+
+* Fixed indent/outdent when highlighting an inline node instead of the list
+  (eg. a bolded section).
+
 ## 1.0.0a5 (Alpha 5)
 
 *release-date* January 6, 2012

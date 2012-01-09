@@ -1521,7 +1521,9 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
         nodes = [],
         liNodes = [],
         containsNodeTextFilter,
-        parentsToAdd;
+        parentsToAdd,
+        $node,
+        $maybeParentLi;
 
     // Filter function to remove undesired nodes from what rangy.getNodes()
     // gives
@@ -1581,9 +1583,12 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
             // selecting that entire li
             parentsToAdd = [];
             for (j = 0; j < nodes.length; j++) {
-                if (!$(nodes[j]).is('li,ol,ul')) {
-                    // TODO: Handle sub-nodes inside a list like <li><strong>foo</strong> bar</li>
-                    parentsToAdd.push($(nodes[j]).parent('li').get(0));
+                $node = $(nodes[j]);
+                if (!$node.is('li,ol,ul')) {
+                    $maybeParentLi = $node.parent().filter('li');
+                    if ($maybeParentLi.length > 0) {
+                        parentsToAdd.push($maybeParentLi.get(0));
+                    }
                 }
             }
             // Add in all of the new parents if they're not already included
@@ -1600,7 +1605,8 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
 
     // Filter out the non-li nodes
     for (i = 0; i < nodes.length; i++) {
-        if (nodes[i].tagName && nodes[i].tagName === WYMeditor.LI) {
+        if (nodes[i].nodeType === WYMeditor.NODE.ELEMENT
+                && nodes[i].tagName.toLowerCase() === WYMeditor.LI) {
             liNodes.push(nodes[i]);
         }
     }
@@ -1630,10 +1636,8 @@ WYMeditor.editor.prototype.indent = function () {
         listItems,
         rootList;
 
-    nodes = wym._getSelectedListItems(sel);
+    listItems = wym._getSelectedListItems(sel);
 
-    // Just use the li nodes
-    listItems = $(nodes).filter('li');
     if (listItems.length === 0) {
         return false;
     }
@@ -1681,10 +1685,8 @@ WYMeditor.editor.prototype.outdent = function () {
         listItems,
         rootList;
 
-    nodes = wym._getSelectedListItems(sel);
+    listItems = wym._getSelectedListItems(sel);
 
-    // Just use the li nodes
-    listItems = $(nodes).filter('li');
     if (listItems.length === 0) {
         return false;
     }
