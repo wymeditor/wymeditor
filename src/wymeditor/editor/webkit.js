@@ -85,8 +85,8 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
 
         this._doc.execCommand(cmd, '', null);
 
-        //Safari creates lists in e.g. paragraphs.
-        //Find the container, and remove it.
+        // Webkit creates lists in paragraphs and we only want text wrapped in
+        // paragraphs.
         container = this.findUp(focusNode, WYMeditor.MAIN_CONTAINERS);
         if (container) {
             $(container).contents().unwrap();
@@ -105,7 +105,7 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
         break;
     }
 
-    //set to P if parent = BODY
+    // Wrap this content in a paragraph tag if we're in the body
     container = this.selected();
     if (container && container.tagName.toLowerCase() === WYMeditor.BODY) {
         this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);

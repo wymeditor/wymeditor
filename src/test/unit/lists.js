@@ -1109,6 +1109,8 @@ test("Triple outdent doesn't break HTML", function () {
     );
 });
 
+module("list-order_unordered_conversion", {setup: setupWym});
+
 var orderedHtml = String() +
         '<ol>' +
             '<li id="li_1">1' +
@@ -1178,32 +1180,92 @@ var li_1_1_1_1_unorderedHtml = String() +
             '<li id="li_2">2</li>' +
         '</ol>';
 
-module("list-order_unordered_conversion", {setup: setupWym});
-if (!SKIP_KNOWN_FAILING_TESTS) {
-    test("Ordered to unordered second item", function () {
-        expect(4);
+test("Ordered to unordered second item", function () {
+    expect(6);
 
-        testList('li_2', 'unordered', orderedHtml, li_2_unorderedHtml);
-        testList('li_2', 'ordered', li_2_unorderedHtml, orderedHtml);
-    });
-}
+    testList('li_2', 'unordered', orderedHtml, li_2_unorderedHtml);
+    testList('li_2', 'ordered', li_2_unorderedHtml, orderedHtml);
 
-if (!SKIP_KNOWN_FAILING_TESTS) {
-    test("Ordered to unordered nested", function () {
-        expect(4);
+    // With text selection
+    testList('li_2', 'unordered', orderedHtml, li_2_unorderedHtml, true);
+    testList('li_2', 'ordered', li_2_unorderedHtml, orderedHtml, true);
+});
 
-        testList('li_1_1_1', 'unordered', orderedHtml, li_1_1_1_unorderedHtml);
-        testList('li_1_1_1', 'ordered', li_1_1_1_unorderedHtml, orderedHtml);
-    });
-}
-if ($.browser.safari && !SKIP_KNOWN_FAILING_TESTS) {
-    test("Ordered to unordered one item", function () {
-        expect(4);
+test("Ordered to unordered nested", function () {
+    expect(6);
 
-        testList('li_1_1_1_1', 'unordered', orderedHtml, li_1_1_1_1_unorderedHtml);
-        testList('li_1_1_1_1', 'ordered', li_1_1_1_1_unorderedHtml, orderedHtml);
-    });
-}
+    testList('li_1_1_1', 'unordered', orderedHtml, li_1_1_1_unorderedHtml);
+    testList('li_1_1_1', 'ordered', li_1_1_1_unorderedHtml, orderedHtml);
+
+    // With text selection
+    testList('li_1_1_1', 'unordered', orderedHtml, li_1_1_1_unorderedHtml, true);
+    testList('li_1_1_1', 'ordered', li_1_1_1_unorderedHtml, orderedHtml, true);
+});
+test("Ordered to unordered one item", function () {
+    expect(6);
+
+    testList('li_1_1_1_1', 'unordered', orderedHtml, li_1_1_1_1_unorderedHtml);
+    testList('li_1_1_1_1', 'ordered', li_1_1_1_1_unorderedHtml, orderedHtml);
+
+    // With text selection
+    testList('li_1_1_1_1', 'unordered', orderedHtml, li_1_1_1_1_unorderedHtml, true);
+    testList('li_1_1_1_1', 'ordered', li_1_1_1_1_unorderedHtml, orderedHtml, true);
+});
+
+var pHtml = String() +
+        '<p id="p_1">content 1</p>' +
+        '<p id="p_2">content <strong id="strong_2">2</strong></p>';
+var p_1_orderedHtml = String() +
+        '<ol>' +
+            '<li>content 1</li>' +
+        '</ol>' +
+        '<p id="p_2">content <strong id="strong_2">2</strong></p>';
+var p_1_unorderedHtml = String() +
+        '<ul>' +
+            '<li>content 1</li>' +
+        '</ul>' +
+        '<p id="p_2">content <strong id="strong_2">2</strong></p>';
+var p_2_orderedHtml = String() +
+        '<p id="p_1">content 1</p>' +
+        '<ol>' +
+            '<li>content <strong id="strong_2">2</strong></li>' +
+        '</ol>';
+var p_2_unorderedHtml = String() +
+        '<p id="p_1">content 1</p>' +
+        '<ul>' +
+            '<li>content <strong id="strong_2">2</strong></li>' +
+        '</ul>';
+
+test("Paragraph", function () {
+    expect(6);
+
+    testList('p_1', 'ordered', pHtml, p_1_orderedHtml);
+    testList('p_1', 'unordered', pHtml, p_1_unorderedHtml);
+
+    // Using text selection
+    testList('p_1', 'unordered', pHtml, p_1_unorderedHtml, true);
+    testList('p_1', 'ordered', pHtml, p_1_orderedHtml, true);
+});
+test("Paragraph with inline tags", function () {
+    expect(6);
+
+    testList('p_2', 'ordered', pHtml, p_2_orderedHtml);
+    testList('p_2', 'unordered', pHtml, p_2_unorderedHtml);
+
+    // Using text selection
+    testList('p_2', 'ordered', pHtml, p_2_orderedHtml, true);
+    testList('p_2', 'unordered', pHtml, p_2_unorderedHtml, true);
+});
+test("Paragraph selecting inline tag", function () {
+    expect(6);
+
+    testList('strong_2', 'ordered', pHtml, p_2_orderedHtml);
+    testList('strong_2', 'unordered', pHtml, p_2_unorderedHtml);
+
+    // Using text selection
+    testList('strong_2', 'ordered', pHtml, p_2_orderedHtml, true);
+    testList('strong_2', 'unordered', pHtml, p_2_unorderedHtml, true);
+});
 
 module("list-correction", {setup: setupWym});
 
