@@ -12,6 +12,12 @@ WYMeditor.
 * Fixed indent/outdent when highlighting an inline node instead of the list
   (eg. a bolded section).
 * Updated the turkish translation (thanks Gokce).
+* Attempting to indent with a cursor outside of a list no longer throws a
+  javascript error.
+* It's now possible to consistently toggle lists between ordered and unordered
+  in all supported browsers.
+* Turning a top-level item into a list no longer wraps the list in a paragraph
+  in chrome 16 and higher.
 
 ## 1.0.0a5 (Alpha 5)
 
