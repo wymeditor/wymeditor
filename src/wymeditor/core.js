@@ -222,15 +222,22 @@ jQuery.extend(WYMeditor, {
     INSERT_UNORDEREDLIST: "InsertUnorderedList",
     INSERT_ORDEREDLIST  : "InsertOrderedList",
 
+    // Containers that we allow at the root of the document (as a direct child
+    // of the body tag)
     MAIN_CONTAINERS : ["p",  "h1",  "h2",  "h3", "h4", "h5", "h6", "pre", "blockquote"],
 
+    // All block (as opposed to inline) tags
     BLOCKS : ["address", "blockquote", "div", "dl",
         "fieldset", "form", "h1", "h2", "h3", "h4", "h5", "h6", "hr",
         "noscript", "ol", "p", "pre", "table", "ul", "dd", "dt",
         "li", "tbody", "td", "tfoot", "th", "thead", "tr"],
 
+    // The subset of the `MAIN_CONTAINERS` that prevent the user from using
+    // up/down/enter/backspace from moving above or below them. They
+    // effectively block the creation of new blocks.
     BLOCKING_ELEMENTS : ["table", "blockquote", "pre"],
 
+    // The remaining `MAIN_CONTAINERS` that are not considered `BLOCKING_ELEMENTS`
     NON_BLOCKING_ELEMENTS : ["p", "h1", "h2", "h3", "h4", "h5", "h6"],
 
     KEY : {
