@@ -11,6 +11,7 @@ WYMeditor.
 
 * Fixed indent/outdent when highlighting an inline node instead of the list
   (eg. a bolded section).
+* Updated the turkish translation (thanks Gokce).
 
 ## 1.0.0a5 (Alpha 5)
 
