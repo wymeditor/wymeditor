@@ -1226,41 +1226,41 @@ test("Ordered to unordered one item", function () {
 module("list-conversion_blocks", {setup: setupWym});
 var pHtml = String() +
         '<p id="p_1">content 1</p>' +
-        '<p id="p_2">content <strong id="strong_2">2</strong></p>' +
+        '<p id="p_2"><strong id="strong_2">content</strong> 2</p>' +
         '<h1 id="h1_3">content 3</h1>';
 var p_1_orderedHtml = String() +
         '<ol>' +
             '<li>content 1</li>' +
         '</ol>' +
-        '<p id="p_2">content <strong id="strong_2">2</strong></p>' +
+        '<p id="p_2"><strong id="strong_2">content</strong> 2</p>' +
         '<h1 id="h1_3">content 3</h1>';
 var p_1_unorderedHtml = String() +
         '<ul>' +
             '<li>content 1</li>' +
         '</ul>' +
-        '<p id="p_2">content <strong id="strong_2">2</strong></p>' +
+        '<p id="p_2"><strong id="strong_2">content</strong> 2</p>' +
         '<h1 id="h1_3">content 3</h1>';
 var p_2_orderedHtml = String() +
         '<p id="p_1">content 1</p>' +
         '<ol>' +
-            '<li>content <strong id="strong_2">2</strong></li>' +
+            '<li><strong id="strong_2">content</strong> 2</li>' +
         '</ol>' +
         '<h1 id="h1_3">content 3</h1>';
 var p_2_unorderedHtml = String() +
         '<p id="p_1">content 1</p>' +
         '<ul>' +
-            '<li>content <strong id="strong_2">2</strong></li>' +
+            '<li><strong id="strong_2">content</strong> 2</li>' +
         '</ul>' +
         '<h1 id="h1_3">content 3</h1>';
 var h1_3_orderedHtml = String() +
         '<p id="p_1">content 1</p>' +
-        '<p id="p_2">content <strong id="strong_2">2</strong></p>' +
+        '<p id="p_2"><strong id="strong_2">content</strong> 2</p>' +
         '<ol>' +
             '<li>content 3</li>' +
         '</ol>';
 var h1_3_unorderedHtml = String() +
         '<p id="p_1">content 1</p>' +
-        '<p id="p_2">content <strong id="strong_2">2</strong></p>' +
+        '<p id="p_2"><strong id="strong_2">content</strong> 2</p>' +
         '<ul>' +
             '<li>content 3</li>' +
         '</ul>';
@@ -1270,7 +1270,7 @@ var p_1_ordered_p_2_ordered_pHtml = String() +
             '<li>content 1</li>' +
         '</ol>' +
         '<ol>' +
-            '<li>content <strong id="strong_2">2</strong></li>' +
+            '<li><strong id="strong_2">content</strong> 2</li>' +
         '</ol>' +
         '<h1 id="h1_3">content 3</h1>';
 var p_1_ordered_p_2_unordered_pHtml = String() +
@@ -1278,7 +1278,7 @@ var p_1_ordered_p_2_unordered_pHtml = String() +
             '<li>content 1</li>' +
         '</ol>' +
         '<ul>' +
-            '<li>content <strong id="strong_2">2</strong></li>' +
+            '<li><strong id="strong_2">content</strong> 2</li>' +
         '</ul>' +
         '<h1 id="h1_3">content 3</h1>';
 var p_1_unordered_p_2_ordered_pHtml = String() +
@@ -1286,7 +1286,7 @@ var p_1_unordered_p_2_ordered_pHtml = String() +
             '<li>content 1</li>' +
         '</ul>' +
         '<ol>' +
-            '<li>content <strong id="strong_2">2</strong></li>' +
+            '<li><strong id="strong_2">content</strong> 2</li>' +
         '</ol>' +
         '<h1 id="h1_3">content 3</h1>';
 
@@ -1303,22 +1303,12 @@ test("Paragraph", function () {
 test("Paragraph with inline tags", function () {
     expect(6);
 
-    testList('p_2', 'ordered', pHtml, p_2_orderedHtml);
-    testList('p_2', 'unordered', pHtml, p_2_unorderedHtml);
-
-    // Using text selection
-    testList('p_2', 'ordered', pHtml, p_2_orderedHtml, true);
-    testList('p_2', 'unordered', pHtml, p_2_unorderedHtml, true);
-});
-test("Paragraph selecting inline tag", function () {
-    expect(6);
-
     testList('strong_2', 'ordered', pHtml, p_2_orderedHtml);
     testList('strong_2', 'unordered', pHtml, p_2_unorderedHtml);
 
     // Using text selection
-    testList('strong_2', 'ordered', pHtml, p_2_orderedHtml, true);
-    testList('strong_2', 'unordered', pHtml, p_2_unorderedHtml, true);
+    testList('p_2', 'ordered', pHtml, p_2_orderedHtml, true);
+    testList('p_2', 'unordered', pHtml, p_2_unorderedHtml, true);
 });
 test("h1", function () {
     expect(6);
@@ -1331,27 +1321,23 @@ test("h1", function () {
     testList('h1_3', 'unordered', pHtml, h1_3_unorderedHtml, true);
 });
 test("Paragraph shouldn't join", function () {
-    expect(9);
+    expect(6);
 
-    testList('p_2', 'ordered', p_1_orderedHtml, p_1_ordered_p_2_ordered_pHtml);
     testList('strong_2', 'ordered', p_1_orderedHtml, p_1_ordered_p_2_ordered_pHtml);
     testList('p_1', 'ordered', p_2_orderedHtml, p_1_ordered_p_2_ordered_pHtml);
 
     // Using text selection
     testList('p_2', 'ordered', p_1_orderedHtml, p_1_ordered_p_2_ordered_pHtml, true);
-    testList('strong_2', 'ordered', p_1_orderedHtml, p_1_ordered_p_2_ordered_pHtml, true);
     testList('p_1', 'ordered', p_2_orderedHtml, p_1_ordered_p_2_ordered_pHtml, true);
 });
 test("Not joining different types", function () {
-    expect(9);
+    expect(6);
 
-    testList('p_2', 'unordered', p_1_orderedHtml, p_1_ordered_p_2_unordered_pHtml);
     testList('strong_2', 'unordered', p_1_orderedHtml, p_1_ordered_p_2_unordered_pHtml);
     testList('p_1', 'unordered', p_2_orderedHtml, p_1_unordered_p_2_ordered_pHtml);
 
     // Using text selection
     testList('p_2', 'unordered', p_1_orderedHtml, p_1_ordered_p_2_unordered_pHtml, true);
-    testList('strong_2', 'unordered', p_1_orderedHtml, p_1_ordered_p_2_unordered_pHtml, true);
     testList('p_1', 'unordered', p_2_orderedHtml, p_1_unordered_p_2_ordered_pHtml, true);
 });
 

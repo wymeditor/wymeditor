@@ -1022,30 +1022,15 @@ jQuery.fn.parentsOrSelf = function (jqexpr) {
 */
 WYMeditor.changeNodeType = function (node, newTag) {
     var newNode = document.createElement(newTag),
-        propertyName,
-        property,
         i,
         attributes = node.attributes;
 
-    // Copy DOM properties
-    for (propertyName in node) {
-        //try {
-        if (node.hasOwnProperty(propertyName)) {
-            property = node[propertyName];
-            // Only copy string and number properties, excluding the outerHTML
-            if (property && propertyName !== 'outerHTML' &&
-                    (typeof property === 'string' || typeof property === 'number')) {
-                newNode[propertyName] = node[propertyName];
-            }
-        }
-        //} catch (e) {
-            // Some of the properties throw getter errors
-        //}
-    }
-
     // Copy attributes
     for (i = 0; i < attributes.length; i++) {
-        newNode.setAttribute(attributes[i].nodeName, attributes[i].nodeValue);
+        if (attributes[i].specified) {
+            // We only care about specified attributes
+            newNode.setAttribute(attributes[i].nodeName, attributes[i].nodeValue);
+        }
     }
 
     // Not copying inline CSS
