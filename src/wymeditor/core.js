@@ -240,6 +240,11 @@ jQuery.extend(WYMeditor, {
     // The remaining `MAIN_CONTAINERS` that are not considered `BLOCKING_ELEMENTS`
     NON_BLOCKING_ELEMENTS : ["p", "h1", "h2", "h3", "h4", "h5", "h6"],
 
+    // The elements that are allowed to be turned in to lists. If an item in
+    // this array isn't in the MAIN_CONTAINERS array, then its contents will be
+    // turned in to a list instead.
+    POTENTIAL_LIST_ELEMENTS : ["p", "h1", "h2", "h3", "h4", "h5", "h6", "pre", "blockquote", "td"],
+
     // Keyboard mappings so that we don't have to remember that 38 means up
     // when reading keyboard handlers
     KEY : {
@@ -1006,6 +1011,48 @@ jQuery.fn.parentsOrSelf = function (jqexpr) {
     } else {
         return n.parents(jqexpr).slice(0, 1);
     }
+};
+
+/*
+    WYMeditor.changeNodeType
+    ========================
+
+    Change the type (tagName) of the given node, while retaining all content,
+    properties and attributes.
+*/
+WYMeditor.changeNodeType = function (node, newTag) {
+    var newNode = document.createElement(newTag),
+        propertyName,
+        property,
+        i,
+        attributes = node.attributes;
+
+    // Copy DOM properties
+    for (propertyName in node) {
+        //try {
+        if (node.hasOwnProperty(propertyName)) {
+            property = node[propertyName];
+            // Only copy string and number properties, excluding the outerHTML
+            if (property && propertyName !== 'outerHTML' &&
+                    (typeof property === 'string' || typeof property === 'number')) {
+                newNode[propertyName] = node[propertyName];
+            }
+        }
+        //} catch (e) {
+            // Some of the properties throw getter errors
+        //}
+    }
+
+    // Copy attributes
+    for (i = 0; i < attributes.length; i++) {
+        newNode.setAttribute(attributes[i].nodeName, attributes[i].nodeValue);
+    }
+
+    // Not copying inline CSS
+
+    $(node).contents().wrapAll(newNode);
+    $(node).contents().unwrap();
+    return newNode;
 };
 
 // String & array helpers

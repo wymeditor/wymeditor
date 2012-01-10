@@ -477,6 +477,17 @@ var li_7_indentedHtml = String() +
         '</ol>';
 
 
+test("No change outside list", function () {
+    expect(6);
+    var notList = '<p id="p_1">1</p>';
+
+    testList('p_1', 'indent', notList, notList);
+    testList('p_1', 'outdent', notList, notList);
+
+    // Text selection instead
+    testList('p_1', 'indent', notList, notList, true);
+    testList('p_1', 'outdent', notList, notList, true);
+});
 
 test("First-level w/sublist", function () {
     expect(6);
@@ -1257,6 +1268,8 @@ var h1_3_unorderedHtml = String() +
 var p_1_ordered_p_2_ordered_pHtml = String() +
         '<ol>' +
             '<li>content 1</li>' +
+        '</ol>' +
+        '<ol>' +
             '<li>content <strong id="strong_2">2</strong></li>' +
         '</ol>' +
         '<h1 id="h1_3">content 3</h1>';
@@ -1317,7 +1330,7 @@ test("h1", function () {
     testList('h1_3', 'ordered', pHtml, h1_3_orderedHtml, true);
     testList('h1_3', 'unordered', pHtml, h1_3_unorderedHtml, true);
 });
-test("Paragraph joining", function () {
+test("Paragraph shouldn't join", function () {
     expect(9);
 
     testList('p_2', 'ordered', p_1_orderedHtml, p_1_ordered_p_2_ordered_pHtml);

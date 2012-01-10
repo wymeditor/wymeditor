@@ -335,6 +335,14 @@ WYMeditor.editor.prototype.exec = function (cmd) {
         this.dialog(WYMeditor.PREVIEW, this._options.dialogFeaturesPreview);
         break;
 
+    case WYMeditor.INSERT_ORDEREDLIST:
+        this.insertOrderedlist();
+        break;
+
+    case WYMeditor.INSERT_UNORDEREDLIST:
+        this.insertUnorderedlist();
+        break;
+
     case WYMeditor.INDENT:
         this.indent();
         break;
@@ -1519,6 +1527,7 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
     var wym = this,
         i,
         range,
+        selectedLi,
         nodes = [],
         liNodes = [],
         containsNodeTextFilter,
@@ -1559,7 +1568,10 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
         if (range.collapsed === true) {
             // Collapsed ranges don't return the range they're in as part of
             // getNodes, so let's find the next list item up
-            nodes = nodes.concat([wym.findUp(range.startContainer, 'li')]);
+            selectedLi = wym.findUp(range.startContainer, 'li');
+            if (selectedLi) {
+                nodes = nodes.concat([selectedLi]);
+            }
         } else {
             // getNodes includes the parent list item whenever we have our
             // selection in a sublist. We need to make a distinction between
@@ -1712,6 +1724,121 @@ WYMeditor.editor.prototype.outdent = function () {
 
         sel.setSingleRange(range);
     }
+};
+
+/**
+    editor.insertOrderedlist
+    =========================
+
+    Convert the selected block in to an ordered list.
+
+    If the selection is already inside a list, switch the type of the nearest
+    parent list to an `<ol>`. If the selection is in a block element that can be a
+    valid list, place that block element's contents inside an ordered list.
+
+    Pure dom implementation consistently cross-browser implementation of
+    `execCommand(InsertOrderedList)`.
+ */
+WYMeditor.editor.prototype.insertOrderedlist = function () {
+    return this._insertList('ol');
+};
+
+/**
+    editor.insertUnorderedlist
+    =========================
+
+    Convert the selected block in to an unordered list.
+
+    Exactly the same as `editor.insert_orderedlist` except with `<ol>` instead.
+
+    Pure dom implementation consistently cross-browser implementation of
+    `execCommand(InsertUnorderedList)`.
+ */
+WYMeditor.editor.prototype.insertUnorderedlist = function () {
+    return this._insertList('ul');
+};
+
+/**
+    editor._insertList
+    =========================
+
+    Convert the selected block in to the specified type of list.
+
+    If the selection is already inside a list, switch the type of the nearest
+    parent list to an `<ol>`. If the selection is in a block element that can be a
+    valid list, place that block element's contents inside an ordered list.
+ */
+WYMeditor.editor.prototype._insertList = function (listType) {
+    var wym = this._wym,
+        sel = rangy.getIframeSelection(this._iframe),
+        // Starting selection information for selection restore
+        startContainer = sel.getRangeAt(0).startContainer,
+        startOffset = sel.getRangeAt(0).startOffset,
+        endContainer = sel.getRangeAt(0).endContainer,
+        endOffset = sel.getRangeAt(0).endOffset,
+        listItems,
+        rootList,
+        selectedBlock,
+        potentialListBlock;
+
+    listItems = wym._getSelectedListItems(sel);
+
+    // If we've selected some list items all in the same list, we want to
+    // change the type of that list.
+    if (listItems.length !== 0) {
+        // If the selection is across paragraphs and other items at the root level,
+        // don't indent
+        rootList = wym.getCommonParentList(listItems);
+        if (rootList) {
+            return this._changeListType(rootList, listType);
+        } else {
+            // We have a selection across multiple root-level lists. Punt on
+            // this case for now.
+            // TODO: Handle multiple root-level lists properly
+            return false;
+        }
+
+    }
+
+    // If we've selected a block-level item that's appropriate to convert in to a list,
+    // convert it.
+    selectedBlock = this.selected();
+    potentialListBlock = this.findUp(selectedBlock, WYMeditor.POTENTIAL_LIST_ELEMENTS);
+    if (potentialListBlock) {
+        return this._convertToList(potentialListBlock, listType);
+    }
+
+    // The user has something selected that wouldn't be a valid list
+    return false;
+};
+
+WYMeditor.editor.prototype._changeListType = function (list, listType) {
+    // Wrap the contents in a new list of `listType` and remove the old list
+    // container.
+    return WYMeditor.changeNodeType(list, listType);
+};
+
+WYMeditor.editor.prototype._convertToList = function (blockElement, listType) {
+    var $blockElement = $(blockElement),
+        newList,
+        newLi;
+
+    newList = document.createElement(listType);
+    newLi = document.createElement('li');
+    newList.appendChild(newLi);
+
+    if (this.findUp(blockElement, WYMeditor.MAIN_CONTAINERS) === blockElement) {
+        // This is a main container block, so we can just replace it with the
+        // list structure
+        $blockElement.contents().wrapAll(newList);
+        $blockElement.contents().unwrap();
+        return newList;
+    }
+    // We're converting a block that's not a main container, so we need to nest
+    // this list around its contents and NOT remove the container (eg. a td
+    // node).
+    $blockElement.contents().wrapAll(newList);
+    return newList;
 };
 
 /**
