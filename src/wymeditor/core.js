@@ -240,6 +240,8 @@ jQuery.extend(WYMeditor, {
     // The remaining `MAIN_CONTAINERS` that are not considered `BLOCKING_ELEMENTS`
     NON_BLOCKING_ELEMENTS : ["p", "h1", "h2", "h3", "h4", "h5", "h6"],
 
+    // Keyboard mappings so that we don't have to remember that 38 means up
+    // when reading keyboard handlers
     KEY : {
         BACKSPACE: 8,
         TAB: 9,
@@ -259,6 +261,7 @@ jQuery.extend(WYMeditor, {
         COMMAND: 224
     },
 
+    // domNode.nodeType constants
     NODE : {
         ELEMENT: 1,
         ATTRIBUTE: 2,

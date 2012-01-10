@@ -1109,7 +1109,7 @@ test("Triple outdent doesn't break HTML", function () {
     );
 });
 
-module("list-order_unordered_conversion", {setup: setupWym});
+module("list-conversion_type", {setup: setupWym});
 
 var orderedHtml = String() +
         '<ol>' +
@@ -1212,29 +1212,70 @@ test("Ordered to unordered one item", function () {
     testList('li_1_1_1_1', 'ordered', li_1_1_1_1_unorderedHtml, orderedHtml, true);
 });
 
+module("list-conversion_blocks", {setup: setupWym});
 var pHtml = String() +
         '<p id="p_1">content 1</p>' +
-        '<p id="p_2">content <strong id="strong_2">2</strong></p>';
+        '<p id="p_2">content <strong id="strong_2">2</strong></p>' +
+        '<h1 id="h1_3">content 3</h1>';
 var p_1_orderedHtml = String() +
         '<ol>' +
             '<li>content 1</li>' +
         '</ol>' +
-        '<p id="p_2">content <strong id="strong_2">2</strong></p>';
+        '<p id="p_2">content <strong id="strong_2">2</strong></p>' +
+        '<h1 id="h1_3">content 3</h1>';
 var p_1_unorderedHtml = String() +
         '<ul>' +
             '<li>content 1</li>' +
         '</ul>' +
-        '<p id="p_2">content <strong id="strong_2">2</strong></p>';
+        '<p id="p_2">content <strong id="strong_2">2</strong></p>' +
+        '<h1 id="h1_3">content 3</h1>';
 var p_2_orderedHtml = String() +
         '<p id="p_1">content 1</p>' +
         '<ol>' +
             '<li>content <strong id="strong_2">2</strong></li>' +
-        '</ol>';
+        '</ol>' +
+        '<h1 id="h1_3">content 3</h1>';
 var p_2_unorderedHtml = String() +
         '<p id="p_1">content 1</p>' +
         '<ul>' +
             '<li>content <strong id="strong_2">2</strong></li>' +
+        '</ul>' +
+        '<h1 id="h1_3">content 3</h1>';
+var h1_3_orderedHtml = String() +
+        '<p id="p_1">content 1</p>' +
+        '<p id="p_2">content <strong id="strong_2">2</strong></p>' +
+        '<ol>' +
+            '<li>content 3</li>' +
+        '</ol>';
+var h1_3_unorderedHtml = String() +
+        '<p id="p_1">content 1</p>' +
+        '<p id="p_2">content <strong id="strong_2">2</strong></p>' +
+        '<ul>' +
+            '<li>content 3</li>' +
         '</ul>';
+// Multiples
+var p_1_ordered_p_2_ordered_pHtml = String() +
+        '<ol>' +
+            '<li>content 1</li>' +
+            '<li>content <strong id="strong_2">2</strong></li>' +
+        '</ol>' +
+        '<h1 id="h1_3">content 3</h1>';
+var p_1_ordered_p_2_unordered_pHtml = String() +
+        '<ol>' +
+            '<li>content 1</li>' +
+        '</ol>' +
+        '<ul>' +
+            '<li>content <strong id="strong_2">2</strong></li>' +
+        '</ul>' +
+        '<h1 id="h1_3">content 3</h1>';
+var p_1_unordered_p_2_ordered_pHtml = String() +
+        '<ul>' +
+            '<li>content 1</li>' +
+        '</ul>' +
+        '<ol>' +
+            '<li>content <strong id="strong_2">2</strong></li>' +
+        '</ol>' +
+        '<h1 id="h1_3">content 3</h1>';
 
 test("Paragraph", function () {
     expect(6);
@@ -1265,6 +1306,40 @@ test("Paragraph selecting inline tag", function () {
     // Using text selection
     testList('strong_2', 'ordered', pHtml, p_2_orderedHtml, true);
     testList('strong_2', 'unordered', pHtml, p_2_unorderedHtml, true);
+});
+test("h1", function () {
+    expect(6);
+
+    testList('h1_3', 'ordered', pHtml, h1_3_orderedHtml);
+    testList('h1_3', 'unordered', pHtml, h1_3_unorderedHtml);
+
+    // Using text selection
+    testList('h1_3', 'ordered', pHtml, h1_3_orderedHtml, true);
+    testList('h1_3', 'unordered', pHtml, h1_3_unorderedHtml, true);
+});
+test("Paragraph joining", function () {
+    expect(9);
+
+    testList('p_2', 'ordered', p_1_orderedHtml, p_1_ordered_p_2_ordered_pHtml);
+    testList('strong_2', 'ordered', p_1_orderedHtml, p_1_ordered_p_2_ordered_pHtml);
+    testList('p_1', 'ordered', p_2_orderedHtml, p_1_ordered_p_2_ordered_pHtml);
+
+    // Using text selection
+    testList('p_2', 'ordered', p_1_orderedHtml, p_1_ordered_p_2_ordered_pHtml, true);
+    testList('strong_2', 'ordered', p_1_orderedHtml, p_1_ordered_p_2_ordered_pHtml, true);
+    testList('p_1', 'ordered', p_2_orderedHtml, p_1_ordered_p_2_ordered_pHtml, true);
+});
+test("Not joining different types", function () {
+    expect(9);
+
+    testList('p_2', 'unordered', p_1_orderedHtml, p_1_ordered_p_2_unordered_pHtml);
+    testList('strong_2', 'unordered', p_1_orderedHtml, p_1_ordered_p_2_unordered_pHtml);
+    testList('p_1', 'unordered', p_2_orderedHtml, p_1_unordered_p_2_ordered_pHtml);
+
+    // Using text selection
+    testList('p_2', 'unordered', p_1_orderedHtml, p_1_ordered_p_2_unordered_pHtml, true);
+    testList('strong_2', 'unordered', p_1_orderedHtml, p_1_ordered_p_2_unordered_pHtml, true);
+    testList('p_1', 'unordered', p_2_orderedHtml, p_1_unordered_p_2_ordered_pHtml, true);
 });
 
 module("list-correction", {setup: setupWym});
