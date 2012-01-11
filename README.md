@@ -25,105 +25,126 @@ customize to provide the specific capabilities your users need, and you want
 users focused on the structure of their content instead of tweaking fonts and
 margins, you should give WYMeditor a try.
 
+We also fully support internet explorer 6, for those poor souls who have no
+choice.
+
 Try It
 ------
 
 Want to see what WYMeditor can do? Try the [WYMeditor examples](http://wymeditor.no.de/wymeditor/examples/) right now.
 
-These examples use the latest code from the master branch, but they should be stable.
+These examples run the bleeding edge code and give you a good idea of what
+WYMeditor can do.
 
-Download
---------
+Quick Start
+-----------
 
-You can download pre-built archives of both the latest stable release and a bleeding edge version with the code currently in master.
+1. WYMeditor requies jQuery 1.2.6 or higher. First ensure that your page
+includes jQuery.
 
-* Latest Release: [Version 1.0.0a5](https://github.com/downloads/wymeditor/wymeditor/wymeditor-1.0.0a5.tar.gz)
-* Latest Stable: [CI Build](http://jenkins.wymeditor.org/job/wym_master/lastSuccessfulBuild/artifact/dist/wymeditor.tar.gz)
+2. Download the
+[Version 1.0.0a5](https://github.com/downloads/wymeditor/wymeditor/wymeditor-1.0.0a5.tar.gz) 
+archive and extract the contents to a folder in your project.
+
+3. Include the `wymeditor/jquery.wymeditor.min.js` file on your page. This file
+will pull in anything else that's required.
+
+    <script type="text/javascript" src="/wymeditor/jquery.wymeditor.min.js"></script>
+
+4. Now use the `wymeditor()` function to select one of your `textarea` elements
+and turn it in to a WYMeditor instance. eg. if you have a `textarea` with the
+class `my-wymeditor`:
+
+    $('.my-wymeditor').wymeditor();
+
+*Note*: You'll probably want to do this initialization inside a
+`$(document).ready()` block.
+
+5. If you'd like to receive the valid HTML your editor produce on form
+submission, just add the class `wymupdate` to your submit button.
+
+    <input type="submit" class="wymupdate" />
+
+6. ???
+
+7. Profit!
+
+More examples with different plugins and configuration options can be found in
+your `examples` directory. 
 
 Compatibility
 -------------
 
 WYMeditor is compatible with:
 
-* IE 6+
-* Firefox 3.6, 8 and 9
+* IE 6, 7, 8 and 9
+* Firefox 3.6.x, 9.x and 10.x
 * Opera 9.5+
 * Safari 3.0+
-* Google Chrome 15 and 16
+* Google Chrome Stable and Beta
 
-Quick Start
------------
+Contributing to WYMeditor
+-------------------------
 
-Download the latest release from
-[WYMeditor.org](http://www.wymeditor.org/download/) or build it yourself using
-`make`. Then include jQuery and the WYMeditor source:
+### Documentation
 
-    <script type="text/javascript" src="/jquery/jquery.js"></script>
-    <script type="text/javascript" src="/wymeditor/jquery.wymeditor.min.js"></script>
+We need a lot of help in the documentation department. We moved from the old
+[trac repository](http://trac.wymeditor.org/trac) earlier this year and still
+haven't ported over the relevant documentation. Porting that, fileing
+documentation tickets or even just asking questions on IRC at #wymeditor on
+freenode would be very helpful.
 
-WYMeditor works with jQuery 1.2.6 and up, although more recent jQuery versions
-provide better performance.
-
-Now, prepare a textarea:
-
-    <textarea class="wymeditor"><p>Hello, World!</p></textarea>
-    <input type="submit" class="wymupdate" />
-
-Make sure to include the `wymupdate` class on your submit buttons. 
-
-Use jQuery `$(document).ready()` to turn your textarea into a WYMeditor editor:
-
-    <script>
-      $(document).ready(function() {
-        $('.wymeditor').wymeditor();
-      });
-    </script>
-
-
-More examples can be [found here](https://github.com/wymeditor/wymeditor/tree/master/src/examples) 
-or in your local `examples` directory.
-
-Building WYMeditor
-------------------
-
-To build WYMeditor you need to have `make` and the 
-[UglifyJS module](https://github.com/mishoo/UglifyJS/) for Node.js installed.
-To install UglifyJS using [NPM](http://npmjs.org/) run the following:
-
-    npm install -g uglify-js
-
-Running `make` in the terminal will build WYMeditor for distribution inside the
-dist catalog, which will be created if if does not already exist. 
-
-Running `make wymeditor` will only merge and minify the the WYMeditor source
-without packaging it for distribution.
-
-Testing WYMeditor
------------------
+### Testing WYMeditor
 
 WYMeditor includes a full unit test suite to help us ensure that the editor
 works great across a variety of browsers. The test suite should pass in any of
 our supported browsers and if it doesn't, please 
 [file a bug](https://github.com/wymeditor/wymeditor/issues/new) so we can fix it!
 
-The unit test suite is located at `src/test/unit/index.html` and the easiest
-way to run the tests is to drop your source checkout behind apache (if you have
-it) or use a simple python web server and the command line. eg:
+To run the test suite. 
+
+1. Get a copy of the source using git:
+
+    git clone git://github.com/wymeditor/wymeditor.git
+
+2. Put your source behind some kind of web server (apache, nginx, etc). If you
+don't have one installed or don't want to fuss with configuration, you can use
+python's HTTP server:
 
     $ cd /path/to/my/wymeditor/src
     $ python -m SimpleHTTPServer
 
-That command starts up a python web server hosting your `src` directory on port
-`8000`. Now open up a browser and go to
+3. The unit test suite is located at `src/test/unit/index.html`, so if you used
+the python instructions, open up your browser to
 [http://localhost:8000/test/unit/index.html](http://localhost:8000/test/unit/index.html).
+
 All green means you're good to go.
 
-Contributing
------------
- - **Official branch:** https://github.com/wymeditor/wymeditor
- - **Issue tracking:** https://github.com/wymeditor/wymeditor/issues
+### Building WYMeditor
+
+1. Get a copy of the source using git:
+
+    git clone git://github.com/wymeditor/wymeditor.git
+
+2. Install `make`, Node.js and [UglifyJS](https://github.com/mishoo/UglifyJS/).
+To install UglifyJS using [NPM](http://npmjs.org/) run the following:
+
+    npm install -g uglify-js
+
+3. Run `make` from your git clone:
+
+    $ cd wymeditor
+    $ make
+
+The results will appear in your `dist` directory.
+
+Getting Help
+------------
+
  - **Wiki/Docs:** https://github.com/wymeditor/wymeditor/wiki
  - **Forum:** http://community.wymeditor.org
+ - **Issue tracking:** https://github.com/wymeditor/wymeditor/issues
+ - **Official branch:** https://github.com/wymeditor/wymeditor
  - **Continous Integration:** http://jenkins.wymeditor.org
 
 [Read more on contributing](https://github.com/wymeditor/wymeditor/wiki/Contributing). 
