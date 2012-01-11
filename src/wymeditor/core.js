@@ -1021,9 +1021,14 @@ jQuery.fn.parentsOrSelf = function (jqexpr) {
     properties and attributes.
 */
 WYMeditor.changeNodeType = function (node, newTag) {
-    var newNode = document.createElement(newTag),
+    var newNode,
         i,
         attributes = node.attributes;
+
+    // In ie6, have to create the node as part of wrapInner before we can copy
+    // over attributes
+    $(node).wrapInner('<' + newTag + '>');
+    newNode = $(node).children().get(0);
 
     // Copy attributes
     for (i = 0; i < attributes.length; i++) {
@@ -1033,9 +1038,8 @@ WYMeditor.changeNodeType = function (node, newTag) {
         }
     }
 
-    // Not copying inline CSS
+    // Not copying inline CSS or properties/events
 
-    $(node).contents().wrapAll(newNode);
     $(node).contents().unwrap();
     return newNode;
 };

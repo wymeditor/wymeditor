@@ -1820,25 +1820,28 @@ WYMeditor.editor.prototype._changeListType = function (list, listType) {
 
 WYMeditor.editor.prototype._convertToList = function (blockElement, listType) {
     var $blockElement = $(blockElement),
-        newList,
-        newLi;
+        newListHtml,
+        $newList;
 
-    newList = document.createElement(listType);
-    newLi = document.createElement('li');
-    newList.appendChild(newLi);
+    // ie6 doesn't support calling wrapInner with a dom node. Build html
+    newListHtml = '<' + listType + '><li></li></' + listType + '>';
 
     if (this.findUp(blockElement, WYMeditor.MAIN_CONTAINERS) === blockElement) {
         // This is a main container block, so we can just replace it with the
         // list structure
-        $blockElement.contents().wrapAll(newList);
-        $blockElement.contents().unwrap();
-        return newList;
+        $blockElement.wrapInner(newListHtml);
+        $newList = $blockElement.children();
+        $newList.unwrap();
+
+        return $newList.get(0);
     }
     // We're converting a block that's not a main container, so we need to nest
     // this list around its contents and NOT remove the container (eg. a td
     // node).
-    $blockElement.contents().wrapAll(newList);
-    return newList;
+    $blockElement.wrapInner(newListHtml);
+    $newList = $blockElement.children();
+
+    return $newList.get(0);
 };
 
 /**
