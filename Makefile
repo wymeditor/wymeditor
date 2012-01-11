@@ -4,6 +4,7 @@ BUILD_DIR = dist
 
 JS_FILES = ${WYM_DIR}/core.js\
  ${WYM_DIR}/rangy/rangy-core.js\
+ ${WYM_DIR}/rangy/rangy-selectionsaverestore.js\
  ${WYM_DIR}/editor/base.js\
  ${WYM_DIR}/editor/ie.js\
  ${WYM_DIR}/editor/firefox.js\

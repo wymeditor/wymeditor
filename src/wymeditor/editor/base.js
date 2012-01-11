@@ -1639,15 +1639,9 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
 WYMeditor.editor.prototype.indent = function () {
     var wym = this._wym,
         sel = rangy.getIframeSelection(this._iframe),
-        // Starting selection information for selection restore
-        startContainer = sel.getRangeAt(0).startContainer,
-        startOffset = sel.getRangeAt(0).startOffset,
-        endContainer = sel.getRangeAt(0).endContainer,
-        endOffset = sel.getRangeAt(0).endOffset,
-        nodes = [],
-        range,
         listItems,
-        rootList;
+        rootList,
+        manipulationFunc;
 
     listItems = wym._getSelectedListItems(sel);
 
@@ -1662,20 +1656,15 @@ WYMeditor.editor.prototype.indent = function () {
         return false;
     }
 
-    for (i = 0; i < listItems.length; i++) {
-        wym._indentSingleItem(listItems[i]);
-    }
-
-    if (listItems.length === 1) {
-        // Put the selection back on the last li element
-        range = rangy.createRange(this._doc);
-        range.setStart(startContainer, startOffset);
-        range.setEnd(endContainer, endOffset);
-        range.collapse(false);
-
-        sel.setSingleRange(range);
-    }
-
+    manipulationFunc = function () {
+        var domChanged = false;
+        for (i = 0; i < listItems.length; i++) {
+            wym._indentSingleItem(listItems[i]);
+            domChanged = true;
+        }
+        return domChanged;
+    };
+    wym.restoreSelectionAfterManipulation(manipulationFunc);
 };
 
 /**
@@ -1688,15 +1677,9 @@ WYMeditor.editor.prototype.indent = function () {
 WYMeditor.editor.prototype.outdent = function () {
     var wym = this._wym,
         sel = rangy.getIframeSelection(this._iframe),
-        // Starting selection information for selection restore
-        startContainer = sel.getRangeAt(0).startContainer,
-        startOffset = sel.getRangeAt(0).startOffset,
-        endContainer = sel.getRangeAt(0).endContainer,
-        endOffset = sel.getRangeAt(0).endOffset,
-        nodes = [],
-        range,
         listItems,
-        rootList;
+        rootList,
+        manipulationFunc;
 
     listItems = wym._getSelectedListItems(sel);
 
@@ -1711,18 +1694,44 @@ WYMeditor.editor.prototype.outdent = function () {
         return false;
     }
 
-    for (i = 0; i < listItems.length; i++) {
-        wym._outdentSingleItem(listItems[i]);
-    }
+    manipulationFunc = function () {
+        var domChanged = false;
+        for (i = 0; i < listItems.length; i++) {
+            wym._outdentSingleItem(listItems[i]);
+            domChanged = true;
+        }
+        return domChanged;
+    };
+    wym.restoreSelectionAfterManipulation(manipulationFunc);
+};
 
-    if (listItems.length === 1) {
-        // Put the selection back on the last li element
-        range = rangy.createRange(this._doc);
-        range.setStart(startContainer, startOffset);
-        range.setEnd(endContainer, endOffset);
-        range.collapse(false);
+/**
+    editor.restoreSelectionAfterManipulation
+    ========================================
 
-        sel.setSingleRange(range);
+    A helper function to ensure that the selection is restored to the same
+    location after a potentially-complicated dom manipulation is performed. This
+    also handles the case where the dom manipulation throws and error by cleaning
+    up any selection markers that were added to the dom.
+
+    `manipulationFunc` is a function that takes no arguments and performs the
+    manipulation. It should return `true` if changes were made that could have
+    potentially destroyed the selection.
+*/
+WYMeditor.editor.prototype.restoreSelectionAfterManipulation = function (manipulationFunc) {
+    var sel = rangy.getIframeSelection(this._iframe),
+        savedSelection = rangy.saveSelection(rangy.dom.getIframeWindow(this._iframe));
+
+    // If something goes wrong, we don't want to leave selection markers
+    // floating around
+    try {
+        if (manipulationFunc()) {
+            rangy.restoreSelection(savedSelection);
+        } else {
+            rangy.removeMarkers(savedSelection);
+        }
+    } catch (e) {
+        rangy.removeMarkers(savedSelection);
     }
 };
 
@@ -1740,7 +1749,14 @@ WYMeditor.editor.prototype.outdent = function () {
     `execCommand(InsertOrderedList)`.
  */
 WYMeditor.editor.prototype.insertOrderedlist = function () {
-    return this._insertList('ol');
+    var wym = this,
+        manipulationFunc;
+
+    manipulationFunc = function () {
+        return wym._insertList('ol');
+    };
+
+    wym.restoreSelectionAfterManipulation(manipulationFunc);
 };
 
 /**
@@ -1755,7 +1771,14 @@ WYMeditor.editor.prototype.insertOrderedlist = function () {
     `execCommand(InsertUnorderedList)`.
  */
 WYMeditor.editor.prototype.insertUnorderedlist = function () {
-    return this._insertList('ul');
+    var wym = this,
+        manipulationFunc;
+
+    manipulationFunc = function () {
+        return wym._insertList('ul');
+    };
+
+    wym.restoreSelectionAfterManipulation(manipulationFunc);
 };
 
 /**
@@ -1767,15 +1790,12 @@ WYMeditor.editor.prototype.insertUnorderedlist = function () {
     If the selection is already inside a list, switch the type of the nearest
     parent list to an `<ol>`. If the selection is in a block element that can be a
     valid list, place that block element's contents inside an ordered list.
+
+    Returns `true` if a change was made, `false` otherwise.
  */
 WYMeditor.editor.prototype._insertList = function (listType) {
     var wym = this._wym,
         sel = rangy.getIframeSelection(this._iframe),
-        // Starting selection information for selection restore
-        startContainer = sel.getRangeAt(0).startContainer,
-        startOffset = sel.getRangeAt(0).startOffset,
-        endContainer = sel.getRangeAt(0).endContainer,
-        endOffset = sel.getRangeAt(0).endOffset,
         listItems,
         rootList,
         selectedBlock,
@@ -1790,7 +1810,8 @@ WYMeditor.editor.prototype._insertList = function (listType) {
         // don't indent
         rootList = wym.getCommonParentList(listItems);
         if (rootList) {
-            return this._changeListType(rootList, listType);
+            this._changeListType(rootList, listType);
+            return true;
         } else {
             // We have a selection across multiple root-level lists. Punt on
             // this case for now.
@@ -1805,7 +1826,8 @@ WYMeditor.editor.prototype._insertList = function (listType) {
     selectedBlock = this.selected();
     potentialListBlock = this.findUp(selectedBlock, WYMeditor.POTENTIAL_LIST_ELEMENTS);
     if (potentialListBlock) {
-        return this._convertToList(potentialListBlock, listType);
+        this._convertToList(potentialListBlock, listType);
+        return true;
     }
 
     // The user has something selected that wouldn't be a valid list
