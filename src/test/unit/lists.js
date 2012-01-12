@@ -1,5 +1,4 @@
 module("list-indent_outdent", {setup: setupWym});
-
 /**
 * Run a list manipulation and verify the results.
 *
@@ -9,29 +8,35 @@ module("list-indent_outdent", {setup: setupWym});
 * @param expectedHtml The expected HTML result.
 * @param isText Should this be considered a text selection (as opposed to a DOM
   selection). Default is false.
+* @param doSelection Whether to start by changing the selection. Defaults to true.
 */
-function testList(elmntId, action, startHtml, expectedHtml, isText) {
+function testList(elmntId, action, startHtml, expectedHtml, isText, doSelection) {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         actionLi,
         buttonSelector,
         actionButton;
 
-    wymeditor.html(startHtml);
+    if (typeof doSelection === 'undefined') {
+        doSelection = true;
+    }
 
-    $body = $(wymeditor._doc).find('body.wym_iframe');
-    actionLi = $body.find('#' + elmntId)[0];
+    if (doSelection) {
+        wymeditor.html(startHtml);
+        $body = $(wymeditor._doc).find('body.wym_iframe');
+        actionLi = $body.find('#' + elmntId)[0];
 
-    if (isText === true) {
-        // Make a text selection inside the target element instead of selecting
-        // the element itself
-        // Selecting from 0 to 1 means we'll select the whole text on
-        // one-character text nodes and we'll partially-select longer nodes.
-        // This allows us to test both without juggling this through all of our
-        // test-cases
-        makeTextSelection(wymeditor, actionLi, actionLi, 0, 1);
-    } else {
-        moveSelector(wymeditor, actionLi);
+        if (isText === true) {
+            // Make a text selection inside the target element instead of selecting
+            // the element itself
+            // Selecting from 0 to 1 means we'll select the whole text on
+            // one-character text nodes and we'll partially-select longer nodes.
+            // This allows us to test both without juggling this through all of our
+            // test-cases
+            makeTextSelection(wymeditor, actionLi, actionLi, 0, 1);
+        } else {
+            moveSelector(wymeditor, actionLi);
+        }
     }
 
     buttonSelector = '';
@@ -57,6 +62,55 @@ function testList(elmntId, action, startHtml, expectedHtml, isText) {
     actionButton.click();
 
     htmlEquals(wymeditor, expectedHtml);
+}
+
+/*
+    testListRoundTrip
+    =================
+
+    Run a list manipulation one direction and then the opposite direction and
+    ensure that they're exact opposites of eachother. Generally, this is used to
+    ensure that the selection at the end of the action is in a sane place.
+
+    `elmntId` An id for the li that will be modified
+
+    `action` One of `indent`, `outdent`, `ordered` or `unordered`. The opposite
+    action will be performed afterwards.
+
+    `startHtml` The starting HTML
+
+    `expectedHtml` The expected HTML result.
+
+    `isText` Should this be considered a text selection (as opposed to a DOM
+    selection). Default is false.
+*/
+function testListRoundTrip(elmntId, action, startHtml, expectedHtml, isText) {
+    var oppositeAction;
+
+    if (typeof isText === 'undefined') {
+        isText = false;
+    }
+
+    if (action === 'outdent') {
+        oppositeAction = 'indent';
+    } else if (action === 'indent') {
+        oppositeAction = 'outdent';
+    } else if (action === 'unordered') {
+        oppositeAction = 'ordered';
+    } else if (action === 'ordered') {
+        oppositeAction = 'unordered';
+    } else {
+        ok(
+            false,
+            'Improper call to testList. Action must be either "indent", ' +
+                '"outdent", "ordered" or "unordered"'
+        );
+    }
+
+    testList(elmntId, action, startHtml, expectedHtml, isText, true);
+    // Run it again the other direction without changing the selection or
+    // initial HTML
+    testList(elmntId, oppositeAction, expectedHtml, startHtml, isText, false);
 }
 
 /**
@@ -477,25 +531,36 @@ var li_7_indentedHtml = String() +
         '</ol>';
 
 
-
-test("First-level w/sublist", function () {
+test("No change outside list", function () {
     expect(6);
+    var notList = '<p id="p_1">1</p>';
 
-    testList('li_2', 'indent', nestedListHtml, li_2_indentedHtml);
-    testList('li_2', 'outdent', li_2_indentedHtml, nestedListHtml);
+    testList('p_1', 'indent', notList, notList);
+    testList('p_1', 'outdent', notList, notList);
+
     // Text selection instead
-    testList('li_2', 'indent', nestedListHtml, li_2_indentedHtml, true);
-    testList('li_2', 'outdent', li_2_indentedHtml, nestedListHtml, true);
+    testList('p_1', 'indent', notList, notList, true);
+    testList('p_1', 'outdent', notList, notList, true);
 });
 
-test("First-level w/sublist joins lists", function () {
-    expect(6);
+test("First-level w/sublist", function () {
+    expect(10);
 
-    testList('li_3', 'indent', nestedListHtml, li_3_indentedHtml);
-    testList('li_3', 'outdent', li_3_indentedHtml, nestedListHtml);
+    testListRoundTrip('li_2', 'indent', nestedListHtml, li_2_indentedHtml);
+    testListRoundTrip('li_2', 'outdent', li_2_indentedHtml, nestedListHtml);
+    // Text selection instead
+    testListRoundTrip('li_2', 'indent', nestedListHtml, li_2_indentedHtml, true);
+    testListRoundTrip('li_2', 'outdent', li_2_indentedHtml, nestedListHtml, true);
+});
+
+test("First-level previous sublist joins lists", function () {
+    expect(10);
+
+    testListRoundTrip('li_3', 'indent', nestedListHtml, li_3_indentedHtml);
+    testListRoundTrip('li_3', 'outdent', li_3_indentedHtml, nestedListHtml);
     // Via Text selection
-    testList('li_3', 'indent', nestedListHtml, li_3_indentedHtml, true);
-    testList('li_3', 'outdent', li_3_indentedHtml, nestedListHtml, true);
+    testListRoundTrip('li_3', 'indent', nestedListHtml, li_3_indentedHtml, true);
+    testListRoundTrip('li_3', 'outdent', li_3_indentedHtml, nestedListHtml, true);
 });
 
 test("Outdent joining list with longer content", function () {
@@ -509,80 +574,80 @@ test("Outdent joining list with longer content", function () {
 });
 
 test("Outdent w/sublist", function () {
-    expect(6);
+    expect(10);
 
-    testList('li_5_3', 'outdent', nestedListHtml, li_5_3_outdentedHtml);
-    testList('li_5_3', 'indent', li_5_3_outdentedHtml, nestedListHtml);
+    testListRoundTrip('li_5_3', 'outdent', nestedListHtml, li_5_3_outdentedHtml);
+    testListRoundTrip('li_5_3', 'indent', li_5_3_outdentedHtml, nestedListHtml);
 
     // Via Text selection
-    testList('li_5_3', 'outdent', nestedListHtml, li_5_3_outdentedHtml, true);
-    testList('li_5_3', 'indent', li_5_3_outdentedHtml, nestedListHtml, true);
+    testListRoundTrip('li_5_3', 'outdent', nestedListHtml, li_5_3_outdentedHtml, true);
+    testListRoundTrip('li_5_3', 'indent', li_5_3_outdentedHtml, nestedListHtml, true);
 });
 
 test("Outdent last element in list", function () {
-    expect(6);
+    expect(10);
 
-    testList('li_3_1', 'outdent', nestedListHtml, li_3_1_outdentedHtml);
-    testList('li_3_1', 'indent', li_3_1_outdentedHtml, nestedListHtml);
+    testListRoundTrip('li_3_1', 'outdent', nestedListHtml, li_3_1_outdentedHtml);
+    testListRoundTrip('li_3_1', 'indent', li_3_1_outdentedHtml, nestedListHtml);
 
     // Via Text selection
-    testList('li_3_1', 'outdent', nestedListHtml, li_3_1_outdentedHtml, true);
-    testList('li_3_1', 'indent', li_3_1_outdentedHtml, nestedListHtml, true);
+    testListRoundTrip('li_3_1', 'outdent', nestedListHtml, li_3_1_outdentedHtml, true);
+    testListRoundTrip('li_3_1', 'indent', li_3_1_outdentedHtml, nestedListHtml, true);
 });
 
 test("Second-level w/sublist", function () {
-    expect(6);
+    expect(10);
 
-    testList('li_5_3', 'indent', nestedListHtml, li_5_3_indentedHtml);
-    testList('li_5_3', 'outdent', li_5_3_indentedHtml, nestedListHtml);
+    testListRoundTrip('li_5_3', 'indent', nestedListHtml, li_5_3_indentedHtml);
+    testListRoundTrip('li_5_3', 'outdent', li_5_3_indentedHtml, nestedListHtml);
 
     // Via Text selection
-    testList('li_5_3', 'indent', nestedListHtml, li_5_3_indentedHtml, true);
-    testList('li_5_3', 'outdent', li_5_3_indentedHtml, nestedListHtml, true);
+    testListRoundTrip('li_5_3', 'indent', nestedListHtml, li_5_3_indentedHtml, true);
+    testListRoundTrip('li_5_3', 'outdent', li_5_3_indentedHtml, nestedListHtml, true);
 });
 
 test("First-level no-sublist", function () {
-    expect(6);
+    expect(10);
 
-    testList('li_7', 'indent', nestedListHtml, li_7_indentedHtml);
-    testList('li_7', 'outdent', li_7_indentedHtml, nestedListHtml);
+    testListRoundTrip('li_7', 'indent', nestedListHtml, li_7_indentedHtml);
+    testListRoundTrip('li_7', 'outdent', li_7_indentedHtml, nestedListHtml);
 
     // Via Text selection
-    testList('li_7', 'indent', nestedListHtml, li_7_indentedHtml, true);
-    testList('li_7', 'outdent', li_7_indentedHtml, nestedListHtml, true);
+    testListRoundTrip('li_7', 'indent', nestedListHtml, li_7_indentedHtml, true);
+    testListRoundTrip('li_7', 'outdent', li_7_indentedHtml, nestedListHtml, true);
 });
 
 test("Second-level no-sublist", function () {
-    expect(6);
+    expect(10);
 
-    testList('li_2_2', 'indent', nestedListHtml, li_2_2_indentedHtml);
-    testList('li_2_2', 'outdent', li_2_2_indentedHtml, nestedListHtml);
+    testListRoundTrip('li_2_2', 'indent', nestedListHtml, li_2_2_indentedHtml);
+    testListRoundTrip('li_2_2', 'outdent', li_2_2_indentedHtml, nestedListHtml);
 
     // Via Text selection
-    testList('li_2_2', 'indent', nestedListHtml, li_2_2_indentedHtml, true);
-    testList('li_2_2', 'outdent', li_2_2_indentedHtml, nestedListHtml, true);
+    testListRoundTrip('li_2_2', 'indent', nestedListHtml, li_2_2_indentedHtml, true);
+    testListRoundTrip('li_2_2', 'outdent', li_2_2_indentedHtml, nestedListHtml, true);
 });
 
 test("First-level no-sublist first-item", function () {
-    expect(6);
+    expect(10);
 
-    testList('li_1', 'indent', nestedListHtml, li_1_indentedHtml);
-    testList('li_1', 'outdent', li_1_indentedHtml, nestedListHtml);
+    testListRoundTrip('li_1', 'indent', nestedListHtml, li_1_indentedHtml);
+    testListRoundTrip('li_1', 'outdent', li_1_indentedHtml, nestedListHtml);
 
     // Via Text selection
-    testList('li_1', 'indent', nestedListHtml, li_1_indentedHtml, true);
-    testList('li_1', 'outdent', li_1_indentedHtml, nestedListHtml, true);
+    testListRoundTrip('li_1', 'indent', nestedListHtml, li_1_indentedHtml, true);
+    testListRoundTrip('li_1', 'outdent', li_1_indentedHtml, nestedListHtml, true);
 });
 
 test("First-level no-sublist previous-sublist", function () {
-    expect(6);
+    expect(10);
 
-    testList('li_4', 'indent', nestedListHtml, li_4_indentedHtml);
-    testList('li_4', 'outdent', li_4_indentedHtml, nestedListHtml);
+    testListRoundTrip('li_4', 'indent', nestedListHtml, li_4_indentedHtml);
+    testListRoundTrip('li_4', 'outdent', li_4_indentedHtml, nestedListHtml);
 
     // Via Text selection
-    testList('li_4', 'indent', nestedListHtml, li_4_indentedHtml, true);
-    testList('li_4', 'outdent', li_4_indentedHtml, nestedListHtml, true);
+    testListRoundTrip('li_4', 'indent', nestedListHtml, li_4_indentedHtml, true);
+    testListRoundTrip('li_4', 'outdent', li_4_indentedHtml, nestedListHtml, true);
 });
 
 test("Can't dedent first-level", function () {
@@ -627,14 +692,14 @@ var li_1_indentedNestedFirstItemHtml = String() +
         '</ol>';
 
 test("Nested first item", function () {
-    expect(6);
+    expect(10);
 
-    testList('li_1', 'indent', nestedFirstItemHtml, li_1_indentedNestedFirstItemHtml);
-    testList('li_1', 'outdent', li_1_indentedNestedFirstItemHtml, nestedFirstItemHtml);
+    testListRoundTrip('li_1', 'indent', nestedFirstItemHtml, li_1_indentedNestedFirstItemHtml);
+    testListRoundTrip('li_1', 'outdent', li_1_indentedNestedFirstItemHtml, nestedFirstItemHtml);
 
     // Via Text selection
-    testList('li_1', 'indent', nestedFirstItemHtml, li_1_indentedNestedFirstItemHtml, true);
-    testList('li_1', 'outdent', li_1_indentedNestedFirstItemHtml, nestedFirstItemHtml, true);
+    testListRoundTrip('li_1', 'indent', nestedFirstItemHtml, li_1_indentedNestedFirstItemHtml, true);
+    testListRoundTrip('li_1', 'outdent', li_1_indentedNestedFirstItemHtml, nestedFirstItemHtml, true);
 });
 
 var overhungListHtml = String() +
@@ -665,14 +730,14 @@ var li_3_overhungHtml = String() +
         '</ol>';
 
 test("Double overhang with different list type indent/outdent", function () {
-    expect(6);
+    expect(10);
 
-    testList('li_3', 'indent', overhungListHtml, li_3_overhungHtml);
-    testList('li_3', 'outdent', li_3_overhungHtml, overhungListHtml);
+    testListRoundTrip('li_3', 'indent', overhungListHtml, li_3_overhungHtml);
+    testListRoundTrip('li_3', 'outdent', li_3_overhungHtml, overhungListHtml);
 
     // Via Text selection
-    testList('li_3', 'indent', overhungListHtml, li_3_overhungHtml, true);
-    testList('li_3', 'outdent', li_3_overhungHtml, overhungListHtml, true);
+    testListRoundTrip('li_3', 'indent', overhungListHtml, li_3_overhungHtml, true);
+    testListRoundTrip('li_3', 'outdent', li_3_overhungHtml, overhungListHtml, true);
 });
 
 module("list-content_reordering", {setup: setupWym});
@@ -741,25 +806,25 @@ var li_1_6_doubleSublistOutdentedHtml = String() +
 
 test("Two same-level sublist middle outdent", function () {
     // Shouldn't re-order content when outdent with two sublists
-    expect(6);
+    expect(10);
 
-    testList('li_1_5', 'outdent', doubleSublistHtml, li_1_5_doubleSublistOutdentedHtml);
-    testList('li_1_5', 'indent', li_1_5_doubleSublistOutdentedHtml, doubleSublistHtml);
+    testListRoundTrip('li_1_5', 'outdent', doubleSublistHtml, li_1_5_doubleSublistOutdentedHtml);
+    testListRoundTrip('li_1_5', 'indent', li_1_5_doubleSublistOutdentedHtml, doubleSublistHtml);
 
     // Via Text selection
-    testList('li_1_5', 'outdent', doubleSublistHtml, li_1_5_doubleSublistOutdentedHtml, true);
-    testList('li_1_5', 'indent', li_1_5_doubleSublistOutdentedHtml, doubleSublistHtml, true);
+    testListRoundTrip('li_1_5', 'outdent', doubleSublistHtml, li_1_5_doubleSublistOutdentedHtml, true);
+    testListRoundTrip('li_1_5', 'indent', li_1_5_doubleSublistOutdentedHtml, doubleSublistHtml, true);
 });
 
 test("Two same-level sublist last outdent", function () {
-    expect(6);
+    expect(10);
 
-    testList('li_1_6', 'outdent', doubleSublistHtml, li_1_6_doubleSublistOutdentedHtml);
-    testList('li_1_6', 'indent', li_1_6_doubleSublistOutdentedHtml, doubleSublistHtml);
+    testListRoundTrip('li_1_6', 'outdent', doubleSublistHtml, li_1_6_doubleSublistOutdentedHtml);
+    testListRoundTrip('li_1_6', 'indent', li_1_6_doubleSublistOutdentedHtml, doubleSublistHtml);
 
     // Via Text selection
-    testList('li_1_6', 'outdent', doubleSublistHtml, li_1_6_doubleSublistOutdentedHtml, true);
-    testList('li_1_6', 'indent', li_1_6_doubleSublistOutdentedHtml, doubleSublistHtml, true);
+    testListRoundTrip('li_1_6', 'outdent', doubleSublistHtml, li_1_6_doubleSublistOutdentedHtml, true);
+    testListRoundTrip('li_1_6', 'indent', li_1_6_doubleSublistOutdentedHtml, doubleSublistHtml, true);
 });
 
 var li_2_1_to_li_2_2_indentedHtml = String() +
@@ -1092,22 +1157,24 @@ var diThirdOutdentHtml = String() +
         '</ol>';
 
 test("Triple outdent doesn't break HTML", function () {
-    expect(6);
+    expect(9);
 
-    testList('li_1_1_1_4', 'outdent', doubleIndentHtml, diFirstOutdentHtml);
-    testList(
+    testListRoundTrip('li_1_1_1_4', 'outdent', doubleIndentHtml, diFirstOutdentHtml);
+    testListRoundTrip(
         'li_1_1_1_4',
         'outdent',
         diFirstOutdentHtml,
         diSecondOutdentHtml
     );
-    testList(
+    testListRoundTrip(
         'li_1_1_1_4',
         'outdent',
         diSecondOutdentHtml,
         diThirdOutdentHtml
     );
 });
+
+module("list-conversion_type", {setup: setupWym});
 
 var orderedHtml = String() +
         '<ol>' +
@@ -1178,32 +1245,155 @@ var li_1_1_1_1_unorderedHtml = String() +
             '<li id="li_2">2</li>' +
         '</ol>';
 
-module("list-order_unordered_conversion", {setup: setupWym});
-if (!SKIP_KNOWN_FAILING_TESTS) {
-    test("Ordered to unordered second item", function () {
-        expect(4);
+test("Ordered to unordered second item", function () {
+    expect(10);
 
-        testList('li_2', 'unordered', orderedHtml, li_2_unorderedHtml);
-        testList('li_2', 'ordered', li_2_unorderedHtml, orderedHtml);
-    });
-}
+    // Round trip tests (for selection restoration)
+    testListRoundTrip('li_2', 'unordered', orderedHtml, li_2_unorderedHtml);
+    testListRoundTrip('li_2', 'ordered', li_2_unorderedHtml, orderedHtml);
+    // With text selection
+    testListRoundTrip('li_2', 'unordered', orderedHtml, li_2_unorderedHtml, true);
+    testListRoundTrip('li_2', 'ordered', li_2_unorderedHtml, orderedHtml, true);
+});
 
-if (!SKIP_KNOWN_FAILING_TESTS) {
-    test("Ordered to unordered nested", function () {
-        expect(4);
+test("Ordered to unordered nested", function () {
+    expect(10);
 
-        testList('li_1_1_1', 'unordered', orderedHtml, li_1_1_1_unorderedHtml);
-        testList('li_1_1_1', 'ordered', li_1_1_1_unorderedHtml, orderedHtml);
-    });
-}
-if ($.browser.safari && !SKIP_KNOWN_FAILING_TESTS) {
-    test("Ordered to unordered one item", function () {
-        expect(4);
+    testListRoundTrip('li_1_1_1', 'unordered', orderedHtml, li_1_1_1_unorderedHtml);
+    testListRoundTrip('li_1_1_1', 'ordered', li_1_1_1_unorderedHtml, orderedHtml);
 
-        testList('li_1_1_1_1', 'unordered', orderedHtml, li_1_1_1_1_unorderedHtml);
-        testList('li_1_1_1_1', 'ordered', li_1_1_1_1_unorderedHtml, orderedHtml);
-    });
-}
+    // With text selection
+    testListRoundTrip('li_1_1_1', 'unordered', orderedHtml, li_1_1_1_unorderedHtml, true);
+    testListRoundTrip('li_1_1_1', 'ordered', li_1_1_1_unorderedHtml, orderedHtml, true);
+});
+test("Ordered to unordered one item", function () {
+    expect(10);
+
+    testListRoundTrip('li_1_1_1_1', 'unordered', orderedHtml, li_1_1_1_1_unorderedHtml);
+    testListRoundTrip('li_1_1_1_1', 'ordered', li_1_1_1_1_unorderedHtml, orderedHtml);
+
+    // With text selection
+    testListRoundTrip('li_1_1_1_1', 'unordered', orderedHtml, li_1_1_1_1_unorderedHtml, true);
+    testListRoundTrip('li_1_1_1_1', 'ordered', li_1_1_1_1_unorderedHtml, orderedHtml, true);
+});
+
+module("list-conversion_blocks", {setup: setupWym});
+var pHtml = String() +
+        '<p id="p_1">content 1</p>' +
+        '<p id="p_2"><strong id="strong_2">content</strong> 2</p>' +
+        '<h1 id="h1_3">content 3</h1>';
+var p_1_orderedHtml = String() +
+        '<ol>' +
+            '<li>content 1</li>' +
+        '</ol>' +
+        '<p id="p_2"><strong id="strong_2">content</strong> 2</p>' +
+        '<h1 id="h1_3">content 3</h1>';
+var p_1_unorderedHtml = String() +
+        '<ul>' +
+            '<li>content 1</li>' +
+        '</ul>' +
+        '<p id="p_2"><strong id="strong_2">content</strong> 2</p>' +
+        '<h1 id="h1_3">content 3</h1>';
+var p_2_orderedHtml = String() +
+        '<p id="p_1">content 1</p>' +
+        '<ol>' +
+            '<li><strong id="strong_2">content</strong> 2</li>' +
+        '</ol>' +
+        '<h1 id="h1_3">content 3</h1>';
+var p_2_unorderedHtml = String() +
+        '<p id="p_1">content 1</p>' +
+        '<ul>' +
+            '<li><strong id="strong_2">content</strong> 2</li>' +
+        '</ul>' +
+        '<h1 id="h1_3">content 3</h1>';
+var h1_3_orderedHtml = String() +
+        '<p id="p_1">content 1</p>' +
+        '<p id="p_2"><strong id="strong_2">content</strong> 2</p>' +
+        '<ol>' +
+            '<li>content 3</li>' +
+        '</ol>';
+var h1_3_unorderedHtml = String() +
+        '<p id="p_1">content 1</p>' +
+        '<p id="p_2"><strong id="strong_2">content</strong> 2</p>' +
+        '<ul>' +
+            '<li>content 3</li>' +
+        '</ul>';
+// Multiples
+var p_1_ordered_p_2_ordered_pHtml = String() +
+        '<ol>' +
+            '<li>content 1</li>' +
+        '</ol>' +
+        '<ol>' +
+            '<li><strong id="strong_2">content</strong> 2</li>' +
+        '</ol>' +
+        '<h1 id="h1_3">content 3</h1>';
+var p_1_ordered_p_2_unordered_pHtml = String() +
+        '<ol>' +
+            '<li>content 1</li>' +
+        '</ol>' +
+        '<ul>' +
+            '<li><strong id="strong_2">content</strong> 2</li>' +
+        '</ul>' +
+        '<h1 id="h1_3">content 3</h1>';
+var p_1_unordered_p_2_ordered_pHtml = String() +
+        '<ul>' +
+            '<li>content 1</li>' +
+        '</ul>' +
+        '<ol>' +
+            '<li><strong id="strong_2">content</strong> 2</li>' +
+        '</ol>' +
+        '<h1 id="h1_3">content 3</h1>';
+
+test("Paragraph", function () {
+    expect(6);
+
+    testList('p_1', 'ordered', pHtml, p_1_orderedHtml);
+    testList('p_1', 'unordered', pHtml, p_1_unorderedHtml);
+
+    // Using text selection
+    testList('p_1', 'unordered', pHtml, p_1_unorderedHtml, true);
+    testList('p_1', 'ordered', pHtml, p_1_orderedHtml, true);
+});
+test("Paragraph with inline tags", function () {
+    expect(6);
+
+    testList('strong_2', 'ordered', pHtml, p_2_orderedHtml);
+    testList('strong_2', 'unordered', pHtml, p_2_unorderedHtml);
+
+    // Using text selection
+    testList('p_2', 'ordered', pHtml, p_2_orderedHtml, true);
+    testList('p_2', 'unordered', pHtml, p_2_unorderedHtml, true);
+});
+test("h1", function () {
+    expect(6);
+
+    testList('h1_3', 'ordered', pHtml, h1_3_orderedHtml);
+    testList('h1_3', 'unordered', pHtml, h1_3_unorderedHtml);
+
+    // Using text selection
+    testList('h1_3', 'ordered', pHtml, h1_3_orderedHtml, true);
+    testList('h1_3', 'unordered', pHtml, h1_3_unorderedHtml, true);
+});
+test("Paragraph shouldn't join", function () {
+    expect(6);
+
+    testList('strong_2', 'ordered', p_1_orderedHtml, p_1_ordered_p_2_ordered_pHtml);
+    testList('p_1', 'ordered', p_2_orderedHtml, p_1_ordered_p_2_ordered_pHtml);
+
+    // Using text selection
+    testList('p_2', 'ordered', p_1_orderedHtml, p_1_ordered_p_2_ordered_pHtml, true);
+    testList('p_1', 'ordered', p_2_orderedHtml, p_1_ordered_p_2_ordered_pHtml, true);
+});
+test("Not joining different types", function () {
+    expect(6);
+
+    testList('strong_2', 'unordered', p_1_orderedHtml, p_1_ordered_p_2_unordered_pHtml);
+    testList('p_1', 'unordered', p_2_orderedHtml, p_1_unordered_p_2_ordered_pHtml);
+
+    // Using text selection
+    testList('p_2', 'unordered', p_1_orderedHtml, p_1_ordered_p_2_unordered_pHtml, true);
+    testList('p_1', 'unordered', p_2_orderedHtml, p_1_unordered_p_2_ordered_pHtml, true);
+});
 
 module("list-correction", {setup: setupWym});
 

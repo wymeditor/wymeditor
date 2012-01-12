@@ -222,17 +222,31 @@ jQuery.extend(WYMeditor, {
     INSERT_UNORDEREDLIST: "InsertUnorderedList",
     INSERT_ORDEREDLIST  : "InsertOrderedList",
 
+    // Containers that we allow at the root of the document (as a direct child
+    // of the body tag)
     MAIN_CONTAINERS : ["p",  "h1",  "h2",  "h3", "h4", "h5", "h6", "pre", "blockquote"],
 
+    // All block (as opposed to inline) tags
     BLOCKS : ["address", "blockquote", "div", "dl",
         "fieldset", "form", "h1", "h2", "h3", "h4", "h5", "h6", "hr",
         "noscript", "ol", "p", "pre", "table", "ul", "dd", "dt",
         "li", "tbody", "td", "tfoot", "th", "thead", "tr"],
 
+    // The subset of the `MAIN_CONTAINERS` that prevent the user from using
+    // up/down/enter/backspace from moving above or below them. They
+    // effectively block the creation of new blocks.
     BLOCKING_ELEMENTS : ["table", "blockquote", "pre"],
 
+    // The remaining `MAIN_CONTAINERS` that are not considered `BLOCKING_ELEMENTS`
     NON_BLOCKING_ELEMENTS : ["p", "h1", "h2", "h3", "h4", "h5", "h6"],
 
+    // The elements that are allowed to be turned in to lists. If an item in
+    // this array isn't in the MAIN_CONTAINERS array, then its contents will be
+    // turned in to a list instead.
+    POTENTIAL_LIST_ELEMENTS : ["p", "h1", "h2", "h3", "h4", "h5", "h6", "pre", "blockquote", "td"],
+
+    // Keyboard mappings so that we don't have to remember that 38 means up
+    // when reading keyboard handlers
     KEY : {
         BACKSPACE: 8,
         TAB: 9,
@@ -252,6 +266,7 @@ jQuery.extend(WYMeditor, {
         COMMAND: 224
     },
 
+    // domNode.nodeType constants
     NODE : {
         ELEMENT: 1,
         ATTRIBUTE: 2,
@@ -996,6 +1011,37 @@ jQuery.fn.parentsOrSelf = function (jqexpr) {
     } else {
         return n.parents(jqexpr).slice(0, 1);
     }
+};
+
+/*
+    WYMeditor.changeNodeType
+    ========================
+
+    Change the type (tagName) of the given node, while retaining all content,
+    properties and attributes.
+*/
+WYMeditor.changeNodeType = function (node, newTag) {
+    var newNode,
+        i,
+        attributes = node.attributes;
+
+    // In ie6, have to create the node as part of wrapInner before we can copy
+    // over attributes
+    $(node).wrapInner('<' + newTag + '>');
+    newNode = $(node).children().get(0);
+
+    // Copy attributes
+    for (i = 0; i < attributes.length; i++) {
+        if (attributes[i].specified) {
+            // We only care about specified attributes
+            newNode.setAttribute(attributes[i].nodeName, attributes[i].nodeValue);
+        }
+    }
+
+    // Not copying inline CSS or properties/events
+
+    $(node).contents().unwrap();
+    return newNode;
 };
 
 // String & array helpers

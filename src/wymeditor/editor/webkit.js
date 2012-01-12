@@ -79,31 +79,13 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
     var focusNode = this.selected(),
         container;
 
-    switch (cmd) {
-    case WYMeditor.INSERT_ORDEREDLIST:
-    case WYMeditor.INSERT_UNORDEREDLIST:
-
+    if (param) {
+        this._doc.execCommand(cmd, '', param);
+    } else {
         this._doc.execCommand(cmd, '', null);
-
-        //Safari creates lists in e.g. paragraphs.
-        //Find the container, and remove it.
-        container = this.findUp(focusNode, WYMeditor.MAIN_CONTAINERS);
-        if (container) {
-            jQuery(container).replaceWith(jQuery(container).html());
-        }
-
-        break;
-    default:
-        if (param) {
-            this._doc.execCommand(cmd, '', param);
-        } else {
-            this._doc.execCommand(cmd, '', null);
-        }
-
-        break;
     }
 
-    //set to P if parent = BODY
+    // Wrap this content in a paragraph tag if we're in the body
     container = this.selected();
     if (container && container.tagName.toLowerCase() === WYMeditor.BODY) {
         this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
