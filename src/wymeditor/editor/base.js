@@ -1411,6 +1411,11 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
     if (!$liToOutdent.parent().parent().is('ol,ul,li')) {
         return;
     }
+    if (!$liToOutdent.parent().parent().is('li')) {
+        // We have invalid list nesting and we need to fix that
+        WYMeditor.console.error('invalid list nesting');
+        WYMeditor.console.log($liToOutdent.parent().parent()[0].innerHTML);
+    }
 
     // Separate out the contents into things that should stay with the li as it
     // moves and things that should stay at their current level
@@ -1418,8 +1423,13 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
     $sublistContents = $(splitContent.sublistContents);
     $itemContents = $(splitContent.itemContents);
 
-    // Gather subsequent sinbling and parent sibling content
+    // Gather subsequent sibling and parent sibling content
     $parentLi = $liToOutdent.parent().parent('li');
+    // Invalid HTML could cause this selector to fail, which breaks our logic.
+    // Bail out rather than possibly losing content
+    if ($parentLi.length === 0) {
+        return;
+    }
     $parentList = $liToOutdent.parent();
     $subsequentSiblingContent = $liToOutdent.nextAllContents();
     $subsequentParentListSiblingContent = $parentList.nextAllContents();

@@ -827,6 +827,48 @@ test("Two same-level sublist last outdent", function () {
     testListRoundTrip('li_1_6', 'indent', li_1_6_doubleSublistOutdentedHtml, doubleSublistHtml, true);
 });
 
+var invalidNestingHtml = String() +
+        '<ol>' +
+            '<li id="li_2">2</li>' +
+            '<ul>' +
+                '<li id="li_2_1">2_1' +
+                    '<ul>' +
+                        '<li id="li_2_1_2">2_1_2</li>' +
+                    '</ul>' +
+                '</li>' +
+                '<li id="li_2_2">2_2</li>' +
+            '</ul>' +
+            '<li id="li_3">3</li>' +
+        '</ol>';
+
+var li_2_2_outdentInvalidNestingHtml = String() +
+        '<ol>' +
+            '<li id="li_2">2' +
+                '<ul>' +
+                    '<li id="li_2_1">2_1' +
+                        '<ul>' +
+                            '<li id="li_2_1_2">2_1_2</li>' +
+                        '</ul>' +
+                    '</li>' +
+                '</ul>' +
+            '</li>' +
+            '<li id="li_2_2">2_2</li>' +
+            '<li id="li_3">3</li>' +
+        '</ol>';
+
+test("Invalid nesting outdent", function () {
+    expect(10);
+
+    testListRoundTrip('li_2_2', 'outdent', invalidNestingHtml, li_2_2_outdentInvalidNestingHtml);
+    testListRoundTrip('li_2_2', 'indent', li_2_2_outdentInvalidNestingHtml, invalidNestingHtml);
+
+    // Via Text selection
+    testListRoundTrip('li_2_2', 'outdent', invalidNestingHtml, li_2_2_outdentInvalidNestingHtml, true);
+    testListRoundTrip('li_2_2', 'indent', li_2_2_outdentInvalidNestingHtml, invalidNestingHtml, true);
+});
+
+module("list-multi_selection", {setup: setupWym});
+
 var li_2_1_to_li_2_2_indentedHtml = String() +
         '<ol>' +
             '<li id="li_1">1</li>' +
@@ -1014,8 +1056,6 @@ var li_2_to_li_3_subnodeIndentedHtml = String() +
             '</li>' +
         '</ol>';
 
-
-module("list-multi_selection", {setup: setupWym});
 
 test("Second-level with sub-node", function () {
     expect(4);
