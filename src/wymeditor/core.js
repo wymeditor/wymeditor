@@ -36,7 +36,17 @@ if (typeof (WYMeditor) === 'undefined') {
 
 // Wrap the Firebug console in WYMeditor.console
 (function () {
-    if (!window.console || !window.console.firebug) {
+    if (window.console) {
+        // Chrome
+        WYMeditor.console = window.console;
+    } else if (window.console.firebug) {
+        // FF with firebug
+        WYMeditor.console = window.console;
+    } else if (console) {
+        // ie8+
+        WYMeditor.console = console;
+    } else {
+        // No in-browser console logging available
         var names = [
                 "log", "debug", "info", "warn", "error", "assert", "dir", "dirxml",
                 "group", "groupEnd", "time", "timeEnd", "count", "trace", "profile",
@@ -50,8 +60,6 @@ if (typeof (WYMeditor) === 'undefined') {
             WYMeditor.console[names[i]] = noOp;
         }
 
-    } else {
-        WYMeditor.console = window.console;
     }
 }());
 
