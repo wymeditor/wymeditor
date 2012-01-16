@@ -827,6 +827,8 @@ test("Two same-level sublist last outdent", function () {
     testListRoundTrip('li_1_6', 'indent', li_1_6_doubleSublistOutdentedHtml, doubleSublistHtml, true);
 });
 
+module("list-invalid_nesting", {setup: setupWym});
+
 var invalidNestingHtml = String() +
         '<ol>' +
             '<li id="li_2">2</li>' +
@@ -838,9 +840,56 @@ var invalidNestingHtml = String() +
                 '</li>' +
                 '<li id="li_2_2">2_2</li>' +
             '</ul>' +
-            '<li id="li_3">3</li>' +
+            'text_3' +
+            '<li id="li_4">4</li>' +
+            'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
         '</ol>';
-
+var invalidNestingNoPreviousHtml = String() +
+        '<ol>' +
+            '<ul>' +
+                '<li id="li_2_1">2_1' +
+                    '<ul>' +
+                        '<li id="li_2_1_2">2_1_2</li>' +
+                    '</ul>' +
+                '</li>' +
+                '<li id="li_2_2">2_2</li>' +
+            '</ul>' +
+            'text_3' +
+            '<li id="li_4">4</li>' +
+            'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
+        '</ol>';
+var invalidNestingCorrectedHtml = String() +
+        '<ol>' +
+            '<li id="li_2">2' +
+                '<ul>' +
+                    '<li id="li_2_1">2_1' +
+                        '<ul>' +
+                            '<li id="li_2_1_2">2_1_2</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_2_2">2_2</li>' +
+                '</ul>' +
+            '</li>' +
+            '<li>text_3</li>' +
+            '<li id="li_4">4</li>' +
+            '<li>text_5_1<span id="span_5_2">5_2</span>text_5_3</li>' +
+        '</ol>';
+var invalidNestingNoPreviousCorrectedHtml = String() +
+        '<ol>' +
+            '<li class="spacer_li">' +
+                '<ul>' +
+                    '<li id="li_2_1">2_1' +
+                        '<ul>' +
+                            '<li id="li_2_1_2">2_1_2</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_2_2">2_2</li>' +
+                '</ul>' +
+            '</li>' +
+            '<li>text_3</li>' +
+            '<li id="li_4">4</li>' +
+            '<li>text_5_1<span id="span_5_2">5_2</span>text_5_3</li>' +
+        '</ol>';
 var li_2_2_outdentInvalidNestingHtml = String() +
         '<ol>' +
             '<li id="li_2">2' +
@@ -853,8 +902,58 @@ var li_2_2_outdentInvalidNestingHtml = String() +
                 '</ul>' +
             '</li>' +
             '<li id="li_2_2">2_2</li>' +
-            '<li id="li_3">3</li>' +
+            '<li>text_3</li>' +
+            '<li id="li_4">4</li>' +
+            '<li>text_5_1<span id="span_5_2">5_2</span>text_5_3</li>' +
         '</ol>';
+
+var li_4_outdentInvalidNestingHtml = String() +
+        '<ol>' +
+            '<li id="li_2">2' +
+                '<ul>' +
+                    '<li id="li_2_1">2_1' +
+                        '<ul>' +
+                            '<li id="li_2_1_2">2_1_2</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_2_2">2_2</li>' +
+                '</ul>' +
+            '</li>' +
+            '<li>text_3</li>' +
+            '<li class="spacer_li">' +
+                '<ol>' +
+                    '<li id="li_4">4</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li>text_5_1<span id="span_5_2">5_2</span>text_5_3</li>' +
+        '</ol>';
+test("Invalid nesting correction", function () {
+    expect(2);
+
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        actionLi,
+        startHtml = invalidNestingHtml,
+        expectedHtml = invalidNestingCorrectedHtml;
+
+    wymeditor.html(startHtml);
+    $body = $(wymeditor._doc).find('body.wym_iframe');
+    actionLi = $body.find('#li_4')[0];
+
+    wymeditor.correctInvalidListNesting(actionLi);
+    htmlEquals(wymeditor, expectedHtml);
+
+    // No previous li to join
+    startHtml = invalidNestingNoPreviousHtml;
+    expectedHtml = invalidNestingNoPreviousCorrectedHtml;
+
+    wymeditor.html(startHtml);
+    $body = $(wymeditor._doc).find('body.wym_iframe');
+    actionLi = $body.find('#li_2_2')[0];
+
+    wymeditor.correctInvalidListNesting(actionLi);
+    htmlEquals(wymeditor, expectedHtml);
+});
 
 test("Invalid nesting outdent", function () {
     expect(10);
@@ -865,6 +964,16 @@ test("Invalid nesting outdent", function () {
     // Via Text selection
     testListRoundTrip('li_2_2', 'outdent', invalidNestingHtml, li_2_2_outdentInvalidNestingHtml, true);
     testListRoundTrip('li_2_2', 'indent', li_2_2_outdentInvalidNestingHtml, invalidNestingHtml, true);
+});
+test("Invalid unwrapped text outdent", function () {
+    expect(10);
+
+    testListRoundTrip('li_4', 'outdent', invalidNestingHtml, li_4_outdentInvalidNestingHtml);
+    testListRoundTrip('li_4', 'indent', li_4_outdentInvalidNestingHtml, invalidNestingHtml);
+
+    // Via Text selection
+    testListRoundTrip('li_4', 'outdent', invalidNestingHtml, li_4_outdentInvalidNestingHtml, true);
+    testListRoundTrip('li_4', 'indent', li_4_outdentInvalidNestingHtml, invalidNestingHtml, true);
 });
 
 module("list-multi_selection", {setup: setupWym});

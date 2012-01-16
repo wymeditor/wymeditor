@@ -1,4 +1,4 @@
-/*jslint evil: true */
+/*jslint evil: true, continue:true*/
 
 /**
     WYMeditor.editor.init
@@ -1413,7 +1413,7 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
     }
     if (!$liToOutdent.parent().parent().is('li')) {
         // We have invalid list nesting and we need to fix that
-        WYMeditor.console.error('invalid list nesting');
+        WYMeditor.console.log('invalid list nesting:');
         WYMeditor.console.log($liToOutdent.parent().parent()[0].innerHTML);
     }
 
@@ -1428,6 +1428,7 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
     // Invalid HTML could cause this selector to fail, which breaks our logic.
     // Bail out rather than possibly losing content
     if ($parentLi.length === 0) {
+        WYMeditor.console.error('Invalid list. No parentLi found, so aborting outdent');
         return;
     }
     $parentList = $liToOutdent.parent();
@@ -1488,6 +1489,150 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
     if ($parentLi.contents().length === 0) {
         $parentLi.remove();
     }
+};
+
+/**
+    editor.correctInvalidListNesting
+    ================================
+
+    Take an li/ol/ul and correct any list nesting issues in the entire list
+    tree.
+
+    Corrected lists have the following properties:
+    1. ol and ul nodes *only* allow li children.
+    2. All li nodes have either an ol or ul parent.
+ */
+WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem) {
+    // Travel up the dom until we're at the root ol/ul/li
+    var currentNode = listItem,
+        parentNode,
+        tagName;
+    while (currentNode.parentNode) {
+        parentNode = currentNode.parentNode;
+        if (parentNode.nodeType !== WYMeditor.NODE.ELEMENT) {
+            // Our parent is outside a valid list structure. Stop at this node.
+            break;
+        }
+        tagName = parentNode.tagName.toLowerCase();
+        if (tagName !== 'ol' && tagName !== 'ul' && tagName !== 'li') {
+            // Our parent is outside a valid list structure. Stop at this node.
+            break;
+
+        }
+        // We're still traversing up a list structure. Keep going
+        currentNode = parentNode;
+    }
+    if (!currentNode || currentNode.nodeType !== WYMeditor.NODE.ELEMENT
+            || (currentNode.tagName.toLowerCase() !== 'ol'
+                && currentNode.tagName.toLowerCase() !== 'ul')) {
+        WYMeditor.console.error("Can't correct invalid list nesting. No root list found");
+        return;
+    }
+    return this._correctInvalidListNesting(currentNode);
+};
+
+/**
+    editor._correctInvalidListNesting
+    ================================
+
+    This is the function that actually does the list correction.
+    correctInvalidListNesting is just a helper function that first finds the root
+    of the list.
+
+    We use a reverse preorder traversal to navigate the DOM because we might be:
+
+    * Making nodes children of their previous sibling (in the <ol><li></li><ol>...</ol></ol> case)
+    * Adding nodes at the current level (wrapping any non-li node inside a ul/ol in a new li node)
+
+    Adapted from code at: Tavs Dokkedahl from
+    http://www.jslab.dk/articles/non.recursive.preorder.traversal.part3
+ */
+WYMeditor.editor.prototype._correctInvalidListNesting = function (listNode) {
+    var rootNode = listNode,
+        currentNode = listNode,
+        previousSibling,
+        previousLi,
+        $currentNode,
+        tagName,
+        spacerHtml = '<li class="spacer_li"></li>';
+
+    while (currentNode) {
+        if (currentNode._wym_visited) {
+            // This node has already been visited.
+            // Remove mark for visited nodes
+            currentNode._wym_visited = false;
+            // Once we reach the root element again traversal
+            // is done and we can break
+            if (currentNode === rootNode) {
+                break;
+            }
+            if (currentNode.previousSibling) {
+                currentNode = currentNode.previousSibling;
+            } else {
+                currentNode = currentNode.parentNode;
+            }
+        } else {
+            // This is the first visit for this node
+
+            // Any nodes that aren't li/ol/ul need to be wrapped in an li
+            if (!this._isListStructureNode(currentNode)) {
+                // We have a textNode or a list content (not structure) node.
+                // Ensure that we have an li ancestor before we have any ol/ul
+                // ancestors
+                // TODO: If we hit an ol/ul first, wrap this and any previous
+                // non-li siblings in a new li
+                WYMeditor.console.log("Fixing orphaned list content");
+            }
+
+            // If this ol/ul doesn't have an li parent, give it one
+            if (currentNode !== rootNode && currentNode.nodeType === WYMeditor.NODE.ELEMENT) {
+                // This is a non-root dom node
+                $currentNode = $(currentNode);
+                if ($currentNode.is('ol,ul') && $currentNode.parent('li').length === 0) {
+                    // This list doesn't have an li parent. Give it one.
+                    previousSibling = currentNode.previousSibling;
+                    if (previousSibling && previousSibling.nodeType === WYMeditor.NODE.ELEMENT
+                            && previousSibling.tagName.toLowerCase() === 'li') {
+                        // We have a previous li in which to place our node
+                        previousLi = previousSibling;
+                    } else {
+                        // We need to add a spacer li in which to place our node
+                        $currentNode.before(spacerHtml);
+                        previousLi = $currentNode.prev()[0];
+                    }
+                    // Put our node in the previousLi
+                    $(previousLi).append($currentNode);
+                }
+            }
+
+            if (currentNode.lastChild) {
+                // Since we have childnodes, mark this as visited because
+                // we'll return later
+                currentNode._wym_visited = true;
+                currentNode = currentNode.lastChild;
+            } else if (currentNode.previousSibling) {
+                currentNode = currentNode.previousSibling;
+            } else {
+                currentNode = currentNode.parentNode;
+            }
+        }
+    }
+
+};
+
+/**
+    editor._isListStructureNode
+    ===========================
+
+    Is this node part of a list structure (eg. either an li, ol, or ul node)?
+*/
+WYMeditor.editor.prototype._isListStructureNode = function (node) {
+    if (node.nodeType === WYMeditor.NODE.TEXT
+            || (currentNode.nodeType === WYMeditor.NODE.ELEMENT
+                    && !$(currentNode).is('ol,ul,li'))) {
+        return false;
+    }
+    return true;
 };
 
 /**
