@@ -829,23 +829,59 @@ test("Two same-level sublist last outdent", function () {
 
 module("list-invalid_nesting", {setup: setupWym});
 
-var invalidNestingHtml = String() +
+var invalidNestingNoPreviousHtml = String() +
         '<ol>' +
-            '<li id="li_2">2</li>' +
+            '<table id="table_1"><tr><td>td_1_1</td></tr></table>' +
             '<ul>' +
                 '<li id="li_2_1">2_1' +
                     '<ul>' +
                         '<li id="li_2_1_2">2_1_2</li>' +
                     '</ul>' +
+                    'after2_1' +
                 '</li>' +
                 '<li id="li_2_2">2_2</li>' +
+                'after2_2' +
             '</ul>' +
             'text_3' +
             '<li id="li_4">4</li>' +
             'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
+            '<li id="li_6">6</li>' +
+            '<table id="table_7"><tr><td>td_7_1</td></tr></table>' +
+            '<ol>' +
+                '<li id="li_8">8</li>' +
+            '</ol>' +
         '</ol>';
-var invalidNestingNoPreviousHtml = String() +
+var invalidNestingNoPreviousCorrectedHtml = String() +
         '<ol>' +
+            '<li class="spacer_li">' +
+                '<table id="table_1"><tr><td>td_1_1</td></tr></table>' +
+                '<ul>' +
+                    '<li id="li_2_1">2_1' +
+                        '<ul>' +
+                            '<li id="li_2_1_2">2_1_2</li>' +
+                        '</ul>' +
+                        'after2_1' +
+                    '</li>' +
+                    '<li id="li_2_2">2_2<br />' +
+                        'after2_2' +
+                    '</li>' +
+                '</ul>' +
+                'text_3' +
+            '</li>' +
+            '<li id="li_4">4<br />' +
+                'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
+            '</li>' +
+            '<li id="li_6">6' +
+                '<table id="table_7"><tr><td>td_7_1</td></tr></table>' +
+                '<ol>' +
+                    '<li id="li_8">8</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>';
+
+var invalidNestingHtml = String() +
+        '<ol>' +
+            '<li id="li_2">2</li>' +
             '<ul>' +
                 '<li id="li_2_1">2_1' +
                     '<ul>' +
@@ -869,26 +905,11 @@ var invalidNestingCorrectedHtml = String() +
                     '</li>' +
                     '<li id="li_2_2">2_2</li>' +
                 '</ul>' +
+                'text_3' +
             '</li>' +
-            '<li>text_3</li>' +
-            '<li id="li_4">4</li>' +
-            '<li>text_5_1<span id="span_5_2">5_2</span>text_5_3</li>' +
-        '</ol>';
-var invalidNestingNoPreviousCorrectedHtml = String() +
-        '<ol>' +
-            '<li class="spacer_li">' +
-                '<ul>' +
-                    '<li id="li_2_1">2_1' +
-                        '<ul>' +
-                            '<li id="li_2_1_2">2_1_2</li>' +
-                        '</ul>' +
-                    '</li>' +
-                    '<li id="li_2_2">2_2</li>' +
-                '</ul>' +
+            '<li id="li_4">4<br >' +
+                'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
             '</li>' +
-            '<li>text_3</li>' +
-            '<li id="li_4">4</li>' +
-            '<li>text_5_1<span id="span_5_2">5_2</span>text_5_3</li>' +
         '</ol>';
 var li_2_2_outdentInvalidNestingHtml = String() +
         '<ol>' +
@@ -903,8 +924,9 @@ var li_2_2_outdentInvalidNestingHtml = String() +
             '</li>' +
             '<li id="li_2_2">2_2</li>' +
             '<li>text_3</li>' +
-            '<li id="li_4">4</li>' +
-            '<li>text_5_1<span id="span_5_2">5_2</span>text_5_3</li>' +
+            '<li id="li_4">4<br >' +
+                'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
+            '</li>' +
         '</ol>';
 
 var li_4_outdentInvalidNestingHtml = String() +
@@ -922,13 +944,15 @@ var li_4_outdentInvalidNestingHtml = String() +
             '<li>text_3</li>' +
             '<li class="spacer_li">' +
                 '<ol>' +
-                    '<li id="li_4">4</li>' +
+                    '<li id="li_4">4<br >' +
+                        'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
+                    '</li>' +
                 '</ol>' +
             '</li>' +
-            '<li>text_5_1<span id="span_5_2">5_2</span>text_5_3</li>' +
         '</ol>';
-test("Invalid nesting correction", function () {
-    expect(2);
+
+test("Invalid nesting correction no spacer", function () {
+    expect(1);
 
     var wymeditor = jQuery.wymeditors(0),
         $body,
@@ -942,10 +966,15 @@ test("Invalid nesting correction", function () {
 
     wymeditor.correctInvalidListNesting(actionLi);
     htmlEquals(wymeditor, expectedHtml);
+});
+test("Invalid nesting correction requiring spacer", function () {
+    expect(1);
 
-    // No previous li to join
-    startHtml = invalidNestingNoPreviousHtml;
-    expectedHtml = invalidNestingNoPreviousCorrectedHtml;
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        actionLi,
+        startHtml = invalidNestingNoPreviousHtml,
+        expectedHtml = invalidNestingNoPreviousCorrectedHtml;
 
     wymeditor.html(startHtml);
     $body = $(wymeditor._doc).find('body.wym_iframe');
@@ -954,7 +983,6 @@ test("Invalid nesting correction", function () {
     wymeditor.correctInvalidListNesting(actionLi);
     htmlEquals(wymeditor, expectedHtml);
 });
-
 test("Invalid nesting outdent", function () {
     expect(10);
 

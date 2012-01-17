@@ -1522,9 +1522,7 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem) {
         // We're still traversing up a list structure. Keep going
         currentNode = parentNode;
     }
-    if (!currentNode || currentNode.nodeType !== WYMeditor.NODE.ELEMENT
-            || (currentNode.tagName.toLowerCase() !== 'ol'
-                && currentNode.tagName.toLowerCase() !== 'ul')) {
+    if (!$(currentNode).is('ol,ul')) {
         WYMeditor.console.error("Can't correct invalid list nesting. No root list found");
         return;
     }
@@ -1554,6 +1552,10 @@ WYMeditor.editor.prototype._correctInvalidListNesting = function (listNode) {
         previousLi,
         $currentNode,
         tagName,
+        ancestorNode,
+        nodesToMove,
+        targetLi,
+        lastContentNode,
         spacerHtml = '<li class="spacer_li"></li>';
 
     while (currentNode) {
@@ -1574,34 +1576,99 @@ WYMeditor.editor.prototype._correctInvalidListNesting = function (listNode) {
         } else {
             // This is the first visit for this node
 
-            // Any nodes that aren't li/ol/ul need to be wrapped in an li
-            if (!this._isListStructureNode(currentNode)) {
-                // We have a textNode or a list content (not structure) node.
+            // All non-li nodes must have an
+            // ancestor li node that's closer than any ol/ul ancestor node.
+            // Basically, everything needs to be inside an li node.
+            if (currentNode !== rootNode && !$(currentNode).is('li')) {
+                // We have a non-li node.
                 // Ensure that we have an li ancestor before we have any ol/ul
                 // ancestors
-                // TODO: If we hit an ol/ul first, wrap this and any previous
-                // non-li siblings in a new li
-                WYMeditor.console.log("Fixing orphaned list content");
-            }
 
-            // If this ol/ul doesn't have an li parent, give it one
-            if (currentNode !== rootNode && currentNode.nodeType === WYMeditor.NODE.ELEMENT) {
-                // This is a non-root dom node
-                $currentNode = $(currentNode);
-                if ($currentNode.is('ol,ul') && $currentNode.parent('li').length === 0) {
-                    // This list doesn't have an li parent. Give it one.
-                    previousSibling = currentNode.previousSibling;
-                    if (previousSibling && previousSibling.nodeType === WYMeditor.NODE.ELEMENT
-                            && previousSibling.tagName.toLowerCase() === 'li') {
-                        // We have a previous li in which to place our node
-                        previousLi = previousSibling;
-                    } else {
-                        // We need to add a spacer li in which to place our node
-                        $currentNode.before(spacerHtml);
-                        previousLi = $currentNode.prev()[0];
+                ancestorNode = currentNode;
+                while (ancestorNode.parentNode) {
+                    ancestorNode = ancestorNode.parentNode;
+                    if ($(ancestorNode).is('li')) {
+                        // Everything is ok. Hit an li before a ol/ul
+                        break;
                     }
-                    // Put our node in the previousLi
-                    $(previousLi).append($currentNode);
+
+                    if (ancestorNode.nodeType !== WYMeditor.NODE.ELEMENT) {
+                        // Our parent is outside a valid list structure. Stop at this node.
+                        break;
+                    }
+                    tagName = ancestorNode.tagName.toLowerCase();
+                    if (tagName === 'ol' || tagName === 'ul') {
+                        // We've hit a list container before any list item.
+                        // This isn't valid html and causes editing problems.
+                        //
+                        // Convert the list to a valid structure that closely
+                        // mimics the layout and behavior of invalidly nested
+                        // content inside a list. The browser treats the
+                        // content similar to how it would treat that same
+                        // content separated by a <br /> within its previous
+                        // sibling list item, so recreate that structure.
+                        //
+                        // The algorithm for performing this is basically:
+                        // 1. Gather this and any previous siblings up until the
+                        // previous li (if one exists) as content to move.
+                        // 2. If we don't have any previous or subsequent li
+                        // sibling, create a spacer li in which to insert all
+                        // the gathered content.
+                        // 3. Move all of the content to the previous li or the
+                        // subsequent li (in that priority).
+                        WYMeditor.console.log("Fixing orphaned list content");
+
+                        // Gather this and previous sibling until the previous li
+                        nodesToMove = [currentNode];
+                        previousSibling = currentNode;
+                        targetLi = null;
+                        while (previousSibling.previousSibling) {
+                            previousSibling = previousSibling.previousSibling;
+                            if ($(previousSibling).is('li')) {
+                                targetLi = previousSibling;
+                                // We hit an li. Store it as the target in
+                                // which to move the nodes
+                                break;
+                            }
+                            nodesToMove.push(previousSibling);
+                        }
+
+                        // We have our nodes ordered right to left and we need
+                        // them left to right
+                        nodesToMove.reverse();
+
+                        // If there are no previous siblings, we can join the next li instead
+                        if (!targetLi && nodesToMove.length === 1) {
+                            if ($(currentNode.nextSibling).is('li')) {
+                                targetLi = currentNode.nextSibling;
+                            }
+                        }
+
+                        // If we still don't have an li in which to move, we
+                        // need to create a spacer li
+                        if (!targetLi) {
+                            $(nodesToMove[0]).before(spacerHtml);
+                            targetLi = $(nodesToMove[0]).prev()[0];
+                        }
+
+                        // Move all of our content inside the li we've chosen
+                        // If the last content node inside the target li is
+                        // text and so is the first content node to move, separate them
+                        // with a <br /> to preserve the visual layout of them
+                        // being on separate lines
+                        lastContentNode = $(targetLi).contents().last();
+                        if (lastContentNode.length === 1
+                                && lastContentNode[0].nodeType === WYMeditor.NODE.TEXT) {
+                            if (nodesToMove[0].nodeType === WYMeditor.NODE.TEXT) {
+                                $(targetLi).append('<br />');
+                            }
+                        }
+                        $(targetLi).append($(nodesToMove));
+
+                        break;
+
+                    }
+                    // We're still traversing up a list structure. Keep going
                 }
             }
 
@@ -1618,21 +1685,6 @@ WYMeditor.editor.prototype._correctInvalidListNesting = function (listNode) {
         }
     }
 
-};
-
-/**
-    editor._isListStructureNode
-    ===========================
-
-    Is this node part of a list structure (eg. either an li, ol, or ul node)?
-*/
-WYMeditor.editor.prototype._isListStructureNode = function (node) {
-    if (node.nodeType === WYMeditor.NODE.TEXT
-            || (currentNode.nodeType === WYMeditor.NODE.ELEMENT
-                    && !$(currentNode).is('ol,ul,li'))) {
-        return false;
-    }
-    return true;
 };
 
 /**
