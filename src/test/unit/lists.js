@@ -740,6 +740,94 @@ test("Double overhang with different list type indent/outdent", function () {
     testListRoundTrip('li_3', 'outdent', li_3_overhungHtml, overhungListHtml, true);
 });
 
+var textContentAfterSublistHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1' +
+                '<ul>' +
+                    '<li id="li_1_1">1_1</li>' +
+                    '<li id="li_1_2">1_2</li>' +
+                '</ul>' +
+                '1_3_content' +
+            '</li>' +
+            '<li id="li_2">2</li>' +
+        '</ol>';
+var li_1_2_outdentedTextContentAfterSublistHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1' +
+                '<ul>' +
+                    '<li id="li_1_1">1_1</li>' +
+                '</ul>' +
+            '</li>' +
+            '<li id="li_1_2">1_2<br />' +
+                '1_3_content' +
+            '</li>' +
+            '<li id="li_2">2</li>' +
+        '</ol>';
+test("Content after sublist text indent/outdent", function () {
+    expect(3);
+
+    // Not round-trippable
+    testList(
+        'li_1_2',
+        'outdent',
+        textContentAfterSublistHtml,
+        li_1_2_outdentedTextContentAfterSublistHtml
+    );
+
+    // Via Text selection
+    testList(
+        'li_1_2',
+        'outdent',
+        textContentAfterSublistHtml,
+        li_1_2_outdentedTextContentAfterSublistHtml,
+        true
+    );
+});
+var nodeContentAfterSublistHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1' +
+                '<ul>' +
+                    '<li id="li_1_1">1_1</li>' +
+                    '<li id="li_1_2">1_2</li>' +
+                '</ul>' +
+                '<table><tr><td>td_1_3</td></tr></table>' +
+            '</li>' +
+            '<li id="li_2">2</li>' +
+        '</ol>';
+var li_1_2_outdentedNodeContentAfterSublistHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1' +
+                '<ul>' +
+                    '<li id="li_1_1">1_1</li>' +
+                '</ul>' +
+            '</li>' +
+            '<li id="li_1_2">1_2' +
+                '<table><tr><td>td_1_3</td></tr></table>' +
+            '</li>' +
+            '<li id="li_2">2</li>' +
+        '</ol>';
+test("Content after sublist node indent/outdent", function () {
+    expect(3);
+
+    // Not round-trippable
+    testList(
+        'li_1_2',
+        'outdent',
+        nodeContentAfterSublistHtml,
+        li_1_2_outdentedNodeContentAfterSublistHtml
+    );
+
+    // Via Text selection
+    testList(
+        'li_1_2',
+        'outdent',
+        nodeContentAfterSublistHtml,
+        li_1_2_outdentedNodeContentAfterSublistHtml,
+        true
+    );
+});
+
+
 module("list-content_reordering", {setup: setupWym});
 
 var doubleSublistHtml = String() +
@@ -920,16 +1008,16 @@ var li_2_2_outdentInvalidNestingHtml = String() +
                             '<li id="li_2_1_2">2_1_2</li>' +
                         '</ul>' +
                     '</li>' +
+                    '<li id="li_2_2">2_2</li>' +
                 '</ul>' +
+                'text_3' +
             '</li>' +
-            '<li id="li_2_2">2_2</li>' +
-            '<li>text_3</li>' +
             '<li id="li_4">4<br >' +
                 'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
             '</li>' +
         '</ol>';
 
-var li_4_outdentInvalidNestingHtml = String() +
+var span_5_2_indentedCorrectedNestingHtml = String() +
         '<ol>' +
             '<li id="li_2">2' +
                 '<ul>' +
@@ -940,13 +1028,29 @@ var li_4_outdentInvalidNestingHtml = String() +
                     '</li>' +
                     '<li id="li_2_2">2_2</li>' +
                 '</ul>' +
-            '</li>' +
-            '<li>text_3</li>' +
-            '<li class="spacer_li">' +
+                'text_3' +
                 '<ol>' +
                     '<li id="li_4">4<br >' +
                         'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
                     '</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>';
+var span_5_2_indentedUncorrectedNestingHtml = String() +
+        '<ol>' +
+            '<li id="li_2">2' +
+                '<ul>' +
+                    '<li id="li_2_1">2_1' +
+                        '<ul>' +
+                            '<li id="li_2_1_2">2_1_2</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_2_2">2_2</li>' +
+                '</ul>' +
+                'text_3' +
+                '<ol>' +
+                    '<li id="li_4">4</li>' +
+                    'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
                 '</ol>' +
             '</li>' +
         '</ol>';
@@ -983,6 +1087,14 @@ test("Invalid nesting correction requiring spacer", function () {
     wymeditor.correctInvalidListNesting(actionLi);
     htmlEquals(wymeditor, expectedHtml);
 });
+test("Invalid nesting can't re-arrange via content after sublist", function () {
+    expect(5);
+
+    testListRoundTrip('li_2_1', 'outdent', invalidNestingHtml, invalidNestingCorrectedHtml);
+
+    // Via Text selection
+    testListRoundTrip('li_2_1', 'outdent', invalidNestingHtml, invalidNestingCorrectedHtml, true);
+});
 test("Invalid nesting outdent", function () {
     expect(10);
 
@@ -993,15 +1105,32 @@ test("Invalid nesting outdent", function () {
     testListRoundTrip('li_2_2', 'outdent', invalidNestingHtml, li_2_2_outdentInvalidNestingHtml, true);
     testListRoundTrip('li_2_2', 'indent', li_2_2_outdentInvalidNestingHtml, invalidNestingHtml, true);
 });
-test("Invalid unwrapped text outdent", function () {
+test("Invalid unwrapped text indent", function () {
     expect(10);
 
-    testListRoundTrip('li_4', 'outdent', invalidNestingHtml, li_4_outdentInvalidNestingHtml);
-    testListRoundTrip('li_4', 'indent', li_4_outdentInvalidNestingHtml, invalidNestingHtml);
+    testListRoundTrip('span_5_2', 'indent', invalidNestingHtml, span_5_2_indentedCorrectedNestingHtml);
+    testListRoundTrip(
+        'span_5_2',
+        'outdent',
+        span_5_2_indentedCorrectedNestingHtml,
+        invalidNestingCorrectedHtml
+    );
 
     // Via Text selection
-    testListRoundTrip('li_4', 'outdent', invalidNestingHtml, li_4_outdentInvalidNestingHtml, true);
-    testListRoundTrip('li_4', 'indent', li_4_outdentInvalidNestingHtml, invalidNestingHtml, true);
+    testListRoundTrip(
+        'span_5_2',
+        'indent',
+        invalidNestingHtml,
+        span_5_2_indentedCorrectedNestingHtml,
+        true
+    );
+    testListRoundTrip(
+        'span_5_2',
+        'outdent',
+        span_5_2_indentedCorrectedNestingHtml,
+        invalidNestingCorrectedHtml,
+        true
+    );
 });
 
 module("list-multi_selection", {setup: setupWym});

@@ -1413,8 +1413,10 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
     }
     if (!$liToOutdent.parent().parent().is('li')) {
         // We have invalid list nesting and we need to fix that
-        WYMeditor.console.log('invalid list nesting:');
-        WYMeditor.console.log($liToOutdent.parent().parent()[0].innerHTML);
+        WYMeditor.console.log(
+            'Attempting to fix invalid list nesting before outdenting.'
+        );
+        wym.correctInvalidListNesting(listItem);
     }
 
     // Separate out the contents into things that should stay with the li as it
@@ -1850,6 +1852,9 @@ WYMeditor.editor.prototype.indent = function () {
         rootList,
         manipulationFunc;
 
+    // First, make sure this list is properly structured
+    wym.correctInvalidListNesting(this.container());
+
     listItems = wym._getSelectedListItems(sel);
 
     if (listItems.length === 0) {
@@ -1887,6 +1892,9 @@ WYMeditor.editor.prototype.outdent = function () {
         listItems,
         rootList,
         manipulationFunc;
+
+    // First, make sure this list is properly structured
+    wym.correctInvalidListNesting(this.container());
 
     listItems = wym._getSelectedListItems(sel);
 
