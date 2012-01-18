@@ -1,4 +1,4 @@
-/*jslint evil: true, continue:true*/
+/*jshint evil: true */
 
 /**
     WYMeditor.editor.init
@@ -62,7 +62,7 @@ WYMeditor.editor.prototype.init = function () {
     // We're not using jQuery.extend because we *want* to copy properties via
     // the prototype chain
     for (prop in WymClass) {
-        /*jslint forin: true */
+        /*jslint forin: false*/
         // Explicitly not using hasOwnProperty for the inheritance here
         // because we want to go up the prototype chain to get all of the
         // browser-specific editor methods. This is kind of a code smell,
@@ -71,11 +71,7 @@ WYMeditor.editor.prototype.init = function () {
     }
 
     // Load wymbox
-    this._box = jQuery(this._element).
-        hide().
-        after(this._options.boxHtml).
-        next().
-        addClass('wym_box_' + this._index);
+    this._box = jQuery(this._element).hide().after(this._options.boxHtml).next().addClass('wym_box_' + this._index);
 
     // Store the instance index and replaced element in wymbox
     // but keep it compatible with jQuery < 1.2.3, see #122
@@ -1480,6 +1476,16 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
     if ($subsequentParentListSiblingContent.length > 0) {
         // Move the subsequent content in to a new list item after our parent li
         $subsequentParentListSiblingContent.detach();
+
+        // If our last content and the first content in the subsequent content
+        // are both text nodes, insert a <br /> spacer to avoid crunching the
+        // text together visually. This maintains the same "visual" structure.
+        if ($liToOutdent.contents().length > 0
+                && $liToOutdent.contents().last()[0].nodeType === WYMeditor.NODE.TEXT
+                && $subsequentParentListSiblingContent[0].nodeType === WYMeditor.NODE.TEXT) {
+            $liToOutdent.append('<br />');
+        }
+
         $liToOutdent.append($subsequentParentListSiblingContent);
     }
 
@@ -1509,6 +1515,9 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem) {
     var currentNode = listItem,
         parentNode,
         tagName;
+    if (!currentNode) {
+        return;
+    }
     while (currentNode.parentNode) {
         parentNode = currentNode.parentNode;
         if (parentNode.nodeType !== WYMeditor.NODE.ELEMENT) {
@@ -1741,6 +1750,7 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
         liNodes = [],
         containsNodeTextFilter,
         parentsToAdd,
+        node,
         $node,
         $maybeParentLi;
 
@@ -1805,11 +1815,15 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
             // selecting that entire li
             parentsToAdd = [];
             for (j = 0; j < nodes.length; j++) {
-                $node = $(nodes[j]);
-                if (!$node.is('li,ol,ul')) {
-                    $maybeParentLi = $node.parent().filter('li');
-                    if ($maybeParentLi.length > 0) {
-                        parentsToAdd.push($maybeParentLi.get(0));
+                node = nodes[j];
+                if (!$(node).is('li,ol,ul')) {
+                    // Crawl up the dom until we find an li
+                    while (node.parentNode) {
+                        node = node.parentNode;
+                        if ($(node).is('li')) {
+                            parentsToAdd.push(node);
+                            break;
+                        }
                     }
                 }
             }
@@ -1853,8 +1867,19 @@ WYMeditor.editor.prototype.indent = function () {
         manipulationFunc;
 
     // First, make sure this list is properly structured
-    wym.correctInvalidListNesting(this.container());
+    manipulationFunc = function () {
+        var selectedBlock = wym.selected(),
+            potentialListBlock = wym.findUp(
+                selectedBlock,
+                ['ol', 'ul', 'li']
+            );
+        wym.correctInvalidListNesting(potentialListBlock);
+        return true;
+    };
+    wym.restoreSelectionAfterManipulation(manipulationFunc);
 
+    // Gather the li nodes the user means to affect based on their current
+    // selection
     listItems = wym._getSelectedListItems(sel);
 
     if (listItems.length === 0) {
@@ -1894,8 +1919,19 @@ WYMeditor.editor.prototype.outdent = function () {
         manipulationFunc;
 
     // First, make sure this list is properly structured
-    wym.correctInvalidListNesting(this.container());
+    manipulationFunc = function () {
+        var selectedBlock = wym.selected(),
+            potentialListBlock = wym.findUp(
+                selectedBlock,
+                ['ol', 'ul', 'li']
+            );
+        wym.correctInvalidListNesting(potentialListBlock);
+        return true;
+    };
+    wym.restoreSelectionAfterManipulation(manipulationFunc);
 
+    // Gather the li nodes the user means to affect based on their current
+    // selection
     listItems = wym._getSelectedListItems(sel);
 
     if (listItems.length === 0) {
@@ -1946,6 +1982,8 @@ WYMeditor.editor.prototype.restoreSelectionAfterManipulation = function (manipul
             rangy.removeMarkers(savedSelection);
         }
     } catch (e) {
+        WYMeditor.console.error("Error during manipulation");
+        WYMeditor.console.error(e);
         rangy.removeMarkers(savedSelection);
     }
 };

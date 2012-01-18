@@ -827,6 +827,76 @@ test("Content after sublist node indent/outdent", function () {
     );
 });
 
+var spanInSublistHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1' +
+                '<ul>' +
+                    '<li id="li_1_1">1_1' +
+                        '<ul>' +
+                            '<li id="li_1_1_2">1_1_2</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_1_2">1_2</li>' +
+                '</ul>' +
+                'text_2' +
+            '</li>' +
+            '<li id="li_3">3<br >' +
+                'text_3_1<span id="span_3_2">3_2</span>text_3_3' +
+            '</li>' +
+        '</ol>';
+
+var span_3_2_indentedSpanInSublistHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1' +
+                '<ul>' +
+                    '<li id="li_1_1">1_1' +
+                        '<ul>' +
+                            '<li id="li_1_1_2">1_1_2</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_1_2">1_2</li>' +
+                '</ul>' +
+                'text_2' +
+                '<ol>' +
+                    '<li id="li_3">3<br >' +
+                        'text_3_1<span id="span_3_2">3_2</span>text_3_3' +
+                    '</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>';
+test("Span in sublist indent/outdent", function () {
+    expect(10);
+
+    testListRoundTrip(
+        'span_3_2',
+        'indent',
+        spanInSublistHtml,
+        span_3_2_indentedSpanInSublistHtml
+    );
+    testListRoundTrip(
+        'span_3_2',
+        'outdent',
+        span_3_2_indentedSpanInSublistHtml,
+        spanInSublistHtml
+    );
+
+    // Via Text selection
+    testListRoundTrip(
+        'span_3_2',
+        'indent',
+        spanInSublistHtml,
+        span_3_2_indentedSpanInSublistHtml,
+        true
+    );
+    testListRoundTrip(
+        'span_3_2',
+        'outdent',
+        span_3_2_indentedSpanInSublistHtml,
+        spanInSublistHtml,
+        true
+    );
+});
+
 
 module("list-content_reordering", {setup: setupWym});
 
@@ -1008,8 +1078,9 @@ var li_2_2_outdentInvalidNestingHtml = String() +
                             '<li id="li_2_1_2">2_1_2</li>' +
                         '</ul>' +
                     '</li>' +
-                    '<li id="li_2_2">2_2</li>' +
                 '</ul>' +
+            '</li>' +
+            '<li id="li_2_2">2_2<br />' +
                 'text_3' +
             '</li>' +
             '<li id="li_4">4<br >' +
@@ -1017,7 +1088,7 @@ var li_2_2_outdentInvalidNestingHtml = String() +
             '</li>' +
         '</ol>';
 
-var span_5_2_indentedCorrectedNestingHtml = String() +
+var span_5_2_indentedInvalidNestingHtml = String() +
         '<ol>' +
             '<li id="li_2">2' +
                 '<ul>' +
@@ -1033,24 +1104,6 @@ var span_5_2_indentedCorrectedNestingHtml = String() +
                     '<li id="li_4">4<br >' +
                         'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
                     '</li>' +
-                '</ol>' +
-            '</li>' +
-        '</ol>';
-var span_5_2_indentedUncorrectedNestingHtml = String() +
-        '<ol>' +
-            '<li id="li_2">2' +
-                '<ul>' +
-                    '<li id="li_2_1">2_1' +
-                        '<ul>' +
-                            '<li id="li_2_1_2">2_1_2</li>' +
-                        '</ul>' +
-                    '</li>' +
-                    '<li id="li_2_2">2_2</li>' +
-                '</ul>' +
-                'text_3' +
-                '<ol>' +
-                    '<li id="li_4">4</li>' +
-                    'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
                 '</ol>' +
             '</li>' +
         '</ol>';
@@ -1087,47 +1140,40 @@ test("Invalid nesting correction requiring spacer", function () {
     wymeditor.correctInvalidListNesting(actionLi);
     htmlEquals(wymeditor, expectedHtml);
 });
-test("Invalid nesting can't re-arrange via content after sublist", function () {
-    expect(5);
-
-    testListRoundTrip('li_2_1', 'outdent', invalidNestingHtml, invalidNestingCorrectedHtml);
-
-    // Via Text selection
-    testListRoundTrip('li_2_1', 'outdent', invalidNestingHtml, invalidNestingCorrectedHtml, true);
-});
 test("Invalid nesting outdent", function () {
-    expect(10);
+    expect(3);
 
-    testListRoundTrip('li_2_2', 'outdent', invalidNestingHtml, li_2_2_outdentInvalidNestingHtml);
-    testListRoundTrip('li_2_2', 'indent', li_2_2_outdentInvalidNestingHtml, invalidNestingHtml);
+    // Not round-trippable because of post-sublist content moving li's
+    testList('li_2_2', 'outdent', invalidNestingHtml, li_2_2_outdentInvalidNestingHtml);
 
     // Via Text selection
-    testListRoundTrip('li_2_2', 'outdent', invalidNestingHtml, li_2_2_outdentInvalidNestingHtml, true);
-    testListRoundTrip('li_2_2', 'indent', li_2_2_outdentInvalidNestingHtml, invalidNestingHtml, true);
+    testList('li_2_2', 'outdent', invalidNestingHtml, li_2_2_outdentInvalidNestingHtml, true);
 });
 test("Invalid unwrapped text indent", function () {
-    expect(10);
+    expect(8);
 
-    testListRoundTrip('span_5_2', 'indent', invalidNestingHtml, span_5_2_indentedCorrectedNestingHtml);
+    // Not round-trippable because of initial invalid nesting
+    testList('span_5_2', 'indent', invalidNestingHtml, span_5_2_indentedInvalidNestingHtml);
     testListRoundTrip(
         'span_5_2',
         'outdent',
-        span_5_2_indentedCorrectedNestingHtml,
+        span_5_2_indentedInvalidNestingHtml,
         invalidNestingCorrectedHtml
     );
 
     // Via Text selection
-    testListRoundTrip(
+    // Not round-trippable because of initial invalid nesting
+    testList(
         'span_5_2',
         'indent',
         invalidNestingHtml,
-        span_5_2_indentedCorrectedNestingHtml,
+        span_5_2_indentedInvalidNestingHtml,
         true
     );
     testListRoundTrip(
         'span_5_2',
         'outdent',
-        span_5_2_indentedCorrectedNestingHtml,
+        span_5_2_indentedInvalidNestingHtml,
         invalidNestingCorrectedHtml,
         true
     );
