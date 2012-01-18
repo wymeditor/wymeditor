@@ -740,6 +740,164 @@ test("Double overhang with different list type indent/outdent", function () {
     testListRoundTrip('li_3', 'outdent', li_3_overhungHtml, overhungListHtml, true);
 });
 
+var textContentAfterSublistHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1' +
+                '<ul>' +
+                    '<li id="li_1_1">1_1</li>' +
+                    '<li id="li_1_2">1_2</li>' +
+                '</ul>' +
+                '1_3_content' +
+            '</li>' +
+            '<li id="li_2">2</li>' +
+        '</ol>';
+var li_1_2_outdentedTextContentAfterSublistHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1' +
+                '<ul>' +
+                    '<li id="li_1_1">1_1</li>' +
+                '</ul>' +
+            '</li>' +
+            '<li id="li_1_2">1_2<br />' +
+                '1_3_content' +
+            '</li>' +
+            '<li id="li_2">2</li>' +
+        '</ol>';
+test("Content after sublist text indent/outdent", function () {
+    expect(3);
+
+    // Not round-trippable
+    testList(
+        'li_1_2',
+        'outdent',
+        textContentAfterSublistHtml,
+        li_1_2_outdentedTextContentAfterSublistHtml
+    );
+
+    // Via Text selection
+    testList(
+        'li_1_2',
+        'outdent',
+        textContentAfterSublistHtml,
+        li_1_2_outdentedTextContentAfterSublistHtml,
+        true
+    );
+});
+var nodeContentAfterSublistHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1' +
+                '<ul>' +
+                    '<li id="li_1_1">1_1</li>' +
+                    '<li id="li_1_2">1_2</li>' +
+                '</ul>' +
+                '<table><tr><td>td_1_3</td></tr></table>' +
+            '</li>' +
+            '<li id="li_2">2</li>' +
+        '</ol>';
+var li_1_2_outdentedNodeContentAfterSublistHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1' +
+                '<ul>' +
+                    '<li id="li_1_1">1_1</li>' +
+                '</ul>' +
+            '</li>' +
+            '<li id="li_1_2">1_2' +
+                '<table><tr><td>td_1_3</td></tr></table>' +
+            '</li>' +
+            '<li id="li_2">2</li>' +
+        '</ol>';
+test("Content after sublist node indent/outdent", function () {
+    expect(3);
+
+    // Not round-trippable
+    testList(
+        'li_1_2',
+        'outdent',
+        nodeContentAfterSublistHtml,
+        li_1_2_outdentedNodeContentAfterSublistHtml
+    );
+
+    // Via Text selection
+    testList(
+        'li_1_2',
+        'outdent',
+        nodeContentAfterSublistHtml,
+        li_1_2_outdentedNodeContentAfterSublistHtml,
+        true
+    );
+});
+
+var spanInSublistHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1' +
+                '<ul>' +
+                    '<li id="li_1_1">1_1' +
+                        '<ul>' +
+                            '<li id="li_1_1_2">1_1_2</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_1_2">1_2</li>' +
+                '</ul>' +
+                'text_2 ' + // IE really likes this space
+            '</li>' +
+            '<li id="li_3">3<br >' +
+                'text_3_1<span id="span_3_2">3_2</span>text_3_3' +
+            '</li>' +
+        '</ol>';
+
+var span_3_2_indentedSpanInSublistHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1' +
+                '<ul>' +
+                    '<li id="li_1_1">1_1' +
+                        '<ul>' +
+                            '<li id="li_1_1_2">1_1_2</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_1_2">1_2</li>' +
+                '</ul>' +
+                'text_2 ' +
+                '<ol>' +
+                    '<li id="li_3">3<br >' +
+                        'text_3_1<span id="span_3_2">3_2</span>text_3_3' +
+                    '</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>';
+test("Span in sublist indent/outdent", function () {
+    expect(10);
+
+    testListRoundTrip(
+        'span_3_2',
+        'indent',
+        spanInSublistHtml,
+        span_3_2_indentedSpanInSublistHtml
+    );
+    testListRoundTrip(
+        'span_3_2',
+        'outdent',
+        span_3_2_indentedSpanInSublistHtml,
+        spanInSublistHtml
+    );
+
+    // Via Text selection
+    testListRoundTrip(
+        'span_3_2',
+        'indent',
+        spanInSublistHtml,
+        span_3_2_indentedSpanInSublistHtml,
+        true
+    );
+    testListRoundTrip(
+        'span_3_2',
+        'outdent',
+        span_3_2_indentedSpanInSublistHtml,
+        spanInSublistHtml,
+        true
+    );
+});
+
+
 module("list-content_reordering", {setup: setupWym});
 
 var doubleSublistHtml = String() +
@@ -826,6 +984,202 @@ test("Two same-level sublist last outdent", function () {
     testListRoundTrip('li_1_6', 'outdent', doubleSublistHtml, li_1_6_doubleSublistOutdentedHtml, true);
     testListRoundTrip('li_1_6', 'indent', li_1_6_doubleSublistOutdentedHtml, doubleSublistHtml, true);
 });
+
+module("list-invalid_nesting", {setup: setupWym});
+
+var invalidNestingNoPreviousHtml = String() +
+        '<ol>' +
+            '<table id="table_1"><tr><td>td_1_1</td></tr></table>' +
+            '<ul>' +
+                '<li id="li_2_1">2_1' +
+                    '<ul>' +
+                        '<li id="li_2_1_2">2_1_2</li>' +
+                    '</ul>' +
+                    'after2_1' +
+                '</li>' +
+                '<li id="li_2_2">2_2</li>' +
+                'after2_2' +
+            '</ul>' +
+            'text_3' +
+            '<li id="li_4">4</li>' +
+            'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
+            '<li id="li_6">6</li>' +
+            '<table id="table_7"><tr><td>td_7_1</td></tr></table>' +
+            '<ol>' +
+                '<li id="li_8">8</li>' +
+            '</ol>' +
+        '</ol>';
+var invalidNestingNoPreviousCorrectedHtml = String() +
+        '<ol>' +
+            '<li class="spacer_li">' +
+                '<table id="table_1"><tr><td>td_1_1</td></tr></table>' +
+                '<ul>' +
+                    '<li id="li_2_1">2_1' +
+                        '<ul>' +
+                            '<li id="li_2_1_2">2_1_2</li>' +
+                        '</ul>' +
+                        'after2_1' +
+                    '</li>' +
+                    '<li id="li_2_2">2_2<br />' +
+                        'after2_2' +
+                    '</li>' +
+                '</ul>' +
+                'text_3' +
+            '</li>' +
+            '<li id="li_4">4<br />' +
+                'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
+            '</li>' +
+            '<li id="li_6">6' +
+                '<table id="table_7"><tr><td>td_7_1</td></tr></table>' +
+                '<ol>' +
+                    '<li id="li_8">8</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>';
+
+var invalidNestingHtml = String() +
+        '<ol>' +
+            '<li id="li_2">2</li>' +
+            '<ul>' +
+                '<li id="li_2_1">2_1' +
+                    '<ul>' +
+                        '<li id="li_2_1_2">2_1_2</li>' +
+                    '</ul>' +
+                '</li>' +
+                '<li id="li_2_2">2_2</li>' +
+            '</ul>' +
+            'text_3 ' +
+            '<li id="li_4">4</li>' +
+            'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
+        '</ol>';
+var invalidNestingCorrectedHtml = String() +
+        '<ol>' +
+            '<li id="li_2">2' +
+                '<ul>' +
+                    '<li id="li_2_1">2_1' +
+                        '<ul>' +
+                            '<li id="li_2_1_2">2_1_2</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_2_2">2_2</li>' +
+                '</ul>' +
+                'text_3 ' +
+            '</li>' +
+            '<li id="li_4">4<br >' +
+                'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
+            '</li>' +
+        '</ol>';
+var li_2_2_outdentInvalidNestingHtml = String() +
+        '<ol>' +
+            '<li id="li_2">2' +
+                '<ul>' +
+                    '<li id="li_2_1">2_1' +
+                        '<ul>' +
+                            '<li id="li_2_1_2">2_1_2</li>' +
+                        '</ul>' +
+                    '</li>' +
+                '</ul>' +
+            '</li>' +
+            '<li id="li_2_2">2_2<br />' +
+                'text_3 ' +
+            '</li>' +
+            '<li id="li_4">4<br >' +
+                'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
+            '</li>' +
+        '</ol>';
+
+var span_5_2_indentedInvalidNestingHtml = String() +
+        '<ol>' +
+            '<li id="li_2">2' +
+                '<ul>' +
+                    '<li id="li_2_1">2_1' +
+                        '<ul>' +
+                            '<li id="li_2_1_2">2_1_2</li>' +
+                        '</ul>' +
+                    '</li>' +
+                    '<li id="li_2_2">2_2</li>' +
+                '</ul>' +
+                'text_3 ' +
+                '<ol>' +
+                    '<li id="li_4">4<br >' +
+                        'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
+                    '</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>';
+
+test("Invalid nesting correction no spacer", function () {
+    expect(1);
+
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        actionLi,
+        startHtml = invalidNestingHtml,
+        expectedHtml = invalidNestingCorrectedHtml;
+
+    wymeditor.html(startHtml);
+    $body = $(wymeditor._doc).find('body.wym_iframe');
+    actionLi = $body.find('#li_4')[0];
+
+    wymeditor.correctInvalidListNesting(actionLi);
+    htmlEquals(wymeditor, expectedHtml);
+});
+test("Invalid nesting correction requiring spacer", function () {
+    expect(1);
+
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        actionLi,
+        startHtml = invalidNestingNoPreviousHtml,
+        expectedHtml = invalidNestingNoPreviousCorrectedHtml;
+
+    wymeditor.html(startHtml);
+    $body = $(wymeditor._doc).find('body.wym_iframe');
+    actionLi = $body.find('#li_2_2')[0];
+
+    wymeditor.correctInvalidListNesting(actionLi);
+    htmlEquals(wymeditor, expectedHtml);
+});
+test("Invalid nesting outdent", function () {
+    expect(3);
+
+    // Not round-trippable because of post-sublist content moving li's
+    testList('li_2_2', 'outdent', invalidNestingHtml, li_2_2_outdentInvalidNestingHtml);
+
+    // Via Text selection
+    testList('li_2_2', 'outdent', invalidNestingHtml, li_2_2_outdentInvalidNestingHtml, true);
+});
+test("Invalid unwrapped text indent", function () {
+    expect(8);
+
+    // Not round-trippable because of initial invalid nesting
+    testList('span_5_2', 'indent', invalidNestingHtml, span_5_2_indentedInvalidNestingHtml);
+    testListRoundTrip(
+        'span_5_2',
+        'outdent',
+        span_5_2_indentedInvalidNestingHtml,
+        invalidNestingCorrectedHtml
+    );
+
+    // Via Text selection
+    // Not round-trippable because of initial invalid nesting
+    testList(
+        'span_5_2',
+        'indent',
+        invalidNestingHtml,
+        span_5_2_indentedInvalidNestingHtml,
+        true
+    );
+    testListRoundTrip(
+        'span_5_2',
+        'outdent',
+        span_5_2_indentedInvalidNestingHtml,
+        invalidNestingCorrectedHtml,
+        true
+    );
+});
+
+module("list-multi_selection", {setup: setupWym});
 
 var li_2_1_to_li_2_2_indentedHtml = String() +
         '<ol>' +
@@ -1014,8 +1368,6 @@ var li_2_to_li_3_subnodeIndentedHtml = String() +
             '</li>' +
         '</ol>';
 
-
-module("list-multi_selection", {setup: setupWym});
 
 test("Second-level with sub-node", function () {
     expect(4);
@@ -1400,17 +1752,16 @@ module("list-correction", {setup: setupWym});
 test("Should correct invalid list nesting", function () {
     expect(2);
 
-    var wymeditor = jQuery.wymeditors(0);
-
-    var expected = "<ul><li>a<ul><li>a.1<\/li><\/ul><\/li><li>b<\/li><\/ul>";
+    var wymeditor = jQuery.wymeditors(0),
+        expected = "<ul><li>a<ul><li>a.1<\/li><\/ul><\/li><li>b<\/li><\/ul>",
     // FF
-    var invalid_ff_html = "<ul><li>a<\/li><ul><li>a.1<\/li><\/ul><li>b<br><\/li><\/ul>";
+        invalid_ff_html = "<ul><li>a<\/li><ul><li>a.1<\/li><\/ul><li>b<br><\/li><\/ul>",
+        invalid_ie_html = "<UL>\r\n<LI>a<\/LI>\r\n<UL>\r\n<LI>a.1<\/LI><\/UL>\r\n<LI>b<\/LI><\/UL>";
     wymeditor.html(invalid_ff_html);
     htmlEquals(wymeditor, expected);
     // IE
     // IE has invalid sublist nesting
     expected = "<ul>\r\n<li>a<ul>\r\n<li>a.1<\/li><\/ul><\/li>\r\n<li>b<\/li><\/ul>";
-    var invalid_ie_html = "<UL>\r\n<LI>a<\/LI>\r\n<UL>\r\n<LI>a.1<\/LI><\/UL>\r\n<LI>b<\/LI><\/UL>";
     wymeditor.html(invalid_ie_html);
     htmlEquals(wymeditor, expected);
 });
@@ -1418,9 +1769,8 @@ test("Should correct invalid list nesting", function () {
 test("Double indent correction", function () {
     expect(1);
 
-    var wymeditor = jQuery.wymeditors(0);
-
-    var brokenHtml = String() +
+    var wymeditor = jQuery.wymeditors(0),
+        brokenHtml = String() +
             '<ol>' +
                 '<li id="li_1">1' +
                     '<ol>' +
@@ -1429,8 +1779,8 @@ test("Double indent correction", function () {
                         '</ol>' +
                     '</ol>' +
                 '</li>' +
-            '</ol>';
-    var repairedHtml = String() +
+            '</ol>',
+        repairedHtml = String() +
             '<ol>' +
                 '<li id="li_1">1' +
                     '<ol>' +
@@ -1452,15 +1802,17 @@ module("list-tabbing", {setup: setupWym});
 test("Tab key indents", function () {
     expect(2);
 
-    var initHtml = nestedListHtml;
-    var expectedHtml = li_7_indentedHtml;
-    var elmntId = "li_7";
+    var initHtml = nestedListHtml,
+        expectedHtml = li_7_indentedHtml,
+        elmntId = "li_7",
+        $body,
+        actionElement,
 
-    var wymeditor = jQuery.wymeditors(0);
+        wymeditor = jQuery.wymeditors(0);
     wymeditor.html(initHtml);
 
-    var $body = $(wymeditor._doc).find('body.wym_iframe');
-    var actionElement = $body.find('#' + elmntId)[0];
+    $body = $(wymeditor._doc).find('body.wym_iframe');
+    actionElement = $body.find('#' + elmntId)[0];
 
     moveSelector(wymeditor, actionElement);
 
@@ -1479,20 +1831,22 @@ test("Shift+Tab outdents", function () {
                     '</ol>' +
                 '</li>' +
                 '<li id="li_2">2</li>' +
-            '</ol>';
-    var expectedHtml = String() +
+            '</ol>',
+        expectedHtml = String() +
             '<ol>' +
                 '<li id="li_1_1">1_1</li>' +
                 '<li id="li_2">2</li>' +
-            '</ol>';
+            '</ol>',
 
-    var elmntId = "li_1_1";
+        elmntId = "li_1_1",
+        $body,
+        actionElement,
 
-    var wymeditor = jQuery.wymeditors(0);
+        wymeditor = jQuery.wymeditors(0);
     wymeditor.html(initHtml);
 
-    var $body = $(wymeditor._doc).find('body.wym_iframe');
-    var actionElement = $body.find('#' + elmntId)[0];
+    $body = $(wymeditor._doc).find('body.wym_iframe');
+    actionElement = $body.find('#' + elmntId)[0];
 
     moveSelector(wymeditor, actionElement);
 
@@ -1503,15 +1857,17 @@ test("Shift+Tab outdents", function () {
 test("Tab has no effect outside lists", function () {
     expect(2);
 
-    var initHtml = '<p id="p_1">test</p>';
-    var expectedHtml = initHtml;
-    var elmntId = "p_1";
+    var initHtml = '<p id="p_1">test</p>',
+        expectedHtml = initHtml,
+        elmntId = "p_1",
+        $body,
+        actionElement,
 
-    var wymeditor = jQuery.wymeditors(0);
+        wymeditor = jQuery.wymeditors(0);
     wymeditor.html(initHtml);
 
-    var $body = $(wymeditor._doc).find('body.wym_iframe');
-    var actionElement = $body.find('#' + elmntId)[0];
+    $body = $(wymeditor._doc).find('body.wym_iframe');
+    actionElement = $body.find('#' + elmntId)[0];
 
     moveSelector(wymeditor, actionElement);
 

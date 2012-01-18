@@ -1,4 +1,4 @@
-/*jslint evil: true */
+/*jshint evil: true */
 
 /**
     WYMeditor.editor.init
@@ -62,7 +62,7 @@ WYMeditor.editor.prototype.init = function () {
     // We're not using jQuery.extend because we *want* to copy properties via
     // the prototype chain
     for (prop in WymClass) {
-        /*jslint forin: true */
+        /*jslint forin: false*/
         // Explicitly not using hasOwnProperty for the inheritance here
         // because we want to go up the prototype chain to get all of the
         // browser-specific editor methods. This is kind of a code smell,
@@ -71,11 +71,7 @@ WYMeditor.editor.prototype.init = function () {
     }
 
     // Load wymbox
-    this._box = jQuery(this._element).
-        hide().
-        after(this._options.boxHtml).
-        next().
-        addClass('wym_box_' + this._index);
+    this._box = jQuery(this._element).hide().after(this._options.boxHtml).next().addClass('wym_box_' + this._index);
 
     // Store the instance index and replaced element in wymbox
     // but keep it compatible with jQuery < 1.2.3, see #122
@@ -1411,6 +1407,13 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
     if (!$liToOutdent.parent().parent().is('ol,ul,li')) {
         return;
     }
+    if (!$liToOutdent.parent().parent().is('li')) {
+        // We have invalid list nesting and we need to fix that
+        WYMeditor.console.log(
+            'Attempting to fix invalid list nesting before outdenting.'
+        );
+        wym.correctInvalidListNesting(listItem);
+    }
 
     // Separate out the contents into things that should stay with the li as it
     // moves and things that should stay at their current level
@@ -1418,8 +1421,14 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
     $sublistContents = $(splitContent.sublistContents);
     $itemContents = $(splitContent.itemContents);
 
-    // Gather subsequent sinbling and parent sibling content
+    // Gather subsequent sibling and parent sibling content
     $parentLi = $liToOutdent.parent().parent('li');
+    // Invalid HTML could cause this selector to fail, which breaks our logic.
+    // Bail out rather than possibly losing content
+    if ($parentLi.length === 0) {
+        WYMeditor.console.error('Invalid list. No parentLi found, so aborting outdent');
+        return;
+    }
     $parentList = $liToOutdent.parent();
     $subsequentSiblingContent = $liToOutdent.nextAllContents();
     $subsequentParentListSiblingContent = $parentList.nextAllContents();
@@ -1467,6 +1476,16 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
     if ($subsequentParentListSiblingContent.length > 0) {
         // Move the subsequent content in to a new list item after our parent li
         $subsequentParentListSiblingContent.detach();
+
+        // If our last content and the first content in the subsequent content
+        // are both text nodes, insert a <br /> spacer to avoid crunching the
+        // text together visually. This maintains the same "visual" structure.
+        if ($liToOutdent.contents().length > 0
+                && $liToOutdent.contents().last()[0].nodeType === WYMeditor.NODE.TEXT
+                && $subsequentParentListSiblingContent[0].nodeType === WYMeditor.NODE.TEXT) {
+            $liToOutdent.append('<br />');
+        }
+
         $liToOutdent.append($subsequentParentListSiblingContent);
     }
 
@@ -1478,6 +1497,205 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
     if ($parentLi.contents().length === 0) {
         $parentLi.remove();
     }
+};
+
+/**
+    editor.correctInvalidListNesting
+    ================================
+
+    Take an li/ol/ul and correct any list nesting issues in the entire list
+    tree.
+
+    Corrected lists have the following properties:
+    1. ol and ul nodes *only* allow li children.
+    2. All li nodes have either an ol or ul parent.
+ */
+WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem) {
+    // Travel up the dom until we're at the root ol/ul/li
+    var currentNode = listItem,
+        parentNode,
+        tagName;
+    if (!currentNode) {
+        return;
+    }
+    while (currentNode.parentNode) {
+        parentNode = currentNode.parentNode;
+        if (parentNode.nodeType !== WYMeditor.NODE.ELEMENT) {
+            // Our parent is outside a valid list structure. Stop at this node.
+            break;
+        }
+        tagName = parentNode.tagName.toLowerCase();
+        if (tagName !== 'ol' && tagName !== 'ul' && tagName !== 'li') {
+            // Our parent is outside a valid list structure. Stop at this node.
+            break;
+
+        }
+        // We're still traversing up a list structure. Keep going
+        currentNode = parentNode;
+    }
+    if (!$(currentNode).is('ol,ul')) {
+        WYMeditor.console.error("Can't correct invalid list nesting. No root list found");
+        return;
+    }
+    return this._correctInvalidListNesting(currentNode);
+};
+
+/**
+    editor._correctInvalidListNesting
+    ================================
+
+    This is the function that actually does the list correction.
+    correctInvalidListNesting is just a helper function that first finds the root
+    of the list.
+
+    We use a reverse preorder traversal to navigate the DOM because we might be:
+
+    * Making nodes children of their previous sibling (in the <ol><li></li><ol>...</ol></ol> case)
+    * Adding nodes at the current level (wrapping any non-li node inside a ul/ol in a new li node)
+
+    Adapted from code at: Tavs Dokkedahl from
+    http://www.jslab.dk/articles/non.recursive.preorder.traversal.part3
+ */
+WYMeditor.editor.prototype._correctInvalidListNesting = function (listNode) {
+    var rootNode = listNode,
+        currentNode = listNode,
+        previousSibling,
+        previousLi,
+        $currentNode,
+        tagName,
+        ancestorNode,
+        nodesToMove,
+        targetLi,
+        lastContentNode,
+        spacerHtml = '<li class="spacer_li"></li>';
+
+    while (currentNode) {
+        if (currentNode._wym_visited) {
+            // This node has already been visited.
+            // Remove mark for visited nodes
+            currentNode._wym_visited = false;
+            // Once we reach the root element again traversal
+            // is done and we can break
+            if (currentNode === rootNode) {
+                break;
+            }
+            if (currentNode.previousSibling) {
+                currentNode = currentNode.previousSibling;
+            } else {
+                currentNode = currentNode.parentNode;
+            }
+        } else {
+            // This is the first visit for this node
+
+            // All non-li nodes must have an
+            // ancestor li node that's closer than any ol/ul ancestor node.
+            // Basically, everything needs to be inside an li node.
+            if (currentNode !== rootNode && !$(currentNode).is('li')) {
+                // We have a non-li node.
+                // Ensure that we have an li ancestor before we have any ol/ul
+                // ancestors
+
+                ancestorNode = currentNode;
+                while (ancestorNode.parentNode) {
+                    ancestorNode = ancestorNode.parentNode;
+                    if ($(ancestorNode).is('li')) {
+                        // Everything is ok. Hit an li before a ol/ul
+                        break;
+                    }
+
+                    if (ancestorNode.nodeType !== WYMeditor.NODE.ELEMENT) {
+                        // Our parent is outside a valid list structure. Stop at this node.
+                        break;
+                    }
+                    tagName = ancestorNode.tagName.toLowerCase();
+                    if (tagName === 'ol' || tagName === 'ul') {
+                        // We've hit a list container before any list item.
+                        // This isn't valid html and causes editing problems.
+                        //
+                        // Convert the list to a valid structure that closely
+                        // mimics the layout and behavior of invalidly nested
+                        // content inside a list. The browser treats the
+                        // content similar to how it would treat that same
+                        // content separated by a <br /> within its previous
+                        // sibling list item, so recreate that structure.
+                        //
+                        // The algorithm for performing this is basically:
+                        // 1. Gather this and any previous siblings up until the
+                        // previous li (if one exists) as content to move.
+                        // 2. If we don't have any previous or subsequent li
+                        // sibling, create a spacer li in which to insert all
+                        // the gathered content.
+                        // 3. Move all of the content to the previous li or the
+                        // subsequent li (in that priority).
+                        WYMeditor.console.log("Fixing orphaned list content");
+
+                        // Gather this and previous sibling until the previous li
+                        nodesToMove = [currentNode];
+                        previousSibling = currentNode;
+                        targetLi = null;
+                        while (previousSibling.previousSibling) {
+                            previousSibling = previousSibling.previousSibling;
+                            if ($(previousSibling).is('li')) {
+                                targetLi = previousSibling;
+                                // We hit an li. Store it as the target in
+                                // which to move the nodes
+                                break;
+                            }
+                            nodesToMove.push(previousSibling);
+                        }
+
+                        // We have our nodes ordered right to left and we need
+                        // them left to right
+                        nodesToMove.reverse();
+
+                        // If there are no previous siblings, we can join the next li instead
+                        if (!targetLi && nodesToMove.length === 1) {
+                            if ($(currentNode.nextSibling).is('li')) {
+                                targetLi = currentNode.nextSibling;
+                            }
+                        }
+
+                        // If we still don't have an li in which to move, we
+                        // need to create a spacer li
+                        if (!targetLi) {
+                            $(nodesToMove[0]).before(spacerHtml);
+                            targetLi = $(nodesToMove[0]).prev()[0];
+                        }
+
+                        // Move all of our content inside the li we've chosen
+                        // If the last content node inside the target li is
+                        // text and so is the first content node to move, separate them
+                        // with a <br /> to preserve the visual layout of them
+                        // being on separate lines
+                        lastContentNode = $(targetLi).contents().last();
+                        if (lastContentNode.length === 1
+                                && lastContentNode[0].nodeType === WYMeditor.NODE.TEXT) {
+                            if (nodesToMove[0].nodeType === WYMeditor.NODE.TEXT) {
+                                $(targetLi).append('<br />');
+                            }
+                        }
+                        $(targetLi).append($(nodesToMove));
+
+                        break;
+
+                    }
+                    // We're still traversing up a list structure. Keep going
+                }
+            }
+
+            if (currentNode.lastChild) {
+                // Since we have childnodes, mark this as visited because
+                // we'll return later
+                currentNode._wym_visited = true;
+                currentNode = currentNode.lastChild;
+            } else if (currentNode.previousSibling) {
+                currentNode = currentNode.previousSibling;
+            } else {
+                currentNode = currentNode.parentNode;
+            }
+        }
+    }
+
 };
 
 /**
@@ -1532,6 +1750,7 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
         liNodes = [],
         containsNodeTextFilter,
         parentsToAdd,
+        node,
         $node,
         $maybeParentLi;
 
@@ -1596,11 +1815,15 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
             // selecting that entire li
             parentsToAdd = [];
             for (j = 0; j < nodes.length; j++) {
-                $node = $(nodes[j]);
-                if (!$node.is('li,ol,ul')) {
-                    $maybeParentLi = $node.parent().filter('li');
-                    if ($maybeParentLi.length > 0) {
-                        parentsToAdd.push($maybeParentLi.get(0));
+                node = nodes[j];
+                if (!$(node).is('li,ol,ul')) {
+                    // Crawl up the dom until we find an li
+                    while (node.parentNode) {
+                        node = node.parentNode;
+                        if ($(node).is('li')) {
+                            parentsToAdd.push(node);
+                            break;
+                        }
                     }
                 }
             }
@@ -1643,6 +1866,20 @@ WYMeditor.editor.prototype.indent = function () {
         rootList,
         manipulationFunc;
 
+    // First, make sure this list is properly structured
+    manipulationFunc = function () {
+        var selectedBlock = wym.selected(),
+            potentialListBlock = wym.findUp(
+                selectedBlock,
+                ['ol', 'ul', 'li']
+            );
+        wym.correctInvalidListNesting(potentialListBlock);
+        return true;
+    };
+    wym.restoreSelectionAfterManipulation(manipulationFunc);
+
+    // Gather the li nodes the user means to affect based on their current
+    // selection
     listItems = wym._getSelectedListItems(sel);
 
     if (listItems.length === 0) {
@@ -1681,6 +1918,20 @@ WYMeditor.editor.prototype.outdent = function () {
         rootList,
         manipulationFunc;
 
+    // First, make sure this list is properly structured
+    manipulationFunc = function () {
+        var selectedBlock = wym.selected(),
+            potentialListBlock = wym.findUp(
+                selectedBlock,
+                ['ol', 'ul', 'li']
+            );
+        wym.correctInvalidListNesting(potentialListBlock);
+        return true;
+    };
+    wym.restoreSelectionAfterManipulation(manipulationFunc);
+
+    // Gather the li nodes the user means to affect based on their current
+    // selection
     listItems = wym._getSelectedListItems(sel);
 
     if (listItems.length === 0) {
@@ -1731,6 +1982,8 @@ WYMeditor.editor.prototype.restoreSelectionAfterManipulation = function (manipul
             rangy.removeMarkers(savedSelection);
         }
     } catch (e) {
+        WYMeditor.console.error("Error during manipulation");
+        WYMeditor.console.error(e);
         rangy.removeMarkers(savedSelection);
     }
 };
