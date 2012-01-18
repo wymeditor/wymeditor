@@ -5,7 +5,7 @@ WYMeditor.
 
 ## 1.0.0a6 (Alpha 6)
 
-*release-date* TBD
+*release-date* January 17, 2012
 
 ### Changes Since 1.0.0a5
 

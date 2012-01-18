@@ -59,7 +59,7 @@ Checklist:
   this release. For a major release, also flesh out highlights and examples
   that are most important.
 * Set a date for the release in `CHANGELOG.md`.
-* In the *Download* section of `README.md`, update the *Latest Release* link to
+* In the *Quick Start* section of `README.md`, update the *Version xxxx* link to
   point to the appropriate version and the appropriate github download target.
   The tar.gz should be named in the format `wymeditor-<version>.tar.gz`.
 * Review the `README.md` for any changes that might be necessary as a result of
