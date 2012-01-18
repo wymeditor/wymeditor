@@ -20,6 +20,8 @@ WYMeditor.
   javascript error.
 * Several bugs related to losing/moving your selection when indenting or
   outdenting lists are now fixed.
+* Outdenting after using backspace to join an item inside a list no longer
+  loses content in internet explorer.
 
 ## 1.0.0a5 (Alpha 5)
 
