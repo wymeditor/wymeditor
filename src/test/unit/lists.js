@@ -838,7 +838,7 @@ var spanInSublistHtml = String() +
                     '</li>' +
                     '<li id="li_1_2">1_2</li>' +
                 '</ul>' +
-                'text_2' +
+                'text_2 ' + // IE really likes this space
             '</li>' +
             '<li id="li_3">3<br >' +
                 'text_3_1<span id="span_3_2">3_2</span>text_3_3' +
@@ -856,7 +856,7 @@ var span_3_2_indentedSpanInSublistHtml = String() +
                     '</li>' +
                     '<li id="li_1_2">1_2</li>' +
                 '</ul>' +
-                'text_2' +
+                'text_2 ' +
                 '<ol>' +
                     '<li id="li_3">3<br >' +
                         'text_3_1<span id="span_3_2">3_2</span>text_3_3' +
@@ -1048,7 +1048,7 @@ var invalidNestingHtml = String() +
                 '</li>' +
                 '<li id="li_2_2">2_2</li>' +
             '</ul>' +
-            'text_3' +
+            'text_3 ' +
             '<li id="li_4">4</li>' +
             'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
         '</ol>';
@@ -1063,7 +1063,7 @@ var invalidNestingCorrectedHtml = String() +
                     '</li>' +
                     '<li id="li_2_2">2_2</li>' +
                 '</ul>' +
-                'text_3' +
+                'text_3 ' +
             '</li>' +
             '<li id="li_4">4<br >' +
                 'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
@@ -1081,7 +1081,7 @@ var li_2_2_outdentInvalidNestingHtml = String() +
                 '</ul>' +
             '</li>' +
             '<li id="li_2_2">2_2<br />' +
-                'text_3' +
+                'text_3 ' +
             '</li>' +
             '<li id="li_4">4<br >' +
                 'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
@@ -1099,7 +1099,7 @@ var span_5_2_indentedInvalidNestingHtml = String() +
                     '</li>' +
                     '<li id="li_2_2">2_2</li>' +
                 '</ul>' +
-                'text_3' +
+                'text_3 ' +
                 '<ol>' +
                     '<li id="li_4">4<br >' +
                         'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
@@ -1752,17 +1752,16 @@ module("list-correction", {setup: setupWym});
 test("Should correct invalid list nesting", function () {
     expect(2);
 
-    var wymeditor = jQuery.wymeditors(0);
-
-    var expected = "<ul><li>a<ul><li>a.1<\/li><\/ul><\/li><li>b<\/li><\/ul>";
+    var wymeditor = jQuery.wymeditors(0),
+        expected = "<ul><li>a<ul><li>a.1<\/li><\/ul><\/li><li>b<\/li><\/ul>",
     // FF
-    var invalid_ff_html = "<ul><li>a<\/li><ul><li>a.1<\/li><\/ul><li>b<br><\/li><\/ul>";
+        invalid_ff_html = "<ul><li>a<\/li><ul><li>a.1<\/li><\/ul><li>b<br><\/li><\/ul>",
+        invalid_ie_html = "<UL>\r\n<LI>a<\/LI>\r\n<UL>\r\n<LI>a.1<\/LI><\/UL>\r\n<LI>b<\/LI><\/UL>";
     wymeditor.html(invalid_ff_html);
     htmlEquals(wymeditor, expected);
     // IE
     // IE has invalid sublist nesting
     expected = "<ul>\r\n<li>a<ul>\r\n<li>a.1<\/li><\/ul><\/li>\r\n<li>b<\/li><\/ul>";
-    var invalid_ie_html = "<UL>\r\n<LI>a<\/LI>\r\n<UL>\r\n<LI>a.1<\/LI><\/UL>\r\n<LI>b<\/LI><\/UL>";
     wymeditor.html(invalid_ie_html);
     htmlEquals(wymeditor, expected);
 });
@@ -1770,9 +1769,8 @@ test("Should correct invalid list nesting", function () {
 test("Double indent correction", function () {
     expect(1);
 
-    var wymeditor = jQuery.wymeditors(0);
-
-    var brokenHtml = String() +
+    var wymeditor = jQuery.wymeditors(0),
+        brokenHtml = String() +
             '<ol>' +
                 '<li id="li_1">1' +
                     '<ol>' +
@@ -1781,8 +1779,8 @@ test("Double indent correction", function () {
                         '</ol>' +
                     '</ol>' +
                 '</li>' +
-            '</ol>';
-    var repairedHtml = String() +
+            '</ol>',
+        repairedHtml = String() +
             '<ol>' +
                 '<li id="li_1">1' +
                     '<ol>' +
@@ -1804,15 +1802,17 @@ module("list-tabbing", {setup: setupWym});
 test("Tab key indents", function () {
     expect(2);
 
-    var initHtml = nestedListHtml;
-    var expectedHtml = li_7_indentedHtml;
-    var elmntId = "li_7";
+    var initHtml = nestedListHtml,
+        expectedHtml = li_7_indentedHtml,
+        elmntId = "li_7",
+        $body,
+        actionElement,
 
-    var wymeditor = jQuery.wymeditors(0);
+        wymeditor = jQuery.wymeditors(0);
     wymeditor.html(initHtml);
 
-    var $body = $(wymeditor._doc).find('body.wym_iframe');
-    var actionElement = $body.find('#' + elmntId)[0];
+    $body = $(wymeditor._doc).find('body.wym_iframe');
+    actionElement = $body.find('#' + elmntId)[0];
 
     moveSelector(wymeditor, actionElement);
 
@@ -1831,20 +1831,22 @@ test("Shift+Tab outdents", function () {
                     '</ol>' +
                 '</li>' +
                 '<li id="li_2">2</li>' +
-            '</ol>';
-    var expectedHtml = String() +
+            '</ol>',
+        expectedHtml = String() +
             '<ol>' +
                 '<li id="li_1_1">1_1</li>' +
                 '<li id="li_2">2</li>' +
-            '</ol>';
+            '</ol>',
 
-    var elmntId = "li_1_1";
+        elmntId = "li_1_1",
+        $body,
+        actionElement,
 
-    var wymeditor = jQuery.wymeditors(0);
+        wymeditor = jQuery.wymeditors(0);
     wymeditor.html(initHtml);
 
-    var $body = $(wymeditor._doc).find('body.wym_iframe');
-    var actionElement = $body.find('#' + elmntId)[0];
+    $body = $(wymeditor._doc).find('body.wym_iframe');
+    actionElement = $body.find('#' + elmntId)[0];
 
     moveSelector(wymeditor, actionElement);
 
@@ -1855,15 +1857,17 @@ test("Shift+Tab outdents", function () {
 test("Tab has no effect outside lists", function () {
     expect(2);
 
-    var initHtml = '<p id="p_1">test</p>';
-    var expectedHtml = initHtml;
-    var elmntId = "p_1";
+    var initHtml = '<p id="p_1">test</p>',
+        expectedHtml = initHtml,
+        elmntId = "p_1",
+        $body,
+        actionElement,
 
-    var wymeditor = jQuery.wymeditors(0);
+        wymeditor = jQuery.wymeditors(0);
     wymeditor.html(initHtml);
 
-    var $body = $(wymeditor._doc).find('body.wym_iframe');
-    var actionElement = $body.find('#' + elmntId)[0];
+    $body = $(wymeditor._doc).find('body.wym_iframe');
+    actionElement = $body.find('#' + elmntId)[0];
 
     moveSelector(wymeditor, actionElement);
 
