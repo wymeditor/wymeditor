@@ -36,16 +36,8 @@ if (typeof (WYMeditor) === 'undefined') {
 
 // Wrap the Firebug console in WYMeditor.console
 (function () {
-    if (window.console) {
-        // Chrome
-        WYMeditor.console = window.console;
-    } else if (window.console.firebug) {
-        // FF with firebug
-        WYMeditor.console = window.console;
-    } else if (console) {
-        // ie8+
-        WYMeditor.console = console;
-    } else {
+    if (typeof window.console === 'undefined'
+            && typeof console === 'undefined') {
         // No in-browser console logging available
         var names = [
                 "log", "debug", "info", "warn", "error", "assert", "dir", "dirxml",
@@ -59,7 +51,15 @@ if (typeof (WYMeditor) === 'undefined') {
         for (i = 0; i < names.length; i += 1) {
             WYMeditor.console[names[i]] = noOp;
         }
-
+    } else if (console) {
+        // ie8+
+        WYMeditor.console = console;
+    } else if (window.console.firebug) {
+        // FF with firebug
+        WYMeditor.console = window.console;
+    } else if (window.console) {
+        // Chrome
+        WYMeditor.console = window.console;
     }
 }());
 
