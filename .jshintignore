@@ -3,3 +3,4 @@ node_modules
 src/jquery/*
 src/test/unit/qunit.js
 src/wymeditor/rangy/*
+src/wymeditor/parser/*

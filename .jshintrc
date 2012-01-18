@@ -50,7 +50,7 @@
     "latedef"       : true,   // Prohipit variable use before definition.
     "loopfunc"      : false,  // Allow functions to be defined within loops.
     "noarg"         : true,   // Prohibit use of `arguments.caller` and `arguments.callee`.
-    "regexp"        : true,   // Prohibit `.` and `[^...]` in regular expressions.
+    "regexp"        : false,   // Prohibit `.` and `[^...]` in regular expressions.
     "regexdash"     : false,  // Tolerate unescaped last dash i.e. `[-...]`.
     "scripturl"     : true,   // Tolerate script-targeted URLs.
     "shadow"        : false,  // Allows re-define variables later in code e.g. `var x=1; x=2;`.
@@ -64,7 +64,7 @@
     "nonew"         : true,   // Prohibit use of constructors for side-effects.
     "nomen"         : false,   // Prohibit use of initial or trailing underbars in names.
     "onevar"        : true,  // Allow only one `var` statement per function.
-    "plusplus"      : true,  // Prohibit use of `++` & `--`.
+    "plusplus"      : false,  // Prohibit use of `++` & `--`.
     "sub"           : false,  // Tolerate all forms of subscript notation besides dot notation e.g. `dict['key']` instead of `dict.key`.
     "trailing"      : true,   // Prohibit trailing whitespaces.
     "white"         : true,   // Check against strict whitespace and indentation rules.

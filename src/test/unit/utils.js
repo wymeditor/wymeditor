@@ -179,7 +179,16 @@ function makeTextSelection(wymeditor, startElement, endElement, startElementInde
 * Move the selection to the start of the given element within the editor.
 */
 function moveSelector(wymeditor, selectedElement) {
-    makeSelection(wymeditor, selectedElement, selectedElement, 0, 0);
+    if (selectedElement.tagName.toLowerCase() === 'span') {
+        // Hack to make span element selections work outside of FF. Webkit and
+        // IE select the node before the span if you try a collapsed selection
+        // on a span node.
+        // Should probably be doing block vs inline detection here instead of
+        // hardcoding detection for a span element
+        makeSelection(wymeditor, selectedElement, selectedElement, 0, 1);
+    } else {
+        makeSelection(wymeditor, selectedElement, selectedElement, 0, 0);
+    }
 
     equals(wymeditor.selected(), selectedElement, "moveSelector");
 }
