@@ -1179,6 +1179,227 @@ test("Invalid unwrapped text indent", function () {
     );
 });
 
+module("list-invalid_overclosing", {setup: setupWym});
+
+// Lists that have been "over-closed" and thus have li elements that don't have
+// parent lists
+var overClosedHtml = {};
+overClosedHtml.base = String() +
+        '<ol id="ol_1">' +
+            '<li id="li_1">li_1' +
+                '<ol>' +
+                    '<li id="li_1_1">li_1_1</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>' +
+        '<li id="li_2">li_2' +
+            '<ol id="ol_2_1">' +
+                '<li id="li_2_1">li_2_1' +
+                    '<ol>' +
+                        '<li id="li_2_1_1">li_2_1_1</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+        '<li id="li_3">li_3</li>' +
+        '<p>stop</p>' +
+        '<li id="li_new">li_new</li>' +
+        'text' +
+        '<li id="li_text_sep">li_text_sep</li>';
+overClosedHtml.unordered = {};
+overClosedHtml.ordered = {};
+overClosedHtml.unordered.li_2 = String() +
+        '<ol id="ol_1">' +
+            '<li id="li_1">li_1' +
+                '<ol>' +
+                    '<li id="li_1_1">li_1_1</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_2">li_2' +
+                '<ol id="ol_2_1">' +
+                    '<li id="li_2_1">li_2_1' +
+                        '<ol>' +
+                            '<li id="li_2_1_1">li_2_1_1</li>' +
+                        '</ol>' +
+                    '</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_3">li_3</li>' +
+        '</ol>' +
+        '<p>stop</p>' +
+        '<li id="li_new">li_new</li>' +
+        'text' +
+        '<li id="li_text_sep">li_text_sep</li>';
+overClosedHtml.unordered.li_2_1 = overClosedHtml.unordered.li_2;
+overClosedHtml.unordered.li_2_1_1 = overClosedHtml.unordered.li_2;
+overClosedHtml.unordered.li_3 = overClosedHtml.unordered.li_2;
+test("Unordered corrects overclosed", function () {
+    expect(12);
+    var testData = overClosedHtml,
+        testItems = ['li_2', 'li_2_1', 'li_2_1_1', 'li_3'],
+        i,
+        itemId;
+
+    for (i = 0; i < testItems.length; i++) {
+        itemId = testItems[i];
+        testList(itemId, 'unordered', testData.base, testData.unordered[itemId]);
+
+        // Via Text selection
+        testList(itemId, 'unordered', testData.base, testData.unordered[itemId], true);
+    }
+});
+
+overClosedHtml.unordered.li_1_1_to_li_3 = overClosedHtml.unordered.li_2;
+overClosedHtml.unordered.li_2_to_li_2_1_1 = overClosedHtml.unordered.li_2;
+test("Unordered corrects overclosed multiselect", function () {
+    expect(4);
+    var testData = overClosedHtml,
+        testItems = [['li_1_1', 'li_3'], ['li_2', 'li_2_1_1']],
+        i,
+        startItemId,
+        endItemId,
+        resultKey;
+
+    for (i = 0; i < testItems.length; i++) {
+        startItemId = testItems[i][0];
+        endItemId = testItems[i][1];
+        resultKey = startItemId + '_to_' + endItemId;
+        testListMulti(startItemId, endItemId, 'unordered', testData.base, testData.unordered[resultKey]);
+
+        // Via Text selection
+        testListMulti(
+            startItemId,
+            endItemId,
+            'unordered',
+            testData.base,
+            testData.unordered[resultKey],
+            true
+        );
+    }
+});
+
+overClosedHtml.unordered.li_new = String() +
+        '<ol id="ol_1">' +
+            '<li id="li_1">li_1' +
+                '<ol>' +
+                    '<li id="li_1_1">li_1_1</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>' +
+        '<li id="li_2">li_2' +
+            '<ol id="ol_2_1">' +
+                '<li id="li_2_1">li_2_1' +
+                    '<ol>' +
+                        '<li id="li_2_1_1">li_2_1_1</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+        '<li id="li_3">li_3</li>' +
+        '<p>stop</p>' +
+        '<ul>' +
+            '<li id="li_new">li_new</li>' +
+        '</ul>' +
+        'text' +
+        '<li id="li_text_sep">li_text_sep</li>';
+overClosedHtml.ordered.li_new = String() +
+        '<ol id="ol_1">' +
+            '<li id="li_1">li_1' +
+                '<ol>' +
+                    '<li id="li_1_1">li_1_1</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>' +
+        '<li id="li_2">li_2' +
+            '<ol id="ol_2_1">' +
+                '<li id="li_2_1">li_2_1' +
+                    '<ol>' +
+                        '<li id="li_2_1_1">li_2_1_1</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+        '<li id="li_3">li_3</li>' +
+        '<p>stop</p>' +
+        '<ol>' +
+            '<li id="li_new">li_new</li>' +
+        '</ol>' +
+        'text' +
+        '<li id="li_text_sep">li_text_sep</li>';
+test("Correction breaks on paragraphs", function () {
+    expect(6);
+    var testData = overClosedHtml,
+        testItem = 'li_new';
+
+    testList(testItem, 'unordered', testData.base, testData.unordered[testItem]);
+    testList(testItem, 'ordered', testData.base, testData.ordered[testItem]);
+
+        // Via Text selection
+    testList(testItem, 'unordered', testData.base, testData.unordered[testItem], true);
+    testList(testItem, 'ordered', testData.base, testData.ordered[testItem], true);
+});
+overClosedHtml.unordered.li_text_sep = String() +
+        '<ol id="ol_1">' +
+            '<li id="li_1">li_1' +
+                '<ol>' +
+                    '<li id="li_1_1">li_1_1</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_2">li_2' +
+                '<ol id="ol_2_1">' +
+                    '<li id="li_2_1">li_2_1' +
+                        '<ol>' +
+                            '<li id="li_2_1_1">li_2_1_1</li>' +
+                        '</ol>' +
+                    '</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_3">li_3</li>' +
+        '</ol>' +
+        '<p>stop</p>' +
+        '<li id="li_new">li_new</li>' +
+        'text' +
+        '<ul>' +
+            '<li id="li_text_sep">li_text_sep</li>' +
+        '<ul>';
+overClosedHtml.ordered.li_text_sep = String() +
+        '<ol id="ol_1">' +
+            '<li id="li_1">li_1' +
+                '<ol>' +
+                    '<li id="li_1_1">li_1_1</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_2">li_2' +
+                '<ol id="ol_2_1">' +
+                    '<li id="li_2_1">li_2_1' +
+                        '<ol>' +
+                            '<li id="li_2_1_1">li_2_1_1</li>' +
+                        '</ol>' +
+                    '</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_3">li_3</li>' +
+        '</ol>' +
+        '<p>stop</p>' +
+        '<li id="li_new">li_new</li>' +
+        'text' +
+        '<ol>' +
+            '<li id="li_text_sep">li_text_sep</li>' +
+        '<ol>';
+test("Correction breaks on text", function () {
+    expect(6);
+    var testData = overClosedHtml,
+        testItem = 'li_text_sep';
+
+    testList(testItem, 'unordered', testData.base, testData.unordered[testItem]);
+    testList(testItem, 'ordered', testData.base, testData.ordered[testItem]);
+
+        // Via Text selection
+    testList(testItem, 'unordered', testData.base, testData.unordered[testItem], true);
+    testList(testItem, 'ordered', testData.base, testData.ordered[testItem], true);
+});
+
+
 module("list-multi_selection", {setup: setupWym});
 
 var li_2_1_to_li_2_2_indentedHtml = String() +
