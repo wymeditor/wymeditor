@@ -1533,6 +1533,7 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem) {
         // We're still traversing up a list structure. Keep going
         currentNode = parentNode;
     }
+    // We have the root node. Make sure it's legit
     if ($(currentNode).is('li')) {
         // We have an li as the "root" because its missing a parent list.
         // Correct this problem and then try again to correct the nesting.
@@ -1566,14 +1567,14 @@ WYMeditor.editor.prototype._correctOrphanedListItem = function (listNode) {
     nextAdjacentLis = $(listNode).nextContentsUntil(':not(li)');
 
     // Merge the collections together
-    $adjacentLis.add(prevAdjacentLis);
-    $adjacentLis.add(listNode);
-    $adjacentLis.add(nextAdjacentLis);
+    $adjacentLis = $adjacentLis.add(prevAdjacentLis);
+    $adjacentLis = $adjacentLis.add(listNode);
+    $adjacentLis = $adjacentLis.add(nextAdjacentLis);
 
 
     // Determine if we have a list node in which to insert all of our orphaned
     // li's
-    prevNode = $adjacentLis[$adjacentLis.length].previousSibling;
+    prevNode = $adjacentLis[0].previousSibling;
     if (prevNode && $(prevNode).is('ol,ul')) {
         prevList = prevNode;
     } else {
@@ -1583,7 +1584,7 @@ WYMeditor.editor.prototype._correctOrphanedListItem = function (listNode) {
     }
 
     // Insert all of the adjacent orphaned lists inside the new parent
-    prevList.append($adjacentLis);
+    $(prevList).append($adjacentLis);
 };
 
 /**
@@ -2051,6 +2052,19 @@ WYMeditor.editor.prototype.insertOrderedlist = function () {
     var wym = this,
         manipulationFunc;
 
+    // First, make sure this list is properly structured
+    manipulationFunc = function () {
+        var selectedBlock = wym.selected(),
+            potentialListBlock = wym.findUp(
+                selectedBlock,
+                ['ol', 'ul', 'li']
+            );
+        wym.correctInvalidListNesting(potentialListBlock);
+        return true;
+    };
+    wym.restoreSelectionAfterManipulation(manipulationFunc);
+
+    // Actually perform the list insertion
     manipulationFunc = function () {
         return wym._insertList('ol');
     };
@@ -2073,6 +2087,19 @@ WYMeditor.editor.prototype.insertUnorderedlist = function () {
     var wym = this,
         manipulationFunc;
 
+    // First, make sure this list is properly structured
+    manipulationFunc = function () {
+        var selectedBlock = wym.selected(),
+            potentialListBlock = wym.findUp(
+                selectedBlock,
+                ['ol', 'ul', 'li']
+            );
+        wym.correctInvalidListNesting(potentialListBlock);
+        return true;
+    };
+    wym.restoreSelectionAfterManipulation(manipulationFunc);
+
+    // Actually perform the list insertion
     manipulationFunc = function () {
         return wym._insertList('ul');
     };

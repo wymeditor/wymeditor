@@ -972,6 +972,7 @@ jQuery.fn.isPhantomNode = function () {
 */
 jQuery.fn.nextContentsUntil = function (selector, filter) {
     var matched = [],
+        $matched,
         cur = this.get(0);
 
     selector = selector ? selector : '';
@@ -993,7 +994,11 @@ jQuery.fn.nextContentsUntil = function (selector, filter) {
         }
     }
 
-    return $(matched).filter(filter);
+    $matched = $(matched);
+    if (filter) {
+        return $matched.filter(filter);
+    }
+    return $matched;
 };
 /**
     jQuery.fn.nextAllContents
@@ -1017,6 +1022,7 @@ jQuery.fn.nextAllContents = function () {
 */
 jQuery.fn.prevContentsUntil = function (selector, filter) {
     var matched = [],
+        $matched,
         cur = this.get(0);
 
     selector = selector ? selector : '';
@@ -1038,7 +1044,11 @@ jQuery.fn.prevContentsUntil = function (selector, filter) {
         }
     }
 
-    return $(matched).filter(filter);
+    $matched = $(matched);
+    if (filter) {
+        return $matched.filter(filter);
+    }
+    return $matched;
 };
 
 /**
