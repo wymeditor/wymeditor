@@ -1533,11 +1533,57 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem) {
         // We're still traversing up a list structure. Keep going
         currentNode = parentNode;
     }
+    if ($(currentNode).is('li')) {
+        // We have an li as the "root" because its missing a parent list.
+        // Correct this problem and then try again to correct the nesting.
+        WYMeditor.console.log("Correcting orphaned root li before correcting invalid list nesting.");
+        this._correctOrphanedListItem(currentNode);
+        return this.correctInvalidListNesting(currentNode);
+    }
     if (!$(currentNode).is('ol,ul')) {
         WYMeditor.console.error("Can't correct invalid list nesting. No root list found");
         return;
     }
     return this._correctInvalidListNesting(currentNode);
+};
+/**
+    editor._correctOrphanedListItem
+    ===============================
+
+    Ensure that the given ophaned list item has a proper list parent.
+
+    Uses the sibling nodes to determine what kind of list should be used. Also
+    wraps sibling adjacent orphaned li nodes in the same list.
+ */
+WYMeditor.editor.prototype._correctOrphanedListItem = function (listNode) {
+    var prevAdjacentLis,
+        nextAdjacentLis,
+        $adjacentLis = $(),
+        prevList,
+        prevNode;
+
+    prevAdjacentLis = $(listNode).prevContentsUntil(':not(li)');
+    nextAdjacentLis = $(listNode).nextContentsUntil(':not(li)');
+
+    // Merge the collections together
+    $adjacentLis.add(prevAdjacentLis);
+    $adjacentLis.add(listNode);
+    $adjacentLis.add(nextAdjacentLis);
+
+
+    // Determine if we have a list node in which to insert all of our orphaned
+    // li's
+    prevNode = $adjacentLis[$adjacentLis.length].previousSibling;
+    if (prevNode && $(prevNode).is('ol,ul')) {
+        prevList = prevNode;
+    } else {
+        // No previous existing list to use. Need to create one
+        prevList = $('<ol></ol>');
+        $adjacentLis.before(prevList);
+    }
+
+    // Insert all of the adjacent orphaned lists inside the new parent
+    prevList.append($adjacentLis);
 };
 
 /**

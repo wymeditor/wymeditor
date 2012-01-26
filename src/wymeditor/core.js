@@ -964,17 +964,18 @@ jQuery.fn.isPhantomNode = function () {
 };
 
 /**
-    jQuery.fn.nextAllContents
-    ======================
+    jQuery.fn.nextContentsUntil
+    ===========================
 
-    Acts like jQuery.nextAll() but includes text nodes and comments and only
+    Acts like jQuery.nextUntil() but includes text nodes and comments and only
     works on the first element in the given jQuery collection..
-
-    Mostly cribbed from the jQuery source.
 */
-jQuery.fn.nextAllContents = function () {
+jQuery.fn.nextContentsUntil = function (selector, filter) {
     var matched = [],
         cur = this.get(0);
+
+    selector = selector ? selector : '';
+    filter = filter ? filter : '';
 
     if (!cur) {
         // Called on an empty selector. The sibling of nothing is nothing
@@ -984,8 +985,98 @@ jQuery.fn.nextAllContents = function () {
     cur = cur.nextSibling;
 
     while (cur) {
+        if (!$(cur).is(selector)) {
+            matched.push(cur);
+            cur = cur.nextSibling;
+        } else {
+            break;
+        }
+    }
+
+    return $(matched).filter(filter);
+};
+/**
+    jQuery.fn.nextAllContents
+    =========================
+
+    Acts like jQuery.nextAll() but includes text nodes and comments and only
+    works on the first element in the given jQuery collection..
+
+    Mostly cribbed from the jQuery source.
+*/
+jQuery.fn.nextAllContents = function () {
+    return $(this).nextContentsUntil('', '');
+};
+
+/**
+    jQuery.fn.prevContentsUntil
+    ===========================
+
+    Acts like jQuery.prevUntil() but includes text nodes and comments and only
+    works on the first element in the given jQuery collection..
+*/
+jQuery.fn.prevContentsUntil = function (selector, filter) {
+    var matched = [],
+        cur = this.get(0);
+
+    selector = selector ? selector : '';
+    filter = filter ? filter : '';
+
+    if (!cur) {
+        // Called on an empty selector. The sibling of nothing is nothing
+        return $();
+    }
+    // We don't want to include this element, only its siblings
+    cur = cur.previousSibling;
+
+    while (cur) {
+        if (!$(cur).is(selector)) {
+            matched.push(cur);
+            cur = cur.previousSibling;
+        } else {
+            break;
+        }
+    }
+
+    return $(matched).filter(filter);
+};
+
+/**
+    jQuery.fn.prevAllContents
+    =========================
+
+    Acts like jQuery.prevAll() but includes text nodes and comments and only
+    works on the first element in the given jQuery collection..
+
+    Mostly cribbed from the jQuery source.
+*/
+jQuery.fn.prevAllContents = function () {
+    return $(this).prevContentsUntil('', '');
+};
+
+/**
+    jQuery.fn.prevAllContents
+    =========================
+
+    Acts like jQuery.prevAll() but includes text nodes and comments and only
+    works on the first element in the given jQuery collection..
+
+    Mostly cribbed from the jQuery source.
+*/
+jQuery.fn.prevAllContents = function () {
+    var matched = [],
+        cur = this.get(0);
+
+    if (!cur) {
+        // Called on an empty selector. The sibling of nothing is nothing
+        return $();
+    }
+    // We don't want to include this element, only its siblings
+    cur = cur.previousSibling;
+
+    while (cur) {
         matched.push(cur);
-        cur = cur.nextSibling;
+        cur = cur.previousSibling;
     }
 
     return $(matched);

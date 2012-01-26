@@ -1179,12 +1179,12 @@ test("Invalid unwrapped text indent", function () {
     );
 });
 
-module("list-invalid_overclosing", {setup: setupWym});
+module("list-invalid_orphaned_listitem", {setup: setupWym});
 
 // Lists that have been "over-closed" and thus have li elements that don't have
 // parent lists
-var overClosedHtml = {};
-overClosedHtml.base = String() +
+var orphanedLiHtml = {};
+orphanedLiHtml.base = String() +
         '<ol id="ol_1">' +
             '<li id="li_1">li_1' +
                 '<ol>' +
@@ -1206,9 +1206,9 @@ overClosedHtml.base = String() +
         '<li id="li_new">li_new</li>' +
         'text' +
         '<li id="li_text_sep">li_text_sep</li>';
-overClosedHtml.unordered = {};
-overClosedHtml.ordered = {};
-overClosedHtml.unordered.li_2 = String() +
+orphanedLiHtml.unordered = {};
+orphanedLiHtml.ordered = {};
+orphanedLiHtml.unordered.li_2 = String() +
         '<ol id="ol_1">' +
             '<li id="li_1">li_1' +
                 '<ol>' +
@@ -1230,12 +1230,12 @@ overClosedHtml.unordered.li_2 = String() +
         '<li id="li_new">li_new</li>' +
         'text' +
         '<li id="li_text_sep">li_text_sep</li>';
-overClosedHtml.unordered.li_2_1 = overClosedHtml.unordered.li_2;
-overClosedHtml.unordered.li_2_1_1 = overClosedHtml.unordered.li_2;
-overClosedHtml.unordered.li_3 = overClosedHtml.unordered.li_2;
-test("Unordered corrects overclosed", function () {
+orphanedLiHtml.unordered.li_2_1 = orphanedLiHtml.unordered.li_2;
+orphanedLiHtml.unordered.li_2_1_1 = orphanedLiHtml.unordered.li_2;
+orphanedLiHtml.unordered.li_3 = orphanedLiHtml.unordered.li_2;
+test("Unordered corrects orphans", function () {
     expect(12);
-    var testData = overClosedHtml,
+    var testData = orphanedLiHtml,
         testItems = ['li_2', 'li_2_1', 'li_2_1_1', 'li_3'],
         i,
         itemId;
@@ -1249,11 +1249,11 @@ test("Unordered corrects overclosed", function () {
     }
 });
 
-overClosedHtml.unordered.li_1_1_to_li_3 = overClosedHtml.unordered.li_2;
-overClosedHtml.unordered.li_2_to_li_2_1_1 = overClosedHtml.unordered.li_2;
-test("Unordered corrects overclosed multiselect", function () {
+orphanedLiHtml.unordered.li_1_1_to_li_3 = orphanedLiHtml.unordered.li_2;
+orphanedLiHtml.unordered.li_2_to_li_2_1_1 = orphanedLiHtml.unordered.li_2;
+test("Unordered corrects with multiselect", function () {
     expect(4);
-    var testData = overClosedHtml,
+    var testData = orphanedLiHtml,
         testItems = [['li_1_1', 'li_3'], ['li_2', 'li_2_1_1']],
         i,
         startItemId,
@@ -1278,7 +1278,7 @@ test("Unordered corrects overclosed multiselect", function () {
     }
 });
 
-overClosedHtml.unordered.li_new = String() +
+orphanedLiHtml.unordered.li_new = String() +
         '<ol id="ol_1">' +
             '<li id="li_1">li_1' +
                 '<ol>' +
@@ -1302,7 +1302,7 @@ overClosedHtml.unordered.li_new = String() +
         '</ul>' +
         'text' +
         '<li id="li_text_sep">li_text_sep</li>';
-overClosedHtml.ordered.li_new = String() +
+orphanedLiHtml.ordered.li_new = String() +
         '<ol id="ol_1">' +
             '<li id="li_1">li_1' +
                 '<ol>' +
@@ -1328,7 +1328,7 @@ overClosedHtml.ordered.li_new = String() +
         '<li id="li_text_sep">li_text_sep</li>';
 test("Correction breaks on paragraphs", function () {
     expect(6);
-    var testData = overClosedHtml,
+    var testData = orphanedLiHtml,
         testItem = 'li_new';
 
     testList(testItem, 'unordered', testData.base, testData.unordered[testItem]);
@@ -1338,7 +1338,7 @@ test("Correction breaks on paragraphs", function () {
     testList(testItem, 'unordered', testData.base, testData.unordered[testItem], true);
     testList(testItem, 'ordered', testData.base, testData.ordered[testItem], true);
 });
-overClosedHtml.unordered.li_text_sep = String() +
+orphanedLiHtml.unordered.li_text_sep = String() +
         '<ol id="ol_1">' +
             '<li id="li_1">li_1' +
                 '<ol>' +
@@ -1362,7 +1362,7 @@ overClosedHtml.unordered.li_text_sep = String() +
         '<ul>' +
             '<li id="li_text_sep">li_text_sep</li>' +
         '<ul>';
-overClosedHtml.ordered.li_text_sep = String() +
+orphanedLiHtml.ordered.li_text_sep = String() +
         '<ol id="ol_1">' +
             '<li id="li_1">li_1' +
                 '<ol>' +
@@ -1388,7 +1388,7 @@ overClosedHtml.ordered.li_text_sep = String() +
         '<ol>';
 test("Correction breaks on text", function () {
     expect(6);
-    var testData = overClosedHtml,
+    var testData = orphanedLiHtml,
         testItem = 'li_text_sep';
 
     testList(testItem, 'unordered', testData.base, testData.unordered[testItem]);
