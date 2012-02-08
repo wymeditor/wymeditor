@@ -1,0 +1,281 @@
+/*
+ * WYMeditor : what you see is What You Mean web-based editor
+ * Copyright (c) 2005 - 2009 Jean-Francois Hovinne, http://www.wymeditor.org/
+ * Dual licensed under the MIT (MIT-license.txt)
+ * and GPL (GPL-license.txt) licenses.
+ *
+ * For further information visit:
+ *        http://www.wymeditor.org/
+ *
+ * File Name:
+ *        wymeditor.css
+ *        Main editor css file.
+ *        See the documentation for more info.
+ *
+ * File Authors:
+ *        Jean-Francois Hovinne (jf.hovinne a-t wymeditor dotorg)
+ *        Daniel Reszka (d.reszka a-t wymeditor dotorg)
+ *        Gyuris Gellért (bubu a-t ujevangelizacio dothu)
+*/
+
+/* VISUAL FEEDBACK */
+@font-face {
+	font-family: "Visitor";
+	src: url("visitor1.ttf");
+}
+
+/* basic */
+  body  { background: #e1e8f1;}
+
+/* make HTML blocs visible */
+  div,
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  ul,
+  ol,
+  table,
+  address,
+  blockquote,
+  pre           { background: #FFFFFF;
+                  padding:8px 5px 5px;
+                  margin:10px; }
+  ul,
+  ol,
+  dl            { background: #B9C4D0;
+                  margin: 10px;
+                  padding: 0 0 0 10px;
+                  list-style-position: outside;
+                  min-height: 1.6em; }
+  ul ul,
+  ul ol,
+  ol ol,
+  ol ul         { margin: 5px 0 0 -5px }
+  li            { background: white;
+                  margin: 0 0 0 20px;
+                  padding: 8px 0 0 5px; }
+  dt, dd        { background: white;
+                  margin: 0 0 0 20px; 
+                  padding: 8px 0 0 5px }
+  dd            { margin-left: 4em }
+  td            { background: #F0F4F8; }
+  th            { background: #ffffcc; }
+  caption       { background: #E4E4B0; padding: 5px; font-weight: bold; }
+  table         { font-size: 12px; width: 500px; }
+  td            { width: 25%; }
+  blockquote    { margin-left: 30px; }
+  pre           { background-color:transparent; border: 1px solid white; }
+
+/* Gecko min height fix */
+  td            { height: 1.6em; }
+
+/* specific HTML elements */
+  caption   { text-align: left; }
+  img       { margin-right: 5px;
+              border-style: solid;
+              border-color: gray;
+              border-width: 0; }
+  a img     { border-width: 1px; border-color: blue; }
+  acronym   { border: 1px solid gray; }
+  span      { /*background-color: #eef;*/ }
+
+/* visual feedback for non-valid nesting of elements*/
+  h1 h1, h1 h2, h1 h3, h1 h4, h1 h5, h1 h6, h1 p, h1 pre, h1 address,
+  h2 h1, h2 h2, h2 h3, h2 h4, h2 h5, h2 h6, h2 p, h2 pre, h2 address,
+  h3 h1, h3 h2, h3 h3, h3 h4, h3 h5, h3 h6, h3 p, h3 pre, h3 address,
+  h4 h1, h4 h2, h4 h3, h4 h4, h4 h5, h4 h6, h4 p, h4 pre, h4 address,
+  h5 h1, h5 h2, h5 h3, h5 h4, h5 h5, h5 h6, h5 p, h5 pre, h5 address,
+  h6 h1, h6 h2, h6 h3, h6 h4, h6 h4, h6 h6, h6 p, h6 pre, h6 address,
+  p h1, p h2, p h3, p h4, p h5, p h6, p pre, p address,
+  pre h1, pre h2, pre h3, pre h4, pre h5, pre h6, pre p, pre pre, pre address,
+  address h1, address h2, address h3, address h4, address h5, address h6,
+  address p, address pre, address address
+  { background-color: #ff9999 !important;
+    border: 1px solid red !important;
+    font-size: 12px !important;
+    font-weight: normal; }
+
+/* Spacer BRs shouldn't add much whitespace */
+br { height: 5px; line-height: 5px; }
+
+/* labels: block elements */
+div, p, ol, ul, dl, li, dt, dd, h1, h2, h3, h4, h5, h6, blockquote, 
+pre, address {
+	position: relative;
+}
+div::before,
+p::before,
+ol::before,
+ul::before,
+dl::before,
+li::before,
+dt::before,
+dd::before,
+h1::before,
+h2::before,
+h3::before,
+h4::before,
+h5::before,
+h6::before,
+blockquote::before,
+pre::before,
+address::before {
+	position: absolute;
+	left: 1px;
+	top: -2px;
+	padding: 1px;
+	font: 12px/12px "Visitor", monospace;
+	color: silver;
+	background: rgba(255,255,255,0.5);
+}
+div:hover::before,
+p:hover::before,
+ol:hover::before,
+ul:hover::before,
+dl:hover::before,
+li:hover::before,
+dt:hover::before,
+dd:hover::before,
+h1:hover::before,
+h2:hover::before,
+h3:hover::before,
+h4:hover::before,
+h5:hover::before,
+h6:hover::before,
+blockquote:hover::before,
+pre:hover::before,
+address:hover::before {
+	color: rgb(65,105,225);
+	background: rgba(255,255,255,0.);
+	outline: 1px solid rgba(65,105,225,0.9);
+}
+div::before               { content: "div" }
+div[class]::before        { content: "div." attr(class) }
+p::before                 { content: "p" }
+p[class]::before          { content: "p." attr(class) }
+ol::before                { content: "ol" }
+ol[class]::before         { content: "ol." attr(class) }
+ul::before                { content: "ul" }
+ul[class]::before         { content: "ul." attr(class) }
+dl::before                { content: "dl" }
+dl[class]::before         { content: "dl." attr(class) }
+li::before                { content: "li" }
+li[class]::before         { content: "li." attr(class) }
+dt::before                { content: "dt" }
+dt[class]::before         { content: "dt." attr(class) }
+dd::before                { content: "dd" }
+dd[class]::before         { content: "dd." attr(class) }
+h1::before                { content: "h1" }
+h1[class]::before         { content: "h1." attr(class) }
+h2::before                { content: "h2" }
+h2[class]::before         { content: "h2." attr(class) }
+h3::before                { content: "h3" }
+h3[class]::before         { content: "h3." attr(class) }
+h4::before                { content: "h4" }
+h4[class]::before         { content: "h4." attr(class) }
+h5::before                { content: "h5" }
+h5[class]::before         { content: "h5." attr(class) }
+h6::before                { content: "h6" }
+h6[class]::before         { content: "h6." attr(class) }
+blockquote::before        { content: "blockquote" }
+blockquote[class]::before { content: "blockquote." attr(class) }
+pre::before               { content: "pre" }
+pre[class]::before        { content: "pre." attr(class) }
+address::before           { content: "address" }
+address[class]::before    { content: "address." attr(class) }
+
+/* labels: inline elements */
+span, strong, b, em, i, a, abbr, acronym, kbd, q, cite, samp, var, del, 
+ins, dfn, code, sup, sub {
+	position: relative;
+}
+span:hover::before,
+strong:hover::before,
+b:hover::before,
+em:hover::before,
+i:hover::before,
+a:hover::before,
+abbr:hover::before,
+acronym:hover::before,
+kbd:hover::before,
+/*q:hover::before(2), now is not working http://www.w3.org/TR/css3-content/#inserting0 */
+cite:hover::before,
+samp:hover::before,
+var:hover::before,
+del:hover::before,
+ins:hover::before,
+dfn:hover::before,
+code:hover::before,
+sup:hover::before,
+sub:hover::before {
+	position: absolute;
+	top: -5px;
+	left: -2px;
+	padding: 1px;
+	font: 12px/12px "Visitor", monospace;
+	hyphens: none; /* chrome a-href */
+	color: rgb(65,105,225);
+	background: rgba(255,255,255,0.9);
+	outline: 1px solid rgba(65,105,225,0.9);
+}
+span:hover::before           { content: "span"; }
+span[class]:hover::before    { content: "span." attr(class)}
+strong:hover::before         { content: "strong"; }
+strong[class]:hover::before  { content: "strong." attr(class)}
+b:hover::before              { content: "strong"; }
+b[class]:hover::before       { content: "strong." attr(class)}
+em:hover::before             { content: "em"; }
+em[class]:hover::before      { content: "em." attr(class)}
+i:hover::before              { content: "em"; }
+i[class]:hover::before       { content: "em." attr(class)}
+a[href]:hover::before        { content: "a-href"; }
+a[href][class]:hover::before { content: "a-href." attr(class)}
+abbr:hover::before           { content: "abbr"; }
+abbr[class]:hover::before    { content: "abbr." attr(class)}
+acronym:hover::before        { content: "acronym"; }
+acronym[class]:hover::before { content: "acronym." attr(class)}
+kbd:hover::before            { content: "kbd"; }
+kbd[class]:hover::before     { content: "kbd." attr(class)}
+/*q:hover::before(2)           { content: "q"; }
+q[class]:hover::before(2)    { content: "q." attr(class)}*/
+cite:hover::before           { content: "cite"; }
+cite[class]:hover::before    { content: "cite." attr(class)}
+samp:hover::before           { content: "samp"; }
+samp[class]:hover::before    { content: "samp." attr(class)}
+var:hover::before            { content: "var"; }
+var[class]:hover::before     { content: "var." attr(class)}
+del:hover::before            { content: "del"; }
+del[class]:hover::before     { content: "del." attr(class)}
+ins:hover::before            { content: "ins"; }
+ins[class]:hover::before     { content: "ins." attr(class)}
+dfn:hover::before            { content: "dfn"; }
+dfn[class]:hover::before     { content: "dfn." attr(class)}
+code:hover::before           { content: "code"; }
+code[class]:hover::before    { content: "code." attr(class)}
+sup:hover::before            { content: "sup"; }
+sup[class]:hover::before     { content: "sup." attr(class)}
+sub:hover::before            { content: "sub"; }
+sub[class]:hover::before     { content: "sub." attr(class)}
+
+span:hover,
+strong:hover, b:hover,
+em:hover, i:hover,
+a[href]:hover,
+abbr:hover,
+acronym:hover,
+kbd:hover,
+q:hover,
+cite:hover,
+samp:hover,
+var:hover,
+del:hover,
+ins:hover,
+dfn:hover,
+code:hover,
+sup:hover,
+sub:hover { background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAN1wAADdcBQiibeAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAAgSURBVAiZY3DMfPj/////DDDMxIAGMAQYHTMf/kcWAADRgQ4R3lkO7wAAAABJRU5ErkJggg==) bottom left no-repeat,
+                        url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAN1wAADdcBQiibeAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAAgSURBVAiZY/z//z8DDDhlPfrPxIAGMAQYHTMf/kcWAABxJAgb2YLYKgAAAABJRU5ErkJggg==) bottom right no-repeat }
