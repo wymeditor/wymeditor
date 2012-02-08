@@ -1141,41 +1141,71 @@ test("Invalid nesting correction requiring spacer", function () {
     htmlEquals(wymeditor, expectedHtml);
 });
 test("Invalid nesting outdent", function () {
-    expect(3);
+    expect(5);
 
-    // Not round-trippable because of post-sublist content moving li's
-    testList('li_2_2', 'outdent', invalidNestingHtml, li_2_2_outdentInvalidNestingHtml);
+    // First outdent just corrects things and the second actually makes the change
+    testList('li_2_2', 'outdent', invalidNestingHtml, invalidNestingCorrectedHtml);
+    testList(
+        'li_2_2',
+        'outdent',
+        null,
+        li_2_2_outdentInvalidNestingHtml,
+        false,
+        false
+    );
+    // Can't go the other way because of the <br /> business
 
     // Via Text selection
-    testList('li_2_2', 'outdent', invalidNestingHtml, li_2_2_outdentInvalidNestingHtml, true);
+    testList('li_2_2', 'outdent', invalidNestingHtml, invalidNestingCorrectedHtml, true);
+    testList(
+        'li_2_2',
+        'outdent',
+        null,
+        li_2_2_outdentInvalidNestingHtml,
+        true,
+        false
+    );
 });
 test("Invalid unwrapped text indent", function () {
-    expect(8);
+    expect(7);
 
-    // Not round-trippable because of initial invalid nesting
-    testList('span_5_2', 'indent', invalidNestingHtml, span_5_2_indentedInvalidNestingHtml);
-    testListRoundTrip(
-        'span_5_2',
-        'outdent',
-        span_5_2_indentedInvalidNestingHtml,
-        invalidNestingCorrectedHtml
-    );
-
-    // Via Text selection
-    // Not round-trippable because of initial invalid nesting
+    // First outdent just corrects things and the second actually makes the change
+    testList('span_5_2', 'indent', invalidNestingHtml, invalidNestingCorrectedHtml);
     testList(
         'span_5_2',
         'indent',
-        invalidNestingHtml,
+        null,
         span_5_2_indentedInvalidNestingHtml,
-        true
+        false,
+        false
     );
-    testListRoundTrip(
+    testList(
         'span_5_2',
         'outdent',
-        span_5_2_indentedInvalidNestingHtml,
+        null,
         invalidNestingCorrectedHtml,
-        true
+        false,
+        false
+    );
+
+    // Via Text selection
+    // Not round-trippable because of initial invalid nesting
+    testList('span_5_2', 'indent', invalidNestingHtml, invalidNestingCorrectedHtml, true);
+    testList(
+        'span_5_2',
+        'indent',
+        null,
+        span_5_2_indentedInvalidNestingHtml,
+        true,
+        false
+    );
+    testList(
+        'span_5_2',
+        'outdent',
+        null,
+        invalidNestingCorrectedHtml,
+        true,
+        false
     );
 });
 
@@ -1327,16 +1357,19 @@ orphanedLiHtml.ordered.li_new = String() +
         'text' +
         '<li id="li_text_sep">li_text_sep</li>';
 test("Correction breaks on paragraphs", function () {
-    expect(6);
+    expect(7);
     var testData = orphanedLiHtml,
         testItem = 'li_new';
 
-    testList(testItem, 'unordered', testData.base, testData.unordered[testItem]);
-    testList(testItem, 'ordered', testData.base, testData.ordered[testItem]);
+    // First action just fixes the list
+    testList(testItem, 'unordered', testData.base, testData.ordered[testItem]);
+    testList(testItem, 'unordered', null, testData.unordered[testItem], false, false);
+    testList(testItem, 'ordered', null, testData.ordered[testItem], false, false);
 
-        // Via Text selection
-    testList(testItem, 'unordered', testData.base, testData.unordered[testItem], true);
-    testList(testItem, 'ordered', testData.base, testData.ordered[testItem], true);
+    // Via Text selection
+    testList(testItem, 'unordered', testData.base, testData.ordered[testItem], true);
+    testList(testItem, 'unordered', null, testData.unordered[testItem], false, false);
+    testList(testItem, 'ordered', null, testData.ordered[testItem], false, false);
 });
 orphanedLiHtml.unordered.li_text_sep = String() +
         '<ol id="ol_1">' +
@@ -1345,23 +1378,23 @@ orphanedLiHtml.unordered.li_text_sep = String() +
                     '<li id="li_1_1">li_1_1</li>' +
                 '</ol>' +
             '</li>' +
-            '<li id="li_2">li_2' +
-                '<ol id="ol_2_1">' +
-                    '<li id="li_2_1">li_2_1' +
-                        '<ol>' +
-                            '<li id="li_2_1_1">li_2_1_1</li>' +
-                        '</ol>' +
-                    '</li>' +
-                '</ol>' +
-            '</li>' +
-            '<li id="li_3">li_3</li>' +
         '</ol>' +
+        '<li id="li_2">li_2' +
+            '<ol id="ol_2_1">' +
+                '<li id="li_2_1">li_2_1' +
+                    '<ol>' +
+                        '<li id="li_2_1_1">li_2_1_1</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+        '<li id="li_3">li_3</li>' +
         '<p>stop</p>' +
         '<li id="li_new">li_new</li>' +
         'text' +
         '<ul>' +
             '<li id="li_text_sep">li_text_sep</li>' +
-        '<ul>';
+        '</ul>';
 orphanedLiHtml.ordered.li_text_sep = String() +
         '<ol id="ol_1">' +
             '<li id="li_1">li_1' +
@@ -1369,34 +1402,37 @@ orphanedLiHtml.ordered.li_text_sep = String() +
                     '<li id="li_1_1">li_1_1</li>' +
                 '</ol>' +
             '</li>' +
-            '<li id="li_2">li_2' +
-                '<ol id="ol_2_1">' +
-                    '<li id="li_2_1">li_2_1' +
-                        '<ol>' +
-                            '<li id="li_2_1_1">li_2_1_1</li>' +
-                        '</ol>' +
-                    '</li>' +
-                '</ol>' +
-            '</li>' +
-            '<li id="li_3">li_3</li>' +
         '</ol>' +
+        '<li id="li_2">li_2' +
+            '<ol id="ol_2_1">' +
+                '<li id="li_2_1">li_2_1' +
+                    '<ol>' +
+                        '<li id="li_2_1_1">li_2_1_1</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+        '<li id="li_3">li_3</li>' +
         '<p>stop</p>' +
         '<li id="li_new">li_new</li>' +
         'text' +
         '<ol>' +
             '<li id="li_text_sep">li_text_sep</li>' +
-        '<ol>';
+        '</ol>';
 test("Correction breaks on text", function () {
-    expect(6);
+    expect(7);
     var testData = orphanedLiHtml,
         testItem = 'li_text_sep';
 
-    testList(testItem, 'unordered', testData.base, testData.unordered[testItem]);
-    testList(testItem, 'ordered', testData.base, testData.ordered[testItem]);
+    // Default action on the first click
+    testList(testItem, 'unordered', testData.base, testData.ordered[testItem]);
+    testList(testItem, 'unordered', null, testData.unordered[testItem], false, false);
+    testList(testItem, 'ordered', null, testData.ordered[testItem], false, false);
 
-        // Via Text selection
-    testList(testItem, 'unordered', testData.base, testData.unordered[testItem], true);
-    testList(testItem, 'ordered', testData.base, testData.ordered[testItem], true);
+    // Via Text selection
+    testList(testItem, 'unordered', testData.base, testData.ordered[testItem], true);
+    testList(testItem, 'unordered', null, testData.unordered[testItem], false, false);
+    testList(testItem, 'ordered', null, testData.ordered[testItem], false, false);
 });
 
 
