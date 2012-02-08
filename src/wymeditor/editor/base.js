@@ -1480,9 +1480,9 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
         // If our last content and the first content in the subsequent content
         // are both text nodes, insert a <br /> spacer to avoid crunching the
         // text together visually. This maintains the same "visual" structure.
-        if ($liToOutdent.contents().length > 0
-                && $liToOutdent.contents().last()[0].nodeType === WYMeditor.NODE.TEXT
-                && $subsequentParentListSiblingContent[0].nodeType === WYMeditor.NODE.TEXT) {
+        if ($liToOutdent.contents().length > 0 &&
+                $liToOutdent.contents().last()[0].nodeType === WYMeditor.NODE.TEXT &&
+                $subsequentParentListSiblingContent[0].nodeType === WYMeditor.NODE.TEXT) {
             $liToOutdent.append('<br />');
         }
 
@@ -1509,14 +1509,23 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
     Corrected lists have the following properties:
     1. ol and ul nodes *only* allow li children.
     2. All li nodes have either an ol or ul parent.
+
+    The `alreadyCorrected` argument is used to indicate if a correction has
+    already been made, which means we need to return true even if no further
+    corrections are made.
+
+    Returns true if any nodes were corrected.
  */
-WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem) {
+WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alreadyCorrected) {
     // Travel up the dom until we're at the root ol/ul/li
     var currentNode = listItem,
         parentNode,
         tagName;
+    if (typeof alreadyCorrected === 'undefined') {
+        alreadyCorrected = false;
+    }
     if (!currentNode) {
-        return;
+        return alreadyCorrected;
     }
     while (currentNode.parentNode) {
         parentNode = currentNode.parentNode;
@@ -1539,13 +1548,13 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem) {
         // Correct this problem and then try again to correct the nesting.
         WYMeditor.console.log("Correcting orphaned root li before correcting invalid list nesting.");
         this._correctOrphanedListItem(currentNode);
-        return this.correctInvalidListNesting(currentNode);
+        return this.correctInvalidListNesting(currentNode, true);
     }
     if (!$(currentNode).is('ol,ul')) {
         WYMeditor.console.error("Can't correct invalid list nesting. No root list found");
-        return;
+        return alreadyCorrected;
     }
-    return this._correctInvalidListNesting(currentNode);
+    return this._correctInvalidListNesting(currentNode, alreadyCorrected);
 };
 /**
     editor._correctOrphanedListItem
@@ -1595,6 +1604,8 @@ WYMeditor.editor.prototype._correctOrphanedListItem = function (listNode) {
     correctInvalidListNesting is just a helper function that first finds the root
     of the list.
 
+    Returns true if any correction was made.
+
     We use a reverse preorder traversal to navigate the DOM because we might be:
 
     * Making nodes children of their previous sibling (in the <ol><li></li><ol>...</ol></ol> case)
@@ -1603,9 +1614,10 @@ WYMeditor.editor.prototype._correctOrphanedListItem = function (listNode) {
     Adapted from code at: Tavs Dokkedahl from
     http://www.jslab.dk/articles/non.recursive.preorder.traversal.part3
  */
-WYMeditor.editor.prototype._correctInvalidListNesting = function (listNode) {
+WYMeditor.editor.prototype._correctInvalidListNesting = function (listNode, alreadyCorrected) {
     var rootNode = listNode,
         currentNode = listNode,
+        wasCorrected = false,
         previousSibling,
         previousLi,
         $currentNode,
@@ -1615,6 +1627,9 @@ WYMeditor.editor.prototype._correctInvalidListNesting = function (listNode) {
         targetLi,
         lastContentNode,
         spacerHtml = '<li class="spacer_li"></li>';
+    if (typeof alreadyCorrected !== 'undefined') {
+        wasCorrected = alreadyCorrected;
+    }
 
     while (currentNode) {
         if (currentNode._wym_visited) {
@@ -1675,6 +1690,7 @@ WYMeditor.editor.prototype._correctInvalidListNesting = function (listNode) {
                         // 3. Move all of the content to the previous li or the
                         // subsequent li (in that priority).
                         WYMeditor.console.log("Fixing orphaned list content");
+                        wasCorrected = true;
 
                         // Gather this and previous sibling until the previous li
                         nodesToMove = [currentNode];
@@ -1715,8 +1731,7 @@ WYMeditor.editor.prototype._correctInvalidListNesting = function (listNode) {
                         // with a <br /> to preserve the visual layout of them
                         // being on separate lines
                         lastContentNode = $(targetLi).contents().last();
-                        if (lastContentNode.length === 1
-                                && lastContentNode[0].nodeType === WYMeditor.NODE.TEXT) {
+                        if (lastContentNode.length === 1 && lastContentNode[0].nodeType === WYMeditor.NODE.TEXT) {
                             if (nodesToMove[0].nodeType === WYMeditor.NODE.TEXT) {
                                 $(targetLi).append('<br />');
                             }
@@ -1743,6 +1758,7 @@ WYMeditor.editor.prototype._correctInvalidListNesting = function (listNode) {
         }
     }
 
+    return wasCorrected;
 };
 
 /**
@@ -1888,8 +1904,8 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
 
     // Filter out the non-li nodes
     for (i = 0; i < nodes.length; i++) {
-        if (nodes[i].nodeType === WYMeditor.NODE.ELEMENT
-                && nodes[i].tagName.toLowerCase() === WYMeditor.LI) {
+        if (nodes[i].nodeType === WYMeditor.NODE.ELEMENT &&
+                nodes[i].tagName.toLowerCase() === WYMeditor.LI) {
             liNodes.push(nodes[i]);
         }
     }
@@ -1920,10 +1936,18 @@ WYMeditor.editor.prototype.indent = function () {
                 selectedBlock,
                 ['ol', 'ul', 'li']
             );
-        wym.correctInvalidListNesting(potentialListBlock);
-        return true;
+        return wym.correctInvalidListNesting(potentialListBlock);
     };
-    wym.restoreSelectionAfterManipulation(manipulationFunc);
+    if (wym.restoreSelectionAfterManipulation(manipulationFunc)) {
+        // We actually made some list correction
+        // Don't actually perform the action if we've potentially just changed
+        // the list, and maybe the list appearance as a result.
+        return true;
+    }
+
+    // We just changed and restored the selection when possibly correcting the
+    // lists
+    sel = rangy.getIframeSelection(this._iframe);
 
     // Gather the li nodes the user means to affect based on their current
     // selection
@@ -1948,7 +1972,7 @@ WYMeditor.editor.prototype.indent = function () {
         }
         return domChanged;
     };
-    wym.restoreSelectionAfterManipulation(manipulationFunc);
+    return wym.restoreSelectionAfterManipulation(manipulationFunc);
 };
 
 /**
@@ -1972,10 +1996,18 @@ WYMeditor.editor.prototype.outdent = function () {
                 selectedBlock,
                 ['ol', 'ul', 'li']
             );
-        wym.correctInvalidListNesting(potentialListBlock);
-        return true;
+        return wym.correctInvalidListNesting(potentialListBlock);
     };
-    wym.restoreSelectionAfterManipulation(manipulationFunc);
+    if (wym.restoreSelectionAfterManipulation(manipulationFunc)) {
+        // We actually made some list correction
+        // Don't actually perform the action if we've potentially just changed
+        // the list, and maybe the list appearance as a result.
+        return true;
+    }
+
+    // We just changed and restored the selection when possibly correcting the
+    // lists
+    sel = rangy.getIframeSelection(this._iframe);
 
     // Gather the li nodes the user means to affect based on their current
     // selection
@@ -2000,7 +2032,7 @@ WYMeditor.editor.prototype.outdent = function () {
         }
         return domChanged;
     };
-    wym.restoreSelectionAfterManipulation(manipulationFunc);
+    return wym.restoreSelectionAfterManipulation(manipulationFunc);
 };
 
 /**
@@ -2018,12 +2050,14 @@ WYMeditor.editor.prototype.outdent = function () {
 */
 WYMeditor.editor.prototype.restoreSelectionAfterManipulation = function (manipulationFunc) {
     var sel = rangy.getIframeSelection(this._iframe),
-        savedSelection = rangy.saveSelection(rangy.dom.getIframeWindow(this._iframe));
+        savedSelection = rangy.saveSelection(rangy.dom.getIframeWindow(this._iframe)),
+        changesMade = true;
 
     // If something goes wrong, we don't want to leave selection markers
     // floating around
     try {
-        if (manipulationFunc()) {
+        changesMade = manipulationFunc();
+        if (changesMade) {
             rangy.restoreSelection(savedSelection);
         } else {
             rangy.removeMarkers(savedSelection);
@@ -2033,6 +2067,8 @@ WYMeditor.editor.prototype.restoreSelectionAfterManipulation = function (manipul
         WYMeditor.console.error(e);
         rangy.removeMarkers(savedSelection);
     }
+
+    return changesMade;
 };
 
 /**
@@ -2059,17 +2095,21 @@ WYMeditor.editor.prototype.insertOrderedlist = function () {
                 selectedBlock,
                 ['ol', 'ul', 'li']
             );
-        wym.correctInvalidListNesting(potentialListBlock);
-        return true;
+        return wym.correctInvalidListNesting(potentialListBlock);
     };
-    wym.restoreSelectionAfterManipulation(manipulationFunc);
+    if (wym.restoreSelectionAfterManipulation(manipulationFunc)) {
+        // We actually made some list correction
+        // Don't actually perform the action if we've potentially just changed
+        // the list, and maybe the list appearance as a result.
+        return true;
+    }
 
     // Actually perform the list insertion
     manipulationFunc = function () {
         return wym._insertList('ol');
     };
 
-    wym.restoreSelectionAfterManipulation(manipulationFunc);
+    return wym.restoreSelectionAfterManipulation(manipulationFunc);
 };
 
 /**
@@ -2094,17 +2134,21 @@ WYMeditor.editor.prototype.insertUnorderedlist = function () {
                 selectedBlock,
                 ['ol', 'ul', 'li']
             );
-        wym.correctInvalidListNesting(potentialListBlock);
-        return true;
+        return wym.correctInvalidListNesting(potentialListBlock);
     };
-    wym.restoreSelectionAfterManipulation(manipulationFunc);
+    if (wym.restoreSelectionAfterManipulation(manipulationFunc)) {
+        // We actually made some list correction
+        // Don't actually perform the action if we've potentially just changed
+        // the list, and maybe the list appearance as a result.
+        return true;
+    }
 
     // Actually perform the list insertion
     manipulationFunc = function () {
         return wym._insertList('ul');
     };
 
-    wym.restoreSelectionAfterManipulation(manipulationFunc);
+    return wym.restoreSelectionAfterManipulation(manipulationFunc);
 };
 
 /**
