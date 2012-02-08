@@ -20,8 +20,12 @@
 
 /* VISUAL FEEDBACK */
 @font-face {
-	font-family: "Visitor";
-	src: url("visitor1.ttf");
+    font-family: "Visitor";
+    src: url("visitor1.eot?") format("eot"),
+         url("visitor1.woff") format("woff"),
+         url("visitor1.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
 }
 
 /* basic */
@@ -102,164 +106,164 @@
 /* Spacer BRs shouldn't add much whitespace */
 br { height: 5px; line-height: 5px; }
 
-/* labels: block elements */
+/* labels: block elements; IE support ::before->:before  */
 div, p, ol, ul, dl, li, dt, dd, h1, h2, h3, h4, h5, h6, blockquote, 
 pre, address {
 	position: relative;
 }
-div::before,
-p::before,
-ol::before,
-ul::before,
-dl::before,
-li::before,
-dt::before,
-dd::before,
-h1::before,
-h2::before,
-h3::before,
-h4::before,
-h5::before,
-h6::before,
-blockquote::before,
-pre::before,
-address::before {
+div:before,
+p:before,
+ol:before,
+ul:before,
+dl:before,
+li:before,
+dt:before,
+dd:before,
+h1:before,
+h2:before,
+h3:before,
+h4:before,
+h5:before,
+h6:before,
+blockquote:before,
+pre:before,
+address:before {
 	position: absolute;
 	left: 1px;
 	top: -2px;
 	padding: 1px;
-	font: 12px/12px "Visitor", monospace;
+	font: 10px/10px "Visitor", monospace;
 	color: silver;
 	background: rgba(255,255,255,0.5);
 }
-div:hover::before,
-p:hover::before,
-ol:hover::before,
-ul:hover::before,
-dl:hover::before,
-li:hover::before,
-dt:hover::before,
-dd:hover::before,
-h1:hover::before,
-h2:hover::before,
-h3:hover::before,
-h4:hover::before,
-h5:hover::before,
-h6:hover::before,
-blockquote:hover::before,
-pre:hover::before,
-address:hover::before {
+div:hover:before,
+p:hover:before,
+ol:hover:before,
+ul:hover:before,
+dl:hover:before,
+li:hover:before,
+dt:hover:before,
+dd:hover:before,
+h1:hover:before,
+h2:hover:before,
+h3:hover:before,
+h4:hover:before,
+h5:hover:before,
+h6:hover:before,
+blockquote:hover:before,
+pre:hover:before,
+address:hover:before {
 	color: rgb(65,105,225);
 	background: rgba(255,255,255,0.);
 	outline: 1px solid rgba(65,105,225,0.9);
 }
-div::before               { content: "div" }
-div[class]::before        { content: "div." attr(class) }
-p::before                 { content: "p" }
-p[class]::before          { content: "p." attr(class) }
-ol::before                { content: "ol" }
-ol[class]::before         { content: "ol." attr(class) }
-ul::before                { content: "ul" }
-ul[class]::before         { content: "ul." attr(class) }
-dl::before                { content: "dl" }
-dl[class]::before         { content: "dl." attr(class) }
-li::before                { content: "li" }
-li[class]::before         { content: "li." attr(class) }
-dt::before                { content: "dt" }
-dt[class]::before         { content: "dt." attr(class) }
-dd::before                { content: "dd" }
-dd[class]::before         { content: "dd." attr(class) }
-h1::before                { content: "h1" }
-h1[class]::before         { content: "h1." attr(class) }
-h2::before                { content: "h2" }
-h2[class]::before         { content: "h2." attr(class) }
-h3::before                { content: "h3" }
-h3[class]::before         { content: "h3." attr(class) }
-h4::before                { content: "h4" }
-h4[class]::before         { content: "h4." attr(class) }
-h5::before                { content: "h5" }
-h5[class]::before         { content: "h5." attr(class) }
-h6::before                { content: "h6" }
-h6[class]::before         { content: "h6." attr(class) }
-blockquote::before        { content: "blockquote" }
-blockquote[class]::before { content: "blockquote." attr(class) }
-pre::before               { content: "pre" }
-pre[class]::before        { content: "pre." attr(class) }
-address::before           { content: "address" }
-address[class]::before    { content: "address." attr(class) }
+div:before               { content: "div" }
+div[class]:before        { content: "div." attr(class) }
+p:before                 { content: "p" }
+p[class]:before          { content: "p." attr(class) }
+ol:before                { content: "ol" }
+ol[class]:before         { content: "ol." attr(class) }
+ul:before                { content: "ul" }
+ul[class]:before         { content: "ul." attr(class) }
+dl:before                { content: "dl" }
+dl[class]:before         { content: "dl." attr(class) }
+li:before                { content: "li" }
+li[class]:before         { content: "li." attr(class) }
+dt:before                { content: "dt" }
+dt[class]:before         { content: "dt." attr(class) }
+dd:before                { content: "dd" }
+dd[class]:before         { content: "dd." attr(class) }
+h1:before                { content: "h1" }
+h1[class]:before         { content: "h1." attr(class) }
+h2:before                { content: "h2" }
+h2[class]:before         { content: "h2." attr(class) }
+h3:before                { content: "h3" }
+h3[class]:before         { content: "h3." attr(class) }
+h4:before                { content: "h4" }
+h4[class]:before         { content: "h4." attr(class) }
+h5:before                { content: "h5" }
+h5[class]:before         { content: "h5." attr(class) }
+h6:before                { content: "h6" }
+h6[class]:before         { content: "h6." attr(class) }
+blockquote:before        { content: "blockquote" }
+blockquote[class]:before { content: "blockquote." attr(class) }
+pre:before               { content: "pre" }
+pre[class]:before        { content: "pre." attr(class) }
+address:before           { content: "address" }
+address[class]:before    { content: "address." attr(class) }
 
 /* labels: inline elements */
 span, strong, b, em, i, a, abbr, acronym, kbd, q, cite, samp, var, del, 
 ins, dfn, code, sup, sub {
 	position: relative;
 }
-span:hover::before,
-strong:hover::before,
-b:hover::before,
-em:hover::before,
-i:hover::before,
-a:hover::before,
-abbr:hover::before,
-acronym:hover::before,
-kbd:hover::before,
+span:hover:before,
+strong:hover:before,
+b:hover:before,
+em:hover:before,
+i:hover:before,
+a:hover:before,
+abbr:hover:before,
+acronym:hover:before,
+kbd:hover:before,
 /*q:hover::before(2), now is not working http://www.w3.org/TR/css3-content/#inserting0 */
-cite:hover::before,
-samp:hover::before,
-var:hover::before,
-del:hover::before,
-ins:hover::before,
-dfn:hover::before,
-code:hover::before,
-sup:hover::before,
-sub:hover::before {
+cite:hover:before,
+samp:hover:before,
+var:hover:before,
+del:hover:before,
+ins:hover:before,
+dfn:hover:before,
+code:hover:before,
+sup:hover:before,
+sub:hover:before {
 	position: absolute;
 	top: -5px;
 	left: -2px;
 	padding: 1px;
-	font: 12px/12px "Visitor", monospace;
-	hyphens: none; /* chrome a-href */
+	font: 10px/10px "Visitor", monospace;
+	hyphens: none; /* chrome: a-href */
 	color: rgb(65,105,225);
 	background: rgba(255,255,255,0.9);
 	outline: 1px solid rgba(65,105,225,0.9);
 }
-span:hover::before           { content: "span"; }
-span[class]:hover::before    { content: "span." attr(class)}
-strong:hover::before         { content: "strong"; }
-strong[class]:hover::before  { content: "strong." attr(class)}
-b:hover::before              { content: "strong"; }
-b[class]:hover::before       { content: "strong." attr(class)}
-em:hover::before             { content: "em"; }
-em[class]:hover::before      { content: "em." attr(class)}
-i:hover::before              { content: "em"; }
-i[class]:hover::before       { content: "em." attr(class)}
-a[href]:hover::before        { content: "a-href"; }
-a[href][class]:hover::before { content: "a-href." attr(class)}
-abbr:hover::before           { content: "abbr"; }
-abbr[class]:hover::before    { content: "abbr." attr(class)}
-acronym:hover::before        { content: "acronym"; }
-acronym[class]:hover::before { content: "acronym." attr(class)}
-kbd:hover::before            { content: "kbd"; }
-kbd[class]:hover::before     { content: "kbd." attr(class)}
+span:hover:before           { content: "span"; }
+span[class]:hover:before    { content: "span." attr(class)}
+strong:hover:before         { content: "strong"; }
+strong[class]:hover:before  { content: "strong." attr(class)}
+b:hover:before              { content: "strong"; }
+b[class]:hover:before       { content: "strong." attr(class)}
+em:hover:before             { content: "em"; }
+em[class]:hover:before      { content: "em." attr(class)}
+i:hover:before              { content: "em"; }
+i[class]:hover:before       { content: "em." attr(class)}
+a[href]:hover:before        { content: "a-href"; }
+a[href][class]:hover:before { content: "a-href." attr(class)}
+abbr:hover:before           { content: "abbr"; }
+abbr[class]:hover:before    { content: "abbr." attr(class)}
+acronym:hover:before        { content: "acronym"; }
+acronym[class]:hover:before { content: "acronym." attr(class)}
+kbd:hover:before            { content: "kbd"; }
+kbd[class]:hover:before     { content: "kbd." attr(class)}
 /*q:hover::before(2)           { content: "q"; }
 q[class]:hover::before(2)    { content: "q." attr(class)}*/
-cite:hover::before           { content: "cite"; }
-cite[class]:hover::before    { content: "cite." attr(class)}
-samp:hover::before           { content: "samp"; }
-samp[class]:hover::before    { content: "samp." attr(class)}
-var:hover::before            { content: "var"; }
-var[class]:hover::before     { content: "var." attr(class)}
-del:hover::before            { content: "del"; }
-del[class]:hover::before     { content: "del." attr(class)}
-ins:hover::before            { content: "ins"; }
-ins[class]:hover::before     { content: "ins." attr(class)}
-dfn:hover::before            { content: "dfn"; }
-dfn[class]:hover::before     { content: "dfn." attr(class)}
-code:hover::before           { content: "code"; }
-code[class]:hover::before    { content: "code." attr(class)}
-sup:hover::before            { content: "sup"; }
-sup[class]:hover::before     { content: "sup." attr(class)}
-sub:hover::before            { content: "sub"; }
-sub[class]:hover::before     { content: "sub." attr(class)}
+cite:hover:before           { content: "cite"; }
+cite[class]:hover:before    { content: "cite." attr(class)}
+samp:hover:before           { content: "samp"; }
+samp[class]:hover:before    { content: "samp." attr(class)}
+var:hover:before            { content: "var"; }
+var[class]:hover:before     { content: "var." attr(class)}
+del:hover:before            { content: "del"; }
+del[class]:hover:before     { content: "del." attr(class)}
+ins:hover:before            { content: "ins"; }
+ins[class]:hover:before     { content: "ins." attr(class)}
+dfn:hover:before            { content: "dfn"; }
+dfn[class]:hover:before     { content: "dfn." attr(class)}
+code:hover:before           { content: "code"; }
+code[class]:hover:before    { content: "code." attr(class)}
+sup:hover:before            { content: "sup"; }
+sup[class]:hover:before     { content: "sup." attr(class)}
+sub:hover:before            { content: "sub"; }
+sub[class]:hover:before     { content: "sub." attr(class)}
 
 span:hover,
 strong:hover, b:hover,
