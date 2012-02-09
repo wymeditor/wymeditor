@@ -14,31 +14,33 @@ function setupWym(extraPostInit) {
         jQuery('.wymeditor').wymeditor({
             stylesheet: 'styles.css',
             postInit: function (wym) {
-                var listPlugin = new ListPlugin({}, wym);
-                var tableEditor = wym.table();
-
+                var listPlugin = new ListPlugin({}, wym),
+                    tableEditor = wym.table(),
                 /**
                 * Determine if attempting to select a cell with a non-text inner node (a span)
                 * actually selects the inner node or selects the cell itself. FF for example,
                 * selects the cell while webkit selects the inner.
                 */
-                var initialHtml = String() +
+                    initialHtml = String() +
                         '<table>' +
                             '<tbody>' +
                                 '<tr>' +
                                     '<td id="td_1_1"><span id="span_1_1">span_1_1</span></td>' +
                                 '</tr>' +
                             '</tbody>' +
-                        '</table>';
-                var spanSelector = '#span_1_1';
-                var tdSelector = '#td_1_1';
+                        '</table>',
+                    spanSelector = '#span_1_1',
+                    tdSelector = '#td_1_1',
+                    $body,
+                    td,
+                    span;
 
                 wym.html(initialHtml);
 
-                var $body = $(wym._doc).find('body.wym_iframe');
+                $body = $(wym._doc).find('body.wym_iframe');
 
-                var td = $body.find(tdSelector)[0];
-                var span = $body.find(spanSelector)[0];
+                td = $body.find(tdSelector)[0];
+                span = $body.find(spanSelector)[0];
                 wym.tableEditor.selectElement($body.find(tdSelector)[0]);
 
                 if (wym.selected() === span) {
@@ -84,8 +86,10 @@ test("Configure classes items using CSS", function () {
         "Classes loaded"
     );
     equals(
-        jQuery('div.wym_classes a:first-child', jQuery.wymeditors(0)._box).
-                attr('name'),
+        jQuery(
+            'div.wym_classes a:first-child',
+            jQuery.wymeditors(0)._box
+        ).attr('name'),
         'date',
         "First loaded class name"
     );
@@ -95,8 +99,8 @@ module("XmlHelper", {setup: setupWym});
 
 test("Should escape URL's only once #69.1", function () {
     expect(2);
-    var original = "index.php?module=x&func=view&id=1";
-    var expected = "index.php?module=x&amp;func=view&amp;id=1";
+    var original = "index.php?module=x&func=view&id=1",
+        expected = "index.php?module=x&amp;func=view&amp;id=1";
     equals(jQuery.wymeditors(0).helper.escapeOnce(original), expected,
             "Escape entities");
     equals(jQuery.wymeditors(0).helper.escapeOnce(expected), expected,
@@ -115,9 +119,9 @@ test("Should correct invalid lists", function () {
                     '<\/ul>' +
                 '<\/li>' +
                 '<li>b<\/li>' +
-            '<\/ul>';
+            '<\/ul>',
     // FF
-    var design_mode_pseudo_html = String() +
+        design_mode_pseudo_html = String() +
             '<ul>' +
                 '<li>a<\/li>' +
                 '<ul>' +
@@ -194,9 +198,8 @@ test("Should correct under-closed lists", function () {
                 '<li id="li_6">6</li>' +
                 '<li id="li_7">7</li>' +
                 '<li id="li_8">8</li>' +
-            '</ol>';
-
-    var fixedHtml = String() +
+            '</ol>',
+        fixedHtml = String() +
             '<ol>' +
                 '<li id="li_1">1</li>' +
                 '<li id="li_2">2' +
@@ -235,10 +238,38 @@ test("Should correct under-closed lists", function () {
     equals(jQuery.wymeditors(0).parser.parse(missingClosingLiHtml), fixedHtml);
 });
 
+test("Don't over-close lists", function () {
+    expect(1);
+    var orphanedLiHtml = String() +
+        '<ol id="ol_1">' +
+            '<li id="li_1">li_1' +
+                '<ol>' +
+                    '<li id="li_1_1">li_1_1</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>' +
+        '<li id="li_2">li_2' +
+            '<ol id="ol_2_1">' +
+                '<li id="li_2_1">li_2_1' +
+                    '<ol>' +
+                        '<li id="li_2_1_1">li_2_1_1</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+        '<li id="li_3">li_3</li>' +
+        '<p>stop</p>' +
+        '<li id="li_new">li_new</li>' +
+        'text' +
+        '<li id="li_text_sep">li_text_sep</li>';
+
+    equals(jQuery.wymeditors(0).parser.parse(orphanedLiHtml), orphanedLiHtml);
+});
+
 test("Shouldn't remove empty td elements", function () {
     expect(1);
-    var expected = '<table><tr><td>Cell1</td><td></td></tr></table>';
-    var empty_cell = '<table><tr><td>Cell1</td><td></td></tr></table>';
+    var expected = '<table><tr><td>Cell1</td><td></td></tr></table>',
+        empty_cell = '<table><tr><td>Cell1</td><td></td></tr></table>';
     equals(jQuery.wymeditors(0).parser.parse(empty_cell), expected);
 });
 
@@ -247,8 +278,8 @@ test("Should remove PRE line breaks (BR)", function () {
     var original = String() +
             '<pre>One<br>Two<br>Three</pre>' +
             '<p>Test</p>' +
-            '<pre>Three<br>Four<br>Five</pre>';
-    var expected = String() +
+            '<pre>Three<br>Four<br>Five</pre>',
+        expected = String() +
             '<pre>One\r\nTwo\r\nThree</pre>' +
             '<p>Test</p>' +
             '<pre>Three\r\nFour\r\nFive</pre>';
@@ -273,8 +304,8 @@ test("Shouldn't strip colSpan attributes", function () {
                     '<td id="td_2_1">2_1</td>' +
                     '<td id="td_2_2">2_2</td>' +
                 '</tr>' +
-            '</table>';
-    var expected = String() +
+            '</table>',
+        expected = String() +
             '<table>' +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1" colspan="2">1_1</td>' +
@@ -295,8 +326,8 @@ module("Post Init", {setup: setupWym});
 
 test("Sanity check: html()", function () {
     expect(1);
-    var testText1 = '<p>This is some text with which to test.<\/p>';
-    var wymeditor = jQuery.wymeditors(0);
+    var testText1 = '<p>This is some text with which to test.<\/p>',
+        wymeditor = jQuery.wymeditors(0);
 
     wymeditor.html(testText1);
     htmlEquals(wymeditor, testText1);
@@ -692,17 +723,19 @@ module("Table Insertion", {setup: setupWym});
 test("Table is editable after insertion", function () {
     expect(7);
 
-    var wymeditor = jQuery.wymeditors(0);
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        dm;
     wymeditor.html('');
 
-    var $body = $(wymeditor._doc).find('body.wym_iframe');
+    $body = $(wymeditor._doc).find('body.wym_iframe');
     wymeditor.insertTable(3, 2, '', '');
 
     $body.find('td').each(function (index, td) {
         equals(isContentEditable(td), true);
     });
 
-    var dm = wymeditor._doc.designMode;
+    dm = wymeditor._doc.designMode;
     ok(dm === 'on' || dm === 'On');
 });
 
@@ -726,10 +759,11 @@ if ($.browser.mozilla) {
     test("Table cells are editable in FF > 3.5: table insert", function () {
         expect(12);
 
-        var wymeditor = jQuery.wymeditors(0);
+        var wymeditor = jQuery.wymeditors(0),
+            $body;
         wymeditor.html('');
 
-        var $body = $(wymeditor._doc).find('body.wym_iframe');
+        $body = $(wymeditor._doc).find('body.wym_iframe');
         wymeditor.insertTable(3, 2, '', '');
 
         $body.find('td').each(function (index, td) {
@@ -746,8 +780,8 @@ if ($.browser.mozilla) {
     test("Table cells are editable in FF > 3.5: html() insert", function () {
         expect(12);
 
-        var wymeditor = jQuery.wymeditors(0);
-        var $body = $(wymeditor._doc).find('body.wym_iframe');
+        var wymeditor = jQuery.wymeditors(0),
+            $body = $(wymeditor._doc).find('body.wym_iframe');
 
         wymeditor.html('');
         wymeditor.html(table_3_2_html);
@@ -767,8 +801,8 @@ if ($.browser.mozilla) {
             // the HTML
             expect(12);
 
-            var wymeditor = jQuery.wymeditors(0);
-            var $body = $(wymeditor._doc).find('body.wym_iframe');
+            var wymeditor = jQuery.wymeditors(0),
+                $body = $(wymeditor._doc).find('body.wym_iframe');
 
             $body.html(table_3_2_html);
             $body.find('td').each(function (index, td) {
@@ -790,14 +824,16 @@ test("Preformatted text retains spacing", function () {
         '<pre>pre1\r\n' +
         'spaced\r\n\r\n' +
         'double  spaced' +
-        '</pre>';
+        '</pre>',
+        wymeditor = jQuery.wymeditors(0),
+        $body,
+        pre_children;
 
     // Only ie and firefox 3.x use \r\n newlines
     if ($.browser.webkit || $.browser.safari || ($.browser.mozilla && $.browser.version > '2.0')) {
         preHtml = preHtml.replace(/\r/g, '');
     }
 
-    var wymeditor = jQuery.wymeditors(0);
     wymeditor.html(preHtml);
 
     expect(1);
@@ -805,8 +841,8 @@ test("Preformatted text retains spacing", function () {
     if ($.browser.mozilla && $.browser.version < '2.0') {
         // Firefox 3.x converts the text inside pre to DOM nodes, where as other
         // browsers just use plain text
-        var $body = $(wymeditor._doc).find('body.wym_iframe');
-        var pre_children = $body.children('pre').contents();
+        $body = $(wymeditor._doc).find('body.wym_iframe');
+        pre_children = $body.children('pre').contents();
 
         expect(8);
         equals(pre_children.length, 6,
@@ -830,9 +866,8 @@ test("Double soft returns are allowed", function () {
     var initHtml = String() +
             '<ul>' +
                 '<li>li_1<br /><br />stuff</li>' +
-            '</ul>';
-
-    var wymeditor = jQuery.wymeditors(0);
+            '</ul>',
+        wymeditor = jQuery.wymeditors(0);
     wymeditor.html(initHtml);
 
     wymeditor.fixBodyHtml();
@@ -848,9 +883,8 @@ test("_selected image is saved on mousedown", function () {
             '<p id="noimage">Images? We dont need no stinkin images</p>' +
             '<p>' +
                 '<img id="google" src="http://www.google.com/intl/en_com/images/srpr/logo3w.png" />' +
-            '</p>';
-
-    var wymeditor = jQuery.wymeditors(0),
+            '</p>',
+        wymeditor = jQuery.wymeditors(0),
         $body,
         $noimage,
         $google;

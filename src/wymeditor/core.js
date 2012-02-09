@@ -1064,35 +1064,6 @@ jQuery.fn.prevAllContents = function () {
     return $(this).prevContentsUntil('', '');
 };
 
-/**
-    jQuery.fn.prevAllContents
-    =========================
-
-    Acts like jQuery.prevAll() but includes text nodes and comments and only
-    works on the first element in the given jQuery collection..
-
-    Mostly cribbed from the jQuery source.
-*/
-jQuery.fn.prevAllContents = function () {
-    var matched = [],
-        cur = this.get(0);
-
-    if (!cur) {
-        // Called on an empty selector. The sibling of nothing is nothing
-        return $();
-    }
-    // We don't want to include this element, only its siblings
-    cur = cur.previousSibling;
-
-    while (cur) {
-        matched.push(cur);
-        cur = cur.previousSibling;
-    }
-
-    return $(matched);
-};
-
-
 WYMeditor.isPhantomNode = function (n) {
     if (n.nodeType === 3) {
         return !(/[^\t\n\r ]/.test(n.data));
