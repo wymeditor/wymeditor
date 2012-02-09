@@ -21,7 +21,7 @@
 /* VISUAL FEEDBACK */
 @font-face {
     font-family: "Visitor";
-    src: url("visitor1.eot?") format("eot"),
+    src: url("visitor1.eot") format("eot"),
          url("visitor1.woff") format("woff"),
          url("visitor1.ttf") format("truetype");
     font-weight: normal;
@@ -59,18 +59,25 @@
   ul ol,
   ol ol,
   ol ul         { margin: 5px 0 0 -5px }
-  li            { background: white;
-                  margin: 0 0 0 20px;
+  ul > li ul,
+  ul > li ol,
+  ol > li ul,
+  ol > li ol    { border-top: 4px solid #B9C4D0 }
+  li > p:first-child,
+  li > div:first-child { margin-top: 0 } 
+  li > p:last-child,
+  li > div:last-child {	margin-bottom: 0 }
+  li, 
+  dd, 
+  dt            { background: white;
+                  margin: 0px 0 4px 20px;
                   padding: 8px 0 0 5px; }
-  dt, dd        { background: white;
-                  margin: 0 0 0 20px; 
-                  padding: 8px 0 0 5px }
+  dt            { margin-bottom: 0 }
   dd            { margin-left: 4em }
-  td            { background: #F0F4F8; }
+  td            { background: #F0F4F8; width: 25%; }
   th            { background: #ffffcc; }
   caption       { background: #E4E4B0; padding: 5px; font-weight: bold; }
   table         { font-size: 12px; width: 500px; }
-  td            { width: 25%; }
   blockquote    { margin-left: 30px; }
   pre           { background-color:transparent; border: 1px solid white; }
 
@@ -135,6 +142,12 @@ address:before {
 	font: 10px/10px "Visitor", monospace;
 	color: silver;
 	background: rgba(255,255,255,0.5);
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    -ms-user-select: none;  
+    user-select: none;
 }
 div:hover:before,
 p:hover:before,
@@ -225,6 +238,12 @@ sub:hover:before {
 	color: rgb(65,105,225);
 	background: rgba(255,255,255,0.9);
 	outline: 1px solid rgba(65,105,225,0.9);
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    -ms-user-select: none;  
+    user-select: none;
 }
 span:hover:before           { content: "span"; }
 span[class]:hover:before    { content: "span." attr(class)}
