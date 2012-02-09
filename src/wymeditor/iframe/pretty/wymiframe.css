@@ -73,7 +73,8 @@
                   margin: 0px 0 4px 20px;
                   padding: 8px 0 0 5px; }
   dt            { margin-bottom: 0 }
-  dd            { margin-left: 4em }
+  dd + dt       { margin-top: 4px; }
+  dd            { margin: 2px 0 0 4em }
   td            { background: #F0F4F8; width: 25%; }
   th            { background: #ffffcc; }
   caption       { background: #E4E4B0; padding: 5px; font-weight: bold; }
@@ -136,9 +137,9 @@ blockquote:before,
 pre:before,
 address:before {
 	position: absolute;
-	left: 1px;
+	left: -2px;
 	top: -2px;
-	padding: 1px;
+	padding: 0px 3px;
 	font: 10px/10px "Visitor", monospace;
 	color: silver;
 	background: rgba(255,255,255,0.5);
@@ -148,6 +149,7 @@ address:before {
     -o-user-select: none;
     -ms-user-select: none;  
     user-select: none;
+    cursor: default;
 }
 div:hover:before,
 p:hover:before,
@@ -205,6 +207,22 @@ pre[class]:before        { content: "pre." attr(class) }
 address:before           { content: "address" }
 address[class]:before    { content: "address." attr(class) }
 
+ul[class]:before,
+ol[class]:before,
+dl[class]:before {
+	transform: rotate(90deg);
+	-ms-transform: rotate(90deg); /* IE 9 */
+	-webkit-transform: rotate(90deg); /* Safari and Chrome */
+	-o-transform: rotate(90deg); /* Opera 11+ */
+	-moz-transform: rotate(90deg); /* Firefox */
+	transform-origin: bottom left;
+	-ms-transform-origin:  bottom left;
+	-webkit-transform-origin: bottom left;
+	-o-transform-origin: bottom left;
+	-moz-transform-origin: bottom left;
+	top: -12px;
+}
+
 /* labels: inline elements */
 span, strong, b, em, i, a, abbr, acronym, kbd, q, cite, samp, var, del, 
 ins, dfn, code, sup, sub {
@@ -230,9 +248,9 @@ code:hover:before,
 sup:hover:before,
 sub:hover:before {
 	position: absolute;
-	top: -5px;
+	top: -8px;
 	left: -2px;
-	padding: 1px;
+	padding: 0px 3px;
 	font: 10px/10px "Visitor", monospace;
 	hyphens: none; /* chrome: a-href */
 	color: rgb(65,105,225);
@@ -244,6 +262,7 @@ sub:hover:before {
     -o-user-select: none;
     -ms-user-select: none;  
     user-select: none;
+    cursor: default;
 }
 span:hover:before           { content: "span"; }
 span[class]:hover:before    { content: "span." attr(class)}
