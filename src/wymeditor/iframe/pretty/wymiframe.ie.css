@@ -18,4 +18,4 @@
 
 /* VISUAL FEEDBACK */
 ul, ol, dl { min-height: auto; line-height: 0px }
-li, dt, dl { line-height: 20px; }
+li, dt, dd { line-height: 20px; }

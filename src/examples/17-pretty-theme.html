@@ -33,7 +33,27 @@
 
 jQuery(function() {
     jQuery('.wymeditor').wymeditor({
-		iframeBasePath: "../wymeditor/iframe/pretty/"
+		iframeBasePath: "../wymeditor/iframe/pretty/",
+        postInit: function(wym) {
+            //construct the button's html
+            var html = "<li class=\"wym_tools_toogle_pretty_theme\">"
+                     + "<a name=\"TogglePrettyTheme\" href=\"#\""
+                     + " title=\"Toggle short and verbose theme style\""
+                     + " style=\"background-image:"
+                     + " url(../wymeditor/iframe/pretty/icon.png)\">"
+                     + "Toggle short and verbose theme style"
+                     + "</a></li>";
+            //add the button to the tools box
+            jQuery(wym._box)
+            .find(wym._options.toolsSelector + wym._options.toolsListSelector)
+            .append(html);
+            //handle click event
+            jQuery(wym._box)
+            .find('li.wym_tools_toogle_pretty_theme a').click(function() {
+                wym.toggleClass('short', 'BODY' );
+                return(false);
+            });
+        }  
 	});
 });
 
