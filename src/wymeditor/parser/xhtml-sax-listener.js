@@ -284,7 +284,8 @@ WYMeditor.XhtmlSaxListener.prototype.fixNestingBeforeOpeningBlockTag = function(
         // We have a <li></li><ol>... situation. The new list should be a
         // child of the li tag. Not a sibling.
 
-        this.output = this.output.replace(/<\/li>\s*$/, '');
+        // Remove the last closing li tag
+        this.output = this.output.replace(/<\/li>\s*$/, '     ');
         this.insertContentAfterClosingTag(tag, '</li>');
     } else if ((tag == 'ul' || tag == 'ol') && this.last_tag &&
             this.last_tag_opened && (this.last_tag == 'ul' || this.last_tag == 'ol')) {

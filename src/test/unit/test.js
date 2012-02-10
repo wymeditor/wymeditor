@@ -71,10 +71,12 @@ module("API", {setup: setupWym});
 
 test("Commands", function () {
     expect(2);
-    jQuery.wymeditors(0).toggleHtml();
-    equals(jQuery('div.wym_html:visible', jQuery.wymeditors(0)._box).length, 1);
-    jQuery.wymeditors(0).toggleHtml();
-    equals(jQuery('div.wym_html:visible', jQuery.wymeditors(0)._box).length, 0);
+    var wymeditor = jQuery.wymeditors(0);
+
+    wymeditor.toggleHtml();
+    equals(jQuery('div.wym_html:visible', wymeditor._box).length, 1);
+    wymeditor.toggleHtml();
+    equals(jQuery('div.wym_html:visible', wymeditor._box).length, 0);
 });
 
 module("CssParser", {setup: setupWym});
@@ -109,7 +111,7 @@ test("Should escape URL's only once #69.1", function () {
 
 module("XmlParser", {setup: setupWym});
 
-test("Should correct invalid lists", function () {
+test("Should correct orphaned sublists", function () {
     expect(2);
     var expected = String() +
             '<ul>' +
@@ -128,8 +130,9 @@ test("Should correct invalid lists", function () {
                     '<li>a.1<\/li>' +
                 '<\/ul>' +
                 '<li>b<br><\/li>' +
-            '<\/ul>';
-    equals(jQuery.wymeditors(0).parser.parse(design_mode_pseudo_html), expected,
+            '<\/ul>',
+        wymeditor = jQuery.wymeditors(0);
+    equals(wymeditor.parser.parse(design_mode_pseudo_html), expected,
             "on Firefox");
     // IE
     // IE has invalid sublist nesting
@@ -153,7 +156,7 @@ test("Should correct invalid lists", function () {
             '<\/UL>';
     /*jslint white:true */
     equals(
-        jQuery.wymeditors(0).parser.parse(design_mode_pseudo_html),
+        wymeditor.parser.parse(design_mode_pseudo_html),
         expected,
         "on IE"
     );
@@ -239,7 +242,7 @@ test("Should correct under-closed lists", function () {
 });
 
 test("Don't over-close lists", function () {
-    expect(1);
+    expect(4);
     var orphanedLiHtml = String() +
         '<ol id="ol_1">' +
             '<li id="li_1">li_1' +
@@ -261,9 +264,33 @@ test("Don't over-close lists", function () {
         '<p>stop</p>' +
         '<li id="li_new">li_new</li>' +
         'text' +
-        '<li id="li_text_sep">li_text_sep</li>';
+        '<li id="li_text_sep">li_text_sep</li>',
+        simpleOrphanedLiHtml = String() +
+        '<ol id="ol_1">' +
+            '<li id="li_1">li_1' +
+                '<ol>' +
+                    '<li id="li_1_1">li_1_1</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>' +
+        '<li id="li_2">li_2</li>',
+        wymeditor = jQuery.wymeditors(0);
 
-    equals(jQuery.wymeditors(0).parser.parse(orphanedLiHtml), orphanedLiHtml);
+    equals(
+        wymeditor.parser.parse(orphanedLiHtml),
+        orphanedLiHtml
+    );
+    equals(
+        wymeditor.parser.parse(simpleOrphanedLiHtml),
+        simpleOrphanedLiHtml
+    );
+
+    // Now throw the browser/dom in the mix
+    wymeditor.html(orphanedLiHtml);
+    htmlEquals(wymeditor, orphanedLiHtml);
+
+    wymeditor.html(simpleOrphanedLiHtml);
+    htmlEquals(wymeditor, simpleOrphanedLiHtml);
 });
 
 test("Shouldn't remove empty td elements", function () {
