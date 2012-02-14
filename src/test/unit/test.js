@@ -294,6 +294,28 @@ test("Shouldn't strip colSpan attributes", function () {
     );
 });
 
+test("no-op on table with colgroup generates valid XHTML", function () {
+    expect(1);
+
+    var tableWithColXHtml = String() +
+        '<table>' +
+            '<colgroup>' +
+                '<col width="20%" />' +
+                '<col width="30%" />' +
+                '<col width="50%" />' +
+            '</colgroup>' +
+            '<tbody>' +
+                '<tr id="tr_1">' +
+                    '<td id="td_1_1">1_1</td>' +
+                    '<td id="td_1_2">1_2</td>' +
+                    '<td id="td_1_3">1_3</td>' +
+                '</tr>' +
+            '</tbody>' +
+        '</table>';
+
+    equals(jQuery.wymeditors(0).parser.parse(tableWithColXHtml), tableWithColXHtml);
+});
+
 module("Post Init", {setup: setupWym});
 
 test("Sanity check: html()", function () {
