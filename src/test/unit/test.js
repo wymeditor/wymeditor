@@ -300,9 +300,9 @@ test("no-op on table with colgroup generates valid XHTML", function () {
     var tableWithColXHtml = String() +
         '<table>' +
             '<colgroup>' +
-                '<col width="20%"/>' +
-                '<col width="30%"/>' +
-                '<col width="50%"/>' +
+                '<col width="20%" />' +
+                '<col width="30%" />' +
+                '<col width="50%" />' +
             '</colgroup>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
