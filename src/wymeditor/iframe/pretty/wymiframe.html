@@ -15,12 +15,81 @@
  *
  * File Authors:
  *        Jean-Francois Hovinne (jf.hovinne a-t wymeditor dotorg)
+ *        Gyuris Gellért (bubu a-t ujevangelizacio dothu)
 -->
-<html>
+<html xml:lang="en" lang="en">
 <head>
 <title>WYMeditor iframe</title>
 <link rel="stylesheet" type="text/css" media="screen" href="wymiframe.css" />
 <!--[if IE]><link rel="stylesheet" type="text/css" media="screen" href="wymiframe.ie.css" /><![endif]-->
+<script type="text/javascript">
+document.addEventListener("DOMContentLoaded", function() {
+	document.documentElement.addEventListener('DOMAttrModified', function(event) {
+		if (event.target.tagName.toLowerCase() == 'html' && event.attrName == 'lang' && event.newValue != 'en') {
+            var rules=[], i, item, s, db, sLang = event.newValue;
+			db = [ // Permanently this is here. 
+				[ ' type ' , ' - típusa: ' ],
+				[ 'document division', 'szakasz' ],
+				[ 'ordered list', 'számozás' ],
+				[ 'unordered list', 'felsorolás' ],
+				[ 'definition list', 'definíciólista' ],
+				[ 'list item', 'listaelem' ],
+				[ 'definition term', 'definíciós kifejezés' ],
+				[ 'definition description', 'definícióleírás' ],
+				[ 'paragraph',  'bekezdés' ],
+				[ 'heading 1' , 'címsor 1' ],
+				[ 'heading 2' , 'címsor 2' ],
+				[ 'heading 3' , 'címsor 3' ],
+				[ 'heading 4' , 'címsor 4' ],
+				[ 'heading 5' , 'címsor 5' ],
+				[ 'heading 6' , 'címsor 6' ],
+				[ 'block quotation', 'idézetblokk' ],
+				[ 'preformatted text', 'előformázott szöveg' ],
+				[ 'address or contact information', 'cím vagy elérhetőség' ],
+				[ 'text span', 'szövegrész' ],
+				[ 'strong emphasis', 'erős hangsúlyozás' ],
+				[ 'emphasis', 'hangsúlyozozás' ],
+				[ 'hyperlink', 'hiperhivatkozás' ],
+				[ 'abbreviation', 'rövidítés' ],
+				[ '"acronym', '"betűszó' ], // do not match 'acronym' in selector!
+				[ 'keyboard input', 'felhasználói bevitel' ],
+				[ 'work title', 'cím' ],
+				[ 'sample text', 'mintaszöveg' ],
+				[ 'variable', 'változó' ],
+				[ 'deleted text', 'törölt szöveg' ],
+				[ 'inserted text', 'beszúrt szöveg' ],
+				[ 'definition', 'definíció' ],
+				[ 'code fragment', 'kódrészlet' ],
+				[ 'superscript', 'felső index' ],
+				[ 'subscript', 'alsó index' ]
+			];
+			// get all rules with -> body:lang(en)
+            for (i = 0; i < document.styleSheets[0].cssRules.length; i++) { 
+				var item = document.styleSheets[0].cssRules[i];
+				if (item.type == item.STYLE_RULE) {
+					if (item.selectorText.match(/body:lang\(en\)/i)) {
+						rules.push(item.cssText)
+					};
+				};
+			};
+			// convert to string to simplify replace
+			s = new String(rules);
+			// replace lang() pseudo selector
+			s = s.replace('body:lang(en)', 'body:lang('+sLang+')', 'gi');
+			// replace db strings
+			for (i = 0; i < db.length; i++) {
+				s = s.replace(db[i][0], db[i][1], 'gi');
+			};
+			// convert back to array
+			rules = s.split(',');
+			// make CSS rules
+			for (i = 0; i < rules.length; i++) {
+				document.styleSheets[0].insertRule(rules[i], document.styleSheets[0].cssRules.length);
+			};
+		}
+	}, false);
+});
+</script>
 </head>
 <body class="wym_iframe"></body>
 </html>

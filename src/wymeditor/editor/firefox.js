@@ -53,6 +53,10 @@ WYMeditor.WymClassMozilla.prototype.initIframe = function (iframe) {
     //set the text direction
     jQuery('html', this._doc).attr('dir', this._options.direction);
 
+    //set lang; please add to other browser too
+    jQuery('html', this._doc).attr('lang', this._options.lang);
+    jQuery('html', this._doc).attr('xml:lang', this._options.lang);
+
     //init html value
     this.html(this._wym._html);
 
