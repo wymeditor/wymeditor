@@ -10,6 +10,8 @@ WYMeditor.XhtmlSaxListener = function() {
     this.validator = WYMeditor.XhtmlValidator;
     this._tag_stack = [];
     this.avoided_tags = [];
+    this._insert_before_closing = [];
+    this._insert_after_closing = [];
 
     this.entities = {
         '&nbsp;':'&#160;','&iexcl;':'&#161;','&cent;':'&#162;',
@@ -130,6 +132,14 @@ WYMeditor.XhtmlSaxListener.prototype.shouldCloseTagAutomatically = function(tag,
 
 WYMeditor.XhtmlSaxListener.prototype.beforeParsing = function(raw) {
     this.output = '';
+
+    // Reset attributes that might bleed over between parsing
+    this._insert_before_closing = [];
+    this._insert_after_closing = [];
+    this._open_tags = {};
+    this._tag_stack = [];
+    this.last_tag = null;
+
     return raw;
 };
 
@@ -138,6 +148,7 @@ WYMeditor.XhtmlSaxListener.prototype.afterParsing = function(xhtml) {
     xhtml = this.joinRepeatedEntities(xhtml);
     xhtml = this.removeEmptyTags(xhtml);
     xhtml = this.removeBrInPre(xhtml);
+
     return xhtml;
 };
 
@@ -285,7 +296,7 @@ WYMeditor.XhtmlSaxListener.prototype.fixNestingBeforeOpeningBlockTag = function(
         // child of the li tag. Not a sibling.
 
         // Remove the last closing li tag
-        this.output = this.output.replace(/<\/li>\s*$/, '     ');
+        this.output = this.output.replace(/<\/li>\s*$/, '');
         this.insertContentAfterClosingTag(tag, '</li>');
     } else if ((tag == 'ul' || tag == 'ol') && this.last_tag &&
             this.last_tag_opened && (this.last_tag == 'ul' || this.last_tag == 'ol')) {
@@ -301,9 +312,9 @@ WYMeditor.XhtmlSaxListener.prototype.fixNestingBeforeOpeningBlockTag = function(
             var closestOpenTag = this._tag_stack[this._tag_stack.length - 2];
             if (closestOpenTag == 'li'){
                 // Pop the tag off of the stack to indicate we closed it
-                this._open_tags['li']--;
-                if (this._open_tags['li'] === 0) {
-                    this._open_tags['li'] = undefined;
+                this._open_tags.li -= 1;
+                if (this._open_tags.li === 0) {
+                    this._open_tags.li = undefined;
                 }
                 this._tag_stack.pop(this._tag_stack.length - 2);
                 this.output += '</li>';
