@@ -761,7 +761,8 @@ if ($.browser.mozilla) {
         wymeditor.insertTable(3, 2, '', '');
 
         $body.find('td').each(function (index, td) {
-            if ($.browser.version >= '1.9.1' && $.browser.version < '2.0') {
+            if (parseInt($.browser.version) == 1 &&
+                $.browser.version >= '1.9.1' && $.browser.version < '2.0') {
                 equals(td.childNodes.length, 1);
             } else {
                 equals(td.childNodes.length, 0);
@@ -800,7 +801,8 @@ if ($.browser.mozilla) {
 
             $body.html(table_3_2_html);
             $body.find('td').each(function (index, td) {
-                if ($.browser.version >= '1.9.1' && $.browser.version < '2.0') {
+                if (parseInt($.browser.version) == 1 &&
+                    $.browser.version >= '1.9.1' && $.browser.version < '2.0') {
                     equals(td.childNodes.length, 1);
                 } else {
                     equals(td.childNodes.length, 0);
@@ -824,7 +826,8 @@ test("Preformatted text retains spacing", function () {
         preChildren;
 
     // Only ie and firefox 3.x use \r\n newlines
-    if ($.browser.webkit || $.browser.safari || ($.browser.mozilla && $.browser.version > '2.0')) {
+    if ($.browser.webkit || $.browser.safari ||
+        ($.browser.mozilla && parseFloat($.browser.version) > 2.0)) {
         preHtml = preHtml.replace(/\r/g, '');
     }
 
@@ -833,7 +836,7 @@ test("Preformatted text retains spacing", function () {
 
     expect(1);
 
-    if ($.browser.mozilla && $.browser.version < '2.0') {
+    if ($.browser.mozilla && parseFloat($.browser.version) < 2.0) {
         // Firefox 3.x converts the text inside pre to DOM nodes, where as other
         // browsers just use plain text
         $body = $(wymeditor._doc).find('body.wym_iframe');
