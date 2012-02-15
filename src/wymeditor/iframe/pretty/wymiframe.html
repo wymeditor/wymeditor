@@ -26,65 +26,35 @@
 document.addEventListener("DOMContentLoaded", function() {
 	document.documentElement.addEventListener('DOMAttrModified', function(event) {
 		if (event.target.tagName.toLowerCase() == 'html' && event.attrName == 'lang' && event.newValue != 'en') {
-            var rules=[], i, item, s, db, sLang = event.newValue;
-			db = [ // Permanently this is here. 
-				[ ' type ' , ' - típusa: ' ],
-				[ 'document division', 'szakasz' ],
-				[ 'ordered list', 'számozás' ],
-				[ 'unordered list', 'felsorolás' ],
-				[ 'definition list', 'definíciólista' ],
-				[ 'list item', 'listaelem' ],
-				[ 'definition term', 'definíciós kifejezés' ],
-				[ 'definition description', 'definícióleírás' ],
-				[ 'paragraph',  'bekezdés' ],
-				[ 'heading 1' , 'címsor 1' ],
-				[ 'heading 2' , 'címsor 2' ],
-				[ 'heading 3' , 'címsor 3' ],
-				[ 'heading 4' , 'címsor 4' ],
-				[ 'heading 5' , 'címsor 5' ],
-				[ 'heading 6' , 'címsor 6' ],
-				[ 'block quotation', 'idézetblokk' ],
-				[ 'preformatted text', 'előformázott szöveg' ],
-				[ 'address or contact information', 'cím vagy elérhetőség' ],
-				[ 'text span', 'szövegrész' ],
-				[ 'strong emphasis', 'erős hangsúlyozás' ],
-				[ 'emphasis', 'hangsúlyozozás' ],
-				[ 'hyperlink', 'hiperhivatkozás' ],
-				[ 'abbreviation', 'rövidítés' ],
-				[ '"acronym', '"betűszó' ], // do not match 'acronym' in selector!
-				[ 'keyboard input', 'felhasználói bevitel' ],
-				[ 'work title', 'cím' ],
-				[ 'sample text', 'mintaszöveg' ],
-				[ 'variable', 'változó' ],
-				[ 'deleted text', 'törölt szöveg' ],
-				[ 'inserted text', 'beszúrt szöveg' ],
-				[ 'definition', 'definíció' ],
-				[ 'code fragment', 'kódrészlet' ],
-				[ 'superscript', 'felső index' ],
-				[ 'subscript', 'alsó index' ]
-			];
+            var aRules=[], i, oCssRule, sKey, s = '', sLang = event.newValue;
 			// get all rules with -> body:lang(en)
             for (i = 0; i < document.styleSheets[0].cssRules.length; i++) { 
-				var item = document.styleSheets[0].cssRules[i];
-				if (item.type == item.STYLE_RULE) {
-					if (item.selectorText.match(/body:lang\(en\)/i)) {
-						rules.push(item.cssText)
+				var oCssRule = document.styleSheets[0].cssRules[i];
+				if (oCssRule.type == oCssRule.STYLE_RULE) {
+					if (oCssRule.selectorText.match(/body:lang\(en\)/i)) {
+						aRules.push(oCssRule.cssText)
 					};
 				};
 			};
 			// convert to string to simplify replace
-			s = new String(rules);
+			aRules.forEach(function(val) {
+				s += val + '\n';
+			});
 			// replace lang() pseudo selector
 			s = s.replace('body:lang(en)', 'body:lang('+sLang+')', 'gi');
-			// replace db strings
-			for (i = 0; i < db.length; i++) {
-				s = s.replace(db[i][0], db[i][1], 'gi');
+			// replace db strings; only with lowercase! see 'g', not 'gi'
+			// I suspect, we can guarantee, this is still loaded. Is it true?
+			for (i in parent.WYMeditor.STRINGS[sLang]) {
+				if (parent.WYMeditor.STRINGS[sLang].hasOwnProperty(i)) {
+					s = s.replace(i, parent.WYMeditor.STRINGS[sLang][i], 'g');
+				};
 			};
 			// convert back to array
-			rules = s.split(',');
+			aRules = s.split('\n');
+			aRules.pop(); // last \n
 			// make CSS rules
-			for (i = 0; i < rules.length; i++) {
-				document.styleSheets[0].insertRule(rules[i], document.styleSheets[0].cssRules.length);
+			for (i = 0; i < aRules.length; i++) {
+				document.styleSheets[0].insertRule(aRules[i], document.styleSheets[0].cssRules.length);
 			};
 		}
 	}, false);
