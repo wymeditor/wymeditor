@@ -16,11 +16,11 @@ function setupWym(extraPostInit) {
             postInit: function (wym) {
                 var listPlugin = new ListPlugin({}, wym),
                     tableEditor = wym.table(),
-                /**
-                * Determine if attempting to select a cell with a non-text inner node (a span)
-                * actually selects the inner node or selects the cell itself. FF for example,
-                * selects the cell while webkit selects the inner.
-                */
+                    /**
+                    * Determine if attempting to select a cell with a non-text inner node (a span)
+                    * actually selects the inner node or selects the cell itself. FF for example,
+                    * selects the cell while webkit selects the inner.
+                    */
                     initialHtml = String() +
                         '<table>' +
                             '<tbody>' +
@@ -122,7 +122,7 @@ test("Should correct orphaned sublists", function () {
                 '<\/li>' +
                 '<li>b<\/li>' +
             '<\/ul>',
-    // FF
+        // FF
         design_mode_pseudo_html = String() +
             '<ul>' +
                 '<li>a<\/li>' +
@@ -347,6 +347,28 @@ test("Shouldn't strip colSpan attributes", function () {
         expected,
         "Don't strip colSpan"
     );
+});
+
+test("no-op on table with colgroup generates valid XHTML", function () {
+    expect(1);
+
+    var tableWithColXHtml = String() +
+        '<table>' +
+            '<colgroup>' +
+                '<col width="20%" />' +
+                '<col width="30%" />' +
+                '<col width="50%" />' +
+            '</colgroup>' +
+            '<tbody>' +
+                '<tr id="tr_1">' +
+                    '<td id="td_1_1">1_1</td>' +
+                    '<td id="td_1_2">1_2</td>' +
+                    '<td id="td_1_3">1_3</td>' +
+                '</tr>' +
+            '</tbody>' +
+        '</table>';
+
+    equals(jQuery.wymeditors(0).parser.parse(tableWithColXHtml), tableWithColXHtml);
 });
 
 module("Post Init", {setup: setupWym});
@@ -847,14 +869,14 @@ if ($.browser.mozilla) {
 module("preformatted text", {setup: setupWym});
 
 test("Preformatted text retains spacing", function () {
-    var preHtml = String() +
-        '<pre>pre1\r\n' +
-        'spaced\r\n\r\n' +
-        'double  spaced' +
-        '</pre>',
-        wymeditor = jQuery.wymeditors(0),
+    var wymeditor = jQuery.wymeditors(0),
+        preHtml = String() +
+            '<pre>pre1\r\n' +
+            'spaced\r\n\r\n' +
+            'double  spaced' +
+            '</pre>',
         $body,
-        pre_children;
+        preChildren;
 
     // Only ie and firefox 3.x use \r\n newlines
     if ($.browser.webkit || $.browser.safari || ($.browser.mozilla && $.browser.version > '2.0')) {
@@ -869,18 +891,18 @@ test("Preformatted text retains spacing", function () {
         // Firefox 3.x converts the text inside pre to DOM nodes, where as other
         // browsers just use plain text
         $body = $(wymeditor._doc).find('body.wym_iframe');
-        pre_children = $body.children('pre').contents();
+        preChildren = $body.children('pre').contents();
 
         expect(8);
-        equals(pre_children.length, 6,
+        equals(preChildren.length, 6,
                 "Should have text, br, text, br, br, text");
-        if (pre_children.length === 6) {
-            equals(pre_children[0].nodeName.toLowerCase(), '#text');
-            equals(pre_children[1].nodeName.toLowerCase(), 'br');
-            equals(pre_children[2].nodeName.toLowerCase(), '#text');
-            equals(pre_children[3].nodeName.toLowerCase(), 'br');
-            equals(pre_children[4].nodeName.toLowerCase(), 'br');
-            equals(pre_children[5].nodeName.toLowerCase(), '#text');
+        if (preChildren.length === 6) {
+            equals(preChildren[0].nodeName.toLowerCase(), '#text');
+            equals(preChildren[1].nodeName.toLowerCase(), 'br');
+            equals(preChildren[2].nodeName.toLowerCase(), '#text');
+            equals(preChildren[3].nodeName.toLowerCase(), 'br');
+            equals(preChildren[4].nodeName.toLowerCase(), 'br');
+            equals(preChildren[5].nodeName.toLowerCase(), '#text');
         }
     }
 

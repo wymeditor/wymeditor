@@ -3,6 +3,28 @@
 This document tracks the enhancements and bug fixes between releases of
 WYMeditor.
 
+## 1.0.0b1 (Beta 1)
+
+*release-date* TBD
+
+### Changes Since 1.0.0a6
+
+* A new *pretty* theme option is now available for modern browsers (ie9+, FF,
+  Chrome, Safari). This theme uses CSS instead of images to provide context
+  clues for blocks, resulting in fewer HTTP requests and better network
+  performance. Additionally, the context clues have been expanded to provide a
+  better "plain english" explanation of the elements. Give this new theme a
+  swing at [the example](http://wymeditor.no.de/wymeditor/examples/17-pretty-theme.html).
+
+  You can enable it in your project by passing the
+  `iframeBasePath: "wymeditor/iframe/pretty/"` option to your WYMeditor instance.
+
+  Thanks to first-time contributor Gyuris Gellért for the theme.
+* `<col />` tags are now automatically self-closing and the parser no longer
+  forces a closing `</col>` tag.
+
+  Thanks to first-time contributor Steven Bufton for the fix.
+
 ## 1.0.0a6 (Alpha 6)
 
 *release-date* January 17, 2012
