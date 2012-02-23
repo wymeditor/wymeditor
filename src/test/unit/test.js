@@ -242,7 +242,7 @@ test("Should correct under-closed lists", function () {
 });
 
 test("Don't over-close lists", function () {
-    expect(4);
+    expect(6);
     var orphanedLiHtml = String() +
         '<ol id="ol_1">' +
             '<li id="li_1">li_1' +
@@ -274,6 +274,30 @@ test("Don't over-close lists", function () {
             '</li>' +
         '</ol>' +
         '<li id="li_2">li_2</li>',
+        listAfterText = String() +
+        '<ol id="ol_1">' +
+            '<li id="li_1">li_1' +
+                '<ol>' +
+                    '<li id="li_1_1">li_1_1</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>' +
+        '<li id="li_2">li_2' +
+            '<ol id="ol_2_1">' +
+                '<li id="li_2_1">li_2_1' +
+                    '<ol>' +
+                        '<li id="li_2_1_1">li_2_1_1</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+        '<li id="li_3">li_3</li>' +
+        '<p>stop</p>' +
+        '<li id="li_new">li_new</li>' +
+        'text' +
+        '<ol>' +
+            '<li id="li_text_sep">li_text_sep</li>' +
+        '</ol>',
         wymeditor = jQuery.wymeditors(0);
 
     equals(
@@ -284,6 +308,10 @@ test("Don't over-close lists", function () {
         wymeditor.parser.parse(simpleOrphanedLiHtml),
         simpleOrphanedLiHtml
     );
+    equals(
+        wymeditor.parser.parse(listAfterText),
+        listAfterText
+    );
 
     // Now throw the browser/dom in the mix
     wymeditor.html(orphanedLiHtml);
@@ -291,6 +319,9 @@ test("Don't over-close lists", function () {
 
     wymeditor.html(simpleOrphanedLiHtml);
     htmlEquals(wymeditor, simpleOrphanedLiHtml);
+
+    wymeditor.html(listAfterText);
+    htmlEquals(wymeditor, listAfterText);
 });
 
 test("Shouldn't remove empty td elements", function () {

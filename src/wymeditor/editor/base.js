@@ -1580,7 +1580,6 @@ WYMeditor.editor.prototype._correctOrphanedListItem = function (listNode) {
     $adjacentLis = $adjacentLis.add(listNode);
     $adjacentLis = $adjacentLis.add(nextAdjacentLis);
 
-
     // Determine if we have a list node in which to insert all of our orphaned
     // li's
     prevNode = $adjacentLis[0].previousSibling;
