@@ -1588,8 +1588,8 @@ WYMeditor.editor.prototype._correctOrphanedListItem = function (listNode) {
         prevList = prevNode;
     } else {
         // No previous existing list to use. Need to create one
-        prevList = $('<ol></ol>');
-        $adjacentLis.before(prevList);
+        $adjacentLis.before('<ol></ol>');
+        prevList = $adjacentLis.prev()[0];
     }
 
     // Insert all of the adjacent orphaned lists inside the new parent

@@ -1356,6 +1356,19 @@ orphanedLiHtml.ordered.li_new = String() +
         '</ol>' +
         'text' +
         '<li id="li_text_sep">li_text_sep</li>';
+
+// Internet Explorer likes to randomly add whitespace around textNodes that
+// don't have parent elements when you manipulate the DOM near them. Change our
+// test data to expect this so that we pass in IE
+orphanedLiHtml.ordered.li_new = orphanedLiHtml.ordered.li_new.replace(
+    /text<li id=\"li_text_sep/g,
+    'text <li id="li_text_sep'
+);
+orphanedLiHtml.unordered.li_new = orphanedLiHtml.unordered.li_new.replace(
+    /text<li id=\"li_text_sep/g,
+    'text <li id="li_text_sep'
+);
+
 test("Correction breaks on paragraphs", function () {
     expect(7);
     var testData = orphanedLiHtml,
