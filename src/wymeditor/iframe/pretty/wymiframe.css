@@ -169,77 +169,77 @@ blockquote:hover::before,
 pre:hover::before,
 address:hover::before {
 	color: rgb(65,105,225);
-	background: rgba(255,255,255,0.);
+	background: rgba(255,255,255,0.5);
 	outline: 1px solid rgba(65,105,225,0.9);
 }
-body:lang(en) div::before               { content: "document division" } /* official names: https://developer.mozilla.org/en/HTML/Element */
-body:lang(en) div[class]::before        { content: "document division type \"" attr(class) "\"" }
-body.short    div::before               { content: "div" }
-body.short    div[class]::before        { content: "div." attr(class) }
-body:lang(en) p::before                 { content: "paragraph" }
-body:lang(en) p[class]::before          { content: "paragraph type \"" attr(class) "\"" }
-body.short    p::before                 { content: "p" }
-body.short    p[class]::before          { content: "p." attr(class) }
-body:lang(en) ol::before                { content: "ordered list" }
-body:lang(en) ol[class]::before         { content: "ordered list type \"" attr(class) "\"" }
-body.short    ol::before                { content: "ol" }
-body.short    ol[class]::before         { content: "ol." attr(class) }
-body:lang(en) ul::before                { content: "unordered list" }
-body:lang(en) ul[class]::before         { content: "unordered list type \"" attr(class) "\"" }
-body.short    ul::before                { content: "ul" }
-body.short    ul[class]::before         { content: "ul." attr(class) }
-body:lang(en) dl::before                { content: "definition list" }
-body:lang(en) dl[class]::before         { content: "definition list type \"" attr(class) "\"" }
-body.short    dl::before                { content: "dl" }
-body.short    dl[class]::before         { content: "dl." attr(class) }
-body:lang(en) li::before                { content: "list item" }
-body:lang(en) li[class]::before         { content: "list item type \"" attr(class) "\"" }
-body.short    li::before                { content: "li" }
-body.short    li[class]::before         { content: "li." attr(class) }
-body:lang(en) dt::before                { content: "definition term" }
-body:lang(en) dt[class]::before         { content: "definition term type \"" attr(class) "\"" }
-body.short    dt::before                { content: "dt" }
-body.short    dt[class]::before         { content: "dt." attr(class) }
-body:lang(en) dd::before                { content: "definition description" }
-body:lang(en) dd[class]::before         { content: "definition description type \"" attr(class) "\"" }
-body.short    dd::before                { content: "dd" }
-body.short    dd[class]::before         { content: "dd." attr(class) }
-body:lang(en) h1::before                { content: "heading 1" }
-body:lang(en) h1[class]::before         { content: "heading 1 type \"" attr(class) "\"" }
-body.short    h1::before                { content: "h1" }
-body.short    h1[class]::before         { content: "h1." attr(class) }
-body:lang(en) h2::before                { content: "heading 2" }
-body:lang(en) h2[class]::before         { content: "heading 2 type \"" attr(class) "\"" }
-body.short    h2::before                { content: "h2" }
-body.short    h2[class]::before         { content: "h2." attr(class) }
-body:lang(en) h3::before                { content: "heading 3" }
-body:lang(en) h3[class]::before         { content: "heading 3 type \"" attr(class) "\"" }
-body.short    h3::before                { content: "h3" }
-body.short    h3[class]::before         { content: "h3." attr(class) }
-body:lang(en) h4::before                { content: "heading 4" }
-body:lang(en) h4[class]::before         { content: "heading 4 type \"" attr(class) "\"" }
-body.short    h4::before                { content: "h4" }
-body.short    h4[class]::before         { content: "h4." attr(class) }
-body:lang(en) h5::before                { content: "heading 5" }
-body:lang(en) h5[class]::before         { content: "heading 5 type \"" attr(class) "\"" }
-body.short    h5::before                { content: "h5" }
-body.short    h5[class]::before         { content: "h5." attr(class) }
-body:lang(en) h6::before                { content: "heading 6" }
-body:lang(en) h6[class]::before         { content: "heading 6 type \"" attr(class) "\"" }
-body.short    h6::before                { content: "h6" }
-body.short    h6[class]::before         { content: "h6." attr(class) }
-body:lang(en) blockquote::before        { content: "block quotation" }
-body:lang(en) blockquote[class]::before { content: "block quotation type \"" attr(class) "\"" }
-body.short    blockquote::before        { content: "blockquote" }
-body.short    blockquote[class]::before { content: "blockquote." attr(class) }
-body:lang(en) pre::before               { content: "preformatted text" }
-body:lang(en) pre[class]::before        { content: "preformatted text type \"" attr(class) "\"" }
-body.short    pre::before               { content: "pre" }
-body.short    pre[class]::before        { content: "pre." attr(class) }
-body:lang(en) address::before           { content: "address or contact information" }
-body:lang(en) address[class]::before    { content: "address or contact information type \"" attr(class) "\"" }
-body.short    address::before           { content: "address" }
-body.short    ddress[class]::before     { content: "address." attr(class) }
+body:lang(en) div::before               { content: "Document Division" } /* official names: https://developer.mozilla.org/en/HTML/Element */
+body:lang(en) div[class]::before        { content: "Document Division type \"" attr(class) "\"" }
+body.short    div::before               { content: "div" !important }
+body.short    div[class]::before        { content: "div." attr(class) !important }
+body:lang(en) p::before                 { content: "Paragraph" }
+body:lang(en) p[class]::before          { content: "Paragraph type \"" attr(class) "\"" }
+body.short    p::before                 { content: "p" !important }
+body.short    p[class]::before          { content: "p." attr(class) !important }
+body:lang(en) ol::before                { content: "Ordered List" }
+body:lang(en) ol[class]::before         { content: "Ordered List type \"" attr(class) "\"" }
+body.short    ol::before                { content: "ol" !important }
+body.short    ol[class]::before         { content: "ol." attr(class) !important }
+body:lang(en) ul::before                { content: "Unordered List" }
+body:lang(en) ul[class]::before         { content: "Unordered List type \"" attr(class) "\"" }
+body.short    ul::before                { content: "ul" !important }
+body.short    ul[class]::before         { content: "ul." attr(class) !important }
+body:lang(en) dl::before                { content: "Definition List" }
+body:lang(en) dl[class]::before         { content: "Definition List type \"" attr(class) "\"" }
+body.short    dl::before                { content: "dl" !important }
+body.short    dl[class]::before         { content: "dl." attr(class) !important }
+body:lang(en) li::before                { content: "List Item" }
+body:lang(en) li[class]::before         { content: "List Item type \"" attr(class) "\"" }
+body.short    li::before                { content: "li" !important }
+body.short    li[class]::before         { content: "li." attr(class) !important }
+body:lang(en) dt::before                { content: "Definition Term" }
+body:lang(en) dt[class]::before         { content: "Definition Term type \"" attr(class) "\"" }
+body.short    dt::before                { content: "dt" !important }
+body.short    dt[class]::before         { content: "dt." attr(class) !important }
+body:lang(en) dd::before                { content: "Definition Description" }
+body:lang(en) dd[class]::before         { content: "Definition Description type \"" attr(class) "\"" }
+body.short    dd::before                { content: "dd" !important }
+body.short    dd[class]::before         { content: "dd." attr(class) !important }
+body:lang(en) h1::before                { content: "Heading 1" }
+body:lang(en) h1[class]::before         { content: "Heading 1 type \"" attr(class) "\"" }
+body.short    h1::before                { content: "h1" !important }
+body.short    h1[class]::before         { content: "h1." attr(class) !important }
+body:lang(en) h2::before                { content: "Heading 2" }
+body:lang(en) h2[class]::before         { content: "Heading 2 type \"" attr(class) "\"" }
+body.short    h2::before                { content: "h2" !important }
+body.short    h2[class]::before         { content: "h2." attr(class) !important }
+body:lang(en) h3::before                { content: "Heading 3" }
+body:lang(en) h3[class]::before         { content: "Heading 3 type \"" attr(class) "\"" }
+body.short    h3::before                { content: "h3" !important }
+body.short    h3[class]::before         { content: "h3." attr(class) !important }
+body:lang(en) h4::before                { content: "Heading 4" }
+body:lang(en) h4[class]::before         { content: "Heading 4 type \"" attr(class) "\"" }
+body.short    h4::before                { content: "h4" !important }
+body.short    h4[class]::before         { content: "h4." attr(class) !important }
+body:lang(en) h5::before                { content: "Heading 5" }
+body:lang(en) h5[class]::before         { content: "Heading 5 type \"" attr(class) "\"" }
+body.short    h5::before                { content: "h5" !important }
+body.short    h5[class]::before         { content: "h5." attr(class) !important }
+body:lang(en) h6::before                { content: "Heading 6" }
+body:lang(en) h6[class]::before         { content: "Heading 6 type \"" attr(class) "\"" }
+body.short    h6::before                { content: "h6" !important }
+body.short    h6[class]::before         { content: "h6." attr(class) !important }
+body:lang(en) blockquote::before        { content: "Blockquote" }
+body:lang(en) blockquote[class]::before { content: "Blockquote type \"" attr(class) "\"" }
+body.short    blockquote::before        { content: "blockquote" !important }
+body.short    blockquote[class]::before { content: "blockquote." attr(class) !important }
+body:lang(en) pre::before               { content: "Preformatted" }
+body:lang(en) pre[class]::before        { content: "Preformatted type \"" attr(class) "\"" }
+body.short    pre::before               { content: "pre" !important }
+body.short    pre[class]::before        { content: "pre." attr(class) !important }
+body:lang(en) address::before           { content: "Address Or Contact Information" }
+body:lang(en) address[class]::before    { content: "Address Or Contact Information type \"" attr(class) "\"" }
+body.short    address::before           { content: "address" !important }
+body.short    ddress[class]::before     { content: "address." attr(class) !important }
 
 ul[class]:not(:empty)::before, body:not(.short) ul:not(:empty)::before,
 ol[class]:not(:empty)::before, body:not(.short) ol:not(:empty)::before,
@@ -299,82 +299,82 @@ sub:hover::before {
     cursor: default;
     white-space: nowrap;
 }
-body:lang(en) span:hover::before           { content: "text span" }
-body:lang(en) span[class]:hover::before    { content: "text span type \"" attr(class) "\"" }
-body.short    span:hover::before           { content: "span" }
-body.short    span[class]:hover::before    { content: "span." attr(class) }
-body:lang(en) strong:hover::before         { content: "strong emphasis" }
-body:lang(en) strong[class]:hover::before  { content: "strong emphasis type \"" attr(class) "\"" }
-body.short    strong:hover::before         { content: "strong" }
-body.short    strong[class]:hover::before  { content: "strong." attr(class) }
-body:lang(en) b:hover::before              { content: "strong emphasis" }
-body:lang(en) b[class]:hover::before       { content: "strong emphasis type \"" attr(class) "\"" }
-body.short    b:hover::before              { content: "strong" }
-body.short    b[class]:hover::before       { content: "strong." attr(class) }
-body:lang(en) em:hover::before             { content: "emphasis" }
-body:lang(en) em[class]:hover::before      { content: "emphasis" }
-body.short    em:hover::before             { content: "em" }
-body.short    em[class]:hover::before      { content: "em." attr(class) }
-body:lang(en) i:hover::before              { content: "emphasis" }
-body:lang(en) i[class]:hover::before       { content: "emphasis type \"" attr(class) "\"" }
-body.short    i:hover::before              { content: "em" }
-body.short    i[class]:hover::before       { content: "em." attr(class) }
-body:lang(en) a[href]:hover::before        { content: "hyperlink" }
-body:lang(en) a[href][class]:hover::before { content: "hyperlink type \"" attr(class) "\"" }
-body.short    a[href]:hover::before        { content: "a-href" }
-body.short    a[href][class]:hover::before { content: "a-href." attr(class) }
-body:lang(en) abbr:hover::before           { content: "abbreviation" }
-body:lang(en) abbr[class]:hover::before    { content: "abbreviation type \"" attr(class) "\"" }
-body.short    abbr:hover::before           { content: "abbr" }
-body.short    abbr[class]:hover::before    { content: "abbr." attr(class) }
-body:lang(en) acronym:hover::before        { content: "acronym" }
-body:lang(en) acronym[class]:hover::before { content: "acronym type \"" attr(class) "\"" }
-body.short    acronym:hover::before        { content: "acronym" }
-body.short    acronym[class]:hover::before { content: "acronym." attr(class) }
-body:lang(en) kbd:hover::before            { content: "keyboard input" }
-body:lang(en) kbd[class]:hover::before     { content: "keyboard input type \"" attr(class) "\"" }
-body.short    kbd:hover::before            { content: "kbd" }
-body.short    kbd[class]:hover::before     { content: "kbd." attr(class)}
-/*body:lang(en) q:hover::before(2)           { content: "quotation" }
-body:lang(en) q[class]:hover::before(2)    { content: "quotation type \"" attr(class) "\"" }
-body.short    q:hover::before(2)           { content: "q" }
-body.short    q[class]:hover::before(2)    { content: "q." attr(class) }*/
-body:lang(en) cite:hover::before           { content: "work title" }
-body:lang(en) cite[class]:hover::before    { content: "work title type \"" attr(class) "\""}
-body.short    cite:hover::before           { content: "cite" }
-body.short    cite[class]:hover::before    { content: "cite." attr(class) }
-body:lang(en) samp:hover::before           { content: "sample text" }
-body:lang(en) samp[class]:hover::before    { content: "sample text type \"" attr(class) "\"" }
-body.short    samp:hover::before           { content: "samp" }
-body.short    samp[class]:hover::before    { content: "samp." attr(class) }
-body:lang(en) var:hover::before            { content: "variable" }
-body:lang(en) var[class]:hover::before     { content: "variable type \"" attr(class) "\"" }
-body.short    var:hover::before            { content: "var" }
-body.short    var[class]:hover::before     { content: "var." attr(class) }
-body:lang(en) del:hover::before            { content: "deleted text" }
-body:lang(en) del[class]:hover::before     { content: "deleted text type \"" attr(class) "\"" }
-body.short    del:hover::before            { content: "del" }
-body.short    del[class]:hover::before     { content: "del." attr(class) }
-body:lang(en) ins:hover::before            { content: "inserted text" }
-body:lang(en) ins[class]:hover::before     { content: "inserted text type \"" attr(class) "\"" }
-body.short    ins:hover::before            { content: "ins" }
-body.short    ins[class]:hover::before     { content: "ins." attr(class) }
-body:lang(en) dfn:hover::before            { content: "definition" }
-body:lang(en) dfn[class]:hover::before     { content: "definition type \"" attr(class) "\"" }
-body.short    dfn:hover::before            { content: "dfn" }
-body.short    dfn[class]:hover::before     { content: "dfn." attr(class) }
-body:lang(en) code:hover::before           { content: "code fragment" }
-body:lang(en) code[class]:hover::before    { content: "code fragment type \"" attr(class) "\"" }
-body.short    code:hover::before           { content: "code" }
-body.short    code[class]:hover::before    { content: "code." attr(class) }
-body:lang(en) sup:hover::before            { content: "superscript" }
-body:lang(en) sup[class]:hover::before     { content: "superscript type \"" attr(class) "\"" }
-body.short    sup:hover::before            { content: "sup" }
-body.short    sup[class]:hover::before     { content: "sup." attr(class) }
-body:lang(en) sub:hover::before            { content: "subscript" }
-body:lang(en) sub[class]:hover::before     { content: "subscript type \"" attr(class) "\""}
-body.short    sub:hover::before            { content: "sub" }
-body.short    sub[class]:hover::before     { content: "sub." attr(class) }
+body:lang(en) span:hover::before           { content: "Text Span" }
+body:lang(en) span[class]:hover::before    { content: "Text Span type \"" attr(class) "\"" }
+body.short    span:hover::before           { content: "span" !important }
+body.short    span[class]:hover::before    { content: "span." attr(class) !important }
+body:lang(en) strong:hover::before         { content: "Strong" }
+body:lang(en) strong[class]:hover::before  { content: "Strong type \"" attr(class) "\"" }
+body.short    strong:hover::before         { content: "strong" !important }
+body.short    strong[class]:hover::before  { content: "strong." attr(class) !important }
+body:lang(en) b:hover::before              { content: "Strong" }
+body:lang(en) b[class]:hover::before       { content: "Strong type \"" attr(class) "\"" }
+body.short    b:hover::before              { content: "strong" !important }
+body.short    b[class]:hover::before       { content: "strong." attr(class) !important }
+body:lang(en) em:hover::before             { content: "Emphasis" }
+body:lang(en) em[class]:hover::before      { content: "Emphasis type \"" attr(class) "\"" }
+body.short    em:hover::before             { content: "em" !important }
+body.short    em[class]:hover::before      { content: "em." attr(class) !important }
+body:lang(en) i:hover::before              { content: "Emphasis" }
+body:lang(en) i[class]:hover::before       { content: "Emphasis type \"" attr(class) "\"" }
+body.short    i:hover::before              { content: "em" !important }
+body.short    i[class]:hover::before       { content: "em." attr(class) !important }
+body:lang(en) a[href]:hover::before        { content: "Hyperlink" }
+body:lang(en) a[href][class]:hover::before { content: "Hyperlink type \"" attr(class) "\"" }
+body.short    a[href]:hover::before        { content: "a-href" !important }
+body.short    a[href][class]:hover::before { content: "a-href." attr(class) !important }
+body:lang(en) abbr:hover::before           { content: "Abbreviation" }
+body:lang(en) abbr[class]:hover::before    { content: "Abbreviation type \"" attr(class) "\"" }
+body.short    abbr:hover::before           { content: "abbr" !important }
+body.short    abbr[class]:hover::before    { content: "abbr." attr(class) !important }
+body:lang(en) acronym:hover::before        { content: "Acronym" }
+body:lang(en) acronym[class]:hover::before { content: "Acronym type \"" attr(class) "\"" }
+body.short    acronym:hover::before        { content: "acronym" !important }
+body.short    acronym[class]:hover::before { content: "acronym." attr(class) !important }
+body:lang(en) kbd:hover::before            { content: "Keyboard Input" }
+body:lang(en) kbd[class]:hover::before     { content: "Keyboard Input type \"" attr(class) "\"" }
+body.short    kbd:hover::before            { content: "kbd" !important }
+body.short    kbd[class]:hover::before     { content: "kbd." attr(class) !important }
+/*body:lang(en) q:hover::before(2)           { content: "Quotation" }
+body:lang(en) q[class]:hover::before(2)    { content: "Quotation type \"" attr(class) "\"" }
+body.short    q:hover::before(2)           { content: "q" !important }
+body.short    q[class]:hover::before(2)    { content: "q." attr(class) !important }*/
+body:lang(en) cite:hover::before           { content: "Work Title" }
+body:lang(en) cite[class]:hover::before    { content: "Work Title type \"" attr(class) "\""}
+body.short    cite:hover::before           { content: "cite" !important }
+body.short    cite[class]:hover::before    { content: "cite." attr(class) !important }
+body:lang(en) samp:hover::before           { content: "Sample Text" }
+body:lang(en) samp[class]:hover::before    { content: "Sample Text type \"" attr(class) "\"" }
+body.short    samp:hover::before           { content: "samp" !important }
+body.short    samp[class]:hover::before    { content: "samp." attr(class) !important }
+body:lang(en) var:hover::before            { content: "Variable" }
+body:lang(en) var[class]:hover::before     { content: "Variable type \"" attr(class) "\"" }
+body.short    var:hover::before            { content: "var" !important }
+body.short    var[class]:hover::before     { content: "var." attr(class) !important }
+body:lang(en) del:hover::before            { content: "Deleted Text" }
+body:lang(en) del[class]:hover::before     { content: "Deleted Text type \"" attr(class) "\"" }
+body.short    del:hover::before            { content: "del" !important }
+body.short    del[class]:hover::before     { content: "del." attr(class) !important }
+body:lang(en) ins:hover::before            { content: "Inserted Text" }
+body:lang(en) ins[class]:hover::before     { content: "Inserted Text type \"" attr(class) "\"" }
+body.short    ins:hover::before            { content: "ins" !important }
+body.short    ins[class]:hover::before     { content: "ins." attr(class) !important }
+body:lang(en) dfn:hover::before            { content: "Definition" }
+body:lang(en) dfn[class]:hover::before     { content: "Definition type \"" attr(class) "\"" }
+body.short    dfn:hover::before            { content: "dfn" !important }
+body.short    dfn[class]:hover::before     { content: "dfn." attr(class) !important }
+body:lang(en) code:hover::before           { content: "Code Fragment" }
+body:lang(en) code[class]:hover::before    { content: "Code Fragment type \"" attr(class) "\"" }
+body.short    code:hover::before           { content: "code" !important }
+body.short    code[class]:hover::before    { content: "code." attr(class) !important }
+body:lang(en) sup:hover::before            { content: "Superscript" }
+body:lang(en) sup[class]:hover::before     { content: "Superscript type \"" attr(class) "\"" }
+body.short    sup:hover::before            { content: "sup" !important }
+body.short    sup[class]:hover::before     { content: "sup." attr(class) !important }
+body:lang(en) sub:hover::before            { content: "Subscript" }
+body:lang(en) sub[class]:hover::before     { content: "Subscript type \"" attr(class) "\""}
+body.short    sub:hover::before            { content: "sub" !important }
+body.short    sub[class]:hover::before     { content: "sub." attr(class) !important }
 
 span:hover,
 strong:hover, b:hover,

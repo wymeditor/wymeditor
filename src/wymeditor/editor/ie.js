@@ -45,6 +45,14 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
     //set the text direction
     jQuery('html', this._doc).attr('dir', this._options.direction);
 
+    //set lang
+	// IE9 = If designMode is set to 'on' it's not possible to modify DOM via script
+	// Rather, we can modify, only will have no effect. So, there is no support for translatable
+	// CSS iframe theme. http://msdn.microsoft.com/en-us/library/ms533720%28v=vs.85%29.aspx
+	// With contenteditable no problem.
+    //jQuery('html', this._doc).attr('lang', this._options.lang);
+    //jQuery('html', this._doc).attr('xml:lang', this._options.lang);
+
     //init html value
     jQuery(this._doc.body).html(this._wym._html);
 

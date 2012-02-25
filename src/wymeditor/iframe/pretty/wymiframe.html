@@ -24,41 +24,64 @@
 <!--[if IE]><link rel="stylesheet" type="text/css" media="screen" href="wymiframe.ie.css" /><![endif]-->
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function() {
-	document.documentElement.addEventListener('DOMAttrModified', function(event) {
-		if (event.target.tagName.toLowerCase() == 'html' && event.attrName == 'lang' && event.newValue != 'en') {
-            var aRules=[], i, oCssRule, sKey, s = '', sLang = event.newValue;
-			// get all rules with -> body:lang(en)
-            for (i = 0; i < document.styleSheets[0].cssRules.length; i++) { 
-				var oCssRule = document.styleSheets[0].cssRules[i];
-				if (oCssRule.type == oCssRule.STYLE_RULE) {
-					if (oCssRule.selectorText.match(/body:lang\(en\)/i)) {
-						aRules.push(oCssRule.cssText)
-					};
-				};
-			};
-			// convert to string to simplify replace
-			aRules.forEach(function(val) {
-				s += val + '\n';
-			});
-			// replace lang() pseudo selector
-			s = s.replace('body:lang(en)', 'body:lang('+sLang+')', 'gi');
-			// replace db strings; only with lowercase! see 'g', not 'gi'
-			// I suspect, we can guarantee, this is still loaded. Is it true?
-			for (i in parent.WYMeditor.STRINGS[sLang]) {
-				if (parent.WYMeditor.STRINGS[sLang].hasOwnProperty(i)) {
-					s = s.replace(i, parent.WYMeditor.STRINGS[sLang][i], 'g');
-				};
-			};
-			// convert back to array
-			aRules = s.split('\n');
-			aRules.pop(); // last \n
-			// make CSS rules
-			for (i = 0; i < aRules.length; i++) {
-				document.styleSheets[0].insertRule(aRules[i], document.styleSheets[0].cssRules.length);
-			};
-		}
-	}, false);
+	document.documentElement.addEventListener('DOMAttrModified', modifyHandler, false); // IE9, Opera, Firefox
+	document.documentElement.addEventListener("DOMSubtreeModified", modifyHandler, false); // Firefox, Webkit(!)
+	// not so good solution: https://developer.mozilla.org/en/Extensions/Performance_best_practices_in_extensions#Avoid_DOM_mutation_event_listeners
 });
+function modifyHandler(event) {
+	if (document.documentElement.getAttribute('lang') != 'en') {
+		document.documentElement.removeEventListener('DOMAttrModified', modifyHandler, false);
+		document.documentElement.removeEventListener('DOMSubtreeModified', modifyHandler, false);  
+		createRules(document.documentElement.getAttribute('lang'));
+	};
+};
+function createRules(sLang) {
+	var aRules=[], aContent=[], i, oCssRule, sKey, s = '', c = '';
+	// get all rules with -> body:lang(en)
+	for (i = 0; i < document.styleSheets[0].cssRules.length; i++) { 
+		var oCssRule = document.styleSheets[0].cssRules[i];
+		if (oCssRule.type == oCssRule.STYLE_RULE) {
+			if (oCssRule.selectorText.match(/body:lang\(en\)/i)) {
+				aRules.push(oCssRule.selectorText);
+				aContent.push((oCssRule.style.content[0] == "'" || oCssRule.style.content[0] == '"') 
+				               ? oCssRule.style.content : "'" + oCssRule.style.content + "'"
+				); // Webkit is terrible... isn't consistent: 'Document Division' but Paragraph, Emphasis (without quotation marks)
+			};
+		};
+	};
+	// replace lang() pseudo selector
+	for ( i = 0; i < aRules.length; i++ ) {
+		aRules[i] = aRules[i].replace('body:lang(en)', 'body:lang('+sLang+')', 'gi');
+	};
+	// convert content to string to simplify replace
+	aContent.forEach(function(element) {
+		c += element + '\n';
+	});
+	// replace db strings in content; 
+	for (i in parent.WYMeditor.STRINGS[sLang]) {
+		if (parent.WYMeditor.STRINGS[sLang].hasOwnProperty(i)) {
+			if ( i == 'Title' ) { continue; } // workaround for 'Work Title'
+			c = c.replace( new RegExp( i.replace(/_/g, ' '), 'g'), parent.WYMeditor.STRINGS[sLang][i] );
+		};
+	};
+	// Webkit... 'Document Division type "', attr(class), '"' -> 'Document Division type "' attr(class) '"'
+	c = c.replace(/,/g, '');
+	/*@cc_on
+	c = c.replace(/\\/g, '');
+	c = c.replace(/"""/g, '"\'"');
+	c = c.replace(/""/g, '\'"');
+	parent.cssTextFix = [];
+	@*/
+	// convert back to array
+	aContent = c.split('\n');
+	// make CSS rules
+	for (i = 0; i < aRules.length; i++) {
+		document.styleSheets[0].insertRule(aRules[i] + ' { content: ' + aContent[i] + ' }', document.styleSheets[0].cssRules.length);
+		/*@cc_on
+		parent.cssTextFix.push(aRules[i] + ' { content: ' + aContent[i] + ' }');
+		@*/
+	};
+};
 </script>
 </head>
 <body class="wym_iframe"></body>

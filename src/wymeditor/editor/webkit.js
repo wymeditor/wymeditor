@@ -42,6 +42,10 @@ WYMeditor.WymClassSafari.prototype.initIframe = function (iframe) {
     //set the text direction
     jQuery('html', this._doc).attr('dir', this._options.direction);
 
+    //set lang;
+    jQuery('html', this._doc).attr('lang', this._options.lang);
+    jQuery('html', this._doc).attr('xml:lang', this._options.lang);
+
     //init designMode
     this._doc.designMode = "on";
 

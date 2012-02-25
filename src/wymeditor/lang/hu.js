@@ -41,43 +41,24 @@ WYMeditor.STRINGS.hu = {
     Classes:          'Osztályok',
     Status:           'Állapot',
     Source_Code:      'Forráskód',
-    
-    // tags
-	' type ':                 ', típusa: ',
-	'"\\""':                  '"”"', // after
-	'\\""':                   '„"',  // before
-	'document division':      'szakasz',
-	'ordered list':           'számozás', /* duplicate */
-	'unordered list':         'felsorolás', /* duplicate */
-	'definition list':        'definíciólista',
-	'list item':              'listaelem',
-	'definition term':        'definíciós kifejezés',
-	'definition description': 'definícióleírás',
-	'paragraph':              'bekezdés', /* duplicate */
-	'heading 1':              'címsor 1', /* duplicate */
-	'heading 2':              'címsor 2', /* duplicate */
-	'heading 3':              'címsor 3', /* duplicate */
-	'heading 4':              'címsor 4', /* duplicate */
-	'heading 5':              'címsor 5', /* duplicate */
-	'heading 6':              'címsor 6', /* duplicate */
-	'block quotation':        'idézetblokk', /* official name problem */
-	'preformatted text':      'előformázott szöveg',
-	'address or contact information': 'cím vagy elérhetőség',
-	'text span':              'szövegrész',
-	'strong emphasis':        'erős hangsúlyozás', /* official name problem */
-	'emphasis':               'hangsúlyozozás', /* official name problem */
-	'hyperlink':              'hiperhivatkozás',
-	'abbreviation':           'rövidítés',
-	'"acronym':               '"betűszó', // do not match 'acronym' in selector!
-	'keyboard input':         'felhasználói bevitel',
-	'work title':             'cím',
-	'sample text':            'mintaszöveg',
-	'variable':               'változó',
-	'deleted text':           'törölt szöveg',
-	'inserted text':          'beszúrt szöveg',
-	'definition':             'definíció',
-	'code fragment':          'kódrészlet',
-	'superscript':            'felső index', /* duplicate */
-	'subscript':              'alsó index' /* duplicate */
+	Document_Division:              'Szakasz',
+	Definition_List:                'Definíciólista',
+	List_Item:                      'Listaelem',
+	Definition_Term:                'Definíciós kifejezés',
+	Definition_Description:         'Definícióleírás',
+	Address_Or_Contact_Information: 'Cím vagy elérhetőség',
+	Text_Span:                      'Szövegrész',
+	Hyperlink:                      'Hiperhivatkozás',
+	Abbreviation:                   'Rövidítés',
+	Acronym:                        'Betűszó',
+	Keyboard_Input:                 'Felhasználói bevitel',
+	Work_Title:                     'Cím',
+	Sample_Text:                    'Mintaszöveg',
+	Variable:                       'Változó',
+	Deleted_Text:                   'Törölt szöveg',
+	Inserted_Text:                  'Beszúrt szöveg',
+	Definition:                     'Definíció',
+	Code_Fragment:                  'Kódrészlet',
+	' type ':                       ' - típusa: '
 };
 
