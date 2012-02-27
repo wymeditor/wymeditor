@@ -5,10 +5,41 @@ WYMeditor.
 
 ## 1.0.0b1 (Beta 1)
 
-*release-date* TBD
+*release-date* February 27, 2012
 
-### Changes Since 1.0.0a6
+We're almost there! Following up on the later October alpha release, we're
+happy to announce the availability of a beta-quality WYMeditor release. This
+release is not without bugs, but we think it is strictly better than 0.5.0rc2
+with a variety of enhancements and bug fixes. Users currently on an earlier
+alpha or on 0.5.0rc2 are encouraged to try out this release and report any
+bugs, especially those that are new since 0.5.0rc2. 
 
+Bugs that are determined to be regressions from 0.5.0rc2 will receive the
+highest priority fixes.
+
+Any feedback or discussion would be appreciated on the 
+[WYMeditor Forums](http://community.wymeditor.org/).
+
+Versus 0.5.0rc2 we have:
+
+* *19* major bug fixes
+* *8* major enhancements including a new theme.
+* A huge internal code refactor to make maintaining and improving WYMeditor easier
+* A passing unit test suite containing more than 600 tests across all supported browsers
+
+### Upgrade Cycle
+
+Once all 
+[milestone 1.x issues](https://github.com/wymeditor/wymeditor/issues?milestone=5&sort=created&direction=desc&state=open)
+are completed, this cycle will culminate in a 1.0.0 stable release.  
+
+### Enhancements
+
+* The parser now works harder to correct any invalid list nesting that might
+  occur due to browser-specific problems or HTML that was loaded to begin. On
+  every list action (indent, outdent, order/unordered conversion), the parser
+  crawls your list to make any necessary corrections. This ensures a much more
+  consistent list-editing experience, especially in Internet Explorer.
 * A new *pretty* theme option is now available for modern browsers (ie9+, FF,
   Chrome, Safari). This theme uses CSS instead of images to provide context
   clues for blocks, resulting in fewer HTTP requests and better network
@@ -20,100 +51,6 @@ WYMeditor.
   `iframeBasePath: "wymeditor/iframe/pretty/"` option to your WYMeditor instance.
 
   Thanks to first-time contributor Gyuris Gellért for the theme.
-* `<col />` tags are now automatically self-closing and the parser no longer
-  forces a closing `</col>` tag.
-
-  Thanks to first-time contributor Steven Bufton for the fix.
-
-## 1.0.0a6 (Alpha 6)
-
-*release-date* January 17, 2012
-
-### Changes Since 1.0.0a5
-
-* It's now possible to consistently toggle lists between ordered and unordered
-  in all supported browsers.
-* Turning a top-level item into a list no longer wraps the list in a paragraph
-  in chrome 16 and higher.
-* Fixed indent/outdent when highlighting an inline node instead of the list
-  (eg. a bolded section).
-* Updated the turkish translation (thanks Gokce).
-* Attempting to indent with a cursor outside of a list no longer throws a
-  javascript error.
-* Several bugs related to losing/moving your selection when indenting or
-  outdenting lists are now fixed.
-* Outdenting after using backspace to join an item inside a list no longer
-  loses content in internet explorer.
-
-## 1.0.0a5 (Alpha 5)
-
-*release-date* January 6, 2012
-
-### Changes Since 1.0.0a4
-
-* Fixed several related list outdent bugs where content could be re-ordered or
-  where outdent would fail to occur.
-
-## 1.0.0a4 (Alpha 4)
-
-*release-date* December 22, 2011
-
-### Changes Since 1.0.0a3
-
-* It's now possible to indent multiple list items at one time.
-* It is once-again possible to adjust an images width and height in FF using
-  the browser-supplied slide and drag handles. This was removed out of purity
-  (there should be a solution that maintains image ratios, uses CSS instead,
-  etc), but in absense of a better solution, it's better than having no ability
-  to control the size of inserted images.
-* Updated the bundled version of Rangy to version 1.2
-* Fixed a list indent bug when indenting a list with a previous list item which
-  had a sublist of a different list type. This used to create a second sublist
-  of the original list type, which isn't what someone would expect.
-
-## 1.0.0a3 (Alpha 3)
-
-*release-date* December 17, 2011
-
-### Changes Since 1.0.0a2
-
-* Fixed a bug making it impossible to use *Paste From Word* inside tables or lists
-
-## 1.0.0a2 (Alpha 2)
-
-*release-date* November 1, 2011
-
-### Changes Since 1.0.0a1
-
-* Fixed bug preventing *Paste From Word* from properly splitting paragraphs in internet explorer
-* Updated the unit tests so that everything is passing under Firefox 7
-* Switched from jslint to jshint for source control static analysis
-
-## 1.0.0a1 (Alpha 1)
-
-*release-date* October 17, 2011
-
-Finally! It took us a while, but this marks the first significant release since 0.5.0rc2. It comes with:
-
-* *8* major bug fixes
-* *6* major enhancements
-* A huge internal code refactor to make maintaining and improving WYMeditor easier
-* A passing unit test suite containing more than 350 tests across all supported browsers
-
-### Upgrade Cycle
-
-This release is an *Alpha Quality* release and we would appreciate any testing
-or feedback. One of the core developers is using this build in production, but
-plugin compatibility issues may exist. Further alpha and eventually beta builds
-will follow as 
-[milestone 1.x issues](https://github.com/wymeditor/wymeditor/issues?milestone=5&sort=created&direction=desc&state=open)
-are completed. Once all blocker tickets are completed, this cycle will
-culminate in a 1.0.0 stable release.  
-
-Any feedback or discussion would be appreciated on the [WYMeditor Forums](http://community.wymeditor.org/).
-
-### Enhancements
-
 * The Embed plugin now supports embedding via an iframe.
 * List indent/outdent has been rewritten to fix several outstanding bugs in
   various browsers. Indent and outdent are now always opposites of eachother
@@ -186,4 +123,29 @@ Any feedback or discussion would be appreciated on the [WYMeditor Forums](http:/
   whitespace in list HTML.
 * `colSpan` and `rowSpan` attributes are no longer stripped out in Internet
   Explorer.
+* Fixed a bug making it impossible to use *Paste From Word* inside tables or lists
+* Fixed a list indent bug when indenting a list with a previous list item which
+  had a sublist of a different list type. This used to create a second sublist
+  of the original list type, which isn't what someone would expect.
+* Fixed several related list outdent bugs where content could be re-ordered or
+  where outdent would fail to occur.
+* It's now possible to consistently toggle lists between ordered and unordered
+  in all supported browsers.
+* Turning a top-level item into a list no longer wraps the list in a paragraph
+  in chrome 16 and higher.
+* Fixed indent/outdent when highlighting an inline node instead of the list
+  (eg. a bolded section).
+* Updated the turkish translation (thanks Gokce).
+* Attempting to indent with a cursor outside of a list no longer throws a
+  javascript error.
+* Several bugs related to losing/moving your selection when indenting or
+  outdenting lists are now fixed.
+* Outdenting after using backspace to join an item inside a list no longer
+  loses content in internet explorer.
+* `<col />` tags are now automatically self-closing and the parser no longer
+  forces a closing `</col>` tag.
+
+  Thanks to first-time contributor Steven Bufton for the fix.
+
+
 
