@@ -120,6 +120,12 @@ the python instructions, open up your browser to
 
 All green means you're good to go.
 
+4. Want to run the tests from the command line? You can do that to! Just install 
+[PhantomJS](http://www.phantomjs.org/) and then (if you used the http server
+from step 2) call:
+
+    $ build/phantomjs_test.sh localhost:8000/test/unit
+
 ### Building WYMeditor
 
 1. Get a copy of the source using git:

@@ -55,6 +55,7 @@
             "../../wymeditor/plugins/table/jquery.wymeditor.table.js",
 
             "qunit.js",
+            "qunit-tap.js",
 
             // Test files
             "utils.js",
@@ -66,6 +67,13 @@
         ],
         urlParams['jquery']
     );
+</script>
+<script>
+    if (urlParams.tapOutput) {
+        // Only provide tap output when ?tapOutput=true
+        // When running via phantomJS, use that URL
+        qunitTap(QUnit, function() { console.log.apply(console, arguments); }, {noPlan: true});
+    }
 </script>
 </head>
 

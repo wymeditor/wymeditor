@@ -30,15 +30,16 @@ function attribToHtml(str) {
 */
 function normalizeHtml(node) {
     var html = '',
+        name,
+        attrs,
+        attr,
+        n,
+        child,
+        sortedAttrs,
         i;
     switch (node.nodeType) {
     case 1:  // an element
-        var name = node.tagName.toLowerCase(),
-            attrs,
-            attr,
-            n,
-            child,
-            sortedAttrs;
+        name = node.tagName.toLowerCase();
 
         html += '<' + name;
         attrs = node.attributes;
@@ -120,9 +121,9 @@ function makeSelection(wymeditor, startElement, endElement, startElementIndex, e
     if (typeof endElementIndex === 'undefined') {
         endElementIndex = 0;
     }
-    var sel = rangy.getIframeSelection(wymeditor._iframe);
+    var sel = rangy.getIframeSelection(wymeditor._iframe),
+        range = rangy.createRange(wymeditor._doc);
 
-    var range = rangy.createRange(wymeditor._doc);
     range.setStart(startElement, startElementIndex);
     range.setEnd(endElement, endElementIndex);
     if (startElement === endElement &&
@@ -203,25 +204,29 @@ function simulateKey(keyCode, targetElement, options) {
         'ctrlKey': false,
         'shiftKey': false,
         'altKey': false
-    };
+    },
+        keydown,
+        keypress,
+        keyup;
 
     options = $.extend(defaults, options);
 
-    var keydown = $.Event('keydown');
+    keydown = $.Event('keydown');
+
     keydown.keyCode = keyCode;
     keydown.metaKey = options.metaKey;
     keydown.ctrlKey = options.ctrlKey;
     keydown.shiftKey = options.shiftKey;
     keydown.altKey = options.altKey;
 
-    var keypress = $.Event('keypress');
+    keypress = $.Event('keypress');
     keypress.keyCode = keyCode;
     keydown.metaKey = options.metaKey;
     keydown.ctrlKey = options.ctrlKey;
     keydown.shiftKey = options.shiftKey;
     keydown.altKey = options.altKey;
 
-    var keyup = $.Event('keyup');
+    keyup = $.Event('keyup');
     keyup.keyCode = keyCode;
     keydown.metaKey = options.metaKey;
     keydown.ctrlKey = options.ctrlKey;
