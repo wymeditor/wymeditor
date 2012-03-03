@@ -402,6 +402,42 @@ test("no-op on table with colgroup generates valid XHTML", function () {
     equals(jQuery.wymeditors(0).parser.parse(tableWithColXHtml), tableWithColXHtml);
 });
 
+test("Allow line breaks after strong in lists", function () {
+    expect(4);
+    var listHtml = String() +
+        '<ol id="ol_1">' +
+            '<li id="li_1">li_1' +
+                '<ol>' +
+                    '<li id="li_1_1"><strong>li_1_1</strong><br />more text</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>',
+        listHtmlUnclosedBr = String() +
+        '<ol id="ol_1">' +
+            '<li id="li_1">li_1' +
+                '<ol>' +
+                    '<li id="li_1_1"><strong>li_1_1</strong><br>more text</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>',
+        wymeditor = jQuery.wymeditors(0);
+
+    equals(
+        wymeditor.parser.parse(listHtml),
+        listHtml
+    );
+    equals(
+        wymeditor.parser.parse(listHtmlUnclosedBr),
+        listHtml
+    );
+
+    // Now throw the browser/dom in the mix
+    wymeditor.html(listHtml);
+    htmlEquals(wymeditor, listHtml);
+
+    wymeditor.html(listHtmlUnclosedBr);
+    htmlEquals(wymeditor, listHtml);
+});
 module("Post Init", {setup: setupWym});
 
 test("Sanity check: html()", function () {
