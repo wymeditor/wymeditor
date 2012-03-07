@@ -323,7 +323,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
 
             $(wrapper).find(filter).children().unwrap();
 
-            parent = this.findParentNode(range.startContainer, filter);
+            parent = this.findParentElement(range.startContainer, filter);
             firstChild = wrapper.childNodes[0];
             lastChild = wrapper.childNodes[wrapper.childNodes.length - 1];
 
