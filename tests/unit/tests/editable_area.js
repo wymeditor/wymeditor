@@ -28,7 +28,7 @@ jQuery(function($){
         ok(editableArea.isEmpty(), 'Emptying the editor');
     });
     
-    test('splitBlock', 6, function() {
+    test('splitBlock', 7, function() {
         function setup (container) {
             var text = document.createTextNode('Text to break'),
                 node = document.createElement('p');
@@ -49,6 +49,14 @@ jQuery(function($){
         
         editableArea.splitBlock(textNode, textNode.length);
         strictEqual(editableArea.html(), '<p>Text to break</p><p><br _wym_placeholder="true" /></p>', 'Splitting block elements (at end)');
+        
+        editableArea.html('');
+        
+        var block = $('<h1><br _wym_placeholder="true" /></h1>')[0];
+        editableArea.element.append(block);
+
+        editableArea.splitBlock(block, 0);
+        strictEqual(editableArea.html(), '<h1><br _wym_placeholder="true" /></h1><h1><br _wym_placeholder="true" /></h1>', 'Splitting block elements without textNodes');
         
         editableArea.html('');
         
