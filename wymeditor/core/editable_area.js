@@ -118,7 +118,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
     
     splitNodes: function (node, offset, container) {
         var child = node.nodeType === Wymeditor.TEXT_NODE ?
-                this.splitTextNode(node, offset) : node,
+                this.splitTextNode(node, offset) : node.childNodes[offset],
             oldParent = child.parentNode,
             newParent = document.createElement(oldParent.tagName),
             parents = [],
