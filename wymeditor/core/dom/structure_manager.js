@@ -49,6 +49,7 @@ Wymeditor.ns('dom').structureManager = function (ruleSet) {
         // Merge all collection per node
         for (i = 0; collection = collectionsByWeight[i]; i++) {
             for (j = 0; nodeName = collection.members[j]; j++) {
+                nodeName = nodeName.toLowerCase();
                 nodes[nodeName] = $.extend(true, (nodes[nodeName] || {}), collection.properties);
             }
         }
@@ -56,7 +57,7 @@ Wymeditor.ns('dom').structureManager = function (ruleSet) {
         // Add node specific overrides/extensions
         for (nodeName in _rawRuleSet.nodes) {
             if (_rawRuleSet.nodes.hasOwnProperty(nodeName)) {
-                nodes[nodeName] = $.extend(true, (nodes[nodeName] || {}), _rawRuleSet.nodes[nodeName]);
+                nodes[nodeName.toLowerCase()] = $.extend(true, (nodes[nodeName.toLowerCase()] || {}), _rawRuleSet.nodes[nodeName]);
             }
         }
 
