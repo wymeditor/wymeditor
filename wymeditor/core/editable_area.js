@@ -73,6 +73,8 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
             ranges, 
             range,
             block,
+            parent,
+            parentRules,
             next;
 
         if (event.keyCode === 13) {
@@ -84,16 +86,24 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
                 range = ranges[0];
                 range.deleteContents();
                 block = this.findParentBlockElement(range.startContainer);
+                parent = block.parent();
                 
                 if (event.shiftKey) {
                     range.insertNode($('<br />')[0]);
-                } else if (block.text() === '' && 
-                    block.parent().not(this.element).is(blockFilter)) {
+                } else if (block.text() === '' && parent.not(this.element).is(blockFilter)) {
                     // Were inside an empty nested block element, hitting enter 
                     // should remove the element and take us up a level.
-                    next = $('<p/>').insertAfter(block.parent())[0];
+
+                    // Create and insert next element based on context
+                    parentRules = this.structureManager.getNodeRules(parent[0]);
+                    next = document.createElement(parentRules && parentRules.next || 'p');
+                    parent.after(next);
+
+                    // Move selection to the new element
                     this.populateEmptyElements(next);
                     this.selection.selectNodeContents(next);
+                    
+                    // Remove the old empty element
                     block.remove();
                 } else {
                     // Split the current block element
