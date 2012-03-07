@@ -98,9 +98,13 @@ Wymeditor.ns('dom').structureManager = function (ruleSet) {
         }
     };
     
-    function getNode (name) {
+    function getNode (node) {
+        if (!Wymeditor.utils.is('String', node) && node.nodeName) {
+            node = node.nodeName;
+        }
+
         // Return a copy not a reference
-        return $.extend(true, {}, _ruleSet.nodes[name]); 
+        return $.extend(true, {}, _ruleSet.nodes[node.toLowerCase()]); 
     };
 
     function getCollection(name) {
