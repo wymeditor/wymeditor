@@ -158,7 +158,8 @@ Wymeditor.dom.structureManager.DEFAULT_RULESET = {
         'u': { remove: true },
         'a': { attributes: { href: true, rel: false } },
         'img': { attributes: { src: true, alt: true, width: false, height: false } },
-        'br': { validChildren: false } 
+        'br': { validChildren: false },
+        'li': { next: 'li' }
     },
     collections: {
         all: {
