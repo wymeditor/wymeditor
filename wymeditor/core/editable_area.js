@@ -128,14 +128,24 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
     },
     
     splitNodes: function (node, offset, container) {
-        var child = node.nodeType === Wymeditor.TEXT_NODE ?
-                this.splitTextNode(node, offset) : node.childNodes[offset],
-            oldParent = child.parentNode,
-            newParent = document.createElement(oldParent.tagName),
-            parents = [],
+        var parents = [],
             children = [],
+            oldParent,
+            newParent,
+            child,
             i;
         
+        if (node.nodeType === Wymeditor.TEXT_NODE) {
+            child = this.splitTextNode(node, offset);
+        } else if (Wymeditor.utils.is('Number', offset)) {
+            child = node.childNodes[offset];
+        } else {
+            child = node;
+        }
+
+        oldParent = child.parentNode;
+        newParent = document.createElement(oldParent.tagName);
+            
         container = $(container || oldParent.parentNode)[0];
         
         // We're splitting the parentNode
