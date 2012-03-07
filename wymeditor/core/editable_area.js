@@ -94,6 +94,7 @@ Wymeditor.EditableArea.prototype = Wymeditor.utils.extendPrototypeOf(Wymeditor.O
                     next = $('<p/>').insertAfter(block.parent())[0];
                     this.populateEmptyElements(next);
                     this.selection.selectNodeContents(next);
+                    block.remove();
                 } else {
                     // Split the current block element
                     this.selection.selectNodeContents(
