@@ -3,6 +3,19 @@
 This document tracks the enhancements and bug fixes between releases of
 WYMeditor.
 
+## 1.0.0b2 (Beta 2)
+
+*release-date* TBD
+
+### Enhancements
+
+* Added a Slovak translation. Thanks Miroslav Bendik.
+
+### Bug Fixes
+
+* A missing space in the tools HTML was triggering quirks mode in FF and other
+  browsers. Thanks to corphi for the fix.
+
 ## 1.0.0b1 (Beta 1)
 
 *release-date* February 27, 2012
