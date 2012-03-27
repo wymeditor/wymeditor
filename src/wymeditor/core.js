@@ -418,7 +418,7 @@ jQuery.fn.wymeditor = function (options) {
 
         toolsItemHtml: String() +
             '<li class="' + WYMeditor.TOOL_CLASS + '">' +
-                '<a href="#" name="' + WYMeditor.TOOL_NAME + '"' +
+                '<a href="#" name="' + WYMeditor.TOOL_NAME + '" ' +
                         'title="' + WYMeditor.TOOL_TITLE + '">' +
                     WYMeditor.TOOL_TITLE +
                 '</a>' +
