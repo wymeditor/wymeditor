@@ -15,6 +15,7 @@
  *
  * File Authors:
  *        Jean-Francois Hovinne (jf.hovinne a-t wymeditor dotorg)
+ *        Philipp Cordes (pc a-t irgendware dotnet)
 -->
 <html>
 <head>
