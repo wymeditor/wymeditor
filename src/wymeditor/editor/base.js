@@ -743,7 +743,7 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
 
         $body = $(this._doc).find('body.wym_iframe'),
         children = $body.children(),
-        placeholderNode = '<br _moz_editor_bogus_node="TRUE" _moz_dirty="">',
+        placeholderNode = '<br _moz_editor_bogus_node="TRUE" _moz_dirty="" />',
         $firstChild,
         $lastChild,
         blockSepSelector;
