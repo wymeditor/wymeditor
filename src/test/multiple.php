@@ -76,7 +76,7 @@
         <input type="submit" class="wymupdate" />
     </form>
 
-    EOF;
+EOF;
     ?>
 
 </body>
