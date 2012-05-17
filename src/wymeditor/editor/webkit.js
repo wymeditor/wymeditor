@@ -79,23 +79,23 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
     var focusNode = this.selected(),
         _param, container, attr;
 
-	// DIV insert detection (causes problems)
-	if (cmd == WYMeditor.INSERT_HTML.toLowerCase()) {
-		_param = jQuery(param);
+    // DIV insert detection (causes problems)
+    if (cmd == WYMeditor.INSERT_HTML.toLowerCase()) {
+        _param = jQuery(param);
 
-		if (_param.is('div')) {
-			attr = _param.get(0).attributes;
-			// replace default block with DIV
-			this._doc.execCommand(WYMeditor.FORMAT_BLOCK, '', WYMeditor.DIV);
-			// copy attributes
-			container = this.selected();
-			for (var i = 0; i < attr.length; i++) {
-				container.setAttribute(attr[i].name, attr[i].value);
-			}
+        if (_param.is('div')) {
+            attr = _param.get(0).attributes;
+            // replace default block with DIV
+            this._doc.execCommand(WYMeditor.FORMAT_BLOCK, '', WYMeditor.DIV);
+            // copy attributes
+            container = this.selected();
+            for (var i = 0; i < attr.length; i++) {
+                container.setAttribute(attr[i].name, attr[i].value);
+            }
 
-			param = _param.html();
-		}
-	}
+            param = _param.html();
+        }
+    }
 
     if (param) {
         this._doc.execCommand(cmd, '', param);
