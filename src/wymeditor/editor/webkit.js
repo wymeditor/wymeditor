@@ -80,7 +80,7 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
         _param, container, attr;
 
     // DIV insert detection (causes problems)
-    if (cmd == WYMeditor.INSERT_HTML.toLowerCase()) {
+    if (cmd.toLowerCase() == WYMeditor.INSERT_HTML.toLowerCase()) {
         _param = jQuery(param);
 
         if (_param.is('div')) {
