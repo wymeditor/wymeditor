@@ -1892,7 +1892,7 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
             // Add in all of the new parents if they're not already included
             // (no duplicates)
             for (j = 0; j < parentsToAdd.length; j++) {
-                if ($.inArray(parentsToAdd[j], nodes) === -1) {
+                if (jQuery.inArray(parentsToAdd[j], nodes) === -1) {
                     nodes.push(parentsToAdd[j]);
                 }
             }
