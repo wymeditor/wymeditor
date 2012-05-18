@@ -58,12 +58,12 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
     this._doc.onbeforedeactivate = function () {
         wym.saveCaret();
     };
-    $(this._doc).bind('keyup', wym.keyup);
+    jQuery(this._doc).bind('keyup', wym.keyup);
     // Workaround for an ie8 => ie7 compatibility mode bug triggered
     // intermittently by certain combinations of CSS on the iframe
     var ieVersion = parseInt($.browser.version, 10);
     if (ieVersion >= 8 && ieVersion < 9) {
-        $(this._doc).bind('keydown', function () {
+        jQuery(this._doc).bind('keydown', function () {
             wym.fixBluescreenOfDeath();
         });
     }
@@ -143,10 +143,10 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
     A real fix would be greatly appreciated.
 */
 WYMeditor.WymClassExplorer.prototype.fixBluescreenOfDeath = function () {
-    var position = $(this._doc).find('p').eq(0).position();
+    var position = jQuery(this._doc).find('p').eq(0).position();
     if (position !== null && typeof position !== 'undefined' && position.left < 0) {
-        $(this._box).append('<br id="wym-bluescreen-bug-fix" />');
-        $(this._box).find('#wym-bluescreen-bug-fix').remove();
+        jQuery(this._box).append('<br id="wym-bluescreen-bug-fix" />');
+        jQuery(this._box).find('#wym-bluescreen-bug-fix').remove();
     }
 };
 
@@ -289,14 +289,14 @@ WYMeditor.WymClassExplorer.prototype.setFocusToNode = function (node, toStart) {
 WYMeditor.WymClassExplorer.prototype.spaceBlockingElements = function () {
     var blockingSelector = WYMeditor.BLOCKING_ELEMENTS.join(', ');
 
-    var $body = $(this._doc).find('body.wym_iframe');
+    var $body = jQuery(this._doc).find('body.wym_iframe');
     var children = $body.children();
     var placeholderNode = WYMeditor.WymClassExplorer.PLACEHOLDER_NODE;
 
     // Make sure we have the appropriate placeholder nodes
     if (children.length > 0) {
-        var $firstChild = $(children[0]);
-        var $lastChild = $(children[children.length - 1]);
+        var $firstChild = jQuery(children[0]);
+        var $lastChild = jQuery(children[children.length - 1]);
 
         // Ensure begining placeholder
         if ($firstChild.is(blockingSelector)) {

@@ -311,8 +311,8 @@ WYMeditor.WymClassMozilla.prototype.afterInsertTable = function (table) {
         // In certain FF versions, inserted tables need some content in their
         // cells before they're editable, otherwise the user has to move focus
         // in and then out of a cell first, even with our click() hack
-        $(table).find('td').each(function (index, element) {
-            $(element).append(WYMeditor.WymClassMozilla.CELL_PLACEHOLDER);
+        jQuery(table).find('td').each(function (index, element) {
+            jQuery(element).append(WYMeditor.WymClassMozilla.CELL_PLACEHOLDER);
         });
     }
 };
