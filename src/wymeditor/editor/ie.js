@@ -61,7 +61,7 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
     jQuery(this._doc).bind('keyup', wym.keyup);
     // Workaround for an ie8 => ie7 compatibility mode bug triggered
     // intermittently by certain combinations of CSS on the iframe
-    var ieVersion = parseInt($.browser.version, 10);
+    var ieVersion = parseInt(jQuery.browser.version, 10);
     if (ieVersion >= 8 && ieVersion < 9) {
         jQuery(this._doc).bind('keydown', function () {
             wym.fixBluescreenOfDeath();
@@ -302,7 +302,7 @@ WYMeditor.WymClassExplorer.prototype.spaceBlockingElements = function () {
         if ($firstChild.is(blockingSelector)) {
             $firstChild.before(placeholderNode);
         }
-        if ($.browser.version >= "7.0" && $lastChild.is(blockingSelector)) {
+        if (jQuery.browser.version >= "7.0" && $lastChild.is(blockingSelector)) {
             $lastChild.after(placeholderNode);
         }
     }

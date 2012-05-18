@@ -469,7 +469,7 @@ TableEditor.prototype.mergeRow = function (sel) {
 
     // Add a colspan to the farthest-left cell
     var combinedColspan = this.getTotalColumns(cells);
-    if ($.browser.msie) {
+    if (jQuery.browser.msie) {
         // jQuery.attr doesn't work for colspan in ie
         mergeCell.colSpan = combinedColspan;
     } else {
@@ -683,7 +683,7 @@ TableEditor.prototype.selectElement = function (elmnt) {
         // ie8 can raise an "unkown runtime error" trying to empty the range
     }
     // IE selection hack
-    if ($.browser.msie) {
+    if (jQuery.browser.msie) {
         this._wym.saveCaret();
     }
 };

@@ -412,7 +412,7 @@ WYMeditor.editor.prototype.selection_collapsed = function () {
     var sel = this.selection(),
         collapsed = false;
 
-    $.each(sel.getAllRanges(), function () {
+    jQuery.each(sel.getAllRanges(), function () {
         if (this.collapsed) {
             collapsed = true;
             //break
@@ -434,8 +434,8 @@ WYMeditor.editor.prototype.selected_contains = function (selector) {
     var sel = this.selection(),
         matches = [];
 
-    $.each(sel.getAllRanges(), function () {
-        $.each(this.getNodes(), function () {
+    jQuery.each(sel.getAllRanges(), function () {
+        jQuery.each(this.getNodes(), function () {
             if (jQuery(this).is(selector)) {
                 matches.push(this);
             }
@@ -785,16 +785,16 @@ WYMeditor.editor.prototype._getBlockSepSelector = function () {
 
     var blockCombo = [];
     // Consecutive blocking elements need separators
-    $.each(WYMeditor.BLOCKING_ELEMENTS, function (indexO, elementO) {
-        $.each(WYMeditor.BLOCKING_ELEMENTS, function (indexI, elementI) {
+    jQuery.each(WYMeditor.BLOCKING_ELEMENTS, function (indexO, elementO) {
+        jQuery.each(WYMeditor.BLOCKING_ELEMENTS, function (indexI, elementI) {
             blockCombo.push(elementO + ' + ' + elementI);
         });
     });
 
     // A blocking element either followed by or preceeded by a block elements
     // needs separators
-    $.each(WYMeditor.BLOCKING_ELEMENTS, function (indexO, elementO) {
-        $.each(WYMeditor.NON_BLOCKING_ELEMENTS, function (indexI, elementI) {
+    jQuery.each(WYMeditor.BLOCKING_ELEMENTS, function (indexO, elementO) {
+        jQuery.each(WYMeditor.NON_BLOCKING_ELEMENTS, function (indexI, elementI) {
             blockCombo.push(elementO + ' + ' + elementI);
             blockCombo.push(elementI + ' + ' + elementO);
         });
