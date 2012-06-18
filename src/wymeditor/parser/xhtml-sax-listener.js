@@ -205,7 +205,7 @@ WYMeditor.XhtmlSaxListener.prototype.addContent = function(text) {
         // IE adds random significant newlines inside nested lists
         text = text.replace(/(\r|\n|\r\n)+/g, ' ');
     }
-    if (text.length > 0) {
+    if (text.replace(/^\s+|\s+$/g, '').length > 0) {
         // Don't count it as text if it's empty
         this._last_node_was_text = true;
     }
