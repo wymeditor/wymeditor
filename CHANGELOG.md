@@ -19,6 +19,9 @@ WYMeditor.
   in chrome and safari. Thanks to Jakub Krčma for the fix.
 * It is once again possible to use the Drupal 7 wysiwyg module to integrate
   WYMeditor. Thanks to Jean-Francois Hovinne for the patch.
+* Newline characters are no longer incorrectly removed in IE, which could cause
+  words in copy/pasted lists to join together. Thanks to Jakub Krčma for the
+  fix.
 
 ## 1.0.0b1 (Beta 1)
 
