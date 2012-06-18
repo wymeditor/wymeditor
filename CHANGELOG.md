@@ -15,6 +15,8 @@ WYMeditor.
 
 * A missing space in the tools HTML was triggering quirks mode in FF and other
   browsers. Thanks to corphi for the fix.
+* Inserting `div` tags via the API or DOM no longer breaks document structure
+  in chrome and safari. Thanks to Jakub Krčma for the fix.
 
 ## 1.0.0b1 (Beta 1)
 
@@ -25,12 +27,12 @@ happy to announce the availability of a beta-quality WYMeditor release. This
 release is not without bugs, but we think it is strictly better than 0.5.0rc2
 with a variety of enhancements and bug fixes. Users currently on an earlier
 alpha or on 0.5.0rc2 are encouraged to try out this release and report any
-bugs, especially those that are new since 0.5.0rc2. 
+bugs, especially those that are new since 0.5.0rc2.
 
 Bugs that are determined to be regressions from 0.5.0rc2 will receive the
 highest priority fixes.
 
-Any feedback or discussion would be appreciated on the 
+Any feedback or discussion would be appreciated on the
 [WYMeditor Forums](http://community.wymeditor.org/).
 
 Versus 0.5.0rc2 we have:
@@ -42,9 +44,9 @@ Versus 0.5.0rc2 we have:
 
 ### Upgrade Cycle
 
-Once all 
+Once all
 [milestone 1.x issues](https://github.com/wymeditor/wymeditor/issues?milestone=5&sort=created&direction=desc&state=open)
-are completed, this cycle will culminate in a 1.0.0 stable release.  
+are completed, this cycle will culminate in a 1.0.0 stable release.
 
 ### Enhancements
 
