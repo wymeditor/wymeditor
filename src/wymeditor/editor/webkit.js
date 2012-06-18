@@ -153,7 +153,7 @@ WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
     wym._selected_image = null;
 
     // Fix to allow shift + return to insert a line break in older safari
-    if ($.browser.version < 534.1) {
+    if (jQuery.browser.version < 534.1) {
         // Not needed in AT MAX chrome 6.0. Probably safe earlier
         if (evt.keyCode === WYMeditor.KEY.ENTER && evt.shiftKey) {
             wym._exec('InsertLineBreak');

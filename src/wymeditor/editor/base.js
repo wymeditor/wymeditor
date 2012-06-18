@@ -412,7 +412,7 @@ WYMeditor.editor.prototype.selection_collapsed = function () {
     var sel = this.selection(),
         collapsed = false;
 
-    $.each(sel.getAllRanges(), function () {
+    jQuery.each(sel.getAllRanges(), function () {
         if (this.collapsed) {
             collapsed = true;
             //break
@@ -434,9 +434,9 @@ WYMeditor.editor.prototype.selected_contains = function (selector) {
     var sel = this.selection(),
         matches = [];
 
-    $.each(sel.getAllRanges(), function () {
-        $.each(this.getNodes(), function () {
-            if ($(this).is(selector)) {
+    jQuery.each(sel.getAllRanges(), function () {
+        jQuery.each(this.getNodes(), function () {
+            if (jQuery(this).is(selector)) {
                 matches.push(this);
             }
         });
@@ -453,8 +453,8 @@ WYMeditor.editor.prototype.selected_contains = function (selector) {
     the selection's parents.
 */
 WYMeditor.editor.prototype.selected_parents_contains = function (selector) {
-    var $matches = $([]),
-        $selected = $(this.selected());
+    var $matches = jQuery([]),
+        $selected = jQuery(this.selected());
     if ($selected.is(selector)) {
         $matches = $matches.add($selected);
     }
@@ -741,7 +741,7 @@ WYMeditor.editor.prototype.fixBodyHtml = function () {
 WYMeditor.editor.prototype.spaceBlockingElements = function () {
     var blockingSelector = WYMeditor.BLOCKING_ELEMENTS.join(', '),
 
-        $body = $(this._doc).find('body.wym_iframe'),
+        $body = jQuery(this._doc).find('body.wym_iframe'),
         children = $body.children(),
         placeholderNode = '<br _moz_editor_bogus_node="TRUE" _moz_dirty="">',
         $firstChild,
@@ -750,8 +750,8 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
 
     // Make sure that we still have a bogus node at both the begining and end
     if (children.length > 0) {
-        $firstChild = $(children[0]);
-        $lastChild = $(children[children.length - 1]);
+        $firstChild = jQuery(children[0]);
+        $lastChild = jQuery(children[children.length - 1]);
 
         if ($firstChild.is(blockingSelector)) {
             $firstChild.before(placeholderNode);
@@ -785,16 +785,16 @@ WYMeditor.editor.prototype._getBlockSepSelector = function () {
 
     var blockCombo = [];
     // Consecutive blocking elements need separators
-    $.each(WYMeditor.BLOCKING_ELEMENTS, function (indexO, elementO) {
-        $.each(WYMeditor.BLOCKING_ELEMENTS, function (indexI, elementI) {
+    jQuery.each(WYMeditor.BLOCKING_ELEMENTS, function (indexO, elementO) {
+        jQuery.each(WYMeditor.BLOCKING_ELEMENTS, function (indexI, elementI) {
             blockCombo.push(elementO + ' + ' + elementI);
         });
     });
 
     // A blocking element either followed by or preceeded by a block elements
     // needs separators
-    $.each(WYMeditor.BLOCKING_ELEMENTS, function (indexO, elementO) {
-        $.each(WYMeditor.NON_BLOCKING_ELEMENTS, function (indexI, elementI) {
+    jQuery.each(WYMeditor.BLOCKING_ELEMENTS, function (indexO, elementO) {
+        jQuery.each(WYMeditor.NON_BLOCKING_ELEMENTS, function (indexI, elementI) {
             blockCombo.push(elementO + ' + ' + elementI);
             blockCombo.push(elementI + ' + ' + elementO);
         });
@@ -811,7 +811,7 @@ WYMeditor.editor.prototype._getBlockSepSelector = function () {
     paragraphs, usually after hitting enter from an existing paragraph.
 */
 WYMeditor.editor.prototype.fixDoubleBr = function () {
-    var $body = $(this._doc).find('body.wym_iframe'),
+    var $body = jQuery(this._doc).find('body.wym_iframe'),
         $last_br;
     // Strip consecutive brs unless they're in a a pre tag
     $body.children('br + br').filter(':not(pre br)').remove();
@@ -955,7 +955,7 @@ WYMeditor.editor.prototype._handleMultilineBlockContainerPaste = function (wym, 
 
 
     // Now append all subsequent paragraphs
-    $insertAfter = $(blockParent);
+    $insertAfter = jQuery(blockParent);
 
     // Just need to split the current container and put new block elements
     // in between
@@ -976,7 +976,7 @@ WYMeditor.editor.prototype._handleMultilineBlockContainerPaste = function (wym, 
     blockParentType = blockParent.tagName;
     leftSide = [];
     rightSide = [];
-    $(blockParent).contents().each(function (index, element) {
+    jQuery(blockParent).contents().each(function (index, element) {
         // Capture all of the dom nodes to the left and right of our
         // range. We can't remove them in the same step because that
         // loses the selection in webkit
@@ -1002,25 +1002,25 @@ WYMeditor.editor.prototype._handleMultilineBlockContainerPaste = function (wym, 
     });
     // Now remove all of the left and right nodes
     for (i = 0; i < leftSide.length; i++) {
-        $(leftSide[i]).remove();
+        jQuery(leftSide[i]).remove();
     }
     for (i = 0; i < rightSide.length; i++) {
-        $(rightSide[i]).remove();
+        jQuery(rightSide[i]).remove();
     }
 
     // Rebuild our split nodes and add the inserted content
     if (leftSide.length > 0) {
         // We have left-of-selection content
         // Put the content back inside our blockParent
-        $(blockParent).prepend(leftSide);
+        jQuery(blockParent).prepend(leftSide);
     }
     if (rightSide.length > 0) {
         // We have right-of-selection content.
         // Split it off in to a node of the same type after our
         // blockParent
-        $splitRightParagraph = $('<' + blockParentType + '>' +
+        $splitRightParagraph = jQuery('<' + blockParentType + '>' +
             '</' + blockParentType + '>', wym._doc);
-        $splitRightParagraph.insertAfter($(blockParent));
+        $splitRightParagraph.insertAfter(jQuery(blockParent));
         $splitRightParagraph.append(rightSide);
     }
 
@@ -1031,15 +1031,15 @@ WYMeditor.editor.prototype._handleMultilineBlockContainerPaste = function (wym, 
         1
     )[0];
     firstParagraphHtml = firstParagraphString.split(WYMeditor.NEWLINE).join('<br />');
-    $(blockParent).html($(blockParent).html() + firstParagraphHtml);
+    jQuery(blockParent).html(jQuery(blockParent).html() + firstParagraphHtml);
 
     // Now append all subsequent paragraphs
-    $insertAfter = $(blockParent);
+    $insertAfter = jQuery(blockParent);
     for (i = 0; i < paragraphStrings.length; i++) {
         html = '<' + blockSplitter + '>' +
             (paragraphStrings[i].split(WYMeditor.NEWLINE).join('<br />')) +
             '</' + blockSplitter + '>';
-        $insertAfter = $(html, wym._doc).insertAfter($insertAfter);
+        $insertAfter = jQuery(html, wym._doc).insertAfter($insertAfter);
     }
 };
 
@@ -1069,7 +1069,7 @@ WYMeditor.editor.prototype.paste = function (str) {
     wym = this;
     sel = rangy.getIframeSelection(wym._iframe);
     range = sel.getRangeAt(0);
-    $container = $(container);
+    $container = jQuery(container);
 
     // Start by collapsing the range to the start of the selection. We're
     // punting on implementing a paste that also replaces existing content for
@@ -1106,7 +1106,7 @@ WYMeditor.editor.prototype.paste = function (str) {
                     '</' + blockSplitter + '>';
                 // Build multiple nodes from the HTML because ie6 chokes
                 // creating multiple nodes implicitly via jquery
-                insertionNodes = $(html, wym._doc);
+                insertionNodes = jQuery(html, wym._doc);
                 for (j = insertionNodes.length - 1; j >= 0; j--) {
                     // Loop backwards through all of the nodes because
                     // insertNode moves that direction
@@ -1133,7 +1133,7 @@ WYMeditor.editor.prototype.paste = function (str) {
                 range.insertNode(textNode);
                 if (i > 0) {
                     // Don't insert an opening br
-                    range.insertNode($('<br />', wym._doc).get(0));
+                    range.insertNode(jQuery('<br />', wym._doc).get(0));
                 }
             }
         }
@@ -1218,7 +1218,7 @@ WYMeditor.editor.prototype.splitListItemContents = function ($listItem) {
 
     for (i = 0; i < $allContents.length; i++) {
         elmnt = $allContents.get(i);
-        if (hitSublist || $(elmnt).is('ol,ul')) {
+        if (hitSublist || jQuery(elmnt).is('ol,ul')) {
             // We've hit the first sublist. Everything from this point on is
             // considered `sublistContents`
             hitSublist = true;
@@ -1254,10 +1254,10 @@ WYMeditor.editor.prototype.joinAdjacentLists = function (listOne, listTwo) {
         return;
     }
 
-    $listTwoContents = $(listTwo).contents();
+    $listTwoContents = jQuery(listTwo).contents();
     $listTwoContents.unwrap(); // Kill listTwo
     $listTwoContents.detach();
-    $(listOne).append($listTwoContents);
+    jQuery(listOne).append($listTwoContents);
 };
 
 /**
@@ -1296,14 +1296,14 @@ WYMeditor.editor.prototype._indentSingleItem = function (listItem) {
     // 2. An existing sublist inside `liToIndent`.
     // 3. A new sublist that we create.
 
-    $liToIndent = $(listItem);
+    $liToIndent = jQuery(listItem);
     listType = $liToIndent.parent()[0].tagName.toLowerCase();
 
     // Separate out the contents into things that should stay with the li as it
     // moves and things that should stay at their current level
     splitContent = wym.splitListItemContents($liToIndent);
-    $sublistContents = $(splitContent.sublistContents);
-    $itemContents = $(splitContent.itemContents);
+    $sublistContents = jQuery(splitContent.sublistContents);
+    $itemContents = jQuery(splitContent.itemContents);
 
     $prevLi = $liToIndent.prev().filter('li');
     // Ensure we actually have a previous li in which to put the `liToIndent`
@@ -1399,7 +1399,7 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
     // 7. Remove `liToOutdent`'s original parent list and parent li if either
     // are now empty
 
-    $liToOutdent = $(listItem);
+    $liToOutdent = jQuery(listItem);
     listType = $liToOutdent.parent()[0].tagName.toLowerCase();
 
     // If this list item isn't already indented at least one level, don't allow
@@ -1418,8 +1418,8 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
     // Separate out the contents into things that should stay with the li as it
     // moves and things that should stay at their current level
     splitContent = wym.splitListItemContents($liToOutdent);
-    $sublistContents = $(splitContent.sublistContents);
-    $itemContents = $(splitContent.itemContents);
+    $sublistContents = jQuery(splitContent.sublistContents);
+    $itemContents = jQuery(splitContent.itemContents);
 
     // Gather subsequent sibling and parent sibling content
     $parentLi = $liToOutdent.parent().parent('li');
@@ -1543,14 +1543,14 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
         currentNode = parentNode;
     }
     // We have the root node. Make sure it's legit
-    if ($(currentNode).is('li')) {
+    if (jQuery(currentNode).is('li')) {
         // We have an li as the "root" because its missing a parent list.
         // Correct this problem and then try again to correct the nesting.
         WYMeditor.console.log("Correcting orphaned root li before correcting invalid list nesting.");
         this._correctOrphanedListItem(currentNode);
         return this.correctInvalidListNesting(currentNode, true);
     }
-    if (!$(currentNode).is('ol,ul')) {
+    if (!jQuery(currentNode).is('ol,ul')) {
         WYMeditor.console.error("Can't correct invalid list nesting. No root list found");
         return alreadyCorrected;
     }
@@ -1568,12 +1568,12 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
 WYMeditor.editor.prototype._correctOrphanedListItem = function (listNode) {
     var prevAdjacentLis,
         nextAdjacentLis,
-        $adjacentLis = $(),
+        $adjacentLis = jQuery(),
         prevList,
         prevNode;
 
-    prevAdjacentLis = $(listNode).prevContentsUntil(':not(li)');
-    nextAdjacentLis = $(listNode).nextContentsUntil(':not(li)');
+    prevAdjacentLis = jQuery(listNode).prevContentsUntil(':not(li)');
+    nextAdjacentLis = jQuery(listNode).nextContentsUntil(':not(li)');
 
     // Merge the collections together
     $adjacentLis = $adjacentLis.add(prevAdjacentLis);
@@ -1583,7 +1583,7 @@ WYMeditor.editor.prototype._correctOrphanedListItem = function (listNode) {
     // Determine if we have a list node in which to insert all of our orphaned
     // li's
     prevNode = $adjacentLis[0].previousSibling;
-    if (prevNode && $(prevNode).is('ol,ul')) {
+    if (prevNode && jQuery(prevNode).is('ol,ul')) {
         prevList = prevNode;
     } else {
         // No previous existing list to use. Need to create one
@@ -1592,7 +1592,7 @@ WYMeditor.editor.prototype._correctOrphanedListItem = function (listNode) {
     }
 
     // Insert all of the adjacent orphaned lists inside the new parent
-    $(prevList).append($adjacentLis);
+    jQuery(prevList).append($adjacentLis);
 };
 
 /**
@@ -1651,7 +1651,7 @@ WYMeditor.editor.prototype._correctInvalidListNesting = function (listNode, alre
             // All non-li nodes must have an
             // ancestor li node that's closer than any ol/ul ancestor node.
             // Basically, everything needs to be inside an li node.
-            if (currentNode !== rootNode && !$(currentNode).is('li')) {
+            if (currentNode !== rootNode && !jQuery(currentNode).is('li')) {
                 // We have a non-li node.
                 // Ensure that we have an li ancestor before we have any ol/ul
                 // ancestors
@@ -1659,7 +1659,7 @@ WYMeditor.editor.prototype._correctInvalidListNesting = function (listNode, alre
                 ancestorNode = currentNode;
                 while (ancestorNode.parentNode) {
                     ancestorNode = ancestorNode.parentNode;
-                    if ($(ancestorNode).is('li')) {
+                    if (jQuery(ancestorNode).is('li')) {
                         // Everything is ok. Hit an li before a ol/ul
                         break;
                     }
@@ -1697,7 +1697,7 @@ WYMeditor.editor.prototype._correctInvalidListNesting = function (listNode, alre
                         targetLi = null;
                         while (previousSibling.previousSibling) {
                             previousSibling = previousSibling.previousSibling;
-                            if ($(previousSibling).is('li')) {
+                            if (jQuery(previousSibling).is('li')) {
                                 targetLi = previousSibling;
                                 // We hit an li. Store it as the target in
                                 // which to move the nodes
@@ -1712,7 +1712,7 @@ WYMeditor.editor.prototype._correctInvalidListNesting = function (listNode, alre
 
                         // If there are no previous siblings, we can join the next li instead
                         if (!targetLi && nodesToMove.length === 1) {
-                            if ($(currentNode.nextSibling).is('li')) {
+                            if (jQuery(currentNode.nextSibling).is('li')) {
                                 targetLi = currentNode.nextSibling;
                             }
                         }
@@ -1720,8 +1720,8 @@ WYMeditor.editor.prototype._correctInvalidListNesting = function (listNode, alre
                         // If we still don't have an li in which to move, we
                         // need to create a spacer li
                         if (!targetLi) {
-                            $(nodesToMove[0]).before(spacerHtml);
-                            targetLi = $(nodesToMove[0]).prev()[0];
+                            jQuery(nodesToMove[0]).before(spacerHtml);
+                            targetLi = jQuery(nodesToMove[0]).prev()[0];
                         }
 
                         // Move all of our content inside the li we've chosen
@@ -1729,13 +1729,13 @@ WYMeditor.editor.prototype._correctInvalidListNesting = function (listNode, alre
                         // text and so is the first content node to move, separate them
                         // with a <br /> to preserve the visual layout of them
                         // being on separate lines
-                        lastContentNode = $(targetLi).contents().last();
+                        lastContentNode = jQuery(targetLi).contents().last();
                         if (lastContentNode.length === 1 && lastContentNode[0].nodeType === WYMeditor.NODE.TEXT) {
                             if (nodesToMove[0].nodeType === WYMeditor.NODE.TEXT) {
-                                $(targetLi).append('<br />');
+                                jQuery(targetLi).append('<br />');
                             }
                         }
-                        $(targetLi).append($(nodesToMove));
+                        jQuery(targetLi).append(jQuery(nodesToMove));
 
                         break;
 
@@ -1769,12 +1769,12 @@ WYMeditor.editor.prototype.getCommonParentList = function (listItems) {
         parentList,
         rootList;
 
-    listItems = $(listItems).filter('li');
+    listItems = jQuery(listItems).filter('li');
     if (listItems.length === 0) {
         return null;
     }
     firstLi = listItems[0];
-    parentList = $(firstLi).parent('ol,ul');
+    parentList = jQuery(firstLi).parent('ol,ul');
 
     if (parentList.length === 0) {
         return null;
@@ -1782,8 +1782,8 @@ WYMeditor.editor.prototype.getCommonParentList = function (listItems) {
     rootList = parentList[0];
 
     // Ensure that all of the li's have the same parent list
-    $(listItems).each(function (index, elmnt) {
-        parentList = $(elmnt).parent('ol,ul');
+    jQuery(listItems).each(function (index, elmnt) {
+        parentList = jQuery(elmnt).parent('ol,ul');
         if (parentList.length === 0 || parentList[0] !== rootList) {
             return null;
         }
@@ -1878,11 +1878,11 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
             parentsToAdd = [];
             for (j = 0; j < nodes.length; j++) {
                 node = nodes[j];
-                if (!$(node).is('li,ol,ul')) {
+                if (!jQuery(node).is('li,ol,ul')) {
                     // Crawl up the dom until we find an li
                     while (node.parentNode) {
                         node = node.parentNode;
-                        if ($(node).is('li')) {
+                        if (jQuery(node).is('li')) {
                             parentsToAdd.push(node);
                             break;
                         }
@@ -1892,7 +1892,7 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
             // Add in all of the new parents if they're not already included
             // (no duplicates)
             for (j = 0; j < parentsToAdd.length; j++) {
-                if ($.inArray(parentsToAdd[j], nodes) === -1) {
+                if (jQuery.inArray(parentsToAdd[j], nodes) === -1) {
                     nodes.push(parentsToAdd[j]);
                 }
             }
@@ -2210,7 +2210,7 @@ WYMeditor.editor.prototype._changeListType = function (list, listType) {
 };
 
 WYMeditor.editor.prototype._convertToList = function (blockElement, listType) {
-    var $blockElement = $(blockElement),
+    var $blockElement = jQuery(blockElement),
         newListHtml,
         $newList;
 

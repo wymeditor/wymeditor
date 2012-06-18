@@ -1,4 +1,5 @@
 /*jslint evil: true, indent: 4 */
+/*@version @VERSION */
 /**
     WYMeditor
     =========
@@ -980,13 +981,13 @@ jQuery.fn.nextContentsUntil = function (selector, filter) {
 
     if (!cur) {
         // Called on an empty selector. The sibling of nothing is nothing
-        return $();
+        return jQuery();
     }
     // We don't want to include this element, only its siblings
     cur = cur.nextSibling;
 
     while (cur) {
-        if (!$(cur).is(selector)) {
+        if (!jQuery(cur).is(selector)) {
             matched.push(cur);
             cur = cur.nextSibling;
         } else {
@@ -994,7 +995,7 @@ jQuery.fn.nextContentsUntil = function (selector, filter) {
         }
     }
 
-    $matched = $(matched);
+    $matched = jQuery(matched);
     if (filter) {
         return $matched.filter(filter);
     }
@@ -1010,7 +1011,7 @@ jQuery.fn.nextContentsUntil = function (selector, filter) {
     Mostly cribbed from the jQuery source.
 */
 jQuery.fn.nextAllContents = function () {
-    return $(this).nextContentsUntil('', '');
+    return jQuery(this).nextContentsUntil('', '');
 };
 
 /**
@@ -1030,13 +1031,13 @@ jQuery.fn.prevContentsUntil = function (selector, filter) {
 
     if (!cur) {
         // Called on an empty selector. The sibling of nothing is nothing
-        return $();
+        return jQuery();
     }
     // We don't want to include this element, only its siblings
     cur = cur.previousSibling;
 
     while (cur) {
-        if (!$(cur).is(selector)) {
+        if (!jQuery(cur).is(selector)) {
             matched.push(cur);
             cur = cur.previousSibling;
         } else {
@@ -1044,7 +1045,7 @@ jQuery.fn.prevContentsUntil = function (selector, filter) {
         }
     }
 
-    $matched = $(matched);
+    $matched = jQuery(matched);
     if (filter) {
         return $matched.filter(filter);
     }
@@ -1061,7 +1062,7 @@ jQuery.fn.prevContentsUntil = function (selector, filter) {
     Mostly cribbed from the jQuery source.
 */
 jQuery.fn.prevAllContents = function () {
-    return $(this).prevContentsUntil('', '');
+    return jQuery(this).prevContentsUntil('', '');
 };
 
 WYMeditor.isPhantomNode = function (n) {
@@ -1107,8 +1108,8 @@ WYMeditor.changeNodeType = function (node, newTag) {
 
     // In ie6, have to create the node as part of wrapInner before we can copy
     // over attributes
-    $(node).wrapInner('<' + newTag + '>');
-    newNode = $(node).children().get(0);
+    jQuery(node).wrapInner('<' + newTag + '>');
+    newNode = jQuery(node).children().get(0);
 
     // Copy attributes
     for (i = 0; i < attributes.length; i++) {
@@ -1120,7 +1121,7 @@ WYMeditor.changeNodeType = function (node, newTag) {
 
     // Not copying inline CSS or properties/events
 
-    $(node).contents().unwrap();
+    jQuery(node).contents().unwrap();
     return newNode;
 };
 

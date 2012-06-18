@@ -27,7 +27,7 @@ ListPlugin.prototype.bindEvents = function() {
 
     // Bind a key listener so we can handle tabs
     // With jQuery 1.3, live() can be used to simplify handler logic
-    $(wym._doc).bind('keydown', listPlugin.handleKeyDown);
+    jQuery(wym._doc).bind('keydown', listPlugin.handleKeyDown);
 };
 
 /**
