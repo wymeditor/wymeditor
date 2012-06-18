@@ -2149,7 +2149,7 @@ test("Tab has no effect outside lists", function () {
     htmlEquals(wymeditor, expectedHtml);
 });
 
-module("gh-357", {setup: setupWym});
+module("list-newline_normalization", {setup: setupWym});
 
 test("Shouldn't eat newline text spacing in li", function () {
     expect(1);
@@ -2164,7 +2164,13 @@ test("Shouldn't eat newline text spacing in li", function () {
                 '</li>' +
             '</ul>',
 
-        expectedHtml = '<ul><li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer sagittis porta dapibus.</li></ul>',
+        expectedHtml = String() +
+            '<ul>' +
+                '<li>' +
+                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' +
+                    ' Integer sagittis porta dapibus.' +
+                '</li>' +
+            '</ul>',
         wymeditor = jQuery.wymeditors(0);
 
     wymeditor.html(initHtml);
