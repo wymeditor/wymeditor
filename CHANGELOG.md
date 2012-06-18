@@ -17,6 +17,8 @@ WYMeditor.
   browsers. Thanks to corphi for the fix.
 * Inserting `div` tags via the API or DOM no longer breaks document structure
   in chrome and safari. Thanks to Jakub Krčma for the fix.
+* It is once again possible to use the Drupal 7 wysiwyg module to integrate
+  WYMeditor. Thanks to Jean-Francois Hovinne for the patch.
 
 ## 1.0.0b1 (Beta 1)
 
