@@ -2148,3 +2148,32 @@ test("Tab has no effect outside lists", function () {
     simulateKey(WYMeditor.KEY.TAB, actionElement);
     htmlEquals(wymeditor, expectedHtml);
 });
+
+module("list-newline_normalization", {setup: setupWym});
+
+test("Shouldn't eat newline text spacing in li", function () {
+    expect(1);
+
+    var initHtml = String() +
+            '<ul>' +
+                '<li>' +
+                    'Lorem ipsum dolor' + "\n" +
+                    'sit amet, consectetur' + "\n\n" +
+                    'adipiscing elit. Integer' + "\n\n\n" +
+                    'sagittis porta dapibus.' +
+                '</li>' +
+            '</ul>',
+
+        expectedHtml = String() +
+            '<ul>' +
+                '<li>' +
+                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' +
+                    ' Integer sagittis porta dapibus.' +
+                '</li>' +
+            '</ul>',
+        wymeditor = jQuery.wymeditors(0);
+
+    wymeditor.html(initHtml);
+    wymeditor.update();
+    htmlEquals(wymeditor, expectedHtml);
+});
