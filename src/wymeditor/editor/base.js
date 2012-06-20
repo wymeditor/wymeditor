@@ -389,9 +389,23 @@ WYMeditor.editor.prototype.selection = function () {
 */
 WYMeditor.editor.prototype.selected = function () {
     var sel = this.selection(),
-        node = sel.focusNode;
+        node = sel.focusNode,
+        caretPos;
 
     if (node) {
+        if ($.browser.msie) {
+            if (sel.isCollapsed && node.tagName && node.tagName.toLowerCase() === 'body') {
+                // For collapsed selections, we have to use the ghetto "caretPos"
+                // hack to find the selection, otherwise it always says that the
+                // body element is selected
+                caretPos = this._iframe.contentWindow.document.caretPos;
+                if (caretPos) {
+                    if (caretPos.parentElement) {
+                        node = caretPos.parentElement();
+                    }
+                }
+            }
+        }
         if (node.nodeName === "#text") {
             return node.parentNode;
         } else {
