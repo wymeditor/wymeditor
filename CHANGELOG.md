@@ -5,7 +5,7 @@ WYMeditor.
 
 ## 1.0.0b2 (Beta 2)
 
-*release-date* TBD
+*release-date* June 20, 2012
 
 ### Enhancements
 
@@ -22,6 +22,8 @@ WYMeditor.
 * Newline characters are no longer incorrectly removed in IE, which could cause
   words in copy/pasted lists to join together. Thanks to Jakub Krčma for the
   fix.
+* Tables and images are once again properly inserted at your cursor location
+  in Internet Explorer. This was a regression bug in 1.0.0b1.
 
 ## 1.0.0b1 (Beta 1)
 
