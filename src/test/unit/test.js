@@ -402,6 +402,41 @@ test("no-op on table with colgroup generates valid XHTML", function () {
     equals(jQuery.wymeditors(0).parser.parse(tableWithColXHtml), tableWithColXHtml);
 });
 
+test("Should allow arbitrary rel values", function () {
+    var exampleRels = [
+        'alternate',
+        'appendix',
+        'bookmark',
+        'chapter',
+        'contents',
+        'copyright',
+        'glossary',
+        'help',
+        'home',
+        'index',
+        'next',
+        'prev',
+        'section',
+        'start',
+        'stylesheet',
+        'subsection',
+        ' ',
+        'shortcut',
+        'nofollow',
+        'moodalbox',
+        'lightbox',
+        'icon'
+    ],
+        expected,
+        i;
+    expect(exampleRels.length);
+
+    for (i = 0; i < exampleRels.length; i++) {
+        expected = '<p><a rel="' + exampleRels[i] + '">foo</a></p>';
+        equals(jQuery.wymeditors(0).parser.parse(expected), expected);
+    }
+});
+
 module("Post Init", {setup: setupWym});
 
 test("Sanity check: html()", function () {
@@ -997,7 +1032,7 @@ if ($.browser.webkit || $.browser.safari) {
             '<div>Anything</div>' +
             '<p>Some text after the div container</p>';
 
-    test("DIV element is correctly inserted", function() {
+    test("DIV element is correctly inserted", function () {
         var initHtml = String() +
                 '<p>Some text before the div container</p>' +
                 '<p id="replaceMe">Replace me</p>' +

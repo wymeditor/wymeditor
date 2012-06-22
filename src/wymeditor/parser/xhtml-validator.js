@@ -350,9 +350,6 @@ WYMeditor.XhtmlValidator = {
                 "1":"href",
                 "2":"hreflang",
                 "media":/^(all|braille|print|projection|screen|speech|,|;| )+$/i,
-                //next comment line required by Opera!
-                /*"rel":/^(alternate|appendix|bookmark|chapter|contents|copyright|glossary|help|home|index|next|prev|section|start|stylesheet|subsection| |shortcut|icon)+$/i,*/
-                "rel":/^(alternate|appendix|bookmark|chapter|contents|copyright|glossary|help|home|index|next|prev|section|start|stylesheet|subsection| |shortcut|icon)+$/i,
                 "rev":/^(alternate|appendix|bookmark|chapter|contents|copyright|glossary|help|home|index|next|prev|section|start|stylesheet|subsection| |shortcut|icon)+$/i,
                 "3":"type"
             },
