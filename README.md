@@ -9,7 +9,7 @@ Why WYMeditor?
 --------------
 
 WYMeditor is different from the
-[traditional](http://www.tinymce.com/) [editors](http://ckeditor.com/) 
+[traditional](http://www.tinymce.com/) [editors](http://ckeditor.com/)
 because we are 100% focused on providing a simple experience for users that
 separates the content of their document from the presentation of that document.
 We focus on enforcing web standards and separating a document's structure
@@ -43,7 +43,7 @@ Quick Start
 includes jQuery.
 
 2. Download the
-[Version 1.0.0b1](https://github.com/downloads/wymeditor/wymeditor/wymeditor-1.0.0b1.tar.gz) 
+[Version 1.0.0b2](https://github.com/downloads/wymeditor/wymeditor/wymeditor-1.0.0b2.tar.gz)
 archive and extract the contents to a folder in your project.
 
 3. Include the `wymeditor/jquery.wymeditor.min.js` file on your page. This file
@@ -70,7 +70,7 @@ submission, just add the class `wymupdate` to your submit button.
 7. Profit!
 
 More examples with different plugins and configuration options can be found in
-your `examples` directory. 
+your `examples` directory.
 
 Compatibility
 -------------
@@ -98,10 +98,10 @@ freenode would be very helpful.
 
 WYMeditor includes a full unit test suite to help us ensure that the editor
 works great across a variety of browsers. The test suite should pass in any of
-our supported browsers and if it doesn't, please 
+our supported browsers and if it doesn't, please
 [file a bug](https://github.com/wymeditor/wymeditor/issues/new) so we can fix it!
 
-To run the test suite. 
+To run the test suite.
 
 1. Get a copy of the source using git:
 
@@ -120,7 +120,7 @@ the python instructions, open up your browser to
 
 All green means you're good to go.
 
-4. Want to run the tests from the command line? You can do that to! Just install 
+4. Want to run the tests from the command line? You can do that to! Just install
 [PhantomJS](http://www.phantomjs.org/) and then (if you used the http server
 from step 2) call:
 
@@ -153,10 +153,10 @@ Getting Help
  - **Official branch:** https://github.com/wymeditor/wymeditor
  - **Continous Integration:** http://jenkins.wymeditor.org
 
-[Read more on contributing](https://github.com/wymeditor/wymeditor/wiki/Contributing). 
+[Read more on contributing](https://github.com/wymeditor/wymeditor/wiki/Contributing).
 
 Copyright
 ---------
-Copyright (c) 2005 - 2011 Jean-Francois Hovinne, 
+Copyright (c) 2005 - 2011 Jean-Francois Hovinne,
 Dual licensed under the MIT (MIT-license.txt)
 and GPL (GPL-license.txt) licenses.
