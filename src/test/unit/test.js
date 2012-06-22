@@ -905,37 +905,16 @@ test("Preformatted text retains spacing", function () {
             '<pre>pre1\r\n' +
             'spaced\r\n\r\n' +
             'double  spaced' +
-            '</pre>',
-        $body,
-        preChildren;
+            '</pre>';
 
-    // Only ie and firefox 3.x use \r\n newlines
-    if ($.browser.webkit || $.browser.safari || ($.browser.mozilla && $.browser.version > '2.0')) {
+    // Only ie keeps \r\n newlines
+    if (!$.browser.msie) {
         preHtml = preHtml.replace(/\r/g, '');
     }
 
     wymeditor.html(preHtml);
 
     expect(1);
-
-    if ($.browser.mozilla && $.browser.version < '2.0') {
-        // Firefox 3.x converts the text inside pre to DOM nodes, where as other
-        // browsers just use plain text
-        $body = $(wymeditor._doc).find('body.wym_iframe');
-        preChildren = $body.children('pre').contents();
-
-        expect(8);
-        equals(preChildren.length, 6,
-                "Should have text, br, text, br, br, text");
-        if (preChildren.length === 6) {
-            equals(preChildren[0].nodeName.toLowerCase(), '#text');
-            equals(preChildren[1].nodeName.toLowerCase(), 'br');
-            equals(preChildren[2].nodeName.toLowerCase(), '#text');
-            equals(preChildren[3].nodeName.toLowerCase(), 'br');
-            equals(preChildren[4].nodeName.toLowerCase(), 'br');
-            equals(preChildren[5].nodeName.toLowerCase(), '#text');
-        }
-    }
 
     equals(wymeditor.xhtml(), preHtml);
 });
@@ -997,7 +976,7 @@ if ($.browser.webkit || $.browser.safari) {
             '<div>Anything</div>' +
             '<p>Some text after the div container</p>';
 
-    test("DIV element is correctly inserted", function() {
+    test("DIV element is correctly inserted", function () {
         var initHtml = String() +
                 '<p>Some text before the div container</p>' +
                 '<p id="replaceMe">Replace me</p>' +
