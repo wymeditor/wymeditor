@@ -686,7 +686,7 @@ function testPaste(pasteStartSelector, startHtml, textToPaste, elmntStartHtml, e
         elmntExpectedHtml
     );
 
-    $body = $(wymeditor._doc).find('body.wym_iframe');
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
     wymeditor._doc.body.focus();
     if (pasteStartSelector === '') {
@@ -814,7 +814,7 @@ test("Table is editable after insertion", function () {
         dm;
     wymeditor.html('');
 
-    $body = $(wymeditor._doc).find('body.wym_iframe');
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     wymeditor.insertTable(3, 2, '', '');
 
     $body.find('td').each(function (index, td) {
@@ -849,7 +849,7 @@ if ($.browser.mozilla) {
             $body;
         wymeditor.html('');
 
-        $body = $(wymeditor._doc).find('body.wym_iframe');
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
         wymeditor.insertTable(3, 2, '', '');
 
         $body.find('td').each(function (index, td) {
@@ -867,7 +867,7 @@ if ($.browser.mozilla) {
         expect(12);
 
         var wymeditor = jQuery.wymeditors(0),
-            $body = $(wymeditor._doc).find('body.wym_iframe');
+            $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
         wymeditor.html('');
         wymeditor.html(table_3_2_html);
@@ -888,7 +888,7 @@ if ($.browser.mozilla) {
             expect(12);
 
             var wymeditor = jQuery.wymeditors(0),
-                $body = $(wymeditor._doc).find('body.wym_iframe');
+                $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
             $body.html(table_3_2_html);
             $body.find('td').each(function (index, td) {
@@ -957,7 +957,7 @@ test("_selected image is saved on mousedown", function () {
     expect(3);
 
     wymeditor.html(initHtml);
-    $body = $(wymeditor._doc).find('body.wym_iframe');
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
     // Editor starts with no selected image
     equals(wymeditor._selected_image, null);

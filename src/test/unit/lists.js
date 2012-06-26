@@ -23,7 +23,7 @@ function testList(elmntId, action, startHtml, expectedHtml, isText, doSelection)
 
     if (doSelection) {
         wymeditor.html(startHtml);
-        $body = $(wymeditor._doc).find('body.wym_iframe');
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
         actionLi = $body.find('#' + elmntId)[0];
 
         if (isText === true) {
@@ -136,7 +136,7 @@ function testListMulti(startElmntId, endElmntId, action, startHtml, expectedHtml
         actionButton;
     wymeditor.html(startHtml);
 
-    $body = $(wymeditor._doc).find('body.wym_iframe');
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     startLi = $body.find('#' + startElmntId)[0];
     endLi = $body.find('#' + endElmntId)[0];
 
@@ -1118,7 +1118,7 @@ test("Invalid nesting correction no spacer", function () {
         expectedHtml = invalidNestingCorrectedHtml;
 
     wymeditor.html(startHtml);
-    $body = $(wymeditor._doc).find('body.wym_iframe');
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     actionLi = $body.find('#li_4')[0];
 
     wymeditor.correctInvalidListNesting(actionLi);
@@ -1134,7 +1134,7 @@ test("Invalid nesting correction requiring spacer", function () {
         expectedHtml = invalidNestingNoPreviousCorrectedHtml;
 
     wymeditor.html(startHtml);
-    $body = $(wymeditor._doc).find('body.wym_iframe');
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     actionLi = $body.find('#li_2_2')[0];
 
     wymeditor.correctInvalidListNesting(actionLi);
@@ -2085,7 +2085,7 @@ test("Tab key indents", function () {
         wymeditor = jQuery.wymeditors(0);
     wymeditor.html(initHtml);
 
-    $body = $(wymeditor._doc).find('body.wym_iframe');
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     actionElement = $body.find('#' + elmntId)[0];
 
     moveSelector(wymeditor, actionElement);
@@ -2119,7 +2119,7 @@ test("Shift+Tab outdents", function () {
         wymeditor = jQuery.wymeditors(0);
     wymeditor.html(initHtml);
 
-    $body = $(wymeditor._doc).find('body.wym_iframe');
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     actionElement = $body.find('#' + elmntId)[0];
 
     moveSelector(wymeditor, actionElement);
@@ -2140,7 +2140,7 @@ test("Tab has no effect outside lists", function () {
         wymeditor = jQuery.wymeditors(0);
     wymeditor.html(initHtml);
 
-    $body = $(wymeditor._doc).find('body.wym_iframe');
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     actionElement = $body.find('#' + elmntId)[0];
 
     moveSelector(wymeditor, actionElement);

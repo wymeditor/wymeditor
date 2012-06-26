@@ -11,7 +11,7 @@ function testTable(selector, action, type, initialHtml, expectedHtml) {
     var wymeditor = jQuery.wymeditors(0);
     wymeditor.html(initialHtml);
 
-    var $body = $(wymeditor._doc).find('body.wym_iframe');
+    var $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     var actionElmnt = $body.find(selector)[0];
 
     if (action === 'add') {
@@ -35,7 +35,7 @@ function testTableTab(initialHtml, startSelector, endSelector) {
     var wymeditor = jQuery.wymeditors(0);
     wymeditor.html(initialHtml);
 
-    var $body = $(wymeditor._doc).find('body.wym_iframe');
+    var $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     var startElmnt = $body.find(startSelector)[0];
     ok(startElmnt !== null, "Selection start element exists");
     moveSelector(wymeditor, startElmnt);
@@ -75,7 +75,7 @@ function testRowMerge(initialHtml, expectedHtml, startSelector, endSelector, exp
 
     // Verify that the proposed selection range exists, and then make that
     // selection
-    var $body = $(wymeditor._doc).find('body.wym_iframe');
+    var $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     var startElmnt = $body.find(startSelector)[0];
     ok(startElmnt !== null, "Selection start element exists");
     var endElmnt = $body.find(endSelector)[0];
@@ -110,7 +110,7 @@ function testGetCellXIndex(initialHtml, cellSelector, expectedIndex) {
     var wymeditor = jQuery.wymeditors(0);
     wymeditor.html(initialHtml);
 
-    var $body = $(wymeditor._doc).find('body.wym_iframe');
+    var $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     var cell = $body.find(cellSelector)[0];
 
     var actual = wymeditor.tableEditor.getCellXIndex(cell);
@@ -1413,7 +1413,7 @@ test("getCellXIndex test", function () {
 
 module("utils", {setup: setupWym});
 function testNormalize(testHtml) {
-    var normed = normalizeHtml($(testHtml)[0]);
+    var normed = normalizeHtml(jQuery(testHtml)[0]);
     equals(normed, testHtml);
 }
 

@@ -95,18 +95,18 @@ function htmlEquals(wymeditor, expected) {
         i;
     xhtml = jQuery.trim(wymeditor.xhtml());
     if (xhtml === '') {
-        // In jQuery 1.2.x, $('') returns an empty list, so we can't call
+        // In jQuery 1.2.x, jQuery('') returns an empty list, so we can't call
         // normalizeHTML. On 1.3.x or higher upgrade, we can remove this
         // check for the empty string
         equals(xhtml, expected);
         return;
     }
 
-    tmpNodes = $(xhtml, wymeditor._doc);
+    tmpNodes = jQuery(xhtml, wymeditor._doc);
     for (i = 0; i < tmpNodes.length; i++) {
         normedActual += normalizeHtml(tmpNodes[i]);
     }
-    tmpNodes = $(expected, wymeditor._doc);
+    tmpNodes = jQuery(expected, wymeditor._doc);
     for (i = 0; i < tmpNodes.length; i++) {
         normedExpected += normalizeHtml(tmpNodes[i]);
     }
@@ -156,7 +156,7 @@ function makeTextSelection(wymeditor, startElement, endElement, startElementInde
     if (typeof startElementIndex !== 'undefined') {
         // Look for a first-child text node and use
         // that as the startElement for the makeSelection() call
-        $startElementContents = $(startElement).contents();
+        $startElementContents = jQuery(startElement).contents();
         if ($startElementContents.length > 0 &&
                 $startElementContents.get(0).nodeType === WYMeditor.NODE.TEXT) {
             startElement = $startElementContents.get(0);
@@ -165,7 +165,7 @@ function makeTextSelection(wymeditor, startElement, endElement, startElementInde
     if (typeof endElementIndex !== 'undefined') {
         // Look for a first-child text node and use
         // that as the startElement for the makeSelection() call
-        $endElementContents = $(endElement).contents();
+        $endElementContents = jQuery(endElement).contents();
         if ($endElementContents.length > 0 &&
                 $endElementContents.get(0).nodeType === WYMeditor.NODE.TEXT) {
             endElement = $endElementContents.get(0);
@@ -233,9 +233,9 @@ function simulateKey(keyCode, targetElement, options) {
     keydown.shiftKey = options.shiftKey;
     keydown.altKey = options.altKey;
 
-    $(targetElement).trigger(keydown);
-    $(targetElement).trigger(keypress);
-    $(targetElement).trigger(keyup);
+    jQuery(targetElement).trigger(keydown);
+    jQuery(targetElement).trigger(keypress);
+    jQuery(targetElement).trigger(keyup);
 }
 
 /*
