@@ -419,7 +419,7 @@ test("Sanity check: html()", function () {
     htmlEquals(wymeditor, testText1);
 });
 
-if (!$.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
+if (!jQuery.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
     test("Adding combined CSS selectors", function () {
         expect(1);
 
@@ -490,7 +490,7 @@ var complexCopyText = String() +
         'sentence3\r\n\r\n' +
         'gap\r\n\r\n' +
         'gap2';
-if ($.browser !== 'msie') {
+if (jQuery.browser !== 'msie') {
     complexCopyText = complexCopyText.replace(/\r/g, '');
 }
 
@@ -826,7 +826,7 @@ test("Table is editable after insertion", function () {
 });
 
 // Only FF >= 3.5 seems to require content in <td> for them to be editable
-if ($.browser.mozilla) {
+if (jQuery.browser.mozilla) {
     var table_3_2_html = String() +
             "<table><tbody>" +
                 "<tr>" +
@@ -853,7 +853,7 @@ if ($.browser.mozilla) {
         wymeditor.insertTable(3, 2, '', '');
 
         $body.find('td').each(function (index, td) {
-            if ($.browser.version >= '1.9.1' && $.browser.version < '2.0') {
+            if (jQuery.browser.version >= '1.9.1' && jQuery.browser.version < '2.0') {
                 equals(td.childNodes.length, 1);
             } else {
                 equals(td.childNodes.length, 0);
@@ -892,7 +892,7 @@ if ($.browser.mozilla) {
 
             $body.html(table_3_2_html);
             $body.find('td').each(function (index, td) {
-                if ($.browser.version >= '1.9.1' && $.browser.version < '2.0') {
+                if (jQuery.browser.version >= '1.9.1' && jQuery.browser.version < '2.0') {
                     equals(td.childNodes.length, 1);
                 } else {
                     equals(td.childNodes.length, 0);
@@ -914,7 +914,7 @@ test("Preformatted text retains spacing", function () {
             '</pre>';
 
     // Only ie keeps \r\n newlines
-    if (!$.browser.msie) {
+    if (!jQuery.browser.msie) {
         preHtml = preHtml.replace(/\r/g, '');
     }
 
@@ -974,7 +974,7 @@ test("_selected image is saved on mousedown", function () {
     equals(wymeditor._selected_image, $google[0]);
 });
 
-if ($.browser.webkit || $.browser.safari) {
+if (jQuery.browser.webkit || jQuery.browser.safari) {
     module("gh-319", {setup: setupWym});
 
     var gh_319_divInsertionHtml = String() +

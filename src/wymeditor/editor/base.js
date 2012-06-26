@@ -393,7 +393,7 @@ WYMeditor.editor.prototype.selected = function () {
         caretPos;
 
     if (node) {
-        if ($.browser.msie) {
+        if (jQuery.browser.msie) {
             if (sel.isCollapsed && node.tagName && node.tagName.toLowerCase() === 'body') {
                 // For collapsed selections, we have to use the ghetto "caretPos"
                 // hack to find the selection, otherwise it always says that the

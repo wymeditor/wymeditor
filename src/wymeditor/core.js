@@ -715,7 +715,7 @@ jQuery.fn.wymeditor = function (options) {
     });
 };
 
-// Enable accessing of wymeditor instances via $.wymeditors
+// Enable accessing of wymeditor instances via jQuery.wymeditors
 jQuery.extend({
     wymeditors: function (i) {
         return WYMeditor.INSTANCES[i];

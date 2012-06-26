@@ -8,17 +8,17 @@
 module("Blocking Elements", {setup: setupWym});
 
 // Can't move the selection to a <br> element
-var no_br_selection_browser = $.browser.webkit || $.browser.msie,
+var no_br_selection_browser = jQuery.browser.webkit || jQuery.browser.msie,
     // Can't move the selection to a <table> element
-    no_table_selection_browser = $.browser.webkit || $.browser.msie,
+    no_table_selection_browser = jQuery.browser.webkit || jQuery.browser.msie,
     // keyup/keydown can't be used to fix textnode wrapping
-    no_keypress_textnode_wrap_browser = $.browser.msie,
+    no_keypress_textnode_wrap_browser = jQuery.browser.msie,
     // Double-br browsers need placeholders both before and after blocking
     // elements. Others just need placeholders before
-    is_double_br_browser = ($.browser.mozilla ||
-        $.browser.webkit ||
-        $.browser.safari ||
-        ($.browser.msie && $.browser.version >= "7.0")),
+    is_double_br_browser = (jQuery.browser.mozilla ||
+        jQuery.browser.webkit ||
+        jQuery.browser.safari ||
+        (jQuery.browser.msie && jQuery.browser.version >= "7.0")),
 
     tableHtml = String() +
         '<table>' +
@@ -108,7 +108,7 @@ var no_br_selection_browser = $.browser.webkit || $.browser.msie,
         '</pre>';
 
 // Webkit doesn't use \r\n newlines
-if ($.browser.webkit || $.browser.safari) {
+if (jQuery.browser.webkit || jQuery.browser.safari) {
     h1BlockquotePreHtml = h1BlockquotePreHtml.replace(/\r/g, '');
 }
 

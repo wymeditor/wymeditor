@@ -140,7 +140,7 @@ function makeSelection(wymeditor, startElement, endElement, startElementIndex, e
     sel.setSingleRange(range);
 
     // IE selection hack
-    if ($.browser.msie) {
+    if (jQuery.browser.msie) {
         wymeditor.saveCaret();
     }
 }
@@ -209,9 +209,9 @@ function simulateKey(keyCode, targetElement, options) {
         keypress,
         keyup;
 
-    options = $.extend(defaults, options);
+    options = jQuery.extend(defaults, options);
 
-    keydown = $.Event('keydown');
+    keydown = jQuery.Event('keydown');
 
     keydown.keyCode = keyCode;
     keydown.metaKey = options.metaKey;
@@ -219,14 +219,14 @@ function simulateKey(keyCode, targetElement, options) {
     keydown.shiftKey = options.shiftKey;
     keydown.altKey = options.altKey;
 
-    keypress = $.Event('keypress');
+    keypress = jQuery.Event('keypress');
     keypress.keyCode = keyCode;
     keydown.metaKey = options.metaKey;
     keydown.ctrlKey = options.ctrlKey;
     keydown.shiftKey = options.shiftKey;
     keydown.altKey = options.altKey;
 
-    keyup = $.Event('keyup');
+    keyup = jQuery.Event('keyup');
     keyup.keyCode = keyCode;
     keydown.metaKey = options.metaKey;
     keydown.ctrlKey = options.ctrlKey;
@@ -245,7 +245,7 @@ function simulateKey(keyCode, targetElement, options) {
 function isContentEditable(element) {
     // We can't use isContentEditable in firefox 7 because it doesn't take
     // in to account designMode like firefox 3 did
-    if (!$.browser.mozilla && typeof element.isContentEditable  !== 'undefined') {
+    if (!jQuery.browser.mozilla && typeof element.isContentEditable  !== 'undefined') {
         return element.isContentEditable;
     }
 

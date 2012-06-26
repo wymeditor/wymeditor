@@ -825,7 +825,7 @@ test("Tab to next row", function () {
 test("Tab from th to next row", function () {
     expect(3);
     var expectedSelector = '#span_2_1';
-    if ($.browser.mozilla) {
+    if (jQuery.browser.mozilla) {
         expectedSelector = '#td_2_1';
     }
     testTableTab(thTableHtml, '#th_1_3', expectedSelector);
@@ -1327,7 +1327,7 @@ test("With span", function () {
 });
 
 module("table-row_merge_rowspan", {setup: setupWym});
-if (!$.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
+if (!jQuery.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
     test("Across rowspan", function () {
         expect(5);
 
@@ -1335,7 +1335,7 @@ if (!$.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
     });
 }
 
-if (!$.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
+if (!jQuery.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
     test("Into rowspan", function () {
         expect(5);
 
