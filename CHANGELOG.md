@@ -3,6 +3,13 @@
 This document tracks the enhancements and bug fixes between releases of
 WYMeditor.
 
+## 1.0.0b3 (Beta 3)
+
+*release-date* June 26, 2012
+
+This is a small hotfix release to fix `jQuery.noConflict()` compatibility,
+which is necessary for Drupal integration.
+
 ## 1.0.0b2 (Beta 2)
 
 *release-date* June 22, 2012

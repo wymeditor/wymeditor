@@ -43,7 +43,7 @@ Quick Start
 includes jQuery.
 
 2. Download the
-[Version 1.0.0b2](https://github.com/downloads/wymeditor/wymeditor/wymeditor-1.0.0b2.tar.gz)
+[Version 1.0.0b3](https://github.com/downloads/wymeditor/wymeditor/wymeditor-1.0.0b3.tar.gz)
 archive and extract the contents to a folder in your project.
 
 3. Include the `wymeditor/jquery.wymeditor.min.js` file on your page. This file
