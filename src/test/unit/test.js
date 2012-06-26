@@ -1,4 +1,8 @@
 
+// We need to be able to operate in a noConflict context. Doing this during our
+// tests ensures that remains the case.
+jQuery.noConflict();
+
 // Whether or not we want to skip the tests that are known to be failing.
 // Ideally, there would be no tests in this category, but right now there are
 // a lot of table-related bugs that need to be fixed that aren't the number
@@ -37,7 +41,7 @@ function setupWym(extraPostInit) {
 
                 wym.html(initialHtml);
 
-                $body = $(wym._doc).find('body.wym_iframe');
+                $body = jQuery(wym._doc).find('body.wym_iframe');
 
                 td = $body.find(tdSelector)[0];
                 span = $body.find(spanSelector)[0];
@@ -55,6 +59,8 @@ function setupWym(extraPostInit) {
         });
     }
 }
+
+
 module("Core", {setup: setupWym});
 
 test("Instantiate", function () {
