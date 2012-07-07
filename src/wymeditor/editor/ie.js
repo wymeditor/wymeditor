@@ -113,6 +113,16 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
         // Is this really needed, it trigger an unexisting property on IE6
         this._doc = iframe.contentWindow.document;
     } catch (e) {}
+    
+    //set lang, translate the theme
+	if ( this._options.lang != 'en' ) {
+		jQuery('html', this._doc).attr('lang', this._options.lang);
+		jQuery('html', this._doc).attr('xml:lang', this._options.lang);
+		//translate the theme - note: don't executed twice
+		if ( $.browser.version > 8 && this._doc.styleSheets.length != 0) {
+			this.translateTheme();
+		}
+	}
 };
 
 (function (editorLoadSkin) {

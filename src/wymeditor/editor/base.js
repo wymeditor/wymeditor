@@ -703,6 +703,64 @@ WYMeditor.editor.prototype.encloseString = function (sVal) {
 };
 
 /**
+    WYMeditor.editor.translateTheme
+    =========================
+
+    Translate CSS declarations with :lang() selectors.
+	The "content" property is translatable.
+*/
+WYMeditor.editor.prototype.translateTheme = function () {
+	var aRules=[],
+		aContent=[],
+		oCssRule,
+		i,
+		c = '';
+	// get all rules with -> body:lang(en)
+	for (i = 0; i < this._doc.styleSheets[0].cssRules.length; i++) { 
+		var oCssRule = this._doc.styleSheets[0].cssRules[i];
+		if (oCssRule.type == oCssRule.STYLE_RULE) {
+			if (oCssRule.selectorText.match(/body:lang\(en\)/i)) {
+				aRules.push(oCssRule.selectorText);
+				aContent.push((oCssRule.style.content[0] == "'" || oCssRule.style.content[0] == '"') 
+				               ? oCssRule.style.content : "'" + oCssRule.style.content + "'"
+				); // Webkit is terrible... isn't consistent: 'Document Division' but Paragraph, Emphasis (without quotation marks)
+			};
+		};
+	};
+	// nothing to translate
+	if (aRules.length == 0) return;
+	
+	// replace lang() pseudo selector
+	for (i = 0; i < aRules.length; i++) {
+		aRules[i] = aRules[i].replace('body:lang(en)', 'body:lang('+this._options.lang+')', 'gi');
+	};
+	// convert content to string to simplify replace
+	aContent.forEach(function(element) {
+		c += element + '\n';
+	});
+	// replace db strings in content; 
+	for (i in WYMeditor.STRINGS[this._options.lang]) {
+		if (WYMeditor.STRINGS[this._options.lang].hasOwnProperty(i)) {
+			if ( i == 'Title' ) { continue; } // workaround for 'Work Title'
+			c = c.replace( new RegExp( i.replace(/_/g, ' '), 'g'), WYMeditor.STRINGS[this._options.lang][i] );
+		};
+	};
+	// Webkit... 'Document Division type "', attr(class), '"' -> 'Document Division type "' attr(class) '"'
+	c = c.replace(/,/g, '');
+	/*@cc_on
+	c = c.replace(/\\/g, '');
+	c = c.replace(/"""/g, '"\'"');
+	c = c.replace(/""/g, '\'"');
+	@*/
+	// convert back to array
+	aContent = c.split('\n');
+	// make CSS rules
+	for (i = 0; i < aRules.length; i++) {
+		this._doc.styleSheets[0].insertRule(aRules[i] + ' { content: ' + aContent[i] + ' }', this._doc.styleSheets[0].cssRules.length);
+	};
+};
+
+/**
     editor.status
     =============
 
