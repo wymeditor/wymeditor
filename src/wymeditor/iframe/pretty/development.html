@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 <!--
  * WYMeditor : what you see is What You Mean web-based editor
  * Copyright (c) 2012 Gyuris Gellért http://bubu.ujevangelizacio.hu/bubu
@@ -14,6 +14,7 @@
  *
  * File Authors:
  *        Gyuris Gellért (bubu a-t ujevangelizacio dothu)
+ *        Philipp Cordes (pc a-t irgendware dotnet)
 -->
 <html>
 <head>
@@ -38,20 +39,19 @@
 <div class="messages error">Division, section &lt;div&gt; with class "messages error" • Vivamus metus orci, consectetur a consectetur sed, malesuada sed ligula. Nunc nibh quam, tempor sagittis rhoncus quis, placerat a elit.</div>
 <address>Address &lt;address&gt; • Suspendisse laoreet pellentesque nibh id gravida. </address>
 <blockquote cite="#">Quoted section &lt;blockquote&gt; • Donec vulputate pretium egestas. Vivamus faucibus ultrices elit, sit amet dignissim mauris semper at. Mauris laoreet nisi sed dolor volutpat sagittis. Proin euismod varius nisl ut interdum. Maecenas tempor, ipsum placerat suscipit malesuada, sem ipsum ullamcorper purus, eu eleifend tortor ante ac arcu. </blockquote>
-<blockquote><p>Nested paragraph in quoted section  •  Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</blockquote>
+<blockquote><p>Nested paragraph in quoted section  •  Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p></blockquote>
 <pre>Preformatted text &lt;pre&gt; • 
     Proin hendrerit felis 
      vitae urna bibendum commodo. 
       Cras non augue vitae metus ullamcorper porttitor at et nisl. 
        Quisque dui lacus, vestibulum at placerat vitae, dignissim ac erat.</pre>
 
-<p>Inline elements: strong, em, a href, span, abbr, acronym, q, cite, kbd, samp, var, dfn, code, del, ins, sup, sub • Lorem ipsum 
+<p>Inline elements: strong, em, a href, span, abbr, q, cite, kbd, samp, var, dfn, code, del, ins, sup, sub • Lorem ipsum 
 	<strong>important text &lt;strong&gt; and &lt;b&gt; • dolor sit amet</strong>, consectetur 
-	<em>emphasized text &lt;em&gt and &lt;i&gt; • adipiscing elit</em>. Vestibulum
-	<a href="#">hyperlink &lta href&gt; • metus</a> tellus, ultrices ac 
+	<em>emphasized text &lt;em&gt; and &lt;i&gt; • adipiscing elit</em>. Vestibulum
+	<a href="#">hyperlink &lt;a href&gt; • metus</a> tellus, ultrices ac 
 	<span>generic inline container &lt;span&gt; • tristique vitae</span>, laoreet et ante. Sodales
 	<abbr title="abbr">abbreviation &lt;abbr&gt; • ALIQUAM</abbr> elit velit, 
-	<acronym title="acronym">acronym &lt;acronym&gt; • PORTA</acronym> sed volutpat, 
 	<q>short quotation &lt;q&gt; • Vestibulum eros odio</q>, gravida et bibendum et,
 	<cite>title of a work &lt;cite&gt; • accumsan imperdiet</cite> eros. In at mauris
 	<kbd>keyboard input &lt;kbd&gt; • vitae</kbd> sodales in dolor. Cum sociis 
@@ -117,7 +117,7 @@
 	<dd>Curabitur id nunc ante, nec tincidunt odio. Nulla facilisi. In hac habitasse platea dictumst. Curabitur suscipit luctus aliquet. Pellentesque quis risus dolor.</dd>
 </dl>
 
-<table width="50%" border="1">
+<table style="width:50%;border-width:1px;">
 	<caption>Caption • Table with border 1.</caption>
 	<thead>
 		<tr>
