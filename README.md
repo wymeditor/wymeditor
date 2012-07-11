@@ -134,6 +134,28 @@ to test with jQuery 1.8.0 against a local server on port 8000:
 
 [http://localhost:8000/test/unit/?jquery=1.8.0](http://localhost:8000/test/unit/?jquery=1.8.0).
 
+#### Selenium Tests
+
+Because WYMeditor is strongly affected by the way various browsers handle
+certain native events (keystrokes, mouse navigation, switching windows), it's
+not always possible to use javascript to actually test that behavior. For
+specific cases where it's not possible to reproduce behavior in javascript, we
+rely on our [http://seleniumhq.org/](Selenium) test suite to drive an actual
+browser using the [http://pypi.python.org/pypi/selenium](Selenium 2 python
+bindings).
+
+If possible, it is strongly encouraged to write a javascript unit test instead
+of a Selenium test.
+
+##### Installing Selenium Components
+
+1. Install the Selenium 2 python bindings, roughly following these
+[http://selenium-python.readthedocs.org/en/latest/installation.html](installation
+instructions). The specific version of Selenium we require can be installed via:
+
+	$ pip install -r wym_selenium/requirements.txt
+
+2.
 
 ### Building WYMeditor
 
