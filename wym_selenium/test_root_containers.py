@@ -1,6 +1,8 @@
 """
 Tests exercising the behavior of the root containers.
 """
+import os
+
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
@@ -19,7 +21,12 @@ SPECIAL_KEYS = {
 }
 
 def _get_driver():
-    return webdriver.Chrome()
+    browser = os.environ.get('SELENIUM_BROWSER', 'firefox').lower()
+
+    if browser == 'chrome':
+        return webdriver.Chrome()
+    else:
+        return webdriver.Firefox()
 
 def _switch_to_editor_content(d):
     d.switch_to_frame(0)
