@@ -3,30 +3,83 @@ module.exports = function (grunt) {
 
     // Project configuration.
     grunt.initConfig({
+        pkg: '<json:package.json>',
         meta: {
-            version: '1.0.0b3',
-            banner: '/*! WYMeditor- v<%= meta.version %> - ' +
-                '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
-                '* http://wymeditor.org/\n' +
-                '* Copyright (c) <%= grunt.template.today("yyyy") %> ' +
-                'WYMeditor; Licensed MIT */'
+            name: 'WYMeditor',
+            banner: '/*! <%= meta.name %> - v<%= pkg.version %> - ' +
+                '<%= grunt.template.today("m/d/yyyy") %>\n' +
+                '* <%= pkg.homepage %>\n' +
+                '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
+                ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */'
+        },
+        // Extra files that should be included in the distribution
+        distribution: {
+            root_files: [
+
+
+            ]
         },
         lint: {
-            files: ['grunt.js', 'src/**/*.js', 'test/**/*.js']
+            files: [
+                'grunt.js',
+                'src/wymeditor/core.js',
+                'src/wymeditor/editor/*.js',
+                'src/wymeditor/parser/*.js',
+                'src/wymeditor/plugins/**.js',
+                'src/wymeditor/skins/**.js',
+                'src/wymeditor/lang/**.js',
+                'src/test/unit/*.js'
+            ]
         },
         qunit: {
             files: ['test/unit/index.html']
         },
         concat: {
             dist: {
-                src: ['<banner:meta.banner>', '<file_strip_banner:src/FILE_NAME.js>'],
-                dest: 'dist/FILE_NAME.js'
+                src: [
+                    '<banner:meta.banner>',
+                    '<file_strip_banner:src/wymeditor/core.js>',
+                    'src/wymeditor/rangy/*.js',
+                    'src/wymeditor/editor/*.js',
+                    'src/wymeditor/parser/*.js'
+                ],
+                dest: 'dist/jquery.wymeditor.js'
             }
         },
         min: {
             dist: {
-                src: ['<banner:meta.banner>', '<config:concat.dist.dest>'],
-                dest: 'dist/FILE_NAME.min.js'
+                src: [
+                    '<banner:meta.banner>',
+                    '<config:concat.dist.dest>'
+                ],
+                dest: 'dist/jquery.wymeditor.min.js'
+            }
+        },
+        copy: {
+            dist: {
+                files: {
+                    "dist/wymeditor": [
+                        "README.md",
+                        "CHANGELOG.md",
+                        "AUTHORS",
+                        "MIT-license.txt",
+                        "GPL-license.txt",
+                        "package.json",
+                        "grunt.js",
+                        "wymeditor.jquery.json",
+                        "docs/**"
+                    ],
+                    "dist/wymeditor/wymeditor": [
+                        "src/examples/**",
+                        "src/jquery/**",
+                        "<config:concat.dist.dest>",
+                        "<config:min.dist.dest>",
+                        "src/wymeditor/iframe/**",
+                        "src/wymeditor/lang/**",
+                        "src/wymeditor/plugins/**",
+                        "src/wymeditor/skins/**"
+                    ]
+                }
             }
         },
         watch: {
@@ -55,6 +108,8 @@ module.exports = function (grunt) {
     });
 
     // Default task.
-    grunt.registerTask('default', 'lint qunit concat min');
+    grunt.registerTask('default', 'concat min copy');
+
+    grunt.loadNpmTasks('grunt-contrib');
 
 };

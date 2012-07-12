@@ -16,33 +16,30 @@
 			"url": "http://www.policystat.com"
 		},
 		{
-			"name": "",
-			"email": "",
-			"url": ""
+			"name": "Jonatan Lundin",
+			"email": "jonatan.lundin@gmail.com"
 		}
 	],
-	"contributors": [
-		{
-			"name": "",
-			"email": "",
-			"url": ""
-		}
-	],
+	"author": {
+			"name": "Jean-Francois Hovinne",
+			"email": "jf.hovinne@wymeditor.org"
+	},
 	"licenses": [
 		{
 			"type": "MIT",
-			"url": ""
+			"url": "http://mit-license.org/"
 		},
 		{
 			"type": "GPLv2",
-			"url": ""
+			"url": "http://opensource.org/licenses/gpl-2.0.php"
 		}
 	],
 	"dependencies": {
 		"jquery" : "1.2.6 - 1.7.1"
 	},
 	"devDependencies": {
-		"grunt": "~0.3.x"
+		"grunt": "~0.3.x",
+		"grunt-contrib": "~0.1.x"
 	},
 	"keywords": [
 		"wysiwyg",
