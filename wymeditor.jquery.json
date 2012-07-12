@@ -1,0 +1,44 @@
+{
+	"name": "wymeditor",
+	"title": "WYMeditor",
+	"description": "Pure js cross-browser WYSIWYM editor with a focus on the clean separation of content and styling.",
+	"version": "1.0.0b3",
+	"homepage": "http://www.wymeditor.org",
+	"author": {
+		"name": "",
+		"email": "",
+		"url": ""
+	},
+	"licenses": [
+		{
+			"type": "MIT",
+			"url": ""
+		},
+		{
+			"type": "GPLv2",
+			"url": ""
+		}
+	],
+	"dependencies": {
+		"jquery" : "1.2.6 - 1.7.1"
+	},
+	"keywords": [
+		"wysiwyg"
+	],
+	"docs": "",
+	"demo": "",
+	"download": "",
+	"bugs": "",
+	"maintainers": [
+		{
+			"name": "Wes Winham",
+			"email": "winhamwr@gmail.com",
+			"url": "http://www.policystat.com"
+		},
+		{
+			"name": "",
+			"email": "",
+			"url": ""
+		}
+	]
+}
