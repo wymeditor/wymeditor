@@ -31,6 +31,8 @@ which is necessary for Drupal integration.
   fix.
 * Tables and images are once again properly inserted at your cursor location
   in Internet Explorer. This was a regression bug in 1.0.0b1.
+* Fixed wrong behavior of `iframe` element when white-space property is set on
+  any `textarea` container. Tested on Firefox 13 and Chrome 19.
 
 ## 1.0.0b1 (Beta 1)
 
