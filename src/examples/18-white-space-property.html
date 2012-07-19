@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+ * WYMeditor : what you see is What You Mean web-based editor
+ * Copyright (c) 2005 - 2009 Jean-Francois Hovinne, http://www.wymeditor.org/
+ * Dual licensed under the MIT (MIT-license.txt)
+ * and GPL (GPL-license.txt) licenses.
+ *
+ * For further information visit:
+ *        http://www.wymeditor.org/
+ *
+ * File Name:
+ *        18-white-space-property.html
+ *        Test page for #361.
+ *        See the documentation for more info.
+ *
+ * File Authors:
+ *        Jorge Salinas - http://jsalinas.info
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Test Page</title>
+
+    <!-- jQuery library is required, see http://jquery.com/ -->
+    <script type="text/javascript" src="../jquery/jquery.js"></script>
+    <!-- WYMeditor main JS file, minified version -->
+    <script type="text/javascript" src="../wymeditor/jquery.wymeditor.min.js"></script>
+
+    <script type="text/javascript">
+      $(document).ready(function() {
+          $('.wymeditor').wymeditor({
+              skin: 'compact',
+            });
+       });
+    </script>
+    
+    <style type="text/css" media="screen">
+      .container { white-space: nowrap; }
+    </style>
+  </head>
+ 
+  <body>
+
+    <div class="container">
+      <form action="" method="">
+        <textarea class="wymeditor" name="test" rows="8" cols="40"></textarea>
+      </form>
+    </div>
+    
+  </body>
+</html>

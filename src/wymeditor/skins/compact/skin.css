@@ -49,7 +49,7 @@
 
 /*WYM_IFRAME*/
         .wym_skin_compact .wym_iframe             { width: 98%;}
-        .wym_skin_compact .wym_iframe iframe      { width: 100%; height: 200px; border: 1px solid gray; background: white }
+        .wym_skin_compact .wym_iframe iframe      { width: 100%; height: 200px; border: 1px solid gray; background: white; display: block; }
 
 
 /*AREAS*/
