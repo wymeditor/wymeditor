@@ -39,7 +39,8 @@
 	},
 	"devDependencies": {
 		"grunt": "~0.3.x",
-		"grunt-contrib": "~0.1.x"
+		"grunt-contrib": "~0.1.x",
+		"uglify-js": "~1.x"
 	},
 	"keywords": [
 		"wysiwyg",

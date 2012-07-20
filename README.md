@@ -149,33 +149,42 @@ of a Selenium test.
 
 ##### Installing Selenium Components
 
-1. Install the Selenium 2 python bindings, roughly following these
+Install the Selenium 2 python bindings, roughly following these
 [http://selenium-python.readthedocs.org/en/latest/installation.html](installation
 instructions). The specific version of Selenium we require can be installed via:
 
 	$ pip install -r wym_selenium/requirements.txt
 
-2.
+##### Running Selenium Tests
+
+1. The selenium tests can be run via the associated
+  [Grunt](http://gruntjs.com/) task.
+
+    $ grunt selenium
 
 ### Building WYMeditor
 
 
 1. Get a copy of the source using git:
 
-    `git clone git://github.com/wymeditor/wymeditor.git`
+    $ git clone git://github.com/wymeditor/wymeditor.git
 
-2. Install `make`, Node.js and [UglifyJS](https://github.com/mishoo/UglifyJS/).
-To install UglifyJS using [NPM](http://npmjs.org/) run the following:
+3. Use [NPM](http://npmjs.org/) to install [Grunt](http://gruntjs.com/), the
+  javascript build tool.
 
-    `npm install -g uglify-js`
+    $ npm install -g grunt
 
-3. Run `make` from your git clone:
+2. Install the build requirements (defined in our `package.json`).
 
-    `$ cd wymeditor`
+    $ npm install
 
-    `$ make`
+3. Run the grunt build script.
 
-The resulting compressed distribution will appear in your `dist` directory.
+    $ grunt
+
+The resulting build will end up in your `dist/wymeditor` directory
+and as a `.tar.gz` archive with the current version number inside `dist`.
+Eg. `dist/wymeditor-1.0.0.tar.gz`
 
 #### Building with Google's Closure Compiler (Java)
 
@@ -186,7 +195,7 @@ you can follow these instructions instead.
 
 1. Get a copy of the source using git:
 
-    `git clone git://github.com/wymeditor/wymeditor.git`
+    `$ git clone git://github.com/wymeditor/wymeditor.git`
 
 2. Install `make` and Java.
 
@@ -199,7 +208,6 @@ extracting `compiler.jar` into your `wymeditor` directory.
     `$ cd wymeditor`
 
     `$ make min_closure archive`
-
 
 Getting Help
 ------------

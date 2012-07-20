@@ -82,6 +82,17 @@ module.exports = function (grunt) {
                 }
             }
         },
+        compress: {
+            tgz: {
+                options: {
+                    mode: "tgz",
+                    basePath: "dist/wymeditor"
+                },
+                files: {
+                    'dist/wymeditor-<%= pkg.version %>.tar.gz': 'dist/wymeditor/**'
+                }
+            }
+        },
         watch: {
             files: '<config:lint.files>',
             tasks: 'lint qunit'
@@ -108,7 +119,7 @@ module.exports = function (grunt) {
     });
 
     // Default task.
-    grunt.registerTask('default', 'concat min copy');
+    grunt.registerTask('default', 'concat min copy compress');
 
     grunt.loadNpmTasks('grunt-contrib');
 
