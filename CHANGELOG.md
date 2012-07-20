@@ -3,6 +3,15 @@
 This document tracks the enhancements and bug fixes between releases of
 WYMeditor.
 
+## 1.0.0b4 (Beta 4)
+
+*release-date* TBD
+
+
+### Bug Fixes
+
+* The editor area is now properly displayed when using the Compact skin and styling with `white-space: nowrap'`. Thanks to Jorge Salinas for the fix.
+
 ## 1.0.0b3 (Beta 3)
 
 *release-date* June 26, 2012
@@ -31,8 +40,6 @@ which is necessary for Drupal integration.
   fix.
 * Tables and images are once again properly inserted at your cursor location
   in Internet Explorer. This was a regression bug in 1.0.0b1.
-* Fixed wrong behavior of `iframe` element when white-space property is set on
-  any `textarea` container. Tested on Firefox 13 and Chrome 19.
 
 ## 1.0.0b1 (Beta 1)
 
