@@ -7,6 +7,10 @@ WYMeditor.
 
 *release-date* TBD
 
+### Enhancements
+
+* Added a Danish translation. Thanks Sebastian Kolind.
+
 
 ### Bug Fixes
 
