@@ -126,6 +126,15 @@ from step 2) call:
 
     $ build/phantomjs_test.sh localhost:8000/test/unit
 
+#### Testing Different jQuery Versions
+
+The unit tests can be run with the different versions of jQuery hosted on
+Google's CDN by appending the URL parameter `?jquery=<version>`. For example,
+to test with jQuery 1.8.0 against a local server on port 8000:
+
+[http://localhost:8000/test/unit/?jquery=1.8.0](http://localhost:8000/test/unit/?jquery=1.8.0).
+
+
 ### Building WYMeditor
 
 1. Get a copy of the source using git:
