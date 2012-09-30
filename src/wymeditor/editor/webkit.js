@@ -77,7 +77,25 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
     }
 
     var focusNode = this.selected(),
-        container;
+        _param, container, attr;
+
+    // DIV insert detection (causes problems)
+    if (cmd.toLowerCase() == WYMeditor.INSERT_HTML.toLowerCase()) {
+        _param = jQuery(param);
+
+        if (_param.is('div')) {
+            attr = _param.get(0).attributes;
+            // replace default block with DIV
+            this._doc.execCommand(WYMeditor.FORMAT_BLOCK, '', WYMeditor.DIV);
+            // copy attributes
+            container = this.selected();
+            for (var i = 0; i < attr.length; i++) {
+                container.setAttribute(attr[i].name, attr[i].value);
+            }
+
+            param = _param.html();
+        }
+    }
 
     if (param) {
         this._doc.execCommand(cmd, '', param);
@@ -135,7 +153,7 @@ WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
     wym._selected_image = null;
 
     // Fix to allow shift + return to insert a line break in older safari
-    if ($.browser.version < 534.1) {
+    if (jQuery.browser.version < 534.1) {
         // Not needed in AT MAX chrome 6.0. Probably safe earlier
         if (evt.keyCode === WYMeditor.KEY.ENTER && evt.shiftKey) {
             wym._exec('InsertLineBreak');
@@ -171,7 +189,7 @@ WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
             name = container.parentNode.tagName.toLowerCase();
         }
 
-        if (name === WYMeditor.BODY || name === WYMeditor.DIV) {
+        if (name === WYMeditor.BODY) {
             // Replace text nodes with <p> tags
             wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
             wym.fixBodyHtml();

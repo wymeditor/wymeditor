@@ -1,4 +1,8 @@
 
+// We need to be able to operate in a noConflict context. Doing this during our
+// tests ensures that remains the case.
+jQuery.noConflict();
+
 // Whether or not we want to skip the tests that are known to be failing.
 // Ideally, there would be no tests in this category, but right now there are
 // a lot of table-related bugs that need to be fixed that aren't the number
@@ -37,7 +41,7 @@ function setupWym(extraPostInit) {
 
                 wym.html(initialHtml);
 
-                $body = $(wym._doc).find('body.wym_iframe');
+                $body = jQuery(wym._doc).find('body.wym_iframe');
 
                 td = $body.find(tdSelector)[0];
                 span = $body.find(spanSelector)[0];
@@ -55,6 +59,8 @@ function setupWym(extraPostInit) {
         });
     }
 }
+
+
 module("Core", {setup: setupWym});
 
 test("Instantiate", function () {
@@ -71,10 +77,12 @@ module("API", {setup: setupWym});
 
 test("Commands", function () {
     expect(2);
-    jQuery.wymeditors(0).toggleHtml();
-    equals(jQuery('div.wym_html:visible', jQuery.wymeditors(0)._box).length, 1);
-    jQuery.wymeditors(0).toggleHtml();
-    equals(jQuery('div.wym_html:visible', jQuery.wymeditors(0)._box).length, 0);
+    var wymeditor = jQuery.wymeditors(0);
+
+    wymeditor.toggleHtml();
+    equals(jQuery('div.wym_html:visible', wymeditor._box).length, 1);
+    wymeditor.toggleHtml();
+    equals(jQuery('div.wym_html:visible', wymeditor._box).length, 0);
 });
 
 module("CssParser", {setup: setupWym});
@@ -109,7 +117,7 @@ test("Should escape URL's only once #69.1", function () {
 
 module("XmlParser", {setup: setupWym});
 
-test("Should correct invalid lists", function () {
+test("Should correct orphaned sublists", function () {
     expect(2);
     var expected = String() +
             '<ul>' +
@@ -128,8 +136,9 @@ test("Should correct invalid lists", function () {
                     '<li>a.1<\/li>' +
                 '<\/ul>' +
                 '<li>b<br><\/li>' +
-            '<\/ul>';
-    equals(jQuery.wymeditors(0).parser.parse(design_mode_pseudo_html), expected,
+            '<\/ul>',
+        wymeditor = jQuery.wymeditors(0);
+    equals(wymeditor.parser.parse(design_mode_pseudo_html), expected,
             "on Firefox");
     // IE
     // IE has invalid sublist nesting
@@ -153,7 +162,7 @@ test("Should correct invalid lists", function () {
             '<\/UL>';
     /*jslint white:true */
     equals(
-        jQuery.wymeditors(0).parser.parse(design_mode_pseudo_html),
+        wymeditor.parser.parse(design_mode_pseudo_html),
         expected,
         "on IE"
     );
@@ -236,6 +245,89 @@ test("Should correct under-closed lists", function () {
             '</ol>';
 
     equals(jQuery.wymeditors(0).parser.parse(missingClosingLiHtml), fixedHtml);
+});
+
+test("Don't over-close lists", function () {
+    expect(6);
+    var orphanedLiHtml = String() +
+        '<ol id="ol_1">' +
+            '<li id="li_1">li_1' +
+                '<ol>' +
+                    '<li id="li_1_1">li_1_1</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>' +
+        '<li id="li_2">li_2' +
+            '<ol id="ol_2_1">' +
+                '<li id="li_2_1">li_2_1' +
+                    '<ol>' +
+                        '<li id="li_2_1_1">li_2_1_1</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+        '<li id="li_3">li_3</li>' +
+        '<p>stop</p>' +
+        '<li id="li_new">li_new</li>' +
+        'text' +
+        '<li id="li_text_sep">li_text_sep</li>',
+        simpleOrphanedLiHtml = String() +
+        '<ol id="ol_1">' +
+            '<li id="li_1">li_1' +
+                '<ol>' +
+                    '<li id="li_1_1">li_1_1</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>' +
+        '<li id="li_2">li_2</li>',
+        listAfterText = String() +
+        '<ol id="ol_1">' +
+            '<li id="li_1">li_1' +
+                '<ol>' +
+                    '<li id="li_1_1">li_1_1</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>' +
+        '<li id="li_2">li_2' +
+            '<ol id="ol_2_1">' +
+                '<li id="li_2_1">li_2_1' +
+                    '<ol>' +
+                        '<li id="li_2_1_1">li_2_1_1</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+        '<li id="li_3">li_3</li>' +
+        '<p>stop</p>' +
+        '<li id="li_new">li_new</li>' +
+        'text' +
+        '<ol>' +
+            '<li id="li_text_sep">li_text_sep</li>' +
+        '</ol>',
+        wymeditor = jQuery.wymeditors(0);
+
+    equals(
+        wymeditor.parser.parse(orphanedLiHtml),
+        orphanedLiHtml
+    );
+    equals(
+        wymeditor.parser.parse(simpleOrphanedLiHtml),
+        simpleOrphanedLiHtml
+    );
+    equals(
+        wymeditor.parser.parse(listAfterText),
+        listAfterText
+    );
+
+    // Now throw the browser/dom in the mix
+    wymeditor.html(orphanedLiHtml);
+    htmlEquals(wymeditor, orphanedLiHtml);
+
+    wymeditor.html(simpleOrphanedLiHtml);
+    htmlEquals(wymeditor, simpleOrphanedLiHtml);
+
+    wymeditor.html(listAfterText);
+    htmlEquals(wymeditor, listAfterText);
 });
 
 test("Shouldn't remove empty td elements", function () {
@@ -327,7 +419,7 @@ test("Sanity check: html()", function () {
     htmlEquals(wymeditor, testText1);
 });
 
-if (!$.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
+if (!jQuery.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
     test("Adding combined CSS selectors", function () {
         expect(1);
 
@@ -398,7 +490,7 @@ var complexCopyText = String() +
         'sentence3\r\n\r\n' +
         'gap\r\n\r\n' +
         'gap2';
-if ($.browser !== 'msie') {
+if (jQuery.browser !== 'msie') {
     complexCopyText = complexCopyText.replace(/\r/g, '');
 }
 
@@ -594,7 +686,7 @@ function testPaste(pasteStartSelector, startHtml, textToPaste, elmntStartHtml, e
         elmntExpectedHtml
     );
 
-    $body = $(wymeditor._doc).find('body.wym_iframe');
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
     wymeditor._doc.body.focus();
     if (pasteStartSelector === '') {
@@ -722,7 +814,7 @@ test("Table is editable after insertion", function () {
         dm;
     wymeditor.html('');
 
-    $body = $(wymeditor._doc).find('body.wym_iframe');
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     wymeditor.insertTable(3, 2, '', '');
 
     $body.find('td').each(function (index, td) {
@@ -734,7 +826,7 @@ test("Table is editable after insertion", function () {
 });
 
 // Only FF >= 3.5 seems to require content in <td> for them to be editable
-if ($.browser.mozilla) {
+if (jQuery.browser.mozilla) {
     var table_3_2_html = String() +
             "<table><tbody>" +
                 "<tr>" +
@@ -757,12 +849,12 @@ if ($.browser.mozilla) {
             $body;
         wymeditor.html('');
 
-        $body = $(wymeditor._doc).find('body.wym_iframe');
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
         wymeditor.insertTable(3, 2, '', '');
 
         $body.find('td').each(function (index, td) {
-            if (parseInt($.browser.version) == 1 &&
-                $.browser.version >= '1.9.1' && $.browser.version < '2.0') {
+            if (parseInt(jQuery.browser.version) == 1 &&
+                jQuery.browser.version >= '1.9.1' && jQuery.browser.version < '2.0') {
                 equals(td.childNodes.length, 1);
             } else {
                 equals(td.childNodes.length, 0);
@@ -776,7 +868,7 @@ if ($.browser.mozilla) {
         expect(12);
 
         var wymeditor = jQuery.wymeditors(0),
-            $body = $(wymeditor._doc).find('body.wym_iframe');
+            $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
         wymeditor.html('');
         wymeditor.html(table_3_2_html);
@@ -797,12 +889,12 @@ if ($.browser.mozilla) {
             expect(12);
 
             var wymeditor = jQuery.wymeditors(0),
-                $body = $(wymeditor._doc).find('body.wym_iframe');
+                $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
             $body.html(table_3_2_html);
             $body.find('td').each(function (index, td) {
-                if (parseInt($.browser.version) == 1 &&
-                    $.browser.version >= '1.9.1' && $.browser.version < '2.0') {
+                if (parseInt(jQuery.browser.version) == 1 &&
+                    jQuery.browser.version >= '1.9.1' && jQuery.browser.version < '2.0') {
                     equals(td.childNodes.length, 1);
                 } else {
                     equals(td.childNodes.length, 0);
@@ -816,44 +908,21 @@ if ($.browser.mozilla) {
 module("preformatted text", {setup: setupWym});
 
 test("Preformatted text retains spacing", function () {
-    var wymeditor,
+    var wymeditor = jQuery.wymeditors(0),
         preHtml = String() +
             '<pre>pre1\r\n' +
             'spaced\r\n\r\n' +
             'double  spaced' +
-            '</pre>',
-        $body,
-        preChildren;
+            '</pre>';
 
-    // Only ie and firefox 3.x use \r\n newlines
-    if ($.browser.webkit || $.browser.safari ||
-        ($.browser.mozilla && parseFloat($.browser.version) > 2.0)) {
+    // Only ie keeps \r\n newlines
+    if (!jQuery.browser.msie) {
         preHtml = preHtml.replace(/\r/g, '');
     }
 
-    wymeditor = jQuery.wymeditors(0);
     wymeditor.html(preHtml);
 
     expect(1);
-
-    if ($.browser.mozilla && parseFloat($.browser.version) < 2.0) {
-        // Firefox 3.x converts the text inside pre to DOM nodes, where as other
-        // browsers just use plain text
-        $body = $(wymeditor._doc).find('body.wym_iframe');
-        preChildren = $body.children('pre').contents();
-
-        expect(8);
-        equals(preChildren.length, 6,
-                "Should have text, br, text, br, br, text");
-        if (preChildren.length === 6) {
-            equals(preChildren[0].nodeName.toLowerCase(), '#text');
-            equals(preChildren[1].nodeName.toLowerCase(), 'br');
-            equals(preChildren[2].nodeName.toLowerCase(), '#text');
-            equals(preChildren[3].nodeName.toLowerCase(), 'br');
-            equals(preChildren[4].nodeName.toLowerCase(), 'br');
-            equals(preChildren[5].nodeName.toLowerCase(), '#text');
-        }
-    }
 
     equals(wymeditor.xhtml(), preHtml);
 });
@@ -890,7 +959,7 @@ test("_selected image is saved on mousedown", function () {
     expect(3);
 
     wymeditor.html(initHtml);
-    $body = $(wymeditor._doc).find('body.wym_iframe');
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
     // Editor starts with no selected image
     equals(wymeditor._selected_image, null);
@@ -906,3 +975,35 @@ test("_selected image is saved on mousedown", function () {
     $google.mousedown();
     equals(wymeditor._selected_image, $google[0]);
 });
+
+if (jQuery.browser.webkit || jQuery.browser.safari) {
+    module("gh-319", {setup: setupWym});
+
+    var gh_319_divInsertionHtml = String() +
+            '<p>Some text before the div container</p>' +
+            '<div>Anything</div>' +
+            '<p>Some text after the div container</p>';
+
+    test("DIV element is correctly inserted", function () {
+        var initHtml = String() +
+                '<p>Some text before the div container</p>' +
+                '<p id="replaceMe">Replace me</p>' +
+                '<p>Some text after the div container</p>',
+            divHtml = String() +
+                '<div>Anything</div>',
+            wymeditor = jQuery.wymeditors(0),
+            $body, selectedElmnt;
+
+        expect(1);
+
+        wymeditor.html(initHtml);
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+        wymeditor._doc.body.focus();
+
+        selectedElmnt = $body.find('#replaceMe').get(0);
+        makeTextSelection(wymeditor, selectedElmnt, selectedElmnt, 0, selectedElmnt.innerText.length);
+
+        wymeditor._exec(WYMeditor.INSERT_HTML, divHtml);
+        equals($body.html(), gh_319_divInsertionHtml);
+    });
+}

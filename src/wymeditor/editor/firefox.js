@@ -30,9 +30,9 @@ WYMeditor.WymClassMozilla = function (wym) {
 WYMeditor.WymClassMozilla.CELL_PLACEHOLDER = '<br _moz_dirty="">';
 
 // Firefox 3.5 and 3.6 require the CELL_PLACEHOLDER and 4.0 doesn't
-WYMeditor.WymClassMozilla.NEEDS_CELL_FIX = parseInt($.browser.version,10) == 1 &&
-    $.browser.version >= '1.9.1' &&
-    $.browser.version < '2.0';
+WYMeditor.WymClassMozilla.NEEDS_CELL_FIX = parseInt(jQuery.browser.version,10) == 1 &&
+    jQuery.browser.version >= '1.9.1' &&
+    jQuery.browser.version < '2.0';
 
 WYMeditor.WymClassMozilla.prototype.initIframe = function (iframe) {
     var wym = this,
@@ -312,8 +312,8 @@ WYMeditor.WymClassMozilla.prototype.afterInsertTable = function (table) {
         // In certain FF versions, inserted tables need some content in their
         // cells before they're editable, otherwise the user has to move focus
         // in and then out of a cell first, even with our click() hack
-        $(table).find('td').each(function (index, element) {
-            $(element).append(WYMeditor.WymClassMozilla.CELL_PLACEHOLDER);
+        jQuery(table).find('td').each(function (index, element) {
+            jQuery(element).append(WYMeditor.WymClassMozilla.CELL_PLACEHOLDER);
         });
     }
 };

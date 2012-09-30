@@ -1,4 +1,5 @@
 /*jslint evil: true, indent: 4 */
+/*@version @VERSION */
 /**
     WYMeditor
     =========
@@ -418,7 +419,7 @@ jQuery.fn.wymeditor = function (options) {
 
         toolsItemHtml: String() +
             '<li class="' + WYMeditor.TOOL_CLASS + '">' +
-                '<a href="#" name="' + WYMeditor.TOOL_NAME + '"' +
+                '<a href="#" name="' + WYMeditor.TOOL_NAME + '" ' +
                         'title="' + WYMeditor.TOOL_TITLE + '">' +
                     WYMeditor.TOOL_TITLE +
                 '</a>' +
@@ -714,7 +715,7 @@ jQuery.fn.wymeditor = function (options) {
     });
 };
 
-// Enable accessing of wymeditor instances via $.wymeditors
+// Enable accessing of wymeditor instances via jQuery.wymeditors
 jQuery.extend({
     wymeditors: function (i) {
         return WYMeditor.INSTANCES[i];
@@ -964,8 +965,45 @@ jQuery.fn.isPhantomNode = function () {
 };
 
 /**
+    jQuery.fn.nextContentsUntil
+    ===========================
+
+    Acts like jQuery.nextUntil() but includes text nodes and comments and only
+    works on the first element in the given jQuery collection..
+*/
+jQuery.fn.nextContentsUntil = function (selector, filter) {
+    var matched = [],
+        $matched,
+        cur = this.get(0);
+
+    selector = selector ? selector : '';
+    filter = filter ? filter : '';
+
+    if (!cur) {
+        // Called on an empty selector. The sibling of nothing is nothing
+        return jQuery();
+    }
+    // We don't want to include this element, only its siblings
+    cur = cur.nextSibling;
+
+    while (cur) {
+        if (!jQuery(cur).is(selector)) {
+            matched.push(cur);
+            cur = cur.nextSibling;
+        } else {
+            break;
+        }
+    }
+
+    $matched = jQuery(matched);
+    if (filter) {
+        return $matched.filter(filter);
+    }
+    return $matched;
+};
+/**
     jQuery.fn.nextAllContents
-    ======================
+    =========================
 
     Acts like jQuery.nextAll() but includes text nodes and comments and only
     works on the first element in the given jQuery collection..
@@ -973,24 +1011,59 @@ jQuery.fn.isPhantomNode = function () {
     Mostly cribbed from the jQuery source.
 */
 jQuery.fn.nextAllContents = function () {
+    return jQuery(this).nextContentsUntil('', '');
+};
+
+/**
+    jQuery.fn.prevContentsUntil
+    ===========================
+
+    Acts like jQuery.prevUntil() but includes text nodes and comments and only
+    works on the first element in the given jQuery collection..
+*/
+jQuery.fn.prevContentsUntil = function (selector, filter) {
     var matched = [],
+        $matched,
         cur = this.get(0);
+
+    selector = selector ? selector : '';
+    filter = filter ? filter : '';
 
     if (!cur) {
         // Called on an empty selector. The sibling of nothing is nothing
-        return $();
+        return jQuery();
     }
     // We don't want to include this element, only its siblings
-    cur = cur.nextSibling;
+    cur = cur.previousSibling;
 
     while (cur) {
-        matched.push(cur);
-        cur = cur.nextSibling;
+        if (!jQuery(cur).is(selector)) {
+            matched.push(cur);
+            cur = cur.previousSibling;
+        } else {
+            break;
+        }
     }
 
-    return $(matched);
+    $matched = jQuery(matched);
+    if (filter) {
+        return $matched.filter(filter);
+    }
+    return $matched;
 };
 
+/**
+    jQuery.fn.prevAllContents
+    =========================
+
+    Acts like jQuery.prevAll() but includes text nodes and comments and only
+    works on the first element in the given jQuery collection..
+
+    Mostly cribbed from the jQuery source.
+*/
+jQuery.fn.prevAllContents = function () {
+    return jQuery(this).prevContentsUntil('', '');
+};
 
 WYMeditor.isPhantomNode = function (n) {
     if (n.nodeType === 3) {
@@ -1035,8 +1108,8 @@ WYMeditor.changeNodeType = function (node, newTag) {
 
     // In ie6, have to create the node as part of wrapInner before we can copy
     // over attributes
-    $(node).wrapInner('<' + newTag + '>');
-    newNode = $(node).children().get(0);
+    jQuery(node).wrapInner('<' + newTag + '>');
+    newNode = jQuery(node).children().get(0);
 
     // Copy attributes
     for (i = 0; i < attributes.length; i++) {
@@ -1048,7 +1121,7 @@ WYMeditor.changeNodeType = function (node, newTag) {
 
     // Not copying inline CSS or properties/events
 
-    $(node).contents().unwrap();
+    jQuery(node).contents().unwrap();
     return newNode;
 };
 

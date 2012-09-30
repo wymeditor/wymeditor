@@ -23,7 +23,7 @@ function testList(elmntId, action, startHtml, expectedHtml, isText, doSelection)
 
     if (doSelection) {
         wymeditor.html(startHtml);
-        $body = $(wymeditor._doc).find('body.wym_iframe');
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
         actionLi = $body.find('#' + elmntId)[0];
 
         if (isText === true) {
@@ -136,7 +136,7 @@ function testListMulti(startElmntId, endElmntId, action, startHtml, expectedHtml
         actionButton;
     wymeditor.html(startHtml);
 
-    $body = $(wymeditor._doc).find('body.wym_iframe');
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     startLi = $body.find('#' + startElmntId)[0];
     endLi = $body.find('#' + endElmntId)[0];
 
@@ -1118,7 +1118,7 @@ test("Invalid nesting correction no spacer", function () {
         expectedHtml = invalidNestingCorrectedHtml;
 
     wymeditor.html(startHtml);
-    $body = $(wymeditor._doc).find('body.wym_iframe');
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     actionLi = $body.find('#li_4')[0];
 
     wymeditor.correctInvalidListNesting(actionLi);
@@ -1134,50 +1134,324 @@ test("Invalid nesting correction requiring spacer", function () {
         expectedHtml = invalidNestingNoPreviousCorrectedHtml;
 
     wymeditor.html(startHtml);
-    $body = $(wymeditor._doc).find('body.wym_iframe');
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     actionLi = $body.find('#li_2_2')[0];
 
     wymeditor.correctInvalidListNesting(actionLi);
     htmlEquals(wymeditor, expectedHtml);
 });
 test("Invalid nesting outdent", function () {
-    expect(3);
+    expect(5);
 
-    // Not round-trippable because of post-sublist content moving li's
-    testList('li_2_2', 'outdent', invalidNestingHtml, li_2_2_outdentInvalidNestingHtml);
+    // First outdent just corrects things and the second actually makes the change
+    testList('li_2_2', 'outdent', invalidNestingHtml, invalidNestingCorrectedHtml);
+    testList(
+        'li_2_2',
+        'outdent',
+        null,
+        li_2_2_outdentInvalidNestingHtml,
+        false,
+        false
+    );
+    // Can't go the other way because of the <br /> business
 
     // Via Text selection
-    testList('li_2_2', 'outdent', invalidNestingHtml, li_2_2_outdentInvalidNestingHtml, true);
+    testList('li_2_2', 'outdent', invalidNestingHtml, invalidNestingCorrectedHtml, true);
+    testList(
+        'li_2_2',
+        'outdent',
+        null,
+        li_2_2_outdentInvalidNestingHtml,
+        true,
+        false
+    );
 });
 test("Invalid unwrapped text indent", function () {
-    expect(8);
+    expect(7);
 
-    // Not round-trippable because of initial invalid nesting
-    testList('span_5_2', 'indent', invalidNestingHtml, span_5_2_indentedInvalidNestingHtml);
-    testListRoundTrip(
-        'span_5_2',
-        'outdent',
-        span_5_2_indentedInvalidNestingHtml,
-        invalidNestingCorrectedHtml
-    );
-
-    // Via Text selection
-    // Not round-trippable because of initial invalid nesting
+    // First outdent just corrects things and the second actually makes the change
+    testList('span_5_2', 'indent', invalidNestingHtml, invalidNestingCorrectedHtml);
     testList(
         'span_5_2',
         'indent',
-        invalidNestingHtml,
+        null,
         span_5_2_indentedInvalidNestingHtml,
-        true
+        false,
+        false
     );
-    testListRoundTrip(
+    testList(
         'span_5_2',
         'outdent',
-        span_5_2_indentedInvalidNestingHtml,
+        null,
         invalidNestingCorrectedHtml,
-        true
+        false,
+        false
+    );
+
+    // Via Text selection
+    // Not round-trippable because of initial invalid nesting
+    testList('span_5_2', 'indent', invalidNestingHtml, invalidNestingCorrectedHtml, true);
+    testList(
+        'span_5_2',
+        'indent',
+        null,
+        span_5_2_indentedInvalidNestingHtml,
+        true,
+        false
+    );
+    testList(
+        'span_5_2',
+        'outdent',
+        null,
+        invalidNestingCorrectedHtml,
+        true,
+        false
     );
 });
+
+module("list-invalid_orphaned_listitem", {setup: setupWym});
+
+// Lists that have been "over-closed" and thus have li elements that don't have
+// parent lists
+var orphanedLiHtml = {};
+orphanedLiHtml.base = String() +
+        '<ol id="ol_1">' +
+            '<li id="li_1">li_1' +
+                '<ol>' +
+                    '<li id="li_1_1">li_1_1</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>' +
+        '<li id="li_2">li_2' +
+            '<ol id="ol_2_1">' +
+                '<li id="li_2_1">li_2_1' +
+                    '<ol>' +
+                        '<li id="li_2_1_1">li_2_1_1</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+        '<li id="li_3">li_3</li>' +
+        '<p>stop</p>' +
+        '<li id="li_new">li_new</li>' +
+        'text' +
+        '<li id="li_text_sep">li_text_sep</li>';
+orphanedLiHtml.unordered = {};
+orphanedLiHtml.ordered = {};
+orphanedLiHtml.unordered.li_2 = String() +
+        '<ol id="ol_1">' +
+            '<li id="li_1">li_1' +
+                '<ol>' +
+                    '<li id="li_1_1">li_1_1</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_2">li_2' +
+                '<ol id="ol_2_1">' +
+                    '<li id="li_2_1">li_2_1' +
+                        '<ol>' +
+                            '<li id="li_2_1_1">li_2_1_1</li>' +
+                        '</ol>' +
+                    '</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_3">li_3</li>' +
+        '</ol>' +
+        '<p>stop</p>' +
+        '<li id="li_new">li_new</li>' +
+        'text' +
+        '<li id="li_text_sep">li_text_sep</li>';
+orphanedLiHtml.unordered.li_2_1 = orphanedLiHtml.unordered.li_2;
+orphanedLiHtml.unordered.li_2_1_1 = orphanedLiHtml.unordered.li_2;
+orphanedLiHtml.unordered.li_3 = orphanedLiHtml.unordered.li_2;
+test("Unordered corrects orphans", function () {
+    expect(12);
+    var testData = orphanedLiHtml,
+        testItems = ['li_2', 'li_2_1', 'li_2_1_1', 'li_3'],
+        i,
+        itemId;
+
+    for (i = 0; i < testItems.length; i++) {
+        itemId = testItems[i];
+        testList(itemId, 'unordered', testData.base, testData.unordered[itemId]);
+
+        // Via Text selection
+        testList(itemId, 'unordered', testData.base, testData.unordered[itemId], true);
+    }
+});
+
+orphanedLiHtml.unordered.li_1_1_to_li_3 = orphanedLiHtml.unordered.li_2;
+orphanedLiHtml.unordered.li_2_to_li_2_1_1 = orphanedLiHtml.unordered.li_2;
+test("Unordered corrects with multiselect", function () {
+    expect(4);
+    var testData = orphanedLiHtml,
+        testItems = [['li_1_1', 'li_3'], ['li_2', 'li_2_1_1']],
+        i,
+        startItemId,
+        endItemId,
+        resultKey;
+
+    for (i = 0; i < testItems.length; i++) {
+        startItemId = testItems[i][0];
+        endItemId = testItems[i][1];
+        resultKey = startItemId + '_to_' + endItemId;
+        testListMulti(startItemId, endItemId, 'unordered', testData.base, testData.unordered[resultKey]);
+
+        // Via Text selection
+        testListMulti(
+            startItemId,
+            endItemId,
+            'unordered',
+            testData.base,
+            testData.unordered[resultKey],
+            true
+        );
+    }
+});
+
+orphanedLiHtml.unordered.li_new = String() +
+        '<ol id="ol_1">' +
+            '<li id="li_1">li_1' +
+                '<ol>' +
+                    '<li id="li_1_1">li_1_1</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>' +
+        '<li id="li_2">li_2' +
+            '<ol id="ol_2_1">' +
+                '<li id="li_2_1">li_2_1' +
+                    '<ol>' +
+                        '<li id="li_2_1_1">li_2_1_1</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+        '<li id="li_3">li_3</li>' +
+        '<p>stop</p>' +
+        '<ul>' +
+            '<li id="li_new">li_new</li>' +
+        '</ul>' +
+        'text' +
+        '<li id="li_text_sep">li_text_sep</li>';
+orphanedLiHtml.ordered.li_new = String() +
+        '<ol id="ol_1">' +
+            '<li id="li_1">li_1' +
+                '<ol>' +
+                    '<li id="li_1_1">li_1_1</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>' +
+        '<li id="li_2">li_2' +
+            '<ol id="ol_2_1">' +
+                '<li id="li_2_1">li_2_1' +
+                    '<ol>' +
+                        '<li id="li_2_1_1">li_2_1_1</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+        '<li id="li_3">li_3</li>' +
+        '<p>stop</p>' +
+        '<ol>' +
+            '<li id="li_new">li_new</li>' +
+        '</ol>' +
+        'text' +
+        '<li id="li_text_sep">li_text_sep</li>';
+
+// Internet Explorer likes to randomly add whitespace around textNodes that
+// don't have parent elements when you manipulate the DOM near them. Change our
+// test data to expect this so that we pass in IE
+// TODO: Maybe use some kind of modernizr-style test and correct this with the
+// parser?
+if (jQuery.browser.msie) {
+    orphanedLiHtml.ordered.li_new = orphanedLiHtml.ordered.li_new.replace(
+        /text<li id=\"li_text_sep/g,
+        'text <li id="li_text_sep'
+    );
+    orphanedLiHtml.unordered.li_new = orphanedLiHtml.unordered.li_new.replace(
+        /text<li id=\"li_text_sep/g,
+        'text <li id="li_text_sep'
+    );
+}
+
+test("Correction breaks on paragraphs", function () {
+    expect(7);
+    var testData = orphanedLiHtml,
+        testItem = 'li_new';
+
+    // First action just fixes the list
+    testList(testItem, 'unordered', testData.base, testData.ordered[testItem]);
+    testList(testItem, 'unordered', null, testData.unordered[testItem], false, false);
+    testList(testItem, 'ordered', null, testData.ordered[testItem], false, false);
+
+    // Via Text selection
+    testList(testItem, 'unordered', testData.base, testData.ordered[testItem], true);
+    testList(testItem, 'unordered', null, testData.unordered[testItem], false, false);
+    testList(testItem, 'ordered', null, testData.ordered[testItem], false, false);
+});
+orphanedLiHtml.unordered.li_text_sep = String() +
+        '<ol id="ol_1">' +
+            '<li id="li_1">li_1' +
+                '<ol>' +
+                    '<li id="li_1_1">li_1_1</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>' +
+        '<li id="li_2">li_2' +
+            '<ol id="ol_2_1">' +
+                '<li id="li_2_1">li_2_1' +
+                    '<ol>' +
+                        '<li id="li_2_1_1">li_2_1_1</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+        '<li id="li_3">li_3</li>' +
+        '<p>stop</p>' +
+        '<li id="li_new">li_new</li>' +
+        'text' +
+        '<ul>' +
+            '<li id="li_text_sep">li_text_sep</li>' +
+        '</ul>';
+orphanedLiHtml.ordered.li_text_sep = String() +
+        '<ol id="ol_1">' +
+            '<li id="li_1">li_1' +
+                '<ol>' +
+                    '<li id="li_1_1">li_1_1</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>' +
+        '<li id="li_2">li_2' +
+            '<ol id="ol_2_1">' +
+                '<li id="li_2_1">li_2_1' +
+                    '<ol>' +
+                        '<li id="li_2_1_1">li_2_1_1</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+        '<li id="li_3">li_3</li>' +
+        '<p>stop</p>' +
+        '<li id="li_new">li_new</li>' +
+        'text' +
+        '<ol>' +
+            '<li id="li_text_sep">li_text_sep</li>' +
+        '</ol>';
+test("Correction breaks on text", function () {
+    expect(7);
+    var testData = orphanedLiHtml,
+        testItem = 'li_text_sep';
+
+    // Default action on the first click
+    testList(testItem, 'unordered', testData.base, testData.ordered[testItem]);
+    testList(testItem, 'unordered', null, testData.unordered[testItem], false, false);
+    testList(testItem, 'ordered', null, testData.ordered[testItem], false, false);
+
+    // Via Text selection
+    testList(testItem, 'unordered', testData.base, testData.ordered[testItem], true);
+    testList(testItem, 'unordered', null, testData.unordered[testItem], false, false);
+    testList(testItem, 'ordered', null, testData.ordered[testItem], false, false);
+});
+
 
 module("list-multi_selection", {setup: setupWym});
 
@@ -1811,7 +2085,7 @@ test("Tab key indents", function () {
         wymeditor = jQuery.wymeditors(0);
     wymeditor.html(initHtml);
 
-    $body = $(wymeditor._doc).find('body.wym_iframe');
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     actionElement = $body.find('#' + elmntId)[0];
 
     moveSelector(wymeditor, actionElement);
@@ -1845,7 +2119,7 @@ test("Shift+Tab outdents", function () {
         wymeditor = jQuery.wymeditors(0);
     wymeditor.html(initHtml);
 
-    $body = $(wymeditor._doc).find('body.wym_iframe');
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     actionElement = $body.find('#' + elmntId)[0];
 
     moveSelector(wymeditor, actionElement);
@@ -1866,11 +2140,40 @@ test("Tab has no effect outside lists", function () {
         wymeditor = jQuery.wymeditors(0);
     wymeditor.html(initHtml);
 
-    $body = $(wymeditor._doc).find('body.wym_iframe');
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     actionElement = $body.find('#' + elmntId)[0];
 
     moveSelector(wymeditor, actionElement);
 
     simulateKey(WYMeditor.KEY.TAB, actionElement);
+    htmlEquals(wymeditor, expectedHtml);
+});
+
+module("list-newline_normalization", {setup: setupWym});
+
+test("Shouldn't eat newline text spacing in li", function () {
+    expect(1);
+
+    var initHtml = String() +
+            '<ul>' +
+                '<li>' +
+                    'Lorem ipsum dolor' + "\n" +
+                    'sit amet, consectetur' + "\n\n" +
+                    'adipiscing elit. Integer' + "\n\n\n" +
+                    'sagittis porta dapibus.' +
+                '</li>' +
+            '</ul>',
+
+        expectedHtml = String() +
+            '<ul>' +
+                '<li>' +
+                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' +
+                    ' Integer sagittis porta dapibus.' +
+                '</li>' +
+            '</ul>',
+        wymeditor = jQuery.wymeditors(0);
+
+    wymeditor.html(initHtml);
+    wymeditor.update();
     htmlEquals(wymeditor, expectedHtml);
 });

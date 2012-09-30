@@ -10,6 +10,9 @@ WYMeditor.XhtmlSaxListener = function() {
     this.validator = WYMeditor.XhtmlValidator;
     this._tag_stack = [];
     this.avoided_tags = [];
+    this._insert_before_closing = [];
+    this._insert_after_closing = [];
+    this._last_node_was_text = false;
 
     this.entities = {
         '&nbsp;':'&#160;','&iexcl;':'&#161;','&cent;':'&#162;',
@@ -130,6 +133,15 @@ WYMeditor.XhtmlSaxListener.prototype.shouldCloseTagAutomatically = function(tag,
 
 WYMeditor.XhtmlSaxListener.prototype.beforeParsing = function(raw) {
     this.output = '';
+
+    // Reset attributes that might bleed over between parsing
+    this._insert_before_closing = [];
+    this._insert_after_closing = [];
+    this._open_tags = {};
+    this._tag_stack = [];
+    this._last_node_was_text = false;
+    this.last_tag = null;
+
     return raw;
 };
 
@@ -138,6 +150,7 @@ WYMeditor.XhtmlSaxListener.prototype.afterParsing = function(xhtml) {
     xhtml = this.joinRepeatedEntities(xhtml);
     xhtml = this.removeEmptyTags(xhtml);
     xhtml = this.removeBrInPre(xhtml);
+
     return xhtml;
 };
 
@@ -190,8 +203,14 @@ WYMeditor.XhtmlSaxListener.prototype.addContent = function(text) {
     if (this.last_tag && this.last_tag == 'li') {
         // We should strip trailing newlines from text inside li tags because
         // IE adds random significant newlines inside nested lists
-        text = text.replace(/\n/, '');
-        text = text.replace(/\r/, '');
+        text = text.replace(/(\r|\n|\r\n)+$/g, '');
+
+        // Let's also normalize multiple newlines down to a single space
+        text = text.replace(/(\r|\n|\r\n)+/g, ' ');
+    }
+    if (text.replace(/^\s+|\s+$/g, '').length > 0) {
+        // Don't count it as text if it's empty
+        this._last_node_was_text = true;
     }
     this.output += text;
 };
@@ -215,6 +234,7 @@ WYMeditor.XhtmlSaxListener.prototype.addCss = function(text) {
 };
 
 WYMeditor.XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes) {
+    this._last_node_was_text = false;
     this.output += this.helper.tag(
         tag,
         this.validator.getValidTagAttributes(tag, attributes),
@@ -222,6 +242,7 @@ WYMeditor.XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes) {
 };
 
 WYMeditor.XhtmlSaxListener.prototype.inlineTag = function(tag, attributes) {
+    this._last_node_was_text = false;
     this.output += this.helper.tag(
         tag,
         this.validator.getValidTagAttributes(tag, attributes));
@@ -232,6 +253,7 @@ WYMeditor.XhtmlSaxListener.prototype.openUnknownTag = function(tag, attributes) 
 };
 
 WYMeditor.XhtmlSaxListener.prototype.closeBlockTag = function(tag) {
+    this._last_node_was_text = false;
     this.output = this.output.replace(/<br \/>$/, '') +
         this._getClosingTagContent('before', tag) +
         "</"+tag+">" +
@@ -243,6 +265,7 @@ WYMeditor.XhtmlSaxListener.prototype.closeUnknownTag = function(tag) {
 };
 
 WYMeditor.XhtmlSaxListener.prototype.closeUnopenedTag = function(tag) {
+    this._last_node_was_text = false;
     this.output += "</" + tag + ">";
 };
 
@@ -279,11 +302,12 @@ WYMeditor.XhtmlSaxListener.prototype.insertContentBeforeClosingTag = function(ta
 };
 
 WYMeditor.XhtmlSaxListener.prototype.fixNestingBeforeOpeningBlockTag = function(tag, attributes) {
-    if ((tag == 'ul' || tag == 'ol') && this.last_tag &&
+    if (!this._last_node_was_text && (tag == 'ul' || tag == 'ol') && this.last_tag &&
             !this.last_tag_opened && this.last_tag == 'li') {
         // We have a <li></li><ol>... situation. The new list should be a
         // child of the li tag. Not a sibling.
 
+        // Remove the last closing li tag
         this.output = this.output.replace(/<\/li>\s*$/, '');
         this.insertContentAfterClosingTag(tag, '</li>');
     } else if ((tag == 'ul' || tag == 'ol') && this.last_tag &&
@@ -292,6 +316,7 @@ WYMeditor.XhtmlSaxListener.prototype.fixNestingBeforeOpeningBlockTag = function(
         // a li tag parent and shouldn't be directly nested.
 
         // Add an opening li tag before and after this tag
+        this._last_node_was_text = false;
         this.output += this.helper.tag('li', {}, true);
         this.insertContentAfterClosingTag(tag, '</li>');
     } else if (tag == 'li' && !this.last_tag_opened) {
@@ -300,11 +325,12 @@ WYMeditor.XhtmlSaxListener.prototype.fixNestingBeforeOpeningBlockTag = function(
             var closestOpenTag = this._tag_stack[this._tag_stack.length - 2];
             if (closestOpenTag == 'li'){
                 // Pop the tag off of the stack to indicate we closed it
-                this._open_tags['li']--;
-                if (this._open_tags['li'] === 0) {
-                    this._open_tags['li'] = undefined;
+                this._open_tags.li -= 1;
+                if (this._open_tags.li === 0) {
+                    this._open_tags.li = undefined;
                 }
                 this._tag_stack.pop(this._tag_stack.length - 2);
+                this._last_node_was_text = false;
                 this.output += '</li>';
             }
         }
