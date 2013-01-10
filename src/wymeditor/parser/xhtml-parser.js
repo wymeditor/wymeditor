@@ -200,7 +200,7 @@ WYMeditor.XhtmlParser.prototype.forceLeaveMode = function(mode, tag) {
         return false;
     }
     tag = this.normalizeTag(tag);
-    return tag == 'br' && $.inArray(this._tag, this._allowedLineBreaks) != -1;
+    return tag == 'br' && jQuery.inArray(this._tag, this._allowedLineBreaks) != -1;
 };
 
 WYMeditor.XhtmlParser.prototype.normalizeTag = function(tag) {
