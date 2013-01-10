@@ -14,6 +14,7 @@ WYMeditor.XhtmlParser = function(Listener, mode) {
     this._matches = [];
     this._last_match = '';
     this._current_match = '';
+    this._allowedLineBreaks = ['strong', 'li'];
 
     return this;
 };
@@ -192,6 +193,14 @@ WYMeditor.XhtmlParser.prototype._autoCloseUnclosed = function(new_tag, closing) 
 
 WYMeditor.XhtmlParser.prototype.getTagReplacements = function() {
     return this._Listener.getTagReplacements();
+};
+
+WYMeditor.XhtmlParser.prototype.forceLeaveMode = function(mode, tag) {
+    if(mode != 'OpeningTag') {
+        return false;
+    }
+    tag = this.normalizeTag(tag);
+    return tag == 'br' && $.inArray(this._tag, this._allowedLineBreaks) != -1;
 };
 
 WYMeditor.XhtmlParser.prototype.normalizeTag = function(tag) {

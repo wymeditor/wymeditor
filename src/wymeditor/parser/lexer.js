@@ -213,6 +213,10 @@ WYMeditor.Lexer.prototype._dispatchTokens = function(unmatched, matched, mode) {
     }
     this._mode.enter(mode);
 
+    if (this._parser.forceLeaveMode && this._parser.forceLeaveMode(mode, matched)) {
+        this._mode.leave();
+    }
+
     return this._invokeParser(matched, WYMeditor.LEXER_ENTER);
 };
 
