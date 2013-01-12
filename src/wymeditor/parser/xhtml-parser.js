@@ -14,7 +14,6 @@ WYMeditor.XhtmlParser = function(Listener, mode) {
     this._matches = [];
     this._last_match = '';
     this._current_match = '';
-    this._allowedLineBreaks = ['strong', 'li'];
 
     return this;
 };
@@ -196,11 +195,17 @@ WYMeditor.XhtmlParser.prototype.getTagReplacements = function() {
 };
 
 WYMeditor.XhtmlParser.prototype.forceLeaveMode = function(mode, tag) {
-    if(mode != 'OpeningTag') {
+    if (mode != 'OpeningTag') {
         return false;
     }
+
     tag = this.normalizeTag(tag);
-    return tag == 'br' && jQuery.inArray(this._tag, this._allowedLineBreaks) != -1;
+    var tags = this._Listener.allowedLineBreaks;
+    var lastTag = this._Listener.last_tag;
+
+    return this._Listener.isInlineTag(tag)
+        && lastTag != 'p'
+        && jQuery.inArray(lastTag, tags) != -1;
 };
 
 WYMeditor.XhtmlParser.prototype.normalizeTag = function(tag) {

@@ -111,6 +111,10 @@ WYMeditor.XhtmlSaxListener = function() {
         "sub", "sup", "table", "tbody", "td", "textarea", "tfoot", "th",
         "thead", "title", "tr", "tt", "ul", "var", "extends"];
 
+    this.allowedLineBreaks = [
+      "a", "em", "h1", "h2", "h3", "h4", "h5", "h6",
+      "small", "strong", "td", "th"
+    ];
 
     this.inline_tags = ["br", "col", "hr", "img", "input"];
 
@@ -254,7 +258,11 @@ WYMeditor.XhtmlSaxListener.prototype.openUnknownTag = function(tag, attributes) 
 
 WYMeditor.XhtmlSaxListener.prototype.closeBlockTag = function(tag) {
     this._last_node_was_text = false;
-    this.output = this.output.replace(/<br \/>$/, '') +
+
+    if (jQuery.inArray(tag, this.allowedLineBreaks) == -1) {
+        this.output = this.output.replace(/<br \/>$/, '');
+    }
+    this.output +=
         this._getClosingTagContent('before', tag) +
         "</"+tag+">" +
         this._getClosingTagContent('after', tag);

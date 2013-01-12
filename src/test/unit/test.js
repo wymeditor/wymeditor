@@ -408,6 +408,24 @@ test("no-op on table with colgroup generates valid XHTML", function () {
     equals(jQuery.wymeditors(0).parser.parse(tableWithColXHtml), tableWithColXHtml);
 });
 
+test("Allow BRs in all block elements", function() {
+    var blockElements = jQuery.wymeditors(0).parser._Listener.allowedLineBreaks;
+    var template = '<TAG>hello<br /></TAG>';
+    var html;
+
+    for (var i=0; i < blockElements.length; i++) {
+        var el = blockElements[i];
+        html = template.replace(/TAG/g, el);
+        equals(jQuery.wymeditors(0).parser.parse(html), html);
+    }
+});
+
+test("Allow line breaks inside em tags", function() {
+    var html = '<em>hello<br />world</em>';
+    wymeditor = jQuery.wymeditors(0);
+    equals(wymeditor.parser.parse(html), html);
+});
+
 test("Allow line breaks after strong in lists", function () {
     expect(4);
     var listHtml = String() +
