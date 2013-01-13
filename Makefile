@@ -29,11 +29,12 @@ WE_MIN = ${BUILD_DIR}/jquery.wymeditor.min.js
 WE_ARCH = wymeditor-${WYM_VER}.tar.gz
 
 MERGE = cat ${JS_FILES} | perl -pe 's/^\xEF\xBB\xBF//g' | ${VER} > ${WE}
-WE_MINIFIER = uglifyjs ${WE} > ${WE_MIN}
+WE_MINIFIER_UGLIFYJS = uglifyjs ${WE} -o ${WE_MIN}
+WE_MINIFIER_CLOSURE = java -jar compiler.jar --js ${WE} --js_output_file ${WE_MIN}
 
-all: archive
+all: min_uglifyjs archive
 
-wymeditor:
+${WE}:
 	@@echo "Building" ${WE}
 	@@mkdir -p ${BUILD_DIR}
 
@@ -43,16 +44,25 @@ wymeditor:
 	@@echo ${WE} "Built"
 	@@echo
 
-min: wymeditor
+min_uglifyjs: ${WE}
 	@@echo "Building" ${WE_MIN}
 
-	@@echo " - Compressing using Uglifier"
-	@@${WE_MINIFIER}
+	@@echo " - Compressing using UglifyJS"
+	@@${WE_MINIFIER_UGLIFYJS}
 	
 	@@echo ${WE_MIN} "Built"
 	@@echo
 
-archive: min
+min_closure: ${WE}
+	@@echo "Building" ${WE_MIN}
+
+	@@echo " - Compressing using Google's Closure Compiler"
+	@@${WE_MINIFIER_CLOSURE}
+	
+	@@echo ${WE_MIN} "Built"
+	@@echo
+
+archive: ${WE_MIN}
 	@@echo "Building" ${WE_ARCH}
 
 	@@echo " - Creating archive"
@@ -72,3 +82,7 @@ archive: min
 	
 	@@echo ${WE_ARCH} "Built"
 	@@echo
+
+clean:
+	rm -r ${BUILD_DIR}
+
