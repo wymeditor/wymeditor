@@ -91,7 +91,7 @@ WYMeditor.WymClassMozilla.prototype.initIframe = function (iframe) {
     this.listen();
 };
 
-/* @name html
+/** @name html
  * @description Get/Set the html value
  */
 WYMeditor.WymClassMozilla.prototype.html = function (html) {
