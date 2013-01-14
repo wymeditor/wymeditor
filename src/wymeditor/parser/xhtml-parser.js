@@ -194,6 +194,20 @@ WYMeditor.XhtmlParser.prototype.getTagReplacements = function() {
     return this._Listener.getTagReplacements();
 };
 
+WYMeditor.XhtmlParser.prototype.forceLeaveMode = function(mode, tag) {
+    if (mode != 'OpeningTag') {
+        return false;
+    }
+
+    tag = this.normalizeTag(tag);
+    var tags = this._Listener.allowedLineBreaks;
+    var lastTag = this._Listener.last_tag;
+
+    return this._Listener.isInlineTag(tag)
+        && lastTag != 'p'
+        && jQuery.inArray(lastTag, tags) != -1;
+};
+
 WYMeditor.XhtmlParser.prototype.normalizeTag = function(tag) {
     tag = tag.replace(/^([\s<\/>]*)|([\s<\/>]*)$/gm,'').toLowerCase();
     var tags = this._Listener.getTagReplacements();
