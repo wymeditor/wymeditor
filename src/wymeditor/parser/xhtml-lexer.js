@@ -44,6 +44,7 @@ WYMeditor.XhtmlLexer.prototype.addCssTokens = function(scope) {
 };
 
 WYMeditor.XhtmlLexer.prototype.addTagTokens = function(scope) {
+    this.addSpecialPattern("<\\s*[a-z0-9:\-]+\\s*/>", scope, 'SelfClosingTag');
     this.addSpecialPattern("<\\s*[a-z0-9:\-]+\\s*>", scope, 'OpeningTag');
     this.addEntryPattern("<[a-z0-9:\-]+"+'[\\\/ \\\>]+', scope, 'OpeningTag');
     this.addInTagDeclarationTokens('OpeningTag');

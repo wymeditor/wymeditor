@@ -89,6 +89,10 @@ WYMeditor.XhtmlParser.prototype._addNonTagBlock = function(match, state, type) {
     return true;
 };
 
+WYMeditor.XhtmlParser.prototype.SelfClosingTag = function(match, state) {
+    return this.OpeningTag(match, state);
+};
+
 WYMeditor.XhtmlParser.prototype.OpeningTag = function(match, state) {
     switch (state){
         case WYMeditor.LEXER_ENTER:
