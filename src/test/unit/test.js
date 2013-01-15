@@ -408,6 +408,17 @@ test("no-op on table with colgroup generates valid XHTML", function () {
     equals(jQuery.wymeditors(0).parser.parse(tableWithColXHtml), tableWithColXHtml);
 });
 
+test("Allow HR inside strong tags", function () {
+    var html = '<strong>hello<hr /></strong>';
+    equals(jQuery.wymeditors(0).parser.parse(html), html);
+});
+
+test("Allow line breaks inside em tags", function() {
+    var html = '<em>hello<br />world</em>';
+    wymeditor = jQuery.wymeditors(0);
+    equals(wymeditor.parser.parse(html), html);
+});
+
 test("Allow line breaks after strong in lists", function () {
     expect(4);
     var listHtml = String() +
