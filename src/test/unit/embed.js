@@ -18,9 +18,23 @@ test("Shouldn't remove object elements", function() {
                 'allowfullscreen="true" /> ' +
             '</embed>' +
         '</object>';
+
+    var expected = '' +
+        '<object width="480" height="390">' +
+            '<param name="movie" value="' + YOUTUBE_VIDEO_URL + '" />' +
+            '<param name="allowFullScreen" value="true" />' +
+            '<param name="allowscriptaccess" value="always" />' +
+            '<embed ' +
+                'src="' + YOUTUBE_VIDEO_URL + '" ' +
+                'type="application/x-shockwave-flash" ' +
+                'width="480" '+
+                'height="390" '+
+                'allowscriptaccess="always" ' +
+                'allowfullscreen="true" /> ' +
+        '</object>';
     equals(
         jQuery.trim(jQuery.wymeditors(0).parser.parse(objectEmbed)),
-        jQuery.trim(objectEmbed));
+        jQuery.trim(expected));
 });
 
 test("Shouldn't remove iframe elements", function() {
@@ -28,7 +42,10 @@ test("Shouldn't remove iframe elements", function() {
     var iframeEmbed = '<iframe width="480" height="390" ' +
         'src="' + YOUTUBE_VIDEO_URL + '" frameborder="0" />' +
         '</iframe>';
+    var expected = '<iframe width="480" height="390" ' +
+        'src="' + YOUTUBE_VIDEO_URL + '" frameborder="0"></iframe>';
+
     equals(
         jQuery.trim(jQuery.wymeditors(0).parser.parse(iframeEmbed)),
-        jQuery.trim(iframeEmbed));
+        jQuery.trim(expected));
 });
