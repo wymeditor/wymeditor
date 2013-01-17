@@ -90,7 +90,13 @@ WYMeditor.XhtmlParser.prototype._addNonTagBlock = function(match, state, type) {
 };
 
 WYMeditor.XhtmlParser.prototype.SelfClosingTag = function(match, state) {
-    return this.OpeningTag(match, state);
+    var result = this.OpeningTag(match, state);
+    var tag = this.normalizeTag(match);
+
+    if(jQuery.inArray(tag, this._Listener.inline_tags) == -1) {
+        result = this.ClosingTag(match, state);
+    }
+    return result;
 };
 
 WYMeditor.XhtmlParser.prototype.OpeningTag = function(match, state) {

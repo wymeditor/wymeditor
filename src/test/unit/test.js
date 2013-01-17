@@ -408,6 +408,12 @@ test("no-op on table with colgroup generates valid XHTML", function () {
     equals(jQuery.wymeditors(0).parser.parse(tableWithColXHtml), tableWithColXHtml);
 });
 
+test("Self closing button tags should be expanded and removed", function () {
+    var html = '<p><button /></p>';
+    var expected = '<p></p>';
+    equals(jQuery.wymeditors(0).parser.parse(html), expected);
+});
+
 test("Allow HR inside strong tags", function () {
     var html = '<strong>hello<hr /></strong>';
     equals(jQuery.wymeditors(0).parser.parse(html), html);
