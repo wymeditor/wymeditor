@@ -414,6 +414,12 @@ test("Self closing button tags should be expanded and removed", function () {
     equals(jQuery.wymeditors(0).parser.parse(html), expected);
 });
 
+test("Iframe should not be self closing", function () {
+    var html = '<iframe width="480" height="390" src="asd.html" frameborder="0" /></iframe>';
+    var expected = '<iframe width="480" height="390" src="asd.html" frameborder="0"></iframe>';
+    equals(jQuery.wymeditors(0).parser.parse(html), expected);
+});
+
 test("Allow HR inside strong tags", function () {
     var html = '<strong>hello<hr /></strong>';
     equals(jQuery.wymeditors(0).parser.parse(html), html);
