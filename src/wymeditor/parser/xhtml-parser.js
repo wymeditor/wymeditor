@@ -89,6 +89,12 @@ WYMeditor.XhtmlParser.prototype._addNonTagBlock = function(match, state, type) {
     return true;
 };
 
+WYMeditor.XhtmlParser.prototype.SelfClosingTag = function(match, state) {
+    var result = this.OpeningTag(match, state);
+    var tag = this.normalizeTag(match);
+    return this.ClosingTag(match, state);
+};
+
 WYMeditor.XhtmlParser.prototype.OpeningTag = function(match, state) {
     switch (state){
         case WYMeditor.LEXER_ENTER:
@@ -144,11 +150,11 @@ WYMeditor.XhtmlParser.prototype._callCloseTagListener = function(tag) {
                 tag = expected_tag;
             }
             this._Listener.closeBlockTag(tag);
-        } else {
-            this._Listener.closeUnknownTag(tag);
         }
     } else {
-        this._Listener.closeUnopenedTag(tag);
+        if(!this._Listener.isInlineTag(tag)) {
+            this._Listener.closeUnopenedTag(tag);
+        }
     }
     this._Listener.last_tag = tag;
     this._Listener.last_tag_opened = false;
