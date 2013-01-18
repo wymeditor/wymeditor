@@ -10,6 +10,9 @@ WYMeditor.
 ### Enhancements
 
 * Added a Danish translation. Thanks Sebastian Kolind.
+* Fixed several bugs related to parsing void elements (br, hr, etc) which could
+  be either self-closing or not. These usually manifested when used near other
+  inline elements (eg. span).
 
 
 ### Bug Fixes
