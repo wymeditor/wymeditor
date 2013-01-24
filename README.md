@@ -137,19 +137,44 @@ to test with jQuery 1.8.0 against a local server on port 8000:
 
 ### Building WYMeditor
 
+#### Building with UglifyJS (Node.js)
+
+UglifyJS is faster but generates bigger minified code than Closure.  It requires Node.js.
+
 1. Get a copy of the source using git:
 
-    git clone git://github.com/wymeditor/wymeditor.git
+    `git clone git://github.com/wymeditor/wymeditor.git`
 
 2. Install `make`, Node.js and [UglifyJS](https://github.com/mishoo/UglifyJS/).
 To install UglifyJS using [NPM](http://npmjs.org/) run the following:
 
-    npm install -g uglify-js
+    `npm install -g uglify-js`
 
 3. Run `make` from your git clone:
 
-    $ cd wymeditor
-    $ make
+    `$ cd wymeditor`
+    
+    `$ make min_uglifyjs archive`
+    
+#### Building with Google's Closure Compiler (Java)
+
+Closure Compiler is slower but generates smaller minified code than UglifyJS.  It requires Java.
+
+1. Get a copy of the source using git:
+
+    `git clone git://github.com/wymeditor/wymeditor.git`
+
+2. Install `make` and Java.
+
+3. Download [Closure Compiler application](https://developers.google.com/closure/compiler/),
+extracting `compiler.jar` into your `wymeditor` directory.
+
+4. Run `make` from your git clone:
+
+    `$ cd wymeditor`
+    
+    `$ make min_closure archive`
+     
 
 The results will appear in your `dist` directory.
 
