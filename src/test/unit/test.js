@@ -912,7 +912,8 @@ if (jQuery.browser.mozilla) {
         wymeditor.insertTable(3, 2, '', '');
 
         $body.find('td').each(function (index, td) {
-            if (jQuery.browser.version >= '1.9.1' && jQuery.browser.version < '2.0') {
+            if (parseInt(jQuery.browser.version, 10) == 1 &&
+                jQuery.browser.version >= '1.9.1' && jQuery.browser.version < '2.0') {
                 equals(td.childNodes.length, 1);
             } else {
                 equals(td.childNodes.length, 0);
@@ -936,30 +937,6 @@ if (jQuery.browser.mozilla) {
             equals(isContentEditable(td), true);
         });
     });
-
-    if (!SKIP_KNOWN_FAILING_TESTS) {
-        test("Table cells are editable in FF > 3.5: via inner_html", function () {
-            // This is currently broken. Doing a raw insert in to the editor
-            // body doesn't let us use our fixBodyHtml() fix to add the
-            // appropriate placeholder nodes inside the table cells
-            // Need to figure out another way to detect this and correct
-            // the HTML
-            expect(12);
-
-            var wymeditor = jQuery.wymeditors(0),
-                $body = jQuery(wymeditor._doc).find('body.wym_iframe');
-
-            $body.html(table_3_2_html);
-            $body.find('td').each(function (index, td) {
-                if (jQuery.browser.version >= '1.9.1' && jQuery.browser.version < '2.0') {
-                    equals(td.childNodes.length, 1);
-                } else {
-                    equals(td.childNodes.length, 0);
-                }
-                equals(isContentEditable(td), true);
-            });
-        });
-    }
 }
 
 module("preformatted text", {setup: setupWym});

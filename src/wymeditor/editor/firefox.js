@@ -30,7 +30,9 @@ WYMeditor.WymClassMozilla = function (wym) {
 WYMeditor.WymClassMozilla.CELL_PLACEHOLDER = '<br _moz_dirty="" />';
 
 // Firefox 3.5 and 3.6 require the CELL_PLACEHOLDER and 4.0 doesn't
-WYMeditor.WymClassMozilla.NEEDS_CELL_FIX = jQuery.browser.version >= '1.9.1' &&
+WYMeditor.WymClassMozilla.NEEDS_CELL_FIX = parseInt(
+    jQuery.browser.version, 10) == 1 &&
+    jQuery.browser.version >= '1.9.1' &&
     jQuery.browser.version < '2.0';
 
 WYMeditor.WymClassMozilla.prototype.initIframe = function (iframe) {
