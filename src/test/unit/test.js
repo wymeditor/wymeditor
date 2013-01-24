@@ -972,7 +972,7 @@ test("Preformatted text retains spacing", function () {
             'double  spaced' +
             '</pre>';
 
-    // Only ie keeps \r\n newlines
+    // Only ie and unsupported old firefox use \r\n newlines
     if (!jQuery.browser.msie) {
         preHtml = preHtml.replace(/\r/g, '');
     }
@@ -980,7 +980,6 @@ test("Preformatted text retains spacing", function () {
     wymeditor.html(preHtml);
 
     expect(1);
-
     equals(wymeditor.xhtml(), preHtml);
 });
 
