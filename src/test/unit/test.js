@@ -912,7 +912,8 @@ if (jQuery.browser.mozilla) {
         wymeditor.insertTable(3, 2, '', '');
 
         $body.find('td').each(function (index, td) {
-            if (jQuery.browser.version >= '1.9.1' && jQuery.browser.version < '2.0') {
+            if (parseInt(jQuery.browser.version) == 1 &&
+                jQuery.browser.version >= '1.9.1' && jQuery.browser.version < '2.0') {
                 equals(td.childNodes.length, 1);
             } else {
                 equals(td.childNodes.length, 0);
@@ -951,7 +952,8 @@ if (jQuery.browser.mozilla) {
 
             $body.html(table_3_2_html);
             $body.find('td').each(function (index, td) {
-                if (jQuery.browser.version >= '1.9.1' && jQuery.browser.version < '2.0') {
+                if (parseInt(jQuery.browser.version) == 1 &&
+                    jQuery.browser.version >= '1.9.1' && jQuery.browser.version < '2.0') {
                     equals(td.childNodes.length, 1);
                 } else {
                     equals(td.childNodes.length, 0);
