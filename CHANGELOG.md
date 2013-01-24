@@ -10,15 +10,20 @@ WYMeditor.
 ### Enhancements
 
 * Added a Danish translation. Thanks Sebastian Kolind.
+* The Makefile now supports building a WYMeditor distribution based on Google's
+  Closure Compiler instead of UglifyJS. Thanks Michael Farrell.
+
+### Bug Fixes
+
+* The editor area is now properly displayed when using the Compact skin and
+  styling with `white-space: nowrap'`. Thanks to Jorge Salinas for the fix.
 * Fixed several bugs related to parsing void elements (br, hr, etc) which could
   be either self-closing or not. These usually manifested when used near other
   inline elements (eg. span). Thanks to Craig MacGregor for the fix.
 * Fixed several XHTML-strict non-compliance problems. WYMeditor aims to always
   output fully-compliant XHTML. Thanks Philipp Cordes for the report and fix.
-
-### Bug Fixes
-
-* The editor area is now properly displayed when using the Compact skin and styling with `white-space: nowrap'`. Thanks to Jorge Salinas for the fix.
+* The Makefile now fails more gracefully when you don't have UglifyJS installed
+  and you attempt to build a distribution. Thanks to Michael Farrell for the fix.
 
 ## 1.0.0b3 (Beta 3)
 
