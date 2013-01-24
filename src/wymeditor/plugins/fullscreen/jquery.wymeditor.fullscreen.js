@@ -15,6 +15,7 @@
  *        Luis Santos (luis.santos a-t openquest dotpt)
  *        Jonatan Lundin (jonatan.lundin a-t gmail dotcom)
  *        Gerd Riesselmann (gerd a-t gyro-php dot org) : Fixed issue with new skin layout
+ *        Philipp Cordes (pc a-t irgendware dotnet)
  */
 
 //Extend WYMeditor
@@ -32,6 +33,7 @@ WYMeditor.editor.prototype.fullscreen = function() {
     var html = '' +
         "<li class='wym_tools_fullscreen'>" +
             "<a name='Fullscreen' href='#' " +
+                "title='Fullscreen' " +
                 "style='background-image: url(" +
                     wym._options.basePath +
                     "plugins/fullscreen/icon_fullscreen.gif)'>" +

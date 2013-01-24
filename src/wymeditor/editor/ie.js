@@ -25,7 +25,7 @@ WYMeditor.WymClassExplorer = function (wym) {
     this._class = "className";
 };
 
-WYMeditor.WymClassExplorer.PLACEHOLDER_NODE = '<br>';
+WYMeditor.WymClassExplorer.PLACEHOLDER_NODE = '<br />';
 
 WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
     //This function is executed twice, though it is called once!

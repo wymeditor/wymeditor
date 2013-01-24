@@ -9,7 +9,7 @@
 WYMeditor.editor.prototype.hovertools = function() {
     var wym = this;
 
-    wym.status('&nbsp;');
+    wym.status('&#160;');
 
     // Bind events on buttons
     jQuery(this._box).find(this._options.toolSelector).hover(
@@ -17,7 +17,7 @@ WYMeditor.editor.prototype.hovertools = function() {
             wym.status(jQuery(this).html());
         },
         function() {
-            wym.status('&nbsp;');
+            wym.status('&#160;');
         }
     );
 
