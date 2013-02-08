@@ -119,7 +119,11 @@ function makeSelection(wymeditor, startElement, endElement, startElementIndex, e
         startElementIndex = 0;
     }
     if (typeof endElementIndex === 'undefined') {
-        endElementIndex = 0;
+        // IE8+ has some trouble selecting a node without selecting any content
+        // from that node. This is really kind of a hack, as the other browsers
+        // handle selecting the 0-index of the endElement with no trouble. This
+        // might be something that rangy can handle.
+        endElementIndex = 1;
     }
     var sel = rangy.getIframeSelection(wymeditor._iframe),
         range = rangy.createRange(wymeditor._doc);
