@@ -24,6 +24,8 @@ WYMeditor.
   output fully-compliant XHTML. Thanks Philipp Cordes for the report and fix.
 * The Makefile now fails more gracefully when you don't have UglifyJS installed
   and you attempt to build a distribution. Thanks to Michael Farrell for the fix.
+* Fixed the Slovak translation language code. Thanks to Josef Šimánek for the
+  fix.
 
 ## 1.0.0b3 (Beta 3)
 
