@@ -91,13 +91,13 @@ test: unittest selenium
 testserver:
 	@cd src; python -m SimpleHTTPServer &
 
-selenium-firefox: testserver
+selenium-firefox:
 	@SELENIUM_BROWSER=firefox nosetests wym_selenium/
 
-selenium-chrome: testserver
+selenium-chrome:
 	@SELENIUM_BROWSER=chrome nosetests wym_selenium/
 
-selenium: selenium-firefox selenium-chrome
+selenium: selenium-chrome
 
 unittest:
 	@@build/phantomjs_test.sh localhost:8000/test/unit

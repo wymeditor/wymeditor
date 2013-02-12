@@ -178,19 +178,35 @@ of a Selenium test.
 
 1 Install the Selenium 2 python bindings, roughly following these
 [http://selenium-python.readthedocs.org/en/latest/installation.html](installation
-instructions). The specific version of Selenium we require can be installed via:
+instructions). The specific version of the python Selenium bindings and the
+nose testing framework we require are defined in a
+[pip](http://www.pip-installer.org/) requirements file located at
+`wym_selenium/requirements.txt`. To install these, we recommend that you first
+create an isolated python [virtualenv](http://www.virtualenv.org/):
 
-	$ pip install -r wym_selenium/requirements.txt
+	$ mkdir -p ~/.virtualenvs
+	$ virtualenv ~/.virtualenvs/wym
 
-2. The selenium tests can be run via the associated
-  [Grunt](http://gruntjs.com/) task. First, use [NPM](http://npmjs.org/) to
-  install [Grunt](http://gruntjs.com/), the javascript build tool:
+2. Then actually use pip to install the requirements:
 
-    $ npm install -g grunt
+	(wym)$ cd /path/to/wymeditor
+	(wym)$ pip install -r selenium_requirements.txt
 
-3. Use Grunt to run the tests:
+3. To run the Selenium tests, you'll first need to serve the `src` directory
+with a web server. If you have python installed, then you can simply open a
+terminal and run:
 
-    $ grunt selenium
+	$ cd /path/to/wymeditor
+	$ make testserver
+
+You'll need to keep this terminal open when running the tests.
+
+4. Then you can use make once again (in another terminal) to actually run the
+tests:
+
+	$ source ~/.virtualenvs/wym/bin/activate
+	(wym)$ cd /path/to/wymeditor
+	(wym)$ make selenium
 
 ### Building WYMeditor
 
@@ -229,6 +245,12 @@ extracting `compiler.jar` into your `wymeditor` directory.
 
     $ cd /path/to/wymeditor
     $ make min_closure archive
+
+### A note on build scripts
+
+The project is currently in the process of moving entirely from `make` to Grunt
+as a build tool. Any help porting the remaining `make` tasks to Grunt would be
+wonderful, as it's a bit confusing right now.
 
 Getting Help
 ------------
