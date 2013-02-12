@@ -1,4 +1,4 @@
-WYMeditor.STRINGS.cs = {
+WYMeditor.STRINGS.sk = {
     Strong:           'Tučné',
     Emphasis:         'Kurzíva',
     Superscript:      'Horný index',
