@@ -90,24 +90,47 @@ Contributing to WYMeditor
 
 We need a lot of help in the documentation department. We moved from the old
 [trac repository](http://trac.wymeditor.org/trac) earlier this year and still
-haven't ported over the relevant documentation. Porting that, fileing
+haven't ported over the relevant documentation. Porting that, filing
 documentation tickets or even just asking questions on IRC at #wymeditor on
 freenode would be very helpful.
 
 ### Testing WYMeditor
 
-WYMeditor includes a full unit test suite to help us ensure that the editor
-works great across a variety of browsers. The test suite should pass in any of
-our supported browsers and if it doesn't, please
+To maintain quality, WYMeditor includes both a unit test suite and a
+[Selenium2](http://seleniumhq.org/) test suite. You are encouraged to run both
+of them, with all tests passing in all supported browsers. If that's ever not
+the case, please
 [file a bug](https://github.com/wymeditor/wymeditor/issues/new) so we can fix it!
 
-To run the test suite.
-
-1. Get a copy of the source using git:
+All of the following instructions assume you've already retrieved a copy of the
+source, using git like so:
 
     git clone git://github.com/wymeditor/wymeditor.git
 
-2. Put your source behind some kind of web server (apache, nginx, etc). If you
+#### Unit tests vs Selenium tests
+
+The unit test suite covers that vast majority of required tests and can be
+quickly run by anyone with a copy of the source code and a web browser. For the
+majority of behavior, a unit test will suffice. Unfortunately, there are cases
+where browser behavior can't be simulated in a unit tests (these primarily
+involve testing browser-specific input handling and `execCommand` behavior). To
+test these issues, a Selenium test is required.
+
+Currently, the Selenium test suite is written in python. In the future, we
+would like to move to the node.js [wd](https://github.com/admc/wd) module. This
+will once again allow a contributor to only require knowledge of javascript in
+order to enhance WYMeditor.
+
+#### Running unit tests
+
+WYMeditor includes a full unit test suite to help us ensure that the editor
+works great across a variety of browsers. You simply need to serve the
+WYMeditor source using some type of web server and then load the URL for the
+unit tests in your browser.
+
+To run the tests:
+
+1. Put your source behind some kind of web server (apache, nginx, etc). If you
 don't have one installed or don't want to fuss with configuration, you can use
 python's HTTP server:
 
@@ -120,13 +143,17 @@ the python instructions, open up your browser to
 
 All green means you're good to go.
 
-4. Want to run the tests from the command line? You can do that to! Just install
-[PhantomJS](http://www.phantomjs.org/) and then (if you used the http server
-from step 2) call:
+##### PhantomJS unit tests
+
+Want to run the tests from the command line? You can do that to!
+
+1. Install [PhantomJS](http://www.phantomjs.org/)
+2. Call the `build/phantomjs_test.sh` script with the URL of your unit tests.
+For example, if you used the python method of hosting files from above:
 
     $ build/phantomjs_test.sh localhost:8000/test/unit
 
-#### Testing Different jQuery Versions
+##### Unit testing different jQuery versions
 
 The unit tests can be run with the different versions of jQuery hosted on
 Google's CDN by appending the URL parameter `?jquery=<version>`. For example,
@@ -140,45 +167,44 @@ Because WYMeditor is strongly affected by the way various browsers handle
 certain native events (keystrokes, mouse navigation, switching windows), it's
 not always possible to use javascript to actually test that behavior. For
 specific cases where it's not possible to reproduce behavior in javascript, we
-rely on our [http://seleniumhq.org/](Selenium) test suite to drive an actual
+rely on our [http://seleniumhq.org/](Selenium2) test suite to drive an actual
 browser using the [http://pypi.python.org/pypi/selenium](Selenium 2 python
 bindings).
 
 If possible, it is strongly encouraged to write a javascript unit test instead
 of a Selenium test.
 
-##### Installing Selenium Components
+##### Running Selenium Tests
 
-Install the Selenium 2 python bindings, roughly following these
+1 Install the Selenium 2 python bindings, roughly following these
 [http://selenium-python.readthedocs.org/en/latest/installation.html](installation
 instructions). The specific version of Selenium we require can be installed via:
 
 	$ pip install -r wym_selenium/requirements.txt
 
-##### Running Selenium Tests
+2. The selenium tests can be run via the associated
+  [Grunt](http://gruntjs.com/) task. First, use [NPM](http://npmjs.org/) to
+  install [Grunt](http://gruntjs.com/), the javascript build tool:
 
-1. The selenium tests can be run via the associated
-  [Grunt](http://gruntjs.com/) task.
+    $ npm install -g grunt
+
+3. Use Grunt to run the tests:
 
     $ grunt selenium
 
 ### Building WYMeditor
 
-
-1. Get a copy of the source using git:
-
-    $ git clone git://github.com/wymeditor/wymeditor.git
-
-3. Use [NPM](http://npmjs.org/) to install [Grunt](http://gruntjs.com/), the
+1. Use [NPM](http://npmjs.org/) to install [Grunt](http://gruntjs.com/), the
   javascript build tool.
 
     $ npm install -g grunt
 
 2. Install the build requirements (defined in our `package.json`).
 
+    $ cd /path/to/wymeditor
     $ npm install
 
-3. Run the grunt build script.
+4. Run the grunt build script.
 
     $ grunt
 
@@ -193,21 +219,16 @@ The default WYMeditor distribution is built with
 installation of Node.js. If you prefer Java and/or Google's Closure Compiler,
 you can follow these instructions instead.
 
-1. Get a copy of the source using git:
+1. Install `make` and Java.
 
-    `$ git clone git://github.com/wymeditor/wymeditor.git`
-
-2. Install `make` and Java.
-
-3. Download
+2. Download
 [Closure Compiler application](https://developers.google.com/closure/compiler/),
 extracting `compiler.jar` into your `wymeditor` directory.
 
 4. Run `make` from your git clone:
 
-    `$ cd wymeditor`
-
-    `$ make min_closure archive`
+    $ cd /path/to/wymeditor
+    $ make min_closure archive
 
 Getting Help
 ------------
