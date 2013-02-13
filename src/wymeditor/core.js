@@ -37,8 +37,8 @@ if (typeof (WYMeditor) === 'undefined') {
 
 // Wrap the Firebug console in WYMeditor.console
 (function () {
-    if (typeof window.console === 'undefined'
-            && typeof console === 'undefined') {
+    if (typeof window.console === 'undefined' &&
+        typeof console === 'undefined') {
         // No in-browser console logging available
         var names = [
                 "log", "debug", "info", "warn", "error", "assert", "dir", "dirxml",
@@ -376,6 +376,14 @@ jQuery.fn.wymeditor = function (options) {
         lang:       "en",
         direction:  "ltr",
         customCommands: [],
+
+        // This is the container that will be created by "Enter" presses from
+        // another container whose only parent is the <body>. For cross-browser
+        // sanity sake, you must choose between either p tags or div tags here.
+        // Whichever you choose, the other will be automatically converted when
+        // found at the top level of your document.
+        topLevelContainer:  'p',
+
         boxHtml: String() +
             "<div class='wym_box'>" +
                 "<div class='wym_area_top'>" +

@@ -12,7 +12,7 @@ jQuery.noConflict();
 // that should always be passing in all supported browsers.
 var SKIP_KNOWN_FAILING_TESTS = true;
 
-function setupWym(extraPostInit) {
+function setupWym(modificationCallback) {
     if (WYMeditor.INSTANCES.length === 0) {
         stop(5000); // Stop test running until the editor is initialized
         jQuery('.wymeditor').wymeditor({
@@ -52,14 +52,33 @@ function setupWym(extraPostInit) {
                 } else {
                     WYMeditor._isInnerSelector = false;
                 }
+                wym.setTopLevelContainer('p');
 
+                if (typeof modificationCallback !== 'undefined') {
+                    modificationCallback(wym);
+                }
 
                 start(); // Re-start test running now that we're finished initializing
             }
         });
+    } else {
+        var wym;
+        wym = WYMeditor.INSTANCES[0];
+        wym.setTopLevelContainer('p');
+
+        if (typeof modificationCallback !== 'undefined') {
+            stop(1000);
+            modificationCallback(wym);
+            start();
+        }
     }
 }
 
+function setupDivWym() {
+    setupWym(function(wym) {
+        wym.setTopLevelContainer('div');
+    });
+}
 
 module("Core", {setup: setupWym});
 

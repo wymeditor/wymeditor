@@ -48,6 +48,10 @@ WYMeditor.editor.prototype.init = function () {
         this._options.preInit(this);
     }
 
+    this._topLevelContainer = null;
+    this.parser = null;
+    this.helper = null;
+
     SaxListener = new WYMeditor.XhtmlSaxListener();
     jQuery.extend(SaxListener, WymClass);
     this.parser = new WYMeditor.XhtmlParser(SaxListener);
@@ -180,6 +184,8 @@ WYMeditor.editor.prototype.init = function () {
     jQuery(this._box).find(this._options.htmlSelector).hide();
 
     this.loadSkin();
+
+    this.setTopLevelContainer(this._options.topLevelContainer);
 };
 
 /**
@@ -239,6 +245,26 @@ WYMeditor.editor.prototype.bindEvents = function () {
     jQuery(this._options.updateSelector).bind(this._options.updateEvent, function () {
         wym.update();
     });
+};
+
+WYMeditor.editor.prototype.setTopLevelContainer = function (topLevelContainer) {
+    var wym = this;
+    if (wym._topLevelContainer === topLevelContainer) {
+        // We've already set this as our top level container. No need to do the
+        // work again.
+        return;
+    }
+    if (topLevelContainer !== 'p' && topLevelContainer !== 'div') {
+        throw new Error(
+            "topLevelContainer must be either 'p' or 'div'. '" +
+            topLevelContainer +
+            "' not supported."
+        );
+    }
+    wym._topLevelContainer = topLevelContainer;
+
+    // TODO: Actually do all of the switching required to move from p to div or
+    // from div to p for the topLevelContainer
 };
 
 WYMeditor.editor.prototype.ready = function () {
