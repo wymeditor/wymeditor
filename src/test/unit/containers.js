@@ -5,16 +5,16 @@ var replaceMeHtml = String() +
         '<p>Some text after the replaced container</p>';
 var replacementDivHtml = '<div>replaced</div>';
 
-var topLevelP_replaceMeHtml = String() +
+var rootP_replaceMeHtml = String() +
         '<p>Some text before the replaced container</p>' +
         '<p>replaced</p>' +
         '<p>Some text after the replaced container</p>';
-var topLevelDiv_replaceMeHtml = String() +
+var rootDiv_replaceMeHtml = String() +
         '<p>Some text before the replaced container</p>' +
         '<div>replaced</div>' +
         '<p>Some text after the replaced container</p>';
 
-module("TopContainer", {setup: setupWym});
+module("structure-defaultRoot", {setup: setupWym});
 
 test("DIV element is correctly converted to p", function () {
     var wymeditor = jQuery.wymeditors(0),
@@ -31,10 +31,10 @@ test("DIV element is correctly converted to p", function () {
     makeTextSelection(wymeditor, selectedElmnt, selectedElmnt, 0, selectedElmnt.innerText.length);
 
     wymeditor._exec(WYMeditor.INSERT_HTML, replacementDivHtml);
-    htmlEquals(wymeditor, topLevelP_replaceMeHtml);
+    htmlEquals(wymeditor, rootP_replaceMeHtml);
 });
 
-module("TopContainer-div", {setup: setupTopLevelContainerDivWym});
+module("structure-defaultRoot-div", {setup: setupDefaultRootContainerDivWym});
 
 test("DIV element is correctly inserted", function () {
     var wymeditor = jQuery.wymeditors(0),
@@ -51,5 +51,5 @@ test("DIV element is correctly inserted", function () {
     makeTextSelection(wymeditor, selectedElmnt, selectedElmnt, 0, selectedElmnt.innerText.length);
 
     wymeditor._exec(WYMeditor.INSERT_HTML, replacementDivHtml);
-    htmlEquals(wymeditor, topLevelDiv_replaceMeHtml);
+    htmlEquals(wymeditor, rootDiv_replaceMeHtml);
 });

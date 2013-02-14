@@ -48,8 +48,10 @@ WYMeditor.editor.prototype.init = function () {
         this._options.preInit(this);
     }
 
-    this._containerRules = this.getDefaultContainerRules();
-    this._topLevelContainer = null;
+    this.documentStructureManager = new WYMeditor.DocumentStructureManager(
+        this._options.structureRules.defaultRootContainer
+    );
+
     this.parser = null;
     this.helper = null;
 
@@ -185,8 +187,6 @@ WYMeditor.editor.prototype.init = function () {
     jQuery(this._box).find(this._options.htmlSelector).hide();
 
     this.loadSkin();
-
-    this.setTopLevelContainer(this._options.topLevelContainer);
 };
 
 /**
@@ -246,85 +246,6 @@ WYMeditor.editor.prototype.bindEvents = function () {
     jQuery(this._options.updateSelector).bind(this._options.updateEvent, function () {
         wym.update();
     });
-};
-
-WYMeditor.editor.prototype.getDefaultContainerRules = function () {
-    var containerRules = {
-        // By default, this container will be used for all root contents. This
-        // defines the container used when "enter" is pressed from the root and
-        // also which container wraps or replaces containers found at the root
-        // that aren't allowed. Only `WYMeditor.ALLOWED_ROOT_CONTAINERS` are
-        // allowed here..
-        defaultRoot: 'p',
-        // Only these containers are allowed as a direct child of the body tag.
-        // All other containers located there will be wrapped in the
-        // `defaultRoot`, unless they're one of the tags in `convertIfRoot`.
-        root: [
-            'p',
-            'h1',
-            'h2',
-            'h3',
-            'h4',
-            'h5',
-            'h6',
-            'pre',
-            'blockquote',
-            'table',
-            'ol',
-            'ul'
-        ],
-        // If these tags are found in the root, they'll be converted to the
-        // `defaultRoot` container instead of the default of being wrapped.
-        convertIfRoot: [
-            'div'
-        ],
-        // These containers prevent the user from using up/down/enter/backspace
-        // to move above or below them, thus effectively blocking the creation
-        // of new blocks. We must use temporary spacer elements to correct this
-        // while the document is being edited.
-        blockingNavigation: [
-            'table',
-            'blockquote',
-            'pre'
-        ],
-        // In addition to the `root` containers, these containers can have
-        // their contents converted to a list when they're in a user's
-        // selection. This means wrapping their contents in an ol/ul plus an
-        // li.
-        // For the non-list non `contentsCanConvertToList` `root` containers,
-        // they'll be instead be converted to a list (replaced with an ol/ul
-        // and their contents wrapped in an li).
-        contentsCanConvertToList: [
-            'td'
-        ]
-    };
-
-    return containerRules;
-};
-
-WYMeditor.editor.prototype.setTopLevelContainer = function (topLevelContainer) {
-    // TODO: Build a `WYMeditor.ContainerRuleManager` object to hold the rules and
-    // put it at `wym.containerRules`
-    // TODO: Put this function on `wym.containerRules` so that you call it
-    // `wym.containerRules.setRoot`
-    var wym = this;
-    if (wym._topLevelContainer === topLevelContainer) {
-        // We've already set this as our top level container. No need to do the
-        // work again.
-        return;
-    }
-    if (topLevelContainer !== 'p' && topLevelContainer !== 'div') {
-        // TODO: Check against a constant on `ContainerRuleManager` here
-        throw new Error(
-            "topLevelContainer must be either 'p' or 'div'. '" +
-            topLevelContainer +
-            "' not supported."
-        );
-    }
-    wym._topLevelContainer = topLevelContainer;
-
-    // TODO: Actually do all of the switching required to move from p to div or
-    // from div to p for the topLevelContainer
 };
 
 WYMeditor.editor.prototype.ready = function () {
@@ -840,8 +761,7 @@ WYMeditor.editor.prototype.fixBodyHtml = function () {
     start/end of the document.
 */
 WYMeditor.editor.prototype.spaceBlockingElements = function () {
-    var blockingSelector = WYMeditor.BLOCKING_ELEMENTS.join(', '),
-
+    var blockingSelector = WYMeditor.DocumentStructureManager.CONTAINERS_BLOCKING_NAVIGATION.join(', '),
         $body = jQuery(this._doc).find('body.wym_iframe'),
         children = $body.children(),
         placeholderNode = '<br _moz_editor_bogus_node="TRUE" _moz_dirty="" />',
@@ -884,22 +804,47 @@ WYMeditor.editor.prototype._getBlockSepSelector = function () {
         return this._blockSpacersSel;
     }
 
-    var blockCombo = [];
-    // Consecutive blocking elements need separators
-    jQuery.each(WYMeditor.BLOCKING_ELEMENTS, function (indexO, elementO) {
-        jQuery.each(WYMeditor.BLOCKING_ELEMENTS, function (indexI, elementI) {
-            blockCombo.push(elementO + ' + ' + elementI);
-        });
+    var wym = this,
+        blockCombo = [],
+        containersBlockingNav = WYMeditor.DocumentStructureManager.CONTAINERS_BLOCKING_NAVIGATION,
+        containersNotBlockingNav;
+
+    // Generate the list of non-blocking elements by removing the blocking
+    // elements from the list of validRootContainers
+    containersNotBlockingNav = jQuery.grep(
+        wym.documentStructureManager.structureRules.validRootContainers,
+        function (item) {
+            return jQuery.inArray(item, containersBlockingNav) < 0;
     });
+
+
+    // Consecutive blocking elements need separators
+    jQuery.each(
+        containersBlockingNav,
+        function (indexO, elementO) {
+            jQuery.each(
+                containersBlockingNav,
+                function (indexI, elementI) {
+                    blockCombo.push(elementO + ' + ' + elementI);
+                }
+            );
+        }
+    );
 
     // A blocking element either followed by or preceeded by a block elements
     // needs separators
-    jQuery.each(WYMeditor.BLOCKING_ELEMENTS, function (indexO, elementO) {
-        jQuery.each(WYMeditor.NON_BLOCKING_ELEMENTS, function (indexI, elementI) {
-            blockCombo.push(elementO + ' + ' + elementI);
-            blockCombo.push(elementI + ' + ' + elementO);
-        });
-    });
+    jQuery.each(
+        containersBlockingNav,
+        function (indexO, elementO) {
+            jQuery.each(
+                containersNotBlockingNav,
+                function (indexI, elementI) {
+                    blockCombo.push(elementO + ' + ' + elementI);
+                    blockCombo.push(elementI + ' + ' + elementO);
+                }
+            );
+        }
+    );
     this._blockSpacersSel = blockCombo.join(', ');
     return this._blockSpacersSel;
 };

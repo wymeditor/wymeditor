@@ -52,7 +52,6 @@ function setupWym(modificationCallback) {
                 } else {
                     WYMeditor._isInnerSelector = false;
                 }
-                wym.setTopLevelContainer('p');
 
                 if (typeof modificationCallback !== 'undefined') {
                     modificationCallback(wym);
@@ -64,7 +63,7 @@ function setupWym(modificationCallback) {
     } else {
         var wym;
         wym = WYMeditor.INSTANCES[0];
-        wym.setTopLevelContainer('p');
+        wym.documentStructureManager.setDefaultRootContainer('p');
 
         if (typeof modificationCallback !== 'undefined') {
             stop(1000);
@@ -74,9 +73,9 @@ function setupWym(modificationCallback) {
     }
 }
 
-function setupDivWym() {
+function setupDefaultRootContainerDivWym() {
     setupWym(function(wym) {
-        wym.setTopLevelContainer('div');
+        wym.documentStructureManager.setDefaultRootContainer('div');
     });
 }
 
@@ -1028,34 +1027,3 @@ test("_selected image is saved on mousedown", function () {
     equals(wymeditor._selected_image, $google[0]);
 });
 
-if (jQuery.browser.webkit || jQuery.browser.safari) {
-    module("gh-319", {setup: setupWym});
-
-    var gh_319_divInsertionHtml = String() +
-            '<p>Some text before the div container</p>' +
-            '<div>Anything</div>' +
-            '<p>Some text after the div container</p>';
-
-    test("DIV element is correctly inserted", function () {
-        var initHtml = String() +
-                '<p>Some text before the div container</p>' +
-                '<p id="replaceMe">Replace me</p>' +
-                '<p>Some text after the div container</p>',
-            divHtml = String() +
-                '<div>Anything</div>',
-            wymeditor = jQuery.wymeditors(0),
-            $body, selectedElmnt;
-
-        expect(1);
-
-        wymeditor.html(initHtml);
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
-        wymeditor._doc.body.focus();
-
-        selectedElmnt = $body.find('#replaceMe').get(0);
-        makeTextSelection(wymeditor, selectedElmnt, selectedElmnt, 0, selectedElmnt.innerText.length);
-
-        wymeditor._exec(WYMeditor.INSERT_HTML, divHtml);
-        equals($body.html(), gh_319_divInsertionHtml);
-    });
-}

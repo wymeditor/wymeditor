@@ -137,8 +137,6 @@ jQuery.extend(WYMeditor, {
     UNLINK              - Command: unset a link.
     INSERT_UNORDEREDLIST- Command: insert an unordered list.
     INSERT_ORDEREDLIST  - Command: insert an ordered list.
-    MAIN_CONTAINERS     - An array of the main HTML containers used in WYMeditor.
-    BLOCKS              - An array of the HTML block elements.
     KEY                 - Standard key codes.
     NODE                - Node types.
 
@@ -230,40 +228,6 @@ jQuery.extend(WYMeditor, {
     UNLINK              : "Unlink",
     INSERT_UNORDEREDLIST: "InsertUnorderedList",
     INSERT_ORDEREDLIST  : "InsertOrderedList",
-
-    // Only these containers are allowed as the
-    // WYMeditor._containerRules['defaultRoot'] container.
-    ALLOWED_ROOT_CONTAINERS : [
-        "p",
-        "div"
-    ],
-
-    // Default containers that are allowed at the root of the document (as a
-    // direct child of the body tag)
-    MAIN_CONTAINERS : [
-        "p",
-        "h1",
-        "h2",
-        "h3",
-        "h4",
-        "h5",
-        "h6",
-        "pre",
-        "blockquote"
-    ],
-
-    // The subset of the `MAIN_CONTAINERS` that prevent the user from using
-    // up/down/enter/backspace from moving above or below them. They
-    // effectively block the creation of new blocks.
-    BLOCKING_ELEMENTS : ["table", "blockquote", "pre"],
-
-    // The remaining `MAIN_CONTAINERS` that are not considered `BLOCKING_ELEMENTS`
-    NON_BLOCKING_ELEMENTS : ["p", "h1", "h2", "h3", "h4", "h5", "h6"],
-
-    // The elements that are allowed to be turned in to lists. If an item in
-    // this array isn't in the MAIN_CONTAINERS array, then its contents will be
-    // turned in to a list instead.
-    POTENTIAL_LIST_ELEMENTS : ["p", "h1", "h2", "h3", "h4", "h5", "h6", "pre", "blockquote", "td"],
 
     // Keyboard mappings so that we don't have to remember that 38 means up
     // when reading keyboard handlers
@@ -388,12 +352,11 @@ jQuery.fn.wymeditor = function (options) {
         direction:  "ltr",
         customCommands: [],
 
-        // This is the container that will be created by "Enter" presses from
-        // another container whose only parent is the <body>. For cross-browser
-        // sanity sake, you must choose between either p tags or div tags here.
-        // Whichever you choose, the other will be automatically converted when
-        // found at the top level of your document.
-        topLevelContainer:  'p',
+        // These values will override the default for their respective
+        // `DocumentStructureManager.structureRules`
+        structureRules: {
+            defaultRootContainer:  'p'
+        },
 
         boxHtml: String() +
             "<div class='wym_box'>" +
