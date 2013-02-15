@@ -79,24 +79,6 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
     var focusNode = this.selected(),
         _param, container, attr;
 
-    // DIV insert detection (causes problems)
-    if (cmd.toLowerCase() == WYMeditor.INSERT_HTML.toLowerCase()) {
-        _param = jQuery(param);
-
-        if (_param.is('div')) {
-            attr = _param.get(0).attributes;
-            // replace default block with DIV
-            this._doc.execCommand(WYMeditor.FORMAT_BLOCK, '', WYMeditor.DIV);
-            // copy attributes
-            container = this.selected();
-            for (var i = 0; i < attr.length; i++) {
-                container.setAttribute(attr[i].name, attr[i].value);
-            }
-
-            param = _param.html();
-        }
-    }
-
     if (param) {
         this._doc.execCommand(cmd, '', param);
     } else {
@@ -189,7 +171,7 @@ WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
             name = container.parentNode.tagName.toLowerCase();
         }
 
-        if (name === WYMeditor.BODY) {
+        if (name === WYMeditor.BODY || name === WYMeditor.DIV) {
             // Replace text nodes with <p> tags
             wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
             wym.fixBodyHtml();
