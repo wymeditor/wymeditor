@@ -5,7 +5,7 @@ WYMeditor.
 
 ## 1.0.0b4 (Beta 4)
 
-*release-date* TBD
+*release-date* February 15, 2013
 
 ### Enhancements
 
