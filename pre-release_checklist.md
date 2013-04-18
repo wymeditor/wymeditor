@@ -33,9 +33,6 @@ Passing Tests
 -------------
 
 All releases should have 100% passing unit tests in 100% of supported browsers.
-They should also pass all of the continuous integration criteria as defined by
-the jobs on [http://jenkins.wymeditor.org](http://jenkins.wymeditor.org), which
-means passing jslint and any other static analysis checks.
 
 The person doing the release is responsible for running the unit tests in all
 supported browsers before cutting a release tarball.
@@ -46,7 +43,7 @@ Update Documentation
 It's important that users can be confident that the documentation distributed
 with WYMeditor is up to date so that it can be trusted. As of December 2011, we
 have a long way to go in this area, but at the very least we need to keep the
-documenation bundled with the source accurate.
+documentation bundled with the source accurate.
 
 Checklist:
 
@@ -70,15 +67,15 @@ Build and Distribute the Archive
 
 Any user should be able to follow the instructions in the readme to make their
 own archive, but it's important to include an archive in a known place for ease
-of use. 
+of use.
 
 * Follow the `README.md` instructions to create the `tar.gz` archive.
-* Tag the current version in git using [Semantic Versioning](http://semver.org/) 
+* Tag the current version in git using [Semantic Versioning](http://semver.org/)
   and push the tag to github.
-* Navigate to the [WYMeditor Downloads](https://github.com/wymeditor/wymeditor/downloads) 
+* Navigate to the [WYMeditor Downloads](https://github.com/wymeditor/wymeditor/downloads)
   page on github and upload the archive. The archive you upload should be named
   according to the `wymeditor-<version>.tar.gz` format to ensure the appropriate
-  download URL.  
+  download URL.
 
 Tell the World
 ==============
@@ -86,7 +83,7 @@ Tell the World
 If a new release is cut in the forest when nobody is there, does it make a
 sound? A new release isn't much good if nobody knows about it.
 
-* Make a new sticky thread on the [WYMeditor Forums](http://community.wymeditor.org) 
+* Make a new sticky thread on the [WYMeditor Forums](http://community.wymeditor.org)
   announcing the new release with the title `Version <version> released`.
   Highlight any major changes, link to the changelog and download and maybe
   comment on plans for the next release.

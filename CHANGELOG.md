@@ -5,7 +5,7 @@ WYMeditor.
 
 ## 1.0.0b4 (Beta 4)
 
-*release-date* TBD
+*release-date* February 15, 2013
 
 ### Enhancements
 
@@ -26,6 +26,29 @@ WYMeditor.
   and you attempt to build a distribution. Thanks to Michael Farrell for the fix.
 * Fixed the Slovak translation language code. Thanks to Josef Šimánek for the
   fix.
+* In 1.0.0b2, we added a bug fix to allow DIV tags to peacefully co-exist with
+  P tags in document structure. It turned out that this fix was a bit
+  half-baked and actually broke both P and DIV tags in subtle ways, especially
+  in webkit browsers. We've reverted that change, so DIVs are now just as
+  broken as they were previously, but P tags are back to being peachy. The full
+  fix for mixing DIV and P tags for structure is being worked on as part of
+  [Issue 360](https://github.com/wymeditor/wymeditor/pull/360) and will
+  hopefully land in 1.0.0b5, which is now definitely going to be a thing.
+
+### 1.0.0 Blocking Issues
+
+In an attempt to ovary-up (or whatever your preferred genatalia) and actually
+get a 1.0.0 out the door, we've moved the goalposts a bit. The applicable 1.0.x
+issues have been narrowed down a bit to the major bugs in supported browsers. I
+understand that `major` is in the eye of the beholder, but this is an attempt
+to more-effectively allocated the project's limited resources. The remaining
+issues are listed on the [1.0.0
+milestone](https://github.com/wymeditor/wymeditor/issues?milestone=5) and
+you'll notice there are no features that made the cut. It's all bug-fix mode.
+
+Folks have been using WYMeditor in production longer than Chrome has existed as
+a browser. Perhaps it's time to not pretend like a non-1.0 version number means
+anything.
 
 ## 1.0.0b3 (Beta 3)
 
@@ -83,7 +106,7 @@ Versus 0.5.0rc2 we have:
 ### Upgrade Cycle
 
 Once all
-[milestone 1.x issues](https://github.com/wymeditor/wymeditor/issues?milestone=5&sort=created&direction=desc&state=open)
+[milestone 1.0.0 issues](https://github.com/wymeditor/wymeditor/issues?milestone=10&sort=created&direction=desc&state=open)
 are completed, this cycle will culminate in a 1.0.0 stable release.
 
 ### Enhancements

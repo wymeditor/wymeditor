@@ -1026,4 +1026,3 @@ test("_selected image is saved on mousedown", function () {
     $google.mousedown();
     equals(wymeditor._selected_image, $google[0]);
 });
-
