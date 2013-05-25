@@ -25,7 +25,7 @@ customize to provide the specific capabilities your users need, and you want
 users focused on the structure of their content instead of tweaking fonts and
 margins, you should give WYMeditor a try.
 
-We also fully support internet explorer 6, for those poor souls who have no
+We also fully support Internet Explorer 6, for those poor souls who have no
 choice.
 
 Try It
@@ -39,8 +39,8 @@ WYMeditor can do.
 Quick Start
 -----------
 
-1. WYMeditor requies jQuery 1.2.6 or higher. First ensure that your page
-includes jQuery.
+1. WYMeditor requires a version of jQuery between 1.2.6 and 1.8.3. First ensure
+that your page includes jQuery.
 
 2. Download the
 [Version 1.0.0b4](https://github.com/downloads/wymeditor/wymeditor/wymeditor-1.0.0b4.tar.gz)
