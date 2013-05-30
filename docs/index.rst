@@ -9,14 +9,8 @@ Welcome to WYMeditor's documentation!
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
+    general/general
+    version_1.0_and_0.5/version_1.0_and_0.5
+    version_2.0/version_2.0
