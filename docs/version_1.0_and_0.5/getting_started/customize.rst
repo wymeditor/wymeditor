@@ -41,7 +41,7 @@ ready:
 List of Options
 ---------------
 
-Check the file ``jquery.wymeditor.js``, function ``$j.fn.wymeditor``, for the
+Check the file jquery.wymeditor.js, function ``$j.fn.wymeditor``, for the
 complete list of options and their default values.
 
 **html**
@@ -64,12 +64,12 @@ used while loading the iframe and the dialogs.
 
 Example:
 
-~~~~ {.wiki}
-  basePath: "/admin/edit/wymeditor/"
-~~~~
+.. code-block:: javascript
 
-This value is automatically guessed by computeBasePath, which looks for
-the `script` element loading jquery.wymeditor.js.
+  basePath: "/admin/edit/wymeditor/"
+
+This value is automatically guessed by ``computeBasePath``, which looks for the
+``script`` element loading jquery.wymeditor.js.
 
 **skinPath**
 
@@ -77,24 +77,24 @@ WYMeditor skin (theme) path, used to load the skin.
 
 Example:
 
-~~~~ {.wiki}
-  skinPath: "wymeditor/skins/default/"
-~~~~
+.. code-block:: javascript
 
-This value is automatically guessed, based on the basePath value.
+  skinPath: "wymeditor/skins/default/"
+
+This value is automatically guessed, based on the ``basePath`` value.
 
 **wymPath**
 
 WYMeditor main JS file path.
 
-This value is automatically guessed by computeWymPath, which looks for
-the `script` element loading jquery.wymeditor.js.
+This value is automatically guessed by ``computeWymPath``, which looks for the
+``script`` element loading jquery.wymeditor.js.
 
 **iframeBasePath**
 
 WYMeditor iframe base path.
 
-This value is automatically guessed, based on the basePath value.
+This value is automatically guessed, based on the ``basePath`` value.
 
 **jQueryPath**
 
@@ -102,42 +102,46 @@ jQuery JS file path.
 
 Example:
 
-~~~~ {.wiki}
-  jQueryPath: "/js/jquery.js"
-~~~~
+.. code-block:: javascript
 
-This value is automatically guessed by computeJqueryPath, which looks
-for the `script` element loading jquery.js.
+  jQueryPath: "/js/jquery.js"
+
+This value is automatically guessed by ``computeJqueryPath``, which looks for
+the ``script`` element loading jquery.js.
 
 **lang**
 
 The language to use with WYMeditor. Default is English (en). Codes are
-in ISO-639-1 format.\
- Language packs are stored in the wymeditor/lang directory.
+in ISO-639-1 format.
 
-# How to use a custom language
+Language packs are stored in the ``wymeditor/lang`` directory.
+
+
+How to use a Custom Language
+------------------------------
 
 Just initialize the option:
 
-~~~~ {.wiki}
-$('.wymeditor').wymeditor({ lang: 'pl' });
-~~~~
+.. code-block:: javascript
+
+    $('.wymeditor').wymeditor({ lang: 'pl' });
+
 
 **boxHtml**
 
-The editor container's HTML. This option allows you to customize the
-HTML containing a WYMeditor instance.
+The editor container's HTML. This option allows you to customize the HTML
+containing a WYMeditor instance.
 
 **logoHtml**
 
-The WYMeditor logo HTML. This option allows you to customize the HTML
-which displays the WYMeditor logo.
+The WYMeditor logo HTML. This option allows you to customize the HTML which
+displays the WYMeditor logo.
 
 If you prefer to hide the WYMeditor logo, use an empty string:
 
-~~~~ {.wiki}
-$('.wymeditor').wymeditor({ logoHtml: '' });
-~~~~
+.. code-block:: javascript
+
+    $('.wymeditor').wymeditor({ logoHtml: '' });
 
 In such a case, please consider making a donation to the project.
 
@@ -147,52 +151,52 @@ The iframe (used for editing) container's HTML.
 
 **styles & stylesheet**
 
-Allows you to easily configure the editor' styles.\
- Advantageously replaces editorStyles, dialogStyles and classesItems.
+Allows you to easily configure the editor's styles. Advantageously replaces
+``editorStyles``, ``dialogStyles`` and ``classesItems``.
 
-Define the styles using the `styles` option OR point to an external
-stylesheet, using the `stylesheet` option.
+Define the styles using the ``styles`` option OR point to an external
+stylesheet, using the ``stylesheet`` option.
 
-Example, using `styles`:
+Example, using ``styles``:
 
-~~~~ {.wiki}
-styles:                                                            
-      '/* PARA: Date */                                                    '+
-      '.date p{                                                            '+
-      '  color: #ccf;                                                      '+
-      '  /* background-color: #ff9; border: 2px solid #ee9; */             '+
-      '}                                                                   '+
-      '                                                                    '+
-      '/* PARA: Hidden note */                                             '+
-      '.hidden-note p /* p[@class!="important"] */ {                       '+
-      '     display: none;                                                 '+
-      '    /* color: #999; border: 2px solid #ccc; */                      '+
-      '}                                                                   '
-~~~~
+.. code-block:: javascript
 
-Example, using `stylesheet`:
+    styles:
+          '/* PARA: Date */                                                    '+
+          '.date p{                                                            '+
+          '  color: #ccf;                                                      '+
+          '  /* background-color: #ff9; border: 2px solid #ee9; */             '+
+          '}                                                                   '+
+          '                                                                    '+
+          '/* PARA: Hidden note */                                             '+
+          '.hidden-note p /* p[@class!="important"] */ {                       '+
+          '     display: none;                                                 '+
+          '    /* color: #999; border: 2px solid #ccc; */                      '+
+          '}                                                                   '
 
-~~~~ {.wiki}
-$('.wymeditor').wymeditor({ stylesheet: 'stylesheet.css' });
-~~~~
+Example, using ``stylesheet``:
 
-Use [this example
-stylesheet](https://github.com/wymeditor/wymeditor/blob/master/src/examples/styles.css)
+.. code-block:: javascript
+
+    $('.wymeditor').wymeditor({ stylesheet: 'stylesheet.css' });
+
+Use `this example stylesheet
+<https://github.com/wymeditor/wymeditor/blob/master/src/examples/styles.css>`_
 as a reference.
 
 **editorStyles**
 
 An array of classes, applied on the editor's content, in the form of:
-`{'name': 'value', 'css': 'value'`}
+``{'name': 'value', 'css': 'value'}``
 
 Example:
 
-~~~~ {.wiki}
+.. code-block:: javascript
+
   editorStyles: [
     {'name': '.hidden-note', 'css': 'color: #999; border: 2px solid #ccc;'},
     {'name': '.border', 'css': 'border: 4px solid #ccc;'}
   ]
-~~~~
 
 **toolsHtml**
 
@@ -205,20 +209,21 @@ The tools buttons' HTML template.
 **toolsItems**
 
 An array of tools buttons, inserted in the tools panel, in the form of:
-`{'name': 'value', 'title': 'value', 'css': 'value'`}
+``{'name': 'value', 'title': 'value', 'css': 'value'}``
 
 Example:
 
-~~~~ {.wiki}
+.. code-block:: javascript
+
   toolsItems: [
     {'name': 'Bold', 'title': 'Strong', 'css': 'wym_tools_strong'}, 
     {'name': 'Italic', 'title': 'Emphasis', 'css': 'wym_tools_emphasis'}
   ]
-~~~~
 
 Default value:
 
-~~~~ {.wiki}
+.. code-block:: javascript
+
   toolsItems: [
     {'name': 'Bold', 'title': 'Strong', 'css': 'wym_tools_strong'}, 
     {'name': 'Italic', 'title': 'Emphasis', 'css': 'wym_tools_emphasis'},
@@ -238,7 +243,6 @@ Default value:
     {'name': 'ToggleHtml', 'title': 'HTML', 'css': 'wym_tools_html'},
     {'name': 'Preview', 'title': 'Preview', 'css': 'wym_tools_preview'}
   ]
-~~~~
 
 **containersHtml**
 
@@ -250,17 +254,17 @@ The containers buttons' HTML template.
 
 **containersItems**
 
-An array of containers buttons, inserted in the containers panel, in the
-form of: `{'name': 'value', 'title': 'value', 'css': 'value'`}
+An array of containers buttons, inserted in the containers panel, in the form
+of: ``{'name': 'value', 'title': 'value', 'css': 'value'}``
 
 Example:
 
-~~~~ {.wiki}
+.. code-block:: javascript
+
   containersItems: [
     {'name': 'P', 'title': 'Paragraph', 'css': 'wym_containers_p'},
     {'name': 'H1', 'title': 'Heading_1', 'css': 'wym_containers_h1'}
   ]
-~~~~
 
 **classesHtml**
 
@@ -272,22 +276,22 @@ The classes buttons' HTML template.
 
 **classesItems**
 
-An array of classes buttons, inserted in the classes panel, in the form
-of: `{'name': 'value', 'title': 'value', 'expr': 'value'`}, where `expr`
-is a jQuery expression.
+An array of classes buttons, inserted in the classes panel, in the form of:
+``{'name': 'value', 'title': 'value', 'expr': 'value'}``, where ``expr`` is a
+jQuery expression.
 
 Example:
 
-~~~~ {.wiki}
+.. code-block:: javascript
+
   classesItems: [
     {'name': 'date', 'title': 'PARA: Date', 'expr': 'p'},
     {'name': 'hidden-note', 'title': 'PARA: Hidden note', 'expr': 'p[@class!="important"]'}
   ]
-~~~~
 
-In this example, the class 'date' can be applied on paragraphs, while
-the class 'hidden-note' can be applied on paragraphs without the class
-'important'.
+In this example, the class ``date`` can be applied on paragraphs, while the
+class ``hidden-note`` can be applied on paragraphs without the class
+``important``.
 
 **statusHtml**
 
@@ -299,59 +303,60 @@ The HTML box's HTML.
 
 **Selectors**
 
-WYMeditor uses jQuery to select elements of the interface. You'll need
-these options if you e.g. customize the panels' HTML.
+WYMeditor uses jQuery to select elements of the interface. You'll need these
+options if you e.g. customize the panels' HTML.
 
--   boxSelector
--   toolsSelector
--   toolsListSelector
--   containersSelector
--   classesSelector
--   htmlSelector
--   iframeSelector
--   statusSelector
--   toolSelector
--   containerSelector
--   classSelector
--   htmlValSelector
--   hrefSelector
--   srcSelector
--   titleSelector
--   altSelector
--   textSelector
--   rowsSelector
--   colsSelector
--   captionSelector
--   submitSelector
--   cancelSelector
--   previewSelector
--   dialogLinkSelector
--   dialogImageSelector
--   dialogTableSelector
--   dialogPasteSelector
--   dialogPreviewSelector
--   updateSelector
+*   boxSelector
+*   toolsSelector
+*   toolsListSelector
+*   containersSelector
+*   classesSelector
+*   htmlSelector
+*   iframeSelector
+*   statusSelector
+*   toolSelector
+*   containerSelector
+*   classSelector
+*   htmlValSelector
+*   hrefSelector
+*   srcSelector
+*   titleSelector
+*   altSelector
+*   textSelector
+*   rowsSelector
+*   colsSelector
+*   captionSelector
+*   submitSelector
+*   cancelSelector
+*   previewSelector
+*   dialogLinkSelector
+*   dialogImageSelector
+*   dialogTableSelector
+*   dialogPasteSelector
+*   dialogPreviewSelector
+*   updateSelector
 
 Example:
 
-~~~~ {.wiki}
+.. code-block:: javascript
+
   classesSelector: ".wym_classes"
-~~~~
 
 **updateSelector & updateEvent**
 
 Allows you to update the value of the element replaced by WYMeditor
-(typically a textarea) by the editor's content while e.g. clicking on a
-button in your page.\
- updateSelector is a jQuery expression, updateEvent is a [jQuery
-event](http://docs.jquery.com/Events).
+(typically a ``textarea``) with the editor's content while e.g. clicking on a
+button in your page.
+
+updateSelector is a jQuery expression, updateEvent is a `jQuery
+event <http://docs.jquery.com/Events>`_.
 
 Example:
 
-~~~~ {.wiki}
+.. code-block:: javascript
+
   updateSelector: ".my-submit-button",
   updateEvent:    "click"
-~~~~
 
 **dialogFeatures**
 
@@ -359,9 +364,9 @@ The dialogs' features.
 
 Example:
 
-~~~~ {.wiki}
+.. code-block:: javascript
+
   dialogFeatures: "menubar=no,titlebar=no,toolbar=no,resizable=no,width=560,height=300,top=0,left=0"
-~~~~
 
 **dialogHtml**
 
@@ -389,8 +394,8 @@ The preview dialog's HTML template.
 
 **dialogStyles**
 
-An array of classes, applied to the dialogs, in the form of:
-`{'name': 'value', 'css': 'value'`}
+An array of classes, applied to the dialogs, in the form of: ``{'name':
+'value', 'css': 'value'}``
 
 **skin**
 
@@ -398,67 +403,99 @@ The skin you want to use.
 
 Example:
 
-~~~~ {.wiki}
-skin: 'custom'
-~~~~
+.. code-block:: javascript
+
+    skin: 'custom'
 
 **stringDelimiterLeft & stringDelimiterRight**
 
-WYMeditor uses a simple function to replace strings delimited by these
-two strings for e.g. the l10n system.
+WYMeditor uses a simple function to replace strings delimited by these two
+strings for e.g. the l10n system.
 
 **preInit(wym)**
 
 A custom function which will be executed once, before WYMeditor's
 initialization.
 
-Parameters:\
-
--   wym: the WYMeditor instance
+Parameters:
+    * wym: the WYMeditor instance
 
 **preBind(wym)**
 
-A custom function which will be executed once, before binding handlers
-on events (e.g. buttons click).
+A custom function which will be executed once, before binding handlers on
+events (e.g. buttons click).
 
-Parameters:\
-
--   wym: the WYMeditor instance
+Parameters:
+    * wym: the WYMeditor instance
 
 **postInit(wym)**
 
 A custom function which will be executed once, when WYMeditor is ready.
 
-Parameters:\
-
--   wym: the WYMeditor instance
+Parameters:
+    * wym: the WYMeditor instance
 
 Example:
 
-~~~~ {.wiki}
-  postInit: function(wym) {
-    //activate the 'tidy' plugin, which cleans up the HTML
-    //'wym' is the WYMeditor instance
-    var wymtidy = wym.tidy();
-    wymtidy.init();
-  }
-~~~~
+.. code-block:: javascript
+
+    postInit: function(wym) {
+      //activate the 'tidy' plugin, which cleans up the HTML
+      //'wym' is the WYMeditor instance
+      var wymtidy = wym.tidy();
+      wymtidy.init();
+    }
 
 **preInitDialog(wym,wdw)**
 
-A custom function which will be executed before a dialog's
-initialization.
+A custom function which will be executed before a dialog's initialization.
 
-Parameters:\
-
--   wym: the WYMeditor instance
--   wdw: the dialog's window object
+Parameters:
+    * wym: the WYMeditor instance
+    * wdw: the dialog's window object
 
 **postInitDialog(wym,wdw)**
 
 A custom function which will be executed when a dialog is ready.
 
-Parameters:\
+Parameters:
+    * wym: the WYMeditor instance
+    * wdw: the dialog's window object
 
--   wym: the WYMeditor instance
--   wdw: the dialog's window object
+Basic Customization Example
+---------------------------
+
+.. code-block:: html
+
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <html>
+    <head>
+    <title>WYMeditor</title>
+    <script type="text/javascript" src="jquery/jquery.js"></script>
+    <script type="text/javascript" src="wymeditor/jquery.wymeditor.pack.js"></script>
+    <script type="text/javascript">
+
+    jQuery(function() {
+        jQuery(".wymeditor").wymeditor({
+           html: '<p>Hello, World!<\/p>',
+           stylesheet: 'styles.css'
+        });
+    });
+
+    </script>
+    </head>
+
+    <body>
+    <form method="post" action="">
+    <textarea class="wymeditor"></textarea>
+    <input type="submit" class="wymupdate" />
+    </form>
+    </body>
+
+    </html>
+
+**Explanation**
+    * The ``html`` option will initialize the editor's content.
+    * The ``stylesheet`` option will automagically parse your CSS file to
+      populate the Classes panel and to initialize the visual feedback.
