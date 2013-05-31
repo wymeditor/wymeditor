@@ -11,6 +11,10 @@ Setting up WYMeditor
 #. Include the ``wymeditor/jquery.wymeditor.min.js`` file on your page. This
    file will pull in anything else that's required.
 
+    .. code-block:: html
+
+        <script type="text/javascript" src="/wymeditor/jquery.wymeditor.min.js"></script>
+
 #. Now use the ``wymeditor()`` function to select one of your ``textarea``
    elements and turn it in to a WYMeditor instance. eg. if you have a
    ``textarea`` with the class ``my-wymeditor``:
@@ -25,6 +29,10 @@ Setting up WYMeditor
 
 #. If you'd like to receive the valid HTML your editor produces on form
    submission, just add the class wymupdate to your submit button.
+
+    .. code-block:: html
+
+         <input type="submit" class="wymupdate" />
 
 #. ???
 
