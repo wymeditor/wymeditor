@@ -46,15 +46,21 @@ Inserting ``<p>inserted</p>`` with ``|`` representing current cursor.
 
 **Middle of Node**
 
-| ``<p>before| after</p>``
-| ``<p>before</p><p>inserted</p><p>| after</p>``
+.. code-block:: html
+
+    <p>before| after</p>
+    <p>before</p><p>inserted</p><p>| after</p>
 
 **Start of Node**
 
-| ``<p>|before after</p>``
-| ``<p>|before after</p><p>inserted</p>``
+.. code-block:: html
+
+    <p>|before after</p>
+    <p>|before after</p><p>inserted</p>
 
 **End of Node**
 
-| ``<p>before after|</p>``
-| ``<p>before after|</p><p>inserted</p>``
+.. code-block:: html
+
+    <p>before after|</p>
+    <p>before after|</p><p>inserted</p>

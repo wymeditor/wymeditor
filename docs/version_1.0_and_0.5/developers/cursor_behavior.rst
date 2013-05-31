@@ -25,12 +25,14 @@ General Guidelines
 Guide
 -----
 
-The ``|`` character represents the cursor
+The ``|`` character represents the cursor.
 
 Paragraph at Start
 ^^^^^^^^^^^^^^^^^^
 
-``<p>|text</p>``
+.. code-block:: html
+
+    <p>|text</p>
 
 **Up**
 
@@ -42,8 +44,10 @@ No Change
 
 **Enter**
 
-| ``<p></p>``
-| ``<p>|text</p>``
+.. code-block:: html
+
+    <p></p>
+    <p>|text</p>
 
 **backspace**
 
