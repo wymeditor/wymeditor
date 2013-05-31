@@ -6,3 +6,4 @@ Version 1.0 (and 0.5)
 
     getting_started/getting_started
     developers/developers
+    using_wymeditor
