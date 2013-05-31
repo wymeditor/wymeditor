@@ -62,22 +62,23 @@ Sample Minimal Page Integration
     </html>
 
 **Explanation**
-    * ``jQuery(function() {});`` is a shorthand for
-      ``jQuery(document).ready()``, allowing you to bind a function to be
-      executed when the DOM document has finished loading. If you prefer, you
-      can use the jQuery '$' shortcut.
-    * ``jQuery(".wymeditor").wymeditor();`` will replace every element with the
-      class ``wymeditor`` by a WYMeditor instance.
-    * The value of the element replaced by WYMeditor will be updated by e.g.
-      clicking on the element with the class ``wymupdate``. See
-      :doc:`customize`.
 
-    .. note::
-        WYMeditor automagically detects the paths of required CSS and JS files.
-        You'll need to initialize ``basePath``, ``cssPath`` and ``jQueryPath``
-        if you don't use default file names (i.e. ``jquery.wymeditor.js``,
-        ``wymeditor/skins/{skin name}/screen.css``, ``jquery.js``).  See
-        :doc:`customize`.
+* ``jQuery(function() {});`` is a shorthand for
+  ``jQuery(document).ready()``, allowing you to bind a function to be
+  executed when the DOM document has finished loading. If you prefer, you
+  can use the jQuery '$' shortcut.
+* ``jQuery(".wymeditor").wymeditor();`` will replace every element with the
+  class ``wymeditor`` by a WYMeditor instance.
+* The value of the element replaced by WYMeditor will be updated by e.g.
+  clicking on the element with the class ``wymupdate``. See
+  :doc:`customize`.
+
+.. note::
+    WYMeditor automagically detects the paths of required CSS and JS files.
+    You'll need to initialize ``basePath``, ``cssPath`` and ``jQueryPath``
+    if you don't use default file names (i.e. ``jquery.wymeditor.js``,
+    ``wymeditor/skins/{skin name}/screen.css``, ``jquery.js``).  See
+    :doc:`customize`.
 
 More examples with different plugins and configuration options can be found in
 your ``examples`` directory.

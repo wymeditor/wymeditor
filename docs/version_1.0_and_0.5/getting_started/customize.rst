@@ -496,6 +496,7 @@ Basic Customization Example
     </html>
 
 **Explanation**
-    * The ``html`` option will initialize the editor's content.
-    * The ``stylesheet`` option will automagically parse your CSS file to
-      populate the Classes panel and to initialize the visual feedback.
+
+* The ``html`` option will initialize the editor's content.
+* The ``stylesheet`` option will automagically parse your CSS file to
+  populate the Classes panel and to initialize the visual feedback.
