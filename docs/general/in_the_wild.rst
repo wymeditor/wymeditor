@@ -9,6 +9,12 @@ date. Please migrate or add links to working integrations.
 Open source
 -----------
 
+3rd-party Skins
+^^^^^^^^^^^^^^^
+
+* `wymeditor-refine <https://github.com/joshmcarthur/wymeditor-refine>`_
+  A skin for WYMEditor extracted and tweaked from Refinery CMS
+  
 Content Management Systems
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
