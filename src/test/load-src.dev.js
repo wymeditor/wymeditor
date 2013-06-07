@@ -8,6 +8,7 @@
 function loadWymSrc(srcPath, extraRequirements, jqueryVersion) {
 
     var requirements = [
+            srcPath + 'jquery/jquery-migrate-1.2.1.min.js',
             srcPath + 'wymeditor/rangy/rangy-core.js',
             srcPath + 'wymeditor/rangy/rangy-selectionsaverestore.js',
             srcPath + 'wymeditor/core.js',
