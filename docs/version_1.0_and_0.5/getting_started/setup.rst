@@ -1,8 +1,13 @@
 Setting up WYMeditor
 ====================
 
-#. WYMeditor requires a version of jQuery between 1.2.6 and 1.8.3. First ensure
+#. WYMeditor requires a version of jQuery between 1.2.6 and 1.9.1. First ensure
    that your page includes jQuery.
+
+    .. note::
+        If a version of jQuery at or above 1.8.0 is used, WYMeditor also
+        requires jQuery Migrate. Ensure that your page also includes jQuery
+        Migrate after jQuery is included. See :ref:`jquery-migrate`.
 
 #. Download the `Version 1.0.0b4
    <https://github.com/downloads/wymeditor/wymeditor/wymeditor-1.0.0b4.tar.gz>`_
@@ -90,3 +95,42 @@ Sample Minimal Page Integration
 
 More examples with different plugins and configuration options can be found in
 your ``examples`` directory.
+
+.. _jquery-migrate:
+
+Page Integration with jQuery Migrate
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: html
+
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <html>
+    <head>
+    <title>WYMeditor</title>
+    <script type="text/javascript" src="jquery/jquery.js"></script>
+
+    <!-- Include jQuery Migrate after jQuery -->
+    <script type="text/javascript" src="jquery/jquery-migrate.min.js"></script>
+
+    <script type="text/javascript" src="wymeditor/jquery.wymeditor.pack.js"></script>
+    <script type="text/javascript">
+
+    jQuery(function() {
+        jQuery(".wymeditor").wymeditor();
+    });
+
+    </script>
+    </head>
+
+    <body>
+    <form method="post" action="">
+    <textarea class="wymeditor"></textarea>
+    <input type="submit" class="wymupdate" />
+    </form>
+    </body>
+
+    </html>
+
+This is only necessary if the included version of jQuery is at or above 1.8.0.
+Be sure to include jQuery Migrate **after** including jQuery.
