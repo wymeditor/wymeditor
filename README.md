@@ -39,8 +39,12 @@ WYMeditor can do.
 Quick Start
 -----------
 
-1. WYMeditor requires a version of jQuery between 1.2.6 and 1.8.3. First ensure
+1. WYMeditor requires a version of jQuery between 1.2.6 and 1.9.1. First ensure
 that your page includes jQuery.
+
+*Note*: If a version of jQuery at or above 1.8.0 is used, WYMeditor also
+requires jQuery Migrate. Ensure that your page also includes jQuery
+Migrate after jQuery is included.
 
 2. Download the
 [Version 1.0.0b4](https://github.com/downloads/wymeditor/wymeditor/wymeditor-1.0.0b4.tar.gz)
