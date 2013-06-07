@@ -91,6 +91,12 @@ sound? A new release isn't much good if nobody knows about it.
 * Tweet out the good news to [@wymeditor](http://twitter.com/wymeditor).
 * Call your mother.
 
+Prepare For the Next Release
+============================
+
+* Create a new version entry in `CHANGELOG.md`
+* Bump the version string for the Sphinx documentation at `docs/conf.py`
+
 
 
 
