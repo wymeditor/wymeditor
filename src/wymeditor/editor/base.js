@@ -2296,7 +2296,7 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
 
     // Find the currently-selected container
     container = jQuery(
-        this.findUp(this.container(), WYMeditor.MAIN_CONTAINERS)
+        this.findUp(this.container(), WYMeditor.POTENTIAL_TABLE_INSERT_ELEMENTS)
     ).get(0);
 
     if (!container || !container.parentNode) {
@@ -2305,6 +2305,9 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
     } else {
         // Append the table after the currently-selected container
         jQuery(container).after(table);
+        if (container.nodeName.toLowerCase() === "li") {
+            jQuery(table).after("<li></li>");
+        }
     }
 
     // Handle any browser-specific cleanup

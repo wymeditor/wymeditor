@@ -254,6 +254,9 @@ jQuery.extend(WYMeditor, {
     // turned in to a list instead.
     POTENTIAL_LIST_ELEMENTS : ["p", "h1", "h2", "h3", "h4", "h5", "h6", "pre", "blockquote", "td"],
 
+    POTENTIAL_TABLE_INSERT_ELEMENTS : ["p", "h1",  "h2",  "h3", "h4", "h5", "h6",
+        "pre", "blockquote", "li"],
+
     // Keyboard mappings so that we don't have to remember that 38 means up
     // when reading keyboard handlers
     KEY : {
