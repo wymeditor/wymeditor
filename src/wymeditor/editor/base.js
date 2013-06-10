@@ -2304,9 +2304,17 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
         jQuery(this._doc.body).append(table);
     } else {
         // Append the table after the currently-selected container
-        jQuery(container).after(table);
-        if (container.nodeName.toLowerCase() === "li") {
-            jQuery(table).after("<li></li>");
+        if (container.nodeName.toLowerCase() === WYMeditor.LI) {
+            $tableInList = jQuery(container).append(table);
+
+            // Add a list item after the inserted table if one does not already
+            // exist. This is necessary because the user cannot add additional
+            // list items after the table otherwise.
+            if (!$tableInList.next(WYMeditor.LI).length) {
+                $tableInList.after("<li></li>");
+            }
+        } else {
+            jQuery(container).after(table);
         }
     }
 
