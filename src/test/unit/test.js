@@ -945,7 +945,7 @@ function tableInListPrepareHtml($body) {
     // The normal xhtml parser strips line breaks from the html whose
     // presence needs to be tested for in the editor for the table in list
     // tests, so this function is used to prepare and normalize the html
-    // for comparison instead.
+    // for comparison instead of wymeditor.xhtml().
     $body.find('*').each(function () {
         jQuery(this).removeAttr('_wym_visited')
                     .removeAttr('_moz_editor_bogus_node')
