@@ -941,6 +941,23 @@ if (jQuery.browser.mozilla) {
 
 module("Tables in a list", {setup: setupWym});
 
+function tableInListPrepareHtml($body) {
+    // The normal xhtml parser strips line breaks from the html whose
+    // presence needs to be tested for in the editor for the table in list
+    // tests, so this function is used to prepare and normalize the html
+    // for comparison instead.
+    $body.find('*').each(function () {
+        jQuery(this).removeAttr('_wym_visited')
+                    .removeAttr('_moz_editor_bogus_node')
+                    .removeAttr('_moz_dirty');
+    });
+    $body.find('caption').each(function () {
+        jQuery(this).prependTo(jQuery(this).parent());
+    });
+
+    return normalizeHtml($body.get(0).firstChild);
+}
+
 var expectedMiddleOutFull = String() +
     '<ol>' +
         '<li id="li_1">1</li>' +
@@ -1038,52 +1055,50 @@ test("Table insertion into a list", function () {
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
     $element = $body.find('#li_2')[0];
-    makeTextSelection(wymeditor, $element, $element, 0 , 1);
+    makeTextSelection(wymeditor, $element, $element, 0, 1);
     wymeditor.insertTable(1, 1, 'test_1', '');
     $body.find('td').attr('id', 't1_1_1').text('1_1');
-    equals(normalizeHtml($body.get(0).firstChild), expectedMiddleOutFull,
+    equals(tableInListPrepareHtml($body), expectedMiddleOutFull,
            "Table insertion in the middle of a list");
 
     wymeditor.html(listForTableInsertion);
     $element = $body.find('#li_3')[0];
-    makeTextSelection(wymeditor, $element, $element, 0 , 1);
+    makeTextSelection(wymeditor, $element, $element, 0, 1);
     wymeditor.insertTable(1, 1, 'test_1', '');
     $body.find('td').attr('id', 't1_1_1').text('1_1');
-    equals(normalizeHtml($body.get(0).firstChild), expectedEndOut,
+    equals(tableInListPrepareHtml($body), expectedEndOut,
            "Table insertion at the end of a list");
 
     wymeditor.html(sublistForTableInsertion);
     $element = $body.find('#li_2')[0];
-    makeTextSelection(wymeditor, $element, $element, 0 , 1);
+    makeTextSelection(wymeditor, $element, $element, 0, 1);
     wymeditor.insertTable(1, 1, 'test_1', '');
     $body.find('td').attr('id', 't1_1_1').text('1_1');
-    equals(normalizeHtml($body.get(0).firstChild), expectedSublistSingleTable,
+    equals(tableInListPrepareHtml($body), expectedSublistSingleTable,
            "Single table insertion within a sublist");
 
     wymeditor.html(expectedSublistSingleTable);
     $element = $body.find('#li_2');
-    makeTextSelection(wymeditor, $element, $element, 0 , 1);
+    makeTextSelection(wymeditor, $element, $element, 0, 1);
 
     wymeditor.insertTable(2, 1, 'test_2', '');
     $body.find('td').eq(1).attr('id', 't2_1_1').text('1_1');
     $body.find('td').eq(2).attr('id', 't2_2_1').text('2_1');
 
-    makeTextSelection(wymeditor, $element, $element, 0 , 1);
+    makeTextSelection(wymeditor, $element, $element, 0, 1);
     wymeditor.insertTable(3, 1, 'test_3', '');
     $body.find('td').eq(3).attr('id', 't3_1_1').text('1_1');
     $body.find('td').eq(4).attr('id', 't3_2_1').text('2_1');
     $body.find('td').eq(5).attr('id', 't3_3_1').text('3_1');
 
-    $body.find('br').removeAttr('_moz_editor_bogus_node')
-                    .removeAttr('_moz_dirty');
-    equals(normalizeHtml($body.get(0).firstChild),
+    equals(tableInListPrepareHtml($body),
            expectedSublistMultipleTables,
            "Multiple table insertion within a sublist");
 
 });
 
 test("Indent and outdent with table in a list", function () {
-    expect(4);
+    expect(6);
     var wymeditor = jQuery.wymeditors(0),
         $body,
         $startElt,
@@ -1131,37 +1146,46 @@ test("Indent and outdent with table in a list", function () {
             '</li>' +
         '</ol>';
 
+    var startEndInNoBR = expectedEndIn.replace('<br>', '');
+
+    var startEndOutNoBR = expectedEndOut.replace('<br>', '');
+
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
-    wymeditor.html(expectedMiddleOutFull);
-    $startElt = $body.find('#li_2')[0];
-    $endElt = $body.find('#li_3')[0];
-    makeTextSelection(wymeditor, $startElt, $endElt, 0 , 1);
-    wymeditor.indent();
-    equals(normalizeHtml($body.get(0).firstChild), expectedMiddleIn,
+    function changeIndent(html, selStart, selEnd, inOrOut) {
+        wymeditor.html(html);
+        makeTextSelection(wymeditor, $body.find(selStart)[0],
+                          $body.find(selEnd)[0], 0, 1);
+        if (inOrOut === "indent") {
+            wymeditor.indent();
+        } else if (inOrOut === "outdent") {
+            wymeditor.outdent();
+        }
+    }
+
+    changeIndent(expectedMiddleOutFull, '#li_2', '#li_3', 'indent');
+    equals(tableInListPrepareHtml($body), expectedMiddleIn,
            "Table indented in the middle of a list");
 
-    wymeditor.html(expectedMiddleIn);
-    $startElt = $body.find('#li_2')[0];
-    $endElt = $body.find('#li_3')[0];
-    makeTextSelection(wymeditor, $startElt, $startElt, 0, 1);
-    wymeditor.outdent();
-    equals(normalizeHtml($body.get(0).firstChild), expectedMiddleOutPartial,
+    changeIndent(expectedMiddleIn, '#li_2', '#li_2', 'outdent');
+    equals(tableInListPrepareHtml($body), expectedMiddleOutPartial,
            "Table outdented in the middle of a list");
 
-    wymeditor.html(expectedEndOut);
-    $startElt = $body.find('#li_3');
-    makeTextSelection(wymeditor, $startElt, $startElt, 0 , 1);
-    wymeditor.indent();
-    equals(normalizeHtml($body.get(0).firstChild), expectedEndIn,
+    changeIndent(expectedEndOut, '#li_3', '#li_3', 'indent');
+    equals(tableInListPrepareHtml($body), expectedEndIn,
            "Table indented at the end of a list");
 
-    wymeditor.html(expectedEndIn);
-    $startElt = $body.find('#li_3');
-    makeTextSelection(wymeditor, $startElt, $startElt, 0, 1);
-    wymeditor.outdent();
-    equals(normalizeHtml($body.get(0).firstChild), expectedEndOut,
+    changeIndent(expectedEndIn, '#li_3', '#li_3', 'outdent');
+    equals(tableInListPrepareHtml($body), expectedEndOut,
            "Table outdented at the end of a list");
+
+    changeIndent(startEndOutNoBR, '#li_3', '#li_3', 'indent');
+    equals(tableInListPrepareHtml($body), expectedEndIn,
+           "Table indented at the end of a list with no line break");
+
+    changeIndent(startEndInNoBR, '#li_3', '#li_3', 'outdent');
+    equals(tableInListPrepareHtml($body), expectedEndOut,
+           "Table outdented at the end of a list with no line break");
 });
 
 module("preformatted text", {setup: setupWym});
