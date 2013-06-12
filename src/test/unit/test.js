@@ -939,7 +939,7 @@ if (jQuery.browser.mozilla) {
     });
 }
 
-module("Tables in a list", {setup: setupWym});
+// Functions and html strings for table in list modules
 
 function tableInListPrepareHtml($body) {
     // The normal xhtml parser strips line breaks from the html whose
@@ -958,15 +958,242 @@ function tableInListPrepareHtml($body) {
     return normalizeHtml($body.get(0).firstChild);
 }
 
+function setupTable(wymeditor, html, selection, rows, cols, caption) {
+    var $body,
+        $element,
+        $table,
+        i,
+        j,
+        cellStr,
+        idStr = 't' + caption.slice(-1);
+
+    wymeditor.html(html);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    $element = $body.find(selection);
+    makeTextSelection(wymeditor, $element, $element, 0, 1);
+
+    wymeditor.insertTable(rows, cols, caption, '');
+    $tableCells = $body.find('caption:contains(' + caption + ')')
+                       .parent()
+                       .find('td');
+
+    for (i = 0; i < rows; i++) {
+        for (j = 0; j < cols; j++) {
+            cellStr = (i+1) + '_' + (j+1);
+            $tableCells.eq(i + j)
+                       .attr('id', idStr + '_' + cellStr)
+                       .text(cellStr);
+        }
+    }
+}
+
+function changeIndent(wymeditor, html, selStart, selEnd, inOrOut) {
+    var $body;
+
+    wymeditor.html(html);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    makeTextSelection(wymeditor, $body.find(selStart)[0],
+                      $body.find(selEnd)[0], 0, 1);
+    if (inOrOut === "indent") {
+        wymeditor.indent();
+    } else if (inOrOut === "outdent") {
+        wymeditor.outdent();
+    }
+}
+
+var listForTableInsertion = String() +
+    '<ol>' +
+        '<li id="li_1">1</li>' +
+        '<li id="li_2">2</li>' +
+        '<li id="li_3">3</li>' +
+    '</ol>';
+
+var sublistForTableInsertion = String() +
+    '<ol>' +
+        '<li id="li_1">1' +
+            '<ol>' +
+                '<li id="li_2">2' +
+                    '<ol>' +
+                        '<li id="li_3">3</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+    '</ol>';
+
+var expectedSublistOneTable = String() +
+    '<ol>' +
+        '<li id="li_1">1' +
+            '<ol>' +
+                '<li id="li_2">2' +
+                    '<table>' +
+                        '<caption>test_1</caption>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td id="t1_1_1">1_1</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                    '<ol>' +
+                        '<li id="li_3">3</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+    '</ol>';
+
+var expectedSublistTwoTables = String() +
+    '<ol>' +
+        '<li id="li_1">1' +
+            '<ol>' +
+                '<li id="li_2">2' +
+                    '<table>' +
+                        '<caption>test_1</caption>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td id="t1_1_1">1_1</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                    '<br>' +
+                    '<table>' +
+                        '<caption>test_2</caption>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td id="t2_1_1">1_1</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td id="t2_2_1">2_1</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                    '<ol>' +
+                        '<li id="li_3">3</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+    '</ol>';
+
+var expectedSublistThreeTables = String() +
+    '<ol>' +
+        '<li id="li_1">1' +
+            '<ol>' +
+                '<li id="li_2">2' +
+                    '<table>' +
+                        '<caption>test_1</caption>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td id="t1_1_1">1_1</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                    '<br>' +
+                    '<table>' +
+                        '<caption>test_2</caption>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td id="t2_1_1">1_1</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td id="t2_2_1">2_1</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                    '<br>' +
+                    '<table>' +
+                        '<caption>test_3</caption>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td id="t3_1_1">1_1</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td id="t3_2_1">2_1</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td id="t3_3_1">3_1</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                    '<ol>' +
+                        '<li id="li_3">3</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+    '</ol>';
+
+var expectedMiddleIn = String() +
+    '<ol>' +
+        '<li id="li_1">1' +
+            '<ol>' +
+                '<li id="li_2">2' +
+                    '<table>' +
+                        '<caption>test_1</caption>' +
+                        '<tbody>' +
+                        '<tr>' +
+                            '<td id="t1_1_1">1_1</td>' +
+                        '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                '</li>' +
+                '<li id="li_3">3</li>' +
+            '</ol>' +
+        '</li>' +
+    '</ol>';
+
+var expectedMiddleOutPartial = String() +
+    '<ol>' +
+        '<li id="li_1">1</li>' +
+        '<li id="li_2">2' +
+            '<table>' +
+                '<caption>test_1</caption>' +
+                '<tbody>' +
+                    '<tr>' +
+                        '<td id="t1_1_1">1_1</td>' +
+                    '</tr>' +
+                '</tbody>' +
+            '</table>' +
+            '<ol>' +
+                '<li id="li_3">3</li>' +
+            '</ol>' +
+        '</li>' +
+    '</ol>';
+
 var expectedMiddleOutFull = String() +
     '<ol>' +
         '<li id="li_1">1</li>' +
         '<li id="li_2">2' +
-            '<table><caption>test_1</caption><tbody>' +
-                '<tr><td id="t1_1_1">1_1</td></tr>' +
-            '</tbody></table>' +
+            '<table>' +
+                '<caption>test_1</caption>' +
+                '<tbody>' +
+                    '<tr>' +
+                        '<td id="t1_1_1">1_1</td>' +
+                    '</tr>' +
+                '</tbody>' +
+            '</table>' +
         '</li>' +
         '<li id="li_3">3</li>' +
+    '</ol>';
+
+var expectedEndIn = String() +
+    '<ol>' +
+        '<li id="li_1">1</li>' +
+        '<li id="li_2">2' +
+            '<ol>' +
+                '<li id="li_3">3' +
+                    '<table>' +
+                        '<caption>test_1</caption>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td id="t1_1_1">1_1</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                    '<br>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
     '</ol>';
 
 var expectedEndOut = String() +
@@ -974,216 +1201,125 @@ var expectedEndOut = String() +
             '<li id="li_1">1</li>' +
             '<li id="li_2">2</li>' +
             '<li id="li_3">3' +
-                '<table><caption>test_1</caption><tbody>' +
-                    '<tr><td id="t1_1_1">1_1</td></tr>' +
-                '</tbody></table>' +
+                '<table>' +
+                    '<caption>test_1</caption>' +
+                    '<tbody>' +
+                        '<tr>' +
+                            '<td id="t1_1_1">1_1</td>' +
+                        '</tr>' +
+                    '</tbody>' +
+                '</table>' +
                 '<br>' +
             '</li>' +
         '</ol>';
 
-test("Table insertion into a list", function () {
-    expect(4);
+var startEndInNoBR = expectedEndIn.replace('<br>', '');
+
+var startEndOutNoBR = expectedEndOut.replace('<br>', '');
+
+module("table-insert_in_list", {setup: setupWym});
+
+test("Table insertion in the middle of a list", function () {
+    expect(1);
     var wymeditor = jQuery.wymeditors(0),
-        $body,
-        $table,
-        $element;
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
-    var listForTableInsertion = String() +
-        '<ol>' +
-            '<li id="li_1">1</li>' +
-            '<li id="li_2">2</li>' +
-            '<li id="li_3">3</li>' +
-        '</ol>';
-
-    var sublistForTableInsertion = String() +
-        '<ol>' +
-            '<li id="li_1">1' +
-                '<ol>' +
-                    '<li id="li_2">2' +
-                        '<ol>' +
-                            '<li id="li_3">3</li>' +
-                        '</ol>' +
-                    '</li>' +
-                '</ol>' +
-            '</li>' +
-        '</ol>';
-
-    var expectedSublistSingleTable = String() +
-        '<ol>' +
-            '<li id="li_1">1' +
-                '<ol>' +
-                    '<li id="li_2">2' +
-                        '<table><caption>test_1</caption><tbody>' +
-                            '<tr><td id="t1_1_1">1_1</td></tr>' +
-                        '</tbody></table>' +
-                        '<ol>' +
-                            '<li id="li_3">3</li>' +
-                        '</ol>' +
-                    '</li>' +
-                '</ol>' +
-            '</li>' +
-        '</ol>';
-
-    var expectedSublistMultipleTables = String() +
-        '<ol>' +
-            '<li id="li_1">1' +
-                '<ol>' +
-                    '<li id="li_2">2' +
-                        '<table><caption>test_1</caption><tbody>' +
-                            '<tr><td id="t1_1_1">1_1</td></tr>' +
-                        '</tbody></table>' +
-                        '<br>' +
-                        '<table><caption>test_2</caption><tbody>' +
-                            '<tr><td id="t2_1_1">1_1</td></tr>' +
-                            '<tr><td id="t2_2_1">2_1</td></tr>' +
-                        '</tbody></table>' +
-                        '<br>' +
-                        '<table><caption>test_3</caption><tbody>' +
-                            '<tr><td id="t3_1_1">1_1</td></tr>' +
-                            '<tr><td id="t3_2_1">2_1</td></tr>' +
-                            '<tr><td id="t3_3_1">3_1</td></tr>' +
-                        '</tbody></table>' +
-                        '<ol>' +
-                            '<li id="li_3">3</li>' +
-                        '</ol>' +
-                    '</li>' +
-                '</ol>' +
-            '</li>' +
-        '</ol>';
-
-    wymeditor.html(listForTableInsertion);
-    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
-
-    $element = $body.find('#li_2')[0];
-    makeTextSelection(wymeditor, $element, $element, 0, 1);
-    wymeditor.insertTable(1, 1, 'test_1', '');
-    $body.find('td').attr('id', 't1_1_1').text('1_1');
+    setupTable(wymeditor, listForTableInsertion, '#li_2', 1, 1, 'test_1');
     equals(tableInListPrepareHtml($body), expectedMiddleOutFull,
            "Table insertion in the middle of a list");
-
-    wymeditor.html(listForTableInsertion);
-    $element = $body.find('#li_3')[0];
-    makeTextSelection(wymeditor, $element, $element, 0, 1);
-    wymeditor.insertTable(1, 1, 'test_1', '');
-    $body.find('td').attr('id', 't1_1_1').text('1_1');
-    equals(tableInListPrepareHtml($body), expectedEndOut,
-           "Table insertion at the end of a list");
-
-    wymeditor.html(sublistForTableInsertion);
-    $element = $body.find('#li_2')[0];
-    makeTextSelection(wymeditor, $element, $element, 0, 1);
-    wymeditor.insertTable(1, 1, 'test_1', '');
-    $body.find('td').attr('id', 't1_1_1').text('1_1');
-    equals(tableInListPrepareHtml($body), expectedSublistSingleTable,
-           "Single table insertion within a sublist");
-
-    wymeditor.html(expectedSublistSingleTable);
-    $element = $body.find('#li_2');
-    makeTextSelection(wymeditor, $element, $element, 0, 1);
-
-    wymeditor.insertTable(2, 1, 'test_2', '');
-    $body.find('td').eq(1).attr('id', 't2_1_1').text('1_1');
-    $body.find('td').eq(2).attr('id', 't2_2_1').text('2_1');
-
-    makeTextSelection(wymeditor, $element, $element, 0, 1);
-    wymeditor.insertTable(3, 1, 'test_3', '');
-    $body.find('td').eq(3).attr('id', 't3_1_1').text('1_1');
-    $body.find('td').eq(4).attr('id', 't3_2_1').text('2_1');
-    $body.find('td').eq(5).attr('id', 't3_3_1').text('3_1');
-
-    equals(tableInListPrepareHtml($body),
-           expectedSublistMultipleTables,
-           "Multiple table insertion within a sublist");
-
 });
 
-test("Indent and outdent with table in a list", function () {
-    expect(6);
+test("Table insertion at the end of a list", function () {
+    expect(1);
     var wymeditor = jQuery.wymeditors(0),
-        $body,
-        $startElt,
-        $endElt;
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
-    var expectedMiddleIn = String() +
-        '<ol>' +
-            '<li id="li_1">1' +
-                '<ol>' +
-                    '<li id="li_2">2' +
-                        '<table><caption>test_1</caption><tbody>' +
-                            '<tr><td id="t1_1_1">1_1</td></tr>' +
-                        '</tbody></table>' +
-                    '</li>' +
-                    '<li id="li_3">3</li>' +
-                '</ol>' +
-            '</li>' +
-        '</ol>';
+        setupTable(wymeditor, listForTableInsertion, '#li_3', 1, 1, 'test_1');
+        equals(tableInListPrepareHtml($body), expectedEndOut,
+       "Table insertion at the end of a list");
+});
 
-    var expectedMiddleOutPartial = String() +
-        '<ol>' +
-            '<li id="li_1">1</li>' +
-            '<li id="li_2">2' +
-                '<table><caption>test_1</caption><tbody>' +
-                    '<tr><td id="t1_1_1">1_1</td></tr>' +
-                '</tbody></table>' +
-                '<ol>' +
-                    '<li id="li_3">3</li>' +
-                '</ol>' +
-            '</li>' +
-        '</ol>';
+module("table-insert_in_sublist", {setup: setupWym});
 
-    var expectedEndIn = String() +
-        '<ol>' +
-            '<li id="li_1">1</li>' +
-            '<li id="li_2">2' +
-                '<ol>' +
-                    '<li id="li_3">3' +
-                        '<table><caption>test_1</caption><tbody>' +
-                            '<tr><td id="t1_1_1">1_1</td></tr>' +
-                        '</tbody></table>' +
-                        '<br>' +
-                    '</li>' +
-                '</ol>' +
-            '</li>' +
-        '</ol>';
+test("Single table insertion into a sublist", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
-    var startEndInNoBR = expectedEndIn.replace('<br>', '');
+    setupTable(wymeditor, sublistForTableInsertion, '#li_2', 1, 1, 'test_1');
+    equals(tableInListPrepareHtml($body), expectedSublistOneTable,
+           "Single table insertion within a sublist");
+});
 
-    var startEndOutNoBR = expectedEndOut.replace('<br>', '');
+test("Double table insertion into a sublist", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
-    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    setupTable(wymeditor, expectedSublistOneTable, '#li_2', 2, 1, 'test_2');
+    equals(tableInListPrepareHtml($body), expectedSublistTwoTables,
+           "Double table insertion within a sublist");
+});
 
-    function changeIndent(html, selStart, selEnd, inOrOut) {
-        wymeditor.html(html);
-        makeTextSelection(wymeditor, $body.find(selStart)[0],
-                          $body.find(selEnd)[0], 0, 1);
-        if (inOrOut === "indent") {
-            wymeditor.indent();
-        } else if (inOrOut === "outdent") {
-            wymeditor.outdent();
-        }
-    }
+test("Triple table insertion into a sublist", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
-    changeIndent(expectedMiddleOutFull, '#li_2', '#li_3', 'indent');
+    setupTable(wymeditor, expectedSublistTwoTables, '#li_2', 3, 1, 'test_3');
+    equals(tableInListPrepareHtml($body),
+           expectedSublistThreeTables,
+           "Triple table insertion within a sublist");
+});
+
+module("table-indent_in_list", {setup: setupWym});
+
+test("Indent with table in the middle of a list", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+    changeIndent(wymeditor, expectedMiddleOutFull, '#li_2', '#li_3', 'indent');
     equals(tableInListPrepareHtml($body), expectedMiddleIn,
            "Table indented in the middle of a list");
+});
 
-    changeIndent(expectedMiddleIn, '#li_2', '#li_2', 'outdent');
-    equals(tableInListPrepareHtml($body), expectedMiddleOutPartial,
-           "Table outdented in the middle of a list");
+test("Indent with table at the end of a list", function () {
+    expect(2);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
-    changeIndent(expectedEndOut, '#li_3', '#li_3', 'indent');
+    changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'indent');
     equals(tableInListPrepareHtml($body), expectedEndIn,
            "Table indented at the end of a list");
 
-    changeIndent(expectedEndIn, '#li_3', '#li_3', 'outdent');
+    changeIndent(wymeditor, startEndOutNoBR, '#li_3', '#li_3', 'indent');
+    equals(tableInListPrepareHtml($body), expectedEndIn,
+           "Table indented at the end of a list with no line break");
+});
+
+module("table-outdent_in_list", {setup: setupWym});
+
+test("Outdent with table in the middle of a list", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+    changeIndent(wymeditor, expectedMiddleIn, '#li_2', '#li_2', 'outdent');
+    equals(tableInListPrepareHtml($body), expectedMiddleOutPartial,
+           "Table outdented in the middle of a list");
+});
+
+test("Outdent with table at the end of a list", function () {
+    expect(2);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+    changeIndent(wymeditor, expectedEndIn, '#li_3', '#li_3', 'outdent');
     equals(tableInListPrepareHtml($body), expectedEndOut,
            "Table outdented at the end of a list");
 
-    changeIndent(startEndOutNoBR, '#li_3', '#li_3', 'indent');
-    equals(tableInListPrepareHtml($body), expectedEndIn,
-           "Table indented at the end of a list with no line break");
-
-    changeIndent(startEndInNoBR, '#li_3', '#li_3', 'outdent');
+    changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'outdent');
     equals(tableInListPrepareHtml($body), expectedEndOut,
            "Table outdented at the end of a list with no line break");
 });
