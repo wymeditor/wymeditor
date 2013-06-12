@@ -939,6 +939,231 @@ if (jQuery.browser.mozilla) {
     });
 }
 
+module("Tables in a list", {setup: setupWym});
+
+var expectedMiddleOutFull = String() +
+    '<ol>' +
+        '<li id="li_1">1</li>' +
+        '<li id="li_2">2' +
+            '<table><caption>test_1</caption><tbody>' +
+                '<tr><td id="t1_1_1">1_1</td></tr>' +
+            '</tbody></table>' +
+        '</li>' +
+        '<li id="li_3">3</li>' +
+    '</ol>';
+
+var expectedEndOut = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2</li>' +
+            '<li id="li_3">3' +
+                '<table><caption>test_1</caption><tbody>' +
+                    '<tr><td id="t1_1_1">1_1</td></tr>' +
+                '</tbody></table>' +
+                '<br>' +
+            '</li>' +
+        '</ol>';
+
+test("Table insertion into a list", function () {
+    expect(4);
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        $table,
+        $element;
+
+    var listForTableInsertion = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2</li>' +
+            '<li id="li_3">3</li>' +
+        '</ol>';
+
+    var sublistForTableInsertion = String() +
+        '<ol>' +
+            '<li id="li_1">1' +
+                '<ol>' +
+                    '<li id="li_2">2' +
+                        '<ol>' +
+                            '<li id="li_3">3</li>' +
+                        '</ol>' +
+                    '</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>';
+
+    var expectedSublistSingleTable = String() +
+        '<ol>' +
+            '<li id="li_1">1' +
+                '<ol>' +
+                    '<li id="li_2">2' +
+                        '<table><caption>test_1</caption><tbody>' +
+                            '<tr><td id="t1_1_1">1_1</td></tr>' +
+                        '</tbody></table>' +
+                        '<ol>' +
+                            '<li id="li_3">3</li>' +
+                        '</ol>' +
+                    '</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>';
+
+    var expectedSublistMultipleTables = String() +
+        '<ol>' +
+            '<li id="li_1">1' +
+                '<ol>' +
+                    '<li id="li_2">2' +
+                        '<table><caption>test_1</caption><tbody>' +
+                            '<tr><td id="t1_1_1">1_1</td></tr>' +
+                        '</tbody></table>' +
+                        '<br>' +
+                        '<table><caption>test_2</caption><tbody>' +
+                            '<tr><td id="t2_1_1">1_1</td></tr>' +
+                            '<tr><td id="t2_2_1">2_1</td></tr>' +
+                        '</tbody></table>' +
+                        '<br>' +
+                        '<table><caption>test_3</caption><tbody>' +
+                            '<tr><td id="t3_1_1">1_1</td></tr>' +
+                            '<tr><td id="t3_2_1">2_1</td></tr>' +
+                            '<tr><td id="t3_3_1">3_1</td></tr>' +
+                        '</tbody></table>' +
+                        '<ol>' +
+                            '<li id="li_3">3</li>' +
+                        '</ol>' +
+                    '</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>';
+
+    wymeditor.html(listForTableInsertion);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+    $element = $body.find('#li_2')[0];
+    makeTextSelection(wymeditor, $element, $element, 0 , 1);
+    wymeditor.insertTable(1, 1, 'test_1', '');
+    $body.find('td').attr('id', 't1_1_1').text('1_1');
+    equals(normalizeHtml($body.get(0).firstChild), expectedMiddleOutFull,
+           "Table insertion in the middle of a list");
+
+    wymeditor.html(listForTableInsertion);
+    $element = $body.find('#li_3')[0];
+    makeTextSelection(wymeditor, $element, $element, 0 , 1);
+    wymeditor.insertTable(1, 1, 'test_1', '');
+    $body.find('td').attr('id', 't1_1_1').text('1_1');
+    equals(normalizeHtml($body.get(0).firstChild), expectedEndOut,
+           "Table insertion at the end of a list");
+
+    wymeditor.html(sublistForTableInsertion);
+    $element = $body.find('#li_2')[0];
+    makeTextSelection(wymeditor, $element, $element, 0 , 1);
+    wymeditor.insertTable(1, 1, 'test_1', '');
+    $body.find('td').attr('id', 't1_1_1').text('1_1');
+    equals(normalizeHtml($body.get(0).firstChild), expectedSublistSingleTable,
+           "Single table insertion within a sublist");
+
+    wymeditor.html(expectedSublistSingleTable);
+    $element = $body.find('#li_2');
+    makeTextSelection(wymeditor, $element, $element, 0 , 1);
+
+    wymeditor.insertTable(2, 1, 'test_2', '');
+    $body.find('td').eq(1).attr('id', 't2_1_1').text('1_1');
+    $body.find('td').eq(2).attr('id', 't2_2_1').text('2_1');
+
+    makeTextSelection(wymeditor, $element, $element, 0 , 1);
+    wymeditor.insertTable(3, 1, 'test_3', '');
+    $body.find('td').eq(3).attr('id', 't3_1_1').text('1_1');
+    $body.find('td').eq(4).attr('id', 't3_2_1').text('2_1');
+    $body.find('td').eq(5).attr('id', 't3_3_1').text('3_1');
+
+    $body.find('br').removeAttr('_moz_editor_bogus_node')
+                    .removeAttr('_moz_dirty');
+    equals(normalizeHtml($body.get(0).firstChild),
+           expectedSublistMultipleTables,
+           "Multiple table insertion within a sublist");
+
+});
+
+test("Indent and outdent with table in a list", function () {
+    expect(4);
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        $startElt,
+        $endElt;
+
+    var expectedMiddleIn = String() +
+        '<ol>' +
+            '<li id="li_1">1' +
+                '<ol>' +
+                    '<li id="li_2">2' +
+                        '<table><caption>test_1</caption><tbody>' +
+                            '<tr><td id="t1_1_1">1_1</td></tr>' +
+                        '</tbody></table>' +
+                    '</li>' +
+                    '<li id="li_3">3</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>';
+
+    var expectedMiddleOutPartial = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2' +
+                '<table><caption>test_1</caption><tbody>' +
+                    '<tr><td id="t1_1_1">1_1</td></tr>' +
+                '</tbody></table>' +
+                '<ol>' +
+                    '<li id="li_3">3</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>';
+
+    var expectedEndIn = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2' +
+                '<ol>' +
+                    '<li id="li_3">3' +
+                        '<table><caption>test_1</caption><tbody>' +
+                            '<tr><td id="t1_1_1">1_1</td></tr>' +
+                        '</tbody></table>' +
+                        '<br>' +
+                    '</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>';
+
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+    wymeditor.html(expectedMiddleOutFull);
+    $startElt = $body.find('#li_2')[0];
+    $endElt = $body.find('#li_3')[0];
+    makeTextSelection(wymeditor, $startElt, $endElt, 0 , 1);
+    wymeditor.indent();
+    equals(normalizeHtml($body.get(0).firstChild), expectedMiddleIn,
+           "Table indented in the middle of a list");
+
+    wymeditor.html(expectedMiddleIn);
+    $startElt = $body.find('#li_2')[0];
+    $endElt = $body.find('#li_3')[0];
+    makeTextSelection(wymeditor, $startElt, $startElt, 0, 1);
+    wymeditor.outdent();
+    equals(normalizeHtml($body.get(0).firstChild), expectedMiddleOutPartial,
+           "Table outdented in the middle of a list");
+
+    wymeditor.html(expectedEndOut);
+    $startElt = $body.find('#li_3');
+    makeTextSelection(wymeditor, $startElt, $startElt, 0 , 1);
+    wymeditor.indent();
+    equals(normalizeHtml($body.get(0).firstChild), expectedEndIn,
+           "Table indented at the end of a list");
+
+    wymeditor.html(expectedEndIn);
+    $startElt = $body.find('#li_3');
+    makeTextSelection(wymeditor, $startElt, $startElt, 0, 1);
+    wymeditor.outdent();
+    equals(normalizeHtml($body.get(0).firstChild), expectedEndOut,
+           "Table outdented at the end of a list");
+});
+
 module("preformatted text", {setup: setupWym});
 
 test("Preformatted text retains spacing", function () {

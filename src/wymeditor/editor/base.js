@@ -1988,11 +1988,14 @@ WYMeditor.editor.prototype.indent = function () {
         }
         if (domChanged) {
             // If there is a table in the last list item of the indented
-            // selection, append a line break after that list item to
+            // selection, ensure a line break is after that list item to
             // allow the user to continue the list after the table.
             $lastListElement = jQuery(listItems.slice(-1)[0]);
 
-            if ($lastListElement.children(WYMeditor.TABLE).length) {
+            if ($lastListElement.children(WYMeditor.TABLE).length &&
+                $lastListElement.children(WYMeditor.BR).length <
+                $lastListElement.children(WYMeditor.TABLE).length) {
+
                 $lastListElement.append("<br />");
             }
         }
@@ -2063,7 +2066,12 @@ WYMeditor.editor.prototype.outdent = function () {
             // user to continue the list after the table.
             $lastListElement = jQuery(listItems.slice(-1)[0]);
 
-            if ($lastListElement.children(WYMeditor.TABLE).length) {
+            if ($lastListElement.children(WYMeditor.TABLE).length &&
+                !$lastListElement.next(WYMeditor.LI).length &&
+                !$lastListElement.find(WYMeditor.LI).length &&
+                $lastListElement.children(WYMeditor.BR).length <
+                $lastListElement.children(WYMeditor.TABLE).length) {
+
                 $lastListElement.append("<br />");
             }
         }
@@ -2297,7 +2305,9 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
         x,
         y,
 
-        container;
+        container,
+        $listItem,
+        $filteredChildren;
 
     // Create the table caption
     newCaption = table.createCaption();
@@ -2327,9 +2337,28 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
     } else {
         // Append the table after the currently-selected container
         if (container.nodeName.toLowerCase() === WYMeditor.LI) {
-            // Append a line break after the inserted table to allow the user
-            // to continue the list after the table.
-            jQuery(container).append(table).append("<br />");
+            $listItem = jQuery(container);
+            $filteredChildren = $listItem.children()
+                                         .not(WYMeditor.TABLE)
+                                         .not(WYMeditor.BR);
+
+            // If the list item has a child that is not another table or line
+            // break, insert the table before its first child that is not a
+            // table or line break.
+            if ($filteredChildren.length) {
+                $filteredChildren.eq(0).before(table);
+            } else {
+                $listItem.append(table);
+            }
+
+            // If the list item is the last one in its list, append a line
+            // break after the inserted table to allow the user to continue the
+            // list after the table.
+            if (!$listItem.next(WYMeditor.LI).length &&
+                !$listItem.find(WYMeditor.LI).length) {
+
+                $listItem.append('<br />');
+            }
         } else {
             jQuery(container).after(table);
         }
