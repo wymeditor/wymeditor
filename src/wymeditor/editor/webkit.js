@@ -77,7 +77,7 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
     }
 
     var focusNode = this.selected(),
-        _param, container, attr;
+        _param, container, attr, parent;
 
     if (param) {
         this._doc.execCommand(cmd, '', param);
@@ -85,10 +85,23 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
         this._doc.execCommand(cmd, '', null);
     }
 
-    // Wrap this content in a paragraph tag if we're in the body
     container = this.selected();
-    if (container && container.tagName.toLowerCase() === WYMeditor.BODY) {
-        this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
+    if (container) {
+        tagName = container.tagName.toLowerCase();
+
+        // Wrap this content in a paragraph tag if we're in the body
+        if (tagName === WYMeditor.BODY) {
+            this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
+        }
+
+        // Strip span tags if we're in a header
+        if (tagName === 'span') {
+            parent = container.parentNode;
+            if (parent && jQuery.inArray(parent.tagName.toLowerCase(),
+                                         WYMeditor.HEADER_ELEMENTS) > -1) {
+                jQuery(container).contents().unwrap();
+            }
+        }
     }
 
     return true;
