@@ -953,7 +953,7 @@ function tableInListPrepareHtml($body) {
     });
 
     if (jQuery.browser.msie) {
-        // Some version of IE were adding the caption after the table body for
+        // Some versions of IE were adding the caption after the table body for
         // tables. This ensures the table caption is always at the start.
         $body.find('caption').each(function () {
             jQuery(this).prependTo(jQuery(this).parent());
