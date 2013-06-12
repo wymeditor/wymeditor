@@ -3,6 +3,33 @@
 This document tracks the enhancements and bug fixes between releases of
 WYMeditor.
 
+## 1.0.0b5 (Beta 5)
+
+*release-date* TBD
+
+### Enhancements
+
+* We now have all of the documentation in one place at
+  [wymeditor.readthedocs.org](https://wymeditor.readthedocs.org)! No more
+  switching back and forth between the old Trac site and the github Wiki.
+  The new documentation uses [Sphinx](http://sphinx-doc.org/) and new pull
+  requests will now be able to come with `docs/` already committed!
+  Thanks to Nick McLaughlin for the herculean effort in combining the years
+  of spread-out documentation.
+* We now document how to run WYMeditor with jQuery 1.8.x and 1.9.x via
+  [jquery-migrate](https://github.com/jquery/jquery-migrate/). The unit tests
+  now also support those versions of jQuery.
+* Some community members have created a
+  [Django-CMS 3](https://github.com/wymeditor/djangocms_wymeditor_plugin)
+  plugin for WYMeditor. If you're upgrading from Django-CMS 2 to 3, you'll
+  want to check it out.
+
+### Bug Fixes
+
+* WYMeditor now works properly in Chrome when using jQuery 1.4 or higher.
+  Thanks to several folks for outlining the fix and for Nick McLaughlin for the
+  pull request.
+
 ## 1.0.0b4 (Beta 4)
 
 *release-date* February 15, 2013

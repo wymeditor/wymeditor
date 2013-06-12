@@ -81,22 +81,23 @@ Compatibility
 
 WYMeditor is compatible with:
 
-* IE 6, 7, 8 and 9
-* Firefox 3.6.x, 9.x and 10.x
-* Opera 9.5+
-* Safari 3.0+
-* Google Chrome Stable and Beta
+* IE: 7, 8, 9 and 10
+* Firefox: LTS and latests two major versions
+* Opera: Latest version
+* Safari: Latest version
+* Google Chrome: Latest two major versions
 
 Contributing to WYMeditor
 -------------------------
 
 ### Documentation
 
-We need a lot of help in the documentation department. We moved from the old
-[trac repository](http://trac.wymeditor.org/trac) earlier this year and still
-haven't ported over the relevant documentation. Porting that, fileing
-documentation tickets or even just asking questions on IRC at #wymeditor on
-freenode would be very helpful.
+Our documentation uses the [Sphinx](http://sphinx-doc.org/) documentation tool.
+The source lives in the `docs/` folder and every pull requests that isn't
+just fixing a bug *must* come with documentation.
+
+You can see the current documentation at
+[wymeditor.readthedocs.org](http://wymeditor.readthedocs.org).
 
 ### Testing WYMeditor
 
@@ -186,15 +187,15 @@ extracting `compiler.jar` into your `wymeditor` directory.
 Getting Help
 ------------
 
- - **Wiki/Docs:** https://github.com/wymeditor/wymeditor/wiki
+ - **Documentation:** [wymeditor.readthedocs.org](http://wymeditor.readthedocs.org)
  - **Forum:** http://community.wymeditor.org
  - **Issue tracking:** https://github.com/wymeditor/wymeditor/issues
  - **Official branch:** https://github.com/wymeditor/wymeditor
 
-[Read more on contributing](https://github.com/wymeditor/wymeditor/wiki/Contributing).
+[Read more on contributing](https://wymeditor.readthedocs.org/en/latest/version_2.0/contributing.html)
 
 Copyright
 ---------
-Copyright (c) 2005 - 2011 Jean-Francois Hovinne,
+Copyright (c) 2005 - 2013 Jean-Francois Hovinne,
 Dual licensed under the MIT (MIT-license.txt)
 and GPL (GPL-license.txt) licenses.
