@@ -951,9 +951,14 @@ function tableInListPrepareHtml($body) {
                     .removeAttr('_moz_editor_bogus_node')
                     .removeAttr('_moz_dirty');
     });
-    $body.find('caption').each(function () {
-        jQuery(this).prependTo(jQuery(this).parent());
-    });
+
+    if (jQuery.browser.msie) {
+        // Some version of IE were adding the caption after the table body for
+        // tables. This ensures the table caption is always at the start.
+        $body.find('caption').each(function () {
+            jQuery(this).prependTo(jQuery(this).parent());
+        });
+    }
 
     return normalizeHtml($body.get(0).firstChild);
 }
