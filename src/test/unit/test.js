@@ -946,10 +946,16 @@ function tableInListPrepareHtml($body) {
     // presence needs to be tested for in the editor for the table in list
     // tests, so this function is used to prepare and normalize the html
     // for comparison instead of wymeditor.xhtml().
+
     $body.find('*').each(function () {
-        jQuery(this).removeAttr('_wym_visited')
-                    .removeAttr('_moz_editor_bogus_node')
-                    .removeAttr('_moz_dirty');
+        // Remove attributes that were only showing up in certain browsers.
+        if (jQuery.browser.msie) {
+            jQuery(this).removeAttr('_wym_visited');
+        }
+        if (jQuery.browser.mozilla) {
+            jQuery(this).removeAttr('_moz_editor_bogus_node')
+                        .removeAttr('_moz_dirty');
+        }
     });
 
     if (jQuery.browser.msie) {
@@ -1060,7 +1066,7 @@ var expectedSublistTwoTables = String() +
                             '</tr>' +
                         '</tbody>' +
                     '</table>' +
-                    '<br>' +
+                    '<br class="wym-blocking-element-spacer">' +
                     '<table>' +
                         '<caption>test_2</caption>' +
                         '<tbody>' +
@@ -1093,7 +1099,7 @@ var expectedSublistThreeTables = String() +
                             '</tr>' +
                         '</tbody>' +
                     '</table>' +
-                    '<br>' +
+                    '<br class="wym-blocking-element-spacer">' +
                     '<table>' +
                         '<caption>test_2</caption>' +
                         '<tbody>' +
@@ -1105,7 +1111,7 @@ var expectedSublistThreeTables = String() +
                             '</tr>' +
                         '</tbody>' +
                     '</table>' +
-                    '<br>' +
+                    '<br class="wym-blocking-element-spacer">' +
                     '<table>' +
                         '<caption>test_3</caption>' +
                         '<tbody>' +
@@ -1195,7 +1201,7 @@ var expectedEndIn = String() +
                             '</tr>' +
                         '</tbody>' +
                     '</table>' +
-                    '<br>' +
+                    '<br class="wym-blocking-element-spacer">' +
                 '</li>' +
             '</ol>' +
         '</li>' +
@@ -1214,13 +1220,15 @@ var expectedEndOut = String() +
                         '</tr>' +
                     '</tbody>' +
                 '</table>' +
-                '<br>' +
+                '<br class="wym-blocking-element-spacer">' +
             '</li>' +
         '</ol>';
 
-var startEndInNoBR = expectedEndIn.replace('<br>', '');
+var startEndInNoBR = expectedEndIn.replace(
+                        '<br class="wym-blocking-element-spacer">', '');
 
-var startEndOutNoBR = expectedEndOut.replace('<br>', '');
+var startEndOutNoBR = expectedEndOut.replace(
+                        '<br class="wym-blocking-element-spacer">', '');
 
 module("table-insert_in_list", {setup: setupWym});
 

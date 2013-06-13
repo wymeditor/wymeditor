@@ -279,11 +279,13 @@ WYMeditor.editor.prototype.html = function (html) {
     enforce a valid, well-formed, semantic xhtml result.
 */
 WYMeditor.editor.prototype.xhtml = function () {
-    var html;
+    var html,
+        $body = jQuery(this._doc.body);
 
     // Remove any of the placeholder nodes we've created for start/end content
-    // insertion
-    jQuery(this._doc.body).children(WYMeditor.BR).remove();
+    // insertion.
+    $body.children(WYMeditor.BR).remove();
+    $body.find('.wym-blocking-element-spacer').remove();
 
     return this.parser.parse(this.html());
 };
@@ -759,10 +761,21 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
 
         $body = jQuery(this._doc).find('body.wym_iframe'),
         children = $body.children(),
-        placeholderNode = '<br _moz_editor_bogus_node="TRUE" _moz_dirty="" />',
+
+        placeholderNode,
         $firstChild,
         $lastChild,
         blockSepSelector;
+
+    if (jQuery.browser.mozilla) {
+        placeholderNode = '<br ' +
+                             'class="wym-blocking-element-spacer" ' +
+                             '_moz_editor_bogus_node="TRUE" ' +
+                             '_moz_dirty="" ' +
+                          '/>';
+    } else {
+        placeholderNode = '<br class="wym-blocking-element-spacer" />';
+    }
 
     // Make sure that we still have a bogus node at both the begining and end
     if (children.length > 0) {
@@ -773,7 +786,9 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
             $firstChild.before(placeholderNode);
         }
 
-        if ($lastChild.is(blockingSelector)) {
+        if ($lastChild.is(blockingSelector) &&
+            !(jQuery.browser.msie && jQuery.browser.version < "7.0")) {
+
             $lastChild.after(placeholderNode);
         }
     }
@@ -783,6 +798,51 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
     // Put placeholder nodes between consecutive blocking elements and between
     // blocking elements and normal block-level elements
     $body.find(blockSepSelector).before(placeholderNode);
+
+    // Add a placeholder node after any table at the end of a list or sublist
+    // to ensure the user has space to click and continue the list after the
+    // table. Remove placeholder when it is no longer needed.
+    function adjustTableInListSpacing() {
+        var $table = jQuery(this),
+            $listElt = $table.parent();
+
+        // Only check for spacing if the table is the last table in the
+        // list item.
+        if (!$table.next(WYMeditor.TABLE).length) {
+
+            // If the list item the table is contained by is not followed by
+            // another list item and does not contain a sublist, the table
+            // might need a line break after it.
+            if (!$listElt.next(WYMeditor.LI).length &&
+                !$listElt.find(WYMeditor.LI).length) {
+
+                // If there are less line breaks than tables in the list item,
+                // there must not be a line break after the last table, so one
+                // must be added.
+                if ($listElt.children(WYMeditor.BR).length <
+                    $listElt.children(WYMeditor.TABLE).length) {
+
+                    $table.after(placeholderNode);
+                }
+
+            // If the list item the table is contained by is followed by
+            // another list item or contains a sublist, the line break after
+            // the table can be removed if it is sill there.
+            } else {
+
+                // If there are a greater than or equal number of line breaks
+                // compared to tables, there must be a line break after the
+                // last table, so remove it.
+                if ($listElt.children(WYMeditor.BR).length >=
+                    $listElt.children(WYMeditor.TABLE).length) {
+
+                    $table.next(WYMeditor.BR).remove();
+                }
+            }
+        }
+    }
+    $body.find(WYMeditor.LI + ' > ' + WYMeditor.TABLE)
+         .each(adjustTableInListSpacing);
 };
 
 /**
@@ -1986,19 +2046,7 @@ WYMeditor.editor.prototype.indent = function () {
             wym._indentSingleItem(listItems[i]);
             domChanged = true;
         }
-        if (domChanged) {
-            // If there is a table in the last list item of the indented
-            // selection, ensure a line break is after that list item to
-            // allow the user to continue the list after the table.
-            $lastListElement = jQuery(listItems.slice(-1)[0]);
 
-            if ($lastListElement.children(WYMeditor.TABLE).length &&
-                $lastListElement.children(WYMeditor.BR).length <
-                $lastListElement.children(WYMeditor.TABLE).length) {
-
-                $lastListElement.append("<br />");
-            }
-        }
         return domChanged;
     };
     return wym.restoreSelectionAfterManipulation(manipulationFunc);
@@ -2060,21 +2108,7 @@ WYMeditor.editor.prototype.outdent = function () {
             wym._outdentSingleItem(listItems[i]);
             domChanged = true;
         }
-        if (domChanged) {
-            // If there is a table in the last list item of the outdented
-            // selection, append a line break to that list element to allow the
-            // user to continue the list after the table.
-            $lastListElement = jQuery(listItems.slice(-1)[0]);
 
-            if ($lastListElement.children(WYMeditor.TABLE).length &&
-                !$lastListElement.next(WYMeditor.LI).length &&
-                !$lastListElement.find(WYMeditor.LI).length &&
-                $lastListElement.children(WYMeditor.BR).length <
-                $lastListElement.children(WYMeditor.TABLE).length) {
-
-                $lastListElement.append("<br />");
-            }
-        }
         return domChanged;
     };
     return wym.restoreSelectionAfterManipulation(manipulationFunc);
@@ -2336,7 +2370,8 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
         jQuery(this._doc.body).append(table);
     } else {
         // Append the table after the currently-selected container
-        if (container.nodeName.toLowerCase() === WYMeditor.LI) {
+        if (jQuery.inArray(container.nodeName.toLowerCase(),
+                           WYMeditor.INLINE_TABLE_INSERTION_ELEMENTS) > -1) {
             $listItem = jQuery(container);
             $filteredChildren = $listItem.children()
                                          .not(WYMeditor.TABLE)
@@ -2345,19 +2380,11 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
             // If the list item has a child that is not another table or line
             // break, insert the table before its first child that is not a
             // table or line break.
+            // eg. We should insert the table before the start of a sublist.
             if ($filteredChildren.length) {
                 $filteredChildren.eq(0).before(table);
             } else {
                 $listItem.append(table);
-            }
-
-            // If the list item is the last one in its list, append a line
-            // break after the inserted table to allow the user to continue the
-            // list after the table.
-            if (!$listItem.next(WYMeditor.LI).length &&
-                !$listItem.find(WYMeditor.LI).length) {
-
-                $listItem.append('<br />');
             }
         } else {
             jQuery(container).after(table);
