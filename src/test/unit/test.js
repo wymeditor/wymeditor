@@ -941,34 +941,28 @@ if (jQuery.browser.mozilla) {
 
 // Functions and html strings for table in list modules
 
-function tableInListPrepareHtml($body) {
-    // The normal xhtml parser strips line breaks from the html whose
-    // presence needs to be tested for in the editor for the table in list
-    // tests, so this function is used to prepare and normalize the html
-    // for comparison instead of wymeditor.xhtml().
-
-    $body.find('*').each(function () {
-        // Remove attributes that were only showing up in certain browsers.
-        if (jQuery.browser.msie) {
-            jQuery(this).removeAttr('_wym_visited');
-        }
-        if (jQuery.browser.mozilla) {
-            jQuery(this).removeAttr('_moz_editor_bogus_node')
-                        .removeAttr('_moz_dirty');
-        }
-    });
-
-    if (jQuery.browser.msie) {
-        // Some versions of IE were adding the caption after the table body for
-        // tables. This ensures the table caption is always at the start.
-        $body.find('caption').each(function () {
-            jQuery(this).prependTo(jQuery(this).parent());
-        });
-    }
-
-    return normalizeHtml($body.get(0).firstChild);
-}
-
+// Puts the html in the body of the wymeditor and creates a rowsXcols-sized
+// table at the selection whose cells each have an id attribute of the form
+// "t<table_id_character>_<x>_<y>" where <table_id_character> is the last
+// character of the caption, <x> is the x-coordinate of the cell in the table,
+// and <y> is the y-coordinate of the cell in the table. Each cell then has
+// text of the form "<x>_<y>" where <x> and <y> are the same as described for
+// the id attribute. Here is a small example:
+//
+// setupTable(wymeditor, html, selection, 2, 1, 'test_1') inserts the
+// following html at the selection:
+//
+//  <table>
+//      <caption>test_1</caption>
+//      <tbody>
+//          <tr>
+//              <td id="t1_1_1">1_1</td>
+//          </tr>
+//          <tr>
+//              <td id="t1_2_1">2_1</td>
+//          </tr>
+//      </tbody>
+//  </table>
 function setupTable(wymeditor, html, selection, rows, cols, caption) {
     var $body,
         $element,
@@ -1066,7 +1060,9 @@ var expectedSublistTwoTables = String() +
                             '</tr>' +
                         '</tbody>' +
                     '</table>' +
-                    '<br class="wym-blocking-element-spacer">' +
+                    '<br class="' +
+                        WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
+                    '"/>' +
                     '<table>' +
                         '<caption>test_2</caption>' +
                         '<tbody>' +
@@ -1099,7 +1095,9 @@ var expectedSublistThreeTables = String() +
                             '</tr>' +
                         '</tbody>' +
                     '</table>' +
-                    '<br class="wym-blocking-element-spacer">' +
+                    '<br class="' +
+                        WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
+                    '"/>' +
                     '<table>' +
                         '<caption>test_2</caption>' +
                         '<tbody>' +
@@ -1111,7 +1109,9 @@ var expectedSublistThreeTables = String() +
                             '</tr>' +
                         '</tbody>' +
                     '</table>' +
-                    '<br class="wym-blocking-element-spacer">' +
+                    '<br class="' +
+                        WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
+                    '"/>' +
                     '<table>' +
                         '<caption>test_3</caption>' +
                         '<tbody>' +
@@ -1133,6 +1133,12 @@ var expectedSublistThreeTables = String() +
             '</ol>' +
         '</li>' +
     '</ol>';
+
+var sublistThreeTablesNoBR =
+        expectedSublistThreeTables.replace(RegExp(
+            '<br class="' +
+                WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
+            '"/>', 'g'), '');
 
 var expectedMiddleIn = String() +
     '<ol>' +
@@ -1201,7 +1207,9 @@ var expectedEndIn = String() +
                             '</tr>' +
                         '</tbody>' +
                     '</table>' +
-                    '<br class="wym-blocking-element-spacer">' +
+                    '<br class="' +
+                        WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
+                    '"/>' +
                 '</li>' +
             '</ol>' +
         '</li>' +
@@ -1220,15 +1228,21 @@ var expectedEndOut = String() +
                         '</tr>' +
                     '</tbody>' +
                 '</table>' +
-                '<br class="wym-blocking-element-spacer">' +
+                '<br class="' +
+                    WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
+                '"/>' +
             '</li>' +
         '</ol>';
 
 var startEndInNoBR = expectedEndIn.replace(
-                        '<br class="wym-blocking-element-spacer">', '');
+                        '<br class="' +
+                            WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
+                        '"/>', '');
 
 var startEndOutNoBR = expectedEndOut.replace(
-                        '<br class="wym-blocking-element-spacer">', '');
+                        '<br class="' +
+                            WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
+                        '"/>', '');
 
 module("table-insert_in_list", {setup: setupWym});
 
@@ -1238,7 +1252,7 @@ test("Table insertion in the middle of a list", function () {
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
     setupTable(wymeditor, listForTableInsertion, '#li_2', 1, 1, 'test_1');
-    equals(tableInListPrepareHtml($body), expectedMiddleOutFull,
+    equals(normalizeHtml($body.get(0).firstChild), expectedMiddleOutFull,
            "Table insertion in the middle of a list");
 });
 
@@ -1248,7 +1262,7 @@ test("Table insertion at the end of a list", function () {
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
         setupTable(wymeditor, listForTableInsertion, '#li_3', 1, 1, 'test_1');
-        equals(tableInListPrepareHtml($body), expectedEndOut,
+        equals(normalizeHtml($body.get(0).firstChild), expectedEndOut,
        "Table insertion at the end of a list");
 });
 
@@ -1260,7 +1274,7 @@ test("Single table insertion into a sublist", function () {
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
     setupTable(wymeditor, sublistForTableInsertion, '#li_2', 1, 1, 'test_1');
-    equals(tableInListPrepareHtml($body), expectedSublistOneTable,
+    equals(normalizeHtml($body.get(0).firstChild), expectedSublistOneTable,
            "Single table insertion within a sublist");
 });
 
@@ -1270,7 +1284,7 @@ test("Double table insertion into a sublist", function () {
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
     setupTable(wymeditor, expectedSublistOneTable, '#li_2', 2, 1, 'test_2');
-    equals(tableInListPrepareHtml($body), expectedSublistTwoTables,
+    equals(normalizeHtml($body.get(0).firstChild), expectedSublistTwoTables,
            "Double table insertion within a sublist");
 });
 
@@ -1280,9 +1294,32 @@ test("Triple table insertion into a sublist", function () {
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
     setupTable(wymeditor, expectedSublistTwoTables, '#li_2', 3, 1, 'test_3');
-    equals(tableInListPrepareHtml($body),
+    equals(normalizeHtml($body.get(0).firstChild),
            expectedSublistThreeTables,
            "Triple table insertion within a sublist");
+});
+
+module("table-parse_spacers_in_list", {setup: setupWym});
+
+test("Parse list with a table at the end", function () {
+    var wymeditor = jQuery.wymeditors(0);
+
+    wymeditor.html(expectedEndOut);
+    htmlEquals(wymeditor, startEndOutNoBR);
+});
+
+test("Parse list with a table at the end in a sublist", function () {
+    var wymeditor = jQuery.wymeditors(0);
+
+    wymeditor.html(expectedEndIn);
+    htmlEquals(wymeditor, startEndInNoBR);
+});
+
+test("Parse list with multiple tables in a sublist", function () {
+    var wymeditor = jQuery.wymeditors(0);
+
+    wymeditor.html(expectedSublistThreeTables);
+    htmlEquals(wymeditor, sublistThreeTablesNoBR);
 });
 
 module("table-indent_in_list", {setup: setupWym});
@@ -1293,7 +1330,7 @@ test("Indent with table in the middle of a list", function () {
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
     changeIndent(wymeditor, expectedMiddleOutFull, '#li_2', '#li_3', 'indent');
-    equals(tableInListPrepareHtml($body), expectedMiddleIn,
+    equals(normalizeHtml($body.get(0).firstChild), expectedMiddleIn,
            "Table indented in the middle of a list");
 });
 
@@ -1303,11 +1340,11 @@ test("Indent with table at the end of a list", function () {
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
     changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'indent');
-    equals(tableInListPrepareHtml($body), expectedEndIn,
+    equals(normalizeHtml($body.get(0).firstChild), expectedEndIn,
            "Table indented at the end of a list");
 
     changeIndent(wymeditor, startEndOutNoBR, '#li_3', '#li_3', 'indent');
-    equals(tableInListPrepareHtml($body), expectedEndIn,
+    equals(normalizeHtml($body.get(0).firstChild), expectedEndIn,
            "Table indented at the end of a list with no line break");
 });
 
@@ -1319,7 +1356,7 @@ test("Outdent with table in the middle of a list", function () {
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
     changeIndent(wymeditor, expectedMiddleIn, '#li_2', '#li_2', 'outdent');
-    equals(tableInListPrepareHtml($body), expectedMiddleOutPartial,
+    equals(normalizeHtml($body.get(0).firstChild), expectedMiddleOutPartial,
            "Table outdented in the middle of a list");
 });
 
@@ -1329,11 +1366,11 @@ test("Outdent with table at the end of a list", function () {
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
     changeIndent(wymeditor, expectedEndIn, '#li_3', '#li_3', 'outdent');
-    equals(tableInListPrepareHtml($body), expectedEndOut,
+    equals(normalizeHtml($body.get(0).firstChild), expectedEndOut,
            "Table outdented at the end of a list");
 
     changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'outdent');
-    equals(tableInListPrepareHtml($body), expectedEndOut,
+    equals(normalizeHtml($body.get(0).firstChild), expectedEndOut,
            "Table outdented at the end of a list with no line break");
 });
 

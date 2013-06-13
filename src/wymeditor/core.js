@@ -263,6 +263,11 @@ jQuery.extend(WYMeditor, {
     // them.
     INLINE_TABLE_INSERTION_ELEMENTS : ["li"],
 
+    // Class used to identify <br /> elements that are used to space out
+    // blocking elements in the editor so that they can be removed before
+    // parsing the html.
+    BLOCKING_ELEMENT_SPACER_CLASS : "wym-blocking-element-spacer",
+
     // Keyboard mappings so that we don't have to remember that 38 means up
     // when reading keyboard handlers
     KEY : {

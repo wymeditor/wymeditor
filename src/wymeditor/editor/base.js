@@ -285,7 +285,7 @@ WYMeditor.editor.prototype.xhtml = function () {
     // Remove any of the placeholder nodes we've created for start/end content
     // insertion.
     $body.children(WYMeditor.BR).remove();
-    $body.find('.wym-blocking-element-spacer').remove();
+    $body.find('.' + WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS).remove();
 
     return this.parser.parse(this.html());
 };
@@ -769,12 +769,15 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
 
     if (jQuery.browser.mozilla) {
         placeholderNode = '<br ' +
-                             'class="wym-blocking-element-spacer" ' +
-                             '_moz_editor_bogus_node="TRUE" ' +
-                             '_moz_dirty="" ' +
+                            'class="' +
+                            WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS + '" ' +
+                            '_moz_editor_bogus_node="TRUE" ' +
+                            '_moz_dirty=""' +
                           '/>';
     } else {
-        placeholderNode = '<br class="wym-blocking-element-spacer" />';
+        placeholderNode = '<br ' +
+                            'class="' +
+                            WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS + '"/>';
     }
 
     // Make sure that we still have a bogus node at both the begining and end
