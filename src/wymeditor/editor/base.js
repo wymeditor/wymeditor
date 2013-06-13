@@ -2040,7 +2040,8 @@ WYMeditor.editor.prototype.indent = function () {
     }
 
     manipulationFunc = function () {
-        var domChanged = false,
+        var domChanged = false;
+
         for (i = 0; i < listItems.length; i++) {
             wym._indentSingleItem(listItems[i]);
             domChanged = true;
@@ -2101,7 +2102,8 @@ WYMeditor.editor.prototype.outdent = function () {
     }
 
     manipulationFunc = function () {
-        var domChanged = false,
+        var domChanged = false;
+
         for (i = 0; i < listItems.length; i++) {
             wym._outdentSingleItem(listItems[i]);
             domChanged = true;
