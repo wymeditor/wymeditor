@@ -1039,6 +1039,9 @@ var expectedSublistOneTable = String() +
                             '</tr>' +
                         '</tbody>' +
                     '</table>' +
+                    '<br class="' +
+                        WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
+                    '"/>' +
                     '<ol>' +
                         '<li id="li_3">3</li>' +
                     '</ol>' +
@@ -1053,17 +1056,6 @@ var expectedSublistTwoTables = String() +
             '<ol>' +
                 '<li id="li_2">2' +
                     '<table>' +
-                        '<caption>test_1</caption>' +
-                        '<tbody>' +
-                            '<tr>' +
-                                '<td id="t1_1_1">1_1</td>' +
-                            '</tr>' +
-                        '</tbody>' +
-                    '</table>' +
-                    '<br class="' +
-                        WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
-                    '"/>' +
-                    '<table>' +
                         '<caption>test_2</caption>' +
                         '<tbody>' +
                             '<tr>' +
@@ -1074,6 +1066,20 @@ var expectedSublistTwoTables = String() +
                             '</tr>' +
                         '</tbody>' +
                     '</table>' +
+                    '<br class="' +
+                        WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
+                    '"/>' +
+                    '<table>' +
+                        '<caption>test_1</caption>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td id="t1_1_1">1_1</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                    '<br class="' +
+                        WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
+                    '"/>' +
                     '<ol>' +
                         '<li id="li_3">3</li>' +
                     '</ol>' +
@@ -1088,10 +1094,16 @@ var expectedSublistThreeTables = String() +
             '<ol>' +
                 '<li id="li_2">2' +
                     '<table>' +
-                        '<caption>test_1</caption>' +
+                        '<caption>test_3</caption>' +
                         '<tbody>' +
                             '<tr>' +
-                                '<td id="t1_1_1">1_1</td>' +
+                                '<td id="t3_1_1">1_1</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td id="t3_2_1">2_1</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td id="t3_3_1">3_1</td>' +
                             '</tr>' +
                         '</tbody>' +
                     '</table>' +
@@ -1113,19 +1125,16 @@ var expectedSublistThreeTables = String() +
                         WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
                     '"/>' +
                     '<table>' +
-                        '<caption>test_3</caption>' +
+                        '<caption>test_1</caption>' +
                         '<tbody>' +
                             '<tr>' +
-                                '<td id="t3_1_1">1_1</td>' +
-                            '</tr>' +
-                            '<tr>' +
-                                '<td id="t3_2_1">2_1</td>' +
-                            '</tr>' +
-                            '<tr>' +
-                                '<td id="t3_3_1">3_1</td>' +
+                                '<td id="t1_1_1">1_1</td>' +
                             '</tr>' +
                         '</tbody>' +
                     '</table>' +
+                    '<br class="' +
+                        WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
+                    '"/>' +
                     '<ol>' +
                         '<li id="li_3">3</li>' +
                     '</ol>' +
@@ -1153,6 +1162,9 @@ var expectedMiddleIn = String() +
                         '</tr>' +
                         '</tbody>' +
                     '</table>' +
+                    '<br class="' +
+                        WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
+                    '"/>' +
                 '</li>' +
                 '<li id="li_3">3</li>' +
             '</ol>' +
@@ -1171,6 +1183,9 @@ var expectedMiddleOutPartial = String() +
                     '</tr>' +
                 '</tbody>' +
             '</table>' +
+            '<br class="' +
+                WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
+            '"/>' +
             '<ol>' +
                 '<li id="li_3">3</li>' +
             '</ol>' +
@@ -1189,6 +1204,9 @@ var expectedMiddleOutFull = String() +
                     '</tr>' +
                 '</tbody>' +
             '</table>' +
+            '<br class="' +
+                WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
+            '"/>' +
         '</li>' +
         '<li id="li_3">3</li>' +
     '</ol>';
@@ -1300,6 +1318,9 @@ test("Triple table insertion into a sublist", function () {
 });
 
 module("table-parse_spacers_in_list", {setup: setupWym});
+// The tests in this module use the htmlEquals function from utils.js to parse
+// the resulting html from tables being inserted into a list or sublist using
+// the parser to ensure that the line break spacers are properly removed.
 
 test("Parse list with a table at the end", function () {
     var wymeditor = jQuery.wymeditors(0);
