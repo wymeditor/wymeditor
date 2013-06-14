@@ -771,7 +771,8 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
         $firstChild,
         $lastChild,
         blockSepSelector,
-        blockListEndSepSelector;
+        blockListEndSepSelector,
+        $blockListEnds;
 
     if (jQuery.browser.mozilla) {
         placeholderNode = '<br ' +
@@ -809,10 +810,17 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
     $body.find(blockSepSelector).before(placeholderNode);
 
     blockListEndSepSelector = this._getBlockListEndSepSelector();
+    $blockListEnds = $body.find(blockListEndSepSelector);
 
     // Put placeholder nodes after blocking elements at the end of lists to
     // space them.
-    $body.find(blockListEndSepSelector).after(placeholderNode);
+    $blockListEnds.each(function () {
+        var $block = jQuery(this);
+
+        if(!$block.next(WYMeditor.BLOCKING_ELEMENTS.join(', ')).length) {
+            $block.after(placeholderNode);
+        }
+    });
 };
 
 /**
@@ -870,7 +878,7 @@ WYMeditor.editor.prototype._getBlockListEndSepSelector = function () {
             // Only get the last-of-type because spacer nodes can be
             // inserted between the other blocking elements in a list if
             // the selector returned by _buildBlockSepSelector is used.
-            blockCombo.push(elementO + ' ' + elementI + ':last-of-type');
+            blockCombo.push(elementO + ' ' + elementI);
         });
     });
 
