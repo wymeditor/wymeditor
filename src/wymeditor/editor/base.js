@@ -771,8 +771,8 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
         $firstChild,
         $lastChild,
         blockSepSelector,
-        blockListEndSepSelector,
-        $blockListEnds;
+        blockInListsSepSelector,
+        $blockInLists;
 
     if (jQuery.browser.mozilla) {
         placeholderNode = '<br ' +
@@ -809,12 +809,12 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
     // blocking elements and normal block-level elements
     $body.find(blockSepSelector).before(placeholderNode);
 
-    blockListEndSepSelector = this._getBlockListEndSepSelector();
-    $blockListEnds = $body.find(blockListEndSepSelector);
+    blockInListsSepSelector = this._getBlockInListsSepSelector();
+    $blockInLists = $body.find(blockInListsSepSelector);
 
     // Put placeholder nodes after blocking elements at the end of lists to
     // space them.
-    $blockListEnds.each(function () {
+    $blockInLists.each(function () {
         var $block = jQuery(this);
 
         if(!$block.next(WYMeditor.BLOCKING_ELEMENTS.join(', ')).length) {
@@ -859,16 +859,16 @@ WYMeditor.editor.prototype._getBlockSepSelector = function () {
 };
 
 /**
-    editor._getBlockListEndSepSelector
+    editor._getBlockInListsSepSelector
     ==================================
 
-    Returns a selector for getting all of the block elements at the end of lists
-    or sublists. These block elements should have a spacer line break after
-    them in the editor at all times.
+    Returns a selector for getting all of the block elements in lists
+    or sublists. The block elements at the end of lists or sublists should have
+    a spacer line break after them in the editor at all times.
 */
-WYMeditor.editor.prototype._getBlockListEndSepSelector = function () {
-    if (typeof (this._blockListEndSpacersSel) !== 'undefined') {
-        return this._blockListEndSpacersSel;
+WYMeditor.editor.prototype._getBlockInListsSepSelector = function () {
+    if (typeof (this._blockInListsSpacersSel) !== 'undefined') {
+        return this._blockInListsSpacersSel;
     }
 
     var blockCombo = [];
@@ -882,8 +882,8 @@ WYMeditor.editor.prototype._getBlockListEndSepSelector = function () {
         });
     });
 
-    this._blockListEndSpacersSel = blockCombo.join(', ');
-    return this._blockListEndSpacersSel;
+    this._blockInListsSpacersSel = blockCombo.join(', ');
+    return this._blockInListsSpacersSel;
 };
 
 /**
@@ -900,7 +900,7 @@ WYMeditor.editor.prototype.fixDoubleBr = function () {
     $body.children('br + br').filter(':not(pre br)').remove();
 
     // Strip consecutive brs following a block element at the end of a list
-    $body.find(this._getBlockListEndSepSelector())
+    $body.find(this._getBlockInListsSepSelector())
          .nextAll('br + br').remove();
 
     // Also remove any brs between two p's
