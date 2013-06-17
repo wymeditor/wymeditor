@@ -1012,23 +1012,39 @@ test("_selected image is saved on mousedown", function () {
 module("image-insertion", {setup: setupWym});
 
 test("Image insertion outside of a container", function () {
-    expect(1);
+    expect(2);
     var wymeditor = jQuery.wymeditors(0),
         $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
-        $image,
+        checkOutside,
 
-        imageSrc = 'http://www.google.com/intl/en_com/images/srpr/logo3w.png',
+        imageURL = 'http://www.google.com/intl/en_com/images/srpr/logo3w.png',
+        imageStamp = wymeditor.uniqueStamp(),
+        imageSelector = 'img[src$="' + imageStamp + '"]',
+
         expectedHtml = String() +
             '<p>' +
-                '<img src="' + imageSrc + '"/>' +
+                '<img src="' + imageURL + '"/>' +
             '</p>';
+        expectedHtmlIE = expectedHtml.replace(/<\/?p>/g, '');
 
-        wymeditor._exec(WYMeditor.INSERT_IMAGE, imageSrc);
-        $image = jQuery('img[src=' + imageSrc + ']');
+    // Mimic the way images are inserted by the insert image tool by first
+    // inserting the image with its src set to a unique stamp for
+    // identification rather than its actual src.
+    wymeditor.html('');
+    wymeditor._exec(WYMeditor.INSERT_IMAGE, imageStamp);
 
-        ok(!$image.parent().nodeName === 'p',
-           "Image was wrapped in a paragraph");
-        ok(!$image.patent().parent()
+    checkOutside = !($body.siblings(imageSelector).length ||
+                   $body.siblings().children(imageSelector).length);
+    ok(checkOutside, "Image is not outside the wymeditor body");
+
+    $body.find(imageSelector).attr(WYMeditor.SRC, imageURL);
+    if (jQuery.browser.msie) {
+        // IE doesn't wrap the image in a paragraph
+        htmlEquals(wymeditor, expectedHtmlIE);
+    } else {
+        htmlEquals(wymeditor, expectedHtml);
+    }
+});
 
 module("header-no_span", {setup: setupWym});
 
