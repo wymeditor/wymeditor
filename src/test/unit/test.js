@@ -1009,7 +1009,34 @@ test("_selected image is saved on mousedown", function () {
     equals(wymeditor._selected_image, $google[0]);
 });
 
-module("Span in headers", {setup: setupWym});
+module("header-no_span", {setup: setupWym});
+
+/**
+    checkSpanInHeader
+    =================
+
+    Checks if using the given command on a container of type containerType in
+    wymeditor creates a tagName element within the container. Returns true if
+    no span was created within the container, and returns false if a span was
+    created within the container.
+*/
+function checkTagInContainer(wymeditor, containerType, tagName, command) {
+    var $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $container,
+        i,
+
+        initHtml = String () +
+        '<' + containerType + '>' +
+            'Test' +
+        '</' + containerType + '>';
+
+    wymeditor.html(initHtml);
+    $container = $body.find(containerType);
+    makeTextSelection(wymeditor, $container, $container, 0, 4);
+
+    wymeditor.exec(command);
+    return $container.find(tagName).length;
+}
 
 test("No span within a header after bolding", function () {
     expect(6);
@@ -1017,27 +1044,9 @@ test("No span within a header after bolding", function () {
         $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
         i;
 
-    function testHeader(headerType) {
-        var $header,
-            i,
-            initHtml = String () +
-            '<' + headerType + '>' +
-                'Test' +
-            '</' + headerType + '>';
-
-        wymeditor.html(initHtml);
-        $header = $body.find(headerType);
-        makeTextSelection(wymeditor, $header, $header, 0, 4);
-
-        wymeditor.exec('Bold');
-        equals(wymeditor.xhtml(), initHtml,
-               "Test for span in " + headerType + " on bold");
-
-        return true;
-    }
-
     for (i = 1; i < 7; i++) {
         header = 'h' + i;
-        testHeader(header);
+        ok(!checkTagInContainer(wymeditor, header, 'span', 'Bold'),
+           "No span in " + header + " on bold");
     }
 });

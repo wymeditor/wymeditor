@@ -77,7 +77,9 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
     }
 
     var focusNode = this.selected(),
-        _param, container, attr, parent;
+        container,
+        tagName,
+        parent;
 
     if (param) {
         this._doc.execCommand(cmd, '', param);
@@ -94,7 +96,7 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
             this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
         }
 
-        // Strip span tags if we're in a header
+        // Strip span tag that might have been added if we're in a header
         if (tagName === 'span') {
             parent = container.parentNode;
             if (parent && jQuery.inArray(parent.tagName.toLowerCase(),
