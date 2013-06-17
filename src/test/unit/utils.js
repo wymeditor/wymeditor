@@ -65,12 +65,14 @@ function normalizeHtml(node) {
                 attr = attrs[i];
                 if (attr.specified) {
                     // We only care about specified attributes and ignore
-                    // attributes needed for the editor internally.
+                    // attributes that are only used in specific browsers.
                     if (!(jQuery.browser.mozilla &&
                             (attr.nodeName === '_moz_editor_bogus_node' ||
                              attr.nodeName === '_moz_dirty')) &&
                         !(jQuery.browser.msie &&
-                            attr.nodeName === '_wym_visited')
+                            attr.nodeName === '_wym_visited' ||
+                            attr.nodeName === 'sizcache' ||
+                            attr.nodeName === 'sizset')
                        ) {
 
                         sortedAttrs.push(attr);
