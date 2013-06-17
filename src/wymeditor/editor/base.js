@@ -812,12 +812,20 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
     blockInListSepSelector = this._getBlockInListSepSelector();
     $blockInList = $body.find(blockInListSepSelector);
 
-    // Put placeholder nodes after blocking elements at the end of lists to
-    // space them.
+    // The $blockInList selection must be iterated over to only add placeholder
+    // nodes after blocking elements at the end of a list item rather than all
+    // blocking elements in a list. No jQuery selection that is supported on
+    // all browsers can do this check, so that is why it must be done by using
+    // `each` to iterate over the selection. Note that the handling of the
+    // spacing of other blocking elements in a list besides after the last
+    // blocking element in a list item is already handled by the
+    // blockSepSelector used before this.
     $blockInList.each(function () {
         var $block = jQuery(this);
 
-        if(!$block.next(blockingSelector).length) {
+        if(!$block.next(blockingSelector).length &&
+           !$block.next(WYMeditor.BR).length) {
+
             $block.after(placeholderNode);
         }
     });
@@ -898,16 +906,6 @@ WYMeditor.editor.prototype.fixDoubleBr = function () {
 
     // Strip consecutive brs unless they're in a pre tag
     $body.children('br + br').filter(':not(pre br)').remove();
-
-    // Strip consecutive brs following a block element at the end of a list
-    $body.find(this._getBlockInListSepSelector())
-         .each(function () {
-            var $block = jQuery(this);
-
-            if (!$block.next(blockingSelector).length) {
-                $block.nextAll('br + br').remove();
-            }
-         });
 
     // Also remove any brs between two p's
     $body.find('p + br').next('p').prev('br').remove();
