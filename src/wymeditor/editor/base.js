@@ -771,8 +771,8 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
         $firstChild,
         $lastChild,
         blockSepSelector,
-        blockInListsSepSelector,
-        $blockInLists;
+        blockInListSepSelector,
+        $blockInList;
 
     if (jQuery.browser.mozilla) {
         placeholderNode = '<br ' +
@@ -809,15 +809,15 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
     // blocking elements and normal block-level elements
     $body.find(blockSepSelector).before(placeholderNode);
 
-    blockInListsSepSelector = this._getBlockInListsSepSelector();
-    $blockInLists = $body.find(blockInListsSepSelector);
+    blockInListSepSelector = this._getBlockInListSepSelector();
+    $blockInList = $body.find(blockInListSepSelector);
 
     // Put placeholder nodes after blocking elements at the end of lists to
     // space them.
-    $blockInLists.each(function () {
+    $blockInList.each(function () {
         var $block = jQuery(this);
 
-        if(!$block.next(WYMeditor.BLOCKING_ELEMENTS.join(', ')).length) {
+        if(!$block.next(blockingSelector).length) {
             $block.after(placeholderNode);
         }
     });
@@ -858,32 +858,29 @@ WYMeditor.editor.prototype._getBlockSepSelector = function () {
     return this._blockSpacersSel;
 };
 
-/**
-    editor._getBlockInListsSepSelector
+/*
+    editor._getBlockInListSepSelector
     ==================================
 
     Returns a selector for getting all of the block elements in lists
     or sublists. The block elements at the end of lists or sublists should have
     a spacer line break after them in the editor at all times.
 */
-WYMeditor.editor.prototype._getBlockInListsSepSelector = function () {
-    if (typeof (this._blockInListsSpacersSel) !== 'undefined') {
-        return this._blockInListsSpacersSel;
+WYMeditor.editor.prototype._getBlockInListSepSelector = function () {
+    if (typeof (this._blockInListSpacersSel) !== 'undefined') {
+        return this._blockInListSpacersSel;
     }
 
     var blockCombo = [];
 
     jQuery.each(WYMeditor.LIST_TYPE_ELEMENTS, function (indexO, elementO) {
         jQuery.each(WYMeditor.BLOCKING_ELEMENTS, function (indexI, elementI) {
-            // Only get the last-of-type because spacer nodes can be
-            // inserted between the other blocking elements in a list if
-            // the selector returned by _buildBlockSepSelector is used.
             blockCombo.push(elementO + ' ' + elementI);
         });
     });
 
-    this._blockInListsSpacersSel = blockCombo.join(', ');
-    return this._blockInListsSpacersSel;
+    this._blockInListSpacersSel = blockCombo.join(', ');
+    return this._blockInListSpacersSel;
 };
 
 /**
@@ -895,13 +892,22 @@ WYMeditor.editor.prototype._getBlockInListsSepSelector = function () {
 */
 WYMeditor.editor.prototype.fixDoubleBr = function () {
     var $body = jQuery(this._doc).find('body.wym_iframe'),
-        $last_br;
+        $last_br,
+
+        blockingSelector = WYMeditor.BLOCKING_ELEMENTS.join(', ');
+
     // Strip consecutive brs unless they're in a pre tag
     $body.children('br + br').filter(':not(pre br)').remove();
 
     // Strip consecutive brs following a block element at the end of a list
-    $body.find(this._getBlockInListsSepSelector())
-         .nextAll('br + br').remove();
+    $body.find(this._getBlockInListSepSelector())
+         .each(function () {
+            var $block = jQuery(this);
+
+            if (!$block.next(blockingSelector).length) {
+                $block.nextAll('br + br').remove();
+            }
+         });
 
     // Also remove any brs between two p's
     $body.find('p + br').next('p').prev('br').remove();
