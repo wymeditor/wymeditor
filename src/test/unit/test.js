@@ -1026,6 +1026,10 @@ function changeIndent(wymeditor, html, selStart, selEnd, inOrOut) {
     }
 }
 
+var TEST_LINEBREAK_SPACER = '<br class="' +
+                                WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
+                            '"/>';
+
 var listForTableInsertion = String() +
     '<ol>' +
         '<li id="li_1">1</li>' +
@@ -1059,9 +1063,7 @@ var expectedSublistOneTable = String() +
                             '</tr>' +
                         '</tbody>' +
                     '</table>' +
-                    '<br class="' +
-                        WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
-                    '"/>' +
+                    TEST_LINEBREAK_SPACER +
                     '<ol>' +
                         '<li id="li_3">3</li>' +
                     '</ol>' +
@@ -1086,9 +1088,7 @@ var expectedSublistTwoTables = String() +
                             '</tr>' +
                         '</tbody>' +
                     '</table>' +
-                    '<br class="' +
-                        WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
-                    '"/>' +
+                    TEST_LINEBREAK_SPACER +
                     '<table>' +
                         '<caption>test_1</caption>' +
                         '<tbody>' +
@@ -1097,9 +1097,7 @@ var expectedSublistTwoTables = String() +
                             '</tr>' +
                         '</tbody>' +
                     '</table>' +
-                    '<br class="' +
-                        WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
-                    '"/>' +
+                    TEST_LINEBREAK_SPACER +
                     '<ol>' +
                         '<li id="li_3">3</li>' +
                     '</ol>' +
@@ -1127,9 +1125,7 @@ var expectedSublistThreeTables = String() +
                             '</tr>' +
                         '</tbody>' +
                     '</table>' +
-                    '<br class="' +
-                        WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
-                    '"/>' +
+                    TEST_LINEBREAK_SPACER +
                     '<table>' +
                         '<caption>test_2</caption>' +
                         '<tbody>' +
@@ -1141,9 +1137,7 @@ var expectedSublistThreeTables = String() +
                             '</tr>' +
                         '</tbody>' +
                     '</table>' +
-                    '<br class="' +
-                        WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
-                    '"/>' +
+                    TEST_LINEBREAK_SPACER +
                     '<table>' +
                         '<caption>test_1</caption>' +
                         '<tbody>' +
@@ -1152,9 +1146,7 @@ var expectedSublistThreeTables = String() +
                             '</tr>' +
                         '</tbody>' +
                     '</table>' +
-                    '<br class="' +
-                        WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
-                    '"/>' +
+                    TEST_LINEBREAK_SPACER +
                     '<ol>' +
                         '<li id="li_3">3</li>' +
                     '</ol>' +
@@ -1164,10 +1156,8 @@ var expectedSublistThreeTables = String() +
     '</ol>';
 
 var sublistThreeTablesNoBR =
-        expectedSublistThreeTables.replace(RegExp(
-            '<br class="' +
-                WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
-            '"/>', 'g'), '');
+        expectedSublistThreeTables.replace(
+            RegExp(TEST_LINEBREAK_SPACER, 'g'), '');
 
 var expectedMiddleIn = String() +
     '<ol>' +
@@ -1182,9 +1172,7 @@ var expectedMiddleIn = String() +
                         '</tr>' +
                         '</tbody>' +
                     '</table>' +
-                    '<br class="' +
-                        WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
-                    '"/>' +
+                    TEST_LINEBREAK_SPACER +
                 '</li>' +
                 '<li id="li_3">3</li>' +
             '</ol>' +
@@ -1203,9 +1191,7 @@ var expectedMiddleOutPartial = String() +
                     '</tr>' +
                 '</tbody>' +
             '</table>' +
-            '<br class="' +
-                WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
-            '"/>' +
+            TEST_LINEBREAK_SPACER +
             '<ol>' +
                 '<li id="li_3">3</li>' +
             '</ol>' +
@@ -1224,9 +1210,7 @@ var expectedMiddleOutFull = String() +
                     '</tr>' +
                 '</tbody>' +
             '</table>' +
-            '<br class="' +
-                WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
-            '"/>' +
+            TEST_LINEBREAK_SPACER +
         '</li>' +
         '<li id="li_3">3</li>' +
     '</ol>';
@@ -1245,9 +1229,7 @@ var expectedEndIn = String() +
                             '</tr>' +
                         '</tbody>' +
                     '</table>' +
-                    '<br class="' +
-                        WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
-                    '"/>' +
+                    TEST_LINEBREAK_SPACER +
                 '</li>' +
             '</ol>' +
         '</li>' +
@@ -1266,21 +1248,13 @@ var expectedEndOut = String() +
                         '</tr>' +
                     '</tbody>' +
                 '</table>' +
-                '<br class="' +
-                    WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
-                '"/>' +
+                TEST_LINEBREAK_SPACER +
             '</li>' +
         '</ol>';
 
-var startEndInNoBR = expectedEndIn.replace(
-                        '<br class="' +
-                            WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
-                        '"/>', '');
+var startEndInNoBR = expectedEndIn.replace(TEST_LINEBREAK_SPACER, '');
 
-var startEndOutNoBR = expectedEndOut.replace(
-                        '<br class="' +
-                            WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
-                        '"/>', '');
+var startEndOutNoBR = expectedEndOut.replace(TEST_LINEBREAK_SPACER, '');
 
 module("table-insert_in_list", {setup: setupWym});
 
