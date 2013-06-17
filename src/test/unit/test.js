@@ -941,29 +941,34 @@ if (jQuery.browser.mozilla) {
 
 // Functions and html strings for table in list modules
 
-// Puts the html in the body of the wymeditor and creates a rowsXcols-sized
-// table at the selection (using the specified selectionType which can be
-// 'text' or 'collapsed'). The table's cells each have an id attribute of the
-// form "t<table_id_character>_<x>_<y>" where <table_id_character> is the last
-// character of the caption, <x> is the x-coordinate of the cell in the table,
-// and <y> is the y-coordinate of the cell in the table. Each cell then has
-// text of the form "<x>_<y>" where <x> and <y> are the same as described for
-// the id attribute. Here is a small example:
-//
-// setupTable(wymeditor, html, selection, selectionType, 2, 1, 'test_1')
-// inserts the following html at the selection:
-//
-//  <table>
-//      <caption>test_1</caption>
-//      <tbody>
-//          <tr>
-//              <td id="t1_1_1">1_1</td>
-//          </tr>
-//          <tr>
-//              <td id="t1_2_1">2_1</td>
-//          </tr>
-//      </tbody>
-//  </table>
+/**
+    setupTable
+    ==========
+
+    Puts the html in the body of the wymeditor and creates a rowsXcols-sized
+    table at the selection (using the specified selectionType which can be
+    'text' or 'collapsed'). The table's cells each have an id attribute of the
+    form "t<table_id_character>_<x>_<y>" where <table_id_character> is the last
+    character of the caption, <x> is the x-coordinate of the cell in the table,
+    and <y> is the y-coordinate of the cell in the table. Each cell then has
+    text of the form "<x>_<y>" where <x> and <y> are the same as described for
+    the id attribute. Here is a small example:
+
+    setupTable(wymeditor, html, selection, selectionType, 2, 1, 'test_1')
+    inserts the following html at the selection:
+
+        <table>
+            <caption>test_1</caption>
+            <tbody>
+                <tr>
+                    <td id="t1_1_1">1_1</td>
+                </tr>
+                <tr>
+                    <td id="t1_2_1">2_1</td>
+                </tr>
+            </tbody>
+        </table>
+*/
 function setupTable(wymeditor, html, selection, selectionType,
                     rows, cols, caption) {
     var $body,
@@ -995,6 +1000,18 @@ function setupTable(wymeditor, html, selection, selectionType,
     }
 }
 
+/**
+    changeIndent
+    ============
+
+    Puts the html in the body of the wymeditor and applies either the indent or
+    outdent command to the selection ranging from the element with id selStart
+    to the element with id selEnd. selStart and selEnd should be strings in the
+    form '#<element_id>' where <element_id> is the id attribute of the element
+    to be selected. inOrOur should be the string 'indent' if the indent command
+    should be applied to the selection, or it should be the string 'outdent' if
+    the outdent command should be applied to the selection.
+*/
 function changeIndent(wymeditor, html, selStart, selEnd, inOrOut) {
     var $body;
 
