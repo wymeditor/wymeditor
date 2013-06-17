@@ -1009,6 +1009,27 @@ test("_selected image is saved on mousedown", function () {
     equals(wymeditor._selected_image, $google[0]);
 });
 
+module("image-insertion", {setup: setupWym});
+
+test("Image insertion outside of a container", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $image,
+
+        imageSrc = 'http://www.google.com/intl/en_com/images/srpr/logo3w.png',
+        expectedHtml = String() +
+            '<p>' +
+                '<img src="' + imageSrc + '"/>' +
+            '</p>';
+
+        wymeditor._exec(WYMeditor.INSERT_IMAGE, imageSrc);
+        $image = jQuery('img[src=' + imageSrc + ']');
+
+        ok(!$image.parent().nodeName === 'p',
+           "Image was wrapped in a paragraph");
+        ok(!$image.patent().parent()
+
 module("header-no_span", {setup: setupWym});
 
 /**
