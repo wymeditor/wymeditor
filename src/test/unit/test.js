@@ -1012,18 +1012,17 @@ test("_selected image is saved on mousedown", function () {
 module("header-no_span", {setup: setupWym});
 
 /**
-    checkSpanInHeader
-    =================
+    checkTagInContainer
+    ===================
 
     Checks if using the given command on a container of type containerType in
-    wymeditor creates a tagName element within the container. Returns true if
-    no span was created within the container, and returns false if a span was
-    created within the container.
+    wymeditor creates a tagName element within the container. Returns true if a
+    tagName element was created within the container, and returns false if no
+    tagName element was created within the container.
 */
 function checkTagInContainer(wymeditor, containerType, tagName, command) {
     var $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
         $container,
-        i,
 
         initHtml = String () +
         '<' + containerType + '>' +
