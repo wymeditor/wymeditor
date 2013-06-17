@@ -1000,32 +1000,6 @@ function setupTable(wymeditor, html, selection, selectionType,
     }
 }
 
-/**
-    changeIndent
-    ============
-
-    Puts the html in the body of the wymeditor and applies either the indent or
-    outdent command to the selection ranging from the element with id selStart
-    to the element with id selEnd. selStart and selEnd should be strings in the
-    form '#<element_id>' where <element_id> is the id attribute of the element
-    to be selected. inOrOur should be the string 'indent' if the indent command
-    should be applied to the selection, or it should be the string 'outdent' if
-    the outdent command should be applied to the selection.
-*/
-function changeIndent(wymeditor, html, selStart, selEnd, inOrOut) {
-    var $body;
-
-    wymeditor.html(html);
-    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
-    makeTextSelection(wymeditor, $body.find(selStart)[0],
-                      $body.find(selEnd)[0], 0, 1);
-    if (inOrOut === "indent") {
-        wymeditor.indent();
-    } else if (inOrOut === "outdent") {
-        wymeditor.outdent();
-    }
-}
-
 var TEST_LINEBREAK_SPACER = '<br class="' +
                                 WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
                             '"/>';
@@ -1159,45 +1133,6 @@ var sublistThreeTablesNoBR =
         expectedSublistThreeTables.replace(
             RegExp(TEST_LINEBREAK_SPACER, 'g'), '');
 
-var expectedMiddleIn = String() +
-    '<ol>' +
-        '<li id="li_1">1' +
-            '<ol>' +
-                '<li id="li_2">2' +
-                    '<table>' +
-                        '<caption>test_1</caption>' +
-                        '<tbody>' +
-                        '<tr>' +
-                            '<td id="t1_1_1">1_1</td>' +
-                        '</tr>' +
-                        '</tbody>' +
-                    '</table>' +
-                    TEST_LINEBREAK_SPACER +
-                '</li>' +
-                '<li id="li_3">3</li>' +
-            '</ol>' +
-        '</li>' +
-    '</ol>';
-
-var expectedMiddleOutPartial = String() +
-    '<ol>' +
-        '<li id="li_1">1</li>' +
-        '<li id="li_2">2' +
-            '<table>' +
-                '<caption>test_1</caption>' +
-                '<tbody>' +
-                    '<tr>' +
-                        '<td id="t1_1_1">1_1</td>' +
-                    '</tr>' +
-                '</tbody>' +
-            '</table>' +
-            TEST_LINEBREAK_SPACER +
-            '<ol>' +
-                '<li id="li_3">3</li>' +
-            '</ol>' +
-        '</li>' +
-    '</ol>';
-
 var expectedMiddleOutFull = String() +
     '<ol>' +
         '<li id="li_1">1</li>' +
@@ -1251,10 +1186,6 @@ var expectedEndOut = String() +
                 TEST_LINEBREAK_SPACER +
             '</li>' +
         '</ol>';
-
-var startEndInNoBR = expectedEndIn.replace(TEST_LINEBREAK_SPACER, '');
-
-var startEndOutNoBR = expectedEndOut.replace(TEST_LINEBREAK_SPACER, '');
 
 module("table-insert_in_list", {setup: setupWym});
 
@@ -1362,58 +1293,6 @@ test("Parse list with multiple tables in a sublist", function () {
 
     wymeditor.html(expectedSublistThreeTables);
     htmlEquals(wymeditor, sublistThreeTablesNoBR);
-});
-
-module("table-indent_in_list", {setup: setupWym});
-
-test("Indent with table in the middle of a list", function () {
-    expect(1);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
-
-    changeIndent(wymeditor, expectedMiddleOutFull, '#li_2', '#li_3', 'indent');
-    equals(normalizeHtml($body.get(0).firstChild), expectedMiddleIn,
-           "Table indented in the middle of a list");
-});
-
-test("Indent with table at the end of a list", function () {
-    expect(2);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
-
-    changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'indent');
-    equals(normalizeHtml($body.get(0).firstChild), expectedEndIn,
-           "Table indented at the end of a list");
-
-    changeIndent(wymeditor, startEndOutNoBR, '#li_3', '#li_3', 'indent');
-    equals(normalizeHtml($body.get(0).firstChild), expectedEndIn,
-           "Table indented at the end of a list with no line break");
-});
-
-module("table-outdent_in_list", {setup: setupWym});
-
-test("Outdent with table in the middle of a list", function () {
-    expect(1);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
-
-    changeIndent(wymeditor, expectedMiddleIn, '#li_2', '#li_2', 'outdent');
-    equals(normalizeHtml($body.get(0).firstChild), expectedMiddleOutPartial,
-           "Table outdented in the middle of a list");
-});
-
-test("Outdent with table at the end of a list", function () {
-    expect(2);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
-
-    changeIndent(wymeditor, expectedEndIn, '#li_3', '#li_3', 'outdent');
-    equals(normalizeHtml($body.get(0).firstChild), expectedEndOut,
-           "Table outdented at the end of a list");
-
-    changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'outdent');
-    equals(normalizeHtml($body.get(0).firstChild), expectedEndOut,
-           "Table outdented at the end of a list with no line break");
 });
 
 module("preformatted text", {setup: setupWym});
