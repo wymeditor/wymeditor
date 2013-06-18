@@ -96,21 +96,15 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
             this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
         }
 
-        // If the bold command was used within a header and if a span tag was
-        // added within that header without a class and with a style attribute,
-        // unwrap the header content from that span tag.
-        if (cmd === WYMeditor.BOLD && tagName === 'span') {
-            parent = container.parentNode;
+        // If the container is a span, strip it out if it doesn't have a class
+        // but has an inline style of 'font-weight: normal;'.
+        if (tagName === 'span') {
+            $span = jQuery(container);
 
-            // Check if we're in a header
-            if (parent && jQuery.inArray(parent.tagName.toLowerCase(),
-                                         WYMeditor.HEADER_ELEMENTS) > -1) {
-                $span = jQuery(container);
+            if (!$span.attr('class') &&
+                $span.attr('style') === 'font-weight: normal;') {
 
-                // Check if the span has no class but has a style attribute.
-                if (!$span.attr('class') && $span.attr('style')) {
-                    $span.contents().unwrap();
-                }
+                $span.contents().unwrap();
             }
         }
     }

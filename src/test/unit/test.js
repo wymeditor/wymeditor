@@ -1037,7 +1037,7 @@ function checkTagInContainer(wymeditor, containerType, tagName, command) {
     return $container.find(tagName).length;
 }
 
-test("No span within a header after bolding", function () {
+test("No span added to header after bolding", function () {
     expect(6);
     var wymeditor = jQuery.wymeditors(0),
         i;
@@ -1045,6 +1045,6 @@ test("No span within a header after bolding", function () {
     for (i = 1; i < 7; i++) {
         header = 'h' + i;
         ok(!checkTagInContainer(wymeditor, header, 'span', 'Bold'),
-           "No span in " + header + " on bold");
+           "No span added to " + header + " on bold");
     }
 });
