@@ -249,6 +249,9 @@ jQuery.extend(WYMeditor, {
     // The remaining `MAIN_CONTAINERS` that are not considered `BLOCKING_ELEMENTS`
     NON_BLOCKING_ELEMENTS : ["p", "h1", "h2", "h3", "h4", "h5", "h6"],
 
+    // The subset of the `MAIN_CONTAINERS` containing the header elements.
+    HEADER_ELEMENTS : ["h1", "h2", "h3", "h4", "h5", "h6"],
+
     // The elements that are allowed to be turned in to lists. If an item in
     // this array isn't in the MAIN_CONTAINERS array, then its contents will be
     // turned in to a list instead.

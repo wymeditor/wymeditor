@@ -1008,3 +1008,43 @@ test("_selected image is saved on mousedown", function () {
     $google.mousedown();
     equals(wymeditor._selected_image, $google[0]);
 });
+
+module("header-no_span", {setup: setupWym});
+
+/**
+    checkTagInContainer
+    ===================
+
+    Checks if using the given command on a container of type containerType in
+    wymeditor creates a tagName element within the container. Returns true if a
+    tagName element was created within the container, and returns false if no
+    tagName element was created within the container.
+*/
+function checkTagInContainer(wymeditor, containerType, tagName, command) {
+    var $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $container,
+
+        initHtml = String () +
+        '<' + containerType + '>' +
+            'Test' +
+        '</' + containerType + '>';
+
+    wymeditor.html(initHtml);
+    $container = $body.find(containerType);
+    makeTextSelection(wymeditor, $container, $container, 0, 4);
+
+    wymeditor.exec(command);
+    return $container.find(tagName).length;
+}
+
+test("No span added to header after bolding", function () {
+    expect(6);
+    var wymeditor = jQuery.wymeditors(0),
+        i;
+
+    for (i = 1; i < 7; i++) {
+        header = 'h' + i;
+        ok(!checkTagInContainer(wymeditor, header, 'span', 'Bold'),
+           "No span added to " + header + " on bold");
+    }
+});
