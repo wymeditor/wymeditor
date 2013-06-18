@@ -76,8 +76,10 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
         return false;
     }
 
-    var focusNode = this.selected(),
-        _param, container, attr;
+    var container,
+        tagName,
+        parent,
+        $span;
 
     if (param) {
         this._doc.execCommand(cmd, '', param);
@@ -85,10 +87,26 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
         this._doc.execCommand(cmd, '', null);
     }
 
-    // Wrap this content in a paragraph tag if we're in the body
     container = this.selected();
-    if (container && container.tagName.toLowerCase() === WYMeditor.BODY) {
-        this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
+    if (container) {
+        tagName = container.tagName.toLowerCase();
+
+        // Wrap this content in a paragraph tag if we're in the body
+        if (tagName === WYMeditor.BODY) {
+            this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
+        }
+
+        // If the container is a span, strip it out if it doesn't have a class
+        // but has an inline style of 'font-weight: normal;'.
+        if (tagName === 'span') {
+            $span = jQuery(container);
+
+            if (!$span.attr('class') &&
+                $span.attr('style') === 'font-weight: normal;') {
+
+                $span.contents().unwrap();
+            }
+        }
     }
 
     return true;
