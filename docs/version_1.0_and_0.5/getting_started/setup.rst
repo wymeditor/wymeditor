@@ -1,7 +1,7 @@
 Setting up WYMeditor
 ====================
 
-#. WYMeditor requires a version of jQuery between 1.2.6 and 1.9.1. First ensure
+#. WYMeditor requires a version of jQuery between 1.3.x and 1.9.x. First ensure
    that your page includes jQuery.
 
     .. note::

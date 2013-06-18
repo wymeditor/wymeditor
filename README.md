@@ -1,12 +1,10 @@
-WYMeditor
-=========
+# WYMeditor
 
 WYMeditor is an open source web-based WYSIWYM editor with semantics and
 standards in mind. The WYM-part stands for "What You Mean" compared to the more
 common "What You See Is What You Get".
 
-Why WYMeditor?
---------------
+## Why WYMeditor?
 
 WYMeditor is different from the
 [traditional](http://www.tinymce.com/) [editors](http://ckeditor.com/)
@@ -28,16 +26,14 @@ margins, you should give WYMeditor a try.
 We also fully support Internet Explorer 6, for those poor souls who have no
 choice.
 
-Try It
-------
+## Try It
 
 Want to see what WYMeditor can do? Try the [WYMeditor examples](http://wymeditor.no.de/wymeditor/examples/) right now.
 
 These examples run the bleeding edge code and give you a good idea of what
 WYMeditor can do.
 
-Quick Start
------------
+## Quick Start
 
 1. WYMeditor requires a version of jQuery between 1.2.6 and 1.9.1. First ensure
 that your page includes jQuery.
@@ -76,10 +72,11 @@ submission, just add the class `wymupdate` to your submit button.
 More examples with different plugins and configuration options can be found in
 your `examples` directory.
 
-Compatibility
--------------
+## Compatibility
 
 WYMeditor is compatible with:
+
+### Browsers
 
 * IE: 7, 8, 9 and 10
 * Firefox: LTS and latests two major versions
@@ -87,8 +84,13 @@ WYMeditor is compatible with:
 * Safari: Latest version
 * Google Chrome: Latest two major versions
 
-Contributing to WYMeditor
--------------------------
+### jQuery
+
+* Versions 1.3.X to 1.7.X
+* Version 1.8.x to 1.9.X when you include
+  [jquery-migrate](https://github.com/jquery/jquery-migrate/)
+
+## Contributing to WYMeditor
 
 ### Documentation
 
@@ -184,8 +186,7 @@ extracting `compiler.jar` into your `wymeditor` directory.
     `$ make min_closure archive`
 
 
-Getting Help
-------------
+## Getting Help
 
  - **Documentation:** [wymeditor.readthedocs.org](http://wymeditor.readthedocs.org)
  - **Forum:** http://community.wymeditor.org
@@ -194,8 +195,8 @@ Getting Help
 
 [Read more on contributing](https://wymeditor.readthedocs.org/en/latest/version_2.0/contributing.html)
 
-Copyright
----------
+## Copyright
+
 Copyright (c) 2005 - 2013 Jean-Francois Hovinne,
 Dual licensed under the MIT (MIT-license.txt)
 and GPL (GPL-license.txt) licenses.
