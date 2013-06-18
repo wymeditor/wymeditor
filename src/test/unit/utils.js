@@ -8,7 +8,7 @@ var pr_quot = /\"/g;
 // Attributes with browser specific use that should be ignored when normalizing
 // HTML for comparison across browsers.
 var ignoreAttributes = ['_moz_editor_bogus_node', '_moz_dirty',
-                        '_wym_visited', 'sizcache', 'sizsize'];
+                        '_wym_visited', 'sizcache', 'sizset'];
 
 /**
 * Escape html special characters.
