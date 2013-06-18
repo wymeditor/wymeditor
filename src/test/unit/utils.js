@@ -8,7 +8,7 @@ var pr_quot = /\"/g;
 // Attributes with browser specific use that should be ignored when normalizing
 // HTML for comparison across browsers.
 var ignoreAttributes = ['_moz_editor_bogus_node', '_moz_dirty',
-                        '_wym_visited', 'sizcache', 'sizset'];
+                        '_wym_visited', 'sizset'];
 
 /**
 * Escape html special characters.
@@ -71,8 +71,14 @@ function normalizeHtml(node) {
                 if (attr.specified) {
                     // We only care about specified attributes and ignore
                     // attributes that are only used in specific browsers.
-                    if (jQuery.inArray(attr.nodeName,
-                                       ignoreAttributes) === -1) {
+                    if (jQuery.inArray(attr.nodeName, ignoreAttributes) === -1 &&
+
+                        // With some versions of jQuery on IE, sometimes an
+                        // attribute named `sizcache` followed by a differing
+                        // string of numbers is added to elements, so regex
+                        // must be used to check for it.
+                        !/sizcache\d*/.test(attr.nodeName)) {
+
                         sortedAttrs.push(attr);
                     }
                 }
