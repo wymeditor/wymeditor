@@ -1040,7 +1040,6 @@ function checkTagInContainer(wymeditor, containerType, tagName, command) {
 test("No span within a header after bolding", function () {
     expect(6);
     var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
         i;
 
     for (i = 1; i < 7; i++) {

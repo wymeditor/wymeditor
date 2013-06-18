@@ -76,8 +76,7 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
         return false;
     }
 
-    var focusNode = this.selected(),
-        container,
+    var container,
         tagName,
         parent;
 
