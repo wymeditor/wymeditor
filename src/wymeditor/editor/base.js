@@ -2382,7 +2382,7 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
         // No valid selected container. Put the table at the end.
         jQuery(this._doc.body).append(table);
 
-    } else if (jQuery.inArray(container.tagName.toLowerCase(),
+    } else if (jQuery.inArray(container.nodeName.toLowerCase(),
                        WYMeditor.INLINE_TABLE_INSERTION_ELEMENTS) > -1) {
         // Insert table after selection if container is allowed to have tables
         // inserted inline.
@@ -2392,7 +2392,7 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
         // selection is within the list item, put the table after it. Either
         // way, this ensures the table will always be inserted within the list
         // item.
-        if (selectedNode.tagName.toLowerCase() === WYMeditor.LI) {
+        if (selectedNode.nodeName.toLowerCase() === WYMeditor.LI) {
             jQuery(selectedNode).append(table);
         } else {
             jQuery(selectedNode).after(table);
