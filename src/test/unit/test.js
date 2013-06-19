@@ -863,7 +863,7 @@ test("List- 2nd level li li_2_2", function () {
     );
 });
 
-module("Table Insertion", {setup: setupWym});
+module("table-insertion", {setup: setupWym});
 
 test("Table is editable after insertion", function () {
     expect(7);
@@ -939,7 +939,7 @@ if (jQuery.browser.mozilla) {
     });
 }
 
-module("preformatted text", {setup: setupWym});
+module("preformatted-text", {setup: setupWym});
 
 test("Preformatted text retains spacing", function () {
     var wymeditor = jQuery.wymeditors(0),
@@ -960,7 +960,7 @@ test("Preformatted text retains spacing", function () {
     equals(wymeditor.xhtml(), preHtml);
 });
 
-module("soft return", {setup: setupWym});
+module("soft-return", {setup: setupWym});
 
 test("Double soft returns are allowed", function () {
     var initHtml = String() +
@@ -976,7 +976,7 @@ test("Double soft returns are allowed", function () {
     htmlEquals(wymeditor, initHtml);
 });
 
-module("image styling", {setup: setupWym});
+module("image-styling", {setup: setupWym});
 
 test("_selected image is saved on mousedown", function () {
     var initHtml = String() +
