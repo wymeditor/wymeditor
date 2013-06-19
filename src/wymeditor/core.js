@@ -249,13 +249,27 @@ jQuery.extend(WYMeditor, {
     // The remaining `MAIN_CONTAINERS` that are not considered `BLOCKING_ELEMENTS`
     NON_BLOCKING_ELEMENTS : ["p", "h1", "h2", "h3", "h4", "h5", "h6"],
 
-    // The subset of the `MAIN_CONTAINERS` containing the header elements.
-    HEADER_ELEMENTS : ["h1", "h2", "h3", "h4", "h5", "h6"],
+    // The elements that define a type of list.
+    LIST_TYPE_ELEMENTS : ["ul", "ol"],
 
     // The elements that are allowed to be turned in to lists. If an item in
     // this array isn't in the MAIN_CONTAINERS array, then its contents will be
     // turned in to a list instead.
     POTENTIAL_LIST_ELEMENTS : ["p", "h1", "h2", "h3", "h4", "h5", "h6", "pre", "blockquote", "td"],
+
+    // The elements that are allowed to have a table inserted after them or
+    // within them.
+    POTENTIAL_TABLE_INSERT_ELEMENTS : ["p", "h1",  "h2",  "h3", "h4", "h5", "h6",
+        "pre", "blockquote", "li"],
+
+    // The elements that are allowed to have a table inserted inline within
+    // them.
+    INLINE_TABLE_INSERTION_ELEMENTS : ["li"],
+
+    // Class used to identify <br /> elements that are used to space out
+    // blocking elements in the editor so that they can be removed before
+    // parsing the html.
+    BLOCKING_ELEMENT_SPACER_CLASS : "wym-blocking-element-spacer",
 
     // Keyboard mappings so that we don't have to remember that 38 means up
     // when reading keyboard handlers

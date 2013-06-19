@@ -5,6 +5,11 @@ var pr_lt = /</g;
 var pr_gt = />/g;
 var pr_quot = /\"/g;
 
+// Attributes with browser specific use that should be ignored when normalizing
+// HTML for comparison across browsers.
+var ignoreAttributes = ['_moz_editor_bogus_node', '_moz_dirty',
+                        '_wym_visited', 'sizset'];
+
 /**
 * Escape html special characters.
 */
@@ -36,7 +41,21 @@ function normalizeHtml(node) {
         n,
         child,
         sortedAttrs,
-        i;
+        i,
+        $captions;
+
+    if (jQuery.browser.msie) {
+        $captions = jQuery(node).find('table > caption');
+        if ($captions.length) {
+            // Some versions of IE can unexpectedly add the caption of a table
+            // after the table body. This ensures the table caption is always
+            // at the start.
+            $captions.each(function () {
+                jQuery(this).prependTo(jQuery(this).parent());
+            });
+        }
+    }
+
     switch (node.nodeType) {
     case 1:  // an element
         name = node.tagName.toLowerCase();
@@ -50,8 +69,18 @@ function normalizeHtml(node) {
             for (i = n; --i >= 0;) {
                 attr = attrs[i];
                 if (attr.specified) {
-                    // We only care about specified attributes
-                    sortedAttrs.push(attr);
+                    // We only care about specified attributes and ignore
+                    // attributes that are only used in specific browsers.
+                    if (jQuery.inArray(attr.nodeName, ignoreAttributes) === -1 &&
+
+                        // With some versions of jQuery on IE, sometimes an
+                        // attribute named `sizcache` followed by a differing
+                        // string of numbers is added to elements, so regex
+                        // must be used to check for it.
+                        !/sizcache\d*/.test(attr.nodeName)) {
+
+                        sortedAttrs.push(attr);
+                    }
                 }
             }
             sortedAttrs.sort(function (a, b) {
@@ -65,7 +94,13 @@ function normalizeHtml(node) {
                     '="' + attribToHtml(attr.value) + '"';
             }
         }
-        html += '>';
+        if (name === "br" || name === "img" || name === "link") {
+            // close self-closing element
+            html += '/>';
+        } else {
+            html += '>';
+        }
+
         for (child = node.firstChild; child; child = child.nextSibling) {
             html += normalizeHtml(child);
         }
