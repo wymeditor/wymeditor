@@ -29,6 +29,10 @@ WYMeditor.
 * WYMeditor now works properly in Chrome when using jQuery 1.4 or higher.
   Thanks to several folks for outlining the fix and for Nick McLaughlin for the
   pull request.
+* When using the bold tool in a header in Chrome, there was an issue
+  where a span with a style attribute set to `font-weight: normal` would
+  be wrapped around the header's content. This has been fixed so that
+  this span will no longer occur after bolding.
 
 ## 1.0.0b4 (Beta 4)
 
