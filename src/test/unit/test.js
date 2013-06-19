@@ -939,6 +939,362 @@ if (jQuery.browser.mozilla) {
     });
 }
 
+// Functions and html strings for table in list modules
+
+/**
+    setupTable
+    ==========
+
+    Puts the html in the body of the wymeditor and creates a rowsXcols-sized
+    table at the selection (using the specified selectionType which can be
+    'text' or 'collapsed'). The table's cells each have an id attribute of the
+    form "t<table_id_character>_<x>_<y>" where <table_id_character> is the last
+    character of the caption, <x> is the x-coordinate of the cell in the table,
+    and <y> is the y-coordinate of the cell in the table. Each cell then has
+    text of the form "<x>_<y>" where <x> and <y> are the same as described for
+    the id attribute. Here is a small example:
+
+    setupTable(wymeditor, html, selection, selectionType, 2, 1, 'test_1')
+    inserts the following html at the selection:
+
+        <table>
+            <caption>test_1</caption>
+            <tbody>
+                <tr>
+                    <td id="t1_1_1">1_1</td>
+                </tr>
+                <tr>
+                    <td id="t1_2_1">2_1</td>
+                </tr>
+            </tbody>
+        </table>
+*/
+function setupTable(wymeditor, html, selection, selectionType,
+                    rows, cols, caption) {
+    var $body,
+        $element,
+        $table,
+        i,
+        j,
+        selectionNum = (selectionType === 'text') ? 1 : 0,
+        cellStr,
+        idStr = 't' + caption.slice(-1);
+
+    wymeditor.html(html);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    $element = $body.find(selection);
+    makeTextSelection(wymeditor, $element, $element, 0, selectionNum);
+
+    wymeditor.insertTable(rows, cols, caption, '');
+    $tableCells = $body.find('caption:contains(' + caption + ')')
+                       .parent()
+                       .find('td');
+
+    for (i = 0; i < rows; i++) {
+        for (j = 0; j < cols; j++) {
+            cellStr = (i+1) + '_' + (j+1);
+            $tableCells.eq(i + j)
+                       .attr('id', idStr + '_' + cellStr)
+                       .text(cellStr);
+        }
+    }
+}
+
+var TEST_LINEBREAK_SPACER = '<br class="' +
+                                WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS +
+                            '"/>';
+
+var listForTableInsertion = String() +
+    '<ol>' +
+        '<li id="li_1">1</li>' +
+        '<li id="li_2">2</li>' +
+        '<li id="li_3">3</li>' +
+    '</ol>';
+
+var sublistForTableInsertion = String() +
+    '<ol>' +
+        '<li id="li_1">1' +
+            '<ol>' +
+                '<li id="li_2">2' +
+                    '<ol>' +
+                        '<li id="li_3">3</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+    '</ol>';
+
+var expectedSublistOneTable = String() +
+    '<ol>' +
+        '<li id="li_1">1' +
+            '<ol>' +
+                '<li id="li_2">2' +
+                    '<table>' +
+                        '<caption>test_1</caption>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td id="t1_1_1">1_1</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                    TEST_LINEBREAK_SPACER +
+                    '<ol>' +
+                        '<li id="li_3">3</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+    '</ol>';
+
+var expectedSublistTwoTables = String() +
+    '<ol>' +
+        '<li id="li_1">1' +
+            '<ol>' +
+                '<li id="li_2">2' +
+                    '<table>' +
+                        '<caption>test_2</caption>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td id="t2_1_1">1_1</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td id="t2_2_1">2_1</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                    TEST_LINEBREAK_SPACER +
+                    '<table>' +
+                        '<caption>test_1</caption>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td id="t1_1_1">1_1</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                    TEST_LINEBREAK_SPACER +
+                    '<ol>' +
+                        '<li id="li_3">3</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+    '</ol>';
+
+var expectedSublistThreeTables = String() +
+    '<ol>' +
+        '<li id="li_1">1' +
+            '<ol>' +
+                '<li id="li_2">2' +
+                    '<table>' +
+                        '<caption>test_3</caption>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td id="t3_1_1">1_1</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td id="t3_2_1">2_1</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td id="t3_3_1">3_1</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                    TEST_LINEBREAK_SPACER +
+                    '<table>' +
+                        '<caption>test_2</caption>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td id="t2_1_1">1_1</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td id="t2_2_1">2_1</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                    TEST_LINEBREAK_SPACER +
+                    '<table>' +
+                        '<caption>test_1</caption>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td id="t1_1_1">1_1</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                    TEST_LINEBREAK_SPACER +
+                    '<ol>' +
+                        '<li id="li_3">3</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+    '</ol>';
+
+var sublistThreeTablesNoBR =
+        expectedSublistThreeTables.replace(
+            RegExp(TEST_LINEBREAK_SPACER, 'g'), '');
+
+var expectedMiddleOutFull = String() +
+    '<ol>' +
+        '<li id="li_1">1</li>' +
+        '<li id="li_2">2' +
+            '<table>' +
+                '<caption>test_1</caption>' +
+                '<tbody>' +
+                    '<tr>' +
+                        '<td id="t1_1_1">1_1</td>' +
+                    '</tr>' +
+                '</tbody>' +
+            '</table>' +
+            TEST_LINEBREAK_SPACER +
+        '</li>' +
+        '<li id="li_3">3</li>' +
+    '</ol>';
+
+var expectedEndIn = String() +
+    '<ol>' +
+        '<li id="li_1">1</li>' +
+        '<li id="li_2">2' +
+            '<ol>' +
+                '<li id="li_3">3' +
+                    '<table>' +
+                        '<caption>test_1</caption>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td id="t1_1_1">1_1</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                    TEST_LINEBREAK_SPACER +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+    '</ol>';
+
+var expectedEndOut = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2</li>' +
+            '<li id="li_3">3' +
+                '<table>' +
+                    '<caption>test_1</caption>' +
+                    '<tbody>' +
+                        '<tr>' +
+                            '<td id="t1_1_1">1_1</td>' +
+                        '</tr>' +
+                    '</tbody>' +
+                '</table>' +
+                TEST_LINEBREAK_SPACER +
+            '</li>' +
+        '</ol>';
+
+module("table-insert_in_list", {setup: setupWym});
+
+test("Table insertion in the middle of a list with text selection", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+    setupTable(wymeditor, listForTableInsertion, '#li_2', 'text',
+               1, 1, 'test_1');
+    equals(normalizeHtml($body.get(0).firstChild), expectedMiddleOutFull,
+           "Table insertion in the middle of a list with text selection");
+});
+
+test("Table insertion at the end of a list with text selection", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+        setupTable(wymeditor, listForTableInsertion, '#li_3', 'text',
+                   1, 1, 'test_1');
+        equals(normalizeHtml($body.get(0).firstChild), expectedEndOut,
+       "Table insertion at the end of a list with text selection");
+});
+
+test("Table insertion in the middle of a list with collapsed selection", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+    setupTable(wymeditor, listForTableInsertion, '#li_2', 'collapsed',
+               1, 1, 'test_1');
+    equals(normalizeHtml($body.get(0).firstChild), expectedMiddleOutFull,
+           "Table insertion in the middle of a list with collapsed selection");
+});
+
+test("Table insertion at the end of a list with collapsed selection", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+        setupTable(wymeditor, listForTableInsertion, '#li_3', 'collapsed',
+                   1, 1, 'test_1');
+        equals(normalizeHtml($body.get(0).firstChild), expectedEndOut,
+       "Table insertion at the end of a list with collapsed selection");
+});
+
+module("table-insert_in_sublist", {setup: setupWym});
+
+test("Single table insertion into a sublist", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+    setupTable(wymeditor, sublistForTableInsertion, '#li_2', 'text',
+               1, 1, 'test_1');
+    equals(normalizeHtml($body.get(0).firstChild), expectedSublistOneTable,
+           "Single table insertion within a sublist");
+});
+
+test("Double table insertion into a sublist", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+    setupTable(wymeditor, expectedSublistOneTable, '#li_2', 'text',
+               2, 1, 'test_2');
+    equals(normalizeHtml($body.get(0).firstChild), expectedSublistTwoTables,
+           "Double table insertion within a sublist");
+});
+
+test("Triple table insertion into a sublist", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+    setupTable(wymeditor, expectedSublistTwoTables, '#li_2', 'text',
+               3, 1, 'test_3');
+    equals(normalizeHtml($body.get(0).firstChild),
+           expectedSublistThreeTables,
+           "Triple table insertion within a sublist");
+});
+
+module("table-parse_spacers_in_list", {setup: setupWym});
+// The tests in this module use the htmlEquals function from utils.js to parse
+// the resulting html from tables being inserted into a list or sublist using
+// the parser to ensure that the line break spacers are properly removed.
+
+test("Parse list with a table at the end", function () {
+    var wymeditor = jQuery.wymeditors(0);
+
+    wymeditor.html(expectedEndOut);
+    htmlEquals(wymeditor, startEndOutNoBR);
+});
+
+test("Parse list with a table at the end in a sublist", function () {
+    var wymeditor = jQuery.wymeditors(0);
+
+    wymeditor.html(expectedEndIn);
+    htmlEquals(wymeditor, startEndInNoBR);
+});
+
+test("Parse list with multiple tables in a sublist", function () {
+    var wymeditor = jQuery.wymeditors(0);
+
+    wymeditor.html(expectedSublistThreeTables);
+    htmlEquals(wymeditor, sublistThreeTablesNoBR);
+});
+
 module("preformatted-text", {setup: setupWym});
 
 test("Preformatted text retains spacing", function () {
