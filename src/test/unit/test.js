@@ -976,14 +976,23 @@ function setupTable(wymeditor, html, selection, selectionType,
         $table,
         i,
         j,
-        selectionNum = (selectionType === 'text') ? 1 : 0,
+        selectionNum,
+        stub,
         cellStr,
         idStr = 't' + caption.slice(-1);
 
     wymeditor.html(html);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     $element = $body.find(selection);
-    makeTextSelection(wymeditor, $element, $element, 0, selectionNum);
+
+    if (selectionType === 'node') {
+        // Force wymeditor.selection() to return the node as the selection
+        stub = sinon.stub(wymeditor, 'selection');
+        stub.returns({focusNode: $body.find(selection)[0]});
+    } else {
+        selectionNum = (selectionType === 'text') ? 1 : 0;
+        makeTextSelection(wymeditor, $element, $element, 0, selectionNum);
+    }
 
     wymeditor.insertTable(rows, cols, caption, '');
     $tableCells = $body.find('caption:contains(' + caption + ')')
@@ -997,6 +1006,10 @@ function setupTable(wymeditor, html, selection, selectionType,
                        .attr('id', idStr + '_' + cellStr)
                        .text(cellStr);
         }
+    }
+
+    if (selectionType === 'node') {
+        wymeditor.selection.restore();
     }
 }
 
@@ -1311,6 +1324,17 @@ test("Table insertion with selection inside another table in a list", function (
         equals(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
                "Table insertion with selection inside a caption element " +
                "in a list");
+});
+
+test("Table insertion with direct selection of list item node", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+    setupTable(wymeditor, expectedListOneTable, '#li_3', 'node',
+               1, 1, 'test_2');
+    equals(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
+           "Table insertion with direct selection of list item node");
 });
 
 module("table-insert_in_sublist", {setup: setupWym});
