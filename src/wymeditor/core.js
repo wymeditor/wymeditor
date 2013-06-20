@@ -266,6 +266,10 @@ jQuery.extend(WYMeditor, {
     // them.
     INLINE_TABLE_INSERTION_ELEMENTS : ["li"],
 
+    // The elements used in tables that can be selected by the user by clicking
+    // in them.
+    SELECTABLE_TABLE_ELEMENTS: ["td", "th", "caption"],
+
     // Class used to identify <br /> elements that are used to space out
     // blocking elements in the editor so that they can be removed before
     // parsing the html.
