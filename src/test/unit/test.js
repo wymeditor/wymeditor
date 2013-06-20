@@ -1010,7 +1010,7 @@ function setupTable(wymeditor, html, selection, selectionType,
 
     if (selectionType === 'node') {
         // Restore the wymeditor.selection() function back to its original
-        // functionality by removing the stub was wrapped around it.
+        // functionality by removing the stub that was wrapped around it.
         stub.restore();
     }
 }
