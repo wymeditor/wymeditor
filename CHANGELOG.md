@@ -23,6 +23,11 @@ WYMeditor.
   [Django-CMS 3](https://github.com/wymeditor/djangocms_wymeditor_plugin)
   plugin for WYMeditor. If you're upgrading from Django-CMS 2 to 3, you'll
   want to check it out.
+* Tables can now be inserted and used in lists. Previously, the editor
+  would not let the user insert a table anywhere in a list, but now, the
+  user can insert a table at any point in a list or sublist and can even
+  insert multiple tables in the same list item. In addition, the tables
+  should properly indent, outdent, and space themselves within a list.
 
 ### Bug Fixes
 
