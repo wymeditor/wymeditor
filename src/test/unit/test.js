@@ -1030,7 +1030,12 @@ var expectedListOneTable = String() +
         '<li id="li_2">2</li>' +
         '<li id="li_3">3' +
             '<table>' +
-                '<caption>test_1</caption>' +
+                '<caption id="t1_cap">test_1</caption>' +
+                '<thead>' +
+                    '<tr>' +
+                        '<th id="t1_h_1">h_1</th>' +
+                    '</tr>' +
+                '</thead>' +
                 '<tbody>' +
                     '<tr>' +
                         '<td id="t1_1_1">1_1</td>' +
@@ -1047,7 +1052,12 @@ var expectedListTwoTables = String() +
         '<li id="li_2">2</li>' +
         '<li id="li_3">3' +
             '<table>' +
-                '<caption>test_1</caption>' +
+                '<caption id="t1_cap">test_1</caption>' +
+                '<thead>' +
+                    '<tr>' +
+                        '<th id="t1_h_1">h_1</th>' +
+                    '</tr>' +
+                '</thead>' +
                 '<tbody>' +
                     '<tr>' +
                         '<td id="t1_1_1">1_1</td>' +
@@ -1279,14 +1289,28 @@ test("Table insertion at the end of a list with collapsed selection", function (
 // This test mimics the behavior that caused issue #406 which would
 // unexpectedly nest an inserted table into another table within a list.
 test("Table insertion with selection inside another table in a list", function () {
-    expect(1);
+    expect(3);
     var wymeditor = jQuery.wymeditors(0),
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
+        // Try insert in td element
         setupTable(wymeditor, expectedListOneTable, '#t1_1_1', 'collapsed',
                    1, 1, 'test_2');
         equals(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
-               "Table insertion with selection inside another table in a list");
+               "Table insertion with selection inside a td element in a list");
+
+        // Try insert in th element
+        setupTable(wymeditor, expectedListOneTable, '#t1_h_1', 'collapsed',
+                   1, 1, 'test_2');
+        equals(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
+               "Table insertion with selection inside a th element in a list");
+
+        // Try insert in caption element
+        setupTable(wymeditor, expectedListOneTable, '#t1_cap', 'collapsed',
+                   1, 1, 'test_2');
+        equals(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
+               "Table insertion with selection inside a caption element " +
+               "in a list");
 });
 
 module("table-insert_in_sublist", {setup: setupWym});
