@@ -2353,7 +2353,8 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
 
         x,
         y,
-        container;
+        container,
+        selectedNode;
 
     // Create the table caption
     newCaption = table.createCaption();
@@ -2385,7 +2386,20 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
                        WYMeditor.INLINE_TABLE_INSERTION_ELEMENTS) > -1) {
         // Insert table after selection if container is allowed to have tables
         // inserted inline.
-        jQuery(this.selection().focusNode).after(table);
+        selectedNode = this.selection().focusNode;
+
+        // If the selection is within a table, move the selection to the parent
+        // table to avoid nesting the tables.
+        if (jQuery.inArray(selectedNode.nodeName.toLowerCase(),
+                           WYMeditor.SELECTABLE_TABLE_ELEMENTS) > -1 ||
+            jQuery.inArray(selectedNode.parentNode.nodeName.toLowerCase(),
+                           WYMeditor.SELECTABLE_TABLE_ELEMENTS) > -1) {
+
+            while (selectedNode.nodeName.toLowerCase() !== WYMeditor.TABLE) {
+                selectedNode = selectedNode.parentNode;
+            }
+        }
+        jQuery(selectedNode).after(table);
 
     } else {
         // If the table is not allowed to be inserted inline with the
