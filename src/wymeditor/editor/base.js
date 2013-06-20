@@ -2388,10 +2388,12 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
         // inserted inline.
         selectedNode = this.selection().focusNode;
 
-        // If the selection is a table cell or within a table cell, move the
-        // selection to the parent table to avoid nesting the tables.
-        if (selectedNode.nodeName.toLowerCase() === WYMeditor.TD ||
-            selectedNode.parentNode.nodeName.toLowerCase() === WYMeditor.TD) {
+        // If the selection is within a table, move the selection to the parent
+        // table to avoid nesting the tables.
+        if (jQuery.inArray(selectedNode.nodeName.toLowerCase(),
+                           WYMeditor.SELECTABLE_TABLE_ELEMENTS) > -1 ||
+            jQuery.inArray(selectedNode.parentNode.nodeName.toLowerCase(),
+                           WYMeditor.SELECTABLE_TABLE_ELEMENTS) > -1) {
 
             while (selectedNode.nodeName.toLowerCase() !== WYMeditor.TABLE) {
                 selectedNode = selectedNode.parentNode;
