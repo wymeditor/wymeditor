@@ -2399,7 +2399,16 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
                 selectedNode = selectedNode.parentNode;
             }
         }
-        jQuery(selectedNode).after(table);
+
+        // If the list item itself is selected, append the table to it. If the
+        // selection is within the list item, put the table after it. Either
+        // way, this ensures the table will always be inserted within the list
+        // item.
+        if (selectedNode.nodeName.toLowerCase() === WYMeditor.LI) {
+            jQuery(selectedNode).append(table);
+        } else {
+            jQuery(selectedNode).after(table);
+        }
 
     } else {
         // If the table is not allowed to be inserted inline with the
