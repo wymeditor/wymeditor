@@ -863,7 +863,7 @@ test("List- 2nd level li li_2_2", function () {
     );
 });
 
-module("Table Insertion", {setup: setupWym});
+module("table-insertion", {setup: setupWym});
 
 test("Table is editable after insertion", function () {
     expect(7);
@@ -1375,7 +1375,7 @@ test("Parse list with multiple tables in a sublist", function () {
     htmlEquals(wymeditor, sublistThreeTablesNoBR);
 });
 
-module("preformatted text", {setup: setupWym});
+module("preformatted-text", {setup: setupWym});
 
 test("Preformatted text retains spacing", function () {
     var wymeditor = jQuery.wymeditors(0),
@@ -1396,7 +1396,7 @@ test("Preformatted text retains spacing", function () {
     equals(wymeditor.xhtml(), preHtml);
 });
 
-module("soft return", {setup: setupWym});
+module("soft-return", {setup: setupWym});
 
 test("Double soft returns are allowed", function () {
     var initHtml = String() +
@@ -1412,7 +1412,7 @@ test("Double soft returns are allowed", function () {
     htmlEquals(wymeditor, initHtml);
 });
 
-module("image styling", {setup: setupWym});
+module("image-styling", {setup: setupWym});
 
 test("_selected image is saved on mousedown", function () {
     var initHtml = String() +
@@ -1443,6 +1443,43 @@ test("_selected image is saved on mousedown", function () {
     $google = $body.find('#google');
     $google.mousedown();
     equals(wymeditor._selected_image, $google[0]);
+});
+
+module("image-insertion", {setup: setupWym});
+
+test("Image insertion outside of a container", function () {
+    expect(3);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+
+        imageURL = 'http://www.google.com/intl/en_com/images/srpr/logo3w.png',
+        imageStamp = wymeditor.uniqueStamp(),
+        imageSelector = 'img[src$="' + imageStamp + '"]',
+
+        expectedHtml = String() +
+            '<p>' +
+                '<img src="' + imageURL + '"/>' +
+            '</p>';
+        expectedHtmlIE = expectedHtml.replace(/<\/?p>/g, '');
+
+    // Mimic the way images are inserted by the insert image tool by first
+    // inserting the image with its src set to a unique stamp for
+    // identification rather than its actual src.
+    wymeditor.html('');
+    wymeditor._exec(WYMeditor.INSERT_IMAGE, imageStamp);
+
+    ok(!$body.siblings(imageSelector).length,
+       "Image is not a sibling of the wymeditor body");
+    ok(!$body.siblings().children(imageSelector).length,
+       "Image is not a child of a sibling of the wymeditor body");
+
+    $body.find(imageSelector).attr(WYMeditor.SRC, imageURL);
+    if (jQuery.browser.msie) {
+        // IE doesn't wrap the image in a paragraph
+        htmlEquals(wymeditor, expectedHtmlIE);
+    } else {
+        htmlEquals(wymeditor, expectedHtml);
+    }
 });
 
 module("header-no_span", {setup: setupWym});
