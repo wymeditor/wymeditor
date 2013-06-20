@@ -78,8 +78,7 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
 
     var container,
         $container,
-        tagName,
-        parent;
+        tagName;
 
     if (param) {
         this._doc.execCommand(cmd, '', param);
