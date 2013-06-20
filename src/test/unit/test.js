@@ -947,12 +947,12 @@ if (jQuery.browser.mozilla) {
 
     Puts the html in the body of the wymeditor and creates a rowsXcols-sized
     table at the selection (using the specified selectionType which can be
-    'text' or 'collapsed'). The table's cells each have an id attribute of the
-    form "t<table_id_character>_<x>_<y>" where <table_id_character> is the last
-    character of the caption, <x> is the x-coordinate of the cell in the table,
-    and <y> is the y-coordinate of the cell in the table. Each cell then has
-    text of the form "<x>_<y>" where <x> and <y> are the same as described for
-    the id attribute. Here is a small example:
+    'text','collapsed', or 'node'). The table's cells each have an id attribute
+    of the form "t<table_id_character>_<x>_<y>" where <table_id_character> is
+    the last character of the caption, <x> is the x-coordinate of the cell in
+    the table, and <y> is the y-coordinate of the cell in the table. Each cell
+    then has text of the form "<x>_<y>" where <x> and <y> are the same as
+    described for the id attribute. Here is a small example:
 
     setupTable(wymeditor, html, selection, selectionType, 2, 1, 'test_1')
     inserts the following html at the selection:
@@ -1009,7 +1009,9 @@ function setupTable(wymeditor, html, selection, selectionType,
     }
 
     if (selectionType === 'node') {
-        wymeditor.selection.restore();
+        // Restore the wymeditor.selection() function back to its original
+        // functionality by removing the stub was wrapped around it.
+        stub.restore();
     }
 }
 
