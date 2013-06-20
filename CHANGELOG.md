@@ -33,6 +33,13 @@ WYMeditor.
   where a span with a style attribute set to `font-weight: normal` would
   be wrapped around the header's content. This has been fixed so that
   this span will no longer occur after bolding.
+* When attempting to insert an image outside of a container in Chrome
+  such as in the case of inserting an image into a blank document, there
+  was an issue where the image was being moved outside of the wymeditor
+  body causing none of the user-entered values for the attributes of the
+  image to be applied to the image. This has been fixed so that
+  inserting an image properly places it within the wymeditor body and
+  properly applies the user-entered values for its attributes.
 
 ## 1.0.0b4 (Beta 4)
 
