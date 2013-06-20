@@ -77,9 +77,8 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
     }
 
     var container,
-        tagName,
-        parent,
-        $span;
+        $container,
+        tagName;
 
     if (param) {
         this._doc.execCommand(cmd, '', param);
@@ -89,6 +88,7 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
 
     container = this.selected();
     if (container) {
+        $container = jQuery(container);
         tagName = container.tagName.toLowerCase();
 
         // Wrap this content in a paragraph tag if we're in the body
@@ -96,16 +96,24 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
             this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
         }
 
+        // If the cmd was FORMAT_BLOCK, check if the block was moved outside
+        // the body after running the command. If it was moved outside, move it
+        // back inside the body. This was added because running FORMAT_BLOCK on
+        // an image inserted outside of a container was causing it to be moved
+        // outside the body (See issue #400).
+        if (cmd === WYMeditor.FORMAT_BLOCK &&
+            $container.siblings('body.wym_iframe').length) {
+
+            $container.siblings('body.wym_iframe').append(container);
+        }
+
         // If the container is a span, strip it out if it doesn't have a class
         // but has an inline style of 'font-weight: normal;'.
-        if (tagName === 'span') {
-            $span = jQuery(container);
+        if (tagName === 'span' &&
+            !$container.attr('class') &&
+            $container.attr('style') === 'font-weight: normal;') {
 
-            if (!$span.attr('class') &&
-                $span.attr('style') === 'font-weight: normal;') {
-
-                $span.contents().unwrap();
-            }
+            $container.contents().unwrap();
         }
     }
 

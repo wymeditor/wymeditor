@@ -1024,6 +1024,59 @@ var sublistForTableInsertion = String() +
         '</li>' +
     '</ol>';
 
+var expectedListOneTable = String() +
+    '<ol>' +
+        '<li id="li_1">1</li>' +
+        '<li id="li_2">2</li>' +
+        '<li id="li_3">3' +
+            '<table>' +
+                '<caption id="t1_cap">test_1</caption>' +
+                '<thead>' +
+                    '<tr>' +
+                        '<th id="t1_h_1">h_1</th>' +
+                    '</tr>' +
+                '</thead>' +
+                '<tbody>' +
+                    '<tr>' +
+                        '<td id="t1_1_1">1_1</td>' +
+                    '</tr>' +
+                '</tbody>' +
+            '</table>' +
+            TEST_LINEBREAK_SPACER +
+        '</li>' +
+    '</ol>';
+
+var expectedListTwoTables = String() +
+    '<ol>' +
+        '<li id="li_1">1</li>' +
+        '<li id="li_2">2</li>' +
+        '<li id="li_3">3' +
+            '<table>' +
+                '<caption id="t1_cap">test_1</caption>' +
+                '<thead>' +
+                    '<tr>' +
+                        '<th id="t1_h_1">h_1</th>' +
+                    '</tr>' +
+                '</thead>' +
+                '<tbody>' +
+                    '<tr>' +
+                        '<td id="t1_1_1">1_1</td>' +
+                    '</tr>' +
+                '</tbody>' +
+            '</table>' +
+            TEST_LINEBREAK_SPACER +
+            '<table>' +
+                '<caption>test_2</caption>' +
+                '<tbody>' +
+                    '<tr>' +
+                        '<td id="t2_1_1">1_1</td>' +
+                    '</tr>' +
+                '</tbody>' +
+            '</table>' +
+            TEST_LINEBREAK_SPACER +
+        '</li>' +
+    '</ol>';
+
 var expectedSublistOneTable = String() +
     '<ol>' +
         '<li id="li_1">1' +
@@ -1233,6 +1286,33 @@ test("Table insertion at the end of a list with collapsed selection", function (
                "Table insertion at the end of a list with collapsed selection");
 });
 
+// This test mimics the behavior that caused issue #406 which would
+// unexpectedly nest an inserted table into another table within a list.
+test("Table insertion with selection inside another table in a list", function () {
+    expect(3);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+        // Try insert in td element
+        setupTable(wymeditor, expectedListOneTable, '#t1_1_1', 'collapsed',
+                   1, 1, 'test_2');
+        equals(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
+               "Table insertion with selection inside a td element in a list");
+
+        // Try insert in th element
+        setupTable(wymeditor, expectedListOneTable, '#t1_h_1', 'collapsed',
+                   1, 1, 'test_2');
+        equals(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
+               "Table insertion with selection inside a th element in a list");
+
+        // Try insert in caption element
+        setupTable(wymeditor, expectedListOneTable, '#t1_cap', 'collapsed',
+                   1, 1, 'test_2');
+        equals(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
+               "Table insertion with selection inside a caption element " +
+               "in a list");
+});
+
 module("table-insert_in_sublist", {setup: setupWym});
 
 test("Single table insertion into a sublist", function () {
@@ -1363,6 +1443,43 @@ test("_selected image is saved on mousedown", function () {
     $google = $body.find('#google');
     $google.mousedown();
     equals(wymeditor._selected_image, $google[0]);
+});
+
+module("image-insertion", {setup: setupWym});
+
+test("Image insertion outside of a container", function () {
+    expect(3);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+
+        imageURL = 'http://www.google.com/intl/en_com/images/srpr/logo3w.png',
+        imageStamp = wymeditor.uniqueStamp(),
+        imageSelector = 'img[src$="' + imageStamp + '"]',
+
+        expectedHtml = String() +
+            '<p>' +
+                '<img src="' + imageURL + '"/>' +
+            '</p>';
+        expectedHtmlIE = expectedHtml.replace(/<\/?p>/g, '');
+
+    // Mimic the way images are inserted by the insert image tool by first
+    // inserting the image with its src set to a unique stamp for
+    // identification rather than its actual src.
+    wymeditor.html('');
+    wymeditor._exec(WYMeditor.INSERT_IMAGE, imageStamp);
+
+    ok(!$body.siblings(imageSelector).length,
+       "Image is not a sibling of the wymeditor body");
+    ok(!$body.siblings().children(imageSelector).length,
+       "Image is not a child of a sibling of the wymeditor body");
+
+    $body.find(imageSelector).attr(WYMeditor.SRC, imageURL);
+    if (jQuery.browser.msie) {
+        // IE doesn't wrap the image in a paragraph
+        htmlEquals(wymeditor, expectedHtmlIE);
+    } else {
+        htmlEquals(wymeditor, expectedHtml);
+    }
 });
 
 module("header-no_span", {setup: setupWym});
