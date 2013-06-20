@@ -1368,10 +1368,9 @@ test("_selected image is saved on mousedown", function () {
 module("image-insertion", {setup: setupWym});
 
 test("Image insertion outside of a container", function () {
-    expect(2);
+    expect(3);
     var wymeditor = jQuery.wymeditors(0),
         $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
-        checkOutside,
 
         imageURL = 'http://www.google.com/intl/en_com/images/srpr/logo3w.png',
         imageStamp = wymeditor.uniqueStamp(),
@@ -1389,9 +1388,10 @@ test("Image insertion outside of a container", function () {
     wymeditor.html('');
     wymeditor._exec(WYMeditor.INSERT_IMAGE, imageStamp);
 
-    checkOutside = !($body.siblings(imageSelector).length ||
-                   $body.siblings().children(imageSelector).length);
-    ok(checkOutside, "Image is not outside the wymeditor body");
+    ok(!$body.siblings(imageSelector).length,
+       "Image is not a sibling of the wymeditor body");
+    ok(!$body.siblings().children(imageSelector).length,
+       "Image is not a child of a sibling of the wymeditor body");
 
     $body.find(imageSelector).attr(WYMeditor.SRC, imageURL);
     if (jQuery.browser.msie) {
