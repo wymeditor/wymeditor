@@ -3,8 +3,8 @@
     ==================
 
     Initializes the structured_headings plugin for the wymeditor instance. This
-    function should be called in the `postInit` function of the wymeditor
-    instantiation.
+    method should be called by the passed wymeditor instance in the `postInit`
+    function of the wymeditor instantiation.
 */
 WYMeditor.editor.prototype.structuredHeadings = function () {
     var wym = this,
@@ -45,7 +45,7 @@ WYMeditor.editor.prototype.structuredHeadings = function () {
     Function to output the plugin CSS to the console log so that it can be
     copied over to other pages.
 */
-WYMeditor.getStructuredHeadingsCSS = function () {
+WYMeditor.printStructuredHeadingsCSS = function () {
     if (!(jQuery.browser.msie && jQuery.browser.version < "8.0")) {
         console.log(WYMeditor.structuredHeadingsCSS);
     }
