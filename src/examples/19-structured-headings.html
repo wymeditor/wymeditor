@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+ * WYMeditor : what you see is What You Mean web-based editor
+ * Copyright (c) 2005 - 2009 Jean-Francois Hovinne, http://www.wymeditor.org/
+ * Dual licensed under the MIT (MIT-license.txt)
+ * and GPL (GPL-license.txt) licenses.
+ *
+ * For further information visit:
+ *        http://www.wymeditor.org/
+ *
+ * File Name:
+ *        19-structured-headings.html
+ *        WYMeditor integration example - structured headings plugin.
+ *        See the documentation for more info.
+ *
+ * File Authors:
+ *        Jean-Francois Hovinne - http://www.hovinne.com/
+-->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>WYMeditor</title>
+<!-- jQuery library is required, see http://jquery.com/ -->
+<script type="text/javascript" src="../jquery/jquery.js"></script>
+<!-- WYMeditor main JS file, minified version -->
+<script type="text/javascript" src="../wymeditor/jquery.wymeditor.min.js"></script>
+<!-- Structured headings plugin JS file -->
+<script type="text/javascript"
+        src="../wymeditor/plugins/structured_headings/jquery.wymeditor.structured_headings.js">
+</script>
+
+<script type="text/javascript">
+
+jQuery(function() {
+    jQuery('.wymeditor').wymeditor({
+
+        html:   '<p>Hello, world!<\/p>',
+        stylesheet: 'styles.css',
+        postInit: function(wym) {
+
+            // Call this function to initialize the structured headings plugin
+            wym.structuredHeadings();
+        }
+    });
+});
+
+</script>
+
+</head>
+
+<body>
+<h1>WYMeditor integration example - structured headings plugin</h1>
+<p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+<form method="post" action="">
+<textarea class="wymeditor"></textarea>
+<input type="submit" class="wymupdate" />
+</form>
+
+</body>
+
+</html>
+
