@@ -92,86 +92,9 @@ Adding a Button to the Tool Bar
 
 (work in progress)
 
-Plugins Included in the Download
---------------------------------
+Available Plugins
+-----------------
 
-**embed**
+See :doc:`../../plugins/plugins` for a listing and descriptions of the plugins
+included in the download and available third party plugins.
 
-Add Description
-
-**fullscreen**
-
-Add Description
-
-**hovertools**
-
-This plugin improves visual feedback by:
-
-* displaying a tool's title in the status bar while the mouse hovers over it.
-* changing background color of elements which match a condition, i.e. on which
-  a class can be applied.
-
-**list**
-
-Add Description
-
-**rdfa**
-
-Add Description
-
-**resizable**
-
-Add Description
-
-**table**
-
-Add Description
-
-**tidy**
-
-Add Description
-
-List of Third Party Plugins
----------------------------
-
-**modal_dialog (by samuelcole)**
-
-https://github.com/samuelcole/modal_dialog
-
-Replaces the default dialog behaiour (new window) with a modal dialog. Known
-bug in IE, more information `here
-<https://github.com/wymeditor/wymeditor/issues/67>`_.
-
-**alignment (by Patabugen)**
-
-https://bitbucket.org/Patabugen/wymeditor-plugins/src
-
-Set Text Alignment with classes.
-
-**site_links (by Patabugen)**
-
-https://bitbucket.org/Patabugen/wymeditor-plugins/src
-
-A plugin to add a dropdown of links to the Links dialog, especially for making
-it easier to link to your own site (or any other predefined set).
-
-Can also add a File Upload form to let you upload files right from the Link dialog.
-
-**image_float (by Patabugen)**
-
-https://bitbucket.org/Patabugen/wymeditor-plugins/src
-
-Float images with classes.
-
-**image_upload (by Patabugen)**
-
-https://bitbucket.org/Patabugen/wymeditor-plugins/src
-
-Adds an Image Upload form to the Insert Image dialog.
-
-**Catch Paste**
-
-Force automatic "Paste From Word" usage so that all pasted content is properly
-cleaned.
-
-http://forum.wymeditor.org/forum/viewtopic.php?f=2&t=676
