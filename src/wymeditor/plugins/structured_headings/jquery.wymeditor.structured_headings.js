@@ -1,3 +1,6 @@
+WYMeditor.BROWSER_SUPPORTED_STRUCTURED_HEADINGS = !(jQuery.browser.msie &&
+                                                jQuery.browser.version < "8.0");
+
 /**
     structuredHeadings
     ==================
@@ -18,7 +21,7 @@ WYMeditor.editor.prototype.structuredHeadings = function () {
     cssLink.rel = 'stylesheet';
     cssLink.type = 'text/css';
 
-    if (jQuery.browser.msie && jQuery.browser.version < "8.0") {
+    if (!WYMeditor.BROWSER_SUPPORTED_STRUCTURED_HEADINGS) {
         stylesheetHref = '/plugins/structured_headings/structured_headings_ie7.css';
         cssLink.href = '../..' + stylesheetHref; // Adjust path for iframe
         iframeHead.appendChild(cssLink);
@@ -48,8 +51,8 @@ WYMeditor.editor.prototype.structuredHeadings = function () {
     copied over to other pages.
 */
 WYMeditor.printStructuredHeadingsCSS = function () {
-    if (!(jQuery.browser.msie && jQuery.browser.version < "8.0")) {
-        console.log(WYMeditor.structuredHeadingsCSS);
+    if (WYMeditor.BROWSER_SUPPORTED_STRUCTURED_HEADINGS) {
+        WYMeditor.console.log(WYMeditor.structuredHeadingsCSS);
     }
 };
 
