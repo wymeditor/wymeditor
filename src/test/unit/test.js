@@ -53,6 +53,7 @@ function setupWym(extraPostInit) {
                     WYMeditor._isInnerSelector = false;
                 }
 
+                wym.structuredHeadings();
 
                 start(); // Re-start test running now that we're finished initializing
             }
@@ -1547,3 +1548,4 @@ test("No span added to header after bolding", function () {
            "No span added to " + header + " on bold");
     }
 });
+
