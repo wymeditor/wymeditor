@@ -32,6 +32,11 @@ var LEVEL_CLASSES = ['structured-heading-level1',
     calling this function on a page to number a document's headings outside of
     the editor, they can call the function with no parameters.
 
+    The function returns the total number of characters in all of the added
+    heading numbering spans so that it can be monitored if the headings need to
+    be corrected if the total number of characters in the numbering spans
+    changes.
+
     NOTE: Although this function is stand-alone from WYMeditor, it still
     requires jQuery.
 */
@@ -44,12 +49,13 @@ function numberHeadingsIE7(doc, addClass) {
         adjustedHeadingSel,
 
         $allHeadings,
+        $toTrim,
         $heading,
         headingNum,
         headingLabel,
 
         span,
-        $span,
+        spanCharTotal,
 
         counters = [0, 0, 0, 0, 0, 0],
         i,
@@ -103,11 +109,14 @@ function numberHeadingsIE7(doc, addClass) {
         span.innerHTML = headingLabel;
         span.className = NUMBERING_SPAN_CLASS;
         $heading.prepend(span);
+        spanCharTotal += (headingNum * 2) + 1;
 
         // Reset counters below the heading's level
         for (j = headingNum + 1; j < counters.length; ++j) {
             counters[j] = 0;
         }
     }
+
+    return spanCharTotal;
 }
 

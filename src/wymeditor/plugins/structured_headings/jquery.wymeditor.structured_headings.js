@@ -60,20 +60,29 @@ WYMeditor.printStructuredHeadingsCSS = function () {
     setupHeadingNumbering
     =====================
 
-    TODO: Javascript shim to add heading numbering to IE versions 7 and lower.
+    Javascript polyfill to add heading numbering to IE versions 7 and lower.
 */
 WYMeditor.editor.prototype.setupHeadingNumbering = function () {
     var wym = this,
         $body = jQuery(wym._doc.body),
         headerList = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
         headerSel = headerList.join(', '),
-        prevHeaderTotal = 0;
+        numbering_span_class = 'structured-heading-numbering',
+        prevHeaderTotal = 0,
+        prevSpanCharTotal = 0;
 
     $body.keydown(function () {
-        var headerTotal = $body.find(headerSel).length;
+        var headerTotal = $body.find(headerSel).length,
+            spanTotal = 0;
 
-        if (headerTotal !== prevHeaderTotal) {
-            numberHeadingsIE7(wym._doc, true);
+        $body.find('.' + numbering_span_class).each(function () {
+            spanTotal += this.innerHTML.length;
+        });
+
+        if (headerTotal !== prevHeaderTotal ||
+            spanTotal !== prevSpanCharTotal) {
+
+            prevSpanCharTotal = numberHeadingsIE7(wym._doc, true);
         }
 
         prevHeaderTotal = headerTotal;
