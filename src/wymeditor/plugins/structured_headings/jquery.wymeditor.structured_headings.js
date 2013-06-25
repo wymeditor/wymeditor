@@ -65,78 +65,17 @@ WYMeditor.printStructuredHeadingsCSS = function () {
 WYMeditor.editor.prototype.setupHeadingNumbering = function () {
     var wym = this,
         $body = jQuery(wym._doc.body),
-        $head = jQuery(wym._doc).find('head'),
         headerList = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
         headerSel = headerList.join(', '),
         prevHeaderTotal = 0;
 
     $body.keydown(function () {
-        var $allHeaders,
-            $header,
-            headerNum,
-            headerLabel,
-            headerID,
+        var headerTotal = $body.find(headerSel).length;
 
-            span,
-            $span,
-            headerCSS,
-            $headCSS,
-
-            counters,
-            i,
-            j;
-
-        $allHeaders = $body.find(headerSel);
-        if ($allHeaders.length !== prevHeaderTotal) {
-
-            counters = [0, 0, 0, 0, 0, 0];
-            $body.find('.structured-heading-numbering').remove();
-
-            for (i = 0; i < $allHeaders.length; ++i) {
-                $header = $allHeaders.eq(i);
-                headerNum = parseInt($header[0].nodeName.slice(-1), 10) - 1;
-
-                ++counters[headerNum];
-                headerID = '';
-                for (j = 0; j <= headerNum; ++j) {
-                    if (j === headerNum) {
-                        headerID += counters[j];
-                    } else {
-                        headerID += counters[j] + '.';
-                    }
-                }
-                span = wym._doc.createElement('span');
-                $span = jQuery(span);
-                $header.prepend(span);
-                $span.html(headerID);
-                $span.attr('class', 'structured-heading-numbering');
-                $span.attr('contentEditable', 'false');
-
-                /*headerLabel = headerID.replace(/-/g, '.');
-                headerCSS = String() +
-                    '#h' + headerID + '{' +
-                        'zoom: expression( this.runtimeStyle["zoom"] = "1",' +
-                        'this.innerHTML = "' + headerLabel + ' "+this.innerHTML);' +
-                    '}';
-                $headCSS = $head.find('style#structured-headings-css');
-                if ($headCSS.length) {
-                    $headCSS[0].styleSheet.cssText += '\n' + headerCSS;
-                } else {
-                    style = wym._doc.createElement('style');
-
-                    style.setAttribute('id', 'structured-headings-css');
-                    style.setAttribute('type', 'text/css');
-                    style.styleSheet.cssText = headerCSS;
-
-                    $head[0].appendChild(style);
-                }*/
-
-                for (j = headerNum + 1; j < counters.length; ++j) {
-                    counters[j] = 0;
-                }
-            }
-
-            prevHeaderTotal = $allHeaders.length;
+        if (headerTotal !== prevHeaderTotal) {
+            numberHeadingsIE7(wym._doc, true);
         }
+
+        prevHeaderTotal = headerTotal;
     });
 }
