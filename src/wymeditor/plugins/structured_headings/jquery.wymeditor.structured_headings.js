@@ -1,3 +1,6 @@
+WYMeditor.BROWSER_SUPPORTED_STRUCTURED_HEADINGS = !(jQuery.browser.msie &&
+                                                jQuery.browser.version < "8.0");
+
 /**
     structuredHeadings
     ==================
@@ -14,7 +17,7 @@ WYMeditor.editor.prototype.structuredHeadings = function () {
         cssLink,
         cssRequest;
 
-    if (jQuery.browser.msie && jQuery.browser.version < "8.0") {
+    if (!WYMeditor.BROWSER_SUPPORTED_STRUCTURED_HEADINGS) {
         // TODO: Use Javascript to add the header numbering on versions of IE
         // before 8 because they don't support CSS counters.
         wym.setupHeadingNumbering();
@@ -46,8 +49,8 @@ WYMeditor.editor.prototype.structuredHeadings = function () {
     copied over to other pages.
 */
 WYMeditor.printStructuredHeadingsCSS = function () {
-    if (!(jQuery.browser.msie && jQuery.browser.version < "8.0")) {
-        console.log(WYMeditor.structuredHeadingsCSS);
+    if (WYMeditor.BROWSER_SUPPORTED_STRUCTURED_HEADINGS) {
+        WYMeditor.console.log(WYMeditor.structuredHeadingsCSS);
     }
 };
 
