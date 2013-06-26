@@ -26,7 +26,11 @@ WYMeditor.editor.prototype.structuredHeadings = function () {
         cssLink.href = '../..' + stylesheetHref; // Adjust path for iframe
         iframeHead.appendChild(cssLink);
 
+        // Change href to user stylesheet to store in WYMeditor
+        stylesheetHref = stylesheetHref.replace('ie7', 'ie7_user');
+
         wym.setupHeadingNumbering();
+
 
     } else {
         stylesheetHref = '/plugins/structured_headings/structured_headings.css';

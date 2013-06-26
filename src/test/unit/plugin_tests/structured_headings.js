@@ -88,7 +88,7 @@ test("CSS stored for user access through console", function () {
         stylesheetURL = '../../wymeditor/plugins/structured_headings/';
 
     if (jQuery.browser.msie && jQuery.browser.version < "8.0") {
-        stylesheetURL += 'structured_headings_ie7.css';
+        stylesheetURL += 'structured_headings_ie7_user.css';
     } else {
         stylesheetURL += 'structured_headings.css';
     }

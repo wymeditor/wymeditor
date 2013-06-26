@@ -44,7 +44,7 @@ function numberHeadingsIE7(doc, addClass) {
     var doc = typeof doc !== 'undefined' ? doc : document,
         $doc = jQuery(doc),
 
-        $startNode = $doc.find(START_NODE_CLASS),
+        $startNode = $doc.find('.' + START_NODE_CLASS),
         startIndex,
         adjustedHeadingSel,
 
