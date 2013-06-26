@@ -26,20 +26,16 @@ these steps:
    command in the browser console on the page of the editor using the
    structured headings plugin to print the CSS to the console. If you are using
    IE7, it uses different CSS than the other browsers, and you can get this CSS
-   from its stylesheet ``structured_headings_ie7_user.css`` in the plugin's
-   directory.
+   from its stylesheet ``structured_headings_ie7_user.css`` available in the
+   plugin's directory.
 #. Either copy this CSS to an existing stylesheet or make a new stylesheet with
    this CSS.
 #. Apply the stylesheet with the CSS to all of the pages that contain documents
    that had heading numbering added to them in the editor.
-#. If you are using IE7, in addition to the previous steps, add to all of the
+#. If you are using IE7, in addition to the previous steps, add the script
+   ``number_headings_ie7.js`` available in the plugin's directory to all of the
    pages that contain documents that had heading numbering added to them in the
-   editor both the script ``number_headings_ie7.js`` and a script after that
-   simply containing this line of code:
-
-    .. code-block:: javascript
-
-        jQuery(document).ready(function () { numberHeadingsIE7() });
+   editor.
 
 Browser Support
 ---------------

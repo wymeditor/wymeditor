@@ -1,3 +1,16 @@
+/*
+    This file should be included in documents in IE7 that had heading numbering
+    added to the them by WYMeditor using the structured headings plugin. It
+    adds the heading numbering to the document as it was in the editor.
+
+    NOTE: This script requires jQuery.
+*/
+
+// Add the heading numbering on document ready. The call to numberHeadingsIE7
+// is wrapped in another function to avoid jQuery passing the numberHeadingsIE7
+// function any parameters.
+jQuery(document).ready(function () { numberHeadingsIE7(); });
+
 // Constants for selecting headings
 var HEADING_LIST = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
 var HEADING_SEL = HEADING_LIST.join(', ');

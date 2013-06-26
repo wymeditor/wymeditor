@@ -55,7 +55,7 @@ test("Stylesheet added to iframe", function () {
         i;
 
     if (jQuery.browser.msie && jQuery.browser.version < "8.0") {
-        expectedFileName = 'structured_headings_ie7.css';
+        expectedFileName = 'structured_headings_ie7_editor.css';
     } else {
         expectedFileName = 'structured_headings.css';
     }
