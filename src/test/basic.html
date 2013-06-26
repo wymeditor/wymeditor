@@ -25,18 +25,11 @@
 <script type="text/javascript">
     loadWymSrc('../');
 </script>
-<script type="text/javascript"
-        src="../wymeditor/plugins/structured_headings/number_headings_ie7.js">
-</script>
-<script type="text/javascript"
-        src="../wymeditor/plugins/structured_headings/jquery.wymeditor.structured_headings.js">
-</script>
 <script type="text/javascript">
     jQuery(document).ready(function() {
         jQuery('.wymeditor').wymeditor({
             stylesheet: 'wym_stylesheet.css',
             postInit: function(wym){
-                wym.structuredHeadings();
 
                 //Set the editor's content
                 wym.html("<p>This is some text with which to test.</p>");
