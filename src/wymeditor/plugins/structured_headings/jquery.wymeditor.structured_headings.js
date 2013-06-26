@@ -62,26 +62,26 @@ WYMeditor.printStructuredHeadingsCSS = function () {
 WYMeditor.editor.prototype.setupHeadingNumbering = function () {
     var wym = this,
         $body = jQuery(wym._doc.body),
-        headerList = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
-        headerSel = headerList.join(', '),
+        headingList = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+        headingSel = headingList.join(', '),
         numbering_span_class = 'structured-heading-numbering',
-        prevHeaderTotal = 0,
+        prevHeadingTotal = 0,
         prevSpanCharTotal = 0;
 
     $body.keydown(function () {
-        var headerTotal = $body.find(headerSel).length,
+        var headingTotal = $body.find(headingSel).length,
             spanCharTotal = 0;
 
         $body.find('.' + numbering_span_class).each(function () {
             spanCharTotal += this.innerHTML.length;
         });
 
-        if (headerTotal !== prevHeaderTotal ||
+        if (headingTotal !== prevHeadingTotal ||
             spanCharTotal !== prevSpanCharTotal) {
 
             prevSpanCharTotal = numberHeadingsIE7(wym._doc, true);
         }
 
-        prevHeaderTotal = headerTotal;
+        prevHeadingTotal = headingTotal;
     });
 }
