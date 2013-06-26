@@ -1,5 +1,5 @@
-WYMeditor.BROWSER_SUPPORTED_STRUCTURED_HEADINGS = !(jQuery.browser.msie &&
-                                                jQuery.browser.version < "8.0");
+WYMeditor.BROWSER_SUPPORTED_STRUCTURED_HEADINGS =
+    !(jQuery.browser.msie && jQuery.browser.version < "7.0");
 
 /**
     structuredHeadings
@@ -21,7 +21,7 @@ WYMeditor.editor.prototype.structuredHeadings = function () {
     cssLink.rel = 'stylesheet';
     cssLink.type = 'text/css';
 
-    if (!WYMeditor.BROWSER_SUPPORTED_STRUCTURED_HEADINGS) {
+    if (jQuery.browser.msie && jQuery.browser.version < "8.0") {
         stylesheetHref = '/plugins/structured_headings/structured_headings_ie7.css';
         cssLink.href = '../..' + stylesheetHref; // Adjust path for iframe
         iframeHead.appendChild(cssLink);
@@ -31,16 +31,15 @@ WYMeditor.editor.prototype.structuredHeadings = function () {
     } else {
         stylesheetHref = '/plugins/structured_headings/structured_headings.css';
         cssLink.href = '../..' + stylesheetHref; // Adjust path for iframe
-
         iframeHead.appendChild(cssLink);
-
-        // Get stylesheet CSS and store it in WYMeditor so that it can be accessed
-        // to put on other pages.
-        cssRequest = new XMLHttpRequest();
-        cssRequest.open('GET', wymBasePath + stylesheetHref, false);
-        cssRequest.send('');
-        WYMeditor.structuredHeadingsCSS = cssRequest.responseText;
     }
+
+    // Get stylesheet CSS and store it in WYMeditor so that it can be accessed
+    // to put on other pages.
+    cssRequest = new XMLHttpRequest();
+    cssRequest.open('GET', wymBasePath + stylesheetHref, false);
+    cssRequest.send('');
+    WYMeditor.structuredHeadingsCSS = cssRequest.responseText;
 };
 
 /**
@@ -51,9 +50,7 @@ WYMeditor.editor.prototype.structuredHeadings = function () {
     copied over to other pages.
 */
 WYMeditor.printStructuredHeadingsCSS = function () {
-    if (WYMeditor.BROWSER_SUPPORTED_STRUCTURED_HEADINGS) {
-        WYMeditor.console.log(WYMeditor.structuredHeadingsCSS);
-    }
+    WYMeditor.console.log(WYMeditor.structuredHeadingsCSS);
 };
 
 /**
@@ -73,14 +70,14 @@ WYMeditor.editor.prototype.setupHeadingNumbering = function () {
 
     $body.keydown(function () {
         var headerTotal = $body.find(headerSel).length,
-            spanTotal = 0;
+            spanCharTotal = 0;
 
         $body.find('.' + numbering_span_class).each(function () {
-            spanTotal += this.innerHTML.length;
+            spanCharTotal += this.innerHTML.length;
         });
 
         if (headerTotal !== prevHeaderTotal ||
-            spanTotal !== prevSpanCharTotal) {
+            spanCharTotal !== prevSpanCharTotal) {
 
             prevSpanCharTotal = numberHeadingsIE7(wym._doc, true);
         }

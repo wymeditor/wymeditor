@@ -49,13 +49,12 @@ function numberHeadingsIE7(doc, addClass) {
         adjustedHeadingSel,
 
         $allHeadings,
-        $toTrim,
         $heading,
         headingNum,
         headingLabel,
 
         span,
-        spanCharTotal,
+        spanCharTotal = 0,
 
         counters = [0, 0, 0, 0, 0, 0],
         i,
