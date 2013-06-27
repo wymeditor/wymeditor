@@ -6,21 +6,20 @@ var NUMBERING_SPAN_CLASS = WYMeditor.STRUCTURED_HEADINGS_NUMBERING_SPAN_CLASS;
 var LEVEL_CLASSES = WYMeditor.STRUCTURED_HEADINGS_LEVEL_CLASSES;
 
 /*
-    getHtmlAfterKeydown
-    ======================
+    getHtmlAfterKeyup
+    =================
 
-    Triggers a keydown event on the wymeditor body and returns the normalized
-    html of the body after the keydown event was applied.
+    Triggers an enter keyup event on the wymeditor body and returns the
+    normalized html of the body after the keydown event was applied.
 */
-function getHtmlAfterKeydown(wymeditor) {
+function getHtmlAfterKeyup(wymeditor) {
         var $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
             keydown_event,
             bodyHtml;
 
         // Set up shift key keydown event
-        keydown_event = jQuery.Event('keydown');
-        keydown_event.which = 16;
-        keydown_event.keyCode = 16;
+        keydown_event = jQuery.Event('keyup');
+        keydown_event.which = WYMeditor.KEY.ENTER;
 
         $body.trigger(keydown_event);
 
@@ -183,7 +182,7 @@ if (jQuery.browser.msie && parseInt(jQuery.browser.version, 10) < 8.0) {
         var wymeditor = jQuery.wymeditors(0);
 
         wymeditor.html(startHeadings);
-        equals(getHtmlAfterKeydown(wymeditor), expectedHeadings,
+        equals(getHtmlAfterKeyup(wymeditor), expectedHeadings,
                "Heading numbering properly added on keydown");
     });
 
@@ -193,25 +192,25 @@ if (jQuery.browser.msie && parseInt(jQuery.browser.version, 10) < 8.0) {
 
         // Add correct headings to editor first
         wymeditor.html(expectedHeadings);
-        equals(getHtmlAfterKeydown(wymeditor), expectedHeadings,
+        equals(getHtmlAfterKeyup(wymeditor), expectedHeadings,
                "Heading numbering unchanged on keydown if already correct");
 
         // Break a correct top level heading by replacing it with a heading
         // with edited numbering
         wymeditor.html(editedNumberingTopLevel);
-        equals(getHtmlAfterKeydown(wymeditor), expectedHeadings,
+        equals(getHtmlAfterKeyup(wymeditor), expectedHeadings,
                "Top level heading numbering fixed on keydown");
 
         // Break a correct sublevel heading by replacing it with a heading with
         // edited numbering
         wymeditor.html(editedNumberingSubLevel);
-        equals(getHtmlAfterKeydown(wymeditor), expectedHeadings,
+        equals(getHtmlAfterKeyup(wymeditor), expectedHeadings,
                "Sublevel heading numbering fixed on keydown");
 
         // Break a correct subsublevel heading by replacing it with a heading
         // with edited numbering
         wymeditor.html(editedNumberingSubSubLevel);
-        equals(getHtmlAfterKeydown(wymeditor), expectedHeadings,
+        equals(getHtmlAfterKeyup(wymeditor), expectedHeadings,
                "Subsublevel heading numbering fixed on keydown");
     });
 }

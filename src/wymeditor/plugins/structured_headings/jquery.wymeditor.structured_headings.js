@@ -12,6 +12,16 @@ var START_NODE_CLASS = 'wym-structured-headings-start',
                      'wym-structured-heading-level5',
                      'wym-structured-heading-level6'];
 
+// Key codes for the keyup events that the heading numberings should be
+// recalculated on (i.e. for backspace, enter, and delete keys)
+var NUMBER_HEADINGS_KEYUPS = [8, 13, 46];
+
+// The class of the containers panel and the classes of the DOM elmements
+// within that panel that the heading numberings should be recalculated on
+// click
+var CONTAINERS_PANEL_CLASS = 'wym_containers';
+var CLICK_HYPERLINK_NAMES = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
+
 // Check if wymeditor exists on the page. If it doesn't exist and we're in IE7,
 // number the structured headings on the page. If it does exist, set up the
 // plugin for the editor.
@@ -31,6 +41,9 @@ if (typeof jQuery.wymeditors === 'undefined') {
     WYMeditor.STRUCTURED_HEADINGS_START_NODE_CLASS = START_NODE_CLASS;
     WYMeditor.STRUCTURED_HEADINGS_NUMBERING_SPAN_CLASS = NUMBERING_SPAN_CLASS;
     WYMeditor.STRUCTURED_HEADINGS_LEVEL_CLASSES = LEVEL_CLASSES;
+    WYMeditor.STRUCTURED_HEADINGS_NUMBER_HEADINGS_KEYUPS = NUMBER_HEADINGS_KEYUPS;
+    WYMeditor.STRUCTURED_HEADINGS_CONTAINERS_PANEL_CLASS = CONTAINERS_PANEL_CLASS;
+    WYMeditor.STRUCTURED_HEADINGS_CLICK_HYPERLINK_NAMES = CLICK_HYPERLINK_NAMES;
 
     /**
         structuredHeadings
@@ -99,24 +112,34 @@ if (typeof jQuery.wymeditors === 'undefined') {
     WYMeditor.editor.prototype.enableIE7Polyfill = function () {
         var wym = this,
             $body = jQuery(wym._doc.body),
+            $containersPanelLinks = jQuery(wym._box)
+                .find('.' + CONTAINERS_PANEL_CLASS + ' li > a'),
             prevHeadingTotal = 0,
             prevSpanCharTotal = 0;
 
-        $body.keydown(function () {
-            var headingTotal = $body.find(HEADING_SEL).length,
-                spanCharTotal = 0;
+        $body.keyup(function (evt) {
+            if (jQuery.inArray(evt.which, NUMBER_HEADINGS_KEYUPS) > -1) {
+                var headingTotal = $body.find(HEADING_SEL).length,
+                    spanCharTotal = 0;
 
-            $body.find('.' + NUMBERING_SPAN_CLASS).each(function () {
-                spanCharTotal += this.innerHTML.length;
-            });
+                $body.find('.' + NUMBERING_SPAN_CLASS).each(function () {
+                    spanCharTotal += this.innerHTML.length;
+                });
 
-            if (headingTotal !== prevHeadingTotal ||
-                spanCharTotal !== prevSpanCharTotal) {
+                if (headingTotal !== prevHeadingTotal ||
+                    spanCharTotal !== prevSpanCharTotal) {
 
-                prevSpanCharTotal = numberHeadingsIE7(wym._doc, true);
+                    prevSpanCharTotal = numberHeadingsIE7(wym._doc, true);
+                }
+
+                prevHeadingTotal = headingTotal;
             }
+        });
 
-            prevHeadingTotal = headingTotal;
+        $containersPanelLinks.click(function (evt) {
+            if (jQuery.inArray(evt.target.name, CLICK_HYPERLINK_NAMES) > -1) {
+                numberHeadingsIE7(wym._doc, true);
+            }
         });
     };
 }
