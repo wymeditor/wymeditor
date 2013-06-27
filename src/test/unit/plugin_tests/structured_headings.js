@@ -45,7 +45,7 @@ test("Stylesheet added to iframe", function () {
         linkHref,
         i;
 
-    if (jQuery.browser.msie && jQuery.browser.version < "8.0") {
+    if (WYMeditor.BROWSER_SUPPORTED_STRUCTURED_HEADINGS_POLYFILL) {
         expectedFileName = 'structured_headings_ie7_editor.css';
     } else {
         expectedFileName = 'structured_headings.css';
@@ -78,7 +78,7 @@ test("CSS stored for user access through console", function () {
     var cssRequest,
         stylesheetURL = '../../wymeditor/plugins/structured_headings/';
 
-    if (jQuery.browser.msie && jQuery.browser.version < "8.0") {
+    if (WYMeditor.BROWSER_SUPPORTED_STRUCTURED_HEADINGS_POLYFILL) {
         stylesheetURL += 'structured_headings_ie7_user.css';
     } else {
         stylesheetURL += 'structured_headings.css';
