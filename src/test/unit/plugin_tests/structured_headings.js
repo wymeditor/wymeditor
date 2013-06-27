@@ -1,25 +1,18 @@
 /*
     Tests for the structured_headings plugin.
 */
-
-var START_NODE_CLASS = 'structured-headings-start';
-var NUMBERING_SPAN_CLASS = 'structured-heading-numbering';
-var LEVEL_CLASSES = ['structured-heading-level1',
-                     'structured-heading-level2',
-                     'structured-heading-level3',
-                     'structured-heading-level4',
-                     'structured-heading-level5',
-                     'structured-heading-level6'];
+var START_NODE_CLASS = WYMeditor.STRUCTURED_HEADINGS_START_NODE_CLASS;
+var NUMBERING_SPAN_CLASS = WYMeditor.STRUCTURED_HEADINGS_NUMBERING_SPAN_CLASS;
+var LEVEL_CLASSES = WYMeditor.STRUCTURED_HEADINGS_LEVEL_CLASSES;
 
 /*
-    applyKeydown
-    ============
+    getHtmlAfterKeydown
+    ======================
 
-    Puts the startHtml into the wymeditor body and triggers a keydown event on
-    the body. Returns the normalized html of the body after the keydown event
-    was applied.
+    Triggers a keydown event on the wymeditor body and returns the normalized
+    html of the body after the keydown event was applied.
 */
-function applyKeydown(wymeditor, startHtml) {
+function getHtmlAfterKeydown(wymeditor) {
         var $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
             keydown_event,
             bodyHtml;
@@ -29,7 +22,6 @@ function applyKeydown(wymeditor, startHtml) {
         keydown_event.which = 16;
         keydown_event.keyCode = 16;
 
-        wymeditor.html(startHtml);
         $body.trigger(keydown_event);
 
         // Normalize HTML and remove the body tag to get just inner body html
@@ -102,7 +94,7 @@ test("CSS stored for user access through console", function () {
 });
 
 // Tests for the IE7 polyfill
-if (jQuery.browser.msie && jQuery.browser.version < "8.0") {
+if (jQuery.browser.msie && parseInt(jQuery.browser.version, 10) < 8.0) {
 
     var startHeadings = String() +
         '<h1>H1</h1>' +
@@ -190,7 +182,7 @@ if (jQuery.browser.msie && jQuery.browser.version < "8.0") {
         expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
-        equals(applyKeydown(wymeditor, startHeadings), expectedHeadings,
+        equals(getHtmlAfterKeydown(wymeditor, startHeadings), expectedHeadings,
                "Heading numbering properly added on keydown");
     });
 
@@ -199,25 +191,26 @@ if (jQuery.browser.msie && jQuery.browser.version < "8.0") {
         var wymeditor = jQuery.wymeditors(0);
 
         // Add correct headings to editor first
-        equals(applyKeydown(wymeditor, expectedHeadings), expectedHeadings,
+        wymeditor.html(expectedHeadings);
+        equals(getHtmlAfterKeydown(wymeditor), expectedHeadings,
                "Heading numbering unchanged on keydown if already correct");
 
         // Break a correct top level heading by replacing it with a heading
         // with edited numbering
-        equals(applyKeydown(wymeditor, editedNumberingTopLevel),
-               expectedHeadings,
+        wymeditor.html(editedNumberingTopLevel);
+        equals(getHtmlAfterKeydown(wymeditor), expectedHeadings,
                "Top level heading numbering fixed on keydown");
 
         // Break a correct sublevel heading by replacing it with a heading with
         // edited numbering
-        equals(applyKeydown(wymeditor, editedNumberingSubLevel),
-               expectedHeadings,
+        wymeditor.html(editedNumberingSubLevel);
+        equals(getHtmlAfterKeydown(wymeditor), expectedHeadings,
                "Sublevel heading numbering fixed on keydown");
 
         // Break a correct subsublevel heading by replacing it with a heading
         // with edited numbering
-        equals(applyKeydown(wymeditor, editedNumberingSubSubLevel),
-               expectedHeadings,
+        wymeditor.html(editedNumberingSubSubLevel);
+        equals(getHtmlAfterKeydown(wymeditor), expectedHeadings,
                "Subsublevel heading numbering fixed on keydown");
     });
 }

@@ -1,105 +1,124 @@
-WYMeditor.BROWSER_SUPPORTED_STRUCTURED_HEADINGS =
-    !(jQuery.browser.msie && jQuery.browser.version < "7.0");
-
 // Constants for selecting headings
-var HEADING_LIST = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
-var HEADING_SEL = HEADING_LIST.join(', ');
+var HEADING_LIST = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+    HEADING_SEL = HEADING_LIST.join(', ');
 
 // Constants for class names used in structuring the headings
-var START_NODE_CLASS = 'structured-headings-start';
-var NUMBERING_SPAN_CLASS = 'structured-heading-numbering';
-var LEVEL_CLASSES = ['structured-heading-level1',
-                     'structured-heading-level2',
-                     'structured-heading-level3',
-                     'structured-heading-level4',
-                     'structured-heading-level5',
-                     'structured-heading-level6'];
+var START_NODE_CLASS = 'wym-structured-headings-start',
+    NUMBERING_SPAN_CLASS = 'wym-structured-heading-numbering',
+    LEVEL_CLASSES = ['wym-structured-heading-level1',
+                     'wym-structured-heading-level2',
+                     'wym-structured-heading-level3',
+                     'wym-structured-heading-level4',
+                     'wym-structured-heading-level5',
+                     'wym-structured-heading-level6'];
 
-/**
-    structuredHeadings
-    ==================
-
-    Initializes the structured_headings plugin for the wymeditor instance. This
-    method should be called by the passed wymeditor instance in the `postInit`
-    function of the wymeditor instantiation.
-*/
-WYMeditor.editor.prototype.structuredHeadings = function () {
-    var wym = this,
-        wymBasePath = WYMeditor.computeBasePath(WYMeditor.computeWymPath()),
-        iframeHead = jQuery(wym._doc).find('head')[0],
-        stylesheetHref,
-        cssLink,
-        cssRequest;
-
-    cssLink = wym._doc.createElement('link');
-    cssLink.rel = 'stylesheet';
-    cssLink.type = 'text/css';
-
-    if (jQuery.browser.msie && jQuery.browser.version < "8.0") {
-        stylesheetHref = '/plugins/structured_headings/' +
-                         'structured_headings_ie7_editor.css';
-        cssLink.href = '../..' + stylesheetHref; // Adjust path for iframe
-        iframeHead.appendChild(cssLink);
-
-        // Change href to user stylesheet to store in WYMeditor
-        stylesheetHref = stylesheetHref.replace('editor', 'user');
-
-        wym.setupHeadingNumbering();
-
-
-    } else {
-        stylesheetHref = '/plugins/structured_headings/structured_headings.css';
-        cssLink.href = '../..' + stylesheetHref; // Adjust path for iframe
-        iframeHead.appendChild(cssLink);
+// Check if wymeditor exists on the page. If it doesn't exist and we're in IE7,
+// number the structured headings on the page. If it does exist, set up the
+// plugin for the editor.
+if (typeof jQuery.wymeditors === 'undefined') {
+    if (jQuery.browser.msie && parseInt(jQuery.browser.version, 10) < 8.0) {
+        jQuery(document).ready(function() { numberHeadingsIE7(); });
     }
 
-    // Get stylesheet CSS and store it in WYMeditor so that it can be accessed
-    // to put on other pages.
-    cssRequest = new XMLHttpRequest();
-    cssRequest.open('GET', wymBasePath + stylesheetHref, false);
-    cssRequest.send('');
-    WYMeditor.structuredHeadingsCSS = cssRequest.responseText;
-};
+} else {
+    WYMeditor.BROWSER_SUPPORTED_STRUCTURED_HEADINGS =
+        !(jQuery.browser.msie && parseInt(jQuery.browser.version, 10) < 7.0);
+    WYMeditor.BROWSER_SUPPORTED_STRUCTURED_HEADINGS_POLYFILL =
+        jQuery.browser.msie && parseInt(jQuery.browser.version, 10) < 8.0;
 
-/**
-    WYMeditor.getStructuredHeadingsCSS
-    ==================================
+    WYMeditor.STRUCTURED_HEADINGS_LIST = HEADING_LIST;
+    WYMeditor.STRUCTURED_HEADINGS_SEL = HEADING_SEL;
+    WYMeditor.STRUCTURED_HEADINGS_START_NODE_CLASS = START_NODE_CLASS;
+    WYMeditor.STRUCTURED_HEDAINGS_NUMBERING_SPAN_CLASS = NUMBERING_SPAN_CLASS;
+    WYMeditor.STRUCTURED_HEADINGS_LEVEL_CLASSES = LEVEL_CLASSES;
 
-    Function to output the plugin CSS to the console log so that it can be
-    copied over to other pages.
-*/
-WYMeditor.printStructuredHeadingsCSS = function () {
-    WYMeditor.console.log(WYMeditor.structuredHeadingsCSS);
-};
+    /**
+        structuredHeadings
+        ==================
 
-/**
-    setupHeadingNumbering
-    =====================
+        Initializes the structured_headings plugin for the wymeditor instance. This
+        method should be called by the passed wymeditor instance in the `postInit`
+        function of the wymeditor instantiation.
+    */
+    WYMeditor.editor.prototype.structuredHeadings = function () {
+        var wym = this,
+            wymBasePath = WYMeditor.computeBasePath(WYMeditor.computeWymPath()),
+            iframeHead = jQuery(wym._doc).find('head')[0],
+            stylesheetHref,
+            cssLink,
+            cssRequest;
 
-    Javascript polyfill to add heading numbering to IE versions 7 and lower.
-*/
-WYMeditor.editor.prototype.setupHeadingNumbering = function () {
-    var wym = this,
-        $body = jQuery(wym._doc.body),
-        prevHeadingTotal = 0,
-        prevSpanCharTotal = 0;
+        cssLink = wym._doc.createElement('link');
+        cssLink.rel = 'stylesheet';
+        cssLink.type = 'text/css';
 
-    $body.keydown(function () {
-        var headingTotal = $body.find(HEADING_SEL).length,
-            spanCharTotal = 0;
+        if (WYMeditor.BROWSER_SUPPORTED_STRUCTURED_HEADINGS_POLYFILL) {
+            stylesheetHref = '/plugins/structured_headings/' +
+                             'structured_headings_ie7_editor.css';
+            cssLink.href = '../..' + stylesheetHref; // Adjust path for iframe
+            iframeHead.appendChild(cssLink);
 
-        $body.find('.' + NUMBERING_SPAN_CLASS).each(function () {
-            spanCharTotal += this.innerHTML.length;
-        });
+            // Change href to user stylesheet to store in WYMeditor
+            stylesheetHref = stylesheetHref.replace('editor', 'user');
 
-        if (headingTotal !== prevHeadingTotal ||
-            spanCharTotal !== prevSpanCharTotal) {
+            wym.enableIE7Polyfill();
 
-            prevSpanCharTotal = numberHeadingsIE7(wym._doc, true);
+
+        } else {
+            stylesheetHref = '/plugins/structured_headings/structured_headings.css';
+            cssLink.href = '../..' + stylesheetHref; // Adjust path for iframe
+            iframeHead.appendChild(cssLink);
         }
 
-        prevHeadingTotal = headingTotal;
-    });
+        // Get stylesheet CSS and store it in WYMeditor so that it can be accessed
+        // to put on other pages.
+        cssRequest = new XMLHttpRequest();
+        cssRequest.open('GET', wymBasePath + stylesheetHref, false);
+        cssRequest.send('');
+        WYMeditor.structuredHeadingsCSS = cssRequest.responseText;
+    };
+
+    /**
+        WYMeditor.getStructuredHeadingsCSS
+        ==================================
+
+        Function to output the plugin CSS to the console log so that it can be
+        copied over to other pages.
+    */
+    WYMeditor.printStructuredHeadingsCSS = function () {
+        WYMeditor.console.log(WYMeditor.structuredHeadingsCSS);
+    };
+
+    /**
+        enableIE7Polyfill
+        =================
+
+        Enables Javascript polyfill to add heading numbering to IE versions 7
+        and lower.
+    */
+    WYMeditor.editor.prototype.enableIE7Polyfill = function () {
+        var wym = this,
+            $body = jQuery(wym._doc.body),
+            prevHeadingTotal = 0,
+            prevSpanCharTotal = 0;
+
+        $body.keydown(function () {
+            var headingTotal = $body.find(HEADING_SEL).length,
+                spanCharTotal = 0;
+
+            $body.find('.' + NUMBERING_SPAN_CLASS).each(function () {
+                spanCharTotal += this.innerHTML.length;
+            });
+
+            if (headingTotal !== prevHeadingTotal ||
+                spanCharTotal !== prevSpanCharTotal) {
+
+                prevSpanCharTotal = numberHeadingsIE7(wym._doc, true);
+            }
+
+            prevHeadingTotal = headingTotal;
+        });
+    };
 }
 
 /*
@@ -131,8 +150,9 @@ WYMeditor.editor.prototype.setupHeadingNumbering = function () {
     requires jQuery.
 */
 function numberHeadingsIE7(doc, addClass) {
-    var doc = typeof doc !== 'undefined' ? doc : document,
-        $doc = jQuery(doc),
+    doc = typeof doc !== 'undefined' ? doc : document;
+
+    var $doc = jQuery(doc),
 
         $startNode = $doc.find('.' + START_NODE_CLASS),
         startIndex,
