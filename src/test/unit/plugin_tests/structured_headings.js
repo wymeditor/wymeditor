@@ -2,8 +2,8 @@
     Tests for the structured_headings plugin.
 */
 var START_NODE_CLASS = WYMeditor.STRUCTURED_HEADINGS_START_NODE_CLASS;
-var NUMBERING_SPAN_CLASS = WYMeditor.STRUCTURED_HEADINGS_NUMBERING_SPAN_CLASS;
 var LEVEL_CLASSES = WYMeditor.STRUCTURED_HEADINGS_LEVEL_CLASSES;
+var NUMBERING_SPAN_CLASS = WYMeditor.HEADING_NUMBERING_SPAN_CLASS;
 
 /*
     getHtmlAfterKeyup
@@ -14,14 +14,14 @@ var LEVEL_CLASSES = WYMeditor.STRUCTURED_HEADINGS_LEVEL_CLASSES;
 */
 function getHtmlAfterKeyup(wymeditor) {
         var $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
-            keydown_event,
+            keyup_event,
             bodyHtml;
 
         // Set up shift key keydown event
-        keydown_event = jQuery.Event('keyup');
-        keydown_event.which = WYMeditor.KEY.ENTER;
+        keyup_event = jQuery.Event('keyup');
+        keyup_event.which = WYMeditor.KEY.ENTER;
 
-        $body.trigger(keydown_event);
+        $body.trigger(keyup_event);
 
         // Normalize HTML and remove the body tag to get just inner body html
         bodyHtml = normalizeHtml($body[0]).replace(/<\/?body[\d\w\s"=]*>/g, '');
@@ -93,7 +93,7 @@ test("CSS stored for user access through console", function () {
 });
 
 // Tests for the IE7 polyfill
-if (jQuery.browser.msie && parseInt(jQuery.browser.version, 10) < 8.0) {
+if (WYMeditor.BROWSER_SUPPORTED_STRUCTURED_HEADINGS_POLYFILL) {
 
     var startHeadings = String() +
         '<h1>H1</h1>' +
