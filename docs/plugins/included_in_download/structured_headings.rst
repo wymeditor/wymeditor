@@ -33,9 +33,9 @@ these steps:
 #. Apply the stylesheet with the CSS to all of the pages that contain documents
    that had heading numbering added to them in the editor.
 #. If you are using IE7, in addition to the previous steps, add the script
-   ``number_headings_ie7.js`` available in the plugin's directory to all of the
-   pages that contain documents that had heading numbering added to them in the
-   editor.
+   ``jquery.wymeditor.structured_headings.js`` available in the plugin's
+   directory to all of the pages that contain documents that had heading
+   numbering added to them in the editor.
 
 Browser Support
 ---------------
