@@ -29,7 +29,7 @@ if (typeof jQuery.wymeditors === 'undefined') {
     WYMeditor.STRUCTURED_HEADINGS_LIST = HEADING_LIST;
     WYMeditor.STRUCTURED_HEADINGS_SEL = HEADING_SEL;
     WYMeditor.STRUCTURED_HEADINGS_START_NODE_CLASS = START_NODE_CLASS;
-    WYMeditor.STRUCTURED_HEDAINGS_NUMBERING_SPAN_CLASS = NUMBERING_SPAN_CLASS;
+    WYMeditor.STRUCTURED_HEADINGS_NUMBERING_SPAN_CLASS = NUMBERING_SPAN_CLASS;
     WYMeditor.STRUCTURED_HEADINGS_LEVEL_CLASSES = LEVEL_CLASSES;
 
     /**
@@ -160,19 +160,19 @@ function numberHeadingsIE7(doc, addClass) {
 
         $allHeadings,
         $heading,
-        headingNum,
         headingLabel,
 
         span,
         spanCharTotal = 0,
 
         counters = [0, 0, 0, 0, 0, 0],
+        counterIndex,
         i,
         j;
 
     // If no start node is set and addClass is true, set the start node as the
     // first heading in doc by default.
-    if (addClass && !$startNode.length) {
+    if (addClass) {
         $startNode = $doc.find(HEADING_SEL);
         if ($startNode.length) {
             $startNode = $startNode.eq(0);
@@ -185,32 +185,38 @@ function numberHeadingsIE7(doc, addClass) {
         return;
     }
 
-    // Ignore headings above the level of the start node
-    startIndex = parseInt($startNode[0].nodeName.slice(-1), 10) - 1;
-    adjustedHeadingSel = HEADING_LIST.slice(startIndex,
-                                            HEADING_LIST.length).join(', ');
-    $allHeadings = $startNode.nextAll(adjustedHeadingSel).add($startNode);
+    // startHeadingType is the level of the heading that is the start node.
+    // This is found out by looking at the last character of its nodeName.
+    startHeadingLevel = parseInt($startNode[0].nodeName.slice(-1), 10);
+    $allHeadings = $startNode.nextAll(HEADING_SEL).add($startNode);
 
     // Remove any previously calculated heading numbering
     $doc.find('.' + NUMBERING_SPAN_CLASS).remove();
 
     for (i = 0; i < $allHeadings.length; ++i) {
         $heading = $allHeadings.eq(i);
-        headingNum = parseInt($heading[0].nodeName.slice(-1), 10) -
-                     (startIndex + 1);
+        counterIndex = parseInt($heading[0].nodeName.slice(-1), 10) -
+            startHeadingLevel;
+
+        // If the counterIndex is negative, it means the level of the current
+        // heading is above the level of the start node, so heading numbering
+        // should stop at this point.
+        if (counterIndex < 0) {
+            break;
+        }
 
         // Calculate the heading label
-        ++counters[headingNum];
+        ++counters[counterIndex];
         headingLabel = '';
-        for (j = 0; j <= headingNum; ++j) {
-            if (j === headingNum) {
+        for (j = 0; j <= counterIndex; ++j) {
+            if (j === counterIndex) {
                 headingLabel += counters[j];
             } else {
                 headingLabel += counters[j] + '.';
             }
         }
         if (addClass) {
-            $heading.addClass(LEVEL_CLASSES[headingNum]);
+            $heading.addClass(LEVEL_CLASSES[counterIndex]);
         }
 
         // Prepend span containing the heading's label to heading
@@ -218,10 +224,10 @@ function numberHeadingsIE7(doc, addClass) {
         span.innerHTML = headingLabel;
         span.className = NUMBERING_SPAN_CLASS;
         $heading.prepend(span);
-        spanCharTotal += (headingNum * 2) + 1;
+        spanCharTotal += (counterIndex * 2) + 1;
 
         // Reset counters below the heading's level
-        for (j = headingNum + 1; j < counters.length; ++j) {
+        for (j = counterIndex + 1; j < counters.length; ++j) {
             counters[j] = 0;
         }
     }

@@ -182,7 +182,8 @@ if (jQuery.browser.msie && parseInt(jQuery.browser.version, 10) < 8.0) {
         expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
-        equals(getHtmlAfterKeydown(wymeditor, startHeadings), expectedHeadings,
+        wymeditor.html(startHeadings);
+        equals(getHtmlAfterKeydown(wymeditor), expectedHeadings,
                "Heading numbering properly added on keydown");
     });
 
