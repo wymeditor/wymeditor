@@ -110,7 +110,7 @@ WYMeditor.editor.prototype.enableIE7Polyfill = function () {
     var wym = this,
         $body = jQuery(wym._doc.body),
         $containersPanelLinks = jQuery(wym._box)
-            .find('.' + wym._options.containersSelector + ' li > a'),
+            .find(wym._options.containersSelector + ' li > a'),
         headingSel = WYMeditor.HEADING_ELEMENTS.join(', '),
         prevHeadingTotal = 0,
         prevSpanCharTotal = 0;
