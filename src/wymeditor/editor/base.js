@@ -529,7 +529,7 @@ WYMeditor.editor.prototype.container = function (sType) {
             if (container.tagName.toLowerCase() === WYMeditor.TD) {
                 sType = WYMeditor.TH;
             }
-            this.switchTo(container, sType);
+            this.switchTo(container, sType, true);
             this.update();
         }
     } else {
@@ -667,14 +667,26 @@ WYMeditor.editor.prototype.findUp = function (node, filter) {
     WYMeditor.editor.switchTo
     =========================
 
-    Switch the type of the given `node` to type `sType`
+    Switch the type of the given `node` to type `sType`. If keepAttrs is true,
+    the attributes of node are preserved and readded to its new type. If
+    keepAttrs is false (or undefined), all of the attributes of node will be
+    lost in the switch, leaving the node with no attributes after being
+    switched to the new type.
 */
-WYMeditor.editor.prototype.switchTo = function (node, sType) {
+WYMeditor.editor.prototype.switchTo = function (node, sType, keepAttrs) {
     var newNode = this._doc.createElement(sType),
-        html = jQuery(node).html();
+        html = jQuery(node).html(),
+        attrs = node.attributes,
+        i;
 
     node.parentNode.replaceChild(newNode, node);
     jQuery(newNode).html(html);
+    if (keepAttrs) {
+        for (i = 0; i < attrs.length; ++i) {
+            newNode.setAttribute(attrs.item(i).nodeName,
+                                 attrs.item(i).nodeValue);
+        }
+    }
 
     this.setFocusToNode(newNode);
 };
