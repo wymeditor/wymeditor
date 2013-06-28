@@ -35,7 +35,16 @@ these steps:
 #. If you are using IE7, in addition to the previous steps, add the script
    ``jquery.wymeditor.structured_headings.js`` available in the plugin's
    directory to all of the pages that contain documents that had heading
-   numbering added to them in the editor.
+   numbering added to them in the editor. This script provides the function
+   ``numberHeadingsIE7()`` which detects which headings on the page were
+   assigned numbering in WYMeditor and adds the numbering for these headings
+   into the page. This function should be called in a script on document ready
+   after the ``jquery.wymeditor.structured_headings.js`` script is included on
+   the page. Here is an example of what that script should look like:
+
+    .. code-block:: javascript
+
+        jQuery(document).ready(function() { numberHeadingsIE7(); });
 
 Browser Support
 ---------------

@@ -45,7 +45,7 @@ test("Stylesheet added to iframe", function () {
         linkHref,
         i;
 
-    if (WYMeditor.BROWSER_SUPPORTED_STRUCTURED_HEADINGS_POLYFILL) {
+    if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
         expectedFileName = 'structured_headings_ie7_editor.css';
     } else {
         expectedFileName = 'structured_headings.css';
@@ -78,7 +78,7 @@ test("CSS stored for user access through console", function () {
     var cssRequest,
         stylesheetURL = '../../wymeditor/plugins/structured_headings/';
 
-    if (WYMeditor.BROWSER_SUPPORTED_STRUCTURED_HEADINGS_POLYFILL) {
+    if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
         stylesheetURL += 'structured_headings_ie7_user.css';
     } else {
         stylesheetURL += 'structured_headings.css';
@@ -93,7 +93,7 @@ test("CSS stored for user access through console", function () {
 });
 
 // Tests for the IE7 polyfill
-if (WYMeditor.BROWSER_SUPPORTED_STRUCTURED_HEADINGS_POLYFILL) {
+if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
 
     var startHeadings = String() +
         '<h1>H1</h1>' +

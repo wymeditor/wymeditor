@@ -1,11 +1,5 @@
-// Check if wymeditor exists on the page. If it doesn't exist and we're in IE7,
-// number the structured headings on the page.
-if (typeof (jQuery.wymeditors) === 'undefined') {
-    if (jQuery.browser.msie && parseInt(jQuery.browser.version, 10) < 8.0) {
-        jQuery(document).ready(function() { numberHeadingsIE7(); });
-    }
-}
-
+// In case the script is included on a page without WYMeditor, define the
+// WYMeditor and WYMeditor.editor objects to hold the constants used.
 if (typeof (WYMeditor) === 'undefined') {
     WYMeditor = {};
     WYMeditor.HEADING_ELEMENTS = ["h1", "h2", "h3", "h4", "h5", "h6"];
@@ -20,9 +14,7 @@ if (typeof (WYMeditor.editor) === 'undefined') {
     WYMeditor.editor.prototype = {};
 }
 
-WYMeditor.BROWSER_SUPPORTED_STRUCTURED_HEADINGS =
-    !(jQuery.browser.msie && parseInt(jQuery.browser.version, 10) < 7.0);
-WYMeditor.BROWSER_SUPPORTED_STRUCTURED_HEADINGS_POLYFILL =
+WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED =
     jQuery.browser.msie && parseInt(jQuery.browser.version, 10) < 8.0;
 
 // Constants for class names used in structuring the headings
@@ -33,13 +25,12 @@ WYMeditor.STRUCTURED_HEADINGS_LEVEL_CLASSES = ['wym-structured-heading-level1',
                                                'wym-structured-heading-level4',
                                                'wym-structured-heading-level5',
                                                'wym-structured-heading-level6'];
-WYMeditor.HEADING_NUMBERING_SPAN_CLASS = 'wym-structured-heading-numbering';
+WYMeditor.STRUCTURED_HEADINGS_NUMBERING_SPAN_CLASS = 'wym-structured-heading-numbering';
 
 // Key codes for the keyup events that the heading numberings should be
-// recalculated on (i.e. for backspace, enter, and delete keys)
-WYMeditor.POTENTIAL_HEADING_MODIFICATION_KEYS = [WYMeditor.KEY.BACKSPACE,
-                                                 WYMeditor.KEY.DELETE,
-                                                 WYMeditor.KEY.ENTER];
+// recalculated on
+WYMeditor.STRUCTURED_HEADINGS_POTENTIAL_HEADING_MODIFICATION_KEYS =
+    [WYMeditor.KEY.BACKSPACE, WYMeditor.KEY.DELETE, WYMeditor.KEY.ENTER];
 
 
 /**
@@ -62,7 +53,7 @@ WYMeditor.editor.prototype.structuredHeadings = function () {
     cssLink.rel = 'stylesheet';
     cssLink.type = 'text/css';
 
-    if (WYMeditor.BROWSER_SUPPORTED_STRUCTURED_HEADINGS_POLYFILL) {
+    if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
         stylesheetHref = '/plugins/structured_headings/' +
                          'structured_headings_ie7_editor.css';
         cssLink.href = '../..' + stylesheetHref; // Adjust path for iframe
@@ -72,7 +63,6 @@ WYMeditor.editor.prototype.structuredHeadings = function () {
         stylesheetHref = stylesheetHref.replace('editor', 'user');
 
         wym.enableIE7Polyfill();
-
 
     } else {
         stylesheetHref = '/plugins/structured_headings/structured_headings.css';
@@ -117,12 +107,12 @@ WYMeditor.editor.prototype.enableIE7Polyfill = function () {
 
     $body.keyup(function (evt) {
         if (jQuery.inArray(evt.which,
-                    WYMeditor.POTENTIAL_HEADING_MODIFICATION_KEYS) > -1) {
+            WYMeditor.STRUCTURED_HEADINGS_POTENTIAL_HEADING_MODIFICATION_KEYS) > -1) {
 
             var headingTotal = $body.find(headingSel).length,
                 spanCharTotal = 0;
 
-            $body.find('.' + WYMeditor.HEADING_NUMBERING_SPAN_CLASS)
+            $body.find('.' + WYMeditor.STRUCTURED_HEADINGS_NUMBERING_SPAN_CLASS)
                  .each(function () {
 
                 spanCharTotal += this.innerHTML.length;
@@ -226,7 +216,7 @@ function numberHeadingsIE7(doc, addClass) {
     $allHeadings = $startNode.nextAll(headingSel).add($startNode);
 
     // Remove any previously calculated heading numbering
-    $doc.find('.' + WYMeditor.HEADING_NUMBERING_SPAN_CLASS).remove();
+    $doc.find('.' + WYMeditor.STRUCTURED_HEADINGS_NUMBERING_SPAN_CLASS).remove();
 
     for (i = 0; i < $allHeadings.length; ++i) {
         $heading = $allHeadings.eq(i);
@@ -257,7 +247,7 @@ function numberHeadingsIE7(doc, addClass) {
         // Prepend span containing the heading's label to heading
         span = doc.createElement('span');
         span.innerHTML = headingLabel;
-        span.className = WYMeditor.HEADING_NUMBERING_SPAN_CLASS;
+        span.className = WYMeditor.STRUCTURED_HEADINGS_NUMBERING_SPAN_CLASS;
         $heading.prepend(span);
         spanCharTotal += (counterIndex * 2) + 1;
 
