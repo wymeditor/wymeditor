@@ -1402,6 +1402,71 @@ test("Parse list with multiple tables in a sublist", function () {
     htmlEquals(wymeditor, sublistThreeTablesNoBR);
 });
 
+module("table-td_th_switching", {setup: setupWym});
+
+var tableWithColspanTD = String() +
+    '<table>' +
+        '<caption>test_1</caption>' +
+        '<tbody>' +
+            '<tr>' +
+                '<td colspan="2">1</td>' +
+            '</tr>' +
+            '<tr>' +
+                '<td>2_1</td>' +
+                '<td>2_2</td>' +
+            '</tr>' +
+        '</tbody>' +
+    '</table>';
+
+var tableWithColspanTH = String() +
+    '<table>' +
+        '<caption>test_1</caption>' +
+        '<tbody>' +
+            '<tr>' +
+                '<th colspan="2">1</th>' +
+            '</tr>' +
+            '<tr>' +
+                '<td>2_1</td>' +
+                '<td>2_2</td>' +
+            '</tr>' +
+        '</tbody>' +
+    '</table>';
+
+test("Colspan preserved when switching between td and th", function () {
+    expect(2);
+    var wymeditor = jQuery.wymeditors(0),
+        $thContainerLink = jQuery(wymeditor._box)
+            .find(wymeditor._options.containersSelector + ' a[name$="TH"]'),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $tableCell,
+        xhtml,
+        xhtmlStr;
+
+        wymeditor.html(tableWithColspanTD);
+        $tableCell = $body.find('td[colspan$="2"]');
+        makeTextSelection(wymeditor, $tableCell[0], $tableCell[0], 0, 1);
+
+        // Click "Table Header" option in the containers panel
+        $thContainerLink.trigger('click');
+        xhtml = jQuery(wymeditor.xhtml(), wymeditor._doc);
+        // Remove any added rowspan="1" and tabindex="0" attrs so that they
+        // don't mess up the equals comparison
+        xhtmlStr = normalizeHtml(xhtml[0])
+            .replace(/\s*(rowspan="1"|tabindex="0")\s*/g, '');
+        equals(xhtmlStr, tableWithColspanTH,
+               "Colspan preserved when switching td to th");
+
+        // Click "Table Header" option again in the containers panel
+        $thContainerLink.trigger('click');
+        xhtml = jQuery(wymeditor.xhtml(), wymeditor._doc);
+        // Remove any added rowspan="1" and tabindex="0" attrs so that they
+        // don't mess up the equals comparison
+        xhtmlStr = normalizeHtml(xhtml[0])
+            .replace(/\s*(rowspan="1"|tabindex="0")\s*/g, '');
+        equals(xhtmlStr, tableWithColspanTD,
+               "Colspan preserved when switching th back to td");
+});
+
 module("preformatted-text", {setup: setupWym});
 
 test("Preformatted text retains spacing", function () {
