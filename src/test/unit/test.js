@@ -468,6 +468,151 @@ test("Allow line breaks after strong in lists", function () {
     wymeditor.html(listHtmlUnclosedBr);
     htmlEquals(wymeditor, listHtml);
 });
+
+module("XmlParser-editor_only_elements", {setup: setupWym});
+
+var TEXT_CONTAINER_ELEMENTS = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+                               'pre', 'blockquote', 'div'];
+var TEXT_INLINE_ELEMENTS = ['a', 'span', 'strong', 'em'];
+var SELF_CLOSING_ELEMENTS = ['br', 'hr', 'img'];
+
+var editorOnlyContainerStartHtml = String() +
+    '<p id="before-removed-element">Not removed</p>' +
+    '<p id="after-removed-element">Not removed</p>';
+
+var editorOnlyInlineStartHtml = String() +
+    '<p id="before-removed-element">Not removed</p>' +
+    '<p id="test-container">Not removed</p>' +
+    '<p id="after-removed-element">Not removed</p>';
+
+test("Remove editor-only text container elements", function () {
+    expect(TEXT_CONTAINER_ELEMENTS.length);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $element,
+        tagName,
+        i;
+
+    for (i = 0; i < TEXT_CONTAINER_ELEMENTS.length; ++i) {
+        wymeditor.html(editorOnlyContainerStartHtml);
+        tagName = TEXT_CONTAINER_ELEMENTS[i];
+        $element = jQuery('<' + tagName + '>Removed</' + tagName + '>');
+        $element.attr("id", "removed-" + tagName);
+        $element.addClass(WYMeditor.EDITOR_ONLY_CLASS);
+        $body.find('#before-removed-element').after($element);
+
+        htmlEquals(wymeditor, editorOnlyContainerStartHtml,
+                   "Remove editor only `" + tagName + "` element");
+    }
+});
+
+test("Remove editor-only text inline elements", function () {
+    expect(TEXT_INLINE_ELEMENTS.length);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $element,
+        tagName,
+        i;
+
+    for (i = 0; i < TEXT_INLINE_ELEMENTS.length; ++i) {
+        wymeditor.html(editorOnlyInlineStartHtml);
+        tagName = TEXT_INLINE_ELEMENTS[i];
+        $element = jQuery('<' + tagName + '> Removed</' + tagName + '>');
+        $element.attr("id", "removed-" + tagName);
+        $element.addClass(WYMeditor.EDITOR_ONLY_CLASS);
+        $body.find('#test-container').append($element);
+
+        htmlEquals(wymeditor, editorOnlyInlineStartHtml,
+                   "Remove editor only `" + tagName + "` inline element");
+    }
+});
+
+test("Remove editor-only table", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        table,
+        i;
+
+    wymeditor.html(editorOnlyContainerStartHtml);
+    table = '<table id="removed-table" class="' +
+                WYMeditor.EDITOR_ONLY_CLASS + '">';
+    table += '<caption>Removed</caption>';
+    for (i = 0; i < 3; ++i) {
+        table += '<tr><td>Removed</td></tr>';
+    }
+    table += '</table>';
+    $body.find('#before-removed-element').after(table);
+
+    htmlEquals(wymeditor, editorOnlyContainerStartHtml,
+               "Remove editor only `table`");
+});
+
+test("Remove editor-only lists", function() {
+    expect(WYMeditor.LIST_TYPE_ELEMENTS.length);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        listType,
+        list,
+        i,
+        j;
+
+    for (i = 0; i < WYMeditor.LIST_TYPE_ELEMENTS.length; ++i) {
+        wymeditor.html(editorOnlyContainerStartHtml);
+        listType = WYMeditor.LIST_TYPE_ELEMENTS[i];
+        list = '<' + listType + ' id="removed-list" class="' +
+                    WYMeditor.EDITOR_ONLY_CLASS + '">';
+        for (j = 0; j < 3; ++j) {
+            list += '<li>Removed</li>';
+        }
+        list += '</' + listType + '>';
+        $body.find('#before-removed-element').after(list);
+
+        htmlEquals(wymeditor, editorOnlyContainerStartHtml,
+                   "Remove editor only `" + listType + "` list");
+    }
+});
+
+test("Remove editor-only self-closing elements", function () {
+    expect(SELF_CLOSING_ELEMENTS.length);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $element,
+        tagName,
+        i;
+
+    for (i = 0; i < SELF_CLOSING_ELEMENTS.length; ++i) {
+        wymeditor.html(editorOnlyContainerStartHtml);
+        tagName = SELF_CLOSING_ELEMENTS[i];
+        $element = jQuery('<' + tagName + '/>');
+        $element.attr("id", "removed-" + tagName);
+        $element.addClass(WYMeditor.EDITOR_ONLY_CLASS);
+        $body.find('#before-removed-element').after($element);
+
+        htmlEquals(wymeditor, editorOnlyContainerStartHtml,
+                   "Remove editor only `" + tagName + "` element");
+    }
+});
+
+test("Remove editor-only element with multiple classes", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $element;
+
+    wymeditor.html(editorOnlyContainerStartHtml);
+    $element = jQuery('<p>Test</p>');
+    $element.attr("id", "multiclass-test");
+    $element.addClass("foo");
+    $element.addClass("bar");
+    $element.addClass(WYMeditor.EDITOR_ONLY_CLASS);
+    $element.addClass("baz");
+    $body.append($element);
+
+    htmlEquals(wymeditor, editorOnlyContainerStartHtml,
+               "Remove editor only `p` element with multiple classes");
+});
+
 module("Post Init", {setup: setupWym});
 
 test("Sanity check: html()", function () {
