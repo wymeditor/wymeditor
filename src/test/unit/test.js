@@ -1587,6 +1587,70 @@ test("Parse list with multiple tables in a sublist", function () {
     htmlEquals(wymeditor, sublistThreeTablesNoBR);
 });
 
+module("table-td_th_switching", {setup: setupWym});
+
+var tableWithColspanTD = String() +
+    '<table>' +
+        '<caption>test_1</caption>' +
+        '<tbody>' +
+            '<tr>' +
+                '<td colspan="2">1</td>' +
+            '</tr>' +
+            '<tr>' +
+                '<td>2_1</td>' +
+                '<td>2_2</td>' +
+            '</tr>' +
+        '</tbody>' +
+    '</table>';
+
+var tableWithColspanTH = String() +
+    '<table>' +
+        '<caption>test_1</caption>' +
+        '<tbody>' +
+            '<tr>' +
+                '<th colspan="2">1</th>' +
+            '</tr>' +
+            '<tr>' +
+                '<td>2_1</td>' +
+                '<td>2_2</td>' +
+            '</tr>' +
+        '</tbody>' +
+    '</table>';
+
+test("Colspan preserved when switching from td to th", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $thContainerLink = jQuery(wymeditor._box)
+            .find(wymeditor._options.containersSelector + ' a[name="TH"]'),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $tableCell;
+
+        wymeditor.html(tableWithColspanTD);
+        $tableCell = $body.find('td[colspan="2"]');
+        makeTextSelection(wymeditor, $tableCell[0], $tableCell[0], 0, 1);
+
+        // Click "Table Header" option in the containers panel
+        $thContainerLink.trigger('click');
+        htmlEquals(wymeditor, tableWithColspanTH);
+});
+
+test("Colspan preserved when switching from th to td", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $thContainerLink = jQuery(wymeditor._box)
+            .find(wymeditor._options.containersSelector + ' a[name="TH"]'),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $tableCell;
+
+        wymeditor.html(tableWithColspanTH);
+        $tableCell = $body.find('th[colspan="2"]');
+        makeTextSelection(wymeditor, $tableCell[0], $tableCell[0], 0, 1);
+
+        // Click "Table Header" option in the containers panel
+        $thContainerLink.trigger('click');
+        htmlEquals(wymeditor, tableWithColspanTD);
+});
+
 module("preformatted-text", {setup: setupWym});
 
 test("Preformatted text retains spacing", function () {

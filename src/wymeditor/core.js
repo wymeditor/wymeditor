@@ -252,6 +252,9 @@ jQuery.extend(WYMeditor, {
     // The elements that define a type of list.
     LIST_TYPE_ELEMENTS : ["ul", "ol"],
 
+    // The elements that define a heading
+    HEADING_ELEMENTS : ["h1", "h2", "h3", "h4", "h5", "h6"],
+
     // The elements that are allowed to be turned in to lists. If an item in
     // this array isn't in the MAIN_CONTAINERS array, then its contents will be
     // turned in to a list instead.

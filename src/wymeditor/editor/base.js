@@ -529,7 +529,7 @@ WYMeditor.editor.prototype.container = function (sType) {
             if (container.tagName.toLowerCase() === WYMeditor.TD) {
                 sType = WYMeditor.TH;
             }
-            this.switchTo(container, sType);
+            this.switchTo(container, sType, false);
             this.update();
         }
     } else {
@@ -667,14 +667,25 @@ WYMeditor.editor.prototype.findUp = function (node, filter) {
     WYMeditor.editor.switchTo
     =========================
 
-    Switch the type of the given `node` to type `sType`
+    Switch the type of the given `node` to type `sType`. If stripAttrs is true,
+    the attributes of node will not be included in the the new type. If
+    stripAttrs is false (or undefined), the attributes of node will be
+    preserved through the switch.
 */
-WYMeditor.editor.prototype.switchTo = function (node, sType) {
+WYMeditor.editor.prototype.switchTo = function (node, sType, stripAttrs) {
     var newNode = this._doc.createElement(sType),
-        html = jQuery(node).html();
+        html = jQuery(node).html(),
+        attrs = node.attributes,
+        i;
 
+    if (!stripAttrs) {
+        for (i = 0; i < attrs.length; ++i) {
+            newNode.setAttribute(attrs.item(i).nodeName,
+                                 attrs.item(i).nodeValue);
+        }
+    }
+    newNode.innerHTML = html;
     node.parentNode.replaceChild(newNode, node);
-    jQuery(newNode).html(html);
 
     this.setFocusToNode(newNode);
 };
