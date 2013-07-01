@@ -275,6 +275,11 @@ jQuery.extend(WYMeditor, {
     // parsing the html.
     BLOCKING_ELEMENT_SPACER_CLASS : "wym-blocking-element-spacer",
 
+    // Class used to flag an element for removal by the xhtml parser so that
+    // the element is removed from the output and only shows up internally
+    // within the editor.
+    EDITOR_ONLY_CLASS: "wym-editor-only",
+
     // Keyboard mappings so that we don't have to remember that 38 means up
     // when reading keyboard handlers
     KEY : {
