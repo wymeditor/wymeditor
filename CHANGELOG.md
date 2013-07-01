@@ -45,6 +45,12 @@ WYMeditor.
   image to be applied to the image. This has been fixed so that
   inserting an image properly places it within the wymeditor body and
   properly applies the user-entered values for its attributes.
+* When switching between a normal table cell and a table header using
+  the "Table Header" option in the containers panel in the editor, any
+  `colspan` or other attributes were being lost in the container
+  conversion. This has been fixed so that all attributes such as `colspan`
+  are retained when switching betwen a normal table cell and a table
+  header. 
 
 ## 1.0.0b4 (Beta 4)
 

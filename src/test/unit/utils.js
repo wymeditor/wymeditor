@@ -5,10 +5,21 @@ var pr_lt = /</g;
 var pr_gt = />/g;
 var pr_quot = /\"/g;
 
-// Attributes with browser specific use that should be ignored when normalizing
-// HTML for comparison across browsers.
-var ignoreAttributes = ['_moz_editor_bogus_node', '_moz_dirty',
-                        '_wym_visited', 'sizset'];
+// Attributes that should be ignored when normalizing HTML for comparison
+// across browsers. The variable is an array of arrays where each array should
+// have the name of the attribute to be ignored as the first element. The
+// second element in each array should be an array of values that specifies
+// that the attribute will only be ignored if it is one of those values. If
+// this second element is not provided, it will always ignore the attribute no
+// matter what the attribute's value is.
+var ignoreAttributes = [
+                        ['_moz_editor_bogus_node'],
+                        ['_moz_dirty'],
+                        ['_wym_visited'],
+                        ['sizset'],
+                        ['tabindex'],
+                        ['rowspan', ['1']]
+                       ];
 
 /**
 * Escape html special characters.
@@ -41,7 +52,9 @@ function normalizeHtml(node) {
         n,
         child,
         sortedAttrs,
+        keepAttr,
         i,
+        j,
         $captions;
 
     if (jQuery.browser.msie) {
@@ -68,19 +81,37 @@ function normalizeHtml(node) {
             sortedAttrs = [];
             for (i = n; --i >= 0;) {
                 attr = attrs[i];
-                if (attr.specified) {
-                    // We only care about specified attributes and ignore
-                    // attributes that are only used in specific browsers.
-                    if (jQuery.inArray(attr.nodeName, ignoreAttributes) === -1 &&
+                keepAttr = true;
 
-                        // With some versions of jQuery on IE, sometimes an
-                        // attribute named `sizcache` followed by a differing
-                        // string of numbers is added to elements, so regex
-                        // must be used to check for it.
-                        !/sizcache\d*/.test(attr.nodeName)) {
+                // We only care about specified attributes
+                if (!attr.specified) {
+                    keepAttr = false;
+                }
 
-                        sortedAttrs.push(attr);
+                // Ignore attributes that are only used in specific browsers.
+                for (j = 0; j < ignoreAttributes.length; ++j) {
+                    if (attr.nodeName === ignoreAttributes[j][0]) {
+                        if (!ignoreAttributes[j][1] ||
+                            jQuery.inArray(attr.nodeValue,
+                                           ignoreAttributes[j][1]) > -1) {
+
+                                keepAttr = false;
+                                break;
+                        }
                     }
+
+                    // With some versions of jQuery on IE, sometimes an
+                    // attribute named `sizcache` followed by a differing
+                    // string of numbers is added to elements, so regex
+                    // must be used to check for it.
+                    if (/sizcache\d*/.test(attr.nodeName)) {
+                        keepAttr = false;
+                        break;
+                    }
+                }
+
+                if (keepAttr) {
+                    sortedAttrs.push(attr);
                 }
             }
             sortedAttrs.sort(function (a, b) {
