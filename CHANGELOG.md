@@ -28,6 +28,12 @@ WYMeditor.
   user can insert a table at any point in a list or sublist and can even
   insert multiple tables in the same list item. In addition, the tables
   should properly indent, outdent, and space themselves within a list.
+* Elements in the editor can now easily be flagged to be removed from
+  the editor output by the XHTML parser. This allows elements to be
+  "editor-only" in the sense that they will be visible in the editor but
+  not included in the outputed XHTML from the editor. Simply add the
+  class `WYMeditor.EDITOR_ONLY_CLASS` to an element to specify it to be
+  removed by the XHTML parser in this manner.
 
 ### Bug Fixes
 
