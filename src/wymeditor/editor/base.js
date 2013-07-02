@@ -275,6 +275,20 @@ WYMeditor.editor.prototype._html = function (html) {
 };
 
 /**
+    WYMeditor.editor.html
+    =====================
+
+    Deprecated. Use WYMeditor.editor._html instead.
+*/
+WYMeditor.editor.prototype.html = function (html) {
+    if (typeof html === 'string') {
+        this._html(html);
+    } else {
+        return this._html();
+    }
+};
+
+/**
     WYMeditor.editor.xhtml
     ======================
 
