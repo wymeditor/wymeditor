@@ -68,7 +68,7 @@ WymTidy.prototype.cleanup = function() {
             if (data.indexOf("<?php") === 0) {
                 wym.status("Ooops... Is PHP installed?");
             } else {
-                wym.html(data);
+                wym._html(data);
                 wym.status("HTML has been cleaned up.");
             }
         } else {

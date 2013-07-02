@@ -338,10 +338,10 @@ jQuery.extend(WYMeditor, {
         this._element = elem;
         this._options = options;
         // Store the element's inner value
-        this._html = jQuery(elem).val();
+        this._innerHtml = jQuery(elem).val();
 
         if (this._options.html) {
-            this._html = this._options.html;
+            this._innerHtml = this._options.html;
         }
         // Path to the WYMeditor core
         this._options.wymPath = this._options.wymPath ||

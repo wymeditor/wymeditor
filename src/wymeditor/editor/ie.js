@@ -44,7 +44,7 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
     jQuery('html', this._doc).attr('dir', this._options.direction);
 
     //init html value
-    jQuery(this._doc.body).html(this._wym._html);
+    jQuery(this._doc.body).html(this._wym._innerHtml);
 
     //handle events
     var wym = this;

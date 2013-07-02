@@ -56,7 +56,7 @@ WYMeditor.WymClassMozilla.prototype.initIframe = function (iframe) {
     jQuery('html', this._doc).attr('dir', this._options.direction);
 
     //init html value
-    this.html(this._wym._html);
+    this._html(this._wym._innerHtml);
 
     //init designMode
     this.enableDesignMode();
@@ -96,7 +96,7 @@ WYMeditor.WymClassMozilla.prototype.initIframe = function (iframe) {
 /** @name html
  * @description Get/Set the html value
  */
-WYMeditor.WymClassMozilla.prototype.html = function (html) {
+WYMeditor.WymClassMozilla.prototype._html = function (html) {
     if (typeof html === 'string') {
         //disable designMode
         try {

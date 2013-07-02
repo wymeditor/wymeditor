@@ -257,12 +257,15 @@ WYMeditor.editor.prototype.box = function () {
 };
 
 /**
-    WYMeditor.editor.html
-    =====================
+    WYMeditor.editor._html
+    ======================
 
-    Get or set the wymbox html value.
+    Get or set the wymbox html value. If you want to get the wymbox html, you
+    should use WYMeditor.editor.xhtml() instead of this so that the html is
+    parsed and receives cross-browser cleanup. Only use this if you have a
+    specific reason not to use WYMeditor.editor.xhtml().
 */
-WYMeditor.editor.prototype.html = function (html) {
+WYMeditor.editor.prototype._html = function (html) {
     if (typeof html === 'string') {
         jQuery(this._doc.body).html(html);
         this.update();
@@ -281,7 +284,7 @@ WYMeditor.editor.prototype.html = function (html) {
 WYMeditor.editor.prototype.xhtml = function () {
     this.removeBlockingElementSpacers();
 
-    return this.parser.parse(this.html());
+    return this.parser.parse(this._html());
 };
 
 /**
