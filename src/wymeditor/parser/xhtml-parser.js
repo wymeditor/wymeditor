@@ -15,12 +15,6 @@ WYMeditor.XhtmlParser = function(Listener, mode) {
     this._last_match = '';
     this._current_match = '';
 
-    // These are used for removing blocks flagged for removal by the parser
-    this._removeBlock = false;
-    this._removeSelfClosing = false;
-    this._tagIndexInStack = 0;
-    this._tagIndexInOutput = 0;
-
     return this;
 };
 
@@ -34,12 +28,6 @@ WYMeditor.XhtmlParser.prototype.beforeParsing = function(raw) {
         // Usefull for cleaning up content pasted from other sources (MSWord)
         this._Listener.avoidStylingTagsAndAttributes();
     }
-
-    // Reset variables used for removing blocks
-    this._removeBlock = false;
-    this._removeSelfClosing = false;
-    this._tagIndexInStack = 0;
-    this._tagIndexInOutput = 0;
 
     return this._Listener.beforeParsing(raw);
 };
@@ -132,45 +120,16 @@ WYMeditor.XhtmlParser.prototype.ClosingTag = function(match, state) {
 };
 
 WYMeditor.XhtmlParser.prototype._callOpenTagListener = function(tag, attributes) {
-    var classes,
-        isInlineTag = this._Listener.isInlineTag(tag);
-
     attributes = attributes || {};
     this.autoCloseUnclosedBeforeNewOpening(tag);
-
-    // If the tag is flagged as editor-only, mark its position in the tag stack
-    // and the output so it can be removed once the parser reaches its closing
-    // tag.
-    if (attributes["class"]) {
-        classes = attributes["class"].split(" ");
-        if (jQuery.inArray(WYMeditor.EDITOR_ONLY_CLASS, classes) > -1) {
-            if (!this._removeBlock && !isInlineTag) {
-                this._removeBlock = true;
-                this._tagIndexInStack = this._Listener._tag_stack.length;
-                this._tagIndexInOutput = this._Listener.output.length;
-            }
-
-            // If the tag is a self-closing tag, have the parser remove it
-            // before moving to the next tag.
-            if (isInlineTag) {
-                this._removeSelfClosing = true;
-            }
-        }
-    }
 
     if (this._Listener.isBlockTag(tag)) {
         this._Listener._tag_stack.push(tag);
         this._Listener.fixNestingBeforeOpeningBlockTag(tag, attributes);
         this._Listener.openBlockTag(tag, attributes);
         this._increaseOpenTagCounter(tag);
-    } else if (isInlineTag) {
-        if (!this._removeSelfClosing) {
-            this._Listener.inlineTag(tag, attributes);
-        } else {
-            // Reset _removeSelfClosing to false after avoiding adding the
-            // editor-only self-closing tag to the output.
-            this._removeSelfClosing = false;
-        }
+    } else if (this._Listener.isInlineTag(tag)) {
+        this._Listener.inlineTag(tag, attributes);
     } else {
         this._Listener.openUnknownTag(tag, attributes);
         this._increaseOpenTagCounter(tag);
@@ -197,16 +156,6 @@ WYMeditor.XhtmlParser.prototype._callCloseTagListener = function(tag) {
         if(!this._Listener.isInlineTag(tag)) {
             this._Listener.closeUnopenedTag(tag);
         }
-    }
-
-    // If the parser has reached the closing tag of an element that was flagged
-    // as editor-only, remove the element from the Listener output.
-    if (this._removeBlock &&
-        this._Listener._tag_stack.length === this._tagIndexInStack) {
-
-        this._Listener.output = this._Listener.output.slice(0,
-                                                    this._tagIndexInOutput);
-        this._removeBlock = false;
     }
 
     this._Listener.last_tag = tag;

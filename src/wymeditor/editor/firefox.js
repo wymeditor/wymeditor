@@ -287,7 +287,12 @@ WYMeditor.WymClassMozilla.prototype.openBlockTag = function (tag, attributes) {
         }
     }
 
-    this.output += this.helper.tag(tag, attributes, true);
+    if (!this._insideTagToRemove && !this._shouldRemoveTag(tag, attributes)) {
+        this.output += this.helper.tag(tag, attributes, true);
+    } else if (!this._insideTagToRemove) {
+        this._insideTagToRemove = true;
+        this._removedTagStackIndex = this._tag_stack.length - 1;
+    }
 };
 
 WYMeditor.WymClassMozilla.prototype.getTagForStyle = function (style) {

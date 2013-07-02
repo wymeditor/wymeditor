@@ -13,6 +13,8 @@ WYMeditor.XhtmlSaxListener = function() {
     this._insert_before_closing = [];
     this._insert_after_closing = [];
     this._last_node_was_text = false;
+    this._insideTagToRemove = false;
+    this._removedTagStackIndex = 0;
 
     this.entities = {
         '&nbsp;':'&#160;','&iexcl;':'&#161;','&cent;':'&#162;',
@@ -212,40 +214,50 @@ WYMeditor.XhtmlSaxListener.prototype.addContent = function(text) {
         // Don't count it as text if it's empty
         this._last_node_was_text = true;
     }
-    this.output += text;
+    if (!this._insideTagToRemove) {
+        this.output += text;
+    }
 };
 
 WYMeditor.XhtmlSaxListener.prototype.addComment = function(text) {
-    if (this.remove_comments) {
+    if (this.remove_comments && !this._insideTagToRemove) {
         this.output += text;
     }
 };
 
 WYMeditor.XhtmlSaxListener.prototype.addScript = function(text) {
-    if (!this.remove_scripts) {
+    if (!this.remove_scripts && !this._insideTagToRemove) {
         this.output += text;
     }
 };
 
 WYMeditor.XhtmlSaxListener.prototype.addCss = function(text) {
-    if (!this.remove_embeded_styles) {
+    if (!this.remove_embeded_styles && !this._insideTagToRemove) {
         this.output += text;
     }
 };
 
 WYMeditor.XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes) {
     this._last_node_was_text = false;
-    this.output += this.helper.tag(
-        tag,
-        this.validator.getValidTagAttributes(tag, attributes),
-        true);
+    if (!this._insideTagToRemove && !this._shouldRemoveTag(tag, attributes)) {
+        this.output += this.helper.tag(
+            tag,
+            this.validator.getValidTagAttributes(tag, attributes),
+            true);
+
+    } else if (!this._insideTagToRemove) {
+        this._insideTagToRemove = true;
+        this._removedTagStackIndex = this._tag_stack.length - 1;
+    }
 };
 
 WYMeditor.XhtmlSaxListener.prototype.inlineTag = function(tag, attributes) {
     this._last_node_was_text = false;
-    this.output += this.helper.tag(
-        tag,
-        this.validator.getValidTagAttributes(tag, attributes));
+    if (!this._insideTagToRemove && !this._shouldRemoveTag(tag, attributes)) {
+        this.output += this.helper.tag(
+            tag,
+            this.validator.getValidTagAttributes(tag, attributes));
+    }
 };
 
 WYMeditor.XhtmlSaxListener.prototype.openUnknownTag = function(tag, attributes) {
@@ -254,10 +266,18 @@ WYMeditor.XhtmlSaxListener.prototype.openUnknownTag = function(tag, attributes) 
 
 WYMeditor.XhtmlSaxListener.prototype.closeBlockTag = function(tag) {
     this._last_node_was_text = false;
-    this.output = this.output.replace(/<br \/>$/, '') +
-        this._getClosingTagContent('before', tag) +
-        "</"+tag+">" +
-        this._getClosingTagContent('after', tag);
+    if (!this._insideTagToRemove) {
+        this.output = this.output.replace(/<br \/>$/, '') +
+            this._getClosingTagContent('before', tag) +
+            "</"+tag+">" +
+            this._getClosingTagContent('after', tag);
+    }
+
+    if (this._insideTagToRemove &&
+        this._tag_stack.length === this._removedTagStackIndex) {
+
+        this._insideTagToRemove = false;
+    }
 };
 
 WYMeditor.XhtmlSaxListener.prototype.closeUnknownTag = function(tag) {
@@ -266,7 +286,9 @@ WYMeditor.XhtmlSaxListener.prototype.closeUnknownTag = function(tag) {
 
 WYMeditor.XhtmlSaxListener.prototype.closeUnopenedTag = function(tag) {
     this._last_node_was_text = false;
-    this.output += "</" + tag + ">";
+    if (!this._insideTagToRemove) {
+        this.output += "</" + tag + ">";
+    }
 };
 
 WYMeditor.XhtmlSaxListener.prototype.avoidStylingTagsAndAttributes = function() {
@@ -358,5 +380,26 @@ WYMeditor.XhtmlSaxListener.prototype._getClosingTagContent = function(position, 
         return this['_insert_'+position+'_closing'][tag].pop();
     }
     return '';
+};
+
+/*
+    _shouldRemoveTag
+    ================
+
+    Specifies if the passed tag with the passed attributes should be removed
+    from the output or not. This is determined by whether the tag has the class
+    WYMeditor.EDITOR_ONLY_CLASS or not. If the tag should be removed, the
+    function returns true. Otherwise, the function returns false.
+*/
+WYMeditor.XhtmlSaxListener.prototype._shouldRemoveTag = function(tag, attributes) {
+    var classes;
+
+    if (attributes["class"]) {
+        classes = attributes["class"].split(" ");
+        if (jQuery.inArray(WYMeditor.EDITOR_ONLY_CLASS, classes) > -1) {
+            return true;
+        }
+    }
+    return false;
 };
 
