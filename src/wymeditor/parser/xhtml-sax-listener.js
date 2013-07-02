@@ -14,6 +14,8 @@ WYMeditor.XhtmlSaxListener = function() {
     this._insert_after_closing = [];
     this._last_node_was_text = false;
     this._insideTagToRemove = false;
+    this._lastTagRemoved = false;
+    this._removeBlockTag = false;
     this._removedTagStackIndex = 0;
 
     this.entities = {
@@ -142,6 +144,7 @@ WYMeditor.XhtmlSaxListener.prototype.beforeParsing = function(raw) {
     this._open_tags = {};
     this._tag_stack = [];
     this._last_node_was_text = false;
+    this._lastTagRemoved = false;
     this.last_tag = null;
 
     return raw;
@@ -239,14 +242,17 @@ WYMeditor.XhtmlSaxListener.prototype.addCss = function(text) {
 
 WYMeditor.XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes) {
     this._last_node_was_text = false;
-    if (!this._insideTagToRemove && !this._shouldRemoveTag(tag, attributes)) {
+    if (!this._insideTagToRemove && !this._shouldRemoveTag(tag, attributes) &&
+        !this._removeBlockTag) {
+
         this.output += this.helper.tag(
             tag,
             this.validator.getValidTagAttributes(tag, attributes),
             true);
-
+        this._lastTagRemoved = false;
     } else if (!this._insideTagToRemove) {
         this._insideTagToRemove = true;
+        this._removeBlockTag = false;
         this._removedTagStackIndex = this._tag_stack.length - 1;
     }
 };
@@ -257,6 +263,7 @@ WYMeditor.XhtmlSaxListener.prototype.inlineTag = function(tag, attributes) {
         this.output += this.helper.tag(
             tag,
             this.validator.getValidTagAttributes(tag, attributes));
+        this._lastTagRemoved = false;
     }
 };
 
@@ -277,6 +284,7 @@ WYMeditor.XhtmlSaxListener.prototype.closeBlockTag = function(tag) {
         this._tag_stack.length === this._removedTagStackIndex) {
 
         this._insideTagToRemove = false;
+        this._lastTagRemoved = true;
     }
 };
 
@@ -329,9 +337,15 @@ WYMeditor.XhtmlSaxListener.prototype.fixNestingBeforeOpeningBlockTag = function(
         // We have a <li></li><ol>... situation. The new list should be a
         // child of the li tag. Not a sibling.
 
-        // Remove the last closing li tag
-        this.output = this.output.replace(/<\/li>\s*$/, '');
-        this.insertContentAfterClosingTag(tag, '</li>');
+        if (this._lastTagRemoved) {
+            // If the previous li tag was removed, the new list should be
+            // removed with it.
+            this._removeBlockTag = true;
+        } else {
+            // Remove the last closing li tag
+            this.output = this.output.replace(/<\/li>\s*$/, '');
+            this.insertContentAfterClosingTag(tag, '</li>');
+        }
     } else if ((tag == 'ul' || tag == 'ol') && this.last_tag &&
             this.last_tag_opened && (this.last_tag == 'ul' || this.last_tag == 'ol')) {
         // We have a <ol|ul><ol|ul>... situation. The new list should be have
