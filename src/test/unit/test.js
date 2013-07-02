@@ -502,7 +502,7 @@ test("Remove editor-only text container elements", function () {
         $body.find('#before-editor-only-element').after($element);
 
         htmlEquals(wymeditor, editorOnlyContainerStartHtml,
-                   "Remove editor only `" + tagName + "` element");
+                   "Remove editor-only `" + tagName + "` element");
     }
 });
 
@@ -523,7 +523,7 @@ test("Remove editor-only text inline elements", function () {
         $body.find('#test-container').append($element);
 
         htmlEquals(wymeditor, editorOnlyInlineStartHtml,
-                   "Remove editor only `" + tagName + "` inline element");
+                   "Remove editor-only `" + tagName + "` inline element");
     }
 });
 
@@ -545,7 +545,7 @@ test("Remove editor-only table", function () {
     $body.find('#before-editor-only-element').after(table);
 
     htmlEquals(wymeditor, editorOnlyContainerStartHtml,
-               "Remove editor only `table`");
+               "Remove editor-only `table`");
 });
 
 test("Remove editor-only lists", function() {
@@ -569,7 +569,7 @@ test("Remove editor-only lists", function() {
         $body.find('#before-editor-only-element').after(list);
 
         htmlEquals(wymeditor, editorOnlyContainerStartHtml,
-                   "Remove editor only `" + listType + "` list");
+                   "Remove editor-only `" + listType + "` list");
     }
 });
 
@@ -590,7 +590,7 @@ test("Remove editor-only self-closing elements", function () {
         $body.find('#before-editor-only-element').after($element);
 
         htmlEquals(wymeditor, editorOnlyContainerStartHtml,
-                   "Remove editor only `" + tagName + "` element");
+                   "Remove editor-only `" + tagName + "` element");
     }
 });
 
@@ -610,7 +610,7 @@ test("Remove editor-only element with multiple classes", function () {
     $body.find('#before-editor-only-element').after($element);
 
     htmlEquals(wymeditor, editorOnlyContainerStartHtml,
-               "Remove editor only `p` element with multiple classes");
+               "Remove editor-only `p` element with multiple classes");
 });
 
 test("Remove nested editor-only elements", function () {

@@ -168,7 +168,7 @@ WYMeditor.XhtmlParser.prototype._callOpenTagListener = function(tag, attributes)
             this._Listener.inlineTag(tag, attributes);
         } else {
             // Reset _removeSelfClosing to false after avoiding adding the
-            // self-closing tag to the output.
+            // editor-only self-closing tag to the output.
             this._removeSelfClosing = false;
         }
     } else {
@@ -200,7 +200,7 @@ WYMeditor.XhtmlParser.prototype._callCloseTagListener = function(tag) {
     }
 
     // If the parser has reached the closing tag of an element that was flagged
-    // for removal, remove the element from the Listener output.
+    // as editor-only, remove the element from the Listener output.
     if (this._removeBlock &&
         this._Listener._tag_stack.length === this._tagIndexInStack) {
 
