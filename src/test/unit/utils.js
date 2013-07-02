@@ -152,8 +152,10 @@ function normalizeHtml(node) {
 /**
 * Ensure the cleaned xhtml coming from a WYMeditor instance matches the
 * expected HTML, accounting for differing whitespace and attribute ordering.
+* assertionString is the string message printed with the result of the
+* assertion checking this matching. This parameter is optional.
 */
-function htmlEquals(wymeditor, expected, testString) {
+function htmlEquals(wymeditor, expected, assertionString) {
     var xhtml = '',
         normedActual = '',
         normedExpected = '',
@@ -164,7 +166,7 @@ function htmlEquals(wymeditor, expected, testString) {
         // In jQuery 1.2.x, jQuery('') returns an empty list, so we can't call
         // normalizeHTML. On 1.3.x or higher upgrade, we can remove this
         // check for the empty string
-        equals(xhtml, expected, testString);
+        equals(xhtml, expected, assertionString);
         return;
     }
 
@@ -177,7 +179,7 @@ function htmlEquals(wymeditor, expected, testString) {
         normedExpected += normalizeHtml(tmpNodes[i]);
     }
 
-    equals(normedActual, normedExpected, testString);
+    equals(normedActual, normedExpected, assertionString);
 }
 
 function makeSelection(wymeditor, startElement, endElement, startElementIndex, endElementIndex) {
