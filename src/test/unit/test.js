@@ -653,6 +653,151 @@ test("Remove nested editor-only elements", function () {
                "Remove nested editor-only elements");
 });
 
+module("XmlParser-editor_only_invalid_lists", {setup: setupWym});
+
+var invalidULEndNesting = String() +
+    '<ul id="ul_top">' +
+        '<li id="li_1">1</li>' +
+        '<li id="li_2">2</li>' +
+        '<ul id="ul_2">' +
+            '<li id="li_2_1">2_1</li>' +
+            '<li id="li_2_2">2_2</li>' +
+        '</ul>' +
+    '</ul>';
+
+var validULEndNesting = String() +
+    '<ul id="ul_top">' +
+        '<li id="li_1">1</li>' +
+        '<li id="li_2">2'+
+            '<ul id="ul_2">' +
+                '<li id="li_2_1">2_1</li>' +
+                '<li id="li_2_2">2_2</li>' +
+            '</ul>' +
+        '</li>' +
+    '</ul>';
+
+var invalidULStartNesting = String() +
+    '<ul id="ul_top">' +
+        '<ul id="ul_1">' +
+            '<li id="li_1_1">1_1</li>' +
+            '<li id="li_1_2">1_2</li>' +
+        '</ul>' +
+        '<li id="li_2">2</li>' +
+        '<li id="li_3">3</li>' +
+    '</ul>';
+
+var validULStartNesting = String() +
+    '<ul id="ul_top">' +
+        '<li>' +
+            '<ul id="ul_1">' +
+                '<li id="li_1_1">1_1</li>' +
+                '<li id="li_1_2">1_2</li>' +
+            '</ul>' +
+        '</li>' +
+        '<li id="li_2">2</li>' +
+        '<li id="li_3">3</li>' +
+    '</ul>';
+
+var invalidLINesting = String() +
+    '<ul id="ul_top">' +
+        '<li id="li_1">1' +
+            '<li id="li_2">2</li>' +
+        '</li>' +
+        '<li id="li_3">3</li>' +
+    '</ul>';
+
+var validLINesting = String() +
+    '<ul id="ul_top">' +
+        '<li id="li_1">1</li>' +
+        '<li id="li_2">2</li>' +
+        '<li id="li_3">3</li>' +
+    '</ul>';
+
+test("Remove editor-only invalid UL with LI sibling before it", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        expectedHtml;
+
+    wymeditor.html(invalidULEndNesting);
+    $body.find('#ul_2').addClass(WYMeditor.EDITOR_ONLY_CLASS);
+
+    expectedHtml = validULEndNesting.replace(/<ul id="ul\_2".*?<\/ul>/, '');
+    htmlEquals(wymeditor, expectedHtml,
+               "Remove editor-only invalid UL with LI sibling before it");
+});
+
+test("Remove editor-only invalid UL that's the first child of a UL", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        expectedHtml;
+
+    wymeditor.html(invalidULStartNesting);
+    $body.find('#ul_1').addClass(WYMeditor.EDITOR_ONLY_CLASS);
+
+    expectedHtml = validULStartNesting.replace(/<ul id="ul\_1".*?<\/ul>/, '');
+    htmlEquals(wymeditor, expectedHtml,
+               "Remove editor-only UL that's the first child of a UL");
+});
+
+test("Remove editor-only LI with invalid UL sibling after it", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        expectedHtml;
+
+    wymeditor.html(invalidULEndNesting);
+    $body.find('#li_2').addClass(WYMeditor.EDITOR_ONLY_CLASS);
+
+    expectedHtml = validULEndNesting.replace(/<ul id="ul\_2".*?<\/ul>/, '');
+    expectedHtml = expectedHtml.replace(/<li id="li\_2".*?<\/li>/, '');
+    htmlEquals(wymeditor, expectedHtml,
+               "Remove editor-only LI with invalid UL sibling after it");
+});
+
+test("Remove editor-only LI with invalid UL sibling before it", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        expectedHtml;
+
+    wymeditor.html(invalidULStartNesting);
+    $body.find('#li_2').addClass(WYMeditor.EDITOR_ONLY_CLASS);
+
+    expectedHtml = validULStartNesting.replace(/<li id="li\_2".*?<\/li>/, '');
+    htmlEquals(wymeditor, expectedHtml,
+               "Remove editor-only LI with invalid UL sibling before it");
+});
+
+test("Remove editor-only invalid LI nested within an LI", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        expectedHtml;
+
+    wymeditor.html(invalidLINesting);
+    $body.find('#li_2').addClass(WYMeditor.EDITOR_ONLY_CLASS);
+
+    expectedHtml = validLINesting.replace(/<li id="li\_2".*?<\/li>/, '');
+    htmlEquals(wymeditor, expectedHtml,
+               "Remove editor-only LI with invalid UL sibling before it");
+});
+
+test("Remove editor-only LI with an invalid LI nested within it", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        expectedHtml;
+
+    wymeditor.html(invalidLINesting);
+    $body.find('#li_1').addClass(WYMeditor.EDITOR_ONLY_CLASS);
+
+    expectedHtml = validLINesting.replace(/<li id="li\_1".*?<\/li>/, '');
+    htmlEquals(wymeditor, expectedHtml,
+               "Remove editor-only LI with an invalid LI nested within it");
+});
+
 module("Post Init", {setup: setupWym});
 
 test("Sanity check: html()", function () {
