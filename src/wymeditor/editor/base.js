@@ -279,13 +279,13 @@ WYMeditor.editor.prototype._html = function (html) {
     =====================
 
     Deprecated. Use WYMeditor.editor.xhtml or WYMeditor.editor._html instead.
+    Calling this function will give a console warning.
 */
 WYMeditor.editor.prototype.html = function (html) {
-    if (typeof html === 'string') {
-        this._html(html);
-    } else {
-        return this._html();
-    }
+    WYMeditor.console.warn("The function WYMeditor.editor.html() is deprecated. " +
+                           "Use either WYMeditor.editor.xhtml() or " +
+                           "WYMeditor.editor._html() instead.");
+    this._html(html);
 };
 
 /**
