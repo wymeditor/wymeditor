@@ -279,23 +279,7 @@ WYMeditor.editor.prototype.html = function (html) {
     enforce a valid, well-formed, semantic xhtml result.
 */
 WYMeditor.editor.prototype.xhtml = function () {
-    this.removeBlockingElementSpacers();
-
     return this.parser.parse(this.html());
-};
-
-/**
-    WYMeditor.editor.removeBlockingElementSpacers
-    =============================================
-
-    Remove any placeholder nodes that were created to space apart blocking
-    elements for managable editing within the editor.
-*/
-WYMeditor.editor.prototype.removeBlockingElementSpacers = function () {
-    var $body = jQuery(this._doc.body);
-
-    $body.children(WYMeditor.BR).remove();
-    $body.find('.' + WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS).remove();
 };
 
 /**
@@ -788,14 +772,13 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
     if (jQuery.browser.mozilla) {
         placeholderNode = '<br ' +
                             'class="' +
-                            WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS + '" ' +
+                            WYMeditor.EDITOR_ONLY_CLASS + '" ' +
                             '_moz_editor_bogus_node="TRUE" ' +
                             '_moz_dirty=""' +
                           '/>';
     } else {
         placeholderNode = '<br ' +
-                            'class="' +
-                            WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS + '"/>';
+                            'class="' + WYMeditor.EDITOR_ONLY_CLASS + '"/>';
     }
 
     // Make sure that we still have a bogus node at both the begining and end
