@@ -278,7 +278,7 @@ WYMeditor.editor.prototype._html = function (html) {
     WYMeditor.editor.html
     =====================
 
-    Deprecated. Use WYMeditor.editor._html instead.
+    Deprecated. Use WYMeditor.editor.xhtml or WYMeditor.editor._html instead.
 */
 WYMeditor.editor.prototype.html = function (html) {
     if (typeof html === 'string') {
