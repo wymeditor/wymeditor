@@ -50,7 +50,7 @@ WYMeditor.editor.prototype.init = function () {
     }
 
     SaxListener = new WYMeditor.XhtmlSaxListener();
-    jQuery.extend(SaxListener, WymClass);
+    //jQuery.extend(SaxListener, WymClass);
     this.parser = new WYMeditor.XhtmlParser(SaxListener);
 
     if (this._options.styles || this._options.stylesheet) {
@@ -257,17 +257,38 @@ WYMeditor.editor.prototype.box = function () {
 };
 
 /**
-    WYMeditor.editor.html
-    =====================
+    WYMeditor.editor._html
+    ======================
 
-    Get or set the wymbox html value.
+    Get or set the wymbox html value. If you want to get the wymbox html, you
+    should use WYMeditor.editor.xhtml() instead of this so that the html is
+    parsed and receives cross-browser cleanup. Only use this if you have a
+    specific reason not to use WYMeditor.editor.xhtml().
 */
-WYMeditor.editor.prototype.html = function (html) {
+WYMeditor.editor.prototype._html = function (html) {
     if (typeof html === 'string') {
         jQuery(this._doc.body).html(html);
         this.update();
     } else {
         return jQuery(this._doc.body).html();
+    }
+};
+
+/**
+    WYMeditor.editor.html
+    =====================
+
+    Deprecated. Use WYMeditor.editor.xhtml or WYMeditor.editor._html instead.
+    Calling this function will give a console warning.
+*/
+WYMeditor.editor.prototype.html = function (html) {
+    WYMeditor.console.warn("The function WYMeditor.editor.html() is deprecated. " +
+                           "Use either WYMeditor.editor.xhtml() or " +
+                           "WYMeditor.editor._html() instead.");
+    if (typeof html === 'string') {
+        this._html(html);
+    } else {
+        return this._html();
     }
 };
 
@@ -279,7 +300,7 @@ WYMeditor.editor.prototype.html = function (html) {
     enforce a valid, well-formed, semantic xhtml result.
 */
 WYMeditor.editor.prototype.xhtml = function () {
-    return this.parser.parse(this.html());
+    return this.parser.parse(this._html());
 };
 
 /**

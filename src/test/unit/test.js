@@ -39,7 +39,7 @@ function setupWym(extraPostInit) {
                     td,
                     span;
 
-                wym.html(initialHtml);
+                wym._html(initialHtml);
 
                 $body = jQuery(wym._doc).find('body.wym_iframe');
 
@@ -321,13 +321,13 @@ test("Don't over-close lists", function () {
     );
 
     // Now throw the browser/dom in the mix
-    wymeditor.html(orphanedLiHtml);
+    wymeditor._html(orphanedLiHtml);
     htmlEquals(wymeditor, orphanedLiHtml);
 
-    wymeditor.html(simpleOrphanedLiHtml);
+    wymeditor._html(simpleOrphanedLiHtml);
     htmlEquals(wymeditor, simpleOrphanedLiHtml);
 
-    wymeditor.html(listAfterText);
+    wymeditor._html(listAfterText);
     htmlEquals(wymeditor, listAfterText);
 });
 
@@ -462,10 +462,10 @@ test("Allow line breaks after strong in lists", function () {
     );
 
     // Now throw the browser/dom in the mix
-    wymeditor.html(listHtml);
+    wymeditor._html(listHtml);
     htmlEquals(wymeditor, listHtml);
 
-    wymeditor.html(listHtmlUnclosedBr);
+    wymeditor._html(listHtmlUnclosedBr);
     htmlEquals(wymeditor, listHtml);
 });
 
@@ -494,7 +494,7 @@ test("Remove editor-only text container elements", function () {
         i;
 
     for (i = 0; i < TEXT_CONTAINER_ELEMENTS.length; ++i) {
-        wymeditor.html(editorOnlyContainerStartHtml);
+        wymeditor._html(editorOnlyContainerStartHtml);
         tagName = TEXT_CONTAINER_ELEMENTS[i];
         $element = jQuery('<' + tagName + '>editor-only</' + tagName + '>');
         $element.attr("id", "editor-only-" + tagName);
@@ -515,7 +515,7 @@ test("Remove editor-only text inline elements", function () {
         i;
 
     for (i = 0; i < TEXT_INLINE_ELEMENTS.length; ++i) {
-        wymeditor.html(editorOnlyInlineStartHtml);
+        wymeditor._html(editorOnlyInlineStartHtml);
         tagName = TEXT_INLINE_ELEMENTS[i];
         $element = jQuery('<' + tagName + '> editor-only</' + tagName + '>');
         $element.attr("id", "editor-only-" + tagName);
@@ -534,7 +534,7 @@ test("Remove editor-only table", function () {
         table,
         i;
 
-    wymeditor.html(editorOnlyContainerStartHtml);
+    wymeditor._html(editorOnlyContainerStartHtml);
     table = '<table id="editor-only-table" class="' +
                 WYMeditor.EDITOR_ONLY_CLASS + '">';
     table += '<caption>editor-only</caption>';
@@ -558,7 +558,7 @@ test("Remove editor-only lists", function() {
         j;
 
     for (i = 0; i < WYMeditor.LIST_TYPE_ELEMENTS.length; ++i) {
-        wymeditor.html(editorOnlyContainerStartHtml);
+        wymeditor._html(editorOnlyContainerStartHtml);
         listType = WYMeditor.LIST_TYPE_ELEMENTS[i];
         list = '<' + listType + ' id="editor-only-list" class="' +
                     WYMeditor.EDITOR_ONLY_CLASS + '">';
@@ -582,7 +582,7 @@ test("Remove editor-only self-closing elements", function () {
         i;
 
     for (i = 0; i < SELF_CLOSING_ELEMENTS.length; ++i) {
-        wymeditor.html(editorOnlyContainerStartHtml);
+        wymeditor._html(editorOnlyContainerStartHtml);
         tagName = SELF_CLOSING_ELEMENTS[i];
         $element = jQuery('<' + tagName + '/>');
         $element.attr("id", "editor-only-" + tagName);
@@ -600,7 +600,7 @@ test("Remove editor-only element with multiple classes", function () {
         $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
         $element;
 
-    wymeditor.html(editorOnlyContainerStartHtml);
+    wymeditor._html(editorOnlyContainerStartHtml);
     $element = jQuery('<p>Test</p>');
     $element.attr("id", "editor-only-multiclass");
     $element.addClass("foo");
@@ -622,7 +622,7 @@ test("Remove nested editor-only elements", function () {
         $strong,
         $img;
 
-    wymeditor.html(editorOnlyContainerStartHtml);
+    wymeditor._html(editorOnlyContainerStartHtml);
 
     // Create an editor-only img element
     $img = jQuery('<img/>');
@@ -653,14 +653,159 @@ test("Remove nested editor-only elements", function () {
                "Remove nested editor-only elements");
 });
 
+module("XmlParser-editor_only_invalid_lists", {setup: setupWym});
+
+var invalidULEndNesting = String() +
+    '<ul id="ul_top">' +
+        '<li id="li_1">1</li>' +
+        '<li id="li_2">2</li>' +
+        '<ul id="ul_2">' +
+            '<li id="li_2_1">2_1</li>' +
+            '<li id="li_2_2">2_2</li>' +
+        '</ul>' +
+    '</ul>';
+
+var validULEndNesting = String() +
+    '<ul id="ul_top">' +
+        '<li id="li_1">1</li>' +
+        '<li id="li_2">2'+
+            '<ul id="ul_2">' +
+                '<li id="li_2_1">2_1</li>' +
+                '<li id="li_2_2">2_2</li>' +
+            '</ul>' +
+        '</li>' +
+    '</ul>';
+
+var invalidULStartNesting = String() +
+    '<ul id="ul_top">' +
+        '<ul id="ul_1">' +
+            '<li id="li_1_1">1_1</li>' +
+            '<li id="li_1_2">1_2</li>' +
+        '</ul>' +
+        '<li id="li_2">2</li>' +
+        '<li id="li_3">3</li>' +
+    '</ul>';
+
+var validULStartNesting = String() +
+    '<ul id="ul_top">' +
+        '<li>' +
+            '<ul id="ul_1">' +
+                '<li id="li_1_1">1_1</li>' +
+                '<li id="li_1_2">1_2</li>' +
+            '</ul>' +
+        '</li>' +
+        '<li id="li_2">2</li>' +
+        '<li id="li_3">3</li>' +
+    '</ul>';
+
+var invalidLINesting = String() +
+    '<ul id="ul_top">' +
+        '<li id="li_1">1' +
+            '<li id="li_2">2</li>' +
+        '</li>' +
+        '<li id="li_3">3</li>' +
+    '</ul>';
+
+var validLINesting = String() +
+    '<ul id="ul_top">' +
+        '<li id="li_1">1</li>' +
+        '<li id="li_2">2</li>' +
+        '<li id="li_3">3</li>' +
+    '</ul>';
+
+test("Remove editor-only invalid UL with LI sibling before it", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        expectedHtml;
+
+    wymeditor._html(invalidULEndNesting);
+    $body.find('#ul_2').addClass(WYMeditor.EDITOR_ONLY_CLASS);
+
+    expectedHtml = validULEndNesting.replace(/<ul id="ul\_2".*?<\/ul>/, '');
+    htmlEquals(wymeditor, expectedHtml,
+               "Remove editor-only invalid UL with LI sibling before it");
+});
+
+test("Remove editor-only invalid UL that's the first child of a UL", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        expectedHtml;
+
+    wymeditor._html(invalidULStartNesting);
+    $body.find('#ul_1').addClass(WYMeditor.EDITOR_ONLY_CLASS);
+
+    expectedHtml = invalidULStartNesting.replace(/<ul id="ul\_1".*?<\/ul>/, '');
+    htmlEquals(wymeditor, expectedHtml,
+               "Remove editor-only UL that's the first child of a UL");
+});
+
+test("Remove editor-only LI with invalid UL sibling after it", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        expectedHtml;
+
+    wymeditor._html(invalidULEndNesting);
+    $body.find('#li_2').addClass(WYMeditor.EDITOR_ONLY_CLASS);
+
+    expectedHtml = validULEndNesting.replace(/<ul id="ul\_2".*?<\/ul>/, '');
+    expectedHtml = expectedHtml.replace(/<li id="li\_2".*?<\/li>/, '');
+    htmlEquals(wymeditor, expectedHtml,
+               "Remove editor-only LI with invalid UL sibling after it");
+});
+
+test("Remove editor-only LI with invalid UL sibling before it", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        expectedHtml;
+
+    wymeditor._html(invalidULStartNesting);
+    $body.find('#li_2').addClass(WYMeditor.EDITOR_ONLY_CLASS);
+
+    expectedHtml = validULStartNesting.replace(/<li id="li\_2".*?<\/li>/, '');
+    htmlEquals(wymeditor, expectedHtml,
+               "Remove editor-only LI with invalid UL sibling before it");
+});
+
+test("Remove editor-only invalid LI nested within an LI", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        expectedHtml;
+
+    wymeditor._html(invalidLINesting);
+    $body.find('#li_2').addClass(WYMeditor.EDITOR_ONLY_CLASS);
+
+    expectedHtml = validLINesting.replace(/<li id="li\_2".*?<\/li>/, '');
+    htmlEquals(wymeditor, expectedHtml,
+               "Remove editor-only LI with invalid UL sibling before it");
+});
+
+test("Remove editor-only LI with an invalid LI nested within it", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        expectedHtml;
+
+    wymeditor._html(invalidLINesting);
+    $body.find('#li_1').addClass(WYMeditor.EDITOR_ONLY_CLASS);
+
+    expectedHtml = validLINesting.replace(/<li id="li\_1".*?<\/li>/, '');
+    htmlEquals(wymeditor, expectedHtml,
+               "Remove editor-only LI with an invalid LI nested within it");
+});
+
 module("Post Init", {setup: setupWym});
 
-test("Sanity check: html()", function () {
+test("Sanity check: _html()", function () {
     expect(1);
     var testText1 = '<p>This is some text with which to test.<\/p>',
         wymeditor = jQuery.wymeditors(0);
 
-    wymeditor.html(testText1);
+    wymeditor._html(testText1);
     htmlEquals(wymeditor, testText1);
 });
 
@@ -922,7 +1067,7 @@ function testPaste(pasteStartSelector, startHtml, textToPaste, elmntStartHtml, e
     }
 
     wymeditor = jQuery.wymeditors(0);
-    wymeditor.html(startHtml);
+    wymeditor._html(startHtml);
 
     // Escape slashes for the regexp
     elmntRegex = new RegExp(elmntStartHtml.replace('/', '\\/'), 'g');
@@ -1057,7 +1202,7 @@ test("Table is editable after insertion", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         dm;
-    wymeditor.html('');
+    wymeditor._html('');
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     wymeditor.insertTable(3, 2, '', '');
@@ -1092,7 +1237,7 @@ if (jQuery.browser.mozilla) {
 
         var wymeditor = jQuery.wymeditors(0),
             $body;
-        wymeditor.html('');
+        wymeditor._html('');
 
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
         wymeditor.insertTable(3, 2, '', '');
@@ -1109,14 +1254,14 @@ if (jQuery.browser.mozilla) {
 
     });
 
-    test("Table cells are editable in FF > 3.5: html() insert", function () {
+    test("Table cells are editable in FF > 3.5: _html() insert", function () {
         expect(12);
 
         var wymeditor = jQuery.wymeditors(0),
             $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
-        wymeditor.html('');
-        wymeditor.html(table_3_2_html);
+        wymeditor._html('');
+        wymeditor._html(table_3_2_html);
         $body.find('td').each(function (index, td) {
             // Both FF 3.6 and 4.0 add spacer brs with design mode
             equals(td.childNodes.length, 1);
@@ -1167,7 +1312,7 @@ function setupTable(wymeditor, html, selection, selectionType,
         cellStr,
         idStr = 't' + caption.slice(-1);
 
-    wymeditor.html(html);
+    wymeditor._html(html);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     $element = $body.find(selection);
 
@@ -1567,21 +1712,21 @@ module("table-parse_spacers_in_list", {setup: setupWym});
 test("Parse list with a table at the end", function () {
     var wymeditor = jQuery.wymeditors(0);
 
-    wymeditor.html(expectedEndOut);
+    wymeditor._html(expectedEndOut);
     htmlEquals(wymeditor, startEndOutNoBR);
 });
 
 test("Parse list with a table at the end in a sublist", function () {
     var wymeditor = jQuery.wymeditors(0);
 
-    wymeditor.html(expectedEndIn);
+    wymeditor._html(expectedEndIn);
     htmlEquals(wymeditor, startEndInNoBR);
 });
 
 test("Parse list with multiple tables in a sublist", function () {
     var wymeditor = jQuery.wymeditors(0);
 
-    wymeditor.html(expectedSublistThreeTables);
+    wymeditor._html(expectedSublistThreeTables);
     htmlEquals(wymeditor, sublistThreeTablesNoBR);
 });
 
@@ -1623,7 +1768,7 @@ test("Colspan preserved when switching from td to th", function () {
         $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
         $tableCell;
 
-        wymeditor.html(tableWithColspanTD);
+        wymeditor._html(tableWithColspanTD);
         $tableCell = $body.find('td[colspan="2"]');
         makeTextSelection(wymeditor, $tableCell[0], $tableCell[0], 0, 1);
 
@@ -1640,7 +1785,7 @@ test("Colspan preserved when switching from th to td", function () {
         $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
         $tableCell;
 
-        wymeditor.html(tableWithColspanTH);
+        wymeditor._html(tableWithColspanTH);
         $tableCell = $body.find('th[colspan="2"]');
         makeTextSelection(wymeditor, $tableCell[0], $tableCell[0], 0, 1);
 
@@ -1664,7 +1809,7 @@ test("Preformatted text retains spacing", function () {
         preHtml = preHtml.replace(/\r/g, '');
     }
 
-    wymeditor.html(preHtml);
+    wymeditor._html(preHtml);
 
     expect(1);
     equals(wymeditor.xhtml(), preHtml);
@@ -1678,7 +1823,7 @@ test("Double soft returns are allowed", function () {
                 '<li>li_1<br /><br />stuff</li>' +
             '</ul>',
         wymeditor = jQuery.wymeditors(0);
-    wymeditor.html(initHtml);
+    wymeditor._html(initHtml);
 
     wymeditor.fixBodyHtml();
 
@@ -1701,7 +1846,7 @@ test("_selected image is saved on mousedown", function () {
 
     expect(3);
 
-    wymeditor.html(initHtml);
+    wymeditor._html(initHtml);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
     // Editor starts with no selected image
@@ -1739,7 +1884,7 @@ test("Image insertion outside of a container", function () {
     // Mimic the way images are inserted by the insert image tool by first
     // inserting the image with its src set to a unique stamp for
     // identification rather than its actual src.
-    wymeditor.html('');
+    wymeditor._html('');
     wymeditor._exec(WYMeditor.INSERT_IMAGE, imageStamp);
 
     ok(!$body.siblings(imageSelector).length,
@@ -1776,7 +1921,7 @@ function checkTagInContainer(wymeditor, containerType, tagName, command) {
             'Test' +
         '</' + containerType + '>';
 
-    wymeditor.html(initHtml);
+    wymeditor._html(initHtml);
     $container = $body.find(containerType);
     makeTextSelection(wymeditor, $container, $container, 0, 4);
 

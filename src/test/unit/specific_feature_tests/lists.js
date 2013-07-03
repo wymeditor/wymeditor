@@ -22,7 +22,7 @@ function testList(elmntId, action, startHtml, expectedHtml, isText, doSelection)
     }
 
     if (doSelection) {
-        wymeditor.html(startHtml);
+        wymeditor._html(startHtml);
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
         actionLi = $body.find('#' + elmntId)[0];
 
@@ -134,7 +134,7 @@ function testListMulti(startElmntId, endElmntId, action, startHtml, expectedHtml
         endLi,
         buttonSelector,
         actionButton;
-    wymeditor.html(startHtml);
+    wymeditor._html(startHtml);
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     startLi = $body.find('#' + startElmntId)[0];
@@ -1117,7 +1117,7 @@ test("Invalid nesting correction no spacer", function () {
         startHtml = invalidNestingHtml,
         expectedHtml = invalidNestingCorrectedHtml;
 
-    wymeditor.html(startHtml);
+    wymeditor._html(startHtml);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     actionLi = $body.find('#li_4')[0];
 
@@ -1133,7 +1133,7 @@ test("Invalid nesting correction requiring spacer", function () {
         startHtml = invalidNestingNoPreviousHtml,
         expectedHtml = invalidNestingNoPreviousCorrectedHtml;
 
-    wymeditor.html(startHtml);
+    wymeditor._html(startHtml);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     actionLi = $body.find('#li_2_2')[0];
 
@@ -2031,12 +2031,12 @@ test("Should correct invalid list nesting", function () {
     // FF
         invalid_ff_html = "<ul><li>a<\/li><ul><li>a.1<\/li><\/ul><li>b<br><\/li><\/ul>",
         invalid_ie_html = "<UL>\r\n<LI>a<\/LI>\r\n<UL>\r\n<LI>a.1<\/LI><\/UL>\r\n<LI>b<\/LI><\/UL>";
-    wymeditor.html(invalid_ff_html);
+    wymeditor._html(invalid_ff_html);
     htmlEquals(wymeditor, expected);
     // IE
     // IE has invalid sublist nesting
     expected = "<ul>\r\n<li>a<ul>\r\n<li>a.1<\/li><\/ul><\/li>\r\n<li>b<\/li><\/ul>";
-    wymeditor.html(invalid_ie_html);
+    wymeditor._html(invalid_ie_html);
     htmlEquals(wymeditor, expected);
 });
 
@@ -2067,7 +2067,7 @@ test("Double indent correction", function () {
                 '</li>' +
             '</ol>';
 
-    wymeditor.html(brokenHtml);
+    wymeditor._html(brokenHtml);
     htmlEquals(wymeditor, repairedHtml);
 });
 
@@ -2083,7 +2083,7 @@ test("Tab key indents", function () {
         actionElement,
 
         wymeditor = jQuery.wymeditors(0);
-    wymeditor.html(initHtml);
+    wymeditor._html(initHtml);
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     actionElement = $body.find('#' + elmntId)[0];
@@ -2117,7 +2117,7 @@ test("Shift+Tab outdents", function () {
         actionElement,
 
         wymeditor = jQuery.wymeditors(0);
-    wymeditor.html(initHtml);
+    wymeditor._html(initHtml);
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     actionElement = $body.find('#' + elmntId)[0];
@@ -2138,7 +2138,7 @@ test("Tab has no effect outside lists", function () {
         actionElement,
 
         wymeditor = jQuery.wymeditors(0);
-    wymeditor.html(initHtml);
+    wymeditor._html(initHtml);
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     actionElement = $body.find('#' + elmntId)[0];
@@ -2173,7 +2173,7 @@ test("Shouldn't eat newline text spacing in li", function () {
             '</ul>',
         wymeditor = jQuery.wymeditors(0);
 
-    wymeditor.html(initHtml);
+    wymeditor._html(initHtml);
     wymeditor.update();
     htmlEquals(wymeditor, expectedHtml);
 });
@@ -2195,7 +2195,7 @@ module("list-indent_outdent_with_table", {setup: setupWym});
 function changeIndent(wymeditor, html, selStart, selEnd, inOrOut) {
     var $body;
 
-    wymeditor.html(html);
+    wymeditor._html(html);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     makeTextSelection(wymeditor, $body.find(selStart)[0],
                       $body.find(selEnd)[0], 0, 1);

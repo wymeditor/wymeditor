@@ -58,6 +58,21 @@ WYMeditor.
   are retained when switching betwen a normal table cell and a table
   header. 
 
+### Deprecation
+
+* The `WYMeditor.editor.html()` function has been deprecated and
+  replaced with the `WYMeditor.editor._html()` function that has the
+  same functionality. This change was made to discourage users from
+  using the `html()` function (which is intended only for internal use)
+  as a means to get the HTML output from the editor because that
+  function bypasses all parsing and cross-browser cleanup for the HTML.
+  In most cases, users should be using the `WYMeditor.editor.xhtml()`
+  function to get the HTML output from the editor because it does parse
+  and apply cross-browser cleanup to the HTML. Now, using the `html()`
+  function will still work but just give a console warning of its
+  deprecation, but the function will be fully removed in the release of
+  version 1.0.0.
+
 ## 1.0.0b4 (Beta 4)
 
 *release-date* February 15, 2013
