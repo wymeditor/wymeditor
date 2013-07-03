@@ -9,7 +9,7 @@
  */
 function testTable(selector, action, type, initialHtml, expectedHtml) {
     var wymeditor = jQuery.wymeditors(0);
-    wymeditor.html(initialHtml);
+    wymeditor._html(initialHtml);
 
     var $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     var actionElmnt = $body.find(selector)[0];
@@ -33,7 +33,7 @@ function testTable(selector, action, type, initialHtml, expectedHtml) {
 
 function testTableTab(initialHtml, startSelector, endSelector) {
     var wymeditor = jQuery.wymeditors(0);
-    wymeditor.html(initialHtml);
+    wymeditor._html(initialHtml);
 
     var $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     var startElmnt = $body.find(startSelector)[0];
@@ -71,7 +71,7 @@ function testTableTab(initialHtml, startSelector, endSelector) {
 function testRowMerge(initialHtml, expectedHtml, startSelector, endSelector, expectedFinalSelector) {
 
     var wymeditor = jQuery.wymeditors(0);
-    wymeditor.html(initialHtml);
+    wymeditor._html(initialHtml);
 
     // Verify that the proposed selection range exists, and then make that
     // selection
@@ -108,7 +108,7 @@ function testRowMerge(initialHtml, expectedHtml, startSelector, endSelector, exp
 
 function testGetCellXIndex(initialHtml, cellSelector, expectedIndex) {
     var wymeditor = jQuery.wymeditors(0);
-    wymeditor.html(initialHtml);
+    wymeditor._html(initialHtml);
 
     var $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     var cell = $body.find(cellSelector)[0];
