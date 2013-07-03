@@ -494,7 +494,7 @@ test("Remove editor-only text container elements", function () {
         i;
 
     for (i = 0; i < TEXT_CONTAINER_ELEMENTS.length; ++i) {
-        wymeditor.html(editorOnlyContainerStartHtml);
+        wymeditor._html(editorOnlyContainerStartHtml);
         tagName = TEXT_CONTAINER_ELEMENTS[i];
         $element = jQuery('<' + tagName + '>editor-only</' + tagName + '>');
         $element.attr("id", "editor-only-" + tagName);
@@ -515,7 +515,7 @@ test("Remove editor-only text inline elements", function () {
         i;
 
     for (i = 0; i < TEXT_INLINE_ELEMENTS.length; ++i) {
-        wymeditor.html(editorOnlyInlineStartHtml);
+        wymeditor._html(editorOnlyInlineStartHtml);
         tagName = TEXT_INLINE_ELEMENTS[i];
         $element = jQuery('<' + tagName + '> editor-only</' + tagName + '>');
         $element.attr("id", "editor-only-" + tagName);
@@ -534,7 +534,7 @@ test("Remove editor-only table", function () {
         table,
         i;
 
-    wymeditor.html(editorOnlyContainerStartHtml);
+    wymeditor._html(editorOnlyContainerStartHtml);
     table = '<table id="editor-only-table" class="' +
                 WYMeditor.EDITOR_ONLY_CLASS + '">';
     table += '<caption>editor-only</caption>';
@@ -558,7 +558,7 @@ test("Remove editor-only lists", function() {
         j;
 
     for (i = 0; i < WYMeditor.LIST_TYPE_ELEMENTS.length; ++i) {
-        wymeditor.html(editorOnlyContainerStartHtml);
+        wymeditor._html(editorOnlyContainerStartHtml);
         listType = WYMeditor.LIST_TYPE_ELEMENTS[i];
         list = '<' + listType + ' id="editor-only-list" class="' +
                     WYMeditor.EDITOR_ONLY_CLASS + '">';
@@ -582,7 +582,7 @@ test("Remove editor-only self-closing elements", function () {
         i;
 
     for (i = 0; i < SELF_CLOSING_ELEMENTS.length; ++i) {
-        wymeditor.html(editorOnlyContainerStartHtml);
+        wymeditor._html(editorOnlyContainerStartHtml);
         tagName = SELF_CLOSING_ELEMENTS[i];
         $element = jQuery('<' + tagName + '/>');
         $element.attr("id", "editor-only-" + tagName);
@@ -600,7 +600,7 @@ test("Remove editor-only element with multiple classes", function () {
         $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
         $element;
 
-    wymeditor.html(editorOnlyContainerStartHtml);
+    wymeditor._html(editorOnlyContainerStartHtml);
     $element = jQuery('<p>Test</p>');
     $element.attr("id", "editor-only-multiclass");
     $element.addClass("foo");
@@ -622,7 +622,7 @@ test("Remove nested editor-only elements", function () {
         $strong,
         $img;
 
-    wymeditor.html(editorOnlyContainerStartHtml);
+    wymeditor._html(editorOnlyContainerStartHtml);
 
     // Create an editor-only img element
     $img = jQuery('<img/>');
@@ -719,7 +719,7 @@ test("Remove editor-only invalid UL with LI sibling before it", function () {
         $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
         expectedHtml;
 
-    wymeditor.html(invalidULEndNesting);
+    wymeditor._html(invalidULEndNesting);
     $body.find('#ul_2').addClass(WYMeditor.EDITOR_ONLY_CLASS);
 
     expectedHtml = validULEndNesting.replace(/<ul id="ul\_2".*?<\/ul>/, '');
@@ -733,7 +733,7 @@ test("Remove editor-only invalid UL that's the first child of a UL", function ()
         $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
         expectedHtml;
 
-    wymeditor.html(invalidULStartNesting);
+    wymeditor._html(invalidULStartNesting);
     $body.find('#ul_1').addClass(WYMeditor.EDITOR_ONLY_CLASS);
 
     expectedHtml = invalidULStartNesting.replace(/<ul id="ul\_1".*?<\/ul>/, '');
@@ -747,7 +747,7 @@ test("Remove editor-only LI with invalid UL sibling after it", function () {
         $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
         expectedHtml;
 
-    wymeditor.html(invalidULEndNesting);
+    wymeditor._html(invalidULEndNesting);
     $body.find('#li_2').addClass(WYMeditor.EDITOR_ONLY_CLASS);
 
     expectedHtml = validULEndNesting.replace(/<ul id="ul\_2".*?<\/ul>/, '');
@@ -762,7 +762,7 @@ test("Remove editor-only LI with invalid UL sibling before it", function () {
         $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
         expectedHtml;
 
-    wymeditor.html(invalidULStartNesting);
+    wymeditor._html(invalidULStartNesting);
     $body.find('#li_2').addClass(WYMeditor.EDITOR_ONLY_CLASS);
 
     expectedHtml = validULStartNesting.replace(/<li id="li\_2".*?<\/li>/, '');
@@ -776,7 +776,7 @@ test("Remove editor-only invalid LI nested within an LI", function () {
         $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
         expectedHtml;
 
-    wymeditor.html(invalidLINesting);
+    wymeditor._html(invalidLINesting);
     $body.find('#li_2').addClass(WYMeditor.EDITOR_ONLY_CLASS);
 
     expectedHtml = validLINesting.replace(/<li id="li\_2".*?<\/li>/, '');
@@ -790,7 +790,7 @@ test("Remove editor-only LI with an invalid LI nested within it", function () {
         $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
         expectedHtml;
 
-    wymeditor.html(invalidLINesting);
+    wymeditor._html(invalidLINesting);
     $body.find('#li_1').addClass(WYMeditor.EDITOR_ONLY_CLASS);
 
     expectedHtml = validLINesting.replace(/<li id="li\_1".*?<\/li>/, '');

@@ -13,10 +13,28 @@ WYMeditor.XhtmlSaxListener = function() {
     this._insert_before_closing = [];
     this._insert_after_closing = [];
     this._last_node_was_text = false;
+
+    // This flag is set to true if the parser is currently inside a tag flagged
+    // for removal. Nothing will be added to the output while this flag is set
+    // to true.
     this._insideTagToRemove = false;
+
+    // If the last tag was not added to the output, this flag is set to true.
     this._lastTagRemoved = false;
+
+    // This flag specifies that the current tag should not be added to the
+    // output. It allows the Listener to explicitly force a tag to be removed.
     this._removeBlockTag = false;
+
+    // When correcting invalid list nesting, situations can occur that will
+    // result in an extra closing LI tag coming up later in the parser. When
+    // one of these situations occurs, this flag is set to true so that the
+    // parser knows to ignore the extra closing LI tag.
     this._removeExtraLI = false;
+
+    // This is for storage of a tag's index in the tag stack so that the
+    // Listener can use it to check for when the tag has been closed (i.e. when
+    // the top of the tag stack is at the stored index again).
     this._removedTagStackIndex = 0;
 
     this.entities = {
@@ -224,48 +242,61 @@ WYMeditor.XhtmlSaxListener.prototype.addContent = function(text) {
 };
 
 WYMeditor.XhtmlSaxListener.prototype.addComment = function(text) {
-    if (this.remove_comments && !this._insideTagToRemove) {
-        this.output += text;
+    if (this.remove_comments || this._insideTagToRemove) {
+        return;
     }
+    this.output += text;
 };
 
 WYMeditor.XhtmlSaxListener.prototype.addScript = function(text) {
-    if (!this.remove_scripts && !this._insideTagToRemove) {
-        this.output += text;
+    if (this.remove_scripts || this._insideTagToRemove) {
+        return;
     }
+    this.output += text;
 };
 
 WYMeditor.XhtmlSaxListener.prototype.addCss = function(text) {
-    if (!this.remove_embeded_styles && !this._insideTagToRemove) {
-        this.output += text;
+    if (this.remove_embeded_styles || this._insideTagToRemove) {
+        return;
     }
+    this.output += text;
 };
 
 WYMeditor.XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes) {
     this._last_node_was_text = false;
-    if (!this._insideTagToRemove && !this._shouldRemoveTag(tag, attributes) &&
-        !this._removeBlockTag) {
+    if (this._insideTagToRemove || this._shouldRemoveTag(tag, attributes) ||
+        this._removeBlockTag) {
+        // If we're currently in a block marked for removal or if this tag is
+        // marked for removal, don't add it to the output.
 
-        this.output += this.helper.tag(
-            tag,
-            this.validator.getValidTagAttributes(tag, attributes),
-            true);
-        this._lastTagRemoved = false;
-    } else if (!this._insideTagToRemove) {
-        this._insideTagToRemove = true;
-        this._removeBlockTag = false;
-        this._removedTagStackIndex = this._tag_stack.length - 1;
+        if (!this._insideTagToRemove) {
+            // If this tag is marked for removal, set a flag signifying that
+            // we're in a tag to remove and mark the position in the tag stack
+            // of this tag so that we know when we've reached the end of it.
+            this._insideTagToRemove = true;
+            this._removeBlockTag = false;
+            this._removedTagStackIndex = this._tag_stack.length - 1;
+        }
+        return;
     }
+    this.output += this.helper.tag(
+        tag,
+        this.validator.getValidTagAttributes(tag, attributes),
+        true);
+    this._lastTagRemoved = false;
 };
 
 WYMeditor.XhtmlSaxListener.prototype.inlineTag = function(tag, attributes) {
     this._last_node_was_text = false;
-    if (!this._insideTagToRemove && !this._shouldRemoveTag(tag, attributes)) {
-        this.output += this.helper.tag(
-            tag,
-            this.validator.getValidTagAttributes(tag, attributes));
-        this._lastTagRemoved = false;
+    if (this._insideTagToRemove || this._shouldRemoveTag(tag, attributes)) {
+        // If we're currently in a block marked for removal or if this tag is
+        // marked for removal, don't add it to the output.
+        return;
     }
+    this.output += this.helper.tag(
+        tag,
+        this.validator.getValidTagAttributes(tag, attributes));
+    this._lastTagRemoved = false;
 };
 
 WYMeditor.XhtmlSaxListener.prototype.openUnknownTag = function(tag, attributes) {
@@ -274,19 +305,21 @@ WYMeditor.XhtmlSaxListener.prototype.openUnknownTag = function(tag, attributes) 
 
 WYMeditor.XhtmlSaxListener.prototype.closeBlockTag = function(tag) {
     this._last_node_was_text = false;
-    if (!this._insideTagToRemove) {
-        this.output = this.output.replace(/<br \/>$/, '') +
-            this._getClosingTagContent('before', tag) +
-            "</"+tag+">" +
-            this._getClosingTagContent('after', tag);
+    if (this._insideTagToRemove) {
+        if (this._tag_stack.length === this._removedTagStackIndex) {
+            // If we've reached the index in the tag stack were the tag to be
+            // removed started, we're no longer inside that tag and can turn
+            // the insideTagToRemove flag off.
+            this._insideTagToRemove = false;
+            this._lastTagRemoved = true;
+        }
+        return;
     }
 
-    if (this._insideTagToRemove &&
-        this._tag_stack.length === this._removedTagStackIndex) {
-
-        this._insideTagToRemove = false;
-        this._lastTagRemoved = true;
-    }
+    this.output = this.output.replace(/<br \/>$/, '') +
+        this._getClosingTagContent('before', tag) +
+        "</"+tag+">" +
+        this._getClosingTagContent('after', tag);
 };
 
 WYMeditor.XhtmlSaxListener.prototype.closeUnknownTag = function(tag) {
