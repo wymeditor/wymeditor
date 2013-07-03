@@ -223,6 +223,20 @@ WYMeditor.XhtmlSaxListener.prototype.getTagReplacements = function() {
     return {'b':'strong', 'i':'em'};
 };
 
+WYMeditor.XhtmlSaxListener.prototype.getTagForStyle = function (style) {
+    if (/bold/.test(style)) {
+        return 'strong';
+    } else if (/italic/.test(style)) {
+        return 'em';
+    } else if (/sub/.test(style)) {
+        return 'sub';
+    } else if (/super/.test(style)) {
+        return 'sup';
+    }
+
+    return false;
+};
+
 WYMeditor.XhtmlSaxListener.prototype.addContent = function(text) {
     if (this.last_tag && this.last_tag == 'li') {
         // We should strip trailing newlines from text inside li tags because
@@ -279,10 +293,19 @@ WYMeditor.XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes) {
         }
         return;
     }
-    this.output += this.helper.tag(
-        tag,
-        this.validator.getValidTagAttributes(tag, attributes),
-        true);
+
+    attributes = this.validator.getValidTagAttributes(tag, attributes);
+    if (tag === 'span' && attributes.style) {
+        var new_tag = this.getTagForStyle(attributes.style);
+        if (new_tag) {
+            tag = new_tag;
+            this._tag_stack.pop();
+            this._tag_stack.push(tag);
+            attributes.style = '';
+        }
+    }
+
+    this.output += this.helper.tag(tag, attributes, true);
     this._lastTagRemoved = false;
 };
 
