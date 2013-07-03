@@ -278,6 +278,8 @@ jQuery.extend(WYMeditor, {
     // within the editor.
     EDITOR_ONLY_CLASS: "wym-editor-only",
 
+    CLASSES_REMOVED_BY_PARSER: ["apple-style-span"],
+
     // Keyboard mappings so that we don't have to remember that 38 means up
     // when reading keyboard handlers
     KEY : {

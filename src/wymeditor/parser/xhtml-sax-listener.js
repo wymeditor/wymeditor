@@ -295,6 +295,9 @@ WYMeditor.XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes) {
     }
 
     attributes = this.validator.getValidTagAttributes(tag, attributes);
+    attributes = this.removeUnwantedClasses(attributes);
+
+    // Handle Mozilla and Safari styled spans
     if (tag === 'span' && attributes.style) {
         var new_tag = this.getTagForStyle(attributes.style);
         if (new_tag) {
@@ -316,9 +319,10 @@ WYMeditor.XhtmlSaxListener.prototype.inlineTag = function(tag, attributes) {
         // marked for removal, don't add it to the output.
         return;
     }
-    this.output += this.helper.tag(
-        tag,
-        this.validator.getValidTagAttributes(tag, attributes));
+
+    attributes = this.getValidTagAttributes(attributes);
+    attributes = this.removeUnwantedClasses(attributes);
+    this.output += this.helper.tag(tag, attributes);
     this._lastTagRemoved = false;
 };
 
@@ -386,6 +390,35 @@ WYMeditor.XhtmlSaxListener.prototype.insertContentAfterClosingTag = function(tag
 
 WYMeditor.XhtmlSaxListener.prototype.insertContentBeforeClosingTag = function(tag, content) {
     this._insertContentWhenClosingTag('before', tag, content);
+};
+
+/*
+    removeUnwantedClasses
+    =====================
+
+    Removes the unwanted classes specified in the
+    WYMeditor.CLASSES_REMOVED_BY_PARSER constant from the passed attributes
+    object and returns the attributes object after the removals. The passed
+    attributes object should be in a format with attribute names as properties
+    and those attributes' values as those properties' values.
+*/
+WYMeditor.XhtmlSaxListener.prototype.removeUnwantedClasses = function(attributes) {
+    var classes
+        index,
+        i;
+
+    if (attributes["class"]) {
+        classes = attributes["class"].split(" ");
+        for (i = 0; i < WYMeditor.CLASSES_REMOVED_BY_PARSER.length; ++i) {
+            index = jQuery.inArray(WYMeditor.CLASSES_REMOVED_BY_PARSER[i], classes);
+            if (index !== -1) {
+                classes.splice(index, 1);
+            }
+        }
+        attributes["class"] = classes.join(" ");
+    }
+
+    return attributes;
 };
 
 WYMeditor.XhtmlSaxListener.prototype.fixNestingBeforeOpeningBlockTag = function(tag, attributes) {
