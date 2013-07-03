@@ -20,17 +20,20 @@ WYMeditor.XhtmlSaxListener = function() {
     this._insideTagToRemove = false;
 
     // If the last tag was not added to the output, this flag is set to true.
+    // This is needed because if we are trying to fix an invalid tag by nesting
+    // it in the last outputted tag as in the case of some invalid lists, if
+    // the last tag was removed, the invalid tag should just be removed as well
+    // instead of trying to fix it by nesting it in a tag that was already
+    // removed from the output.
     this._lastTagRemoved = false;
 
-    // This flag specifies that the current tag should not be added to the
-    // output. It allows the Listener to explicitly force a tag to be removed.
-    this._removeBlockTag = false;
-
     // When correcting invalid list nesting, situations can occur that will
-    // result in an extra closing LI tag coming up later in the parser. When
-    // one of these situations occurs, this flag is set to true so that the
-    // parser knows to ignore the extra closing LI tag.
-    this._removeExtraLI = false;
+    // result in an extra closing LI tags coming up later in the parser. When
+    // one of these situations occurs, this counter is incremented so that it
+    // can be referenced to find how many extra LI closing tags to expect. This
+    // counter should be decremented everytime one of these extra LI closing
+    // tags is removed.
+    this._extraLIClosingTags = 0;
 
     // This is for storage of a tag's index in the tag stack so that the
     // Listener can use it to check for when the tag has been closed (i.e. when
@@ -328,7 +331,13 @@ WYMeditor.XhtmlSaxListener.prototype.closeUnknownTag = function(tag) {
 
 WYMeditor.XhtmlSaxListener.prototype.closeUnopenedTag = function(tag) {
     this._last_node_was_text = false;
-    if (!this._insideTagToRemove) {
+    if (this._insideTagToRemove) {
+        return;
+    }
+
+    if (tag === 'li' && this._extraLIClosingTags) {
+        this._extraLIClosingTags--;
+    } else {
         this.output += "</" + tag + ">";
     }
 };
@@ -374,7 +383,8 @@ WYMeditor.XhtmlSaxListener.prototype.fixNestingBeforeOpeningBlockTag = function(
         if (this._lastTagRemoved) {
             // If the previous li tag was removed, the new list should be
             // removed with it.
-            this._removeBlockTag = true;
+            this._insideTagToRemove = true;
+            this._removedTagStackIndex = this._tag_stack.length - 1;
         } else if (!this._shouldRemoveTag(tag, attributes)){
             // If this tag is not going to be removed, remove the last closing
             // li tag
@@ -409,7 +419,7 @@ WYMeditor.XhtmlSaxListener.prototype.fixNestingBeforeOpeningBlockTag = function(
                 if (this._insideTagToRemove) {
                     this._insideTagToRemove = false;
                     this._lastTagRemoved = true;
-                    this._removeExtraLI = true;
+                    this._extraLIClosingTag++;
                 } else {
                     this.output += '</li>';
                 }
