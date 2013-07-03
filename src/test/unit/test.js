@@ -736,7 +736,7 @@ test("Remove editor-only invalid UL that's the first child of a UL", function ()
     wymeditor.html(invalidULStartNesting);
     $body.find('#ul_1').addClass(WYMeditor.EDITOR_ONLY_CLASS);
 
-    expectedHtml = validULStartNesting.replace(/<ul id="ul\_1".*?<\/ul>/, '');
+    expectedHtml = invalidULStartNesting.replace(/<ul id="ul\_1".*?<\/ul>/, '');
     htmlEquals(wymeditor, expectedHtml,
                "Remove editor-only UL that's the first child of a UL");
 });

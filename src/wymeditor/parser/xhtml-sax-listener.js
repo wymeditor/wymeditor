@@ -16,6 +16,7 @@ WYMeditor.XhtmlSaxListener = function() {
     this._insideTagToRemove = false;
     this._lastTagRemoved = false;
     this._removeBlockTag = false;
+    this._removeExtraLI = false;
     this._removedTagStackIndex = 0;
 
     this.entities = {
@@ -341,8 +342,9 @@ WYMeditor.XhtmlSaxListener.prototype.fixNestingBeforeOpeningBlockTag = function(
             // If the previous li tag was removed, the new list should be
             // removed with it.
             this._removeBlockTag = true;
-        } else {
-            // Remove the last closing li tag
+        } else if (!this._shouldRemoveTag(tag, attributes)){
+            // If this tag is not going to be removed, remove the last closing
+            // li tag
             this.output = this.output.replace(/<\/li>\s*$/, '');
             this.insertContentAfterClosingTag(tag, '</li>');
         }
@@ -351,15 +353,18 @@ WYMeditor.XhtmlSaxListener.prototype.fixNestingBeforeOpeningBlockTag = function(
         // We have a <ol|ul><ol|ul>... situation. The new list should be have
         // a li tag parent and shouldn't be directly nested.
 
-        // Add an opening li tag before and after this tag
+        // If this tag is not going to be removed, add an opening li tag before
+        // and after this tag
+        if (!this._shouldRemoveTag(tag, attributes)) {
+            this.output += this.helper.tag('li', {}, true);
+            this.insertContentAfterClosingTag(tag, '</li>');
+        }
         this._last_node_was_text = false;
-        this.output += this.helper.tag('li', {}, true);
-        this.insertContentAfterClosingTag(tag, '</li>');
-    } else if (tag == 'li' && !this.last_tag_opened) {
+    } else if (tag == 'li') {
         // Closest open tag that's not this tag
         if (this._tag_stack.length >= 2) {
             var closestOpenTag = this._tag_stack[this._tag_stack.length - 2];
-            if (closestOpenTag == 'li'){
+            if (closestOpenTag == 'li' && !this._shouldRemoveTag(tag, attributes)){
                 // Pop the tag off of the stack to indicate we closed it
                 this._open_tags.li -= 1;
                 if (this._open_tags.li === 0) {
@@ -367,7 +372,14 @@ WYMeditor.XhtmlSaxListener.prototype.fixNestingBeforeOpeningBlockTag = function(
                 }
                 this._tag_stack.pop(this._tag_stack.length - 2);
                 this._last_node_was_text = false;
-                this.output += '</li>';
+
+                if (this._insideTagToRemove) {
+                    this._insideTagToRemove = false;
+                    this._lastTagRemoved = true;
+                    this._removeExtraLI = true;
+                } else {
+                    this.output += '</li>';
+                }
             }
         }
         // Opening a new li tag while another li tag is still open.

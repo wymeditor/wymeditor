@@ -153,7 +153,9 @@ WYMeditor.XhtmlParser.prototype._callCloseTagListener = function(tag) {
             this._Listener.closeBlockTag(tag);
         }
     } else {
-        if(!this._Listener.isInlineTag(tag)) {
+        if (this._Listener._removeExtraLI) {
+            this._Listener._removeExtraLI = false;
+        } else if(!this._Listener.isInlineTag(tag)) {
             this._Listener.closeUnopenedTag(tag);
         }
     }
