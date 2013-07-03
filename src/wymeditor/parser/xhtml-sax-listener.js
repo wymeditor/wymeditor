@@ -320,7 +320,7 @@ WYMeditor.XhtmlSaxListener.prototype.inlineTag = function(tag, attributes) {
         return;
     }
 
-    attributes = this.getValidTagAttributes(attributes);
+    attributes = this.validator.getValidTagAttributes(tag, attributes);
     attributes = this.removeUnwantedClasses(attributes);
     this.output += this.helper.tag(tag, attributes);
     this._lastTagRemoved = false;
@@ -403,7 +403,7 @@ WYMeditor.XhtmlSaxListener.prototype.insertContentBeforeClosingTag = function(ta
     and those attributes' values as those properties' values.
 */
 WYMeditor.XhtmlSaxListener.prototype.removeUnwantedClasses = function(attributes) {
-    var classes
+    var classes,
         index,
         i;
 
