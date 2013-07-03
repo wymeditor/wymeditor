@@ -46,7 +46,7 @@ WYMeditor.WymClassSafari.prototype.initIframe = function (iframe) {
     this._doc.designMode = "on";
 
     //init html value
-    this._html(this._wym._innerHtml);
+    this._html(this._wym._options.html);
 
     //pre-bind functions
     if (jQuery.isFunction(this._options.preBind)) {

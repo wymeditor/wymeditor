@@ -56,7 +56,7 @@ WYMeditor.WymClassMozilla.prototype.initIframe = function (iframe) {
     jQuery('html', this._doc).attr('dir', this._options.direction);
 
     //init html value
-    this._html(this._wym._innerHtml);
+    this._html(this._wym._options.html);
 
     //init designMode
     this.enableDesignMode();
