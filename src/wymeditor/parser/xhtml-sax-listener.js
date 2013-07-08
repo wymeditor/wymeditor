@@ -313,8 +313,8 @@ WYMeditor.XhtmlSaxListener.prototype.closeBlockTag = function(tag) {
             // removed started, we're no longer inside that tag and can turn
             // the insideTagToRemove flag off.
             this._insideTagToRemove = false;
-            this._lastTagRemoved = true;
         }
+        this._lastTagRemoved = true;
         return;
     }
 
