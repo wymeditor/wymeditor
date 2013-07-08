@@ -286,7 +286,14 @@ WYMeditor.XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes) {
         // the output.
         return;
     }
-<<<<<<< HEAD
+    if (this._shouldRemoveTag(tag, attributes)) {
+        // If this tag is marked for removal, set a flag signifying that
+        // we're in a tag to remove and mark the position in the tag stack
+        // of this tag so that we know when we've reached the end of it.
+        this._insideTagToRemove = true;
+        this._removedTagStackIndex = this._tag_stack.length - 1;
+        return;
+    }
 
     attributes = this.validator.getValidTagAttributes(tag, attributes);
     attributes = this.removeUnwantedClasses(attributes);
@@ -303,21 +310,6 @@ WYMeditor.XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes) {
     }
 
     this.output += this.helper.tag(tag, attributes, true);
-=======
-    if (this._shouldRemoveTag(tag, attributes)) {
-        // If this tag is marked for removal, set a flag signifying that
-        // we're in a tag to remove and mark the position in the tag stack
-        // of this tag so that we know when we've reached the end of it.
-        this._insideTagToRemove = true;
-        this._removedTagStackIndex = this._tag_stack.length - 1;
-        return;
-    }
-
-    this.output += this.helper.tag(
-        tag,
-        this.validator.getValidTagAttributes(tag, attributes),
-        true);
->>>>>>> issue_415
     this._lastTagRemoved = false;
 };
 
@@ -422,17 +414,18 @@ WYMeditor.XhtmlSaxListener.prototype.removeUnwantedClasses = function(attributes
         index,
         i;
 
-    if (attributes["class"]) {
-        classes = attributes["class"].split(" ");
-        for (i = 0; i < WYMeditor.CLASSES_REMOVED_BY_PARSER.length; ++i) {
-            index = jQuery.inArray(WYMeditor.CLASSES_REMOVED_BY_PARSER[i], classes);
-            if (index !== -1) {
-                classes.splice(index, 1);
-            }
-        }
-        attributes["class"] = classes.join(" ");
+    if (!attributes["class"]) {
+        return attributes;
     }
 
+    classes = attributes["class"].split(" ");
+    for (i = 0; i < WYMeditor.CLASSES_REMOVED_BY_PARSER.length; ++i) {
+        index = jQuery.inArray(WYMeditor.CLASSES_REMOVED_BY_PARSER[i], classes);
+        if (index !== -1) {
+            classes.splice(index, 1);
+        }
+    }
+    attributes["class"] = classes.join(" ");
     return attributes;
 };
 
