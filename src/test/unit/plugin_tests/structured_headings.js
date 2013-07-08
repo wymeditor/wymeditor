@@ -225,7 +225,7 @@ if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
         expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
-        wymeditor.html(expectedHeadings);
+        wymeditor._html(expectedHeadings);
         htmlEquals(wymeditor, expectedParsedHeadings,
                    "Heading numbering stripped by parser");
     });
