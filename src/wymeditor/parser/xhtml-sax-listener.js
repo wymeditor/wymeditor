@@ -267,8 +267,7 @@ WYMeditor.XhtmlSaxListener.prototype.addCss = function(text) {
 
 WYMeditor.XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes) {
     this._last_node_was_text = false;
-    if (this._insideTagToRemove || this._shouldRemoveTag(tag, attributes) ||
-        this._removeBlockTag) {
+    if (this._insideTagToRemove || this._shouldRemoveTag(tag, attributes)) {
         // If we're currently in a block marked for removal or if this tag is
         // marked for removal, don't add it to the output.
 
@@ -277,7 +276,6 @@ WYMeditor.XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes) {
             // we're in a tag to remove and mark the position in the tag stack
             // of this tag so that we know when we've reached the end of it.
             this._insideTagToRemove = true;
-            this._removeBlockTag = false;
             this._removedTagStackIndex = this._tag_stack.length - 1;
         }
         return;
@@ -419,7 +417,7 @@ WYMeditor.XhtmlSaxListener.prototype.fixNestingBeforeOpeningBlockTag = function(
                 if (this._insideTagToRemove) {
                     this._insideTagToRemove = false;
                     this._lastTagRemoved = true;
-                    this._extraLIClosingTag++;
+                    this._extraLIClosingTags++;
                 } else {
                     this.output += '</li>';
                 }
