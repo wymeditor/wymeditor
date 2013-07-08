@@ -411,15 +411,21 @@ WYMeditor.XhtmlSaxListener.prototype.fixNestingBeforeOpeningBlockTag = function(
                 if (this._open_tags.li === 0) {
                     this._open_tags.li = undefined;
                 }
-                this._tag_stack.pop(this._tag_stack.length - 2);
+                this._tag_stack.splice(this._tag_stack.length - 2, 1);
                 this._last_node_was_text = false;
 
-                if (this._insideTagToRemove) {
+                if (!this._insideTagToRemove) {
+                    // If not inside a tag to remove, close the outer LI now
+                    // before adding the LI that was nested within it to the
+                    // output.
+                    this.output += '</li>';
+                } else if (this._tag_stack.length - 1 ===
+                           this._removedTagStackIndex) {
+                    // If the outer LI was the start of a block to be removed,
+                    // reset the flag for removing a tag.
                     this._insideTagToRemove = false;
                     this._lastTagRemoved = true;
                     this._extraLIClosingTags++;
-                } else {
-                    this.output += '</li>';
                 }
             }
         }
