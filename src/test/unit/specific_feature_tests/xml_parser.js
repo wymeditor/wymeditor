@@ -696,3 +696,72 @@ test("Remove editor-only UL with invalid LI nesting within it", function () {
                "Remove editor-only UL with invalid LI nesting within it");
 });
 
+
+module("XmlParser-fix_style_spans", {setup: setupWym});
+
+var startSpan = '<p>Test<span>Test</span></p>';
+
+function testStyleSpan(newTag, spanStyle, assertionString) {
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        expectedHtml = startSpan.replace(/span/g, newTag);
+
+    wymeditor._html(startSpan);
+    $body.find('span').attr('style', spanStyle);
+
+    htmlEquals(wymeditor, expectedHtml, assertionString);
+}
+
+test("Fix bold style span", function () {
+    expect(1);
+    testStyleSpan("strong", "font-weight:bold;", "Fix bold style span");
+});
+
+test("Fix italic style span", function () {
+    expect(1);
+    testStyleSpan("em", "font-style:italic;", "Fix italic style span");
+});
+
+test("Fix superscript style span", function () {
+    expect(1);
+    testStyleSpan("sup", "vertical-align:super;", "Fix superscript style span");
+});
+
+test("Fix subscript style span", function () {
+    expect(1);
+    testStyleSpan("sub", "vertical-align:sub;", "Fix subscript style span");
+});
+
+module("XmlParser-remove_unwanted_classes", {setup: setupWym});
+
+test("Remove 'apple-style-span' class", function () {
+    expect(2);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        expectedHtml,
+
+        startHtmlSingleClass = String() +
+            '<span id="span_1" class="apple-style-span">' +
+                'Test' +
+            '</span>',
+        expectedHtmlSingleClass = String() +
+            '<span id="span_1">' +
+                'Test' +
+            '</span>',
+        startHtmlMultiClass = String() +
+            '<span id="span_1" class="foo bar apple-style-span baz">' +
+                'Test' +
+            '</span>',
+        expectedHtmlMultiClass = String() +
+            '<span id="span_1" class="foo bar baz">' +
+                'Test' +
+            '</span>';
+
+    wymeditor._html(startHtmlSingleClass);
+    htmlEquals(wymeditor, expectedHtmlSingleClass,
+               "'apple-style-span' removed from span with one class");
+
+    wymeditor._html(startHtmlMultiClass);
+    htmlEquals(wymeditor, expectedHtmlMultiClass,
+               "'apple-style-span' removed from span with multiple classes");
+});
