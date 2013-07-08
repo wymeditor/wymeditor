@@ -798,6 +798,20 @@ test("Remove editor-only LI with an invalid LI nested within it", function () {
                "Remove editor-only LI with an invalid LI nested within it");
 });
 
+test("Remove editor-only UL with invalid LI nesting within it", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        expectedHtml;
+
+    wymeditor._html(invalidLINesting);
+    $body.find('#ul_top').addClass(WYMeditor.EDITOR_ONLY_CLASS);
+
+    expectedHtml = "";
+    htmlEquals(wymeditor, expectedHtml,
+               "Remove editor-only UL with invalid LI nesting within it");
+});
+
 module("Post Init", {setup: setupWym});
 
 test("Sanity check: _html()", function () {
