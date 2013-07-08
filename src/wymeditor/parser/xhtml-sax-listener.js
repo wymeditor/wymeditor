@@ -267,19 +267,20 @@ WYMeditor.XhtmlSaxListener.prototype.addCss = function(text) {
 
 WYMeditor.XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes) {
     this._last_node_was_text = false;
-    if (this._insideTagToRemove || this._shouldRemoveTag(tag, attributes)) {
-        // If we're currently in a block marked for removal or if this tag is
-        // marked for removal, don't add it to the output.
-
-        if (!this._insideTagToRemove) {
-            // If this tag is marked for removal, set a flag signifying that
-            // we're in a tag to remove and mark the position in the tag stack
-            // of this tag so that we know when we've reached the end of it.
-            this._insideTagToRemove = true;
-            this._removedTagStackIndex = this._tag_stack.length - 1;
-        }
+    if (this._insideTagToRemove) {
+        // If we're currently in a block marked for removal, don't add it to
+        // the output.
         return;
     }
+    if (this._shouldRemoveTag(tag, attributes)) {
+        // If this tag is marked for removal, set a flag signifying that
+        // we're in a tag to remove and mark the position in the tag stack
+        // of this tag so that we know when we've reached the end of it.
+        this._insideTagToRemove = true;
+        this._removedTagStackIndex = this._tag_stack.length - 1;
+        return;
+    }
+
     this.output += this.helper.tag(
         tag,
         this.validator.getValidTagAttributes(tag, attributes),
@@ -467,11 +468,13 @@ WYMeditor.XhtmlSaxListener.prototype._getClosingTagContent = function(position, 
 WYMeditor.XhtmlSaxListener.prototype._shouldRemoveTag = function(tag, attributes) {
     var classes;
 
-    if (attributes["class"]) {
-        classes = attributes["class"].split(" ");
-        if (jQuery.inArray(WYMeditor.EDITOR_ONLY_CLASS, classes) > -1) {
-            return true;
-        }
+    if (!attributes["class"]) {
+        return false;
+    }
+
+    classes = attributes["class"].split(" ");
+    if (jQuery.inArray(WYMeditor.EDITOR_ONLY_CLASS, classes) > -1) {
+        return true;
     }
     return false;
 };
