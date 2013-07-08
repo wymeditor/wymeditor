@@ -20,17 +20,20 @@ WYMeditor.XhtmlSaxListener = function() {
     this._insideTagToRemove = false;
 
     // If the last tag was not added to the output, this flag is set to true.
+    // This is needed because if we are trying to fix an invalid tag by nesting
+    // it in the last outputted tag as in the case of some invalid lists, if
+    // the last tag was removed, the invalid tag should just be removed as well
+    // instead of trying to fix it by nesting it in a tag that was already
+    // removed from the output.
     this._lastTagRemoved = false;
 
-    // This flag specifies that the current tag should not be added to the
-    // output. It allows the Listener to explicitly force a tag to be removed.
-    this._removeBlockTag = false;
-
     // When correcting invalid list nesting, situations can occur that will
-    // result in an extra closing LI tag coming up later in the parser. When
-    // one of these situations occurs, this flag is set to true so that the
-    // parser knows to ignore the extra closing LI tag.
-    this._removeExtraLI = false;
+    // result in an extra closing LI tags coming up later in the parser. When
+    // one of these situations occurs, this counter is incremented so that it
+    // can be referenced to find how many extra LI closing tags to expect. This
+    // counter should be decremented everytime one of these extra LI closing
+    // tags is removed.
+    this._extraLIClosingTags = 0;
 
     // This is for storage of a tag's index in the tag stack so that the
     // Listener can use it to check for when the tag has been closed (i.e. when
@@ -278,8 +281,7 @@ WYMeditor.XhtmlSaxListener.prototype.addCss = function(text) {
 
 WYMeditor.XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes) {
     this._last_node_was_text = false;
-    if (this._insideTagToRemove || this._shouldRemoveTag(tag, attributes) ||
-        this._removeBlockTag) {
+    if (this._insideTagToRemove || this._shouldRemoveTag(tag, attributes)) {
         // If we're currently in a block marked for removal or if this tag is
         // marked for removal, don't add it to the output.
 
@@ -288,7 +290,6 @@ WYMeditor.XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes) {
             // we're in a tag to remove and mark the position in the tag stack
             // of this tag so that we know when we've reached the end of it.
             this._insideTagToRemove = true;
-            this._removeBlockTag = false;
             this._removedTagStackIndex = this._tag_stack.length - 1;
         }
         return;
@@ -355,7 +356,13 @@ WYMeditor.XhtmlSaxListener.prototype.closeUnknownTag = function(tag) {
 
 WYMeditor.XhtmlSaxListener.prototype.closeUnopenedTag = function(tag) {
     this._last_node_was_text = false;
-    if (!this._insideTagToRemove) {
+    if (this._insideTagToRemove) {
+        return;
+    }
+
+    if (tag === 'li' && this._extraLIClosingTags) {
+        this._extraLIClosingTags--;
+    } else {
         this.output += "</" + tag + ">";
     }
 };
@@ -430,7 +437,8 @@ WYMeditor.XhtmlSaxListener.prototype.fixNestingBeforeOpeningBlockTag = function(
         if (this._lastTagRemoved) {
             // If the previous li tag was removed, the new list should be
             // removed with it.
-            this._removeBlockTag = true;
+            this._insideTagToRemove = true;
+            this._removedTagStackIndex = this._tag_stack.length - 1;
         } else if (!this._shouldRemoveTag(tag, attributes)){
             // If this tag is not going to be removed, remove the last closing
             // li tag
@@ -459,15 +467,21 @@ WYMeditor.XhtmlSaxListener.prototype.fixNestingBeforeOpeningBlockTag = function(
                 if (this._open_tags.li === 0) {
                     this._open_tags.li = undefined;
                 }
-                this._tag_stack.pop(this._tag_stack.length - 2);
+                this._tag_stack.splice(this._tag_stack.length - 2, 1);
                 this._last_node_was_text = false;
 
-                if (this._insideTagToRemove) {
+                if (!this._insideTagToRemove) {
+                    // If not inside a tag to remove, close the outer LI now
+                    // before adding the LI that was nested within it to the
+                    // output.
+                    this.output += '</li>';
+                } else if (this._tag_stack.length - 1 ===
+                           this._removedTagStackIndex) {
+                    // If the outer LI was the start of a block to be removed,
+                    // reset the flag for removing a tag.
                     this._insideTagToRemove = false;
                     this._lastTagRemoved = true;
-                    this._removeExtraLI = true;
-                } else {
-                    this.output += '</li>';
+                    this._extraLIClosingTags++;
                 }
             }
         }
