@@ -14,6 +14,7 @@ function waitFor(testFx, onReady, timeOutMillis) {
             if ( (new Date().getTime() - start < maxtimeOutMillis) && !condition ) {
                 // If not time-out yet and condition not yet fulfilled
                 condition = testFx();
+                console.log(condition);
             } else {
                 if(!condition) {
                     // If condition still not fulfilled (timeout but condition is 'false')
@@ -66,7 +67,7 @@ page.open(phantom.args[0], function(status){
                     var results = document.getElementById('qunit-testresult');
                     console.log(results.innerText);
                     try {
-                        failString = el.getElementsByClassName('failed')[0].innerHTML;
+                        failString = results.getElementsByClassName('failed')[0].innerHTML;
                     } catch (e) { }
                     if (parseInt(failString, 10) > 0) {
                         return 1; // Failures
