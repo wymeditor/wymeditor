@@ -44,10 +44,58 @@ WYMeditor.STRUCTURED_HEADINGS_POTENTIAL_HEADING_MODIFICATION_KEYS =
 WYMeditor.editor.prototype.structuredHeadings = function () {
     var wym = this,
         wymBasePath = WYMeditor.computeBasePath(WYMeditor.computeWymPath()),
+        $body = jQuery(wym._doc).find('body.wym_iframe'),
+        $containerItems,
+        $containerLink,
+        $newHeadingItem,
+        newHeadingLink,
+        i,
+
         iframeHead = jQuery(wym._doc).find('head')[0],
         stylesheetHref,
         cssLink,
         cssRequest;
+
+    // Remove normal heading links from the containers list
+    $containerItems = jQuery(wym._box).find(wym._options.containersSelector)
+                                      .find('li');
+    for (i = 0; i < $containerItems.length; ++i) {
+        $containerLink = $containerItems.eq(i).find('a');
+        if ($containerLink[0].name[0].toLowerCase() === 'h') {
+            $containerItems.eq(i).remove();
+        }
+    }
+    // Create new list item for the new single heading link
+    $newHeadingItem = jQuery('<li></li>');
+    $newHeadingItem.addClass('wym_containers_heading');
+
+    // Create new single heading link
+    newHeadingLink = wym._doc.createElement('a');
+    newHeadingLink.href = "#";
+    newHeadingLink.name = "HEADING";
+    newHeadingLink.innerHTML = "Heading";
+
+    // Add single heading link to the list item and add the list item to the
+    // containers list
+    $newHeadingItem.append(newHeadingLink);
+    $containerItems.eq(0).after($newHeadingItem);
+
+    // Bind click event to the new single heading link
+    $newHeadingItem.find('a').click(function (evt) {
+        var newHeading = wym.findUp(wym.container(),
+                                    WYMeditor.MAIN_CONTAINERS),
+            headingSel = WYMeditor.HEADING_ELEMENTS.join(" "),
+            $prevHeading;
+
+        if (newHeading) {
+            $prevHeading = $body.find(newHeading).prev(headingSel);
+            if ($prevHeading.length) {
+                wym.switchTo(newHeading, prevHeading[0].nodeName);
+            } else {
+                wym.switchTo(newHeading, 'h1');
+            }
+        }
+    });
 
     cssLink = wym._doc.createElement('link');
     cssLink.rel = 'stylesheet';
