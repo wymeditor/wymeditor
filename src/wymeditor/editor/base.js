@@ -1287,8 +1287,8 @@ WYMeditor.editor.prototype.unwrap = function () {
 };
 
 WYMeditor.editor.prototype.setFocusToNode = function (node, toStart) {
-    var range = this._doc.createRange(),
-        selection = this._iframe.contentWindow.getSelection();
+    var range = rangy.createRange(),
+        selection = this.selection();
     toStart = toStart ? 0 : 1;
 
     range.selectNodeContents(node);
