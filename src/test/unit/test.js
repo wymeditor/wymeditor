@@ -664,7 +664,9 @@ function setupTable(wymeditor, html, selection, selectionType,
     }
 }
 
-var TEST_LINEBREAK_SPACER = '<br class="' + WYMeditor.EDITOR_ONLY_CLASS + '"/>';
+var TEST_LINEBREAK_SPACER = '<br class="' +
+                                WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS + ' ' +
+                                WYMeditor.EDITOR_ONLY_CLASS + '"/>';
 
 var listForTableInsertion = String() +
     '<ol>' +

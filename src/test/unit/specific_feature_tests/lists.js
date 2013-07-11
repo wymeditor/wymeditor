@@ -2206,7 +2206,9 @@ function changeIndent(wymeditor, html, selStart, selEnd, inOrOut) {
     }
 }
 
-var TEST_LINEBREAK_SPACER = '<br class="' + WYMeditor.EDITOR_ONLY_CLASS + '"/>';
+var TEST_LINEBREAK_SPACER = '<br class="' +
+                                WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS + ' ' +
+                                WYMeditor.EDITOR_ONLY_CLASS + '"/>';
 
 var expectedMiddleIn = String() +
     '<ol>' +
