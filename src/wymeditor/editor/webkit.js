@@ -240,7 +240,15 @@ WYMeditor.WymClassSafari.prototype.openBlockTag = function (tag, attributes) {
         }
     }
 
-    this.output += this.helper.tag(tag, attributes, true);
+    if (!this._insideTagToRemove && !this._shouldRemoveTag(tag, attributes) &&
+        !this._removeBlockTag) {
+        this.output += this.helper.tag(tag, attributes, true);
+        this._lastTagRemoved = false;
+    } else if (!this._insideTagToRemove) {
+        this._insideTagToRemove = true;
+        this._removeBlockTag = false;
+        this._removedTagStackIndex = this._tag_stack.length - 1;
+    }
 };
 
 WYMeditor.WymClassSafari.prototype.getTagForStyle = function (style) {
