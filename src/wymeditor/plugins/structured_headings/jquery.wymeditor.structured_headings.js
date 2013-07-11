@@ -83,11 +83,16 @@ function HeadingStructure(options, wym) {
             '<li class="wym_containers_heading">' +
                 '<a href="#" name="HEADING">Heading</a>' +
             '</li>',
-        headingContainerPanelSelector: "li.wym_containers_heading a"
+        headingContainerPanelSelector: "li.wym_containers_heading a",
+
+        highestAllowableHeadingLevel: 1,
+        lowestAllowableHeadingLevel: 6
 
     }, options);
 
-    this._headingElements = WYMeditor.HEADING_ELEMENTS;
+    this._headingElements = WYMeditor.HEADING_ELEMENTS
+        .slice(options.highestAllowableHeadingLevel - 1,
+               options.lowestAllowableHeadingLevel);
     this._headingSel = this._headingElements.join(", ");
     this._options = options;
     this._wym = wym;
@@ -257,11 +262,13 @@ HeadingStructure.prototype.changeHeadingLevel = function (heading, upOrDown) {
         return;
     }
 
-    // If the heading level is to be moved up and the heading is an H1, or if
-    // the heading is to be moved down and the heading is an H6, don't do
-    // anything.
+    // If the heading level is to be moved up and the heading is at the highest
+    // allowable level, or if the heading is to be moved down and the heading
+    // is at the lowest allowable level, don't do anything.
     headingLevel = getHeadingLevel(heading);
-    if (headingLevel === (changeLevelUp ? 1 : 6)) {
+    if (headingLevel === (changeLevelUp ?
+                            this._options.highestAllowableHeadingLevel :
+                            this._options.lowestAllowableHeadingLevel)) {
         return;
     }
 
@@ -306,7 +313,7 @@ HeadingStructure.prototype.switchToHeading = function (node) {
     if ($prevHeading.length) {
         wym.switchTo(node, $prevHeading[0].nodeName);
     } else {
-        wym.switchTo(node, 'h1');
+        wym.switchTo(node, 'h' + this._options.highestAllowableHeadingLevel);
     }
 };
 
