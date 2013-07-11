@@ -78,8 +78,10 @@
     if (urlParams.tapOutput) {
         // Only provide tap output when ?tapOutput=true
         // When running via phantomJS, use that URL
+        console.log("Running qunit tests with tap output.");
         qunitTap(QUnit, function() { console.log.apply(console, arguments); }, {noPlan: true});
     }
+        console.log("Running qunit tests without tap output.");
 </script>
 </head>
 
