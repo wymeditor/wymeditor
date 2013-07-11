@@ -273,10 +273,9 @@ jQuery.extend(WYMeditor, {
     // in them.
     SELECTABLE_TABLE_ELEMENTS: ["td", "th", "caption"],
 
-    // Class used to identify <br /> elements that are used to space out
-    // blocking elements in the editor so that they can be removed before
-    // parsing the html.
-    BLOCKING_ELEMENT_SPACER_CLASS : "wym-blocking-element-spacer",
+    // Class for marking br elements used to space apart blocking elements in the
+    // editor.
+    BLOCKING_ELEMENT_SPACER_CLASS: "wym-blocking-element-spacer",
 
     // Class used to flag an element for removal by the xhtml parser so that
     // the element is removed from the output and only shows up internally

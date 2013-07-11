@@ -248,6 +248,9 @@ function numberHeadingsIE7(doc, addClass) {
         span = doc.createElement('span');
         span.innerHTML = headingLabel;
         span.className = WYMeditor.STRUCTURED_HEADINGS_NUMBERING_SPAN_CLASS;
+        if (addClass) {
+            span.className += ' ' + WYMeditor.EDITOR_ONLY_CLASS;
+        }
         $heading.prepend(span);
         spanCharTotal += (counterIndex * 2) + 1;
 
