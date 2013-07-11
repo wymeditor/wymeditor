@@ -50,7 +50,6 @@ WYMeditor.editor.prototype.init = function () {
     }
 
     SaxListener = new WYMeditor.XhtmlSaxListener();
-    //jQuery.extend(SaxListener, WymClass);
     this.parser = new WYMeditor.XhtmlParser(SaxListener);
 
     if (this._options.styles || this._options.stylesheet) {
