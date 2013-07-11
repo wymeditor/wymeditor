@@ -1957,3 +1957,16 @@ test("No span added to header after bolding", function () {
     }
 });
 
+
+module("html_from_editor-html_function", {setup: setupWym});
+
+test("Can set and get html with the html() function", function () {
+    var wymeditor = jQuery.wymeditors(0),
+        testHtml = "<p>Test</p>",
+        htmlNode;
+
+    wymeditor.html(testHtml);
+    htmlNode = jQuery(wymeditor.html(), wymeditor._doc);
+    equals(normalizeHtml(htmlNode[0]), testHtml, "Set and get with html() function");
+});
+
