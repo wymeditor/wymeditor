@@ -166,7 +166,7 @@ function htmlEquals(wymeditor, expected, assertionString) {
         // In jQuery 1.2.x, jQuery('') returns an empty list, so we can't call
         // normalizeHTML. On 1.3.x or higher upgrade, we can remove this
         // check for the empty string
-        equals(xhtml, expected, assertionString);
+        deepEqual(xhtml, expected, assertionString);
         return;
     }
 
@@ -179,7 +179,7 @@ function htmlEquals(wymeditor, expected, assertionString) {
         normedExpected += normalizeHtml(tmpNodes[i]);
     }
 
-    equals(normedActual, normedExpected, assertionString);
+    deepEqual(normedActual, normedExpected, assertionString);
 }
 
 function makeSelection(wymeditor, startElement, endElement, startElementIndex, endElementIndex) {
@@ -263,7 +263,7 @@ function moveSelector(wymeditor, selectedElement) {
         makeSelection(wymeditor, selectedElement, selectedElement, 0, 0);
     }
 
-    equals(wymeditor.selected(), selectedElement, "moveSelector");
+    deepEqual(wymeditor.selected(), selectedElement, "moveSelector");
 }
 
 
