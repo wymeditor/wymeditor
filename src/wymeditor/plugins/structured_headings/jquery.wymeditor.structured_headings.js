@@ -63,43 +63,21 @@ WYMeditor.editor.prototype.structuredHeadings = function (options) {
     @class
 */
 function HeadingStructure(options, wym) {
-    var index,
-        i;
-
     options = jQuery.extend({
-        headingLevelUpButtonHtml: String() +
-            '<li class="wym_tools_heading_level_up">' +
-                '<a name="heading_level_up" href="#" title="Heading Level Up" ' +
-                    'style="background-image: ' +
-                        "url('" + wym._options.basePath +
-                            "plugins/structured_headings/arrow_up.png')" + '">' +
-                    'Heading Level Up' +
-                '</a>' +
-            '</li>',
-        headingLevelUpSelector: "li.wym_tools_heading_level_up a",
+        headingIndentToolSelector: "li.wym_tools_indent a",
+        headingOutdentToolSelector: "li.wym_tools_outdent a",
 
-        headingLevelDownButtonHtml: String() +
-            '<li class="wym_tools_heading_level_down">' +
-                '<a name="heading_level_down" href="#" title="Heading Level Down" ' +
-                    'style="background-image: ' +
-                        "url('" + wym._options.basePath +
-                            "plugins/structured_headings/arrow_down.png')" + '">' +
-                    'Heading Level Down' +
-                '</a>' +
-            '</li>',
-        headingLevelDownSelector: "li.wym_tools_heading_level_down a",
-
-        enableFixHeadingNestingButton: false,
-        fixHeadingNestingButtonHtml: String() +
-            '<li class="wym_tools_fix_heading_nesting">' +
-                '<a name="fix_heading_nesting" href="#" title="Fix Heading Nesting" ' +
+        enableFixHeadingStructureButton: false,
+        fixHeadingStructureButtonHtml: String() +
+            '<li class="wym_tools_fix_heading_structure">' +
+                '<a name="fix_heading_structure" href="#" title="Fix Heading Structure" ' +
                     'style="background-image: ' +
                         "url('" + wym._options.basePath +
                             "plugins/structured_headings/ruler_arrow.png')" + '">' +
-                    'Fix Heading Nesting' +
+                    'Fix Heading Structure' +
                 '</a>' +
             '</li>',
-        fixHeadingNestingSelector: "li.wym_tools_fix_heading_nesting a",
+        fixHeadingStructureSelector: "li.wym_tools_fix_heading_structure a",
 
         headingContainerPanelHtml: String() +
             '<li class="wym_containers_heading">' +
@@ -154,11 +132,9 @@ HeadingStructure.prototype.createUI = function () {
         newHeadingLink,
         i;
 
-    // Add tool panel buttons
-    $tools.append(this._options.headingLevelUpButtonHtml);
-    $tools.append(this._options.headingLevelDownButtonHtml);
-    if (this._options.enableFixHeadingNestingButton) {
-        $tools.append(this._options.fixHeadingNestingButtonHtml);
+    // Add tool panel buttons if necessary
+    if (this._options.enableFixHeadingStructureButton) {
+        $tools.append(this._options.fixHeadingStructureButtonHtml);
     }
 
     // Remove normal heading links from the containers panel list
@@ -189,16 +165,21 @@ HeadingStructure.prototype.bindEvents = function () {
         $box = jQuery(wym._box);
 
     // Bind click events to tool buttons
-    $box.find(this._options.headingLevelUpSelector).click(function () {
+    $box.find(this._options.headingOutdentToolSelector).click(function () {
         var heading = wym.findUp(wym.container(),
                                  headingStructure._headingElements);
         headingStructure.changeHeadingLevel(heading, "up");
     });
-    $box.find(this._options.headingLevelDownSelector).click(function () {
+    $box.find(this._options.headingIndentToolSelector).click(function () {
         var heading = wym.findUp(wym.container(),
                                  headingStructure._headingElements);
         headingStructure.changeHeadingLevel(heading, "down");
     });
+    if (this._options.enableFixHeadingStructureButton) {
+        $box.find(this._options.fixHeadingStructureSelector).click(function () {
+            headingStructure.fixHeadingStructure();
+        });
+    }
 
     // Bind click event to the new single heading link
     $box.find(this._options.headingContainerPanelSelector).click(function () {
@@ -245,7 +226,7 @@ HeadingStructure.prototype.addCssStylesheet = function () {
     cssRequest = new XMLHttpRequest();
     cssRequest.open('GET', wym._options.basePath + stylesheetHref, false);
     cssRequest.send('');
-    this._structuredHeadingsCSS = cssRequest.responseText;
+    WYMeditor.structuredHeadingsCSS = cssRequest.responseText;
 };
 
 /**
@@ -284,14 +265,14 @@ HeadingStructure.prototype.changeHeadingLevel = function (heading, upOrDown) {
         return;
     }
 
-    // If the requested change in the heading's level is not allowable because
-    // of the level of its preceding heading, don't do anything.
+    // If the user is trying to change a heading level down, don't let them
+    // change the heading level to be any lower if the heading is already at a
+    // lower level than the previous heading level.
     prevHeading = jQuery(heading).prev(this._headingSel)[0];
     if (prevHeading) {
         prevHeadingLevel = getHeadingLevel(prevHeading);
         headingLevelDifference = prevHeadingLevel - headingLevel;
-        if ((changeLevelUp && (headingLevelDifference > 0)) ||
-            (!changeLevelUp && (headingLevelDifference < 0))) {
+        if (!changeLevelUp && (headingLevelDifference < 0)) {
             return;
         }
     }
@@ -323,21 +304,49 @@ HeadingStructure.prototype.switchToHeading = function (node) {
 
     $prevHeading = jQuery(node).prev(this._headingSel);
     if ($prevHeading.length) {
-        wym.switchTo(node, $prevHeading[0].nodeName.toLowerCase());
+        wym.switchTo(node, $prevHeading[0].nodeName);
     } else {
         wym.switchTo(node, 'h1');
     }
 };
 
 /**
-    printCss
-    ========
+    fixHeadingStructure
+    ===================
 
-    Function to output the plugin CSS to the console log so that it can be
-    copied over to other pages.
+    Fixes the structure of the headings in the editor if needed so that they
+    follow proper standards of heading usage. The main fix this applies is
+    preventing headings from being more than one level apart while descending
+    (e.g. an H1 followed by an H3 or an H2 followed by an H4).
+
+    This function is pretty simple now and will need more work in the future to
+    make it smarter.
 */
-HeadingStructure.prototype.printCSS = function () {
-    WYMeditor.console.log(this._structuredHeadingsCSS);
+HeadingStructure.prototype.fixHeadingStructure = function () {
+    var wym = this._wym,
+        $headings = jQuery(wym._doc).find('body.wym_iframe')
+                                    .find(this._headingSel),
+        heading,
+        headingLevel,
+        prevHeadingLevel,
+        i;
+
+    // If there are no headings in the document, don't do anything.
+    if (!$headings.length) {
+        return;
+    }
+
+    prevHeadingLevel = getHeadingLevel($headings[0]);
+    for (i = 1; i < $headings.length; ++i) {
+        heading = $headings[i];
+        headingLevel = getHeadingLevel(heading);
+        if (headingLevel - prevHeadingLevel > 1) {
+            wym.switchTo(heading, 'h' + (prevHeadingLevel + 1));
+            ++prevHeadingLevel;
+        } else {
+            prevHeadingLevel = headingLevel;
+        }
+    }
 };
 
 /**
@@ -384,6 +393,18 @@ HeadingStructure.prototype.enableIE7Polyfill = function () {
     });
 };
 
+/**
+    WYMeditor.printStructuredHeadingsCss
+    ====================================
+
+    Function to output the plugin CSS to the console log so that it can be
+    copied over to other pages.
+*/
+WYMeditor.printStructuredHeadingsCSS = function () {
+    WYMeditor.console.log(WYMeditor.structuredHeadingsCSS);
+};
+
+
 /*
     getHeadingLevel
     ===============
@@ -394,7 +415,7 @@ HeadingStructure.prototype.enableIE7Polyfill = function () {
 */
 function getHeadingLevel(heading) {
     return parseInt(heading.nodeName.slice(-1), 10);
-};
+}
 
 
 /*
