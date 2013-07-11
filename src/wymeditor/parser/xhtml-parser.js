@@ -28,6 +28,7 @@ WYMeditor.XhtmlParser.prototype.beforeParsing = function(raw) {
         // Usefull for cleaning up content pasted from other sources (MSWord)
         this._Listener.avoidStylingTagsAndAttributes();
     }
+
     return this._Listener.beforeParsing(raw);
 };
 
@@ -156,6 +157,7 @@ WYMeditor.XhtmlParser.prototype._callCloseTagListener = function(tag) {
             this._Listener.closeUnopenedTag(tag);
         }
     }
+
     this._Listener.last_tag = tag;
     this._Listener.last_tag_opened = false;
 };
