@@ -227,14 +227,14 @@ WYMeditor.XhtmlSaxListener.prototype.getTagReplacements = function() {
 };
 
 WYMeditor.XhtmlSaxListener.prototype.getTagForStyle = function (style) {
-    if (/bold/.test(style)) {
-        return 'strong';
-    } else if (/italic/.test(style)) {
-        return 'em';
-    } else if (/sub/.test(style)) {
+    if (/sub/.test(style)) {
         return 'sub';
     } else if (/super/.test(style)) {
         return 'sup';
+    } else if (/bold/.test(style)) {
+        return 'strong';
+    } else if (/italic/.test(style)) {
+        return 'em';
     }
 
     return false;
