@@ -793,13 +793,17 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
     if (jQuery.browser.mozilla) {
         placeholderNode = '<br ' +
                             'class="' +
+                            WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS + ' ' +
                             WYMeditor.EDITOR_ONLY_CLASS + '" ' +
                             '_moz_editor_bogus_node="TRUE" ' +
                             '_moz_dirty=""' +
                           '/>';
     } else {
         placeholderNode = '<br ' +
-                            'class="' + WYMeditor.EDITOR_ONLY_CLASS + '"/>';
+                            'class="' +
+                            WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS + ' ' +
+                            WYMeditor.EDITOR_ONLY_CLASS + '"' +
+                          '/>';
     }
 
     // Make sure that we still have a bogus node at both the begining and end
