@@ -1,4 +1,5 @@
 # WYMeditor
+[![Build Status](https://travis-ci.org/FriedRice/wymeditor.png)](https://travis-ci.org/FriedRice/wymeditor)
 
 WYMeditor is an open source web-based WYSIWYM editor with semantics and
 standards in mind. The WYM-part stands for "What You Mean" compared to the more

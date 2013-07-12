@@ -1,8 +1,9 @@
 {
   "name": "wymeditor",
+  "description": "Pure js cross-browser WYSIWYM editor with a focus on the clean separation of content and styling.",
   "version": "1.0.0-b5",
   "homepage": "http://wymeditor.github.io/wymeditor/",
-  "repositories": [
+  "repository": [
     {
       "type": "git",
       "url": "https://github.com/wymeditor/wymeditor.git"
@@ -33,9 +34,6 @@
       "url": "http://opensource.org/licenses/gpl-2.0.php"
     }
   ],
-  "dependencies": {
-    "jquery": "1.5.1"
-  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-qunit": ">=0.2.1",
