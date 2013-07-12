@@ -44,14 +44,14 @@ function testTableTab(initialHtml, startSelector, endSelector) {
 
     var actualSelection = wymeditor.selected();
     if (endSelector === null) {
-        equals(actualSelection, null);
+        deepEqual(actualSelection, null);
     } else {
         var expectedSelection = $body.find(endSelector);
         if (expectedSelection.length !== 0) {
             expectedSelection = expectedSelection[0];
         }
 
-        equals(actualSelection, expectedSelection);
+        deepEqual(actualSelection, expectedSelection);
     }
 }
 
@@ -86,7 +86,7 @@ function testRowMerge(initialHtml, expectedHtml, startSelector, endSelector, exp
     // merge
     var sel = rangy.getIframeSelection(wymeditor._iframe);
     var changesMade = wymeditor.tableEditor.mergeRow(sel);
-    equals(changesMade, true);
+    deepEqual(changesMade, true);
 
     // Verify that the resulting HTML matches the expected HTML
     htmlEquals(wymeditor, expectedHtml);
@@ -95,14 +95,14 @@ function testRowMerge(initialHtml, expectedHtml, startSelector, endSelector, exp
     // selection.
     var actualSelection = wymeditor.selected();
     if (expectedFinalSelector === null) {
-        equals(actualSelection, null);
+        deepEqual(actualSelection, null);
     } else {
         var expectedSelection = $body.find(expectedFinalSelector);
         if (expectedSelection.length !== 0) {
             expectedSelection = expectedSelection[0];
         }
 
-        equals(actualSelection, expectedSelection, "Ending selection matches");
+        deepEqual(actualSelection, expectedSelection, "Ending selection matches");
     }
 }
 
@@ -114,7 +114,7 @@ function testGetCellXIndex(initialHtml, cellSelector, expectedIndex) {
     var cell = $body.find(cellSelector)[0];
 
     var actual = wymeditor.tableEditor.getCellXIndex(cell);
-    equals(actual, expectedIndex);
+    deepEqual(actual, expectedIndex);
 }
 
 module("Table Modification", {setup: setupWym});
@@ -1414,7 +1414,7 @@ test("getCellXIndex test", function () {
 module("utils", {setup: setupWym});
 function testNormalize(testHtml) {
     var normed = normalizeHtml(jQuery(testHtml)[0]);
-    equals(normed, testHtml);
+    deepEqual(normed, testHtml);
 }
 
 test("Test Normalize", function () {

@@ -1312,6 +1312,7 @@ test("Can set and get html with the html() function", function () {
 
     wymeditor.html(testHtml);
     htmlNode = jQuery(wymeditor.html(), wymeditor._doc);
-    equals(normalizeHtml(htmlNode[0]), testHtml, "Set and get with html() function");
+    deepEqual(normalizeHtml(htmlNode[0]), testHtml,
+              "Set and get with html() function");
 });
 
