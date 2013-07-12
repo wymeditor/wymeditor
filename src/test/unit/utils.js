@@ -52,13 +52,15 @@ function normalizeHtml(node) {
         n,
         child,
         sortedAttrs,
+        attrName,
+        attrValue,
         keepAttr,
         i,
         j,
         $captions;
 
     if (jQuery.browser.msie) {
-        $captions = jQuery(node).find('table > caption');
+        $captions = jQuery(node).find('caption');
         if ($captions.length) {
             // Some versions of IE can unexpectedly add the caption of a table
             // after the table body. This ensures the table caption is always
@@ -81,6 +83,8 @@ function normalizeHtml(node) {
             sortedAttrs = [];
             for (i = n; --i >= 0;) {
                 attr = attrs[i];
+                attrName = attr.nodeName.toLowerCase();
+                attrValue = attr.nodeValue;
                 keepAttr = true;
 
                 // We only care about specified attributes
@@ -90,9 +94,9 @@ function normalizeHtml(node) {
 
                 // Ignore attributes that are only used in specific browsers.
                 for (j = 0; j < ignoreAttributes.length; ++j) {
-                    if (attr.nodeName === ignoreAttributes[j][0]) {
+                    if (attrName === ignoreAttributes[j][0]) {
                         if (!ignoreAttributes[j][1] ||
-                            jQuery.inArray(attr.nodeValue,
+                            jQuery.inArray(attrValue,
                                            ignoreAttributes[j][1]) > -1) {
 
                                 keepAttr = false;
@@ -104,7 +108,7 @@ function normalizeHtml(node) {
                     // attribute named `sizcache` followed by a differing
                     // string of numbers is added to elements, so regex
                     // must be used to check for it.
-                    if (/sizcache\d*/.test(attr.nodeName)) {
+                    if (/sizcache\d*/.test(attrName)) {
                         keepAttr = false;
                         break;
                     }
