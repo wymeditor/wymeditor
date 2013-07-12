@@ -1,9 +1,52 @@
 {
-  "name": "WYMeditor",
-  "version": "1.0.0b5",
+  "name": "wymeditor",
+  "version": "1.0.0-b5",
+  "homepage": "http://wymeditor.github.io/wymeditor/",
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/wymeditor/wymeditor.git"
+    }
+  ],
+  "maintainers": [
+    {
+      "name": "Wes Winham",
+      "email": "winhamwr@gmail.com",
+      "url": "http://www.policystat.com"
+    },
+    {
+      "name": "Jonatan Lundin",
+      "email": "jonatan.lundin@gmail.com"
+    }
+  ],
+  "author": {
+    "name": "Jean-Francois Hovinne",
+    "email": "jf.hovinne@wymeditor.org"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://mit-license.org/"
+    },
+    {
+      "type": "GPLv2",
+      "url": "http://opensource.org/licenses/gpl-2.0.php"
+    }
+  ],
+  "dependencies": {
+    "jquery": "1.3.x - 1.9.x"
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-qunit": ">=0.2.1",
-    "grunt-contrib-watch": ">=0.3.1"
+    "grunt-contrib-watch": ">=0.3.1",
+    "grunt-contrib-connect": "~0.3.0"
+  },
+  "keywords": [
+    "wysiwyg",
+    "editor"
+  ],
+  "bugs": {
+    "url": "http://github.com/wymeditor/wymeditor/issues"
   }
 }

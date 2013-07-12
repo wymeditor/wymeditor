@@ -139,7 +139,7 @@ if (!jQuery.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
             styles,
             {name: 'p,h1,h2', css: 'font-style:italic'}
         );
-        deepEqual(jQuery('p', doc).css('fontStyle'), 'italic', 'Font-style');
+        deepEqual(jQuery('p', doc).css('font-style'), 'italic', 'Font-style');
     });
 }
 
@@ -1228,7 +1228,7 @@ test("_selected image is saved on mousedown", function () {
 module("image-insertion", {setup: setupWym});
 
 test("Image insertion outside of a container", function () {
-    expect(3);
+    expect(2 + (inPhantomjs ? 0 : 1));
     var wymeditor = jQuery.wymeditors(0),
         $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
 
@@ -1257,7 +1257,7 @@ test("Image insertion outside of a container", function () {
     if (jQuery.browser.msie) {
         // IE doesn't wrap the image in a paragraph
         htmlEquals(wymeditor, expectedHtmlIE);
-    } else {
+    } else if (!inPhantomjs) {
         htmlEquals(wymeditor, expectedHtml);
     }
 });
@@ -1308,11 +1308,18 @@ module("html_from_editor-html_function", {setup: setupWym});
 test("Can set and get html with the html() function", function () {
     var wymeditor = jQuery.wymeditors(0),
         testHtml = "<p>Test</p>",
+        stub,
         htmlNode;
+
+    // Disable console warnings so that the deprecation warning aren't
+    // displayed.
+    stub = sinon.stub(WYMeditor.console, "warn", function() {});
 
     wymeditor.html(testHtml);
     htmlNode = jQuery(wymeditor.html(), wymeditor._doc);
     deepEqual(normalizeHtml(htmlNode[0]), testHtml,
               "Set and get with html() function");
+
+    stub.restore();
 });
 

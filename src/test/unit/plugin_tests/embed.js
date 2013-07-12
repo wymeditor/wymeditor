@@ -48,5 +48,4 @@ test("Shouldn't remove iframe elements", function() {
     deepEqual(
         jQuery.trim(jQuery.wymeditors(0).parser.parse(iframeEmbed)),
         jQuery.trim(expected));
-    console.log("END");
 });
