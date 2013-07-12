@@ -34,6 +34,11 @@ WYMeditor.
   not included in the outputed XHTML from the editor. Simply add the
   class `WYMeditor.EDITOR_ONLY_CLASS` to an element to specify it to be
   removed by the XHTML parser in this manner.
+* Classes can now be specified to be removed from tags' class attribute
+  by the XHTML parser. Simply add a string for each of the class names
+  to remove to the `WYMeditor.CLASSES_REMOVED_BY_PARSER` array, and the
+  XHTML parser will remove all of those classes from all the tags in the
+  editor's output. 
 
 ### Bug Fixes
 

@@ -273,45 +273,6 @@ WYMeditor.WymClassMozilla.prototype.enableDesignMode = function () {
     }
 };
 
-WYMeditor.WymClassMozilla.prototype.openBlockTag = function (tag, attributes) {
-    attributes = this.validator.getValidTagAttributes(tag, attributes);
-
-    // Handle Mozilla styled spans
-    if (tag === 'span' && attributes.style) {
-        var new_tag = this.getTagForStyle(attributes.style);
-        if (new_tag) {
-            tag = new_tag;
-            this._tag_stack.pop();
-            this._tag_stack.push(tag);
-            attributes.style = '';
-        }
-    }
-
-    if (!this._insideTagToRemove && !this._shouldRemoveTag(tag, attributes) &&
-        !this._removeBlockTag) {
-        this.output += this.helper.tag(tag, attributes, true);
-        this._lastTagRemoved = false;
-    } else if (!this._insideTagToRemove) {
-        this._insideTagToRemove = true;
-        this._removeBlockTag = false;
-        this._removedTagStackIndex = this._tag_stack.length - 1;
-    }
-};
-
-WYMeditor.WymClassMozilla.prototype.getTagForStyle = function (style) {
-    if (/bold/.test(style)) {
-        return 'strong';
-    } else if (/italic/.test(style)) {
-        return 'em';
-    } else if (/sub/.test(style)) {
-        return 'sub';
-    } else if (/super/.test(style)) {
-        return 'sup';
-    }
-
-    return false;
-};
-
 /*
  * Fix new cell contents and ability to insert content at the front and end of
  * the contents.
@@ -326,3 +287,4 @@ WYMeditor.WymClassMozilla.prototype.afterInsertTable = function (table) {
         });
     }
 };
+
