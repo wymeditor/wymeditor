@@ -1277,7 +1277,7 @@ WYMeditor.editor.prototype.unwrap = function () {
 };
 
 WYMeditor.editor.prototype.setFocusToNode = function (node, toStart) {
-    var range = rangy.createRange(),
+    var range = rangy.createRange(this._doc),
         selection = this.selection();
     toStart = toStart ? 0 : 1;
 

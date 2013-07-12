@@ -17,7 +17,7 @@ Features
   prevent a user from indenting a heading more than one level below its
   preceding heading.
 * Automatically numbers headings to better outline a document.
-* Provides an optional tool that can be used to automatically fix inproper
+* Provides an optional tool that can be used to automatically fix improper
   heading structure in a document (although it's still in development).
 * More features to come on further development.
 
