@@ -1,5 +1,5 @@
 module.exports = function(grunt) {
-    var jqueryVersion = grunt.option('jquery') || '1.5.1';
+    var jqueryVersion = grunt.option('jquery') || '1.4.2';
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),

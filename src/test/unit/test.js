@@ -867,26 +867,6 @@ var expectedMiddleOutFull = String() +
         '<li id="li_3">3</li>' +
     '</ol>';
 
-var expectedEndIn = String() +
-    '<ol>' +
-        '<li id="li_1">1</li>' +
-        '<li id="li_2">2' +
-            '<ol>' +
-                '<li id="li_3">3' +
-                    '<table>' +
-                        '<caption>test_1</caption>' +
-                        '<tbody>' +
-                            '<tr>' +
-                                '<td id="t1_1_1">1_1</td>' +
-                            '</tr>' +
-                        '</tbody>' +
-                    '</table>' +
-                    TEST_LINEBREAK_SPACER +
-                '</li>' +
-            '</ol>' +
-        '</li>' +
-    '</ol>';
-
 var expectedEndOut = String() +
         '<ol>' +
             '<li id="li_1">1</li>' +
@@ -1225,42 +1205,48 @@ test("_selected image is saved on mousedown", function () {
     deepEqual(wymeditor._selected_image, $google[0]);
 });
 
-module("image-insertion", {setup: setupWym});
+// The following test doesn't work in Phantom.js because the `InsertImage`
+// command for the browser execCommand function would not insert an image into
+// the editor in Phantom.js. This test still works fine in all other supported
+// browsers.
+if (!inPhantomjs || !SKIP_KNOWN_FAILING_TESTS) {
+    module("image-insertion", {setup: setupWym});
 
-test("Image insertion outside of a container", function () {
-    expect(2 + (inPhantomjs ? 0 : 1));
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+    test("Image insertion outside of a container", function () {
+        expect(3);
+        var wymeditor = jQuery.wymeditors(0),
+            $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
 
-        imageURL = 'http://www.google.com/intl/en_com/images/srpr/logo3w.png',
-        imageStamp = wymeditor.uniqueStamp(),
-        imageSelector = 'img[src$="' + imageStamp + '"]',
+            imageURL = 'http://www.google.com/intl/en_com/images/srpr/logo3w.png',
+            imageStamp = wymeditor.uniqueStamp(),
+            imageSelector = 'img[src$="' + imageStamp + '"]',
 
-        expectedHtml = String() +
-            '<p>' +
-                '<img src="' + imageURL + '"/>' +
-            '</p>';
-        expectedHtmlIE = expectedHtml.replace(/<\/?p>/g, '');
+            expectedHtml = String() +
+                '<p>' +
+                    '<img src="' + imageURL + '"/>' +
+                '</p>';
+            expectedHtmlIE = expectedHtml.replace(/<\/?p>/g, '');
 
-    // Mimic the way images are inserted by the insert image tool by first
-    // inserting the image with its src set to a unique stamp for
-    // identification rather than its actual src.
-    wymeditor._html('');
-    wymeditor._exec(WYMeditor.INSERT_IMAGE, imageStamp);
+        // Mimic the way images are inserted by the insert image tool by first
+        // inserting the image with its src set to a unique stamp for
+        // identification rather than its actual src.
+        wymeditor._html('');
+        wymeditor._exec(WYMeditor.INSERT_IMAGE, imageStamp);
 
-    ok(!$body.siblings(imageSelector).length,
-       "Image is not a sibling of the wymeditor body");
-    ok(!$body.siblings().children(imageSelector).length,
-       "Image is not a child of a sibling of the wymeditor body");
+        ok(!$body.siblings(imageSelector).length,
+           "Image is not a sibling of the wymeditor body");
+        ok(!$body.siblings().children(imageSelector).length,
+           "Image is not a child of a sibling of the wymeditor body");
 
-    $body.find(imageSelector).attr(WYMeditor.SRC, imageURL);
-    if (jQuery.browser.msie) {
-        // IE doesn't wrap the image in a paragraph
-        htmlEquals(wymeditor, expectedHtmlIE);
-    } else if (!inPhantomjs) {
-        htmlEquals(wymeditor, expectedHtml);
-    }
-});
+        $body.find(imageSelector).attr(WYMeditor.SRC, imageURL);
+        if (jQuery.browser.msie) {
+            // IE doesn't wrap the image in a paragraph
+            htmlEquals(wymeditor, expectedHtmlIE);
+        } else {
+            htmlEquals(wymeditor, expectedHtml);
+        }
+    });
+}
 
 module("header-no_span", {setup: setupWym});
 
@@ -1311,15 +1297,17 @@ test("Can set and get html with the html() function", function () {
         stub,
         htmlNode;
 
-    // Disable console warnings so that the deprecation warning isn't
-    // displayed.
+    // Disable console warnings so that the deprecation warning added in issue
+    // #364 isn't displayed. This warning is not necessary because this test is
+    // explicitly trying to test that the deprecated function still works, so
+    // it should not make the user think that the test is malfunctioning by
+    // outputting a console warning.
     stub = sinon.stub(WYMeditor.console, "warn", function() {});
 
     wymeditor.html(testHtml);
     htmlNode = jQuery(wymeditor.html(), wymeditor._doc);
+    stub.restore();
     deepEqual(normalizeHtml(htmlNode[0]), testHtml,
               "Set and get with html() function");
-
-    stub.restore();
 });
 
