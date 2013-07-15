@@ -22,7 +22,7 @@ function parseVersionString(str) {
     head.js library. Loads relative to the given path to the src/ directory.
 */
 function loadWymSrc(srcPath, extraRequirements, jqueryVersion) {
-    var localJqueryVersion = "1.5.1",
+    var localJqueryVersion = "1.4.2",
         baseRequirements = [
             srcPath + 'wymeditor/rangy/rangy-core.js',
             srcPath + 'wymeditor/rangy/rangy-selectionsaverestore.js',
