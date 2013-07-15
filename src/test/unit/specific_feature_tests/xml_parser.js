@@ -23,7 +23,7 @@ test("Should correct orphaned sublists", function () {
                 '<li>b<br><\/li>' +
             '<\/ul>',
         wymeditor = jQuery.wymeditors(0);
-    equals(wymeditor.parser.parse(design_mode_pseudo_html), expected,
+    deepEqual(wymeditor.parser.parse(design_mode_pseudo_html), expected,
             "on Firefox");
     // IE
     // IE has invalid sublist nesting
@@ -46,7 +46,7 @@ test("Should correct orphaned sublists", function () {
                 '<LI>b<\/LI>' +
             '<\/UL>';
     /*jslint white:true */
-    equals(
+    deepEqual(
         wymeditor.parser.parse(design_mode_pseudo_html),
         expected,
         "on IE"
@@ -129,7 +129,7 @@ test("Should correct under-closed lists", function () {
                 '<li id="li_8">8</li>' +
             '</ol>';
 
-    equals(jQuery.wymeditors(0).parser.parse(missingClosingLiHtml), fixedHtml);
+    deepEqual(jQuery.wymeditors(0).parser.parse(missingClosingLiHtml), fixedHtml);
 });
 
 test("Don't over-close lists", function () {
@@ -191,15 +191,15 @@ test("Don't over-close lists", function () {
         '</ol>',
         wymeditor = jQuery.wymeditors(0);
 
-    equals(
+    deepEqual(
         wymeditor.parser.parse(orphanedLiHtml),
         orphanedLiHtml
     );
-    equals(
+    deepEqual(
         wymeditor.parser.parse(simpleOrphanedLiHtml),
         simpleOrphanedLiHtml
     );
-    equals(
+    deepEqual(
         wymeditor.parser.parse(listAfterText),
         listAfterText
     );
@@ -219,7 +219,7 @@ test("Shouldn't remove empty td elements", function () {
     expect(1);
     var expected = '<table><tr><td>Cell1</td><td></td></tr></table>',
         empty_cell = '<table><tr><td>Cell1</td><td></td></tr></table>';
-    equals(jQuery.wymeditors(0).parser.parse(empty_cell), expected);
+    deepEqual(jQuery.wymeditors(0).parser.parse(empty_cell), expected);
 });
 
 test("Should remove PRE line breaks (BR)", function () {
@@ -232,7 +232,7 @@ test("Should remove PRE line breaks (BR)", function () {
             '<pre>One\r\nTwo\r\nThree</pre>' +
             '<p>Test</p>' +
             '<pre>Three\r\nFour\r\nFive</pre>';
-    equals(
+    deepEqual(
         jQuery.wymeditors(0).parser.parse(original),
         expected,
         "Remove BR in PRE"
@@ -264,7 +264,7 @@ test("Shouldn't strip colSpan attributes", function () {
                     '<td id="td_2_2">2_2</td>' +
                 '</tr>' +
             '</table>';
-    equals(
+    deepEqual(
         jQuery.wymeditors(0).parser.parse(original),
         expected,
         "Don't strip colSpan"
@@ -290,30 +290,30 @@ test("no-op on table with colgroup generates valid XHTML", function () {
             '</tbody>' +
         '</table>';
 
-    equals(jQuery.wymeditors(0).parser.parse(tableWithColXHtml), tableWithColXHtml);
+    deepEqual(jQuery.wymeditors(0).parser.parse(tableWithColXHtml), tableWithColXHtml);
 });
 
 test("Self closing button tags should be expanded and removed", function () {
     var html = '<p><button /></p>';
     var expected = '<p></p>';
-    equals(jQuery.wymeditors(0).parser.parse(html), expected);
+    deepEqual(jQuery.wymeditors(0).parser.parse(html), expected);
 });
 
 test("Iframe should not be self closing", function () {
     var html = '<iframe width="480" height="390" src="asd.html" frameborder="0" /></iframe>';
     var expected = '<iframe width="480" height="390" src="asd.html" frameborder="0"></iframe>';
-    equals(jQuery.wymeditors(0).parser.parse(html), expected);
+    deepEqual(jQuery.wymeditors(0).parser.parse(html), expected);
 });
 
 test("Allow HR inside strong tags", function () {
     var html = '<strong>hello<hr /></strong>';
-    equals(jQuery.wymeditors(0).parser.parse(html), html);
+    deepEqual(jQuery.wymeditors(0).parser.parse(html), html);
 });
 
 test("Allow line breaks inside em tags", function() {
     var html = '<em>hello<br />world</em>';
     wymeditor = jQuery.wymeditors(0);
-    equals(wymeditor.parser.parse(html), html);
+    deepEqual(wymeditor.parser.parse(html), html);
 });
 
 test("Allow line breaks after strong in lists", function () {
@@ -336,11 +336,11 @@ test("Allow line breaks after strong in lists", function () {
         '</ol>',
         wymeditor = jQuery.wymeditors(0);
 
-    equals(
+    deepEqual(
         wymeditor.parser.parse(listHtml),
         listHtml
     );
-    equals(
+    deepEqual(
         wymeditor.parser.parse(listHtmlUnclosedBr),
         listHtml
     );

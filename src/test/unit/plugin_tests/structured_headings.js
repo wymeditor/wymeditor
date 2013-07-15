@@ -88,8 +88,8 @@ test("CSS stored for user access through console", function () {
     cssRequest.open('GET', stylesheetURL, false);
     cssRequest.send('');
 
-    equals(WYMeditor.structuredHeadingsCSS, cssRequest.responseText,
-           "CSS correctly stored for user access");
+    deepEqual(WYMeditor.structuredHeadingsCSS, cssRequest.responseText,
+              "CSS correctly stored for user access");
 });
 
 // Tests for the IE7 polyfill
@@ -189,8 +189,8 @@ if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
         var wymeditor = jQuery.wymeditors(0);
 
         wymeditor._html(startHeadings);
-        equals(getHtmlAfterKeyup(wymeditor), expectedHeadings,
-               "Heading numbering properly added on keyup");
+        deepEqual(getHtmlAfterKeyup(wymeditor), expectedHeadings,
+                  "Heading numbering properly added on keyup");
     });
 
     test("Heading numbering fixed on keyup if edited", function () {
@@ -199,26 +199,26 @@ if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
 
         // Add correct headings to editor first
         wymeditor._html(expectedHeadings);
-        equals(getHtmlAfterKeyup(wymeditor), expectedHeadings,
-               "Heading numbering unchanged on keyup if already correct");
+        deepEqual(getHtmlAfterKeyup(wymeditor), expectedHeadings,
+                  "Heading numbering unchanged on keyup if already correct");
 
         // Break a correct top level heading by replacing it with a heading
         // with edited numbering
         wymeditor._html(editedNumberingTopLevel);
-        equals(getHtmlAfterKeyup(wymeditor), expectedHeadings,
-               "Top level heading numbering fixed on keyup");
+        deepEqual(getHtmlAfterKeyup(wymeditor), expectedHeadings,
+                  "Top level heading numbering fixed on keyup");
 
         // Break a correct sublevel heading by replacing it with a heading with
         // edited numbering
         wymeditor._html(editedNumberingSubLevel);
-        equals(getHtmlAfterKeyup(wymeditor), expectedHeadings,
-               "Sublevel heading numbering fixed on keyup");
+        deepEqual(getHtmlAfterKeyup(wymeditor), expectedHeadings,
+                  "Sublevel heading numbering fixed on keyup");
 
         // Break a correct subsublevel heading by replacing it with a heading
         // with edited numbering
         wymeditor._html(editedNumberingSubSubLevel);
-        equals(getHtmlAfterKeyup(wymeditor), expectedHeadings,
-               "Subsublevel heading numbering fixed on keyup");
+        deepEqual(getHtmlAfterKeyup(wymeditor), expectedHeadings,
+                  "Subsublevel heading numbering fixed on keyup");
     });
 
     test("Heading numbering stripped on parsing", function () {

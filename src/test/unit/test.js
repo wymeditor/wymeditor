@@ -14,7 +14,7 @@ var SKIP_KNOWN_FAILING_TESTS = true;
 
 function setupWym(extraPostInit) {
     if (WYMeditor.INSTANCES.length === 0) {
-        stop(5000); // Stop test running until the editor is initialized
+        stop(); // Stop test running until the editor is initialized
         jQuery('.wymeditor').wymeditor({
             stylesheet: 'styles.css',
             postInit: function (wym) {
@@ -66,9 +66,9 @@ module("Core", {setup: setupWym});
 
 test("Instantiate", function () {
     expect(2);
-    equals(WYMeditor.INSTANCES.length, 1, "WYMeditor.INSTANCES length");
-    equals(typeof jQuery.wymeditors(0), 'object',
-            "Type of first WYMeditor instance, using jQuery.wymeditors(0)");
+    deepEqual(WYMeditor.INSTANCES.length, 1, "WYMeditor.INSTANCES length");
+    deepEqual(typeof jQuery.wymeditors(0), 'object',
+              "Type of first WYMeditor instance, using jQuery.wymeditors(0)");
 });
 /*
     Tests that require the WYMeditor instance to already be initialized.
@@ -81,9 +81,9 @@ test("Commands", function () {
     var wymeditor = jQuery.wymeditors(0);
 
     wymeditor.toggleHtml();
-    equals(jQuery('div.wym_html:visible', wymeditor._box).length, 1);
+    deepEqual(jQuery('div.wym_html:visible', wymeditor._box).length, 1);
     wymeditor.toggleHtml();
-    equals(jQuery('div.wym_html:visible', wymeditor._box).length, 0);
+    deepEqual(jQuery('div.wym_html:visible', wymeditor._box).length, 0);
 });
 
 module("CssParser", {setup: setupWym});
@@ -94,7 +94,7 @@ test("Configure classes items using CSS", function () {
         jQuery('div.wym_classes ul', jQuery.wymeditors(0)._box).length > 0,
         "Classes loaded"
     );
-    equals(
+    deepEqual(
         jQuery(
             'div.wym_classes a:first-child',
             jQuery.wymeditors(0)._box
@@ -110,9 +110,9 @@ test("Should escape URL's only once #69.1", function () {
     expect(2);
     var original = "index.php?module=x&func=view&id=1",
         expected = "index.php?module=x&amp;func=view&amp;id=1";
-    equals(jQuery.wymeditors(0).helper.escapeOnce(original), expected,
+    deepEqual(jQuery.wymeditors(0).helper.escapeOnce(original), expected,
             "Escape entities");
-    equals(jQuery.wymeditors(0).helper.escapeOnce(expected), expected,
+    deepEqual(jQuery.wymeditors(0).helper.escapeOnce(expected), expected,
             "Avoids double entity escaping");
 });
 
@@ -139,7 +139,7 @@ if (!jQuery.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
             styles,
             {name: 'p,h1,h2', css: 'font-style:italic'}
         );
-        equals(jQuery('p', doc).css('fontStyle'), 'italic', 'Font-style');
+        deepEqual(jQuery('p', doc).css('font-style'), 'italic', 'Font-style');
     });
 }
 
@@ -404,7 +404,7 @@ function testPaste(pasteStartSelector, startHtml, textToPaste, elmntStartHtml, e
         startElmnt = $body.find(pasteStartSelector).get(0);
         endElmnt = $body.find(pasteEndSelector).get(0);
         makeTextSelection(wymeditor, startElmnt, endElmnt, pasteStartIndex, pasteEndIndex);
-        equals(wymeditor.selected(), startElmnt, "moveSelector");
+        deepEqual(wymeditor.selected(), startElmnt, "moveSelector");
     }
     wymeditor.paste(textToPaste);
 
@@ -526,7 +526,7 @@ test("Table is editable after insertion", function () {
     wymeditor.insertTable(3, 2, '', '');
 
     $body.find('td').each(function (index, td) {
-        equals(isContentEditable(td), true);
+        deepEqual(isContentEditable(td), true);
     });
 
     dm = wymeditor._doc.designMode;
@@ -563,11 +563,11 @@ if (jQuery.browser.mozilla) {
         $body.find('td').each(function (index, td) {
             if (parseInt(jQuery.browser.version, 10) == 1 &&
                 jQuery.browser.version >= '1.9.1' && jQuery.browser.version < '2.0') {
-                equals(td.childNodes.length, 1);
+                deepEqual(td.childNodes.length, 1);
             } else {
-                equals(td.childNodes.length, 0);
+                deepEqual(td.childNodes.length, 0);
             }
-            equals(isContentEditable(td), true);
+            deepEqual(isContentEditable(td), true);
         });
 
     });
@@ -582,8 +582,8 @@ if (jQuery.browser.mozilla) {
         wymeditor._html(table_3_2_html);
         $body.find('td').each(function (index, td) {
             // Both FF 3.6 and 4.0 add spacer brs with design mode
-            equals(td.childNodes.length, 1);
-            equals(isContentEditable(td), true);
+            deepEqual(td.childNodes.length, 1);
+            deepEqual(isContentEditable(td), true);
         });
     });
 }
@@ -867,6 +867,23 @@ var expectedMiddleOutFull = String() +
         '<li id="li_3">3</li>' +
     '</ol>';
 
+var expectedEndOut = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2</li>' +
+            '<li id="li_3">3' +
+                '<table>' +
+                    '<caption>test_1</caption>' +
+                    '<tbody>' +
+                        '<tr>' +
+                            '<td id="t1_1_1">1_1</td>' +
+                        '</tr>' +
+                    '</tbody>' +
+                '</table>' +
+                TEST_LINEBREAK_SPACER +
+            '</li>' +
+        '</ol>';
+
 var expectedEndIn = String() +
     '<ol>' +
         '<li id="li_1">1</li>' +
@@ -904,6 +921,10 @@ var expectedEndOut = String() +
             '</li>' +
         '</ol>';
 
+var startEndInNoBR = expectedEndIn.replace(TEST_LINEBREAK_SPACER, '');
+
+var startEndOutNoBR = expectedEndOut.replace(TEST_LINEBREAK_SPACER, '');
+
 module("table-insert_in_list", {setup: setupWym});
 
 test("Table insertion in the middle of a list with text selection", function () {
@@ -913,7 +934,7 @@ test("Table insertion in the middle of a list with text selection", function () 
 
     setupTable(wymeditor, listForTableInsertion, '#li_2', 'text',
                1, 1, 'test_1');
-    equals(normalizeHtml($body.get(0).firstChild), expectedMiddleOutFull,
+    deepEqual(normalizeHtml($body.get(0).firstChild), expectedMiddleOutFull,
            "Table insertion in the middle of a list with text selection");
 });
 
@@ -924,7 +945,7 @@ test("Table insertion at the end of a list with text selection", function () {
 
         setupTable(wymeditor, listForTableInsertion, '#li_3', 'text',
                    1, 1, 'test_1');
-        equals(normalizeHtml($body.get(0).firstChild), expectedEndOut,
+        deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndOut,
                "Table insertion at the end of a list with text selection");
 });
 
@@ -935,7 +956,7 @@ test("Table insertion in the middle of a list with collapsed selection", functio
 
     setupTable(wymeditor, listForTableInsertion, '#li_2', 'collapsed',
                1, 1, 'test_1');
-    equals(normalizeHtml($body.get(0).firstChild), expectedMiddleOutFull,
+    deepEqual(normalizeHtml($body.get(0).firstChild), expectedMiddleOutFull,
            "Table insertion in the middle of a list with collapsed selection");
 });
 
@@ -946,7 +967,7 @@ test("Table insertion at the end of a list with collapsed selection", function (
 
         setupTable(wymeditor, listForTableInsertion, '#li_3', 'collapsed',
                    1, 1, 'test_1');
-        equals(normalizeHtml($body.get(0).firstChild), expectedEndOut,
+        deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndOut,
                "Table insertion at the end of a list with collapsed selection");
 });
 
@@ -960,19 +981,19 @@ test("Table insertion with selection inside another table in a list", function (
         // Try insert in td element
         setupTable(wymeditor, expectedListOneTable, '#t1_1_1', 'collapsed',
                    1, 1, 'test_2');
-        equals(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
+        deepEqual(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
                "Table insertion with selection inside a td element in a list");
 
         // Try insert in th element
         setupTable(wymeditor, expectedListOneTable, '#t1_h_1', 'collapsed',
                    1, 1, 'test_2');
-        equals(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
+        deepEqual(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
                "Table insertion with selection inside a th element in a list");
 
         // Try insert in caption element
         setupTable(wymeditor, expectedListOneTable, '#t1_cap', 'collapsed',
                    1, 1, 'test_2');
-        equals(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
+        deepEqual(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
                "Table insertion with selection inside a caption element " +
                "in a list");
 });
@@ -984,7 +1005,7 @@ test("Table insertion with direct selection of list item node", function () {
 
     setupTable(wymeditor, expectedListOneTable, '#li_3', 'node',
                1, 1, 'test_2');
-    equals(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
+    deepEqual(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
            "Table insertion with direct selection of list item node");
 });
 
@@ -997,7 +1018,7 @@ test("Single table insertion into a sublist", function () {
 
     setupTable(wymeditor, sublistForTableInsertion, '#li_2', 'text',
                1, 1, 'test_1');
-    equals(normalizeHtml($body.get(0).firstChild), expectedSublistOneTable,
+    deepEqual(normalizeHtml($body.get(0).firstChild), expectedSublistOneTable,
            "Single table insertion within a sublist");
 });
 
@@ -1008,7 +1029,7 @@ test("Double table insertion into a sublist", function () {
 
     setupTable(wymeditor, expectedSublistOneTable, '#li_2', 'text',
                2, 1, 'test_2');
-    equals(normalizeHtml($body.get(0).firstChild), expectedSublistTwoTables,
+    deepEqual(normalizeHtml($body.get(0).firstChild), expectedSublistTwoTables,
            "Double table insertion within a sublist");
 });
 
@@ -1019,7 +1040,7 @@ test("Triple table insertion into a sublist", function () {
 
     setupTable(wymeditor, expectedSublistTwoTables, '#li_2', 'text',
                3, 1, 'test_3');
-    equals(normalizeHtml($body.get(0).firstChild),
+    deepEqual(normalizeHtml($body.get(0).firstChild),
            expectedSublistThreeTables,
            "Triple table insertion within a sublist");
 });
@@ -1132,7 +1153,7 @@ test("Preformatted text retains spacing", function () {
     wymeditor._html(preHtml);
 
     expect(1);
-    equals(wymeditor.xhtml(), preHtml);
+    deepEqual(wymeditor.xhtml(), preHtml);
 });
 
 module("soft-return", {setup: setupWym});
@@ -1170,56 +1191,62 @@ test("_selected image is saved on mousedown", function () {
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
     // Editor starts with no selected image
-    equals(wymeditor._selected_image, null);
+    deepEqual(wymeditor._selected_image, undefined);
 
     // Clicking on a non-image doesn't change that
     $noimage = $body.find('#noimage');
     $noimage.mousedown();
-    equals(wymeditor._selected_image, null);
+    deepEqual(wymeditor._selected_image, null);
 
 
     // Clicking an image does update the selected image
     $google = $body.find('#google');
     $google.mousedown();
-    equals(wymeditor._selected_image, $google[0]);
+    deepEqual(wymeditor._selected_image, $google[0]);
 });
 
-module("image-insertion", {setup: setupWym});
+// The following test doesn't work in Phantom.js because the `InsertImage`
+// command for the browser execCommand function would not insert an image into
+// the editor in Phantom.js. This test still works fine in all other supported
+// browsers.
+if (!inPhantomjs || !SKIP_KNOWN_FAILING_TESTS) {
+    module("image-insertion", {setup: setupWym});
 
-test("Image insertion outside of a container", function () {
-    expect(3);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+    test("Image insertion outside of a container", function () {
+        expect(3);
+        var wymeditor = jQuery.wymeditors(0),
+            $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
 
-        imageURL = 'http://www.google.com/intl/en_com/images/srpr/logo3w.png',
-        imageStamp = wymeditor.uniqueStamp(),
-        imageSelector = 'img[src$="' + imageStamp + '"]',
+            imageURL = 'http://www.google.com/intl/en_com/images/srpr/logo3w.png',
+            imageStamp = wymeditor.uniqueStamp(),
+            imageSelector = 'img[src$="' + imageStamp + '"]',
 
-        expectedHtml = String() +
-            '<p>' +
-                '<img src="' + imageURL + '"/>' +
-            '</p>';
-        expectedHtmlIE = expectedHtml.replace(/<\/?p>/g, '');
+            expectedHtml = String() +
+                '<p>' +
+                    '<img src="' + imageURL + '"/>' +
+                '</p>';
+            expectedHtmlIE = expectedHtml.replace(/<\/?p>/g, '');
 
-    // Mimic the way images are inserted by the insert image tool by first
-    // inserting the image with its src set to a unique stamp for
-    // identification rather than its actual src.
-    wymeditor._html('');
-    wymeditor._exec(WYMeditor.INSERT_IMAGE, imageStamp);
+        // Mimic the way images are inserted by the insert image tool by first
+        // inserting the image with its src set to a unique stamp for
+        // identification rather than its actual src.
+        wymeditor._html('');
+        wymeditor._exec(WYMeditor.INSERT_IMAGE, imageStamp);
 
-    ok(!$body.siblings(imageSelector).length,
-       "Image is not a sibling of the wymeditor body");
-    ok(!$body.siblings().children(imageSelector).length,
-       "Image is not a child of a sibling of the wymeditor body");
+        ok(!$body.siblings(imageSelector).length,
+           "Image is not a sibling of the wymeditor body");
+        ok(!$body.siblings().children(imageSelector).length,
+           "Image is not a child of a sibling of the wymeditor body");
 
-    $body.find(imageSelector).attr(WYMeditor.SRC, imageURL);
-    if (jQuery.browser.msie) {
-        // IE doesn't wrap the image in a paragraph
-        htmlEquals(wymeditor, expectedHtmlIE);
-    } else {
-        htmlEquals(wymeditor, expectedHtml);
-    }
-});
+        $body.find(imageSelector).attr(WYMeditor.SRC, imageURL);
+        if (jQuery.browser.msie) {
+            // IE doesn't wrap the image in a paragraph
+            htmlEquals(wymeditor, expectedHtmlIE);
+        } else {
+            htmlEquals(wymeditor, expectedHtml);
+        }
+    });
+}
 
 module("header-no_span", {setup: setupWym});
 
@@ -1267,10 +1294,20 @@ module("html_from_editor-html_function", {setup: setupWym});
 test("Can set and get html with the html() function", function () {
     var wymeditor = jQuery.wymeditors(0),
         testHtml = "<p>Test</p>",
+        stub,
         htmlNode;
+
+    // Disable console warnings so that the deprecation warning added in issue
+    // #364 isn't displayed. This warning is not necessary because this test is
+    // explicitly trying to test that the deprecated function still works, so
+    // it should not make the user think that the test is malfunctioning by
+    // outputting a console warning.
+    stub = sinon.stub(WYMeditor.console, "warn", function() {});
 
     wymeditor.html(testHtml);
     htmlNode = jQuery(wymeditor.html(), wymeditor._doc);
-    equals(normalizeHtml(htmlNode[0]), testHtml, "Set and get with html() function");
+    stub.restore();
+    deepEqual(normalizeHtml(htmlNode[0]), testHtml,
+              "Set and get with html() function");
 });
 
