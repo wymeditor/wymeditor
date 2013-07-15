@@ -43,135 +43,11 @@ WYMeditor.STRUCTURED_HEADINGS_POTENTIAL_HEADING_MODIFICATION_KEYS =
 */
 WYMeditor.editor.prototype.structuredHeadings = function () {
     var wym = this,
-        $box = jQuery(wym._box),
-        $body = jQuery(wym._doc).find('body.wym_iframe'),
-        $tools = jQuery(wym._box).find(
-            wym._options.toolsSelector + wym._options.toolsListSelector
-        ),
-
-        $containerItems,
-        $containerLink,
-        $newHeadingItem,
-        newHeadingLink,
-        i,
-
+        wymBasePath = WYMeditor.computeBasePath(WYMeditor.computeWymPath()),
         iframeHead = jQuery(wym._doc).find('head')[0],
         stylesheetHref,
         cssLink,
         cssRequest;
-
-    var headingLevelUpButton = String() +
-            '<li class="wym_tools_heading_level_up">' +
-                '<a name="heading_level_up" href="#" title="Heading Level Up" ' +
-                    'style="background-image: ' +
-                        "url('" + wym._options.basePath +
-                            "plugins/table/table_join_row.png')" + '">' +
-                    'Heading Level Up' +
-                '</a>' +
-            '</li>',
-
-        headingLevelDownButton = String() +
-            '<li class="wym_tools_heading_level_down">' +
-                '<a name="heading_level_down" href="#" title="Heading Level Down" ' +
-                    'style="background-image: ' +
-                        "url('" + wym._options.basePath +
-                            "plugins/table/table_insert_row.png')" + '">' +
-                    'Heading Level Down' +
-                '</a>' +
-            '</li>';
-
-    // Add tool panel buttons
-    $tools.append(headingLevelUpButton);
-    $tools.append(headingLevelDownButton);
-
-    // Bind click events to tool buttons
-    $box.find('li.wym_tools_heading_level_up a').click(function () {
-        var heading = wym.findUp(wym.container(), WYMeditor.HEADING_ELEMENTS),
-            headingSel = WYMeditor.HEADING_ELEMENTS.join(", "),
-            headingLevel,
-            prevHeading,
-            prevHeadingLevel;
-
-        if (heading) {
-            prevHeading = jQuery(heading).prev(headingSel)[0];
-            headingLevel = getHeadingLevel(heading);
-
-            if (headingLevel === 1) {
-                return;
-            }
-            if (prevHeading) {
-                prevHeadingLevel = getHeadingLevel(prevHeading);
-                if (prevHeadingLevel - headingLevel > 0) {
-                    return;
-                }
-            }
-            wym.switchTo(heading, 'h' + (headingLevel - 1));
-        }
-    });
-    $box.find('li.wym_tools_heading_level_down a').click(function () {
-        var heading = wym.findUp(wym.container(), WYMeditor.HEADING_ELEMENTS),
-            headingSel = WYMeditor.HEADING_ELEMENTS.join(", "),
-            headingLevel,
-            prevHeading,
-            prevHeadingLevel;
-
-        if (heading) {
-            prevHeading = jQuery(heading).prev(headingSel)[0];
-            headingLevel = getHeadingLevel(heading);
-
-            if (headingLevel === 6) {
-                return;
-            }
-            if (prevHeading) {
-                prevHeadingLevel = getHeadingLevel(prevHeading);
-                if (headingLevel - prevHeadingLevel > 0) {
-                    return;
-                }
-            }
-            wym.switchTo(heading, 'h' + (headingLevel + 1));
-        }
-    });
-
-    // Remove normal heading links from the containers list
-    $containerItems = jQuery(wym._box).find(wym._options.containersSelector)
-                                      .find('li');
-    for (i = 0; i < $containerItems.length; ++i) {
-        $containerLink = $containerItems.eq(i).find('a');
-        if ($containerLink[0].name[0].toLowerCase() === 'h') {
-            $containerItems.eq(i).remove();
-        }
-    }
-    // Create new list item for the new single heading link
-    $newHeadingItem = jQuery('<li></li>');
-    $newHeadingItem.addClass('wym_containers_heading');
-
-    // Create new single heading link
-    newHeadingLink = wym._doc.createElement('a');
-    newHeadingLink.href = "#";
-    newHeadingLink.name = "HEADING";
-    newHeadingLink.innerHTML = "Heading";
-
-    // Add single heading link to the list item and add the list item to the
-    // containers list
-    $newHeadingItem.append(newHeadingLink);
-    $containerItems.eq(0).after($newHeadingItem);
-
-    // Bind click event to the new single heading link
-    $newHeadingItem.find('a').click(function () {
-        var newHeading = wym.findUp(wym.container(),
-                                    WYMeditor.MAIN_CONTAINERS),
-            headingSel = WYMeditor.HEADING_ELEMENTS.join(", "),
-            $prevHeading;
-
-        if (newHeading) {
-            $prevHeading = jQuery(newHeading).prev(headingSel);
-            if ($prevHeading.length) {
-                wym.switchTo(newHeading, $prevHeading[0].nodeName);
-            } else {
-                wym.switchTo(newHeading, 'h1');
-            }
-        }
-    });
 
     cssLink = wym._doc.createElement('link');
     cssLink.rel = 'stylesheet';
@@ -197,7 +73,7 @@ WYMeditor.editor.prototype.structuredHeadings = function () {
     // Get stylesheet CSS and store it in WYMeditor so that it can be accessed
     // to put on other pages.
     cssRequest = new XMLHttpRequest();
-    cssRequest.open('GET', wym._options.basePath + stylesheetHref, false);
+    cssRequest.open('GET', wymBasePath + stylesheetHref, false);
     cssRequest.send('');
     WYMeditor.structuredHeadingsCSS = cssRequest.responseText;
 };
@@ -372,9 +248,6 @@ function numberHeadingsIE7(doc, addClass) {
         span = doc.createElement('span');
         span.innerHTML = headingLabel;
         span.className = WYMeditor.STRUCTURED_HEADINGS_NUMBERING_SPAN_CLASS;
-        if (addClass) {
-            span.className += ' ' + WYMeditor.EDITOR_ONLY_CLASS;
-        }
         $heading.prepend(span);
         spanCharTotal += (counterIndex * 2) + 1;
 
