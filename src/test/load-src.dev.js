@@ -22,6 +22,7 @@ function parseVersionString(str) {
     head.js library. Loads relative to the given path to the src/ directory.
 */
 function loadWymSrc(srcPath, extraRequirements, jqueryVersion) {
+    // Oldest supported version of jQuery is used by default
     var localJqueryVersion = "1.4.2",
         baseRequirements = [
             srcPath + 'wymeditor/rangy/rangy-core.js',
