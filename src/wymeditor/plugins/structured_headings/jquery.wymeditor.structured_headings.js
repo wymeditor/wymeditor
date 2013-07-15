@@ -228,7 +228,7 @@ StructuredHeadingsManager.prototype.addCssStylesheet = function () {
     // Get stylesheet CSS and store it in WYMeditor so that it can be accessed
     // to put on other pages.
     cssRequest = new XMLHttpRequest();
-    cssRequest.open('GET', wym._options.basePath + stylesheetHref, false);
+    cssRequest.open('GET', wymBasePath + stylesheetHref, false);
     cssRequest.send('');
     WYMeditor.structuredHeadingsCSS = cssRequest.responseText;
 };
