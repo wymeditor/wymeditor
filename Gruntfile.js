@@ -1,6 +1,6 @@
 module.exports = function(grunt) {
     // Oldest supported version of jQuery is used by default
-    var jqueryVersion = grunt.option('jquery') || '1.4.2';
+    var jqueryVersion = grunt.option('jquery') || '1.4.1';
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
