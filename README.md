@@ -37,7 +37,7 @@ what WYMeditor can do.
 
 ## Quick Start
 
-1. WYMeditor requires a version of jQuery between 1.3.2 and 1.9.1. First
+1. WYMeditor requires a version of jQuery between 1.3.0 and 1.9.1. First
    ensure that your page includes jQuery.
 
     *Note*: If a version of jQuery at or above 1.8.0 is used, WYMeditor
@@ -66,7 +66,7 @@ what WYMeditor can do.
     *Note*: You'll probably want to do this initialization inside a
     `$(document).ready()` block.
 
-5. If you'd like to receive the valid HTML your editor produce on form
+5. If you'd like to receive the valid XHTML your editor produces on form
    submission, just add the class `wymupdate` to your submit button.
 
     ```html
@@ -122,7 +122,7 @@ bug](https://github.com/wymeditor/wymeditor/issues/new) so we can fix it!
 1. Get a copy of the source using git:
     
     ```shell
-    $ git clone git://github.com/wymeditor/wymeditor.git
+    git clone git://github.com/wymeditor/wymeditor.git
     ```
 
 2. Put your source behind some kind of web server (apache, nginx, etc). If you
@@ -151,13 +151,14 @@ following these instructions:
     ```shell
     git clone git://github.com/wymeditor/wymeditor.git
     ```
-2. Use npm to install the Grunt requirements by running this command in
-   the root directory of the project (Note: you might have to run this
-   command as the root user):
+2. Use [NPM](http://npmjs.org/) to install the Grunt requirements by running
+   this command in the root directory of the project:
 
     ```shell
     $ npm install
     ```
+    *Note*: You might have to run this command as the the root user on your
+    system.
 
 3. Finally, run the tests by running the `test` Grunt task in the root
    directory of the project:
@@ -178,7 +179,6 @@ running tests from the command line with Grunt, include the parameter
 
 For a browser example, to test with jQuery 1.8.0 against a local server
 on port 8000, use the URL:
-
 [http://localhost:8000/test/unit/index.html?jquery=1.8.0](http://localhost:8000/test/unit/?jquery=1.8.0).
 
 For a command line example, to test with jQuery 1.8.0 using Grunt, use
