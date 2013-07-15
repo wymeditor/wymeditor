@@ -6,7 +6,11 @@ works great across a variety of browsers. The test suite should pass in any of
 our supported browsers and if it doesn't, please `file a bug
 <https://github.com/wymeditor/wymeditor/issues/new>`_ so we can fix it!
 
-To run the test suite.
+Running the Tests Locally
+-------------------------
+
+Running the Tests in a Browser
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 #. Get a copy of the source using git:
 
@@ -27,21 +31,92 @@ To run the test suite.
    used the python instructions, open up your browser to
    http://localhost:8000/test/unit/index.html.
 
-   All green means you're good to go.
+All green means you're good to go.
 
-#. Want to run the tests from the command line? You can do that to! Just
-   install `PhantomJS <http://www.phantomjs.org/>`_ and then (if you used the
-   http server from step 2) call:
+Running the Tests from the Command Line
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In addtion to the browser test suite, you can also run the unit tests
+from the command line in a headless Phantom.js browser using Grunt by
+following these instructions:
+
+#. If you haven't already, get a copy of the source using git:
 
     .. code-block:: shell-session
 
-        $ build/phantomjs_test.sh localhost:8000/test/unit
+        git clone git://github.com/wymeditor/wymeditor.git
+
+#. Use `NPM <http://npmjs.org/>`_ to install the Grunt requirements by running
+   this command in the root directory of the project:
+
+    .. code-block:: shell-session
+
+        $ npm install
+
+    .. note::
+        You might have to run this command as the the root user on your
+        system.
+
+#. Use NPM to install the Grunt CLI.
+
+    .. code-block:: shell-session
+
+        $ npm install -g grunt-cli
+
+    .. note::
+        You might have to run this command as the the root user on your
+        system.
+
+#. Finally, run the tests by running the ``test`` Grunt task in the root
+   directory of the project:
+
+    .. code-block:: shell-session
+
+        $ grunt test
+
+If the task runs with no errors or failures, you're good to go.
 
 Testing Different jQuery Versions
----------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The unit tests can be run with the different versions of jQuery hosted on
-Google's CDN by appending the URL parameter ``?jquery=<version>``. For example,
-to test with jQuery 1.8.0 against a local server on port 8000:
+Google's CDN. To do this when running tests in a browser, append the URL
+parameter ``?jquery=<version>`` to the test suite URL. To do this when running
+tests from the command line with Grunt, include the parameter
+``--jquery=<version>`` when running the ``test`` task.
 
-http://localhost:8000/test/unit/?jquery=1.8.0.
+For a browser example, to test with jQuery 1.8.0 against a local server on port
+8000, use the URL: http://localhost:8000/test/unit/index.html?jquery=1.8.0.
+
+For a command line example, to test with jQuery 1.8.0 using Grunt, use the
+command:
+
+.. code-block:: shell-session
+
+    grunt test --jquery=1.8.0
+
+Grunt Watch Task
+^^^^^^^^^^^^^^^^
+
+Besides just the task for running the tests, the Grunt for the project also
+includes a ``watch`` task that can be used to have Grunt automatically run the
+unit tests anytime a file in the project's source files is modified. This task
+can be invoked by running this command in the project's root directoy:
+
+.. code-block:: shell-session
+
+    $ grunt watch
+
+Just like with the normal ``test`` task, a specific version of jQuery can be
+specified to be used for the tests in the ``watch`` task by including the
+parameter ``--jquery=<version>`` when running the command to start the task.
+
+Travis CI
+---------
+
+WYMeditor is set up on `Travis CI <https://travis-ci.org/>`_ so that the unit
+tests are run automatically using the ``test`` Grunt task with several
+different versions of jQuery whenever commits are submitted to the Git
+repositiory for the project. Any submitted pull requests should pass these
+tests.
+

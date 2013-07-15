@@ -7,7 +7,7 @@ module.exports = function(grunt) {
             all: {
                 options: {
                     urls: [
-                        'http://localhost:8080/test/unit/index.html' +
+                        'http://localhost:7070/test/unit/index.html' +
                         '?inPhantomjs=true&jquery=' + jqueryVersion
                     ]
                 }
@@ -16,7 +16,7 @@ module.exports = function(grunt) {
         connect: {
             server: {
                 options: {
-                    port: 8080,
+                    port: 7070,
                     base: './src'
                 }
             }

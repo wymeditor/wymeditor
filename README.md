@@ -117,7 +117,7 @@ works great across a variety of browsers. The test suite should pass in any of
 our supported browsers and if it doesn't, please [file a
 bug](https://github.com/wymeditor/wymeditor/issues/new) so we can fix it!
 
-#### Running the tests in a browser
+#### Running the Tests in a Browser
 
 1. Get a copy of the source using git:
     
@@ -140,7 +140,7 @@ the python instructions, open up your browser to
 
 All green means you're good to go.
 
-#### Running the tests from the command line
+#### Running the Tests from the Command Line
 
 In addtion to the browser test suite, you can also run the unit tests
 from the command line in a headless Phantom.js browser using Grunt by
