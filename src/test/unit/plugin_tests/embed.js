@@ -32,7 +32,7 @@ test("Shouldn't remove object elements", function() {
                 'allowscriptaccess="always" ' +
                 'allowfullscreen="true" /> ' +
         '</object>';
-    equals(
+    deepEqual(
         jQuery.trim(jQuery.wymeditors(0).parser.parse(objectEmbed)),
         jQuery.trim(expected));
 });
@@ -45,7 +45,7 @@ test("Shouldn't remove iframe elements", function() {
     var expected = '<iframe width="480" height="390" ' +
         'src="' + YOUTUBE_VIDEO_URL + '" frameborder="0"></iframe>';
 
-    equals(
+    deepEqual(
         jQuery.trim(jQuery.wymeditors(0).parser.parse(iframeEmbed)),
         jQuery.trim(expected));
 });

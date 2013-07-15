@@ -125,18 +125,18 @@ test("table has br spacers via ._html()", function () {
 
     if (is_double_br_browser) {
         expect(5);
-        equals(children.length, 3);
+        deepEqual(children.length, 3);
         if (children.length === 3) {
-            equals(children[0].tagName.toLowerCase(), 'br');
-            equals(children[1].tagName.toLowerCase(), 'table');
-            equals(children[2].tagName.toLowerCase(), 'br');
+            deepEqual(children[0].tagName.toLowerCase(), 'br');
+            deepEqual(children[1].tagName.toLowerCase(), 'table');
+            deepEqual(children[2].tagName.toLowerCase(), 'br');
         }
     } else {
         expect(4);
-        equals(children.length, 2);
+        deepEqual(children.length, 2);
         if (children.length === 2) {
-            equals(children[0].tagName.toLowerCase(), 'br');
-            equals(children[1].tagName.toLowerCase(), 'table');
+            deepEqual(children[0].tagName.toLowerCase(), 'br');
+            deepEqual(children[1].tagName.toLowerCase(), 'table');
         }
     }
 
@@ -155,18 +155,18 @@ test("table has br spacers via table insertion", function () {
 
     if (is_double_br_browser) {
         expect(5);
-        equals(children.length, 3);
+        deepEqual(children.length, 3);
         if (children.length === 3) {
-            equals(children[0].tagName.toLowerCase(), 'br');
-            equals(children[1].tagName.toLowerCase(), 'table');
-            equals(children[2].tagName.toLowerCase(), 'br');
+            deepEqual(children[0].tagName.toLowerCase(), 'br');
+            deepEqual(children[1].tagName.toLowerCase(), 'table');
+            deepEqual(children[2].tagName.toLowerCase(), 'br');
         }
     } else {
         expect(4);
-        equals(children.length, 2);
+        deepEqual(children.length, 2);
         if (children.length === 2) {
-            equals(children[0].tagName.toLowerCase(), 'br');
-            equals(children[1].tagName.toLowerCase(), 'table');
+            deepEqual(children[0].tagName.toLowerCase(), 'br');
+            deepEqual(children[1].tagName.toLowerCase(), 'table');
         }
     }
 
@@ -184,20 +184,20 @@ test("p + table has br spacers via ._html()", function () {
 
     if (is_double_br_browser) {
         expect(6);
-        equals(children.length, 4);
+        deepEqual(children.length, 4);
         if (children.length === 4) {
-            equals(children[0].tagName.toLowerCase(), 'p');
-            equals(children[1].tagName.toLowerCase(), 'br');
-            equals(children[2].tagName.toLowerCase(), 'table');
-            equals(children[3].tagName.toLowerCase(), 'br');
+            deepEqual(children[0].tagName.toLowerCase(), 'p');
+            deepEqual(children[1].tagName.toLowerCase(), 'br');
+            deepEqual(children[2].tagName.toLowerCase(), 'table');
+            deepEqual(children[3].tagName.toLowerCase(), 'br');
         }
     } else {
         expect(5);
-        equals(children.length, 3);
+        deepEqual(children.length, 3);
         if (children.length === 3) {
-            equals(children[0].tagName.toLowerCase(), 'p');
-            equals(children[1].tagName.toLowerCase(), 'br');
-            equals(children[2].tagName.toLowerCase(), 'table');
+            deepEqual(children[0].tagName.toLowerCase(), 'p');
+            deepEqual(children[1].tagName.toLowerCase(), 'br');
+            deepEqual(children[2].tagName.toLowerCase(), 'table');
         }
     }
 
@@ -223,20 +223,20 @@ test("p + table has br spacers via table insertion", function () {
 
     if (is_double_br_browser) {
         expect(7);
-        equals(children.length, 4);
+        deepEqual(children.length, 4);
         if (children.length === 4) {
-            equals(children[0].tagName.toLowerCase(), 'p');
-            equals(children[1].tagName.toLowerCase(), 'br');
-            equals(children[2].tagName.toLowerCase(), 'table');
-            equals(children[3].tagName.toLowerCase(), 'br');
+            deepEqual(children[0].tagName.toLowerCase(), 'p');
+            deepEqual(children[1].tagName.toLowerCase(), 'br');
+            deepEqual(children[2].tagName.toLowerCase(), 'table');
+            deepEqual(children[3].tagName.toLowerCase(), 'br');
         }
     } else {
         expect(6);
-        equals(children.length, 3);
+        deepEqual(children.length, 3);
         if (children.length === 3) {
-            equals(children[0].tagName.toLowerCase(), 'p');
-            equals(children[1].tagName.toLowerCase(), 'br');
-            equals(children[2].tagName.toLowerCase(), 'table');
+            deepEqual(children[0].tagName.toLowerCase(), 'p');
+            deepEqual(children[1].tagName.toLowerCase(), 'br');
+            deepEqual(children[2].tagName.toLowerCase(), 'table');
         }
     }
 
@@ -253,13 +253,13 @@ test("p + table + p has br spacers via ._html()", function () {
     children = $body.children();
 
     expect(7);
-    equals(children.length, 5);
+    deepEqual(children.length, 5);
     if (children.length === 5) {
-        equals(children[0].tagName.toLowerCase(), 'p');
-        equals(children[1].tagName.toLowerCase(), 'br');
-        equals(children[2].tagName.toLowerCase(), 'table');
-        equals(children[3].tagName.toLowerCase(), 'br');
-        equals(children[4].tagName.toLowerCase(), 'p');
+        deepEqual(children[0].tagName.toLowerCase(), 'p');
+        deepEqual(children[1].tagName.toLowerCase(), 'br');
+        deepEqual(children[2].tagName.toLowerCase(), 'table');
+        deepEqual(children[3].tagName.toLowerCase(), 'br');
+        deepEqual(children[4].tagName.toLowerCase(), 'p');
     }
 
     htmlEquals(wymeditor, pTablePHtml);
@@ -283,13 +283,13 @@ test("p + table + p has br spacers via table insertion", function () {
     children = $body.children();
 
     expect(8);
-    equals(children.length, 5);
+    deepEqual(children.length, 5);
     if (children.length === 5) {
-        equals(children[0].tagName.toLowerCase(), 'p');
-        equals(children[1].tagName.toLowerCase(), 'br');
-        equals(children[2].tagName.toLowerCase(), 'table');
-        equals(children[3].tagName.toLowerCase(), 'br');
-        equals(children[4].tagName.toLowerCase(), 'p');
+        deepEqual(children[0].tagName.toLowerCase(), 'p');
+        deepEqual(children[1].tagName.toLowerCase(), 'br');
+        deepEqual(children[2].tagName.toLowerCase(), 'table');
+        deepEqual(children[3].tagName.toLowerCase(), 'br');
+        deepEqual(children[4].tagName.toLowerCase(), 'p');
     }
 
     htmlEquals(wymeditor, pTablePHtml);
@@ -305,15 +305,15 @@ test("p + table + table + p has br spacers via ._html()", function () {
     children = $body.children();
 
     expect(9);
-    equals(children.length, 7);
+    deepEqual(children.length, 7);
     if (children.length === 7) {
-        equals(children[0].tagName.toLowerCase(), 'p');
-        equals(children[1].tagName.toLowerCase(), 'br');
-        equals(children[2].tagName.toLowerCase(), 'table');
-        equals(children[3].tagName.toLowerCase(), 'br');
-        equals(children[4].tagName.toLowerCase(), 'table');
-        equals(children[5].tagName.toLowerCase(), 'br');
-        equals(children[6].tagName.toLowerCase(), 'p');
+        deepEqual(children[0].tagName.toLowerCase(), 'p');
+        deepEqual(children[1].tagName.toLowerCase(), 'br');
+        deepEqual(children[2].tagName.toLowerCase(), 'table');
+        deepEqual(children[3].tagName.toLowerCase(), 'br');
+        deepEqual(children[4].tagName.toLowerCase(), 'table');
+        deepEqual(children[5].tagName.toLowerCase(), 'br');
+        deepEqual(children[6].tagName.toLowerCase(), 'p');
     }
 
     htmlEquals(wymeditor, pTableTablePHtml);
@@ -338,15 +338,15 @@ test("p + table + table + p has br spacers via table insertion", function () {
     children = $body.children();
 
     expect(10);
-    equals(children.length, 7);
+    deepEqual(children.length, 7);
     if (children.length === 7) {
-        equals(children[0].tagName.toLowerCase(), 'p');
-        equals(children[1].tagName.toLowerCase(), 'br');
-        equals(children[2].tagName.toLowerCase(), 'table');
-        equals(children[3].tagName.toLowerCase(), 'br');
-        equals(children[4].tagName.toLowerCase(), 'table');
-        equals(children[5].tagName.toLowerCase(), 'br');
-        equals(children[6].tagName.toLowerCase(), 'p');
+        deepEqual(children[0].tagName.toLowerCase(), 'p');
+        deepEqual(children[1].tagName.toLowerCase(), 'br');
+        deepEqual(children[2].tagName.toLowerCase(), 'table');
+        deepEqual(children[3].tagName.toLowerCase(), 'br');
+        deepEqual(children[4].tagName.toLowerCase(), 'table');
+        deepEqual(children[5].tagName.toLowerCase(), 'br');
+        deepEqual(children[6].tagName.toLowerCase(), 'p');
     }
 
     htmlEquals(wymeditor, pTableTablePHtml);
@@ -363,24 +363,24 @@ test("h1 + blockquote + pre has br spacers via ._html()", function () {
 
     if (is_double_br_browser) {
         expect(8);
-        equals(children.length, 6);
+        deepEqual(children.length, 6);
         if (children.length === 6) {
-            equals(children[0].tagName.toLowerCase(), 'h1');
-            equals(children[1].tagName.toLowerCase(), 'br');
-            equals(children[2].tagName.toLowerCase(), 'blockquote');
-            equals(children[3].tagName.toLowerCase(), 'br');
-            equals(children[4].tagName.toLowerCase(), 'pre');
-            equals(children[5].tagName.toLowerCase(), 'br');
+            deepEqual(children[0].tagName.toLowerCase(), 'h1');
+            deepEqual(children[1].tagName.toLowerCase(), 'br');
+            deepEqual(children[2].tagName.toLowerCase(), 'blockquote');
+            deepEqual(children[3].tagName.toLowerCase(), 'br');
+            deepEqual(children[4].tagName.toLowerCase(), 'pre');
+            deepEqual(children[5].tagName.toLowerCase(), 'br');
         }
     } else {
         expect(7);
-        equals(children.length, 5);
+        deepEqual(children.length, 5);
         if (children.length === 5) {
-            equals(children[0].tagName.toLowerCase(), 'h1');
-            equals(children[1].tagName.toLowerCase(), 'br');
-            equals(children[2].tagName.toLowerCase(), 'blockquote');
-            equals(children[3].tagName.toLowerCase(), 'br');
-            equals(children[4].tagName.toLowerCase(), 'pre');
+            deepEqual(children[0].tagName.toLowerCase(), 'h1');
+            deepEqual(children[1].tagName.toLowerCase(), 'br');
+            deepEqual(children[2].tagName.toLowerCase(), 'blockquote');
+            deepEqual(children[3].tagName.toLowerCase(), 'br');
+            deepEqual(children[4].tagName.toLowerCase(), 'pre');
         }
     }
 
@@ -399,13 +399,13 @@ test("br spacers aren't deleted when arrowing through them", function () {
 
     function checkLayout($body) {
         children = $body.children();
-        equals(children.length, 5);
+        deepEqual(children.length, 5);
         if (children.length === 5) {
-            equals(children[0].tagName.toLowerCase(), 'p');
-            equals(children[1].tagName.toLowerCase(), 'br');
-            equals(children[2].tagName.toLowerCase(), 'table');
-            equals(children[3].tagName.toLowerCase(), 'br');
-            equals(children[4].tagName.toLowerCase(), 'p');
+            deepEqual(children[0].tagName.toLowerCase(), 'p');
+            deepEqual(children[1].tagName.toLowerCase(), 'br');
+            deepEqual(children[2].tagName.toLowerCase(), 'table');
+            deepEqual(children[3].tagName.toLowerCase(), 'br');
+            deepEqual(children[4].tagName.toLowerCase(), 'p');
         }
     }
 
@@ -468,20 +468,20 @@ test("br spacers don't cause lots of blank p's when arrowing down", function () 
 
     if (is_double_br_browser) {
         expect(6);
-        equals(children.length, 4, "Should have p, br, table, br");
+        deepEqual(children.length, 4, "Should have p, br, table, br");
         if (children.length === 4) {
-            equals(children[0].tagName.toLowerCase(), 'p');
-            equals(children[1].tagName.toLowerCase(), 'br');
-            equals(children[2].tagName.toLowerCase(), 'table');
-            equals(children[3].tagName.toLowerCase(), 'br');
+            deepEqual(children[0].tagName.toLowerCase(), 'p');
+            deepEqual(children[1].tagName.toLowerCase(), 'br');
+            deepEqual(children[2].tagName.toLowerCase(), 'table');
+            deepEqual(children[3].tagName.toLowerCase(), 'br');
         }
     } else {
         expect(5);
-        equals(children.length, 3, "Should have p, br, table");
+        deepEqual(children.length, 3, "Should have p, br, table");
         if (children.length === 3) {
-            equals(children[0].tagName.toLowerCase(), 'p');
-            equals(children[1].tagName.toLowerCase(), 'br');
-            equals(children[2].tagName.toLowerCase(), 'table');
+            deepEqual(children[0].tagName.toLowerCase(), 'p');
+            deepEqual(children[1].tagName.toLowerCase(), 'br');
+            deepEqual(children[2].tagName.toLowerCase(), 'table');
         }
     }
 
@@ -503,13 +503,13 @@ test("br spacers don't cause lots of blank p's when arrowing up", function () {
 
     children = $body.children();
 
-    equals(children.length, 5, "Should have p, br, table, br, p");
+    deepEqual(children.length, 5, "Should have p, br, table, br, p");
     if (children.length === 5) {
-        equals(children[0].tagName.toLowerCase(), 'p');
-        equals(children[1].tagName.toLowerCase(), 'br');
-        equals(children[2].tagName.toLowerCase(), 'table');
-        equals(children[3].tagName.toLowerCase(), 'br');
-        equals(children[4].tagName.toLowerCase(), 'p');
+        deepEqual(children[0].tagName.toLowerCase(), 'p');
+        deepEqual(children[1].tagName.toLowerCase(), 'br');
+        deepEqual(children[2].tagName.toLowerCase(), 'table');
+        deepEqual(children[3].tagName.toLowerCase(), 'br');
+        deepEqual(children[4].tagName.toLowerCase(), 'p');
     }
 
     htmlEquals(wymeditor, pTablePHtml);
@@ -536,12 +536,12 @@ test("br spacers stay in place when content is inserted- post-br", function () {
 
     children = $body.children();
 
-    equals(children.length, 4, "Should have br, table, br, p");
+    deepEqual(children.length, 4, "Should have br, table, br, p");
     if (children.length === 4) {
-        equals(children[0].tagName.toLowerCase(), 'br');
-        equals(children[1].tagName.toLowerCase(), 'table');
-        equals(children[2].tagName.toLowerCase(), 'br');
-        equals(children[3].tagName.toLowerCase(), 'p');
+        deepEqual(children[0].tagName.toLowerCase(), 'br');
+        deepEqual(children[1].tagName.toLowerCase(), 'table');
+        deepEqual(children[2].tagName.toLowerCase(), 'br');
+        deepEqual(children[3].tagName.toLowerCase(), 'p');
     }
 
     htmlEquals(wymeditor, tableHtml + '<p>yo</p>');
@@ -569,12 +569,12 @@ test("br spacers stay in place when content is inserted- pre-br", function () {
 
     children = $body.children();
 
-    equals(children.length, 4, "Should have p, br, table, br");
+    deepEqual(children.length, 4, "Should have p, br, table, br");
     if (children.length === 4) {
-        equals(children[0].tagName.toLowerCase(), 'p');
-        equals(children[1].tagName.toLowerCase(), 'br');
-        equals(children[2].tagName.toLowerCase(), 'table');
-        equals(children[3].tagName.toLowerCase(), 'br');
+        deepEqual(children[0].tagName.toLowerCase(), 'p');
+        deepEqual(children[1].tagName.toLowerCase(), 'br');
+        deepEqual(children[2].tagName.toLowerCase(), 'table');
+        deepEqual(children[3].tagName.toLowerCase(), 'br');
     }
 
     htmlEquals(wymeditor, tableHtml);

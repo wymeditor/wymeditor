@@ -2313,7 +2313,7 @@ test("Indent with table in the middle of a list", function () {
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
     changeIndent(wymeditor, expectedMiddleOutFull, '#li_2', '#li_3', 'indent');
-    equals(normalizeHtml($body.get(0).firstChild), expectedMiddleIn,
+    deepEqual(normalizeHtml($body.get(0).firstChild), expectedMiddleIn,
            "Table indented in the middle of a list");
 });
 
@@ -2323,11 +2323,11 @@ test("Indent with table at the end of a list", function () {
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
     changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'indent');
-    equals(normalizeHtml($body.get(0).firstChild), expectedEndIn,
+    deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndIn,
            "Table indented at the end of a list");
 
     changeIndent(wymeditor, startEndOutNoBR, '#li_3', '#li_3', 'indent');
-    equals(normalizeHtml($body.get(0).firstChild), expectedEndIn,
+    deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndIn,
            "Table indented at the end of a list with no line break");
 });
 
@@ -2337,7 +2337,7 @@ test("Outdent with table in the middle of a list", function () {
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
     changeIndent(wymeditor, expectedMiddleIn, '#li_2', '#li_2', 'outdent');
-    equals(normalizeHtml($body.get(0).firstChild), expectedMiddleOutPartial,
+    deepEqual(normalizeHtml($body.get(0).firstChild), expectedMiddleOutPartial,
            "Table outdented in the middle of a list");
 });
 
@@ -2347,11 +2347,11 @@ test("Outdent with table at the end of a list", function () {
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
     changeIndent(wymeditor, expectedEndIn, '#li_3', '#li_3', 'outdent');
-    equals(normalizeHtml($body.get(0).firstChild), expectedEndOut,
+    deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndOut,
            "Table outdented at the end of a list");
 
     changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'outdent');
-    equals(normalizeHtml($body.get(0).firstChild), expectedEndOut,
+    deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndOut,
            "Table outdented at the end of a list with no line break");
 });
 
