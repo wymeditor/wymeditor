@@ -1311,7 +1311,7 @@ test("Can set and get html with the html() function", function () {
         stub,
         htmlNode;
 
-    // Disable console warnings so that the deprecation warning aren't
+    // Disable console warnings so that the deprecation warning isn't
     // displayed.
     stub = sinon.stub(WYMeditor.console, "warn", function() {});
 

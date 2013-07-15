@@ -1,11 +1,14 @@
 module.exports = function(grunt) {
+    var jqueryVersion = grunt.option('jquery') || '1.5.1';
+
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         qunit: {
             all: {
                 options: {
                     urls: [
-                        'http://localhost:8080/test/unit/index.html?inPhantomjs=true'
+                        'http://localhost:8080/test/unit/index.html' +
+                        '?inPhantomjs=true&jquery=' + jqueryVersion
                     ]
                 }
             }
@@ -38,5 +41,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-qunit');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-watch');
+
     grunt.registerTask('test', ['connect', 'qunit']);
+    grunt.registerTask('default', ['test']);
 };

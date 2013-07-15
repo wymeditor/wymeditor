@@ -1,5 +1,4 @@
-# WYMeditor
-[![Build Status](https://travis-ci.org/FriedRice/wymeditor.png)](https://travis-ci.org/FriedRice/wymeditor)
+# WYMeditor [![Build Status](https://travis-ci.org/wymeditor/wymeditor.png)](https://travis-ci.org/wymeditor/wymeditor)
 
 WYMeditor is an open source web-based WYSIWYM editor with semantics and
 standards in mind. The WYM-part stands for "What You Mean" compared to the more
@@ -109,18 +108,22 @@ works great across a variety of browsers. The test suite should pass in any of
 our supported browsers and if it doesn't, please
 [file a bug](https://github.com/wymeditor/wymeditor/issues/new) so we can fix it!
 
-To run the test suite.
+#### Running the tests in a browser
 
 1. Get a copy of the source using git:
-
-    git clone git://github.com/wymeditor/wymeditor.git
+    
+    ```shell
+    $ git clone git://github.com/wymeditor/wymeditor.git
+    ```
 
 2. Put your source behind some kind of web server (apache, nginx, etc). If you
 don't have one installed or don't want to fuss with configuration, you can use
 python's HTTP server:
 
+    ```shell
     $ cd /path/to/my/wymeditor/src
     $ python -m SimpleHTTPServer
+    ```
 
 3. The unit test suite is located at `src/test/unit/index.html`, so if you used
 the python instructions, open up your browser to
@@ -128,20 +131,53 @@ the python instructions, open up your browser to
 
 All green means you're good to go.
 
-4. Want to run the tests from the command line? You can do that to! Just install
-[PhantomJS](http://www.phantomjs.org/) and then (if you used the http server
-from step 2) call:
+#### Running the tests from the command line
 
-    $ build/phantomjs_test.sh localhost:8000/test/unit
+In addtion to the browser test suite, you can also run the unit tests
+from the command line in a headless Phantom.js browser using Grunt by
+following these instructions:
+
+1. If you haven't already, get a copy of the source using git:
+    
+    ```shell
+    git clone git://github.com/wymeditor/wymeditor.git
+    ```
+2. Use npm to install the Grunt requirements by running this command in
+   the root directory of the project (Note: you might have to run this
+   command as the root user):
+
+    ```shell
+    $ npm install
+    ```
+
+3. Finally, run the tests by running the `test` Grunt task in the root
+   directory of the project:
+
+    ```shell
+    $ grunt test
+    ```
+
+If the task runs with no errors or failures, you're good to go.
 
 #### Testing Different jQuery Versions
 
 The unit tests can be run with the different versions of jQuery hosted on
-Google's CDN by appending the URL parameter `?jquery=<version>`. For example,
-to test with jQuery 1.8.0 against a local server on port 8000:
+Google's CDN. To do this when running tests in a browser, append the URL
+parameter `?jquery=<version>` to the test suite URL. To do this when
+running tests from the command line with Grunt, include the parameter
+`--jquery=<version>` when running the `test` task. 
 
-[http://localhost:8000/test/unit/?jquery=1.8.0](http://localhost:8000/test/unit/?jquery=1.8.0).
+For a browser example, to test with jQuery 1.8.0 against a local server
+on port 8000, use the URL:
 
+[http://localhost:8000/test/unit/index.html?jquery=1.8.0](http://localhost:8000/test/unit/?jquery=1.8.0).
+
+For a command line example, to test with jQuery 1.8.0 using Grunt, use
+the command:
+
+```shell
+grunt test --jquery=1.8.0
+```
 
 ### Building WYMeditor
 

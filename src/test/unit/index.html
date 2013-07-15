@@ -29,7 +29,7 @@
     }
 
     // Set global variables for checking if phantomjs is being used
-    inPhantomjs = urlParams["inPhantomjs"];
+    inPhantomjs = (urlParams["inPhantomjs"] === 'true') ? true : false;
 
     loadWymSrc(
         '../../',
