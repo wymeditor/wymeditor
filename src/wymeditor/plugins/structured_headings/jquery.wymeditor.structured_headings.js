@@ -288,7 +288,7 @@ StructuredHeadingsManager.prototype.changeHeadingLevel = function (heading, upOr
 
     wym.switchTo(heading, 'h' + (headingLevel + levelAdjustment));
     if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
-        numberHeadingsIE7(wym._doc, true);
+        this.numberHeadingsIE7();
     }
 };
 
@@ -391,7 +391,7 @@ StructuredHeadingsManager.prototype.enableIE7Polyfill = function () {
             if (headingTotal !== prevHeadingTotal ||
                 spanCharTotal !== prevSpanCharTotal) {
 
-                prevSpanCharTotal = numberHeadingsIE7(wym._doc, true);
+                prevSpanCharTotal = headingManager.numberHeadingsIE7();
             }
 
             prevHeadingTotal = headingTotal;
@@ -399,9 +399,20 @@ StructuredHeadingsManager.prototype.enableIE7Polyfill = function () {
     });
 
     $containersPanelLinks.click(function (evt) {
-        numberHeadingsIE7(wym._doc, true);
+        headingManager.numberHeadingsIE7();
     });
 };
+
+/**
+    numberHeadingsIE7
+    =================
+
+    A method of Structured Headings Manager objects that wraps the
+    numberHeadingsIE7 function in the plugin file for easier use.
+*/
+StructuredHeadingsManager.prototype.numberHeadingsIE7 = function () {
+    numberHeadingsIE7(this._wym._doc, true);
+}
 
 /**
     WYMeditor.printStructuredHeadingsCss
@@ -413,7 +424,6 @@ StructuredHeadingsManager.prototype.enableIE7Polyfill = function () {
 WYMeditor.printStructuredHeadingsCSS = function () {
     WYMeditor.console.log(WYMeditor.structuredHeadingsCSS);
 };
-
 
 /*
     getHeadingLevel
