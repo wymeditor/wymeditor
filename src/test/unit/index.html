@@ -1,27 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<!--
- * WYMeditor : what you see is What You Mean web-based editor
- * Copyright (c) 2005 - 2009 Jean-Francois Hovinne, http://www.wymeditor.org/
- * Dual licensed under the MIT (MIT-license.txt)
- * and GPL (GPL-license.txt) licenses.
- *
- * For further information visit:
- *        http://www.wymeditor.org/
- *
- * File Name:
- *        test.html
- *        WYMeditor unit tests.
- *        See the documentation for more info.
- *
- * File Authors:
- *        Jean-Francois Hovinne (jf.hovinne a-t wymeditor dotorg)
- *        Wes Winham
--->
+<!--WYMeditor unit tests-->
+
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta content="charset=utf-8" />
 <title>WYMeditor Test Suite</title>
-<link rel="stylesheet" href="qunit.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="qunit/qunit-1.12.0.css" type="text/css" media="screen" />
 
 <script type="text/javascript" src="../load-src.dev.js"></script>
 
@@ -36,15 +20,16 @@
     var length = params.length;
     var urlParams = {};
     var current;
-    if (length > 0) {
-        for (var i = 0; i < length; i++) {
-            current = params[i].split( "=" );
-            current[0] = decodeURIComponent(current[0]);
-            // allow just a key to turn on a flag, e.g., test.html?noglobals
-            current[1] = current[1] ? decodeURIComponent(current[1]) : true;
-            urlParams[current[0]] = current[1];
-        }
+    for (var i = 0; i < length; ++i) {
+        current = params[i].split( "=" );
+        current[0] = decodeURIComponent(current[0]);
+        // allow just a key to turn on a flag, e.g., test.html?noglobals
+        current[1] = current[1] ? decodeURIComponent(current[1]) : true;
+        urlParams[current[0]] = current[1];
     }
+
+    // Set global variables for checking if phantomjs is being used
+    inPhantomjs = (urlParams["inPhantomjs"] === 'true') ? true : false;
 
     loadWymSrc(
         '../../',
@@ -53,18 +38,24 @@
             "../../wymeditor/plugins/embed/jquery.wymeditor.embed.js",
             "../../wymeditor/plugins/list/jquery.wymeditor.list.js",
             "../../wymeditor/plugins/table/jquery.wymeditor.table.js",
+            "../../wymeditor/plugins/structured_headings/jquery.wymeditor.structured_headings.js",
 
-            "qunit.js",
-            "qunit-tap.js",
+            "qunit/qunit-1.12.0.js",
+            "qunit/qunit-tap.js",
+
+            // Sinon files
+            "sinon/sinon-1.7.3.js",
+            "sinon/sinon-qunit-1.0.0.js",
 
             // Test files
             "utils.js",
             "test.js",
-            "lists.js",
-            "blocking_elements.js",
-            "table_test.js",
-            "embed.js",
-            "containers.js"
+            "specific_feature_tests/xml_parser.js",
+            "specific_feature_tests/lists.js",
+            "specific_feature_tests/blocking_elements.js",
+            "plugin_tests/table_test.js",
+            "plugin_tests/embed.js",
+            "plugin_tests/structured_headings.js"
         ],
         urlParams['jquery']
     );
@@ -73,7 +64,7 @@
     if (urlParams.tapOutput) {
         // Only provide tap output when ?tapOutput=true
         // When running via phantomJS, use that URL
-        qunitTap(QUnit, function() { console.log.apply(console, arguments); }, {noPlan: true});
+        qunitTap(QUnit, function() { console.log.apply(console, arguments); });
     }
 </script>
 </head>
@@ -84,12 +75,13 @@
     <div id="qunit-testrunner-toolbar"></div>
     <h2 id="qunit-userAgent"></h2>
     <div>
-    <form method="post" action="">
-        <textarea class="wymeditor"></textarea>
-        <input type="submit" class="wymupdate" />
-        <input type="button" class="wymclear" name="Clear" value="Clear" />
-    </form>
+        <form method="post" action="">
+            <textarea class="wymeditor"></textarea>
+            <input type="submit" class="wymupdate" />
+            <input type="button" class="wymclear" name="Clear" value="Clear" />
+        </form>
     </div>
     <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture"></div>
 </body>
 </html>

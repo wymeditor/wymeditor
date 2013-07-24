@@ -25,8 +25,6 @@ WYMeditor.WymClassExplorer = function (wym) {
     this._class = "className";
 };
 
-WYMeditor.WymClassExplorer.PLACEHOLDER_NODE = '<br />';
-
 WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
     //This function is executed twice, though it is called once!
     //But MSIE needs that, otherwise designMode won't work.
@@ -46,7 +44,7 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
     jQuery('html', this._doc).attr('dir', this._options.direction);
 
     //init html value
-    jQuery(this._doc.body).html(this._wym._html);
+    jQuery(this._doc.body).html(this._wym._options.html);
 
     //handle events
     var wym = this;
@@ -279,41 +277,5 @@ WYMeditor.WymClassExplorer.prototype.setFocusToNode = function (node, toStart) {
     range.collapse(toStart);
     range.select();
     node.focus();
-};
-
-/** @name spaceBlockingElements
- * @description Insert <br> elements between adjacent blocking elements and
- * p elements, between block elements or blocking elements and after blocking
- * elements.
- */
-WYMeditor.WymClassExplorer.prototype.spaceBlockingElements = function () {
-    var blockingSelector,
-        blockingContainers;
-    blockingContainers = WYMeditor.DocumentStructureManager.CONTAINERS_BLOCKING_NAVIGATION;
-    blockingSelector = blockingContainers.join(', ');
-
-    var $body = jQuery(this._doc).find('body.wym_iframe');
-    var children = $body.children();
-    var placeholderNode = WYMeditor.WymClassExplorer.PLACEHOLDER_NODE;
-
-    // Make sure we have the appropriate placeholder nodes
-    if (children.length > 0) {
-        var $firstChild = jQuery(children[0]);
-        var $lastChild = jQuery(children[children.length - 1]);
-
-        // Ensure begining placeholder
-        if ($firstChild.is(blockingSelector)) {
-            $firstChild.before(placeholderNode);
-        }
-        if (jQuery.browser.version >= "7.0" && $lastChild.is(blockingSelector)) {
-            $lastChild.after(placeholderNode);
-        }
-    }
-
-    var blockSepSelector = this._getBlockSepSelector();
-
-    // Put placeholder nodes between consecutive blocking elements and between
-    // blocking elements and normal block-level elements
-    $body.find(blockSepSelector).before(placeholderNode);
 };
 

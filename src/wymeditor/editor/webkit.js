@@ -46,7 +46,7 @@ WYMeditor.WymClassSafari.prototype.initIframe = function (iframe) {
     this._doc.designMode = "on";
 
     //init html value
-    this.html(this._wym._html);
+    this._html(this._wym._options.html);
 
     //pre-bind functions
     if (jQuery.isFunction(this._options.preBind)) {
@@ -76,8 +76,9 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
         return false;
     }
 
-    var focusNode = this.selected(),
-        _param, container, attr;
+    var container,
+        $container,
+        tagName;
 
     if (param) {
         this._doc.execCommand(cmd, '', param);
@@ -85,10 +86,36 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
         this._doc.execCommand(cmd, '', null);
     }
 
-    // Wrap this content in a paragraph tag if we're in the body
     container = this.selected();
-    if (container && container.tagName.toLowerCase() === WYMeditor.BODY) {
-        this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
+    if (container) {
+        $container = jQuery(container);
+        tagName = container.tagName.toLowerCase();
+
+        // Wrap this content in a paragraph tag if we're in the body
+        if (tagName === WYMeditor.BODY) {
+            this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
+        }
+
+        // If the cmd was FORMAT_BLOCK, check if the block was moved outside
+        // the body after running the command. If it was moved outside, move it
+        // back inside the body. This was added because running FORMAT_BLOCK on
+        // an image inserted outside of a container was causing it to be moved
+        // outside the body (See issue #400).
+        if (cmd === WYMeditor.FORMAT_BLOCK &&
+            $container.siblings('body.wym_iframe').length) {
+
+            $container.siblings('body.wym_iframe').append(container);
+        }
+
+        // If the container is a span, strip it out if it doesn't have a class
+        // but has an inline style of 'font-weight: normal;'.
+        if (tagName === 'span' &&
+            (!$container.attr('class') ||
+                $container.attr('class').toLowerCase() === 'apple-style-span') &&
+            $container.attr('style') === 'font-weight: normal;') {
+
+            $container.contents().unwrap();
+        }
     }
 
     return true;
@@ -190,43 +217,3 @@ WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
     }
 };
 
-WYMeditor.WymClassSafari.prototype.openBlockTag = function (tag, attributes) {
-    var new_tag;
-
-    attributes = this.validator.getValidTagAttributes(tag, attributes);
-
-    // Handle Safari styled spans
-    if (tag === 'span' && attributes.style) {
-        new_tag = this.getTagForStyle(attributes.style);
-        if (new_tag) {
-            tag = new_tag;
-            this._tag_stack.pop();
-            this._tag_stack.push(tag);
-            attributes.style = '';
-
-            // Should fix #125 - also removed the xhtml() override
-            if (typeof attributes['class'] === 'string') {
-                attributes['class'] = attributes['class'].replace(
-                    /apple-style-span/gi,
-                    ''
-                );
-            }
-        }
-    }
-
-    this.output += this.helper.tag(tag, attributes, true);
-};
-
-WYMeditor.WymClassSafari.prototype.getTagForStyle = function (style) {
-    if (/bold/.test(style)) {
-        return 'strong';
-    } else if (/italic/.test(style)) {
-        return 'em';
-    } else if (/sub/.test(style)) {
-        return 'sub';
-    } else if (/super/.test(style)) {
-        return 'sup';
-    }
-
-    return false;
-};

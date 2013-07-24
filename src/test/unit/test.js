@@ -14,7 +14,7 @@ var SKIP_KNOWN_FAILING_TESTS = true;
 
 function setupWym(modificationCallback) {
     if (WYMeditor.INSTANCES.length === 0) {
-        stop(5000); // Stop test running until the editor is initialized
+        stop(); // Stop test running until the editor is initialized
         jQuery('.wymeditor').wymeditor({
             stylesheet: 'styles.css',
             postInit: function (wym) {
@@ -39,10 +39,11 @@ function setupWym(modificationCallback) {
                     td,
                     span;
 
-                wym.html(initialHtml);
+                wym.structuredHeadings();
+
+                wym._html(initialHtml);
 
                 $body = jQuery(wym._doc).find('body.wym_iframe');
-
                 td = $body.find(tdSelector)[0];
                 span = $body.find(spanSelector)[0];
                 wym.tableEditor.selectElement($body.find(tdSelector)[0]);
@@ -66,7 +67,7 @@ function setupWym(modificationCallback) {
         wym.documentStructureManager.setDefaultRootContainer('p');
 
         if (typeof modificationCallback !== 'undefined') {
-            stop(1000);
+            stop();
             modificationCallback(wym);
             start();
         }
@@ -83,9 +84,9 @@ module("Core", {setup: setupWym});
 
 test("Instantiate", function () {
     expect(2);
-    equals(WYMeditor.INSTANCES.length, 1, "WYMeditor.INSTANCES length");
-    equals(typeof jQuery.wymeditors(0), 'object',
-            "Type of first WYMeditor instance, using jQuery.wymeditors(0)");
+    deepEqual(WYMeditor.INSTANCES.length, 1, "WYMeditor.INSTANCES length");
+    deepEqual(typeof jQuery.wymeditors(0), 'object',
+              "Type of first WYMeditor instance, using jQuery.wymeditors(0)");
 });
 /*
     Tests that require the WYMeditor instance to already be initialized.
@@ -98,9 +99,9 @@ test("Commands", function () {
     var wymeditor = jQuery.wymeditors(0);
 
     wymeditor.toggleHtml();
-    equals(jQuery('div.wym_html:visible', wymeditor._box).length, 1);
+    deepEqual(jQuery('div.wym_html:visible', wymeditor._box).length, 1);
     wymeditor.toggleHtml();
-    equals(jQuery('div.wym_html:visible', wymeditor._box).length, 0);
+    deepEqual(jQuery('div.wym_html:visible', wymeditor._box).length, 0);
 });
 
 module("CssParser", {setup: setupWym});
@@ -111,7 +112,7 @@ test("Configure classes items using CSS", function () {
         jQuery('div.wym_classes ul', jQuery.wymeditors(0)._box).length > 0,
         "Classes loaded"
     );
-    equals(
+    deepEqual(
         jQuery(
             'div.wym_classes a:first-child',
             jQuery.wymeditors(0)._box
@@ -127,372 +128,20 @@ test("Should escape URL's only once #69.1", function () {
     expect(2);
     var original = "index.php?module=x&func=view&id=1",
         expected = "index.php?module=x&amp;func=view&amp;id=1";
-    equals(jQuery.wymeditors(0).helper.escapeOnce(original), expected,
+    deepEqual(jQuery.wymeditors(0).helper.escapeOnce(original), expected,
             "Escape entities");
-    equals(jQuery.wymeditors(0).helper.escapeOnce(expected), expected,
+    deepEqual(jQuery.wymeditors(0).helper.escapeOnce(expected), expected,
             "Avoids double entity escaping");
 });
 
-module("XmlParser", {setup: setupWym});
-
-test("Should correct orphaned sublists", function () {
-    expect(2);
-    var expected = String() +
-            '<ul>' +
-                '<li>a' +
-                    '<ul>' +
-                        '<li>a.1<\/li>' +
-                    '<\/ul>' +
-                '<\/li>' +
-                '<li>b<\/li>' +
-            '<\/ul>',
-        // FF
-        design_mode_pseudo_html = String() +
-            '<ul>' +
-                '<li>a<\/li>' +
-                '<ul>' +
-                    '<li>a.1<\/li>' +
-                '<\/ul>' +
-                '<li>b<br><\/li>' +
-            '<\/ul>',
-        wymeditor = jQuery.wymeditors(0);
-    equals(wymeditor.parser.parse(design_mode_pseudo_html), expected,
-            "on Firefox");
-    // IE
-    // IE has invalid sublist nesting
-    /*jslint white:false */
-    expected = String() +
-            "<ul>\r\n" +
-                '<li>a' +
-                    '<ul>\r\n' +
-                        '<li>a.1<\/li>' +
-                    '<\/ul>' +
-                '<\/li>\r\n' +
-                '<li>b<\/li>' +
-            '<\/ul>';
-    design_mode_pseudo_html = String() +
-            '<UL>\r\n' +
-                '<LI>a<\/LI>\r\n' +
-                '<UL>\r\n' +
-                    '<LI>a.1<\/LI>' +
-                '<\/UL>\r\n' +
-                '<LI>b<\/LI>' +
-            '<\/UL>';
-    /*jslint white:true */
-    equals(
-        wymeditor.parser.parse(design_mode_pseudo_html),
-        expected,
-        "on IE"
-    );
-});
-
-test("Should correct under-closed lists", function () {
-    expect(1);
-    // Taken from a mistake made during development that uncovered a
-    // parsing issue where if an LI tag was left unclosed, IE did lots of
-    // over-closing to compensate which completey broke list structure
-    var missingClosingLiHtml = String() +
-            '<ol>' +
-                '<li id="li_1">1</li>' +
-                '<li id="li_2">2' +
-                    '<ol>' +
-                        '<li id="li_2_1">2_1</li>' +
-                        '<li id="li_2_2">2_2</li>' +
-                    '</ol>' +
-                '</li>' +
-                '<li id="li_3">3' +
-                    '<ol>' +
-                        '<li id="li_3_1">3_1</li>' +
-                    '</ol>' +
-                '</li>' +
-                '<li id="li_4">4</li>' +
-                '<li id="li_5">5' +
-                    '<ol>' +
-                        '<li id="li_5_1">5_1</li>' +
-                        '<li id="li_5_2">5_2</li>' +
-                    '</ol>' +
-                // </li> Ommitted closing tag
-                '<li id="li_5_3">5_3' +
-                    '<ol>' +
-                        '<li class="spacer_li">' +
-                            '<ul>' +
-                                '<li id="li_5_3_1">5_3_1</li>' +
-                            '</ul>' +
-                        '</li>' +
-                        '<li id="li_5_4">5_4</li>' +
-                    '</ol>' +
-                '</li>' +
-                '<li id="li_6">6</li>' +
-                '<li id="li_7">7</li>' +
-                '<li id="li_8">8</li>' +
-            '</ol>',
-        fixedHtml = String() +
-            '<ol>' +
-                '<li id="li_1">1</li>' +
-                '<li id="li_2">2' +
-                    '<ol>' +
-                        '<li id="li_2_1">2_1</li>' +
-                        '<li id="li_2_2">2_2</li>' +
-                    '</ol>' +
-                '</li>' +
-                '<li id="li_3">3' +
-                    '<ol>' +
-                        '<li id="li_3_1">3_1</li>' +
-                    '</ol>' +
-                '</li>' +
-                '<li id="li_4">4</li>' +
-                '<li id="li_5">5' +
-                    '<ol>' +
-                        '<li id="li_5_1">5_1</li>' +
-                        '<li id="li_5_2">5_2</li>' +
-                    '</ol>' +
-                '</li>' +
-                '<li id="li_5_3">5_3' +
-                    '<ol>' +
-                        '<li class="spacer_li">' +
-                            '<ul>' +
-                                '<li id="li_5_3_1">5_3_1</li>' +
-                            '</ul>' +
-                        '</li>' +
-                        '<li id="li_5_4">5_4</li>' +
-                    '</ol>' +
-                '</li>' +
-                '<li id="li_6">6</li>' +
-                '<li id="li_7">7</li>' +
-                '<li id="li_8">8</li>' +
-            '</ol>';
-
-    equals(jQuery.wymeditors(0).parser.parse(missingClosingLiHtml), fixedHtml);
-});
-
-test("Don't over-close lists", function () {
-    expect(6);
-    var orphanedLiHtml = String() +
-        '<ol id="ol_1">' +
-            '<li id="li_1">li_1' +
-                '<ol>' +
-                    '<li id="li_1_1">li_1_1</li>' +
-                '</ol>' +
-            '</li>' +
-        '</ol>' +
-        '<li id="li_2">li_2' +
-            '<ol id="ol_2_1">' +
-                '<li id="li_2_1">li_2_1' +
-                    '<ol>' +
-                        '<li id="li_2_1_1">li_2_1_1</li>' +
-                    '</ol>' +
-                '</li>' +
-            '</ol>' +
-        '</li>' +
-        '<li id="li_3">li_3</li>' +
-        '<p>stop</p>' +
-        '<li id="li_new">li_new</li>' +
-        'text' +
-        '<li id="li_text_sep">li_text_sep</li>',
-        simpleOrphanedLiHtml = String() +
-        '<ol id="ol_1">' +
-            '<li id="li_1">li_1' +
-                '<ol>' +
-                    '<li id="li_1_1">li_1_1</li>' +
-                '</ol>' +
-            '</li>' +
-        '</ol>' +
-        '<li id="li_2">li_2</li>',
-        listAfterText = String() +
-        '<ol id="ol_1">' +
-            '<li id="li_1">li_1' +
-                '<ol>' +
-                    '<li id="li_1_1">li_1_1</li>' +
-                '</ol>' +
-            '</li>' +
-        '</ol>' +
-        '<li id="li_2">li_2' +
-            '<ol id="ol_2_1">' +
-                '<li id="li_2_1">li_2_1' +
-                    '<ol>' +
-                        '<li id="li_2_1_1">li_2_1_1</li>' +
-                    '</ol>' +
-                '</li>' +
-            '</ol>' +
-        '</li>' +
-        '<li id="li_3">li_3</li>' +
-        '<p>stop</p>' +
-        '<li id="li_new">li_new</li>' +
-        'text' +
-        '<ol>' +
-            '<li id="li_text_sep">li_text_sep</li>' +
-        '</ol>',
-        wymeditor = jQuery.wymeditors(0);
-
-    equals(
-        wymeditor.parser.parse(orphanedLiHtml),
-        orphanedLiHtml
-    );
-    equals(
-        wymeditor.parser.parse(simpleOrphanedLiHtml),
-        simpleOrphanedLiHtml
-    );
-    equals(
-        wymeditor.parser.parse(listAfterText),
-        listAfterText
-    );
-
-    // Now throw the browser/dom in the mix
-    wymeditor.html(orphanedLiHtml);
-    htmlEquals(wymeditor, orphanedLiHtml);
-
-    wymeditor.html(simpleOrphanedLiHtml);
-    htmlEquals(wymeditor, simpleOrphanedLiHtml);
-
-    wymeditor.html(listAfterText);
-    htmlEquals(wymeditor, listAfterText);
-});
-
-test("Shouldn't remove empty td elements", function () {
-    expect(1);
-    var expected = '<table><tr><td>Cell1</td><td></td></tr></table>',
-        empty_cell = '<table><tr><td>Cell1</td><td></td></tr></table>';
-    equals(jQuery.wymeditors(0).parser.parse(empty_cell), expected);
-});
-
-test("Should remove PRE line breaks (BR)", function () {
-    expect(1);
-    var original = String() +
-            '<pre>One<br>Two<br>Three</pre>' +
-            '<p>Test</p>' +
-            '<pre>Three<br>Four<br>Five</pre>',
-        expected = String() +
-            '<pre>One\r\nTwo\r\nThree</pre>' +
-            '<p>Test</p>' +
-            '<pre>Three\r\nFour\r\nFive</pre>';
-    equals(
-        jQuery.wymeditors(0).parser.parse(original),
-        expected,
-        "Remove BR in PRE"
-    );
-});
-
-test("Shouldn't strip colSpan attributes", function () {
-    // http://trac.wymeditor.org/trac/ticket/223
-    // IE8 uses colSpan for the colspan attribute. WYMeditor shouldn't strip it
-    // just because of the camelCase
-    expect(1);
-    var original = String() +
-            '<table>' +
-                '<tr id="tr_1">' +
-                    '<td id="td_1_1" colSpan="2">1_1</td>' +
-                '</tr>' +
-                '<tr id="tr_2">' +
-                    '<td id="td_2_1">2_1</td>' +
-                    '<td id="td_2_2">2_2</td>' +
-                '</tr>' +
-            '</table>',
-        expected = String() +
-            '<table>' +
-                '<tr id="tr_1">' +
-                    '<td id="td_1_1" colspan="2">1_1</td>' +
-                '</tr>' +
-                '<tr id="tr_2">' +
-                    '<td id="td_2_1">2_1</td>' +
-                    '<td id="td_2_2">2_2</td>' +
-                '</tr>' +
-            '</table>';
-    equals(
-        jQuery.wymeditors(0).parser.parse(original),
-        expected,
-        "Don't strip colSpan"
-    );
-});
-
-test("no-op on table with colgroup generates valid XHTML", function () {
-    expect(1);
-
-    var tableWithColXHtml = String() +
-        '<table>' +
-            '<colgroup>' +
-                '<col width="20%" />' +
-                '<col width="30%" />' +
-                '<col width="50%" />' +
-            '</colgroup>' +
-            '<tbody>' +
-                '<tr id="tr_1">' +
-                    '<td id="td_1_1">1_1</td>' +
-                    '<td id="td_1_2">1_2</td>' +
-                    '<td id="td_1_3">1_3</td>' +
-                '</tr>' +
-            '</tbody>' +
-        '</table>';
-
-    equals(jQuery.wymeditors(0).parser.parse(tableWithColXHtml), tableWithColXHtml);
-});
-
-test("Self closing button tags should be expanded and removed", function () {
-    var html = '<p><button /></p>';
-    var expected = '<p></p>';
-    equals(jQuery.wymeditors(0).parser.parse(html), expected);
-});
-
-test("Iframe should not be self closing", function () {
-    var html = '<iframe width="480" height="390" src="asd.html" frameborder="0" /></iframe>';
-    var expected = '<iframe width="480" height="390" src="asd.html" frameborder="0"></iframe>';
-    equals(jQuery.wymeditors(0).parser.parse(html), expected);
-});
-
-test("Allow HR inside strong tags", function () {
-    var html = '<strong>hello<hr /></strong>';
-    equals(jQuery.wymeditors(0).parser.parse(html), html);
-});
-
-test("Allow line breaks inside em tags", function() {
-    var html = '<em>hello<br />world</em>';
-    wymeditor = jQuery.wymeditors(0);
-    equals(wymeditor.parser.parse(html), html);
-});
-
-test("Allow line breaks after strong in lists", function () {
-    expect(4);
-    var listHtml = String() +
-        '<ol id="ol_1">' +
-            '<li id="li_1">li_1' +
-                '<ol>' +
-                    '<li id="li_1_1"><strong>li_1_1</strong><br />more text</li>' +
-                '</ol>' +
-            '</li>' +
-        '</ol>',
-        listHtmlUnclosedBr = String() +
-        '<ol id="ol_1">' +
-            '<li id="li_1">li_1' +
-                '<ol>' +
-                    '<li id="li_1_1"><strong>li_1_1</strong><br>more text</li>' +
-                '</ol>' +
-            '</li>' +
-        '</ol>',
-        wymeditor = jQuery.wymeditors(0);
-
-    equals(
-        wymeditor.parser.parse(listHtml),
-        listHtml
-    );
-    equals(
-        wymeditor.parser.parse(listHtmlUnclosedBr),
-        listHtml
-    );
-
-    // Now throw the browser/dom in the mix
-    wymeditor.html(listHtml);
-    htmlEquals(wymeditor, listHtml);
-
-    wymeditor.html(listHtmlUnclosedBr);
-    htmlEquals(wymeditor, listHtml);
-});
 module("Post Init", {setup: setupWym});
 
-test("Sanity check: html()", function () {
+test("Sanity check: _html()", function () {
     expect(1);
     var testText1 = '<p>This is some text with which to test.<\/p>',
         wymeditor = jQuery.wymeditors(0);
 
-    wymeditor.html(testText1);
+    wymeditor._html(testText1);
     htmlEquals(wymeditor, testText1);
 });
 
@@ -508,7 +157,7 @@ if (!jQuery.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
             styles,
             {name: 'p,h1,h2', css: 'font-style:italic'}
         );
-        equals(jQuery('p', doc).css('fontStyle'), 'italic', 'Font-style');
+        deepEqual(jQuery('p', doc).css('font-style'), 'italic', 'Font-style');
     });
 }
 
@@ -754,7 +403,7 @@ function testPaste(pasteStartSelector, startHtml, textToPaste, elmntStartHtml, e
     }
 
     wymeditor = jQuery.wymeditors(0);
-    wymeditor.html(startHtml);
+    wymeditor._html(startHtml);
 
     // Escape slashes for the regexp
     elmntRegex = new RegExp(elmntStartHtml.replace('/', '\\/'), 'g');
@@ -773,7 +422,7 @@ function testPaste(pasteStartSelector, startHtml, textToPaste, elmntStartHtml, e
         startElmnt = $body.find(pasteStartSelector).get(0);
         endElmnt = $body.find(pasteEndSelector).get(0);
         makeTextSelection(wymeditor, startElmnt, endElmnt, pasteStartIndex, pasteEndIndex);
-        equals(wymeditor.selected(), startElmnt, "moveSelector");
+        deepEqual(wymeditor.selected(), startElmnt, "moveSelector");
     }
     wymeditor.paste(textToPaste);
 
@@ -881,7 +530,7 @@ test("List- 2nd level li li_2_2", function () {
     );
 });
 
-module("Table Insertion", {setup: setupWym});
+module("table-insertion", {setup: setupWym});
 
 test("Table is editable after insertion", function () {
     expect(7);
@@ -889,13 +538,13 @@ test("Table is editable after insertion", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         dm;
-    wymeditor.html('');
+    wymeditor._html('');
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     wymeditor.insertTable(3, 2, '', '');
 
     $body.find('td').each(function (index, td) {
-        equals(isContentEditable(td), true);
+        deepEqual(isContentEditable(td), true);
     });
 
     dm = wymeditor._doc.designMode;
@@ -924,7 +573,7 @@ if (jQuery.browser.mozilla) {
 
         var wymeditor = jQuery.wymeditors(0),
             $body;
-        wymeditor.html('');
+        wymeditor._html('');
 
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
         wymeditor.insertTable(3, 2, '', '');
@@ -932,32 +581,579 @@ if (jQuery.browser.mozilla) {
         $body.find('td').each(function (index, td) {
             if (parseInt(jQuery.browser.version, 10) == 1 &&
                 jQuery.browser.version >= '1.9.1' && jQuery.browser.version < '2.0') {
-                equals(td.childNodes.length, 1);
+                deepEqual(td.childNodes.length, 1);
             } else {
-                equals(td.childNodes.length, 0);
+                deepEqual(td.childNodes.length, 0);
             }
-            equals(isContentEditable(td), true);
+            deepEqual(isContentEditable(td), true);
         });
 
     });
 
-    test("Table cells are editable in FF > 3.5: html() insert", function () {
+    test("Table cells are editable in FF > 3.5: _html() insert", function () {
         expect(12);
 
         var wymeditor = jQuery.wymeditors(0),
             $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
-        wymeditor.html('');
-        wymeditor.html(table_3_2_html);
+        wymeditor._html('');
+        wymeditor._html(table_3_2_html);
         $body.find('td').each(function (index, td) {
             // Both FF 3.6 and 4.0 add spacer brs with design mode
-            equals(td.childNodes.length, 1);
-            equals(isContentEditable(td), true);
+            deepEqual(td.childNodes.length, 1);
+            deepEqual(isContentEditable(td), true);
         });
     });
 }
 
-module("preformatted text", {setup: setupWym});
+// Functions and html strings for table in list modules
+
+/**
+    setupTable
+    ==========
+
+    Puts the html in the body of the wymeditor and creates a rowsXcols-sized
+    table at the selection (using the specified selectionType which can be
+    'text','collapsed', or 'node'). The table's cells each have an id attribute
+    of the form "t<table_id_character>_<x>_<y>" where <table_id_character> is
+    the last character of the caption, <x> is the x-coordinate of the cell in
+    the table, and <y> is the y-coordinate of the cell in the table. Each cell
+    then has text of the form "<x>_<y>" where <x> and <y> are the same as
+    described for the id attribute. Here is a small example:
+
+    setupTable(wymeditor, html, selection, selectionType, 2, 1, 'test_1')
+    inserts the following html at the selection:
+
+        <table>
+            <caption>test_1</caption>
+            <tbody>
+                <tr>
+                    <td id="t1_1_1">1_1</td>
+                </tr>
+                <tr>
+                    <td id="t1_2_1">2_1</td>
+                </tr>
+            </tbody>
+        </table>
+*/
+function setupTable(wymeditor, html, selection, selectionType,
+                    rows, cols, caption) {
+    var $body,
+        $element,
+        $table,
+        i,
+        j,
+        selectionNum,
+        stub,
+        cellStr,
+        idStr = 't' + caption.slice(-1);
+
+    wymeditor._html(html);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    $element = $body.find(selection);
+
+    if (selectionType === 'node') {
+        // Force wymeditor.selection() to return the node as the selection
+        stub = sinon.stub(wymeditor, 'selection');
+        stub.returns({focusNode: $body.find(selection)[0]});
+    } else {
+        selectionNum = (selectionType === 'text') ? 1 : 0;
+        makeTextSelection(wymeditor, $element, $element, 0, selectionNum);
+    }
+
+    wymeditor.insertTable(rows, cols, caption, '');
+    $tableCells = $body.find('caption:contains(' + caption + ')')
+                       .parent()
+                       .find('td');
+
+    for (i = 0; i < rows; i++) {
+        for (j = 0; j < cols; j++) {
+            cellStr = (i+1) + '_' + (j+1);
+            $tableCells.eq(i + j)
+                       .attr('id', idStr + '_' + cellStr)
+                       .text(cellStr);
+        }
+    }
+
+    if (selectionType === 'node') {
+        // Restore the wymeditor.selection() function back to its original
+        // functionality by removing the stub that was wrapped around it.
+        stub.restore();
+    }
+}
+
+var TEST_LINEBREAK_SPACER = '<br class="' +
+                                WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS + ' ' +
+                                WYMeditor.EDITOR_ONLY_CLASS + '"/>';
+
+var listForTableInsertion = String() +
+    '<ol>' +
+        '<li id="li_1">1</li>' +
+        '<li id="li_2">2</li>' +
+        '<li id="li_3">3</li>' +
+    '</ol>';
+
+var sublistForTableInsertion = String() +
+    '<ol>' +
+        '<li id="li_1">1' +
+            '<ol>' +
+                '<li id="li_2">2' +
+                    '<ol>' +
+                        '<li id="li_3">3</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+    '</ol>';
+
+var expectedListOneTable = String() +
+    '<ol>' +
+        '<li id="li_1">1</li>' +
+        '<li id="li_2">2</li>' +
+        '<li id="li_3">3' +
+            '<table>' +
+                '<caption id="t1_cap">test_1</caption>' +
+                '<thead>' +
+                    '<tr>' +
+                        '<th id="t1_h_1">h_1</th>' +
+                    '</tr>' +
+                '</thead>' +
+                '<tbody>' +
+                    '<tr>' +
+                        '<td id="t1_1_1">1_1</td>' +
+                    '</tr>' +
+                '</tbody>' +
+            '</table>' +
+            TEST_LINEBREAK_SPACER +
+        '</li>' +
+    '</ol>';
+
+var expectedListTwoTables = String() +
+    '<ol>' +
+        '<li id="li_1">1</li>' +
+        '<li id="li_2">2</li>' +
+        '<li id="li_3">3' +
+            '<table>' +
+                '<caption id="t1_cap">test_1</caption>' +
+                '<thead>' +
+                    '<tr>' +
+                        '<th id="t1_h_1">h_1</th>' +
+                    '</tr>' +
+                '</thead>' +
+                '<tbody>' +
+                    '<tr>' +
+                        '<td id="t1_1_1">1_1</td>' +
+                    '</tr>' +
+                '</tbody>' +
+            '</table>' +
+            TEST_LINEBREAK_SPACER +
+            '<table>' +
+                '<caption>test_2</caption>' +
+                '<tbody>' +
+                    '<tr>' +
+                        '<td id="t2_1_1">1_1</td>' +
+                    '</tr>' +
+                '</tbody>' +
+            '</table>' +
+            TEST_LINEBREAK_SPACER +
+        '</li>' +
+    '</ol>';
+
+var expectedSublistOneTable = String() +
+    '<ol>' +
+        '<li id="li_1">1' +
+            '<ol>' +
+                '<li id="li_2">2' +
+                    '<table>' +
+                        '<caption>test_1</caption>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td id="t1_1_1">1_1</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                    TEST_LINEBREAK_SPACER +
+                    '<ol>' +
+                        '<li id="li_3">3</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+    '</ol>';
+
+var expectedSublistTwoTables = String() +
+    '<ol>' +
+        '<li id="li_1">1' +
+            '<ol>' +
+                '<li id="li_2">2' +
+                    '<table>' +
+                        '<caption>test_2</caption>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td id="t2_1_1">1_1</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td id="t2_2_1">2_1</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                    TEST_LINEBREAK_SPACER +
+                    '<table>' +
+                        '<caption>test_1</caption>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td id="t1_1_1">1_1</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                    TEST_LINEBREAK_SPACER +
+                    '<ol>' +
+                        '<li id="li_3">3</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+    '</ol>';
+
+var expectedSublistThreeTables = String() +
+    '<ol>' +
+        '<li id="li_1">1' +
+            '<ol>' +
+                '<li id="li_2">2' +
+                    '<table>' +
+                        '<caption>test_3</caption>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td id="t3_1_1">1_1</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td id="t3_2_1">2_1</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td id="t3_3_1">3_1</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                    TEST_LINEBREAK_SPACER +
+                    '<table>' +
+                        '<caption>test_2</caption>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td id="t2_1_1">1_1</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                                '<td id="t2_2_1">2_1</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                    TEST_LINEBREAK_SPACER +
+                    '<table>' +
+                        '<caption>test_1</caption>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td id="t1_1_1">1_1</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                    TEST_LINEBREAK_SPACER +
+                    '<ol>' +
+                        '<li id="li_3">3</li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+    '</ol>';
+
+var sublistThreeTablesNoBR =
+        expectedSublistThreeTables.replace(
+            RegExp(TEST_LINEBREAK_SPACER, 'g'), '');
+
+var expectedMiddleOutFull = String() +
+    '<ol>' +
+        '<li id="li_1">1</li>' +
+        '<li id="li_2">2' +
+            '<table>' +
+                '<caption>test_1</caption>' +
+                '<tbody>' +
+                    '<tr>' +
+                        '<td id="t1_1_1">1_1</td>' +
+                    '</tr>' +
+                '</tbody>' +
+            '</table>' +
+            TEST_LINEBREAK_SPACER +
+        '</li>' +
+        '<li id="li_3">3</li>' +
+    '</ol>';
+
+var expectedEndOut = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2</li>' +
+            '<li id="li_3">3' +
+                '<table>' +
+                    '<caption>test_1</caption>' +
+                    '<tbody>' +
+                        '<tr>' +
+                            '<td id="t1_1_1">1_1</td>' +
+                        '</tr>' +
+                    '</tbody>' +
+                '</table>' +
+                TEST_LINEBREAK_SPACER +
+            '</li>' +
+        '</ol>';
+
+var expectedEndIn = String() +
+    '<ol>' +
+        '<li id="li_1">1</li>' +
+        '<li id="li_2">2' +
+            '<ol>' +
+                '<li id="li_3">3' +
+                    '<table>' +
+                        '<caption>test_1</caption>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td id="t1_1_1">1_1</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                    TEST_LINEBREAK_SPACER +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+    '</ol>';
+
+var expectedEndOut = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2</li>' +
+            '<li id="li_3">3' +
+                '<table>' +
+                    '<caption>test_1</caption>' +
+                    '<tbody>' +
+                        '<tr>' +
+                            '<td id="t1_1_1">1_1</td>' +
+                        '</tr>' +
+                    '</tbody>' +
+                '</table>' +
+                TEST_LINEBREAK_SPACER +
+            '</li>' +
+        '</ol>';
+
+var startEndInNoBR = expectedEndIn.replace(TEST_LINEBREAK_SPACER, '');
+
+var startEndOutNoBR = expectedEndOut.replace(TEST_LINEBREAK_SPACER, '');
+
+module("table-insert_in_list", {setup: setupWym});
+
+test("Table insertion in the middle of a list with text selection", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+    setupTable(wymeditor, listForTableInsertion, '#li_2', 'text',
+               1, 1, 'test_1');
+    deepEqual(normalizeHtml($body.get(0).firstChild), expectedMiddleOutFull,
+           "Table insertion in the middle of a list with text selection");
+});
+
+test("Table insertion at the end of a list with text selection", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+        setupTable(wymeditor, listForTableInsertion, '#li_3', 'text',
+                   1, 1, 'test_1');
+        deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndOut,
+               "Table insertion at the end of a list with text selection");
+});
+
+test("Table insertion in the middle of a list with collapsed selection", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+    setupTable(wymeditor, listForTableInsertion, '#li_2', 'collapsed',
+               1, 1, 'test_1');
+    deepEqual(normalizeHtml($body.get(0).firstChild), expectedMiddleOutFull,
+           "Table insertion in the middle of a list with collapsed selection");
+});
+
+test("Table insertion at the end of a list with collapsed selection", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+        setupTable(wymeditor, listForTableInsertion, '#li_3', 'collapsed',
+                   1, 1, 'test_1');
+        deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndOut,
+               "Table insertion at the end of a list with collapsed selection");
+});
+
+// This test mimics the behavior that caused issue #406 which would
+// unexpectedly nest an inserted table into another table within a list.
+test("Table insertion with selection inside another table in a list", function () {
+    expect(3);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+        // Try insert in td element
+        setupTable(wymeditor, expectedListOneTable, '#t1_1_1', 'collapsed',
+                   1, 1, 'test_2');
+        deepEqual(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
+               "Table insertion with selection inside a td element in a list");
+
+        // Try insert in th element
+        setupTable(wymeditor, expectedListOneTable, '#t1_h_1', 'collapsed',
+                   1, 1, 'test_2');
+        deepEqual(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
+               "Table insertion with selection inside a th element in a list");
+
+        // Try insert in caption element
+        setupTable(wymeditor, expectedListOneTable, '#t1_cap', 'collapsed',
+                   1, 1, 'test_2');
+        deepEqual(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
+               "Table insertion with selection inside a caption element " +
+               "in a list");
+});
+
+test("Table insertion with direct selection of list item node", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+    setupTable(wymeditor, expectedListOneTable, '#li_3', 'node',
+               1, 1, 'test_2');
+    deepEqual(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
+           "Table insertion with direct selection of list item node");
+});
+
+module("table-insert_in_sublist", {setup: setupWym});
+
+test("Single table insertion into a sublist", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+    setupTable(wymeditor, sublistForTableInsertion, '#li_2', 'text',
+               1, 1, 'test_1');
+    deepEqual(normalizeHtml($body.get(0).firstChild), expectedSublistOneTable,
+           "Single table insertion within a sublist");
+});
+
+test("Double table insertion into a sublist", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+    setupTable(wymeditor, expectedSublistOneTable, '#li_2', 'text',
+               2, 1, 'test_2');
+    deepEqual(normalizeHtml($body.get(0).firstChild), expectedSublistTwoTables,
+           "Double table insertion within a sublist");
+});
+
+test("Triple table insertion into a sublist", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+    setupTable(wymeditor, expectedSublistTwoTables, '#li_2', 'text',
+               3, 1, 'test_3');
+    deepEqual(normalizeHtml($body.get(0).firstChild),
+           expectedSublistThreeTables,
+           "Triple table insertion within a sublist");
+});
+
+module("table-parse_spacers_in_list", {setup: setupWym});
+// The tests in this module use the htmlEquals function from utils.js to parse
+// the resulting html from tables being inserted into a list or sublist using
+// the parser to ensure that the line break spacers are properly removed.
+
+test("Parse list with a table at the end", function () {
+    var wymeditor = jQuery.wymeditors(0);
+
+    wymeditor._html(expectedEndOut);
+    htmlEquals(wymeditor, startEndOutNoBR);
+});
+
+test("Parse list with a table at the end in a sublist", function () {
+    var wymeditor = jQuery.wymeditors(0);
+
+    wymeditor._html(expectedEndIn);
+    htmlEquals(wymeditor, startEndInNoBR);
+});
+
+test("Parse list with multiple tables in a sublist", function () {
+    var wymeditor = jQuery.wymeditors(0);
+
+    wymeditor._html(expectedSublistThreeTables);
+    htmlEquals(wymeditor, sublistThreeTablesNoBR);
+});
+
+module("table-td_th_switching", {setup: setupWym});
+
+var tableWithColspanTD = String() +
+    '<table>' +
+        '<caption>test_1</caption>' +
+        '<tbody>' +
+            '<tr>' +
+                '<td colspan="2">1</td>' +
+            '</tr>' +
+            '<tr>' +
+                '<td>2_1</td>' +
+                '<td>2_2</td>' +
+            '</tr>' +
+        '</tbody>' +
+    '</table>';
+
+var tableWithColspanTH = String() +
+    '<table>' +
+        '<caption>test_1</caption>' +
+        '<tbody>' +
+            '<tr>' +
+                '<th colspan="2">1</th>' +
+            '</tr>' +
+            '<tr>' +
+                '<td>2_1</td>' +
+                '<td>2_2</td>' +
+            '</tr>' +
+        '</tbody>' +
+    '</table>';
+
+test("Colspan preserved when switching from td to th", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $thContainerLink = jQuery(wymeditor._box)
+            .find(wymeditor._options.containersSelector + ' a[name="TH"]'),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $tableCell;
+
+        wymeditor._html(tableWithColspanTD);
+        $tableCell = $body.find('td[colspan="2"]');
+        makeTextSelection(wymeditor, $tableCell[0], $tableCell[0], 0, 1);
+
+        // Click "Table Header" option in the containers panel
+        $thContainerLink.trigger('click');
+        htmlEquals(wymeditor, tableWithColspanTH);
+});
+
+test("Colspan preserved when switching from th to td", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        $thContainerLink = jQuery(wymeditor._box)
+            .find(wymeditor._options.containersSelector + ' a[name="TH"]'),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $tableCell;
+
+        wymeditor._html(tableWithColspanTH);
+        $tableCell = $body.find('th[colspan="2"]');
+        makeTextSelection(wymeditor, $tableCell[0], $tableCell[0], 0, 1);
+
+        // Click "Table Header" option in the containers panel
+        $thContainerLink.trigger('click');
+        htmlEquals(wymeditor, tableWithColspanTD);
+});
+
+module("preformatted-text", {setup: setupWym});
 
 test("Preformatted text retains spacing", function () {
     var wymeditor = jQuery.wymeditors(0),
@@ -972,13 +1168,13 @@ test("Preformatted text retains spacing", function () {
         preHtml = preHtml.replace(/\r/g, '');
     }
 
-    wymeditor.html(preHtml);
+    wymeditor._html(preHtml);
 
     expect(1);
-    equals(wymeditor.xhtml(), preHtml);
+    deepEqual(wymeditor.xhtml(), preHtml);
 });
 
-module("soft return", {setup: setupWym});
+module("soft-return", {setup: setupWym});
 
 test("Double soft returns are allowed", function () {
     var initHtml = String() +
@@ -986,7 +1182,7 @@ test("Double soft returns are allowed", function () {
                 '<li>li_1<br /><br />stuff</li>' +
             '</ul>',
         wymeditor = jQuery.wymeditors(0);
-    wymeditor.html(initHtml);
+    wymeditor._html(initHtml);
 
     wymeditor.fixBodyHtml();
 
@@ -994,7 +1190,7 @@ test("Double soft returns are allowed", function () {
     htmlEquals(wymeditor, initHtml);
 });
 
-module("image styling", {setup: setupWym});
+module("image-styling", {setup: setupWym});
 
 test("_selected image is saved on mousedown", function () {
     var initHtml = String() +
@@ -1009,20 +1205,127 @@ test("_selected image is saved on mousedown", function () {
 
     expect(3);
 
-    wymeditor.html(initHtml);
+    wymeditor._html(initHtml);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
     // Editor starts with no selected image
-    equals(wymeditor._selected_image, null);
+    deepEqual(wymeditor._selected_image, undefined);
 
     // Clicking on a non-image doesn't change that
     $noimage = $body.find('#noimage');
     $noimage.mousedown();
-    equals(wymeditor._selected_image, null);
+    deepEqual(wymeditor._selected_image, null);
 
 
     // Clicking an image does update the selected image
     $google = $body.find('#google');
     $google.mousedown();
-    equals(wymeditor._selected_image, $google[0]);
+    deepEqual(wymeditor._selected_image, $google[0]);
 });
+
+// The following test doesn't work in Phantom.js because the `InsertImage`
+// command for the browser execCommand function would not insert an image into
+// the editor in Phantom.js. This test still works fine in all other supported
+// browsers.
+if (!inPhantomjs || !SKIP_KNOWN_FAILING_TESTS) {
+    module("image-insertion", {setup: setupWym});
+
+    test("Image insertion outside of a container", function () {
+        expect(3);
+        var wymeditor = jQuery.wymeditors(0),
+            $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+
+            imageURL = 'http://www.google.com/intl/en_com/images/srpr/logo3w.png',
+            imageStamp = wymeditor.uniqueStamp(),
+            imageSelector = 'img[src$="' + imageStamp + '"]',
+
+            expectedHtml = String() +
+                '<p>' +
+                    '<img src="' + imageURL + '"/>' +
+                '</p>';
+            expectedHtmlIE = expectedHtml.replace(/<\/?p>/g, '');
+
+        // Mimic the way images are inserted by the insert image tool by first
+        // inserting the image with its src set to a unique stamp for
+        // identification rather than its actual src.
+        wymeditor._html('');
+        wymeditor._exec(WYMeditor.INSERT_IMAGE, imageStamp);
+
+        ok(!$body.siblings(imageSelector).length,
+           "Image is not a sibling of the wymeditor body");
+        ok(!$body.siblings().children(imageSelector).length,
+           "Image is not a child of a sibling of the wymeditor body");
+
+        $body.find(imageSelector).attr(WYMeditor.SRC, imageURL);
+        if (jQuery.browser.msie) {
+            // IE doesn't wrap the image in a paragraph
+            htmlEquals(wymeditor, expectedHtmlIE);
+        } else {
+            htmlEquals(wymeditor, expectedHtml);
+        }
+    });
+}
+
+module("header-no_span", {setup: setupWym});
+
+/**
+    checkTagInContainer
+    ===================
+
+    Checks if using the given command on a container of type containerType in
+    wymeditor creates a tagName element within the container. Returns true if a
+    tagName element was created within the container, and returns false if no
+    tagName element was created within the container.
+*/
+function checkTagInContainer(wymeditor, containerType, tagName, command) {
+    var $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $container,
+
+        initHtml = String () +
+        '<' + containerType + '>' +
+            'Test' +
+        '</' + containerType + '>';
+
+    wymeditor._html(initHtml);
+    $container = $body.find(containerType);
+    makeTextSelection(wymeditor, $container, $container, 0, 4);
+
+    wymeditor.exec(command);
+    return $container.find(tagName).length;
+}
+
+test("No span added to header after bolding", function () {
+    expect(6);
+    var wymeditor = jQuery.wymeditors(0),
+        i;
+
+    for (i = 1; i < 7; i++) {
+        header = 'h' + i;
+        ok(!checkTagInContainer(wymeditor, header, 'span', 'Bold'),
+           "No span added to " + header + " on bold");
+    }
+});
+
+
+module("html_from_editor-html_function", {setup: setupWym});
+
+test("Can set and get html with the html() function", function () {
+    var wymeditor = jQuery.wymeditors(0),
+        testHtml = "<p>Test</p>",
+        stub,
+        htmlNode;
+
+    // Disable console warnings so that the deprecation warning added in issue
+    // #364 isn't displayed. This warning is not necessary because this test is
+    // explicitly trying to test that the deprecated function still works, so
+    // it should not make the user think that the test is malfunctioning by
+    // outputting a console warning.
+    stub = sinon.stub(WYMeditor.console, "warn", function() {});
+
+    wymeditor.html(testHtml);
+    htmlNode = jQuery(wymeditor.html(), wymeditor._doc);
+    stub.restore();
+    deepEqual(normalizeHtml(htmlNode[0]), testHtml,
+              "Set and get with html() function");
+});
+

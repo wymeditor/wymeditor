@@ -3,6 +3,81 @@
 This document tracks the enhancements and bug fixes between releases of
 WYMeditor.
 
+## 1.0.0b5 (Beta 5)
+
+*release-date* TBD
+
+### Enhancements
+
+* We now have all of the documentation in one place at
+  [wymeditor.readthedocs.org](https://wymeditor.readthedocs.org)! No more
+  switching back and forth between the old Trac site and the github Wiki.
+  The new documentation uses [Sphinx](http://sphinx-doc.org/) and new pull
+  requests will now be able to come with `docs/` already committed!
+  Thanks to Nick McLaughlin for the herculean effort in combining the years
+  of spread-out documentation.
+* We now document how to run WYMeditor with jQuery 1.8.x and 1.9.x via
+  [jquery-migrate](https://github.com/jquery/jquery-migrate/). The unit tests
+  now also support those versions of jQuery.
+* Some community members have created a
+  [Django-CMS 3](https://github.com/wymeditor/djangocms_wymeditor_plugin)
+  plugin for WYMeditor. If you're upgrading from Django-CMS 2 to 3, you'll
+  want to check it out.
+* Tables can now be inserted and used in lists. Previously, the editor
+  would not let the user insert a table anywhere in a list, but now, the
+  user can insert a table at any point in a list or sublist and can even
+  insert multiple tables in the same list item. In addition, the tables
+  should properly indent, outdent, and space themselves within a list.
+* Elements in the editor can now easily be flagged to be removed from
+  the editor output by the XHTML parser. This allows elements to be
+  "editor-only" in the sense that they will be visible in the editor but
+  not included in the outputed XHTML from the editor. Simply add the
+  class `WYMeditor.EDITOR_ONLY_CLASS` to an element to specify it to be
+  removed by the XHTML parser in this manner.
+* Classes can now be specified to be removed from tags' class attribute
+  by the XHTML parser. Simply add a string for each of the class names
+  to remove to the `WYMeditor.CLASSES_REMOVED_BY_PARSER` array, and the
+  XHTML parser will remove all of those classes from all the tags in the
+  editor's output. 
+
+### Bug Fixes
+
+* WYMeditor now works properly in Chrome when using jQuery 1.4 or higher.
+  Thanks to several folks for outlining the fix and for Nick McLaughlin for the
+  pull request.
+* When using the bold tool in a header in Chrome, there was an issue
+  where a span with a style attribute set to `font-weight: normal` would
+  be wrapped around the header's content. This has been fixed so that
+  this span will no longer occur after bolding.
+* When attempting to insert an image outside of a container in Chrome
+  such as in the case of inserting an image into a blank document, there
+  was an issue where the image was being moved outside of the wymeditor
+  body causing none of the user-entered values for the attributes of the
+  image to be applied to the image. This has been fixed so that
+  inserting an image properly places it within the wymeditor body and
+  properly applies the user-entered values for its attributes.
+* When switching between a normal table cell and a table header using
+  the "Table Header" option in the containers panel in the editor, any
+  `colspan` or other attributes were being lost in the container
+  conversion. This has been fixed so that all attributes such as `colspan`
+  are retained when switching betwen a normal table cell and a table
+  header. 
+
+### Deprecation
+
+* The `WYMeditor.editor.html()` function has been deprecated and
+  replaced with the `WYMeditor.editor._html()` function that has the
+  same functionality. This change was made to discourage users from
+  using the `html()` function (which is intended only for internal use)
+  as a means to get the HTML output from the editor because that
+  function bypasses all parsing and cross-browser cleanup for the HTML.
+  In most cases, users should be using the `WYMeditor.editor.xhtml()`
+  function to get the HTML output from the editor because it does parse
+  and apply cross-browser cleanup to the HTML. Now, using the `html()`
+  function will still work but just give a console warning of its
+  deprecation, but the function will be fully removed in the release of
+  version 1.0.0.
+
 ## 1.0.0b4 (Beta 4)
 
 *release-date* February 15, 2013

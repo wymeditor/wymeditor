@@ -1,0 +1,11 @@
+language: node_js
+node_js:
+    - 0.10
+before_script: npm install -g grunt-cli
+script:
+    - grunt test --jquery=1.4.1
+    - grunt test --jquery=1.5.2
+    - grunt test --jquery=1.6.4
+    - grunt test --jquery=1.7.2
+    - grunt test --jquery=1.8.3
+    - grunt test --jquery=1.9.1

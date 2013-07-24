@@ -36,7 +36,8 @@ WYMeditor.editor.prototype.init = function () {
         WymClass = new WYMeditor.WymClassMozilla(this);
     } else if (jQuery.browser.opera) {
         WymClass = new WYMeditor.WymClassOpera(this);
-    } else if (jQuery.browser.safari) {
+    } else if (jQuery.browser.safari || jQuery.browser.webkit ||
+               jQuery.browser.chrome) {
         WymClass = new WYMeditor.WymClassSafari(this);
     }
 
@@ -56,7 +57,6 @@ WYMeditor.editor.prototype.init = function () {
     this.helper = null;
 
     SaxListener = new WYMeditor.XhtmlSaxListener();
-    jQuery.extend(SaxListener, WymClass);
     this.parser = new WYMeditor.XhtmlParser(SaxListener);
 
     if (this._options.styles || this._options.stylesheet) {
@@ -263,17 +263,38 @@ WYMeditor.editor.prototype.box = function () {
 };
 
 /**
-    WYMeditor.editor.html
-    =====================
+    WYMeditor.editor._html
+    ======================
 
-    Get or set the wymbox html value.
+    Get or set the wymbox html value. If you want to get the wymbox html, you
+    should use WYMeditor.editor.xhtml() instead of this so that the html is
+    parsed and receives cross-browser cleanup. Only use this if you have a
+    specific reason not to use WYMeditor.editor.xhtml().
 */
-WYMeditor.editor.prototype.html = function (html) {
+WYMeditor.editor.prototype._html = function (html) {
     if (typeof html === 'string') {
         jQuery(this._doc.body).html(html);
         this.update();
     } else {
         return jQuery(this._doc.body).html();
+    }
+};
+
+/**
+    WYMeditor.editor.html
+    =====================
+
+    Deprecated. Use WYMeditor.editor.xhtml or WYMeditor.editor._html instead.
+    Calling this function will give a console warning.
+*/
+WYMeditor.editor.prototype.html = function (html) {
+    WYMeditor.console.warn("The function WYMeditor.editor.html() is deprecated. " +
+                           "Use either WYMeditor.editor.xhtml() or " +
+                           "WYMeditor.editor._html() instead.");
+    if (typeof html === 'string') {
+        this._html(html);
+    } else {
+        return this._html();
     }
 };
 
@@ -285,13 +306,7 @@ WYMeditor.editor.prototype.html = function (html) {
     enforce a valid, well-formed, semantic xhtml result.
 */
 WYMeditor.editor.prototype.xhtml = function () {
-    var html;
-
-    // Remove any of the placeholder nodes we've created for start/end content
-    // insertion
-    jQuery(this._doc.body).children(WYMeditor.BR).remove();
-
-    return this.parser.parse(this.html());
+    return this.parser.parse(this._html());
 };
 
 /**
@@ -525,7 +540,7 @@ WYMeditor.editor.prototype.container = function (sType) {
             if (container.tagName.toLowerCase() === WYMeditor.TD) {
                 sType = WYMeditor.TH;
             }
-            this.switchTo(container, sType);
+            this.switchTo(container, sType, false);
             this.update();
         }
     } else {
@@ -663,14 +678,25 @@ WYMeditor.editor.prototype.findUp = function (node, filter) {
     WYMeditor.editor.switchTo
     =========================
 
-    Switch the type of the given `node` to type `sType`
+    Switch the type of the given `node` to type `sType`. If stripAttrs is true,
+    the attributes of node will not be included in the the new type. If
+    stripAttrs is false (or undefined), the attributes of node will be
+    preserved through the switch.
 */
-WYMeditor.editor.prototype.switchTo = function (node, sType) {
+WYMeditor.editor.prototype.switchTo = function (node, sType, stripAttrs) {
     var newNode = this._doc.createElement(sType),
-        html = jQuery(node).html();
+        html = jQuery(node).html(),
+        attrs = node.attributes,
+        i;
 
+    if (!stripAttrs) {
+        for (i = 0; i < attrs.length; ++i) {
+            newNode.setAttribute(attrs.item(i).nodeName,
+                                 attrs.item(i).nodeValue);
+        }
+    }
+    newNode.innerHTML = html;
     node.parentNode.replaceChild(newNode, node);
-    jQuery(newNode).html(html);
 
     this.setFocusToNode(newNode);
 };
@@ -730,9 +756,6 @@ WYMeditor.editor.prototype.status = function (sMessage) {
 WYMeditor.editor.prototype.update = function () {
     var html;
 
-    // Dirty fix to remove stray line breaks (#189)
-    jQuery(this._doc.body).children(WYMeditor.BR).remove();
-
     html = this.xhtml();
     jQuery(this._element).val(html);
     jQuery(this._box).find(this._options.htmlValSelector).not('.hasfocus').val(html); //#147
@@ -748,8 +771,8 @@ WYMeditor.editor.prototype.update = function () {
     certain block elements.
 */
 WYMeditor.editor.prototype.fixBodyHtml = function () {
-    this.fixDoubleBr();
     this.spaceBlockingElements();
+    this.fixDoubleBr();
 };
 
 /**
@@ -761,15 +784,36 @@ WYMeditor.editor.prototype.fixBodyHtml = function () {
     start/end of the document.
 */
 WYMeditor.editor.prototype.spaceBlockingElements = function () {
-    var blockingSelector = WYMeditor.DocumentStructureManager.CONTAINERS_BLOCKING_NAVIGATION.join(', '),
+    var blockingSelector =
+            WYMeditor.DocumentStructureManager.CONTAINERS_BLOCKING_NAVIGATION.join(', '),
         $body = jQuery(this._doc).find('body.wym_iframe'),
         children = $body.children(),
-        placeholderNode = '<br _moz_editor_bogus_node="TRUE" _moz_dirty="" />',
+
+        placeholderNode,
         $firstChild,
         $lastChild,
-        blockSepSelector;
+        blockSepSelector,
+        blockInListSepSelector,
+        $blockInList;
 
-    // Make sure that we still have a bogus node at both the begining and end
+    if (jQuery.browser.mozilla) {
+        placeholderNode = '<br ' +
+                            'class="' +
+                            WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS + ' ' +
+                            WYMeditor.EDITOR_ONLY_CLASS + '" ' +
+                            '_moz_editor_bogus_node="TRUE" ' +
+                            '_moz_dirty=""' +
+                          '/>';
+    } else {
+        placeholderNode = '<br ' +
+                            'class="' +
+                            WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS + ' ' +
+                            WYMeditor.EDITOR_ONLY_CLASS + '"' +
+                          '/>';
+    }
+
+    // Make sure that we still have a placeholder node at both the begining and
+    // end
     if (children.length > 0) {
         $firstChild = jQuery(children[0]);
         $lastChild = jQuery(children[children.length - 1]);
@@ -778,7 +822,9 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
             $firstChild.before(placeholderNode);
         }
 
-        if ($lastChild.is(blockingSelector)) {
+        if ($lastChild.is(blockingSelector) &&
+            !(jQuery.browser.msie && jQuery.browser.version < "7.0")) {
+
             $lastChild.after(placeholderNode);
         }
     }
@@ -788,10 +834,31 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
     // Put placeholder nodes between consecutive blocking elements and between
     // blocking elements and normal block-level elements
     $body.find(blockSepSelector).before(placeholderNode);
+
+    blockInListSepSelector = this._getBlockInListSepSelector();
+    $blockInList = $body.find(blockInListSepSelector);
+
+    // The $blockInList selection must be iterated over to only add placeholder
+    // nodes after blocking elements at the end of a list item rather than all
+    // blocking elements in a list. No jQuery selection that is supported on
+    // all browsers can do this check, so that is why it must be done by using
+    // `each` to iterate over the selection. Note that the handling of the
+    // spacing of other blocking elements in a list besides after the last
+    // blocking element in a list item is already handled by the
+    // blockSepSelector used before this.
+    $blockInList.each(function () {
+        var $block = jQuery(this);
+
+        if(!$block.next(blockingSelector).length &&
+           !$block.next(WYMeditor.BR).length) {
+
+            $block.after(placeholderNode);
+        }
+    });
 };
 
 /**
-    editor._buildBlockSepSelector
+    editor._getBlockSepSelector
     =============================
 
     Build a string representing a jquery selector that will find all
@@ -806,7 +873,8 @@ WYMeditor.editor.prototype._getBlockSepSelector = function () {
 
     var wym = this,
         blockCombo = [],
-        containersBlockingNav = WYMeditor.DocumentStructureManager.CONTAINERS_BLOCKING_NAVIGATION,
+        containersBlockingNav =
+            WYMeditor.DocumentStructureManager.CONTAINERS_BLOCKING_NAVIGATION,
         containersNotBlockingNav;
 
     // Generate the list of non-blocking elements by removing the blocking
@@ -814,9 +882,8 @@ WYMeditor.editor.prototype._getBlockSepSelector = function () {
     containersNotBlockingNav = jQuery.grep(
         wym.documentStructureManager.structureRules.validRootContainers,
         function (item) {
-            return jQuery.inArray(item, containersBlockingNav) < 0;
+            return jQuery.inArray(item, containersBlockingNav) === -1;
     });
-
 
     // Consecutive blocking elements need separators
     jQuery.each(
@@ -831,8 +898,8 @@ WYMeditor.editor.prototype._getBlockSepSelector = function () {
         }
     );
 
-    // A blocking element either followed by or preceeded by a block elements
-    // needs separators
+    // A blocking element either followed by or preceeded by a not blocking
+    // element needs separators
     jQuery.each(
         containersBlockingNav,
         function (indexO, elementO) {
@@ -849,6 +916,31 @@ WYMeditor.editor.prototype._getBlockSepSelector = function () {
     return this._blockSpacersSel;
 };
 
+/*
+    editor._getBlockInListSepSelector
+    ==================================
+
+    Returns a selector for getting all of the block elements in lists
+    or sublists. The block elements at the end of lists or sublists should have
+    a spacer line break after them in the editor at all times.
+*/
+WYMeditor.editor.prototype._getBlockInListSepSelector = function () {
+    if (typeof (this._blockInListSpacersSel) !== 'undefined') {
+        return this._blockInListSpacersSel;
+    }
+
+    var blockCombo = [];
+
+    jQuery.each(WYMeditor.LIST_TYPE_ELEMENTS, function (indexO, elementO) {
+        jQuery.each(WYMeditor.BLOCKING_ELEMENTS, function (indexI, elementI) {
+            blockCombo.push(elementO + ' ' + elementI);
+        });
+    });
+
+    this._blockInListSpacersSel = blockCombo.join(', ');
+    return this._blockInListSpacersSel;
+};
+
 /**
     editor.fixDoubleBr
     ==================
@@ -858,8 +950,11 @@ WYMeditor.editor.prototype._getBlockSepSelector = function () {
 */
 WYMeditor.editor.prototype.fixDoubleBr = function () {
     var $body = jQuery(this._doc).find('body.wym_iframe'),
-        $last_br;
-    // Strip consecutive brs unless they're in a a pre tag
+        $last_br,
+
+        blockingSelector = WYMeditor.BLOCKING_ELEMENTS.join(', ');
+
+    // Strip consecutive brs unless they're in a pre tag
     $body.children('br + br').filter(':not(pre br)').remove();
 
     // Also remove any brs between two p's
@@ -1455,7 +1550,7 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
     }
     if (!$liToOutdent.parent().parent().is('li')) {
         // We have invalid list nesting and we need to fix that
-        WYMeditor.console.log(
+        WYMeditor.console.debug(
             'Attempting to fix invalid list nesting before outdenting.'
         );
         wym.correctInvalidListNesting(listItem);
@@ -1592,7 +1687,7 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
     if (jQuery(currentNode).is('li')) {
         // We have an li as the "root" because its missing a parent list.
         // Correct this problem and then try again to correct the nesting.
-        WYMeditor.console.log("Correcting orphaned root li before correcting invalid list nesting.");
+        WYMeditor.console.debug("Correcting orphaned root li before correcting invalid list nesting.");
         this._correctOrphanedListItem(currentNode);
         return this.correctInvalidListNesting(currentNode, true);
     }
@@ -1734,7 +1829,7 @@ WYMeditor.editor.prototype._correctInvalidListNesting = function (listNode, alre
                         // the gathered content.
                         // 3. Move all of the content to the previous li or the
                         // subsequent li (in that priority).
-                        WYMeditor.console.log("Fixing orphaned list content");
+                        WYMeditor.console.debug("Fixing orphaned list content");
                         wasCorrected = true;
 
                         // Gather this and previous sibling until the previous li
@@ -2011,10 +2106,12 @@ WYMeditor.editor.prototype.indent = function () {
 
     manipulationFunc = function () {
         var domChanged = false;
+
         for (i = 0; i < listItems.length; i++) {
             wym._indentSingleItem(listItems[i]);
             domChanged = true;
         }
+
         return domChanged;
     };
     return wym.restoreSelectionAfterManipulation(manipulationFunc);
@@ -2071,10 +2168,12 @@ WYMeditor.editor.prototype.outdent = function () {
 
     manipulationFunc = function () {
         var domChanged = false;
+
         for (i = 0; i < listItems.length; i++) {
             wym._outdentSingleItem(listItems[i]);
             domChanged = true;
         }
+
         return domChanged;
     };
     return wym.restoreSelectionAfterManipulation(manipulationFunc);
@@ -2309,8 +2408,8 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
 
         x,
         y,
-
-        container;
+        container,
+        selectedNode;
 
     // Create the table caption
     newCaption = table.createCaption();
@@ -2331,14 +2430,44 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
 
     // Find the currently-selected container
     container = jQuery(
-        this.findUp(this.container(), WYMeditor.MAIN_CONTAINERS)
+        this.findUp(this.container(), WYMeditor.POTENTIAL_TABLE_INSERT_ELEMENTS)
     ).get(0);
 
     if (!container || !container.parentNode) {
         // No valid selected container. Put the table at the end.
         jQuery(this._doc.body).append(table);
+
+    } else if (jQuery.inArray(container.nodeName.toLowerCase(),
+                       WYMeditor.INLINE_TABLE_INSERTION_ELEMENTS) > -1) {
+        // Insert table after selection if container is allowed to have tables
+        // inserted inline.
+        selectedNode = this.selection().focusNode;
+
+        // If the selection is within a table, move the selection to the parent
+        // table to avoid nesting the tables.
+        if (jQuery.inArray(selectedNode.nodeName.toLowerCase(),
+                           WYMeditor.SELECTABLE_TABLE_ELEMENTS) > -1 ||
+            jQuery.inArray(selectedNode.parentNode.nodeName.toLowerCase(),
+                           WYMeditor.SELECTABLE_TABLE_ELEMENTS) > -1) {
+
+            while (selectedNode.nodeName.toLowerCase() !== WYMeditor.TABLE) {
+                selectedNode = selectedNode.parentNode;
+            }
+        }
+
+        // If the list item itself is selected, append the table to it. If the
+        // selection is within the list item, put the table after it. Either
+        // way, this ensures the table will always be inserted within the list
+        // item.
+        if (selectedNode.nodeName.toLowerCase() === WYMeditor.LI) {
+            jQuery(selectedNode).append(table);
+        } else {
+            jQuery(selectedNode).after(table);
+        }
+
     } else {
-        // Append the table after the currently-selected container
+        // If the table is not allowed to be inserted inline with the
+        // container, insert it after the container.
         jQuery(container).after(table);
     }
 

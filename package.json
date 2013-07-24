@@ -1,56 +1,50 @@
 {
-	"name": "wymeditor",
-	"description": "Pure js cross-browser WYSIWYM editor with a focus on the clean separation of content and styling.",
-	"version": "1.0.0b3",
-	"homepage": "http://www.wymeditor.org",
-	"repositories": [
-		{
-			"type": "git",
-			"url": "https://github.com/wymeditor/wymeditor.git"
-		}
-	],
-	"maintainers": [
-		{
-			"name": "Wes Winham",
-			"email": "winhamwr@gmail.com",
-			"url": "http://www.policystat.com"
-		},
-		{
-			"name": "Jonatan Lundin",
-			"email": "jonatan.lundin@gmail.com"
-		}
-	],
-	"author": {
-			"name": "Jean-Francois Hovinne",
-			"email": "jf.hovinne@wymeditor.org"
-	},
-	"licenses": [
-		{
-			"type": "MIT",
-			"url": "http://mit-license.org/"
-		},
-		{
-			"type": "GPLv2",
-			"url": "http://opensource.org/licenses/gpl-2.0.php"
-		}
-	],
-	"dependencies": {
-		"jquery" : "1.2.6 - 1.7.1"
-	},
-	"devDependencies": {
-		"grunt": "~0.3.x",
-		"grunt-contrib": "~0.1.x",
-		"uglify-js": "~1.x"
-	},
-	"keywords": [
-		"wysiwyg",
-		"editor"
-	],
-	"bugs": {
-		"url": "http://github.com/wymeditor/wymeditor/issues"
-	},
-	"scripts": {
-		"test": "grunt qunit",
-		"build": "grunt min"
-	}
+  "name": "wymeditor",
+  "description": "Pure js cross-browser WYSIWYM editor with a focus on the clean separation of content and styling.",
+  "version": "1.0.0-b5",
+  "homepage": "http://wymeditor.github.io/wymeditor/",
+  "repository": [
+    {
+      "type": "git",
+      "url": "https://github.com/wymeditor/wymeditor.git"
+    }
+  ],
+  "maintainers": [
+    {
+      "name": "Wes Winham",
+      "email": "winhamwr@gmail.com",
+      "url": "http://www.policystat.com"
+    },
+    {
+      "name": "Jonatan Lundin",
+      "email": "jonatan.lundin@gmail.com"
+    }
+  ],
+  "author": {
+    "name": "Jean-Francois Hovinne",
+    "email": "jf.hovinne@wymeditor.org"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://mit-license.org/"
+    },
+    {
+      "type": "GPLv2",
+      "url": "http://opensource.org/licenses/gpl-2.0.php"
+    }
+  ],
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-qunit": ">=0.2.1",
+    "grunt-contrib-watch": ">=0.3.1",
+    "grunt-contrib-connect": "~0.3.0"
+  },
+  "keywords": [
+    "wysiwyg",
+    "editor"
+  ],
+  "bugs": {
+    "url": "http://github.com/wymeditor/wymeditor/issues"
+  }
 }

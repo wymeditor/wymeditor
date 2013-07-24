@@ -56,7 +56,7 @@ WYMeditor.WymClassMozilla.prototype.initIframe = function (iframe) {
     jQuery('html', this._doc).attr('dir', this._options.direction);
 
     //init html value
-    this.html(this._wym._html);
+    this._html(this._wym._options.html);
 
     //init designMode
     this.enableDesignMode();
@@ -96,7 +96,7 @@ WYMeditor.WymClassMozilla.prototype.initIframe = function (iframe) {
 /** @name html
  * @description Get/Set the html value
  */
-WYMeditor.WymClassMozilla.prototype.html = function (html) {
+WYMeditor.WymClassMozilla.prototype._html = function (html) {
     if (typeof html === 'string') {
         //disable designMode
         try {
@@ -273,37 +273,6 @@ WYMeditor.WymClassMozilla.prototype.enableDesignMode = function () {
     }
 };
 
-WYMeditor.WymClassMozilla.prototype.openBlockTag = function (tag, attributes) {
-    attributes = this.validator.getValidTagAttributes(tag, attributes);
-
-    // Handle Mozilla styled spans
-    if (tag === 'span' && attributes.style) {
-        var new_tag = this.getTagForStyle(attributes.style);
-        if (new_tag) {
-            tag = new_tag;
-            this._tag_stack.pop();
-            this._tag_stack.push(tag);
-            attributes.style = '';
-        }
-    }
-
-    this.output += this.helper.tag(tag, attributes, true);
-};
-
-WYMeditor.WymClassMozilla.prototype.getTagForStyle = function (style) {
-    if (/bold/.test(style)) {
-        return 'strong';
-    } else if (/italic/.test(style)) {
-        return 'em';
-    } else if (/sub/.test(style)) {
-        return 'sub';
-    } else if (/super/.test(style)) {
-        return 'sup';
-    }
-
-    return false;
-};
-
 /*
  * Fix new cell contents and ability to insert content at the front and end of
  * the contents.
@@ -318,3 +287,4 @@ WYMeditor.WymClassMozilla.prototype.afterInsertTable = function (table) {
         });
     }
 };
+

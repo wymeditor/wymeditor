@@ -229,6 +229,61 @@ jQuery.extend(WYMeditor, {
     INSERT_UNORDEREDLIST: "InsertUnorderedList",
     INSERT_ORDEREDLIST  : "InsertOrderedList",
 
+    // Containers that we allow at the root of the document (as a direct child
+    // of the body tag)
+    MAIN_CONTAINERS : ["p",  "h1",  "h2",  "h3", "h4", "h5", "h6", "pre", "blockquote"],
+
+    // All block (as opposed to inline) tags
+    BLOCKS : ["address", "blockquote", "div", "dl",
+        "fieldset", "form", "h1", "h2", "h3", "h4", "h5", "h6", "hr",
+        "noscript", "ol", "p", "pre", "table", "ul", "dd", "dt",
+        "li", "tbody", "td", "tfoot", "th", "thead", "tr"],
+
+    // The subset of the `MAIN_CONTAINERS` that prevent the user from using
+    // up/down/enter/backspace from moving above or below them. They
+    // effectively block the creation of new blocks.
+    BLOCKING_ELEMENTS : ["table", "blockquote", "pre"],
+
+    // The remaining `MAIN_CONTAINERS` that are not considered `BLOCKING_ELEMENTS`
+    NON_BLOCKING_ELEMENTS : ["p", "h1", "h2", "h3", "h4", "h5", "h6"],
+
+    // The elements that define a type of list.
+    LIST_TYPE_ELEMENTS : ["ul", "ol"],
+
+    // The elements that define a heading
+    HEADING_ELEMENTS : ["h1", "h2", "h3", "h4", "h5", "h6"],
+
+    // The elements that are allowed to be turned in to lists. If an item in
+    // this array isn't in the MAIN_CONTAINERS array, then its contents will be
+    // turned in to a list instead.
+    POTENTIAL_LIST_ELEMENTS : ["p", "h1", "h2", "h3", "h4", "h5", "h6", "pre", "blockquote", "td"],
+
+    // The elements that are allowed to have a table inserted after them or
+    // within them.
+    POTENTIAL_TABLE_INSERT_ELEMENTS : ["p", "h1",  "h2",  "h3", "h4", "h5", "h6",
+        "pre", "blockquote", "li"],
+
+    // The elements that are allowed to have a table inserted inline within
+    // them.
+    INLINE_TABLE_INSERTION_ELEMENTS : ["li"],
+
+    // The elements used in tables that can be selected by the user by clicking
+    // in them.
+    SELECTABLE_TABLE_ELEMENTS: ["td", "th", "caption"],
+
+    // Class for marking br elements used to space apart blocking elements in the
+    // editor.
+    BLOCKING_ELEMENT_SPACER_CLASS: "wym-blocking-element-spacer",
+
+    // Class used to flag an element for removal by the xhtml parser so that
+    // the element is removed from the output and only shows up internally
+    // within the editor.
+    EDITOR_ONLY_CLASS: "wym-editor-only",
+
+    // Classes that will be removed from all tags' class attribute by the
+    // parser.
+    CLASSES_REMOVED_BY_PARSER: ["apple-style-span"],
+
     // Keyboard mappings so that we don't have to remember that 38 means up
     // when reading keyboard handlers
     KEY : {
@@ -289,11 +344,10 @@ jQuery.extend(WYMeditor, {
         this._element = elem;
         this._options = options;
         // Store the element's inner value
-        this._html = jQuery(elem).val();
-
-        if (this._options.html) {
-            this._html = this._options.html;
+        if (!this._options.html) {
+            this._options.html = jQuery(elem).val();
         }
+
         // Path to the WYMeditor core
         this._options.wymPath = this._options.wymPath ||
             WYMeditor.computeWymPath();

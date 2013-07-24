@@ -40,11 +40,12 @@ jQuery.extend(WYMeditor.DocumentStructureManager, {
         // defines the container used when "enter" is pressed from the root and
         // also which container wraps or replaces containers found at the root
         // that aren't allowed. Only
-        // `DocumentStructureManager.VALID_DEFAULT_ROOT_CONTAINERS` are
-        // allowed here.
-        // Whichever you choose, the VALID_DEFAULT_ROOT_CONTAINERS will be
-        // automatically converted when found at the top level of your document.
-        defaultRootContainer: '',
+        // `DocumentStructureManager.VALID_DEFAULT_ROOT_CONTAINERS` are allowed
+        // here. Whichever you choose, the VALID_DEFAULT_ROOT_CONTAINERS will
+        // be automatically converted when found at the top level of your
+        // document.
+        defaultRootContainer: 'p',
+
         // Only these containers are allowed as a direct child of the body tag.
         // All other containers located there will be wrapped in the
         // `defaultRootContainer`, unless they're one of the tags in
@@ -63,12 +64,14 @@ jQuery.extend(WYMeditor.DocumentStructureManager, {
             'ol',
             'ul'
         ],
+
         // If these tags are found in the root, they'll be converted to the
         // `defaultRootContainer` container instead of the default of being
         // wrapped.
         convertIfRootContainers: [
             'div'
         ],
+
         // The elements that are allowed to be turned in to lists.
         validListConversionTargetContainers: [
             "p",
@@ -83,6 +86,7 @@ jQuery.extend(WYMeditor.DocumentStructureManager, {
             "td",
             "th"
         ],
+
         // For most block elements, the default behavior when a user attempts
         // to convert it to a list is to convert that block to a ol/ul and wrap
         // the contents in an li. For containers in `wrapContentsInList`,
@@ -114,15 +118,8 @@ WYMeditor.DocumentStructureManager.prototype.setDefaultRootContainer = function(
     }
 
     // Make sure the new container is one of the valid options
-    containerIsValid = false;
     validContainers = WYMeditor.DocumentStructureManager.VALID_DEFAULT_ROOT_CONTAINERS;
-    for (var i =  validContainers.length - 1; i >= 0; i--) {
-        if (defaultRootContainer === validContainers[i]) {
-            containerIsValid = true;
-            break;
-        }
-    }
-    if (!containerIsValid) {
+    if (jQuery.inArray(defaultRootContainer, validContainers) === -1) {
         throw new Error(
             "a defaultRootContainer of '" +
             defaultRootContainer +

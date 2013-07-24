@@ -114,29 +114,29 @@ if (jQuery.browser.webkit || jQuery.browser.safari) {
 
 // If there is no element in front of a table in FF or ie, it's not possible
 // to put content in front of that table.
-test("table has br spacers via .html()", function () {
+test("table has br spacers via ._html()", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
-    wymeditor.html(tableHtml);
+    wymeditor._html(tableHtml);
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     children = $body.children();
 
     if (is_double_br_browser) {
         expect(5);
-        equals(children.length, 3);
+        deepEqual(children.length, 3);
         if (children.length === 3) {
-            equals(children[0].tagName.toLowerCase(), 'br');
-            equals(children[1].tagName.toLowerCase(), 'table');
-            equals(children[2].tagName.toLowerCase(), 'br');
+            deepEqual(children[0].tagName.toLowerCase(), 'br');
+            deepEqual(children[1].tagName.toLowerCase(), 'table');
+            deepEqual(children[2].tagName.toLowerCase(), 'br');
         }
     } else {
         expect(4);
-        equals(children.length, 2);
+        deepEqual(children.length, 2);
         if (children.length === 2) {
-            equals(children[0].tagName.toLowerCase(), 'br');
-            equals(children[1].tagName.toLowerCase(), 'table');
+            deepEqual(children[0].tagName.toLowerCase(), 'br');
+            deepEqual(children[1].tagName.toLowerCase(), 'table');
         }
     }
 
@@ -147,7 +147,7 @@ test("table has br spacers via table insertion", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
-    wymeditor.html('');
+    wymeditor._html('');
     wymeditor.insertTable(2, 3, '', '');
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
@@ -155,49 +155,49 @@ test("table has br spacers via table insertion", function () {
 
     if (is_double_br_browser) {
         expect(5);
-        equals(children.length, 3);
+        deepEqual(children.length, 3);
         if (children.length === 3) {
-            equals(children[0].tagName.toLowerCase(), 'br');
-            equals(children[1].tagName.toLowerCase(), 'table');
-            equals(children[2].tagName.toLowerCase(), 'br');
+            deepEqual(children[0].tagName.toLowerCase(), 'br');
+            deepEqual(children[1].tagName.toLowerCase(), 'table');
+            deepEqual(children[2].tagName.toLowerCase(), 'br');
         }
     } else {
         expect(4);
-        equals(children.length, 2);
+        deepEqual(children.length, 2);
         if (children.length === 2) {
-            equals(children[0].tagName.toLowerCase(), 'br');
-            equals(children[1].tagName.toLowerCase(), 'table');
+            deepEqual(children[0].tagName.toLowerCase(), 'br');
+            deepEqual(children[1].tagName.toLowerCase(), 'table');
         }
     }
 
     htmlEquals(wymeditor, tableHtml);
 });
 
-test("p + table has br spacers via .html()", function () {
+test("p + table has br spacers via ._html()", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
-    wymeditor.html(pTableHtml);
+    wymeditor._html(pTableHtml);
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     children = $body.children();
 
     if (is_double_br_browser) {
         expect(6);
-        equals(children.length, 4);
+        deepEqual(children.length, 4);
         if (children.length === 4) {
-            equals(children[0].tagName.toLowerCase(), 'p');
-            equals(children[1].tagName.toLowerCase(), 'br');
-            equals(children[2].tagName.toLowerCase(), 'table');
-            equals(children[3].tagName.toLowerCase(), 'br');
+            deepEqual(children[0].tagName.toLowerCase(), 'p');
+            deepEqual(children[1].tagName.toLowerCase(), 'br');
+            deepEqual(children[2].tagName.toLowerCase(), 'table');
+            deepEqual(children[3].tagName.toLowerCase(), 'br');
         }
     } else {
         expect(5);
-        equals(children.length, 3);
+        deepEqual(children.length, 3);
         if (children.length === 3) {
-            equals(children[0].tagName.toLowerCase(), 'p');
-            equals(children[1].tagName.toLowerCase(), 'br');
-            equals(children[2].tagName.toLowerCase(), 'table');
+            deepEqual(children[0].tagName.toLowerCase(), 'p');
+            deepEqual(children[1].tagName.toLowerCase(), 'br');
+            deepEqual(children[2].tagName.toLowerCase(), 'table');
         }
     }
 
@@ -209,7 +209,7 @@ test("p + table has br spacers via table insertion", function () {
         $body,
         first_p,
         children;
-    wymeditor.html('<p>p1</p>');
+    wymeditor._html('<p>p1</p>');
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
@@ -223,43 +223,43 @@ test("p + table has br spacers via table insertion", function () {
 
     if (is_double_br_browser) {
         expect(7);
-        equals(children.length, 4);
+        deepEqual(children.length, 4);
         if (children.length === 4) {
-            equals(children[0].tagName.toLowerCase(), 'p');
-            equals(children[1].tagName.toLowerCase(), 'br');
-            equals(children[2].tagName.toLowerCase(), 'table');
-            equals(children[3].tagName.toLowerCase(), 'br');
+            deepEqual(children[0].tagName.toLowerCase(), 'p');
+            deepEqual(children[1].tagName.toLowerCase(), 'br');
+            deepEqual(children[2].tagName.toLowerCase(), 'table');
+            deepEqual(children[3].tagName.toLowerCase(), 'br');
         }
     } else {
         expect(6);
-        equals(children.length, 3);
+        deepEqual(children.length, 3);
         if (children.length === 3) {
-            equals(children[0].tagName.toLowerCase(), 'p');
-            equals(children[1].tagName.toLowerCase(), 'br');
-            equals(children[2].tagName.toLowerCase(), 'table');
+            deepEqual(children[0].tagName.toLowerCase(), 'p');
+            deepEqual(children[1].tagName.toLowerCase(), 'br');
+            deepEqual(children[2].tagName.toLowerCase(), 'table');
         }
     }
 
     htmlEquals(wymeditor, pTableHtml);
 });
 
-test("p + table + p has br spacers via .html()", function () {
+test("p + table + p has br spacers via ._html()", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
-    wymeditor.html(pTablePHtml);
+    wymeditor._html(pTablePHtml);
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     children = $body.children();
 
     expect(7);
-    equals(children.length, 5);
+    deepEqual(children.length, 5);
     if (children.length === 5) {
-        equals(children[0].tagName.toLowerCase(), 'p');
-        equals(children[1].tagName.toLowerCase(), 'br');
-        equals(children[2].tagName.toLowerCase(), 'table');
-        equals(children[3].tagName.toLowerCase(), 'br');
-        equals(children[4].tagName.toLowerCase(), 'p');
+        deepEqual(children[0].tagName.toLowerCase(), 'p');
+        deepEqual(children[1].tagName.toLowerCase(), 'br');
+        deepEqual(children[2].tagName.toLowerCase(), 'table');
+        deepEqual(children[3].tagName.toLowerCase(), 'br');
+        deepEqual(children[4].tagName.toLowerCase(), 'p');
     }
 
     htmlEquals(wymeditor, pTablePHtml);
@@ -270,7 +270,7 @@ test("p + table + p has br spacers via table insertion", function () {
         $body,
         first_p,
         children;
-    wymeditor.html('<p>p1</p><p>p2</p>');
+    wymeditor._html('<p>p1</p><p>p2</p>');
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
@@ -283,37 +283,37 @@ test("p + table + p has br spacers via table insertion", function () {
     children = $body.children();
 
     expect(8);
-    equals(children.length, 5);
+    deepEqual(children.length, 5);
     if (children.length === 5) {
-        equals(children[0].tagName.toLowerCase(), 'p');
-        equals(children[1].tagName.toLowerCase(), 'br');
-        equals(children[2].tagName.toLowerCase(), 'table');
-        equals(children[3].tagName.toLowerCase(), 'br');
-        equals(children[4].tagName.toLowerCase(), 'p');
+        deepEqual(children[0].tagName.toLowerCase(), 'p');
+        deepEqual(children[1].tagName.toLowerCase(), 'br');
+        deepEqual(children[2].tagName.toLowerCase(), 'table');
+        deepEqual(children[3].tagName.toLowerCase(), 'br');
+        deepEqual(children[4].tagName.toLowerCase(), 'p');
     }
 
     htmlEquals(wymeditor, pTablePHtml);
 });
 
-test("p + table + table + p has br spacers via .html()", function () {
+test("p + table + table + p has br spacers via ._html()", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
-    wymeditor.html(pTableTablePHtml);
+    wymeditor._html(pTableTablePHtml);
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     children = $body.children();
 
     expect(9);
-    equals(children.length, 7);
+    deepEqual(children.length, 7);
     if (children.length === 7) {
-        equals(children[0].tagName.toLowerCase(), 'p');
-        equals(children[1].tagName.toLowerCase(), 'br');
-        equals(children[2].tagName.toLowerCase(), 'table');
-        equals(children[3].tagName.toLowerCase(), 'br');
-        equals(children[4].tagName.toLowerCase(), 'table');
-        equals(children[5].tagName.toLowerCase(), 'br');
-        equals(children[6].tagName.toLowerCase(), 'p');
+        deepEqual(children[0].tagName.toLowerCase(), 'p');
+        deepEqual(children[1].tagName.toLowerCase(), 'br');
+        deepEqual(children[2].tagName.toLowerCase(), 'table');
+        deepEqual(children[3].tagName.toLowerCase(), 'br');
+        deepEqual(children[4].tagName.toLowerCase(), 'table');
+        deepEqual(children[5].tagName.toLowerCase(), 'br');
+        deepEqual(children[6].tagName.toLowerCase(), 'p');
     }
 
     htmlEquals(wymeditor, pTableTablePHtml);
@@ -324,7 +324,7 @@ test("p + table + table + p has br spacers via table insertion", function () {
         $body,
         first_p,
         children;
-    wymeditor.html('<p>p1</p><p>p2</p>');
+    wymeditor._html('<p>p1</p><p>p2</p>');
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
@@ -338,49 +338,49 @@ test("p + table + table + p has br spacers via table insertion", function () {
     children = $body.children();
 
     expect(10);
-    equals(children.length, 7);
+    deepEqual(children.length, 7);
     if (children.length === 7) {
-        equals(children[0].tagName.toLowerCase(), 'p');
-        equals(children[1].tagName.toLowerCase(), 'br');
-        equals(children[2].tagName.toLowerCase(), 'table');
-        equals(children[3].tagName.toLowerCase(), 'br');
-        equals(children[4].tagName.toLowerCase(), 'table');
-        equals(children[5].tagName.toLowerCase(), 'br');
-        equals(children[6].tagName.toLowerCase(), 'p');
+        deepEqual(children[0].tagName.toLowerCase(), 'p');
+        deepEqual(children[1].tagName.toLowerCase(), 'br');
+        deepEqual(children[2].tagName.toLowerCase(), 'table');
+        deepEqual(children[3].tagName.toLowerCase(), 'br');
+        deepEqual(children[4].tagName.toLowerCase(), 'table');
+        deepEqual(children[5].tagName.toLowerCase(), 'br');
+        deepEqual(children[6].tagName.toLowerCase(), 'p');
     }
 
     htmlEquals(wymeditor, pTableTablePHtml);
 });
 
-test("h1 + blockquote + pre has br spacers via .html()", function () {
+test("h1 + blockquote + pre has br spacers via ._html()", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
-    wymeditor.html(h1BlockquotePreHtml);
+    wymeditor._html(h1BlockquotePreHtml);
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     children = $body.children();
 
     if (is_double_br_browser) {
         expect(8);
-        equals(children.length, 6);
+        deepEqual(children.length, 6);
         if (children.length === 6) {
-            equals(children[0].tagName.toLowerCase(), 'h1');
-            equals(children[1].tagName.toLowerCase(), 'br');
-            equals(children[2].tagName.toLowerCase(), 'blockquote');
-            equals(children[3].tagName.toLowerCase(), 'br');
-            equals(children[4].tagName.toLowerCase(), 'pre');
-            equals(children[5].tagName.toLowerCase(), 'br');
+            deepEqual(children[0].tagName.toLowerCase(), 'h1');
+            deepEqual(children[1].tagName.toLowerCase(), 'br');
+            deepEqual(children[2].tagName.toLowerCase(), 'blockquote');
+            deepEqual(children[3].tagName.toLowerCase(), 'br');
+            deepEqual(children[4].tagName.toLowerCase(), 'pre');
+            deepEqual(children[5].tagName.toLowerCase(), 'br');
         }
     } else {
         expect(7);
-        equals(children.length, 5);
+        deepEqual(children.length, 5);
         if (children.length === 5) {
-            equals(children[0].tagName.toLowerCase(), 'h1');
-            equals(children[1].tagName.toLowerCase(), 'br');
-            equals(children[2].tagName.toLowerCase(), 'blockquote');
-            equals(children[3].tagName.toLowerCase(), 'br');
-            equals(children[4].tagName.toLowerCase(), 'pre');
+            deepEqual(children[0].tagName.toLowerCase(), 'h1');
+            deepEqual(children[1].tagName.toLowerCase(), 'br');
+            deepEqual(children[2].tagName.toLowerCase(), 'blockquote');
+            deepEqual(children[3].tagName.toLowerCase(), 'br');
+            deepEqual(children[4].tagName.toLowerCase(), 'pre');
         }
     }
 
@@ -393,19 +393,19 @@ test("br spacers aren't deleted when arrowing through them", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
-    wymeditor.html(pTablePHtml);
+    wymeditor._html(pTablePHtml);
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
     function checkLayout($body) {
         children = $body.children();
-        equals(children.length, 5);
+        deepEqual(children.length, 5);
         if (children.length === 5) {
-            equals(children[0].tagName.toLowerCase(), 'p');
-            equals(children[1].tagName.toLowerCase(), 'br');
-            equals(children[2].tagName.toLowerCase(), 'table');
-            equals(children[3].tagName.toLowerCase(), 'br');
-            equals(children[4].tagName.toLowerCase(), 'p');
+            deepEqual(children[0].tagName.toLowerCase(), 'p');
+            deepEqual(children[1].tagName.toLowerCase(), 'br');
+            deepEqual(children[2].tagName.toLowerCase(), 'table');
+            deepEqual(children[3].tagName.toLowerCase(), 'br');
+            deepEqual(children[4].tagName.toLowerCase(), 'p');
         }
     }
 
@@ -428,7 +428,7 @@ test("br spacers aren't deleted when arrowing through them", function () {
     });
 
     // Reset the HTML
-    wymeditor.html(pTablePHtml);
+    wymeditor._html(pTablePHtml);
     wymeditor.fixBodyHtml();
 
     // Go through each top-level element and hit the UP key
@@ -455,7 +455,7 @@ test("br spacers don't cause lots of blank p's when arrowing down", function () 
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
-    wymeditor.html(pTableHtml);
+    wymeditor._html(pTableHtml);
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
@@ -468,20 +468,20 @@ test("br spacers don't cause lots of blank p's when arrowing down", function () 
 
     if (is_double_br_browser) {
         expect(6);
-        equals(children.length, 4, "Should have p, br, table, br");
+        deepEqual(children.length, 4, "Should have p, br, table, br");
         if (children.length === 4) {
-            equals(children[0].tagName.toLowerCase(), 'p');
-            equals(children[1].tagName.toLowerCase(), 'br');
-            equals(children[2].tagName.toLowerCase(), 'table');
-            equals(children[3].tagName.toLowerCase(), 'br');
+            deepEqual(children[0].tagName.toLowerCase(), 'p');
+            deepEqual(children[1].tagName.toLowerCase(), 'br');
+            deepEqual(children[2].tagName.toLowerCase(), 'table');
+            deepEqual(children[3].tagName.toLowerCase(), 'br');
         }
     } else {
         expect(5);
-        equals(children.length, 3, "Should have p, br, table");
+        deepEqual(children.length, 3, "Should have p, br, table");
         if (children.length === 3) {
-            equals(children[0].tagName.toLowerCase(), 'p');
-            equals(children[1].tagName.toLowerCase(), 'br');
-            equals(children[2].tagName.toLowerCase(), 'table');
+            deepEqual(children[0].tagName.toLowerCase(), 'p');
+            deepEqual(children[1].tagName.toLowerCase(), 'br');
+            deepEqual(children[2].tagName.toLowerCase(), 'table');
         }
     }
 
@@ -492,7 +492,7 @@ test("br spacers don't cause lots of blank p's when arrowing up", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
-    wymeditor.html(pTablePHtml);
+    wymeditor._html(pTablePHtml);
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
@@ -503,13 +503,13 @@ test("br spacers don't cause lots of blank p's when arrowing up", function () {
 
     children = $body.children();
 
-    equals(children.length, 5, "Should have p, br, table, br, p");
+    deepEqual(children.length, 5, "Should have p, br, table, br, p");
     if (children.length === 5) {
-        equals(children[0].tagName.toLowerCase(), 'p');
-        equals(children[1].tagName.toLowerCase(), 'br');
-        equals(children[2].tagName.toLowerCase(), 'table');
-        equals(children[3].tagName.toLowerCase(), 'br');
-        equals(children[4].tagName.toLowerCase(), 'p');
+        deepEqual(children[0].tagName.toLowerCase(), 'p');
+        deepEqual(children[1].tagName.toLowerCase(), 'br');
+        deepEqual(children[2].tagName.toLowerCase(), 'table');
+        deepEqual(children[3].tagName.toLowerCase(), 'br');
+        deepEqual(children[4].tagName.toLowerCase(), 'p');
     }
 
     htmlEquals(wymeditor, pTablePHtml);
@@ -521,7 +521,7 @@ test("br spacers stay in place when content is inserted- post-br", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
-    wymeditor.html(tableHtml);
+    wymeditor._html(tableHtml);
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
@@ -536,12 +536,12 @@ test("br spacers stay in place when content is inserted- post-br", function () {
 
     children = $body.children();
 
-    equals(children.length, 4, "Should have br, table, br, p");
+    deepEqual(children.length, 4, "Should have br, table, br, p");
     if (children.length === 4) {
-        equals(children[0].tagName.toLowerCase(), 'br');
-        equals(children[1].tagName.toLowerCase(), 'table');
-        equals(children[2].tagName.toLowerCase(), 'br');
-        equals(children[3].tagName.toLowerCase(), 'p');
+        deepEqual(children[0].tagName.toLowerCase(), 'br');
+        deepEqual(children[1].tagName.toLowerCase(), 'table');
+        deepEqual(children[2].tagName.toLowerCase(), 'br');
+        deepEqual(children[3].tagName.toLowerCase(), 'p');
     }
 
     htmlEquals(wymeditor, tableHtml + '<p>yo</p>');
@@ -557,7 +557,7 @@ test("br spacers stay in place when content is inserted- pre-br", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
-    wymeditor.html(tableHtml);
+    wymeditor._html(tableHtml);
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
@@ -569,12 +569,12 @@ test("br spacers stay in place when content is inserted- pre-br", function () {
 
     children = $body.children();
 
-    equals(children.length, 4, "Should have p, br, table, br");
+    deepEqual(children.length, 4, "Should have p, br, table, br");
     if (children.length === 4) {
-        equals(children[0].tagName.toLowerCase(), 'p');
-        equals(children[1].tagName.toLowerCase(), 'br');
-        equals(children[2].tagName.toLowerCase(), 'table');
-        equals(children[3].tagName.toLowerCase(), 'br');
+        deepEqual(children[0].tagName.toLowerCase(), 'p');
+        deepEqual(children[1].tagName.toLowerCase(), 'br');
+        deepEqual(children[2].tagName.toLowerCase(), 'table');
+        deepEqual(children[3].tagName.toLowerCase(), 'br');
     }
 
     htmlEquals(wymeditor, tableHtml);
