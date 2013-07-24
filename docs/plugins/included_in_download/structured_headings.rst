@@ -7,7 +7,18 @@ them easier to use to structure documents. Currently in development.
 Features
 --------
 
-* Automatic numbering of headings to better outline a document.
+* Simplifies the process of adding headings to a document. Instead of having to
+  choose between a heading 1-6 in the containers panel, those options are
+  replaced with one single "Heading" option that inserts a heading at the same
+  level as the preceding heading in the document.
+* Makes it easier to adjust heading levels properly. In order to change the
+  level of a heading, the indent and outdent tools can be used to lower and
+  raise the level of the heading respectively. The indent tool will also
+  prevent a user from indenting a heading more than one level below its
+  preceding heading.
+* Automatically numbers headings to better outline a document.
+* Provides an optional tool that can be used to automatically fix improper
+  heading structure in a document (although it's still in development).
 * More features to come on further development.
 
 Applying Structured Headings Styling outside of the Editor
