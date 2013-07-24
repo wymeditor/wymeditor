@@ -1302,11 +1302,13 @@ test("Can set and get html with the html() function", function () {
     // explicitly trying to test that the deprecated function still works, so
     // it should not make the user think that the test is malfunctioning by
     // outputting a console warning.
-    stub = sinon.stub(WYMeditor.console, "warn", function() {});
+    if (typeof WYMeditor.console.warn === 'function') {
+        stub = sinon.stub(WYMeditor.console, "warn", function() {});
+    }
 
     wymeditor.html(testHtml);
     htmlNode = jQuery(wymeditor.html(), wymeditor._doc);
-    stub.restore();
+    if (stub) { stub.restore(); }
     deepEqual(normalizeHtml(htmlNode[0]), testHtml,
               "Set and get with html() function");
 });

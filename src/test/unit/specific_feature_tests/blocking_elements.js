@@ -547,35 +547,34 @@ test("br spacers stay in place when content is inserted- post-br", function () {
     htmlEquals(wymeditor, tableHtml + '<p>yo</p>');
 });
 
-test("br spacers stay in place when content is inserted- pre-br", function () {
-    // A br should remain in necessary spots even after content is inserted
-    // there. Duplicate brs should also not be created when inserting that
-    // content.
-    if (no_keypress_textnode_wrap_browser) {
-        return;
-    }
-    var wymeditor = jQuery.wymeditors(0),
-        $body,
-        children;
-    wymeditor._html(tableHtml);
+if (!no_keypress_textnode_wrap_browser) {
+    test("br spacers stay in place when content is inserted- pre-br", function () {
+        // A br should remain in necessary spots even after content is inserted
+        // there. Duplicate brs should also not be created when inserting that
+        // content.
+        var wymeditor = jQuery.wymeditors(0),
+            $body,
+            children;
+        wymeditor._html(tableHtml);
 
-    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
-    // Move the selector to the start
-    moveSelector(wymeditor, $body[0]);
+        // Move the selector to the start
+        moveSelector(wymeditor, $body[0]);
 
-    // Simulate and send the keyup event
-    simulateKey(WYMeditor.KEY.B, wymeditor._doc);
+        // Simulate and send the keyup event
+        simulateKey(WYMeditor.KEY.B, wymeditor._doc);
 
-    children = $body.children();
+        children = $body.children();
 
-    deepEqual(children.length, 4, "Should have p, br, table, br");
-    if (children.length === 4) {
-        deepEqual(children[0].tagName.toLowerCase(), 'p');
-        deepEqual(children[1].tagName.toLowerCase(), 'br');
-        deepEqual(children[2].tagName.toLowerCase(), 'table');
-        deepEqual(children[3].tagName.toLowerCase(), 'br');
-    }
+        deepEqual(children.length, 4, "Should have p, br, table, br");
+        if (children.length === 4) {
+            deepEqual(children[0].tagName.toLowerCase(), 'p');
+            deepEqual(children[1].tagName.toLowerCase(), 'br');
+            deepEqual(children[2].tagName.toLowerCase(), 'table');
+            deepEqual(children[3].tagName.toLowerCase(), 'br');
+        }
 
-    htmlEquals(wymeditor, tableHtml);
-});
+        htmlEquals(wymeditor, tableHtml);
+    });
+}
