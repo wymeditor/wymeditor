@@ -1518,7 +1518,7 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
     }
     if (!$liToOutdent.parent().parent().is('li')) {
         // We have invalid list nesting and we need to fix that
-        WYMeditor.console.debug(
+        WYMeditor.console.log(
             'Attempting to fix invalid list nesting before outdenting.'
         );
         wym.correctInvalidListNesting(listItem);
@@ -1655,7 +1655,7 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
     if (jQuery(currentNode).is('li')) {
         // We have an li as the "root" because its missing a parent list.
         // Correct this problem and then try again to correct the nesting.
-        WYMeditor.console.debug("Correcting orphaned root li before correcting invalid list nesting.");
+        WYMeditor.console.log("Correcting orphaned root li before correcting invalid list nesting.");
         this._correctOrphanedListItem(currentNode);
         return this.correctInvalidListNesting(currentNode, true);
     }
@@ -1797,7 +1797,7 @@ WYMeditor.editor.prototype._correctInvalidListNesting = function (listNode, alre
                         // the gathered content.
                         // 3. Move all of the content to the previous li or the
                         // subsequent li (in that priority).
-                        WYMeditor.console.debug("Fixing orphaned list content");
+                        WYMeditor.console.log("Fixing orphaned list content");
                         wasCorrected = true;
 
                         // Gather this and previous sibling until the previous li
