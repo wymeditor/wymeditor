@@ -91,9 +91,11 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
         $container = jQuery(container);
         tagName = container.tagName.toLowerCase();
 
-        // Wrap this content in a paragraph tag if we're in the body
+        // Wrap this content in the default root container if we're in the body
         if (tagName === WYMeditor.BODY) {
-            this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
+            this._exec(WYMeditor.FORMAT_BLOCK,
+                       this.documentStructureManager.structureRules.defaultRootContainer);
+            this.fixBodyHtml();
         }
 
         // If the cmd was FORMAT_BLOCK, check if the block was moved outside
@@ -157,8 +159,14 @@ WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
     //'this' is the doc
     var wym = WYMeditor.INSTANCES[this.title],
         container,
+        defaultRootContainer,
+        notValidRootContainers,
         name;
 
+    notValidRootContainers =
+        wym.documentStructureManager.structureRules.notValidRootContainers;
+    defaultRootContainer =
+        wym.documentStructureManager.structureRules.defaultRootContainer;
     wym._selected_image = null;
 
     // Fix to allow shift + return to insert a line break in older safari
@@ -198,9 +206,10 @@ WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
             name = container.parentNode.tagName.toLowerCase();
         }
 
-        if (name === WYMeditor.BODY || name === WYMeditor.DIV) {
-            // Replace text nodes with <p> tags
-            wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
+        if (name === WYMeditor.BODY ||
+                jQuery.inArray(name, notValidRootContainers) > -1) {
+            // Replace text nodes with default root tags
+            wym._exec(WYMeditor.FORMAT_BLOCK, defaultRootContainer);
             wym.fixBodyHtml();
         }
     }
@@ -213,6 +222,13 @@ WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
             evt.keyCode === WYMeditor.KEY.RIGHT ||
             evt.keyCode === WYMeditor.KEY.BACKSPACE ||
             evt.keyCode === WYMeditor.KEY.ENTER) {
+
+        container = wym.selected();
+        name = container.tagName.toLowerCase();
+        if (jQuery.inArray(name, notValidRootContainers) > -1) {
+            wym._exec(WYMeditor.FORMAT_BLOCK, defaultRootContainer);
+            wym.fixBodyHtml();
+        }
         wym.fixBodyHtml();
     }
 };

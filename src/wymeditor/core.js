@@ -231,7 +231,8 @@ jQuery.extend(WYMeditor, {
 
     // Containers that we allow at the root of the document (as a direct child
     // of the body tag)
-    MAIN_CONTAINERS : ["p",  "h1",  "h2",  "h3", "h4", "h5", "h6", "pre", "blockquote"],
+    MAIN_CONTAINERS : ["p", "div", "h1",  "h2",  "h3", "h4", "h5", "h6", "pre",
+        "blockquote"],
 
     // All block (as opposed to inline) tags
     BLOCKS : ["address", "blockquote", "div", "dl",
@@ -245,7 +246,7 @@ jQuery.extend(WYMeditor, {
     BLOCKING_ELEMENTS : ["table", "blockquote", "pre"],
 
     // The remaining `MAIN_CONTAINERS` that are not considered `BLOCKING_ELEMENTS`
-    NON_BLOCKING_ELEMENTS : ["p", "h1", "h2", "h3", "h4", "h5", "h6"],
+    NON_BLOCKING_ELEMENTS : ["p", "div", "h1", "h2", "h3", "h4", "h5", "h6"],
 
     // The elements that define a type of list.
     LIST_TYPE_ELEMENTS : ["ul", "ol"],
@@ -256,12 +257,13 @@ jQuery.extend(WYMeditor, {
     // The elements that are allowed to be turned in to lists. If an item in
     // this array isn't in the MAIN_CONTAINERS array, then its contents will be
     // turned in to a list instead.
-    POTENTIAL_LIST_ELEMENTS : ["p", "h1", "h2", "h3", "h4", "h5", "h6", "pre", "blockquote", "td"],
+    POTENTIAL_LIST_ELEMENTS : ["p", "div", "h1", "h2", "h3", "h4", "h5", "h6",
+        "pre", "blockquote", "td"],
 
     // The elements that are allowed to have a table inserted after them or
     // within them.
-    POTENTIAL_TABLE_INSERT_ELEMENTS : ["p", "h1",  "h2",  "h3", "h4", "h5", "h6",
-        "pre", "blockquote", "li"],
+    POTENTIAL_TABLE_INSERT_ELEMENTS : ["p", "div", "h1",  "h2",  "h3", "h4",
+        "h5", "h6", "pre", "blockquote", "li"],
 
     // The elements that are allowed to have a table inserted inline within
     // them.

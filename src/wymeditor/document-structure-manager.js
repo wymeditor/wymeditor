@@ -16,7 +16,8 @@
  * which will automatically convert DIV tags in the root to P tags.
  *
  */
-WYMeditor.DocumentStructureManager = function(defaultRootContainer) {
+WYMeditor.DocumentStructureManager = function(wym, defaultRootContainer) {
+    this._wym = wym;
     this.structureRules = WYMeditor.DocumentStructureManager.DEFAULTS;
     this.setDefaultRootContainer(defaultRootContainer);
 };
@@ -28,6 +29,14 @@ jQuery.extend(WYMeditor.DocumentStructureManager, {
         "p",
         "div"
     ],
+
+    // Cooresponding titles for use in the containers panel for the valid
+    // default root containers
+    DEFAULT_ROOT_CONTAINER_TITLES : {
+        p: "Paragraph",
+        div: "Division"
+    },
+
     // These containers prevent the user from using up/down/enter/backspace
     // to move above or below them, thus effectively blocking the creation
     // of new blocks. We must use temporary spacer elements to correct this
@@ -46,12 +55,18 @@ jQuery.extend(WYMeditor.DocumentStructureManager, {
         // document.
         defaultRootContainer: 'p',
 
+        // These containers cannot be used as root containers. This includes
+        // any default root containers that are not the chosen default root
+        // container.
+        notValidRootContainers: ['div'],
+
         // Only these containers are allowed as a direct child of the body tag.
         // All other containers located there will be wrapped in the
         // `defaultRootContainer`, unless they're one of the tags in
         // `convertIfRoot`.
         validRootContainers: [
             'p',
+            'div',
             'h1',
             'h2',
             'h3',
@@ -75,6 +90,7 @@ jQuery.extend(WYMeditor.DocumentStructureManager, {
         // The elements that are allowed to be turned in to lists.
         validListConversionTargetContainers: [
             "p",
+            "div",
             "h1",
             "h2",
             "h3",
@@ -108,8 +124,8 @@ jQuery.extend(WYMeditor.DocumentStructureManager, {
 WYMeditor.DocumentStructureManager.prototype.setDefaultRootContainer = function(
     defaultRootContainer
 ) {
-    var containerIsValid,
-        validContainers;
+    var validContainers,
+        index;
 
     if (this.structureRules.defaultRootContainer === defaultRootContainer) {
         // This is already our current configuration. No need to do the
@@ -119,7 +135,8 @@ WYMeditor.DocumentStructureManager.prototype.setDefaultRootContainer = function(
 
     // Make sure the new container is one of the valid options
     validContainers = WYMeditor.DocumentStructureManager.VALID_DEFAULT_ROOT_CONTAINERS;
-    if (jQuery.inArray(defaultRootContainer, validContainers) === -1) {
+    index = jQuery.inArray(defaultRootContainer, validContainers);
+    if (index === -1) {
         throw new Error(
             "a defaultRootContainer of '" +
             defaultRootContainer +
@@ -129,6 +146,86 @@ WYMeditor.DocumentStructureManager.prototype.setDefaultRootContainer = function(
 
     this.structureRules.defaultRootContainer = defaultRootContainer;
 
+    // No other possible option for default root containers is valid expect for
+    // the one choosen default root container
+    this.structureRules.notValidRootContainers =
+        WYMeditor.DocumentStructureManager.VALID_DEFAULT_ROOT_CONTAINERS;
+    this.structureRules.notValidRootContainers.splice(index, 1);
+
+    this.adjustDefaultRootContainerUI();
+
     // TODO: Actually do all of the switching required to move from p to div or
     // from div to p for the topLevelContainer
 };
+
+/**
+    adjustDefaultRootContainerUI
+    ============================
+
+    Adds a new link for the default root container to the containers panel in
+    the editor if needed, and removes any other links for valid default root
+    containers form the containers panel besides the link for the chosen
+    default root container.
+*/
+WYMeditor.DocumentStructureManager.prototype.adjustDefaultRootContainerUI = function() {
+    var wym = this._wym,
+        defaultRootContainer = this.structureRules.defaultRootContainer,
+        $containerItems,
+        $containerLink,
+        $newContainerItem,
+        containerName,
+        newContainerLinkNeeded,
+        newContainerLinkHtml,
+        i;
+
+    $containerItems = jQuery(wym._box).find(wym._options.containersSelector)
+                                      .find('li');
+    newContainerLinkNeeded = true;
+
+    // Remove container links for any other valid default root container from
+    // the containers panel besides the link for the chosen default root
+    // container
+    for (i = 0; i < $containerItems.length; ++i) {
+        $containerLink = $containerItems.eq(i).find('a');
+        containerName = $containerLink.attr('name').toLowerCase();
+        if (jQuery.inArray(containerName,
+                           this.structureRules.notValidRootContainers) > -1) {
+            $containerItems.eq(i).remove();
+        }
+        if (containerName === defaultRootContainer) {
+            newContainerLinkNeeded = false;
+        }
+    }
+
+    // Add new link for the default root container to the containers panel if
+    // needed
+    if (newContainerLinkNeeded) {
+        newContainerLinkHtml = wym._options.containersItemHtml;
+        newContainerLinkHtml = WYMeditor.Helper.replaceAll(
+            newContainerLinkHtml,
+            WYMeditor.CONTAINER_NAME,
+            defaultRootContainer.toUpperCase()
+        );
+        newContainerLinkHtml = WYMeditor.Helper.replaceAll(
+            newContainerLinkHtml,
+            WYMeditor.CONTAINER_TITLE,
+            WYMeditor.DocumentStructureManager.DEFAULT_ROOT_CONTAINER_TITLES[defaultRootContainer]
+        );
+        newContainerLinkHtml = WYMeditor.Helper.replaceAll(
+            newContainerLinkHtml,
+            WYMeditor.CONTAINER_CLASS,
+            "wym_containers_" + defaultRootContainer
+        );
+        $newContainerItem = jQuery(newContainerLinkHtml);
+        $containerItems = jQuery(wym._box).find(wym._options.containersSelector)
+                                          .find('li');
+        $containerItems.eq(0).before($newContainerItem);
+
+        // Bind click event for the new link
+        $newContainerItem.find('a').click(function () {
+            wym.container(jQuery(this).attr(WYMeditor.NAME));
+            return false;
+        });
+    }
+}
+

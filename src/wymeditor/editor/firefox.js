@@ -137,8 +137,9 @@ WYMeditor.WymClassMozilla.prototype._exec = function (cmd, param) {
 
     //set to P if parent = BODY
     var container = this.selected();
-    if (container.tagName.toLowerCase() === WYMeditor.BODY) {
+    if (container && container.tagName.toLowerCase() === WYMeditor.BODY) {
         this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
+        this.fixBodyHtml();
     }
 
     return true;
@@ -176,8 +177,14 @@ WYMeditor.WymClassMozilla.prototype.keyup = function (evt) {
     // 'this' is the doc
     var wym = WYMeditor.INSTANCES[this.title],
         container,
+        defaultRootContainer,
+        notValidRootContainers,
         name;
 
+    notValidRootContainers =
+        wym.documentStructureManager.structureRules.notValidRootContainers;
+    defaultRootContainer =
+        wym.documentStructureManager.structureRules.defaultRootContainer;
     wym._selected_image = null;
     container = null;
 
@@ -208,9 +215,10 @@ WYMeditor.WymClassMozilla.prototype.keyup = function (evt) {
             name = container.parentNode.tagName.toLowerCase();
         }
 
-        if (name === WYMeditor.BODY) {
-            // Replace text nodes with <p> tags
-            wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
+        if (name === WYMeditor.BODY ||
+                jQuery.inArray(name, notValidRootContainers) > -1) {
+            // Replace text nodes with default root tags
+            wym._exec(WYMeditor.FORMAT_BLOCK, defaultRootContainer);
             wym.fixBodyHtml();
         }
     }
@@ -223,6 +231,13 @@ WYMeditor.WymClassMozilla.prototype.keyup = function (evt) {
             evt.keyCode === WYMeditor.KEY.RIGHT ||
             evt.keyCode === WYMeditor.KEY.BACKSPACE ||
             evt.keyCode === WYMeditor.KEY.ENTER) {
+
+        container = wym.selected();
+        name = container.tagName.toLowerCase();
+        if (jQuery.inArray(name, notValidRootContainers) > -1) {
+            wym._exec(WYMeditor.FORMAT_BLOCK, defaultRootContainer);
+            wym.fixBodyHtml();
+        }
         wym.fixBodyHtml();
     }
 };

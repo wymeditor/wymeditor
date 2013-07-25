@@ -64,11 +64,10 @@ def test_p_after_p():
 
     # Hit return to create a new paragraph
     chain.send_keys(Keys.RETURN)
-    chain.send_keys('2')
     chain.perform()
 
-    html = _get_xhtml(d)
-    assert html == '<p>This is some text with which to test.</p><p>2</p>'
+    assert body.get_attribute("innerHTML") == \
+            '<p>This is some text with which to test.</p><p><br></p>'
 
     d.close()
 
@@ -104,11 +103,10 @@ def test_p_after_h1():
     _switch_to_editor_content(d)
     chain = ActionChains(d)
     chain.send_keys(Keys.RETURN)
-    chain.send_keys('2')
     chain.perform()
 
-    html = _get_xhtml(d)
-    assert html == '<h1>This is some text with which to test.</h1><p>2</p>'
+    assert body.get_attribute("innerHTML") == \
+            '<h1>This is some text with which to test.</h1><p><br></p>'
 
     d.close()
 

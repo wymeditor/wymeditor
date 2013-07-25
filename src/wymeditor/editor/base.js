@@ -49,10 +49,6 @@ WYMeditor.editor.prototype.init = function () {
         this._options.preInit(this);
     }
 
-    this.documentStructureManager = new WYMeditor.DocumentStructureManager(
-        this._options.structureRules.defaultRootContainer
-    );
-
     this.parser = null;
     this.helper = null;
 
@@ -185,6 +181,11 @@ WYMeditor.editor.prototype.init = function () {
 
     // Hide the html value
     jQuery(this._box).find(this._options.htmlSelector).hide();
+
+    this.documentStructureManager = new WYMeditor.DocumentStructureManager(
+        this,
+        this._options.structureRules.defaultRootContainer
+    );
 
     this.loadSkin();
 };
@@ -511,12 +512,12 @@ WYMeditor.editor.prototype.container = function (sType) {
     }
 
     var container = null,
-        aTypes = null,
-        newNode = null,
+        validContainers,
+        newNode,
         blockquote,
         nodes,
         lgt,
-        firstNode = null,
+        firstNode,
         x;
 
     if (sType.toLowerCase() === WYMeditor.TH) {
@@ -545,18 +546,9 @@ WYMeditor.editor.prototype.container = function (sType) {
         }
     } else {
         // Set the container type
-        aTypes = [
-            WYMeditor.P,
-            WYMeditor.H1,
-            WYMeditor.H2,
-            WYMeditor.H3,
-            WYMeditor.H4,
-            WYMeditor.H5,
-            WYMeditor.H6,
-            WYMeditor.PRE,
-            WYMeditor.BLOCKQUOTE
-        ];
-        container = this.findUp(this.container(), aTypes);
+        validContainers =
+            this.documentStructureManager.structureRules.validRootContainers;
+        container = this.findUp(this.container(), validContainers);
 
         if (container) {
             if (sType.toLowerCase() === WYMeditor.BLOCKQUOTE) {
@@ -1310,13 +1302,12 @@ WYMeditor.editor.prototype.unwrap = function () {
 
 WYMeditor.editor.prototype.setFocusToNode = function (node, toStart) {
     var range = rangy.createRange(this._doc),
-        selection = this.selection();
-    toStart = toStart ? 0 : 1;
+        selection = rangy.getIframeSelection(this._iframe);
+    toStart = toStart || false;
 
     range.selectNodeContents(node);
-    selection.addRange(range);
-    selection.collapse(node, toStart);
-    this._iframe.contentWindow.focus();
+    range.collapse(toStart);
+    selection.setSingleRange(range);
 };
 
 WYMeditor.editor.prototype.addCssRules = function (doc, aCss) {
