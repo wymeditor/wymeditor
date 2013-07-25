@@ -54,7 +54,7 @@ function setupWym(modificationCallback) {
                     WYMeditor._isInnerSelector = false;
                 }
 
-                if (typeof modificationCallback !== 'undefined') {
+                if (typeof modificationCallback === 'function') {
                     modificationCallback(wym);
                 }
 
@@ -66,7 +66,7 @@ function setupWym(modificationCallback) {
         wym = WYMeditor.INSTANCES[0];
         wym.documentStructureManager.setDefaultRootContainer('p');
 
-        if (typeof modificationCallback !== 'undefined') {
+        if (typeof modificationCallback === 'function') {
             stop();
             modificationCallback(wym);
             start();

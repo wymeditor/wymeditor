@@ -1,4 +1,3 @@
-
 var replaceMeHtml = String() +
         '<p>Some text before the replaced container</p>' +
         '<p id="replaceMe">Replace me</p>' +
@@ -17,39 +16,34 @@ var rootDiv_replaceMeHtml = String() +
 module("structure-defaultRoot", {setup: setupWym});
 
 test("DIV element is correctly converted to p", function () {
+    expect(1);
     var wymeditor = jQuery.wymeditors(0),
         $body,
-        selectedElmnt;
+        elementToReplace;
 
-    expect(1);
-
-    wymeditor.html(replaceMeHtml);
+    wymeditor._html(replaceMeHtml);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
-    wymeditor._doc.body.focus();
-
-    selectedElmnt = $body.find('#replaceMe').get(0);
-    makeTextSelection(wymeditor, selectedElmnt, selectedElmnt, 0, selectedElmnt.innerText.length);
+    elementToReplace = $body.find('#replaceMe')[0];
+    makeTextSelection(wymeditor, elementToReplace, elementToReplace);
 
     wymeditor._exec(WYMeditor.INSERT_HTML, replacementDivHtml);
     htmlEquals(wymeditor, rootP_replaceMeHtml);
 });
 
-module("structure-defaultRoot-div", {setup: setupDefaultRootContainerDivWym});
+module("structure-defaultRoot_div", {setup: setupDefaultRootContainerDivWym});
 
 test("DIV element is correctly inserted", function () {
+    expect(1);
     var wymeditor = jQuery.wymeditors(0),
         $body,
-        selectedElmnt;
+        elementToReplace;
 
-    expect(1);
-
-    wymeditor.html(replaceMeHtml);
+    wymeditor._html(replaceMeHtml);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
-    wymeditor._doc.body.focus();
-
-    selectedElmnt = $body.find('#replaceMe').get(0);
-    makeTextSelection(wymeditor, selectedElmnt, selectedElmnt, 0, selectedElmnt.innerText.length);
+    elementToReplace = $body.find('#replaceMe')[0];
+    makeTextSelection(wymeditor, elementToReplace, elementToReplace);
 
     wymeditor._exec(WYMeditor.INSERT_HTML, replacementDivHtml);
     htmlEquals(wymeditor, rootDiv_replaceMeHtml);
 });
+
