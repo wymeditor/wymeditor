@@ -269,13 +269,3 @@ WYMeditor.WymClassExplorer.prototype.keyup = function (evt) {
     }
 };
 
-WYMeditor.WymClassExplorer.prototype.setFocusToNode = function (node, toStart) {
-    var range = this._doc.selection.createRange();
-    toStart = toStart ? true : false;
-
-    range.moveToElementText(node);
-    range.collapse(toStart);
-    range.select();
-    node.focus();
-};
-
