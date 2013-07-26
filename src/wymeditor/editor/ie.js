@@ -302,7 +302,6 @@ WYMeditor.WymClassExplorer.prototype.keyup = function (evt) {
         name = container.tagName.toLowerCase();
         if (jQuery.inArray(name, notValidRootContainers) > -1) {
             wym.switchTo(container, defaultRootContainer);
-            wym.fixBodyHtml();
         }
         wym.fixBodyHtml();
     }

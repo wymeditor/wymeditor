@@ -57,7 +57,8 @@ jQuery.extend(WYMeditor.DocumentStructureManager, {
 
         // These containers cannot be used as root containers. This includes
         // any default root containers that are not the chosen default root
-        // container.
+        // container. By default, this is set to the list of valid root
+        // containers that are not the defaultRootContainer.
         notValidRootContainers: ['div'],
 
         // Only these containers are allowed as a direct child of the body tag.

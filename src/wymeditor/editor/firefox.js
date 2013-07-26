@@ -236,7 +236,6 @@ WYMeditor.WymClassMozilla.prototype.keyup = function (evt) {
         name = container.tagName.toLowerCase();
         if (jQuery.inArray(name, notValidRootContainers) > -1) {
             wym._exec(WYMeditor.FORMAT_BLOCK, defaultRootContainer);
-            wym.fixBodyHtml();
         }
         wym.fixBodyHtml();
     }
