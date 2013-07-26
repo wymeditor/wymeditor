@@ -15,7 +15,7 @@ WYMeditor.
   new documentation uses [Sphinx](http://sphinx-doc.org/) and new pull
   requests will now be able to come with `docs/` already committed!  Thanks to
   Nick McLaughlin for the herculean effort in combining the years of spread-out
- documentation.
+  documentation.
 * We now document how to run WYMeditor with jQuery 1.8.x and 1.9.x via
   [jquery-migrate](https://github.com/jquery/jquery-migrate/). The unit tests
   now also support those versions of jQuery.
@@ -31,7 +31,7 @@ WYMeditor.
 * Elements in the editor can now easily be flagged to be removed from the
   editor output by the XHTML parser. This allows elements to be "editor-only"
   in the sense that they will be visible in the editor but not included in the
-  outputed XHTML from the editor. Simply add the class
+  outputted XHTML from the editor. Simply add the class
   `WYMeditor.EDITOR_ONLY_CLASS` to an element to specify it to be removed by
   the XHTML parser in this manner.
 * Classes can now be specified to be removed from tags' class attribute by the
@@ -43,23 +43,23 @@ WYMeditor.
   selectable default root container feature described in the following point.
 * The default root container used by the editor can now be specified as
   an option to be either `p` or `div`. The specified container for this option
-  will be used by default when a new container is created in the editor, and it
-  will also be used as the default container for wrapping any text or inline
-  elements inserted directly into the editor body. In addition, the editor will
-  try to enforce that the unchosen option for the default root container is
-  converted to the chosen defualt root container when possible (e.g. if `div`
-  is specified as the default root container, the editor will convert `p`
-  elements in the root of the document to `div` elements when the user modifies
-  those containers). The default root container option can be specified as an
-  option of the new `structureRules` option in the editor's initialization. For
-  example:
+  will be used by default when an unspecified new container is created in the
+  root of the editor, and it will also be used as the default container for
+  wrapping any text or inline elements inserted directly into the editor body.
+  In addition, the editor will try to enforce that the unchosen option for the
+  default root container is converted to the chosen defualt root container when
+  possible (e.g. if `div` is specified as the default root container, the
+  editor will convert `p` elements in the root of the document to `div`
+  elements when the user modifies those containers). The default root container
+  option can be specified as an option of the new `structureRules` option in
+  the editor's initialization. For example:
 
     ```javascript
-        jQuery('.wymeditor').wymeditor({
-            structureRules: {
-                defaultRootContainer: 'div'
-            }
-        });
+    jQuery('.wymeditor').wymeditor({
+        structureRules: {
+            defaultRootContainer: 'div'
+        }
+    });
     ```
 
 ### Bug Fixes
@@ -83,6 +83,11 @@ WYMeditor.
   other attributes were being lost in the container conversion. This has been
   fixed so that all attributes such as `colspan` are retained when switching
   betwen a normal table cell and a table header.
+* When hitting enter to create a new container after a heading in Chrome, there
+  was an issue where a `div` container would be created instead of a `p`
+  container as expected. As part of the feature addition of a selected default
+  root container, this issue has been fixed so that the selected default root
+  container is inserted after the heading as expected after hitting enter.
 * A couple bugs in IE with content not allowable to be in the root of the
   editor body not being properly wrapped in containers have been fixed. The
   first bug fixed was that text directly typed into the body of the editor was
@@ -92,6 +97,20 @@ WYMeditor.
   editor (e.g. `strong`, `em`, `a`, etc.) were not being wrapped in a
   container, but this is also now fixed and those elements will be properly
   wrapped in the default root container when modified in the body.
+
+### Build Process Improvements
+
+* [Grunt](http://gruntjs.com/) has been set up for the WYMeditor project so
+  that the unit test suite can now easily be run from the command line in a
+  headless [Phantom.js](http://phantomjs.org/) browser using the Grunt `test`
+  task. See the testing section in the README or the docs for more information.
+* The WYMeditor project is now set up on [Travis CI](https://travis-ci.org/)
+  for continuous integration using the unit test suite run with a variety of
+  jQuery versions using the Grunt `test` task.
+* [Selenium2](http://seleniumhq.org/) tests have been set up for the WYMeditor
+  project to allow for testing coverage of some behaviors that can't be
+  replicated well with JavaScript. See the README for information on running
+  the Selenium tests.
 
 ### Deprecation
 
