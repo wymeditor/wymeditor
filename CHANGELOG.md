@@ -39,8 +39,10 @@ WYMeditor.
   the `WYMeditor.CLASSES_REMOVED_BY_PARSER` array, and the XHTML parser will
   remove all of those classes from all the tags in the editor's output.
 * `div` elements are now visible and labelled in the editor so that they can
-  easily be worked with. This change was made to allow for the addition of the
-  selectable default root container feature described in the following point.
+  easily be worked with. In addition, `div` containers can now also be swithed
+  to other container types using the containers panel. This change was made to
+  allow for the addition of the selectable default root container feature
+  described in the following point.
 * The default root container used by the editor can now be specified as
   an option to be either `p` or `div`. The specified container for this option
   will be used by default when an unspecified new container is created in the
