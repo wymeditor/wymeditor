@@ -546,9 +546,19 @@ WYMeditor.editor.prototype.container = function (sType) {
         }
     } else {
         // Set the container type
-        validContainers =
-            this.documentStructureManager.structureRules.validRootContainers;
-        container = this.findUp(this.container(), validContainers);
+        aTypes = [
+            WYMeditor.P,
+            WYMeditor.DIV,
+            WYMeditor.H1,
+            WYMeditor.H2,
+            WYMeditor.H3,
+            WYMeditor.H4,
+            WYMeditor.H5,
+            WYMeditor.H6,
+            WYMeditor.PRE,
+            WYMeditor.BLOCKQUOTE
+        ];
+        container = this.findUp(this.container(), aTypes);
 
         if (container) {
             if (sType.toLowerCase() === WYMeditor.BLOCKQUOTE) {
