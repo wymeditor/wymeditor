@@ -179,7 +179,8 @@ WYMeditor.WymClassMozilla.prototype.keyup = function (evt) {
         container,
         defaultRootContainer,
         notValidRootContainers,
-        name;
+        name,
+        parentName;
 
     notValidRootContainers =
         wym.documentStructureManager.structureRules.notValidRootContainers;
@@ -202,29 +203,38 @@ WYMeditor.WymClassMozilla.prototype.keyup = function (evt) {
 
         container = wym.selected();
         name = container.tagName.toLowerCase();
+        if (container.parentNode) {
+            parentName = container.parentNode.tagName.toLowerCase();
+        }
 
-        //fix forbidden main containers
+        // Fix forbidden main containers
         if (name === "strong" ||
                 name === "b" ||
                 name === "em" ||
                 name === "i" ||
                 name === "sub" ||
                 name === "sup" ||
-                name === "a") {
+                name === "a" ||
+                name === "span") {
+            // Webkit tries to use spans as a main container
 
-            name = container.parentNode.tagName.toLowerCase();
+            name = parentName;
         }
 
+        // Replace text nodes with default root tags and make sure the
+        // container is valid if it is a root container
         if (name === WYMeditor.BODY ||
-                jQuery.inArray(name, notValidRootContainers) > -1) {
-            // Replace text nodes with default root tags
+                (jQuery.inArray(name, notValidRootContainers) > -1 &&
+                parentName === WYMeditor.BODY)) {
+
             wym._exec(WYMeditor.FORMAT_BLOCK, defaultRootContainer);
             wym.fixBodyHtml();
         }
     }
 
-    // If we potentially created a new block level element or moved to a new one
-    // then we should ensure that they're in the proper format
+    // If we potentially created a new block level element or moved to a new
+    // one, then we should ensure the container is valid and the formatting is
+    // proper.
     if (evt.keyCode === WYMeditor.KEY.UP ||
             evt.keyCode === WYMeditor.KEY.DOWN ||
             evt.keyCode === WYMeditor.KEY.LEFT ||
@@ -232,11 +242,19 @@ WYMeditor.WymClassMozilla.prototype.keyup = function (evt) {
             evt.keyCode === WYMeditor.KEY.BACKSPACE ||
             evt.keyCode === WYMeditor.KEY.ENTER) {
 
+        // If the selected container is a root container, make sure it is not a
+        // different possible default root container than the chosen one.
         container = wym.selected();
         name = container.tagName.toLowerCase();
-        if (jQuery.inArray(name, notValidRootContainers) > -1) {
+        if (container.parentNode) {
+            parentName = container.parentNode.tagName.toLowerCase();
+        }
+        if (jQuery.inArray(name, notValidRootContainers) > -1 &&
+                parentName === WYMeditor.BODY) {
             wym._exec(WYMeditor.FORMAT_BLOCK, defaultRootContainer);
         }
+
+        // Fix formatting if necessary
         wym.fixBodyHtml();
     }
 };

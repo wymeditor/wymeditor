@@ -244,9 +244,10 @@ WYMeditor.WymClassExplorer.prototype.keyup = function (evt) {
     //'this' is the doc
     var wym = WYMeditor.INSTANCES[this.title],
         container,
-        name,
         defaultRootContainer,
-        notValidRootContainers;
+        notValidRootContainers,
+        name,
+        parentName;
 
     notValidRootContainers =
         wym.documentStructureManager.structureRules.notValidRootContainers;
@@ -268,6 +269,9 @@ WYMeditor.WymClassExplorer.prototype.keyup = function (evt) {
         if (container !== null) {
             name = container.tagName.toLowerCase();
         }
+        if (container.parentNode) {
+            parentName = container.parentNode.tagName.toLowerCase();
+        }
 
         // Fix forbidden main containers
         if (name === "strong" ||
@@ -287,10 +291,17 @@ WYMeditor.WymClassExplorer.prototype.keyup = function (evt) {
             wym.wrapWithContainer(selectedNode, defaultRootContainer);
             wym.fixBodyHtml();
         }
+
+        if (jQuery.inArray(name, notValidRootContainers) > -1 &&
+                parentName === WYMeditor.BODY) {
+            wym.switchTo(container, defaultRootContainer);
+            wym.fixBodyHtml();
+        }
     }
 
-    // If we potentially created a new block level element or moved to a new one
-    // then we should ensure that they're in the proper format
+    // If we potentially created a new block level element or moved to a new
+    // one, then we should ensure the container is valid and the formatting is
+    // proper.
     if (evt.keyCode === WYMeditor.KEY.UP ||
             evt.keyCode === WYMeditor.KEY.DOWN ||
             evt.keyCode === WYMeditor.KEY.LEFT ||
@@ -298,11 +309,19 @@ WYMeditor.WymClassExplorer.prototype.keyup = function (evt) {
             evt.keyCode === WYMeditor.KEY.BACKSPACE ||
             evt.keyCode === WYMeditor.KEY.ENTER) {
 
+        // If the selected container is a root container, make sure it is not a
+        // different possible default root container than the chosen one.
         container = wym.selected();
         name = container.tagName.toLowerCase();
-        if (jQuery.inArray(name, notValidRootContainers) > -1) {
+        if (container.parentNode) {
+            parentName = container.parentNode.tagName.toLowerCase();
+        }
+        if (jQuery.inArray(name, notValidRootContainers) > -1 &&
+                parentName === WYMeditor.BODY) {
             wym.switchTo(container, defaultRootContainer);
         }
+
+        // Fix formatting if necessary
         wym.fixBodyHtml();
     }
 };
