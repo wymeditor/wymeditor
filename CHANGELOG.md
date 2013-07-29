@@ -39,8 +39,8 @@ WYMeditor.
   the `WYMeditor.CLASSES_REMOVED_BY_PARSER` array, and the XHTML parser will
   remove all of those classes from all the tags in the editor's output.
 * `div` elements are now visible and labeled in the editor so that they can
-  easily be worked with. In addition, `div` containers can now also be switched
-  to other container types using the containers panel. This change was made to
+  easily be worked with. In addition, `div` containers can now be switched to
+  other container types using the containers panel. This change was made to
   allow for the addition of the selectable default root container feature
   described in the following point.
 * The default root container used by the editor can now be specified as
@@ -48,13 +48,14 @@ WYMeditor.
   will be used by default when an unspecified new container is created in the
   root of the editor, and it will also be used as the default container for
   wrapping any text or inline elements inserted directly into the editor body.
-  In addition, the editor will try to enforce that the unchosen option for the
-  default root container is converted to the chosen default root container when
-  possible (e.g. if `div` is specified as the default root container, the
-  editor will convert `p` elements in the root of the document to `div`
-  elements when the user modifies those containers). The default root container
-  option can be specified as an option of the new `structureRules` option in
-  the editor's initialization. For example:
+  In addition, the editor will enforce that the unchosen option for the
+  default root container is not allowed in the root of the document by
+  converting the unchosen default root container to the chosen default root
+  container when possible (e.g. if `div` is specified as the default root
+  container, the editor will convert `p` elements in the root of the document
+  to `div` elements when the user modifies those containers). The default root
+  container option can be specified as an option of the new `structureRules`
+  option in the editor's initialization. For example:
 
     ```javascript
     jQuery('.wymeditor').wymeditor({
@@ -90,7 +91,7 @@ WYMeditor.
   container as expected. As part of the feature addition of a selected default
   root container, this issue has been fixed so that the selected default root
   container is inserted after the heading as expected after hitting enter.
-* A couple bugs in IE with content not allowable to be in the root of the
+* A couple bugs in IE dealing with content not allowed to be in the root of the
   editor body not being properly wrapped in containers have been fixed. The
   first bug fixed was that text directly typed into the body of the editor was
   not being wrapped in a container, but this is now fixed and the text will be
