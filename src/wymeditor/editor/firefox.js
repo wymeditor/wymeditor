@@ -31,7 +31,7 @@ WYMeditor.WymClassMozilla.CELL_PLACEHOLDER = '<br _moz_dirty="" />';
 
 // Firefox 3.5 and 3.6 require the CELL_PLACEHOLDER and 4.0 doesn't
 WYMeditor.WymClassMozilla.NEEDS_CELL_FIX = parseInt(
-    jQuery.browser.version, 10) == 1 &&
+    jQuery.browser.version, 10) === 1 &&
     jQuery.browser.version >= '1.9.1' &&
     jQuery.browser.version < '2.0';
 
@@ -157,12 +157,12 @@ WYMeditor.WymClassMozilla.prototype.keydown = function (evt) {
     var wym = WYMeditor.INSTANCES[this.title];
 
     if (evt.ctrlKey) {
-        if (evt.keyCode === 66) {
+        if (evt.which === 66) {
             //CTRL+b => STRONG
             wym._exec(WYMeditor.BOLD);
             return false;
         }
-        if (evt.keyCode === 73) {
+        if (evt.which === 73) {
             //CTRL+i => EMPHASIS
             wym._exec(WYMeditor.ITALIC);
             return false;
@@ -189,15 +189,15 @@ WYMeditor.WymClassMozilla.prototype.keyup = function (evt) {
     wym._selected_image = null;
     container = null;
 
-    if (evt.keyCode !== WYMeditor.KEY.BACKSPACE &&
-            evt.keyCode !== WYMeditor.KEY.CTRL &&
-            evt.keyCode !== WYMeditor.KEY.DELETE &&
-            evt.keyCode !== WYMeditor.KEY.COMMAND &&
-            evt.keyCode !== WYMeditor.KEY.UP &&
-            evt.keyCode !== WYMeditor.KEY.DOWN &&
-            evt.keyCode !== WYMeditor.KEY.LEFT &&
-            evt.keyCode !== WYMeditor.KEY.RIGHT &&
-            evt.keyCode !== WYMeditor.KEY.ENTER &&
+    if (evt.which !== WYMeditor.KEY.BACKSPACE &&
+            evt.which !== WYMeditor.KEY.CTRL &&
+            evt.which !== WYMeditor.KEY.DELETE &&
+            evt.which !== WYMeditor.KEY.COMMAND &&
+            evt.which !== WYMeditor.KEY.UP &&
+            evt.which !== WYMeditor.KEY.DOWN &&
+            evt.which !== WYMeditor.KEY.LEFT &&
+            evt.which !== WYMeditor.KEY.RIGHT &&
+            evt.which !== WYMeditor.KEY.ENTER &&
             !evt.metaKey &&
             !evt.ctrlKey) { // Not BACKSPACE, DELETE, CTRL, or COMMAND key
 
@@ -216,7 +216,6 @@ WYMeditor.WymClassMozilla.prototype.keyup = function (evt) {
                 name === "sup" ||
                 name === "a" ||
                 name === "span") {
-            // Webkit tries to use spans as a main container
 
             name = parentName;
         }
@@ -235,12 +234,12 @@ WYMeditor.WymClassMozilla.prototype.keyup = function (evt) {
     // If we potentially created a new block level element or moved to a new
     // one, then we should ensure the container is valid and the formatting is
     // proper.
-    if (evt.keyCode === WYMeditor.KEY.UP ||
-            evt.keyCode === WYMeditor.KEY.DOWN ||
-            evt.keyCode === WYMeditor.KEY.LEFT ||
-            evt.keyCode === WYMeditor.KEY.RIGHT ||
-            evt.keyCode === WYMeditor.KEY.BACKSPACE ||
-            evt.keyCode === WYMeditor.KEY.ENTER) {
+    if (evt.which === WYMeditor.KEY.UP ||
+            evt.which === WYMeditor.KEY.DOWN ||
+            evt.which === WYMeditor.KEY.LEFT ||
+            evt.which === WYMeditor.KEY.RIGHT ||
+            evt.which === WYMeditor.KEY.BACKSPACE ||
+            evt.which === WYMeditor.KEY.ENTER) {
 
         // If the selected container is a root container, make sure it is not a
         // different possible default root container than the chosen one.

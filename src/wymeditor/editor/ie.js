@@ -247,7 +247,8 @@ WYMeditor.WymClassExplorer.prototype.keyup = function (evt) {
         defaultRootContainer,
         notValidRootContainers,
         name,
-        parentName;
+        parentName,
+        forbiddenMainContainer = false;
 
     notValidRootContainers =
         wym.documentStructureManager.structureRules.notValidRootContainers;
@@ -255,17 +256,18 @@ WYMeditor.WymClassExplorer.prototype.keyup = function (evt) {
         wym.documentStructureManager.structureRules.defaultRootContainer;
     this._selected_image = null;
 
-    if (evt.keyCode !== WYMeditor.KEY.BACKSPACE &&
-            evt.keyCode !== WYMeditor.KEY.CTRL &&
-            evt.keyCode !== WYMeditor.KEY.DELETE &&
-            evt.keyCode !== WYMeditor.KEY.COMMAND &&
-            evt.keyCode !== WYMeditor.KEY.UP &&
-            evt.keyCode !== WYMeditor.KEY.DOWN &&
-            evt.keyCode !== WYMeditor.KEY.ENTER &&
+    if (evt.which !== WYMeditor.KEY.BACKSPACE &&
+            evt.which !== WYMeditor.KEY.CTRL &&
+            evt.which !== WYMeditor.KEY.DELETE &&
+            evt.which !== WYMeditor.KEY.COMMAND &&
+            evt.which !== WYMeditor.KEY.UP &&
+            evt.which !== WYMeditor.KEY.DOWN &&
+            evt.which !== WYMeditor.KEY.ENTER &&
             !evt.metaKey &&
             !evt.ctrlKey) { // Not BACKSPACE, DELETE, CTRL, or COMMAND key
 
         container = wym.selected();
+        selectedNode = wym.selection().focusNode;
         if (container !== null) {
             name = container.tagName.toLowerCase();
         }
@@ -280,14 +282,22 @@ WYMeditor.WymClassExplorer.prototype.keyup = function (evt) {
                 name === "i" ||
                 name === "sub" ||
                 name === "sup" ||
-                name === "a") {
+                name === "a" ||
+                name === "span") {
 
-            name = container.parentNode.tagName.toLowerCase();
+            name = parentName;
+            forbiddenMainContainer = true;
         }
 
-        selectedNode = wym.selection().focusNode;
+        // Wrap text nodes and forbidden main containers with default root node
+        // tags
         if (name === WYMeditor.BODY && selectedNode.nodeName === "#text") {
-            // Wrap text nodes with default root node tags
+            // If we're in a forbidden main container, switch the selected node
+            // to its parent node so that we wrap the forbidden main container
+            // itself and not its inner text content
+            if (forbiddenMainContainer) {
+                selectedNode = selectedNode.parentNode;
+            }
             wym.wrapWithContainer(selectedNode, defaultRootContainer);
             wym.fixBodyHtml();
         }
@@ -302,12 +312,12 @@ WYMeditor.WymClassExplorer.prototype.keyup = function (evt) {
     // If we potentially created a new block level element or moved to a new
     // one, then we should ensure the container is valid and the formatting is
     // proper.
-    if (evt.keyCode === WYMeditor.KEY.UP ||
-            evt.keyCode === WYMeditor.KEY.DOWN ||
-            evt.keyCode === WYMeditor.KEY.LEFT ||
-            evt.keyCode === WYMeditor.KEY.RIGHT ||
-            evt.keyCode === WYMeditor.KEY.BACKSPACE ||
-            evt.keyCode === WYMeditor.KEY.ENTER) {
+    if (evt.which === WYMeditor.KEY.UP ||
+            evt.which === WYMeditor.KEY.DOWN ||
+            evt.which === WYMeditor.KEY.LEFT ||
+            evt.which === WYMeditor.KEY.RIGHT ||
+            evt.which === WYMeditor.KEY.BACKSPACE ||
+            evt.which === WYMeditor.KEY.ENTER) {
 
         // If the selected container is a root container, make sure it is not a
         // different possible default root container than the chosen one.

@@ -79,7 +79,7 @@ WYMeditor.WymClassOpera.prototype.selected = function() {
     var sel = this._iframe.contentWindow.getSelection();
     var node = sel.focusNode;
     if (node) {
-        if (node.nodeName == "#text") {
+        if (node.nodeName === "#text") {
             return node.parentNode;
         } else {
             return node;
@@ -103,13 +103,13 @@ WYMeditor.WymClassOpera.prototype.keydown = function(evt) {
     //Get a P instead of no container
     if (!jQuery(startNode).parentsOrSelf(WYMeditor.MAIN_CONTAINERS.join(","))[0] &&
             !jQuery(startNode).parentsOrSelf('li') &&
-            evt.keyCode != WYMeditor.KEY.ENTER &&
-            evt.keyCode != WYMeditor.KEY.LEFT &&
-            evt.keyCode != WYMeditor.KEY.UP &&
-            evt.keyCode != WYMeditor.KEY.RIGHT &&
-            evt.keyCode != WYMeditor.KEY.DOWN &&
-            evt.keyCode != WYMeditor.KEY.BACKSPACE &&
-            evt.keyCode != WYMeditor.KEY.DELETE) {
+            evt.which !== WYMeditor.KEY.ENTER &&
+            evt.which !== WYMeditor.KEY.LEFT &&
+            evt.which !== WYMeditor.KEY.UP &&
+            evt.which !== WYMeditor.KEY.RIGHT &&
+            evt.which !== WYMeditor.KEY.DOWN &&
+            evt.which !== WYMeditor.KEY.BACKSPACE &&
+            evt.which !== WYMeditor.KEY.DELETE) {
 
         wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
     }

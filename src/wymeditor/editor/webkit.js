@@ -135,17 +135,17 @@ WYMeditor.WymClassSafari.prototype.keydown = function (e) {
     var wym = WYMeditor.INSTANCES[this.title];
 
     if (e.ctrlKey) {
-        if (e.keyCode === WYMeditor.KEY.B) {
+        if (e.which === WYMeditor.KEY.B) {
             //CTRL+b => STRONG
             wym._exec(WYMeditor.BOLD);
             e.preventDefault();
         }
-        if (e.keyCode === WYMeditor.KEY.I) {
+        if (e.which === WYMeditor.KEY.I) {
             //CTRL+i => EMPHASIS
             wym._exec(WYMeditor.ITALIC);
             e.preventDefault();
         }
-    } else if (e.shiftKey && e.keyCode === WYMeditor.KEY.ENTER) {
+    } else if (e.shiftKey && e.which === WYMeditor.KEY.ENTER) {
         // Safari 4 and earlier would show a proper linebreak in the editor and
         // then strip it upon save with the default action in the case of inserting
         // a new line after bold text
@@ -173,20 +173,20 @@ WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
     // Fix to allow shift + return to insert a line break in older safari
     if (jQuery.browser.version < 534.1) {
         // Not needed in AT MAX chrome 6.0. Probably safe earlier
-        if (evt.keyCode === WYMeditor.KEY.ENTER && evt.shiftKey) {
+        if (evt.which === WYMeditor.KEY.ENTER && evt.shiftKey) {
             wym._exec('InsertLineBreak');
         }
     }
 
-    if (evt.keyCode !== WYMeditor.KEY.BACKSPACE &&
-            evt.keyCode !== WYMeditor.KEY.CTRL &&
-            evt.keyCode !== WYMeditor.KEY.DELETE &&
-            evt.keyCode !== WYMeditor.KEY.COMMAND &&
-            evt.keyCode !== WYMeditor.KEY.UP &&
-            evt.keyCode !== WYMeditor.KEY.DOWN &&
-            evt.keyCode !== WYMeditor.KEY.LEFT &&
-            evt.keyCode !== WYMeditor.KEY.RIGHT &&
-            evt.keyCode !== WYMeditor.KEY.ENTER &&
+    if (evt.which !== WYMeditor.KEY.BACKSPACE &&
+            evt.which !== WYMeditor.KEY.CTRL &&
+            evt.which !== WYMeditor.KEY.DELETE &&
+            evt.which !== WYMeditor.KEY.COMMAND &&
+            evt.which !== WYMeditor.KEY.UP &&
+            evt.which !== WYMeditor.KEY.DOWN &&
+            evt.which !== WYMeditor.KEY.LEFT &&
+            evt.which !== WYMeditor.KEY.RIGHT &&
+            evt.which !== WYMeditor.KEY.ENTER &&
             !evt.metaKey &&
             !evt.ctrlKey) {// Not BACKSPACE, DELETE, CTRL, or COMMAND key
 
@@ -224,12 +224,12 @@ WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
     // If we potentially created a new block level element or moved to a new
     // one, then we should ensure the container is valid and the formatting is
     // proper.
-    if (evt.keyCode === WYMeditor.KEY.UP ||
-            evt.keyCode === WYMeditor.KEY.DOWN ||
-            evt.keyCode === WYMeditor.KEY.LEFT ||
-            evt.keyCode === WYMeditor.KEY.RIGHT ||
-            evt.keyCode === WYMeditor.KEY.BACKSPACE ||
-            evt.keyCode === WYMeditor.KEY.ENTER) {
+    if (evt.which === WYMeditor.KEY.UP ||
+            evt.which === WYMeditor.KEY.DOWN ||
+            evt.which === WYMeditor.KEY.LEFT ||
+            evt.which === WYMeditor.KEY.RIGHT ||
+            evt.which === WYMeditor.KEY.BACKSPACE ||
+            evt.which === WYMeditor.KEY.ENTER) {
 
         // If the selected container is a root container, make sure it is not a
         // different possible default root container than the chosen one.
