@@ -38,8 +38,8 @@ WYMeditor.
   XHTML parser. Simply add a string for each of the class names to remove to
   the `WYMeditor.CLASSES_REMOVED_BY_PARSER` array, and the XHTML parser will
   remove all of those classes from all the tags in the editor's output.
-* `div` elements are now visible and labelled in the editor so that they can
-  easily be worked with. In addition, `div` containers can now also be swithed
+* `div` elements are now visible and labeled in the editor so that they can
+  easily be worked with. In addition, `div` containers can now also be switched
   to other container types using the containers panel. This change was made to
   allow for the addition of the selectable default root container feature
   described in the following point.
@@ -49,7 +49,7 @@ WYMeditor.
   root of the editor, and it will also be used as the default container for
   wrapping any text or inline elements inserted directly into the editor body.
   In addition, the editor will try to enforce that the unchosen option for the
-  default root container is converted to the chosen defualt root container when
+  default root container is converted to the chosen default root container when
   possible (e.g. if `div` is specified as the default root container, the
   editor will convert `p` elements in the root of the document to `div`
   elements when the user modifies those containers). The default root container
@@ -84,7 +84,7 @@ WYMeditor.
   "Table Header" option in the containers panel in the editor, any `colspan` or
   other attributes were being lost in the container conversion. This has been
   fixed so that all attributes such as `colspan` are retained when switching
-  betwen a normal table cell and a table header.
+  between a normal table cell and a table header.
 * When hitting enter to create a new container after a heading in Chrome, there
   was an issue where a `div` container would be created instead of a `p`
   container as expected. As part of the feature addition of a selected default
@@ -254,7 +254,7 @@ are completed, this cycle will culminate in a 1.0.0 stable release.
   Thanks to first-time contributor Gyuris Gellért for the theme.
 * The Embed plugin now supports embedding via an iframe.
 * List indent/outdent has been rewritten to fix several outstanding bugs in
-  various browsers. Indent and outdent are now always opposites of eachother
+  various browsers. Indent and outdent are now always opposites of each other
   (outdenting what you just indented returns you to your original state) and
   the behavior is consistent across all supported browsers.
 * A list plugin is now available that enables tab for list indent and
@@ -303,7 +303,7 @@ are completed, this cycle will culminate in a 1.0.0 stable release.
 
 * A rare bug affecting ie8 users with certain combinations of CSS attributes
   has been fixed (with a work-around). This bug would manifest as all content
-  in the editor temporarily and randomly dissappearing after a keypress, only
+  in the editor temporarily and randomly disappearing after a keypress, only
   to re-appear when the user moved their mouse.
 * The editor height no longer changes height by a few pixels the first time
   someone hovers over a tool.
@@ -314,7 +314,7 @@ are completed, this cycle will culminate in a 1.0.0 stable release.
   a piece of HTML has previously been affected by the broken list bug, it will
   be automatically corrected.
 * It is now always possible to insert tables, preformatted text and blockquotes
-  at the start and end of documents, as well as in between eachother.
+  at the start and end of documents, as well as in between each other.
   Previously, depending on your browser and version, you couldn't do one or more
   of these things.
 * It is now possible to paste content in to a table when using internet

@@ -7,58 +7,55 @@ the more common "What You See Is What You Get".
 ## Why WYMeditor?
 
 WYMeditor is different from the [traditional](http://www.tinymce.com/)
-[editors](http://ckeditor.com/) because we are 100% focused on providing
-a simple experience for users that separates the content of their
-document from the presentation of that document.  We focus on enforcing
-web standards and separating a document's structure (HTML) from its
-presentation (CSS). Your users won't know and shouldn't care about HTML,
-but when they need consistent, standards-compliant, clean content,
-they'll thank you.
+[editors](http://ckeditor.com/) because we are 100% focused on providing a
+simple experience for users that separates the content of their document from
+the presentation of that document.  We focus on enforcing web standards and
+separating a document's structure (HTML) from its presentation (CSS). Your
+users won't know and shouldn't care about HTML, but when they need consistent,
+standards-compliant, clean content, they'll thank you.
 
-There are lots of choices when it comes to a brower-based editor and
-many of them are stable, mature projects with thousands of users. If you
-need an editor that gives total control and flexibility to the user (not
-you, the developer), then WYMeditor is probably not for you. If you want
-an editor that you can customize to provide the specific capabilities
-your users need, and you want users focused on the structure of their
-content instead of tweaking fonts and margins, you should give WYMeditor
-a try.
+There are lots of choices when it comes to a browser-based editor and many of
+them are stable, mature projects with thousands of users. If you need an editor
+that gives total control and flexibility to the user (not you, the developer),
+then WYMeditor is probably not for you. If you want an editor that you can
+customize to provide the specific capabilities your users need, and you want
+users focused on the structure of their content instead of tweaking fonts and
+margins, you should give WYMeditor a try.
 
-We also fully support Internet Explorer 6, for those poor souls who have
-no choice.
+We also fully support Internet Explorer 6, for those poor souls who have no
+choice.
 
 ## Try It
 
 Want to see what WYMeditor can do? Try the [WYMeditor
 examples](http://wymeditor.no.de/wymeditor/examples/) right now.
 
-These examples run the bleeding edge code and give you a good idea of
-what WYMeditor can do.
+These examples run the bleeding edge code and give you a good idea of what
+WYMeditor can do.
 
 ## Quick Start
 
-1. WYMeditor requires a version of jQuery between 1.3.0 and 1.9.1. First
-   ensure that your page includes jQuery.
+1. WYMeditor requires a version of jQuery between 1.3.0 and 1.9.1. First ensure
+   that your page includes jQuery.
 
-    *Note*: If a version of jQuery at or above 1.8.0 is used, WYMeditor
-    also requires jQuery Migrate. Ensure that your page also includes
-    jQuery Migrate after jQuery is included.
+    *Note*: If a version of jQuery at or above 1.8.0 is used, WYMeditor also
+   requires jQuery Migrate. Ensure that your page also includes jQuery Migrate
+   after jQuery is included.
 
 2. Download the [Version
    1.0.0b4](https://github.com/downloads/wymeditor/wymeditor/wymeditor-1.0.0b4.tar.gz)
    archive and extract the contents to a folder in your project.
 
-3. Include the `wymeditor/jquery.wymeditor.min.js` file on your page
-   using this script. This file will pull in anything else that's
-   required.
+3. Include the `wymeditor/jquery.wymeditor.min.js` file on your page using this
+   script. This file will pull in anything else that's required.
 
     ```html
     <script type="text/javascript" src="/wymeditor/jquery.wymeditor.min.js"></script>
     ```
 
-4. Now use the `wymeditor()` function to select one of your `textarea`
-   elements and turn it in to a WYMeditor instance. eg. if you have a
-   `textarea` with the class `my-wymeditor`:
+4. Now use the `wymeditor()` function to select one of your `textarea` elements
+   and turn it in to a WYMeditor instance. eg. if you have a `textarea` with
+   the class `my-wymeditor`:
 
     ```javascript
     $('.my-wymeditor').wymeditor();
@@ -77,8 +74,8 @@ what WYMeditor can do.
 
 7. Profit!
 
-More examples with different plugins and configuration options can be
-found in your `examples` directory.
+More examples with different plugins and configuration options can be found in
+your `examples` directory.
 
 ## Compatibility
 
@@ -102,10 +99,9 @@ WYMeditor is compatible with:
 
 ### Documentation
 
-Our documentation uses the [Sphinx](http://sphinx-doc.org/)
-documentation tool. The source lives in the `docs/` folder and every
-pull requests that isn't just fixing a bug *must* come with
-documentation.
+Our documentation uses the [Sphinx](http://sphinx-doc.org/) documentation tool.
+The source lives in the `docs/` folder and every pull requests that isn't just
+fixing a bug *must* come with documentation.
 
 You can see the current documentation at
 [wymeditor.readthedocs.org](http://wymeditor.readthedocs.org).
@@ -151,8 +147,8 @@ unit tests in your browser.
 To run the tests:
 
 1. Put your source behind some kind of web server (apache, nginx, etc). If you
-don't have one installed or don't want to fuss with configuration, you can use
-python's HTTP server:
+   don't have one installed or don't want to fuss with configuration, you can
+   use python's HTTP server:
 
     ```shell
     $ cd /path/to/my/wymeditor/src
@@ -160,14 +156,14 @@ python's HTTP server:
     ```
 
 2. The unit test suite is located at `src/test/unit/index.html`, so if you used
-the python instructions, open up your browser to
-[http://localhost:8000/test/unit/index.html](http://localhost:8000/test/unit/index.html).
+   the python instructions, open up your browser to
+   [http://localhost:8000/test/unit/index.html](http://localhost:8000/test/unit/index.html).
 
 All green means you're good to go.
 
 ##### Running Unit Tests from the Command Line
 
-In addtion to the browser test suite, you can also use
+In addition to the browser test suite, you can also use
 [Phantom.js](http://www.phantomjs.org/) to run the unit tests in a headless
 WebKit browser from the command line using [Grunt](http://gruntjs.com/) by
 following these instructions:
@@ -204,16 +200,16 @@ If the task runs with no errors or failures, you're good to go.
 
 The unit tests can be run with the different versions of jQuery hosted on
 Google's CDN. To do this when running tests in a browser, append the URL
-parameter `?jquery=<version>` to the test suite URL. To do this when
-running tests from the command line with Grunt, include the parameter
+parameter `?jquery=<version>` to the test suite URL. To do this when running
+tests from the command line with Grunt, include the parameter
 `--jquery=<version>` when running the `test` task. 
 
-For a browser example, to test with jQuery 1.8.0 against a local server
-on port 8000, use the URL:
+For a browser example, to test with jQuery 1.8.0 against a local server on port
+8000, use the URL:
 [http://localhost:8000/test/unit/index.html?jquery=1.8.0](http://localhost:8000/test/unit/?jquery=1.8.0).
 
-For a command line example, to test with jQuery 1.8.0 using Grunt, use
-the command:
+For a command line example, to test with jQuery 1.8.0 using Grunt, use the
+command:
 
 ```shell
 grunt test --jquery=1.8.0
