@@ -86,11 +86,17 @@ WYMeditor.
   other attributes were being lost in the container conversion. This has been
   fixed so that all attributes such as `colspan` are retained when switching
   between a normal table cell and a table header.
-* When hitting enter to create a new container after a heading in Chrome, there
-  was an issue where a `div` container would be created instead of a `p`
-  container as expected. As part of the feature addition of a selected default
-  root container, this issue has been fixed so that the selected default root
-  container is inserted after the heading as expected after hitting enter.
+* In various situations when working in the editor, hitting enter to
+  create a new container in the root of the document would erroneously
+  create a `div` container instead of a `p` container. This `div`
+  container would not be labeled in the editor, and it could not be
+  converted to another type of container. As part of the feature
+  addition of a selectable default root container, this issue has been
+  fixed so that the selected default root container is always inserted
+  when hitting enter to create a new container in the root of the
+  document. In addition, `div` containers are now clearly labeled in the
+  editor and can now be converted to other types of containers using the
+  containers panel.
 * A couple bugs in IE dealing with content not allowed to be in the root of the
   editor body not being properly wrapped in containers have been fixed. The
   first bug fixed was that text directly typed into the body of the editor was
