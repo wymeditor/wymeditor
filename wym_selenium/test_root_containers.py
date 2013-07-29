@@ -66,14 +66,15 @@ def test_p_after_p():
     chain.send_keys(Keys.RETURN)
     chain.perform()
 
-    assert body.get_attribute("innerHTML") == \
-            '<p>This is some text with which to test.</p><p><br></p>'
+    assert body.get_attribute("innerHTML") == (
+            '<p>This is some text with which to test.</p>'
+            '<p><br></p>')
 
     d.close()
 
 def test_p_after_h1():
-    # Ensure that hitting "Enter" after a h1 successfully creates a following p
-    # tag
+    # Ensure that hitting "Enter" after a h1 successfully creates a following
+    # `p`container
     d = _get_driver()
 
     # Open the basic example page
@@ -105,8 +106,52 @@ def test_p_after_h1():
     chain.send_keys(Keys.RETURN)
     chain.perform()
 
-    assert body.get_attribute("innerHTML") == \
-            '<h1>This is some text with which to test.</h1><p><br></p>'
+    assert body.get_attribute("innerHTML") == (
+            '<h1>This is some text with which to test.</h1>'
+            '<p><br></p>')
+
+    d.close()
+
+def test_p_after_list():
+    # Ensure that hitting "Enter" twice to exit a list successfully creates a
+    # following `p` container
+    d = _get_driver()
+
+    # Open the basic example page
+    d.get('%s/basic.html' % BASE_TEST_URL)
+    assert d.title == 'WYMeditor'
+
+    # Move the selection to the end of the first paragraph
+    _switch_to_editor_content(d)
+    body = _get_editor_body(d)
+    body.click()  # Put the cursor focus in the body
+    chain = ActionChains(d)
+    chain.send_keys(Keys.RIGHT * 20)
+    chain.perform()
+
+    # Turn the paragraph into a list
+    _switch_to_editor_controls(d)
+    chain = ActionChains(d)
+    editor_toolbar = d.find_element_by_class_name('wym_tools')
+    chain.move_to_element(editor_toolbar)
+    chain.perform()
+    editor_toolbar = d.find_element_by_class_name('wym_tools')
+    ordered_list_tool = \
+        editor_toolbar.find_element_by_class_name('wym_tools_ordered_list')
+    chain.click(ordered_list_tool)
+    chain.perform()
+
+    # Hit return twice to create a new paragraph
+    _switch_to_editor_content(d)
+    chain = ActionChains(d)
+    chain.send_keys(Keys.RETURN * 2)
+    chain.perform()
+
+    assert body.get_attribute("innerHTML") == (
+            '<ol>'
+                '<li>This is some text with which to test.</li>'
+            '</ol>'
+            '<p><br></p>')
 
     d.close()
 
