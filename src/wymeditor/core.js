@@ -37,8 +37,8 @@ if (typeof (WYMeditor) === 'undefined') {
 
 // Wrap the Firebug console in WYMeditor.console
 (function () {
-    if (typeof window.console === 'undefined'
-            && typeof console === 'undefined') {
+    if (typeof window.console === 'undefined' &&
+        typeof console === 'undefined') {
         // No in-browser console logging available
         var names = [
                 "log", "debug", "info", "warn", "error", "assert", "dir", "dirxml",
@@ -137,8 +137,6 @@ jQuery.extend(WYMeditor, {
     UNLINK              - Command: unset a link.
     INSERT_UNORDEREDLIST- Command: insert an unordered list.
     INSERT_ORDEREDLIST  - Command: insert an ordered list.
-    MAIN_CONTAINERS     - An array of the main HTML containers used in WYMeditor.
-    BLOCKS              - An array of the HTML block elements.
     KEY                 - Standard key codes.
     NODE                - Node types.
 
@@ -233,7 +231,13 @@ jQuery.extend(WYMeditor, {
 
     // Containers that we allow at the root of the document (as a direct child
     // of the body tag)
-    MAIN_CONTAINERS : ["p",  "h1",  "h2",  "h3", "h4", "h5", "h6", "pre", "blockquote"],
+    MAIN_CONTAINERS : ["p", "div", "h1",  "h2",  "h3", "h4", "h5", "h6", "pre",
+        "blockquote"],
+ 
+    // Containers that we explicitly do not allow at the root of the document.
+    // These containers must be wrapped in a valid main container.
+    FORBIDDEN_MAIN_CONTAINERS : ["strong", "b", "em", "i", "sub", "sup", "a",
+                                 "span"],
 
     // All block (as opposed to inline) tags
     BLOCKS : ["address", "blockquote", "div", "dl",
@@ -247,7 +251,7 @@ jQuery.extend(WYMeditor, {
     BLOCKING_ELEMENTS : ["table", "blockquote", "pre"],
 
     // The remaining `MAIN_CONTAINERS` that are not considered `BLOCKING_ELEMENTS`
-    NON_BLOCKING_ELEMENTS : ["p", "h1", "h2", "h3", "h4", "h5", "h6"],
+    NON_BLOCKING_ELEMENTS : ["p", "div", "h1", "h2", "h3", "h4", "h5", "h6"],
 
     // The elements that define a type of list.
     LIST_TYPE_ELEMENTS : ["ul", "ol"],
@@ -258,12 +262,13 @@ jQuery.extend(WYMeditor, {
     // The elements that are allowed to be turned in to lists. If an item in
     // this array isn't in the MAIN_CONTAINERS array, then its contents will be
     // turned in to a list instead.
-    POTENTIAL_LIST_ELEMENTS : ["p", "h1", "h2", "h3", "h4", "h5", "h6", "pre", "blockquote", "td"],
+    POTENTIAL_LIST_ELEMENTS : ["p", "div", "h1", "h2", "h3", "h4", "h5", "h6",
+        "pre", "blockquote", "td"],
 
     // The elements that are allowed to have a table inserted after them or
     // within them.
-    POTENTIAL_TABLE_INSERT_ELEMENTS : ["p", "h1",  "h2",  "h3", "h4", "h5", "h6",
-        "pre", "blockquote", "li"],
+    POTENTIAL_TABLE_INSERT_ELEMENTS : ["p", "div", "h1",  "h2",  "h3", "h4",
+        "h5", "h6", "pre", "blockquote", "li"],
 
     // The elements that are allowed to have a table inserted inline within
     // them.
@@ -306,6 +311,18 @@ jQuery.extend(WYMeditor, {
         R: 82,
         COMMAND: 224
     },
+
+    // Key codes for the keys that can potentially create a block element when
+    // inputted
+    POTENTIAL_BLOCK_ELEMENT_CREATION_KEYS : [
+        8,   // BACKSPACE
+        13,  // ENTER
+        37,  // LEFT
+        38,  // UP
+        39,  // RIGHT
+        40,  // DOWN
+        46   // DELETE
+    ],
 
     // domNode.nodeType constants
     NODE : {
@@ -407,6 +424,13 @@ jQuery.fn.wymeditor = function (options) {
         lang:       "en",
         direction:  "ltr",
         customCommands: [],
+
+        // These values will override the default for their respective
+        // `DocumentStructureManager.structureRules`
+        structureRules: {
+            defaultRootContainer:  'p'
+        },
+
         boxHtml: String() +
             "<div class='wym_box'>" +
                 "<div class='wym_area_top'>" +
