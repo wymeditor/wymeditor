@@ -100,5 +100,3 @@ selenium-chrome:
 
 selenium: selenium-chrome
 
-unittest:
-	@@build/phantomjs_test.sh localhost:8000/test/unit

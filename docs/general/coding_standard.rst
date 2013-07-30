@@ -139,6 +139,16 @@ and Object constructors.
 
 http://yuiblog.com/blog/2006/11/13/javascript-we-hardly-new-ya/
 
+Use the ``which`` Property of jQuery Event Objects
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When watching for keyboard key input, use the ``event.which`` property to find
+the inputted key instead of ``event.keyCode`` or ``event.charCode``. This
+should be done for consistency across the project because the ``event.which``
+property normalizes ``event.keyCode`` and ``event.charCode`` in jQuery. Using
+``event.which`` is also the `recommended method by jQuery
+<http://api.jquery.com/event.which/>`_ for watching keyboard key input.
+
 Further Reading
 ^^^^^^^^^^^^^^^
 
