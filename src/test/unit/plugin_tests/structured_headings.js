@@ -225,28 +225,60 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
             '<h2 id="h2_no_indent">H1_1</h2>' +
                 '<h3>H1_1_1</h3>' +
                 '<h3>H1_1_2</h3>' +
-            '<h2 id="h2_to_manipulate">H1_2</h2>' +
+            '<h2 id="h2_for_indent">H1_2</h2>' +
                 '<h3>H1_2_1</h3>' +
                 '<h3>H1_2_2</h3>' +
                     '<h4>H1_2_2_1</h4>' +
-                    '<h4 id="h4_to_manipulate">H1_2_2_2</h4>' +
-        '<h1 id="h1_to_manipulate">H2</h1>' +
+                    '<h4 id="h4_for_indent">H1_2_2_2</h4>' +
+        '<h1 id="h1_for_indent">H2</h1>' +
             '<h2>H2_1</h2>' +
                 '<h3 id="h3_no_indent">H2_1_1</h3>' +
                     '<h4>H2_1_1_1</h4>' +
                     '<h4>H2_1_1_2</h4>' +
                         '<h5 id="h5_no_indent">H2_1_1_2_1</h5>' +
                         '<h5>H2_1_1_2_2</h5>' +
-                '<h3 id="h3_to_manipulate">H2_1_2</h3>' +
+                '<h3 id="h3_for_indent">H2_1_2</h3>' +
             '<h2>H2_2</h2>' +
                 '<h3>H2_2_1</h3>' +
                     '<h4 id="h4_no_indent">H2_2_1_1</h4>' +
                         '<h5>H2_2_1_1_1</h5>' +
-                            '<h6 id="h6_to_manipulate">H2_2_1_1_1_1</h6>' +
-                            '<h6>H2_2_1_1_1_2</h6>' +
-                        '<h5 id="h5_to_manipulate">H2_2_1_1_2</h5>' +
+                            '<h6>H2_2_1_1_1_1</h6>' +
+                            '<h6 id="h6_for_indent">H2_2_1_1_1_2</h6>' +
+                        '<h5 id="h5_for_indent">H2_2_1_1_2</h5>' +
                     '<h4>H2_2_1_2</h4>' +
                 '<h3>H2_2_2</h3>';
+
+    var htmlForHeadingOutdention = String() +
+        '<h1>H1</h1>' +
+            '<h2>H1_1</h2>' +
+                '<h3>H1_1_1</h3>' +
+                '<h3>H1_1_2</h3>' +
+            '<h2 id="h2_no_outdent">H1_2</h2>' +
+                '<h3>H1_2_1</h3>' +
+                '<h3>H1_2_2</h3>' +
+                    '<h4>H1_2_2_1</h4>' +
+                    '<h4 id="h4_for_outdent">H1_2_2_2</h4>' +
+            '<h2 id="h2_for_outdent">H1_3</h2>' +
+        '<h1 id="h1_for_outdent">H2</h1>' +
+            '<h2>H2_1</h2>' +
+                '<h3 id="h3_no_outdent">H2_1_1</h3>' +
+                    '<h4>H2_1_1_1</h4>' +
+                    '<h4 id="h4_no_outdent">H2_1_1_2</h4>' +
+                        '<h5>H2_1_1_2_1</h5>' +
+                        '<h5 id="h5_for_outdent">H2_1_1_2_2</h5>' +
+                '<h3 id="h3_for_outdent">H2_1_2</h3>' +
+                '<h3>H2_1_3</h3>' +
+            '<h2>H2_2</h2>' +
+                '<h3>H2_2_1</h3>' +
+                    '<h4>H2_2_1_1</h4>' +
+                        '<h5>H2_2_1_1_1</h5>' +
+                            '<h6 id="h6_for_outdent">H2_2_1_1_1_1</h6>' +
+                            '<h6>H2_2_1_1_1_2</h6>' +
+                        '<h5 id="h5_no_outdent">H2_2_1_1_2</h5>' +
+                            '<h6>H2_2_1_1_2_1</h6>' +
+                    '<h4>H2_2_1_2</h4>' +
+                '<h3>H2_2_2</h3>';
+
 
     var correctHtmlIndent = [];
     var correctHtmlOutdent = [];
@@ -259,19 +291,25 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
     // index one less than the heading's level (e.g. the correct html for the H1
     // heading after indention is stored at index 0 of correctHtmlIndent).
     for (i = 1; i < 7; ++i) {
-        pattern = new RegExp('<h' + i + ' id="h' + i +
-                             '_to_manipulate">(\\w*)<\\/h' + i + '>');
-        correctHtmlIndent.push(htmlForHeadingIndention.replace(
-            pattern,
-            '<h' + (i + 1) + ' id="h' + i + '_to_manipulate">$1</h' +
-                (i + 1) + '>'
-        ));
+        if (i !== 6) {
+            pattern = new RegExp('<h' + i + ' id="h' + i +
+                                 '_for_indent">(\\w*)<\\/h' + i + '>');
+            correctHtmlIndent.push(htmlForHeadingIndention.replace(
+                pattern,
+                '<h' + (i + 1) + ' id="h' + i + '_for_indent">$1</h' +
+                    (i + 1) + '>'
+            ));
+        }
 
-        correctHtmlOutdent.push(htmlForHeadingIndention.replace(
-            pattern,
-            '<h' + (i - 1) + ' id="h' + i + '_to_manipulate">$1</h' +
-                (i - 1) + '>'
-        ));
+        if (i !== 1) {
+            pattern = new RegExp('<h' + i + ' id="h' + i +
+                                 '_for_outdent">(\\w*)<\\/h' + i + '>');
+            correctHtmlOutdent.push(htmlForHeadingOutdention.replace(
+                pattern,
+                '<h' + (i - 1) + ' id="h' + i + '_for_outdent">$1</h' +
+                    (i - 1) + '>'
+            ));
+        }
     }
 
     test("Headings indent when allowable by using indent tool", function () {
@@ -285,7 +323,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
 
         for (i = 1; i < 6; ++i) {
             wymeditor._html(htmlForHeadingIndention);
-            heading = $body.find('#h' + i + '_to_manipulate')[0];
+            heading = $body.find('#h' + i + '_for_indent')[0];
             makeTextSelection(wymeditor, heading, heading);
             $indentTool.click();
             htmlEquals(wymeditor, correctHtmlIndent[i - 1],
@@ -303,11 +341,11 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
             i;
 
         for (i = 2; i < 7; ++i) {
-            wymeditor._html(htmlForHeadingIndention);
-            heading = $body.find('#h' + i + '_to_manipulate')[0];
+            wymeditor._html(htmlForHeadingOutdention);
+            heading = $body.find('#h' + i + '_for_outdent')[0];
             makeTextSelection(wymeditor, heading, heading);
             $outdentTool.click();
-            htmlEquals(wymeditor, correctHtmlOutdent[i - 1],
+            htmlEquals(wymeditor, correctHtmlOutdent[i - 2],
                        "Outdention of an H" + i + " heading");
         }
     });
@@ -321,26 +359,26 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
             heading;
 
         // Default highest heading level
-        wymeditor._html(htmlForHeadingIndention);
+        wymeditor._html(htmlForHeadingOutdention);
         if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
             wymeditor.structuredHeadingsManager.numberHeadingsIE7();
         }
-        heading = $body.find('#h1_to_manipulate')[0];
+        heading = $body.find('#h1_for_outdent')[0];
         makeTextSelection(wymeditor, heading, heading);
         $outdentTool.click();
-        htmlEquals(wymeditor, htmlForHeadingIndention,
+        htmlEquals(wymeditor, htmlForHeadingOutdention,
                    "Outdention of default highest heading level does nothing");
 
         // Customized highest heading level
         wymeditor.structuredHeadingsManager._options.highestAllowableHeadingLevel = 3;
-        wymeditor._html(htmlForHeadingIndention);
+        wymeditor._html(htmlForHeadingOutdention);
         if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
             wymeditor.structuredHeadingsManager.numberHeadingsIE7();
         }
-        heading = $body.find('#h3_to_manipulate')[0];
+        heading = $body.find('#h3_for_outdent')[0];
         makeTextSelection(wymeditor, heading, heading);
         $outdentTool.click();
-        htmlEquals(wymeditor, htmlForHeadingIndention,
+        htmlEquals(wymeditor, htmlForHeadingOutdention,
                    "Outdention of customized highest heading level does nothing");
 
         // Restore default for other tests
@@ -360,7 +398,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
         if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
             wymeditor.structuredHeadingsManager.numberHeadingsIE7();
         }
-        heading = $body.find('#h6_to_manipulate')[0];
+        heading = $body.find('#h6_for_indent')[0];
         makeTextSelection(wymeditor, heading, heading);
         $indentTool.click();
         htmlEquals(wymeditor, htmlForHeadingIndention,
@@ -372,7 +410,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
         if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
             wymeditor.structuredHeadingsManager.numberHeadingsIE7();
         }
-        heading = $body.find('#h4_to_manipulate')[0];
+        heading = $body.find('#h4_for_indent')[0];
         makeTextSelection(wymeditor, heading, heading);
         $indentTool.click();
         htmlEquals(wymeditor, htmlForHeadingIndention,
@@ -382,8 +420,8 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
         wymeditor.structuredHeadingsManager._options.lowestAllowableHeadingLevel = 6;
     });
 
-    test("Heading cannot be indented more than one level below previous " +
-         "heading level", function () {
+    test("Heading cannot be indented more than one level below directly " +
+         "previous heading level", function () {
         expect(4);
         var wymeditor = jQuery.wymeditors(0),
             $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
@@ -401,8 +439,32 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
             makeTextSelection(wymeditor, heading, heading);
             $indentTool.click();
             htmlEquals(wymeditor, htmlForHeadingIndention,
-                       "Indention of an H" + i + " heading after an H" + (i - 1) +
-                       " heading does nothing");
+                       "Indention of an H" + i + " heading directly after an " +
+                       "H" + (i - 1) + " heading does nothing");
+        }
+    });
+
+    test("Heading cannot be outdented more than one level above directly " +
+         "following heading level", function () {
+        expect(4);
+        var wymeditor = jQuery.wymeditors(0),
+            $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+            $outdentTool = jQuery(wymeditor._box).find(
+                wymeditor.structuredHeadingsManager._options.headingOutdentToolSelector),
+            heading,
+            i;
+
+        for (i = 2; i < 6; ++i) {
+            wymeditor._html(htmlForHeadingOutdention);
+            if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
+                wymeditor.structuredHeadingsManager.numberHeadingsIE7();
+            }
+            heading = $body.find('#h' + i + '_no_outdent')[0];
+            makeTextSelection(wymeditor, heading, heading);
+            $outdentTool.click();
+            htmlEquals(wymeditor, htmlForHeadingOutdention,
+                       "Outdention of an H" + i + " heading with a directly " +
+                       "following H" + (i + 1) + " heading does nothing");
         }
     });
 }

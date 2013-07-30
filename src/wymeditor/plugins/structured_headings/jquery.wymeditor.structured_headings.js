@@ -234,15 +234,89 @@ StructuredHeadingsManager.prototype.addCssStylesheet = function () {
 };
 
 /**
+    canRaiseHeadingLevel
+    ====================
+
+    Checks the context of the passed heading DOM node to see if it can validly
+    have its heading level raised. Returns true if the heading's level can
+    validly be raised, false if otherwise.
+
+    @param heading A heading DOM node for checking if it can validly have its
+                   heading level raised
+*/
+StructuredHeadingsManager.prototype.canRaiseHeadingLevel = function (heading) {
+    var headingLevel = getHeadingLevel(heading),
+        headingLevelDifference,
+        nextHeading,
+        nextHeadingLevel;
+
+    // The level of a heading cannot be raised if it is already at the highest
+    // allowable level.
+    if (headingLevel === this._options.highestAllowableHeadingLevel) {
+        return false;
+    }
+
+    // The level of a heading cannot be raised if the heading level is any
+    // higher than the level of its following heading.
+    nextHeading = jQuery(heading).next(this._fullHeadingSel)[0];
+    if (nextHeading) {
+        nextHeadingLevel = getHeadingLevel(nextHeading);
+        headingLevelDifference = headingLevel - nextHeadingLevel;
+        if (headingLevelDifference < 0) {
+            return false;
+        }
+    }
+
+    return true;
+};
+
+/**
+    canLowerHeadingLevel
+    ====================
+
+    Checks the context of the passed heading DOM node to see if it can validly
+    have its heading level lowered. Returns true if the heading's level can
+    validly be lowered, false if otherwise.
+
+    @param heading A heading DOM node for checking if it can validly have its
+                   heading level lowered
+*/
+StructuredHeadingsManager.prototype.canLowerHeadingLevel = function (heading) {
+    var headingLevel = getHeadingLevel(heading),
+        headingLevelDifference,
+        prevHeading,
+        prevHeadingLevel;
+
+    // The level of a heading cannot be lowered if it is already at the lowest
+    // allowable level.
+    if (headingLevel === this._options.lowestAllowableHeadingLevel) {
+        return false;
+    }
+
+    // The user cannot lower the level of a heading if the heading level is any
+    // lower than the level of its previous heading.
+    prevHeading = jQuery(heading).prev(this._fullHeadingSel)[0];
+    if (prevHeading) {
+        prevHeadingLevel = getHeadingLevel(prevHeading);
+        headingLevelDifference = prevHeadingLevel - headingLevel;
+        if (headingLevelDifference < 0) {
+            return false;
+        }
+    }
+
+    return true;
+};
+
+/**
     changeHeadingLevel
     ==================
 
     If the passed heading DOM node exists in the documet, changes the level of
-    that heading up or down by one level if it is allowable. A heading will not
-    have its level moved up if the heading preceding it is at a lower level
-    than the selected heading's current level. A heading will not have its
+    that heading up or down by one level if it is allowable. The heading will not
+    have its level moved up if the heading following it is at a lower level
+    than the passed heading's current level. A heading will not have its
     level moved down if the heading preceding it is at a higher level than the
-    selected heading's current level
+    passed heading's current level.
 
     @param heading The DOM node of a heading element in the document.
     @param upOrDown A string either being "up" or "down" that indicates if the
@@ -252,38 +326,21 @@ StructuredHeadingsManager.prototype.changeHeadingLevel = function (heading, upOr
     var wym = this._wym,
         changeLevelUp = (upOrDown === "up"),
         levelAdjustment = (changeLevelUp ? -1 : 1),
-        headingLevel,
-        prevHeading,
-        prevHeadingLevel;
+        headingLevel;
 
     // If the heading doesn't exist, don't do anything.
     if (!heading) {
         return;
     }
 
-    // If the heading level is to be moved up and the heading is at the highest
-    // allowable level, or if the heading is to be moved down and the heading
-    // is at the lowest allowable level, don't do anything.
+    // Check if the requested change in the heading level is valid. If it is
+    // not valid, don't modify the heading.
     headingLevel = getHeadingLevel(heading);
-    if (changeLevelUp &&
-        (headingLevel === this._options.highestAllowableHeadingLevel)) {
+    if (changeLevelUp && !this.canRaiseHeadingLevel(heading)) {
         return;
     }
-    if (!changeLevelUp &&
-        (headingLevel === this._options.lowestAllowableHeadingLevel)) {
+    if (!changeLevelUp && !this.canLowerHeadingLevel(heading)) {
         return;
-    }
-
-    // If the user is trying to change a heading level down, don't let them
-    // change the heading level to be any lower if the heading is already at a
-    // lower level than the previous heading level.
-    prevHeading = jQuery(heading).prev(this._fullHeadingSel)[0];
-    if (prevHeading) {
-        prevHeadingLevel = getHeadingLevel(prevHeading);
-        headingLevelDifference = prevHeadingLevel - headingLevel;
-        if (!changeLevelUp && (headingLevelDifference < 0)) {
-            return;
-        }
     }
 
     wym.switchTo(heading, 'h' + (headingLevel + levelAdjustment));
