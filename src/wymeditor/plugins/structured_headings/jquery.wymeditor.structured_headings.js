@@ -172,12 +172,12 @@ StructuredHeadingsManager.prototype.bindEvents = function () {
 
     // Bind click events to tool buttons
     $box.find(this._options.headingOutdentToolSelector).click(function () {
-        var heading = wym.findUp(wym.container(), WYMeditor.HEADING_ELEMENTS);
-        headingManager.changeHeadingLevel(heading, "up");
+        var sel = rangy.getIframeSelection(wym._iframe);
+        headingManager.raiseSelectedHeadingsLevel(sel);
     });
     $box.find(this._options.headingIndentToolSelector).click(function () {
-        var heading = wym.findUp(wym.container(), WYMeditor.HEADING_ELEMENTS);
-        headingManager.changeHeadingLevel(heading, "down");
+        var sel = rangy.getIframeSelection(wym._iframe);
+        headingManager.lowerSelectedHeadingsLevel(sel);
     });
     if (this._options.enableFixHeadingStructureButton) {
         $box.find(this._options.fixHeadingStructureSelector).click(function () {
@@ -308,6 +308,136 @@ StructuredHeadingsManager.prototype.canLowerHeadingLevel = function (heading) {
 };
 
 /**
+    raiseSelectedHeadingsLevel
+    ===========================
+
+    Iterates through the headings in the passed selection and raises the level
+    of each heading if it is allowable. The level of a heading can only be
+    raised if it is not the highest allowable level and if the level of the
+    heading is not higher than the level of its following heading after all
+    headings in the selection have had their heading level attempted to be raised.
+
+    @param selection A rangy selection object to have the level of its
+                     containing headings raised if allowable.
+*/
+StructuredHeadingsManager.prototype.raiseSelectedHeadingsLevel = function (
+    selection
+) {
+    var wym = this._wym,
+        headingManager = this,
+        range,
+        heading,
+        headingList,
+        i,
+        j;
+
+    var headingNodeFilter = function (testNode) {
+        return jQuery(testNode).is(headingManager._fullHeadingSel);
+    };
+
+    // Iterate through the headings in the selection from bottom to top so that
+    // each heading has had its following headings in the selection already
+    // raised if possible when the check is run to see if the heading can have
+    // its level raised based on whether or not it is higher than the level of
+    // its following heading.
+    for (i = (selection.rangeCount - 1); i >= 0; --i) {
+        range = selection.getRangeAt(i);
+        if (range.collapsed) {
+            // Collapsed ranges don't return their node with getNodes(), so
+            // use findUp to get the containing heading.
+            heading = wym.findUp(range.startContainer,
+                                 WYMeditor.HEADING_ELEMENTS);
+            this.changeHeadingLevel(heading, "up");
+        } else {
+            // Use getNodes to get the selected headings
+            headingList = range.getNodes(false, headingNodeFilter);
+            if (!headingList.length && range.getNodes().length) {
+                // If there are some nodes in the range, but none of the are
+                // headings, it's possible that all of the nodes are contained
+                // within a heading.
+                headingList = [wym.findUp(range.getNodes()[0],
+                                          WYMeditor.HEADING_ELEMENTS)];
+            }
+            for (j = (headingList.length - 1); j >= 0; --j) {
+                this.changeHeadingLevel(headingList[j], "up");
+            }
+        }
+    }
+};
+
+/**
+    lowerSelectedHeadingsLevel
+    ===========================
+
+    Iterates through the headings in the passed selection and lowers the level
+    of each heading if it is allowable. The level of a heading can only be
+    lowered if it is not the lowest allowable level and if the level of the
+    heading is not lower than the level of its preceding heading after all
+    headings in the selection have had their heading level attempted to be
+    lowered.
+
+    @param selection A rangy selection object to have the level of its
+                     containing headings lowered if allowable.
+*/
+StructuredHeadingsManager.prototype.lowerSelectedHeadingsLevel = function (
+    selection
+) {
+    var wym = this._wym,
+        headingManager = this,
+        range,
+        heading,
+        headingList,
+        i,
+        j;
+
+    var headingNodeFilter = function (testNode) {
+        return jQuery(testNode).is(headingManager._fullHeadingSel);
+    };
+
+    // Iterate through the headings in the selection from top to bottom so that
+    // each heading has had its preceding headings in the selection already
+    // lowered if possible when the check is run to see if the heading can have
+    // its level lowered based on whether or not it is lower than the level of
+    // its preceding heading.
+    for (i = 0; i < selection.rangeCount; ++i) {
+        range = selection.getRangeAt(i);
+        if (range.collapsed) {
+            // Collapsed ranges don't return their node with getNodes(), so
+            // use findUp to get the containing heading.
+            heading = wym.findUp(range.startContainer,
+                                 WYMeditor.HEADING_ELEMENTS);
+            this.changeHeadingLevel(heading, "down");
+        } else {
+            // Use getNodes to get the selected headings
+            headingList = range.getNodes(false, headingNodeFilter);
+            if (!headingList.length && range.getNodes().length) {
+                // If there are some nodes in the range, but none of them are
+                // headings, it's possible that all of the nodes in the range
+                // are contained within a heading.
+                headingList = [wym.findUp(range.getNodes()[0],
+                                          WYMeditor.HEADING_ELEMENTS)];
+            }
+            for (j = 0; j < headingList.length; ++j) {
+                this.changeHeadingLevel(headingList[j], "down");
+            }
+        }
+    }
+};
+
+/**
+    headingNodeFilter
+    =================
+
+    Tests whether the passed DOM node is a heading or not. Returns true if the
+    node is a heading, false if otherwise.
+
+    @param testNode A DOM node to be tested to see if it is a heading
+*/
+StructuredHeadingsManager.prototype.headingNodeFilter = function (testNode) {
+    return jQuery(testNode).is(this._fullHeadingSel);
+};
+
+/**
     changeHeadingLevel
     ==================
 
@@ -320,9 +450,11 @@ StructuredHeadingsManager.prototype.canLowerHeadingLevel = function (heading) {
 
     @param heading The DOM node of a heading element in the document.
     @param upOrDown A string either being "up" or "down" that indicates if the
-                    heading level should be increased or decreased.
+                    heading level should be raised or lowered.
 */
-StructuredHeadingsManager.prototype.changeHeadingLevel = function (heading, upOrDown) {
+StructuredHeadingsManager.prototype.changeHeadingLevel = function (
+    heading, upOrDown
+) {
     var wym = this._wym,
         changeLevelUp = (upOrDown === "up"),
         levelAdjustment = (changeLevelUp ? -1 : 1),
@@ -374,6 +506,10 @@ StructuredHeadingsManager.prototype.switchToHeading = function (node) {
         wym.switchTo(node, $prevHeading[0].nodeName);
     } else {
         wym.switchTo(node, 'h' + this._options.highestAllowableHeadingLevel);
+    }
+
+    if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
+        this.numberHeadingsIE7();
     }
 };
 
