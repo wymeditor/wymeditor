@@ -178,17 +178,13 @@ WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
         }
     }
 
-    if (evt.which !== WYMeditor.KEY.BACKSPACE &&
+    // If the inputted key cannont create a block element and is not a command,
+    // check to make sure the selection is properly wrapped in a container
+    if (!wym.keyCanCreateBlockElement(evt.which) &&
             evt.which !== WYMeditor.KEY.CTRL &&
-            evt.which !== WYMeditor.KEY.DELETE &&
             evt.which !== WYMeditor.KEY.COMMAND &&
-            evt.which !== WYMeditor.KEY.UP &&
-            evt.which !== WYMeditor.KEY.DOWN &&
-            evt.which !== WYMeditor.KEY.LEFT &&
-            evt.which !== WYMeditor.KEY.RIGHT &&
-            evt.which !== WYMeditor.KEY.ENTER &&
             !evt.metaKey &&
-            !evt.ctrlKey) {// Not BACKSPACE, DELETE, CTRL, or COMMAND key
+            !evt.ctrlKey) {
 
         container = wym.selected();
         name = container.tagName.toLowerCase();
@@ -197,16 +193,7 @@ WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
         }
 
         // Fix forbidden main containers
-        if (name === "strong" ||
-                name === "b" ||
-                name === "em" ||
-                name === "i" ||
-                name === "sub" ||
-                name === "sup" ||
-                name === "a" ||
-                name === "span") {
-            // Webkit tries to use spans as a main container
-
+        if (wym.isForbiddenMainContainer(name)) {
             name = parentName;
         }
 
@@ -224,13 +211,7 @@ WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
     // If we potentially created a new block level element or moved to a new
     // one, then we should ensure the container is valid and the formatting is
     // proper.
-    if (evt.which === WYMeditor.KEY.UP ||
-            evt.which === WYMeditor.KEY.DOWN ||
-            evt.which === WYMeditor.KEY.LEFT ||
-            evt.which === WYMeditor.KEY.RIGHT ||
-            evt.which === WYMeditor.KEY.BACKSPACE ||
-            evt.which === WYMeditor.KEY.ENTER) {
-
+    if (wym.keyCanCreateBlockElement(evt.which)) {
         // If the selected container is a root container, make sure it is not a
         // different possible default root container than the chosen one.
         container = wym.selected();

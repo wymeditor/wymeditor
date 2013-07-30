@@ -603,6 +603,38 @@ WYMeditor.editor.prototype.container = function (sType) {
 };
 
 /**
+    WYMeditor.editor.isForbiddenMainContainer
+    =========================================
+
+    Determines whether a container with the passed tagName is allowed to be a
+    main container (i.e. if it is allowed to be a container in the root of the
+    document). Returns true if a container with the passed tagName is *not* an
+    allowable main container, and returns false if otherwise.
+
+    @param tagName A string of the tag name to be determined if it can be a
+                   main container or not
+*/
+WYMeditor.editor.prototype.isForbiddenMainContainer = function (tagName) {
+    return jQuery.inArray(tagName.toLowerCase(),
+                          WYMeditor.FORBIDDEN_MAIN_CONTAINERS) > -1;
+};
+
+/**
+    WYMeditor.editor.keyCanCreateBlockElement
+    =========================================
+
+    Determines whether the key represented by the passed keyCode can create a
+    block element within the editor when inputted. Returns true if the key can
+    create a block element when inputted, and returns false if otherwise.
+
+    @param keyCode A numberic key code representing a key
+*/
+WYMeditor.editor.prototype.keyCanCreateBlockElement = function (keyCode) {
+    return jQuery.inArray(keyCode,
+                    WYMeditor.POTENTIAL_BLOCK_ELEMENT_CREATION_KEYS) > -1;
+};
+
+/**
     WYMeditor.editor.toggleClass
     ============================
 
