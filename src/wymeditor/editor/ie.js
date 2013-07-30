@@ -200,6 +200,31 @@ WYMeditor.WymClassExplorer.prototype.wrap = function (left, right) {
     }
 };
 
+/**
+    wrapWithContainer
+    =================
+
+    Wraps the passed node in a container of the passed type. Also, restores the
+    selection to being after the node within its new container.
+
+    @param node A DOM node to be wrapped in a container
+    @param containerType A string of an HTML tag that specifies the container
+                         type to use for wrapping the node.
+*/
+WYMeditor.WymClassExplorer.prototype.wrapWithContainer = function (node, containerType) {
+    var wym = this._wym,
+        $wrappedNode,
+        selection,
+        range;
+
+    $wrappedNode = jQuery(node).wrap('<' + containerType + ' />');
+    selection = rangy.getIframeSelection(wym._iframe);
+    range = rangy.createRange(wym._doc);
+    range.selectNodeContents($wrappedNode[0]);
+    range.collapse();
+    selection.setSingleRange(range);
+};
+
 WYMeditor.WymClassExplorer.prototype.unwrap = function () {
     // Get the current selection
     var range = this._doc.selection.createRange();
@@ -217,54 +242,80 @@ WYMeditor.WymClassExplorer.prototype.unwrap = function () {
 
 WYMeditor.WymClassExplorer.prototype.keyup = function (evt) {
     //'this' is the doc
-    var wym = WYMeditor.INSTANCES[this.title];
+    var wym = WYMeditor.INSTANCES[this.title],
+        container,
+        defaultRootContainer,
+        notValidRootContainers,
+        name,
+        parentName,
+        forbiddenMainContainer = false;
 
+    notValidRootContainers =
+        wym.documentStructureManager.structureRules.notValidRootContainers;
+    defaultRootContainer =
+        wym.documentStructureManager.structureRules.defaultRootContainer;
     this._selected_image = null;
 
-    var container = null;
-
-    if (evt.keyCode !== WYMeditor.KEY.BACKSPACE &&
-            evt.keyCode !== WYMeditor.KEY.CTRL &&
-            evt.keyCode !== WYMeditor.KEY.DELETE &&
-            evt.keyCode !== WYMeditor.KEY.COMMAND &&
-            evt.keyCode !== WYMeditor.KEY.UP &&
-            evt.keyCode !== WYMeditor.KEY.DOWN &&
-            evt.keyCode !== WYMeditor.KEY.ENTER &&
+    // If the inputted key cannont create a block element and is not a command,
+    // check to make sure the selection is properly wrapped in a container
+    if (!wym.keyCanCreateBlockElement(evt.which) &&
+            evt.which !== WYMeditor.KEY.CTRL &&
+            evt.which !== WYMeditor.KEY.COMMAND &&
             !evt.metaKey &&
-            !evt.ctrlKey) { // Not BACKSPACE, DELETE, CTRL, or COMMAND key
+            !evt.ctrlKey) {
 
         container = wym.selected();
-        var name = '';
+        selectedNode = wym.selection().focusNode;
         if (container !== null) {
             name = container.tagName.toLowerCase();
         }
-
-        // Fix forbidden main containers
-        if (name === "strong" ||
-                name === "b" ||
-                name === "em" ||
-                name === "i" ||
-                name === "sub" ||
-                name === "sup" ||
-                name === "a") {
-
-            name = container.parentNode.tagName.toLowerCase();
+        if (container.parentNode) {
+            parentName = container.parentNode.tagName.toLowerCase();
         }
 
-        if (name === WYMeditor.BODY) {
-            // Replace text nodes with <p> tags
-            wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
+        // Fix forbidden main containers
+        if (wym.isForbiddenMainContainer(name)) {
+            name = parentName;
+            forbiddenMainContainer = true;
+        }
+
+        // Wrap text nodes and forbidden main containers with default root node
+        // tags
+        if (name === WYMeditor.BODY && selectedNode.nodeName === "#text") {
+            // If we're in a forbidden main container, switch the selected node
+            // to its parent node so that we wrap the forbidden main container
+            // itself and not its inner text content
+            if (forbiddenMainContainer) {
+                selectedNode = selectedNode.parentNode;
+            }
+            wym.wrapWithContainer(selectedNode, defaultRootContainer);
+            wym.fixBodyHtml();
+        }
+
+        if (jQuery.inArray(name, notValidRootContainers) > -1 &&
+                parentName === WYMeditor.BODY) {
+            wym.switchTo(container, defaultRootContainer);
             wym.fixBodyHtml();
         }
     }
 
-    // If we potentially created a new block level element or moved to a new one
-    // then we should ensure that they're in the proper format
-    if (evt.keyCode === WYMeditor.KEY.UP ||
-            evt.keyCode === WYMeditor.KEY.DOWN ||
-            evt.keyCode === WYMeditor.KEY.BACKSPACE ||
-            evt.keyCode === WYMeditor.KEY.ENTER) {
+    // If we potentially created a new block level element or moved to a new
+    // one, then we should ensure the container is valid and the formatting is
+    // proper.
+    if (wym.keyCanCreateBlockElement(evt.which)) {
+        // If the selected container is a root container, make sure it is not a
+        // different possible default root container than the chosen one.
+        container = wym.selected();
+        name = container.tagName.toLowerCase();
+        if (container.parentNode) {
+            parentName = container.parentNode.tagName.toLowerCase();
+        }
+        if (jQuery.inArray(name, notValidRootContainers) > -1 &&
+                parentName === WYMeditor.BODY) {
+            wym.switchTo(container, defaultRootContainer);
+        }
 
+        // Fix formatting if necessary
         wym.fixBodyHtml();
     }
 };

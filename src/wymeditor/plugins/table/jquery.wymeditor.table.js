@@ -622,7 +622,7 @@ TableEditor.prototype.keyDown = function (evt) {
     var wym = WYMeditor.INSTANCES[this.title],
         tableEditor = wym.tableEditor;
 
-    if (evt.keyCode === WYMeditor.KEY.TAB) {
+    if (evt.which === WYMeditor.KEY.TAB) {
         return tableEditor.selectNextCell(wym.selected());
     }
 

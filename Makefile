@@ -6,6 +6,7 @@ JS_FILES = ${WYM_DIR}/core.js\
  ${WYM_DIR}/rangy/rangy-core.js\
  ${WYM_DIR}/rangy/rangy-selectionsaverestore.js\
  ${WYM_DIR}/editor/base.js\
+ ${WYM_DIR}/editor/document-structure-manager.js\
  ${WYM_DIR}/editor/ie.js\
  ${WYM_DIR}/editor/firefox.js\
  ${WYM_DIR}/editor/opera.js\
@@ -85,4 +86,17 @@ archive: ${WE_MIN}
 
 clean:
 	rm -r ${BUILD_DIR}
+
+test: unittest selenium
+
+testserver:
+	@cd src; python -m SimpleHTTPServer &
+
+selenium-firefox:
+	@SELENIUM_BROWSER=firefox nosetests wym_selenium/
+
+selenium-chrome:
+	@SELENIUM_BROWSER=chrome nosetests wym_selenium/
+
+selenium: selenium-chrome
 
