@@ -312,11 +312,11 @@ StructuredHeadingsManager.prototype.canLowerHeadingLevel = function (heading) {
     ==================
 
     If the passed heading DOM node exists in the documet, changes the level of
-    that heading up or down by one level if it is allowable. A heading will not
-    have its level moved up if the heading preceding it is at a lower level
-    than the selected heading's current level. A heading will not have its
+    that heading up or down by one level if it is allowable. The heading will not
+    have its level moved up if the heading following it is at a lower level
+    than the passed heading's current level. A heading will not have its
     level moved down if the heading preceding it is at a higher level than the
-    selected heading's current level
+    passed heading's current level.
 
     @param heading The DOM node of a heading element in the document.
     @param upOrDown A string either being "up" or "down" that indicates if the
