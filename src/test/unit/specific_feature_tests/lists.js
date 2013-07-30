@@ -806,26 +806,32 @@ var li_1_2_outdentedNodeContentAfterSublistHtml = String() +
             '</li>' +
             '<li id="li_2">2</li>' +
         '</ol>';
-test("Content after sublist node indent/outdent", function () {
-    expect(3);
 
-    // Not round-trippable
-    testList(
-        'li_1_2',
-        'outdent',
-        nodeContentAfterSublistHtml,
-        li_1_2_outdentedNodeContentAfterSublistHtml
-    );
+// This test doesn't pass in older versions of IE because they add an extra
+// space onto the end of an `li` element's text content. The functionality
+// tested still works in those older IE versions.
+if (!jQuery.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
+    test("Content after sublist node indent/outdent", function () {
+        expect(3);
 
-    // Via Text selection
-    testList(
-        'li_1_2',
-        'outdent',
-        nodeContentAfterSublistHtml,
-        li_1_2_outdentedNodeContentAfterSublistHtml,
-        true
-    );
-});
+        // Not round-trippable
+        testList(
+            'li_1_2',
+            'outdent',
+            nodeContentAfterSublistHtml,
+            li_1_2_outdentedNodeContentAfterSublistHtml
+        );
+
+        // Via Text selection
+        testList(
+            'li_1_2',
+            'outdent',
+            nodeContentAfterSublistHtml,
+            li_1_2_outdentedNodeContentAfterSublistHtml,
+            true
+        );
+    });
+}
 
 var spanInSublistHtml = String() +
         '<ol>' +

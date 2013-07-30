@@ -12,7 +12,7 @@ jQuery.noConflict();
 // that should always be passing in all supported browsers.
 var SKIP_KNOWN_FAILING_TESTS = true;
 
-function setupWym(extraPostInit) {
+function setupWym(modificationCallback) {
     if (WYMeditor.INSTANCES.length === 0) {
         stop(); // Stop test running until the editor is initialized
         jQuery('.wymeditor').wymeditor({
@@ -39,10 +39,11 @@ function setupWym(extraPostInit) {
                     td,
                     span;
 
+                wym.structuredHeadings();
+
                 wym._html(initialHtml);
 
                 $body = jQuery(wym._doc).find('body.wym_iframe');
-
                 td = $body.find(tdSelector)[0];
                 span = $body.find(spanSelector)[0];
                 wym.tableEditor.selectElement($body.find(tdSelector)[0]);
@@ -53,14 +54,31 @@ function setupWym(extraPostInit) {
                     WYMeditor._isInnerSelector = false;
                 }
 
-                wym.structuredHeadings();
+                if (typeof modificationCallback === 'function') {
+                    modificationCallback(wym);
+                }
 
                 start(); // Re-start test running now that we're finished initializing
             }
         });
+    } else {
+        var wym;
+        wym = WYMeditor.INSTANCES[0];
+        wym.documentStructureManager.setDefaultRootContainer('p');
+
+        if (typeof modificationCallback === 'function') {
+            stop();
+            modificationCallback(wym);
+            start();
+        }
     }
 }
 
+function setupDefaultRootContainerDivWym() {
+    setupWym(function(wym) {
+        wym.documentStructureManager.setDefaultRootContainer('div');
+    });
+}
 
 module("Core", {setup: setupWym});
 

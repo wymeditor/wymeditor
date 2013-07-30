@@ -49,6 +49,9 @@ WYMeditor.editor.prototype.init = function () {
         this._options.preInit(this);
     }
 
+    this.parser = null;
+    this.helper = null;
+
     SaxListener = new WYMeditor.XhtmlSaxListener();
     this.parser = new WYMeditor.XhtmlParser(SaxListener);
 
@@ -178,6 +181,11 @@ WYMeditor.editor.prototype.init = function () {
 
     // Hide the html value
     jQuery(this._box).find(this._options.htmlSelector).hide();
+
+    this.documentStructureManager = new WYMeditor.DocumentStructureManager(
+        this,
+        this._options.structureRules.defaultRootContainer
+    );
 
     this.loadSkin();
 };
@@ -504,12 +512,12 @@ WYMeditor.editor.prototype.container = function (sType) {
     }
 
     var container = null,
-        aTypes = null,
-        newNode = null,
+        validContainers,
+        newNode,
         blockquote,
         nodes,
         lgt,
-        firstNode = null,
+        firstNode,
         x;
 
     if (sType.toLowerCase() === WYMeditor.TH) {
@@ -540,6 +548,7 @@ WYMeditor.editor.prototype.container = function (sType) {
         // Set the container type
         aTypes = [
             WYMeditor.P,
+            WYMeditor.DIV,
             WYMeditor.H1,
             WYMeditor.H2,
             WYMeditor.H3,
@@ -591,6 +600,38 @@ WYMeditor.editor.prototype.container = function (sType) {
     }
 
     return false;
+};
+
+/**
+    WYMeditor.editor.isForbiddenMainContainer
+    =========================================
+
+    Determines whether a container with the passed tagName is allowed to be a
+    main container (i.e. if it is allowed to be a container in the root of the
+    document). Returns true if a container with the passed tagName is *not* an
+    allowable main container, and returns false if otherwise.
+
+    @param tagName A string of the tag name to be determined if it can be a
+                   main container or not
+*/
+WYMeditor.editor.prototype.isForbiddenMainContainer = function (tagName) {
+    return jQuery.inArray(tagName.toLowerCase(),
+                          WYMeditor.FORBIDDEN_MAIN_CONTAINERS) > -1;
+};
+
+/**
+    WYMeditor.editor.keyCanCreateBlockElement
+    =========================================
+
+    Determines whether the key represented by the passed keyCode can create a
+    block element within the editor when inputted. Returns true if the key can
+    create a block element when inputted, and returns false if otherwise.
+
+    @param keyCode A numberic key code representing a key
+*/
+WYMeditor.editor.prototype.keyCanCreateBlockElement = function (keyCode) {
+    return jQuery.inArray(keyCode,
+                    WYMeditor.POTENTIAL_BLOCK_ELEMENT_CREATION_KEYS) > -1;
 };
 
 /**
@@ -777,8 +818,8 @@ WYMeditor.editor.prototype.fixBodyHtml = function () {
     start/end of the document.
 */
 WYMeditor.editor.prototype.spaceBlockingElements = function () {
-    var blockingSelector = WYMeditor.BLOCKING_ELEMENTS.join(', '),
-
+    var blockingSelector =
+            WYMeditor.DocumentStructureManager.CONTAINERS_BLOCKING_NAVIGATION.join(', '),
         $body = jQuery(this._doc).find('body.wym_iframe'),
         children = $body.children(),
 
@@ -805,7 +846,8 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
                           '/>';
     }
 
-    // Make sure that we still have a bogus node at both the begining and end
+    // Make sure that we still have a placeholder node at both the begining and
+    // end
     if (children.length > 0) {
         $firstChild = jQuery(children[0]);
         $lastChild = jQuery(children[children.length - 1]);
@@ -863,23 +905,47 @@ WYMeditor.editor.prototype._getBlockSepSelector = function () {
         return this._blockSpacersSel;
     }
 
-    var blockCombo = [];
+    var wym = this,
+        blockCombo = [],
+        containersBlockingNav =
+            WYMeditor.DocumentStructureManager.CONTAINERS_BLOCKING_NAVIGATION,
+        containersNotBlockingNav;
+
+    // Generate the list of non-blocking elements by removing the blocking
+    // elements from the list of validRootContainers
+    containersNotBlockingNav = jQuery.grep(
+        wym.documentStructureManager.structureRules.validRootContainers,
+        function (item) {
+            return jQuery.inArray(item, containersBlockingNav) === -1;
+    });
+
     // Consecutive blocking elements need separators
-    jQuery.each(WYMeditor.BLOCKING_ELEMENTS, function (indexO, elementO) {
-        jQuery.each(WYMeditor.BLOCKING_ELEMENTS, function (indexI, elementI) {
-            blockCombo.push(elementO + ' + ' + elementI);
-        });
-    });
+    jQuery.each(
+        containersBlockingNav,
+        function (indexO, elementO) {
+            jQuery.each(
+                containersBlockingNav,
+                function (indexI, elementI) {
+                    blockCombo.push(elementO + ' + ' + elementI);
+                }
+            );
+        }
+    );
 
-    // A blocking element either followed by or preceeded by a block elements
-    // needs separators
-    jQuery.each(WYMeditor.BLOCKING_ELEMENTS, function (indexO, elementO) {
-        jQuery.each(WYMeditor.NON_BLOCKING_ELEMENTS, function (indexI, elementI) {
-            blockCombo.push(elementO + ' + ' + elementI);
-            blockCombo.push(elementI + ' + ' + elementO);
-        });
-    });
-
+    // A blocking element either followed by or preceeded by a not blocking
+    // element needs separators
+    jQuery.each(
+        containersBlockingNav,
+        function (indexO, elementO) {
+            jQuery.each(
+                containersNotBlockingNav,
+                function (indexI, elementI) {
+                    blockCombo.push(elementO + ' + ' + elementI);
+                    blockCombo.push(elementI + ' + ' + elementO);
+                }
+            );
+        }
+    );
     this._blockSpacersSel = blockCombo.join(', ');
     return this._blockSpacersSel;
 };
@@ -1278,13 +1344,12 @@ WYMeditor.editor.prototype.unwrap = function () {
 
 WYMeditor.editor.prototype.setFocusToNode = function (node, toStart) {
     var range = rangy.createRange(this._doc),
-        selection = this.selection();
-    toStart = toStart ? 0 : 1;
+        selection = rangy.getIframeSelection(this._iframe);
+    toStart = toStart || false;
 
     range.selectNodeContents(node);
-    selection.addRange(range);
-    selection.collapse(node, toStart);
-    this._iframe.contentWindow.focus();
+    range.collapse(toStart);
+    selection.setSingleRange(range);
 };
 
 WYMeditor.editor.prototype.addCssRules = function (doc, aCss) {
@@ -2306,6 +2371,8 @@ WYMeditor.editor.prototype._insertList = function (listType) {
     // If we've selected a block-level item that's appropriate to convert in to a list,
     // convert it.
     selectedBlock = this.selected();
+    // TODO: Use `_containerRules['root']` minus the ol/ul and
+    // `_containerRules['contentsCanConvertToList']
     potentialListBlock = this.findUp(selectedBlock, WYMeditor.POTENTIAL_LIST_ELEMENTS);
     if (potentialListBlock) {
         this._convertToList(potentialListBlock, listType);
@@ -2331,6 +2398,9 @@ WYMeditor.editor.prototype._convertToList = function (blockElement, listType) {
     newListHtml = '<' + listType + '><li></li></' + listType + '>';
 
     if (this.findUp(blockElement, WYMeditor.MAIN_CONTAINERS) === blockElement) {
+        // TODO: Handle ol/ul elements, since these are now in the `root`
+        // containers list
+
         // This is a main container block, so we can just replace it with the
         // list structure
         $blockElement.wrapInner(newListHtml);

@@ -289,21 +289,21 @@ function simulateKey(keyCode, targetElement, options) {
 
     keydown = jQuery.Event('keydown');
 
-    keydown.keyCode = keyCode;
+    keydown.which = keyCode;
     keydown.metaKey = options.metaKey;
     keydown.ctrlKey = options.ctrlKey;
     keydown.shiftKey = options.shiftKey;
     keydown.altKey = options.altKey;
 
     keypress = jQuery.Event('keypress');
-    keypress.keyCode = keyCode;
+    keypress.which = keyCode;
     keydown.metaKey = options.metaKey;
     keydown.ctrlKey = options.ctrlKey;
     keydown.shiftKey = options.shiftKey;
     keydown.altKey = options.altKey;
 
     keyup = jQuery.Event('keyup');
-    keyup.keyCode = keyCode;
+    keyup.which = keyCode;
     keydown.metaKey = options.metaKey;
     keydown.ctrlKey = options.ctrlKey;
     keydown.shiftKey = options.shiftKey;
