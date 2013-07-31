@@ -357,7 +357,7 @@ module("XmlParser-editor_only_elements", {setup: setupWym});
 
 var TEXT_CONTAINER_ELEMENTS = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
                                'pre', 'blockquote', 'div'];
-var TEXT_INLINE_ELEMENTS = ['a', 'span', 'strong', 'em'];
+var TEXT_INLINE_ELEMENTS = ['a', 'span', 'strong', 'em', 'sub', 'sup'];
 var SELF_CLOSING_ELEMENTS = ['br', 'hr', 'img'];
 
 var editorOnlyContainerStartHtml = String() +
@@ -380,7 +380,8 @@ test("Remove editor-only text container elements", function () {
     for (i = 0; i < TEXT_CONTAINER_ELEMENTS.length; ++i) {
         wymeditor._html(editorOnlyContainerStartHtml);
         tagName = TEXT_CONTAINER_ELEMENTS[i];
-        $element = jQuery('<' + tagName + '>editor-only</' + tagName + '>');
+        $element = jQuery('<' + tagName + '>editor-only</' + tagName + '>',
+                          wymeditor._doc);
         $element.attr("id", "editor-only-" + tagName);
         $element.addClass(WYMeditor.EDITOR_ONLY_CLASS);
         $body.find('#before-editor-only-element').after($element);
@@ -401,7 +402,8 @@ test("Remove editor-only text inline elements", function () {
     for (i = 0; i < TEXT_INLINE_ELEMENTS.length; ++i) {
         wymeditor._html(editorOnlyInlineStartHtml);
         tagName = TEXT_INLINE_ELEMENTS[i];
-        $element = jQuery('<' + tagName + '> editor-only</' + tagName + '>');
+        $element = jQuery('<' + tagName + '> editor-only</' + tagName + '>',
+                          wymeditor._doc);
         $element.attr("id", "editor-only-" + tagName);
         $element.addClass(WYMeditor.EDITOR_ONLY_CLASS);
         $body.find('#test-container').append($element);
@@ -468,7 +470,7 @@ test("Remove editor-only self-closing elements", function () {
     for (i = 0; i < SELF_CLOSING_ELEMENTS.length; ++i) {
         wymeditor._html(editorOnlyContainerStartHtml);
         tagName = SELF_CLOSING_ELEMENTS[i];
-        $element = jQuery('<' + tagName + '/>');
+        $element = jQuery('<' + tagName + '/>', wymeditor._doc);
         $element.attr("id", "editor-only-" + tagName);
         $element.addClass(WYMeditor.EDITOR_ONLY_CLASS);
         $body.find('#before-editor-only-element').after($element);
@@ -485,7 +487,7 @@ test("Remove editor-only element with multiple classes", function () {
         $element;
 
     wymeditor._html(editorOnlyContainerStartHtml);
-    $element = jQuery('<p>Test</p>');
+    $element = jQuery('<p>Test</p>', wymeditor._doc);
     $element.attr("id", "editor-only-multiclass");
     $element.addClass("foo");
     $element.addClass("bar");
@@ -509,25 +511,25 @@ test("Remove nested editor-only elements", function () {
     wymeditor._html(editorOnlyContainerStartHtml);
 
     // Create an editor-only img element
-    $img = jQuery('<img/>');
+    $img = jQuery('<img/>', wymeditor._doc);
     $img.attr("id", "editor-only-img");
     $img.attr("src", "http://www.google.com/intl/en_com/images/srpr/logo3w.png");
     $img.addClass(WYMeditor.EDITOR_ONLY_CLASS);
 
     // Create an editor-only strong element
-    $strong = jQuery('<strong>editor-only</strong>');
+    $strong = jQuery('<strong>editor-only</strong>', wymeditor._doc);
     $strong.attr("id", "editor-only-strong");
     $strong.addClass(WYMeditor.EDITOR_ONLY_CLASS);
 
     // Nest the strong and img inside an editor-only span element
-    $span = jQuery('<span>editor-only </span>');
+    $span = jQuery('<span>editor-only </span>', wymeditor._doc);
     $span.attr("id", "editor-only-span");
     $span.addClass(WYMeditor.EDITOR_ONLY_CLASS);
     $span.append($strong);
     $span.append($img);
 
     // Nest the span inside an editor-only p element
-    $container = jQuery('<p>editor-only </p>');
+    $container = jQuery('<p>editor-only </p>', wymeditor._doc);
     $container.attr("id", "remove-container");
     $container.addClass(WYMeditor.EDITOR_ONLY_CLASS);
     $container.append($span);
