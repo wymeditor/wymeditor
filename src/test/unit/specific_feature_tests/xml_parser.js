@@ -739,8 +739,6 @@ module("XmlParser-remove_unwanted_classes", {setup: setupWym});
 test("Remove 'apple-style-span' class", function () {
     expect(2);
     var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
-        expectedHtml,
 
         startHtmlSingleClass = String() +
             '<span id="span_1" class="apple-style-span">' +
@@ -766,4 +764,28 @@ test("Remove 'apple-style-span' class", function () {
     wymeditor._html(startHtmlMultiClass);
     htmlEquals(wymeditor, expectedHtmlMultiClass,
                "'apple-style-span' removed from span with multiple classes");
+});
+
+test("Class removal is case insensitive", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+        defaultClassesRemovedByParser = WYMeditor.CLASSES_REMOVED_BY_PARSER,
+
+        startHtml = String() +
+            '<p id="p_1" class="FOO BaR baZ qUx">' +
+                'Test' +
+            '</p>',
+        expectedHtml = String() +
+            '<p id="p_1" class="baZ">' +
+                'Test' +
+            '</p>';
+
+    WYMeditor.CLASSES_REMOVED_BY_PARSER = ["Bar", "quX", "foo"];
+
+    wymeditor._html(startHtml);
+    htmlEquals(wymeditor, expectedHtml,
+               "Class removal is case insensitive");
+
+    // Restore default
+    WYMeditor.CLASSES_REMOVED_BY_PARSER = defaultClassesRemovedByParser;
 });
