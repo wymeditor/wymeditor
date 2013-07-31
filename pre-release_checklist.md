@@ -72,10 +72,12 @@ of use.
 * Follow the `README.md` instructions to create the `tar.gz` archive.
 * Tag the current version in git using [Semantic Versioning](http://semver.org/)
   and push the tag to github.
-* Navigate to the [WYMeditor Downloads](https://github.com/wymeditor/wymeditor/downloads)
-  page on github and upload the archive. The archive you upload should be named
-  according to the `wymeditor-<version>.tar.gz` format to ensure the appropriate
-  download URL.
+* Navigate to the [WYMeditor Releases](https://github.com/wymeditor/wymeditor/releases)
+  page on github and draft a new release for the tag of the current
+  version. Add the information from the CHANGELOG for the current
+  version to the release description and upload the built `tar.gz`
+  archive named according to the `wymeditor-<version>.tar.gz` format to
+  ensure the appropriate download URL.
 
 Tell the World
 ==============
@@ -96,8 +98,4 @@ Prepare For the Next Release
 
 * Create a new version entry in `CHANGELOG.md`
 * Bump the version string for the Sphinx documentation at `docs/conf.py`
-
-
-
-
 

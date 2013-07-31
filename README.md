@@ -41,7 +41,7 @@ WYMeditor can do.
     included.
 
 2. Download the [Version
-   1.0.0b5](https://github.com/downloads/wymeditor/wymeditor/wymeditor-1.0.0b5.tar.gz)
+   1.0.0b5](https://github.com/wymeditor/wymeditor/releases/download/v1.0.0b5/wymeditor-1.0.0b5.tar.gz)
    archive and extract the contents to a folder in your project.
 
 3. Include the `wymeditor/jquery.wymeditor.min.js` file on your page using this
