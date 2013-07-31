@@ -407,25 +407,26 @@ WYMeditor.XhtmlSaxListener.prototype.insertContentBeforeClosingTag = function(ta
     WYMeditor.CLASSES_REMOVED_BY_PARSER constant from the passed attributes
     object and returns the attributes object after the removals. The passed
     attributes object should be in a format with attribute names as properties
-    and those attributes' values as those properties' values.
+    and those attributes' values as those properties' values. The class
+    matching for removal is case insensitive.
 */
 WYMeditor.XhtmlSaxListener.prototype.removeUnwantedClasses = function(attributes) {
-    var classes,
-        index,
+    var pattern,
         i;
 
     if (!attributes["class"]) {
         return attributes;
     }
 
-    classes = attributes["class"].split(" ");
     for (i = 0; i < WYMeditor.CLASSES_REMOVED_BY_PARSER.length; ++i) {
-        index = jQuery.inArray(WYMeditor.CLASSES_REMOVED_BY_PARSER[i], classes);
-        if (index !== -1) {
-            classes.splice(index, 1);
-        }
+        pattern = new RegExp('(^|\\s)' + WYMeditor.CLASSES_REMOVED_BY_PARSER[i] +
+                             '($|\\s)', 'gi');
+        attributes["class"] = attributes["class"].replace(pattern, '$1');
     }
-    attributes["class"] = classes.join(" ");
+
+    // Remove possible trailing space that could have been left over if the
+    // last class was removed
+    attributes["class"] = attributes["class"].replace(/\s$/, '');
     return attributes;
 };
 

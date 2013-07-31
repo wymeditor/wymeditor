@@ -104,11 +104,12 @@ function normalizeHtml(node) {
                         }
                     }
 
-                    // With some versions of jQuery on IE, sometimes an
-                    // attribute named `sizcache` followed by a differing
-                    // string of numbers is added to elements, so regex
-                    // must be used to check for it.
-                    if (/sizcache\d*/.test(attrName)) {
+                    // With some versions of jQuery on IE, sometimes attributes
+                    // named `sizcache` or `sizzle-` followed by a differing
+                    // string of numbers are added to elements, so regex must
+                    // be used to check for them.
+                    if (/sizcache\d*/.test(attrName) ||
+                        /sizzle-\d*/.test(attrName)) {
                         keepAttr = false;
                         break;
                     }

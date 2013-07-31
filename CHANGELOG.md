@@ -3,9 +3,13 @@
 This document tracks the enhancements and bug fixes between releases of
 WYMeditor.
 
-## 1.0.0b5 (Beta 5)
+## 1.0.0b6 (Beta 6)
 
 *release-date* TBD
+
+## 1.0.0b5 (Beta 5)
+
+*release-date* July 31, 2013
 
 ### Enhancements
 
@@ -34,9 +38,9 @@ WYMeditor.
   outputted XHTML from the editor. Simply add the class
   `WYMeditor.EDITOR_ONLY_CLASS` to an element to specify it to be removed by
   the XHTML parser in this manner.
-* Classes can now be specified to be removed from tags' class attribute by the
-  XHTML parser. Simply add a string for each of the class names to remove to
-  the `WYMeditor.CLASSES_REMOVED_BY_PARSER` array, and the XHTML parser will
+* Classes can now be specified to be removed from tags' `class` attribute by
+  the XHTML parser. Simply add a string for each of the class names to remove
+  to the `WYMeditor.CLASSES_REMOVED_BY_PARSER` array, and the XHTML parser will
   remove all of those classes from all the tags in the editor's output.
 * `div` elements are now visible and labeled in the editor so that they can
   easily be worked with. In addition, `div` containers can now be switched to
@@ -70,7 +74,7 @@ WYMeditor.
 * WYMeditor now works properly in Chrome when using jQuery 1.4 or higher.
   Thanks to several folks for outlining the fix and for Nick McLaughlin for the
   pull request.
-* When using the bold tool in a header in Chrome, there was an issue where a
+* When using the bold tool in a heading in Chrome, there was an issue where a
   span with a style attribute set to `font-weight: normal` would be wrapped
   around the header's content. This has been fixed so that this span will no
   longer occur after bolding.

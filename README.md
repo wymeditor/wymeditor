@@ -22,9 +22,6 @@ customize to provide the specific capabilities your users need, and you want
 users focused on the structure of their content instead of tweaking fonts and
 margins, you should give WYMeditor a try.
 
-We also fully support Internet Explorer 6, for those poor souls who have no
-choice.
-
 ## Try It
 
 Want to see what WYMeditor can do? Try the [WYMeditor
@@ -35,16 +32,17 @@ WYMeditor can do.
 
 ## Quick Start
 
-1. WYMeditor requires a version of jQuery between 1.3.0 and 1.9.1. First ensure
-   that your page includes jQuery.
+1. WYMeditor requires a version of [jQuery](http://jquery.com/) between 1.3.0
+   and 1.9.1. First ensure that your page includes jQuery.
 
     *Note*: If a version of jQuery at or above 1.8.0 is used, WYMeditor also
-   requires jQuery Migrate. Ensure that your page also includes jQuery Migrate
-   after jQuery is included.
+    requires [jQuery Migrate](https://github.com/jquery/jquery-migrate/).
+    Ensure that your page also includes jQuery Migrate after jQuery is
+    included.
 
-2. Download the [Version
-   1.0.0b4](https://github.com/downloads/wymeditor/wymeditor/wymeditor-1.0.0b4.tar.gz)
-   archive and extract the contents to a folder in your project.
+2. Download the Version 1.0.0b5 archive from the [release
+   page](https://github.com/wymeditor/wymeditor/releases/tag/v1.0.0b5)
+   and extract the contents to a folder in your project.
 
 3. Include the `wymeditor/jquery.wymeditor.min.js` file on your page using this
    script. This file will pull in anything else that's required.

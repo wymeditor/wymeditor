@@ -1208,8 +1208,10 @@ test("_selected image is saved on mousedown", function () {
     wymeditor._html(initHtml);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
-    // Editor starts with no selected image
-    deepEqual(wymeditor._selected_image, undefined);
+    // Editor starts with no selected image. Use equal instead of deepEqual
+    // because wymeditor._selected_image intermittently changes between being
+    // undefined and null, but either value should be acceptable for this test.
+    equal(wymeditor._selected_image, undefined);
 
     // Clicking on a non-image doesn't change that
     $noimage = $body.find('#noimage');

@@ -52,13 +52,13 @@ Checklist:
   for this release inside `CHANGELOG.md`. Users upgraded from a specific
   version should be able to easily see what changes might effect them.
 * If this release makes a transition from alpha to beta or beta to stable,
-  consolidate point alpha/beta `CHANGELOG.md` entries in to a unified section for
-  this release. For a major release, also flesh out highlights and examples
+  consolidate point alpha/beta `CHANGELOG.md` entries in to a unified section
+  for this release. For a major release, also flesh out highlights and examples
   that are most important.
 * Set a date for the release in `CHANGELOG.md`.
-* In the *Quick Start* section of `README.md`, update the *Version xxxx* link to
-  point to the appropriate version and the appropriate github download target.
-  The tar.gz should be named in the format `wymeditor-<version>.tar.gz`.
+* In the *Quick Start* section of `README.md`, update the step for downloading
+  the release archive to point to the appropriate release page for the current
+  version.
 * Review the `README.md` for any changes that might be necessary as a result of
   changes in this release.
 
@@ -70,12 +70,14 @@ own archive, but it's important to include an archive in a known place for ease
 of use.
 
 * Follow the `README.md` instructions to create the `tar.gz` archive.
-* Tag the current version in git using [Semantic Versioning](http://semver.org/)
-  and push the tag to github.
-* Navigate to the [WYMeditor Downloads](https://github.com/wymeditor/wymeditor/downloads)
-  page on github and upload the archive. The archive you upload should be named
-  according to the `wymeditor-<version>.tar.gz` format to ensure the appropriate
-  download URL.
+* Tag the current version in git using [Semantic
+  Versioning](http://semver.org/) and push the tag to github.
+* Navigate to the [WYMeditor
+  Releases](https://github.com/wymeditor/wymeditor/releases) page on github and
+  draft a new release for the tag of the current version. Add the information
+  from the CHANGELOG for the current version to the release description and
+  upload the built `tar.gz` archive named according to the
+  `wymeditor-<version>.tar.gz` format.
 
 Tell the World
 ==============
@@ -96,8 +98,4 @@ Prepare For the Next Release
 
 * Create a new version entry in `CHANGELOG.md`
 * Bump the version string for the Sphinx documentation at `docs/conf.py`
-
-
-
-
 
