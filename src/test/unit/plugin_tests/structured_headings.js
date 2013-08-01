@@ -130,8 +130,20 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
 
     module("structured_headings-heading_insertion", {setup: setupWym});
 
+    /**
+        testHeadingInsertion
+        ====================
+
+        Tests that headings are assigned to be a proper level based on the
+        context in which the headings are inserted. Selects a paragraph after a
+        heading of each level between `h1` and `h6`, and clicks on the heading
+        link in the containers panel to test if the heading is properly
+        inserted.
+
+       @param wymeditor A wymeditor instance in which to test heading
+                        insertion.
+    */
     function testHeadingInsertion(wymeditor) {
-        expect(6);
         var $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
             $headingContainerLink = jQuery(wymeditor._box).find(
                 wymeditor.structuredHeadingsManager._options.headingContainerPanelSelector),
@@ -218,8 +230,8 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
         wymeditor.structuredHeadingsManager._options.lowestAllowableHeadingLevel = 6;
     });
 
-    module("structured_headings-heading_indention", {setup: setupWym});
 
+    // Set up variables for indention and outdention tests
     var htmlForHeadingIndention = String() +
         '<h1>H1</h1>' +
             '<h2 id="h2_no_indent">H1_1</h2>' +
@@ -312,77 +324,56 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
         }
     }
 
-    test("Headings indent when allowable by using indent tool", function () {
-        expect(5);
-        var wymeditor = jQuery.wymeditors(0),
-            $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+    module("structured_headings-indent", {setup: setupWym});
+
+    /**
+        testHeadingIndent
+        =================
+
+        Tests heading indention by individually selecting with the passed
+        selectionType a heading at each level between `h1` and `h5` followed by
+        using the indent tool and comparing the resulting html to the expected
+        result.
+
+        @param wymeditor The wymeditor instance in which to test heading
+                         indention.
+        @param selectionType A string that specifies the type of selection used
+                             in the tests. Can be either 'text' or 'collapsed'.
+    */
+    function testHeadingIndent(wymeditor, selectionType) {
+        var $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
             $indentTool = jQuery(wymeditor._box).find(
                 wymeditor.structuredHeadingsManager._options.headingIndentToolSelector),
+            selectionStart = 0,
+            selectionEnd = (selectionType === 'collapsed' ? 0 : 2),
             heading,
             i;
 
         for (i = 1; i < 6; ++i) {
             wymeditor._html(htmlForHeadingIndention);
             heading = $body.find('#h' + i + '_for_indent')[0];
-            makeTextSelection(wymeditor, heading, heading);
+            makeTextSelection(wymeditor, heading, heading,
+                              selectionStart, selectionEnd);
             $indentTool.click();
             htmlEquals(wymeditor, correctHtmlIndent[i - 1],
                        "Indention of an H" + i + " heading");
         }
-    });
+    }
 
-    test("Headings outdent when allowable by using outdent tool", function () {
+    test("Headings indent when allowable by using indent tool with text " +
+         "selection", function () {
         expect(5);
-        var wymeditor = jQuery.wymeditors(0),
-            $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
-            $outdentTool = jQuery(wymeditor._box).find(
-                wymeditor.structuredHeadingsManager._options.headingOutdentToolSelector),
-            heading,
-            i;
+        var wymeditor = jQuery.wymeditors(0);
 
-        for (i = 2; i < 7; ++i) {
-            wymeditor._html(htmlForHeadingOutdention);
-            heading = $body.find('#h' + i + '_for_outdent')[0];
-            makeTextSelection(wymeditor, heading, heading);
-            $outdentTool.click();
-            htmlEquals(wymeditor, correctHtmlOutdent[i - 2],
-                       "Outdention of an H" + i + " heading");
-        }
+        testHeadingIndent(wymeditor, 'text');
     });
 
-    test("Highest heading level does not outdent", function () {
-        expect(2);
-        var wymeditor = jQuery.wymeditors(0),
-            $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
-            $outdentTool = jQuery(wymeditor._box).find(
-                wymeditor.structuredHeadingsManager._options.headingOutdentToolSelector),
-            heading;
+    test("Headings indent when allowable by using indent tool with collapsed " +
+         "selection", function () {
+        expect(5);
+        var wymeditor = jQuery.wymeditors(0);
 
-        // Default highest heading level
-        wymeditor._html(htmlForHeadingOutdention);
-        if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
-            wymeditor.structuredHeadingsManager.numberHeadingsIE7();
-        }
-        heading = $body.find('#h1_for_outdent')[0];
-        makeTextSelection(wymeditor, heading, heading);
-        $outdentTool.click();
-        htmlEquals(wymeditor, htmlForHeadingOutdention,
-                   "Outdention of default highest heading level does nothing");
-
-        // Customized highest heading level
-        wymeditor.structuredHeadingsManager._options.highestAllowableHeadingLevel = 3;
-        wymeditor._html(htmlForHeadingOutdention);
-        if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
-            wymeditor.structuredHeadingsManager.numberHeadingsIE7();
-        }
-        heading = $body.find('#h3_for_outdent')[0];
-        makeTextSelection(wymeditor, heading, heading);
-        $outdentTool.click();
-        htmlEquals(wymeditor, htmlForHeadingOutdention,
-                   "Outdention of customized highest heading level does nothing");
-
-        // Restore default for other tests
-        wymeditor.structuredHeadingsManager._options.highestAllowableHeadingLevel = 1;
+        testHeadingIndent(wymeditor, 'collapsed');
     });
 
     test("Lowest heading level does not indent", function () {
@@ -444,6 +435,93 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
         }
     });
 
+    module("structured_headings-outdent", {setup: setupWym});
+
+    /**
+        testHeadingOutdent
+        =================
+
+        Tests heading outdention by individually selecting with the passed
+        selectionType a heading at each level between `h2` and `h6` followed by
+        using the outdent tool and comparing the resulting html to the expected
+        result.
+
+        @param wymeditor The wymeditor instance in which to test heading
+                         outdention.
+        @param selectionType A string that specifies the type of selection used
+                             in the tests. Can be either 'text' or 'collapsed'.
+    */
+    function testHeadingOutdent(wymeditor, selectionType) {
+        var $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+            $outdentTool = jQuery(wymeditor._box).find(
+                wymeditor.structuredHeadingsManager._options.headingOutdentToolSelector),
+            selectionStart = 0,
+            selectionEnd = (selectionType === 'collapsed' ? 0 : 2),
+            heading,
+            i;
+
+        for (i = 2; i < 7; ++i) {
+            wymeditor._html(htmlForHeadingOutdention);
+            heading = $body.find('#h' + i + '_for_outdent')[0];
+            makeTextSelection(wymeditor, heading, heading,
+                              selectionStart, selectionEnd);
+            $outdentTool.click();
+            htmlEquals(wymeditor, correctHtmlOutdent[i - 2],
+                       "Outdention of an H" + i + " heading");
+        }
+    }
+
+    test("Headings outdent when allowable by using outdent tool with text " +
+         "selection", function () {
+        expect(5);
+        var wymeditor = jQuery.wymeditors(0);
+
+        testHeadingOutdent(wymeditor, 'text');
+    });
+
+    test("Headings outdent when allowable by using outdent tool with collapsed " +
+         "selection", function () {
+        expect(5);
+        var wymeditor = jQuery.wymeditors(0);
+
+        testHeadingOutdent(wymeditor, 'collapsed');
+    });
+
+    test("Highest heading level does not outdent", function () {
+        expect(2);
+        var wymeditor = jQuery.wymeditors(0),
+            $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+            $outdentTool = jQuery(wymeditor._box).find(
+                wymeditor.structuredHeadingsManager._options.headingOutdentToolSelector),
+            heading;
+
+        // Default highest heading level
+        wymeditor._html(htmlForHeadingOutdention);
+        if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
+            wymeditor.structuredHeadingsManager.numberHeadingsIE7();
+        }
+        heading = $body.find('#h1_for_outdent')[0];
+        makeTextSelection(wymeditor, heading, heading);
+        $outdentTool.click();
+        htmlEquals(wymeditor, htmlForHeadingOutdention,
+                   "Outdention of default highest heading level does nothing");
+
+        // Customized highest heading level
+        wymeditor.structuredHeadingsManager._options.highestAllowableHeadingLevel = 3;
+        wymeditor._html(htmlForHeadingOutdention);
+        if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
+            wymeditor.structuredHeadingsManager.numberHeadingsIE7();
+        }
+        heading = $body.find('#h3_for_outdent')[0];
+        makeTextSelection(wymeditor, heading, heading);
+        $outdentTool.click();
+        htmlEquals(wymeditor, htmlForHeadingOutdention,
+                   "Outdention of customized highest heading level does nothing");
+
+        // Restore default for other tests
+        wymeditor.structuredHeadingsManager._options.highestAllowableHeadingLevel = 1;
+    });
+
     test("Heading cannot be outdented more than one level above directly " +
          "following heading level", function () {
         expect(4);
@@ -467,6 +545,115 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
                        "following H" + (i + 1) + " heading does nothing");
         }
     });
+
+    /**
+        testMultipleIndentOutdent
+        =========================
+
+        Tests the indention or outdention of multiple headings in a single
+        selection. First, the passed startHtml is set in the editor body. Then,
+        a selection with the passed startIndex and endIndex is made between the
+        element with the id "start_selection" to the element with the id
+        "end_selection". Then, the indent or outdent tool is clicked depending
+        on indentOrOutdent, and finally, the html in the editor is tested
+        against the passed correctHtml.
+
+        @param wymeditor A wymeditor instance in which to test.
+        @param indentOrOutdent A string being either 'indent' or 'outdent' that
+                               specifies whether the indent or outdent tool
+                               should be used.
+        @param startHtml An html string to set in the editor body before the
+                         test.
+        @param correctHtml An html string to compare against the resulting html
+                           in the editor after testing the multiple indention.
+        @param startIndex The numeric index to start the selection at in the
+                          text of the "start_selection" element.
+        @param endIndex The numeric index to end the selection at in the text
+                        of the "end_selection" element.
+        @param assertionString The string message to be used with the equals
+                               assertion of the test.
+    */
+    function testMultipleIndentOutdent(
+        wymeditor, indentOrOutdent, startHtml, correctHtml,
+        startIndex, endIndex, assertionString
+    ) {
+        var $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+            $tool,
+            startElement,
+            endElement;
+
+        if (indentOrOutdent === 'indent') {
+            $tool = jQuery(wymeditor._box).find(
+                wymeditor.structuredHeadingsManager._options.headingIndentToolSelector);
+        } else {
+            $tool = jQuery(wymeditor._box).find(
+                wymeditor.structuredHeadingsManager._options.headingOutdentToolSelector);
+        }
+
+        wymeditor._html(startHtml);
+        startElement = $body.find('#start_selection')[0];
+        endElement = $body.find('#end_selection')[0];
+        makeTextSelection(wymeditor, startElement, endElement,
+                          startIndex, endIndex);
+        $tool.click();
+        htmlEquals(wymeditor, correctHtml, assertionString);
+    }
+
+    module("structured_headings-multiple_indent", {setup: setupWym});
+
+    var basicMultipleIndentStart = String() +
+        '<h1>Test</h1>' +
+            '<h2>Test</h2>' +
+            '<h2 id="start_selection">Test</h2>' +
+                '<h3>Test</h3>' +
+                '<h3 id="end_selection">Test</h3>';
+    var basicMultipleIndentCorrect = String() +
+        '<h1>Test</h1>' +
+            '<h2>Test</h2>' +
+                '<h3 id="start_selection">Test</h3>' +
+                    '<h4>Test</h4>' +
+                    '<h4 id="end_selection">Test</h4>';
+
+    test("Basic multiple indent", function () {
+        expect(1);
+        var wymeditor = jQuery.wymeditors(0);
+
+        testMultipleIndentOutdent(
+            wymeditor, 'indent',
+            basicMultipleIndentStart, basicMultipleIndentCorrect,
+            undefined, undefined,
+            "Basic multiple indent"
+        );
+    });
+
+    module("structured_headings-multiple_outdent", {setup: setupWym});
+
+    var basicMultipleOutdentStart = String() +
+        '<h1>Test</h1>' +
+            '<h2>Test</h2>' +
+            '<h2 id="start_selection">Test</h2>' +
+                '<h3>Test</h3>' +
+                '<h3 id="end_selection">Test</h3>';
+    var basicMultipleOutdentCorrect = String() +
+        '<h1>Test</h1>' +
+            '<h2>Test</h2>' +
+        '<h1 id="start_selection">Test</h1>' +
+            '<h2>Test</h2>' +
+            '<h2 id="end_selection">Test</h2>';
+
+    test("Basic multiple outdent", function () {
+        expect(1);
+        var wymeditor = jQuery.wymeditors(0);
+
+        testMultipleIndentOutdent(
+            wymeditor, 'outdent',
+            basicMultipleOutdentStart, basicMultipleOutdentCorrect,
+            undefined, undefined,
+            "Basic multiple outdent"
+        );
+    });
+
+
 }
 
 // Tests for the IE7 polyfill

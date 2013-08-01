@@ -425,19 +425,6 @@ StructuredHeadingsManager.prototype.lowerSelectedHeadingsLevel = function (
 };
 
 /**
-    headingNodeFilter
-    =================
-
-    Tests whether the passed DOM node is a heading or not. Returns true if the
-    node is a heading, false if otherwise.
-
-    @param testNode A DOM node to be tested to see if it is a heading
-*/
-StructuredHeadingsManager.prototype.headingNodeFilter = function (testNode) {
-    return jQuery(testNode).is(this._fullHeadingSel);
-};
-
-/**
     changeHeadingLevel
     ==================
 
