@@ -173,11 +173,11 @@ StructuredHeadingsManager.prototype.bindEvents = function () {
     // Bind click events to tool buttons
     $box.find(this._options.headingOutdentToolSelector).click(function () {
         var sel = rangy.getIframeSelection(wym._iframe);
-        headingManager.raiseSelectedHeadingsLevel(sel);
+        headingManager.changeSelectedHeadingsLevel(sel, "up");
     });
     $box.find(this._options.headingIndentToolSelector).click(function () {
         var sel = rangy.getIframeSelection(wym._iframe);
-        headingManager.lowerSelectedHeadingsLevel(sel);
+        headingManager.changeSelectedHeadingsLevel(sel, "down");
     });
     if (this._options.enableFixHeadingStructureButton) {
         $box.find(this._options.fixHeadingStructureSelector).click(function () {
@@ -308,46 +308,63 @@ StructuredHeadingsManager.prototype.canLowerHeadingLevel = function (heading) {
 };
 
 /**
-    raiseSelectedHeadingsLevel
+    changeSelectedHeadingsLevel
     ===========================
 
-    Iterates through the headings in the passed selection and raises the level
-    of each heading if it is allowable. The level of a heading can only be
-    raised if it is not the highest allowable level and if the level of the
-    heading is not higher than the level of its following heading after all
-    headings in the selection have had their heading level attempted to be raised.
+    Iterates through the headings in the passed selection and raises or lowers
+    the level of each heading if it is allowable.
+
+    The level of a heading can only be raised if it is not the highest
+    allowable level and if the level of the heading is not higher than the
+    level of its following heading after all headings in the selection have had
+    their heading level attempted to be raised.
+
+    The level of a heading can only be lowered if it is not the lowest
+    allowable level and if the level of the heading is not lower than the level
+    of its preceding heading after all headings in the selection have had their
+    heading level attempted to be lowered.
 
     @param selection A rangy selection object to have the level of its
                      containing headings raised if allowable.
+    @param upOrDown A string being either "up" or "down" that specifies if the
+                    selected headings should have their level raised up or
+                    lowered down.
 */
-StructuredHeadingsManager.prototype.raiseSelectedHeadingsLevel = function (
-    selection
+StructuredHeadingsManager.prototype.changeSelectedHeadingsLevel = function (
+    selection, upOrDown
 ) {
     var wym = this._wym,
         headingManager = this,
+        shouldRaise = (upOrDown === 'up'),
+        i,
+        i_start = (shouldRaise ? selection.rangeCount - 1 : 0),
+        i_limit = (shouldRaise ? -1 : selection.rangeCount),
+        iter_change = (shouldRaise ? -1 : 1),
         range,
         heading,
         headingList,
-        i,
-        j;
+        j,
+        j_start,
+        j_limit;
 
     var headingNodeFilter = function (testNode) {
         return jQuery(testNode).is(headingManager._fullHeadingSel);
     };
 
-    // Iterate through the headings in the selection from bottom to top so that
-    // each heading has had its following headings in the selection already
-    // raised if possible when the check is run to see if the heading can have
-    // its level raised based on whether or not it is higher than the level of
-    // its following heading.
-    for (i = (selection.rangeCount - 1); i >= 0; --i) {
+    // Iterate through the headings in the selection from bottom to top if the
+    // level of the headings should be raised or top to bottom if the level of
+    // the headings should be lowered. This ordering is necessary to ensure
+    // each heading has had its relevant context of surrounding heading levels
+    // modified so that it can be assessed if the heading can validly be raised
+    // or lowered.
+    for (i = i_start; i !== i_limit; i += iter_change) {
         range = selection.getRangeAt(i);
         if (range.collapsed) {
             // Collapsed ranges don't return their node with getNodes(), so
             // use findUp to get the containing heading.
             heading = wym.findUp(range.startContainer,
                                  WYMeditor.HEADING_ELEMENTS);
-            this.changeHeadingLevel(heading, "up");
+            this.changeHeadingLevel(heading, upOrDown);
         } else {
             // Use getNodes to get the selected headings
             headingList = range.getNodes(false, headingNodeFilter);
@@ -355,70 +372,15 @@ StructuredHeadingsManager.prototype.raiseSelectedHeadingsLevel = function (
                 // If there are some nodes in the range, but none of the are
                 // headings, it's possible that all of the nodes are contained
                 // within a heading.
-                headingList = [wym.findUp(range.getNodes()[0],
-                                          WYMeditor.HEADING_ELEMENTS)];
+                heading = wym.findUp(range.getNodes()[0],
+                                          WYMeditor.HEADING_ELEMENTS);
+                if (heading) { headingList = [heading]; }
             }
-            for (j = (headingList.length - 1); j >= 0; --j) {
-                this.changeHeadingLevel(headingList[j], "up");
-            }
-        }
-    }
-};
 
-/**
-    lowerSelectedHeadingsLevel
-    ===========================
-
-    Iterates through the headings in the passed selection and lowers the level
-    of each heading if it is allowable. The level of a heading can only be
-    lowered if it is not the lowest allowable level and if the level of the
-    heading is not lower than the level of its preceding heading after all
-    headings in the selection have had their heading level attempted to be
-    lowered.
-
-    @param selection A rangy selection object to have the level of its
-                     containing headings lowered if allowable.
-*/
-StructuredHeadingsManager.prototype.lowerSelectedHeadingsLevel = function (
-    selection
-) {
-    var wym = this._wym,
-        headingManager = this,
-        range,
-        heading,
-        headingList,
-        i,
-        j;
-
-    var headingNodeFilter = function (testNode) {
-        return jQuery(testNode).is(headingManager._fullHeadingSel);
-    };
-
-    // Iterate through the headings in the selection from top to bottom so that
-    // each heading has had its preceding headings in the selection already
-    // lowered if possible when the check is run to see if the heading can have
-    // its level lowered based on whether or not it is lower than the level of
-    // its preceding heading.
-    for (i = 0; i < selection.rangeCount; ++i) {
-        range = selection.getRangeAt(i);
-        if (range.collapsed) {
-            // Collapsed ranges don't return their node with getNodes(), so
-            // use findUp to get the containing heading.
-            heading = wym.findUp(range.startContainer,
-                                 WYMeditor.HEADING_ELEMENTS);
-            this.changeHeadingLevel(heading, "down");
-        } else {
-            // Use getNodes to get the selected headings
-            headingList = range.getNodes(false, headingNodeFilter);
-            if (!headingList.length && range.getNodes().length) {
-                // If there are some nodes in the range, but none of them are
-                // headings, it's possible that all of the nodes in the range
-                // are contained within a heading.
-                headingList = [wym.findUp(range.getNodes()[0],
-                                          WYMeditor.HEADING_ELEMENTS)];
-            }
-            for (j = 0; j < headingList.length; ++j) {
-                this.changeHeadingLevel(headingList[j], "down");
+            j_start = (shouldRaise ? headingList.length - 1 : 0);
+            j_limit = (shouldRaise ? -1 : headingList.length);
+            for (j = j_start; j !== j_limit; j += iter_change) {
+                this.changeHeadingLevel(headingList[j], upOrDown);
             }
         }
     }

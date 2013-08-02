@@ -547,8 +547,8 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
     });
 
     /**
-        testMultipleIndentOutdent
-        =========================
+        testMultiIndentOutdent
+        ======================
 
         Tests the indention or outdention of multiple headings in a single
         selection. First, the passed startHtml is set in the editor body. Then,
@@ -573,7 +573,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
         @param assertionString The string message to be used with the equals
                                assertion of the test.
     */
-    function testMultipleIndentOutdent(
+    function testMultiIndentOutdent(
         wymeditor, indentOrOutdent, startHtml, correctHtml,
         startIndex, endIndex, assertionString
     ) {
@@ -601,13 +601,13 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
 
     module("structured_headings-multiple_indent", {setup: setupWym});
 
-    var basicMultipleIndentStart = String() +
+    var basicMultiIndentStart = String() +
         '<h1>Test</h1>' +
             '<h2>Test</h2>' +
             '<h2 id="start_selection">Test</h2>' +
                 '<h3>Test</h3>' +
                 '<h3 id="end_selection">Test</h3>';
-    var basicMultipleIndentCorrect = String() +
+    var basicMultiIndentCorrect = String() +
         '<h1>Test</h1>' +
             '<h2>Test</h2>' +
                 '<h3 id="start_selection">Test</h3>' +
@@ -618,23 +618,363 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
         expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
-        testMultipleIndentOutdent(
+        testMultiIndentOutdent(
             wymeditor, 'indent',
-            basicMultipleIndentStart, basicMultipleIndentCorrect,
+            basicMultiIndentStart, basicMultiIndentCorrect,
             undefined, undefined,
             "Basic multiple indent"
         );
     });
 
+    test("Partial text selection multiple indent", function () {
+        expect(1);
+        var wymeditor = jQuery.wymeditors(0);
+
+        testMultiIndentOutdent(
+            wymeditor, 'indent',
+            basicMultiIndentStart, basicMultiIndentCorrect,
+            2, 3,
+            "Partial text selection multiple indent"
+        );
+    });
+
+    var multiIndentWithContentStart = String() +
+        '<h1>Test</h1>' +
+            '<h2>Test</h2>' +
+            '<p>Content</p>' +
+            '<h2 id="start_selection"><a href="http://google.com">Test</a></h2>' +
+            '<p>Content</p>' +
+            '<pre>Preformatted Content</pre>' +
+                '<h3>T<em>es</em>t</h3>' +
+                '<p>Content</p>' +
+                '<h3 id="end_selection">Te<span>st</span></h3>' +
+                '<p>Content</p>';
+    var multiIndentWithContentCorrect = String() +
+        '<h1>Test</h1>' +
+            '<h2>Test</h2>' +
+            '<p>Content</p>' +
+                '<h3 id="start_selection"><a href="http://google.com">Test</a></h3>' +
+                '<p>Content</p>' +
+                '<pre>Preformatted Content</pre>' +
+                    '<h4>T<em>es</em>t</h4>' +
+                    '<p>Content</p>' +
+                    '<h4 id="end_selection">Te<span>st</span></h4>' +
+                    '<p>Content</p>';
+
+    test("Mulitple indent with content within and around the headings", function () {
+        expect(1);
+        var wymeditor = jQuery.wymeditors(0);
+
+        testMultiIndentOutdent(
+            wymeditor, 'indent',
+            multiIndentWithContentStart, multiIndentWithContentCorrect,
+            undefined, undefined,
+            "Mulitple indent with content within and around the headings"
+        );
+    });
+
+    var multiIndentWithListStart = String() +
+        '<h1>Test</h1>' +
+            '<h2 id="start_selection">Test</h2>' +
+            '<ol>' +
+                '<li>Test</li>' +
+                '<li>Test</li>' +
+                '<li>Test</li>' +
+            '</ol>' +
+            '<h2>Test</h2>' +
+            '<ul>' +
+                '<li>Test</li>' +
+                '<li>Test</li>' +
+                '<li>Test</li>' +
+            '</ul>' +
+                '<h3>Test</h3>' +
+                '<h3 id="end_selection">Test</h3>';
+    var multiIndentWithListCorrect = String() +
+        '<h1>Test</h1>' +
+            '<h2 id="start_selection">Test</h2>' +
+            '<ol>' +
+                '<li>Test</li>' +
+                '<li>Test</li>' +
+                '<li>Test</li>' +
+            '</ol>' +
+                '<h3>Test</h3>' +
+                '<ul>' +
+                    '<li>Test</li>' +
+                    '<li>Test</li>' +
+                    '<li>Test</li>' +
+                '</ul>' +
+                    '<h4>Test</h4>' +
+                    '<h4 id="end_selection">Test</h4>';
+
+    test("Multiple indent with list content between headings", function () {
+        expect(1);
+        var wymeditor = jQuery.wymeditors(0);
+
+        testMultiIndentOutdent(
+            wymeditor, 'indent',
+            multiIndentWithListStart, multiIndentWithListCorrect,
+            undefined, undefined,
+            "Multiple indent with list content between headings"
+        );
+
+    });
+
+    var fullyInvalidMultiIndentStart = String() +
+        '<h1>Test</h1>' +
+            '<h2 id="start_selection">Test</h2>' +
+                '<h3 id="start_selection">Test</h3>' +
+                    '<h4 id="end_selection">Test</h4>' +
+                '<h3>Test</h3>';
+
+    test("Fully invalid multiple indent", function () {
+        expect(1);
+        var wymeditor = jQuery.wymeditors(0);
+
+        testMultiIndentOutdent(
+            wymeditor, 'indent',
+            fullyInvalidMultiIndentStart, fullyInvalidMultiIndentStart,
+            undefined, undefined,
+            "Fully invalid multiple indent"
+        );
+    });
+
+    var invalidStartMultiIndentStart = String() +
+        '<h1>Test</h1>' +
+            '<h2 id="start_selection">Test</h2>' +
+            '<h2>Test</h2>' +
+        '<h1>Test</h1>' +
+            '<h2>Test</h2>' +
+            '<h2>Test</h2>' +
+                '<h3>Test</h3>' +
+                    '<h4 id="end_selection">Test</h4>' +
+                '<h3>Test</h3>';
+    var invalidStartMultiIndentCorrect = String() +
+        '<h1>Test</h1>' +
+            '<h2 id="start_selection">Test</h2>' +
+                '<h3>Test</h3>' +
+            '<h2>Test</h2>' +
+                '<h3>Test</h3>' +
+                '<h3>Test</h3>' +
+                    '<h4>Test</h4>' +
+                        '<h5 id="end_selection">Test</h5>' +
+                '<h3>Test</h3>';
+    var invalidUntilEndMultiIndentStart = String() +
+        '<h1>Test</h1>' +
+            '<h2 id="start_selection">Test</h2>' +
+                '<h3>Test</h3>' +
+                    '<h4>Test</h4>' +
+                    '<h4>Test</h4>' +
+                    '<h4 id="end_selection">Test</h4>' +
+                '<h3>Test</h3>';
+    var invalidUntilEndMultiIndentCorrect = String() +
+        '<h1>Test</h1>' +
+            '<h2 id="start_selection">Test</h2>' +
+                '<h3>Test</h3>' +
+                    '<h4>Test</h4>' +
+                        '<h5>Test</h5>' +
+                        '<h5 id="end_selection">Test</h5>' +
+                '<h3>Test</h3>';
+
+    test("Partially invalid multiple indent", function () {
+        expect(2);
+        var wymeditor = jQuery.wymeditors(0);
+
+        testMultiIndentOutdent(
+            wymeditor, 'indent',
+            invalidStartMultiIndentStart, invalidStartMultiIndentCorrect,
+            undefined, undefined,
+            "Invalid start multiple indent"
+        );
+        testMultiIndentOutdent(
+            wymeditor, 'indent',
+            invalidUntilEndMultiIndentStart,
+            invalidUntilEndMultiIndentCorrect,
+            undefined, undefined,
+            "Invalid until end multiple indent"
+        );
+    });
+
+    var multiIndentLowestLevelStart = String() +
+        '<h1>Test</h1>' +
+            '<h2>Test</h2>' +
+            '<h2>Test</h2>' +
+                '<h3>Test</h3>' +
+                '<h3>Test</h3>' +
+                    '<h4>Test</h4>' +
+                    '<h4 id="start_selection">Test</h4>' +
+                        '<h5>Test</h5>' +
+                        '<h5>Test</h5>' +
+                            '<h6>Test</h6>' +
+                            '<h6>Test</h6>' +
+                    '<h4>Test</h4>' +
+                    '<h4>Test</h4>' +
+                        '<h5>Test</h5>' +
+                        '<h5>Test</h5>' +
+            '<h2>Test</h2>' +
+            '<h2 id="end_selection">Test</h2>' +
+                '<h3>Test</h3>' +
+                '<h3>Test</h3>';
+    var multiIndentLowestLevelCorrect = String() +
+        '<h1>Test</h1>' +
+            '<h2>Test</h2>' +
+            '<h2>Test</h2>' +
+                '<h3>Test</h3>' +
+                '<h3>Test</h3>' +
+                    '<h4>Test</h4>' +
+                        '<h5 id="start_selection">Test</h5>' +
+                            '<h6>Test</h6>' +
+                            '<h6>Test</h6>' +
+                            '<h6>Test</h6>' +
+                            '<h6>Test</h6>' +
+                        '<h5>Test</h5>' +
+                        '<h5>Test</h5>' +
+                            '<h6>Test</h6>' +
+                            '<h6>Test</h6>' +
+                '<h3>Test</h3>' +
+                '<h3 id="end_selection">Test</h3>' +
+                '<h3>Test</h3>' +
+                '<h3>Test</h3>';
+
+    test("Multiple indent with lowest level heading", function () {
+        expect(1);
+        var wymeditor = jQuery.wymeditors(0);
+
+        testMultiIndentOutdent(
+            wymeditor, 'indent',
+            multiIndentLowestLevelStart, multiIndentLowestLevelCorrect,
+            undefined, undefined,
+            "Multiple indent with lowest level heading"
+        );
+    });
+
+    var multiIndentLargeTestStart = String() +
+        '<h1>Test</h1>' +
+            '<h2>Test</h2>' +
+            '<p>Content</p>' +
+            '<h2>Test</h2>' +
+                '<h3>Test</h3>' +
+                '<p>Content</p>' +
+                '<h3>Test</h3>' +
+                    '<h4>T<strong id="start_selection">es</strong>t</h4>' +
+                    '<p>Content</p>' +
+                    '<h4>Te<em>st</em></h4>' +
+                    '<p>Content</p>' +
+                        '<h5>Test</h5>' +
+                        '<p>Content</p>' +
+                        '<ul>' +
+                            '<li>Test</li>' +
+                            '<li>Test' +
+                                '<ul>' +
+                                    '<li>Test</li>' +
+                                    '<li>Test</li>' +
+                                '</ul>' +
+                            '</li>' +
+                            '<li>Test</li>' +
+                        '</ul>' +
+                        '<h5><span>Test</span></h5>' +
+                        '<pre>Preformatted Content</pre>' +
+                            '<h6>Test</h6>' +
+                            '<p>Content</p>' +
+                            '<h6>Test</h6>' +
+                    '<h4>Test</h4>' +
+                    '<p>Content</p>' +
+                    '<h4><span>Test</span></h4>' +
+                    '<p><strong>Content</strong></p>' +
+                        '<h5>Test</h5>' +
+                        '<h5>Test</h5>' +
+            '<h2>Test</h2>' +
+            '<ol>' +
+                '<li>Test</li>' +
+                '<li>Test' +
+                    '<ol>' +
+                        '<li>Test</li>' +
+                        '<li>Test</li>' +
+                    '</ol>' +
+                '</li>' +
+                '<li>Test</li>' +
+            '</ol>' +
+            '<p>Content</p>' +
+            '<h2>Te<sub id="end_selection">st</sub></h2>' +
+                '<h3>Test</h3>' +
+                '<p>Content</p>' +
+                '<h3>Test</h3>';
+    var multiIndentLargeTestCorrect = String() +
+            '<h1>Test</h1>' +
+            '<h2>Test</h2>' +
+            '<p>Content</p>' +
+            '<h2>Test</h2>' +
+                '<h3>Test</h3>' +
+                '<p>Content</p>' +
+                '<h3>Test</h3>' +
+                    '<h4>T<strong id="start_selection">es</strong>t</h4>' +
+                    '<p>Content</p>' +
+                        '<h5>Te<em>st</em></h5>' +
+                        '<p>Content</p>' +
+                            '<h6>Test</h6>' +
+                            '<p>Content</p>' +
+                            '<ul>' +
+                                '<li>Test</li>' +
+                                '<li>Test' +
+                                    '<ul>' +
+                                        '<li>Test</li>' +
+                                        '<li>Test</li>' +
+                                    '</ul>' +
+                                '</li>' +
+                                '<li>Test</li>' +
+                            '</ul>' +
+                            '<h6><span>Test</span></h6>' +
+                            '<pre>Preformatted Content</pre>' +
+                            '<h6>Test</h6>' +
+                            '<p>Content</p>' +
+                            '<h6>Test</h6>' +
+                        '<h5>Test</h5>' +
+                        '<p>Content</p>' +
+                        '<h5><span>Test</span></h5>' +
+                        '<p><strong>Content</strong></p>' +
+                            '<h6>Test</h6>' +
+                            '<h6>Test</h6>' +
+                '<h3>Test</h3>' +
+                '<ol>' +
+                    '<li>Test</li>' +
+                    '<li>Test' +
+                        '<ol>' +
+                            '<li>Test</li>' +
+                            '<li>Test</li>' +
+                        '</ol>' +
+                    '</li>' +
+                    '<li>Test</li>' +
+                '</ol>' +
+                '<p>Content</p>' +
+                '<h3>Te<sub id="end_selection">st</sub></h3>' +
+                '<h3>Test</h3>' +
+                '<p>Content</p>' +
+                '<h3>Test</h3>';
+
+    // This tests combines the test cases from all the other multiple indent
+    // tests to ensure that they still work when all happening at the same
+    // time.
+    test("Multiple indent large testing example", function () {
+        expect(1);
+        var wymeditor = jQuery.wymeditors(0);
+
+        testMultiIndentOutdent(
+            wymeditor, 'indent',
+            multiIndentLargeTestStart, multiIndentLargeTestCorrect,
+            1, 1,
+            "Multiple indent large testing example"
+        );
+
+    });
+
     module("structured_headings-multiple_outdent", {setup: setupWym});
 
-    var basicMultipleOutdentStart = String() +
+    var basicMultiOutdentStart = String() +
         '<h1>Test</h1>' +
             '<h2>Test</h2>' +
             '<h2 id="start_selection">Test</h2>' +
                 '<h3>Test</h3>' +
                 '<h3 id="end_selection">Test</h3>';
-    var basicMultipleOutdentCorrect = String() +
+    var basicMultiOutdentCorrect = String() +
         '<h1>Test</h1>' +
             '<h2>Test</h2>' +
         '<h1 id="start_selection">Test</h1>' +
@@ -645,15 +985,355 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
         expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
-        testMultipleIndentOutdent(
+        testMultiIndentOutdent(
             wymeditor, 'outdent',
-            basicMultipleOutdentStart, basicMultipleOutdentCorrect,
+            basicMultiOutdentStart, basicMultiOutdentCorrect,
             undefined, undefined,
             "Basic multiple outdent"
         );
     });
 
+    test("Partial text selection multiple outdent", function () {
+        expect(1);
+        var wymeditor = jQuery.wymeditors(0);
 
+        testMultiIndentOutdent(
+            wymeditor, 'outdent',
+            basicMultiOutdentStart, basicMultiOutdentCorrect,
+            2, 3,
+            "Partial text selection multiple outdent"
+        );
+    });
+
+    var multiOutdentWithContentStart = String() +
+        '<h1>Test</h1>' +
+            '<h2>Test</h2>' +
+            '<p>Content</p>' +
+            '<h2 id="start_selection"><a href="http://google.com">Test</a></h2>' +
+            '<p>Content</p>' +
+            '<pre>Preformatted Content</pre>' +
+                '<h3>T<em>es</em>t</h3>' +
+                '<p>Content</p>' +
+                '<h3 id="end_selection">Te<span>st</span></h3>' +
+                '<p>Content</p>';
+    var multiOutdentWithContentCorrect = String() +
+        '<h1>Test</h1>' +
+            '<h2>Test</h2>' +
+            '<p>Content</p>' +
+        '<h1 id="start_selection"><a href="http://google.com">Test</a></h1>' +
+        '<p>Content</p>' +
+        '<pre>Preformatted Content</pre>' +
+            '<h2>T<em>es</em>t</h2>' +
+            '<p>Content</p>' +
+            '<h2 id="end_selection">Te<span>st</span></h2>' +
+            '<p>Content</p>';
+
+    test("Mulitple outdent with content within and around the headings", function () {
+        expect(1);
+        var wymeditor = jQuery.wymeditors(0);
+
+        testMultiIndentOutdent(
+            wymeditor, 'outdent',
+            multiOutdentWithContentStart, multiOutdentWithContentCorrect,
+            undefined, undefined,
+            "Mulitple outdent with content within and around the headings"
+        );
+    });
+
+    var multiOutdentWithListStart = String() +
+        '<h1>Test</h1>' +
+            '<h2 id="start_selection">Test</h2>' +
+            '<ol>' +
+                '<li>Test</li>' +
+                '<li>Test</li>' +
+                '<li>Test</li>' +
+            '</ol>' +
+            '<h2>Test</h2>' +
+            '<ul>' +
+                '<li>Test</li>' +
+                '<li>Test</li>' +
+                '<li>Test</li>' +
+            '</ul>' +
+                '<h3>Test</h3>' +
+                '<h3 id="end_selection">Test</h3>';
+    var multiOutdentWithListCorrect = String() +
+        '<h1>Test</h1>' +
+            '<h2 id="start_selection">Test</h2>' +
+            '<ol>' +
+                '<li>Test</li>' +
+                '<li>Test</li>' +
+                '<li>Test</li>' +
+            '</ol>' +
+        '<h1>Test</h1>' +
+        '<ul>' +
+            '<li>Test</li>' +
+            '<li>Test</li>' +
+            '<li>Test</li>' +
+        '</ul>' +
+            '<h2>Test</h2>' +
+            '<h2 id="end_selection">Test</h2>';
+
+    test("Multiple outdent with list content between headings", function () {
+        expect(1);
+        var wymeditor = jQuery.wymeditors(0);
+
+        testMultiIndentOutdent(
+            wymeditor, 'outdent',
+            multiOutdentWithListStart, multiOutdentWithListCorrect,
+            undefined, undefined,
+            "Multiple outdent with list content between headings"
+        );
+
+    });
+
+    var fullyInvalidMultiOutdentStart = String() +
+        '<h1>Test</h1>' +
+            '<h2 id="start_selection">Test</h2>' +
+                '<h3 id="start_selection">Test</h3>' +
+                    '<h4 id="end_selection">Test</h4>' +
+                        '<h5>Test</h5>' +
+                '<h3>Test</h3>';
+
+    test("Fully invalid multiple outdent", function () {
+        expect(1);
+        var wymeditor = jQuery.wymeditors(0);
+
+        testMultiIndentOutdent(
+            wymeditor, 'outdent',
+            fullyInvalidMultiOutdentStart, fullyInvalidMultiOutdentStart,
+            undefined, undefined,
+            "Fully invalid multiple outdent"
+        );
+    });
+
+    var invalidEndMultiOutdentStart = String() +
+        '<h1>Test</h1>' +
+            '<h2>Test</h2>' +
+            '<h2 id="start_selection">Test</h2>' +
+            '<h2>Test</h2>' +
+                '<h3>Test</h3>' +
+                '<h3>Test</h3>' +
+                '<h3>Test</h3>' +
+                    '<h4 id="end_selection">Test</h4>' +
+                        '<h5>Test</h5>' +
+                '<h3>Test</h3>';
+    var invalidEndMultiOutdentCorrect = String() +
+        '<h1>Test</h1>' +
+            '<h2>Test</h2>' +
+        '<h1 id="start_selection">Test</h1>' +
+        '<h1>Test</h1>' +
+            '<h2>Test</h2>' +
+            '<h2>Test</h2>' +
+                '<h3>Test</h3>' +
+                    '<h4 id="end_selection">Test</h4>' +
+                        '<h5>Test</h5>' +
+                '<h3>Test</h3>';
+    var invalidUntilStartMultiOutdentStart = String() +
+        '<h1>Test</h1>' +
+            '<h2 id="start_selection">Test</h2>' +
+            '<h2>Test</h2>' +
+                '<h3>Test</h3>' +
+                    '<h4 id="end_selection">Test</h4>' +
+                        '<h5>Test</h5>' +
+                '<h3>Test</h3>';
+    var invalidUntilStartMultiOutdentCorrect = String() +
+        '<h1>Test</h1>' +
+        '<h1 id="start_selection">Test</h1>' +
+            '<h2>Test</h2>' +
+                '<h3>Test</h3>' +
+                    '<h4 id="end_selection">Test</h4>' +
+                        '<h5>Test</h5>' +
+                '<h3>Test</h3>';
+
+    test("Partially invalid multiple outdent", function () {
+        expect(2);
+        var wymeditor = jQuery.wymeditors(0);
+
+        testMultiIndentOutdent(
+            wymeditor, 'outdent',
+            invalidEndMultiOutdentStart, invalidEndMultiOutdentCorrect,
+            undefined, undefined,
+            "Invalid start multiple outdent"
+        );
+        testMultiIndentOutdent(
+            wymeditor, 'outdent',
+            invalidUntilStartMultiOutdentStart,
+            invalidUntilStartMultiOutdentCorrect,
+            undefined, undefined,
+            "Invalid until end multiple outdent"
+        );
+    });
+
+    var multiOutdentHighestLevelStart = String() +
+        '<h1>Test</h1>' +
+            '<h2>Test</h2>' +
+            '<h2 id="start_selection">Test</h2>' +
+                '<h3>Test</h3>' +
+                '<h3>Test</h3>' +
+        '<h1>Test</h1>' +
+        '<h1>Test</h1>' +
+            '<h2>Test</h2>' +
+            '<h2>Test</h2>' +
+                '<h3>Test</h3>' +
+                '<h3>Test</h3>' +
+                    '<h4>Test</h4>' +
+                    '<h4>Test</h4>' +
+                        '<h5>Test</h5>' +
+                        '<h5>Test</h5>' +
+            '<h2 id="end_selection">Test</h2>' +
+            '<h2>Test</h2>' +
+                '<h3>Test</h3>' +
+                '<h3>Test</h3>';
+    var multiOutdentHighestLevelCorrect = String() +
+        '<h1>Test</h1>' +
+            '<h2>Test</h2>' +
+        '<h1 id="start_selection">Test</h1>' +
+            '<h2>Test</h2>' +
+            '<h2>Test</h2>' +
+        '<h1>Test</h1>' +
+        '<h1>Test</h1>' +
+        '<h1>Test</h1>' +
+        '<h1>Test</h1>' +
+            '<h2>Test</h2>' +
+            '<h2>Test</h2>' +
+                '<h3>Test</h3>' +
+                '<h3>Test</h3>' +
+                    '<h4>Test</h4>' +
+                    '<h4>Test</h4>' +
+        '<h1 id="end_selection">Test</h1>' +
+            '<h2>Test</h2>' +
+                '<h3>Test</h3>' +
+                '<h3>Test</h3>';
+
+    test("Multiple outdent with highest level heading", function () {
+        expect(1);
+        var wymeditor = jQuery.wymeditors(0);
+
+        testMultiIndentOutdent(
+            wymeditor, 'outdent',
+            multiOutdentHighestLevelStart, multiOutdentHighestLevelCorrect,
+            undefined, undefined,
+            "Multiple outdent with highest level heading"
+        );
+    });
+
+    var multiOutdentLargeTestStart = String() +
+        '<h1>Test</h1>' +
+            '<h2>Test</h2>' +
+            '<p>Content</p>' +
+            '<h2><em>Te<span id="start_selection">st</span></em></h2>' +
+            '<p>Content</p>' +
+                '<h3>Test</h3>' +
+                '<p>Content</p>' +
+                '<h3>Test</h3>' +
+        '<h1>Test</h1>' +
+        '<p>Content</p>' +
+        '<h1>T<strong>es</strong>t</h1>' +
+        '<p>Content</p>' +
+        '<ul>' +
+            '<li>Test</li>' +
+            '<li>Test' +
+                '<ul>' +
+                    '<li>Test</li>' +
+                    '<li>Test</li>' +
+                '</ul>' +
+            '</li>' +
+            '<li>Test</li>' +
+        '</ul>' +
+            '<h2>Test</h2>' +
+            '<p><em>Content</em></p>' +
+            '<h2>Test</h2>' +
+            '<pre>Preformatted content</pre>' +
+                '<h3>Test</h3>' +
+                '<p>Content</p>' +
+                '<h3>Te<sub>st</sub></h3>' +
+                    '<h4>Test</h4>' +
+                    '<ol>' +
+                        '<li>Test</li>' +
+                        '<li>Test' +
+                            '<ol>' +
+                                '<li>Test</li>' +
+                                '<li>Test</li>' +
+                            '</ol>' +
+                        '</li>' +
+                        '<li>Test</li>' +
+                    '</ol>' +
+                    '<h4>Test</h4>' +
+                    '<p>Content</p>' +
+                        '<h5>Test</h5>' +
+                        '<h5>Test</h5>' +
+                        '<p>Content</p>' +
+            '<h2>Test</h2>' +
+            '<h2>Te<sup id="end_selection">st</sup></h2>' +
+            '<p>Content</p>' +
+                '<h3>Test</h3>' +
+                '<h3>Test</h3>';
+    var multiOutdentLargeTestCorrect = String() +
+        '<h1>Test</h1>' +
+            '<h2>Test</h2>' +
+            '<p>Content</p>' +
+        '<h1><em>Te<span id="start_selection">st</span></em></h1>' +
+        '<p>Content</p>' +
+            '<h2>Test</h2>' +
+            '<p>Content</p>' +
+            '<h2>Test</h2>' +
+        '<h1>Test</h1>' +
+        '<p>Content</p>' +
+        '<h1>T<strong>es</strong>t</h1>' +
+        '<p>Content</p>' +
+        '<ul>' +
+            '<li>Test</li>' +
+            '<li>Test' +
+                '<ul>' +
+                    '<li>Test</li>' +
+                    '<li>Test</li>' +
+                '</ul>' +
+            '</li>' +
+            '<li>Test</li>' +
+        '</ul>' +
+        '<h1>Test</h1>' +
+        '<p><em>Content</em></p>' +
+        '<h1>Test</h1>' +
+        '<pre>Preformatted content</pre>' +
+            '<h2>Test</h2>' +
+            '<p>Content</p>' +
+            '<h2>Te<sub>st</sub></h2>' +
+                '<h3>Test</h3>' +
+                '<ol>' +
+                    '<li>Test</li>' +
+                    '<li>Test' +
+                        '<ol>' +
+                            '<li>Test</li>' +
+                            '<li>Test</li>' +
+                        '</ol>' +
+                    '</li>' +
+                    '<li>Test</li>' +
+                '</ol>' +
+                '<h3>Test</h3>' +
+                '<p>Content</p>' +
+                    '<h4>Test</h4>' +
+                    '<h4>Test</h4>' +
+                    '<p>Content</p>' +
+        '<h1>Test</h1>' +
+            '<h2>Te<sup id="end_selection">st</sup></h2>' +
+            '<p>Content</p>' +
+                '<h3>Test</h3>' +
+                '<h3>Test</h3>';
+
+    // This tests combines the test cases from all the other multiple outdent
+    // tests to ensure that they still work when all happening at the same
+    // time.
+    test("Multiple outdent large testing example", function () {
+        expect(1);
+        var wymeditor = jQuery.wymeditors(0);
+
+        testMultiIndentOutdent(
+            wymeditor, 'outdent',
+            multiOutdentLargeTestStart, multiOutdentLargeTestCorrect,
+            1, 1,
+            "Multiple outdent large testing example"
+        );
+    });
 }
 
 // Tests for the IE7 polyfill
