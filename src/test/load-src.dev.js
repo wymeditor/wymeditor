@@ -23,7 +23,7 @@ function parseVersionString(str) {
 */
 function loadWymSrc(srcPath, extraRequirements, jqueryVersion) {
     // Oldest supported version of jQuery is used by default
-    var localJqueryVersion = "1.4.1",
+    var localJqueryVersion = "1.4.4",
         baseRequirements = [
             srcPath + 'wymeditor/rangy/rangy-core.js',
             srcPath + 'wymeditor/rangy/rangy-selectionsaverestore.js',
