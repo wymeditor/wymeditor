@@ -2107,6 +2107,9 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
     Tests if all of the nodes within the passed selection are contained in one
     list. Returns true if all of the nodes are within one list, and returns
     false if otherwise.
+
+    @param sel A selection to test for being entirely contained within one
+               list.
 */
 WYMeditor.editor.prototype._selectionOnlyInList = function (sel) {
     var wym = this._wym,
