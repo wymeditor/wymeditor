@@ -258,7 +258,7 @@ StructuredHeadingsManager.prototype.canRaiseHeadingLevel = function (heading) {
 
     // The level of a heading cannot be raised if the heading level is any
     // higher than the level of its following heading.
-    nextHeading = jQuery(heading).next(this._fullHeadingSel)[0];
+    nextHeading = jQuery(heading).nextAll(this._fullHeadingSel)[0];
     if (nextHeading) {
         nextHeadingLevel = getHeadingLevel(nextHeading);
         headingLevelDifference = headingLevel - nextHeadingLevel;
@@ -295,7 +295,7 @@ StructuredHeadingsManager.prototype.canLowerHeadingLevel = function (heading) {
 
     // The user cannot lower the level of a heading if the heading level is any
     // lower than the level of its previous heading.
-    prevHeading = jQuery(heading).prev(this._fullHeadingSel)[0];
+    prevHeading = jQuery(heading).prevAll(this._fullHeadingSel)[0];
     if (prevHeading) {
         prevHeadingLevel = getHeadingLevel(prevHeading);
         headingLevelDifference = prevHeadingLevel - headingLevel;

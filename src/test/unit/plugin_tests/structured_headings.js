@@ -1058,7 +1058,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
                 '<h3 id="end_selection">Test</h3>';
     var multiOutdentWithListCorrect = String() +
         '<h1>Test</h1>' +
-            '<h2 id="start_selection">Test</h2>' +
+        '<h1 id="start_selection">Test</h1>' +
             '<ol>' +
                 '<li>Test</li>' +
                 '<li>Test</li>' +
