@@ -1153,14 +1153,14 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
             wymeditor, 'outdent',
             invalidEndMultiOutdentStart, invalidEndMultiOutdentCorrect,
             undefined, undefined,
-            "Invalid start multiple outdent"
+            "Invalid end multiple outdent"
         );
         testMultiIndentOutdent(
             wymeditor, 'outdent',
             invalidUntilStartMultiOutdentStart,
             invalidUntilStartMultiOutdentCorrect,
             undefined, undefined,
-            "Invalid until end multiple outdent"
+            "Invalid until start multiple outdent"
         );
     });
 

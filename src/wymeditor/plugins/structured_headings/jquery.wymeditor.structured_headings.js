@@ -372,9 +372,8 @@ StructuredHeadingsManager.prototype.changeSelectedHeadingsLevel = function (
                 // If there are some nodes in the range, but none of the are
                 // headings, it's possible that all of the nodes are contained
                 // within a heading.
-                heading = wym.findUp(range.getNodes()[0],
-                                          WYMeditor.HEADING_ELEMENTS);
-                if (heading) { headingList = [heading]; }
+                headingList = [wym.findUp(range.getNodes()[0],
+                                          WYMeditor.HEADING_ELEMENTS)];
             }
 
             j_start = (shouldRaise ? headingList.length - 1 : 0);
