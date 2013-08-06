@@ -7,6 +7,19 @@ WYMeditor.
 
 *release-date* TBD
 
+### Enhancements
+
+* The unit test suite has been fixed to now fully pass using jQuery
+  1.4.4, and since 1.4.x is the oldest fully supported minor version of
+  jQuery, the default version of jQuery packaged with the project and
+  used for the unit test suite has been updated from 1.4.1 to 1.4.4.
+
+### Build Process
+
+* The project can now be fully built using Grunt instead of `make`.
+  Simply use the Grunt `build` task to build the project from the source
+  code.
+
 ## 1.0.0b5 (Beta 5)
 
 *release-date* July 31, 2013

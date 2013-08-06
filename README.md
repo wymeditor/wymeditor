@@ -281,18 +281,20 @@ Qunit instead of a Selenium test.
     git clone git://github.com/wymeditor/wymeditor.git
     ```
 
-2. Install `make`, Node.js and [UglifyJS](https://github.com/mishoo/UglifyJS/).
-   To install UglifyJS using [NPM](http://npmjs.org/) run the following:
+2. Use [NPM](http://npmjs.org/) to install the Grunt requirements and
+   CLI by running these commands in the root directory of the project:
 
     ```shell
-    npm install -g uglify-js
+    $ npm install
+    $ npm install -g grunt-cli
     ```
+    *Note*: You might have to run these commands as the the root user on
+    your system.
 
-3. Run `make` from your git clone:
+3. Build the project using the Grunt `build` task:
 
     ```shell
-    $ cd wymeditor
-    $ make
+    $ grunt build
     ```
 
 The resulting compressed distribution will appear in your `dist` directory.
