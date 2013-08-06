@@ -3,6 +3,19 @@
 This document tracks the enhancements and bug fixes between releases of
 WYMeditor.
 
+## 1.0.0b6 (Beta 6)
+
+*release-date* TBD
+
+### Bug Fixes
+
+* When selecting list items in multiple separate lists at once with
+  content in between them, there was an issue where the indent and
+  outdent tools would still be applied to all of the list items in each
+  of the selected lists. This behavior has been adjusted so that the
+  indent and outdent tools will not apply to lists unless the selection
+  is entirely contained within one list.
+
 ## 1.0.0b5 (Beta 5)
 
 *release-date* July 31, 2013
