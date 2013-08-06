@@ -831,7 +831,9 @@ test("Tab to next row", function () {
 test("Tab from th to next row", function () {
     expect(3);
     var expectedSelector = '#span_2_1';
-    if (jQuery.browser.mozilla) {
+    if (jQuery.browser.mozilla ||
+        (jQuery.browser.msie && parseInt(jQuery.browser.version, 10) >= 9.0))
+    {
         expectedSelector = '#td_2_1';
     }
     testTableTab(thTableHtml, '#th_1_3', expectedSelector);

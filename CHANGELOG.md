@@ -3,6 +3,18 @@
 This document tracks the enhancements and bug fixes between releases of
 WYMeditor.
 
+## 1.0.0b6 (Beta 6)
+
+*release-data* TBD
+
+### Build Process
+
+* The failing tests on IE9 and IE10 have been fixed so that the unit
+  test suite passes fully in those browsers with all supported versions
+  of jQuery. With these fixes, the unit test suite should now pass fully
+  in all supported browsers (Chrome, Firefox, Phantom.js, and IE7-10)
+  with all supported versions of jQuery (1.4-1.9).
+
 ## 1.0.0b5 (Beta 5)
 
 *release-date* July 31, 2013

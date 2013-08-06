@@ -384,6 +384,9 @@ TableEditor.prototype.mergeRow = function (sel) {
         nodes = nodes.concat(range.getNodes(false));
     }
 
+    // Clear the ranges in selection so that it can be moved later
+    rangy.getIframeSelection(wym._iframe).removeAllRanges();
+
     // Just use the td and th nodes
     cells = jQuery(nodes).filter('td,th');
     if (cells.length === 0) {
