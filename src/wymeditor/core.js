@@ -1,10 +1,9 @@
 /*jslint evil: true, indent: 4 */
-/*@version @VERSION */
 /**
     WYMeditor
     =========
 
-    version @VERSION
+    version v1.0.0-b6
 
     WYMeditor : what you see is What You Mean web-based editor
 
