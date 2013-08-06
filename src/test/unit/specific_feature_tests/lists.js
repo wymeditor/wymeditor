@@ -1649,13 +1649,13 @@ var li_2_to_li_3_subnodeIndentedHtml = String() +
         '</ol>';
 
 var listsWithContentBetweenHtml = String() +
-    '<ol>'
+    '<ol>' +
         '<li id="li_1">1</li>' +
         '<li id="li_2">2</li>' +
         '<li id="li_3">3</li>' +
     '</ol>' +
     '<p>Content</p>' +
-    '<ul>'
+    '<ul>' +
         '<li id="li_4">4</li>' +
         '<li id="li_5">5</li>' +
         '<li id="li_6">6</li>' +
@@ -1928,6 +1928,21 @@ test("Ordered to unordered one item", function () {
     // With text selection
     testListRoundTrip('li_1_1_1_1', 'unordered', orderedHtml, li_1_1_1_1_unorderedHtml, true);
     testListRoundTrip('li_1_1_1_1', 'ordered', li_1_1_1_1_unorderedHtml, orderedHtml, true);
+});
+
+test("Prevent converting type with selection over multiple levels", function () {
+    expect(4);
+
+    testListMulti('li_1_1_1', 'li_1_1_1_1', 'unordered',
+                  li_1_1_1_unorderedHtml, li_1_1_1_unorderedHtml);
+    testListMulti('li_1_1_1', 'li_1_1_1_1', 'ordered',
+                  li_1_1_1_unorderedHtml, li_1_1_1_unorderedHtml);
+
+    // With text selection
+    testListMulti('li_1_1_1', 'li_1_1_1_1', 'unordered',
+                  li_1_1_1_unorderedHtml, li_1_1_1_unorderedHtml, true);
+    testListMulti('li_1_1_1', 'li_1_1_1_1', 'ordered',
+                  li_1_1_1_unorderedHtml, li_1_1_1_unorderedHtml, true);
 });
 
 module("list-conversion_blocks", {setup: setupWym});
