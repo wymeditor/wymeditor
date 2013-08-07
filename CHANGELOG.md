@@ -14,6 +14,15 @@ WYMeditor.
   jQuery, the default version of jQuery packaged with the project and
   used for the unit test suite has been updated from 1.4.1 to 1.4.4.
 
+### Bug Fixes
+
+* When selecting list items in multiple separate lists at once with
+  content in between them, there was an issue where the indent and
+  outdent tools would still be applied to all of the list items in each
+  of the selected lists. This behavior has been adjusted so that the
+  indent and outdent tools will not apply to lists unless the selection
+  is entirely contained within one list.
+
 ### Build Process Improvements
 
 * The project can now be fully built using Grunt instead of `make`.
