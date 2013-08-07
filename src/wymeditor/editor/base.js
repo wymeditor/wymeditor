@@ -1935,20 +1935,30 @@ WYMeditor.editor.prototype._correctInvalidListNesting = function (listNode, alre
 };
 
 /**
- * Get the common parent ol/ul for the given li nodes. If the closest parent
- * ol/ul for each cell isn't the same, returns null.
+    editor.getCommonParentList
+    ==========================
+
+    Get the common parent ol/ul for the given li nodes. If the parent ol/ul for
+    each cell isn't the same, returns null.
+
+    @param listItems An array of list item nodes to check for a common parent
+    @param getClosest If true, checks if the closest list parent to each list
+                      node is the same. If false, checks if the furthest list
+                      parent to each list node is the same.
  */
-WYMeditor.editor.prototype.getCommonParentList = function (listItems) {
+WYMeditor.editor.prototype.getCommonParentList = function (listItems, getClosest) {
     var firstLi,
         parentList,
-        rootList;
+        rootList,
+        haveCommonParent = true;
 
     listItems = jQuery(listItems).filter('li');
     if (listItems.length === 0) {
         return null;
     }
     firstLi = listItems[0];
-    parentList = jQuery(firstLi).parent('ol,ul');
+    parentList = jQuery(firstLi).parents('ol,ul');
+    parentList = (getClosest ? parentList.first() : parentList.last());
 
     if (parentList.length === 0) {
         return null;
@@ -1957,12 +1967,16 @@ WYMeditor.editor.prototype.getCommonParentList = function (listItems) {
 
     // Ensure that all of the li's have the same parent list
     jQuery(listItems).each(function (index, elmnt) {
-        parentList = jQuery(elmnt).parent('ol,ul');
+        parentList = jQuery(elmnt).parents('ol,ul');
+        parentList = (getClosest ? parentList.first() : parentList.last());
         if (parentList.length === 0 || parentList[0] !== rootList) {
-            return null;
+            haveCommonParent = false;
         }
     });
 
+    if (!haveCommonParent) {
+        return null;
+    }
     return rootList;
 };
 
@@ -2086,6 +2100,42 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
     return liNodes;
 };
 
+/**
+    editor._selectionOnlyInList
+    ===========================
+
+    Tests if all of the nodes within the passed selection are contained in one
+    list. Returns true if all of the nodes are within one list, and returns
+    false if otherwise.
+
+    @param sel A selection to test for being entirely contained within one
+               list.
+*/
+WYMeditor.editor.prototype._selectionOnlyInList = function (sel) {
+    var wym = this._wym,
+        selStartNode,
+        selEndNode,
+        i;
+
+    for (i = 0; i < sel.rangeCount; ++i) {
+        selStartNode = wym.findUp(sel.getRangeAt(i).startContainer, ['li']);
+        selEndNode = wym.findUp(sel.getRangeAt(i).endContainer, ['li']);
+
+        // If the start or end node is not contained within a list item, return
+        // false.
+        if (!selStartNode || !selEndNode) {
+            return false;
+        }
+
+        // If the two list items do not have a common parent list, return
+        // false.
+        if (!wym.getCommonParentList([selStartNode, selEndNode], false)) {
+            return false;
+        }
+    }
+
+    return true;
+};
 
 /**
     editor.indent
@@ -2122,18 +2172,16 @@ WYMeditor.editor.prototype.indent = function () {
     // lists
     sel = rangy.getIframeSelection(this._iframe);
 
-    // Gather the li nodes the user means to affect based on their current
-    // selection
-    listItems = wym._getSelectedListItems(sel);
-
-    if (listItems.length === 0) {
+    // If all of the selected nodes are not contained within one list, don't
+    // perform the action.
+    if (!wym._selectionOnlyInList(sel)) {
         return false;
     }
 
-    // If the selection is across paragraphs and other items at the root level,
-    // don't indent
-    rootList = wym.getCommonParentList(listItems);
-    if (rootList === null) {
+    // Gather the li nodes the user means to affect based on their current
+    // selection
+    listItems = wym._getSelectedListItems(sel);
+    if (listItems.length === 0) {
         return false;
     }
 
@@ -2184,18 +2232,17 @@ WYMeditor.editor.prototype.outdent = function () {
     // lists
     sel = rangy.getIframeSelection(this._iframe);
 
+    // If all of the selected nodes are not contained within one list, don't
+    // perform the action.
+    if (!wym._selectionOnlyInList(sel)) {
+        return false;
+    }
+
     // Gather the li nodes the user means to affect based on their current
     // selection
     listItems = wym._getSelectedListItems(sel);
 
     if (listItems.length === 0) {
-        return false;
-    }
-
-    // If the selection is across paragraphs and other items at the root level,
-    // don't indent
-    rootList = wym.getCommonParentList(listItems);
-    if (rootList === null) {
         return false;
     }
 
@@ -2355,7 +2402,7 @@ WYMeditor.editor.prototype._insertList = function (listType) {
     if (listItems.length !== 0) {
         // If the selection is across paragraphs and other items at the root level,
         // don't indent
-        rootList = wym.getCommonParentList(listItems);
+        rootList = wym.getCommonParentList(listItems, true);
         if (rootList) {
             this._changeListType(rootList, listType);
             return true;

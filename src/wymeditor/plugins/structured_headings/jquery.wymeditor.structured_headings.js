@@ -172,12 +172,12 @@ StructuredHeadingsManager.prototype.bindEvents = function () {
 
     // Bind click events to tool buttons
     $box.find(this._options.headingOutdentToolSelector).click(function () {
-        var heading = wym.findUp(wym.container(), WYMeditor.HEADING_ELEMENTS);
-        headingManager.changeHeadingLevel(heading, "up");
+        var sel = rangy.getIframeSelection(wym._iframe);
+        headingManager.changeSelectedHeadingsLevel(sel, "up");
     });
     $box.find(this._options.headingIndentToolSelector).click(function () {
-        var heading = wym.findUp(wym.container(), WYMeditor.HEADING_ELEMENTS);
-        headingManager.changeHeadingLevel(heading, "down");
+        var sel = rangy.getIframeSelection(wym._iframe);
+        headingManager.changeSelectedHeadingsLevel(sel, "down");
     });
     if (this._options.enableFixHeadingStructureButton) {
         $box.find(this._options.fixHeadingStructureSelector).click(function () {
@@ -258,7 +258,7 @@ StructuredHeadingsManager.prototype.canRaiseHeadingLevel = function (heading) {
 
     // The level of a heading cannot be raised if the heading level is any
     // higher than the level of its following heading.
-    nextHeading = jQuery(heading).next(this._fullHeadingSel)[0];
+    nextHeading = jQuery(heading).nextAll(this._fullHeadingSel)[0];
     if (nextHeading) {
         nextHeadingLevel = getHeadingLevel(nextHeading);
         headingLevelDifference = headingLevel - nextHeadingLevel;
@@ -295,7 +295,7 @@ StructuredHeadingsManager.prototype.canLowerHeadingLevel = function (heading) {
 
     // The user cannot lower the level of a heading if the heading level is any
     // lower than the level of its previous heading.
-    prevHeading = jQuery(heading).prev(this._fullHeadingSel)[0];
+    prevHeading = jQuery(heading).prevAll(this._fullHeadingSel)[0];
     if (prevHeading) {
         prevHeadingLevel = getHeadingLevel(prevHeading);
         headingLevelDifference = prevHeadingLevel - headingLevel;
@@ -305,6 +305,84 @@ StructuredHeadingsManager.prototype.canLowerHeadingLevel = function (heading) {
     }
 
     return true;
+};
+
+/**
+    changeSelectedHeadingsLevel
+    ===========================
+
+    Iterates through the headings in the passed selection and raises or lowers
+    the level of each heading if it is allowable.
+
+    The level of a heading can only be raised if it is not the highest
+    allowable level and if the level of the heading is not higher than the
+    level of its following heading after all headings in the selection have had
+    their heading level attempted to be raised.
+
+    The level of a heading can only be lowered if it is not the lowest
+    allowable level and if the level of the heading is not lower than the level
+    of its preceding heading after all headings in the selection have had their
+    heading level attempted to be lowered.
+
+    @param selection A rangy selection object to have the level of its
+                     containing headings raised if allowable.
+    @param upOrDown A string being either "up" or "down" that specifies if the
+                    selected headings should have their level raised up or
+                    lowered down.
+*/
+StructuredHeadingsManager.prototype.changeSelectedHeadingsLevel = function (
+    selection, upOrDown
+) {
+    var wym = this._wym,
+        headingManager = this,
+        shouldRaise = (upOrDown === 'up'),
+        i,
+        iStart = (shouldRaise ? selection.rangeCount - 1 : 0),
+        iLimit = (shouldRaise ? -1 : selection.rangeCount),
+        iterChange = (shouldRaise ? -1 : 1),
+        range,
+        heading,
+        headingList,
+        j,
+        jStart,
+        jLimit;
+
+    var headingNodeFilter = function (testNode) {
+        return jQuery(testNode).is(headingManager._fullHeadingSel);
+    };
+
+    // Iterate through the headings in the selection from bottom to top if the
+    // level of the headings should be raised or top to bottom if the level of
+    // the headings should be lowered. This ordering is necessary to ensure
+    // each heading has had its relevant context of surrounding heading levels
+    // modified so that it can be assessed if the heading can validly be raised
+    // or lowered.
+    for (i = iStart; i !== iLimit; i += iterChange) {
+        range = selection.getRangeAt(i);
+        if (range.collapsed) {
+            // Collapsed ranges don't return their node with getNodes(), so
+            // use findUp to get the containing heading.
+            heading = wym.findUp(range.startContainer,
+                                 WYMeditor.HEADING_ELEMENTS);
+            this.changeHeadingLevel(heading, upOrDown);
+        } else {
+            // Use getNodes to get the selected headings
+            headingList = range.getNodes(false, headingNodeFilter);
+            if (!headingList.length && range.getNodes().length) {
+                // If there are some nodes in the range, but none of the are
+                // headings, it's possible that all of the nodes are contained
+                // within a heading.
+                headingList = [wym.findUp(range.getNodes()[0],
+                                          WYMeditor.HEADING_ELEMENTS)];
+            }
+
+            jStart = (shouldRaise ? headingList.length - 1 : 0);
+            jLimit = (shouldRaise ? -1 : headingList.length);
+            for (j = jStart; j !== jLimit; j += iterChange) {
+                this.changeHeadingLevel(headingList[j], upOrDown);
+            }
+        }
+    }
 };
 
 /**
@@ -320,9 +398,11 @@ StructuredHeadingsManager.prototype.canLowerHeadingLevel = function (heading) {
 
     @param heading The DOM node of a heading element in the document.
     @param upOrDown A string either being "up" or "down" that indicates if the
-                    heading level should be increased or decreased.
+                    heading level should be raised or lowered.
 */
-StructuredHeadingsManager.prototype.changeHeadingLevel = function (heading, upOrDown) {
+StructuredHeadingsManager.prototype.changeHeadingLevel = function (
+    heading, upOrDown
+) {
     var wym = this._wym,
         changeLevelUp = (upOrDown === "up"),
         levelAdjustment = (changeLevelUp ? -1 : 1),
@@ -374,6 +454,10 @@ StructuredHeadingsManager.prototype.switchToHeading = function (node) {
         wym.switchTo(node, $prevHeading[0].nodeName);
     } else {
         wym.switchTo(node, 'h' + this._options.highestAllowableHeadingLevel);
+    }
+
+    if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
+        this.numberHeadingsIE7();
     }
 };
 
