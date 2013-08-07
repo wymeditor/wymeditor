@@ -1,10 +1,10 @@
 /*jslint evil: true, indent: 4 */
-/*@version @VERSION */
+/*@version @@VERSION */
 /**
     WYMeditor
     =========
 
-    version @VERSION
+    version @@VERSION
 
     WYMeditor : what you see is What You Mean web-based editor
 
@@ -142,7 +142,7 @@ jQuery.extend(WYMeditor, {
 
 */
 
-    VERSION             : "@VERSION",
+    VERSION             : "@@VERSION",
     INSTANCES           : [],
     STRINGS             : [],
     SKINS               : [],
