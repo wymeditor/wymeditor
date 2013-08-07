@@ -44,6 +44,7 @@ module.exports = function(grunt) {
                         "AUTHORS",
                         "MIT-license.txt",
                         "GPL-license.txt",
+                        "Gruntfile.js",
                         "package.json",
                         "docs/**",
                     ],
@@ -60,7 +61,7 @@ module.exports = function(grunt) {
                     },
                     {expand: true,
                         cwd: "src/",
-                        src: ["jquery/**", "examples/**"],
+                        src: ["jquery/**", "examples/**", "test/**"],
                         dest: "<%= meta.distDir %>/wymeditor/"
                     },
                     {expand: true,
