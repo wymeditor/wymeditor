@@ -337,15 +337,15 @@ StructuredHeadingsManager.prototype.changeSelectedHeadingsLevel = function (
         headingManager = this,
         shouldRaise = (upOrDown === 'up'),
         i,
-        i_start = (shouldRaise ? selection.rangeCount - 1 : 0),
-        i_limit = (shouldRaise ? -1 : selection.rangeCount),
-        iter_change = (shouldRaise ? -1 : 1),
+        iStart = (shouldRaise ? selection.rangeCount - 1 : 0),
+        iLimit = (shouldRaise ? -1 : selection.rangeCount),
+        iterChange = (shouldRaise ? -1 : 1),
         range,
         heading,
         headingList,
         j,
-        j_start,
-        j_limit;
+        jStart,
+        jLimit;
 
     var headingNodeFilter = function (testNode) {
         return jQuery(testNode).is(headingManager._fullHeadingSel);
@@ -357,7 +357,7 @@ StructuredHeadingsManager.prototype.changeSelectedHeadingsLevel = function (
     // each heading has had its relevant context of surrounding heading levels
     // modified so that it can be assessed if the heading can validly be raised
     // or lowered.
-    for (i = i_start; i !== i_limit; i += iter_change) {
+    for (i = iStart; i !== iLimit; i += iterChange) {
         range = selection.getRangeAt(i);
         if (range.collapsed) {
             // Collapsed ranges don't return their node with getNodes(), so
@@ -376,9 +376,9 @@ StructuredHeadingsManager.prototype.changeSelectedHeadingsLevel = function (
                                           WYMeditor.HEADING_ELEMENTS)];
             }
 
-            j_start = (shouldRaise ? headingList.length - 1 : 0);
-            j_limit = (shouldRaise ? -1 : headingList.length);
-            for (j = j_start; j !== j_limit; j += iter_change) {
+            jStart = (shouldRaise ? headingList.length - 1 : 0);
+            jLimit = (shouldRaise ? -1 : headingList.length);
+            for (j = jStart; j !== jLimit; j += iterChange) {
                 this.changeHeadingLevel(headingList[j], upOrDown);
             }
         }
