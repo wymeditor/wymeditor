@@ -26,6 +26,19 @@ module.exports = function(grunt) {
                 dest: "<%= meta.distDir %>/jquery.wymeditor.js"
             }
         },
+        replace: {
+            dist: {
+                options: {
+                    variables: {
+                        "VERSION": "<%= pkg.version %>"
+                    }
+                },
+                files: [
+                    {src: ["<%= concat.dist.dest %>"],
+                        dest: "<%= concat.dist.dest %>"}
+                ]
+            }
+        },
         uglify: {
             options: {
                 banner: "<%= meta.banner %>"
@@ -119,7 +132,9 @@ module.exports = function(grunt) {
         }
     });
     grunt.loadNpmTasks("grunt-contrib");
+    grunt.loadNpmTasks("grunt-replace");
 
-    grunt.registerTask("build", ["concat", "uglify", "copy", "compress"]);
+    grunt.registerTask("build", ["concat", "replace", "uglify", "copy",
+                                 "compress"]);
     grunt.registerTask("test", ["connect", "qunit"]);
 };

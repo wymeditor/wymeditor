@@ -36,7 +36,8 @@
   ],
   "devDependencies": {
     "grunt": "~0.4.1",
-    "grunt-contrib": "~0.7.0"
+    "grunt-contrib": "~0.7.0",
+    "grunt-replace": "~0.4.4"
   },
   "keywords": [
     "wysiwyg",
