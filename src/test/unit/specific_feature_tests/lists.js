@@ -1648,6 +1648,18 @@ var li_2_to_li_3_subnodeIndentedHtml = String() +
             '</li>' +
         '</ol>';
 
+var listsWithContentBetweenHtml = String() +
+    '<ol>' +
+        '<li id="li_1">1</li>' +
+        '<li id="li_2">2</li>' +
+        '<li id="li_3">3</li>' +
+    '</ol>' +
+    '<p>Content</p>' +
+    '<ul>' +
+        '<li id="li_4">4</li>' +
+        '<li id="li_5">5</li>' +
+        '<li id="li_6">6</li>' +
+    '</ul>' +
 
 test("Second-level with sub-node", function () {
     expect(4);
@@ -1707,6 +1719,15 @@ test("Second-level with mixed lists and down a level", function () {
     // Via text selection
     testListMulti('li_5_3', 'li_5_4', 'indent', nestedListHtml, li_5_3_to_li_5_4_indentedHtml, true);
     testListMulti('li_5_3', 'li_5_4', 'outdent', li_5_3_to_li_5_4_indentedHtml, nestedListHtml, true);
+});
+
+test("Selecting multiple lists with content between prevents indent/outdent", function () {
+    expect(2);
+
+    testListMulti('li_2', 'li_5', 'indent', listsWithContentBetweenHtml,
+                  listsWithContentBetweenHtml, true);
+    testListMulti('li_2', 'li_5', 'outdent', listsWithContentBetweenHtml,
+                  listsWithContentBetweenHtml, true);
 });
 
 module("list-broken_html", {setup: setupWym});
@@ -1907,6 +1928,21 @@ test("Ordered to unordered one item", function () {
     // With text selection
     testListRoundTrip('li_1_1_1_1', 'unordered', orderedHtml, li_1_1_1_1_unorderedHtml, true);
     testListRoundTrip('li_1_1_1_1', 'ordered', li_1_1_1_1_unorderedHtml, orderedHtml, true);
+});
+
+test("Prevent converting type with selection over multiple levels", function () {
+    expect(4);
+
+    testListMulti('li_1_1_1', 'li_1_1_1_1', 'unordered',
+                  li_1_1_1_unorderedHtml, li_1_1_1_unorderedHtml);
+    testListMulti('li_1_1_1', 'li_1_1_1_1', 'ordered',
+                  li_1_1_1_unorderedHtml, li_1_1_1_unorderedHtml);
+
+    // With text selection
+    testListMulti('li_1_1_1', 'li_1_1_1_1', 'unordered',
+                  li_1_1_1_unorderedHtml, li_1_1_1_unorderedHtml, true);
+    testListMulti('li_1_1_1', 'li_1_1_1_1', 'ordered',
+                  li_1_1_1_unorderedHtml, li_1_1_1_unorderedHtml, true);
 });
 
 module("list-conversion_blocks", {setup: setupWym});
