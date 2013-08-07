@@ -1368,7 +1368,7 @@ orphanedLiHtml.ordered.li_new = String() +
 // test data to expect this so that we pass in IE
 // TODO: Maybe use some kind of modernizr-style test and correct this with the
 // parser?
-if (jQuery.browser.msie) {
+if (jQuery.browser.msie && parseInt(jQuery.browser.version, 10) < 9.0) {
     orphanedLiHtml.ordered.li_new = orphanedLiHtml.ordered.li_new.replace(
         /text<li id=\"li_text_sep/g,
         'text <li id="li_text_sep'

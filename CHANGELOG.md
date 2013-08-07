@@ -16,6 +16,14 @@ WYMeditor.
   indent and outdent tools will not apply to lists unless the selection
   is entirely contained within one list.
 
+### Build Process Improvements
+
+* The failing tests on IE9 and IE10 have been fixed so that the unit
+  test suite passes fully in those browsers with all supported versions
+  of jQuery. With these fixes, the unit test suite should now pass fully
+  in all supported browsers (Chrome, Firefox, Phantom.js, and IE7-10)
+  with all supported versions of jQuery (1.4-1.9).
+
 ## 1.0.0b5 (Beta 5)
 
 *release-date* July 31, 2013

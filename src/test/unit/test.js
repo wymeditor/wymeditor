@@ -1163,8 +1163,8 @@ test("Preformatted text retains spacing", function () {
             'double  spaced' +
             '</pre>';
 
-    // Only ie and unsupported old firefox use \r\n newlines
-    if (!jQuery.browser.msie) {
+    // Only older IE versions and unsupported old firefox use \r\n newlines
+    if (!(jQuery.browser.msie && parseInt(jQuery.browser.version, 10) < 9.0)) {
         preHtml = preHtml.replace(/\r/g, '');
     }
 
