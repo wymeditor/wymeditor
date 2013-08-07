@@ -174,16 +174,12 @@ following these instructions:
     ```shell
     $ npm install
     ```
-    *Note*: You might have to run this command as the the root user on your
-    system.
 
 3. Use NPM to install the Grunt CLI.
 
     ```shell
-    $ npm install -g grunt-cli
+    $ sudo npm install -g grunt-cli
     ```
-    *Note*: You might have to run this command as the the root user on your
-    system.
 
 4. Finally, run the unit tests by running the `test` Grunt task in the root
    directory of the project:
@@ -286,10 +282,8 @@ Qunit instead of a Selenium test.
 
     ```shell
     $ npm install
-    $ npm install -g grunt-cli
+    $ sudo npm install -g grunt-cli
     ```
-    *Note*: You might have to run these commands as the the root user on
-    your system.
 
 3. Build the project using the Grunt `build` task:
 
