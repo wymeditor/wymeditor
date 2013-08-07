@@ -32,7 +32,8 @@ but should be given high priority otherwise.
 Passing Tests
 -------------
 
-All releases should have 100% passing unit tests in 100% of supported browsers.
+All releases should have 100% passing unit tests in 100% of supported
+browsers for all of the supported versions of jQuery.
 
 The person doing the release is responsible for running the unit tests in all
 supported browsers before cutting a release tarball.
@@ -47,7 +48,8 @@ documentation bundled with the source accurate.
 
 Checklist:
 
-* Bump the version number in `version.txt`.
+* Ensure that the version number in `package.json` is the correct
+  version for the release.
 * Ensure all changes since the last version are noted in section specifically
   for this release inside `CHANGELOG.md`. Users upgraded from a specific
   version should be able to easily see what changes might effect them.
@@ -65,7 +67,7 @@ Checklist:
 Build and Distribute the Archive
 ================================
 
-Any user should be able to follow the instructions in the readme to make their
+Any user should be able to follow the instructions in the README to make their
 own archive, but it's important to include an archive in a known place for ease
 of use.
 
@@ -87,7 +89,7 @@ sound? A new release isn't much good if nobody knows about it.
 
 * Make a new sticky thread on the [WYMeditor Forums](http://community.wymeditor.org)
   announcing the new release with the title `Version <version> released`.
-  Highlight any major changes, link to the changelog and download and maybe
+  Highlight any major changes, link to the CHANGELOG and download and maybe
   comment on plans for the next release.
 * Un-sticky any old forum threads.
 * Tweet out the good news to [@wymeditor](http://twitter.com/wymeditor).
@@ -97,5 +99,6 @@ Prepare For the Next Release
 ============================
 
 * Create a new version entry in `CHANGELOG.md`
+* Bump the version string in `package.json`
 * Bump the version string for the Sphinx documentation at `docs/conf.py`
 

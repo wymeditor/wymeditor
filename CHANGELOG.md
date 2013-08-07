@@ -7,6 +7,13 @@ WYMeditor.
 
 *release-date* TBD
 
+### Enhancements
+
+* The unit test suite has been fixed to now fully pass using jQuery
+  1.4.4, and since 1.4.x is the oldest fully supported minor version of
+  jQuery, the default version of jQuery packaged with the project and
+  used for the unit test suite has been updated from 1.4.1 to 1.4.4.
+
 ### Bug Fixes
 
 * When selecting list items in multiple separate lists at once with
@@ -18,6 +25,9 @@ WYMeditor.
 
 ### Build Process Improvements
 
+* The project can now be fully built using Grunt instead of `make`.
+  Simply use the Grunt `build` task to build the project from the source
+  code.
 * The failing tests on IE9 and IE10 have been fixed so that the unit
   test suite passes fully in those browsers with all supported versions
   of jQuery. With these fixes, the unit test suite should now pass fully
