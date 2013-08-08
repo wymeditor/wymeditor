@@ -14,6 +14,16 @@ WYMeditor.XhtmlSaxListener = function() {
     this._insert_after_closing = [];
     this._last_node_was_text = false;
 
+    // A boolean that should be set to true when the parser is within a list
+    // item and that should be set to false when the parser is no longer
+    // withing a list item.
+    this._insideLI = false;
+
+    // An array of tags that should have their contents unwrapped if the tag is
+    // within a list item.
+    this.tagsToUnwrapInLists =
+        WYMeditor.DocumentStructureManager.VALID_DEFAULT_ROOT_CONTAINERS;
+
     // This flag is set to true if the parser is currently inside a tag flagged
     // for removal. Nothing will be added to the output while this flag is set
     // to true.
