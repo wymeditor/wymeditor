@@ -906,7 +906,7 @@ var contentAfterSublistNestedCorrectHtml = String() +
             '</ul>' +
         '</li>' +
         '<li>' +
-            'Content' +
+            'Content ' +
             '<p>Content</p>' +
             '<ol>' +
                 '<li>3' +
