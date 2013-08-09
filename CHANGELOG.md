@@ -9,30 +9,36 @@ WYMeditor.
 
 ### Enhancements
 
-* The unit test suite has been fixed to now fully pass using jQuery
-  1.4.4, and since 1.4.x is the oldest fully supported minor version of
-  jQuery, the default version of jQuery packaged with the project and
-  used for the unit test suite has been updated from 1.4.1 to 1.4.4.
+* The unit test suite has been fixed to now fully pass using jQuery 1.4.4, and
+  since 1.4.x is the oldest fully supported minor version of jQuery, the
+  default version of jQuery packaged with the project and used for the unit
+  test suite has been updated from 1.4.1 to 1.4.4.
+* The XHTML parser will now unwrap the contents of `p` and `div` elements when
+  those containers are inside list items. In addition, the parser will insert
+  line breaks in place of the removed `p` and `div` containers if necessary to
+  retain the spacing of the content within the list item. This enhancement was
+  made because it was very easy to break a list while working with it in the
+  editor if the list contained `p` or `div` elements, so unwrapping the content
+  of those containers and preserving the content spacing with line breaks is a
+  much more stable way to have editable content within lists.
 
 ### Bug Fixes
 
-* When selecting list items in multiple separate lists at once with
-  content in between them, there was an issue where the indent and
-  outdent tools would still be applied to all of the list items in each
-  of the selected lists. This behavior has been adjusted so that the
-  indent and outdent tools will not apply to lists unless the selection
-  is entirely contained within one list.
+* When selecting list items in multiple separate lists at once with content in
+  between them, there was an issue where the indent and outdent tools would
+  still be applied to all of the list items in each of the selected lists. This
+  behavior has been adjusted so that the indent and outdent tools will not
+  apply to lists unless the selection is entirely contained within one list.
 
 ### Build Process Improvements
 
-* The project can now be fully built using Grunt instead of `make`.
-  Simply use the Grunt `build` task to build the project from the source
-  code.
-* The failing tests on IE9 and IE10 have been fixed so that the unit
-  test suite passes fully in those browsers with all supported versions
-  of jQuery. With these fixes, the unit test suite should now pass fully
-  in all supported browsers (Chrome, Firefox, Phantom.js, and IE7-10)
-  with all supported versions of jQuery (1.4-1.9).
+* The project can now be fully built using Grunt instead of `make`. Simply use
+  the Grunt `build` task to build the project from the source code.
+* The failing tests on IE9 and IE10 have been fixed so that the unit test suite
+  passes fully in those browsers with all supported versions of jQuery. With
+  these fixes, the unit test suite should now pass fully in all supported
+  browsers (Chrome, Firefox, Phantom.js, and IE7-10) with all supported
+  versions of jQuery (1.4-1.9).
 
 ## 1.0.0b5 (Beta 5)
 
