@@ -157,13 +157,19 @@ function normalizeHtml(node) {
 /**
 * Ensure the cleaned xhtml coming from a WYMeditor instance matches the
 * expected HTML, accounting for differing whitespace and attribute ordering.
+*
 * assertionString is the string message printed with the result of the
 * assertion checking this matching. This parameter is optional.
+*
+* fixListSpacing is a boolean that specifies if leading spaces before line
+* breaks and list type elements should be removed in older versions of Internet
+* Explorer (i.e. IE7-8). This paramater is optional.
 */
-function htmlEquals(wymeditor, expected, assertionString) {
+function htmlEquals(wymeditor, expected, assertionString, fixListSpacing) {
     var xhtml = '',
         normedActual = '',
         normedExpected = '',
+        listTypeOptions,
         tmpNodes,
         i;
     xhtml = jQuery.trim(wymeditor.xhtml());
@@ -176,9 +182,21 @@ function htmlEquals(wymeditor, expected, assertionString) {
     }
 
     tmpNodes = jQuery(xhtml, wymeditor._doc);
+
     for (i = 0; i < tmpNodes.length; i++) {
         normedActual += normalizeHtml(tmpNodes[i]);
     }
+    if (fixListSpacing && jQuery.browser.msie &&
+            parseInt(jQuery.browser.version) < 9.0) {
+        normedActual = normedActual.replace(/\s(<br.*?\/>)/g, '$1')
+
+        listTypeOptions = WYMeditor.LIST_TYPE_ELEMENTS.join('|');
+        normedActual = normedActual.replace(
+            new RegExp('\\s(<(' + listTypeOptions + ').*?>)', 'g'),
+            '$1'
+        );
+    }
+
     tmpNodes = jQuery(expected, wymeditor._doc);
     for (i = 0; i < tmpNodes.length; i++) {
         normedExpected += normalizeHtml(tmpNodes[i]);
