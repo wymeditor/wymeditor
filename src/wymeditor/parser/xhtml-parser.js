@@ -147,7 +147,7 @@ WYMeditor.XhtmlParser.prototype._callCloseTagListener = function(tag) {
             var expected_tag = this._Listener._tag_stack.pop();
             if (expected_tag === false) {
                 return;
-            } else if (expected_tag != tag) {
+            } else if (expected_tag !== tag) {
                 tag = expected_tag;
             }
             this._Listener.closeBlockTag(tag);

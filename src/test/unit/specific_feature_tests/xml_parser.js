@@ -789,3 +789,145 @@ test("Class removal is case insensitive", function () {
     // Restore default
     WYMeditor.CLASSES_REMOVED_BY_PARSER = defaultClassesRemovedByParser;
 });
+
+module("XmlParser-fix_content_after_sublist", {setup: setupWym});
+
+var contentAfterSublistStartHtml = String() +
+    '<ul>' +
+        '<li>1' +
+            '<ul>' +
+                '<li>2</li>' +
+            '</ul>' +
+            'Content' +
+        '</li>' +
+        '<li>3</li>' +
+    '</ul>';
+
+var contentAfterSublistCorrectHtml = String() +
+    '<ul>' +
+        '<li>1' +
+            '<ul>' +
+                '<li>2</li>' +
+            '</ul>' +
+        '</li>' +
+        '<li>Content</li>' +
+        '<li>3</li>' +
+    '</ul>';
+
+test("Properly wrap content after sublist in LI", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0);
+
+    wymeditor._html(contentAfterSublistStartHtml);
+    htmlEquals(wymeditor, contentAfterSublistCorrectHtml,
+               "Properly wrap content after sublist in LI");
+});
+
+var contentBetweenSublistsStartHtml = String() +
+    '<ol>' +
+        '<li>1</li>' +
+        '<li>2' +
+            '<ul>' +
+                '<li>3</li>' +
+                '<li>4' +
+                    '<ul>' +
+                        '<li>5</li>' +
+                        '<li>6</li>' +
+                        '<li>7</li>' +
+                    '</ul>' +
+                '</li>' +
+            '</ul>' +
+            '<p>Content</p>' +
+            '<ul>' +
+                '<li>8</li>' +
+            '</ul>' +
+        '</li>' +
+        '<li>9</li>' +
+    '</ol>';
+
+var contentBetweenSublistsCorrectHtml = String() +
+    '<ol>' +
+        '<li>1</li>' +
+        '<li>2' +
+            '<ul>' +
+                '<li>3</li>' +
+                '<li>4' +
+                    '<ul>' +
+                        '<li>5</li>' +
+                        '<li>6</li>' +
+                        '<li>7</li>' +
+                    '</ul>' +
+                '</li>' +
+            '</ul>' +
+        '</li>' +
+        '<li>' +
+            '<p>Content</p>' +
+            '<ul>' +
+                '<li>8</li>' +
+            '</ul>' +
+        '</li>' +
+        '<li>9</li>' +
+    '</ol>';
+
+test("Properly wrap content between sublists in LI", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0);
+
+    wymeditor._html(contentBetweenSublistsStartHtml);
+    htmlEquals(wymeditor, contentBetweenSublistsCorrectHtml,
+               "Properly wrap content between sublists in LI");
+});
+
+var contentAfterSublistNestedStartHtml = String() +
+    '<ul>' +
+        '<li>1' +
+            '<ul>' +
+                '<li>2</li>' +
+            '</ul>' +
+            'Content' +
+            '<p>Content</p>' +
+            '<ol>' +
+                '<li>3' +
+                    '<ol>' +
+                        '<li>4</li>' +
+                    '</ol>' +
+                    '<p>Content</p>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+        '<li>5</li>' +
+    '</ul>';
+
+var contentAfterSublistNestedCorrectHtml = String() +
+    '<ul>' +
+        '<li>1' +
+            '<ul>' +
+                '<li>2</li>' +
+            '</ul>' +
+        '</li>' +
+        '<li>' +
+            'Content' +
+            '<p>Content</p>' +
+            '<ol>' +
+                '<li>3' +
+                    '<ol>' +
+                        '<li>4</li>' +
+                    '</ol>' +
+                '</li>' +
+                '<li>' +
+                    '<p>Content</p>' +
+                '</li>' +
+            '</ol>' +
+        '</li>' +
+        '<li>5</li>' +
+    '</ul>';
+
+test("Properly wrap content after sublist in LI nested", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0);
+
+    wymeditor._html(contentAfterSublistNestedStartHtml);
+    htmlEquals(wymeditor, contentAfterSublistNestedCorrectHtml,
+               "Properly wrap content after sublist in LI nested");
+});
+

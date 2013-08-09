@@ -674,7 +674,6 @@ var nestedFirstItemHtml = String() +
                     '<li id="li_1_1">1_1</li>' +
                     '<li id="li_1_2">1_2</li>' +
                 '</ol>' +
-                'endcontent' +
             '</li>' +
             '<li id="li_2">2</li>' +
         '</ol>';
@@ -686,7 +685,6 @@ var li_1_indentedNestedFirstItemHtml = String() +
                     '<li id="li_1_1">1_1</li>' +
                     '<li id="li_1_2">1_2</li>' +
                 '</ol>' +
-                'endcontent' +
             '</li>' +
             '<li id="li_2">2</li>' +
         '</ol>';
@@ -833,164 +831,6 @@ if (!jQuery.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
     });
 }
 
-var spanInSublistHtml = String() +
-        '<ol>' +
-            '<li id="li_1">1' +
-                '<ul>' +
-                    '<li id="li_1_1">1_1' +
-                        '<ul>' +
-                            '<li id="li_1_1_2">1_1_2</li>' +
-                        '</ul>' +
-                    '</li>' +
-                    '<li id="li_1_2">1_2</li>' +
-                '</ul>' +
-                'text_2 ' + // IE really likes this space
-            '</li>' +
-            '<li id="li_3">3<br >' +
-                'text_3_1<span id="span_3_2">3_2</span>text_3_3' +
-            '</li>' +
-        '</ol>';
-
-var span_3_2_indentedSpanInSublistHtml = String() +
-        '<ol>' +
-            '<li id="li_1">1' +
-                '<ul>' +
-                    '<li id="li_1_1">1_1' +
-                        '<ul>' +
-                            '<li id="li_1_1_2">1_1_2</li>' +
-                        '</ul>' +
-                    '</li>' +
-                    '<li id="li_1_2">1_2</li>' +
-                '</ul>' +
-                'text_2 ' +
-                '<ol>' +
-                    '<li id="li_3">3<br >' +
-                        'text_3_1<span id="span_3_2">3_2</span>text_3_3' +
-                    '</li>' +
-                '</ol>' +
-            '</li>' +
-        '</ol>';
-test("Span in sublist indent/outdent", function () {
-    expect(10);
-
-    testListRoundTrip(
-        'span_3_2',
-        'indent',
-        spanInSublistHtml,
-        span_3_2_indentedSpanInSublistHtml
-    );
-    testListRoundTrip(
-        'span_3_2',
-        'outdent',
-        span_3_2_indentedSpanInSublistHtml,
-        spanInSublistHtml
-    );
-
-    // Via Text selection
-    testListRoundTrip(
-        'span_3_2',
-        'indent',
-        spanInSublistHtml,
-        span_3_2_indentedSpanInSublistHtml,
-        true
-    );
-    testListRoundTrip(
-        'span_3_2',
-        'outdent',
-        span_3_2_indentedSpanInSublistHtml,
-        spanInSublistHtml,
-        true
-    );
-});
-
-
-module("list-content_reordering", {setup: setupWym});
-
-var doubleSublistHtml = String() +
-        '<ol>' +
-            '<li id="li_1">1' +
-                '<ol>' +
-                    '<li id="li_1_1">1_1</li>' +
-                    '<li id="li_1_2">1_2</li>' +
-                    '<li id="li_1_3">1_3</li>' +
-                '</ol>' +
-                '<ol>' +
-                    '<li id="li_1_4">1_4</li>' +
-                    '<li id="li_1_5">1_5</li>' +
-                    '<li id="li_1_6">1_6</li>' +
-                '</ol>' +
-                '<ul>' +
-                    '<li id="li_1_7">1_7</li>' +
-                '</ul>' +
-                'endContent' +
-            '</li>' +
-        '</ol>';
-var li_1_5_doubleSublistOutdentedHtml = String() +
-        '<ol>' +
-            '<li id="li_1">1' +
-                '<ol>' +
-                    '<li id="li_1_1">1_1</li>' +
-                    '<li id="li_1_2">1_2</li>' +
-                    '<li id="li_1_3">1_3</li>' +
-                '</ol>' +
-                '<ol>' +
-                    '<li id="li_1_4">1_4</li>' +
-                '</ol>' +
-            '</li>' +
-            '<li id="li_1_5">1_5' +
-                '<ol>' +
-                    '<li id="li_1_6">1_6</li>' +
-                '</ol>' +
-                '<ul>' +
-                    '<li id="li_1_7">1_7</li>' +
-                '</ul>' +
-                'endContent' +
-            '</li>' +
-        '</ol>';
-var li_1_6_doubleSublistOutdentedHtml = String() +
-        '<ol>' +
-            '<li id="li_1">1' +
-                '<ol>' +
-                    '<li id="li_1_1">1_1</li>' +
-                    '<li id="li_1_2">1_2</li>' +
-                    '<li id="li_1_3">1_3</li>' +
-                '</ol>' +
-                '<ol>' +
-                    '<li id="li_1_4">1_4</li>' +
-                    '<li id="li_1_5">1_5</li>' +
-                '</ol>' +
-            '</li>' +
-            '<li id="li_1_6">1_6' +
-                '<ul>' +
-                    '<li id="li_1_7">1_7</li>' +
-                '</ul>' +
-                'endContent' +
-            '</li>' +
-        '</ol>';
-
-test("Two same-level sublist middle outdent", function () {
-    // Shouldn't re-order content when outdent with two sublists
-    expect(10);
-
-    testListRoundTrip('li_1_5', 'outdent', doubleSublistHtml, li_1_5_doubleSublistOutdentedHtml);
-    testListRoundTrip('li_1_5', 'indent', li_1_5_doubleSublistOutdentedHtml, doubleSublistHtml);
-
-    // Via Text selection
-    testListRoundTrip('li_1_5', 'outdent', doubleSublistHtml, li_1_5_doubleSublistOutdentedHtml, true);
-    testListRoundTrip('li_1_5', 'indent', li_1_5_doubleSublistOutdentedHtml, doubleSublistHtml, true);
-});
-
-test("Two same-level sublist last outdent", function () {
-    expect(10);
-
-    testListRoundTrip('li_1_6', 'outdent', doubleSublistHtml, li_1_6_doubleSublistOutdentedHtml);
-    testListRoundTrip('li_1_6', 'indent', li_1_6_doubleSublistOutdentedHtml, doubleSublistHtml);
-
-    // Via Text selection
-    testListRoundTrip('li_1_6', 'outdent', doubleSublistHtml, li_1_6_doubleSublistOutdentedHtml, true);
-    testListRoundTrip('li_1_6', 'indent', li_1_6_doubleSublistOutdentedHtml, doubleSublistHtml, true);
-});
-
 module("list-invalid_nesting", {setup: setupWym});
 
 var invalidNestingNoPreviousHtml = String() +
@@ -1024,14 +864,14 @@ var invalidNestingNoPreviousCorrectedHtml = String() +
                         '<ul>' +
                             '<li id="li_2_1_2">2_1_2</li>' +
                         '</ul>' +
-                        'after2_1' +
                     '</li>' +
+                    '<li>after2_1</li>' +
                     '<li id="li_2_2">2_2<br />' +
                         'after2_2' +
                     '</li>' +
                 '</ul>' +
-                'text_3' +
             '</li>' +
+            '<li>text_3</li>' +
             '<li id="li_4">4<br />' +
                 'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
             '</li>' +
@@ -1069,8 +909,8 @@ var invalidNestingCorrectedHtml = String() +
                     '</li>' +
                     '<li id="li_2_2">2_2</li>' +
                 '</ul>' +
-                'text_3 ' +
             '</li>' +
+            '<li>text_3 </li>' +
             '<li id="li_4">4<br >' +
                 'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
             '</li>' +
@@ -1105,7 +945,8 @@ var span_5_2_indentedInvalidNestingHtml = String() +
                     '</li>' +
                     '<li id="li_2_2">2_2</li>' +
                 '</ul>' +
-                'text_3 ' +
+            '</li>' +
+            '<li>text_3 ' +
                 '<ol>' +
                     '<li id="li_4">4<br >' +
                         'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
