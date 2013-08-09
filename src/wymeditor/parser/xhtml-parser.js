@@ -148,6 +148,14 @@ WYMeditor.XhtmlParser.prototype._callCloseTagListener = function(tag) {
             if (expected_tag === false) {
                 return;
             } else if (expected_tag !== tag) {
+                // If we are expecting extra block closing tags, put the
+                // expected tag back on the tag stack.
+                if (this._Listener._extraBlockClosingTags) {
+                    this._Listener._tag_stack.push(expected_tag);
+                    this._Listener.removedExtraBlockClosingTag();
+                    return;
+                }
+
                 tag = expected_tag;
             }
             this._Listener.closeBlockTag(tag);

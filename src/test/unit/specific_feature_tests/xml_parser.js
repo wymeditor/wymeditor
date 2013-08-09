@@ -861,7 +861,7 @@ var contentBetweenSublistsCorrectHtml = String() +
             '</ul>' +
         '</li>' +
         '<li>' +
-            '<p>Content</p>' +
+            'Content' +
             '<ul>' +
                 '<li>8</li>' +
             '</ul>' +
@@ -906,17 +906,16 @@ var contentAfterSublistNestedCorrectHtml = String() +
             '</ul>' +
         '</li>' +
         '<li>' +
-            'Content ' +
-            '<p>Content</p>' +
+            'Content' +
+            '<br />' +
+            'Content' +
             '<ol>' +
                 '<li>3' +
                     '<ol>' +
                         '<li>4</li>' +
                     '</ol>' +
                 '</li>' +
-                '<li>' +
-                    '<p>Content</p>' +
-                '</li>' +
+                '<li>Content</li>' +
             '</ol>' +
         '</li>' +
         '<li>5</li>' +
@@ -931,3 +930,832 @@ test("Properly wrap content after sublist in LI nested", function () {
                "Properly wrap content after sublist in LI nested");
 });
 
+module("XmlParser-unwrap_single_tag_in_list_item", {setup: setupWym});
+
+var tagsToUnwrapInLists =
+    WYMeditor.DocumentStructureManager.VALID_DEFAULT_ROOT_CONTAINERS;
+
+/**
+    testUnwrapSingleContentInLI
+    ===========================
+
+    Tests for every element in tagsToUnwrapInLists that the startHtml is
+    properly parsed to being equivalent to the startHtml with the labeled
+    blockTags removed within the wymeditor. For each test, replaces the string
+    "{blockTag}" within the startHtml with the tag name for the tested element.
+
+    @param wymeditor A wymeditor instance to use for testing
+    @param startHtml An html string to insert into the editor at the start of
+                     each test. The string "{blockTag}" in the html will be
+                     replaced with the tag name of the tested element for each
+                     test.
+    @param assertionString A string to use with each test assertion. The string
+                           "{blockTag}" within the string will be replaced by
+                           the tested element.
+*/
+function testUnwrapSingleContentInLI(
+    wymeditor, startHtml, assertionString, expectIESpaces
+) {
+    var correctHtml = startHtml.replace(/<\/?\{blockTag\}>/g, ''),
+        iterStartHtml,
+        iterString,
+        i;
+
+    for (i = 0; i < tagsToUnwrapInLists.length; ++i) {
+        iterStartHtml = startHtml.replace(/\{blockTag\}/g,
+                                          tagsToUnwrapInLists[i]);
+        iterString = assertionString.replace(/\{blockTag\}/g,
+                                             tagsToUnwrapInLists[i]);
+        wymeditor._html(iterStartHtml);
+        htmlEquals(wymeditor, correctHtml, iterString, true);
+    }
+}
+
+var unwrapSingleInListHtml = String() +
+    '<ul>' +
+        '<li>Test</li>' +
+        '<li><{blockTag}>Test</{blockTag}></li>' +
+        '<li>Test</li>' +
+    '</ul>';
+
+test("Unwrap root container content in simple list", function () {
+    expect(tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapSingleContentInLI(wymeditor,
+        unwrapSingleInListHtml,
+        "Unwrap `{blockTag}` content in simple list"
+    );
+});
+
+var unwrapSingleInSublistHtml = String() +
+    '<ol>' +
+        '<li>Test</li>' +
+        '<li>' +
+            '<ul>' +
+                '<li>Test</li>' +
+                '<li><{blockTag}>Test</{blockTag}></li>' +
+                '<li>Test</li>' +
+            '</ul>' +
+        '<li><{blockTag}>Test</{blockTag}></li>' +
+    '</ol>';
+
+test("Unwrap root container content in simple sublist", function () {
+    expect(tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapSingleContentInLI(wymeditor,
+        unwrapSingleInSublistHtml,
+        "Unwrap `{blockTag}` content in simple sublist"
+    );
+});
+
+var unwrapSingleInNestedListHtml = String() +
+    '<ol>' +
+        '<li>Test</li>' +
+        '<li><{blockTag}>Test</{blockTag}>' +
+            '<ul>' +
+                '<li><{blockTag}>Test</{blockTag}></li>' +
+                '<li>Test</li>' +
+                '<li><{blockTag}>Test</{blockTag}>' +
+                    '<ol>' +
+                        '<li>Test</li>' +
+                        '<li>Test</li>' +
+                        '<li><{blockTag}>Test</{blockTag}></li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ul>' +
+        '<li><{blockTag}>Test</{blockTag}></li>' +
+    '</ol>';
+
+test("Unwrap root container content in nested lists", function () {
+    expect(tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapSingleContentInLI(wymeditor,
+        unwrapSingleInNestedListHtml,
+        "Unwrap `{blockTag}` content in nested lists",
+        true
+    );
+});
+
+
+var inlineTagsToTestInLists = ['strong', 'em', 'sup', 'sub', 'a', 'span'];
+
+/**
+    testUnwrapMultiContentInLI
+    ==========================
+
+    Tests every combination of tags in tagsToUnwrapInLists with the type of
+    content specified by otherContentType to check that the startHtml is
+    properly parsed to being equivalent to the startHtml with the labeled
+    blockTags removed and with line breaks properly inserted within the
+    wymeditor. For each test, replaces the string "{blockTag}" within the
+    startHtml with the tag name for the tested element, and replaces the string
+    "{otherContent}" within the startHtml with the other tested content.
+
+    @param wymeditor A wymeditor instance to use for testing
+    @param startHtml An html string to insert into the editor at the start of
+                     each test with proper "{blockTag}" and "{otherContent}"
+                     labels for replacement.
+    @param otherContentType A string specifing the type of content to test with
+                            the tags to be unwrapped. Can be either 'block',
+                            'inline', 'text', 'table'.
+    @param assertionString A string to use with each test assertion. The string
+                           "{blockTag}" within the string will be replaced by
+                           the tested element, and the string "{otherContent}"
+                           withing the string will be replaced by the other
+                           tested content.
+*/
+function testUnwrapMultiContentInLI(
+    wymeditor, startHtml, otherContentType, assertionString
+) {
+    var correctHtml,
+        iterStartHtml,
+        iterCorrectHtml,
+        iterString,
+        iterContent,
+        otherContentText = 'Test',
+        otherContentTag = '<{tag}>Test</{tag}>',
+        otherContentTable = String() +
+            '<table>' +
+                '<caption>Test</caption>' +
+                '<tbody>' +
+                    '<tr>' +
+                        '<td>1</td>' +
+                        '<td>2</td>' +
+                        '<td>3</td>' +
+                    '</tr>' +
+                '</tbody>' +
+            '</table>',
+        otherContentTags,
+        i,
+        j;
+
+    if (otherContentType === 'block') {
+        otherContentTags = tagsToUnwrapInLists;
+    } else if (otherContentType === 'inline') {
+        otherContentTags = inlineTagsToTestInLists;
+    } else if (otherContentType === 'text') {
+        otherContentTags = ['text'];
+    } else if (otherContentType === 'table') {
+        otherContentTags = ['table'];
+    }
+
+    // Insert line breaks in the correctHtml where needed
+    correctHtml =
+        startHtml.replace(/(\{blockTag\}>)(\{otherContent\})/g, '$1<br />$2')
+                 .replace(/(\{otherContent\})(<\{blockTag\})/g, '$1<br />$2');
+
+    // Strip the block tags from the correctHtml
+    correctHtml = correctHtml.replace(/<\/?\{blockTag\}>/g, '');
+
+    for (i = 0; i < tagsToUnwrapInLists.length; ++i) {
+        for (j = 0; j < otherContentTags.length; ++j) {
+            // Create the other content to test with the block that will have
+            // its content unwrapped
+            if (otherContentType === 'text') {
+                iterContent = otherContentText;
+            } else if (otherContentType === 'table') {
+                iterContent = otherContentTable;
+            } else {
+                iterContent = otherContentTag
+                    .replace(/\{tag\}/g, otherContentTags[j]);
+            }
+
+            // Insert the block tag and other content into the start html
+            iterStartHtml = startHtml
+                .replace(/\{blockTag\}/g, tagsToUnwrapInLists[i])
+                .replace(/\{otherContent\}/g, iterContent);
+
+            // Insert the other content into the correct html
+            if (otherContentType === 'block') {
+                iterCorrectHtml = correctHtml
+                    .replace(/\{otherContent\}/g, otherContentText);
+            } else {
+                iterCorrectHtml = correctHtml
+                    .replace(/\{otherContent\}/g, iterContent);
+            }
+
+            // Create assertion string for the test
+            iterString = assertionString
+                .replace(/\{blockTag\}/g, tagsToUnwrapInLists[i])
+                .replace(/\{otherContent\}/g, otherContentTags[j]);
+
+            wymeditor._html(iterStartHtml);
+            htmlEquals(wymeditor, iterCorrectHtml, iterString, true);
+        }
+    }
+}
+
+module("XmlParser-unwrap_multiple_tags_in_list", {setup: setupWym});
+
+var unwrapMultiInListHtml = String() +
+    '<ul>' +
+        '<li>Test</li>' +
+        '<li><{blockTag}>Test</{blockTag}></li>' +
+        '<li>Test</li>' +
+    '</ul>';
+
+var unwrapMultiAfterInListHtml = unwrapMultiInListHtml.replace(
+    /(<\{blockTag\}>)/g, '{otherContent}$1'
+);
+var unwrapMultiBeforeInListHtml = unwrapMultiInListHtml.replace(
+    /(<\/\{blockTag\}>)/g, '$1{otherContent}'
+);
+var unwrapMultiBothInListHtml = unwrapMultiInListHtml.replace(
+    /(<\{blockTag\}>)/g, '{otherContent}$1'
+).replace(
+    /(<\/\{blockTag\}>)/g, '$1{otherContent}'
+);
+
+test("Unwrap root container content after block elements in simple list",
+     function () {
+    expect(tagsToUnwrapInLists.length * tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiAfterInListHtml,
+        'block',
+        "Unwrap `{blockTag}` content after `{otherContent}` content in " +
+            "simple list"
+    );
+});
+
+test("Unwrap root container content before block elements in simple list",
+     function () {
+    expect(tagsToUnwrapInLists.length * tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiBeforeInListHtml,
+        'block',
+        "Unwrap `{blockTag}` content before `{otherContent}` content in " +
+            "simple list"
+    );
+});
+
+test("Unwrap root container content surrounded by block elements in simple " +
+     "list", function () {
+    expect(tagsToUnwrapInLists.length * tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiBothInListHtml,
+        'block',
+        "Unwrap `{blockTag}` content surrounded by `{otherContent}` content in " +
+            "simple list"
+    );
+});
+
+test("Unwrap root container content after inline elements in simple list",
+     function () {
+    expect(tagsToUnwrapInLists.length * inlineTagsToTestInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiAfterInListHtml,
+        'inline',
+        "Unwrap `{blockTag}` content after `{otherContent}` content in " +
+            "simple list"
+    );
+});
+
+test("Unwrap root container content before inline elements in simple list",
+     function () {
+    expect(tagsToUnwrapInLists.length * inlineTagsToTestInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiBeforeInListHtml,
+        'inline',
+        "Unwrap `{blockTag}` content before `{otherContent}` content in " +
+            "simple list"
+    );
+});
+
+test("Unwrap root container content surrounded by inline elements in simple " +
+     "list", function () {
+    expect(tagsToUnwrapInLists.length * inlineTagsToTestInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiBothInListHtml,
+        'inline',
+        "Unwrap `{blockTag}` content surrounded by `{otherContent}` content in " +
+            "simple list"
+    );
+});
+
+test("Unwrap root container content after text node in simple list",
+     function () {
+    expect(tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiAfterInListHtml,
+        'text',
+        "Unwrap `{blockTag}` content after `{otherContent}` content in " +
+            "simple list"
+    );
+});
+
+test("Unwrap root container content before text node in simple list",
+     function () {
+    expect(tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiBeforeInListHtml,
+        'text',
+        "Unwrap `{blockTag}` content before `{otherContent}` content in " +
+            "simple list"
+    );
+});
+
+test("Unwrap root container content surrounded by text nodes in simple " +
+     "list", function () {
+    expect(tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiBothInListHtml,
+        'text',
+        "Unwrap `{blockTag}` content surrounded by `{otherContent}` content in " +
+            "simple list"
+    );
+});
+
+test("Unwrap root container content after table element in simple list",
+     function () {
+    expect(tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiAfterInListHtml,
+        'table',
+        "Unwrap `{blockTag}` content after `{otherContent}` content in " +
+            "simple list"
+    );
+});
+
+test("Unwrap root container content before table element in simple list",
+     function () {
+    expect(tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiBeforeInListHtml,
+        'table',
+        "Unwrap `{blockTag}` content before `{otherContent}` content in " +
+            "simple list"
+    );
+});
+
+test("Unwrap root container content surrounded by table elements in simple " +
+     "list", function () {
+    expect(tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiBothInListHtml,
+        'table',
+        "Unwrap `{blockTag}` content surrounded by `{otherContent}` content in " +
+            "simple list"
+    );
+});
+
+
+module("XmlParser-unwrap_multiple_tags_in_sublist", {setup: setupWym});
+
+var unwrapMultiInSublistHtml = String() +
+    '<ol>' +
+        '<li>Test</li>' +
+        '<li>' +
+            '<ul>' +
+                '<li>Test</li>' +
+                '<li><{blockTag}>Test</{blockTag}></li>' +
+                '<li>Test</li>' +
+            '</ul>' +
+        '<li><{blockTag}>Test</{blockTag}></li>' +
+    '</ol>';
+
+var unwrapMultiAfterInSublistHtml = unwrapMultiInSublistHtml.replace(
+    /(<\{blockTag\}>)/g, '{otherContent}$1'
+);
+var unwrapMultiBeforeInSublistHtml = unwrapMultiInSublistHtml.replace(
+    /(<\/\{blockTag\}>)/g, '$1{otherContent}'
+);
+var unwrapMultiBothInSublistHtml = unwrapMultiInSublistHtml.replace(
+    /(<\{blockTag\}>)/g, '{otherContent}$1'
+).replace(
+    /(<\/\{blockTag\}>)/g, '$1{otherContent}'
+);
+
+test("Unwrap root container content after block elements in simple sublist",
+     function () {
+    expect(tagsToUnwrapInLists.length * tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiAfterInSublistHtml,
+        'block',
+        "Unwrap `{blockTag}` content after `{otherContent}` content in " +
+            "simple sublist"
+    );
+});
+
+test("Unwrap root container content before block elements in simple sublist",
+     function () {
+    expect(tagsToUnwrapInLists.length * tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiBeforeInSublistHtml,
+        'block',
+        "Unwrap `{blockTag}` content before `{otherContent}` content in " +
+            "simple sublist"
+    );
+});
+
+test("Unwrap root container content surrounded by block elements in simple " +
+     "sublist", function () {
+    expect(tagsToUnwrapInLists.length * tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiBothInSublistHtml,
+        'block',
+        "Unwrap `{blockTag}` content surrounded by `{otherContent}` content in " +
+            "simple sublist"
+    );
+});
+
+test("Unwrap root container content after inline elements in simple sublist",
+     function () {
+    expect(tagsToUnwrapInLists.length * inlineTagsToTestInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiAfterInSublistHtml,
+        'inline',
+        "Unwrap `{blockTag}` content after `{otherContent}` content in " +
+            "simple sublist"
+    );
+});
+
+test("Unwrap root container content before inline elements in simple sublist",
+     function () {
+    expect(tagsToUnwrapInLists.length * inlineTagsToTestInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiBeforeInSublistHtml,
+        'inline',
+        "Unwrap `{blockTag}` content before `{otherContent}` content in " +
+            "simple sublist",
+        true
+    );
+});
+
+test("Unwrap root container content surrounded by inline elements in simple " +
+     "sublist", function () {
+    expect(tagsToUnwrapInLists.length * inlineTagsToTestInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiBothInSublistHtml,
+        'inline',
+        "Unwrap `{blockTag}` content surrounded by `{otherContent}` content in " +
+            "simple sublist"
+    );
+});
+
+test("Unwrap root container content after text node in simple sublist",
+     function () {
+    expect(tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiAfterInSublistHtml,
+        'text',
+        "Unwrap `{blockTag}` content after `{otherContent}` content in " +
+            "simple sublist"
+    );
+});
+
+test("Unwrap root container content before text node in simple sublist",
+     function () {
+    expect(tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiBeforeInSublistHtml,
+        'text',
+        "Unwrap `{blockTag}` content before `{otherContent}` content in " +
+            "simple sublist"
+    );
+});
+
+test("Unwrap root container content surrounded by text nodes in simple " +
+     "sublist", function () {
+    expect(tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiBothInSublistHtml,
+        'text',
+        "Unwrap `{blockTag}` content surrounded by `{otherContent}` content in " +
+            "simple sublist"
+    );
+});
+
+test("Unwrap root container content after table element in simple sublist",
+     function () {
+    expect(tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiAfterInSublistHtml,
+        'table',
+        "Unwrap `{blockTag}` content after `{otherContent}` content in " +
+            "simple sublist"
+    );
+});
+
+test("Unwrap root container content before table element in simple sublist",
+     function () {
+    expect(tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiBeforeInSublistHtml,
+        'table',
+        "Unwrap `{blockTag}` content before `{otherContent}` content in " +
+            "simple sublist"
+    );
+});
+
+test("Unwrap root container content surrounded by table elements in simple " +
+     "sublist", function () {
+    expect(tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiBothInSublistHtml,
+        'table',
+        "Unwrap `{blockTag}` content surrounded by `{otherContent}` content in " +
+            "simple sublist"
+    );
+});
+
+module("XmlParser-unwrap_multiple_tags_in_nested_list", {setup: setupWym});
+
+var unwrapMultiInNestedListHtml = String() +
+    '<ol>' +
+        '<li>Test</li>' +
+        '<li><{blockTag}>Test</{blockTag}>' +
+            '<ul>' +
+                '<li><{blockTag}>Test</{blockTag}></li>' +
+                '<li>Test</li>' +
+                '<li><{blockTag}>Test</{blockTag}>' +
+                    '<ol>' +
+                        '<li>Test</li>' +
+                        '<li>Test</li>' +
+                        '<li><{blockTag}>Test</{blockTag}></li>' +
+                    '</ol>' +
+                '</li>' +
+            '</ul>' +
+        '<li><{blockTag}>Test</{blockTag}></li>' +
+    '</ol>';
+
+var unwrapMultiAfterInNestedListHtml = unwrapMultiInNestedListHtml.replace(
+    /(<\{blockTag\}>)/g, '{otherContent}$1'
+);
+var unwrapMultiBeforeInNestedListHtml = unwrapMultiInSublistHtml.replace(
+    /(<\/\{blockTag\}>)/g, '$1{otherContent}'
+);
+var unwrapMultiBothInNestedListHtml = unwrapMultiInNestedListHtml.replace(
+    /(<\{blockTag\}>)/g, '{otherContent}$1'
+).replace(
+    /(<\/\{blockTag\}>)/g, '$1{otherContent}'
+);
+
+test("Unwrap root container content after block elements in nested lists",
+     function () {
+    expect(tagsToUnwrapInLists.length * tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiAfterInNestedListHtml,
+        'block',
+        "Unwrap `{blockTag}` content after `{otherContent}` content in " +
+            "nested lists"
+    );
+});
+
+test("Unwrap root container content before block elements in nested lists",
+     function () {
+    expect(tagsToUnwrapInLists.length * tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiBeforeInNestedListHtml,
+        'block',
+        "Unwrap `{blockTag}` content before `{otherContent}` content in " +
+            "nested lists"
+    );
+});
+
+test("Unwrap root container content surrounded by block elements in nested " +
+     "sublist", function () {
+    expect(tagsToUnwrapInLists.length * tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiBothInNestedListHtml,
+        'block',
+        "Unwrap `{blockTag}` content surrounded by `{otherContent}` content in " +
+            "nested lists"
+    );
+});
+
+test("Unwrap root container content after inline elements in nested lists",
+     function () {
+    expect(tagsToUnwrapInLists.length * inlineTagsToTestInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiAfterInNestedListHtml,
+        'inline',
+        "Unwrap `{blockTag}` content after `{otherContent}` content in " +
+            "nested lists"
+    );
+});
+
+test("Unwrap root container content before inline elements in nested lists",
+     function () {
+    expect(tagsToUnwrapInLists.length * inlineTagsToTestInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiBeforeInNestedListHtml,
+        'inline',
+        "Unwrap `{blockTag}` content before `{otherContent}` content in " +
+            "nested lists"
+    );
+});
+
+test("Unwrap root container content surrounded by inline elements in nested " +
+     "sublist", function () {
+    expect(tagsToUnwrapInLists.length * inlineTagsToTestInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiBothInNestedListHtml,
+        'inline',
+        "Unwrap `{blockTag}` content surrounded by `{otherContent}` content in " +
+            "nested lists"
+    );
+});
+
+test("Unwrap root container content after text node in nested lists",
+     function () {
+    expect(tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiAfterInNestedListHtml,
+        'text',
+        "Unwrap `{blockTag}` content after `{otherContent}` content in " +
+            "nested lists"
+    );
+});
+
+test("Unwrap root container content before text node in nested lists",
+     function () {
+    expect(tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiBeforeInNestedListHtml,
+        'text',
+        "Unwrap `{blockTag}` content before `{otherContent}` content in " +
+            "nested lists"
+    );
+});
+
+test("Unwrap root container content surrounded by text nodes in nested " +
+     "sublist", function () {
+    expect(tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiBothInNestedListHtml,
+        'text',
+        "Unwrap `{blockTag}` content surrounded by `{otherContent}` content in " +
+            "nested lists"
+    );
+});
+
+test("Unwrap root container content after table element in nested lists",
+     function () {
+    expect(tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiAfterInNestedListHtml,
+        'table',
+        "Unwrap `{blockTag}` content after `{otherContent}` content in " +
+            "nested lists"
+    );
+});
+
+test("Unwrap root container content before table element in nested lists",
+     function () {
+    expect(tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiBeforeInNestedListHtml,
+        'table',
+        "Unwrap `{blockTag}` content before `{otherContent}` content in " +
+            "nested lists"
+    );
+});
+
+test("Unwrap root container content surrounded by table elements in nested " +
+     "sublist", function () {
+    expect(tagsToUnwrapInLists.length);
+    var wymeditor = jQuery.wymeditors(0);
+
+    testUnwrapMultiContentInLI(wymeditor,
+        unwrapMultiBothInNestedListHtml,
+        'table',
+        "Unwrap `{blockTag}` content surrounded by `{otherContent}` content in " +
+            "nested lists"
+    );
+});
+
+module("XmlParser-unwrap_nested_tags_in_list", {setup: setupWym});
+
+var unwrapNestedDivStartHtml = String() +
+    '<ul>' +
+        '<li>Before</li>' +
+        '<li>' +
+            'Plain text top' +
+            '<div>' +
+                '<p>Paragraph top</p>' +
+                '<div>' +
+                    '<strong>Strong top</strong>' +
+                    '<div>' +
+                        '<em>Emphasis top</em>' +
+                        '<div>' +
+                            'Middle text' +
+                        '</div>' +
+                        '<em>Emphasis bottom</em>' +
+                    '</div>' +
+                    '<strong>Strong bottom</strong>' +
+                '</div>' +
+                '<p>Paragraph bottom</p>' +
+            '</div>' +
+            'Plain text bottom' +
+        '</li>' +
+        '<li>After</li>' +
+    '</ul>';
+
+var unwrapNestedDivCorrectHtml = String() +
+    '<ul>' +
+        '<li>Before</li>' +
+        '<li>' +
+            'Plain text top' +
+            '<br />' +
+            'Paragraph top' +
+            '<br />' +
+            '<strong>Strong top</strong>' +
+            '<br />' +
+            '<em>Emphasis top</em>' +
+            '<br />' +
+            'Middle text' +
+            '<br />' +
+            '<em>Emphasis bottom</em>' +
+            '<br />' +
+            '<strong>Strong bottom</strong>' +
+            '<br />' +
+            'Paragraph bottom' +
+            '<br />' +
+            'Plain text bottom' +
+        '</li>' +
+        '<li>After</li>' +
+    '</ul>';
+
+
+test("Unwrap content of nested DIV elements in list item", function () {
+    expect(1);
+    wymeditor = jQuery.wymeditors(0);
+
+    wymeditor._html(unwrapNestedDivStartHtml);
+    htmlEquals(wymeditor, unwrapNestedDivCorrectHtml,
+               "Unwrap content of nested `div` elements in a list item",
+               true);
+});
