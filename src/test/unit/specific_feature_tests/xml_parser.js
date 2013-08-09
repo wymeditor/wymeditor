@@ -1013,8 +1013,7 @@ module("XmlParser-unwrap_multiple_tags_in_list", {setup: setupWym});
 var unwrapMultiInListHtml = String() +
     '<ul>' +
         '<li>Test</li>' +
-        '<li>' +
-            '<{blockTag}>Test</{blockTag}></li>' +
+        '<li><{blockTag}>Test</{blockTag}></li>' +
         '<li>Test</li>' +
     '</ul>';
 
@@ -1558,5 +1557,65 @@ test("Unwrap root container content surrounded by table elements in nested " +
     );
 });
 
-//module("XmlParser-unwrap_nested_tags_in_list", {setup: setupWym});
+module("XmlParser-unwrap_nested_tags_in_list", {setup: setupWym});
 
+var unwrapNestedDivStartHtml = String() +
+    '<ul>' +
+        '<li>Before</li>' +
+        '<li>' +
+            'Plain text top' +
+            '<div>' +
+                '<p>Paragraph top</p>' +
+                '<div>' +
+                    '<strong>Strong top</strong>' +
+                    '<div>' +
+                        '<em>Emphasis top</em>' +
+                        '<div>' +
+                            'Middle text' +
+                        '</div>' +
+                        '<em>Emphasis bottom</em>' +
+                    '</div>' +
+                    '<strong>Strong bottom</strong>' +
+                '</div>' +
+                '<p>Paragraph bottom</p>' +
+            '</div>' +
+            'Plain text bottom' +
+        '</li>' +
+        '<li>After</li>' +
+    '</ul>';
+
+var unwrapNestedDivCorrectHtml = String() +
+    '<ul>' +
+        '<li>Before</li>' +
+        '<li>' +
+            'Plain text top' +
+            '<br />' +
+            'Paragraph top' +
+            '<br />' +
+            '<strong>Strong top</strong>' +
+            '<br />' +
+            '<em>Emphasis top</em>' +
+            '<br />' +
+            'Middle text' +
+            '<br />' +
+            '<em>Emphasis bottom</em>' +
+            '<br />' +
+            '<strong>Strong bottom</strong>' +
+            '<br />' +
+            'Paragraph bottom' +
+            '<br />' +
+            'Plain text bottom' +
+        '</li>' +
+        '<li>After</li>' +
+    '</ul>';
+
+
+test("Unwrap content of nested DIV elements in list item", function () {
+    expect(1);
+    wymeditor = jQuery.wymeditors(0);
+
+    wymeditor._html(unwrapNestedDivStartHtml);
+    htmlEquals(wymeditor, unwrapNestedDivCorrectHtml,
+               "Unwrap content of nested `div` elements in a list item",
+               true);
+});

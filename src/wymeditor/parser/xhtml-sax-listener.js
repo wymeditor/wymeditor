@@ -333,6 +333,7 @@ WYMeditor.XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes) {
             // If there was content inside the LI before this unwrapped block,
             // insert a line break so that the content retains its spacing.
             this.output += '<br />';
+            this._addSpacerBeforeElementInLI = false;
         }
         this._tag_stack.pop();
         this._extraBlockClosingTags++;
