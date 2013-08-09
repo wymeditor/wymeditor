@@ -120,8 +120,6 @@ WYMeditor.XhtmlParser.prototype.ClosingTag = function(match, state) {
 };
 
 WYMeditor.XhtmlParser.prototype._callOpenTagListener = function(tag, attributes) {
-    var tagAdded = false;
-
     attributes = attributes || {};
     this.autoCloseUnclosedBeforeNewOpening(tag);
 

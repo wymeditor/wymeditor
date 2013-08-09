@@ -14,8 +14,8 @@ WYMeditor.XhtmlSaxListener = function() {
     this._insert_after_closing = [];
     this._last_node_was_text = false;
 
-    // A string of the tag name of the last opened tag by the parser.
-    this.last_tag = '';
+    // A string of the tag name of the last open tag added to the output.
+    this._lastAddedOpenTag = '';
 
     // A boolean that should be set to true when the parser is within a list
     // item and that should be set to false when the parser is no longer
@@ -329,7 +329,7 @@ WYMeditor.XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes) {
     // If we're currently inside an LI and this tag is not allowed inside
     // an LI, unwrap the tag by not adding it to the output.
     if (this._insideLI && jQuery.inArray(tag, this.tagsToUnwrapInLists) > -1) {
-        if (this._lastOpenedTag !== 'li' || lastNodeWasText) {
+        if (this._lastAddedOpenTag !== 'li' || lastNodeWasText) {
             // If there was content inside the LI before this unwrapped block,
             // insert a line break so that the content retains its spacing.
             this.output += '<br />';
@@ -369,7 +369,7 @@ WYMeditor.XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes) {
     }
 
     this.output += this.helper.tag(tag, attributes, true);
-    this._lastOpenedTag = tag;
+    this._lastAddedOpenTag = tag;
     this._lastTagRemoved = false;
 };
 
