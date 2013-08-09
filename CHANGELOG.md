@@ -21,6 +21,12 @@ WYMeditor.
   editor if the list contained `p` or `div` elements, so unwrapping the content
   of those containers and preserving the content spacing with line breaks is a
   much more stable way to have editable content within lists.
+* The XHTML parser will now wrap content in an `li` if the content is after a
+  sublist within an `li` and if the content is not already in an `li`. Although
+  it is technically valid HTML to have content outside of a list item after a
+  sublist, it is generally poor style and it can create several problems when
+  trying to edit a list in the editor, so having the parser fix it will make
+  editing lists more stable within the editor.
 
 ### Bug Fixes
 
@@ -29,6 +35,12 @@ WYMeditor.
   still be applied to all of the list items in each of the selected lists. This
   behavior has been adjusted so that the indent and outdent tools will not
   apply to lists unless the selection is entirely contained within one list.
+* When working within a list in IE7-8, there was an issue where hitting enter
+  several times within a low-level sublist could eventually insert a `p`
+  container after a sublist within a list item that would break the list. This
+  issue has now been fixed by the enhancements made to the parser so that the
+  `p` container will be removed and will no longer break the list in the parsed
+  XHTML.
 
 ### Build Process Improvements
 

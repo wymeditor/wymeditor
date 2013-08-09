@@ -59,6 +59,13 @@ WYMeditor.XhtmlSaxListener = function() {
     // tags is removed.
     this._extraLIClosingTags = 0;
 
+    // This is a counter that keeps track of how many sublist levels deep the
+    // parser currently is. If it is 0, it means the parser is not currently in
+    // a list; if it is 1, it means the parser is within a list; if it is 2, it
+    // means the parser is within a sublist of a list; if it is 3, it means the
+    // parser is within a sublist of a sublist of a list; etc.
+    this._levelInsideList = 0;
+
     // This is for storage of a tag's index in the tag stack so that the
     // Listener can use it to check for when the tag has been closed (i.e. when
     // the top of the tag stack is at the stored index again).
@@ -266,6 +273,10 @@ WYMeditor.XhtmlSaxListener.prototype.getTagForStyle = function (style) {
 };
 
 WYMeditor.XhtmlSaxListener.prototype.addContent = function(text) {
+    if (this._insideTagToRemove) {
+        return;
+    }
+
     if (this.last_tag && this.last_tag == 'li') {
         // We should strip trailing newlines from text inside li tags because
         // IE adds random significant newlines inside nested lists
@@ -277,14 +288,19 @@ WYMeditor.XhtmlSaxListener.prototype.addContent = function(text) {
     if (text.replace(/^\s+|\s+$/g, '').length > 0) {
         // Don't count it as text if it's empty
         this._last_node_was_text = true;
-        if (this._addSpacerBeforeElementInLI) {
-            this.output += '<br />';
+
+        if (this._expectNewLI) {
+            this.output += '</li><li>';
+            this._insideLI = true;
+            this._expectNewLI = false;
             this._addSpacerBeforeElementInLI = false;
         }
+        if (this._addSpacerBeforeElementInLI) {
+            this.output += '<br />';
+        }
     }
-    if (!this._insideTagToRemove) {
-        this.output += text;
-    }
+
+    this.output += text;
 };
 
 WYMeditor.XhtmlSaxListener.prototype.addComment = function(text) {
@@ -326,6 +342,15 @@ WYMeditor.XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes) {
         return;
     }
 
+    // If a new opened LI tag is expected, but this tag is not an LI, close the
+    // previous LI and add a new opening LI tag to the output.
+    if (this._expectNewLI && tag !== 'li') {
+        this.output += '</li><li>';
+        this._insideLI = true;
+        this._addSpacerBeforeElementInLI = false;
+    }
+    this._expectNewLI = false;
+
     // If we're currently inside an LI and this tag is not allowed inside
     // an LI, unwrap the tag by not adding it to the output.
     if (this._insideLI && jQuery.inArray(tag, this.tagsToUnwrapInLists) > -1) {
@@ -363,6 +388,9 @@ WYMeditor.XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes) {
         }
     }
 
+    if (jQuery.inArray(tag, WYMeditor.LIST_TYPE_ELEMENTS) > -1) {
+        this._levelInsideList++;
+    }
     if (tag === 'li') {
         this._insideLI = true;
         this._addSpacerBeforeElementInLI = false;
@@ -375,10 +403,22 @@ WYMeditor.XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes) {
 
 WYMeditor.XhtmlSaxListener.prototype.inlineTag = function(tag, attributes) {
     this._last_node_was_text = false;
+
     if (this._insideTagToRemove || this._shouldRemoveTag(tag, attributes)) {
         // If we're currently in a block marked for removal or if this tag is
         // marked for removal, don't add it to the output.
         return;
+    }
+
+    if (this._expectNewLI) {
+        this.output += '</li><li>';
+        this._insideLI = true;
+        this._expectNewLI = false;
+        this._addSpacerBeforeElementInLI = false;
+    }
+    if (this._addSpacerBeforeElementInLI) {
+        this.output += '<br />';
+        this._addSpacerBeforeElementInLI = false;
     }
 
     attributes = this.validator.getValidTagAttributes(tag, attributes);
@@ -393,6 +433,8 @@ WYMeditor.XhtmlSaxListener.prototype.openUnknownTag = function(tag, attributes) 
 
 WYMeditor.XhtmlSaxListener.prototype.closeBlockTag = function(tag) {
     this._last_node_was_text = false;
+    this._expectNewLI = false;
+
     if (this._insideTagToRemove) {
         if (this._tag_stack.length === this._removedTagStackIndex) {
             // If we've reached the index in the tag stack were the tag to be
@@ -404,12 +446,16 @@ WYMeditor.XhtmlSaxListener.prototype.closeBlockTag = function(tag) {
         return;
     }
 
+    if (jQuery.inArray(tag, WYMeditor.LIST_TYPE_ELEMENTS) > -1) {
+        this._insideLI = false;
+        this._levelInsideList--;
+        if (this._levelInsideList) {
+            this._expectNewLI = true;
+        }
+    }
     if (tag === 'li') {
         this._insideLI = false;
         this._addSpacerBeforeElementInLI = false;
-    }
-    if (jQuery.inArray(tag, WYMeditor.LIST_TYPE_ELEMENTS) > -1) {
-        this._insideLI = false;
     }
 
     this.output = this.output.replace(/<br \/>$/, '') +
