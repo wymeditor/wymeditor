@@ -1,11 +1,10 @@
-Getting Started
-===============
+##############################
+Getting Started With WYMeditor
+##############################
+
 
 .. toctree::
     :maxdepth: 2
 
-    run_examples
     setup
-    customize
-    api
-    plugins
+    existing_integrations
