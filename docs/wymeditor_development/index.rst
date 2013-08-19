@@ -11,6 +11,4 @@ WYMeditor Development
     coding_standard
     wymeditor_architecture
     cursor_behavior
-    insertion_functions
-    dev_process_improvements
     future_planning/index

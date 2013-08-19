@@ -168,7 +168,7 @@ and 404s retrieving files.
 
 It's also a good idea
 to compare your code
-to some of the :doc:`/using_wymeditor/examples/index`.
+to some of the :doc:`/customizing_wymeditor/examples/index`.
 
 Security Errors
 ---------------
@@ -192,7 +192,7 @@ Those are ``jquery.wymeditor.js``,
 and ``jquery.js``, respectively.
 
 For details,
-see :doc:`customizing_wymeditor/index`.
+see :doc:`/customizing_wymeditor/index`.
 
 .. _jquery-migrate:
 

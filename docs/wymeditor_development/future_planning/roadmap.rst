@@ -16,7 +16,7 @@ General Goals
   modular
 * Implementing a solid event system
 * Documenting the WYMeditor source more thoroughly
-* A more consistent source code (through the :doc:`../general/coding_standard`)
+* A more consistent source code (through the :doc:`/wymeditor_development/coding_standard`)
 
 The Roadmap
 -----------
