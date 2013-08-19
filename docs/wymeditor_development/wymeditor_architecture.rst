@@ -76,7 +76,7 @@ This folder is where most of the magic happens. It includes ``base.js`` for doin
 most of the heavy lifting and anything that can be done in a cross-browser
 manner. It takes the options you passed to the jQuery plugin (defined in
 ``core.js``) and actually creates all of the UI and event listeners that drive
-the editor. 
+the editor.
 
 In the ``init()`` it also performs browser detection and loads the appropriate browser-specific editor extensions that handle all of the fun browser-specific quirks. The extensions are also located in this folder.
 
@@ -87,7 +87,7 @@ This folder contains the HTML and CSS that's used to create the actual editor
 iframe (which is created by the ``init()`` method in the ``WYMeditor.editor``
 object defined primarily in ``editor/base.js``.) By switching the iframe source
 configuration, you choose which iframe to use (default is of course,
-``default``.) 
+``default``.)
 
 Of special interest is the ``wymiframe.css`` file inside your chosen iframe
 (eg. `src/wymeditor/iframe/default/wymiframe.css`. ) This file defines the
@@ -124,6 +124,8 @@ they're at least organized with a top-level folder in the plugins directory
 with the plugin's name. In general, the name of the main plugin file has the
 format ``jquery.wymeditor.<plugin_name>.js``.
 
-A set of plugin system hooks is on the roadmap, but for now most plugins modify
-things in different ways and are relying on APIs that are not guaranteed. 1.0
-will provide those guaranteed APIs. See :doc:`plugin_architecture`.
+A set of plugin system hooks is on the roadmap,
+but for now most plugins modify things in different ways
+and are relying on APIs that are not guaranteed.
+A future release will provide those guaranteed APIs.
+See :doc:`/wymeditor_development/future_planning/plugin_architecture`.

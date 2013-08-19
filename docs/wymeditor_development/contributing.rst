@@ -5,7 +5,7 @@ We <3 Contributions
 -------------------
 
 We love your contributions. Anything, whitespace cleanup, spelling corrections,
-translations, jslint cleanup, etc is very welcome. 
+translations, jslint cleanup, etc is very welcome.
 
 The general idea is that you fork WYMeditor, make your changes in a branch, add
 appropriate unit tests, hack until you're done, make sure the tests still pass,
@@ -26,13 +26,13 @@ Example Process
    my-cool-new-feature``).
 
 #. Make your changes, making sure to follow the
-   :doc:`../general/coding_standard`. If possible, also include a unit test in
+   :doc:`/wymeditor_development/coding_standard`. If possible, also include a unit test in
    src/test/unit/test.js.
 
 #. Add the changed files to your staging area (``git add <modified files>``)
    and commit your changes with a meaningful message (``git commit -m "Describe
    your changes"``). Make sure and follow the
-   :doc:`../general/coding_standard`.
+   :doc:`/wymeditor_development/coding_standard`.
 
 #. Repeat steps 4-5 until you're done.
 

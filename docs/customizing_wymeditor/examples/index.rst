@@ -1,5 +1,10 @@
+##################################
+Contributed Examples and Cookbooks
+##################################
+
+****************************
 Running the Examples Locally
-----------------------------
+****************************
 
 Each release of WYMeditor comes bundled with a set of examples (available
 online `here <http://wymeditor.no.de/wymeditor/examples/>`_). To run these
@@ -28,4 +33,16 @@ Now point your browser to ``http://localhost:8000/`` and browse to the examples
 directory.
 
 **Done!**
+
+**************************
+Examples Table of Contents
+**************************
+
+.. toctree::
+    :maxdepth: 2
+
+    django_administration
+    image_gallery
+    snews_cms
+    rails
 

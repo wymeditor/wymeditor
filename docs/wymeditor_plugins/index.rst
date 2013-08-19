@@ -1,9 +1,18 @@
+#################
+WYMeditor Plugins
+#################
+
+.. toctree::
+    :maxdepth: 2
+
+    included_plugins/index
+    third_party_plugins/index
+
 Plugins
 =======
 
 The WYMeditor includes a simple plugin which demonstrates how easy it is to
-write plugins for WYMeditor. See :doc:`../developers/plugin_architecture` for
-more details.
+write plugins for WYMeditor.
 
 .. note::
     Next versions will use a more advanced events handling architecture which
@@ -37,8 +46,9 @@ name in the plugins folder and then a file called
 jquery.wymeditor.__plugin_name__.js. You need to include this file in your HTML
 using a ``<script>`` tag.
 
-For details on interacting with the editor, including the selection, see
-:doc:`api`.
+For details on interacting with the editor,
+including the selection,
+see :doc:`/writing_plugins/api`.
 
 Example Plugin
 ^^^^^^^^^^^^^^
@@ -95,6 +105,7 @@ Adding a Button to the Tool Bar
 Available Plugins
 -----------------
 
-See :doc:`../../plugins/plugins` for a listing and descriptions of the plugins
-included in the download and available third party plugins.
+See :doc:`/wymeditor_plugins/index` for a listing and descriptions
+of the plugins included in the download
+and available third party plugins.
 
