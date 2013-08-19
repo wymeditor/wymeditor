@@ -1,3 +1,7 @@
+#####################
+Customizing WYMeditor
+#####################
+
 Customization Options
 =====================
 **Since 0.4, getting started examples are integrated in WYMeditor's package.
@@ -216,7 +220,7 @@ Example:
 .. code-block:: javascript
 
   toolsItems: [
-    {'name': 'Bold', 'title': 'Strong', 'css': 'wym_tools_strong'}, 
+    {'name': 'Bold', 'title': 'Strong', 'css': 'wym_tools_strong'},
     {'name': 'Italic', 'title': 'Emphasis', 'css': 'wym_tools_emphasis'}
   ]
 
@@ -225,7 +229,7 @@ Default value:
 .. code-block:: javascript
 
   toolsItems: [
-    {'name': 'Bold', 'title': 'Strong', 'css': 'wym_tools_strong'}, 
+    {'name': 'Bold', 'title': 'Strong', 'css': 'wym_tools_strong'},
     {'name': 'Italic', 'title': 'Emphasis', 'css': 'wym_tools_emphasis'},
     {'name': 'Superscript', 'title': 'Superscript', 'css': 'wym_tools_superscript'},
     {'name': 'Subscript', 'title': 'Subscript', 'css': 'wym_tools_subscript'},
@@ -500,3 +504,8 @@ Basic Customization Example
 * The ``html`` option will initialize the editor's content.
 * The ``stylesheet`` option will automagically parse your CSS file to
   populate the Classes panel and to initialize the visual feedback.
+
+.. toctree::
+    :maxdepth: 2
+
+    examples/index

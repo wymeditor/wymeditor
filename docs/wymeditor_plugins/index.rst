@@ -1,3 +1,13 @@
+#################
+WYMeditor Plugins
+#################
+
+.. toctree::
+    :maxdepth: 2
+
+    included_plugins/index
+    third_party_plugins/index
+
 Plugins
 =======
 
