@@ -6,4 +6,4 @@ Getting Help
 * **Issue tracking:** https://github.com/wymeditor/wymeditor/issues
 * **Official branch:** https://github.com/wymeditor/wymeditor
 
-To Read more on contributing, see :doc:`../version_2.0/contributing`.
+To Read more on contributing, see :doc:`/wymeditor_development/contributing`.

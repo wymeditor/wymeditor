@@ -15,4 +15,4 @@ WYMeditor Development
     insertion_functions
     plugin_architecture
     dev_process_improvements
-    version_2.0_ideas/index
+    future_planning/index
