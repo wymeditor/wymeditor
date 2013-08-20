@@ -22,7 +22,7 @@ Goals
         }
 
         TableEditor.prototype.init = function() {
-            this.editor.addButton({'name': 'AddRow', 'title': 'Add Row', 'cssClass': 'wym_tools_addrow'});
+            this.wymeditor.buttons.addButton({'name': 'AddRow', 'title': 'Add Row', 'cssClass': 'wym_tools_addrow'});
         }
 
         TableEditor.prototype.bindEvents = function() {

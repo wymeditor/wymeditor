@@ -37,8 +37,8 @@ Execute a command.
     selection
 *   InsertUnorderedList: create/remove an unordered list, based on the
     selection
-*   Indent: 'indent' the list element
-*   Outdent: 'outdent' the list element
+*   Indent: `indent` the list element
+*   Outdent: `outdent` the list element
 *   Undo: undo an action
 *   Redo: redo an action
 *   CreateLink: open the link dialog and create/update a link on the
