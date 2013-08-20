@@ -3,7 +3,7 @@ Coding Standard
 
 The goal of this document is to define a set of general rules regarding the
 formatting and structure of the WYMeditor code as well as defining some best
-practices. It should also serve as a god starting point for developers that
+practices. It should also serve as a good starting point for developers that
 want to contribute code to the WYMeditor project.
 
 
@@ -37,9 +37,9 @@ Variables and Functions
 """""""""""""""""""""""
 
 Give variables and function **meaningful names**. Use mixedCase (lower
-CamelCase) for names spanning several words. “Constants” should be in all
+CamelCase) for names spanning several words. `Constants` should be in all
 CAPITAL_LETTERS with underscores to separate words.  Avoid the use of Hungarian
-Notation, instead make sure to “type” your variables by assigning default
+Notation, instead make sure to `type` your variables by assigning default
 values and/or using comments.
 
 Example:
@@ -68,7 +68,7 @@ Example:
 Event Handlers
 """"""""""""""
 
-Prepend “on” to the event handler name for easier differentiation.
+Prepend ``on`` to the event handler name for easier differentiation.
 
 Example:
 

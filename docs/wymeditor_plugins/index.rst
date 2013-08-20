@@ -21,7 +21,7 @@ write plugins for WYMeditor.
 Using a Plugin
 --------------
 
-To use a plugin you need to include it's script file using a ``<script>`` tag
+To use a plugin you need to include its script file using a ``<script>`` tag
 and then initialize it (passing an instance of wym) in the ``postInit``
 function, passed as an option when you call ``$().wymeditor()``.
 
