@@ -6,8 +6,9 @@ Proposed Build Stack
 
 For WYMeditor 1.0, we're moving to an all-Javascript build stack from the
 Node.js community. The rationale behind this is simple – use tools that make
-senese to JS developers. Any person with node.js and npm installed should be
-able to run a few npm commands and then do development or run a build.
+sense to JS developers. Any person with ``node.js`` and ``npm`` installed
+should be able to run a few ``npm`` commands and then do development or run a
+build.
 
 The goal will be to combine asset-management best practices like concatenation
 and minification for CDNs with automatic file generation for easy development.
