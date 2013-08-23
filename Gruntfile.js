@@ -1,4 +1,4 @@
-module.exports = function(grunt) {
+module.exports = function (grunt) {
     // Oldest supported version of jQuery is used by default
     var jqueryVersion = grunt.option("jquery") || "1.4.4";
 
@@ -51,36 +51,45 @@ module.exports = function(grunt) {
         copy: {
             dist: {
                 files: [
-                    {src: [
-                        "README.md",
-                        "CHANGELOG.md",
-                        "AUTHORS",
-                        "MIT-license.txt",
-                        "GPL-license.txt",
-                        "Gruntfile.js",
-                        "package.json",
-                        "docs/**",
-                    ],
-                    dest: "<%= meta.distDir %>/wymeditor/"},
-                    {expand: true,
-                        cwd: "src/wymeditor/",
+                    {
                         src: [
-                        "iframe/**",
-                        "lang/**",
-                        "plugins/**",
-                        "skins/**"
+                            "README.md",
+                            "CHANGELOG.md",
+                            "AUTHORS",
+                            "MIT-license.txt",
+                            "GPL-license.txt",
+                            "Gruntfile.js",
+                            "package.json",
+                            "docs/**"
                         ],
-                        dest: "<%= meta.distDir %>/wymeditor/wymeditor/"
-                    },
-                    {expand: true,
-                        cwd: "src/",
-                        src: ["jquery/**", "examples/**", "test/**"],
                         dest: "<%= meta.distDir %>/wymeditor/"
                     },
-                    {expand: true,
-                        cwd: "<%= meta.distDir %>/",
+                    {
+                        src: [
+                            "iframe/**",
+                            "lang/**",
+                            "plugins/**",
+                            "skins/**"
+                        ],
+                        dest: "<%= meta.distDir %>/wymeditor/wymeditor/",
+                        expand: true,
+                        cwd: "src/wymeditor/"
+                    },
+                    {
+                        src: [
+                            "jquery/**",
+                            "examples/**",
+                            "test/**"
+                        ],
+                        dest: "<%= meta.distDir %>/wymeditor/",
+                        expand: true,
+                        cwd: "src/"
+                    },
+                    {
                         src: ["*.js"],
-                        dest: "<%= meta.distDir %>/wymeditor/wymeditor"
+                        dest: "<%= meta.distDir %>/wymeditor/wymeditor",
+                        expand: true,
+                        cwd: "<%= meta.distDir %>/"
                     }
                 ]
             }
