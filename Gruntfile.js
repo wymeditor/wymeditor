@@ -105,36 +105,59 @@ module.exports = function(grunt) {
                 options: {
                     timeout: 15000,
                     urls: [
-                        "http://localhost:7070/test/unit/index.html" +
+                        "http://localhost:<%= express.all.options.port %>/test/unit/index.html" +
                         "?inPhantomjs=true&jquery=" + jqueryVersion
                     ]
                 }
             }
         },
-        connect: {
-            server: {
+        // grunt-express will serve the files for development and inject
+        // javascript inside the response that communicates back and triggers a
+        // browser refresh whenever grunt-watch detects a change. Hooray for
+        // the livereload option.
+        express: {
+            all: {
                 options: {
-                    port: 7070,
-                    base: "src/"
+                    port: 9000,
+                    hostname: "0.0.0.0",
+                    bases: ["./src", "./dist"],
+                    livereload: true
                 }
             }
         },
-        watch : {
-            options: {
-                interrupt: true
-            },
-            tasks: "test",
-            files : [
-                "Gruntfile.js",
-                "src/wymeditor/**/*.js",
-                "src/test/unit/**/*.js"
-            ]
+        // grunt-watch can trigger automatic re-build and re-test
+        watch: {
+            all: {
+                files : [
+                    "Gruntfile.js",
+                    "src/wymeditor/**/*.js",
+                    "src/test/unit/**/*.js"
+                ],
+                tasks: "qunit",
+                options: {
+                    interrupt: true,
+                    livereload: true
+                }
+            }
         }
     });
     grunt.loadNpmTasks("grunt-contrib");
     grunt.loadNpmTasks("grunt-replace");
+    grunt.loadNpmTasks("grunt-express");
 
-    grunt.registerTask("build", ["concat", "replace", "uglify", "copy",
-                                 "compress"]);
-    grunt.registerTask("test", ["connect", "qunit"]);
+    grunt.registerTask(
+        "build",
+        [
+            "concat",
+            "replace",
+            "uglify",
+            "copy",
+            "compress"
+        ]
+    );
+    grunt.registerTask("test", ["express", "qunit"]);
+    grunt.registerTask("server", [
+        "express",
+        "watch"
+    ]);
 };
