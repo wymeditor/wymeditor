@@ -55,3 +55,28 @@ More Details
 
 For a more detailed explanation,
 see the `guard/listen wiki <https://github.com/guard/listen/wiki/Increasing-the-amount-of-inotify-watchers>`_.
+
+*************************
+Development Using Vagrant
+*************************
+
+Install Virtualbox
+==================
+
+Install Vagrant
+===============
+
+Install Vagrant Plugins
+=======================
+
+.. code-block:: shell-session
+
+    $ vagrant plugin install vagrant-omnibus
+    $ vagrant plugin install vagrant-librarian-chef
+
+Build Your Box
+==============
+
+.. code-block:: shell-session
+
+    $ vagrant up
