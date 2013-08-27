@@ -10,9 +10,21 @@ export HOME=/home/vagrant;
 rm -rf /tmp/phantomjs;
 
 # Let's install the NPM requirements
-sudo npm install -g grunt-cli;
+
+# Install grunt-cli and bower as root so the commands are available everywhere
+# Do this from the /tmp directory so we don't break file ownerships
+sudo npm install -g grunt-cli@~0.1.9;
+sudo npm install -g bower@~1.2.4;
+# Clean up the tmp directory we just created as root
+sudo rm -rf /home/vagrant/tmp;
+
+# Now install the actual WYMeditor requirements
 cd /home/vagrant/wym;
 npm install;
 
 # Add grunt-cli autocompletion
 grep -q 'eval "$(grunt --completion=bash)"' /home/vagrant/.bashrc || echo 'eval "$(grunt --completion=bash)"' >> /home/vagrant/.bashrc
+
+# Add bower autocompletion
+grep -q 'source ~/.bower_autocomplete.sh' /home/vagrant/.bashrc || echo 'source ~/.bower_autocomplete.sh' >> /home/vagrant/.bashrc 
+bower completion --allow-root > /home/vagrant/.bower_autocomplete.sh
