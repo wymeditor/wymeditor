@@ -14,3 +14,5 @@ sudo npm install -g grunt-cli;
 cd /home/vagrant/wym;
 npm install;
 
+# Add grunt-cli autocompletion
+grep -q 'eval "$(grunt --completion=bash)"' /home/vagrant/.bashrc || echo 'eval "$(grunt --completion=bash)"' >> /home/vagrant/.bashrc
