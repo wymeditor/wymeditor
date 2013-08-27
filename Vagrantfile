@@ -28,7 +28,10 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.synced_folder "", "/home/vagrant/wym", :nfs => true
+  # For the test server
   config.vm.network :forwarded_port, guest: 9000, host: 9000
+  # For live reload
+  config.vm.network :forwarded_port, guest: 35729, host: 35729
   config.vm.network :private_network, ip: "10.10.10.132"
 
   config.librarian_chef.cheffile_dir = "chef"
