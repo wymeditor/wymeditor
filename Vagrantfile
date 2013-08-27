@@ -25,12 +25,11 @@ Vagrant.configure("2") do |config|
         "--cpus", cpus || "2",
         "--vram", "32",
     ]
-    v.gui = !ENV['VAGRANT_VBOX_GUI'].nil?
   end
 
   config.vm.synced_folder "", "/home/vagrant/wym", :nfs => true
   config.vm.network :forwarded_port, guest: 9000, host: 9000
-  config.vm.network :private_network, ip: "10.10.10.10"
+  config.vm.network :private_network, ip: "10.10.10.132"
 
   config.librarian_chef.cheffile_dir = "chef"
 
