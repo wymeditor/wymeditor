@@ -18,39 +18,38 @@
 -->
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>WYMeditor</title>
-<!-- jQuery library is required, see http://jquery.com/ -->
-<script type="text/javascript" src="../jquery/jquery.js"></script>
-<!-- WYMeditor main JS file, minified version -->
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.min.js"></script>
-
-<script type="text/javascript">
-
-/* Here we replace each element with class 'wymeditor'
- * (typically textareas) by a WYMeditor instance.
- * 
- * We could use the 'html' option, to initialize the editor's content.
- * If this option isn't set, the content is retrieved from
- * the element being replaced.
- */
-
-jQuery(function() {
-    jQuery('.wymeditor').wymeditor();
-});
-
-</script>
-
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>WYMeditor</title>
 </head>
 
 <body>
-<h1>WYMeditor integration example</h1>
-<p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
-<form method="post" action="">
-<textarea class="wymeditor">&lt;p&gt;Hello, World!&lt;/p&gt;</textarea>
-<input type="submit" class="wymupdate" />
-</form>
+    <h1>WYMeditor integration example</h1>
+    <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+    <form method="post" action="">
+        <textarea class="wymeditor">&lt;p&gt;Hello, World!&lt;/p&gt;</textarea>
+        <input type="submit" class="wymupdate" />
+    </form>
 
+    <!-- build:js jquery.wymeditor.min.js -->
+    <script data-main="../wymeditor/config" src="../bower_components/requirejs/require.js"></script>
+    <!-- endbuild -->
+    <script type="text/javascript">
+        /* Here we replace each element with class 'wymeditor'
+         * (typically textareas) by a WYMeditor instance.
+         *
+         * We could use the 'html' option, to initialize the editor's content.
+         * If this option isn't set, the content is retrieved from
+         * the element being replaced.
+         */
+        require(['jquery', 'wymeditor'], function ($, WYMeditor) {
+            'use strict';
+            $(function() {
+                $('.wymeditor').wymeditor();
+            });
+        });
+    </script>
 </body>
 
 </html>
