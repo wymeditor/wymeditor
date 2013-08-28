@@ -38,6 +38,10 @@ module.exports = function (grunt) {
                 files: [
                     '<%= yeoman.app %>/*.html',
                     '.tmp/styles/{,*/}*.css',
+                    '{.tmp,<%= yeoman.app %>}/main.js',
+                    '{.tmp,<%= yeoman.app %>}/examples/{,*/}*.{js,html}',
+                    '{.tmp,<%= yeoman.app %>}/test/{,*/}*.{js,html}',
+                    '{.tmp,<%= yeoman.app %>}/test/unit/{,*/}*.{js,html}',
                     '{.tmp,<%= yeoman.app %>}/wymeditor/{,*/}*.js',
                     '{.tmp,<%= yeoman.app %>}/wymeditor/plugins/{,*/}*.js',
                     '{.tmp,<%= yeoman.app %>}/wymeditor/skins/{,*/}*.js',
@@ -113,7 +117,7 @@ module.exports = function (grunt) {
                 // Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
                 options: {
                     // `name` and `out` is set by grunt-usemin
-                    baseUrl: yeomanConfig.app + '/wymeditor',
+                    baseUrl: yeomanConfig.app + '/',
                     optimize: 'none',
                     // TODO: Figure out how to make sourcemaps work with grunt-usemin
                     // https://github.com/yeoman/grunt-usemin/issues/30
