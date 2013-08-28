@@ -44,17 +44,16 @@
          * the element being replaced.
          */
 
-        require(['main'], function ($) {
+        require(['main'], function () {
             'use strict';
             // use app here
             console.log('Running jQuery %s', $().jquery);
+            console.log('HTML: WYM version: %s', WYMeditor.VERSION);
+
+            $(function() {
+                $('.wymeditor').wymeditor();
+            });
         });
-//        require(['jquery'], function (jQuery) {
-//            'use strict';
-//            $(function() {
-//                $('.wymeditor').wymeditor();
-//            });
-//        });
     </script>
 </body>
 
