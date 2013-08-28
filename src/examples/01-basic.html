@@ -33,7 +33,7 @@
     </form>
 
     <!-- build:js jquery.wymeditor.min.js -->
-    <script data-main="../wymeditor/config" src="../bower_components/requirejs/require.js"></script>
+    <script data-main="../main" src="../bower_components/requirejs/require.js"></script>
     <!-- endbuild -->
     <script type="text/javascript">
         /* Here we replace each element with class 'wymeditor'
@@ -43,12 +43,18 @@
          * If this option isn't set, the content is retrieved from
          * the element being replaced.
          */
-        require(['jquery', 'wymeditor'], function ($, WYMeditor) {
+
+        require(['main'], function ($) {
             'use strict';
-            $(function() {
-                $('.wymeditor').wymeditor();
-            });
+            // use app here
+            console.log('Running jQuery %s', $().jquery);
         });
+//        require(['jquery'], function (jQuery) {
+//            'use strict';
+//            $(function() {
+//                $('.wymeditor').wymeditor();
+//            });
+//        });
     </script>
 </body>
 
