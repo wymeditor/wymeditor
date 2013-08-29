@@ -17,6 +17,10 @@
     "mootools"      : false,
     "dojo"          : false,
 
+    "globals"       : {
+        "module": false,
+        "require": false
+    },
     "predef"        : [  // Custom globals.
         //"exampleVar",
         //"anotherCoolGlobal",
