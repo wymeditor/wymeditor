@@ -1,9 +1,5 @@
 require.config({
     paths: {
-        'jquery': 'jquery/jquery',
-        'jquery.migrate': 'jquery/jquery-migrate.min',
-        'jquery.rdfquery': 'jquery/jquery.rdfquery.rdfa.min-1.0',
-        'jquery.ui': 'jquery/jquery-ui-1.8.11.custom.min',
         'rangy-core': 'wymeditor/rangy/rangy-core',
         'rangy-selectionsaverestore': 'wymeditor/rangy/rangy-selectionsaverestore',
         'wymeditor.core': 'wymeditor/core',
@@ -25,9 +21,6 @@ require.config({
         'parser.css-parser': 'wymeditor/parser/css-parser'
     },
     shim: {
-        jquery: {
-            exports: 'jQuery'
-        },
         // Rangy
         'rangy-core': {},
         'rangy-selectionsaverestore': {
@@ -36,29 +29,28 @@ require.config({
         // Core
         'wymeditor.core': {
             deps: [
-                'jquery',
                 'rangy-selectionsaverestore',
                 'rangy-core'
             ]
         },
         // Editor
         'editor.base': {
-            deps: ['jquery', 'wymeditor.core']
+            deps: ['wymeditor.core']
         },
         'editor.document-structure-manager': {
-            deps: ['jquery', 'wymeditor.core']
+            deps: ['wymeditor.core']
         },
         'editor.firefox': {
-            deps: ['jquery', 'editor.base']
+            deps: ['editor.base']
         },
         'editor.ie': {
-            deps: ['jquery', 'editor.base']
+            deps: ['editor.base']
         },
         'editor.opera': {
-            deps: ['jquery', 'editor.base']
+            deps: ['editor.base']
         },
         'editor.webkit': {
-            deps: ['jquery', 'editor.base']
+            deps: ['editor.base']
         },
         // Parser
         'parser.xml-helper': {
@@ -100,7 +92,6 @@ require.config({
 });
 
 define([
-    'jquery',
     'wymeditor.core',
     'editor.base',
     'editor.document-structure-manager',

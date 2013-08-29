@@ -112,6 +112,17 @@ module.exports = function (grunt) {
                 '<%= yeoman.app %>/test/unit/{,*/}*.js'
             ]
         },
+        qunit: {
+            all: {
+                options: {
+                    timeout: 15000,
+                    urls: [
+                        "http://localhost:<%= connect.options.port %>/test/unit/index.html" +
+                        "?inPhantomjs=true&jquery=" + jqueryVersion
+                    ]
+                }
+            }
+        },
         requirejs: {
             dist: {
                 // Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
@@ -140,7 +151,6 @@ module.exports = function (grunt) {
             },
             html: [
                 '<%= yeoman.app %>/examples/{,*/}*.html',
-                '<%= yeoman.app %>/test/{,*/}*.html',
                 '<%= yeoman.app %>/wymeditor/iframe/{,*/}*.html'
             ]
         },
@@ -150,16 +160,34 @@ module.exports = function (grunt) {
             },
             html: [
                 '<%= yeoman.dist %>/examples/{,*/}*.html',
-                '<%= yeoman.dist %>/test/{,*/}*.html',
                 '<%= yeoman.dist %>/wymeditor/iframe/{,*/}*.html'
             ],
             css: [
                 '<%= yeoman.dist %>/examples/{,*/}*.css',
-                '<%= yeoman.dist %>/test/{,*/}*.css',
-                '<%= yeoman.dist %>/test/unit/{,*/}*.css',
                 '<%= yeoman.dist %>/wymeditor/plugins/{,*/}*.css',
                 '<%= yeoman.dist %>/wymeditor/skins/{,*/}*.css'
             ]
+        },
+        htmlmin: {
+            dist: {
+                options: {
+                    /*removeCommentsFromCDATA: true,
+                    // https://github.com/yeoman/grunt-usemin/issues/44
+                    //collapseWhitespace: true,
+                    collapseBooleanAttributes: true,
+                    removeAttributeQuotes: true,
+                    removeRedundantAttributes: true,
+                    useShortDoctype: true,
+                    removeEmptyAttributes: true,
+                    removeOptionalTags: true*/
+                },
+                files: [{
+                    expand: true,
+                    cwd: '<%= yeoman.app %>',
+                    src: 'wymeditor/iframe/{,*/}*.html',
+                    dest: '<%= yeoman.dist %>'
+                }]
+            }
         },
         replace: {
             dist: {
@@ -173,10 +201,69 @@ module.exports = function (grunt) {
                         expand: true,
                         flatten: true,
                         src: [
-                            '<%= yeoman.dist %>/{,*/}*.js'
+                            '<%= yeoman.dist %>/*.js'
                         ]
                     }
                 ]
+            }
+        },
+        // All of the files not handled by other tasks that need to make it to
+        // the distribution
+        copy: {
+            dist: {
+                files: [
+                    {
+                        expand: true,
+                        dot: true,
+                        cwd: '<%= yeoman.app %>/..',
+                        dest: '<%= yeoman.dist %>',
+                        src: [
+                            "README.md",
+                            "CHANGELOG.md",
+                            "AUTHORS",
+                            "MIT-license.txt",
+                            "GPL-license.txt",
+                            "package.json"
+                        ]
+                    },
+                    {
+                        expand: true,
+                        dot: true,
+                        cwd: '<%= yeoman.app %>',
+                        dest: '<%= yeoman.dist %>',
+                        src: [
+                            "examples/{,*/}*.{html,png,jpg,jpeg,gif,js,css}"
+                        ]
+                    },
+                    {
+                        expand: true,
+                        dot: true,
+                        cwd: '<%= yeoman.app %>/wymeditor',
+                        dest: '<%= yeoman.dist %>',
+                        src: [
+                            "/lang/*.js",
+                            "plugins/{,*/}*.{png,jpg,jpeg,gif,js,css}",
+                            "skins/{,*/}*.{png,jpg,jpeg,gif,js,css}",
+                            "iframe/{,*/}*.{html,png,jpg,jpeg,gif,js,eot,ttf,woff}"
+                        ]
+                    },
+                    {
+                        expand: true,
+                        dot: true,
+                        cwd: '<%= yeoman.app %>/docs/.build/html',
+                        dest: '<%= yeoman.dist %>/docs',
+                        src: [
+                            "**",
+                        ]
+                    }
+                ]
+            },
+            styles: {
+                expand: true,
+                dot: true,
+                cwd: '<%= yeoman.app %>/styles',
+                dest: '.tmp/styles/',
+                src: '{,*/}*.css'
             }
         },
         compress: {
@@ -188,18 +275,7 @@ module.exports = function (grunt) {
                 },
                 expand: true,
                 cwd: "<%= yeoman.dist %>",
-                src: ["wymeditor/**"]
-            }
-        },
-        qunit: {
-            all: {
-                options: {
-                    timeout: 15000,
-                    urls: [
-                        "http://localhost:<%= connect.options.port %>/test/unit/index.html" +
-                        "?inPhantomjs=true&jquery=" + jqueryVersion
-                    ]
-                }
+                src: ["./**"]
             }
         },
         bower: {
@@ -207,7 +283,7 @@ module.exports = function (grunt) {
                 exclude: ['modernizr']
             },
             all: {
-                rjsConfig: '<%= yeoman.app %>/wymeditor/config.js'
+                rjsConfig: '<%= yeoman.app %>/main.js'
             }
         }
     });
@@ -219,6 +295,7 @@ module.exports = function (grunt) {
 
         grunt.task.run([
             'clean:server',
+            'htmlmin',
             'connect:livereload',
             'watch'
         ]);
@@ -237,7 +314,7 @@ module.exports = function (grunt) {
         'concat',
         'uglify',
         'copy:dist',
-        'rev',
+        //'rev',
         'usemin',
         'replace',
         'compress'
@@ -347,7 +424,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-replace");
     grunt.loadNpmTasks("grunt-contrib-requirejs");
     grunt.loadNpmTasks("grunt-bower-requirejs");
-    grunt.loadNpmTasks("grunt-rev");
+    grunt.loadNpmTasks("grunt-contrib-htmlmin");
+    //grunt.loadNpmTasks("grunt-rev");
     grunt.loadNpmTasks("grunt-usemin");
 
 //    grunt.registerTask(
