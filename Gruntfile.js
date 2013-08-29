@@ -232,7 +232,8 @@ module.exports = function (grunt) {
                         cwd: '<%= yeoman.app %>',
                         dest: '<%= yeoman.dist %>',
                         src: [
-                            "examples/{,*/}*.{html,png,jpg,jpeg,gif,js,css}"
+                            "examples/{,*/}*.{html,png,jpg,jpeg,gif,js,css}",
+                            "bower_components/{,*/}*.js"
                         ]
                     },
                     {
@@ -280,7 +281,7 @@ module.exports = function (grunt) {
         },
         bower: {
             options: {
-                exclude: ['modernizr']
+                exclude: ['modernizr', 'requirejs']
             },
             all: {
                 rjsConfig: '<%= yeoman.app %>/main.js'
