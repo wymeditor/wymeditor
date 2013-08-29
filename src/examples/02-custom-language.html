@@ -4,31 +4,41 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>WYMeditor</title>
+    <title>WYMeditor: Custom Language</title>
 </head>
 
 <body>
-    <h1>WYMeditor integration example - custom language</h1>
+    <h1>WYMeditor: Custom Language</h1>
     <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+    <p>
+        WYMeditor speaks French!
+        (And many
+        <a href="https://github.com/wymeditor/wymeditor/tree/master/src/wymeditor/lang">other languages</a>.
+    </p>
     <form method="post" action="">
         <textarea class="wymeditor"></textarea>
         <input type="submit" class="wymupdate" />
     </form>
 
-    <script type="text/javascript" src="../bower_components/jquery/jquery.js"></script>
-    <script data-main="../main" src="../bower_components/requirejs/require.js"></script>
-
+    <!-- build:js vendor/jquery/jquery.js -->
+    <!-- endbuild -->
+    <!-- build:js ../wymeditor/jquery.wymeditor.js -->
+    <script type="text/javascript" src="../test/load-src.dev.js"></script>
+    <script type="text/javascript">
+        loadWymSrc('../');
+    </script>
+    <!-- endbuild -->
     <script type="text/javascript">
         /* Use 3 options, one to set the html content,
          * one to set the language, and one the set the classes
          */
-        jQuery(function() {
+        $(function() {
             var options = {
                 html: '<p>Hello, World!<\/p>',
                 lang: 'fr',
                 stylesheet: 'styles.css'
             };
-            jQuery('.wymeditor').wymeditor(options);
+            $('.wymeditor').wymeditor(options);
         });
     </script>
 </body>
