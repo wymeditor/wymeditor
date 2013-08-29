@@ -6,7 +6,8 @@ var mountFolder = function (connect, dir) {
 };
 
 module.exports = function (grunt) {
-    require('load-grunt-tasks')(grunt);
+    // show elapsed time at the end
+    require('time-grunt')(grunt);
 
     // Oldest supported version of jQuery is used by default
     var jqueryVersion = grunt.option("jquery") || "1.4.4";
@@ -120,28 +121,6 @@ module.exports = function (grunt) {
                         "http://localhost:<%= connect.options.port %>/test/unit/index.html" +
                         "?inPhantomjs=true&jquery=" + jqueryVersion
                     ]
-                }
-            }
-        },
-        requirejs: {
-            dist: {
-                // Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
-                options: {
-                    // `name` and `out` is set by grunt-usemin
-                    baseUrl: yeomanConfig.app + '/',
-                    optimize: 'none',
-                    // TODO: Figure out how to make sourcemaps work with grunt-usemin
-                    // https://github.com/yeoman/grunt-usemin/issues/30
-                    //generateSourceMaps: true,
-                    // required to support SourceMaps
-                    // http://requirejs.org/docs/errors.html#sourcemapcomments
-                    preserveLicenseComments: false,
-                    useStrict: true,
-                    wrap: true,
-                    uglify: {
-                        banner: "<%= meta.banner %>"
-                    }
-                    //uglify2: {} // https://github.com/mishoo/UglifyJS2
                 }
             }
         },
@@ -309,7 +288,6 @@ module.exports = function (grunt) {
     grunt.registerTask('build', [
         'clean:dist',
         'useminPrepare',
-        'requirejs',
         'concat',
         'uglify',
         'copy:dist',
@@ -421,11 +399,11 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-contrib-clean");
     grunt.loadNpmTasks("grunt-contrib-qunit");
     grunt.loadNpmTasks("grunt-replace");
-    grunt.loadNpmTasks("grunt-contrib-requirejs");
-    grunt.loadNpmTasks("grunt-bower-requirejs");
     grunt.loadNpmTasks("grunt-contrib-htmlmin");
     //grunt.loadNpmTasks("grunt-rev");
     grunt.loadNpmTasks("grunt-usemin");
+    grunt.loadNpmTasks("grunt-bower-install");
+    grunt.loadNpmTasks("time-grunt");
 
 //    grunt.registerTask(
 //        "build",
