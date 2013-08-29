@@ -129,7 +129,6 @@ module.exports = function (grunt) {
                 dest: '<%= yeoman.dist %>'
             },
             html: [
-                '<%= yeoman.app %>/examples/{,*/}*.html',
                 '<%= yeoman.app %>/wymeditor/iframe/{,*/}*.html'
             ]
         },
@@ -178,7 +177,7 @@ module.exports = function (grunt) {
                 files: [
                     {
                         expand: true,
-                        cwd: '<%= yeoman.dist%>',
+                        cwd: '<%= yeoman.dist %>',
                         src: [
                             '*.js'
                         ],
@@ -187,10 +186,28 @@ module.exports = function (grunt) {
                 ]
             }
         },
+        concat: {
+            dist: {
+                src: [
+                    "<%= yeoman.app %>/wymeditor/core.js",
+                    "<%= yeoman.app %>/wymeditor/editor/*.js",
+                    "<%= yeoman.app %>/wymeditor/parser/*.js",
+                    "<%= yeoman.app %>/wymeditor/rangy/*.js"
+                ],
+                dest: "<%= yeoman.dist %>/wymeditor/jquery.wymeditor.js"
+            }
+        },
         uglify: {
             options: {
                 banner: "<%= meta.banner %>"
             },
+            all: {
+                files: {
+                    "<%= yeoman.dist %>/wymeditor/jquery.wymeditor.min.js": [
+                        "<%= yeoman.dist %>/wymeditor/jquery.wymeditor.js"
+                    ]
+                }
+            }
         },
         // All of the files not handled by other tasks that need to make it to
         // the distribution
@@ -217,20 +234,28 @@ module.exports = function (grunt) {
                         cwd: '<%= yeoman.app %>',
                         dest: '<%= yeoman.dist %>',
                         src: [
-                            "examples/{,*/}*.{html,png,jpg,jpeg,gif,js,css}",
-                            //"bower_components/{,*/}*.js"
+                            "examples/{,*/}*.{html,png,jpg,jpeg,gif,js,css}"
+                        ]
+                    },
+                    {
+                        expand: true,
+                        dot: true,
+                        cwd: '<%= yeoman.app %>/bower_components',
+                        dest: '<%= yeoman.dist %>/examples/vendor',
+                        src: [
+                            "{,*/}*.js"
                         ]
                     },
                     {
                         expand: true,
                         dot: true,
                         cwd: '<%= yeoman.app %>/wymeditor',
-                        dest: '<%= yeoman.dist %>',
+                        dest: '<%= yeoman.dist %>/wymeditor',
                         src: [
-                            "/lang/*.js",
+                            "lang/*.js",
                             "plugins/{,*/}*.{png,jpg,jpeg,gif,js,css}",
                             "skins/{,*/}*.{png,jpg,jpeg,gif,js,css}",
-                            "iframe/{,*/}*.{html,png,jpg,jpeg,gif,js,eot,ttf,woff}"
+                            "iframe/{,*/}*.{html,css,png,jpg,jpeg,gif,js,eot,ttf,woff}"
                         ]
                     },
                     {
@@ -263,12 +288,7 @@ module.exports = function (grunt) {
                 cwd: "<%= yeoman.dist %>",
                 src: ["./**"]
             }
-        },
-        //bower: {
-        //    all: {
-        //        rjsConfig: '<%= yeoman.app %>/main.js'
-        //    }
-        //}
+        }
     });
 
     grunt.registerTask('server', function (target) {
@@ -296,7 +316,6 @@ module.exports = function (grunt) {
         'concat',
         'uglify',
         'copy:dist',
-        //'rev',
         'usemin',
         'replace',
         'compress'
@@ -308,93 +327,6 @@ module.exports = function (grunt) {
         'build'
     ]);
 
-//        concat: {
-//            dist: {
-//                src: [
-//                    "src/wymeditor/core.js",
-//                    "src/wymeditor/editor/*.js",
-//                    "src/wymeditor/parser/*.js",
-//                    "src/wymeditor/rangy/*.js"
-//                ],
-//                dest: "<%= meta.distDir %>/jquery.wymeditor.js"
-//            }
-//        },
-//        copy: {
-//            dist: {
-//                files: [
-//                    {
-//                        src: [
-//                            "README.md",
-//                            "CHANGELOG.md",
-//                            "AUTHORS",
-//                            "MIT-license.txt",
-//                            "GPL-license.txt",
-//                            "Gruntfile.js",
-//                            "package.json",
-//                            "docs/**"
-//                        ],
-//                        dest: "<%= meta.distDir %>/wymeditor/"
-//                    },
-//                    {
-//                        src: [
-//                            "iframe/**",
-//                            "lang/**",
-//                            "plugins/**",
-//                            "skins/**"
-//                        ],
-//                        dest: "<%= meta.distDir %>/wymeditor/wymeditor/",
-//                        expand: true,
-//                        cwd: "src/wymeditor/"
-//                    },
-//                    {
-//                        src: [
-//                            "jquery/**",
-//                            "examples/**",
-//                            "test/**"
-//                        ],
-//                        dest: "<%= meta.distDir %>/wymeditor/",
-//                        expand: true,
-//                        cwd: "src/"
-//                    },
-//                    {
-//                        src: ["*.js"],
-//                        dest: "<%= meta.distDir %>/wymeditor/wymeditor",
-//                        expand: true,
-//                        cwd: "<%= meta.distDir %>/"
-//                    }
-//                ]
-//            }
-//        },
-//        // grunt-express will serve the files for development and inject
-//        // javascript inside the response that communicates back and triggers a
-//        // browser refresh whenever grunt-watch detects a change. Hooray for
-//        // the livereload option.
-//        express: {
-//            all: {
-//                options: {
-//                    port: 9000,
-//                    hostname: "0.0.0.0",
-//                    bases: ["./src", "./dist"],
-//                    livereload: true
-//                }
-//            }
-//        },
-//        // grunt-watch can trigger automatic re-build and re-test
-//        watch: {
-//            all: {
-//                files : [
-//                    "Gruntfile.js",
-//                    "src/wymeditor/**/*.js",
-//                    "src/test/unit/**/*.js"
-//                ],
-//                tasks: "qunit",
-//                options: {
-//                    interrupt: true,
-//                    livereload: true
-//                }
-//            }
-//        }
-//    });
     grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks("grunt-contrib-concat");
@@ -406,23 +338,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-contrib-qunit");
     grunt.loadNpmTasks("grunt-replace");
     grunt.loadNpmTasks("grunt-contrib-htmlmin");
-    //grunt.loadNpmTasks("grunt-rev");
     grunt.loadNpmTasks("grunt-usemin");
     grunt.loadNpmTasks("grunt-bower-install");
-
-//    grunt.registerTask(
-//        "build",
-//        [
-//            "concat",
-//            "replace",
-//            "uglify",
-//            "copy",
-//            "compress"
-//        ]
-//    );
-//    grunt.registerTask("test", ["express", "qunit"]);
-//    grunt.registerTask("server", [
-//        "express",
-//        "watch"
-//    ]);
 };
