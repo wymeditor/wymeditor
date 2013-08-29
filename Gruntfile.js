@@ -199,10 +199,11 @@ module.exports = function (grunt) {
                 files: [
                     {
                         expand: true,
-                        flatten: true,
+                        cwd: '<%= yeoman.dist%>',
                         src: [
-                            '<%= yeoman.dist %>/*.js'
-                        ]
+                            '*.js'
+                        ],
+                        dest: '<%= yeoman.dist %>'
                     }
                 ]
             }
@@ -233,7 +234,7 @@ module.exports = function (grunt) {
                         dest: '<%= yeoman.dist %>',
                         src: [
                             "examples/{,*/}*.{html,png,jpg,jpeg,gif,js,css}",
-                            "bower_components/{,*/}*.js"
+                            //"bower_components/{,*/}*.js"
                         ]
                     },
                     {
@@ -279,14 +280,11 @@ module.exports = function (grunt) {
                 src: ["./**"]
             }
         },
-        bower: {
-            options: {
-                exclude: ['modernizr', 'requirejs']
-            },
-            all: {
-                rjsConfig: '<%= yeoman.app %>/main.js'
-            }
-        }
+        //bower: {
+        //    all: {
+        //        rjsConfig: '<%= yeoman.app %>/main.js'
+        //    }
+        //}
     });
 
     grunt.registerTask('server', function (target) {

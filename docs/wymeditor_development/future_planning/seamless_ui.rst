@@ -185,4 +185,90 @@ Solution
   and the `Selection-Aware Toolbar
   <https://github.com/wymeditor/wymeditor/wiki/Selection-aware-toolbar>`_.
 
+****************************
+Addendum: Ideal Build Output
+****************************
 
+Phase 1
+=======
+
+* Include the built docs
+* Vendorize the jquery stuff inside ``bower_components``
+* Include ``package.json``
+* Include the language files
+
+Directory Structure
+-------------------
+
+Inside ``dist/``:
+
+* ``README.md``
+* ``CHANGELOG.md``
+* ``AUTHORS``
+* ``MIT-license.txt``
+* ``GPL-license.txt``
+* ``package.json``
+* ``examples/``
+
+  * ``bower_components/``
+
+    * ``jquery/``
+    * ``jquery-ui/``
+    * etc
+
+  * snip (all of the examples stuff)
+* ``wymeditor/``
+
+  * ``jquery.wymeditor.js`` (un-minified and includes ``lang``)
+  * ``jquery.wymeditor.min.js`` (minified)
+  * ``skins/``
+  * ``iframe/``
+  * ``plugins/``
+
+* ``docs/``
+
+  * The already-built HTML documentation
+
+A ``.tar.gz`` distribution will be created
+with the entire contents of ``dist``.
+
+Phase 2
+=======
+
+* Compress and concat the skin/plugin javascript
+* Sprite the skin/plugin images
+* Support custom builds
+  with only a selected subset of plugins
+  and skins
+
+Directory Structure
+-------------------
+
+Changes:
+
+* ``dist/wymeditor/``
+
+  * ``jquery.wymeditor.js`` (un-minified)
+  * ``jquery.wymeditor.min.js`` (minified)
+  * ``jquery.wymeditor.plugins.js`` (un-minified)
+  * ``jquery.wymeditor.plugins.custom.js`` (un-minified)
+  * ``jquery.wymeditor.skins.js`` (un-minified)
+  * ``jquery.wymeditor.skins.custom.js`` (un-minified)
+  * ``jquery.wymeditor.custom.min.js``
+    (All of the custom options together)
+  * ``icons.png``
+  * ``icons.custom.png``
+  * ``wymeditor.css``
+  * ``wymeditor.custom.css``
+  * ``iframe/``
+
+Phase 3
+=======
+
+Optimize and inline the iframes:
+
+* Sprite the images
+* In-line the CSS and javascript
+* Support storing the full HTML for the iframe
+  in the ``jquery.wymeditor.custom.min.js`` file
+  and directly injecting it into the iframe.
