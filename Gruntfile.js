@@ -1,18 +1,20 @@
+/*jslint node: true */
 'use strict';
-var LIVERELOAD_PORT = 35729;
-var lrSnippet = require('connect-livereload')({port: LIVERELOAD_PORT});
-var mountFolder = function (connect, dir) {
-    return connect.static(require('path').resolve(dir));
-};
+var LIVERELOAD_PORT = 35729,
+    lrSnippet = require('connect-livereload')(
+        {port: LIVERELOAD_PORT}
+    ),
+    mountFolder = function (connect, dir) {
+        return connect.static(require('path').resolve(dir));
+    };
 
 module.exports = function (grunt) {
     // show elapsed time at the end
     require('time-grunt')(grunt);
 
     // Oldest supported version of jQuery is used by default
-    var jqueryVersion = grunt.option("jquery") || "1.4.4";
-
-    var yeomanConfig = {
+    var jqueryVersion = grunt.option("jquery") || "1.4.4",
+        yeomanConfig = {
         app: 'src',
         dist: 'dist'
     };
@@ -21,7 +23,6 @@ module.exports = function (grunt) {
         pkg: grunt.file.readJSON("package.json"),
         yeoman: yeomanConfig,
         meta: {
-            distDir: "dist",
             banner: "/*!\n" +
                 "WYMeditor - v<%= pkg.version %> - " +
                 "<%= grunt.template.today('mm/dd/yyyy') %>\n\n" +
@@ -39,7 +40,6 @@ module.exports = function (grunt) {
                 files: [
                     '<%= yeoman.app %>/*.html',
                     '.tmp/styles/{,*/}*.css',
-                    '{.tmp,<%= yeoman.app %>}/main.js',
                     '{.tmp,<%= yeoman.app %>}/examples/{,*/}*.{js,html}',
                     '{.tmp,<%= yeoman.app %>}/test/{,*/}*.{js,html}',
                     '{.tmp,<%= yeoman.app %>}/test/unit/{,*/}*.{js,html}',
@@ -186,6 +186,11 @@ module.exports = function (grunt) {
                     }
                 ]
             }
+        },
+        uglify: {
+            options: {
+                banner: "<%= meta.banner %>"
+            },
         },
         // All of the files not handled by other tasks that need to make it to
         // the distribution
@@ -394,6 +399,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-compress");
+    grunt.loadNpmTasks("grunt-contrib-connect");
     grunt.loadNpmTasks("grunt-contrib-jshint");
     grunt.loadNpmTasks("grunt-contrib-watch");
     grunt.loadNpmTasks("grunt-contrib-clean");
@@ -403,7 +409,6 @@ module.exports = function (grunt) {
     //grunt.loadNpmTasks("grunt-rev");
     grunt.loadNpmTasks("grunt-usemin");
     grunt.loadNpmTasks("grunt-bower-install");
-    grunt.loadNpmTasks("time-grunt");
 
 //    grunt.registerTask(
 //        "build",

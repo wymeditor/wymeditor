@@ -57,6 +57,9 @@ function loadWymSrc(srcPath, extraRequirements, jqueryVersion) {
     if (typeof jqueryVersion  === 'undefined') {
         jqueryVersion = localJqueryVersion;
     }
+    if (typeof extraRequirements === 'undefined') {
+        extraRequirements = [];
+    }
 
     if (jqueryVersion === localJqueryVersion) {
         jqueryRequirement = [srcPath + 'jquery/jquery.js'];
