@@ -1,64 +1,53 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<!--
- * WYMeditor : what you see is What You Mean web-based editor
- * Copyright (c) 2005 - 2009 Jean-Francois Hovinne, http://www.wymeditor.org/
- * Dual licensed under the MIT (MIT-license.txt)
- * and GPL (GPL-license.txt) licenses.
- *
- * For further information visit:
- *        http://www.wymeditor.org/
- *
- * File Name:
- *        03-plugin.html
- *        WYMeditor integration example - plugin activation.
- *        See the documentation for more info.
- *
- * File Authors:
- *        Jean-Francois Hovinne - http://www.hovinne.com/
--->
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>WYMeditor</title>
-<script type="text/javascript" src="../jquery/jquery.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.min.js"></script>
-<script type="text/javascript" src="../wymeditor/plugins/hovertools/jquery.wymeditor.hovertools.js"></script> <!-- load the plugin -->
-
-<script type="text/javascript">
-
-// Use the 'postInit' option, which will execute the function passed in the parameter.
-
-jQuery(function() {
-    jQuery('.wymeditor').wymeditor({
-    
-        html: '<p>Hello, World!<\/p>',
-        stylesheet: 'styles.css',
-        postInit: function(wym) {
-        
-            //postInit is executed after WYMeditor initialization
-            //'wym' is the current WYMeditor instance
-            
-            //we generally activate plugins after WYMeditor initialization
-
-            //activate 'hovertools' plugin
-            //which gives advanced feedback to the user:
-            wym.hovertools();
-        }
-    });
-});
-
-</script>
-
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>WYMeditor: Plugins</title>
+</head>
+<head>
 </head>
 
 <body>
-<h1>WYMeditor integration example - plugin activation</h1>
-<p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
-<form method="post" action="">
-<textarea class="wymeditor"></textarea>
-<input type="submit" class="wymupdate" />
-</form>
+    <h1>WYMeditor: Plugins</h1>
+    <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+    <p>Hover over toolbar items to see their labels in the lower left.</p>
+    <form method="post" action="">
+        <textarea class="wymeditor"></textarea>
+        <input type="submit" class="wymupdate" />
+    </form>
 
+    <!-- build:js vendor/jquery/jquery.js -->
+    <!-- endbuild -->
+    <!-- build:js ../wymeditor/jquery.wymeditor.js -->
+    <script type="text/javascript" src="../test/load-src.dev.js"></script>
+    <script type="text/javascript">
+        loadWymSrc('../');
+    </script>
+    <!-- endbuild -->
+
+    <!-- Load the hovertools plugin-->
+    <script type="text/javascript" src="../wymeditor/plugins/hovertools/jquery.wymeditor.hovertools.js"></script>
+
+    <script type="text/javascript">
+        // Use the 'postInit' option to initialize the plugin
+        // once WYMeditor is ready.,
+        $(function() {
+            var options = {
+                html: '<p>Hello, World!<\/p>',
+                stylesheet: 'styles.css',
+                postInit: function(wym) {
+                    // postInit is executed after WYMeditor initialization
+                    // 'wym' is the current WYMeditor instance
+
+                    // Let's activate the 'hovertools' plugin
+                    // to provide advanced feedback to our users.
+                    wym.hovertools();
+                }
+            };
+            $('.wymeditor').wymeditor(options);
+        });
+    </script>
 </body>
-
 </html>

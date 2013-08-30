@@ -1,67 +1,52 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<!--
- * WYMeditor : what you see is What You Mean web-based editor
- * Copyright (c) 2005 - 2009 Jean-Francois Hovinne, http://www.wymeditor.org/
- * Dual licensed under the MIT (MIT-license.txt)
- * and GPL (GPL-license.txt) licenses.
- *
- * For further information visit:
- *        http://www.wymeditor.org/
- *
- * File Name:
- *        04-multiple-instances.html
- *        WYMeditor integration example - multiple instances.
- *        See the documentation for more info.
- *
- * File Authors:
- *        Jean-Francois Hovinne - http://www.hovinne.com/
--->
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>WYMeditor</title>
-<script type="text/javascript" src="../jquery/jquery.js"></script>
-<script type="text/javascript" src="../wymeditor/jquery.wymeditor.min.js"></script>
-
-<script type="text/javascript">
-
-// Each textarea with class 'wymeditor' is replaced by a WYMeditor instance.
-
-jQuery(function() {
-    jQuery('.wymeditor').wymeditor({
-
-        html: '<p>Hello, World!<\/p>',
-        stylesheet: 'styles.css'
-
-    });
-});
-
-</script>
-
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>WYMeditor: Multiple Editor Instances</title>
 </head>
 
 <body>
-<h1>WYMeditor integration example - multiple instances</h1>
-<p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
-<form method="post" action="">
-<textarea class="wymeditor"></textarea>
-<input type="submit" class="wymupdate" />
-</form>
+    <h1>WYMeditor: Multiple Editor Instances</h1>
+    <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+    <p>You can use multiple WYMeditor instances on one page.</p>
+    <form method="post" action="">
+        <textarea class="wymeditor"></textarea>
+        <input type="submit" class="wymupdate" />
+    </form>
 
-<br />
+    <br />
+    <form method="post" action="">
+        <textarea class="wymeditor"></textarea>
+        <input type="submit" class="wymupdate" />
+    </form>
 
-<form method="post" action="">
-<textarea class="wymeditor"></textarea>
-<input type="submit" class="wymupdate" />
-</form>
+    <br />
+    <form method="post" action="">
+        <textarea class="wymeditor"></textarea>
+        <input type="submit" class="wymupdate" />
+    </form>
 
-<br />
+    <!-- build:js vendor/jquery/jquery.js -->
+    <!-- endbuild -->
+    <!-- build:js ../wymeditor/jquery.wymeditor.js -->
+    <script type="text/javascript" src="../test/load-src.dev.js"></script>
+    <script type="text/javascript">
+        loadWymSrc('../');
+    </script>
+    <!-- endbuild -->
 
-<form method="post" action="">
-<textarea class="wymeditor"></textarea>
-<input type="submit" class="wymupdate" />
-</form>
-
+    <script type="text/javascript">
+        // Use WYMeditor for each of the textarea's that have the class
+        // 'wymeditor'.
+        $(function() {
+            var options = {
+                html: '<p>Hello, World!<\/p>',
+                stylesheet: 'styles.css'
+            }
+            $('.wymeditor').wymeditor(options);
+        });
+    </script>
 </body>
-
 </html>
