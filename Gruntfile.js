@@ -177,11 +177,11 @@ module.exports = function (grunt) {
                 files: [
                     {
                         expand: true,
-                        cwd: '<%= yeoman.dist %>',
+                        cwd: '<%= yeoman.dist %>/wymeditor',
                         src: [
                             '*.js'
                         ],
-                        dest: '<%= yeoman.dist %>'
+                        dest: '<%= yeoman.dist %>/wymeditor'
                     }
                 ]
             }
