@@ -19,7 +19,7 @@
     display: block;
 }
 
-/*TYPO*/
+/*TYPOGRAPHY*/
 .wym_skin_seamless {
     font-size: 62.5%;
     font-family: Verdana, Arial, sans-serif;
@@ -35,12 +35,15 @@
 }
 
 /*WYM_BOX*/
-.wym_skin_seamless {
-    border: 1px solid gray;
-    background: #f2f2f2;
-    padding: 5px;
+.wym_box {
+    margin:   0;
+    overflow: visible;
+    width:    98%;
 }
-
+.wym_skin_seamless {
+    border-style: none;
+    padding: 1px;
+}
 /*auto-clear the wym_box*/
 .wym_skin_seamless:after {
     content: ".";
@@ -64,14 +67,23 @@
     background: white;
 }
 
+/* Top controls */
+.wym_skin_seamless .wym_area_top {
+    width: 802px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 /*WYM_IFRAME*/
 .wym_skin_seamless .wym_iframe {
-    width: 98%;
+    width: 802px;
+    margin-left: auto;
+    margin-right: auto;
 }
 .wym_skin_seamless .wym_iframe iframe {
-    width: 80%;
+    width: 100%;
     /* Don't set a height. That will be dynamic based on the content. */
-    border: 1px solid gray;
+    border-style: none;
     background: white;
 }
 
