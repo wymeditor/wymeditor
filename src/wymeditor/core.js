@@ -233,7 +233,7 @@ jQuery.extend(WYMeditor, {
     // of the body tag)
     MAIN_CONTAINERS : ["p", "div", "h1",  "h2",  "h3", "h4", "h5", "h6", "pre",
         "blockquote"],
- 
+
     // Containers that we explicitly do not allow at the root of the document.
     // These containers must be wrapped in a valid main container.
     FORBIDDEN_MAIN_CONTAINERS : ["strong", "b", "em", "i", "sub", "sup", "a",
@@ -323,6 +323,10 @@ jQuery.extend(WYMeditor, {
         40,  // DOWN
         46   // DELETE
     ],
+
+    EVENTS : {
+        'postBlockMaybeCreated': 'wym-postBlockMaybeCreated'
+    },
 
     // domNode.nodeType constants
     NODE : {

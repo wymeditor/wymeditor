@@ -55,6 +55,18 @@
                     //WYMeditor.INSTANCES[WYMeditor.INDEX].initIframe($('iframe')[0]);
                 //$(wym._iframe).iframeHeight({watcher: true});
                     resizeIframe(wym._iframe);
+                    $(wym._doc).bind(
+                        WYMeditor.EVENTS.postBlockMaybeCreated,
+                        function (e, wym) {
+                            resizeIframe(wym._iframe);
+                            // Scroll to the current selection
+                            var container = wym.selected();
+                            var topPos = container.offsetTop;
+                            // Scroll the iframe to the bottom
+                            var $contents = $(wym._iframe).contents();
+                            $(document).scrollTop(topPos);
+                        }
+                    );
 
                 }
             });
