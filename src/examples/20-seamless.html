@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>WYMeditor</title>
+    <style type="text/css">
+        .wym_box
+        {
+            margin:   0;
+            overflow: visible;
+            width:    80%;
+        }
+    </style>
+</head>
+<body>
+    <h1>WYMeditor basic integration example with simple skin customisation</h1>
+    <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+    <form method="post" action="">
+        <textarea class="wymeditor"></textarea>
+        <input type="submit" class="wymupdate" />
+    </form>
+    <div>More stuff</div>
+
+    <!-- build:js vendor/jquery/jquery.js -->
+    <!-- endbuild -->
+    <!-- build:js ../wymeditor/jquery.wymeditor.js -->
+    <script type="text/javascript" src="../test/load-src.dev.js"></script>
+    <script type="text/javascript">
+        loadWymSrc('../');
+    </script>
+    <!-- endbuild -->
+    <!-- build:js vendor/iframe-auto-height-jquery-plugin/Src/iframeheight.js -->
+    <script type="text/javascript" src="../bower_components/iframe-auto-height-jquery-plugin/Src/iframeheight.js"></script>
+    <!-- endbuild -->
+
+    <script type="text/javascript">
+        jQuery(function() {
+            var stringToRepeat = '<p>Hello, World!<\/p>',
+                html = '';
+
+            for (var i = 0; i < 30; i++) {
+                html = html + stringToRepeat;
+            }
+            function resizeIframe(iframe) {
+                iframe.height = iframe.contentWindow.document.body.scrollHeight + "px";
+            }
+            jQuery('.wymeditor').wymeditor({
+                html: html,
+                skin: 'seamless',
+                iframeHtml: String() +
+                    '<div class="wym_iframe wym_section">' +
+                        '<iframe src="' + WYMeditor.IFRAME_BASE_PATH + 'wymiframe.html" ' +
+                            'frameborder="0" ' +
+                            'scrolling="no" ' +
+                            'onload="this.contentWindow.parent.WYMeditor.INSTANCES[' +
+                            WYMeditor.INDEX + '].initIframe(this)"' +
+                            '>' +
+                        '</iframe>' +
+                    "</div>",
+                postInit: function(wym) {
+                    //WYMeditor.INSTANCES[WYMeditor.INDEX].initIframe($('iframe')[0]);
+                //$(wym._iframe).iframeHeight({watcher: true});
+                    resizeIframe(wym._iframe);
+
+                }
+            });
+        });
+    </script>
+</body>
+</html>
