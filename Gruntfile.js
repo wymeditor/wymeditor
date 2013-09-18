@@ -116,7 +116,7 @@ module.exports = function (grunt) {
         qunit: {
             all: {
                 options: {
-                    timeout: 15000,
+                    timeout: 25000,
                     urls: [
                         "http://localhost:<%= connect.options.port %>/test/unit/index.html" +
                         "?inPhantomjs=true&jquery=" + jqueryVersion

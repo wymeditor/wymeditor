@@ -12,19 +12,19 @@
     <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
     <p>You can use multiple WYMeditor instances on one page.</p>
     <form method="post" action="">
-        <textarea class="wymeditor"></textarea>
+        <textarea class="wymeditor1">&lt;p&gt;I am editor 1&lt;/p&gt;</textarea>
         <input type="submit" class="wymupdate" />
     </form>
 
     <br />
     <form method="post" action="">
-        <textarea class="wymeditor"></textarea>
+        <textarea class="wymeditor2"></textarea>
         <input type="submit" class="wymupdate" />
     </form>
 
     <br />
     <form method="post" action="">
-        <textarea class="wymeditor"></textarea>
+        <textarea class="wymeditor3"></textarea>
         <input type="submit" class="wymupdate" />
     </form>
 
@@ -38,14 +38,21 @@
     <!-- endbuild -->
 
     <script type="text/javascript">
-        // Use WYMeditor for each of the textarea's that have the class
-        // 'wymeditor'.
         $(function() {
-            var options = {
-                html: '<p>Hello, World!<\/p>',
+            var options1 = {
                 stylesheet: 'styles.css'
             }
-            $('.wymeditor').wymeditor(options);
+            var options2 = {
+                html: '<p>Hello, World! I am editor 2<\/p>',
+                stylesheet: 'styles.css'
+            }
+            var options3 = {
+                html: '<p>Hello, World! I am editor 3<\/p>',
+                stylesheet: 'styles.css'
+            }
+            $('.wymeditor1').wymeditor(options1);
+            $('.wymeditor2').wymeditor(options2);
+            $('.wymeditor3').wymeditor(options3);
         });
     </script>
 </body>
