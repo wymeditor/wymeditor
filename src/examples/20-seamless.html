@@ -62,7 +62,12 @@
                             // Scroll to the current selection
                             var container = wym.selected();
                             var topPos = container.offsetTop;
-                            // Scroll the iframe to the bottom
+                            // Scroll the page so that our current selection
+                            // within the iframe is actually in view.
+                            // TODO: We only actually want to perform the
+                            // scroll if the selected content is either off the
+                            // screen or almost off the screen. Right now, we're
+                            // scrolling much too often, which is disorienting.
                             var $contents = $(wym._iframe).contents();
                             $(document).scrollTop(topPos);
                         }
