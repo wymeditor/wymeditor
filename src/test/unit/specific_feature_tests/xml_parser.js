@@ -311,8 +311,8 @@ test("Allow HR inside strong tags", function () {
 });
 
 test("Allow line breaks inside em tags", function() {
-    var html = '<em>hello<br />world</em>';
-    wymeditor = jQuery.wymeditors(0);
+    var html = '<em>hello<br />world</em>',
+        wymeditor = jQuery.wymeditors(0);
     deepEqual(wymeditor.parser.parse(html), html);
 });
 
@@ -1612,7 +1612,7 @@ var unwrapNestedDivCorrectHtml = String() +
 
 test("Unwrap content of nested DIV elements in list item", function () {
     expect(1);
-    wymeditor = jQuery.wymeditors(0);
+    var wymeditor = jQuery.wymeditors(0);
 
     wymeditor._html(unwrapNestedDivStartHtml);
     htmlEquals(wymeditor, unwrapNestedDivCorrectHtml,
