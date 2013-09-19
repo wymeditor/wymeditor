@@ -641,6 +641,7 @@ function setupTable(wymeditor, html, selection, selectionType,
     var $body,
         $element,
         $table,
+        $tableCells,
         i,
         j,
         selectionNum,
@@ -1244,7 +1245,7 @@ if (!inPhantomjs || !SKIP_KNOWN_FAILING_TESTS) {
             expectedHtml = String() +
                 '<p>' +
                     '<img src="' + imageURL + '"/>' +
-                '</p>';
+                '</p>',
             expectedHtmlIE = expectedHtml.replace(/<\/?p>/g, '');
 
         // Mimic the way images are inserted by the insert image tool by first
@@ -1299,6 +1300,7 @@ function checkTagInContainer(wymeditor, containerType, tagName, command) {
 test("No span added to header after bolding", function () {
     expect(6);
     var wymeditor = jQuery.wymeditors(0),
+        header,
         i;
 
     for (i = 1; i < 7; i++) {
