@@ -51,6 +51,8 @@ function loadWymSrc(srcPath, extraRequirements, jqueryVersion) {
         newJquery,
         i,
         jqVersionObj,
+        jqVersionInt,
+        jqMigrateMinInt,
         jqueryMigrateMin = {major: 1, minor: 8, build: 0};
 
     // Default to using local jquery
