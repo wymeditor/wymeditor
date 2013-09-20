@@ -35,8 +35,17 @@
             for (var i = 0; i < 30; i++) {
                 html = html + stringToRepeat;
             }
-            function resizeIframe(iframe) {
-                iframe.height = iframe.contentWindow.document.body.scrollHeight + "px";
+
+            function resizeIframe(wym) {
+                var desiredHeight = wym._doc.body.scrollHeight,
+                    $iframe = $(wym._iframe),
+                    currentHeight = $iframe.height();
+
+                if (currentHeight !== desiredHeight) {
+                    $iframe.height(desiredHeight);
+                    return true;
+                }
+                return false;
             }
             jQuery('.wymeditor').wymeditor({
                 html: html,
@@ -52,24 +61,36 @@
                         '</iframe>' +
                     "</div>",
                 postInit: function(wym) {
-                    //WYMeditor.INSTANCES[WYMeditor.INDEX].initIframe($('iframe')[0]);
-                //$(wym._iframe).iframeHeight({watcher: true});
-                    resizeIframe(wym._iframe);
+                    $(wym._doc).ready(function() {
+                        resizeIframe(wym);
+                    });
                     $(wym._doc).bind(
                         WYMeditor.EVENTS.postBlockMaybeCreated,
                         function (e, wym) {
-                            resizeIframe(wym._iframe);
-                            // Scroll to the current selection
-                            var container = wym.selected();
-                            var topPos = container.offsetTop;
                             // Scroll the page so that our current selection
                             // within the iframe is actually in view.
-                            // TODO: We only actually want to perform the
-                            // scroll if the selected content is either off the
-                            // screen or almost off the screen. Right now, we're
-                            // scrolling much too often, which is disorienting.
-                            var $contents = $(wym._iframe).contents();
-                            $(document).scrollTop(topPos);
+                            var resizeOccurred = resizeIframe(wym);
+                            if (resizeOccurred !== true) {
+                                return;
+                            }
+
+                            var iframeOffset = wym._iframe.offsetTop,
+                                $container = $(wym.selected()),
+                                containerOffset = $container.offset(),
+                                viewportLowestY,
+                                containerLowestY,
+                                newScrollTop,
+                                extraScroll = 20;
+
+                            containerLowestY = iframeOffset + containerOffset.top + $container.outerHeight();
+                            viewportLowestY = document.body.scrollTop + $(window).height();
+                            var scrollDiff = containerLowestY - viewportLowestY;
+                            if (scrollDiff > 0) {
+                                // Part of our selected container isn't
+                                // visible, so we need to scroll down.
+                                newScrollTop = document.body.scrollTop + scrollDiff + extraScroll;
+                                $(document).scrollTop(newScrollTop);
+                            }
                         }
                     );
 
