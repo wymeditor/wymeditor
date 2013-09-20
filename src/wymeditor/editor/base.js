@@ -514,6 +514,7 @@ WYMeditor.editor.prototype.container = function (sType) {
     }
 
     var container = null,
+        aTypes,
         validContainers,
         newNode,
         blockquote,
@@ -1125,6 +1126,8 @@ WYMeditor.editor.prototype.uniqueStamp = function () {
 WYMeditor.editor.prototype._handleMultilineBlockContainerPaste = function (wym, $container, range, paragraphStrings) {
 
     var i,
+        $insertAfter,
+        html,
         blockSplitter,
         leftSide,
         rightSide,
@@ -1236,6 +1239,10 @@ WYMeditor.editor.prototype._handleMultilineBlockContainerPaste = function (wym, 
 */
 WYMeditor.editor.prototype.paste = function (str) {
     var container = this.selected(),
+        paragraphStrings,
+        j,
+        textNodesToInsert,
+        blockSplitter,
         $container,
         html = '',
         paragraphs,
@@ -1289,7 +1296,7 @@ WYMeditor.editor.prototype.paste = function (str) {
                 // Build multiple nodes from the HTML because ie6 chokes
                 // creating multiple nodes implicitly via jquery
                 insertionNodes = jQuery(html, wym._doc);
-                for (j = insertionNodes.length - 1; j >= 0; j--) {
+                for (var j = insertionNodes.length - 1; j >= 0; j--) {
                     // Loop backwards through all of the nodes because
                     // insertNode moves that direction
                     range.insertNode(insertionNodes[j]);
@@ -2001,6 +2008,7 @@ WYMeditor.editor.prototype.getCommonParentList = function (listItems, getClosest
 WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
     var wym = this,
         i,
+        j,
         range,
         selectedLi,
         nodes = [],
