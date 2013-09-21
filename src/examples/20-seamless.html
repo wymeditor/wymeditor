@@ -74,7 +74,8 @@
                                 return;
                             }
 
-                            var iframeOffset = wym._iframe.offsetTop,
+                            var iframeOffset = $(wym._iframe).offset(),
+                                iframeOffsetTop = iframeOffset.top,
                                 $container = $(wym.selected()),
                                 containerOffset = $container.offset(),
                                 viewportLowestY,
@@ -82,14 +83,24 @@
                                 newScrollTop,
                                 extraScroll = 20;
 
-                            containerLowestY = iframeOffset + containerOffset.top + $container.outerHeight();
-                            viewportLowestY = document.body.scrollTop + $(window).height();
+                            containerLowestY = iframeOffsetTop + containerOffset.top + $container.outerHeight();
+                            viewportLowestY = $(window).scrollTop() + $(window).height();
                             var scrollDiff = containerLowestY - viewportLowestY;
                             if (scrollDiff > 0) {
                                 // Part of our selected container isn't
                                 // visible, so we need to scroll down.
-                                newScrollTop = document.body.scrollTop + scrollDiff + extraScroll;
-                                $(document).scrollTop(newScrollTop);
+                                alert("containerLowestY: " + containerLowestY +
+                                        "\niframeOffsetTop: " + iframeOffsetTop +
+                                        "\ncontainerOffset.top: " + containerOffset.top +
+                                        "\nouterHeight: " + $container.outerHeight()
+                                );
+                                alert("--");
+                                alert("viewportLowestY: " + viewportLowestY +
+                                        "\nwindow scrollTop: " + $(window).scrollTop() +
+                                        "\nwindow: " + $(window).height()
+                                );
+                                newScrollTop = $(document.body).scrollTop() + scrollDiff + extraScroll;
+                                $(document.body).scrollTop(newScrollTop);
                             }
                         }
                     );
