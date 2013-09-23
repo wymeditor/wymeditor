@@ -51,3 +51,11 @@ Find a Better Way of Hosting the Demos
 Joyent has discontinued their no.de node PaaS that we previously used to host
 the demos. Either move to their `Nodejitsu <http://www.nodejitsu.com/>`_
 replacement, or find something else.
+
+Automate Taking Demo Screenshots for the Docs
+---------------------------------------------
+
+Screenshots are worth a thousand words.
+Use `grunt-autoshoot <https://github.com/Ferrari/grunt-autoshot>`_
+to take screenshots of the examples
+and update the docs to embed them.
