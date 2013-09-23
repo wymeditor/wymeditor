@@ -5,6 +5,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>WYMeditor</title>
+    <!-- build:css ../wymeditor/skins/seamless/skin.css -->
+    <link rel="stylesheet" type="text/css" href="../wymeditor/skins/seamless/skin.css" />
+    <!-- endbuild -->
 </head>
 <body>
     <h1>WYMeditor basic integration example with simple skin customisation</h1>
@@ -20,11 +23,13 @@
     <!-- build:js ../wymeditor/jquery.wymeditor.js -->
     <script type="text/javascript" src="../test/load-src.dev.js"></script>
     <script type="text/javascript">
-        loadWymSrc('../');
+        loadWymSrc(
+                '../',
+                ['../wymeditor/skins/seamless/skin.js']
+        );
     </script>
     <!-- endbuild -->
-    <!-- build:js vendor/iframe-auto-height-jquery-plugin/Src/iframeheight.js -->
-    <script type="text/javascript" src="../bower_components/iframe-auto-height-jquery-plugin/Src/iframeheight.js"></script>
+    <!-- build:js ../wymeditor/skins/seamless/skin.js -->
     <!-- endbuild -->
 
     <script type="text/javascript">
@@ -36,76 +41,12 @@
                 html = html + stringToRepeat;
             }
 
-            function resizeIframe(wym) {
-                var desiredHeight = wym._doc.body.scrollHeight,
-                    $iframe = $(wym._iframe),
-                    currentHeight = $iframe.height();
-
-                if (currentHeight !== desiredHeight) {
-                    $iframe.height(desiredHeight);
-                    return true;
-                }
-                return false;
-            }
             jQuery('.wymeditor').wymeditor({
                 html: html,
                 skin: 'seamless',
-                iframeHtml: String() +
-                    '<div class="wym_iframe wym_section">' +
-                        '<iframe src="' + WYMeditor.IFRAME_BASE_PATH + 'wymiframe.html" ' +
-                            'frameborder="0" ' +
-                            'scrolling="no" ' +
-                            'onload="this.contentWindow.parent.WYMeditor.INSTANCES[' +
-                            WYMeditor.INDEX + '].initIframe(this)"' +
-                            '>' +
-                        '</iframe>' +
-                    "</div>",
-                postInit: function(wym) {
-                    $(wym._doc).ready(function() {
-                        resizeIframe(wym);
-                    });
-                    $(wym._doc).bind(
-                        WYMeditor.EVENTS.postBlockMaybeCreated,
-                        function (e, wym) {
-                            // Scroll the page so that our current selection
-                            // within the iframe is actually in view.
-                            var resizeOccurred = resizeIframe(wym);
-                            if (resizeOccurred !== true) {
-                                return;
-                            }
-
-                            var iframeOffset = $(wym._iframe).offset(),
-                                iframeOffsetTop = iframeOffset.top,
-                                $container = $(wym.selected()),
-                                containerOffset = $container.offset(),
-                                viewportLowestY,
-                                containerLowestY,
-                                newScrollTop,
-                                extraScroll = 20;
-
-                            containerLowestY = iframeOffsetTop + containerOffset.top + $container.outerHeight();
-                            viewportLowestY = $(window).scrollTop() + $(window).height();
-                            var scrollDiff = containerLowestY - viewportLowestY;
-                            if (scrollDiff > 0) {
-                                // Part of our selected container isn't
-                                // visible, so we need to scroll down.
-                                alert("containerLowestY: " + containerLowestY +
-                                        "\niframeOffsetTop: " + iframeOffsetTop +
-                                        "\ncontainerOffset.top: " + containerOffset.top +
-                                        "\nouterHeight: " + $container.outerHeight()
-                                );
-                                alert("--");
-                                alert("viewportLowestY: " + viewportLowestY +
-                                        "\nwindow scrollTop: " + $(window).scrollTop() +
-                                        "\nwindow: " + $(window).height()
-                                );
-                                newScrollTop = $(document.body).scrollTop() + scrollDiff + extraScroll;
-                                $(document.body).scrollTop(newScrollTop);
-                            }
-                        }
-                    );
-
-                }
+                // We already included the seamless skin's javascript so that we could
+                // use this constant
+                iframeHtml: WYMeditor.SKINS.seamless.WYM_OPTS.iframeHtml
             });
         });
     </script>
