@@ -133,16 +133,6 @@ WYMeditor.SKINS.seamless = {
         if (scrollDiff > 0) {
             // Part of our selected container isn't
             // visible, so we need to scroll down.
-            alert("containerLowestY: " + containerLowestY +
-                    "\niframeOffsetTop: " + iframeOffsetTop +
-                    "\ncontainerOffset.top: " + containerOffset.top +
-                    "\nouterHeight: " + $container.outerHeight()
-            );
-            alert("--");
-            alert("viewportLowestY: " + viewportLowestY +
-                    "\nwindow scrollTop: " + $window.scrollTop() +
-                    "\nwindow: " + $window.height()
-            );
             newScrollTop = $body.scrollTop() + scrollDiff + extraScroll;
             $body.scrollTop(newScrollTop);
         }
