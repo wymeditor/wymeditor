@@ -64,6 +64,8 @@ WYMeditor.WymClassOpera.prototype.initIframe = function(iframe) {
 
     //add event listeners to doc elements, e.g. images
     this.listen();
+
+    $(wym._element).trigger(WYMeditor.EVENTS.postIframeInitialization, wym);
 };
 
 WYMeditor.WymClassOpera.prototype._exec = function(cmd, param) {

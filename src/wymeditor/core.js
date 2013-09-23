@@ -325,6 +325,7 @@ jQuery.extend(WYMeditor, {
     ],
 
     EVENTS : {
+        'postIframeInitialization': 'wym-postIframeInitialization',
         'postBlockMaybeCreated': 'wym-postBlockMaybeCreated'
     },
 

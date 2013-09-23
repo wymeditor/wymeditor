@@ -813,7 +813,7 @@ WYMeditor.editor.prototype.fixBodyHtml = function () {
     wym.spaceBlockingElements();
     wym.fixDoubleBr();
 
-    $(wym._doc).trigger(WYMeditor.EVENTS.postBlockMaybeCreated, wym);
+    $(wym._element).trigger(WYMeditor.EVENTS.postBlockMaybeCreated, wym);
 };
 
 /**
@@ -1296,7 +1296,7 @@ WYMeditor.editor.prototype.paste = function (str) {
                 // Build multiple nodes from the HTML because ie6 chokes
                 // creating multiple nodes implicitly via jquery
                 insertionNodes = jQuery(html, wym._doc);
-                for (var j = insertionNodes.length - 1; j >= 0; j--) {
+                for (j = insertionNodes.length - 1; j >= 0; j--) {
                     // Loop backwards through all of the nodes because
                     // insertNode moves that direction
                     range.insertNode(insertionNodes[j]);

@@ -91,6 +91,8 @@ WYMeditor.WymClassMozilla.prototype.initIframe = function (iframe) {
 
     //add event listeners to doc elements, e.g. images
     this.listen();
+
+    $(wym._element).trigger(WYMeditor.EVENTS.postIframeInitialization, wym);
 };
 
 /** @name html
