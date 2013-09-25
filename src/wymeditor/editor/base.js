@@ -65,7 +65,7 @@ WYMeditor.editor.prototype.init = function () {
     // We're not using jQuery.extend because we *want* to copy properties via
     // the prototype chain
     for (prop in WymClass) {
-        /*jslint forin: false*/
+        /*jshint forin: false*/
         // Explicitly not using hasOwnProperty for the inheritance here
         // because we want to go up the prototype chain to get all of the
         // browser-specific editor methods. This is kind of a code smell,
@@ -413,15 +413,17 @@ WYMeditor.editor.prototype.selection = function () {
 WYMeditor.editor.prototype.selected = function () {
     var sel = this.selection(),
         node = sel.focusNode,
-        caretPos;
+        caretPos,
+        isBodyTag,
+        isTextNode;
 
     if (node) {
         if (jQuery.browser.msie) {
             // For collapsed selections, we have to use the ghetto "caretPos"
             // hack to find the selection, otherwise it always says that the
             // body element is selected
-            var isBodyTag = node.tagName && node.tagName.toLowerCase() === "body";
-            var isTextNode = node.nodeName === "#text";
+            isBodyTag = node.tagName && node.tagName.toLowerCase() === "body";
+            isTextNode = node.nodeName === "#text";
 
             if (sel.isCollapsed && (isBodyTag || isTextNode)) {
                 caretPos = this._iframe.contentWindow.document.caretPos;
@@ -806,8 +808,12 @@ WYMeditor.editor.prototype.update = function () {
     certain block elements.
 */
 WYMeditor.editor.prototype.fixBodyHtml = function () {
-    this.spaceBlockingElements();
-    this.fixDoubleBr();
+    var wym = this;
+
+    wym.spaceBlockingElements();
+    wym.fixDoubleBr();
+
+    $(wym._element).trigger(WYMeditor.EVENTS.postBlockMaybeCreated, wym);
 };
 
 /**
@@ -884,7 +890,7 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
     $blockInList.each(function () {
         var $block = jQuery(this);
 
-        if(!$block.next(blockingSelector).length &&
+        if (!$block.next(blockingSelector).length &&
            !$block.next(WYMeditor.BR).length) {
 
             $block.after(placeholderNode);
@@ -918,7 +924,8 @@ WYMeditor.editor.prototype._getBlockSepSelector = function () {
         wym.documentStructureManager.structureRules.validRootContainers,
         function (item) {
             return jQuery.inArray(item, containersBlockingNav) === -1;
-    });
+        }
+    );
 
     // Consecutive blocking elements need separators
     jQuery.each(
@@ -1289,7 +1296,7 @@ WYMeditor.editor.prototype.paste = function (str) {
                 // Build multiple nodes from the HTML because ie6 chokes
                 // creating multiple nodes implicitly via jquery
                 insertionNodes = jQuery(html, wym._doc);
-                for (var j = insertionNodes.length - 1; j >= 0; j--) {
+                for (j = insertionNodes.length - 1; j >= 0; j--) {
                     // Loop backwards through all of the nodes because
                     // insertNode moves that direction
                     range.insertNode(insertionNodes[j]);

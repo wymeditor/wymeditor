@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>WYMeditor</title>
+    <!-- build:css ../wymeditor/skins/seamless/skin.css -->
+    <link rel="stylesheet" type="text/css" href="../wymeditor/skins/seamless/skin.css" />
+    <!-- endbuild -->
+</head>
+<body>
+    <h1>WYMeditor basic integration example with simple skin customisation</h1>
+    <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+    <form method="post" action="">
+        <textarea class="wymeditor"></textarea>
+        <input type="submit" class="wymupdate" />
+    </form>
+    <div>More stuff</div>
+
+    <!-- build:js vendor/jquery/jquery.js -->
+    <!-- endbuild -->
+    <!-- build:js ../wymeditor/jquery.wymeditor.js -->
+    <script type="text/javascript" src="../test/load-src.dev.js"></script>
+    <script type="text/javascript">
+        loadWymSrc(
+                '../',
+                ['../wymeditor/skins/seamless/skin.js']
+        );
+    </script>
+    <!-- endbuild -->
+    <!-- build:js ../wymeditor/skins/seamless/skin.js -->
+    <!-- endbuild -->
+
+    <script type="text/javascript">
+        jQuery(function() {
+            var stringToRepeat = '<p>Hello, World!<\/p>',
+                html = '';
+
+            for (var i = 0; i < 30; i++) {
+                html = html + stringToRepeat;
+            }
+
+            jQuery('.wymeditor').wymeditor({
+                html: html,
+                skin: 'seamless',
+                // We already included the seamless skin's javascript so that we could
+                // use this constant
+                iframeHtml: WYMeditor.SKINS.seamless.OPTS.iframeHtml
+            });
+        });
+    </script>
+</body>
+</html>

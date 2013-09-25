@@ -91,6 +91,8 @@ WYMeditor.WymClassMozilla.prototype.initIframe = function (iframe) {
 
     //add event listeners to doc elements, e.g. images
     this.listen();
+
+    $(wym._element).trigger(WYMeditor.EVENTS.postIframeInitialization, wym);
 };
 
 /** @name html
@@ -249,8 +251,8 @@ WYMeditor.WymClassMozilla.prototype.click = function (evt) {
         if (container && container.tagName.toLowerCase() === WYMeditor.TR) {
             // Starting with FF 3.6, inserted tables need some content in their
             // cells before they're editable
-            jQuery(WYMeditor.TD, wym._doc.body).
-                append(WYMeditor.WymClassMozilla.CELL_PLACEHOLDER);
+            jQuery(WYMeditor.TD, wym._doc.body).append(
+                WYMeditor.WymClassMozilla.CELL_PLACEHOLDER);
 
             // The user is still going to need to move out of and then back in
             // to this cell if the table was inserted via an inner_html call

@@ -6,3 +6,4 @@ Writing WYMeditor Plugins
     :maxdepth: 2
 
     api
+    custom_events
