@@ -1,24 +1,6 @@
 /*jslint evil: true */
-/*
- * WYMeditor : what you see is What You Mean web-based editor
- * Copyright (c) 2005 - 2009 Jean-Francois Hovinne, http://www.wymeditor.org/
- * Dual licensed under the MIT (MIT-license.txt)
- * and GPL (GPL-license.txt) licenses.
- *
- * For further information visit:
- *        http://www.wymeditor.org/
- *
- * File Name:
- *        jquery.wymeditor.explorer.js
- *        MSIE specific class and functions.
- *        See the documentation for more info.
- *
- * File Authors:
- *        Jean-Francois Hovinne (jf.hovinne a-t wymeditor dotorg)
- *        Bermi Ferrer (wymeditor a-t bermi dotorg)
- *        Frédéric Palluel-Lafleur (fpalluel a-t gmail dotcom)
- *        Jonatan Lundin (jonatan.lundin a-t gmail dotcom)
- */
+/* global rangy, -$ */
+"use strict";
 
 WYMeditor.WymClassExplorer = function (wym) {
     this._wym = wym;
@@ -112,7 +94,10 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
         this._doc = iframe.contentWindow.document;
     } catch (e) {}
 
-    $(wym._element).trigger(WYMeditor.EVENTS.postIframeInitialization, wym);
+    jQuery(wym._element).trigger(
+        WYMeditor.EVENTS.postIframeInitialization,
+        this._wym
+    );
 };
 
 (function (editorLoadSkin) {

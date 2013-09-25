@@ -1,4 +1,6 @@
 /*jslint evil: true */
+/* global -$ */
+"use strict";
 
 WYMeditor.WymClassSafari = function (wym) {
     this._wym = wym;
@@ -52,7 +54,10 @@ WYMeditor.WymClassSafari.prototype.initIframe = function (iframe) {
     //add event listeners to doc elements, e.g. images
     this.listen();
 
-    $(wym._element).trigger(WYMeditor.EVENTS.postIframeInitialization, this._wym);
+    jQuery(wym._element).trigger(
+        WYMeditor.EVENTS.postIframeInitialization,
+        this._wym
+    );
 };
 
 WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {

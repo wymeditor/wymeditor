@@ -1,4 +1,6 @@
 /*jshint evil: true */
+/* global -$ */
+"use strict";
 
 /**
     WYMeditor.editor.init
@@ -813,7 +815,7 @@ WYMeditor.editor.prototype.fixBodyHtml = function () {
     wym.spaceBlockingElements();
     wym.fixDoubleBr();
 
-    $(wym._element).trigger(WYMeditor.EVENTS.postBlockMaybeCreated, wym);
+    jQuery(wym._element).trigger(WYMeditor.EVENTS.postBlockMaybeCreated, wym);
 };
 
 /**
