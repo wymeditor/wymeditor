@@ -1,15 +1,18 @@
+"use strict";
+
 WYMeditor.SKINS.seamless = {
     OPTS: {
-        iframeHtml: String() +
-            '<div class="wym_iframe wym_section">' +
-                '<iframe src="' + WYMeditor.IFRAME_BASE_PATH + 'wymiframe.html" ' +
-                    'frameborder="0" ' +
-                    'scrolling="no" ' +
-                    'onload="this.contentWindow.parent.WYMeditor.INSTANCES[' +
-                    WYMeditor.INDEX + '].initIframe(this)"' +
-                    '>' +
-                '</iframe>' +
-            "</div>",
+        iframeHtml: [""
+        , '<div class="wym_iframe wym_section">'
+            , '<iframe src="' + WYMeditor.IFRAME_BASE_PATH + 'wymiframe.html" '
+                , 'frameborder="0" '
+                , 'scrolling="no" '
+                , 'onload="this.contentWindow.parent.WYMeditor.INSTANCES['
+                , WYMeditor.INDEX + '].initIframe(this)"'
+                , '>'
+            , '</iframe>'
+        , '</div>'
+        ].join(""),
         // After Iframe initialization, check if we're ready to perform the
         // first resize every this many ms
         initIframeCheckFrequency: 50
@@ -127,7 +130,8 @@ WYMeditor.SKINS.seamless = {
             $window = jQuery(window),
             $body = jQuery(document.body);
 
-        containerLowestY = iframeOffsetTop + containerOffset.top + $container.outerHeight();
+        containerLowestY = iframeOffsetTop + containerOffset.top;
+        containerLowestY += $container.outerHeight();
         viewportLowestY = $window.scrollTop() + $window.height();
         scrollDiff = containerLowestY - viewportLowestY;
         if (scrollDiff > 0) {
