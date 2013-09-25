@@ -1,40 +1,168 @@
+###############
 Coding Standard
-===============
+###############
 
 The goal of this document is to define a set of general rules regarding the
 formatting and structure of the WYMeditor code as well as defining some best
 practices. It should also serve as a good starting point for developers that
 want to contribute code to the WYMeditor project.
 
+******
+jshint
+******
 
-jslint
-------
+All Javascript source should pass the version of
+`jshint <https://github.com/jshint/jshint>`_
+that's defined via ``grunt-contrib-jshint``
+in our ``packages.json``
+with the options defined in our ``.jshintrc``.
 
-All Javascript source should pass the latest stable version of
-`JSlint <https://github.com/reid/node-jslint>`_ using the options:
+Ideally,
+you are running this in your text editor
+on every file save.
+At the very least,
+you can perform this check via Grunt:
 
 .. code-block:: shell-session
 
-    jslint --es5 false --white --indent 4
+    vagrant@precise32:~/wym$ grunt jshint
+
+Making Files Pass
+=================
+
+``jshint`` against master should always pass,
+all the time.
+That means that before sending a pull request,
+a feature branch should pass.
+Generally,
+there are a few techniques to make this happen.
+
+Fix Your Code
+-------------
+
+Most of the time,
+the errors are useful
+and changing the code to pass results in cleaner,
+easier to read,
+more-consistent code.
+If you're confused about an error,
+a quick google usually results
+in a Stack Overflow question with a good solution.
+
+Define ``global`` and ``exported``
+----------------------------------
+
+The combination of the `unused <http://www.jshint.com/docs/options/#unused>`_
+and `undef <http://www.jshint.com/docs/options/#undef>`_ options
+is very useful for eliminating global leakage and dead code.
+It does have a cost in that we must tell jshint
+about which files rely on other files
+and which files are used as libraries by other files.
+
+We do this using `Inline configuration <http://www.jshint.com/docs/config/>`_.
+
+Do **not** use single-line exceptions
+to tell jshint to ignore global/exported problems.
 
 
+``global``
+^^^^^^^^^^
+
+If you get a ``W117`` warning
+about a variable not being defined
+because it comes from another file,
+you need to define a global.
+For example,
+the ``ok`` method comes from QUnit
+so test files need the following at the top:
+
+.. code-block:: javascript
+
+    /* global ok */
+
+``exported``
+^^^^^^^^^^^^
+
+For variables and functions defined in one file
+but used in another,
+you'll get a ``W098`` warning
+about the variable being defined but never used.
+You should fix this with an ``exported`` Inline configuration
+at the top of the file.
+
+For example,
+if the file defines a ``usefulUtiityFunction``,
+you would add the following
+at the top of the file:
+
+.. code-block:: javascript
+
+    /* exported usefulUtilityFunction */
+
+Make jshint Exceptions
+^^^^^^^^^^^^^^^^^^^^^^
+
+This should be used as little as possible.
+There's almost always a way to fix the code
+to match.
+When WYMeditor started enforcing a passing jshint,
+we added exceptions liberally
+just to get to a stable starting point.
+New code should almost never
+come with new exceptions.
+
+This `JSHint options documentation <http://www.jshint.com/docs/config/>`_
+explains how to suppress a warning
+and then re-enable the warning.
+**Always** re-enable the warning
+after you disable it,
+even if there's currently no code after the block.
+Otherwise,
+new code added might accidentally
+not be subject to the check.
+
+For example,
+if you're doing a ``for in`` loop that you know to be safe,
+you could do:
+
+.. code-block:: javascript
+
+    var y = Object.create(null);
+
+    /* jshint -W089 */
+    for (var prop in y) {
+        // ...
+    }
+    /* jshint +W089 */
+
+Current vs Ideal
+================
+
+Some of our current `jshint options <http://www.jshint.com/docs/options/>`_
+are a result of legacy code
+and not an indication of where we'd like to be.
+In the spirit of getting a 100% passing jshint run,
+we made some initial sacrifices.
+The goal is to get all of the code on the same standard.
+
+*************************************
 Crockford Javascript Code Conventions
--------------------------------------
+*************************************
 
 Please refer to the `Crockford Javascript Code
 Conventions <http://javascript.crockford.com/code.html>`_ for a set of general
 rules. The points listed below are not included in Crockford Conventions and/or
 specific to the WYMeditor project.
 
-
+********************
 Formatting and Style
---------------------
+********************
 
 Naming Conventions
-^^^^^^^^^^^^^^^^^^
+==================
 
 Variables and Functions
-"""""""""""""""""""""""
+-----------------------
 
 Give variables and function **meaningful names**. Use mixedCase (lower
 CamelCase) for names spanning several words. `Constants` should be in all
@@ -51,7 +179,7 @@ Example:
     function parseHtml () {};
 
 Constructors
-""""""""""""
+------------
 
 Constructors should be named using PascalCase (upper CamelCase) for easier
 differentiation.
@@ -65,19 +193,8 @@ Example:
     function myMethod () {}
     }
 
-Event Handlers
-""""""""""""""
-
-Prepend ``on`` to the event handler name for easier differentiation.
-
-Example:
-
-.. code-block:: javascript
-
-    function onEventName (event) {}
-
 Namespacing
-^^^^^^^^^^^
+===========
 
 All code should be placed under the WYMeditor namespace to avoid creating any
 unnecessary global variables. If you're extending and/or modifying WYM, place
@@ -89,13 +206,13 @@ DOM parsers which make out the core parts of WYMeditor.
 WYMeditor.ui contains the UI parts of WYM (i.e. the default Toolbar and
 Dialogue objects).
 
-WYMeditor.util contains any utility methods or objects, see :ref:`natives`.
+WYMeditor.util contains any utility methods or objects, see :ref:`coding-style-natives`.
 
 WYMeditor.plugins – place your plug-ins here.
 
 
 Inheritance and "Classes"
--------------------------
+=========================
 
 There's a lot of different ways of doing inheritance in JavaScript. There have
 been attempts to emulate Classes and several patterns trying enhance, hide or
@@ -107,22 +224,13 @@ prototypes).
 It's not that the different variations of the “Pseudo Classical” model out
 there are all bad, but there is no other “standard” way of doing inheritance.
 
-Private members
-^^^^^^^^^^^^^^^
-Add description
-
-Events
-^^^^^^
-
-Add description
-
 Other Rules and Best Practices
-------------------------------
+==============================
 
-.. _natives:
+.. _coding-style-natives:
 
 Leave the Natives Alone
-^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------
 
 WYMeditor is used by a lot of people in a lot of different environments thus
 modifying the prototypes for native objects (such as Array or String) can
@@ -132,7 +240,7 @@ The solution is simple – simply leave them alone. Place any kind of general
 helper methods under WYMeditor.util.
 
 Use Literals
-^^^^^^^^^^^^
+------------
 
 This is a basic one – but there's still a lot of developers that use the Array
 and Object constructors.
@@ -140,7 +248,7 @@ and Object constructors.
 http://yuiblog.com/blog/2006/11/13/javascript-we-hardly-new-ya/
 
 Use the ``which`` Property of jQuery Event Objects
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------------------------
 
 When watching for keyboard key input, use the ``event.which`` property to find
 the inputted key instead of ``event.keyCode`` or ``event.charCode``. This
@@ -150,7 +258,7 @@ property normalizes ``event.keyCode`` and ``event.charCode`` in jQuery. Using
 <http://api.jquery.com/event.which/>`_ for watching keyboard key input.
 
 Further Reading
-^^^^^^^^^^^^^^^
+---------------
 
 Got any other links that you think can be of help for new WYM developers? Share
 them here!
