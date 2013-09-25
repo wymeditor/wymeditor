@@ -189,8 +189,9 @@ Example:
 .. code-block:: javascript
 
     function MyObject () {}
+
     MyObject.prototype = {
-    function myMethod () {}
+        function myMethod () {}
     }
 
 Namespacing
@@ -210,6 +211,53 @@ WYMeditor.util contains any utility methods or objects, see :ref:`coding-style-n
 
 WYMeditor.plugins – place your plug-ins here.
 
+Multi-Line Strings
+==================
+
+Choosing among syntaxes for multi-line strings is rough,
+because they mostly all suck.
+We've settled on this as the least-bad:
+
+.. code-block:: javascript
+
+    var bigString = [""
+        , wym._options.containersSelector
+        , wym._options.classesSelector
+    ].join('');
+
+Advantages:
+
+* Passes ``jshint``
+* Leading commas allows re-ordering without comma juggling
+* A one-line addition is a one-line diff
+* Can use other join characters like ``, `` or ``\n`` for flexibility
+* Can indent lines in source to avoid >79 character lines
+* Can indent lines in source to display HTML nesting for readability
+
+HTML Strings
+------------
+
+Building HTML strings also kind of sucks.
+Eventually,
+we hope to using something like `JSX <http://facebook.github.io/react/docs/jsx-in-depth.html>`_.
+For now,
+just build a multi-line string with proper HTML indentation
+and using ``'`` as the quote character
+(so that it's easy to use proper ``"`` to quote HTML attributes).
+
+.. code-block:: javascript
+
+    var iframeHtml = [""
+        , '<div class="wym_iframe wym_section">'
+            , '<iframe src="' + WYMeditor.IFRAME_BASE_PATH + 'wymiframe.html" '
+                , 'frameborder="0" '
+                , 'scrolling="no" '
+                , 'onload="this.contentWindow.parent.WYMeditor.INSTANCES['
+                , WYMeditor.INDEX + '].initIframe(this)"'
+                , '>'
+            , '</iframe>'
+        , '</div>'
+    ].join(""),
 
 Inheritance and "Classes"
 =========================
