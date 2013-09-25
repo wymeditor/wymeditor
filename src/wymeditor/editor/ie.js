@@ -111,6 +111,8 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
         // Is this really needed, it trigger an unexisting property on IE6
         this._doc = iframe.contentWindow.document;
     } catch (e) {}
+
+    $(wym._element).trigger(WYMeditor.EVENTS.postIframeInitialization, wym);
 };
 
 (function (editorLoadSkin) {
