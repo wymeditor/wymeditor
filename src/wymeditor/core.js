@@ -1,4 +1,5 @@
-/*jslint evil: true, indent: 4 */
+"use strict";
+
 /*@version @@VERSION */
 /**
     WYMeditor

@@ -16,6 +16,12 @@ var rootDivCorrectHtml = String() +
     '<div id="replaceMe">Replace me</div>' +
     '<p>Some text after the replaced container</p>';
 
+function setupDefaultRootContainerDivWym() {
+    setupWym(function (wym) {
+        wym.documentStructureManager.setDefaultRootContainer('div');
+    });
+}
+
 module("structure-default_root_p", {setup: setupWym});
 
 test("DIV element is correctly converted to P", function () {
