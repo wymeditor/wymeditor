@@ -330,7 +330,7 @@ WYMeditor.editor.prototype.exec = function (cmd) {
 
     case WYMeditor.CREATE_LINK:
         container = this.container();
-        if (container || this._selected_image) {
+        if (container || this._selectedImage) {
             this.dialog(WYMeditor.DIALOG_LINK);
         }
         break;
@@ -647,8 +647,8 @@ WYMeditor.editor.prototype.keyCanCreateBlockElement = function (keyCode) {
 */
 WYMeditor.editor.prototype.toggleClass = function (sClass, jqexpr) {
     var container = null;
-    if (this._selected_image) {
-        container = this._selected_image;
+    if (this._selectedImage) {
+        container = this._selectedImage;
     } else {
         container = jQuery(this.selected());
     }
@@ -2621,9 +2621,9 @@ WYMeditor.editor.prototype.listen = function () {
 
 WYMeditor.editor.prototype.mousedown = function (evt) {
     // Store the selected image if we clicked an <img> tag
-    this._selected_image = null;
+    this._selectedImage = null;
     if (evt.target.tagName.toLowerCase() === WYMeditor.IMG) {
-        this._selected_image = evt.target;
+        this._selectedImage = evt.target;
     }
 };
 

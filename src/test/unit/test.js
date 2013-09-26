@@ -1210,20 +1210,20 @@ test("_selected image is saved on mousedown", function () {
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
     // Editor starts with no selected image. Use equal instead of deepEqual
-    // because wymeditor._selected_image intermittently changes between being
+    // because wymeditor._selectedImage intermittently changes between being
     // undefined and null, but either value should be acceptable for this test.
-    equal(wymeditor._selected_image, undefined);
+    equal(wymeditor._selectedImage, undefined);
 
     // Clicking on a non-image doesn't change that
     $noimage = $body.find('#noimage');
     $noimage.mousedown();
-    deepEqual(wymeditor._selected_image, null);
+    deepEqual(wymeditor._selectedImage, null);
 
 
     // Clicking an image does update the selected image
     $google = $body.find('#google');
     $google.mousedown();
-    deepEqual(wymeditor._selected_image, $google[0]);
+    deepEqual(wymeditor._selectedImage, $google[0]);
 });
 
 // The following test doesn't work in Phantom.js because the `InsertImage`

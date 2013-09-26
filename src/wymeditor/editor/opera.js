@@ -102,5 +102,5 @@ WYMeditor.WymClassOpera.prototype.keydown = function(evt) {
 WYMeditor.WymClassOpera.prototype.keyup = function(evt) {
     //'this' is the doc
     var wym = WYMeditor.INSTANCES[this.title];
-    wym._selected_image = null;
+    wym._selectedImage = null;
 };

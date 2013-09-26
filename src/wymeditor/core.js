@@ -898,8 +898,8 @@ WYMeditor.INIT_DIALOG = function (index) {
         }
 
         // fix MSIE selection if link image has been clicked
-        if (!selected && wym._selected_image) {
-            selected = jQuery(wym._selected_image).parentsOrSelf(WYMeditor.A);
+        if (!selected && wym._selectedImage) {
+            selected = jQuery(wym._selectedImage).parentsOrSelf(WYMeditor.A);
         }
     }
 
@@ -924,10 +924,10 @@ WYMeditor.INIT_DIALOG = function (index) {
     }
 
     // auto populate image fields if selected image
-    if (wym._selected_image) {
-        jQuery(wym._options.dialogImageSelector + " " + wym._options.srcSelector).val(jQuery(wym._selected_image).attr(WYMeditor.SRC));
-        jQuery(wym._options.dialogImageSelector + " " + wym._options.titleSelector).val(jQuery(wym._selected_image).attr(WYMeditor.TITLE));
-        jQuery(wym._options.dialogImageSelector + " " + wym._options.altSelector).val(jQuery(wym._selected_image).attr(WYMeditor.ALT));
+    if (wym._selectedImage) {
+        jQuery(wym._options.dialogImageSelector + " " + wym._options.srcSelector).val(jQuery(wym._selectedImage).attr(WYMeditor.SRC));
+        jQuery(wym._options.dialogImageSelector + " " + wym._options.titleSelector).val(jQuery(wym._selectedImage).attr(WYMeditor.TITLE));
+        jQuery(wym._options.dialogImageSelector + " " + wym._options.altSelector).val(jQuery(wym._selectedImage).attr(WYMeditor.ALT));
     }
 
     jQuery(wym._options.dialogLinkSelector + " " +

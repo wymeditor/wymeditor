@@ -241,7 +241,7 @@ WYMeditor.WymClassExplorer.prototype.keyup = function (evt) {
         wym.documentStructureManager.structureRules.notValidRootContainers;
     defaultRootContainer =
         wym.documentStructureManager.structureRules.defaultRootContainer;
-    this._selected_image = null;
+    this._selectedImage = null;
 
     // If the inputted key cannont create a block element and is not a command,
     // check to make sure the selection is properly wrapped in a container
