@@ -3,6 +3,7 @@ node_modules
 src/jquery/*
 src/test/unit/qunit/*
 src/test/unit/sinon/*
+src/wymeditor/editor/opera.js
 src/wymeditor/lang/*
 src/wymeditor/rangy/*
 src/wymeditor/parser/*

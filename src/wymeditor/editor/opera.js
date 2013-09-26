@@ -2,12 +2,12 @@
 /* global -$ */
 "use strict";
 
-WYMeditor.WymClassOpera = function(wym) {
+WYMeditor.WymClassOpera = function (wym) {
     this._wym = wym;
     this._class = "class";
 };
 
-WYMeditor.WymClassOpera.prototype.initIframe = function(iframe) {
+WYMeditor.WymClassOpera.prototype.initIframe = function (iframe) {
     this._iframe = iframe;
     this._doc = iframe.contentWindow.document;
 
