@@ -1,4 +1,5 @@
-"use strict";
+/* jshint strict: false, maxlen: 90, evil: true */
+/* global -$, WYMeditor: true, console */
 
 /*@version @@VERSION */
 /**
@@ -33,7 +34,7 @@
 
 // Global WYMeditor namespace.
 if (typeof (WYMeditor) === 'undefined') {
-    WYMeditor = {};
+    var WYMeditor = {};
 }
 
 // Wrap the Firebug console in WYMeditor.console
@@ -42,9 +43,9 @@ if (typeof (WYMeditor) === 'undefined') {
         typeof console === 'undefined') {
         // No in-browser console logging available
         var names = [
-                "log", "debug", "info", "warn", "error", "assert", "dir", "dirxml",
-                "group", "groupEnd", "time", "timeEnd", "count", "trace", "profile",
-                "profileEnd"
+                "log", "debug", "info", "warn", "error", "assert", "dir",
+                "dirxml", "group", "groupEnd", "time", "timeEnd", "count",
+                "trace", "profile", "profileEnd"
             ],
             noOp = function () {},
             i;
@@ -53,7 +54,7 @@ if (typeof (WYMeditor) === 'undefined') {
         for (i = 0; i < names.length; i += 1) {
             WYMeditor.console[names[i]] = noOp;
         }
-    } else if (console) {
+    } else if (typeof console !== 'undefined') {
         // ie8+
         WYMeditor.console = console;
     } else if (window.console.firebug) {
@@ -86,7 +87,7 @@ jQuery.extend(WYMeditor, {
     SKINS_DEFAULT_PATH  - The skins default base path.
     SKINS_DEFAULT_CSS   - The skins default CSS file.
     LANG_DEFAULT_PATH   - The language files default path.
-    IFRAME_BASE_PATH    - A string replaced by the designmode iframe's base path.
+    IFRAME_BASE_PATH    - String replaced by the designmode iframe's base path.
     IFRAME_DEFAULT      - The iframe's default base path.
     JQUERY_PATH         - A string replaced by the computed jQuery path.
     DIRECTION           - A string replaced by the text direction (rtl or ltr).
@@ -251,7 +252,8 @@ jQuery.extend(WYMeditor, {
     // effectively block the creation of new blocks.
     BLOCKING_ELEMENTS : ["table", "blockquote", "pre"],
 
-    // The remaining `MAIN_CONTAINERS` that are not considered `BLOCKING_ELEMENTS`
+    // The remaining `MAIN_CONTAINERS` that are not considered
+    // `BLOCKING_ELEMENTS`
     NON_BLOCKING_ELEMENTS : ["p", "div", "h1", "h2", "h3", "h4", "h5", "h6"],
 
     // The elements that define a type of list.
@@ -279,8 +281,8 @@ jQuery.extend(WYMeditor, {
     // in them.
     SELECTABLE_TABLE_ELEMENTS: ["td", "th", "caption"],
 
-    // Class for marking br elements used to space apart blocking elements in the
-    // editor.
+    // Class for marking br elements used to space apart blocking elements in
+    // the editor.
     BLOCKING_ELEMENT_SPACER_CLASS: "wym-blocking-element-spacer",
 
     // Class used to flag an element for removal by the xhtml parser so that
@@ -384,7 +386,10 @@ jQuery.extend(WYMeditor, {
             WYMeditor.computeJqueryPath();
         // Path to skin files
         this._options.skinPath = this._options.skinPath ||
-            this._options.basePath + WYMeditor.SKINS_DEFAULT_PATH + this._options.skin + '/';
+            this._options.basePath +
+            WYMeditor.SKINS_DEFAULT_PATH +
+            this._options.skin +
+            '/';
         // Path to the language files
         this._options.langPath = this._options.langPath ||
             this._options.basePath + WYMeditor.LANG_DEFAULT_PATH;
@@ -772,7 +777,7 @@ jQuery.fn.wymeditor = function (options) {
         // Assigning to _editor because the return value from new isn't
         // actually used, but we need to use new to properly change the
         // prototype
-        var _editor = new WYMeditor.editor(jQuery(this), options);
+        this._wym = new WYMeditor.editor(jQuery(this), options);
     });
 };
 
@@ -926,9 +931,15 @@ WYMeditor.INIT_DIALOG = function (index) {
 
     // auto populate image fields if selected image
     if (wym._selectedImage) {
-        jQuery(wym._options.dialogImageSelector + " " + wym._options.srcSelector).val(jQuery(wym._selectedImage).attr(WYMeditor.SRC));
-        jQuery(wym._options.dialogImageSelector + " " + wym._options.titleSelector).val(jQuery(wym._selectedImage).attr(WYMeditor.TITLE));
-        jQuery(wym._options.dialogImageSelector + " " + wym._options.altSelector).val(jQuery(wym._selectedImage).attr(WYMeditor.ALT));
+        jQuery(
+            wym._options.dialogImageSelector + " " + wym._options.srcSelector
+        ).val(jQuery(wym._selectedImage).attr(WYMeditor.SRC));
+        jQuery(
+            wym._options.dialogImageSelector + " " + wym._options.titleSelector
+        ).val(jQuery(wym._selectedImage).attr(WYMeditor.TITLE));
+        jQuery(
+            wym._options.dialogImageSelector + " " + wym._options.altSelector
+        ).val(jQuery(wym._selectedImage).attr(WYMeditor.ALT));
     }
 
     jQuery(wym._options.dialogLinkSelector + " " +
@@ -1003,9 +1014,9 @@ WYMeditor.MAKE_TABLE_ONCLICK = function (wym) {
         var numRows = jQuery(wym._options.rowsSelector).val(),
             numColumns = jQuery(wym._options.colsSelector).val(),
             caption = jQuery(wym._options.captionSelector).val(),
-            summary = jQuery(wym._options.summarySelector).val(),
+            summary = jQuery(wym._options.summarySelector).val();
 
-            table = wym.insertTable(numRows, numColumns, caption, summary);
+        wym.insertTable(numRows, numColumns, caption, summary);
 
         window.close();
     };

@@ -1,4 +1,4 @@
-/*jslint node: true */
+/*jslint node: true, es3: false */
 'use strict';
 var LIVERELOAD_PORT = 35729,
     lrSnippet = require('connect-livereload')(
@@ -15,9 +15,10 @@ module.exports = function (grunt) {
     // Oldest supported version of jQuery is used by default
     var jqueryVersion = grunt.option("jquery") || "1.4.4",
         yeomanConfig = {
-        app: 'src',
-        dist: 'dist'
-    };
+            app: 'src',
+            dist: 'dist'
+        },
+        unitTestPort = 9001;
 
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
@@ -69,6 +70,7 @@ module.exports = function (grunt) {
             },
             test: {
                 options: {
+                    port: unitTestPort,
                     middleware: function (connect) {
                         return [
                             mountFolder(connect, '.tmp'),
@@ -118,7 +120,7 @@ module.exports = function (grunt) {
                 options: {
                     timeout: 25000,
                     urls: [
-                        "http://localhost:<%= connect.options.port %>/test/unit/index.html" +
+                        "http://localhost:" + unitTestPort + "/test/unit/index.html" +
                         "?inPhantomjs=true&jquery=" + jqueryVersion
                     ]
                 }
