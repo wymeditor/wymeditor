@@ -1,9 +1,13 @@
+/* exported isContentEditable, simulateKey, htmlEquals,
+ makeTextSelection, moveSelector */
+/* global rangy, deepEqual */
+"use strict";
 
 // Regex expression shortcuts
-var pr_amp = /&/g;
-var pr_lt = /</g;
-var pr_gt = />/g;
-var pr_quot = /\"/g;
+var preAmp = /&/g;
+var preLt = /</g;
+var preGt = />/g;
+var preQuot = /\"/g;
 
 // Attributes that should be ignored when normalizing HTML for comparison
 // across browsers. The variable is an array of arrays where each array should
@@ -13,35 +17,35 @@ var pr_quot = /\"/g;
 // this second element is not provided, it will always ignore the attribute no
 // matter what the attribute's value is.
 var ignoreAttributes = [
-                        ['_moz_editor_bogus_node'],
-                        ['_moz_dirty'],
-                        ['_wym_visited'],
-                        ['sizset'],
-                        ['tabindex'],
-                        ['rowspan', ['1']]
-                       ];
+    ['_moz_editor_bogus_node'],
+    ['_moz_dirty'],
+    ['_wym_visited'],
+    ['sizset'],
+    ['tabindex'],
+    ['rowspan', ['1']]
+];
 
 /**
 * Escape html special characters.
 */
 function textToHtml(str) {
-    return str.replace(pr_amp, '&amp;')
-        .replace(pr_lt, '&lt;')
-        .replace(pr_gt, '&gt;');
+    return str.replace(preAmp, '&amp;')
+        .replace(preLt, '&lt;')
+        .replace(preGt, '&gt;');
 }
 
 function attribToHtml(str) {
-    return str.replace(pr_amp, '&amp;')
-        .replace(pr_lt, '&lt;')
-        .replace(pr_gt, '&gt;')
-        .replace(pr_quot, '&quot;');
+    return str.replace(preAmp, '&amp;')
+        .replace(preLt, '&lt;')
+        .replace(preGt, '&gt;')
+        .replace(preQuot, '&quot;');
 }
 
 /**
 * Order HTML attributes for consistent HTML comparison.
 *
 * Adapted from google-code-prettify
-* http://code.google.com/p/google-code-prettify/source/browse/trunk/src/prettify.js#311
+* prettify.js
 * Apache license, Copyright (C) 2006 Google Inc.
 */
 function normalizeHtml(node) {
@@ -96,11 +100,13 @@ function normalizeHtml(node) {
                 for (j = 0; j < ignoreAttributes.length; ++j) {
                     if (attrName === ignoreAttributes[j][0]) {
                         if (!ignoreAttributes[j][1] ||
-                            jQuery.inArray(attrValue,
-                                           ignoreAttributes[j][1]) > -1) {
+                            jQuery.inArray(
+                                attrValue,
+                                ignoreAttributes[j][1]
+                            ) > -1) {
 
-                                keepAttr = false;
-                                break;
+                            keepAttr = false;
+                            break;
                         }
                     }
 
@@ -187,8 +193,8 @@ function htmlEquals(wymeditor, expected, assertionString, fixListSpacing) {
         normedActual += normalizeHtml(tmpNodes[i]);
     }
     if (fixListSpacing && jQuery.browser.msie &&
-            parseInt(jQuery.browser.version) < 9.0) {
-        normedActual = normedActual.replace(/\s(<br.*?\/>)/g, '$1')
+            parseInt(jQuery.browser.version, 10) < 9.0) {
+        normedActual = normedActual.replace(/\s(<br.*?\/>)/g, '$1');
 
         listTypeOptions = WYMeditor.LIST_TYPE_ELEMENTS.join('|');
         normedActual = normedActual.replace(
@@ -205,7 +211,9 @@ function htmlEquals(wymeditor, expected, assertionString, fixListSpacing) {
     deepEqual(normedActual, normedExpected, assertionString);
 }
 
-function makeSelection(wymeditor, startElement, endElement, startElementIndex, endElementIndex) {
+function makeSelection(
+    wymeditor, startElement, endElement, startElementIndex, endElementIndex
+) {
     if (typeof startElementIndex === 'undefined') {
         startElementIndex = 0;
     }
@@ -230,7 +238,7 @@ function makeSelection(wymeditor, startElement, endElement, startElementIndex, e
 
     // ie will raise an error if we try to use a Control range that
     // encompasses more than one element. See:
-    // http://code.google.com/p/rangy/wiki/RangySelection#Control_selections_in_Internet_Explorer
+    // http://code.google.com/p/rangy/wiki/RangySelection
     // We need to handle internet explorer selection differently
     sel.setSingleRange(range);
 
@@ -244,17 +252,23 @@ function makeSelection(wymeditor, startElement, endElement, startElementIndex, e
     Make a selection between two elements, but assume that the given indexes
     are to a child TextNode instead of a child DOM node.
 */
-function makeTextSelection(wymeditor, startElement, endElement, startElementIndex, endElementIndex) {
+function makeTextSelection(
+    wymeditor, startElement, endElement, startElementIndex, endElementIndex) {
     var $startElementContents,
-        $endElementContents;
+        $endElementContents,
+        nodeType,
+        isTextNode;
 
     if (typeof startElementIndex !== 'undefined') {
         // Look for a first-child text node and use
         // that as the startElement for the makeSelection() call
         $startElementContents = jQuery(startElement).contents();
-        if ($startElementContents.length > 0 &&
-                $startElementContents.get(0).nodeType === WYMeditor.NODE.TEXT) {
-            startElement = $startElementContents.get(0);
+        if ($startElementContents.length > 0) {
+            nodeType = $startElementContents.get(0).nodeType;
+            isTextNode = nodeType === WYMeditor.NODE.TEXT;
+            if (isTextNode) {
+                startElement = $startElementContents.get(0);
+            }
         }
     }
     if (typeof endElementIndex !== 'undefined') {
@@ -267,7 +281,13 @@ function makeTextSelection(wymeditor, startElement, endElement, startElementInde
         }
     }
 
-    makeSelection(wymeditor, startElement, endElement, startElementIndex, endElementIndex);
+    makeSelection(
+        wymeditor,
+        startElement,
+        endElement,
+        startElementIndex,
+        endElementIndex
+    );
 }
 
 
@@ -340,7 +360,8 @@ function simulateKey(keyCode, targetElement, options) {
 function isContentEditable(element) {
     // We can't use isContentEditable in firefox 7 because it doesn't take
     // in to account designMode like firefox 3 did
-    if (!jQuery.browser.mozilla && typeof element.isContentEditable  !== 'undefined') {
+    if (!jQuery.browser.mozilla &&
+        typeof element.isContentEditable  !== 'undefined') {
         return element.isContentEditable;
     }
 
