@@ -34,7 +34,9 @@
 
 // Global WYMeditor namespace.
 if (typeof (WYMeditor) === 'undefined') {
+    /* jshint -W079 */
     var WYMeditor = {};
+    /* jshint +W079 */
 }
 
 // Wrap the Firebug console in WYMeditor.console

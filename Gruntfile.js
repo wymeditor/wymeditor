@@ -1,4 +1,4 @@
-/*jslint node: true, es3: false */
+/*jslint node: true, es3: false, maxlen: 88 */
 'use strict';
 var LIVERELOAD_PORT = 35729,
     lrSnippet = require('connect-livereload')(
@@ -120,8 +120,13 @@ module.exports = function (grunt) {
                 options: {
                     timeout: 25000,
                     urls: [
-                        "http://localhost:" + unitTestPort + "/test/unit/index.html" +
-                        "?inPhantomjs=true&jquery=" + jqueryVersion
+                        [""
+                            , "http://localhost:"
+                            , unitTestPort
+                            , "/test/unit/index.html"
+                            , "?inPhantomjs=true&jquery="
+                            , jqueryVersion
+                        ].join("")
                     ]
                 }
             }

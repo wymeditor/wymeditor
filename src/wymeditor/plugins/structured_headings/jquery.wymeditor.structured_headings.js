@@ -1,11 +1,13 @@
 /* jshint maxlen: 90 */
-/* global -$, WYMeditor: true, rangy */
+/* global -$, rangy */
 "use strict";
 
 // In case the script is included on a page without WYMeditor, define the
 // WYMeditor and WYMeditor.editor objects to hold the constants used.
 if (typeof (WYMeditor) === 'undefined') {
+    /* jshint -W020 */
     WYMeditor = {};
+    /* jshint +W020 */
     WYMeditor.HEADING_ELEMENTS = ["h1", "h2", "h3", "h4", "h5", "h6"];
     WYMeditor.KEY = {
         BACKSPACE: 8,
