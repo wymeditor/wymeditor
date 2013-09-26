@@ -143,6 +143,9 @@ but in the interests of getting a passing jshint,
 some were used initially.
 Do **not** add these,
 despite the fact that some files currently use them.
+Pull requests that remove a file-wide exception
+and fix the resulting lint problems
+are greatly appreciated.
 
 Current vs Ideal
 ================
