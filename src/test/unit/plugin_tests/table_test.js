@@ -1,3 +1,10 @@
+/* jshint maxlen: 90 */
+/* global rangy,
+setupWym, SKIP_KNOWN_FAILING_TESTS,
+htmlEquals, moveSelector, simulateKey, makeSelection, normalizeHtml,
+ok, test, expect, deepEqual */
+"use strict";
+
 /**
  * Run a table modification and verify the results.
  *
@@ -13,12 +20,15 @@
 function testTable(
     selector, action, type, initialHtml, expectedHtml, indexInSelector
 ) {
-    var wymeditor = jQuery.wymeditors(0);
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        actionElmnt;
+
     wymeditor._html(initialHtml);
 
-    var $body = jQuery(wymeditor._doc).find('body.wym_iframe');
-    var indexInSelector = indexInSelector || 0;
-    var actionElmnt = $body.find(selector)[indexInSelector];
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    indexInSelector = indexInSelector || 0;
+    actionElmnt = $body.find(selector)[indexInSelector];
 
     if (action === 'add') {
         if (type === 'row') {
@@ -38,21 +48,25 @@ function testTable(
 }
 
 function testTableTab(initialHtml, startSelector, endSelector) {
-    var wymeditor = jQuery.wymeditors(0);
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        startElmnt,
+        actualSelection,
+        expectedSelection;
     wymeditor._html(initialHtml);
 
-    var $body = jQuery(wymeditor._doc).find('body.wym_iframe');
-    var startElmnt = $body.find(startSelector)[0];
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    startElmnt = $body.find(startSelector)[0];
     ok(startElmnt !== null, "Selection start element exists");
     moveSelector(wymeditor, startElmnt);
 
     simulateKey(WYMeditor.KEY.TAB, startElmnt);
 
-    var actualSelection = wymeditor.selected();
+    actualSelection = wymeditor.selected();
     if (endSelector === null) {
         deepEqual(actualSelection, null);
     } else {
-        var expectedSelection = $body.find(endSelector);
+        expectedSelection = $body.find(endSelector);
         if (expectedSelection.length !== 0) {
             expectedSelection = expectedSelection[0];
         }
@@ -74,24 +88,34 @@ function testTableTab(initialHtml, startSelector, endSelector) {
 * should have selection after completion of the merge. If null, then having any
 * selection will fail.
 */
-function testRowMerge(initialHtml, expectedHtml, startSelector, endSelector, expectedFinalSelector) {
+function testRowMerge(
+    initialHtml, expectedHtml, startSelector, endSelector, expectedFinalSelector
+) {
 
-    var wymeditor = jQuery.wymeditors(0);
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        startElmnt,
+        endElmnt,
+        sel,
+        changesMade,
+        actualSelection,
+        expectedSelection;
+
     wymeditor._html(initialHtml);
 
     // Verify that the proposed selection range exists, and then make that
     // selection
-    var $body = jQuery(wymeditor._doc).find('body.wym_iframe');
-    var startElmnt = $body.find(startSelector)[0];
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    startElmnt = $body.find(startSelector)[0];
     ok(startElmnt !== null, "Selection start element exists");
-    var endElmnt = $body.find(endSelector)[0];
+    endElmnt = $body.find(endSelector)[0];
     ok(endElmnt !== null, "Selection end element exists");
     makeSelection(wymeditor, startElmnt, endElmnt);
 
     // Use rangy to get a cross-browser selection object and perform the actual
     // merge
-    var sel = rangy.getIframeSelection(wymeditor._iframe);
-    var changesMade = wymeditor.tableEditor.mergeRow(sel);
+    sel = rangy.getIframeSelection(wymeditor._iframe);
+    changesMade = wymeditor.tableEditor.mergeRow(sel);
     deepEqual(changesMade, true);
 
     // Verify that the resulting HTML matches the expected HTML
@@ -99,11 +123,11 @@ function testRowMerge(initialHtml, expectedHtml, startSelector, endSelector, exp
 
     // Verify that our now-current selection matches the expected final
     // selection.
-    var actualSelection = wymeditor.selected();
+    actualSelection = wymeditor.selected();
     if (expectedFinalSelector === null) {
         deepEqual(actualSelection, null);
     } else {
-        var expectedSelection = $body.find(expectedFinalSelector);
+        expectedSelection = $body.find(expectedFinalSelector);
         if (expectedSelection.length !== 0) {
             expectedSelection = expectedSelection[0];
         }
@@ -113,13 +137,16 @@ function testRowMerge(initialHtml, expectedHtml, startSelector, endSelector, exp
 }
 
 function testGetCellXIndex(initialHtml, cellSelector, expectedIndex) {
-    var wymeditor = jQuery.wymeditors(0);
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        cell,
+        actual;
     wymeditor._html(initialHtml);
 
-    var $body = jQuery(wymeditor._doc).find('body.wym_iframe');
-    var cell = $body.find(cellSelector)[0];
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    cell = $body.find(cellSelector)[0];
 
-    var actual = wymeditor.tableEditor.getCellXIndex(cell);
+    actual = wymeditor.tableEditor.getCellXIndex(cell);
     deepEqual(actual, expectedIndex);
 }
 
@@ -1369,7 +1396,13 @@ if (!SKIP_KNOWN_FAILING_TESTS) {
     test("From rowspan to below", function () {
         expect(5);
 
-        testRowMerge(mergeTableHtml, mergeTd23Td34Html, '#td_2_3', '#td_3_4', '#td_3_2 + td');
+        testRowMerge(
+            mergeTableHtml,
+            mergeTd23Td34Html,
+            '#td_2_3',
+            '#td_3_4',
+            '#td_3_2 + td'
+        );
     });
 }
 
@@ -1377,7 +1410,13 @@ if (!SKIP_KNOWN_FAILING_TESTS) {
     test("Below and bottom of long rowspan", function () {
         expect(5);
 
-        testRowMerge(mergeTableLongRowspanHtml, mergeTd42Td23LongRowspanHtml, '#td_4_2', '#td_2_3', '#td_4_2');
+        testRowMerge(
+            mergeTableLongRowspanHtml,
+            mergeTd42Td23LongRowspanHtml,
+            '#td_4_2',
+            '#td_2_3',
+            '#td_4_2'
+        );
     });
 }
 

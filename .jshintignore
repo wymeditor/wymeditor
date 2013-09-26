@@ -1,6 +1,9 @@
 node_modules
 .git
 src/jquery/*
-src/test/unit/qunit.js
+src/test/unit/qunit/*
+src/test/unit/sinon/*
 src/wymeditor/rangy/*
-src/wymeditor/parser/*
+src/wymeditor/skins/minimal/*
+src/wymeditor/skins/silver/*
+src/wymeditor/skins/twopanels/*
