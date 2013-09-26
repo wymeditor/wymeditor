@@ -3,7 +3,15 @@ node_modules
 src/jquery/*
 src/test/unit/qunit/*
 src/test/unit/sinon/*
+src/wymeditor/lang/*
 src/wymeditor/rangy/*
+src/wymeditor/parser/*
+src/wymeditor/plugins/embed/*
+src/wymeditor/plugins/fullscreen/*
+src/wymeditor/plugins/hovertools/*
+src/wymeditor/plugins/list/*
+src/wymeditor/plugins/rdfa/*
+src/wymeditor/skins/compact/*
 src/wymeditor/skins/minimal/*
 src/wymeditor/skins/silver/*
 src/wymeditor/skins/twopanels/*

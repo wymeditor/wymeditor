@@ -1,3 +1,7 @@
+/* jshint maxlen: 90 */
+/* global -$, WYMeditor: true, rangy */
+"use strict";
+
 // In case the script is included on a page without WYMeditor, define the
 // WYMeditor and WYMeditor.editor objects to hold the constants used.
 if (typeof (WYMeditor) === 'undefined') {
@@ -32,22 +36,19 @@ WYMeditor.STRUCTURED_HEADINGS_NUMBERING_SPAN_CLASS = 'wym-structured-heading-num
 WYMeditor.STRUCTURED_HEADINGS_POTENTIAL_HEADING_MODIFICATION_KEYS =
     [WYMeditor.KEY.BACKSPACE, WYMeditor.KEY.DELETE, WYMeditor.KEY.ENTER];
 
-/**
-    structuredHeadings
-    ==================
+/*
+    getHeadingLevel
+    ===============
 
-    Construct and return a heading structure object using the given options
-    object. This should be called in the `postInit` function when initializing
-    a wymeditor instance.
-
-    @param options A configuration object.
+    Returns the integer heading level of the passed heading DOM element. For
+    example, if the passed heading was an `h2` element, the function would
+    return the integer `2`.
 */
-WYMeditor.editor.prototype.structuredHeadings = function (options) {
-    var structuredHeadingsManager = new StructuredHeadingsManager(options, this);
-    this.structuredHeadingsManager = structuredHeadingsManager;
+function getHeadingLevel(heading) {
+    return parseInt(heading.nodeName.slice(-1), 10);
+}
 
-    return structuredHeadingsManager;
-};
+
 
 /**
     StructuredHeadingsManager
@@ -69,14 +70,14 @@ function StructuredHeadingsManager(options, wym) {
 
         enableFixHeadingStructureButton: false,
         fixHeadingStructureButtonHtml: String() +
-            '<li class="wym_tools_fix_heading_structure">' +
-                '<a name="fix_heading_structure" href="#" title="Fix Heading Structure" ' +
-                    'style="background-image: ' +
-                        "url('" + wym._options.basePath +
-                            "plugins/structured_headings/ruler_arrow.png')" + '">' +
-                    'Fix Heading Structure' +
-                '</a>' +
-            '</li>',
+        '<li class="wym_tools_fix_heading_structure">' +
+            '<a name="fix_heading_structure" href="#" title="Fix Heading Structure" ' +
+                'style="background-image: ' +
+                    "url('" + wym._options.basePath +
+                        "plugins/structured_headings/ruler_arrow.png')" + '">' +
+                'Fix Heading Structure' +
+            '</a>' +
+        '</li>',
         fixHeadingStructureSelector: "li.wym_tools_fix_heading_structure a",
 
         headingContainerPanelHtml: String() +
@@ -134,8 +135,6 @@ StructuredHeadingsManager.prototype.createUI = function () {
         ),
         $containerItems,
         $containerLink,
-        $newHeadingItem,
-        newHeadingLink,
         i;
 
     // Add tool panel buttons if necessary
@@ -345,9 +344,10 @@ StructuredHeadingsManager.prototype.changeSelectedHeadingsLevel = function (
         headingList,
         j,
         jStart,
-        jLimit;
+        jLimit,
+        headingNodeFilter;
 
-    var headingNodeFilter = function (testNode) {
+    headingNodeFilter = function (testNode) {
         return jQuery(testNode).is(headingManager._fullHeadingSel);
     };
 
@@ -539,45 +539,10 @@ StructuredHeadingsManager.prototype.enableIE7Polyfill = function () {
         }
     });
 
-    $containersPanelLinks.click(function (evt) {
+    $containersPanelLinks.click(function () {
         headingManager.numberHeadingsIE7();
     });
 };
-
-/**
-    numberHeadingsIE7
-    =================
-
-    A method of Structured Headings Manager objects that wraps the
-    numberHeadingsIE7 function in the plugin file for easier use.
-*/
-StructuredHeadingsManager.prototype.numberHeadingsIE7 = function () {
-    numberHeadingsIE7(this._wym._doc, true);
-}
-
-/**
-    WYMeditor.printStructuredHeadingsCss
-    ====================================
-
-    Function to output the plugin CSS to the console log so that it can be
-    copied over to other pages.
-*/
-WYMeditor.printStructuredHeadingsCSS = function () {
-    WYMeditor.console.log(WYMeditor.structuredHeadingsCSS);
-};
-
-/*
-    getHeadingLevel
-    ===============
-
-    Returns the integer heading level of the passed heading DOM element. For
-    example, if the passed heading was an `h2` element, the function would
-    return the integer `2`.
-*/
-function getHeadingLevel(heading) {
-    return parseInt(heading.nodeName.slice(-1), 10);
-}
-
 
 /*
     numberHeadingsIE7
@@ -697,3 +662,41 @@ function numberHeadingsIE7(doc, addClass) {
     return spanCharTotal;
 }
 
+/**
+    numberHeadingsIE7
+    =================
+
+    A method of Structured Headings Manager objects that wraps the
+    numberHeadingsIE7 function in the plugin file for easier use.
+*/
+StructuredHeadingsManager.prototype.numberHeadingsIE7 = function () {
+    numberHeadingsIE7(this._wym._doc, true);
+};
+
+/**
+    WYMeditor.printStructuredHeadingsCss
+    ====================================
+
+    Function to output the plugin CSS to the console log so that it can be
+    copied over to other pages.
+*/
+WYMeditor.printStructuredHeadingsCSS = function () {
+    WYMeditor.console.log(WYMeditor.structuredHeadingsCSS);
+};
+
+/**
+    structuredHeadings
+    ==================
+
+    Construct and return a heading structure object using the given options
+    object. This should be called in the `postInit` function when initializing
+    a wymeditor instance.
+
+    @param options A configuration object.
+*/
+WYMeditor.editor.prototype.structuredHeadings = function (options) {
+    var structuredHeadingsManager = new StructuredHeadingsManager(options, this);
+    this.structuredHeadingsManager = structuredHeadingsManager;
+
+    return structuredHeadingsManager;
+};
