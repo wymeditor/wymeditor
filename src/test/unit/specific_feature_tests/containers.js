@@ -1,3 +1,9 @@
+/* jshint camelcase: false, maxlen: 85 */
+/* global setupWym,
+htmlEquals, makeTextSelection,
+ok, test, expect */
+"use strict";
+
 var insertPStartHtml = String() +
     '<p>Some text before the replaced container</p>' +
     '<div id="replaceMe">Replace me</div>' +
@@ -129,26 +135,36 @@ test("Text node in the document root is wrapped in default container", function 
             "Text node in the document root is wrapped in default container");
 });
 
-test("Inline element in the document root is wrapped in default container", function () {
-    expect(inlineElementsToTest.length);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
-        keyup_event,
-        inlineElement,
-        i;
+test(
+    "Inline element in the document root is wrapped in default container",
+    function () {
+        expect(inlineElementsToTest.length);
+        var wymeditor = jQuery.wymeditors(0),
+            $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+            keyup_event,
+            inlineElement,
+            i;
 
-    // Set up keyup event with a letter key to trigger wrapping of the element
-    keyup_event = jQuery.Event('keyup');
-    keyup_event.which = WYMeditor.KEY.R;
+        // Set up keyup event with a letter key to trigger wrapping of the element
+        keyup_event = jQuery.Event('keyup');
+        keyup_event.which = WYMeditor.KEY.R;
 
-    for (i = 0; i < inlineElementsToTest.length; ++i) {
-        wymeditor._html(startRootInlineElementHtml[i]);
-        inlineElement = $body.find('#inline-in-root');
-        makeTextSelection(wymeditor, inlineElement, inlineElement, 1, 1);
-        $body.trigger(keyup_event);
-        htmlEquals(wymeditor, correctRootInlineElementHtml[i],
-                "`" + inlineElementsToTest[i] + "` element in the document " +
-                "root is wrapped in default container");
+        for (i = 0; i < inlineElementsToTest.length; ++i) {
+            wymeditor._html(startRootInlineElementHtml[i]);
+            inlineElement = $body.find('#inline-in-root');
+            makeTextSelection(wymeditor, inlineElement, inlineElement, 1, 1);
+            $body.trigger(keyup_event);
+            htmlEquals(
+                wymeditor,
+                correctRootInlineElementHtml[i],
+                [""
+                    , "`"
+                    , inlineElementsToTest[i]
+                    , "` element in the document "
+                    , "root is wrapped in default container"
+                ].join('')
+            );
+        }
     }
-});
+);
 
