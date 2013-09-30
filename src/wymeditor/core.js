@@ -388,10 +388,12 @@ jQuery.extend(WYMeditor, {
             WYMeditor.computeJqueryPath();
         // Path to skin files
         this._options.skinPath = this._options.skinPath ||
-            this._options.basePath +
-            WYMeditor.SKINS_DEFAULT_PATH +
-            this._options.skin +
-            '/';
+            [""
+                , this._options.basePath
+                , WYMeditor.SKINS_DEFAULT_PATH
+                , this._options.skin
+                , "/"
+            ].join("");
         // Path to the language files
         this._options.langPath = this._options.langPath ||
             this._options.basePath + WYMeditor.LANG_DEFAULT_PATH;
