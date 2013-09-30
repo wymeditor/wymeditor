@@ -1,3 +1,10 @@
+/* jshint camelcase: false, maxlen: 105 */
+/* global setupWym, SKIP_KNOWN_FAILING_TESTS,
+htmlEquals, makeTextSelection, moveSelector, simulateKey, normalizeHtml,
+makeSelection,
+ok, test, expect, deepEqual */
+"use strict";
+
 module("list-indent_outdent", {setup: setupWym});
 /**
 * Run a list manipulation and verify the results.
@@ -127,7 +134,9 @@ function testListRoundTrip(elmntId, action, startHtml, expectedHtml, isText) {
     `expectedHtml` The expected HTML result.
     `isText` Is this a Text selection (as opposed to a DOM selection). Defaults to false.
 */
-function testListMulti(startElmntId, endElmntId, action, startHtml, expectedHtml, isText) {
+function testListMulti(
+    startElmntId, endElmntId, action, startHtml, expectedHtml, isText
+) {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         startLi,
@@ -2344,8 +2353,6 @@ var expectedEndOut = String() +
                 TEST_LINEBREAK_SPACER +
             '</li>' +
         '</ol>';
-
-var startEndInNoBR = expectedEndIn.replace(TEST_LINEBREAK_SPACER, '');
 
 var startEndOutNoBR = expectedEndOut.replace(TEST_LINEBREAK_SPACER, '');
 

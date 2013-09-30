@@ -1,3 +1,9 @@
+/* jshint maxlen: 90 */
+/* global setupWym, SKIP_KNOWN_FAILING_TESTS,
+htmlEquals, makeTextSelection, normalizeHtml,
+ok, test, expect, deepEqual */
+"use strict";
+
 /*
     Tests for the structured_headings plugin.
 */
@@ -13,19 +19,19 @@ var NUMBERING_SPAN_CLASS = WYMeditor.STRUCTURED_HEADINGS_NUMBERING_SPAN_CLASS;
     normalized html of the body after the keyup event was applied.
 */
 function getHtmlAfterKeyup(wymeditor) {
-        var $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
-            keyup_event,
-            bodyHtml;
+    var $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        keyupEvent,
+        bodyHtml;
 
-        // Set up shift key keyup event
-        keyup_event = jQuery.Event('keyup');
-        keyup_event.which = WYMeditor.KEY.ENTER;
+    // Set up shift key keyup event
+    keyupEvent = jQuery.Event('keyup');
+    keyupEvent.which = WYMeditor.KEY.ENTER;
 
-        $body.trigger(keyup_event);
+    $body.trigger(keyupEvent);
 
-        // Normalize HTML and remove the body tag to get just inner body html
-        bodyHtml = normalizeHtml($body[0]).replace(/<\/?body.*?>/g, '');
-        return bodyHtml;
+    // Normalize HTML and remove the body tag to get just inner body html
+    bodyHtml = normalizeHtml($body[0]).replace(/<\/?body.*?>/g, '');
+    return bodyHtml;
 }
 
 module("structured_headings-initialize_interface", {setup: setupWym});
@@ -71,7 +77,6 @@ test("Stylesheet added to iframe", function () {
 
         foundLink = false,
         successfulRequest = false,
-        confirmContent = false,
 
         testRequest,
         linkFileName,
@@ -126,39 +131,15 @@ test("CSS stored for user access through console", function () {
               "CSS correctly stored for user access");
 });
 
-if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TESTS) {
+var testHeadingInsertion = function () {};
+var testHeadingIndent = function () {};
+var testHeadingOutdent = function () {};
+var testMultiIndentOutdent = function () {};
+
+if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
+    !SKIP_KNOWN_FAILING_TESTS) {
 
     module("structured_headings-heading_insertion", {setup: setupWym});
-
-    /**
-        testHeadingInsertion
-        ====================
-
-        Tests that headings are assigned to be a proper level based on the
-        context in which the headings are inserted. Selects a paragraph after a
-        heading of each level between `h1` and `h6`, and clicks on the heading
-        link in the containers panel to test if the heading is properly
-        inserted.
-
-       @param wymeditor A wymeditor instance in which to test heading
-                        insertion.
-    */
-    function testHeadingInsertion(wymeditor) {
-        var $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
-            $headingContainerLink = jQuery(wymeditor._box).find(
-                wymeditor.structuredHeadingsManager._options.headingContainerPanelSelector),
-            paragraph,
-            i;
-
-        for (i = 1; i < 7; ++i) {
-            wymeditor._html(htmlForHeadingInsertion);
-            paragraph = $body.find('#to_be_h' + i)[0];
-            makeTextSelection(wymeditor, paragraph, paragraph);
-            $headingContainerLink.click();
-            htmlEquals(wymeditor, correctHtmlInsertions[i - 1],
-                       "Insertion of an H" + i + " heading based on context.");
-        }
-    }
 
     var htmlForHeadingInsertion = String() +
         '<h1>H1</h1>' +
@@ -208,6 +189,37 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
             '<h' + i + ' id="to_be_h' + i + '">Test</h' + i + '>'
         ));
     }
+
+    /**
+        testHeadingInsertion
+        ====================
+
+        Tests that headings are assigned to be a proper level based on the
+        context in which the headings are inserted. Selects a paragraph after a
+        heading of each level between `h1` and `h6`, and clicks on the heading
+        link in the containers panel to test if the heading is properly
+        inserted.
+
+       @param wymeditor A wymeditor instance in which to test heading
+                        insertion.
+    */
+    testHeadingInsertion = function (wymeditor) {
+        var $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+            $headingContainerLink = jQuery(wymeditor._box).find(
+                wymeditor.structuredHeadingsManager._options.headingContainerPanelSelector
+            ),
+            paragraph,
+            i;
+
+        for (i = 1; i < 7; ++i) {
+            wymeditor._html(htmlForHeadingInsertion);
+            paragraph = $body.find('#to_be_h' + i)[0];
+            makeTextSelection(wymeditor, paragraph, paragraph);
+            $headingContainerLink.click();
+            htmlEquals(wymeditor, correctHtmlInsertions[i - 1],
+                       "Insertion of an H" + i + " heading based on context.");
+        }
+    };
 
     test("Insert headings with default settings", function () {
         expect(6);
@@ -340,7 +352,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
         @param selectionType A string that specifies the type of selection used
                              in the tests. Can be either 'text' or 'collapsed'.
     */
-    function testHeadingIndent(wymeditor, selectionType) {
+    testHeadingIndent = function (wymeditor, selectionType) {
         var $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
             $indentTool = jQuery(wymeditor._box).find(
                 wymeditor.structuredHeadingsManager._options.headingIndentToolSelector),
@@ -358,7 +370,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
             htmlEquals(wymeditor, correctHtmlIndent[i - 1],
                        "Indention of an H" + i + " heading");
         }
-    }
+    };
 
     test("Headings indent when allowable by using indent tool with text " +
          "selection", function () {
@@ -451,7 +463,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
         @param selectionType A string that specifies the type of selection used
                              in the tests. Can be either 'text' or 'collapsed'.
     */
-    function testHeadingOutdent(wymeditor, selectionType) {
+    testHeadingOutdent = function (wymeditor, selectionType) {
         var $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
             $outdentTool = jQuery(wymeditor._box).find(
                 wymeditor.structuredHeadingsManager._options.headingOutdentToolSelector),
@@ -469,7 +481,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
             htmlEquals(wymeditor, correctHtmlOutdent[i - 2],
                        "Outdention of an H" + i + " heading");
         }
-    }
+    };
 
     test("Headings outdent when allowable by using outdent tool with text " +
          "selection", function () {
@@ -573,7 +585,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
         @param assertionString The string message to be used with the equals
                                assertion of the test.
     */
-    function testMultiIndentOutdent(
+    var testMultiIndentOutdent = function (
         wymeditor, indentOrOutdent, startHtml, correctHtml,
         startIndex, endIndex, assertionString
     ) {
@@ -597,7 +609,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED || !SKIP_KNOWN_FAILING_TEST
                           startIndex, endIndex);
         $tool.click();
         htmlEquals(wymeditor, correctHtml, assertionString);
-    }
+    };
 
     module("structured_headings-multiple_indent", {setup: setupWym});
 
@@ -1420,11 +1432,15 @@ if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
 
     var editedNumberingSubLevel = expectedHeadings.replace(/>1.2</g, '>1.<');
 
-    var editedNumberingSubSubLevel = expectedHeadings.
-                                        replace(/>2.2.1</g, '>2.2.<');
+    var editedNumberingSubSubLevel = expectedHeadings.replace(
+        />2.2.1</g,
+        '>2.2.<'
+    );
 
-    var expectedParsedHeadings = expectedHeadings.
-                                    replace(/<span.*?<\/span>/g, '');
+    var expectedParsedHeadings = expectedHeadings.replace(
+        /<span.*?<\/span>/g,
+        ''
+    );
 
     module("structured_headings-ie7_polyfill", {setup: setupWym});
 

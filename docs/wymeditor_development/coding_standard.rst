@@ -99,8 +99,8 @@ at the top of the file:
 
     /* exported usefulUtilityFunction */
 
-Make jshint Exceptions
-^^^^^^^^^^^^^^^^^^^^^^
+Make single-section jshint Exceptions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This should be used as little as possible.
 There's almost always a way to fix the code
@@ -134,6 +134,18 @@ you could do:
         // ...
     }
     /* jshint +W089 */
+
+Make file-wide jshint Exceptions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Any file-wide jshint exception is considered a bug,
+but in the interests of getting a passing jshint,
+some were used initially.
+Do **not** add these,
+despite the fact that some files currently use them.
+Pull requests that remove a file-wide exception
+and fix the resulting lint problems
+are greatly appreciated.
 
 Current vs Ideal
 ================
