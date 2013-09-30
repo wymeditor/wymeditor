@@ -2,12 +2,12 @@
 /* global -$ */
 "use strict";
 
-WYMeditor.WymClassOpera = function(wym) {
+WYMeditor.WymClassOpera = function (wym) {
     this._wym = wym;
     this._class = "class";
 };
 
-WYMeditor.WymClassOpera.prototype.initIframe = function(iframe) {
+WYMeditor.WymClassOpera.prototype.initIframe = function (iframe) {
     this._iframe = iframe;
     this._doc = iframe.contentWindow.document;
 
@@ -102,5 +102,5 @@ WYMeditor.WymClassOpera.prototype.keydown = function(evt) {
 WYMeditor.WymClassOpera.prototype.keyup = function(evt) {
     //'this' is the doc
     var wym = WYMeditor.INSTANCES[this.title];
-    wym._selected_image = null;
+    wym._selectedImage = null;
 };

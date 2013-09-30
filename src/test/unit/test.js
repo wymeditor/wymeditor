@@ -1,3 +1,9 @@
+/* jshint camelcase: false, maxlen: 100 */
+/* global -$,
+ok, start, stop, test, expect, equal, deepEqual, sinon,
+htmlEquals, moveSelector, makeTextSelection, isContentEditable, normalizeHtml,
+inPhantomjs, ListPlugin */
+"use strict";
 
 // We need to be able to operate in a noConflict context. Doing this during our
 // tests ensures that remains the case.
@@ -7,9 +13,9 @@ jQuery.noConflict();
 // Ideally, there would be no tests in this category, but right now there are
 // a lot of table-related bugs that need to be fixed that aren't the number
 // one priority. Having a test suite with failing tests is a bad thing though,
-// because new contributors don't know which tests are "supposed to be failing."
-// That lack of knowing makes the test suite much less useful than a test suite
-// that should always be passing in all supported browsers.
+// because new contributors don't know which tests are "supposed to be
+// failing." That lack of knowing makes the test suite much less useful than a
+// test suite that should always be passing in all supported browsers.
 var SKIP_KNOWN_FAILING_TESTS = true;
 
 function setupWym(modificationCallback) {
@@ -18,26 +24,29 @@ function setupWym(modificationCallback) {
         jQuery('.wymeditor').wymeditor({
             stylesheet: 'styles.css',
             postInit: function (wym) {
-                var listPlugin = new ListPlugin({}, wym),
-                    tableEditor = wym.table(),
-                    /**
-                    * Determine if attempting to select a cell with a non-text inner node (a span)
-                    * actually selects the inner node or selects the cell itself. FF for example,
-                    * selects the cell while webkit selects the inner.
-                    */
-                    initialHtml = String() +
-                        '<table>' +
-                            '<tbody>' +
-                                '<tr>' +
-                                    '<td id="td_1_1"><span id="span_1_1">span_1_1</span></td>' +
-                                '</tr>' +
-                            '</tbody>' +
-                        '</table>',
+                // Determine if attempting to select a cell with a non-text
+                // inner node (a span) actually selects the inner node or
+                // selects the cell itself. FF for example, selects the cell
+                // while webkit selects the inner.
+                var initialHtml = [""
+                    , '<table>'
+                        , '<tbody>'
+                            , '<tr>'
+                                , '<td id="td_1_1">'
+                                    , '<span id="span_1_1">span_1_1</span>'
+                                , '</td>'
+                            , '</tr>'
+                        , '</tbody>'
+                    , '</table>'
+                    ].join(''),
                     spanSelector = '#span_1_1',
                     tdSelector = '#td_1_1',
                     $body,
                     td,
                     span;
+
+                wym.listPlugin = new ListPlugin({}, wym);
+                wym.tableEditor = wym.table();
 
                 wym.structuredHeadings();
 
@@ -58,7 +67,8 @@ function setupWym(modificationCallback) {
                     modificationCallback(wym);
                 }
 
-                start(); // Re-start test running now that we're finished initializing
+                // Re-start test running now that we're finished initializing
+                start();
             }
         });
     } else {
@@ -72,12 +82,6 @@ function setupWym(modificationCallback) {
             start();
         }
     }
-}
-
-function setupDefaultRootContainerDivWym() {
-    setupWym(function(wym) {
-        wym.documentStructureManager.setDefaultRootContainer('div');
-    });
 }
 
 module("Core", {setup: setupWym});
@@ -369,17 +373,27 @@ var li_2_2_complexInsertionHtml = String() +
 /**
     Paste some copied content in to the given element and verify the results.
 
-    @param pasteStartSelector String jquery selector for the item to select for the paste target
+    @param pasteStartSelector String jquery selector for the item to select
+    for the paste target
     @param startHtml
     @param textToPaste
     @param elmntStartHtml
     @param elmntExpectedHtml
     @param pasteStartIndex
-    @param pasteEndSelector String jquery selector for the end item in the paste target selection
+    @param pasteEndSelector String jquery selector for the end item
+    in the paste target selection
     @param pasteEndIndex
 */
-function testPaste(pasteStartSelector, startHtml, textToPaste, elmntStartHtml, elmntExpectedHtml,
-                   pasteStartIndex, pasteEndSelector, pasteEndIndex) {
+function testPaste(
+    pasteStartSelector,
+    startHtml,
+    textToPaste,
+    elmntStartHtml,
+    elmntExpectedHtml,
+    pasteStartIndex,
+    pasteEndSelector,
+    pasteEndIndex
+) {
     var $body,
         startElmnt,
         endElmnt,
@@ -421,7 +435,8 @@ function testPaste(pasteStartSelector, startHtml, textToPaste, elmntStartHtml, e
     } else {
         startElmnt = $body.find(pasteStartSelector).get(0);
         endElmnt = $body.find(pasteEndSelector).get(0);
-        makeTextSelection(wymeditor, startElmnt, endElmnt, pasteStartIndex, pasteEndIndex);
+        makeTextSelection(
+            wymeditor, startElmnt, endElmnt, pasteStartIndex, pasteEndIndex);
         deepEqual(wymeditor.selected(), startElmnt, "moveSelector");
     }
     wymeditor.paste(textToPaste);
@@ -579,7 +594,7 @@ if (jQuery.browser.mozilla) {
         wymeditor.insertTable(3, 2, '', '');
 
         $body.find('td').each(function (index, td) {
-            if (parseInt(jQuery.browser.version, 10) == 1 &&
+            if (parseInt(jQuery.browser.version, 10) === 1 &&
                 jQuery.browser.version >= '1.9.1' && jQuery.browser.version < '2.0') {
                 deepEqual(td.childNodes.length, 1);
             } else {
@@ -640,7 +655,6 @@ function setupTable(wymeditor, html, selection, selectionType,
                     rows, cols, caption) {
     var $body,
         $element,
-        $table,
         $tableCells,
         i,
         j,
@@ -669,7 +683,7 @@ function setupTable(wymeditor, html, selection, selectionType,
 
     for (i = 0; i < rows; i++) {
         for (j = 0; j < cols; j++) {
-            cellStr = (i+1) + '_' + (j+1);
+            cellStr = (i + 1) + '_' + (j + 1);
             $tableCells.eq(i + j)
                        .attr('id', idStr + '_' + cellStr)
                        .text(cellStr);
@@ -867,7 +881,7 @@ var expectedSublistThreeTables = String() +
 
 var sublistThreeTablesNoBR =
         expectedSublistThreeTables.replace(
-            RegExp(TEST_LINEBREAK_SPACER, 'g'), '');
+            new RegExp(TEST_LINEBREAK_SPACER, 'g'), '');
 
 var expectedMiddleOutFull = String() +
     '<ol>' +
@@ -962,10 +976,13 @@ test("Table insertion at the end of a list with text selection", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
-        setupTable(wymeditor, listForTableInsertion, '#li_3', 'text',
-                   1, 1, 'test_1');
-        deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndOut,
-               "Table insertion at the end of a list with text selection");
+    setupTable(
+        wymeditor, listForTableInsertion, '#li_3', 'text', 1, 1, 'test_1');
+    deepEqual(
+        normalizeHtml($body.get(0).firstChild),
+        expectedEndOut,
+        "Table insertion at the end of a list with text selection"
+    );
 });
 
 test("Table insertion in the middle of a list with collapsed selection", function () {
@@ -984,10 +1001,10 @@ test("Table insertion at the end of a list with collapsed selection", function (
     var wymeditor = jQuery.wymeditors(0),
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
-        setupTable(wymeditor, listForTableInsertion, '#li_3', 'collapsed',
-                   1, 1, 'test_1');
-        deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndOut,
-               "Table insertion at the end of a list with collapsed selection");
+    setupTable(wymeditor, listForTableInsertion, '#li_3', 'collapsed',
+               1, 1, 'test_1');
+    deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndOut,
+           "Table insertion at the end of a list with collapsed selection");
 });
 
 // This test mimics the behavior that caused issue #406 which would
@@ -997,24 +1014,24 @@ test("Table insertion with selection inside another table in a list", function (
     var wymeditor = jQuery.wymeditors(0),
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
-        // Try insert in td element
-        setupTable(wymeditor, expectedListOneTable, '#t1_1_1', 'collapsed',
-                   1, 1, 'test_2');
-        deepEqual(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
-               "Table insertion with selection inside a td element in a list");
+    // Try insert in td element
+    setupTable(wymeditor, expectedListOneTable, '#t1_1_1', 'collapsed',
+               1, 1, 'test_2');
+    deepEqual(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
+           "Table insertion with selection inside a td element in a list");
 
-        // Try insert in th element
-        setupTable(wymeditor, expectedListOneTable, '#t1_h_1', 'collapsed',
-                   1, 1, 'test_2');
-        deepEqual(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
-               "Table insertion with selection inside a th element in a list");
+    // Try insert in th element
+    setupTable(wymeditor, expectedListOneTable, '#t1_h_1', 'collapsed',
+               1, 1, 'test_2');
+    deepEqual(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
+           "Table insertion with selection inside a th element in a list");
 
-        // Try insert in caption element
-        setupTable(wymeditor, expectedListOneTable, '#t1_cap', 'collapsed',
-                   1, 1, 'test_2');
-        deepEqual(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
-               "Table insertion with selection inside a caption element " +
-               "in a list");
+    // Try insert in caption element
+    setupTable(wymeditor, expectedListOneTable, '#t1_cap', 'collapsed',
+               1, 1, 'test_2');
+    deepEqual(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
+           "Table insertion with selection inside a caption element " +
+           "in a list");
 });
 
 test("Table insertion with direct selection of list item node", function () {
@@ -1128,13 +1145,13 @@ test("Colspan preserved when switching from td to th", function () {
         $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
         $tableCell;
 
-        wymeditor._html(tableWithColspanTD);
-        $tableCell = $body.find('td[colspan="2"]');
-        makeTextSelection(wymeditor, $tableCell[0], $tableCell[0], 0, 1);
+    wymeditor._html(tableWithColspanTD);
+    $tableCell = $body.find('td[colspan="2"]');
+    makeTextSelection(wymeditor, $tableCell[0], $tableCell[0], 0, 1);
 
-        // Click "Table Header" option in the containers panel
-        $thContainerLink.trigger('click');
-        htmlEquals(wymeditor, tableWithColspanTH);
+    // Click "Table Header" option in the containers panel
+    $thContainerLink.trigger('click');
+    htmlEquals(wymeditor, tableWithColspanTH);
 });
 
 test("Colspan preserved when switching from th to td", function () {
@@ -1145,13 +1162,13 @@ test("Colspan preserved when switching from th to td", function () {
         $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
         $tableCell;
 
-        wymeditor._html(tableWithColspanTH);
-        $tableCell = $body.find('th[colspan="2"]');
-        makeTextSelection(wymeditor, $tableCell[0], $tableCell[0], 0, 1);
+    wymeditor._html(tableWithColspanTH);
+    $tableCell = $body.find('th[colspan="2"]');
+    makeTextSelection(wymeditor, $tableCell[0], $tableCell[0], 0, 1);
 
-        // Click "Table Header" option in the containers panel
-        $thContainerLink.trigger('click');
-        htmlEquals(wymeditor, tableWithColspanTD);
+    // Click "Table Header" option in the containers panel
+    $thContainerLink.trigger('click');
+    htmlEquals(wymeditor, tableWithColspanTD);
 });
 
 module("preformatted-text", {setup: setupWym});
@@ -1194,11 +1211,12 @@ test("Double soft returns are allowed", function () {
 module("image-styling", {setup: setupWym});
 
 test("_selected image is saved on mousedown", function () {
-    var initHtml = String() +
-            '<p id="noimage">Images? We dont need no stinkin images</p>' +
-            '<p>' +
-                '<img id="google" src="http://www.google.com/intl/en_com/images/srpr/logo3w.png" />' +
-            '</p>',
+    var initHtml = [""
+        , '<p id="noimage">Images? We dont need no stinkin images</p>'
+        , '<p>'
+            , '<img id="google" src="http://www.google.com/intl/en_com/images/srpr/logo3w.png" />'
+        , '</p>'
+        ].join(''),
         wymeditor = jQuery.wymeditors(0),
         $body,
         $noimage,
@@ -1210,20 +1228,20 @@ test("_selected image is saved on mousedown", function () {
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
     // Editor starts with no selected image. Use equal instead of deepEqual
-    // because wymeditor._selected_image intermittently changes between being
+    // because wymeditor._selectedImage intermittently changes between being
     // undefined and null, but either value should be acceptable for this test.
-    equal(wymeditor._selected_image, undefined);
+    equal(wymeditor._selectedImage, undefined);
 
     // Clicking on a non-image doesn't change that
     $noimage = $body.find('#noimage');
     $noimage.mousedown();
-    deepEqual(wymeditor._selected_image, null);
+    deepEqual(wymeditor._selectedImage, null);
 
 
     // Clicking an image does update the selected image
     $google = $body.find('#google');
     $google.mousedown();
-    deepEqual(wymeditor._selected_image, $google[0]);
+    deepEqual(wymeditor._selectedImage, $google[0]);
 });
 
 // The following test doesn't work in Phantom.js because the `InsertImage`
@@ -1284,7 +1302,7 @@ function checkTagInContainer(wymeditor, containerType, tagName, command) {
     var $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
         $container,
 
-        initHtml = String () +
+        initHtml = String() +
         '<' + containerType + '>' +
             'Test' +
         '</' + containerType + '>';
@@ -1325,7 +1343,7 @@ test("Can set and get html with the html() function", function () {
     // it should not make the user think that the test is malfunctioning by
     // outputting a console warning.
     if (typeof WYMeditor.console.warn === 'function') {
-        stub = sinon.stub(WYMeditor.console, "warn", function() {});
+        stub = sinon.stub(WYMeditor.console, "warn", function () {});
     }
 
     wymeditor.html(testHtml);

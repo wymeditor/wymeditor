@@ -67,7 +67,9 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
 
     var container,
         $container,
-        tagName;
+        tagName,
+        structureRules,
+        noClassOrAppleSpan;
 
     if (param) {
         this._doc.execCommand(cmd, '', param);
@@ -82,8 +84,11 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
 
         // Wrap this content in the default root container if we're in the body
         if (tagName === WYMeditor.BODY) {
-            this._exec(WYMeditor.FORMAT_BLOCK,
-                       this.documentStructureManager.structureRules.defaultRootContainer);
+            structureRules = this.documentStructureManager.structureRules;
+            this._exec(
+                WYMeditor.FORMAT_BLOCK,
+                structureRules.defaultRootContainer
+            );
             this.fixBodyHtml();
         }
 
@@ -100,12 +105,14 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
 
         // If the container is a span, strip it out if it doesn't have a class
         // but has an inline style of 'font-weight: normal;'.
-        if (tagName === 'span' &&
-            (!$container.attr('class') ||
-                $container.attr('class').toLowerCase() === 'apple-style-span') &&
-            $container.attr('style') === 'font-weight: normal;') {
+        if (tagName === 'span') {
+            noClassOrAppleSpan = !$container.attr('class') ||
+                $container.attr('class').toLowerCase() === 'apple-style-span';
+            if (noClassOrAppleSpan &&
+                $container.attr('style') === 'font-weight: normal;') {
 
-            $container.contents().unwrap();
+                $container.contents().unwrap();
+            }
         }
     }
 
@@ -136,8 +143,8 @@ WYMeditor.WymClassSafari.prototype.keydown = function (e) {
         }
     } else if (e.shiftKey && e.which === WYMeditor.KEY.ENTER) {
         // Safari 4 and earlier would show a proper linebreak in the editor and
-        // then strip it upon save with the default action in the case of inserting
-        // a new line after bold text
+        // then strip it upon save with the default action in the case of
+        // inserting a new line after bold text
         wym._exec('InsertLineBreak');
         e.preventDefault();
     }
@@ -157,7 +164,7 @@ WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
         wym.documentStructureManager.structureRules.notValidRootContainers;
     defaultRootContainer =
         wym.documentStructureManager.structureRules.defaultRootContainer;
-    wym._selected_image = null;
+    wym._selectedImage = null;
 
     // Fix to allow shift + return to insert a line break in older safari
     if (jQuery.browser.version < 534.1) {

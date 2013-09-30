@@ -1,5 +1,5 @@
-/*jshint evil: true */
-/* global -$ */
+/*jshint evil: true, camelcase: false, maxlen: 100 */
+/* global -$, rangy */
 "use strict";
 
 /**
@@ -76,7 +76,11 @@ WYMeditor.editor.prototype.init = function () {
     }
 
     // Load wymbox
-    this._box = jQuery(this._element).hide().after(this._options.boxHtml).next().addClass('wym_box_' + this._index);
+    this._box = jQuery(this._element).hide().after(
+        this._options.boxHtml
+    ).next().addClass(
+        'wym_box_' + this._index
+    );
 
     // Store the instance index and replaced element in wymbox
     // but keep it compatible with jQuery < 1.2.3, see #122
@@ -330,7 +334,7 @@ WYMeditor.editor.prototype.exec = function (cmd) {
 
     case WYMeditor.CREATE_LINK:
         container = this.container();
-        if (container || this._selected_image) {
+        if (container || this._selectedImage) {
             this.dialog(WYMeditor.DIALOG_LINK);
         }
         break;
@@ -517,7 +521,6 @@ WYMeditor.editor.prototype.container = function (sType) {
 
     var container = null,
         aTypes,
-        validContainers,
         newNode,
         blockquote,
         nodes,
@@ -647,8 +650,8 @@ WYMeditor.editor.prototype.keyCanCreateBlockElement = function (keyCode) {
 */
 WYMeditor.editor.prototype.toggleClass = function (sClass, jqexpr) {
     var container = null;
-    if (this._selected_image) {
-        container = this._selected_image;
+    if (this._selectedImage) {
+        container = this._selectedImage;
     } else {
         container = jQuery(this.selected());
     }
@@ -994,9 +997,7 @@ WYMeditor.editor.prototype._getBlockInListSepSelector = function () {
 */
 WYMeditor.editor.prototype.fixDoubleBr = function () {
     var $body = jQuery(this._doc).find('body.wym_iframe'),
-        $last_br,
-
-        blockingSelector = WYMeditor.BLOCKING_ELEMENTS.join(', ');
+        $last_br;
 
     // Strip consecutive brs unless they're in a pre tag
     $body.children('br + br').filter(':not(pre br)').remove();
@@ -1125,7 +1126,9 @@ WYMeditor.editor.prototype.uniqueStamp = function () {
     that the container we're pasting to is a block container capable of accepting
     further nested blocks.
 */
-WYMeditor.editor.prototype._handleMultilineBlockContainerPaste = function (wym, $container, range, paragraphStrings) {
+WYMeditor.editor.prototype._handleMultilineBlockContainerPaste = function (
+    wym, $container, range, paragraphStrings
+) {
 
     var i,
         $insertAfter,
@@ -1248,9 +1251,7 @@ WYMeditor.editor.prototype.paste = function (str) {
         $container,
         html = '',
         paragraphs,
-        focusNode,
         i,
-        l,
         isSingleLine = false,
         sel,
         textNode,
@@ -1736,7 +1737,9 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
     if (jQuery(currentNode).is('li')) {
         // We have an li as the "root" because its missing a parent list.
         // Correct this problem and then try again to correct the nesting.
-        WYMeditor.console.log("Correcting orphaned root li before correcting invalid list nesting.");
+        WYMeditor.console.log(
+            "Correcting orphaned root li before correcting invalid list nesting."
+        );
         this._correctOrphanedListItem(currentNode);
         return this.correctInvalidListNesting(currentNode, true);
     }
@@ -1808,8 +1811,6 @@ WYMeditor.editor.prototype._correctInvalidListNesting = function (listNode, alre
         currentNode = listNode,
         wasCorrected = false,
         previousSibling,
-        previousLi,
-        $currentNode,
         tagName,
         ancestorNode,
         nodesToMove,
@@ -1920,7 +1921,8 @@ WYMeditor.editor.prototype._correctInvalidListNesting = function (listNode, alre
                         // with a <br /> to preserve the visual layout of them
                         // being on separate lines
                         lastContentNode = jQuery(targetLi).contents().last();
-                        if (lastContentNode.length === 1 && lastContentNode[0].nodeType === WYMeditor.NODE.TEXT) {
+                        if (lastContentNode.length === 1 &&
+                                lastContentNode[0].nodeType === WYMeditor.NODE.TEXT) {
                             if (nodesToMove[0].nodeType === WYMeditor.NODE.TEXT) {
                                 jQuery(targetLi).append('<br />');
                             }
@@ -2017,9 +2019,7 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
         liNodes = [],
         containsNodeTextFilter,
         parentsToAdd,
-        node,
-        $node,
-        $maybeParentLi;
+        node;
 
     // Filter function to remove undesired nodes from what rangy.getNodes()
     // gives
@@ -2166,8 +2166,8 @@ WYMeditor.editor.prototype.indent = function () {
     var wym = this._wym,
         sel = rangy.getIframeSelection(this._iframe),
         listItems,
-        rootList,
-        manipulationFunc;
+        manipulationFunc,
+        i;
 
     // First, make sure this list is properly structured
     manipulationFunc = function () {
@@ -2226,8 +2226,8 @@ WYMeditor.editor.prototype.outdent = function () {
     var wym = this._wym,
         sel = rangy.getIframeSelection(this._iframe),
         listItems,
-        rootList,
-        manipulationFunc;
+        manipulationFunc,
+        i;
 
     // First, make sure this list is properly structured
     manipulationFunc = function () {
@@ -2290,8 +2290,7 @@ WYMeditor.editor.prototype.outdent = function () {
     potentially destroyed the selection.
 */
 WYMeditor.editor.prototype.restoreSelectionAfterManipulation = function (manipulationFunc) {
-    var sel = rangy.getIframeSelection(this._iframe),
-        savedSelection = rangy.saveSelection(rangy.dom.getIframeWindow(this._iframe)),
+    var savedSelection = rangy.saveSelection(rangy.dom.getIframeWindow(this._iframe)),
         changesMade = true;
 
     // If something goes wrong, we don't want to leave selection markers
@@ -2500,7 +2499,6 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
 
     var table = this._doc.createElement(WYMeditor.TABLE),
         newRow = null,
-        newCol = null,
         newCaption,
 
         x,
@@ -2582,7 +2580,8 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
     Handle cleanup/normalization after inserting a table. Different browsers
     need slightly different tweaks.
 */
-WYMeditor.editor.prototype.afterInsertTable = function (table) {};
+WYMeditor.editor.prototype.afterInsertTable = function () {
+};
 
 WYMeditor.editor.prototype.configureEditorUsingRawCss = function () {
     var CssParser = new WYMeditor.WymCssParser();
@@ -2621,9 +2620,9 @@ WYMeditor.editor.prototype.listen = function () {
 
 WYMeditor.editor.prototype.mousedown = function (evt) {
     // Store the selected image if we clicked an <img> tag
-    this._selected_image = null;
+    this._selectedImage = null;
     if (evt.target.tagName.toLowerCase() === WYMeditor.IMG) {
-        this._selected_image = evt.target;
+        this._selectedImage = evt.target;
     }
 };
 

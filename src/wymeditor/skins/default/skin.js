@@ -1,7 +1,7 @@
+"use strict";
+
 WYMeditor.SKINS['default'] = {
-
-    init: function(wym) {
-
+    init: function (wym) {
         //render following sections as panels
         jQuery(wym._box).find(wym._options.classesSelector)
           .addClass("wym_panel");
@@ -31,10 +31,13 @@ WYMeditor.SKINS['default'] = {
           .css({"margin-left": "155px"});
 
         //make hover work under IE < 7
-        jQuery(wym._box).find(".wym_section").hover(function(){
-          jQuery(this).addClass("hover");
-        },function(){
-          jQuery(this).removeClass("hover");
-        });
+        jQuery(wym._box).find(".wym_section").hover(
+            function () {
+                jQuery(this).addClass("hover");
+            },
+            function () {
+                jQuery(this).removeClass("hover");
+            }
+        );
     }
 };

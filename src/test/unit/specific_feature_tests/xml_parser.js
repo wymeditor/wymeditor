@@ -1,3 +1,7 @@
+/* jshint camelcase: false, maxlen: 100 */
+/* global setupWym, htmlEquals,
+test, expect, deepEqual */
+"use strict";
 // Tests for the XML parser
 
 module("XmlParser", {setup: setupWym});
@@ -294,14 +298,14 @@ test("no-op on table with colgroup generates valid XHTML", function () {
 });
 
 test("Self closing button tags should be expanded and removed", function () {
-    var html = '<p><button /></p>';
-    var expected = '<p></p>';
+    var html = '<p><button /></p>',
+        expected = '<p></p>';
     deepEqual(jQuery.wymeditors(0).parser.parse(html), expected);
 });
 
 test("Iframe should not be self closing", function () {
-    var html = '<iframe width="480" height="390" src="asd.html" frameborder="0" /></iframe>';
-    var expected = '<iframe width="480" height="390" src="asd.html" frameborder="0"></iframe>';
+    var html = '<iframe width="480" height="390" src="asd.html" frameborder="0" /></iframe>',
+        expected = '<iframe width="480" height="390" src="asd.html" frameborder="0"></iframe>';
     deepEqual(jQuery.wymeditors(0).parser.parse(html), expected);
 });
 
@@ -310,7 +314,7 @@ test("Allow HR inside strong tags", function () {
     deepEqual(jQuery.wymeditors(0).parser.parse(html), html);
 });
 
-test("Allow line breaks inside em tags", function() {
+test("Allow line breaks inside em tags", function () {
     var html = '<em>hello<br />world</em>',
         wymeditor = jQuery.wymeditors(0);
     deepEqual(wymeditor.parser.parse(html), html);
@@ -434,7 +438,7 @@ test("Remove editor-only table", function () {
                "Remove editor-only `table`");
 });
 
-test("Remove editor-only lists", function() {
+test("Remove editor-only lists", function () {
     expect(WYMeditor.LIST_TYPE_ELEMENTS.length);
     var wymeditor = jQuery.wymeditors(0),
         $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
@@ -554,7 +558,7 @@ var invalidULEndNesting = String() +
 var validULEndNesting = String() +
     '<ul id="ul_top">' +
         '<li id="li_1">1</li>' +
-        '<li id="li_2">2'+
+        '<li id="li_2">2' +
             '<ul id="ul_2">' +
                 '<li id="li_2_1">2_1</li>' +
                 '<li id="li_2_2">2_2</li>' +
@@ -814,7 +818,7 @@ var tagsToUnwrapInLists =
                            the tested element.
 */
 function testUnwrapSingleContentInLI(
-    wymeditor, startHtml, assertionString, expectIESpaces
+    wymeditor, startHtml, assertionString
 ) {
     var correctHtml = startHtml.replace(/<\/?\{blockTag\}>/g, ''),
         iterStartHtml,
@@ -842,7 +846,8 @@ test("Unwrap root container content in simple list", function () {
     expect(tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
-    testUnwrapSingleContentInLI(wymeditor,
+    testUnwrapSingleContentInLI(
+        wymeditor,
         unwrapSingleInListHtml,
         "Unwrap `{blockTag}` content in simple list"
     );
@@ -864,7 +869,8 @@ test("Unwrap root container content in simple sublist", function () {
     expect(tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
-    testUnwrapSingleContentInLI(wymeditor,
+    testUnwrapSingleContentInLI(
+        wymeditor,
         unwrapSingleInSublistHtml,
         "Unwrap `{blockTag}` content in simple sublist"
     );
@@ -892,10 +898,10 @@ test("Unwrap root container content in nested lists", function () {
     expect(tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
-    testUnwrapSingleContentInLI(wymeditor,
+    testUnwrapSingleContentInLI(
+        wymeditor,
         unwrapSingleInNestedListHtml,
-        "Unwrap `{blockTag}` content in nested lists",
-        true
+        "Unwrap `{blockTag}` content in nested lists"
     );
 });
 

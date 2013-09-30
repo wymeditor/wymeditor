@@ -172,7 +172,7 @@ WYMeditor.WymClassMozilla.prototype.keyup = function (evt) {
         wym.documentStructureManager.structureRules.notValidRootContainers;
     defaultRootContainer =
         wym.documentStructureManager.structureRules.defaultRootContainer;
-    wym._selected_image = null;
+    wym._selectedImage = null;
     container = null;
 
     // If the inputted key cannont create a block element and is not a command,
@@ -226,7 +226,7 @@ WYMeditor.WymClassMozilla.prototype.keyup = function (evt) {
     }
 };
 
-WYMeditor.WymClassMozilla.prototype.click = function (evt) {
+WYMeditor.WymClassMozilla.prototype.click = function () {
     var wym = WYMeditor.INSTANCES[this.title],
         container = wym.selected(),
         sel;

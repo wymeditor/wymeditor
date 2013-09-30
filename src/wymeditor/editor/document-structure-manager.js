@@ -1,3 +1,6 @@
+/*jslint maxlen: 90 */
+/* global -$ */
+"use strict";
 
 /**
  * WYMeditor.DocumentStructureManager
@@ -16,7 +19,7 @@
  * which will automatically convert DIV tags in the root to P tags.
  *
  */
-WYMeditor.DocumentStructureManager = function(wym, defaultRootContainer) {
+WYMeditor.DocumentStructureManager = function (wym, defaultRootContainer) {
     this._wym = wym;
     this.structureRules = WYMeditor.DocumentStructureManager.DEFAULTS;
     this.setDefaultRootContainer(defaultRootContainer);
@@ -122,11 +125,13 @@ jQuery.extend(WYMeditor.DocumentStructureManager, {
  * @param defaultRootContainer String A string representation of the tag to
  * use.
  */
-WYMeditor.DocumentStructureManager.prototype.setDefaultRootContainer = function(
+WYMeditor.DocumentStructureManager.prototype.setDefaultRootContainer = function
+(
     defaultRootContainer
 ) {
     var validContainers,
-        index;
+        index,
+        DSManager;
 
     if (this.structureRules.defaultRootContainer === defaultRootContainer) {
         // This is already our current configuration. No need to do the
@@ -135,7 +140,8 @@ WYMeditor.DocumentStructureManager.prototype.setDefaultRootContainer = function(
     }
 
     // Make sure the new container is one of the valid options
-    validContainers = WYMeditor.DocumentStructureManager.VALID_DEFAULT_ROOT_CONTAINERS;
+    DSManager = WYMeditor.DocumentStructureManager;
+    validContainers = DSManager.VALID_DEFAULT_ROOT_CONTAINERS;
     index = jQuery.inArray(defaultRootContainer, validContainers);
     if (index === -1) {
         throw new Error(
@@ -168,7 +174,7 @@ WYMeditor.DocumentStructureManager.prototype.setDefaultRootContainer = function(
     containers form the containers panel besides the link for the chosen
     default root container.
 */
-WYMeditor.DocumentStructureManager.prototype.adjustDefaultRootContainerUI = function() {
+WYMeditor.DocumentStructureManager.prototype.adjustDefaultRootContainerUI = function () {
     var wym = this._wym,
         defaultRootContainer = this.structureRules.defaultRootContainer,
         $containerItems,
@@ -177,7 +183,8 @@ WYMeditor.DocumentStructureManager.prototype.adjustDefaultRootContainerUI = func
         containerName,
         newContainerLinkNeeded,
         newContainerLinkHtml,
-        i;
+        i,
+        DSManager;
 
     $containerItems = jQuery(wym._box).find(wym._options.containersSelector)
                                       .find('li');
@@ -207,10 +214,11 @@ WYMeditor.DocumentStructureManager.prototype.adjustDefaultRootContainerUI = func
             WYMeditor.CONTAINER_NAME,
             defaultRootContainer.toUpperCase()
         );
+        DSManager = WYMeditor.DocumentStructureManager;
         newContainerLinkHtml = WYMeditor.Helper.replaceAll(
             newContainerLinkHtml,
             WYMeditor.CONTAINER_TITLE,
-            WYMeditor.DocumentStructureManager.DEFAULT_ROOT_CONTAINER_TITLES[defaultRootContainer]
+            DSManager.DEFAULT_ROOT_CONTAINER_TITLES[defaultRootContainer]
         );
         newContainerLinkHtml = WYMeditor.Helper.replaceAll(
             newContainerLinkHtml,
@@ -228,5 +236,5 @@ WYMeditor.DocumentStructureManager.prototype.adjustDefaultRootContainerUI = func
             return false;
         });
     }
-}
+};
 

@@ -1,3 +1,10 @@
+/* jshint camelcase: false, maxlen: 85 */
+/* global setupWym,
+htmlEquals, moveSelector, simulateKey,
+makeSelection,
+test, expect, deepEqual */
+"use strict";
+
 /**
 * Tests for special-casing certain block elements that make it impossible to
 * add content before/after them when followed by another blocking element or by
