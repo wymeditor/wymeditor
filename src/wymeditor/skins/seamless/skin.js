@@ -1,3 +1,4 @@
+/* globals -$ */
 "use strict";
 
 WYMeditor.SKINS.seamless = {
@@ -51,18 +52,20 @@ WYMeditor.SKINS.seamless = {
 
         // The classes and containers sections are dropdowns to the right of
         // the toolbar at the top
-        var $dropdowns = jQuery(
+        var This = WYMeditor.SKINS.seamless,
+            $dropdowns = jQuery(
             [
                 wym._options.containersSelector
                 , wym._options.classesSelector
             ].join(', '),
             wym._box
         ),
-            $toolbar;
+            $toolbar,
+            $areaTop;
 
-        $dropdowns.appendTo(
-            jQuery("div.wym_area_top", wym._box)
-        );
+        $areaTop = jQuery("div.wym_area_top", wym._box);
+
+        $dropdowns.appendTo($areaTop);
         $dropdowns.addClass("wym_dropdown");
         $dropdowns.css({
             "margin-right": "10px",
@@ -74,6 +77,35 @@ WYMeditor.SKINS.seamless = {
         $toolbar = jQuery(wym._options.toolsSelector, wym._box);
         $toolbar.addClass("wym_buttons");
         $toolbar.css({"margin-right": "10px", "float": "left"});
+
+        This.affixTopControls(wym);
+
+    },
+    affixTopControls: function (wym) {
+        // Affix the top area, which contains the toolbar and containers, to
+        // the top of the screen so that we can see it, even if we're scrolled
+        // down.
+        var $areaTop,
+            $areaTopWrapper,
+            earlyScrollPixels = 5;
+
+        $areaTop = jQuery("div.wym_area_top", wym._box);
+
+        // Use a wrapper so we can keep the toolbar styling consistent
+        $areaTopWrapper = jQuery(
+            '<div class="wym_skin_seamless wym_area_top_wrapper">'
+        );
+        $areaTop.wrap($areaTopWrapper);
+
+        // Add another, non-affixed wrapper to stick around and hold vertical
+        // space. This avoids the "jump" when the toolbar switches to being
+        // affixed
+        $areaTop.parent().wrap('<div class="wym_area_top_affix_placeholder">');
+        $areaTop.parent().parent().height($areaTop.height());
+
+        $areaTop.parent().affix({
+            offset: {top: $areaTop.parent().offset().top - earlyScrollPixels}
+        });
     },
     resizeIframeOnceBodyExists: function (wym) {
         // In IE, the wym._doc DOMLoaded event doesn't mean the iframe will

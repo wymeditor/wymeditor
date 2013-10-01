@@ -17,6 +17,7 @@
         <input type="submit" class="wymupdate" />
     </form>
     <div>More stuff</div>
+    <div class="more-content">The toolbar shouldn't affix past here.</div>
 
     <!-- build:js vendor/jquery/jquery.js -->
     <!-- endbuild -->
@@ -25,12 +26,18 @@
     <script type="text/javascript">
         loadWymSrc(
                 '../',
-                ['../wymeditor/skins/seamless/skin.js']
+                ['../wymeditor/skins/seamless/skin.js'],
+                "1.8.1"
         );
     </script>
     <!-- endbuild -->
     <!-- build:js ../wymeditor/skins/seamless/skin.js -->
     <!-- endbuild -->
+
+    <!-- build:js vendor/boostrap/js/bootstrap-affix.js -->
+    <script type="text/javascript" src="../bower_components/bootstrap/js/bootstrap-affix.js"></script>
+    <!-- endbuild -->
+
 
     <script type="text/javascript">
         jQuery(function() {
@@ -48,6 +55,9 @@
                 // use this constant
                 iframeHtml: WYMeditor.SKINS.seamless.OPTS.iframeHtml
             });
+
+            jQuery('.more-content').append(jQuery(html));
+            jQuery('.more-content').append(jQuery(html));
         });
     </script>
 </body>
