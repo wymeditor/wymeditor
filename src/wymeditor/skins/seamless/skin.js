@@ -1,4 +1,114 @@
+/* globals -$ */
 "use strict";
+
+// Add classes to an element based on its current location relative to top and
+// or bottom offsets.
+// Useful for affixing an element on the page within a certain vertical range.
+// Based largely off of the bootstrap affix plugin
+// https://github.com/twbs/bootstrap/blob/master/js/affix.js
+(function ($) {
+    var Affix = function (element, options) {
+        this.options = $.extend({}, $.fn.wymAffix.defaults, options);
+        this.$window = $(window);
+
+        this.$window.on(
+            'scroll.affix.data-api',
+            $.proxy(this.checkPosition, this)
+        );
+        this.$window.on(
+            'click.affix.data-api',
+            $.proxy(
+                function () {
+                    setTimeout(
+                        $.proxy(this.checkPosition, this),
+                        1
+                    );
+                },
+                this
+            )
+        );
+        this.$element = $(element);
+        this.checkPosition();
+    };
+
+    Affix.prototype.checkPosition = function () {
+        if (!this.$element.is(':visible')) {
+            return;
+        }
+
+        var scrollTop = this.$window.scrollTop()
+          , offset = this.options.offset
+          , offsetBottom = offset.bottom
+          , offsetTop = offset.top
+          , reset = 'affix affix-top affix-bottom'
+          , desiredAffixType
+          , isBelowTop = true
+          , isAboveBottom = true;
+
+        if (typeof offset !== 'object') {
+            offsetBottom = offsetTop = offset;
+        }
+        if (typeof offsetTop === 'function') {
+            offsetTop = offset.top();
+        }
+        if (typeof offsetBottom === 'function') {
+            offsetBottom = offset.bottom();
+        }
+
+        if (offsetTop !== null) {
+            isBelowTop = scrollTop > offsetTop;
+        }
+        if (offsetBottom !== null) {
+            isAboveBottom = scrollTop + this.$element.height() < offsetBottom;
+        }
+
+        if (isBelowTop && isAboveBottom) {
+            desiredAffixType = 'affix';
+        } else if (isAboveBottom === false) {
+            // We're below the bottom offset
+            desiredAffixType = 'affix-bottom';
+        } else {
+            desiredAffixType = 'affix-top';
+        }
+
+        if (this.currentAffixType === desiredAffixType) {
+            // We're already properly-affixed. No changes required.
+            return;
+        }
+
+        this.$element.removeClass(reset).addClass(desiredAffixType);
+
+        this.currentAffixType = desiredAffixType;
+    };
+
+
+ /* AFFIX PLUGIN DEFINITION
+  * ======================= */
+
+    $.fn.wymAffix = function (option) {
+        return this.each(function () {
+            var $this = $(this)
+                , data = $this.data('affix')
+                , options = typeof option === 'object' && option;
+
+            if (!data) {
+                $this.data(
+                    'affix',
+                    (data = new Affix(this, options))
+                );
+            }
+            if (typeof option === 'string') {
+                data[option]();
+            }
+        });
+    };
+
+    $.fn.wymAffix.Constructor = Affix;
+
+    $.fn.wymAffix.defaults = {
+        offset: 0
+    };
+}(jQuery));
 
 WYMeditor.SKINS.seamless = {
     OPTS: {
@@ -51,18 +161,20 @@ WYMeditor.SKINS.seamless = {
 
         // The classes and containers sections are dropdowns to the right of
         // the toolbar at the top
-        var $dropdowns = jQuery(
+        var This = WYMeditor.SKINS.seamless,
+            $dropdowns = jQuery(
             [
                 wym._options.containersSelector
                 , wym._options.classesSelector
             ].join(', '),
             wym._box
         ),
-            $toolbar;
+            $toolbar,
+            $areaTop;
 
-        $dropdowns.appendTo(
-            jQuery("div.wym_area_top", wym._box)
-        );
+        $areaTop = jQuery("div.wym_area_top", wym._box);
+
+        $dropdowns.appendTo($areaTop);
         $dropdowns.addClass("wym_dropdown");
         $dropdowns.css({
             "margin-right": "10px",
@@ -74,6 +186,45 @@ WYMeditor.SKINS.seamless = {
         $toolbar = jQuery(wym._options.toolsSelector, wym._box);
         $toolbar.addClass("wym_buttons");
         $toolbar.css({"margin-right": "10px", "float": "left"});
+
+        This.affixTopControls(wym);
+
+    },
+    affixTopControls: function (wym) {
+        // Affix the top area, which contains the toolbar and containers, to
+        // the top of the screen so that we can see it, even if we're scrolled
+        // down.
+        var $areaTop,
+            $offsetWrapper,
+            earlyScrollPixels = 5,
+            offsetWrapperOffsetTop;
+
+        $areaTop = jQuery("div.wym_area_top", wym._box);
+
+        // Use a wrapper so we can keep the toolbar styling consistent
+        $offsetWrapper = jQuery(
+            '<div class="wym_skin_seamless wym_area_top_wrapper">'
+        );
+        $areaTop.wrap($offsetWrapper);
+        $offsetWrapper = $areaTop.parent();
+
+        // Add another, non-affixed wrapper to stick around and hold vertical
+        // space. This avoids the "jump" when the toolbar switches to being
+        // affixed
+        $offsetWrapper.wrap('<div class="wym_area_top_affix_placeholder">');
+        $offsetWrapper.parent().height($areaTop.height());
+
+        offsetWrapperOffsetTop = $offsetWrapper.offset().top;
+
+        $offsetWrapper.wymAffix({
+            offset: {
+                top: offsetWrapperOffsetTop - earlyScrollPixels,
+                bottom: function () {
+                    return offsetWrapperOffsetTop +
+                        wym.seamlessSkinIframeHeight;
+                }
+            }
+        });
     },
     resizeIframeOnceBodyExists: function (wym) {
         // In IE, the wym._doc DOMLoaded event doesn't mean the iframe will
@@ -117,6 +268,7 @@ WYMeditor.SKINS.seamless = {
 
         if (currentHeight !== desiredHeight) {
             $iframe.height(desiredHeight);
+            wym.seamlessSkinIframeHeight = desiredHeight;
             return true;
         }
         return false;

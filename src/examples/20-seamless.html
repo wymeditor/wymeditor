@@ -10,13 +10,14 @@
     <!-- endbuild -->
 </head>
 <body>
-    <h1>WYMeditor basic integration example with simple skin customisation</h1>
+    <h1>WYMeditor with a seamless skin</h1>
+    <h2>Look ma! No double scrollbar!</h2>
     <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
     <form method="post" action="">
         <textarea class="wymeditor"></textarea>
         <input type="submit" class="wymupdate" />
     </form>
-    <div>More stuff</div>
+    <div class="more-content">The toolbar will stop floating here.<div>
 
     <!-- build:js vendor/jquery/jquery.js -->
     <!-- endbuild -->
@@ -25,7 +26,8 @@
     <script type="text/javascript">
         loadWymSrc(
                 '../',
-                ['../wymeditor/skins/seamless/skin.js']
+                ['../wymeditor/skins/seamless/skin.js'],
+                "1.8.1"
         );
     </script>
     <!-- endbuild -->
@@ -48,6 +50,9 @@
                 // use this constant
                 iframeHtml: WYMeditor.SKINS.seamless.OPTS.iframeHtml
             });
+
+            jQuery('.more-content').append(jQuery(html));
+            jQuery('.more-content').append(jQuery(html));
         });
     </script>
 </body>

@@ -37,13 +37,18 @@ Create a "Seamless" skin.
 Phases
 ======
 
-* Get a yeoman build working
-  using require.js
-* Write a seamless skin
-  with no scrollbar
-  and expanding height.
-* Make the toolbar float.
-* Do the cluttered toolbar things.
+Layout Perfection
+-----------------
+
+Tweak the CSS in supported browsers,
+so that the height is pixel-perfect.
+
+Responsive Containers/Classes
+-----------------------------
+
+Make the containers/classes menus responsive,
+floating down the right if there's room,
+but collapsing to drop-downs if there isn't.
 
 Inspiration/Examples
 ====================
@@ -85,6 +90,49 @@ The `iframe-height-jquery-plugin <https://github.com/Sly777/Iframe-Height-Jquery
 Will have to be smart about performing updates,
 since checking the height will trigger an expensive reflow.
 Only do it after new things are created.
+
+*********************
+Context-Aware Toolbar
+*********************
+
+Details from the `Selection-Aware Toolbar wiki <https://github.com/wymeditor/wymeditor/wiki/Selection-aware-toolbar>`_.
+These should be moved here.
+
+Phases
+======
+
+Separate Block and Inline toolbars
+----------------------------------
+
+Make every toolbar item and class
+decide whether it operates on an entire block element
+or just on a selection of text.
+Use a Zenpen-style tooltip menu
+that appears whenever someone makes a selection
+and only show the inline-elements there.
+The block items/classes
+can continue to live on the standard toolbar.
+
+Implement that context-aware toolbar API
+----------------------------------------
+
+Implement the API described above
+and use the API for all included plugins.
+
+Consider making the structured headings plugin
+included by default
+so that there is only one ``heading`` container.
+
+Responsive Editor Body
+----------------------
+
+Make the body width liquid,
+shrinking down for mobile
+without requiring a horizontal scrollbar.
+
+Make the toolbar also responsive,
+stacking icons in to multiple rows,
+if required.
 
 **********************
 Too Many HTTP Requests
