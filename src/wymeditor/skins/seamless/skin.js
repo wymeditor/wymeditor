@@ -196,7 +196,8 @@ WYMeditor.SKINS.seamless = {
         // down.
         var $areaTop,
             $areaTopWrapper,
-            earlyScrollPixels = 5;
+            earlyScrollPixels = 5,
+            areaTopWrapperOffsetTop;
 
         $areaTop = jQuery("div.wym_area_top", wym._box);
 
@@ -212,8 +213,16 @@ WYMeditor.SKINS.seamless = {
         $areaTop.parent().wrap('<div class="wym_area_top_affix_placeholder">');
         $areaTop.parent().parent().height($areaTop.height());
 
-        $areaTop.parent().affix({
-            offset: {top: $areaTop.parent().offset().top - earlyScrollPixels}
+        areaTopWrapperOffsetTop = $areaTop.parent().offset().top;
+
+        $areaTop.parent().wymAffix({
+            offset: {
+                top: areaTopWrapperOffsetTop - earlyScrollPixels,
+                bottom: function () {
+                    return areaTopWrapperOffsetTop +
+                        wym.seamlessSkinIframeHeight;
+                }
+            }
         });
     },
     resizeIframeOnceBodyExists: function (wym) {
@@ -258,6 +267,7 @@ WYMeditor.SKINS.seamless = {
 
         if (currentHeight !== desiredHeight) {
             $iframe.height(desiredHeight);
+            wym.seamlessSkinIframeHeight = desiredHeight;
             return true;
         }
         return false;
