@@ -39,7 +39,7 @@ and floating toolbar to make the WYMeditor UI less obtrusive.
 Your users will no longer see the second vertical scrollbar,
 removing one more thing separating them from their content.
 
-Note: The seamless skin currently required jQuery 1.8 or higher.
+Note: The seamless skin currently requires jQuery 1.8 or higher.
 
 ### Build Process Improvements
 
