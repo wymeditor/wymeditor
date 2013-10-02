@@ -44,17 +44,6 @@
     border-style: none;
     padding: 1px;
 }
-/*auto-clear the wym_box*/
-.wym_skin_seamless:after {
-    content: ".";
-    display: block;
-    height: 0;
-    clear: both;
-    visibility: hidden;
-}
-* html .wym_skin_seamless {
-    height: 1%;
-}
 
 /*WYM_HTML*/
 .wym_skin_seamless .wym_html {
@@ -72,6 +61,17 @@
     width: 802px;
     margin-left: auto;
     margin-right: auto;
+    height: 24px;
+}
+.wym_skin_seamless .wym_area_top_affix_placeholder {
+    margin: 0px;
+    paddin: 0px;
+}
+.wym_skin_seamless .affix {
+    position: fixed;
+    top: 0px;
+    width: 100%;
+    background: white;
 }
 
 /*WYM_IFRAME*/
@@ -99,15 +99,6 @@
 .wym_skin_seamless .wym_area_bottom {
     height: 1%;
     clear: both;
-}
-* html .wym_skin_seamless .wym_area_main {
-    height: 1%;
-}
-* html .wym_skin_seamless .wym_area_top {
-    height: 1%;
-}
-*+html .wym_skin_seamless .wym_area_top {
-    height: 1%;
 }
 
 /*SECTIONS SYSTEM*/
@@ -138,17 +129,6 @@
     padding-top: 1px;
     padding-bottom: 1px;
 }
-/*auto-clear sections*/
-.wym_skin_seamless .wym_section ul:after {
-    content: ".";
-    display: block;
-    height: 0;
-    clear: both;
-    visibility: hidden;
-}
-* html .wym_skin_seamless .wym_section ul {
-    height: 1%;
-}
 
 /*option: add this class to a section to make it render as a panel*/
 .wym_skin_seamless .wym_panel {
@@ -160,11 +140,13 @@
 /*option: add this class to a section to make it render as a dropdown menu*/
 .wym_skin_seamless .wym_dropdown h2 {
     display: block;
+    font-size: 2.0em;
 }
 .wym_skin_seamless .wym_dropdown ul {
     display: none;
     position: absolute;
     background: white;
+    font-size: 1.7em;
 }
 .wym_skin_seamless .wym_dropdown:hover ul,
 .wym_skin_seamless .wym_dropdown.hover ul {
