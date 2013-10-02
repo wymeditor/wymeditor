@@ -30,6 +30,15 @@ WYMeditor.
   behavior has been adjusted so that the indent and outdent tools will not
   apply to lists unless the selection is entirely contained within one list.
 
+### Skins
+
+#### Seamless
+
+Introducing the Seamless skin! This skin uses a resizing iframe
+and floating toolbar to make the WYMeditor UI less obtrusive.
+Your users will no longer see the second vertical scrollbar,
+removing one more thing separating them from their content.
+
 ### Build Process Improvements
 
 * The project can now be fully built using Grunt instead of `make`. Simply use
@@ -39,6 +48,9 @@ WYMeditor.
   these fixes, the unit test suite should now pass fully in all supported
   browsers (Chrome, Firefox, Phantom.js, and IE7-10) with all supported
   versions of jQuery (1.4-1.9).
+* The build now fully passes a `$ grunt jshint` run
+  and this is now automatically run as part of continuous integration
+  on Travis-CI. No more nasty code!
 
 ## 1.0.0b5 (Beta 5)
 
