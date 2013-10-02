@@ -141,6 +141,7 @@
 .wym_skin_seamless .wym_dropdown h2 {
     display: block;
     font-size: 2.0em;
+    line-height: 20px;
 }
 .wym_skin_seamless .wym_dropdown ul {
     display: none;
