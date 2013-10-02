@@ -3,7 +3,6 @@
   "version": "1.0.0-b6",
   "dependencies": {
     "requirejs": "~2.1.4",
-    "bootstrap": "~2.3.2",
     "jquery": "~1.4.4"
   },
   "devDependencies": {}

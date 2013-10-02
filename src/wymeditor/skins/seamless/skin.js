@@ -1,6 +1,115 @@
 /* globals -$ */
 "use strict";
 
+// Add classes to an element based on its current location relative to top and
+// or bottom offsets.
+// Useful for affixing an element on the page within a certain vertical range.
+// Based largely off of the bootstrap affix plugin
+// https://github.com/twbs/bootstrap/blob/master/js/affix.js
+(function ($) {
+    var Affix = function (element, options) {
+        this.options = $.extend({}, $.fn.wymAffix.defaults, options);
+        this.$window = $(window);
+
+        this.$window.on(
+            'scroll.affix.data-api',
+            $.proxy(this.checkPosition, this)
+        );
+        this.$window.on(
+            'click.affix.data-api',
+            $.proxy(
+                function () {
+                    setTimeout(
+                        $.proxy(this.checkPosition, this),
+                        1
+                    );
+                },
+                this
+            )
+        );
+        this.$element = $(element);
+        this.checkPosition();
+    };
+
+    Affix.prototype.checkPosition = function () {
+        if (!this.$element.is(':visible')) {
+            return;
+        }
+
+        var scrollTop = this.$window.scrollTop()
+          , offset = this.options.offset
+          , offsetBottom = offset.bottom
+          , offsetTop = offset.top
+          , reset = 'affix affix-top affix-bottom'
+          , desiredAffixType
+          , isBelowTop = true
+          , isAboveBottom = true;
+
+        if (typeof offset !== 'object') {
+            offsetBottom = offsetTop = offset;
+        }
+        if (typeof offsetTop === 'function') {
+            offsetTop = offset.top();
+        }
+        if (typeof offsetBottom === 'function') {
+            offsetBottom = offset.bottom();
+        }
+
+        if (offsetTop !== null) {
+            isBelowTop = scrollTop > offsetTop;
+        }
+        if (offsetBottom !== null) {
+            isAboveBottom = scrollTop + this.$element.height() < offsetBottom;
+        }
+
+        if (isBelowTop && isAboveBottom) {
+            desiredAffixType = 'affix';
+        } else if (isAboveBottom === false) {
+            // We're below the bottom offset
+            desiredAffixType = 'affix-bottom';
+        } else {
+            desiredAffixType = 'affix-top';
+        }
+
+        if (this.currentAffixType === desiredAffixType) {
+            // We're already properly-affixed. No changes required.
+            return;
+        }
+
+        this.$element.removeClass(reset).addClass(desiredAffixType);
+
+        this.currentAffixType = desiredAffixType;
+    };
+
+
+ /* AFFIX PLUGIN DEFINITION
+  * ======================= */
+
+    $.fn.wymAffix = function (option) {
+        return this.each(function () {
+            var $this = $(this)
+                , data = $this.data('affix')
+                , options = typeof option === 'object' && option;
+
+            if (!data) {
+                $this.data(
+                    'affix',
+                    (data = new Affix(this, options))
+                );
+            }
+            if (typeof option === 'string') {
+                data[option]();
+            }
+        });
+    };
+
+    $.fn.wymAffix.Constructor = Affix;
+
+    $.fn.wymAffix.defaults = {
+        offset: 0
+    };
+}(jQuery));
+
 WYMeditor.SKINS.seamless = {
     OPTS: {
         iframeHtml: [""
