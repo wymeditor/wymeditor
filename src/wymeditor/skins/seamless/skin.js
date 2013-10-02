@@ -197,7 +197,8 @@ WYMeditor.SKINS.seamless = {
         var $areaTop,
             $offsetWrapper,
             earlyScrollPixels = 5,
-            offsetWrapperOffsetTop;
+            offsetWrapperOffsetTop,
+            usePlaceholderWidth;
 
         $areaTop = jQuery("div.wym_area_top", wym._box);
 
@@ -214,8 +215,19 @@ WYMeditor.SKINS.seamless = {
         $offsetWrapper.wrap('<div class="wym_area_top_affix_placeholder">');
         $offsetWrapper.parent().height($areaTop.height());
 
-        offsetWrapperOffsetTop = $offsetWrapper.offset().top;
+        usePlaceholderWidth = function () {
+            // Hard-code the offsetWrapper width so that when this floats to
+            // the top, it doesn't expand to take up all of the room to the
+            // right
+            var $areaTop = jQuery("div.wym_area_top", wym._box),
+                $offsetWrapper = $areaTop.parent();
 
+            $offsetWrapper.width($offsetWrapper.parent().width());
+        };
+        usePlaceholderWidth();
+        jQuery(window).resize(usePlaceholderWidth);
+
+        offsetWrapperOffsetTop = $offsetWrapper.offset().top;
         $offsetWrapper.wymAffix({
             offset: {
                 top: offsetWrapperOffsetTop - earlyScrollPixels,
