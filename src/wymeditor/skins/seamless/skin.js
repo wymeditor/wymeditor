@@ -197,8 +197,8 @@ WYMeditor.SKINS.seamless = {
         var $areaTop,
             $offsetWrapper,
             earlyScrollPixels = 5,
-            offsetWrapperOffsetTop,
-            usePlaceholderWidth;
+            usePlaceholderWidth,
+            $placeholder;
 
         $areaTop = jQuery("div.wym_area_top", wym._box);
 
@@ -213,26 +213,25 @@ WYMeditor.SKINS.seamless = {
         // space. This avoids the "jump" when the toolbar switches to being
         // affixed
         $offsetWrapper.wrap('<div class="wym_area_top_affix_placeholder">');
-        $offsetWrapper.parent().height($areaTop.height());
+        $placeholder = $offsetWrapper.parent();
+        $placeholder.height($areaTop.height());
 
         usePlaceholderWidth = function () {
             // Hard-code the offsetWrapper width so that when this floats to
             // the top, it doesn't expand to take up all of the room to the
             // right
-            var $areaTop = jQuery("div.wym_area_top", wym._box),
-                $offsetWrapper = $areaTop.parent();
-
-            $offsetWrapper.width($offsetWrapper.parent().width());
+            $offsetWrapper.width($placeholder.width());
         };
         usePlaceholderWidth();
         jQuery(window).resize(usePlaceholderWidth);
 
-        offsetWrapperOffsetTop = $offsetWrapper.offset().top;
         $offsetWrapper.wymAffix({
             offset: {
-                top: offsetWrapperOffsetTop - earlyScrollPixels,
+                top: function () {
+                    return $placeholder.offset().top - earlyScrollPixels;
+                },
                 bottom: function () {
-                    return offsetWrapperOffsetTop +
+                    return $placeholder.offset().top +
                         wym.seamlessSkinIframeHeight;
                 }
             }
