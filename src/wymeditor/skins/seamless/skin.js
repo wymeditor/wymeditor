@@ -181,6 +181,12 @@ WYMeditor.SKINS.seamless = {
             "width": "120px",
             "float": "left"
         });
+        // Make dropdowns also work on click, for mobile devices
+        jQuery(".wym_dropdown", wym._box).click(
+            function () {
+                jQuery(this).toggleClass("hover");
+            }
+        );
 
         // The toolbar uses buttons
         $toolbar = jQuery(wym._options.toolsSelector, wym._box);
