@@ -43,6 +43,10 @@ Layout Perfection
 Tweak the CSS in supported browsers,
 so that the height is pixel-perfect.
 
+* Resize the iframe after inserting:
+  * Images
+  * Tables
+
 Responsive Containers/Classes
 -----------------------------
 
