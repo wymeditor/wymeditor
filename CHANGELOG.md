@@ -29,6 +29,10 @@ WYMeditor.
   still be applied to all of the list items in each of the selected lists. This
   behavior has been adjusted so that the indent and outdent tools will not
   apply to lists unless the selection is entirely contained within one list.
+  [#418](https://github.com/wymeditor/wymeditor/issues/418)
+* 1.0.0b5 introduced a regression bug which allowed `br` tags to exist at the
+  document root, even after parsing. This is no longer the case.
+  [#431](https://github.com/wymeditor/wymeditor/issues/431)
 
 ### Skins
 
