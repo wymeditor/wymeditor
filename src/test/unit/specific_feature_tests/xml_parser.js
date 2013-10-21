@@ -1634,10 +1634,11 @@ blockElementsHtml.expected = [""
     , '<p>p2</p>'
 ].join('');
 blockElementsHtml.brInRoot = [""
-    , '<br />'
-    , '<p>p1</p>'
     , '<br>'
+    , '<p>p1</p>'
+    , '<br />'
     , '<p>p2</p>'
+    , '<br />'
 ].join('');
 
 test("BR isn't allowed at the root", function () {
