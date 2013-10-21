@@ -169,7 +169,7 @@ function normalizeHtml(node) {
 *
 * fixListSpacing is a boolean that specifies if leading spaces before line
 * breaks and list type elements should be removed in older versions of Internet
-* Explorer (i.e. IE7-8). This paramater is optional.
+* Explorer (i.e. IE7-8). Defaults to false.
 */
 function htmlEquals(wymeditor, expected, assertionString, fixListSpacing) {
     var xhtml = '',

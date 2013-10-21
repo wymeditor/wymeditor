@@ -1625,3 +1625,29 @@ test("Unwrap content of nested DIV elements in list item", function () {
                "Unwrap content of nested `div` elements in a list item",
                true);
 });
+
+module("XmlParser-allowed_block_elements", {setup: setupWym});
+
+var blockElementsHtml = {};
+blockElementsHtml.expected = [""
+    , '<p>p1</p>'
+    , '<p>p2</p>'
+].join('');
+blockElementsHtml.brInRoot = [""
+    , '<br />'
+    , '<p>p1</p>'
+    , '<br>'
+    , '<p>p2</p>'
+].join('');
+
+test("BR isn't allowed at the root", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0);
+
+    wymeditor._html(blockElementsHtml.brInRoot);
+    htmlEquals(
+        wymeditor,
+        blockElementsHtml.expected,
+       "BR removed from root"
+    );
+});
