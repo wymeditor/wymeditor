@@ -71,6 +71,8 @@ Any user should be able to follow the instructions in the README to make their
 own archive, but it's important to include an archive in a known place for ease
 of use.
 
+* Ensure that the checked-in version located in `dist/`
+  is up to date with the current source.
 * Follow the `README.md` instructions to create the `tar.gz` archive.
 * Tag the current version in git using [Semantic
   Versioning](http://semver.org/) and push the tag to github.
