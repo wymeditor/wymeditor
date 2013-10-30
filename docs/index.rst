@@ -55,6 +55,13 @@ WYMeditor is compatible with:
 * Google Chrome: Latest two major versions
 
 ********
+Examples
+********
+
+WYMeditor has a lot of flexibility.
+Check out our `Examples <_static/examples/index.html>`_.
+
+********
 Contents
 ********
 
