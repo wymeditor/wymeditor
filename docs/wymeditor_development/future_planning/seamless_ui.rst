@@ -47,6 +47,14 @@ so that the height is pixel-perfect.
   * Images
   * Tables
 
+Also,
+investigate using `scrolling.js <https://github.com/pazguille/scrolling>`_
+to provide intelligent scroll debouncing.
+It uses ``requestAnimationFrame`` where supported
+and falls back to using a timeout
+to only hit the callback
+60 times per second.
+
 Responsive Containers/Classes
 -----------------------------
 
