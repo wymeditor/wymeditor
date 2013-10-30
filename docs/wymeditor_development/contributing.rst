@@ -1,8 +1,10 @@
+############
 Contributing
-============
+############
 
+*******************
 We <3 Contributions
--------------------
+*******************
 
 We love your contributions. Anything, whitespace cleanup, spelling corrections,
 translations, jslint cleanup, etc is very welcome.
@@ -12,8 +14,9 @@ appropriate unit tests, hack until you're done, make sure the tests still pass,
 and then send a pull request. If you have questions on how to do any of this,
 please stop by #wymeditor on freenode IRC and ask. We're happy to help!
 
+***************
 Example Process
----------------
+***************
 
 #. Fork `wymeditor <https://github.com/wymeditor/wymeditor>`_ to your personal
    GitHub account.
@@ -47,10 +50,84 @@ Example Process
    Request*.
 
 Staying up to Date
-------------------
+==================
 
 If your fork or local branch falls behind the official upstream repository
 please do a ``git fetch`` and then ``merge`` or ``rebase`` to make sure your
 changes will apply cleanly – otherwise your pull request will not be accepted.
 
 See the `GitHub help section <http://help.github.com/>`_ for further details.
+
+.. _configuring-your-development-environment:
+
+****************************************
+Configuring Your Development Environment
+****************************************
+
+WYMeditor uses the standard modern javascript development toolchain,
+centered on ``Grunt`` as our build tool
+and ``node.js`` via ``NPM`` for installing requirements.
+If you don't have your machine configured for node.js development,
+we've provided a ``Vagrantfile``
+for easy setup using `Vagrant <http://www.vagrantup.com/>`_.
+
+If you want a custom,
+non-Vagrant environment,
+the basic requirements are:
+
+* A working `PhantomJS <http://phantomjs.org/>`_ installation.
+* `grunt` and `bower` installed via ``NPM``.
+
+Then you're just a ``$ npm install`` away from being ready to go.
+
+.. note::
+    For the example setup of an Ubuntu Precise machine,
+    check out our
+    `vagrant_provision.sh <https://github.com/wymeditor/wymeditor/blob/master/vagrant_provision.sh>`_
+    script,
+    which we use for configuring the Vagrant machine.
+
+.. _vagrant-environment-setup:
+
+Environment Setup with Vagrant
+==============================
+
+1. Install Virtualbox
+---------------------
+
+First,
+you need a working installation of
+`VirtualBox <https://www.virtualbox.org/>`_.
+
+On Ubuntu,
+that's as easy as:
+
+.. code-block:: shell-session
+
+    $ sudo apt-get install virtualbox
+
+2. Install Vagrant
+------------------
+
+Vagrant builds and provisions our Virtualbox.
+See their documentation for
+`Vagrant Installation Instructions <http://docs.vagrantup.com/v2/installation/>`.
+
+
+3. Install Vagrant Plugins
+---------------------------
+
+We use a couple of Vagrant plugins
+to make managing things easier.
+
+.. code-block:: shell-session
+
+    $ vagrant plugin install vagrant-omnibus
+    $ vagrant plugin install vagrant-librarian-chef
+
+4. Build Your Box
+-----------------
+
+.. code-block:: shell-session
+
+    $ vagrant up

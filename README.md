@@ -135,83 +135,7 @@ order to enhance WYMeditor.
 
 #### Running Unit Tests
 
-##### Running Unit Tests in a Browser
-
-WYMeditor includes a full unit test suite to help us ensure that the editor
-works great across a variety of browsers. You simply need to serve the
-WYMeditor source using some type of web server and then load the URL for the
-unit tests in your browser.
-
-To run the tests:
-
-1. Put your source behind some kind of web server (apache, nginx, etc). If you
-   don't have one installed or don't want to fuss with configuration, you can
-   use python's HTTP server:
-
-    ```shell
-    $ cd /path/to/my/wymeditor/src
-    $ python -m SimpleHTTPServer
-    ```
-
-2. The unit test suite is located at `src/test/unit/index.html`, so if you used
-   the python instructions, open up your browser to
-   [http://localhost:8000/test/unit/index.html](http://localhost:8000/test/unit/index.html).
-
-All green means you're good to go.
-
-##### Running Unit Tests from the Command Line
-
-In addition to the browser test suite, you can also use
-[Phantom.js](http://www.phantomjs.org/) to run the unit tests in a headless
-WebKit browser from the command line using [Grunt](http://gruntjs.com/) by
-following these instructions:
-
-1. Navigate to the root directory of the project directory cloned from git.
-    
-2. Use [NPM](http://npmjs.org/) to install the Grunt requirements by running
-   this command in the root directory of the project:
-
-    ```shell
-    $ npm install
-    ```
-
-3. Use NPM to install the Grunt CLI.
-
-    ```shell
-    $ sudo npm install -g grunt-cli
-    ```
-
-4. Finally, run the unit tests by running the `test` Grunt task in the root
-   directory of the project:
-
-    ```shell
-    $ grunt test
-    ```
-
-If the task runs with no errors or failures, you're good to go.
-
-##### Unit testing different jQuery versions
-
-The unit tests can be run with the different versions of jQuery hosted on
-Google's CDN. To do this when running tests in a browser, append the URL
-parameter `?jquery=<version>` to the test suite URL. To do this when running
-tests from the command line with Grunt, include the parameter
-`--jquery=<version>` when running the `test` task. 
-
-For a browser example, to test with jQuery 1.8.0 against a local server on port
-8000, use the URL:
-[http://localhost:8000/test/unit/index.html?jquery=1.8.0](http://localhost:8000/test/unit/?jquery=1.8.0).
-
-For a command line example, to test with jQuery 1.8.0 using Grunt, use the
-command:
-
-```shell
-grunt test --jquery=1.8.0
-```
-
-If no specific version of jQuery is specified to be used with the unit tests,
-the newest build of the oldest fully supported minor version of jQuery will be
-used by default (Currently, that version is 1.4.x).
+Read the documentation on [Testing WYMeditor](http://wymeditor.readthedocs.org/en/latest/wymeditor_development/testing_wymeditor.html).
 
 #### Selenium Tests
 
@@ -252,7 +176,7 @@ Qunit instead of a Selenium test.
 3. To run the Selenium tests, you'll first need to serve the `src` directory
    with a web server. If you have python installed, then you can simply open a
    terminal and run:
-    
+
     ```shell
 	$ cd /path/to/wymeditor
 	$ make testserver
@@ -271,53 +195,7 @@ Qunit instead of a Selenium test.
 
 ### Building WYMeditor
 
-1. Get a copy of the source using git:
-
-    ```shell
-    git clone git://github.com/wymeditor/wymeditor.git
-    ```
-
-2. Use [NPM](http://npmjs.org/) to install the Grunt requirements and
-   CLI by running these commands in the root directory of the project:
-
-    ```shell
-    $ npm install
-    $ sudo npm install -g grunt-cli
-    ```
-
-3. Build the project using the Grunt `build` task:
-
-    ```shell
-    $ grunt build
-    ```
-
-The resulting compressed distribution will appear in your `dist` directory.
-
-#### Building with Google's Closure Compiler (Java)
-
-The default WYMeditor distribution is built with
-[UglifyJS](https://github.com/mishoo/UglifyJS), which requires the installation
-of Node.js. If you prefer Java and/or Google's Closure Compiler, you can follow
-these instructions instead.
-
-1. Install `make` and Java.
-
-2. Download [Closure Compiler
-   application](https://developers.google.com/closure/compiler/), extracting
-   `compiler.jar` into your `wymeditor` directory.
-
-3. Run `make` from your git clone:
-
-    ```shell
-    $ cd /path/to/wymeditor
-    $ make min_closure archive
-    ```
-
-#### A Note on Build Scripts
-
-The project is currently in the process of moving entirely from `make` to Grunt
-as a build tool. Any help porting the remaining `make` tasks to Grunt would be
-wonderful, as it's a bit confusing right now.
+Read about [Building WYMeditor](http://wymeditor.readthedocs.org/en/latest/wymeditor_development/building_wymeditor.html)
 
 ## Getting Help
 
@@ -327,7 +205,7 @@ wonderful, as it's a bit confusing right now.
  - **Official branch:** https://github.com/wymeditor/wymeditor
 
 [Read more on
-contributing](https://wymeditor.readthedocs.org/en/latest/version_2.0/contributing.html)
+contributing](http://wymeditor.readthedocs.org/en/latest/wymeditor_development/contributing.html)
 
 ## Copyright
 
