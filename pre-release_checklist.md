@@ -82,6 +82,8 @@ of use.
   from the CHANGELOG for the current version to the release description and
   upload the built `tar.gz` archive named according to the
   `wymeditor-<version>.tar.gz` format.
+* Update the website by building the site with jekyll
+  and then pushing to the `gh-pages` branch.
 
 Tell the World
 ==============
