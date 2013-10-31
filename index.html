@@ -1,0 +1,122 @@
+---
+layout: home
+title: WYMeditor
+base_url: "./"
+---
+
+<h1>
+<a name="wymeditor" class="anchor" href="#wymeditor"><span class="octicon octicon-link"></span></a>WYMeditor</h1>
+
+<p>WYMeditor is an open source web-based WYSIWYM editor with semantics and
+standards in mind. The WYM-part stands for "What You Mean" compared to the more
+common "What You See Is What You Get".</p>
+
+<h2>
+<a name="why-wymeditor" class="anchor" href="#why-wymeditor"><span class="octicon octicon-link"></span></a>Why WYMeditor?</h2>
+
+<p>WYMeditor is different from the
+<a href="http://www.tinymce.com/">traditional</a> <a href="http://ckeditor.com/">editors</a>
+because we are 100% focused on providing a simple experience for users that
+separates the content of their document from the presentation of that document.
+We focus on enforcing web standards and separating a document's structure
+(HTML) from its presentation (CSS). Your users won't know and shouldn't care
+about HTML, but when they need consistent, standards-compliant, clean content,
+they'll thank you.</p>
+
+<p>There are lots of choices when it comes to a brower-based editor and many of
+them are stable, mature projects with thousands of users. If you need an editor
+that gives total control and flexibility to the user (not you, the developer),
+then WYMeditor is probably not for you. If you want an editor that you can
+customize to provide the specific capabilities your users need, and you want
+users focused on the structure of their content instead of tweaking fonts and
+margins, you should give WYMeditor a try.</p>
+
+<p>We also fully support Internet Explorer 6, for those poor souls who have no
+choice.</p>
+
+<h2>
+<a name="try-it" class="anchor" href="#try-it"><span class="octicon octicon-link"></span></a>Try It</h2>
+
+<p>Want to see what WYMeditor can do? Try the <a href="dist/examples/">WYMeditor examples</a> right now.</p>
+
+<p>These examples run the bleeding edge code and give you a good idea of what
+WYMeditor can do.</p>
+
+<h2>
+<a name="quick-start" class="anchor" href="#quick-start"><span class="octicon octicon-link"></span></a>Quick Start</h2>
+
+<ol>
+<li>WYMeditor requires a version of jQuery between 1.2.6 and 1.9.1. First ensure
+that your page includes jQuery.</li>
+</ol><p><em>Note</em>: If a version of jQuery at or above 1.8.0 is used, WYMeditor also
+requires jQuery Migrate. Ensure that your page also includes jQuery
+Migrate after jQuery is included.</p>
+
+<ol>
+<li><p>Download the
+<a href="{{ site.download_dist }}">Version {{ site.current_version }}</a>
+archive and extract the contents to a folder in your project.</p></li>
+<li>
+<p>Include the <code>wymeditor/jquery.wymeditor.min.js</code> file on your page. This file
+will pull in anything else that's required.</p>
+
+</li>
+<li>
+<p>Now use the <code>wymeditor()</code> function to select one of your <code>textarea</code> elements
+and turn it in to a WYMeditor instance. eg. if you have a <code>textarea</code> with the
+class <code>my-wymeditor</code>:</p>
+
+<p>$('.my-wymeditor').wymeditor();</p>
+</li>
+</ol><p><em>Note</em>: You'll probably want to do this initialization inside a
+<code>$(document).ready()</code> block.</p>
+
+<ol>
+<li>
+<p>If you'd like to receive the valid HTML your editor produce on form
+submission, just add the class <code>wymupdate</code> to your submit button.</p>
+
+<p></p>
+</li>
+<li><p>???</p></li>
+<li><p>Profit!</p></li>
+</ol><p>More examples with different plugins and configuration options can be found in
+your <code>examples</code> directory.</p>
+
+<h2>
+<a name="compatibility" class="anchor" href="#compatibility"><span class="octicon octicon-link"></span></a>Compatibility</h2>
+
+<p>WYMeditor is compatible with:</p>
+
+<ul>
+<li>IE: 7, 8, 9 and 10</li>
+<li>Firefox: LTS and latests two major versions</li>
+<li>Opera: Latest version</li>
+<li>Safari: Latest version</li>
+<li>Google Chrome: Latest two major versions</li>
+</ul>
+
+<h2>
+<a name="documentation" class="anchor" href="#documentation"><span class="octicon octicon-link"></span></a>Full Documentation</h2>
+
+<p>Check out or detailed documentation at:
+<a href="http://wymeditor.readthedocs.org">wymeditor.readthedocs.org</a>.</p>
+
+<h2>
+<a name="more-info" class="anchor" href="#more-info" class="octicon octicon-link"></span></a>More Info</h2>
+
+<ul>
+<li>
+<strong>Documentation:</strong> <a href="http://wymeditor.readthedocs.org">wymeditor.readthedocs.org</a>
+</li>
+<li>
+<strong>Forum:</strong> <a href="http://community.wymeditor.org">http://community.wymeditor.org</a>
+</li>
+<li>
+<strong>Issue tracking:</strong> <a href="https://github.com/wymeditor/wymeditor/issues">https://github.com/wymeditor/wymeditor/issues</a>
+</li>
+<li>
+<strong>Official branch:</strong> <a href="https://github.com/wymeditor/wymeditor">https://github.com/wymeditor/wymeditor</a>
+</li>
+</ul>
+
