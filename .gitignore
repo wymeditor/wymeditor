@@ -11,3 +11,4 @@ dist/MIT-license.txt
 dist/package.json
 dist/README.md
 dist/*.gz
+_gh_pages
