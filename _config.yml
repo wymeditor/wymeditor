@@ -1,0 +1,43 @@
+name: WYMeditor
+markdown: redcarpet
+pygments: true
+
+# Permalinks
+permalink:        pretty
+
+# Server
+destination:      ./_gh_pages
+exclude: [
+"AUTHORS",
+"bower.json", 
+".bowerrc",
+"CHANGELOG.md",
+"chef",
+"docs",
+"Gemfile",
+"Gemfile.lock",
+".gitignore", 
+"GPL-license.txt",
+"Gruntfile.js", 
+".jshintignore",
+".jshintrc",
+"Makefile",
+"MIT-license.txt",
+"node_modules", 
+"package.json", 
+"pre-release_checklist.md",
+"README.md", 
+"src",
+".travis.yml",
+".vagrant",
+"Vagrantfile",
+"vagrant_provision.sh",
+"wym_selenium"
+]
+
+# Custom vars
+current_version:  1.0.0b5
+repo:             https://github.com/wymeditor/wymeditor/
+
+download_source:  https://github.com/wymeditor/wymeditor/archive/v1.0.0b5.zip
+download_dist:    https://github.com/wymeditor/wymeditor/releases/download/v1.0.0b5/wymeditor-1.0.0b5.tar.gz
