@@ -320,7 +320,7 @@ are completed, this cycle will culminate in a 1.0.0 stable release.
   clues for blocks, resulting in fewer HTTP requests and better network
   performance. Additionally, the context clues have been expanded to provide a
   better "plain english" explanation of the elements. Give this new theme a
-  swing at [the example](http://wymeditor.no.de/wymeditor/examples/17-pretty-theme.html).
+  swing at [the example](http://wymeditor.github.io/wymeditor/dist/examples/17-pretty-theme.html).
 
   You can enable it in your project by passing the
   `iframeBasePath: "wymeditor/iframe/pretty/"` option to your WYMeditor instance.

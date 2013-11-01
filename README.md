@@ -25,7 +25,7 @@ margins, you should give WYMeditor a try.
 ## Try It
 
 Want to see what WYMeditor can do? Try the [WYMeditor
-examples](http://wymeditor.no.de/wymeditor/examples/) right now.
+examples](http://wymeditor.github.io/wymeditor/dist/examples/) right now.
 
 These examples run the bleeding edge code and give you a good idea of what
 WYMeditor can do.

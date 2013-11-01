@@ -10,13 +10,6 @@ for speculation feels dirty.
 Documentation
 *************
 
-Find a Better Way of Hosting the Demos
-======================================
-
-Joyent has discontinued their no.de node PaaS that we previously used to host
-the demos. Either move to their `Nodejitsu <http://www.nodejitsu.com/>`_
-replacement, or find something else.
-
 Automate Taking Demo Screenshots for the Docs
 =============================================
 
