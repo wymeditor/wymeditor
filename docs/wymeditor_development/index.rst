@@ -56,3 +56,51 @@ More Details
 For a more detailed explanation,
 see the `guard/listen wiki <https://github.com/guard/listen/wiki/Increasing-the-amount-of-inotify-watchers>`_.
 
+*****************
+WYMeditor Website
+*****************
+
+The website at http://wymeditor.github.io/wymeditor/
+is served via Github pages
+and uses Jekyll.
+Instead of dealing with different content
+between a ``gh-pages`` and master branch,
+``master`` also contains the jekyll content.
+
+Currently,
+there's a lot of overlap between the docs,
+the website
+and the README.
+
+The focus of these should be:
+
+* Website = Marketing/Examples/Getting-started
+* README = Funnels to Website but contains project-wide info
+* docs = detailed user and development documentation
+
+Configuring Jekyll
+==================
+
+.. code-block:: shell-session
+
+    $ rvm use 1.9.3
+    $ bundle install
+
+Previewing the Website Locally
+==============================
+
+.. code-block:: shell-session
+
+    $ jekyll build
+    $ jekyll serve
+    $ google-chrome "http://localhost:4000"
+
+Updating the Hosted Version
+===========================
+
+.. code-block:: shell-session
+
+    $ git checkout gh-pages
+    $ git merge origin/master
+    $ git push origin gh-pages
+
