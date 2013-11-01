@@ -34,6 +34,18 @@ WYMeditor.
   document root, even after parsing. This is no longer the case.
   [#431](https://github.com/wymeditor/wymeditor/issues/431)
 
+### Infrastructure Improvements
+
+* Both the examples and the website are now hosted on github pages,
+  which means no more broken links.
+* We're now distributing an already-built version of WYMeditor
+  located in the ``dist/`` folder
+  as part of the repository.
+  This lowers the barrier to entry for trying out WYMeditor.
+  It will also allow us
+  to add [component](https://github.com/component/component) support.
+  Hooray better Javascript component packaging!
+
 ### Skins
 
 #### Seamless
