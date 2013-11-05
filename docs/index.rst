@@ -29,7 +29,7 @@ Examples
 ********
 
 WYMeditor has a lot of flexibility.
-Check out our `Examples <_static/examples/index.html>`_.
+Check out our `Examples <http://wymeditor.github.io/wymeditor/dist/examples/>`_.
 
 ********
 Contents
