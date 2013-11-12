@@ -131,3 +131,7 @@ to make managing things easier.
 .. code-block:: shell-session
 
     $ vagrant up
+
+Please note that if your working directory is an Ubuntu encrypted
+home directory or any kind of FUSE mount, you'll get an error from NFS.
+You can work around this by having your working directory somewhere else.
