@@ -131,3 +131,33 @@ to make managing things easier.
 .. code-block:: shell-session
 
     $ vagrant up
+
+Vagrant Troubleshooting
+-----------------------
+
+Encrypted Home Directory: Problems with the NFS mount
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you use an FUSE-based encrypted home directory,
+as is the default for Ubuntu,
+you might see an error like:
+
+::
+
+    mount.nfs: access denied by server while mounting 10.10.10.1:/home/you/your-wym-repo
+
+Unfortunately,
+NFS can't share encrypted directories,
+which is how Virtualbox and Vagrant
+keep your files synchronized.
+To work around this
+we recommend putting your git clone
+in a directory like ``/opt``.
+
+.. code-block:: shell-session
+
+    $ mkdir -p /opt/wym
+    $ cd /opt/wym
+    $ git clone https://github.com/wymeditor/wymeditor.git
+    $ cd wymeditor
+    $ vagrant up
