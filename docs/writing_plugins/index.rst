@@ -20,11 +20,35 @@ and ideally,
 initialize the editor with content
 that makes playing with your plugin easy.
 
-Please avoid adding a file in ``test``
-other than for unit tests.
-The ``.html`` files in ``test`` rot quickly
-(other than unit tests)
-because users don't see them.
+.. note::
+
+    Please avoid adding a file in ``test``
+    other than for unit tests.
+    The ``.html`` files in ``test`` rot quickly
+    (other than unit tests)
+    because users don't see them.
+
+Serving Examples
+----------------
+
+You can load your example via:
+
+.. code-block:: shell-session
+
+    vagrant$ grunt server
+   $ google-chrome http://localhost:9000/examples/
+
+Serving Examples from ``dist/``
+-------------------------------
+
+To make sure your examples
+also works from the built distribution,
+we can tell ``grunt`` to build first:
+
+.. code-block:: shell-session
+
+    vagrant$ grunt server:dist
+   $ google-chrome http://localhost:9000/examples/
 
 2. Create your plugin folder
 ============================
