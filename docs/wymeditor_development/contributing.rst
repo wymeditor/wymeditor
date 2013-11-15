@@ -14,9 +14,11 @@ appropriate unit tests, hack until you're done, make sure the tests still pass,
 and then send a pull request. If you have questions on how to do any of this,
 please stop by #wymeditor on freenode IRC and ask. We're happy to help!
 
-***************
-Example Process
-***************
+.. _development-contributing-example-process:
+
+****************************
+Example Contribution Process
+****************************
 
 #. Fork `wymeditor <https://github.com/wymeditor/wymeditor>`_ to your personal
    GitHub account.
@@ -29,13 +31,15 @@ Example Process
    my-cool-new-feature``).
 
 #. Make your changes, making sure to follow the
-   :doc:`/wymeditor_development/coding_standard`. If possible, also include a unit test in
-   src/test/unit/test.js.
-
-#. Add the changed files to your staging area (``git add <modified files>``)
-   and commit your changes with a meaningful message (``git commit -m "Describe
-   your changes"``). Make sure and follow the
    :doc:`/wymeditor_development/coding_standard`.
+   If possible,
+   also include a unit test in
+   ``src/test/unit/test.js``.
+
+#. Add the changed files to your staging area
+   (``$ git add <modified files>``)
+   and commit your changes with a meaningful message
+   (``$ git commit -m "Describe your changes"``).
 
 #. Repeat steps 4-5 until you're done.
 
