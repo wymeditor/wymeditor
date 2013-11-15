@@ -20,29 +20,35 @@ WYMeditor.editor.prototype.bidi = function () {
     //construct the buttons' html
     buttonLtr = [""
         , "<li class='wym_tools_direction_ltr'>"
-        , "<a name='ltr' href='#'"
-        , " style='background-image: url("
-        , wym._options.basePath
-        , "plugins/bidi/icons.png);'>"
-        , "{ltr}</a></li>"
+        ,     "<a name='ltr' href='#'"
+        ,     " style='background-image: url("
+        ,     wym._options.basePath
+        ,     "plugins/bidi/icons.png);'>"
+        ,         "{ltr}"
+        ,     "</a>"
+        , "</li>"
     ].join('');
     buttonRtl = [""
         , "<li class='wym_tools_direction_rtl'>"
-        , "<a name='rtl' href='#'"
-        , " style='background-image: url("
-        , wym._options.basePath
-        , "plugins/bidi/icons.png);"
-        , " background-position: 0px -24px;'>"
-        , "{rtl}</a></li>"
+        ,     "<a name='rtl' href='#'"
+        ,         " style='background-image: url("
+        ,         wym._options.basePath
+        ,         "plugins/bidi/icons.png);"
+        ,         " background-position: 0px -24px;'>"
+        ,         "{ltr}"
+        ,     "</a>"
+        , "</li>"
     ].join('');
     buttonRmDir = [""
         , "<li class='wym_tools_direction_remove'>"
-        , "<a name='rmdir' href='#'"
-        , " style='background-image: url("
-        , wym._options.basePath
-        , "plugins/bidi/icons.png);"
-        , " background-position: 0px -48px;'>"
-        , "{rmdir}</a></li>"
+        ,     "<a name='rmdir' href='#'"
+        ,         " style='background-image: url("
+        ,         wym._options.basePath
+        ,         "plugins/bidi/icons.png);"
+        ,         " background-position: 0px -48px;'>"
+        ,         "{ltr}"
+        ,     "</a>"
+        , "</li>"
     ].join('');
 
     html = buttonLtr + buttonRtl + buttonRmDir;
