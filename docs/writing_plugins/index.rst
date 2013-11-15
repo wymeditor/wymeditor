@@ -72,7 +72,7 @@ the user must add some kind of initialization
 in the wymeditor ``postInit``.
 For example:
 
-.. code-block::javascript
+.. code-block:: javascript
 
     jQuery('.wymeditor').wymeditor({
         postInit: function(wym) {

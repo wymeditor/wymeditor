@@ -14,7 +14,7 @@ appropriate unit tests, hack until you're done, make sure the tests still pass,
 and then send a pull request. If you have questions on how to do any of this,
 please stop by #wymeditor on freenode IRC and ask. We're happy to help!
 
-.. _development-contributing-example-process:
+.. _development-contribution-example-process:
 
 ****************************
 Example Contribution Process
@@ -89,6 +89,7 @@ the basic requirements are:
 Then you're just a ``$ npm install`` away from being ready to go.
 
 .. note::
+
     For the example setup of an Ubuntu Precise machine,
     check out our
     `vagrant_provision.sh <https://github.com/wymeditor/wymeditor/blob/master/vagrant_provision.sh>`_

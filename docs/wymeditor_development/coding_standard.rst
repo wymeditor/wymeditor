@@ -348,6 +348,8 @@ property normalizes ``event.keyCode`` and ``event.charCode`` in jQuery. Using
 ``event.which`` is also the `recommended method by jQuery
 <http://api.jquery.com/event.which/>`_ for watching keyboard key input.
 
+.. _development-coding-standard-comments:
+
 Comments should read as "why?" sentences
 ----------------------------------------
 
@@ -372,7 +374,7 @@ or utility function.
 
 "What" comment example
 ^^^^^^^^^^^^^^^^^^^^^^
-.. code-block::javascript
+.. code-block:: javascript
 
     function MyPlugin(options, wym) {
         var defaults = {
@@ -425,7 +427,7 @@ or utility function.
 Improved
 ^^^^^^^^
 
-.. code-block::javascript
+.. code-block:: javascript
 
     function MyPlugin(options, wym) {
         var defaults = {
