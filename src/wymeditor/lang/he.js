@@ -40,6 +40,9 @@ WYMeditor.STRINGS.he = {
     Containers:       'מיכלים',
     Classes:          'מחלקות',
     Status:           'מצב',
-    Source_Code:      'קוד מקור'
+    Source_Code:      'קוד מקור',
+    Left_to_Right:    'שמאל לימין',
+    Right_to_Left:    'ימין לשמאל',
+    Remove_Direction: 'הסר כיוון'
 };
 

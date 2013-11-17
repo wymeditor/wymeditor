@@ -232,6 +232,9 @@ jQuery.extend(WYMeditor, {
     UNLINK              : "Unlink",
     INSERT_UNORDEREDLIST: "InsertUnorderedList",
     INSERT_ORDEREDLIST  : "InsertOrderedList",
+    DIRECTION_LTR       : "DirectionLtr",
+    DIRECTION_RTL       : "DirectionRtl",
+    DIRECTION_REMOVE    : "DirectionRemove",
 
     // Containers that we allow at the root of the document (as a direct child
     // of the body tag)
@@ -517,7 +520,13 @@ jQuery.fn.wymeditor = function (options) {
             {'name': 'Paste', 'title': 'Paste_From_Word',
                 'css': 'wym_tools_paste'},
             {'name': 'ToggleHtml', 'title': 'HTML', 'css': 'wym_tools_html'},
-            {'name': 'Preview', 'title': 'Preview', 'css': 'wym_tools_preview'}
+            {'name': 'Preview', 'title': 'Preview', 'css': 'wym_tools_preview'},
+            {'name': 'DirectionLtr', 'title': 'Left_to_Right',
+               'css': 'wym_tools_direction_ltr'},
+            {'name': 'DirectionRtl', 'title': 'Right_to_Left',
+                'css': 'wym_tools_direction_rtl'},
+            {'name': 'DirectionRemove', 'title': 'Remove_Direction',
+               'css': 'wym_tools_direction_remove'}
         ],
 
         containersHtml: String() +
