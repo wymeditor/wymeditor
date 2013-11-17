@@ -232,6 +232,9 @@ jQuery.extend(WYMeditor, {
     UNLINK              : "Unlink",
     INSERT_UNORDEREDLIST: "InsertUnorderedList",
     INSERT_ORDEREDLIST  : "InsertOrderedList",
+    DIRECTION_LTR       : "DirectionLtr",
+    DIRECTION_RTL       : "DirectionRtl",
+    DIRECTION_REMOVE    : "DirectionRemove",
 
     // Containers that we allow at the root of the document (as a direct child
     // of the body tag)
