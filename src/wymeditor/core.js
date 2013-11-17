@@ -521,12 +521,6 @@ jQuery.fn.wymeditor = function (options) {
                 'css': 'wym_tools_paste'},
             {'name': 'ToggleHtml', 'title': 'HTML', 'css': 'wym_tools_html'},
             {'name': 'Preview', 'title': 'Preview', 'css': 'wym_tools_preview'},
-            {'name': 'DirectionLtr', 'title': 'Left_to_Right',
-               'css': 'wym_tools_direction_ltr'},
-            {'name': 'DirectionRtl', 'title': 'Right_to_Left',
-                'css': 'wym_tools_direction_rtl'},
-            {'name': 'DirectionRemove', 'title': 'Remove_Direction',
-               'css': 'wym_tools_direction_remove'}
         ],
 
         containersHtml: String() +
