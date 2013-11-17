@@ -520,7 +520,7 @@ jQuery.fn.wymeditor = function (options) {
             {'name': 'Paste', 'title': 'Paste_From_Word',
                 'css': 'wym_tools_paste'},
             {'name': 'ToggleHtml', 'title': 'HTML', 'css': 'wym_tools_html'},
-            {'name': 'Preview', 'title': 'Preview', 'css': 'wym_tools_preview'},
+            {'name': 'Preview', 'title': 'Preview', 'css': 'wym_tools_preview'}
         ],
 
         containersHtml: String() +
