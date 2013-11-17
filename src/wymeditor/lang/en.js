@@ -41,5 +41,8 @@ WYMeditor.STRINGS.en = {
     Containers:       'Containers',
     Classes:          'Classes',
     Status:           'Status',
-    Source_Code:      'Source code'
+    Source_Code:      'Source code',
+    Left_to_Right:    'Left to Right',
+    Right_to_Left:    'Right to Left',
+    Remove_Direction: 'Remove Direction'
 };

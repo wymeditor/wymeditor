@@ -376,6 +376,17 @@ WYMeditor.editor.prototype.exec = function (cmd) {
         this.outdent();
         break;
 
+    case WYMeditor.DIRECTION_LTR:
+        this.directionLtr();
+        break;
+
+    case WYMeditor.DIRECTION_RTL:
+        this.directionRtl();
+        break;
+
+    case WYMeditor.DIRECTION_REMOVE:
+        this.directionRemove();
+        break;
 
     default:
         custom_run = false;
@@ -2605,6 +2616,18 @@ WYMeditor.editor.prototype.configureEditorUsingRawCss = function () {
     if (this._options.dialogStyles.length === 0) {
         this._options.dialogStyles = CssParser.css_settings.dialogStyles;
     }
+};
+
+WYMeditor.editor.prototype.directionLtr = function () {
+    jQuery(jQuery(this.selected())).attr('dir', 'ltr');
+};
+
+WYMeditor.editor.prototype.directionRtl = function () {
+    jQuery(jQuery(this.selected())).attr('dir', 'rtl');
+};
+
+WYMeditor.editor.prototype.directionRemove = function () {
+    jQuery(jQuery(this.selected())).removeAttr('dir');
 };
 
 WYMeditor.editor.prototype.listen = function () {
