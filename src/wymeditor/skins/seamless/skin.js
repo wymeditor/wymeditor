@@ -135,7 +135,8 @@ WYMeditor.SKINS.seamless = {
 
         wym.seamlessSkinOpts = {
             initIframeCheckFrequency: This.initIframeCheckFrequency,
-            initialIframeResizeTimer: null
+            initialIframeResizeTimer: null,
+            minimumHeight: jQuery(wym._element).height()
         };
         This.initUIChrome(wym);
 
@@ -316,6 +317,13 @@ WYMeditor.SKINS.seamless = {
             desiredHeight = $innerDoc.children()[0].scrollHeight;
         } else {
             desiredHeight = wym._doc.body.scrollHeight;
+        }
+
+        // Don't let the height drop below the WYMeditor textarea. This allows
+        // folks to use their favorite height-setting method on the textarea,
+        // without needing to pass options on to WYMeditor.
+        if (desiredHeight < wym.seamlessSkinOpts.minimumHeight) {
+            desiredHeight = wym.seamlessSkinOpts.minimumHeight;
         }
 
         if (currentHeight !== desiredHeight) {
