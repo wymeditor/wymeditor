@@ -1,12 +1,12 @@
 /* jshint strict: false, maxlen: 90, evil: true */
 /* global -$, WYMeditor: true, console */
 
-/*@version 1.0.0-b6 */
+/*@version 1.0.0-b6dev */
 /**
     WYMeditor
     =========
 
-    version 1.0.0-b6
+    version 1.0.0-b6dev
 
     WYMeditor : what you see is What You Mean web-based editor
 
@@ -146,7 +146,7 @@ jQuery.extend(WYMeditor, {
 
 */
 
-    VERSION             : "1.0.0-b6",
+    VERSION             : "1.0.0-b6dev",
     INSTANCES           : [],
     STRINGS             : [],
     SKINS               : [],

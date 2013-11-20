@@ -65,7 +65,7 @@
 }
 .wym_skin_seamless .wym_area_top_affix_placeholder {
     margin: 0px;
-    paddin: 0px;
+    padding: 0px;
 }
 .wym_skin_seamless .affix {
     position: fixed;
@@ -85,6 +85,8 @@
     /* Don't set a height. That will be dynamic based on the content. */
     border-style: none;
     background: white;
+    display: block;
+    vertical-align: bottom;
 }
 
 /*AREAS*/

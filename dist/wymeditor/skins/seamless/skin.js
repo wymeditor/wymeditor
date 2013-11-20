@@ -11,11 +11,11 @@
         this.options = $.extend({}, $.fn.wymAffix.defaults, options);
         this.$window = $(window);
 
-        this.$window.on(
+        this.$window.bind(
             'scroll.affix.data-api',
             $.proxy(this.checkPosition, this)
         );
-        this.$window.on(
+        this.$window.bind(
             'click.affix.data-api',
             $.proxy(
                 function () {
@@ -116,7 +116,10 @@ WYMeditor.SKINS.seamless = {
         , '<div class="wym_iframe wym_section">'
             , '<iframe src="' + WYMeditor.IFRAME_BASE_PATH + 'wymiframe.html" '
                 , 'frameborder="0" '
+                , 'border="0" '
                 , 'scrolling="no" '
+                , 'marginheight="0px" '
+                , 'marginwidth="0px" '
                 , 'onload="this.contentWindow.parent.WYMeditor.INSTANCES['
                 , WYMeditor.INDEX + '].initIframe(this)"'
                 , '>'
@@ -279,9 +282,41 @@ WYMeditor.SKINS.seamless = {
         This.resizeIframe(wym);
     },
     resizeIframe: function (wym) {
-        var desiredHeight = wym._doc.body.scrollHeight,
+        var desiredHeight,
+            $innerDoc,
             $iframe = jQuery(wym._iframe),
-            currentHeight = $iframe.height();
+            currentHeight = $iframe.height(),
+            iframeHtmlHeight;
+
+        if (typeof WYMeditor.BODY_SCROLLHEIGHT_MISMATCH === "undefined") {
+            // For some browsers (IE8+ and FF), the scrollHeight of the body
+            // doesn't seem to include the top and bottom margins of the body
+            // relative to the HTML. This leaves the editing "window" smaller
+            // than required, which results in weird overlaps at the start/end.
+            // For those browsers, the HTML element's scrollHeight is more
+            // reliable.
+            // Let's detect which kind of browser we're dealing with one time
+            // so we can just do the right thing in the future.
+            desiredHeight = wym._doc.body.scrollHeight;
+
+            $innerDoc = jQuery(wym._doc);
+            iframeHtmlHeight = $innerDoc.children()[0].scrollHeight;
+
+            if (iframeHtmlHeight > desiredHeight) {
+                // We use greater than because IE7 starts with an
+                // iframeHtmlHeight smaller than its body
+                WYMeditor.BODY_SCROLLHEIGHT_MISMATCH = true;
+            } else {
+                WYMeditor.BODY_SCROLLHEIGHT_MISMATCH = false;
+            }
+        }
+
+        if (WYMeditor.BODY_SCROLLHEIGHT_MISMATCH === true) {
+            $innerDoc = jQuery(wym._doc);
+            desiredHeight = $innerDoc.children()[0].scrollHeight;
+        } else {
+            desiredHeight = wym._doc.body.scrollHeight;
+        }
 
         if (currentHeight !== desiredHeight) {
             $iframe.height(desiredHeight);
