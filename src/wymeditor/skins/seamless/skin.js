@@ -32,10 +32,6 @@
     };
 
     Affix.prototype.checkPosition = function () {
-        if (!this.$element.is(':visible')) {
-            return;
-        }
-
         var scrollTop = this.$window.scrollTop()
           , offset = this.options.offset
           , offsetBottom = offset.bottom
