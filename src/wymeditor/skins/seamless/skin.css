@@ -114,7 +114,6 @@
     margin: 0;
 }
 .wym_skin_seamless .wym_section a {
-    padding: 0 3px;
     display: block;
     text-decoration: none;
     color: black;
@@ -140,6 +139,15 @@
 }
 
 /*option: add this class to a section to make it render as a dropdown menu*/
+.wym_skin_seamless .wym_dropdown {
+    padding: 0;
+    background: #ddd;
+    border: solid gray;
+    margin-right: 10px;
+    width: 120px;
+    float: left;
+    border-width: 1px 1px 1px 1px;
+}
 .wym_skin_seamless .wym_dropdown h2 {
     display: block;
     font-size: 2.0em;
@@ -150,13 +158,24 @@
     position: absolute;
     background: white;
     font-size: 1.7em;
+    margin-left: -1px;
+    padding: 5px 10px 5px 3px;
 }
 .wym_skin_seamless .wym_dropdown:hover ul,
 .wym_skin_seamless .wym_dropdown.hover ul {
     display: block;
 }
+.wym_skin_seamless .wym_dropdown li {
+    width: 120px;
+}
 
-/*option: add this class to a section to make its elements render buttons (icons are only available for the wym_tools section for now)*/
+/* option: add this class to a section to make its elements render buttons
+   (icons are only available for the wym_tools section for now)
+ */
+.wym_skin_seamless .wym_buttons {
+    margin-right: 10px;
+    float: left;
+}
 .wym_skin_seamless .wym_buttons li {
     float:left;
 }
@@ -224,14 +243,6 @@
 }
 
 /*DECORATION*/
-.wym_skin_seamless .wym_section h2 {
-    background: #ddd;
-    border: solid gray;
-    border-width: 0 0 1px;
-}
-.wym_skin_seamless .wym_section h2 span {
-    color: gray;
-}
 .wym_skin_seamless .wym_panel {
     padding: 0;
     border: solid gray;
@@ -240,17 +251,6 @@
 }
 .wym_skin_seamless .wym_panel ul {
     margin: 2px 0 5px;
-}
-.wym_skin_seamless .wym_dropdown {
-    padding: 0;
-    border: solid gray;
-    border-width: 1px 1px 0 1px;
-}
-.wym_skin_seamless .wym_dropdown ul {
-    border: solid gray;
-    border-width: 0 1px 1px 1px;
-    margin-left: -1px;
-    padding: 5px 10px 5px 3px;
 }
 
 /*DIALOGS*/

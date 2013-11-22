@@ -176,11 +176,6 @@ WYMeditor.SKINS.seamless = {
 
         $dropdowns.appendTo($areaTop);
         $dropdowns.addClass("wym_dropdown");
-        $dropdowns.css({
-            "margin-right": "10px",
-            "width": "120px",
-            "float": "left"
-        });
         // Make dropdowns also work on click, for mobile devices
         jQuery(".wym_dropdown", wym._box).click(
             function () {
@@ -191,7 +186,6 @@ WYMeditor.SKINS.seamless = {
         // The toolbar uses buttons
         $toolbar = jQuery(wym._options.toolsSelector, wym._box);
         $toolbar.addClass("wym_buttons");
-        $toolbar.css({"margin-right": "10px", "float": "left"});
 
         This.affixTopControls(wym);
 
