@@ -277,7 +277,8 @@ WYMeditor.SKINS.seamless = {
             $innerDoc,
             $iframe = jQuery(wym._iframe),
             currentHeight = $iframe.height(),
-            iframeHtmlHeight;
+            iframeHtmlHeight,
+            desiredShrinkHeight;
 
         if (typeof WYMeditor.BODY_SCROLLHEIGHT_MISMATCH === "undefined") {
             // For some browsers (IE8+ and FF), the scrollHeight of the body
@@ -305,8 +306,17 @@ WYMeditor.SKINS.seamless = {
         if (WYMeditor.BODY_SCROLLHEIGHT_MISMATCH === true) {
             $innerDoc = jQuery(wym._doc);
             desiredHeight = $innerDoc.children()[0].scrollHeight;
+            desiredShrinkHeight = $innerDoc.children().eq(0).height();
         } else {
+            $innerDoc = jQuery(wym._doc);
             desiredHeight = wym._doc.body.scrollHeight;
+            desiredShrinkHeight = $innerDoc.children().eq(0).height();
+        }
+
+        // Handle the need to potentially shrink
+        if (desiredHeight > desiredShrinkHeight &&
+                currentHeight > desiredShrinkHeight) {
+            desiredHeight = desiredShrinkHeight;
         }
 
         // Don't let the height drop below the WYMeditor textarea. This allows
