@@ -7,6 +7,26 @@ development/testing/packaging/documentation/etc process because making Issues
 for speculation feels dirty.
 
 *************
+Build Process
+*************
+
+1. Minify/Concat all the things
+===============================
+
+HTTP requests are silly.
+
+Put all of the plugins in the bundled version,
+changing any of them so that just including the code
+doesn't activate them.
+
+2. Support Custom Builds
+========================
+
+Use an ``--exclude`` option to grunt
+similar to `this <https://github.com/webpro/jquery-evergreen/blob/master/Gruntfile.js>`_.
+Then folks can make their own slimmed-down builds.
+
+*************
 Documentation
 *************
 
