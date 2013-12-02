@@ -8,12 +8,16 @@ WYMeditor.WymClassExplorer = function (wym) {
 };
 
 WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
-    //This function is executed twice, though it is called once!
-    //But MSIE needs that, otherwise designMode won't work.
-    //Weird.
     this._iframe = iframe;
     this._doc = iframe.contentWindow.document;
 
+    if (this._doc.designMode !== "On") {
+        this._doc.designMode = "On";
+        // Initializing designMode triggers the load event again, thus
+        // triggering this method again. We can short-circuit this run and do
+        // all of the work in the next trigger
+        return false;
+    }
     //add css rules from options
     var aCss = eval(this._options.editorStyles),
         wym;
@@ -55,33 +59,25 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
         wym.paste(window.clipboardData.getData("Text"));
     };
 
-    // Callback can't be executed twice, but initIframe is called twice in IE.
-    // Only run these things on the first call.
-    if (this._initialized) {
-
-        if (jQuery.isFunction(this._options.preBind)) {
-            this._options.preBind(this);
-        }
-
-        this._wym.bindEvents();
-
-        if (jQuery.isFunction(this._options.postInit)) {
-            this._options.postInit(this);
-        }
-
-        // Add event listeners to doc elements, e.g. images
-        this.listen();
+    if (jQuery.isFunction(this._options.preBind)) {
+        this._options.preBind(this);
     }
 
-    this._initialized = true;
+    this._wym.bindEvents();
 
-    // Initialize designMode
-    this._doc.designMode = "on";
+    if (jQuery.isFunction(this._options.postInit)) {
+        this._options.postInit(this);
+    }
+
+    // Add event listeners to doc elements, e.g. images
+    this.listen();
 
     jQuery(wym._element).trigger(
         WYMeditor.EVENTS.postIframeInitialization,
         this._wym
     );
+
+    return true;
 };
 
 (function (editorLoadSkin) {

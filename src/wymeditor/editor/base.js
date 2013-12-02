@@ -196,23 +196,19 @@ WYMeditor.editor.prototype.init = function () {
         wym._options.structureRules.defaultRootContainer
     );
 
-    // Register the `initIframe` call to the iframe's onload event, being
-    // careful to work around IE's double onload call problem.
-    // See: http://msdn.microsoft.com/en-us/library/ie/hh180173%28v=vs.85%29.aspx
-    var iframe = jQuery(wym._box).find('iframe')[0];
-    if (iframe.readyState) {
-        // We're dealing with IE, which calls the jquery-delegated "load" event
-        // twice. The work-around is to use the IE-custom onreadystatechange.
-        iframe.onreadystatechange = function () {
-            if (this.readyState === 2 /* loaded */) {
-                wym.initIframe(this.target);
-            }
-        };
-    } else {
-        jQuery(wym._box).find('iframe').load(function () {
-            wym.initIframe(this);
-        });
-    }
+    // Some browsers like to trigger an iframe's load event multiple times
+    // depending on all sorts of small, annoying details. Instead of attempting
+    // to work-around old ones and predict new ones, let's just ensure the
+    // initialization only happens once. All methods of detecting load are
+    // unreliable.
+    wym._iframe_initialized = false;
+
+    jQuery(wym._box).find('iframe').load(function () {
+        if (wym._iframe_initialized === true) {
+            return;
+        }
+        wym._iframe_initialized = wym.initIframe(this);
+    });
 
     wym.loadSkin();
 };
