@@ -270,46 +270,61 @@ WYMeditor.SKINS.seamless = {
         scrollHeightCalcFix = wym._doc.body.scrollHeight;
         This.resizeIframe(wym);
     },
-    resizeIframe: function (wym) {
+    _recalculateIframeSizeAdjustments: function (wym) {
+        // For some browsers (IE8+ and FF), the scrollHeight of the body
+        // doesn't seem to include the top and bottom margins of the body
+        // relative to the HTML. This leaves the editing "window" smaller
+        // than required, which results in weird overlaps at the start/end.
+        // For those browsers, the HTML element's scrollHeight is more
+        // reliable.
+        // Let's detect which kind of browser we're dealing with one time
+        // so we can just do the right thing in the future.
         var desiredHeight,
+            $innerDoc,
+            iframeHtmlHeight,
+            scrollHeightDifference,
+            topMargin;
+
+        desiredHeight = wym._doc.body.scrollHeight;
+
+        $innerDoc = jQuery(wym._doc);
+        iframeHtmlHeight = $innerDoc.children()[0].scrollHeight;
+
+        scrollHeightDifference = iframeHtmlHeight - desiredHeight;
+        if (scrollHeightDifference > 0) {
+            // We use greater than because IE7 starts with an
+            // iframeHtmlHeight smaller than its body
+            WYMeditor.BODY_SCROLLHEIGHT_MISMATCH = scrollHeightDifference;
+        } else {
+            WYMeditor.BODY_SCROLLHEIGHT_MISMATCH = 0;
+        }
+
+        // If there's a top margin, that should be included in the
+        // calculation for the sake of Internet Explorer
+        topMargin = jQuery(wym._doc.body).children().css('marginTop');
+        if (topMargin === "auto") {
+            topMargin = 0;
+        } else {
+            topMargin = parseInt(topMargin, 10);
+        }
+        WYMeditor.TOP_MARGIN = topMargin;
+    },
+    resizeIframe: function (wym) {
+        var This = WYMeditor.SKINS.seamless,
+            desiredHeight,
             $innerDoc,
             $iframe = jQuery(wym._iframe),
             currentHeight = $iframe.height(),
-            iframeHtmlHeight,
             desiredShrinkHeight;
 
         if (typeof WYMeditor.BODY_SCROLLHEIGHT_MISMATCH === "undefined") {
-            // For some browsers (IE8+ and FF), the scrollHeight of the body
-            // doesn't seem to include the top and bottom margins of the body
-            // relative to the HTML. This leaves the editing "window" smaller
-            // than required, which results in weird overlaps at the start/end.
-            // For those browsers, the HTML element's scrollHeight is more
-            // reliable.
-            // Let's detect which kind of browser we're dealing with one time
-            // so we can just do the right thing in the future.
-            desiredHeight = wym._doc.body.scrollHeight;
-
-            $innerDoc = jQuery(wym._doc);
-            iframeHtmlHeight = $innerDoc.children()[0].scrollHeight;
-
-            if (iframeHtmlHeight > desiredHeight) {
-                // We use greater than because IE7 starts with an
-                // iframeHtmlHeight smaller than its body
-                WYMeditor.BODY_SCROLLHEIGHT_MISMATCH = true;
-            } else {
-                WYMeditor.BODY_SCROLLHEIGHT_MISMATCH = false;
-            }
+            This._recalculateIframeSizeAdjustments(wym);
         }
 
-        if (WYMeditor.BODY_SCROLLHEIGHT_MISMATCH === true) {
-            $innerDoc = jQuery(wym._doc);
-            desiredHeight = $innerDoc.children()[0].scrollHeight;
-            desiredShrinkHeight = $innerDoc.children().eq(0).height();
-        } else {
-            $innerDoc = jQuery(wym._doc);
-            desiredHeight = wym._doc.body.scrollHeight;
-            desiredShrinkHeight = $innerDoc.children().eq(0).height();
-        }
+        $innerDoc = jQuery(wym._doc);
+        desiredHeight = wym._doc.body.scrollHeight;
+        desiredHeight = desiredHeight + WYMeditor.BODY_SCROLLHEIGHT_MISMATCH;
+        desiredShrinkHeight = $innerDoc.children().eq(0).height();
 
         // Handle the potential need to shrink the iframe, likely because
         // content was deleted.
@@ -317,6 +332,7 @@ WYMeditor.SKINS.seamless = {
                 currentHeight > desiredShrinkHeight) {
             desiredHeight = desiredShrinkHeight;
         }
+        desiredHeight = desiredShrinkHeight;
 
         // Don't let the height drop below the WYMeditor textarea. This allows
         // folks to use their favorite height-setting method on the textarea,
@@ -325,9 +341,13 @@ WYMeditor.SKINS.seamless = {
             desiredHeight = wym.seamlessSkinOpts.minimumHeight;
         }
 
+        This._recalculateIframeSizeAdjustments(wym);
         if (currentHeight !== desiredHeight) {
             $iframe.height(desiredHeight);
             wym.seamlessSkinIframeHeight = desiredHeight;
+
+            //This._recalculateIframeSizeAdjustments(wym);
+
             return true;
         }
         return false;
