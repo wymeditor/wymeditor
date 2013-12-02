@@ -116,8 +116,6 @@ WYMeditor.SKINS.seamless = {
                 , 'scrolling="no" '
                 , 'marginheight="0px" '
                 , 'marginwidth="0px" '
-                , 'onload="this.contentWindow.parent.WYMeditor.INSTANCES['
-                , WYMeditor.INDEX + '].initIframe(this)"'
                 , '>'
             , '</iframe>'
         , '</div>'
@@ -313,7 +311,8 @@ WYMeditor.SKINS.seamless = {
             desiredShrinkHeight = $innerDoc.children().eq(0).height();
         }
 
-        // Handle the need to potentially shrink
+        // Handle the potential need to shrink the iframe, likely because
+        // content was deleted.
         if (desiredHeight > desiredShrinkHeight &&
                 currentHeight > desiredShrinkHeight) {
             desiredHeight = desiredShrinkHeight;

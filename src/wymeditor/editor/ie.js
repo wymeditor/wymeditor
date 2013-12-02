@@ -55,36 +55,28 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
         wym.paste(window.clipboardData.getData("Text"));
     };
 
-    //callback can't be executed twice, so we check
+    // Callback can't be executed twice, but initIframe is called twice in IE.
+    // Only run these things on the first call.
     if (this._initialized) {
 
-        //pre-bind functions
         if (jQuery.isFunction(this._options.preBind)) {
             this._options.preBind(this);
         }
 
-
-        //bind external events
         this._wym.bindEvents();
 
-        //post-init functions
         if (jQuery.isFunction(this._options.postInit)) {
             this._options.postInit(this);
         }
 
-        //add event listeners to doc elements, e.g. images
+        // Add event listeners to doc elements, e.g. images
         this.listen();
     }
 
     this._initialized = true;
 
-    //init designMode
+    // Initialize designMode
     this._doc.designMode = "on";
-    try {
-        // (bermi's note) noticed when running unit tests on IE6
-        // Is this really needed, it trigger an unexisting property on IE6
-        this._doc = iframe.contentWindow.document;
-    } catch (e) {}
 
     jQuery(wym._element).trigger(
         WYMeditor.EVENTS.postIframeInitialization,
@@ -223,7 +215,7 @@ WYMeditor.WymClassExplorer.prototype.keyup = function (evt) {
         wym.documentStructureManager.structureRules.defaultRootContainer;
     this._selectedImage = null;
 
-    // If the inputted key cannont create a block element and is not a command,
+    // If the pressed key can't create a block element and is not a command,
     // check to make sure the selection is properly wrapped in a container
     if (!wym.keyCanCreateBlockElement(evt.which) &&
             evt.which !== WYMeditor.KEY.CTRL &&

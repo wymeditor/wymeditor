@@ -30,7 +30,8 @@ WYMeditor.editor.prototype.init = function () {
         aContainers,
         sContainers,
         sContainer,
-        oContainer;
+        oContainer,
+        wym;
 
     if (jQuery.browser.msie) {
         WymClass = new WYMeditor.WymClassExplorer(this);
@@ -75,57 +76,59 @@ WYMeditor.editor.prototype.init = function () {
         this[prop] = WymClass[prop];
     }
 
+    wym = this;
+
     // Load wymbox
-    this._box = jQuery(this._element).hide().after(
-        this._options.boxHtml
+    wym._box = jQuery(wym._element).hide().after(
+        wym._options.boxHtml
     ).next().addClass(
-        'wym_box_' + this._index
+        'wym_box_' + wym._index
     );
 
     // Store the instance index and replaced element in wymbox
     // but keep it compatible with jQuery < 1.2.3, see #122
     if (jQuery.isFunction(jQuery.fn.data)) {
-        jQuery.data(this._box.get(0), WYMeditor.WYM_INDEX, this._index);
-        jQuery.data(this._element.get(0), WYMeditor.WYM_INDEX, this._index);
+        jQuery.data(wym._box.get(0), WYMeditor.WYM_INDEX, wym._index);
+        jQuery.data(wym._element.get(0), WYMeditor.WYM_INDEX, wym._index);
     }
 
     h = WYMeditor.Helper;
 
     // Construct the iframe
-    iframeHtml = this._options.iframeHtml;
-    iframeHtml = h.replaceAll(iframeHtml, WYMeditor.INDEX, this._index);
+    iframeHtml = wym._options.iframeHtml;
+    iframeHtml = h.replaceAll(iframeHtml, WYMeditor.INDEX, wym._index);
     iframeHtml = h.replaceAll(
         iframeHtml,
         WYMeditor.IFRAME_BASE_PATH,
-        this._options.iframeBasePath
+        wym._options.iframeBasePath
     );
 
     // Construct wymbox
-    boxHtml = jQuery(this._box).html();
+    boxHtml = jQuery(wym._box).html();
 
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.LOGO, this._options.logoHtml);
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.TOOLS, this._options.toolsHtml);
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.CONTAINERS, this._options.containersHtml);
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.CLASSES, this._options.classesHtml);
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.HTML, this._options.htmlHtml);
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.LOGO, wym._options.logoHtml);
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.TOOLS, wym._options.toolsHtml);
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.CONTAINERS, wym._options.containersHtml);
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.CLASSES, wym._options.classesHtml);
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.HTML, wym._options.htmlHtml);
     boxHtml = h.replaceAll(boxHtml, WYMeditor.IFRAME, iframeHtml);
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.STATUS, this._options.statusHtml);
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.STATUS, wym._options.statusHtml);
 
     // Construct the tools list
-    aTools = eval(this._options.toolsItems);
+    aTools = eval(wym._options.toolsItems);
     sTools = "";
 
     for (i = 0; i < aTools.length; i += 1) {
         oTool = aTools[i];
         sTool = '';
         if (oTool.name && oTool.title) {
-            sTool = this._options.toolsItemHtml;
+            sTool = wym._options.toolsItemHtml;
         }
         sTool = h.replaceAll(sTool, WYMeditor.TOOL_NAME, oTool.name);
         sTool = h.replaceAll(
             sTool,
             WYMeditor.TOOL_TITLE,
-            this._options.stringDelimiterLeft + oTool.title + this._options.stringDelimiterRight
+            wym._options.stringDelimiterLeft + oTool.title + wym._options.stringDelimiterRight
         );
         sTool = h.replaceAll(sTool, WYMeditor.TOOL_CLASS, oTool.css);
         sTools += sTool;
@@ -134,14 +137,14 @@ WYMeditor.editor.prototype.init = function () {
     boxHtml = h.replaceAll(boxHtml, WYMeditor.TOOLS_ITEMS, sTools);
 
     // Construct the classes list
-    aClasses = eval(this._options.classesItems);
+    aClasses = eval(wym._options.classesItems);
     sClasses = "";
 
     for (i = 0; i < aClasses.length; i += 1) {
         oClass = aClasses[i];
         sClass = '';
         if (oClass.name && oClass.title) {
-            sClass = this._options.classesItemHtml;
+            sClass = wym._options.classesItemHtml;
         }
         sClass = h.replaceAll(sClass, WYMeditor.CLASS_NAME, oClass.name);
         sClass = h.replaceAll(sClass, WYMeditor.CLASS_TITLE, oClass.title);
@@ -151,14 +154,14 @@ WYMeditor.editor.prototype.init = function () {
     boxHtml = h.replaceAll(boxHtml, WYMeditor.CLASSES_ITEMS, sClasses);
 
     // Construct the containers list
-    aContainers = eval(this._options.containersItems);
+    aContainers = eval(wym._options.containersItems);
     sContainers = "";
 
     for (i = 0; i < aContainers.length; i += 1) {
         oContainer = aContainers[i];
         sContainer = '';
         if (oContainer.name && oContainer.title) {
-            sContainer = this._options.containersItemHtml;
+            sContainer = wym._options.containersItemHtml;
         }
         sContainer = h.replaceAll(
             sContainer,
@@ -166,9 +169,9 @@ WYMeditor.editor.prototype.init = function () {
             oContainer.name
         );
         sContainer = h.replaceAll(sContainer, WYMeditor.CONTAINER_TITLE,
-            this._options.stringDelimiterLeft +
+            wym._options.stringDelimiterLeft +
             oContainer.title +
-            this._options.stringDelimiterRight);
+            wym._options.stringDelimiterRight);
         sContainer = h.replaceAll(
             sContainer,
             WYMeditor.CONTAINER_CLASS,
@@ -180,20 +183,38 @@ WYMeditor.editor.prototype.init = function () {
     boxHtml = h.replaceAll(boxHtml, WYMeditor.CONTAINERS_ITEMS, sContainers);
 
     // I10n
-    boxHtml = this.replaceStrings(boxHtml);
+    boxHtml = wym.replaceStrings(boxHtml);
 
     // Load the html in wymbox
-    jQuery(this._box).html(boxHtml);
+    jQuery(wym._box).html(boxHtml);
 
     // Hide the html value
-    jQuery(this._box).find(this._options.htmlSelector).hide();
+    jQuery(wym._box).find(wym._options.htmlSelector).hide();
 
-    this.documentStructureManager = new WYMeditor.DocumentStructureManager(
-        this,
-        this._options.structureRules.defaultRootContainer
+    wym.documentStructureManager = new WYMeditor.DocumentStructureManager(
+        wym,
+        wym._options.structureRules.defaultRootContainer
     );
 
-    this.loadSkin();
+    // Register the `initIframe` call to the iframe's onload event, being
+    // careful to work around IE's double onload call problem.
+    // See: http://msdn.microsoft.com/en-us/library/ie/hh180173%28v=vs.85%29.aspx
+    var iframe = jQuery(wym._box).find('iframe')[0];
+    if (iframe.readyState) {
+        // We're dealing with IE, which calls the jquery-delegated "load" event
+        // twice. The work-around is to use the IE-custom onreadystatechange.
+        iframe.onreadystatechange = function () {
+            if (this.readyState === 2 /* loaded */) {
+                wym.initIframe(this.target);
+            }
+        };
+    } else {
+        jQuery(wym._box).find('iframe').load(function () {
+            wym.initIframe(this);
+        });
+    }
+
+    wym.loadSkin();
 };
 
 /**
