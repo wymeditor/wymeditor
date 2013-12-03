@@ -20,7 +20,11 @@
 /* VISUAL FEEDBACK */
 
 /* basic */
-  body  { background: #e1e8f1;}
+  body  {
+  background: #e1e8f1;
+  margin: 0;
+  vertical-align: baseline;
+}
 
 /* make HTML blocs visible */
   p,
@@ -88,7 +92,3 @@
     border: 1px solid red !important;
     font-size: 12px !important;
     font-weight: normal; }
-
-/* Spacer BRs shouldn't add much whitespace */
-br { height: 5px; line-height: 5px; }
-
