@@ -1,10 +1,6 @@
 /*jslint node: true, es3: false, maxlen: 88 */
 'use strict';
-var LIVERELOAD_PORT = 35729,
-    lrSnippet = require('connect-livereload')(
-        {port: LIVERELOAD_PORT}
-    ),
-    mountFolder = function (connect, dir) {
+var mountFolder = function (connect, dir) {
         return connect.static(require('path').resolve(dir));
     };
 
@@ -34,10 +30,13 @@ module.exports = function (grunt) {
                 "*/\n\n"
         },
         watch: {
-            livereload: {
-                options: {
-                    livereload: LIVERELOAD_PORT
-                },
+            options: {
+                // Don't spawn a child process. Virtualbox's NFS share is
+                // slow enough already.
+                spawn: false,
+                livereload: true
+            },
+            default: {
                 files: [
                     '<%= yeoman.app %>/*.html',
                     '.tmp/styles/{,*/}*.css',
@@ -49,6 +48,18 @@ module.exports = function (grunt) {
                     '{.tmp,<%= yeoman.app %>}/wymeditor/skins/{,*/}*.js',
                     '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
                 ]
+            },
+            dist: {
+                files: [
+                    '<%= yeoman.app %>/*.html',
+                    '.tmp/styles/{,*/}*.css',
+                    '{.tmp,<%= yeoman.app %>}/examples/{,*/}*.{js,html}',
+                    '{.tmp,<%= yeoman.app %>}/wymeditor/{,*/}*.js',
+                    '{.tmp,<%= yeoman.app %>}/wymeditor/plugins/{,*/}*.js',
+                    '{.tmp,<%= yeoman.app %>}/wymeditor/skins/{,*/}*.js',
+                    '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
+                ],
+                tasks: ['build']
             }
         },
         connect: {
@@ -57,11 +68,10 @@ module.exports = function (grunt) {
                 // change this to '0.0.0.0' to access the server from outside
                 hostname: '0.0.0.0'
             },
-            livereload: {
+            dev: {
                 options: {
                     middleware: function (connect) {
                         return [
-                            lrSnippet,
                             mountFolder(connect, '.tmp'),
                             mountFolder(connect, yeomanConfig.app)
                         ];
@@ -300,13 +310,17 @@ module.exports = function (grunt) {
 
     grunt.registerTask('server', function (target) {
         if (target === 'dist') {
-            return grunt.task.run(['build', 'connect:dist:keepalive']);
+            return grunt.task.run([
+                'build',
+                'connect:dist',
+                'watch:dist'
+            ]);
         }
 
         grunt.task.run([
             'clean:server',
             'htmlmin',
-            'connect:livereload',
+            'connect:dev',
             'watch'
         ]);
     });

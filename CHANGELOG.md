@@ -45,6 +45,10 @@ WYMeditor.
   It will also allow us
   to add [component](https://github.com/component/component) support.
   Hooray better Javascript component packaging!
+* To take advantage of Livereload support in development,
+  you must now install a [browser extension](http://feedback.livereload.com/knowledgebase/articles/86242-how-do-i-install-and-use-the-browser-extensions-).
+  Automatic livereload injection was causing problems
+  in older Internet Explorer.
 
 ### Skins
 
