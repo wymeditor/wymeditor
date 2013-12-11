@@ -55,13 +55,6 @@ and falls back to using a timeout
 to only hit the callback
 60 times per second.
 
-Responsive Containers/Classes
------------------------------
-
-Make the containers/classes menus responsive,
-floating down the right if there's room,
-but collapsing to drop-downs if there isn't.
-
 Inspiration/Examples
 ====================
 
