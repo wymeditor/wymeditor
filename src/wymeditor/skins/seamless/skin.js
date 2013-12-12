@@ -309,7 +309,7 @@ WYMeditor.SKINS.seamless = {
             skinOpts._imagesLoadedCheckStartedTime = Date.now();
         }
 
-        if (skinOpts.resizeAfterImagesLoadTimer) {
+        if (skinOpts.resizeAfterImagesLoadTimer !== null) {
             // We're handling a timer, clear it
             window.clearTimeout(
                 skinOpts.resizeAfterImagesLoadTimer
@@ -352,8 +352,7 @@ WYMeditor.SKINS.seamless = {
         }
 
         // Let's check again in after a delay
-        skinOpts.resizeAfterImagesLoadTimer =
-        window.setTimeout(
+        skinOpts.resizeAfterImagesLoadTimer = window.setTimeout(
             function () {
                 This.resizeIframeOnceImagesLoaded(wym);
             },
@@ -361,7 +360,7 @@ WYMeditor.SKINS.seamless = {
         );
     },
     _imageIsLoaded: function (img) {
-        if (!img.complete) {
+        if (img.complete !== true) {
             return false;
         }
 
@@ -394,7 +393,7 @@ WYMeditor.SKINS.seamless = {
         htmlElementScrollHeight = $htmlElement[0].scrollHeight;
 
         if (htmlElementHeight >= bodyScrollHeight) {
-            // Well-behaving browsers like FF and Chrome let use rely on the
+            // Well-behaving browsers like FF and Chrome let us rely on the
             // HTML element's jQuery height() in every case. Hooray!
             heightStrategy = function (wym) {
                 var $htmlElement = jQuery(wym._doc).children().eq(0),

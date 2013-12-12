@@ -174,7 +174,7 @@ in a directory like ``/opt``.
 Enabling Automatic Livereload for Development
 =============================================
 
-The ``grant`` ``server`` and ``server:dist`` tasks
+The ``grant``, ``server``, and ``server:dist`` tasks
 both support "Live Reload" functionality.
 That means that if you have a proper browser extension installed,
 changing a file will automatically trigger a reload event
