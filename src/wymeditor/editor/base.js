@@ -2634,8 +2634,8 @@ WYMeditor.editor.prototype.listen = function () {
         wym.mousedown(e);
     });
 
-    wym._doc.addEventListener('paste', function (e) {
-        wym.handlePasteEvent(e);
+    jQuery(wym._doc).bind('paste', function () {
+        wym.handlePasteEvent();
     });
 };
 

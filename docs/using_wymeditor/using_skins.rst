@@ -75,6 +75,12 @@ Toolbar UI Tweaks Needed
 * Round the bottom corners
   of the iframe body to match the toolbar top.
 
+Window doesn't grow for inserted images
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you insert an image,
+the editor height doesn't automatically update.
+
 *****************
 Third-Party Skins
 *****************
