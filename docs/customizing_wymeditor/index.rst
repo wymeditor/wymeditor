@@ -513,9 +513,12 @@ Basic Customization Example
 * The ``stylesheet`` option will automagically parse your CSS file to
   populate the Classes panel and to initialize the visual feedback.
 
-******************************
-Migrating from Pre Version 1.0
-******************************
+**********************
+Upgrading to Version 1
+**********************
+
+Using the Legacy Skin and Editor Styles
+=======================================
 
 WYMeditor version 1.0 made some significant changes to the default skin
 and editor styles.
@@ -540,7 +543,7 @@ See `Example 21-legacy <http://wymeditor.github.io/wymeditor/dist/examples/21-le
 for a demonstration of the Pre-1.0 user interface.
 
 Deprecation
-===========
+-----------
 
 It's easy to provide
 your own skin and iframe, though,
