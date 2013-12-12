@@ -321,7 +321,7 @@ module.exports = function (grunt) {
             'clean:server',
             'htmlmin',
             'connect:dev',
-            'watch'
+            'watch:default'
         ]);
     });
 
