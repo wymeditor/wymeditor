@@ -8,12 +8,16 @@ WYMeditor.WymClassExplorer = function (wym) {
 };
 
 WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
-    //This function is executed twice, though it is called once!
-    //But MSIE needs that, otherwise designMode won't work.
-    //Weird.
     this._iframe = iframe;
     this._doc = iframe.contentWindow.document;
 
+    if (this._doc.designMode !== "On") {
+        this._doc.designMode = "On";
+        // Initializing designMode triggers the load event again, thus
+        // triggering this method again. We can short-circuit this run and do
+        // all of the work in the next trigger
+        return false;
+    }
     //add css rules from options
     var aCss = eval(this._options.editorStyles),
         wym;
@@ -55,41 +59,25 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
         wym.paste(window.clipboardData.getData("Text"));
     };
 
-    //callback can't be executed twice, so we check
-    if (this._initialized) {
-
-        //pre-bind functions
-        if (jQuery.isFunction(this._options.preBind)) {
-            this._options.preBind(this);
-        }
-
-
-        //bind external events
-        this._wym.bindEvents();
-
-        //post-init functions
-        if (jQuery.isFunction(this._options.postInit)) {
-            this._options.postInit(this);
-        }
-
-        //add event listeners to doc elements, e.g. images
-        this.listen();
+    if (jQuery.isFunction(this._options.preBind)) {
+        this._options.preBind(this);
     }
 
-    this._initialized = true;
+    this._wym.bindEvents();
 
-    //init designMode
-    this._doc.designMode = "on";
-    try {
-        // (bermi's note) noticed when running unit tests on IE6
-        // Is this really needed, it trigger an unexisting property on IE6
-        this._doc = iframe.contentWindow.document;
-    } catch (e) {}
+    if (jQuery.isFunction(this._options.postInit)) {
+        this._options.postInit(this);
+    }
+
+    // Add event listeners to doc elements, e.g. images
+    this.listen();
 
     jQuery(wym._element).trigger(
         WYMeditor.EVENTS.postIframeInitialization,
         this._wym
     );
+
+    return true;
 };
 
 (function (editorLoadSkin) {
@@ -223,7 +211,7 @@ WYMeditor.WymClassExplorer.prototype.keyup = function (evt) {
         wym.documentStructureManager.structureRules.defaultRootContainer;
     this._selectedImage = null;
 
-    // If the inputted key cannont create a block element and is not a command,
+    // If the pressed key can't create a block element and is not a command,
     // check to make sure the selection is properly wrapped in a container
     if (!wym.keyCanCreateBlockElement(evt.which) &&
             evt.which !== WYMeditor.KEY.CTRL &&

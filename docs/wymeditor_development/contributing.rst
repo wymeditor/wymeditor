@@ -170,3 +170,21 @@ in a directory like ``/opt``.
     $ git clone https://github.com/wymeditor/wymeditor.git
     $ cd wymeditor
     $ vagrant up
+
+Enabling Automatic Livereload for Development
+=============================================
+
+The ``grant``, ``server``, and ``server:dist`` tasks
+both support "Live Reload" functionality.
+That means that if you have a proper browser extension installed,
+changing a file will automatically trigger a reload event
+in your browser.
+
+If this sounds nifty,
+simply `install the proper extension <http://feedback.livereload.com/knowledgebase/articles/86242-how-do-i-install-and-use-the-browser-extensions->`_.
+
+.. note::
+
+    If you're using the Vagrant development route,
+    the performance hit from using the NFS share
+    means that live reload won't be instantaneous.
