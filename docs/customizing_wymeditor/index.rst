@@ -527,7 +527,8 @@ we've included a skin and iframe to meet their needs.
 
 These are both labeled as ``legacy``.
 To use them,
-choose those options on editor initialization:
+first load the legacy skins CSS and javascript,
+then choose those options on editor initialization:
 
 .. code-block:: javascript
 
@@ -549,6 +550,41 @@ It's easy to provide
 your own skin and iframe, though,
 so these will be removed
 according to WYMeditor's deprecation policy.
+
+.. _migration-to-1-skin-auto-loading:
+
+No More Skin Auto-loading
+=========================
+
+Versions of WYMeditor prior to 1.0
+would use javascript to automatically load
+your chosen skin's javascript and CSS.
+While this was a small first-usage usability improvement,
+it created some "magic" that quickly became confusing
+when it came time for an optimized,
+production-ready deployment.
+In production,
+you should be looking to reduce the number of HTTP requests
+as much as possible,
+which means including the skin's assets
+along with your other combined/minified/compressed assets.
+
+The default WYMeditor distribution
+now includes all skin javascript and CSS
+as part of the bundle.
+They're only activated based on your choice of ``skin`` option,
+though.
+For enhanced optimization,
+you can create your own WYMeditor bundle
+only containing the skin that you will load,
+but that will be a very low-impact optimization
+for most users,
+as the amount of CSS/Javascript
+in a skin is very small
+relative to the impact of WYMeditor itself.
+
+For more details,
+see the documentation on :ref:`using-skins-loading-a-skin`.
 
 .. toctree::
     :maxdepth: 2

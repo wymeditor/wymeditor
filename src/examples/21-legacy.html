@@ -5,6 +5,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>WYMeditor</title>
+    <!-- build:css ../wymeditor/skins/legacy/skin.css -->
+    <link rel="stylesheet" type="text/css" href="../wymeditor/skins/legacy/skin.css" />
+    <!-- endbuild -->
 </head>
 
 <body>
@@ -27,13 +30,20 @@
     <script type="text/javascript" src="../test/load-src.dev.js"></script>
 
     <script type="text/javascript">
-        loadWymSrc('../');
+        loadWymSrc(
+                '../',
+                ['../wymeditor/skins/seamless/skin.js']
+        );
     </script>
     <!-- endbuild -->
+    <!-- build:js ../wymeditor/skins/legacy/skin.js -->
+    <!-- endbuild -->
+
     <script type="text/javascript">
         $(function() {
             $('.wymeditor').wymeditor({
-                iframeBasePath: "../wymeditor/iframe/legacy/"
+                iframeBasePath: "../wymeditor/iframe/legacy/",
+                skin: "legacy"
             });
         });
     </script>
