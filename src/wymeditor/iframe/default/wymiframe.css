@@ -3,7 +3,7 @@
 /* basic */
 body  {
     background: #e1e8f1;
-    margin: 0;
+    margin: 10px 10px 10px 10px;
     vertical-align: baseline;
 }
 
@@ -18,12 +18,13 @@ h5,
 h6,
 ul,
 ol,
+img,
 table,
 blockquote,
 pre {
     background: #FFFFFF no-repeat 2px 2px;
-    padding:8px 5px 5px;
-    margin:10px;
+    padding: 8px 5px 5px 8px;
+    margin: 0;
 }
 
 /* element-specific customizations */
@@ -36,16 +37,28 @@ acronym {
 }
 blockquote {
     margin-left: 30px;
+    /* This is a member of the BLOCKING_ELEMENTS,
+     * so needs top and bottom margins */
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 img {
     margin-right: 5px;
     border-style: solid;
     border-color: gray;
     border-width: 0;
+    /* This is a member of the BLOCKING_ELEMENTS,
+     * so needs top and bottom margins */
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 pre {
     background-color:transparent;
     border: 1px solid white;
+    /* This is a member of the BLOCKING_ELEMENTS,
+     * so needs top and bottom margins */
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 span {
     background-color: #eef;
@@ -60,6 +73,10 @@ ol {
 table {
     font-size: 12px;
     width: 500px;
+    /* This is a member of the BLOCKING_ELEMENTS,
+     * so needs top and bottom margins */
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 caption {
     background: #E4E4B0;
