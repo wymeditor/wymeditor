@@ -472,9 +472,7 @@ jQuery.fn.wymeditor = function (options) {
 
         iframeHtml: String() +
             '<div class="wym_iframe wym_section">' +
-                '<iframe src="' + WYMeditor.IFRAME_BASE_PATH + 'wymiframe.html" ' +
-                    'onload="this.contentWindow.parent.WYMeditor.INSTANCES[' +
-                        WYMeditor.INDEX + '].initIframe(this)">' +
+                '<iframe src="' + WYMeditor.IFRAME_BASE_PATH + 'wymiframe.html">' +
                 '</iframe>' +
             "</div>",
 
@@ -1291,7 +1289,8 @@ WYMeditor.editor.prototype.init = function () {
         aContainers,
         sContainers,
         sContainer,
-        oContainer;
+        oContainer,
+        wym;
 
     if (jQuery.browser.msie) {
         WymClass = new WYMeditor.WymClassExplorer(this);
@@ -1336,57 +1335,59 @@ WYMeditor.editor.prototype.init = function () {
         this[prop] = WymClass[prop];
     }
 
+    wym = this;
+
     // Load wymbox
-    this._box = jQuery(this._element).hide().after(
-        this._options.boxHtml
+    wym._box = jQuery(wym._element).hide().after(
+        wym._options.boxHtml
     ).next().addClass(
-        'wym_box_' + this._index
+        'wym_box_' + wym._index
     );
 
     // Store the instance index and replaced element in wymbox
     // but keep it compatible with jQuery < 1.2.3, see #122
     if (jQuery.isFunction(jQuery.fn.data)) {
-        jQuery.data(this._box.get(0), WYMeditor.WYM_INDEX, this._index);
-        jQuery.data(this._element.get(0), WYMeditor.WYM_INDEX, this._index);
+        jQuery.data(wym._box.get(0), WYMeditor.WYM_INDEX, wym._index);
+        jQuery.data(wym._element.get(0), WYMeditor.WYM_INDEX, wym._index);
     }
 
     h = WYMeditor.Helper;
 
     // Construct the iframe
-    iframeHtml = this._options.iframeHtml;
-    iframeHtml = h.replaceAll(iframeHtml, WYMeditor.INDEX, this._index);
+    iframeHtml = wym._options.iframeHtml;
+    iframeHtml = h.replaceAll(iframeHtml, WYMeditor.INDEX, wym._index);
     iframeHtml = h.replaceAll(
         iframeHtml,
         WYMeditor.IFRAME_BASE_PATH,
-        this._options.iframeBasePath
+        wym._options.iframeBasePath
     );
 
     // Construct wymbox
-    boxHtml = jQuery(this._box).html();
+    boxHtml = jQuery(wym._box).html();
 
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.LOGO, this._options.logoHtml);
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.TOOLS, this._options.toolsHtml);
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.CONTAINERS, this._options.containersHtml);
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.CLASSES, this._options.classesHtml);
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.HTML, this._options.htmlHtml);
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.LOGO, wym._options.logoHtml);
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.TOOLS, wym._options.toolsHtml);
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.CONTAINERS, wym._options.containersHtml);
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.CLASSES, wym._options.classesHtml);
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.HTML, wym._options.htmlHtml);
     boxHtml = h.replaceAll(boxHtml, WYMeditor.IFRAME, iframeHtml);
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.STATUS, this._options.statusHtml);
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.STATUS, wym._options.statusHtml);
 
     // Construct the tools list
-    aTools = eval(this._options.toolsItems);
+    aTools = eval(wym._options.toolsItems);
     sTools = "";
 
     for (i = 0; i < aTools.length; i += 1) {
         oTool = aTools[i];
         sTool = '';
         if (oTool.name && oTool.title) {
-            sTool = this._options.toolsItemHtml;
+            sTool = wym._options.toolsItemHtml;
         }
         sTool = h.replaceAll(sTool, WYMeditor.TOOL_NAME, oTool.name);
         sTool = h.replaceAll(
             sTool,
             WYMeditor.TOOL_TITLE,
-            this._options.stringDelimiterLeft + oTool.title + this._options.stringDelimiterRight
+            wym._options.stringDelimiterLeft + oTool.title + wym._options.stringDelimiterRight
         );
         sTool = h.replaceAll(sTool, WYMeditor.TOOL_CLASS, oTool.css);
         sTools += sTool;
@@ -1395,14 +1396,14 @@ WYMeditor.editor.prototype.init = function () {
     boxHtml = h.replaceAll(boxHtml, WYMeditor.TOOLS_ITEMS, sTools);
 
     // Construct the classes list
-    aClasses = eval(this._options.classesItems);
+    aClasses = eval(wym._options.classesItems);
     sClasses = "";
 
     for (i = 0; i < aClasses.length; i += 1) {
         oClass = aClasses[i];
         sClass = '';
         if (oClass.name && oClass.title) {
-            sClass = this._options.classesItemHtml;
+            sClass = wym._options.classesItemHtml;
         }
         sClass = h.replaceAll(sClass, WYMeditor.CLASS_NAME, oClass.name);
         sClass = h.replaceAll(sClass, WYMeditor.CLASS_TITLE, oClass.title);
@@ -1412,14 +1413,14 @@ WYMeditor.editor.prototype.init = function () {
     boxHtml = h.replaceAll(boxHtml, WYMeditor.CLASSES_ITEMS, sClasses);
 
     // Construct the containers list
-    aContainers = eval(this._options.containersItems);
+    aContainers = eval(wym._options.containersItems);
     sContainers = "";
 
     for (i = 0; i < aContainers.length; i += 1) {
         oContainer = aContainers[i];
         sContainer = '';
         if (oContainer.name && oContainer.title) {
-            sContainer = this._options.containersItemHtml;
+            sContainer = wym._options.containersItemHtml;
         }
         sContainer = h.replaceAll(
             sContainer,
@@ -1427,9 +1428,9 @@ WYMeditor.editor.prototype.init = function () {
             oContainer.name
         );
         sContainer = h.replaceAll(sContainer, WYMeditor.CONTAINER_TITLE,
-            this._options.stringDelimiterLeft +
+            wym._options.stringDelimiterLeft +
             oContainer.title +
-            this._options.stringDelimiterRight);
+            wym._options.stringDelimiterRight);
         sContainer = h.replaceAll(
             sContainer,
             WYMeditor.CONTAINER_CLASS,
@@ -1441,20 +1442,34 @@ WYMeditor.editor.prototype.init = function () {
     boxHtml = h.replaceAll(boxHtml, WYMeditor.CONTAINERS_ITEMS, sContainers);
 
     // I10n
-    boxHtml = this.replaceStrings(boxHtml);
+    boxHtml = wym.replaceStrings(boxHtml);
 
     // Load the html in wymbox
-    jQuery(this._box).html(boxHtml);
+    jQuery(wym._box).html(boxHtml);
 
     // Hide the html value
-    jQuery(this._box).find(this._options.htmlSelector).hide();
+    jQuery(wym._box).find(wym._options.htmlSelector).hide();
 
-    this.documentStructureManager = new WYMeditor.DocumentStructureManager(
-        this,
-        this._options.structureRules.defaultRootContainer
+    wym.documentStructureManager = new WYMeditor.DocumentStructureManager(
+        wym,
+        wym._options.structureRules.defaultRootContainer
     );
 
-    this.loadSkin();
+    // Some browsers like to trigger an iframe's load event multiple times
+    // depending on all sorts of small, annoying details. Instead of attempting
+    // to work-around old ones and predict new ones, let's just ensure the
+    // initialization only happens once. All methods of detecting load are
+    // unreliable.
+    wym._iframe_initialized = false;
+
+    jQuery(wym._box).find('iframe').load(function () {
+        if (wym._iframe_initialized === true) {
+            return;
+        }
+        wym._iframe_initialized = wym.initIframe(this);
+    });
+
+    wym.loadSkin();
 };
 
 /**
@@ -3874,9 +3889,30 @@ WYMeditor.editor.prototype.listen = function () {
     // Don't use jQuery.find() on the iframe body
     // because of MSIE + jQuery + expando issue (#JQ1143)
 
-    jQuery(this._doc.body).bind("mousedown", function (e) {
+    jQuery(wym._doc.body).bind("mousedown", function (e) {
         wym.mousedown(e);
     });
+
+    jQuery(wym._doc).bind('paste', function () {
+        wym.handlePasteEvent();
+    });
+};
+
+WYMeditor.editor.prototype.handlePasteEvent = function () {
+    var wym = this;
+
+    // The paste event happens *before* the paste actually occurs.
+    // Use a timer to delay execution until after whatever is being pasted has
+    // actually been added.
+    window.setTimeout(
+        function () {
+            jQuery(wym._element).trigger(
+                WYMeditor.EVENTS.postBlockMaybeCreated,
+                wym
+            );
+        },
+        20
+    );
 };
 
 WYMeditor.editor.prototype.mousedown = function (evt) {
@@ -4493,16 +4529,19 @@ WYMeditor.WymClassExplorer = function (wym) {
 };
 
 WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
-    //This function is executed twice, though it is called once!
-    //But MSIE needs that, otherwise designMode won't work.
-    //Weird.
     this._iframe = iframe;
     this._doc = iframe.contentWindow.document;
 
+    if (this._doc.designMode !== "On") {
+        this._doc.designMode = "On";
+        // Initializing designMode triggers the load event again, thus
+        // triggering this method again. We can short-circuit this run and do
+        // all of the work in the next trigger
+        return false;
+    }
     //add css rules from options
     var aCss = eval(this._options.editorStyles),
-        wym,
-        ieVersion = parseInt(jQuery.browser.version, 10);
+        wym;
 
     this.addCssRules(this._doc, aCss);
 
@@ -4525,13 +4564,6 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
         wym.saveCaret();
     };
     jQuery(this._doc).bind('keyup', wym.keyup);
-    // Workaround for an ie8 => ie7 compatibility mode bug triggered
-    // intermittently by certain combinations of CSS on the iframe
-    if (ieVersion >= 8 && ieVersion < 9) {
-        jQuery(this._doc).bind('keydown', function () {
-            wym.fixBluescreenOfDeath();
-        });
-    }
     this._doc.onkeyup = function () {
         wym.saveCaret();
     };
@@ -4548,41 +4580,25 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
         wym.paste(window.clipboardData.getData("Text"));
     };
 
-    //callback can't be executed twice, so we check
-    if (this._initialized) {
-
-        //pre-bind functions
-        if (jQuery.isFunction(this._options.preBind)) {
-            this._options.preBind(this);
-        }
-
-
-        //bind external events
-        this._wym.bindEvents();
-
-        //post-init functions
-        if (jQuery.isFunction(this._options.postInit)) {
-            this._options.postInit(this);
-        }
-
-        //add event listeners to doc elements, e.g. images
-        this.listen();
+    if (jQuery.isFunction(this._options.preBind)) {
+        this._options.preBind(this);
     }
 
-    this._initialized = true;
+    this._wym.bindEvents();
 
-    //init designMode
-    this._doc.designMode = "on";
-    try {
-        // (bermi's note) noticed when running unit tests on IE6
-        // Is this really needed, it trigger an unexisting property on IE6
-        this._doc = iframe.contentWindow.document;
-    } catch (e) {}
+    if (jQuery.isFunction(this._options.postInit)) {
+        this._options.postInit(this);
+    }
+
+    // Add event listeners to doc elements, e.g. images
+    this.listen();
 
     jQuery(wym._element).trigger(
         WYMeditor.EVENTS.postIframeInitialization,
         this._wym
     );
+
+    return true;
 };
 
 (function (editorLoadSkin) {
@@ -4598,33 +4614,6 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
         editorLoadSkin.call(this);
     };
 }(WYMeditor.editor.prototype.loadSkin));
-
-/**
-    fixBluescreenOfDeath
-    ====================
-
-    In ie8 when using ie7 compatibility mode, certain combinations of CSS on
-    the iframe will trigger a bug that causes the rendering engine to give all
-    block-level editable elements a negative left position that puts them off
-    of the screen. This results in the editor looking blank (just the blue
-    background) and requires the user to move the mouse or manipulate the DOM
-    to force a re-render, which fixes the problem.
-
-    This workaround detects the negative position and then manipulates the DOM
-    to cause a re-render, which puts the elements back in position.
-
-    A real fix would be greatly appreciated.
-*/
-WYMeditor.WymClassExplorer.prototype.fixBluescreenOfDeath = function () {
-    var position = jQuery(this._doc).find('p').eq(0).position();
-    if (position !== null &&
-        typeof position !== 'undefined' &&
-            position.left < 0) {
-        jQuery(this._box).append('<br id="wym-bluescreen-bug-fix" />');
-        jQuery(this._box).find('#wym-bluescreen-bug-fix').remove();
-    }
-};
-
 
 WYMeditor.WymClassExplorer.prototype._exec = function (cmd, param) {
     if (param) {
@@ -4743,7 +4732,7 @@ WYMeditor.WymClassExplorer.prototype.keyup = function (evt) {
         wym.documentStructureManager.structureRules.defaultRootContainer;
     this._selectedImage = null;
 
-    // If the inputted key cannont create a block element and is not a command,
+    // If the pressed key can't create a block element and is not a command,
     // check to make sure the selection is properly wrapped in a container
     if (!wym.keyCanCreateBlockElement(evt.which) &&
             evt.which !== WYMeditor.KEY.CTRL &&

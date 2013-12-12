@@ -12,7 +12,11 @@
     <h2>Look ma! No double scrollbar!</h2>
     <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
     <form method="post" action="">
-        <textarea class="wymeditor"></textarea>
+        <!--
+            The seamless skin uses the height of your textarea as the minimum
+            editor height.
+        -->
+        <textarea class="wymeditor" style="min-height: 600px"></textarea>
         <input type="submit" class="wymupdate" />
     </form>
     <div class="more-content">The toolbar will stop floating here.<div>
@@ -26,9 +30,20 @@
             var stringToRepeat = '<p>Hello, World!<\/p>',
                 html = '';
 
-            for (var i = 0; i < 30; i++) {
-                html = html + stringToRepeat;
+            for (var i = 0; i < 2; i++) {
+                html += stringToRepeat;
             }
+            for (var i = 0; i < 5; i++) {
+                // A working image, relative to the iframe, with no height
+                html += stringToRepeat;
+                html += [''
+                    , '<img '
+                    , 'src="../../skins/wymeditor_icon.png'
+                    , '?cache_break=' + i + '"'
+                    , ' />'
+                ].join('');
+            }
+            html += '<p>After the images</p>';
 
             jQuery('.wymeditor').wymeditor({
                 html: html,

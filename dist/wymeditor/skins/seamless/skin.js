@@ -32,10 +32,6 @@
     };
 
     Affix.prototype.checkPosition = function () {
-        if (!this.$element.is(':visible')) {
-            return;
-        }
-
         var scrollTop = this.$window.scrollTop()
           , offset = this.options.offset
           , offsetBottom = offset.bottom
@@ -120,23 +116,40 @@ WYMeditor.SKINS.seamless = {
                 , 'scrolling="no" '
                 , 'marginheight="0px" '
                 , 'marginwidth="0px" '
-                , 'onload="this.contentWindow.parent.WYMeditor.INSTANCES['
-                , WYMeditor.INDEX + '].initIframe(this)"'
                 , '>'
             , '</iframe>'
         , '</div>'
         ].join(""),
         // After Iframe initialization, check if we're ready to perform the
         // first resize every this many ms
-        initIframeCheckFrequency: 50
+        initIframeCheckFrequency: 50,
+        // After load or after images are inserted, check every this many ms to
+        // see if they've properly set their height.
+        imagesLoadedCheckFrequency: 300,
+        // After this many ms, give up on images finishing loading. Some images
+        // might never load due to network connectivity or bad links.
+        imagesLoadedCheckTimeout: 5000
     },
     init: function (wym) {
         var This = WYMeditor.SKINS.seamless;
 
-        wym.seamlessSkinOpts = {
-            initIframeCheckFrequency: This.initIframeCheckFrequency,
-            initialIframeResizeTimer: null
-        };
+        // TODO: Find a unified strategy for dealing with loading polyfills
+        // This is a polyfill for old IE
+        if (!Date.now) {
+            Date.now = function now() {
+                return new Date().getTime();
+            };
+        }
+
+        wym.seamlessSkinOpts = jQuery.extend(
+            This.OPTS,
+            {
+                initialIframeResizeTimer: null,
+                resizeAfterImagesLoadTimer: null,
+                _imagesLoadedCheckStartedTime: 0,
+                minimumHeight: jQuery(wym._element).height()
+            }
+        );
         This.initUIChrome(wym);
 
         // The Iframe isn't initialized at this point, so we'll need to wait
@@ -156,7 +169,9 @@ WYMeditor.SKINS.seamless = {
         // properly resized and the current container in view
         jQuery(wym._element).bind(
             WYMeditor.EVENTS.postBlockMaybeCreated,
-            This.resizeAndScrollIfNeeded
+            function () {
+                This.resizeAndScrollIfNeeded(wym);
+            }
         );
     },
     initUIChrome: function (wym) {
@@ -179,11 +194,6 @@ WYMeditor.SKINS.seamless = {
 
         $dropdowns.appendTo($areaTop);
         $dropdowns.addClass("wym_dropdown");
-        $dropdowns.css({
-            "margin-right": "10px",
-            "width": "120px",
-            "float": "left"
-        });
         // Make dropdowns also work on click, for mobile devices
         jQuery(".wym_dropdown", wym._box).click(
             function () {
@@ -194,7 +204,6 @@ WYMeditor.SKINS.seamless = {
         // The toolbar uses buttons
         $toolbar = jQuery(wym._options.toolsSelector, wym._box);
         $toolbar.addClass("wym_buttons");
-        $toolbar.css({"margin-right": "10px", "float": "left"});
 
         This.affixTopControls(wym);
 
@@ -280,47 +289,171 @@ WYMeditor.SKINS.seamless = {
         // other browsers, but does fix IE7's behavior.
         scrollHeightCalcFix = wym._doc.body.scrollHeight;
         This.resizeIframe(wym);
+        This.resizeIframeOnceImagesLoaded(wym);
     },
-    resizeIframe: function (wym) {
-        var desiredHeight,
-            $innerDoc,
-            $iframe = jQuery(wym._iframe),
-            currentHeight = $iframe.height(),
-            iframeHtmlHeight;
+    resizeIframeOnceImagesLoaded: function (wym) {
+        // Even though the body may be "loaded" from a DOM even standpoint,
+        // that doesn't mean that images have yet been retrieved or that their
+        // heights have been determined. If an image's height pops in after
+        // we've calculated the iframe height, the iframe will be too short.
+        var This = WYMeditor.SKINS.seamless,
+            images,
+            imagesLength,
+            i = 0,
+            allImagesLoaded = true,
+            skinOpts = wym.seamlessSkinOpts,
+            timeWaited;
 
-        if (typeof WYMeditor.BODY_SCROLLHEIGHT_MISMATCH === "undefined") {
-            // For some browsers (IE8+ and FF), the scrollHeight of the body
-            // doesn't seem to include the top and bottom margins of the body
-            // relative to the HTML. This leaves the editing "window" smaller
-            // than required, which results in weird overlaps at the start/end.
-            // For those browsers, the HTML element's scrollHeight is more
-            // reliable.
-            // Let's detect which kind of browser we're dealing with one time
-            // so we can just do the right thing in the future.
-            desiredHeight = wym._doc.body.scrollHeight;
-
-            $innerDoc = jQuery(wym._doc);
-            iframeHtmlHeight = $innerDoc.children()[0].scrollHeight;
-
-            if (iframeHtmlHeight > desiredHeight) {
-                // We use greater than because IE7 starts with an
-                // iframeHtmlHeight smaller than its body
-                WYMeditor.BODY_SCROLLHEIGHT_MISMATCH = true;
-            } else {
-                WYMeditor.BODY_SCROLLHEIGHT_MISMATCH = false;
-            }
+        if (typeof skinOpts._imagesLoadedCheckStartedTime === "undefined" ||
+                skinOpts._imagesLoadedCheckStartedTime === 0) {
+            skinOpts._imagesLoadedCheckStartedTime = Date.now();
         }
 
-        if (WYMeditor.BODY_SCROLLHEIGHT_MISMATCH === true) {
-            $innerDoc = jQuery(wym._doc);
-            desiredHeight = $innerDoc.children()[0].scrollHeight;
+        if (skinOpts.resizeAfterImagesLoadTimer !== null) {
+            // We're handling a timer, clear it
+            window.clearTimeout(
+                skinOpts.resizeAfterImagesLoadTimer
+            );
+            skinOpts.resizeAfterImagesLoadTimer = null;
+        }
+
+        images = jQuery(wym._doc).find('img');
+        imagesLength = images.length;
+
+        if (imagesLength === 0) {
+            // No images. No need to worry about resizing based on them.
+            return;
+        }
+
+        for (i = 0; i < imagesLength; i += 1) {
+            if (!This._imageIsLoaded(images[i])) {
+                // If any image isn't loaded, we're not done
+                allImagesLoaded = false;
+                break;
+            }
+        }
+        // Even if all of the images haven't loaded, we can still be more
+        // correct by accounting for any that have.
+        This.resizeAndScrollIfNeeded(wym);
+
+        if (allImagesLoaded === true) {
+            // Clean up the timeout timer for subsequent calls
+            skinOpts._imagesLoadedCheckStartedTime = 0;
+            return;
+        }
+
+        timeWaited = Date.now() - skinOpts._imagesLoadedCheckStartedTime;
+        if (timeWaited > skinOpts.imagesLoadedCheckTimeout) {
+            // Clean up the timeout timer for subsequent calls
+            skinOpts._imagesLoadedCheckStartedTime = 0;
+            // We've waited long enough. The images might never load.
+            // Don't set another timer.
+            return;
+        }
+
+        // Let's check again in after a delay
+        skinOpts.resizeAfterImagesLoadTimer = window.setTimeout(
+            function () {
+                This.resizeIframeOnceImagesLoaded(wym);
+            },
+            skinOpts.imagesLoadedCheckFrequency
+        );
+    },
+    _imageIsLoaded: function (img) {
+        if (img.complete !== true) {
+            return false;
+        }
+
+        if (typeof img.naturalWidth !== "undefined" &&
+                img.naturalWidth === 0) {
+            return false;
+        }
+
+        return true;
+    },
+    _getIframeHeightStrategy: function (wym) {
+        // For some browsers (IE8+ and FF), the scrollHeight of the body
+        // doesn't seem to include the top and bottom margins of the body
+        // relative to the HTML. This leaves the editing "window" smaller
+        // than required, which results in weird overlaps at the start/end.
+        // For those browsers, the HTML element's scrollHeight is more
+        // reliable.
+        // Let's detect which kind of browser we're dealing with one time
+        // so we can just do the right thing in the future.
+        var bodyScrollHeight,
+            $htmlElement,
+            htmlElementHeight,
+            htmlElementScrollHeight,
+            heightStrategy;
+
+        $htmlElement = jQuery(wym._doc).children().eq(0);
+
+        bodyScrollHeight = wym._doc.body.scrollHeight;
+        htmlElementHeight = $htmlElement.height();
+        htmlElementScrollHeight = $htmlElement[0].scrollHeight;
+
+        if (htmlElementHeight >= bodyScrollHeight) {
+            // Well-behaving browsers like FF and Chrome let us rely on the
+            // HTML element's jQuery height() in every case. Hooray!
+            heightStrategy = function (wym) {
+                var $htmlElement = jQuery(wym._doc).children().eq(0),
+                    htmlElementHeight = $htmlElement.height();
+
+                return htmlElementHeight;
+            };
+
+            return heightStrategy;
+        } else if (bodyScrollHeight > htmlElementScrollHeight) {
+            // This is probably IE7, where the only thing reliable is the
+            // bodyScrollHeight
+            heightStrategy = function (wym) {
+                return wym._doc.body.scrollHeight;
+            };
+
+            return heightStrategy;
         } else {
-            desiredHeight = wym._doc.body.scrollHeight;
+            // This is probably IE8+, where the htmlElementScrollHeight is
+            // fairly reliable, but doesn't shrink when content is removed.
+            heightStrategy = function (wym) {
+                var $htmlElement = jQuery(wym._doc).children().eq(0),
+                    htmlElementScrollHeight = $htmlElement[0].scrollHeight;
+
+                // Without the 10px reduction in height, every possible action
+                // adds 10 pixels of height.
+                // TODO: Figure out why this happens and if we can make the
+                // 10px number not magic (actually derived from a
+                // margin/padding etc).
+                return htmlElementScrollHeight - 10;
+            };
+
+            return heightStrategy;
+        }
+    },
+    resizeIframe: function (wym) {
+        var This = WYMeditor.SKINS.seamless,
+            desiredHeight,
+            $iframe = jQuery(wym._iframe),
+            currentHeight = $iframe.height();
+
+        if (typeof WYMeditor.IFRAME_HEIGHT_GETTER === "undefined") {
+            WYMeditor.IFRAME_HEIGHT_GETTER = This._getIframeHeightStrategy(
+                wym
+            );
+        }
+
+        desiredHeight = WYMeditor.IFRAME_HEIGHT_GETTER(wym);
+
+        // Don't let the height drop below the WYMeditor textarea. This allows
+        // folks to use their favorite height-setting method on the textarea,
+        // without needing to pass options on to WYMeditor.
+        if (desiredHeight < wym.seamlessSkinOpts.minimumHeight) {
+            desiredHeight = wym.seamlessSkinOpts.minimumHeight;
         }
 
         if (currentHeight !== desiredHeight) {
             $iframe.height(desiredHeight);
             wym.seamlessSkinIframeHeight = desiredHeight;
+
             return true;
         }
         return false;
@@ -338,6 +471,10 @@ WYMeditor.SKINS.seamless = {
             $window = jQuery(window),
             $body = jQuery(document.body);
 
+        if ($container.length === 0) {
+            // With nothing selected, there's no need to scroll
+            return;
+        }
         containerLowestY = iframeOffsetTop + containerOffset.top;
         containerLowestY += $container.outerHeight();
         viewportLowestY = $window.scrollTop() + $window.height();
@@ -349,7 +486,7 @@ WYMeditor.SKINS.seamless = {
             $body.scrollTop(newScrollTop);
         }
     },
-    resizeAndScrollIfNeeded: function (e, wym) {
+    resizeAndScrollIfNeeded: function (wym) {
         // Scroll the page so that our current selection
         // within the iframe is actually in view.
         var This = WYMeditor.SKINS.seamless,
