@@ -2630,9 +2630,30 @@ WYMeditor.editor.prototype.listen = function () {
     // Don't use jQuery.find() on the iframe body
     // because of MSIE + jQuery + expando issue (#JQ1143)
 
-    jQuery(this._doc.body).bind("mousedown", function (e) {
+    jQuery(wym._doc.body).bind("mousedown", function (e) {
         wym.mousedown(e);
     });
+
+    wym._doc.addEventListener('paste', function (e) {
+        wym.handlePasteEvent(e);
+    });
+};
+
+WYMeditor.editor.prototype.handlePasteEvent = function () {
+    var wym = this;
+
+    // The paste event happens *before* the paste actually occurs.
+    // Use a timer to delay execution until after whatever is being pasted has
+    // actually been added.
+    window.setTimeout(
+        function () {
+            jQuery(wym._element).trigger(
+                WYMeditor.EVENTS.postBlockMaybeCreated,
+                wym
+            );
+        },
+        20
+    );
 };
 
 WYMeditor.editor.prototype.mousedown = function (evt) {
