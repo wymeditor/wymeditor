@@ -154,7 +154,6 @@ jQuery.extend(WYMeditor, {
     INDEX               : "{Wym_Index}",
     WYM_INDEX           : "wym_index",
     BASE_PATH           : "{Wym_Base_Path}",
-    CSS_PATH            : "{Wym_Css_Path}",
     WYM_PATH            : "{Wym_Wym_Path}",
     SKINS_DEFAULT_PATH  : "skins/",
     SKINS_DEFAULT_CSS   : "skin.css",
@@ -422,8 +421,6 @@ jQuery.fn.wymeditor = function (options) {
         wymPath:    false,
         iframeBasePath: false,
         jQueryPath: false,
-        styles: false,
-        stylesheet: false,
         skin:       "default",
         lang:       "en",
         direction:  "ltr",
@@ -613,8 +610,6 @@ jQuery.fn.wymeditor = function (options) {
                     '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">' +
             '<html dir="' + WYMeditor.DIRECTION + '">' +
                 '<head>' +
-                    '<link rel="stylesheet" type="text/css" media="screen" ' +
-                        'href="' + WYMeditor.CSS_PATH + '" />' +
                     '<title>' + WYMeditor.DIALOG_TITLE + '</title>' +
                     '<script type="text/javascript" ' +
                         'src="' + WYMeditor.JQUERY_PATH + '"></script>' +

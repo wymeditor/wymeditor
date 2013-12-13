@@ -58,10 +58,6 @@ WYMeditor.editor.prototype.init = function () {
     SaxListener = new WYMeditor.XhtmlSaxListener();
     this.parser = new WYMeditor.XhtmlParser(SaxListener);
 
-    if (this._options.styles || this._options.stylesheet) {
-        this.configureEditorUsingRawCss();
-    }
-
     this.helper = new WYMeditor.XmlHelper();
 
     // Extend the editor object with the browser-specific version.
@@ -2593,30 +2589,6 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
     need slightly different tweaks.
 */
 WYMeditor.editor.prototype.afterInsertTable = function () {
-};
-
-WYMeditor.editor.prototype.configureEditorUsingRawCss = function () {
-    var CssParser = new WYMeditor.WymCssParser();
-    if (this._options.stylesheet) {
-        CssParser.parse(
-            jQuery.ajax({
-                url: this._options.stylesheet,
-                async: false
-            }).responseText
-        );
-    } else {
-        CssParser.parse(this._options.styles, false);
-    }
-
-    if (this._options.classesItems.length === 0) {
-        this._options.classesItems = CssParser.css_settings.classesItems;
-    }
-    if (this._options.editorStyles.length === 0) {
-        this._options.editorStyles = CssParser.css_settings.editorStyles;
-    }
-    if (this._options.dialogStyles.length === 0) {
-        this._options.dialogStyles = CssParser.css_settings.dialogStyles;
-    }
 };
 
 WYMeditor.editor.prototype.listen = function () {
