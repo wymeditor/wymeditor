@@ -2,10 +2,14 @@
 Customizing WYMeditor
 #####################
 
+*********************
 Customization Options
-=====================
-**Since 0.4, getting started examples are integrated in WYMeditor's package.
-See the 'examples' directory.**
+*********************
+
+.. note::
+
+    Getting started examples are located
+    in the distributed ``examples/`` directory.
 
 .. code-block:: javascript
 
@@ -22,13 +26,18 @@ WYMeditor instance:
     $("textarea.wymeditor").wymeditor();
 
 
-Parameters
-----------
+Options Format
+==============
 
-The function accepts an optional parameter: an array of ``options``.
+All WYMeditor options are passed
+via the WYMeditor initialization function
+as an options object.
 
-**Example**: Initializes WYMeditor HTML content and displays an alert box when
-ready:
+Example
+-------
+
+Initializes WYMeditor HTML content
+and displays an alert box when ready:
 
 .. code-block:: javascript
 
@@ -43,7 +52,7 @@ ready:
 
 
 List of Options
----------------
+===============
 
 Check the file jquery.wymeditor.js, function ``$j.fn.wymeditor``, for the
 complete list of options and their default values.
@@ -120,9 +129,7 @@ in ISO-639-1 format.
 
 Language packs are stored in the ``wymeditor/lang`` directory.
 
-
-How to use a Custom Language
-------------------------------
+Example: How to use a Custom Language
 
 Just initialize the option:
 
@@ -466,8 +473,9 @@ Parameters:
     * wym: the WYMeditor instance
     * wdw: the dialog's window object
 
+***************************
 Basic Customization Example
----------------------------
+***************************
 
 .. code-block:: html
 
@@ -504,6 +512,79 @@ Basic Customization Example
 * The ``html`` option will initialize the editor's content.
 * The ``stylesheet`` option will automagically parse your CSS file to
   populate the Classes panel and to initialize the visual feedback.
+
+**********************
+Upgrading to Version 1
+**********************
+
+Using the Legacy Skin and Editor Styles
+=======================================
+
+WYMeditor version 1.0 made some significant changes to the default skin
+and editor styles.
+For folks who need the old UI,
+we've included a skin and iframe to meet their needs.
+
+These are both labeled as ``legacy``.
+To use them,
+first load the legacy skins CSS and javascript,
+then choose those options on editor initialization:
+
+.. code-block:: javascript
+
+    $(function() {
+        $('.wymeditor').wymeditor({
+            iframeBasePath: "../wymeditor/iframe/legacy/",
+            skin: "legacy"
+        });
+    });
+
+
+See `Example 21-legacy <http://wymeditor.github.io/wymeditor/dist/examples/21-legacy.html>`_
+for a demonstration of the Pre-1.0 user interface.
+
+Deprecation
+-----------
+
+It's easy to provide
+your own skin and iframe, though,
+so these will be removed
+according to WYMeditor's deprecation policy.
+
+.. _migration-to-1-skin-auto-loading:
+
+No More Skin Auto-loading
+=========================
+
+Versions of WYMeditor prior to 1.0
+would use javascript to automatically load
+your chosen skin's javascript and CSS.
+While this was a small first-usage usability improvement,
+it created some "magic" that quickly became confusing
+when it came time for an optimized,
+production-ready deployment.
+In production,
+you should be looking to reduce the number of HTTP requests
+as much as possible,
+which means including the skin's assets
+along with your other combined/minified/compressed assets.
+
+The default WYMeditor distribution
+now includes all skin javascript and CSS
+as part of the bundle.
+They're only activated based on your choice of ``skin`` option,
+though.
+For enhanced optimization,
+you can create your own WYMeditor bundle
+only containing the skin that you will load,
+but that will be a very low-impact optimization
+for most users,
+as the amount of CSS/Javascript
+in a skin is very small
+relative to the impact of WYMeditor itself.
+
+For more details,
+see the documentation on :ref:`using-skins-loading-a-skin`.
 
 .. toctree::
     :maxdepth: 2

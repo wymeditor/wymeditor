@@ -2,6 +2,47 @@
 Using WYMeditor Skins
 #####################
 
+.. _using-skins-loading-a-skin:
+
+**************
+Loading a Skin
+**************
+
+The default WYMeditor distribution
+now includes all skin javascript and CSS
+as part of the bundle.
+If you're using an existing distribution of WYMeditor,
+and wish to use another one of the bundled skins,
+you simply need to set the ``skin`` option.
+
+If you're migrating from a version of WYMeditor before 1.0,
+the differences are explained in the migration documentation
+on :ref:`migration-to-1-skin-auto-loading`.
+
+Third-party Skins and Skins in Development
+==========================================
+
+When doing WYMeditor development
+or using a non-bundled skin,
+your desired skin won't be included
+in the single bundles of WYMeditor javascript
+and CSS.
+To use a skin then,
+simply include the appropriate CSS and Javascript files
+on the page before you initialize the editor.
+
+Optimizations
+=============
+
+For enhanced optimization,
+you can create your own WYMeditor bundle
+only containing the skin that you will load,
+but that will be a very low-impact optimization
+for most users,
+as the amount of CSS/Javascript
+in a skin is very small
+relative to the impact of WYMeditor itself.
+
 **************
 Included Skins
 **************

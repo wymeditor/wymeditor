@@ -7,6 +7,14 @@ WYMeditor.
 
 *release-date* TBD
 
+### Backwards-Incompatible Changes
+
+* The default iframe has been modified with several usability improvements.
+  To continue to support users who need/prefer the previous iframe, that
+  option is now available as the `legacy` iframe.
+  See the [Upgrading to Version 1 docs](http://wymeditor.readthedocs.org/en/latest/customizing_wymeditor/index.html#upgrading-to-version-1)
+  for details.
+
 ### Enhancements
 
 * The unit test suite has been fixed to now fully pass using jQuery 1.4.4, and
