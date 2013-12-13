@@ -872,14 +872,10 @@ WYMeditor.computeJqueryPath = function () {
 /********** DIALOGS **********/
 
 WYMeditor.INIT_DIALOG = function (index) {
-
     var wym = window.opener.WYMeditor.INSTANCES[index],
-        doc = window.document,
         selected = wym.selected(),
         dialogType = jQuery(wym._options.dialogTypeSelector).val(),
         sStamp = wym.uniqueStamp(),
-        styles,
-        aCss,
         tableOnClick;
 
     if (dialogType === WYMeditor.DIALOG_LINK) {
@@ -899,12 +895,6 @@ WYMeditor.INIT_DIALOG = function (index) {
     if (jQuery.isFunction(wym._options.preInitDialog)) {
         wym._options.preInitDialog(wym, window);
     }
-
-    // add css rules from options
-    styles = doc.styleSheets[0];
-    aCss = eval(wym._options.dialogStyles);
-
-    wym.addCssRules(doc, aCss);
 
     // auto populate fields if selected container (e.g. A)
     if (selected) {

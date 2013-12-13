@@ -147,6 +147,11 @@
                         });
 
                     //feedback css
+                    // TODO: addCssRules was removed. If we're going to continue
+                    // supporting this example, then we'll need to add these as
+                    // standard CSS to a custom iframe, or support fully-dynamic
+                    // iframes that aren't loaded via `src`, but instead have
+                    // their contents injected.
                     var rules = [
                       { name: '.about',
                         css: 'background-color: #f99;' },
@@ -165,7 +170,6 @@
                       { name: '.foaf_phone',
                         css: 'background-color: #c3c;' }
                     ];
-                    wym.addCssRules( wym._doc, rules);
                 }
             });
         });

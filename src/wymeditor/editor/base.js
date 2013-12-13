@@ -1377,20 +1377,6 @@ WYMeditor.editor.prototype.setFocusToNode = function (node, toStart) {
     selection.setSingleRange(range);
 };
 
-WYMeditor.editor.prototype.addCssRules = function (doc, aCss) {
-    var styles = doc.styleSheets[0],
-        i,
-        oCss;
-    if (styles) {
-        for (i = 0; i < aCss.length; i += 1) {
-            oCss = aCss[i];
-            if (oCss.name && oCss.css) {
-                this.addCssRule(styles, oCss);
-            }
-        }
-    }
-};
-
 /**
     editor.splitListItemContents
     =============================

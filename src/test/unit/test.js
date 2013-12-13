@@ -149,23 +149,6 @@ test("Sanity check: _html()", function () {
     htmlEquals(wymeditor, testText1);
 });
 
-if (!jQuery.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
-    test("Adding combined CSS selectors", function () {
-        expect(1);
-
-        var wymeditor = jQuery.wymeditors(0),
-            doc = wymeditor._doc,
-            styles = doc.styleSheets[0];
-
-        wymeditor.addCssRule(
-            styles,
-            {name: 'p,h1,h2', css: 'font-style:italic'}
-        );
-        deepEqual(jQuery('p', doc).css('font-style'), 'italic', 'Font-style');
-    });
-}
-
-
 module("copy-paste", {setup: setupWym});
 
 var basicParagraphsHtml = String() +
