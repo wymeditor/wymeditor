@@ -586,6 +586,64 @@ relative to the impact of WYMeditor itself.
 For more details,
 see the documentation on :ref:`using-skins-loading-a-skin`.
 
+Options Removed
+---------------
+
+* ``skinPath``
+
+.. _migration-to-1-css-configuration:
+
+No More CSS Configuration Options
+=================================
+
+Versions prior to 1.0 had various options
+that supported the ability to set CSS rules
+on various editor and dialog components.
+In the spirit of :ref:`migration-to-1-skin-auto-loading`
+and moving WYMeditor closer to just an idiomatic collection
+of javascript/css/html,
+we're no longer supporting those options.
+All of the things that were previously accomplished with them
+can be better-accomplished
+by actually including those rules in stylesheets.
+
+If you're having difficulty determining the best strategy for migration
+please open an Issue on Github
+and we'll be happy to document your use case
+and help you with a plan.
+
+Options Removed
+---------------
+
+* ``styles``
+* ``stylesheet``
+* ``editorStyles``
+* ``dialogStyles``
+
+Methods Removed
+---------------
+
+* ``addCssRules()``
+* ``addCssRule()``
+
+.. _migration-to-1-lang-auto-loading:
+
+No More Language Automatic Loading
+==================================
+
+Instead of doing an additional HTTP request
+to load a language file,
+the default WYMeditor distribution comes bundled
+with all of the translation files.
+If you're creating your own bundle,
+you'll need to include those files on the page
+before the editor is initialized.
+
+Options Removed
+---------------
+
+* ``langPath``
+
 .. toctree::
     :maxdepth: 2
 
