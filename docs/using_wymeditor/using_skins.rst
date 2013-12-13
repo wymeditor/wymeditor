@@ -1,6 +1,6 @@
-#####################
-Using WYMeditor Skins
-#####################
+###############
+WYMeditor Skins
+###############
 
 .. _using-skins-loading-a-skin:
 
