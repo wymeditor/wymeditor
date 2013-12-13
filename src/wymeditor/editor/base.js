@@ -210,7 +210,7 @@ WYMeditor.editor.prototype.init = function () {
         wym._iframe_initialized = wym.initIframe(this);
     });
 
-    wym.loadSkin();
+    wym.initSkin();
 };
 
 /**
@@ -1081,11 +1081,6 @@ WYMeditor.editor.prototype.dialog = function (dialogType, dialogFeatures, bodyHt
             dialogHtml,
             WYMeditor.DIRECTION,
             this._options.direction
-        );
-        dialogHtml = h.replaceAll(
-            dialogHtml,
-            WYMeditor.CSS_PATH,
-            this._options.skinPath + WYMeditor.SKINS_DEFAULT_CSS
         );
         dialogHtml = h.replaceAll(
             dialogHtml,
@@ -2665,63 +2660,15 @@ WYMeditor.editor.prototype.mousedown = function (evt) {
 };
 
 /**
-    WYMeditor.loadCss
-    =================
-
-    Load a stylesheet in the document.
-
-    href - The CSS path.
-*/
-WYMeditor.loadCss = function (href) {
-    var link = document.createElement('link'),
-        head;
-    link.rel = 'stylesheet';
-    link.href = href;
-
-    head = jQuery('head').get(0);
-    head.appendChild(link);
-};
-
-/**
-    WYMeditor.editor.loadSkin
+    WYMeditor.editor.initSkin
     =========================
 
-    Load the skin CSS and initialization script (if needed).
+    Apply the appropriate CSS class to "activate" that skin's CSS and call the
+    skin's javascript `init` method.
 */
-WYMeditor.editor.prototype.loadSkin = function () {
-    // Does the user want to automatically load the CSS (default: yes)?
-    // We also test if it hasn't been already loaded by another instance
-    // see below for a better (second) test
-    if (this._options.loadSkin && !WYMeditor.SKINS[this._options.skin]) {
-        // Check if it hasn't been already loaded so we don't load it more
-        // than once (we check the existing <link> elements)
-        var found = false,
-            rExp = new RegExp(this._options.skin +
-                '\/' + WYMeditor.SKINS_DEFAULT_CSS + '$');
-
-        jQuery('link').each(function () {
-            if (this.href.match(rExp)) {
-                found = true;
-            }
-        });
-
-        // Load it, using the skin path
-        if (!found) {
-            WYMeditor.loadCss(
-                this._options.skinPath + WYMeditor.SKINS_DEFAULT_CSS
-            );
-        }
-    }
-
+WYMeditor.editor.prototype.initSkin = function () {
     // Put the classname (ex. wym_skin_default) on wym_box
     jQuery(this._box).addClass("wym_skin_" + this._options.skin);
-
-    // Does the user want to use some JS to initialize the skin (default: yes)?
-    // Also check if it hasn't already been loaded by another instance
-    if (this._options.initSkin && !WYMeditor.SKINS[this._options.skin]) {
-        eval(jQuery.ajax({url: this._options.skinPath +
-            WYMeditor.SKINS_DEFAULT_JS, async: false}).responseText);
-    }
 
     // Init the skin, if needed
     if (WYMeditor.SKINS[this._options.skin] && WYMeditor.SKINS[this._options.skin].init) {
