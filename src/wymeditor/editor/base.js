@@ -761,15 +761,13 @@ WYMeditor.editor.prototype.replaceStrings = function (sVal) {
     // Check if the language file has already been loaded
     // if not, get it via a synchronous ajax call
     if (!WYMeditor.STRINGS[this._options.lang]) {
-        try {
-            eval(jQuery.ajax({url: this._options.langPath +
-                this._options.lang + '.js', async: false}).responseText);
-        } catch (e) {
-            WYMeditor.console.error(
-                "WYMeditor: error while parsing language file."
-            );
-            return sVal;
-        }
+        WYMeditor.console.error(
+            "WYMeditor: language '" + this._options.lang + "' not found."
+        );
+        WYMeditor.console.error(
+            "Unable to perform i10n."
+        );
+        return sVal;
     }
 
     // Replace all the strings in sVal and return it
