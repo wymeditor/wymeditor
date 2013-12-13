@@ -84,11 +84,7 @@ jQuery.extend(WYMeditor, {
     INDEX               - A string replaced by the instance index.
     WYM_INDEX           - A string used to get/set the instance index.
     BASE_PATH           - A string replaced by WYMeditor's base path.
-    SKIN_PATH           - A string replaced by WYMeditor's skin path.
     WYM_PATH            - A string replaced by WYMeditor's main JS file path.
-    SKINS_DEFAULT_PATH  - The skins default base path.
-    SKINS_DEFAULT_CSS   - The skins default CSS file.
-    LANG_DEFAULT_PATH   - The language files default path.
     IFRAME_BASE_PATH    - String replaced by the designmode iframe's base path.
     IFRAME_DEFAULT      - The iframe's default base path.
     JQUERY_PATH         - A string replaced by the computed jQuery path.
@@ -155,10 +151,6 @@ jQuery.extend(WYMeditor, {
     WYM_INDEX           : "wym_index",
     BASE_PATH           : "{Wym_Base_Path}",
     WYM_PATH            : "{Wym_Wym_Path}",
-    SKINS_DEFAULT_PATH  : "skins/",
-    SKINS_DEFAULT_CSS   : "skin.css",
-    SKINS_DEFAULT_JS    : "skin.js",
-    LANG_DEFAULT_PATH   : "lang/",
     IFRAME_BASE_PATH    : "{Wym_Iframe_Base_Path}",
     IFRAME_DEFAULT      : "iframe/default/",
     JQUERY_PATH         : "{Wym_Jquery_Path}",
@@ -385,9 +377,6 @@ jQuery.extend(WYMeditor, {
         // Path to jQuery (for loading in pop-up dialogs)
         this._options.jQueryPath = this._options.jQueryPath ||
             WYMeditor.computeJqueryPath();
-        // Path to the language files
-        this._options.langPath = this._options.langPath ||
-            this._options.basePath + WYMeditor.LANG_DEFAULT_PATH;
         // The designmode iframe's base path
         this._options.iframeBasePath = this._options.iframeBasePath ||
             this._options.basePath + WYMeditor.IFRAME_DEFAULT;
