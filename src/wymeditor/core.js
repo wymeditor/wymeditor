@@ -425,8 +425,6 @@ jQuery.fn.wymeditor = function (options) {
         styles: false,
         stylesheet: false,
         skin:       "default",
-        initSkin:   true,
-        loadSkin:   true,
         lang:       "en",
         direction:  "ltr",
         customCommands: [],

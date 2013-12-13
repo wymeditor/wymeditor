@@ -2671,7 +2671,13 @@ WYMeditor.editor.prototype.initSkin = function () {
     jQuery(this._box).addClass("wym_skin_" + this._options.skin);
 
     // Init the skin, if needed
-    if (WYMeditor.SKINS[this._options.skin] && WYMeditor.SKINS[this._options.skin].init) {
-        WYMeditor.SKINS[this._options.skin].init(this);
+    if (WYMeditor.SKINS[this._options.skin]) {
+        if (WYMeditor.SKINS[this._options.skin].init) {
+            WYMeditor.SKINS[this._options.skin].init(this);
+        }
+    } else {
+        WYMeditor.console.warn(
+            "Chosen skin _" + this.options.skin + "_ not found."
+        );
     }
 };
