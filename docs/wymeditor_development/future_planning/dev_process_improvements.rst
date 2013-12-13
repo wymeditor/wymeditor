@@ -30,6 +30,88 @@ Then folks can make their own slimmed-down builds.
 Documentation
 *************
 
+Better Structure
+================
+
+Current planned ideal:
+
+ * index
+ * getting_started/
+
+    * index
+    * setup (mention existing_integrations)
+    * philosophy (or should this be on the website?)
+    * getting_help (link to contributing)
+
+  * customizing_wymeditor/
+
+    * index (general overview of architecture
+      and explanation of customization methods)
+    * configuration_options
+    * using_plugins (content from using_wymeditor/using_plugins and plugins/index)
+    * using_skins
+    * using_content_layouts (better name than iframe)
+
+    * howto/ (instead of customizing_wymeditor/examples)
+
+      * toolbar_items ?
+      * etc
+
+  * plugins/
+
+    * index
+    * core_plugins/
+
+      * bidi
+      * list
+      * table
+      * etc
+
+    * third_party_plugins
+
+  * skins/
+
+    * index
+    * core_skins/
+
+      * silver
+      * legacy
+      * minimal
+
+    * third_party_skins
+
+  * content_layouts
+
+    * index
+    * core_content_layouts/
+
+      * pretty
+      * legacy
+
+    * third_party_content_layouts
+
+  * resources/
+
+    * index
+    * wymeditor_end_user_guide
+
+  * writing_plugins/
+
+    * index
+
+  * writing_skins/
+
+    * index
+
+  * writing_content_layouts/
+
+    * index
+
+  * existing_integrations
+  * upgrade_guide
+  * changelog
+  * wymeditor_development/ (as it already exists)
+
 Automate Taking Demo Screenshots for the Docs
 =============================================
 
