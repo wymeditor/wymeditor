@@ -451,7 +451,6 @@ jQuery.fn.wymeditor = function (options) {
                 '</iframe>' +
             "</div>",
 
-        editorStyles: [],
         toolsHtml: String() +
             '<div class="wym_tools wym_section">' +
                 '<h2>{Tools}</h2>' +
@@ -733,8 +732,6 @@ jQuery.fn.wymeditor = function (options) {
         dialogPreviewHtml: String() +
             '<body class="wym_dialog wym_dialog_preview" ' +
                 'onload="WYMeditor.INIT_DIALOG(' + WYMeditor.INDEX + ')"></body>',
-
-        dialogStyles: [],
 
         stringDelimiterLeft:  "{",
         stringDelimiterRight: "}",
