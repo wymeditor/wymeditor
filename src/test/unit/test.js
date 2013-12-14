@@ -107,24 +107,6 @@ test("Commands", function () {
     deepEqual(jQuery('div.wym_html:visible', wymeditor._box).length, 0);
 });
 
-module("CssParser", {setup: setupWym});
-
-test("Configure classes items using CSS", function () {
-    expect(2);
-    ok(
-        jQuery('div.wym_classes ul', jQuery.wymeditors(0)._box).length > 0,
-        "Classes loaded"
-    );
-    deepEqual(
-        jQuery(
-            'div.wym_classes a:first-child',
-            jQuery.wymeditors(0)._box
-        ).attr('name'),
-        'date',
-        "First loaded class name"
-    );
-});
-
 module("XmlHelper", {setup: setupWym});
 
 test("Should escape URL's only once #69.1", function () {
