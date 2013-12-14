@@ -22,7 +22,6 @@ function setupWym(modificationCallback) {
     if (WYMeditor.INSTANCES.length === 0) {
         stop(); // Stop test running until the editor is initialized
         jQuery('.wymeditor').wymeditor({
-            stylesheet: 'styles.css',
             postInit: function (wym) {
                 // Determine if attempting to select a cell with a non-text
                 // inner node (a span) actually selects the inner node or
