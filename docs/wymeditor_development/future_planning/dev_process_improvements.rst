@@ -120,6 +120,26 @@ Use `grunt-autoshoot <https://github.com/Ferrari/grunt-autoshot>`_
 to take screenshots of the examples
 and update the docs to embed them.
 
+************
+Code Cleanup
+************
+
+JSHint the remaining first-party files
+======================================
+
+Only things we don't control
+should be in ``.jshintignore``.
+
+Don't use ``eval()``
+====================
+
+It's not necessary.
+
+Vendor Rangy
+============
+
+We should include Rangy via bower.
+
 *******
 Testing
 *******
@@ -153,3 +173,10 @@ Run the Unit Tests in Every Browser on Every Build
 our unit tests across our supported browsers. It won't work for our Selenium
 tests, but it will at least make it easy to catch regressions and the like when
 lazy developers \*cough\*me\*cough\* don't test in all of the IE's.
+
+Load all examples/tests on travis
+=================================
+
+Have travis load all of the examples and tests
+using phantomjs
+and verify that WYMeditor is at least finishing initialization.
