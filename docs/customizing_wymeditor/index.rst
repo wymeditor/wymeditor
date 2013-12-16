@@ -51,7 +51,7 @@ along with the ability to write your own.
 By :doc:`/using_wymeditor/using_plugins`
 you can enable a broad range of extra behaviors.
 If none of the :doc:`/wymeditor_plugins/included_plugins/index`
-meet your need,
+meet your needs,
 there's a range of :doc:`/wymeditor_plugins/third_party_plugins/index`
 available.
 

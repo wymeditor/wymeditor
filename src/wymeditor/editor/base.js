@@ -2627,8 +2627,8 @@ WYMeditor.editor.prototype.initSkin = function () {
     jQuery(this._box).addClass("wym_skin_" + this._options.skin);
 
     // Init the skin, if needed
-    if (WYMeditor.SKINS[this._options.skin]) {
-        if (WYMeditor.SKINS[this._options.skin].init) {
+    if (typeof WYMeditor.SKINS[this._options.skin] !== "undefined") {
+        if (typeof WYMeditor.SKINS[this._options.skin].init === "function") {
             WYMeditor.SKINS[this._options.skin].init(this);
         }
     } else {
