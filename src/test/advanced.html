@@ -1,28 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<!--
- * WYMeditor : what you see is What You Mean web-based editor
- * Copyright (c) 2005 - 2009 Jean-Francois Hovinne, http://www.wymeditor.org/
- * Dual licensed under the MIT (MIT-license.txt)
- * and GPL (GPL-license.txt) licenses.
- *
- * For further information visit:
- *        http://www.wymeditor.org/
- *
- * File Name:
- *        advanced.html
- *        Editor integration example.
- *        See the documentation for more info.
- *
- * File Authors:
- *        Jean-Francois Hovinne (jf.hovinne a-t wymeditor dotorg)
--->
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>WYMeditor</title>
+<link rel="stylesheet" type="text/css" href="../wymeditor/skins/default/skin.css" />
 
 <script type="text/javascript" src="load-src.dev.js"></script>
-
 <script type="text/javascript">
     loadWymSrc('../', [
         '../wymeditor/plugins/hovertools/jquery.wymeditor.hovertools.js'
@@ -30,7 +13,6 @@
 </script>
 <script type="text/javascript">
     jQuery(document).ready(function() {
-
         jQuery('.wymeditor').wymeditor({
 
           //options
@@ -44,32 +26,6 @@
              'expr': 'p[@class!="hidden-note"]'},
             {'name': 'border', 'title': 'IMG: Border', 'expr': 'img'},
             {'name': 'special', 'title': 'LIST: Special', 'expr': 'ul, ol'}
-          ],
-
-          //editor css values for visual feedback
-          editorStyles: [
-            {'name': '.hidden-note',
-             'css': 'color: #999; border: 2px solid #ccc;'},
-            {'name': '.border', 'css': 'border: 4px solid #ccc;'},
-            {'name': '.date',
-             'css': 'background-color: #ff9; border: 2px solid #ee9;'},
-            {'name': '.important',
-             'css': 'color: red; font-weight: bold; border: 2px solid red;'},
-            {'name': '.special',
-             'css': 'background-color: #fc9; border: 2px solid red;'}
-          ],
-
-          //dialogs css values
-          dialogStyles: [
-            {'name': '.hidden-note',
-             'css': 'display: none;'},
-            {'name': '.border', 'css': 'border: 1px solid #ccc;'},
-            {'name': '.date',
-             'css': 'color: #ccf;'},
-            {'name': '.important',
-             'css': 'color: red; font-weight: bold;'},
-            {'name': '.special',
-             'css': 'color: green;'}
           ],
 
           //function called when WYMeditor instance is ready

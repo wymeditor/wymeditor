@@ -58,10 +58,6 @@ WYMeditor.editor.prototype.init = function () {
     SaxListener = new WYMeditor.XhtmlSaxListener();
     this.parser = new WYMeditor.XhtmlParser(SaxListener);
 
-    if (this._options.styles || this._options.stylesheet) {
-        this.configureEditorUsingRawCss();
-    }
-
     this.helper = new WYMeditor.XmlHelper();
 
     // Extend the editor object with the browser-specific version.
@@ -210,7 +206,7 @@ WYMeditor.editor.prototype.init = function () {
         wym._iframe_initialized = wym.initIframe(this);
     });
 
-    wym.loadSkin();
+    wym.initSkin();
 };
 
 /**
@@ -765,15 +761,13 @@ WYMeditor.editor.prototype.replaceStrings = function (sVal) {
     // Check if the language file has already been loaded
     // if not, get it via a synchronous ajax call
     if (!WYMeditor.STRINGS[this._options.lang]) {
-        try {
-            eval(jQuery.ajax({url: this._options.langPath +
-                this._options.lang + '.js', async: false}).responseText);
-        } catch (e) {
-            WYMeditor.console.error(
-                "WYMeditor: error while parsing language file."
-            );
-            return sVal;
-        }
+        WYMeditor.console.error(
+            "WYMeditor: language '" + this._options.lang + "' not found."
+        );
+        WYMeditor.console.error(
+            "Unable to perform i10n."
+        );
+        return sVal;
     }
 
     // Replace all the strings in sVal and return it
@@ -1084,11 +1078,6 @@ WYMeditor.editor.prototype.dialog = function (dialogType, dialogFeatures, bodyHt
         );
         dialogHtml = h.replaceAll(
             dialogHtml,
-            WYMeditor.CSS_PATH,
-            this._options.skinPath + WYMeditor.SKINS_DEFAULT_CSS
-        );
-        dialogHtml = h.replaceAll(
-            dialogHtml,
             WYMeditor.WYM_PATH,
             this._options.wymPath
         );
@@ -1384,20 +1373,6 @@ WYMeditor.editor.prototype.setFocusToNode = function (node, toStart) {
     range.selectNodeContents(node);
     range.collapse(toStart);
     selection.setSingleRange(range);
-};
-
-WYMeditor.editor.prototype.addCssRules = function (doc, aCss) {
-    var styles = doc.styleSheets[0],
-        i,
-        oCss;
-    if (styles) {
-        for (i = 0; i < aCss.length; i += 1) {
-            oCss = aCss[i];
-            if (oCss.name && oCss.css) {
-                this.addCssRule(styles, oCss);
-            }
-        }
-    }
 };
 
 /**
@@ -2600,30 +2575,6 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
 WYMeditor.editor.prototype.afterInsertTable = function () {
 };
 
-WYMeditor.editor.prototype.configureEditorUsingRawCss = function () {
-    var CssParser = new WYMeditor.WymCssParser();
-    if (this._options.stylesheet) {
-        CssParser.parse(
-            jQuery.ajax({
-                url: this._options.stylesheet,
-                async: false
-            }).responseText
-        );
-    } else {
-        CssParser.parse(this._options.styles, false);
-    }
-
-    if (this._options.classesItems.length === 0) {
-        this._options.classesItems = CssParser.css_settings.classesItems;
-    }
-    if (this._options.editorStyles.length === 0) {
-        this._options.editorStyles = CssParser.css_settings.editorStyles;
-    }
-    if (this._options.dialogStyles.length === 0) {
-        this._options.dialogStyles = CssParser.css_settings.dialogStyles;
-    }
-};
-
 WYMeditor.editor.prototype.listen = function () {
     var wym = this;
 
@@ -2665,66 +2616,24 @@ WYMeditor.editor.prototype.mousedown = function (evt) {
 };
 
 /**
-    WYMeditor.loadCss
-    =================
-
-    Load a stylesheet in the document.
-
-    href - The CSS path.
-*/
-WYMeditor.loadCss = function (href) {
-    var link = document.createElement('link'),
-        head;
-    link.rel = 'stylesheet';
-    link.href = href;
-
-    head = jQuery('head').get(0);
-    head.appendChild(link);
-};
-
-/**
-    WYMeditor.editor.loadSkin
+    WYMeditor.editor.initSkin
     =========================
 
-    Load the skin CSS and initialization script (if needed).
+    Apply the appropriate CSS class to "activate" that skin's CSS and call the
+    skin's javascript `init` method.
 */
-WYMeditor.editor.prototype.loadSkin = function () {
-    // Does the user want to automatically load the CSS (default: yes)?
-    // We also test if it hasn't been already loaded by another instance
-    // see below for a better (second) test
-    if (this._options.loadSkin && !WYMeditor.SKINS[this._options.skin]) {
-        // Check if it hasn't been already loaded so we don't load it more
-        // than once (we check the existing <link> elements)
-        var found = false,
-            rExp = new RegExp(this._options.skin +
-                '\/' + WYMeditor.SKINS_DEFAULT_CSS + '$');
-
-        jQuery('link').each(function () {
-            if (this.href.match(rExp)) {
-                found = true;
-            }
-        });
-
-        // Load it, using the skin path
-        if (!found) {
-            WYMeditor.loadCss(
-                this._options.skinPath + WYMeditor.SKINS_DEFAULT_CSS
-            );
-        }
-    }
-
+WYMeditor.editor.prototype.initSkin = function () {
     // Put the classname (ex. wym_skin_default) on wym_box
     jQuery(this._box).addClass("wym_skin_" + this._options.skin);
 
-    // Does the user want to use some JS to initialize the skin (default: yes)?
-    // Also check if it hasn't already been loaded by another instance
-    if (this._options.initSkin && !WYMeditor.SKINS[this._options.skin]) {
-        eval(jQuery.ajax({url: this._options.skinPath +
-            WYMeditor.SKINS_DEFAULT_JS, async: false}).responseText);
-    }
-
     // Init the skin, if needed
-    if (WYMeditor.SKINS[this._options.skin] && WYMeditor.SKINS[this._options.skin].init) {
-        WYMeditor.SKINS[this._options.skin].init(this);
+    if (typeof WYMeditor.SKINS[this._options.skin] !== "undefined") {
+        if (typeof WYMeditor.SKINS[this._options.skin].init === "function") {
+            WYMeditor.SKINS[this._options.skin].init(this);
+        }
+    } else {
+        WYMeditor.console.warn(
+            "Chosen skin _" + this.options.skin + "_ not found."
+        );
     }
 };

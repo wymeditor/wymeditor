@@ -1,3 +1,7 @@
+/* exported loadWymSrc */
+/*jshint evil: true */
+"use strict";
+
 function versionToInt(major, minor, build) {
     major = major * 100 * 100;
     minor = minor * 100;
@@ -42,15 +46,13 @@ function loadWymSrc(srcPath, extraRequirements, jqueryVersion) {
             srcPath + 'wymeditor/parser/xhtml-lexer.js',
             srcPath + 'wymeditor/parser/xhtml-parser.js',
             srcPath + 'wymeditor/parser/xhtml-sax-listener.js',
-            srcPath + 'wymeditor/parser/css-lexer.js',
-            srcPath + 'wymeditor/parser/css-parser.js'
+            srcPath + 'wymeditor/lang/en.js',
+            srcPath + 'wymeditor/skins/default/skin.js'
         ],
         jqueryMigrateRequirement = [],
         jqueryRequirement = [],
         requirements = [],
-        newJquery,
         i,
-        jqVersionObj,
         jqVersionInt,
         jqMigrateMinInt,
         jqueryMigrateMin = {major: 1, minor: 8, build: 0};
