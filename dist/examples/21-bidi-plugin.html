@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>WYMeditor</title>
+</head>
+
+<body>
+    <h1>WYMeditor integration example</h1>
+    <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+    <p>This is a demonstration of the bi-directionality plugin.</p>
+    <p>Use the three supplied directionality buttons in the toolbar to set element's `dir` attribute to either `ltr`, `rtl` or remove it, respectively.</p>
+    <form method="post" action="">
+        <textarea class="wymeditor">&lt;p&gt;Hello, World!&lt;/p&gt;</textarea>
+        <input type="submit" class="wymupdate" />
+    </form>
+
+    <script src="vendor/jquery/jquery.js"></script>
+    <script src="../wymeditor/jquery.wymeditor.js"></script>
+
+    <!-- Load the bidi plugin-->
+    <script type="text/javascript"
+    src="../wymeditor/plugins/bidi/jquery.wymeditor.bidi.js"></script>
+
+    <script type="text/javascript">
+        // Use the 'postInit' option to initialize the plugin
+        // once WYMeditor is ready.,
+        $(function() {
+            var options = {
+                postInit: function(wym) {
+                    // postInit is executed after WYMeditor initialization
+                    // 'wym' is the current WYMeditor instance
+
+                    // Let's activate the 'bidi' plugin
+                    // to provide support of bi-directional text editing.
+                    wym.bidi();
+                }
+            };
+            $('.wymeditor').wymeditor(options);
+        });
+    </script>
+</body>
+</html>
