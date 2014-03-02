@@ -14,9 +14,11 @@ appropriate unit tests, hack until you're done, make sure the tests still pass,
 and then send a pull request. If you have questions on how to do any of this,
 please stop by #wymeditor on freenode IRC and ask. We're happy to help!
 
-***************
-Example Process
-***************
+.. _development-contribution-example-process:
+
+****************************
+Example Contribution Process
+****************************
 
 #. Fork `wymeditor <https://github.com/wymeditor/wymeditor>`_ to your personal
    GitHub account.
@@ -29,13 +31,15 @@ Example Process
    my-cool-new-feature``).
 
 #. Make your changes, making sure to follow the
-   :doc:`/wymeditor_development/coding_standard`. If possible, also include a unit test in
-   src/test/unit/test.js.
-
-#. Add the changed files to your staging area (``git add <modified files>``)
-   and commit your changes with a meaningful message (``git commit -m "Describe
-   your changes"``). Make sure and follow the
    :doc:`/wymeditor_development/coding_standard`.
+   If possible,
+   also include a unit test in
+   ``src/test/unit/test.js``.
+
+#. Add the changed files to your staging area
+   (``$ git add <modified files>``)
+   and commit your changes with a meaningful message
+   (``$ git commit -m "Describe your changes"``).
 
 #. Repeat steps 4-5 until you're done.
 
@@ -75,12 +79,17 @@ If you want a custom,
 non-Vagrant environment,
 the basic requirements are:
 
-* A working `PhantomJS <http://phantomjs.org/>`_ installation.
+* A working NPM and nodejs installation
+* ``git`` and whatever tools you need to build from source.
+  eg. ``sudo apt-get install build-essential``
+* A working `PhantomJS <http://phantomjs.org/>`_ installation
+  or at least the libraries necessary to build it.
 * `grunt` and `bower` installed via ``NPM``.
 
 Then you're just a ``$ npm install`` away from being ready to go.
 
 .. note::
+
     For the example setup of an Ubuntu Precise machine,
     check out our
     `vagrant_provision.sh <https://github.com/wymeditor/wymeditor/blob/master/vagrant_provision.sh>`_
@@ -131,3 +140,51 @@ to make managing things easier.
 .. code-block:: shell-session
 
     $ vagrant up
+
+Vagrant Troubleshooting
+-----------------------
+
+Encrypted Home Directory: Problems with the NFS mount
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you use an FUSE-based encrypted home directory,
+as is the default for Ubuntu,
+you might see an error like:
+
+::
+
+    mount.nfs: access denied by server while mounting 10.10.10.1:/home/you/your-wym-repo
+
+Unfortunately,
+NFS can't share encrypted directories,
+which is how Virtualbox and Vagrant
+keep your files synchronized.
+To work around this
+we recommend putting your git clone
+in a directory like ``/opt``.
+
+.. code-block:: shell-session
+
+    $ mkdir -p /opt/wym
+    $ cd /opt/wym
+    $ git clone https://github.com/wymeditor/wymeditor.git
+    $ cd wymeditor
+    $ vagrant up
+
+Enabling Automatic Livereload for Development
+=============================================
+
+The ``grant``, ``server``, and ``server:dist`` tasks
+both support "Live Reload" functionality.
+That means that if you have a proper browser extension installed,
+changing a file will automatically trigger a reload event
+in your browser.
+
+If this sounds nifty,
+simply `install the proper extension <http://feedback.livereload.com/knowledgebase/articles/86242-how-do-i-install-and-use-the-browser-extensions->`_.
+
+.. note::
+
+    If you're using the Vagrant development route,
+    the performance hit from using the NFS share
+    means that live reload won't be instantaneous.

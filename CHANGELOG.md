@@ -7,6 +7,27 @@ WYMeditor.
 
 *release-date* TBD
 
+### Bring your own CSS: Backwards-Incompatible Changes
+
+All of these changes are documented in detail in the
+[Upgrading to Version 1 docs](http://wymeditor.readthedocs.org/en/latest/customizing_wymeditor/index.html#upgrading-to-version-1).
+
+* Skin CSS is no longer being included automatically. That means, that if
+  you're using the default skin, you'll need to add a line like the
+  following:
+  `<link rel="stylesheet" type="text/css"
+    href="wymeditor/skins/default/skin.css" />`
+* We're no longer automatically doing an AJAX HTTP request to load various
+  resources, including skin CSS/JS and language files. If you're using the
+  default WYMeditor bundle, all you'll notice is that WYMeditor loads more
+  quickly. If you're using a custom bundle, you'll need to be sure and include
+  the translations and skin that you need before editor initialization.
+* The default iframe has been modified with several usability improvements.
+  To continue to support users who need/prefer the previous iframe, that
+  option is now available as the `legacy` iframe.
+* Configuring editor styles via WYMeditor options is no longer supported.
+  The best language for using CSS is... CSS.
+
 ### Enhancements
 
 * The unit test suite has been fixed to now fully pass using jQuery 1.4.4, and
@@ -45,6 +66,10 @@ WYMeditor.
   It will also allow us
   to add [component](https://github.com/component/component) support.
   Hooray better Javascript component packaging!
+* To take advantage of Livereload support in development,
+  you must now install a [browser extension](http://feedback.livereload.com/knowledgebase/articles/86242-how-do-i-install-and-use-the-browser-extensions-).
+  Automatic livereload injection was causing problems
+  in older Internet Explorer.
 
 ### Skins
 
@@ -54,8 +79,6 @@ Introducing the Seamless skin! This skin uses a resizing iframe
 and floating toolbar to make the WYMeditor UI less obtrusive.
 Your users will no longer see the second vertical scrollbar,
 removing one more thing separating them from their content.
-
-Note: The seamless skin currently requires jQuery 1.8 or higher.
 
 ### Build Process Improvements
 

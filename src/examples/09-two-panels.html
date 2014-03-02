@@ -5,6 +5,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>WYMeditor</title>
+    <!-- build:css ../wymeditor/skins/twopanels/skin.css -->
+    <link rel="stylesheet" type="text/css" href="../wymeditor/skins/twopanels/skin.css" />
+    <!-- endbuild -->
 </head>
 <body>
     <h1>WYMeditor integration example - two panels</h1>
@@ -19,7 +22,10 @@
     <!-- build:js ../wymeditor/jquery.wymeditor.js -->
     <script type="text/javascript" src="../test/load-src.dev.js"></script>
     <script type="text/javascript">
-        loadWymSrc('../');
+        loadWymSrc(
+                '../',
+                ['../wymeditor/skins/twopanels/skin.js']
+        );
     </script>
     <!-- endbuild -->
 
@@ -27,7 +33,6 @@
         jQuery(function() {
             jQuery('.wymeditor').wymeditor({
                 html: '<p>Hello, World!<\/p>',
-                stylesheet: 'styles.css',
                 skin: 'twopanels'
             });
         });

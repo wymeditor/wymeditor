@@ -1,12 +1,12 @@
 /* jshint strict: false, maxlen: 90, evil: true */
 /* global -$, WYMeditor: true, console */
 
-/*@version 1.0.0-b6 */
+/*@version 1.0.0-b6dev */
 /**
     WYMeditor
     =========
 
-    version 1.0.0-b6
+    version 1.0.0-b6dev
 
     WYMeditor : what you see is What You Mean web-based editor
 
@@ -84,11 +84,7 @@ jQuery.extend(WYMeditor, {
     INDEX               - A string replaced by the instance index.
     WYM_INDEX           - A string used to get/set the instance index.
     BASE_PATH           - A string replaced by WYMeditor's base path.
-    SKIN_PATH           - A string replaced by WYMeditor's skin path.
     WYM_PATH            - A string replaced by WYMeditor's main JS file path.
-    SKINS_DEFAULT_PATH  - The skins default base path.
-    SKINS_DEFAULT_CSS   - The skins default CSS file.
-    LANG_DEFAULT_PATH   - The language files default path.
     IFRAME_BASE_PATH    - String replaced by the designmode iframe's base path.
     IFRAME_DEFAULT      - The iframe's default base path.
     JQUERY_PATH         - A string replaced by the computed jQuery path.
@@ -146,7 +142,7 @@ jQuery.extend(WYMeditor, {
 
 */
 
-    VERSION             : "1.0.0-b6",
+    VERSION             : "1.0.0-b6dev",
     INSTANCES           : [],
     STRINGS             : [],
     SKINS               : [],
@@ -154,12 +150,7 @@ jQuery.extend(WYMeditor, {
     INDEX               : "{Wym_Index}",
     WYM_INDEX           : "wym_index",
     BASE_PATH           : "{Wym_Base_Path}",
-    CSS_PATH            : "{Wym_Css_Path}",
     WYM_PATH            : "{Wym_Wym_Path}",
-    SKINS_DEFAULT_PATH  : "skins/",
-    SKINS_DEFAULT_CSS   : "skin.css",
-    SKINS_DEFAULT_JS    : "skin.js",
-    LANG_DEFAULT_PATH   : "lang/",
     IFRAME_BASE_PATH    : "{Wym_Iframe_Base_Path}",
     IFRAME_DEFAULT      : "iframe/default/",
     JQUERY_PATH         : "{Wym_Jquery_Path}",
@@ -386,17 +377,6 @@ jQuery.extend(WYMeditor, {
         // Path to jQuery (for loading in pop-up dialogs)
         this._options.jQueryPath = this._options.jQueryPath ||
             WYMeditor.computeJqueryPath();
-        // Path to skin files
-        this._options.skinPath = this._options.skinPath ||
-            [""
-                , this._options.basePath
-                , WYMeditor.SKINS_DEFAULT_PATH
-                , this._options.skin
-                , "/"
-            ].join("");
-        // Path to the language files
-        this._options.langPath = this._options.langPath ||
-            this._options.basePath + WYMeditor.LANG_DEFAULT_PATH;
         // The designmode iframe's base path
         this._options.iframeBasePath = this._options.iframeBasePath ||
             this._options.basePath + WYMeditor.IFRAME_DEFAULT;
@@ -427,15 +407,10 @@ jQuery.fn.wymeditor = function (options) {
 
         html:       "",
         basePath:   false,
-        skinPath:    false,
         wymPath:    false,
         iframeBasePath: false,
         jQueryPath: false,
-        styles: false,
-        stylesheet: false,
         skin:       "default",
-        initSkin:   true,
-        loadSkin:   true,
         lang:       "en",
         direction:  "ltr",
         customCommands: [],
@@ -472,13 +447,10 @@ jQuery.fn.wymeditor = function (options) {
 
         iframeHtml: String() +
             '<div class="wym_iframe wym_section">' +
-                '<iframe src="' + WYMeditor.IFRAME_BASE_PATH + 'wymiframe.html" ' +
-                    'onload="this.contentWindow.parent.WYMeditor.INSTANCES[' +
-                        WYMeditor.INDEX + '].initIframe(this)">' +
+                '<iframe src="' + WYMeditor.IFRAME_BASE_PATH + 'wymiframe.html">' +
                 '</iframe>' +
             "</div>",
 
-        editorStyles: [],
         toolsHtml: String() +
             '<div class="wym_tools wym_section">' +
                 '<h2>{Tools}</h2>' +
@@ -626,8 +598,6 @@ jQuery.fn.wymeditor = function (options) {
                     '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">' +
             '<html dir="' + WYMeditor.DIRECTION + '">' +
                 '<head>' +
-                    '<link rel="stylesheet" type="text/css" media="screen" ' +
-                        'href="' + WYMeditor.CSS_PATH + '" />' +
                     '<title>' + WYMeditor.DIALOG_TITLE + '</title>' +
                     '<script type="text/javascript" ' +
                         'src="' + WYMeditor.JQUERY_PATH + '"></script>' +
@@ -763,8 +733,6 @@ jQuery.fn.wymeditor = function (options) {
             '<body class="wym_dialog wym_dialog_preview" ' +
                 'onload="WYMeditor.INIT_DIALOG(' + WYMeditor.INDEX + ')"></body>',
 
-        dialogStyles: [],
-
         stringDelimiterLeft:  "{",
         stringDelimiterRight: "}",
 
@@ -890,14 +858,10 @@ WYMeditor.computeJqueryPath = function () {
 /********** DIALOGS **********/
 
 WYMeditor.INIT_DIALOG = function (index) {
-
     var wym = window.opener.WYMeditor.INSTANCES[index],
-        doc = window.document,
         selected = wym.selected(),
         dialogType = jQuery(wym._options.dialogTypeSelector).val(),
         sStamp = wym.uniqueStamp(),
-        styles,
-        aCss,
         tableOnClick;
 
     if (dialogType === WYMeditor.DIALOG_LINK) {
@@ -917,12 +881,6 @@ WYMeditor.INIT_DIALOG = function (index) {
     if (jQuery.isFunction(wym._options.preInitDialog)) {
         wym._options.preInitDialog(wym, window);
     }
-
-    // add css rules from options
-    styles = doc.styleSheets[0];
-    aCss = eval(wym._options.dialogStyles);
-
-    wym.addCssRules(doc, aCss);
 
     // auto populate fields if selected container (e.g. A)
     if (selected) {
@@ -1291,7 +1249,8 @@ WYMeditor.editor.prototype.init = function () {
         aContainers,
         sContainers,
         sContainer,
-        oContainer;
+        oContainer,
+        wym;
 
     if (jQuery.browser.msie) {
         WymClass = new WYMeditor.WymClassExplorer(this);
@@ -1318,10 +1277,6 @@ WYMeditor.editor.prototype.init = function () {
     SaxListener = new WYMeditor.XhtmlSaxListener();
     this.parser = new WYMeditor.XhtmlParser(SaxListener);
 
-    if (this._options.styles || this._options.stylesheet) {
-        this.configureEditorUsingRawCss();
-    }
-
     this.helper = new WYMeditor.XmlHelper();
 
     // Extend the editor object with the browser-specific version.
@@ -1336,57 +1291,59 @@ WYMeditor.editor.prototype.init = function () {
         this[prop] = WymClass[prop];
     }
 
+    wym = this;
+
     // Load wymbox
-    this._box = jQuery(this._element).hide().after(
-        this._options.boxHtml
+    wym._box = jQuery(wym._element).hide().after(
+        wym._options.boxHtml
     ).next().addClass(
-        'wym_box_' + this._index
+        'wym_box_' + wym._index
     );
 
     // Store the instance index and replaced element in wymbox
     // but keep it compatible with jQuery < 1.2.3, see #122
     if (jQuery.isFunction(jQuery.fn.data)) {
-        jQuery.data(this._box.get(0), WYMeditor.WYM_INDEX, this._index);
-        jQuery.data(this._element.get(0), WYMeditor.WYM_INDEX, this._index);
+        jQuery.data(wym._box.get(0), WYMeditor.WYM_INDEX, wym._index);
+        jQuery.data(wym._element.get(0), WYMeditor.WYM_INDEX, wym._index);
     }
 
     h = WYMeditor.Helper;
 
     // Construct the iframe
-    iframeHtml = this._options.iframeHtml;
-    iframeHtml = h.replaceAll(iframeHtml, WYMeditor.INDEX, this._index);
+    iframeHtml = wym._options.iframeHtml;
+    iframeHtml = h.replaceAll(iframeHtml, WYMeditor.INDEX, wym._index);
     iframeHtml = h.replaceAll(
         iframeHtml,
         WYMeditor.IFRAME_BASE_PATH,
-        this._options.iframeBasePath
+        wym._options.iframeBasePath
     );
 
     // Construct wymbox
-    boxHtml = jQuery(this._box).html();
+    boxHtml = jQuery(wym._box).html();
 
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.LOGO, this._options.logoHtml);
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.TOOLS, this._options.toolsHtml);
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.CONTAINERS, this._options.containersHtml);
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.CLASSES, this._options.classesHtml);
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.HTML, this._options.htmlHtml);
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.LOGO, wym._options.logoHtml);
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.TOOLS, wym._options.toolsHtml);
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.CONTAINERS, wym._options.containersHtml);
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.CLASSES, wym._options.classesHtml);
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.HTML, wym._options.htmlHtml);
     boxHtml = h.replaceAll(boxHtml, WYMeditor.IFRAME, iframeHtml);
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.STATUS, this._options.statusHtml);
+    boxHtml = h.replaceAll(boxHtml, WYMeditor.STATUS, wym._options.statusHtml);
 
     // Construct the tools list
-    aTools = eval(this._options.toolsItems);
+    aTools = eval(wym._options.toolsItems);
     sTools = "";
 
     for (i = 0; i < aTools.length; i += 1) {
         oTool = aTools[i];
         sTool = '';
         if (oTool.name && oTool.title) {
-            sTool = this._options.toolsItemHtml;
+            sTool = wym._options.toolsItemHtml;
         }
         sTool = h.replaceAll(sTool, WYMeditor.TOOL_NAME, oTool.name);
         sTool = h.replaceAll(
             sTool,
             WYMeditor.TOOL_TITLE,
-            this._options.stringDelimiterLeft + oTool.title + this._options.stringDelimiterRight
+            wym._options.stringDelimiterLeft + oTool.title + wym._options.stringDelimiterRight
         );
         sTool = h.replaceAll(sTool, WYMeditor.TOOL_CLASS, oTool.css);
         sTools += sTool;
@@ -1395,14 +1352,14 @@ WYMeditor.editor.prototype.init = function () {
     boxHtml = h.replaceAll(boxHtml, WYMeditor.TOOLS_ITEMS, sTools);
 
     // Construct the classes list
-    aClasses = eval(this._options.classesItems);
+    aClasses = eval(wym._options.classesItems);
     sClasses = "";
 
     for (i = 0; i < aClasses.length; i += 1) {
         oClass = aClasses[i];
         sClass = '';
         if (oClass.name && oClass.title) {
-            sClass = this._options.classesItemHtml;
+            sClass = wym._options.classesItemHtml;
         }
         sClass = h.replaceAll(sClass, WYMeditor.CLASS_NAME, oClass.name);
         sClass = h.replaceAll(sClass, WYMeditor.CLASS_TITLE, oClass.title);
@@ -1412,14 +1369,14 @@ WYMeditor.editor.prototype.init = function () {
     boxHtml = h.replaceAll(boxHtml, WYMeditor.CLASSES_ITEMS, sClasses);
 
     // Construct the containers list
-    aContainers = eval(this._options.containersItems);
+    aContainers = eval(wym._options.containersItems);
     sContainers = "";
 
     for (i = 0; i < aContainers.length; i += 1) {
         oContainer = aContainers[i];
         sContainer = '';
         if (oContainer.name && oContainer.title) {
-            sContainer = this._options.containersItemHtml;
+            sContainer = wym._options.containersItemHtml;
         }
         sContainer = h.replaceAll(
             sContainer,
@@ -1427,9 +1384,9 @@ WYMeditor.editor.prototype.init = function () {
             oContainer.name
         );
         sContainer = h.replaceAll(sContainer, WYMeditor.CONTAINER_TITLE,
-            this._options.stringDelimiterLeft +
+            wym._options.stringDelimiterLeft +
             oContainer.title +
-            this._options.stringDelimiterRight);
+            wym._options.stringDelimiterRight);
         sContainer = h.replaceAll(
             sContainer,
             WYMeditor.CONTAINER_CLASS,
@@ -1441,20 +1398,34 @@ WYMeditor.editor.prototype.init = function () {
     boxHtml = h.replaceAll(boxHtml, WYMeditor.CONTAINERS_ITEMS, sContainers);
 
     // I10n
-    boxHtml = this.replaceStrings(boxHtml);
+    boxHtml = wym.replaceStrings(boxHtml);
 
     // Load the html in wymbox
-    jQuery(this._box).html(boxHtml);
+    jQuery(wym._box).html(boxHtml);
 
     // Hide the html value
-    jQuery(this._box).find(this._options.htmlSelector).hide();
+    jQuery(wym._box).find(wym._options.htmlSelector).hide();
 
-    this.documentStructureManager = new WYMeditor.DocumentStructureManager(
-        this,
-        this._options.structureRules.defaultRootContainer
+    wym.documentStructureManager = new WYMeditor.DocumentStructureManager(
+        wym,
+        wym._options.structureRules.defaultRootContainer
     );
 
-    this.loadSkin();
+    // Some browsers like to trigger an iframe's load event multiple times
+    // depending on all sorts of small, annoying details. Instead of attempting
+    // to work-around old ones and predict new ones, let's just ensure the
+    // initialization only happens once. All methods of detecting load are
+    // unreliable.
+    wym._iframe_initialized = false;
+
+    jQuery(wym._box).find('iframe').load(function () {
+        if (wym._iframe_initialized === true) {
+            return;
+        }
+        wym._iframe_initialized = wym.initIframe(this);
+    });
+
+    wym.initSkin();
 };
 
 /**
@@ -2009,15 +1980,13 @@ WYMeditor.editor.prototype.replaceStrings = function (sVal) {
     // Check if the language file has already been loaded
     // if not, get it via a synchronous ajax call
     if (!WYMeditor.STRINGS[this._options.lang]) {
-        try {
-            eval(jQuery.ajax({url: this._options.langPath +
-                this._options.lang + '.js', async: false}).responseText);
-        } catch (e) {
-            WYMeditor.console.error(
-                "WYMeditor: error while parsing language file."
-            );
-            return sVal;
-        }
+        WYMeditor.console.error(
+            "WYMeditor: language '" + this._options.lang + "' not found."
+        );
+        WYMeditor.console.error(
+            "Unable to perform i10n."
+        );
+        return sVal;
     }
 
     // Replace all the strings in sVal and return it
@@ -2328,11 +2297,6 @@ WYMeditor.editor.prototype.dialog = function (dialogType, dialogFeatures, bodyHt
         );
         dialogHtml = h.replaceAll(
             dialogHtml,
-            WYMeditor.CSS_PATH,
-            this._options.skinPath + WYMeditor.SKINS_DEFAULT_CSS
-        );
-        dialogHtml = h.replaceAll(
-            dialogHtml,
             WYMeditor.WYM_PATH,
             this._options.wymPath
         );
@@ -2628,20 +2592,6 @@ WYMeditor.editor.prototype.setFocusToNode = function (node, toStart) {
     range.selectNodeContents(node);
     range.collapse(toStart);
     selection.setSingleRange(range);
-};
-
-WYMeditor.editor.prototype.addCssRules = function (doc, aCss) {
-    var styles = doc.styleSheets[0],
-        i,
-        oCss;
-    if (styles) {
-        for (i = 0; i < aCss.length; i += 1) {
-            oCss = aCss[i];
-            if (oCss.name && oCss.css) {
-                this.addCssRule(styles, oCss);
-            }
-        }
-    }
 };
 
 /**
@@ -3844,39 +3794,36 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
 WYMeditor.editor.prototype.afterInsertTable = function () {
 };
 
-WYMeditor.editor.prototype.configureEditorUsingRawCss = function () {
-    var CssParser = new WYMeditor.WymCssParser();
-    if (this._options.stylesheet) {
-        CssParser.parse(
-            jQuery.ajax({
-                url: this._options.stylesheet,
-                async: false
-            }).responseText
-        );
-    } else {
-        CssParser.parse(this._options.styles, false);
-    }
-
-    if (this._options.classesItems.length === 0) {
-        this._options.classesItems = CssParser.css_settings.classesItems;
-    }
-    if (this._options.editorStyles.length === 0) {
-        this._options.editorStyles = CssParser.css_settings.editorStyles;
-    }
-    if (this._options.dialogStyles.length === 0) {
-        this._options.dialogStyles = CssParser.css_settings.dialogStyles;
-    }
-};
-
 WYMeditor.editor.prototype.listen = function () {
     var wym = this;
 
     // Don't use jQuery.find() on the iframe body
     // because of MSIE + jQuery + expando issue (#JQ1143)
 
-    jQuery(this._doc.body).bind("mousedown", function (e) {
+    jQuery(wym._doc.body).bind("mousedown", function (e) {
         wym.mousedown(e);
     });
+
+    jQuery(wym._doc).bind('paste', function () {
+        wym.handlePasteEvent();
+    });
+};
+
+WYMeditor.editor.prototype.handlePasteEvent = function () {
+    var wym = this;
+
+    // The paste event happens *before* the paste actually occurs.
+    // Use a timer to delay execution until after whatever is being pasted has
+    // actually been added.
+    window.setTimeout(
+        function () {
+            jQuery(wym._element).trigger(
+                WYMeditor.EVENTS.postBlockMaybeCreated,
+                wym
+            );
+        },
+        20
+    );
 };
 
 WYMeditor.editor.prototype.mousedown = function (evt) {
@@ -3888,67 +3835,25 @@ WYMeditor.editor.prototype.mousedown = function (evt) {
 };
 
 /**
-    WYMeditor.loadCss
-    =================
-
-    Load a stylesheet in the document.
-
-    href - The CSS path.
-*/
-WYMeditor.loadCss = function (href) {
-    var link = document.createElement('link'),
-        head;
-    link.rel = 'stylesheet';
-    link.href = href;
-
-    head = jQuery('head').get(0);
-    head.appendChild(link);
-};
-
-/**
-    WYMeditor.editor.loadSkin
+    WYMeditor.editor.initSkin
     =========================
 
-    Load the skin CSS and initialization script (if needed).
+    Apply the appropriate CSS class to "activate" that skin's CSS and call the
+    skin's javascript `init` method.
 */
-WYMeditor.editor.prototype.loadSkin = function () {
-    // Does the user want to automatically load the CSS (default: yes)?
-    // We also test if it hasn't been already loaded by another instance
-    // see below for a better (second) test
-    if (this._options.loadSkin && !WYMeditor.SKINS[this._options.skin]) {
-        // Check if it hasn't been already loaded so we don't load it more
-        // than once (we check the existing <link> elements)
-        var found = false,
-            rExp = new RegExp(this._options.skin +
-                '\/' + WYMeditor.SKINS_DEFAULT_CSS + '$');
-
-        jQuery('link').each(function () {
-            if (this.href.match(rExp)) {
-                found = true;
-            }
-        });
-
-        // Load it, using the skin path
-        if (!found) {
-            WYMeditor.loadCss(
-                this._options.skinPath + WYMeditor.SKINS_DEFAULT_CSS
-            );
-        }
-    }
-
+WYMeditor.editor.prototype.initSkin = function () {
     // Put the classname (ex. wym_skin_default) on wym_box
     jQuery(this._box).addClass("wym_skin_" + this._options.skin);
 
-    // Does the user want to use some JS to initialize the skin (default: yes)?
-    // Also check if it hasn't already been loaded by another instance
-    if (this._options.initSkin && !WYMeditor.SKINS[this._options.skin]) {
-        eval(jQuery.ajax({url: this._options.skinPath +
-            WYMeditor.SKINS_DEFAULT_JS, async: false}).responseText);
-    }
-
     // Init the skin, if needed
-    if (WYMeditor.SKINS[this._options.skin] && WYMeditor.SKINS[this._options.skin].init) {
-        WYMeditor.SKINS[this._options.skin].init(this);
+    if (typeof WYMeditor.SKINS[this._options.skin] !== "undefined") {
+        if (typeof WYMeditor.SKINS[this._options.skin].init === "function") {
+            WYMeditor.SKINS[this._options.skin].init(this);
+        }
+    } else {
+        WYMeditor.console.warn(
+            "Chosen skin _" + this.options.skin + "_ not found."
+        );
     }
 };
 
@@ -4212,60 +4117,42 @@ WYMeditor.WymClassMozilla.NEEDS_CELL_FIX = parseInt(
     jQuery.browser.version < '2.0';
 
 WYMeditor.WymClassMozilla.prototype.initIframe = function (iframe) {
-    var wym = this,
-        styles,
-        aCss;
+    var wym = this;
 
     this._iframe = iframe;
     this._doc = iframe.contentDocument;
 
-    //add css rules from options
-    styles = this._doc.styleSheets[0];
-
-    aCss = eval(this._options.editorStyles);
-
-    this.addCssRules(this._doc, aCss);
-
     this._doc.title = this._wym._index;
 
-    //set the text direction
+    // Set the text direction
     jQuery('html', this._doc).attr('dir', this._options.direction);
 
-    //init html value
+    // Init html value
     this._html(this._wym._options.html);
 
-    //init designMode
     this.enableDesignMode();
 
-    //pre-bind functions
     if (jQuery.isFunction(this._options.preBind)) {
         this._options.preBind(this);
     }
 
-    //bind external events
+    // Bind external events
     this._wym.bindEvents();
 
-    //bind editor keydown events
     jQuery(this._doc).bind("keydown", this.keydown);
-
-    //bind editor keyup events
     jQuery(this._doc).bind("keyup", this.keyup);
-
-    //bind editor click events
     jQuery(this._doc).bind("click", this.click);
-
-    //bind editor focus events (used to reset designmode - Gecko bug)
+    // Bind editor focus events (used to reset designmode - Gecko bug)
     jQuery(this._doc).bind("focus", function () {
         // Fix scope
         wym.enableDesignMode.call(wym);
     });
 
-    //post-init functions
     if (jQuery.isFunction(this._options.postInit)) {
         this._options.postInit(this);
     }
 
-    //add event listeners to doc elements, e.g. images
+    // Add event listeners to doc elements, e.g. images
     this.listen();
 
     jQuery(wym._element).trigger(
@@ -4324,12 +4211,6 @@ WYMeditor.WymClassMozilla.prototype._exec = function (cmd, param) {
     }
 
     return true;
-};
-
-WYMeditor.WymClassMozilla.prototype.addCssRule = function (styles, oCss) {
-
-    styles.insertRule(oCss.name + " {" + oCss.css + "}",
-        styles.cssRules.length);
 };
 
 //keydown handler, mainly used for keyboard shortcuts
@@ -4493,29 +4374,26 @@ WYMeditor.WymClassExplorer = function (wym) {
 };
 
 WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
-    //This function is executed twice, though it is called once!
-    //But MSIE needs that, otherwise designMode won't work.
-    //Weird.
     this._iframe = iframe;
     this._doc = iframe.contentWindow.document;
 
-    //add css rules from options
-    var aCss = eval(this._options.editorStyles),
-        wym,
-        ieVersion = parseInt(jQuery.browser.version, 10);
-
-    this.addCssRules(this._doc, aCss);
-
+    if (this._doc.designMode !== "On") {
+        this._doc.designMode = "On";
+        // Initializing designMode triggers the load event again, thus
+        // triggering this method again. We can short-circuit this run and do
+        // all of the work in the next trigger
+        return false;
+    }
     this._doc.title = this._wym._index;
 
-    //set the text direction
+    // Set the text direction
     jQuery('html', this._doc).attr('dir', this._options.direction);
 
-    //init html value
+    // Init html value
     jQuery(this._doc.body).html(this._wym._options.html);
 
-    //handle events
-    wym = this;
+    // Handle events
+    var wym = this;
 
     this._doc.body.onfocus = function () {
         wym._doc.designMode = "on";
@@ -4525,13 +4403,6 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
         wym.saveCaret();
     };
     jQuery(this._doc).bind('keyup', wym.keyup);
-    // Workaround for an ie8 => ie7 compatibility mode bug triggered
-    // intermittently by certain combinations of CSS on the iframe
-    if (ieVersion >= 8 && ieVersion < 9) {
-        jQuery(this._doc).bind('keydown', function () {
-            wym.fixBluescreenOfDeath();
-        });
-    }
     this._doc.onkeyup = function () {
         wym.saveCaret();
     };
@@ -4548,45 +4419,29 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
         wym.paste(window.clipboardData.getData("Text"));
     };
 
-    //callback can't be executed twice, so we check
-    if (this._initialized) {
-
-        //pre-bind functions
-        if (jQuery.isFunction(this._options.preBind)) {
-            this._options.preBind(this);
-        }
-
-
-        //bind external events
-        this._wym.bindEvents();
-
-        //post-init functions
-        if (jQuery.isFunction(this._options.postInit)) {
-            this._options.postInit(this);
-        }
-
-        //add event listeners to doc elements, e.g. images
-        this.listen();
+    if (jQuery.isFunction(this._options.preBind)) {
+        this._options.preBind(this);
     }
 
-    this._initialized = true;
+    this._wym.bindEvents();
 
-    //init designMode
-    this._doc.designMode = "on";
-    try {
-        // (bermi's note) noticed when running unit tests on IE6
-        // Is this really needed, it trigger an unexisting property on IE6
-        this._doc = iframe.contentWindow.document;
-    } catch (e) {}
+    if (jQuery.isFunction(this._options.postInit)) {
+        this._options.postInit(this);
+    }
+
+    // Add event listeners to doc elements, e.g. images
+    this.listen();
 
     jQuery(wym._element).trigger(
         WYMeditor.EVENTS.postIframeInitialization,
         this._wym
     );
+
+    return true;
 };
 
-(function (editorLoadSkin) {
-    WYMeditor.WymClassExplorer.prototype.loadSkin = function () {
+(function (editorInitSkin) {
+    WYMeditor.WymClassExplorer.prototype.initSkin = function () {
         // Mark container items as unselectable (#203)
         // Fix for issue explained:
         // http://stackoverflow.com/questions/
@@ -4595,36 +4450,9 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
             this._options.containerSelector
         ).attr('unselectable', 'on');
 
-        editorLoadSkin.call(this);
+        editorInitSkin.call(this);
     };
-}(WYMeditor.editor.prototype.loadSkin));
-
-/**
-    fixBluescreenOfDeath
-    ====================
-
-    In ie8 when using ie7 compatibility mode, certain combinations of CSS on
-    the iframe will trigger a bug that causes the rendering engine to give all
-    block-level editable elements a negative left position that puts them off
-    of the screen. This results in the editor looking blank (just the blue
-    background) and requires the user to move the mouse or manipulate the DOM
-    to force a re-render, which fixes the problem.
-
-    This workaround detects the negative position and then manipulates the DOM
-    to cause a re-render, which puts the elements back in position.
-
-    A real fix would be greatly appreciated.
-*/
-WYMeditor.WymClassExplorer.prototype.fixBluescreenOfDeath = function () {
-    var position = jQuery(this._doc).find('p').eq(0).position();
-    if (position !== null &&
-        typeof position !== 'undefined' &&
-            position.left < 0) {
-        jQuery(this._box).append('<br id="wym-bluescreen-bug-fix" />');
-        jQuery(this._box).find('#wym-bluescreen-bug-fix').remove();
-    }
-};
-
+}(WYMeditor.editor.prototype.initSkin));
 
 WYMeditor.WymClassExplorer.prototype._exec = function (cmd, param) {
     if (param) {
@@ -4636,15 +4464,6 @@ WYMeditor.WymClassExplorer.prototype._exec = function (cmd, param) {
 
 WYMeditor.WymClassExplorer.prototype.saveCaret = function () {
     this._doc.caretPos = this._doc.selection.createRange();
-};
-
-WYMeditor.WymClassExplorer.prototype.addCssRule = function (styles, oCss) {
-    // IE doesn't handle combined selectors (#196)
-    var selectors = oCss.name.split(','),
-        i;
-    for (i = 0; i < selectors.length; i++) {
-        styles.addRule(selectors[i], oCss.css);
-    }
 };
 
 WYMeditor.WymClassExplorer.prototype.insert = function (html) {
@@ -4743,7 +4562,7 @@ WYMeditor.WymClassExplorer.prototype.keyup = function (evt) {
         wym.documentStructureManager.structureRules.defaultRootContainer;
     this._selectedImage = null;
 
-    // If the inputted key cannont create a block element and is not a command,
+    // If the pressed key can't create a block element and is not a command,
     // check to make sure the selection is properly wrapped in a container
     if (!wym.keyCanCreateBlockElement(evt.which) &&
             evt.which !== WYMeditor.KEY.CTRL &&
@@ -4821,43 +4640,30 @@ WYMeditor.WymClassOpera.prototype.initIframe = function (iframe) {
     this._iframe = iframe;
     this._doc = iframe.contentWindow.document;
 
-    //add css rules from options
-    var styles = this._doc.styleSheets[0];
-    var aCss = eval(this._options.editorStyles);
-
-    this.addCssRules(this._doc, aCss);
-
     this._doc.title = this._wym._index;
 
-    //set the text direction
+    // Set the text direction
     jQuery('html', this._doc).attr('dir', this._options.direction);
 
-    //init designMode
     this._doc.designMode = "on";
 
-    //init html value
+    // Init html value
     this._html(this._wym._options.html);
 
-    //pre-bind functions
     if (jQuery.isFunction(this._options.preBind)) {
         this._options.preBind(this);
     }
 
-    //bind external events
+    // Bind external events
     this._wym.bindEvents();
 
-    //bind editor keydown events
     jQuery(this._doc).bind("keydown", this.keydown);
-
-    //bind editor events
     jQuery(this._doc).bind("keyup", this.keyup);
-
-    //post-init functions
     if (jQuery.isFunction(this._options.postInit)) {
         this._options.postInit(this);
     }
 
-    //add event listeners to doc elements, e.g. images
+    // Add event listeners to doc elements, e.g. images
     this.listen();
 
     jQuery(wym._element).trigger(
@@ -4887,11 +4693,6 @@ WYMeditor.WymClassOpera.prototype.selected = function() {
     } else {
         return null;
     }
-};
-
-WYMeditor.WymClassOpera.prototype.addCssRule = function(styles, oCss) {
-    styles.insertRule(
-            oCss.name + " {" + oCss.css + "}", styles.cssRules.length);
 };
 
 WYMeditor.WymClassOpera.prototype.keydown = function(evt) {
@@ -4925,55 +4726,41 @@ WYMeditor.WymClassSafari = function (wym) {
 };
 
 WYMeditor.WymClassSafari.prototype.initIframe = function (iframe) {
-    var wym = this,
-        styles,
-        aCss;
+    var wym = this;
 
-    this._iframe = iframe;
-    this._doc = iframe.contentDocument;
+    wym._iframe = iframe;
+    wym._doc = iframe.contentDocument;
 
-    //add css rules from options
-    styles = this._doc.styleSheets[0];
-    aCss = eval(this._options.editorStyles);
+    wym._doc.title = wym._wym._index;
 
-    this.addCssRules(this._doc, aCss);
+    // Set the text direction
+    jQuery('html', wym._doc).attr('dir', wym._options.direction);
 
-    this._doc.title = this._wym._index;
+    // Init designMode
+    wym._doc.designMode = "on";
 
-    //set the text direction
-    jQuery('html', this._doc).attr('dir', this._options.direction);
+    // Init html value
+    wym._html(wym._wym._options.html);
 
-    //init designMode
-    this._doc.designMode = "on";
-
-    //init html value
-    this._html(this._wym._options.html);
-
-    //pre-bind functions
-    if (jQuery.isFunction(this._options.preBind)) {
-        this._options.preBind(this);
+    if (jQuery.isFunction(wym._options.preBind)) {
+        wym._options.preBind(wym);
     }
 
-    //bind external events
-    this._wym.bindEvents();
+    // Bind external events
+    wym._wym.bindEvents();
 
-    //bind editor keydown events
-    jQuery(this._doc).bind("keydown", this.keydown);
-
-    //bind editor keyup events
-    jQuery(this._doc).bind("keyup", this.keyup);
-
-    //post-init functions
-    if (jQuery.isFunction(this._options.postInit)) {
-        this._options.postInit(this);
+    jQuery(wym._doc).bind("keydown", wym.keydown);
+    jQuery(wym._doc).bind("keyup", wym.keyup);
+    if (jQuery.isFunction(wym._options.postInit)) {
+        wym._options.postInit(wym);
     }
 
-    //add event listeners to doc elements, e.g. images
-    this.listen();
+    // Add event listeners to doc elements, e.g. images
+    wym.listen();
 
     jQuery(wym._element).trigger(
         WYMeditor.EVENTS.postIframeInitialization,
-        this._wym
+        wym._wym
     );
 };
 
@@ -5035,12 +4822,6 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
 
     return true;
 };
-
-WYMeditor.WymClassSafari.prototype.addCssRule = function (styles, oCss) {
-    styles.insertRule(oCss.name + " {" + oCss.css + "}",
-        styles.cssRules.length);
-};
-
 
 //keydown handler, mainly used for keyboard shortcuts
 WYMeditor.WymClassSafari.prototype.keydown = function (e) {
@@ -5141,161 +4922,6 @@ WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
         wym.fixBodyHtml();
     }
 };
-
-
-WYMeditor.WymCssLexer = function(parser, only_wym_blocks)
-{
-    only_wym_blocks = (typeof only_wym_blocks == 'undefined' ? true : only_wym_blocks);
-
-    jQuery.extend(this, new WYMeditor.Lexer(parser, (only_wym_blocks?'Ignore':'WymCss')));
-
-    this.mapHandler('WymCss', 'Ignore');
-
-    if(only_wym_blocks === true){
-        this.addEntryPattern("/\\\x2a[<\\s]*WYMeditor[>\\s]*\\\x2a/", 'Ignore', 'WymCss');
-        this.addExitPattern("/\\\x2a[<\/\\s]*WYMeditor[>\\s]*\\\x2a/", 'WymCss');
-    }
-
-    this.addSpecialPattern("[\\sa-z1-6]*\\\x2e[a-z-_0-9]+", 'WymCss', 'WymCssStyleDeclaration');
-
-    this.addEntryPattern("/\\\x2a", 'WymCss', 'WymCssComment');
-    this.addExitPattern("\\\x2a/", 'WymCssComment');
-
-    this.addEntryPattern("\x7b", 'WymCss', 'WymCssStyle');
-    this.addExitPattern("\x7d", 'WymCssStyle');
-
-    this.addEntryPattern("/\\\x2a", 'WymCssStyle', 'WymCssFeedbackStyle');
-    this.addExitPattern("\\\x2a/", 'WymCssFeedbackStyle');
-
-    return this;
-};
-
-
-WYMeditor.WymCssParser = function()
-{
-    this._in_style = false;
-    this._has_title = false;
-    this.only_wym_blocks = true;
-    this.css_settings = {'classesItems':[], 'editorStyles':[], 'dialogStyles':[]};
-    return this;
-};
-
-WYMeditor.WymCssParser.prototype.parse = function(raw, only_wym_blocks)
-{
-    only_wym_blocks = (typeof only_wym_blocks == 'undefined' ? this.only_wym_blocks : only_wym_blocks);
-    this._Lexer = new WYMeditor.WymCssLexer(this, only_wym_blocks);
-    this._Lexer.parse(raw);
-};
-
-WYMeditor.WymCssParser.prototype.Ignore = function(match, state)
-{
-    return true;
-};
-
-WYMeditor.WymCssParser.prototype.WymCssComment = function(text, status)
-{
-    if(text.match(/end[a-z0-9\s]*wym[a-z0-9\s]*/mi)){
-        return false;
-    }
-    if(status == WYMeditor.LEXER_UNMATCHED){
-        if(!this._in_style){
-            this._has_title = true;
-            this._current_item = {'title':WYMeditor.Helper.trim(text)};
-        }else{
-            if(this._current_item[this._current_element]){
-                if(!this._current_item[this._current_element].expressions){
-                    this._current_item[this._current_element].expressions = [text];
-                }else{
-                    this._current_item[this._current_element].expressions.push(text);
-                }
-            }
-        }
-        this._in_style = true;
-    }
-    return true;
-};
-
-WYMeditor.WymCssParser.prototype.WymCssStyle = function(match, status)
-{
-    if(status == WYMeditor.LEXER_UNMATCHED){
-        match = WYMeditor.Helper.trim(match);
-        if(match !== ''){
-            this._current_item[this._current_element].style = match;
-        }
-    }else if (status == WYMeditor.LEXER_EXIT){
-        this._in_style = false;
-        this._has_title = false;
-        this.addStyleSetting(this._current_item);
-    }
-    return true;
-};
-
-WYMeditor.WymCssParser.prototype.WymCssFeedbackStyle = function(match, status)
-{
-    if(status == WYMeditor.LEXER_UNMATCHED){
-        this._current_item[this._current_element].feedback_style = match.replace(/^([\s\/\*]*)|([\s\/\*]*)$/gm,'');
-    }
-    return true;
-};
-
-WYMeditor.WymCssParser.prototype.WymCssStyleDeclaration = function(match)
-{
-    match = match.replace(/^([\s\.]*)|([\s\.*]*)$/gm, '');
-
-    var tag = '';
-    if(match.indexOf('.') > 0){
-        var parts = match.split('.');
-        this._current_element = parts[1];
-        tag = parts[0];
-    }else{
-        this._current_element = match;
-    }
-
-    if(!this._has_title){
-        this._current_item = {'title':(!tag?'':tag.toUpperCase()+': ')+this._current_element};
-        this._has_title = true;
-    }
-
-    if(!this._current_item[this._current_element]){
-        this._current_item[this._current_element] = {'name':this._current_element};
-    }
-    if(tag){
-        if(!this._current_item[this._current_element].tags){
-            this._current_item[this._current_element].tags = [tag];
-        }else{
-            this._current_item[this._current_element].tags.push(tag);
-        }
-    }
-    return true;
-};
-
-WYMeditor.WymCssParser.prototype.addStyleSetting = function(style_details)
-{
-    for (var name in style_details){
-        var details = style_details[name];
-        if(typeof details == 'object' && name != 'title'){
-
-    this.css_settings.classesItems.push({
-        'name': WYMeditor.Helper.trim(details.name),
-        'title': style_details.title,
-        'expr' : WYMeditor.Helper.trim((details.expressions||details.tags).join(', '))
-    });
-    if(details.feedback_style){
-        this.css_settings.editorStyles.push({
-            'name': '.'+ WYMeditor.Helper.trim(details.name),
-            'css': details.feedback_style
-        });
-    }
-    if(details.style){
-        this.css_settings.dialogStyles.push({
-            'name': '.'+ WYMeditor.Helper.trim(details.name),
-            'css': details.style
-        });
-    }
-}
-}
-};
-
 
 
 // GLOBALS
@@ -7654,6 +7280,1340 @@ WYMeditor.XmlHelper.prototype.parseAttributes = function(tag_attributes)
     }
     return result;
 };
+
+WYMeditor.STRINGS.bg = {
+    Strong:           'Получер',
+    Emphasis:         'Курсив',
+    Superscript:      'Горен индекс',
+    Subscript:        'Долен индекс',
+    Ordered_List:     'Подреден списък',
+    Unordered_List:   'Неподреден списък',
+    Indent:           'Блок навътре',
+    Outdent:          'Блок навън',
+    Undo:             'Стъпка назад',
+    Redo:             'Стъпка напред',
+    Link:             'Създай хипервръзка',
+    Unlink:           'Премахни хипервръзката',
+    Image:            'Изображение',
+    Table:            'Таблица',
+    HTML:             'HTML',
+    Paragraph:        'Абзац',
+    Heading_1:        'Заглавие 1',
+    Heading_2:        'Заглавие 2',
+    Heading_3:        'Заглавие 3',
+    Heading_4:        'Заглавие 4',
+    Heading_5:        'Заглавие 5',
+    Heading_6:        'Заглавие 6',
+    Preformatted:     'Преформатиран',
+    Blockquote:       'Цитат',
+    Table_Header:     'Заглавие на таблицата',
+    URL:              'URL',
+    Title:            'Заглавие',
+    Alternative_Text: 'Алтернативен текст',
+    Caption:          'Етикет',
+    Summary:          'Общо',
+    Number_Of_Rows:   'Брой редове',
+    Number_Of_Cols:   'Брой колони',
+    Submit:           'Изпрати',
+    Cancel:           'Отмени',
+    Choose:           'Затвори',
+    Preview:          'Предварителен преглед',
+    Paste_From_Word:  'Вмъкни от MS WORD',
+    Tools:            'Инструменти',
+    Containers:       'Контейнери',
+    Classes:          'Класове',
+    Status:           'Статус',
+    Source_Code:      'Източник, код'
+};
+
+
+WYMeditor.STRINGS.ca = {
+    Strong:           'Ressaltar',
+    Emphasis:         'Emfatitzar',
+    Superscript:      'Superindex',
+    Subscript:        'Subindex',
+    Ordered_List:     'Llistat ordenat',
+    Unordered_List:   'Llistat sense ordenar',
+    Indent:           'Indentat',
+    Outdent:          'Sense indentar',
+    Undo:             'Desfer',
+    Redo:             'Refer',
+    Link:             'Enllaçar',
+    Unlink:           'Eliminar enllaç',
+    Image:            'Imatge',
+    Table:            'Taula',
+    HTML:             'HTML',
+    Paragraph:        'Paràgraf',
+    Heading_1:        'Capçalera 1',
+    Heading_2:        'Capçalera 2',
+    Heading_3:        'Capçalera 3',
+    Heading_4:        'Capçalera 4',
+    Heading_5:        'Capçalera 5',
+    Heading_6:        'Capçalera 6',
+    Preformatted:     'Pre-formatejat',
+    Blockquote:       'Cita',
+    Table_Header:     'Capçalera de la taula',
+    URL:              'URL',
+    Title:            'Títol',
+    Alternative_Text: 'Text alternatiu',
+    Caption:          'Llegenda',
+    Summary:          'Summary',
+    Number_Of_Rows:   'Nombre de files',
+    Number_Of_Cols:   'Nombre de columnes',
+    Submit:           'Enviar',
+    Cancel:           'Cancel·lar',
+    Choose:           'Triar',
+    Preview:          'Vista prèvia',
+    Paste_From_Word:  'Pegar des de Word',
+    Tools:            'Eines',
+    Containers:       'Contenidors',
+    Classes:          'Classes',
+    Status:           'Estat',
+    Source_Code:      'Codi font'
+};
+
+
+WYMeditor.STRINGS.cs = {
+    Strong:           'Tučné',
+    Emphasis:         'Kurzíva',
+    Superscript:      'Horní index',
+    Subscript:        'Dolní index',
+    Ordered_List:     'Číslovaný seznam',
+    Unordered_List:   'Nečíslovaný seznam',
+    Indent:           'Zvětšit odsazení',
+    Outdent:          'Zmenšit odsazení',
+    Undo:             'Zpět',
+    Redo:             'Znovu',
+    Link:             'Vytvořit odkaz',
+    Unlink:           'Zrušit odkaz',
+    Image:            'Obrázek',
+    Table:            'Tabulka',
+    HTML:             'HTML',
+    Paragraph:        'Odstavec',
+    Heading_1:        'Nadpis 1. úrovně',
+    Heading_2:        'Nadpis 2. úrovně',
+    Heading_3:        'Nadpis 3. úrovně',
+    Heading_4:        'Nadpis 4. úrovně',
+    Heading_5:        'Nadpis 5. úrovně',
+    Heading_6:        'Nadpis 6. úrovně',
+    Preformatted:     'Předformátovaný text',
+    Blockquote:       'Citace',
+    Table_Header:     'Hlavičková buňka tabulky',
+    URL:              'Adresa',
+    Title:            'Text po najetí myší',
+    Alternative_Text: 'Text pro případ nezobrazení obrázku',
+    Caption:          'Titulek tabulky',
+    Summary:          'Shrnutí obsahu',
+    Number_Of_Rows:   'Počet řádek',
+    Number_Of_Cols:   'Počet sloupců',
+    Submit:           'Vytvořit',
+    Cancel:           'Zrušit',
+    Choose:           'Vybrat',
+    Preview:          'Náhled',
+    Paste_From_Word:  'Vložit z Wordu',
+    Tools:            'Nástroje',
+    Containers:       'Typy obsahu',
+    Classes:          'Třídy',
+    Status:           'Stav',
+    Source_Code:      'Zdrojový kód'
+};
+
+
+WYMeditor.STRINGS.cy = {
+    Strong:           'Bras',
+    Emphasis:         'Italig',
+    Superscript:      'Uwchsgript',
+    Subscript:        'Is-sgript',
+    Ordered_List:     'Rhestr mewn Trefn',
+    Unordered_List:   'Pwyntiau Bwled',
+    Indent:           'Mewnoli',
+    Outdent:          'Alloli',
+    Undo:             'Dadwneud',
+    Redo:             'Ailwneud',
+    Link:             'Cysylltu',
+    Unlink:           'Datgysylltu',
+    Image:            'Delwedd',
+    Table:            'Tabl',
+    HTML:             'HTML',
+    Paragraph:        'Paragraff',
+    Heading_1:        'Pennawd 1',
+    Heading_2:        'Pennawd 2',
+    Heading_3:        'Pennawd 3',
+    Heading_4:        'Pennawd 4',
+    Heading_5:        'Pennawd 5',
+    Heading_6:        'Pennawd 6',
+    Preformatted:     'Rhagfformat',
+    Blockquote:       'Bloc Dyfyniad',
+    Table_Header:     'Pennyn Tabl',
+    URL:              'URL',
+    Title:            'Teitl',
+    Alternative_Text: 'Testun Amgen',
+    Caption:          'Pennawd',
+    Summary:          'Crynodeb',
+    Number_Of_Rows:   'Nifer y rhesi',
+    Number_Of_Cols:   'Nifer y colofnau',
+    Submit:           'Anfon',
+    Cancel:           'Diddymu',
+    Choose:           'Dewis',
+    Preview:          'Rhagolwg',
+    Paste_From_Word:  'Gludo o Word',
+    Tools:            'Offer',
+    Containers:       'Cynhwysyddion',
+    Classes:          'Dosbarthiadau',
+    Status:           'Statws',
+    Source_Code:      'Cod ffynhonnell'
+};
+
+
+WYMeditor.STRINGS['da'] = {
+    Strong:           'Fed',
+    Emphasis:         'Skrå',
+    Superscript:      'Superscript',
+    Subscript:        'Subscript',
+    Ordered_List:     'Ordnet liste',
+    Unordered_List:   'Uordnet liste',
+    Indent:           'Indrykke',
+    Outdent:          'Udrykke',
+    Undo:             'Fortryd',
+    Redo:             'Fortryd',
+    Link:             'Link',
+    Unlink:           'Fjern link',
+    Image:            'Billede',
+    Table:            'Tabel',
+    HTML:             'HTML',
+    Paragraph:        'Paragraf',
+    Heading_1:        'Overskrift 1',
+    Heading_2:        'Overskrift 2',
+    Heading_3:        'Overskrift 3',
+    Heading_4:        'Overskrift 4',
+    Heading_5:        'Overskrift 5',
+    Heading_6:        'Overskrift 6',
+    Preformatted:     'Forudformateret',
+    Blockquote:       'Citat',
+    Table_Header:     'Tabel Overskrift',
+    URL:              'URL',
+    Title:            'Titel',
+    Alternative_Text: 'Alternativ tekst',
+    Caption:          'Billedtekst',
+    Summary:          'Resumé',
+    Number_Of_Rows:   'Antal rækker',
+    Number_Of_Cols:   'Antal kolonner',
+    Submit:           'Indsend',
+    Cancel:           'Afbryd',
+    Choose:           'Vælg',
+    Preview:          'Forhåndsvisning',
+    Paste_From_Word:  'Indsæt fra Word',
+    Tools:            'Værktøjer',
+    Containers:       'Containere',
+    Classes:          'Klasser',
+    Status:           'Status',
+    Source_Code:      'Kildekode'
+};
+
+
+WYMeditor.STRINGS.de = {
+    Strong:           'Fett',
+    Emphasis:         'Kursiv',
+    Superscript:      'Text hochstellen',
+    Subscript:        'Text tiefstellen',
+    Ordered_List:     'Geordnete Liste einfügen',
+    Unordered_List:   'Ungeordnete Liste einfügen',
+    Indent:           'Einzug erhöhen',
+    Outdent:          'Einzug vermindern',
+    Undo:             'Befehle rückgängig machen',
+    Redo:             'Befehle wiederherstellen',
+    Link:             'Hyperlink einfügen',
+    Unlink:           'Hyperlink entfernen',
+    Image:            'Bild einfügen',
+    Table:            'Tabelle einfügen',
+    HTML:             'HTML anzeigen/verstecken',
+    Paragraph:        'Absatz',
+    Heading_1:        'Überschrift 1',
+    Heading_2:        'Überschrift 2',
+    Heading_3:        'Überschrift 3',
+    Heading_4:        'Überschrift 4',
+    Heading_5:        'Überschrift 5',
+    Heading_6:        'Überschrift 6',
+    Preformatted:     'Vorformatiert',
+    Blockquote:       'Zitat',
+    Table_Header:     'Tabellenüberschrift',
+    URL:              'URL',
+    Title:            'Titel',
+    Alternative_Text: 'Alternativer Text',
+    Caption:          'Tabellenüberschrift',
+    Summary:          'Summary',
+    Number_Of_Rows:   'Anzahl Zeilen',
+    Number_Of_Cols:   'Anzahl Spalten',
+    Submit:           'Absenden',
+    Cancel:           'Abbrechen',
+    Choose:           'Auswählen',
+    Preview:          'Vorschau',
+    Paste_From_Word:  'Aus Word einfügen',
+    Tools:            'Werkzeuge',
+    Containers:       'Inhaltstyp',
+    Classes:          'Klassen',
+    Status:           'Status',
+    Source_Code:      'Quellcode'
+};
+
+
+WYMeditor.STRINGS.en = {
+    Strong:           'Strong',
+    Emphasis:         'Emphasis',
+    Superscript:      'Superscript',
+    Subscript:        'Subscript',
+    Ordered_List:     'Ordered List',
+    Unordered_List:   'Unordered List',
+    Indent:           'Indent',
+    Outdent:          'Outdent',
+    Undo:             'Undo',
+    Redo:             'Redo',
+    Link:             'Link',
+    Unlink:           'Unlink',
+    Image:            'Image',
+    Table:            'Table',
+    HTML:             'HTML',
+    Paragraph:        'Paragraph',
+    Heading_1:        'Heading 1',
+    Heading_2:        'Heading 2',
+    Heading_3:        'Heading 3',
+    Heading_4:        'Heading 4',
+    Heading_5:        'Heading 5',
+    Heading_6:        'Heading 6',
+    Preformatted:     'Preformatted',
+    Blockquote:       'Blockquote',
+    Table_Header:     'Table Header',
+    URL:              'URL',
+    Title:            'Title',
+    Relationship:     'Relationship',
+    Alternative_Text: 'Alternative text',
+    Caption:          'Caption',
+    Summary:          'Summary',
+    Number_Of_Rows:   'Number of rows',
+    Number_Of_Cols:   'Number of cols',
+    Submit:           'Submit',
+    Cancel:           'Cancel',
+    Choose:           'Choose',
+    Preview:          'Preview',
+    Paste_From_Word:  'Paste from Word',
+    Tools:            'Tools',
+    Containers:       'Formatting',
+    Classes:          'Style',
+    Status:           'Status',
+    Source_Code:      'Source code'
+};
+
+WYMeditor.STRINGS.es = {
+    Strong:           'Resaltar',
+    Emphasis:         'Enfatizar',
+    Superscript:      'Superindice',
+    Subscript:        'Subindice',
+    Ordered_List:     'Lista ordenada',
+    Unordered_List:   'Lista sin ordenar',
+    Indent:           'Indentado',
+    Outdent:          'Sin indentar',
+    Undo:             'Deshacer',
+    Redo:             'Rehacer',
+    Link:             'Enlazar',
+    Unlink:           'Eliminar enlace',
+    Image:            'Imagen',
+    Table:            'Tabla',
+    HTML:             'HTML',
+    Paragraph:        'Párrafo',
+    Heading_1:        'Cabecera 1',
+    Heading_2:        'Cabecera 2',
+    Heading_3:        'Cabecera 3',
+    Heading_4:        'Cabecera 4',
+    Heading_5:        'Cabecera 5',
+    Heading_6:        'Cabecera 6',
+    Preformatted:     'Preformateado',
+    Blockquote:       'Cita',
+    Table_Header:     'Cabecera de la tabla',
+    URL:              'URL',
+    Title:            'Título',
+    Alternative_Text: 'Texto alternativo',
+    Caption:          'Leyenda',
+    Summary:          'Summary',
+    Number_Of_Rows:   'Número de filas',
+    Number_Of_Cols:   'Número de columnas',
+    Submit:           'Enviar',
+    Cancel:           'Cancelar',
+    Choose:           'Seleccionar',
+    Preview:          'Vista previa',
+    Paste_From_Word:  'Pegar desde Word',
+    Tools:            'Herramientas',
+    Containers:       'Contenedores',
+    Classes:          'Clases',
+    Status:           'Estado',
+    Source_Code:      'Código fuente'
+};
+
+
+//Translation To Persian: Ghassem Tofighi (http://ght.ir)
+WYMeditor.STRINGS.fa = {
+    Strong:           'پررنگ',//Strong
+    Emphasis:         'ایتالیک',//Emphasis
+    Superscript:      'بالانويس‌ ',//Superscript
+    Subscript:        'زيرنويس‌',//Subscript
+    Ordered_List:     'لیست مرتب',//Ordered List
+    Unordered_List:   'لیست نامرتب',//Unordered List
+    Indent:           'افزودن دندانه',//Indent
+    Outdent:          'کاهش دندانه',//Outdent
+    Undo:             'واگردانی',//Undo
+    Redo:             'تکرار',//Redo
+    Link:             'ساختن پیوند',//Link
+    Unlink:           'برداشتن پیوند',//Unlink
+    Image:            'تصویر',//Image
+    Table:            'جدول',//Table
+    HTML:             'HTML',//HTML
+    Paragraph:        'پاراگراف',//Paragraph
+    Heading_1:        'سرتیتر ۱',//Heading 1
+    Heading_2:        'سرتیتر ۲',//Heading 2
+    Heading_3:        'سرتیتر ۳',//Heading 3
+    Heading_4:        'سرتیتر ۴',//Heading 4
+    Heading_5:        'سرتیتر ۵',//Heading 5
+    Heading_6:        'سرتیتر ۶',//Heading 6
+    Preformatted:     'قالب آماده',//Preformatted
+    Blockquote:       'نقل قول',//Blockquote
+    Table_Header:     'سرجدول',//Table Header
+    URL:              'آدرس اینترنتی',//URL
+    Title:            'عنوان',//Title
+    Alternative_Text: 'متن جایگزین',//Alternative text
+    Caption:          'عنوان',//Caption
+    Summary:          'Summary',
+    Number_Of_Rows:   'تعداد سطرها',//Number of rows
+    Number_Of_Cols:   'تعداد ستون‌ها',//Number of cols
+    Submit:           'فرستادن',//Submit
+    Cancel:           'لغو',//Cancel
+    Choose:           'انتخاب',//Choose
+    Preview:          'پیش‌نمایش',//Preview
+    Paste_From_Word:  'انتقال از ورد',//Paste from Word
+    Tools:            'ابزار',//Tools
+    Containers:       '‌قالب‌ها',//Containers
+    Classes:          'کلاس‌ها',//Classes
+    Status:           'وضعیت',//Status
+    Source_Code:      'کد مبدأ'//Source code
+};
+
+
+WYMeditor.STRINGS.fi = {
+    Strong:           'Lihavoitu',
+    Emphasis:         'Korostus',
+    Superscript:      'Yläindeksi',
+    Subscript:        'Alaindeksi',
+    Ordered_List:     'Numeroitu lista',
+    Unordered_List:   'Luettelomerkit',
+    Indent:           'Suurenna sisennystä',
+    Outdent:          'Pienennä sisennystä',
+    Undo:             'Kumoa',
+    Redo:             'Toista',
+    Link:             'Linkitä',
+    Unlink:           'Poista linkitys',
+    Image:            'Kuva',
+    Table:            'Taulukko',
+    HTML:             'HTML',
+    Paragraph:        'Kappale',
+    Heading_1:        'Otsikko 1',
+    Heading_2:        'Otsikko 2',
+    Heading_3:        'Otsikko 3',
+    Heading_4:        'Otsikko 4',
+    Heading_5:        'Otsikko 5',
+    Heading_6:        'Otsikko 6',
+    Preformatted:     'Esimuotoilu',
+    Blockquote:       'Sitaatti',
+    Table_Header:     'Taulukon otsikko',
+    URL:              'URL',
+    Title:            'Otsikko',
+    Alternative_Text: 'Vaihtoehtoinen teksti',
+    Caption:          'Kuvateksti',
+    Summary:          'Yhteenveto',
+    Number_Of_Rows:   'Rivien määrä',
+    Number_Of_Cols:   'Palstojen määrä',
+    Submit:           'Lähetä',
+    Cancel:           'Peruuta',
+    Choose:           'Valitse',
+    Preview:          'Esikatsele',
+    Paste_From_Word:  'Tuo Wordista',
+    Tools:            'Työkalut',
+    Containers:       'Muotoilut',
+    Classes:          'Luokat',
+    Status:           'Tila',
+    Source_Code:      'Lähdekoodi'
+};
+
+WYMeditor.STRINGS.fr = {
+    Strong:           'Mise en évidence',
+    Emphasis:         'Emphase',
+    Superscript:      'Exposant',
+    Subscript:        'Indice',
+    Ordered_List:     'Liste Ordonnée',
+    Unordered_List:   'Liste Non-Ordonnée',
+    Indent:           'Imbriqué',
+    Outdent:          'Non-imbriqué',
+    Undo:             'Annuler',
+    Redo:             'Rétablir',
+    Link:             'Lien',
+    Unlink:           'Supprimer le Lien',
+    Image:            'Image',
+    Table:            'Tableau',
+    HTML:             'HTML',
+    Paragraph:        'Paragraphe',
+    Heading_1:        'Titre 1',
+    Heading_2:        'Titre 2',
+    Heading_3:        'Titre 3',
+    Heading_4:        'Titre 4',
+    Heading_5:        'Titre 5',
+    Heading_6:        'Titre 6',
+    Preformatted:     'Pré-formatté',
+    Blockquote:       'Citation',
+    Table_Header:     'Cellule de titre',
+    URL:              'URL',
+    Title:            'Titre',
+    Alternative_Text: 'Texte alternatif',
+    Caption:          'Légende',
+    Summary:          'Résumé',
+    Number_Of_Rows:   'Nombre de lignes',
+    Number_Of_Cols:   'Nombre de colonnes',
+    Submit:           'Envoyer',
+    Cancel:           'Annuler',
+    Choose:           'Choisir',
+    Preview:          'Prévisualisation',
+    Paste_From_Word:  'Copier depuis Word',
+    Tools:            'Outils',
+    Containers:       'Type de texte',
+    Classes:          'Type de contenu',
+    Status:           'Infos',
+    Source_Code:      'Code source'
+};
+
+
+WYMeditor.STRINGS.gl = {
+    Strong:           'Moita énfase',
+    Emphasis:         'Énfase',
+    Superscript:      'Superíndice',
+    Subscript:        'Subíndice',
+    Ordered_List:     'Lista ordenada',
+    Unordered_List:   'Lista sen ordenar',
+    Indent:           'Aniñar',
+    Outdent:          'Desaniñar',
+    Undo:             'Desfacer',
+    Redo:             'Refacer',
+    Link:             'Ligazón',
+    Unlink:           'Desligar',
+    Image:            'Imaxe',
+    Table:            'Táboa',
+    HTML:             'HTML',
+    Paragraph:        'Parágrafo',
+    Heading_1:        'Título 1',
+    Heading_2:        'Título 2',
+    Heading_3:        'Título 3',
+    Heading_4:        'Título 4',
+    Heading_5:        'Título 5',
+    Heading_6:        'Título 6',
+    Preformatted:     'Preformatado',
+    Blockquote:       'Cita en parágrafo',
+    Table_Header:     'Cabeceira da táboa',
+    URL:              'URL',
+    Title:            'Título',
+    Alternative_Text: 'Texto alternativo',
+    Caption:          'Título',
+    Summary:          'Resumo',
+    Number_Of_Rows:   'Número de filas',
+    Number_Of_Cols:   'Número de columnas',
+    Submit:           'Enviar',
+    Cancel:           'Cancelar',
+    Choose:           'Escoller',
+    Preview:          'Previsualizar',
+    Paste_From_Word:  'Colar dende Word',
+    Tools:            'Ferramentas',
+    Containers:       'Contenedores',
+    Classes:          'Clases',
+    Status:           'Estado',
+    Source_Code:      'Código fonte'
+};
+
+
+WYMeditor.STRINGS.he = {
+    Strong:           'חזק',
+    Emphasis:         'מובלט',
+    Superscript:      'כתב עילי',
+    Subscript:        'כתב תחתי',
+    Ordered_List:     'רשימה ממוספרת',
+    Unordered_List:   'רשימה לא ממוספרת',
+    Indent:           'הזחה פנימה',
+    Outdent:          'הזחה החוצה',
+    Undo:             'בטל פעולה',
+    Redo:             'בצע מחדש פעולה',
+    Link:             'קישור',
+    Unlink:           'בטל קישור',
+    Image:            'תמונה',
+    Table:            'טבלה',
+    HTML:             'קוד HTML',
+    Paragraph:        'פסקה',
+    Heading_1:        'כותרת 1 ; תג &lt;h1&gt;',
+    Heading_2:        'כותרת 2 ; תג &lt;h2&gt;',
+    Heading_3:        'כותרת 3 ; תג &lt;h3&gt;',
+    Heading_4:        'כותרת 4 ; תג &lt;h4&gt;',
+    Heading_5:        'כותרת 5 ; תג &lt;h5&gt;',
+    Heading_6:        'כותרת 6 ; תג &lt;h6&gt;',
+    Preformatted:     'משמר רווחים',
+    Blockquote:       'ציטוט',
+    Table_Header:     'כותרת טבלה',
+    URL:              'קישור (URL)',
+    Title:            'כותרת',
+    Alternative_Text: 'טקסט חלופי',
+    Caption:          'כותרת',
+    Summary:          'סיכום',
+    Number_Of_Rows:   'מספר שורות',
+    Number_Of_Cols:   'מספר טורים',
+    Submit:           'שלח',
+    Cancel:           'בטל',
+    Choose:           'בחר',
+    Preview:          'תצוגה מקדימה',
+    Paste_From_Word:  'העתק מ-Word',
+    Tools:            'כלים',
+    Containers:       'מיכלים',
+    Classes:          'מחלקות',
+    Status:           'מצב',
+    Source_Code:      'קוד מקור'
+};
+
+
+WYMeditor.STRINGS.hr = {
+    Strong:           'Podebljano',
+    Emphasis:         'Naglašeno',
+    Superscript:      'Iznad',
+    Subscript:        'Ispod',
+    Ordered_List:     'Pobrojana lista',
+    Unordered_List:   'Nepobrojana lista',
+    Indent:           'Uvuci',
+    Outdent:          'Izvuci',
+    Undo:             'Poništi promjenu',
+    Redo:             'Ponovno promjeni',
+    Link:             'Hiperveza',
+    Unlink:           'Ukloni hipervezu',
+    Image:            'Slika',
+    Table:            'Tablica',
+    HTML:             'HTML',
+    Paragraph:        'Paragraf',
+    Heading_1:        'Naslov 1',
+    Heading_2:        'Naslov 2',
+    Heading_3:        'Naslov 3',
+    Heading_4:        'Naslov 4',
+    Heading_5:        'Naslov 5',
+    Heading_6:        'Naslov 6',
+    Preformatted:     'Unaprijed formatirano',
+    Blockquote:       'Citat',
+    Table_Header:     'Zaglavlje tablice',
+    URL:              'URL',
+    Title:            'Naslov',
+    Alternative_Text: 'Alternativni tekst',
+    Caption:          'Zaglavlje',
+    Summary:          'Sažetak',
+    Number_Of_Rows:   'Broj redova',
+    Number_Of_Cols:   'Broj kolona',
+    Submit:           'Snimi',
+    Cancel:           'Odustani',
+    Choose:           'Izaberi',
+    Preview:          'Pregled',
+    Paste_From_Word:  'Zalijepi iz Word-a',
+    Tools:            'Alati',
+    Containers:       'Kontejneri',
+    Classes:          'Klase',
+    Status:           'Status',
+    Source_Code:      'Izvorni kod'
+};
+
+
+WYMeditor.STRINGS.hu = {
+    Strong:           'Félkövér',
+    Emphasis:         'Kiemelt',
+    Superscript:      'Felső index',
+    Subscript:        'Alsó index',
+    Ordered_List:     'Rendezett lista',
+    Unordered_List:   'Rendezetlen lista',
+    Indent:           'Bekezdés',
+    Outdent:          'Bekezdés törlése',
+    Undo:             'Visszavon',
+    Redo:             'Visszaállít',
+    Link:             'Link',
+    Unlink:           'Link törlése',
+    Image:            'Kép',
+    Table:            'Tábla',
+    HTML:             'HTML',
+    Paragraph:        'Bekezdés',
+    Heading_1:        'Címsor 1',
+    Heading_2:        'Címsor 2',
+    Heading_3:        'Címsor 3',
+    Heading_4:        'Címsor 4',
+    Heading_5:        'Címsor 5',
+    Heading_6:        'Címsor 6',
+    Preformatted:     'Előformázott',
+    Blockquote:       'Idézet',
+    Table_Header:     'Tábla Fejléc',
+    URL:              'Webcím',
+    Title:            'Megnevezés',
+    Alternative_Text: 'Alternatív szöveg',
+    Caption:          'Fejléc',
+    Summary:          'Summary',
+    Number_Of_Rows:   'Sorok száma',
+    Number_Of_Cols:   'Oszlopok száma',
+    Submit:           'Elküld',
+    Cancel:           'Mégsem',
+    Choose:           'Választ',
+    Preview:          'Előnézet',
+    Paste_From_Word:  'Másolás Word-ból',
+    Tools:            'Eszközök',
+    Containers:       'Tartalmak',
+    Classes:          'Osztályok',
+    Status:           'Állapot',
+    Source_Code:      'Forráskód'
+};
+
+
+WYMeditor.STRINGS.it = {
+    Strong:           'Grassetto',
+    Emphasis:         'Corsetto',
+    Superscript:      'Apice',
+    Subscript:        'Pedice',
+    Ordered_List:     'Lista Ordinata',
+    Unordered_List:   'Lista Puntata',
+    Indent:           'Indenta',
+    Outdent:          'Caccia',
+    Undo:             'Indietro',
+    Redo:             'Avanti',
+    Link:             'Inserisci Link',
+    Unlink:           'Togli Link',
+    Image:            'Inserisci Immagine',
+    Table:            'Inserisci Tabella',
+    HTML:             'HTML',
+    Paragraph:        'Paragrafo',
+    Heading_1:        'Heading 1',
+    Heading_2:        'Heading 2',
+    Heading_3:        'Heading 3',
+    Heading_4:        'Heading 4',
+    Heading_5:        'Heading 5',
+    Heading_6:        'Heading 6',
+    Preformatted:     'Preformattato',
+    Blockquote:       'Blockquote',
+    Table_Header:     'Header Tabella',
+    URL:              'Indirizzo',
+    Title:            'Titolo',
+    Alternative_Text: 'Testo Alternativo',
+    Caption:          'Caption',
+    Summary:          'Summary',
+    Number_Of_Rows:   'Numero di Righe',
+    Number_Of_Cols:   'Numero di Colonne',
+    Submit:           'Invia',
+    Cancel:           'Cancella',
+    Choose:           'Scegli',
+    Preview:          'Anteprima',
+    Paste_From_Word:  'Incolla',
+    Tools:            'Tools',
+    Containers:       'Contenitori',
+    Classes:          'Classi',
+    Status:           'Stato',
+    Source_Code:      'Codice Sorgente'
+};
+
+
+WYMeditor.STRINGS.ja = {
+    Strong: '強調<strong>',
+    Emphasis: '強調<em>',
+    Superscript: '上付き',
+    Subscript: '下付き',
+    Ordered_List: '番号付きリスト',
+    Unordered_List: '番号無リスト',
+    Indent: 'インデントを増やす',
+    Outdent: 'インデントを減らす',
+    Undo: '元に戻す',
+    Redo: 'やり直す',
+    Link: 'リンク',
+    Unlink: 'リンク取消',
+    Image: '画像',
+    Table: 'テーブル',
+    HTML: 'HTML',
+    Paragraph: '段落',
+    Heading_1: '見出し 1',
+    Heading_2: '見出し 2',
+    Heading_3: '見出し 3',
+    Heading_4: '見出し 4',
+    Heading_5: '見出し 5',
+    Heading_6: '見出し 6',
+    Preformatted: '整形済みテキスト',
+    Blockquote: '引用文',
+    Table_Header: '表見出し',
+    URL: 'URL',
+    Title: 'タイトル',
+    Alternative_Text: '代替テキスト',
+    Caption: 'キャプション',
+    Summary: 'サマリー',
+    Number_Of_Rows: '行数',
+    Number_Of_Cols: '列数',
+    Submit: '送信',
+    Cancel: 'キャンセル',
+    Choose: '選択',
+    Preview: 'プレビュー',
+    Paste_From_Word: '貼り付け',
+    Tools: 'ツール',
+    Containers: 'コンテナ',
+    Classes: 'クラス',
+    Status: 'ステータス',
+    Source_Code: 'ソースコード'
+};
+
+WYMeditor.STRINGS.lt = {
+    Strong:           'Pusjuodis',
+    Emphasis:         'Kursyvas',
+    Superscript:      'Viršutinis indeksas',
+    Subscript:        'Apatinis indeksas',
+    Ordered_List:     'Numeruotas sąrašas',
+    Unordered_List:   'Suženklintas sąrašas',
+    Indent:           'Padidinti įtrauką',
+    Outdent:          'Sumažinti įtrauką',
+    Undo:             'Atšaukti',
+    Redo:             'Atstatyti',
+    Link:             'Nuoroda',
+    Unlink:           'Panaikinti nuorodą',
+    Image:            'Vaizdas',
+    Table:            'Lentelė',
+    HTML:             'HTML',
+    Paragraph:        'Paragrafas',
+    Heading_1:        'Antraštinis 1',
+    Heading_2:        'Antraštinis 2',
+    Heading_3:        'Antraštinis 3',
+    Heading_4:        'Antraštinis 4',
+    Heading_5:        'Antraštinis 5',
+    Heading_6:        'Antraštinis 6',
+    Preformatted:     'Formuotas',
+    Blockquote:       'Citata',
+    Table_Header:     'Lentelės antraštė',
+    URL:              'URL',
+    Title:            'Antraštinis tekstas',
+    Relationship:     'Sąryšis',
+    Alternative_Text: 'Alternatyvus tekstas',
+    Caption:          'Antraštė',
+    Summary:          'Santrauka',
+    Number_Of_Rows:   'Eilučių skaičius',
+    Number_Of_Cols:   'Stulpelių skaičius',
+    Submit:           'Išsaugoti',
+    Cancel:           'Nutraukti',
+    Choose:           'Rinktis',
+    Preview:          'Peržiūra',
+    Paste_From_Word:  'Įkelti iš MS Word',
+    Tools:            'Įrankiai',
+    Containers:       'Stiliai',
+    Classes:          'Klasės',
+    Status:           'Statusas',
+    Source_Code:      'Išeities tekstas'
+};
+WYMeditor.STRINGS.nb = {
+    Strong:           'Fet',
+    Emphasis:         'Uthevet',
+    Superscript:      'Opphøyet',
+    Subscript:        'Nedsenket',
+    Ordered_List:     'Nummerert liste',
+    Unordered_List:   'Punktliste',
+    Indent:           'Rykk inn',
+    Outdent:          'Rykk ut',
+    Undo:             'Angre',
+    Redo:             'Gjenta',
+    Link:             'Lenke',
+    Unlink:           'Ta bort lenken',
+    Image:            'Bilde',
+    Table:            'Tabell',
+    HTML:             'HTML',
+    Paragraph:        'Avsnitt',
+    Heading_1:        'Overskrift 1',
+    Heading_2:        'Overskrift 2',
+    Heading_3:        'Overskrift 3',
+    Heading_4:        'Overskrift 4',
+    Heading_5:        'Overskrift 5',
+    Heading_6:        'Overskrift 6',
+    Preformatted:     'Preformatert',
+    Blockquote:       'Sitat',
+    Table_Header:     'Tabelloverskrift',
+    URL:              'URL',
+    Title:            'Tittel',
+    Alternative_Text: 'Alternativ tekst',
+    Caption:          'Overskrift',
+    Summary:          'Sammendrag',
+    Number_Of_Rows:   'Antall rader',
+    Number_Of_Cols:   'Antall kolonner',
+    Submit:           'Ok',
+    Cancel:           'Avbryt',
+    Choose:           'Velg',
+    Preview:          'Forhåndsvis',
+    Paste_From_Word:  'Lim inn fra Word',
+    Tools:            'Verktøy',
+    Containers:       'Formatering',
+    Classes:          'Klasser',
+    Status:           'Status',
+    Source_Code:      'Kildekode'
+};
+
+
+WYMeditor.STRINGS.nl = {
+    Strong:           'Sterk benadrukken',
+    Emphasis:         'Benadrukken',
+    Superscript:      'Bovenschrift',
+    Subscript:        'Onderschrift',
+    Ordered_List:     'Geordende lijst',
+    Unordered_List:   'Ongeordende lijst',
+    Indent:           'Inspringen',
+    Outdent:          'Terugspringen',
+    Undo:             'Ongedaan maken',
+    Redo:             'Opnieuw uitvoeren',
+    Link:             'Linken',
+    Unlink:           'Ontlinken',
+    Image:            'Afbeelding',
+    Table:            'Tabel',
+    HTML:             'HTML',
+    Paragraph:        'Paragraaf',
+    Heading_1:        'Kop 1',
+    Heading_2:        'Kop 2',
+    Heading_3:        'Kop 3',
+    Heading_4:        'Kop 4',
+    Heading_5:        'Kop 5',
+    Heading_6:        'Kop 6',
+    Preformatted:     'Voorgeformatteerd',
+    Blockquote:       'Citaat',
+    Table_Header:     'Tabel-kop',
+    URL:              'URL',
+    Title:            'Titel',
+    Relationship:     'Relatie',
+    Alternative_Text: 'Alternatieve tekst',
+    Caption:          'Bijschrift',
+    Summary:          'Summary',
+    Number_Of_Rows:   'Aantal rijen',
+    Number_Of_Cols:   'Aantal kolommen',
+    Submit:           'Versturen',
+    Cancel:           'Annuleren',
+    Choose:           'Kiezen',
+    Preview:          'Voorbeeld bekijken',
+    Paste_From_Word:  'Plakken uit Word',
+    Tools:            'Hulpmiddelen',
+    Containers:       'Teksttypes',
+    Classes:          'Klassen',
+    Status:           'Status',
+    Source_Code:      'Broncode'
+};
+WYMeditor.STRINGS.nn = {
+    Strong:           'Feit',
+    Emphasis:         'Utheva',
+    Superscript:      'Opphøgd',
+    Subscript:        'Nedsenka',
+    Ordered_List:     'Nummerert liste',
+    Unordered_List:   'Punktliste',
+    Indent:           'Rykk inn',
+    Outdent:          'Rykk ut',
+    Undo:             'Angre',
+    Redo:             'Gjentaka',
+    Link:             'Lenkje',
+    Unlink:           'Ta bort lenkja',
+    Image:            'Bilete',
+    Table:            'Tabell',
+    HTML:             'HTML',
+    Paragraph:        'Avsnitt',
+    Heading_1:        'Overskrift 1',
+    Heading_2:        'Overskrift 2',
+    Heading_3:        'Overskrift 3',
+    Heading_4:        'Overskrift 4',
+    Heading_5:        'Overskrift 5',
+    Heading_6:        'Overskrift 6',
+    Preformatted:     'Preformatert',
+    Blockquote:       'Sitat',
+    Table_Header:     'Tabelloverskrift',
+    URL:              'URL',
+    Title:            'Tittel',
+    Alternative_Text: 'Alternativ tekst',
+    Caption:          'Overskrift',
+    Summary:          'Samandrag',
+    Number_Of_Rows:   'Tal på rader',
+    Number_Of_Cols:   'Tal på kolonnar',
+    Submit:           'Ok',
+    Cancel:           'Avbryt',
+    Choose:           'Vel',
+    Preview:          'Førehandsvis',
+    Paste_From_Word:  'Lim inn frå Word',
+    Tools:            'Verkty',
+    Containers:       'Formatering',
+    Classes:          'Klassar',
+    Status:           'Status',
+    Source_Code:      'Kjeldekode'
+};
+
+
+WYMeditor.STRINGS.pl = {
+    Strong:           'Nacisk',
+    Emphasis:         'Emfaza',
+    Superscript:      'Indeks górny',
+    Subscript:        'Indeks dolny',
+    Ordered_List:     'Lista numerowana',
+    Unordered_List:   'Lista wypunktowana',
+    Indent:           'Zwiększ wcięcie',
+    Outdent:          'Zmniejsz wcięcie',
+    Undo:             'Cofnij',
+    Redo:             'Ponów',
+    Link:             'Wstaw link',
+    Unlink:           'Usuń link',
+    Image:            'Obraz',
+    Table:            'Tabela',
+    HTML:             'Źródło HTML',
+    Paragraph:        'Akapit',
+    Heading_1:        'Nagłówek 1',
+    Heading_2:        'Nagłówek 2',
+    Heading_3:        'Nagłówek 3',
+    Heading_4:        'Nagłówek 4',
+    Heading_5:        'Nagłówek 5',
+    Heading_6:        'Nagłówek 6',
+    Preformatted:     'Preformatowany',
+    Blockquote:       'Cytat blokowy',
+    Table_Header:     'Nagłówek tabeli',
+    URL:              'URL',
+    Title:            'Tytuł',
+    Alternative_Text: 'Tekst alternatywny',
+    Caption:          'Tytuł tabeli',
+    Summary:          'Summary',
+    Number_Of_Rows:   'Liczba wierszy',
+    Number_Of_Cols:   'Liczba kolumn',
+    Submit:           'Wyślij',
+    Cancel:           'Anuluj',
+    Choose:           'Wybierz',
+    Preview:          'Podgląd',
+    Paste_From_Word:  'Wklej z Worda',
+    Tools:            'Narzędzia',
+    Containers:       'Format',
+    Classes:          'Styl',
+    Status:           'Status',
+    Source_Code:      'Kod źródłowy'
+};
+
+
+WYMeditor.STRINGS['pt-br'] = {
+    Strong:           'Resaltar',
+    Emphasis:         'Enfatizar',
+    Superscript:      'Sobre escrito',
+    Subscript:        'Sub escrito ',
+    Ordered_List:     'Lista ordenada',
+    Unordered_List:   'Lista desordenada',
+    Indent:           'Indentado',
+    Outdent:          'Desidentar',
+    Undo:             'Desfazer',
+    Redo:             'Refazer',
+    Link:             'Link',
+    Unlink:           'Remover Link',
+    Image:            'Imagem',
+    Table:            'Tabela',
+    HTML:             'HTML',
+    Paragraph:        'Parágrafo',
+    Heading_1:        'Título 1',
+    Heading_2:        'Título 2',
+    Heading_3:        'Título 3',
+    Heading_4:        'Título 4',
+    Heading_5:        'Título 5',
+    Heading_6:        'Título 6',
+    Preformatted:     'Preformatado',
+    Blockquote:       'Citação',
+    Table_Header:     'Título de tabela',
+    URL:              'URL',
+    Title:            'Título',
+    Alternative_Text: 'Texto alternativo',
+    Caption:          'Legenda',
+    Summary:          'Summary',
+    Number_Of_Rows:   'Número de linhas',
+    Number_Of_Cols:   'Número de colunas',
+    Submit:           'Enviar',
+    Cancel:           'Cancelar',
+    Choose:           'Selecionar',
+    Preview:          'Previsualizar',
+    Paste_From_Word:  'Copiar do Word',
+    Tools:            'Ferramentas',
+    Containers:       'Conteneiners',
+    Classes:          'Classes',
+    Status:           'Estado',
+    Source_Code:      'Código fonte'
+};
+
+
+WYMeditor.STRINGS.pt = {
+    Strong:           'Negrito',
+    Emphasis:         'Itálico',
+    Superscript:      'Sobrescrito',
+    Subscript:        'Subsescrito',
+    Ordered_List:     'Lista Numerada',
+    Unordered_List:   'Lista Marcada',
+    Indent:           'Aumentar Indentaçã',
+    Outdent:          'Diminuir Indentaçã',
+    Undo:             'Desfazer',
+    Redo:             'Restaurar',
+    Link:             'Link',
+    Unlink:           'Tirar link',
+    Image:            'Imagem',
+    Table:            'Tabela',
+    HTML:             'HTML',
+    Paragraph:        'Parágrafo',
+    Heading_1:        'Título 1',
+    Heading_2:        'Título 2',
+    Heading_3:        'Título 3',
+    Heading_4:        'Título 4',
+    Heading_5:        'Título 5',
+    Heading_6:        'Título 6',
+    Preformatted:     'Pré-formatado',
+    Blockquote:       'Citação',
+    Table_Header:     'Cabeçalho Tabela',
+    URL:              'URL',
+    Title:            'Título',
+    Alternative_Text: 'Texto Alterativo',
+    Caption:          'Título Tabela',
+    Summary:          'Summary',
+    Number_Of_Rows:   'Número de Linhas',
+    Number_Of_Cols:   'Número de Colunas',
+    Submit:           'Enviar',
+    Cancel:           'Cancelar',
+    Choose:           'Escolha',
+    Preview:          'Prever',
+    Paste_From_Word:  'Colar do Word',
+    Tools:            'Ferramentas',
+    Containers:       'Containers',
+    Classes:          'Classes',
+    Status:           'Status',
+    Source_Code:      'Código Fonte'
+};
+
+
+WYMeditor.STRINGS.ru = {
+    Strong:           'Жирный',
+    Emphasis:         'Наклонный',
+    Superscript:      'Надстрочный',
+    Subscript:        'Подстрочный',
+    Ordered_List:     'Нумерованый список',
+    Unordered_List:   'Ненумерованый список',
+    Indent:           'Увеличить отступ',
+    Outdent:          'Уменьшить отступ',
+    Undo:             'Отменить',
+    Redo:             'Повторить',
+    Link:             'Ссылка',
+    Unlink:           'Удалить ссылку',
+    Image:            'Изображение',
+    Table:            'Таблица',
+    HTML:             'Править HTML',
+    Paragraph:        'Параграф',
+    Heading_1:        'Заголовок 1',
+    Heading_2:        'Заголовок 2',
+    Heading_3:        'Заголовок 3',
+    Heading_4:        'Заголовок 4',
+    Heading_5:        'Заголовок 5',
+    Heading_6:        'Заголовок 6',
+    Preformatted:     'Preformatted',
+    Blockquote:       'Цитата',
+    Table_Header:     'Заголовок таблицы',
+    URL:              'URL',
+    Title:            'Заголовок',
+    Alternative_Text: 'Альтернативный текст',
+    Caption:          'Надпись',
+    Summary:          'Summary',
+    Number_Of_Rows:   'Кол-во строк',
+    Number_Of_Cols:   'Кол-во столбцов',
+    Submit:           'Отправить',
+    Cancel:           'Отмена',
+    Choose:           'Выбор',
+    Preview:          'Просмотр',
+    Paste_From_Word:  'Вставить из Word',
+    Tools:            'Инструменты',
+    Containers:       'Контейнеры',
+    Classes:          'Классы',
+    Status:           'Статус',
+    Source_Code:      'Исходный код'
+};
+
+
+WYMeditor.STRINGS.sk = {
+    Strong:           'Tučné',
+    Emphasis:         'Kurzíva',
+    Superscript:      'Horný index',
+    Subscript:        'Dolný index',
+    Ordered_List:     'Číslovaný zoznam',
+    Unordered_List:   'Nečíslovaný zoznam',
+    Indent:           'Zväčšiť odsadenie',
+    Outdent:          'Zmenšiť odsadenie',
+    Undo:             'Vrátiť',
+    Redo:             'Opakovať',
+    Link:             'Vytvoriť odkaz',
+    Unlink:           'Zrušiť odkaz',
+    Image:            'Obrázok',
+    Table:            'Tabuľka',
+    HTML:             'HTML',
+    Paragraph:        'Odstavec',
+    Heading_1:        'Nadpis 1. úrovne',
+    Heading_2:        'Nadpis 2. úrovne',
+    Heading_3:        'Nadpis 3. úrovne',
+    Heading_4:        'Nadpis 4. úrovne',
+    Heading_5:        'Nadpis 5. úrovne',
+    Heading_6:        'Nadpis 6. úrovne',
+    Preformatted:     'Predformátovaný text',
+    Blockquote:       'Citácia',
+    Table_Header:     'Hlavička tabuľky',
+    URL:              'URL adresa',
+    Title:            'Titulok',
+    Alternative_Text: 'Alternatívny text',
+    Caption:          'Titulok tabuľky',
+    Summary:          'Zhrnutie obsahu',
+    Number_Of_Rows:   'Počet riadkov',
+    Number_Of_Cols:   'Počet stĺpcov',
+    Submit:           'Odoslať',
+    Cancel:           'Zrušiť',
+    Choose:           'Vybrať',
+    Preview:          'Náhľad',
+    Paste_From_Word:  'Vložiť z Wordu',
+    Tools:            'Nástroje',
+    Containers:       'Typy obsahu',
+    Classes:          'Triedy',
+    Status:           'Stav',
+    Source_Code:      'Zdrojový kód'
+};
+
+
+WYMeditor.STRINGS.sv = {
+    Strong:           'Viktigt',
+    Emphasis:         'Betoning',
+    Superscript:      'Upphöjt',
+    Subscript:        'Nedsänkt',
+    Ordered_List:     'Nummerlista',
+    Unordered_List:   'Punktlista',
+    Indent:           'Indrag',
+    Outdent:          'Utdrag',
+    Undo:             'Ångra',
+    Redo:             'Gör om',
+    Link:             'Länk',
+    Unlink:           'Ta bort länk',
+    Image:            'Bild',
+    Table:            'Tabell',
+    HTML:             'HTML',
+    Paragraph:        'Paragraf',
+    Heading_1:        'Rubrik 1',
+    Heading_2:        'Rubrik 2',
+    Heading_3:        'Rubrik 3',
+    Heading_4:        'Rubrik 4',
+    Heading_5:        'Rubrik 5',
+    Heading_6:        'Rubrik 6',
+    Preformatted:     'Förformaterad',
+    Blockquote:       'Blockcitat',
+    Table_Header:     'Tabellrubrik',
+    URL:              'URL',
+    Title:            'Titel',
+    Relationship:     'Relation',
+    Alternative_Text: 'Alternativ text',
+    Caption:          'Överskrift',
+    Summary:          'Summary',
+    Number_Of_Rows:   'Antal rader',
+    Number_Of_Cols:   'Antal kolumner',
+    Submit:           'Skicka',
+    Cancel:           'Avbryt',
+    Choose:           'Välj',
+    Preview:          'Förhandsgranska',
+    Paste_From_Word:  'Klistra in från Word',
+    Tools:            'Verktyg',
+    Containers:       'Formatering',
+    Classes:          'Klasser',
+    Status:           'Status',
+    Source_Code:      'Källkod'
+};
+
+
+WYMeditor.STRINGS.tr = {
+    Strong: 'Kalın',
+    Emphasis: 'Vurgu',
+    Superscript: 'Üstsimge',
+    Subscript: 'Altsimge',
+    Ordered_List: 'Sıralı List',
+    Unordered_List: 'Sırasız List',
+    Indent: 'Girintile',
+    Outdent: 'Çıkıntıla',
+    Undo: 'Geri Al',
+    Redo: 'Yinele',
+    Link: 'Bağlantı',
+    Unlink: 'Bağlantıyı Kaldır',
+    Image: 'Resim',
+    Table: 'Tablo',
+    HTML: 'HTML',
+    Paragraph: 'Parağraf',
+    Heading_1: 'Başlık 1',
+    Heading_2: 'Başlık 2',
+    Heading_3: 'Başlık 3',
+    Heading_4: 'Başlık 4',
+    Heading_5: 'Başlık 5',
+    Heading_6: 'Başlık 6',
+    Preformatted: 'Önceden Formatlı',
+    Blockquote: 'Alıntı',
+    Table_Header: 'Tablo Başlığı',
+    URL: 'URL',
+    Title: 'Başlık',
+    Alternative_Text: 'Alternatif Metin',
+    Caption: 'Etiket',
+    Summary: 'Özet',
+    Number_Of_Rows: 'Satır sayısı',
+    Number_Of_Cols: 'Sütun sayısı',
+    Submit: 'Gönder',
+    Cancel: 'İptal',
+    Choose: 'Seç',
+    Preview: 'Önizleme',
+    Paste_From_Word: 'Word\'den yapıştır',
+    Tools: 'Araçlar',
+    Containers: 'Kapsayıcılar',
+    Classes: 'Sınıflar',
+    Status: 'Durum',
+    Source_Code: 'Kaynak Kodu'
+};
+
+
+WYMeditor.STRINGS.zh_cn = {
+    Strong: '加粗',
+    Emphasis: '斜体',
+    Superscript: '上标',
+    Subscript: '下标',
+    Ordered_List: '有序列表',
+    Unordered_List: '无序列表',
+    Indent: '增加缩进',
+    Outdent: '减少缩进',
+    Undo: '撤消',
+    Redo: '重做',
+    Link: '链接',
+    Unlink: '取消链接',
+    Image: '图片',
+    Table: '表格',
+    HTML: 'HTML源代码',
+    Paragraph: '段落',
+    Heading_1: '标题 1',
+    Heading_2: '标题 2',
+    Heading_3: '标题 3',
+    Heading_4: '标题 4',
+    Heading_5: '标题 5',
+    Heading_6: '标题 6',
+    Preformatted: '原始文本',
+    Blockquote: '引语',
+    Table_Header: '表头',
+    URL: '地址',
+    Title: '提示文字',
+    Alternative_Text: '失效文字',
+    Caption: '标题',
+    Summary: 'Summary',
+    Number_Of_Rows: '行数',
+    Number_Of_Cols: '列数',
+    Submit: '提交',
+    Cancel: '放弃',
+    Choose: '选择',
+    Preview: '预览',
+    Paste_From_Word: '从Word粘贴纯文本',
+    Tools: '工具',
+    Containers: '容器',
+    Classes: '预定义样式',
+    Status: '状态',
+    Source_Code: '源代码',
+    Attachment: '附件',
+    NewParagraph: '新段落'
+};
+
 
 /**
  * @license Rangy, a cross-browser JavaScript range and selection library
@@ -11062,3 +12022,759 @@ rangy.createModule("SaveRestore", function(api, module) {
     api.removeMarkerElement = removeMarkerElement;
     api.removeMarkers = removeMarkers;
 });
+
+/* globals -$ */
+"use strict";
+
+WYMeditor.SKINS.compact = {
+    init: function(wym) {
+        // Move the containers panel to the top area
+        jQuery(wym._options.containersSelector + ', ' +
+            wym._options.classesSelector, wym._box)
+          .appendTo( jQuery("div.wym_area_top", wym._box) )
+          .addClass("wym_dropdown")
+          .css({"margin-right": "10px", "width": "120px", "float": "left"});
+
+        // Render following sections as buttons
+        jQuery(wym._options.toolsSelector, wym._box)
+          .addClass("wym_buttons")
+          .css({"margin-right": "10px", "float": "left"});
+
+        // Make hover work under IE < 7
+        jQuery(".wym_section", wym._box).hover(function(){
+          jQuery(this).addClass("hover");
+        },function(){
+          jQuery(this).removeClass("hover");
+        });
+
+        var postInit = wym._options.postInit;
+        wym._options.postInit = function(wym) {
+            if (postInit) {
+                postInit.call(wym, wym);
+            }
+
+            jQuery(wym._doc.body).css('background-color', '#f0f0f0');
+        };
+    }
+};
+
+"use strict";
+
+WYMeditor.SKINS['default'] = {
+    init: function (wym) {
+        //render following sections as panels
+        jQuery(wym._box).find(wym._options.classesSelector)
+          .addClass("wym_panel");
+
+        //render following sections as buttons
+        jQuery(wym._box).find(wym._options.toolsSelector)
+          .addClass("wym_buttons");
+
+        //render following sections as dropdown menus
+        jQuery(wym._box).find(wym._options.containersSelector)
+          .addClass("wym_dropdown")
+          .find(WYMeditor.H2)
+          .append("<span> ></span>");
+
+        // auto add some margin to the main area sides if left area
+        // or right area are not empty (if they contain sections)
+        jQuery(wym._box).find("div.wym_area_right ul")
+          .parents("div.wym_area_right").show()
+          .parents(wym._options.boxSelector)
+          .find("div.wym_area_main")
+          .css({"margin-right": "155px"});
+
+        jQuery(wym._box).find("div.wym_area_left ul")
+          .parents("div.wym_area_left").show()
+          .parents(wym._options.boxSelector)
+          .find("div.wym_area_main")
+          .css({"margin-left": "155px"});
+
+        //make hover work under IE < 7
+        jQuery(wym._box).find(".wym_section").hover(
+            function () {
+                jQuery(this).addClass("hover");
+            },
+            function () {
+                jQuery(this).removeClass("hover");
+            }
+        );
+    }
+};
+
+"use strict";
+
+WYMeditor.SKINS.legacy = {
+    init: function (wym) {
+        //render following sections as panels
+        jQuery(wym._box).find(wym._options.classesSelector)
+          .addClass("wym_panel");
+
+        //render following sections as buttons
+        jQuery(wym._box).find(wym._options.toolsSelector)
+          .addClass("wym_buttons");
+
+        //render following sections as dropdown menus
+        jQuery(wym._box).find(wym._options.containersSelector)
+          .addClass("wym_dropdown")
+          .find(WYMeditor.H2)
+          .append("<span> ></span>");
+
+        // auto add some margin to the main area sides if left area
+        // or right area are not empty (if they contain sections)
+        jQuery(wym._box).find("div.wym_area_right ul")
+          .parents("div.wym_area_right").show()
+          .parents(wym._options.boxSelector)
+          .find("div.wym_area_main")
+          .css({"margin-right": "155px"});
+
+        jQuery(wym._box).find("div.wym_area_left ul")
+          .parents("div.wym_area_left").show()
+          .parents(wym._options.boxSelector)
+          .find("div.wym_area_main")
+          .css({"margin-left": "155px"});
+
+        //make hover work under IE < 7
+        jQuery(wym._box).find(".wym_section").hover(
+            function () {
+                jQuery(this).addClass("hover");
+            },
+            function () {
+                jQuery(this).removeClass("hover");
+            }
+        );
+    }
+};
+
+jQuery.fn.selectify = function() {
+    return this.each(function() {
+        jQuery(this).hover(
+            function() {
+                jQuery("h2", this).css("background-position", "0px -18px");
+                jQuery("ul", this).fadeIn("fast");
+            },
+		    function() {
+		        jQuery("h2", this).css("background-position", "");
+		        jQuery("ul", this).fadeOut("fast");
+		    }
+        );
+    });
+};
+
+WYMeditor.SKINS.minimal = {
+    //placeholder for the skin JS, if needed
+
+    //init the skin
+    //wym is the WYMeditor.editor instance
+    init: function(wym) {
+
+        //render following sections as dropdown menus
+        jQuery(wym._box).find(wym._options.toolsSelector + ', ' + wym._options.containersSelector + ', ' + wym._options.classesSelector)
+          .addClass("wym_dropdown")
+          .selectify();
+
+
+    }
+};
+
+/* globals -$ */
+"use strict";
+
+// Add classes to an element based on its current location relative to top and
+// or bottom offsets.
+// Useful for affixing an element on the page within a certain vertical range.
+// Based largely off of the bootstrap affix plugin
+// https://github.com/twbs/bootstrap/blob/master/js/affix.js
+(function ($) {
+    var Affix = function (element, options) {
+        this.options = $.extend({}, $.fn.wymAffix.defaults, options);
+        this.$window = $(window);
+
+        this.$window.bind(
+            'scroll.affix.data-api',
+            $.proxy(this.checkPosition, this)
+        );
+        this.$window.bind(
+            'click.affix.data-api',
+            $.proxy(
+                function () {
+                    setTimeout(
+                        $.proxy(this.checkPosition, this),
+                        1
+                    );
+                },
+                this
+            )
+        );
+        this.$element = $(element);
+        this.checkPosition();
+    };
+
+    Affix.prototype.checkPosition = function () {
+        var scrollTop = this.$window.scrollTop()
+          , offset = this.options.offset
+          , offsetBottom = offset.bottom
+          , offsetTop = offset.top
+          , reset = 'affix affix-top affix-bottom'
+          , desiredAffixType
+          , isBelowTop = true
+          , isAboveBottom = true;
+
+        if (typeof offset !== 'object') {
+            offsetBottom = offsetTop = offset;
+        }
+        if (typeof offsetTop === 'function') {
+            offsetTop = offset.top();
+        }
+        if (typeof offsetBottom === 'function') {
+            offsetBottom = offset.bottom();
+        }
+
+        if (offsetTop !== null) {
+            isBelowTop = scrollTop > offsetTop;
+        }
+        if (offsetBottom !== null) {
+            isAboveBottom = scrollTop + this.$element.height() < offsetBottom;
+        }
+
+        if (isBelowTop && isAboveBottom) {
+            desiredAffixType = 'affix';
+        } else if (isAboveBottom === false) {
+            // We're below the bottom offset
+            desiredAffixType = 'affix-bottom';
+        } else {
+            desiredAffixType = 'affix-top';
+        }
+
+        if (this.currentAffixType === desiredAffixType) {
+            // We're already properly-affixed. No changes required.
+            return;
+        }
+
+        this.$element.removeClass(reset).addClass(desiredAffixType);
+
+        this.currentAffixType = desiredAffixType;
+    };
+
+
+ /* AFFIX PLUGIN DEFINITION
+  * ======================= */
+
+    $.fn.wymAffix = function (option) {
+        return this.each(function () {
+            var $this = $(this)
+                , data = $this.data('affix')
+                , options = typeof option === 'object' && option;
+
+            if (!data) {
+                $this.data(
+                    'affix',
+                    (data = new Affix(this, options))
+                );
+            }
+            if (typeof option === 'string') {
+                data[option]();
+            }
+        });
+    };
+
+    $.fn.wymAffix.Constructor = Affix;
+
+    $.fn.wymAffix.defaults = {
+        offset: 0
+    };
+}(jQuery));
+
+WYMeditor.SKINS.seamless = {
+    OPTS: {
+        iframeHtml: [""
+        , '<div class="wym_iframe wym_section">'
+            , '<iframe src="' + WYMeditor.IFRAME_BASE_PATH + 'wymiframe.html" '
+                , 'frameborder="0" '
+                , 'border="0" '
+                , 'scrolling="no" '
+                , 'marginheight="0px" '
+                , 'marginwidth="0px" '
+                , '>'
+            , '</iframe>'
+        , '</div>'
+        ].join(""),
+        // After Iframe initialization, check if we're ready to perform the
+        // first resize every this many ms
+        initIframeCheckFrequency: 50,
+        // After load or after images are inserted, check every this many ms to
+        // see if they've properly set their height.
+        imagesLoadedCheckFrequency: 300,
+        // After this many ms, give up on images finishing loading. Some images
+        // might never load due to network connectivity or bad links.
+        imagesLoadedCheckTimeout: 5000
+    },
+    init: function (wym) {
+        var This = WYMeditor.SKINS.seamless;
+
+        // TODO: Find a unified strategy for dealing with loading polyfills
+        // This is a polyfill for old IE
+        if (!Date.now) {
+            Date.now = function now() {
+                return new Date().getTime();
+            };
+        }
+
+        wym.seamlessSkinOpts = jQuery.extend(
+            This.OPTS,
+            {
+                initialIframeResizeTimer: null,
+                resizeAfterImagesLoadTimer: null,
+                _imagesLoadedCheckStartedTime: 0,
+                minimumHeight: jQuery(wym._element).height()
+            }
+        );
+        This.initUIChrome(wym);
+
+        // The Iframe isn't initialized at this point, so we'll need to wait
+        // until it is before attempting to use it.
+        jQuery(wym._element).bind(
+            WYMeditor.EVENTS.postIframeInitialization,
+            This.postIframeInit
+        );
+    },
+    postIframeInit: function (e, wym) {
+        var This = WYMeditor.SKINS.seamless;
+
+        // Perform an initial resize, if necessary
+        This.resizeIframeOnceBodyExists(wym);
+
+        // Detect possible Block creation so that we can always keep the iframe
+        // properly resized and the current container in view
+        jQuery(wym._element).bind(
+            WYMeditor.EVENTS.postBlockMaybeCreated,
+            function () {
+                This.resizeAndScrollIfNeeded(wym);
+            }
+        );
+    },
+    initUIChrome: function (wym) {
+        // Initialize the toolbar and classes/containers selectors
+
+        // The classes and containers sections are dropdowns to the right of
+        // the toolbar at the top
+        var This = WYMeditor.SKINS.seamless,
+            $dropdowns = jQuery(
+            [
+                wym._options.containersSelector
+                , wym._options.classesSelector
+            ].join(', '),
+            wym._box
+        ),
+            $toolbar,
+            $areaTop;
+
+        $areaTop = jQuery("div.wym_area_top", wym._box);
+
+        $dropdowns.appendTo($areaTop);
+        $dropdowns.addClass("wym_dropdown");
+        // Make dropdowns also work on click, for mobile devices
+        jQuery(".wym_dropdown", wym._box).click(
+            function () {
+                jQuery(this).toggleClass("hover");
+            }
+        );
+
+        // The toolbar uses buttons
+        $toolbar = jQuery(wym._options.toolsSelector, wym._box);
+        $toolbar.addClass("wym_buttons");
+
+        This.affixTopControls(wym);
+
+    },
+    affixTopControls: function (wym) {
+        // Affix the top area, which contains the toolbar and containers, to
+        // the top of the screen so that we can see it, even if we're scrolled
+        // down.
+        var $areaTop,
+            $offsetWrapper,
+            earlyScrollPixels = 5,
+            usePlaceholderWidth,
+            $placeholder;
+
+        $areaTop = jQuery("div.wym_area_top", wym._box);
+
+        // Use a wrapper so we can keep the toolbar styling consistent
+        $offsetWrapper = jQuery(
+            '<div class="wym_skin_seamless wym_area_top_wrapper">'
+        );
+        $areaTop.wrap($offsetWrapper);
+        $offsetWrapper = $areaTop.parent();
+
+        // Add another, non-affixed wrapper to stick around and hold vertical
+        // space. This avoids the "jump" when the toolbar switches to being
+        // affixed
+        $offsetWrapper.wrap('<div class="wym_area_top_affix_placeholder">');
+        $placeholder = $offsetWrapper.parent();
+        $placeholder.height($areaTop.height());
+
+        usePlaceholderWidth = function () {
+            // Hard-code the offsetWrapper width so that when this floats to
+            // the top, it doesn't expand to take up all of the room to the
+            // right
+            $offsetWrapper.width($placeholder.width());
+        };
+        usePlaceholderWidth();
+        jQuery(window).resize(usePlaceholderWidth);
+
+        $offsetWrapper.wymAffix({
+            offset: {
+                top: function () {
+                    return $placeholder.offset().top - earlyScrollPixels;
+                },
+                bottom: function () {
+                    return $placeholder.offset().top +
+                        wym.seamlessSkinIframeHeight;
+                }
+            }
+        });
+    },
+    resizeIframeOnceBodyExists: function (wym) {
+        // In IE, the wym._doc DOMLoaded event doesn't mean the iframe will
+        // actually have a body. We need to wait until the body actually exists
+        // before trying to set the initial hight of the iframe, so we hack
+        // this together with setTimeout.
+        var This = WYMeditor.SKINS.seamless,
+            scrollHeightCalcFix;
+
+        if (wym.seamlessSkinOpts.initialIframeResizeTimer) {
+            // We're handling a timer, clear it
+            window.clearTimeout(
+                wym.seamlessSkinOpts.initialIframeResizeTimer
+            );
+            wym.seamlessSkinOpts.initialIframeResizeTimer = null;
+        }
+
+        if (typeof wym._doc.body === "undefined" || wym._doc.body === null) {
+            // Body isn't ready
+            wym.seamlessSkinOpts.initialIframeResizeTimer = window.setTimeout(
+                function () {
+                    This.resizeIframeOnceBodyExists(wym);
+                },
+                wym.seamlessSkinOpts.initIframeCheckFrequency
+            );
+            return;
+        }
+        // The body is ready, so let's get to resizing
+        // For some reason, at least IE7 requires at least one access to the
+        // scrollHeight before it gives a real value. I was unable to find any
+        // kind of feature detection that would work here and the fix of adding
+        // an extra access here doesn't have any real negative impact on the
+        // other browsers, but does fix IE7's behavior.
+        scrollHeightCalcFix = wym._doc.body.scrollHeight;
+        This.resizeIframe(wym);
+        This.resizeIframeOnceImagesLoaded(wym);
+    },
+    resizeIframeOnceImagesLoaded: function (wym) {
+        // Even though the body may be "loaded" from a DOM even standpoint,
+        // that doesn't mean that images have yet been retrieved or that their
+        // heights have been determined. If an image's height pops in after
+        // we've calculated the iframe height, the iframe will be too short.
+        var This = WYMeditor.SKINS.seamless,
+            images,
+            imagesLength,
+            i = 0,
+            allImagesLoaded = true,
+            skinOpts = wym.seamlessSkinOpts,
+            timeWaited;
+
+        if (typeof skinOpts._imagesLoadedCheckStartedTime === "undefined" ||
+                skinOpts._imagesLoadedCheckStartedTime === 0) {
+            skinOpts._imagesLoadedCheckStartedTime = Date.now();
+        }
+
+        if (skinOpts.resizeAfterImagesLoadTimer !== null) {
+            // We're handling a timer, clear it
+            window.clearTimeout(
+                skinOpts.resizeAfterImagesLoadTimer
+            );
+            skinOpts.resizeAfterImagesLoadTimer = null;
+        }
+
+        images = jQuery(wym._doc).find('img');
+        imagesLength = images.length;
+
+        if (imagesLength === 0) {
+            // No images. No need to worry about resizing based on them.
+            return;
+        }
+
+        for (i = 0; i < imagesLength; i += 1) {
+            if (!This._imageIsLoaded(images[i])) {
+                // If any image isn't loaded, we're not done
+                allImagesLoaded = false;
+                break;
+            }
+        }
+        // Even if all of the images haven't loaded, we can still be more
+        // correct by accounting for any that have.
+        This.resizeAndScrollIfNeeded(wym);
+
+        if (allImagesLoaded === true) {
+            // Clean up the timeout timer for subsequent calls
+            skinOpts._imagesLoadedCheckStartedTime = 0;
+            return;
+        }
+
+        timeWaited = Date.now() - skinOpts._imagesLoadedCheckStartedTime;
+        if (timeWaited > skinOpts.imagesLoadedCheckTimeout) {
+            // Clean up the timeout timer for subsequent calls
+            skinOpts._imagesLoadedCheckStartedTime = 0;
+            // We've waited long enough. The images might never load.
+            // Don't set another timer.
+            return;
+        }
+
+        // Let's check again in after a delay
+        skinOpts.resizeAfterImagesLoadTimer = window.setTimeout(
+            function () {
+                This.resizeIframeOnceImagesLoaded(wym);
+            },
+            skinOpts.imagesLoadedCheckFrequency
+        );
+    },
+    _imageIsLoaded: function (img) {
+        if (img.complete !== true) {
+            return false;
+        }
+
+        if (typeof img.naturalWidth !== "undefined" &&
+                img.naturalWidth === 0) {
+            return false;
+        }
+
+        return true;
+    },
+    _getIframeHeightStrategy: function (wym) {
+        // For some browsers (IE8+ and FF), the scrollHeight of the body
+        // doesn't seem to include the top and bottom margins of the body
+        // relative to the HTML. This leaves the editing "window" smaller
+        // than required, which results in weird overlaps at the start/end.
+        // For those browsers, the HTML element's scrollHeight is more
+        // reliable.
+        // Let's detect which kind of browser we're dealing with one time
+        // so we can just do the right thing in the future.
+        var bodyScrollHeight,
+            $htmlElement,
+            htmlElementHeight,
+            htmlElementScrollHeight,
+            heightStrategy;
+
+        $htmlElement = jQuery(wym._doc).children().eq(0);
+
+        bodyScrollHeight = wym._doc.body.scrollHeight;
+        htmlElementHeight = $htmlElement.height();
+        htmlElementScrollHeight = $htmlElement[0].scrollHeight;
+
+        if (htmlElementHeight >= bodyScrollHeight) {
+            // Well-behaving browsers like FF and Chrome let us rely on the
+            // HTML element's jQuery height() in every case. Hooray!
+            heightStrategy = function (wym) {
+                var $htmlElement = jQuery(wym._doc).children().eq(0),
+                    htmlElementHeight = $htmlElement.height();
+
+                return htmlElementHeight;
+            };
+
+            return heightStrategy;
+        } else if (bodyScrollHeight > htmlElementScrollHeight) {
+            // This is probably IE7, where the only thing reliable is the
+            // bodyScrollHeight
+            heightStrategy = function (wym) {
+                return wym._doc.body.scrollHeight;
+            };
+
+            return heightStrategy;
+        } else {
+            // This is probably IE8+, where the htmlElementScrollHeight is
+            // fairly reliable, but doesn't shrink when content is removed.
+            heightStrategy = function (wym) {
+                var $htmlElement = jQuery(wym._doc).children().eq(0),
+                    htmlElementScrollHeight = $htmlElement[0].scrollHeight;
+
+                // Without the 10px reduction in height, every possible action
+                // adds 10 pixels of height.
+                // TODO: Figure out why this happens and if we can make the
+                // 10px number not magic (actually derived from a
+                // margin/padding etc).
+                return htmlElementScrollHeight - 10;
+            };
+
+            return heightStrategy;
+        }
+    },
+    resizeIframe: function (wym) {
+        var This = WYMeditor.SKINS.seamless,
+            desiredHeight,
+            $iframe = jQuery(wym._iframe),
+            currentHeight = $iframe.height();
+
+        if (typeof WYMeditor.IFRAME_HEIGHT_GETTER === "undefined") {
+            WYMeditor.IFRAME_HEIGHT_GETTER = This._getIframeHeightStrategy(
+                wym
+            );
+        }
+
+        desiredHeight = WYMeditor.IFRAME_HEIGHT_GETTER(wym);
+
+        // Don't let the height drop below the WYMeditor textarea. This allows
+        // folks to use their favorite height-setting method on the textarea,
+        // without needing to pass options on to WYMeditor.
+        if (desiredHeight < wym.seamlessSkinOpts.minimumHeight) {
+            desiredHeight = wym.seamlessSkinOpts.minimumHeight;
+        }
+
+        if (currentHeight !== desiredHeight) {
+            $iframe.height(desiredHeight);
+            wym.seamlessSkinIframeHeight = desiredHeight;
+
+            return true;
+        }
+        return false;
+    },
+    scrollIfNeeded: function (wym) {
+        var iframeOffset = jQuery(wym._iframe).offset(),
+            iframeOffsetTop = iframeOffset.top,
+            $container = jQuery(wym.selected()),
+            containerOffset = $container.offset(),
+            viewportLowestY,
+            containerLowestY,
+            newScrollTop,
+            extraScroll = 20,
+            scrollDiff,
+            $window = jQuery(window),
+            $body = jQuery(document.body);
+
+        if ($container.length === 0) {
+            // With nothing selected, there's no need to scroll
+            return;
+        }
+        containerLowestY = iframeOffsetTop + containerOffset.top;
+        containerLowestY += $container.outerHeight();
+        viewportLowestY = $window.scrollTop() + $window.height();
+        scrollDiff = containerLowestY - viewportLowestY;
+        if (scrollDiff > 0) {
+            // Part of our selected container isn't
+            // visible, so we need to scroll down.
+            newScrollTop = $body.scrollTop() + scrollDiff + extraScroll;
+            $body.scrollTop(newScrollTop);
+        }
+    },
+    resizeAndScrollIfNeeded: function (wym) {
+        // Scroll the page so that our current selection
+        // within the iframe is actually in view.
+        var This = WYMeditor.SKINS.seamless,
+            resizeOccurred = This.resizeIframe(wym);
+        if (resizeOccurred !== true) {
+            return;
+        }
+        This.scrollIfNeeded(wym);
+    }
+};
+
+/* This file is part of the Silver skin for WYMeditor by Scott Edwin Lewis */
+
+jQuery.fn.selectify = function() {
+    return this.each(function() {
+        jQuery(this).hover(
+            function() {
+                jQuery("h2", this).css("background-position", "0px -18px");
+                jQuery("ul", this).fadeIn("fast");
+            },
+		    function() {
+		        jQuery("h2", this).css("background-position", "");
+		        jQuery("ul", this).fadeOut("fast");
+		    }
+        );
+    });
+};
+
+WYMeditor.SKINS.silver = {
+
+    init: function(wym) {
+
+        //add some elements to improve the rendering
+        jQuery(wym._box)
+          .append('<div class="clear"></div>')
+          .wrapInner('<div class="wym_inner"></div>');
+
+        //render following sections as panels
+        jQuery(wym._box).find(wym._options.classesSelector)
+          .addClass("wym_panel");
+
+        //render following sections as buttons
+        jQuery(wym._box).find(wym._options.toolsSelector)
+          .addClass("wym_buttons");
+
+        //render following sections as dropdown menus
+        jQuery(wym._box).find(wym._options.containersSelector)
+          .addClass("wym_dropdown")
+          .selectify();
+
+        // auto add some margin to the main area sides if left area
+        // or right area are not empty (if they contain sections)
+        jQuery(wym._box).find("div.wym_area_right ul")
+          .parents("div.wym_area_right").show()
+          .parents(wym._options.boxSelector)
+          .find("div.wym_area_main")
+          .css({"margin-right": "155px"});
+
+        jQuery(wym._box).find("div.wym_area_left ul")
+          .parents("div.wym_area_left").show()
+          .parents(wym._options.boxSelector)
+          .find("div.wym_area_main")
+          .css({"margin-left": "155px"});
+
+        //make hover work under IE < 7
+        jQuery(wym._box).find(".wym_section").hover(function(){
+          jQuery(this).addClass("hover");
+        },function(){
+          jQuery(this).removeClass("hover");
+        });
+    }
+};
+
+WYMeditor.SKINS.twopanels = {
+
+    init: function(wym) {
+
+        //move the containers panel to the left area
+        jQuery(wym._box).find(wym._options.containersSelector)
+          .appendTo("div.wym_area_left");
+
+        //render following sections as panels
+        jQuery(wym._box).find(wym._options.classesSelector + ', ' +
+          wym._options.containersSelector)
+          .addClass("wym_panel");
+
+        //render following sections as buttons
+        jQuery(wym._box).find(wym._options.toolsSelector)
+          .addClass("wym_buttons");
+
+        // auto add some margin to the main area sides if left area
+        // or right area are not empty (if they contain sections)
+        jQuery(wym._box).find("div.wym_area_right ul")
+          .parents("div.wym_area_right").show()
+          .parents(wym._options.boxSelector)
+          .find("div.wym_area_main")
+          .css({"margin-right": "155px"});
+
+        jQuery(wym._box).find("div.wym_area_left ul")
+          .parents("div.wym_area_left").show()
+          .parents(wym._options.boxSelector)
+          .find("div.wym_area_main")
+          .css({"margin-left": "115px"});
+
+        //make hover work under IE < 7
+        jQuery(wym._box).find(".wym_section").hover(function(){
+          jQuery(this).addClass("hover");
+        },function(){
+          jQuery(this).removeClass("hover");
+        });
+    }
+};

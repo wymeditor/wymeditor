@@ -157,14 +157,36 @@ In the spirit of getting a 100% passing jshint run,
 we made some initial sacrifices.
 The goal is to get all of the code on the same standard.
 
+Additionally,
+there are several files listed in ``.jshintignore``
+because they don't yet conform to our standards.
+We would really all of our code to conform,
+which means removing the ignores
+for everything but the 3rd-party code.
+
 *************************************
 Crockford Javascript Code Conventions
 *************************************
 
-Please refer to the `Crockford Javascript Code
-Conventions <http://javascript.crockford.com/code.html>`_ for a set of general
-rules. The points listed below are not included in Crockford Conventions and/or
-specific to the WYMeditor project.
+Please refer to the
+`Crockford Javascript Code Conventions <http://javascript.crockford.com/code.html>`_
+for our default code conventions.
+The :ref:`development-coding-standard-formatting-and-style` section
+describes some areas where we are more-strict.
+
+Changes to Crockford Conventions
+================================
+
+We also have some choices that contradict Crockford's conventions.
+
+#. We use one ``var`` statement per scope,
+   versus another ``var`` for each variable.
+#. We still use ``eval()`` in a couple of places.
+   It is evil,
+   though,
+   and it's considered an implementation bug.
+
+.. _development-coding-standard-formatting-and-style:
 
 ********************
 Formatting and Style
@@ -176,18 +198,27 @@ Naming Conventions
 Variables and Functions
 -----------------------
 
-Give variables and function **meaningful names**. Use mixedCase (lower
-CamelCase) for names spanning several words. `Constants` should be in all
-CAPITAL_LETTERS with underscores to separate words.  Avoid the use of Hungarian
-Notation, instead make sure to `type` your variables by assigning default
-values and/or using comments.
+* Give variables and function **meaningful names**.
+  Naming is very important!
+* Use mixedCase
+  (lower CamelCase)
+  for names spanning several words.
+* `Constants` should be in all CAPITAL_LETTERS
+  with underscores to separate words.
+* Avoid the use of Hungarian Notation,
+  instead make sure to `type` your variables
+  by assigning default values and/or using comments.
+* Use one ``var`` statement per scope,
+  declaring all of your variables there
+  on separate lines.
 
 Example:
 
 .. code-block:: javascript
 
-    var elements = [];
-    var VERSION = 0.6;
+    var elements = [],
+        somethingElse = '',
+        VERSION = 0.6;
     function parseHtml () {};
 
 Constructors
@@ -316,6 +347,154 @@ should be done for consistency across the project because the ``event.which``
 property normalizes ``event.keyCode`` and ``event.charCode`` in jQuery. Using
 ``event.which`` is also the `recommended method by jQuery
 <http://api.jquery.com/event.which/>`_ for watching keyboard key input.
+
+.. _development-coding-standard-comments:
+
+Comments should read as "why?" sentences
+----------------------------------------
+
+Wherever possible,
+comments should read like a sentence.
+Sentences evolved because they're good
+at conveying information.
+Fragments are often ambiguous
+to those who need the comment most.
+They should also mostly answer the question
+"why?"
+instead of what/how.
+
+When tempted to write a comment
+that describes what a block of code does,
+instead,
+write a function with a good name.
+The exception is one-liners that are conceptually dense,
+although those are usually the sign
+of a need for a refactor
+or utility function.
+
+"What" comment example
+^^^^^^^^^^^^^^^^^^^^^^
+.. code-block:: javascript
+
+    function MyPlugin(options, wym) {
+        var defaults = {
+            'optionFoo1': 'bar'
+        };
+        this._options = jQuery.extend(defaults, options);
+        this._wym = wym;
+
+        this.init();
+    }
+
+    MyPlugin.prototype.init = function() {
+        var wym = this._wym,
+            buttonFoo1,
+            buttonFoo2,
+            buttonsHtml,
+            box = jQuery(wym._box);
+
+        //construct the buttons' html
+        buttonFoo1 = [""
+            , "<li class='wym_tools_foo1'>"
+            ,     "<a name='foo1' title='Foo 1' href='#'"
+            ,         "{foo1}"
+            ,     "</a>"
+            , "</li>"
+        ].join('');
+        buttonFoo2 = [""
+            , "<li class='wym_tools_foo2'>"
+            ,     "<a name='foo2' title='Foo 2' href='#'"
+            ,         "{foo2}"
+            ,     "</a>"
+            , "</li>"
+        ].join('');
+
+        buttonsHtml = buttonFoo1 + buttonFoo2;
+
+        //add the button to the tools box
+        box.find(wym._options.toolsSelector + wym._options.toolsListSelector)
+            .append(buttonsHtml);
+
+        //bind listeners
+        box.find('li.wym_tools_foo1 a').click(function () {
+            // Do foo1 things
+        });
+        box.find('li.wym_tools_foo2 a').click(function () {
+            // Do foo2 things
+        });
+    };
+
+Improved
+^^^^^^^^
+
+.. code-block:: javascript
+
+    function MyPlugin(options, wym) {
+        var defaults = {
+            'optionFoo1': 'bar'
+        };
+        this._options = jQuery.extend(defaults, options);
+        this._wym = wym;
+
+        this.init();
+    }
+
+    MyPlugin.prototype.init = function() {
+        var wym = this._wym,
+            buttonsHtml,
+            box = jQuery(wym._box);
+
+        buttonsHtml = this._buildButtonsHtml();
+
+        // Add the button to the tools box.
+        // TODO: There should probably be a WYMeditor utility function for
+        // doing this.
+        box.find(wym._options.toolsSelector + wym._options.toolsListSelector)
+            .append(buttonsHtml);
+
+        this._bindEventListeners(box);
+    };
+
+    MyPlugin.prototype._buildButtonsHtml = function () {
+        var buttonFoo1 = '',
+            buttonFoo2 = '';
+
+        buttonFoo1 = [""
+            , "<li class='wym_tools_foo1'>"
+            ,     "<a name='foo1' title='Foo 1' href='#'"
+            ,         "{foo1}"
+            ,     "</a>"
+            , "</li>"
+        ].join('');
+        buttonFoo2 = [""
+            , "<li class='wym_tools_foo2'>"
+            ,     "<a name='foo2' title='Foo 2' href='#'"
+            ,         "{foo2}"
+            ,     "</a>"
+            , "</li>"
+        ].join('');
+
+        return buttonFoo1 + buttonFoo2;
+    };
+
+    MyPlugin.prototype._bindEventListeners = function (box) {
+        var myPlugin = this;
+
+        box.find('li.wym_tools_foo1 a').click(function () {
+            myPlugin._doFoo1Things();
+        });
+        box.find('li.wym_tools_foo2 a').click(function () {
+            myPlugin._doFoo2Things();
+        });
+    };
+
+    MyPlugin.prototype._doFoo1Things = function () {
+        // Do foo1 things
+    };
+
+    MyPlugin.prototype._doFoo2Things = function () {
+        // Do foo2 things
+    };
 
 Further Reading
 ---------------

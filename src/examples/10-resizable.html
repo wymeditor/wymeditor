@@ -6,6 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>WYMeditor</title>
     <link rel="stylesheet" type="text/css" href="../jquery/jquery.ui.resizable.css" />
+    <!-- build:css ../wymeditor/skins/default/skin.css -->
+    <link rel="stylesheet" type="text/css" href="../wymeditor/skins/default/skin.css" />
+    <!-- endbuild -->
 </head>
 <body>
     <h1>WYMeditor integration example - resizable plugin</h1>
@@ -33,7 +36,6 @@
         jQuery(function() {
             jQuery('.wymeditor').wymeditor({
                 html: '<p>Hello, World!<\/p>',
-                stylesheet: 'styles.css',
                 postInit: function(wym) {
                     wym.hovertools();
                     wym.resizable();

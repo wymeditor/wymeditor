@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>WYMeditor: Custom Language</title>
+    <link rel="stylesheet" href="../wymeditor/skins/default/skin.css">
 </head>
 
 <body>
@@ -23,14 +24,10 @@
     <script src="vendor/jquery/jquery.js"></script>
     <script src="../wymeditor/jquery.wymeditor.js"></script>
     <script type="text/javascript">
-        /* Use 3 options, one to set the html content,
-         * one to set the language, and one the set the classes
-         */
         $(function() {
             var options = {
                 html: '<p>Hello, World!<\/p>',
-                lang: 'fr',
-                stylesheet: 'styles.css'
+                lang: 'fr'
             };
             $('.wymeditor').wymeditor(options);
         });

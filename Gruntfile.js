@@ -1,10 +1,6 @@
 /*jslint node: true, es3: false, maxlen: 88 */
 'use strict';
-var LIVERELOAD_PORT = 35729,
-    lrSnippet = require('connect-livereload')(
-        {port: LIVERELOAD_PORT}
-    ),
-    mountFolder = function (connect, dir) {
+var mountFolder = function (connect, dir) {
         return connect.static(require('path').resolve(dir));
     };
 
@@ -34,10 +30,13 @@ module.exports = function (grunt) {
                 "*/\n\n"
         },
         watch: {
-            livereload: {
-                options: {
-                    livereload: LIVERELOAD_PORT
-                },
+            options: {
+                // Don't spawn a child process. Virtualbox's NFS share is
+                // slow enough already.
+                spawn: false,
+                livereload: true
+            },
+            default: {
                 files: [
                     '<%= yeoman.app %>/*.html',
                     '.tmp/styles/{,*/}*.css',
@@ -49,6 +48,18 @@ module.exports = function (grunt) {
                     '{.tmp,<%= yeoman.app %>}/wymeditor/skins/{,*/}*.js',
                     '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
                 ]
+            },
+            dist: {
+                files: [
+                    '<%= yeoman.app %>/*.html',
+                    '.tmp/styles/{,*/}*.css',
+                    '{.tmp,<%= yeoman.app %>}/examples/{,*/}*.{js,html}',
+                    '{.tmp,<%= yeoman.app %>}/wymeditor/{,*/}*.js',
+                    '{.tmp,<%= yeoman.app %>}/wymeditor/plugins/{,*/}*.js',
+                    '{.tmp,<%= yeoman.app %>}/wymeditor/skins/{,*/}*.js',
+                    '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
+                ],
+                tasks: ['build']
             }
         },
         connect: {
@@ -57,11 +68,10 @@ module.exports = function (grunt) {
                 // change this to '0.0.0.0' to access the server from outside
                 hostname: '0.0.0.0'
             },
-            livereload: {
+            dev: {
                 options: {
                     middleware: function (connect) {
                         return [
-                            lrSnippet,
                             mountFolder(connect, '.tmp'),
                             mountFolder(connect, yeomanConfig.app)
                         ];
@@ -199,7 +209,11 @@ module.exports = function (grunt) {
                     "<%= yeoman.app %>/wymeditor/core.js",
                     "<%= yeoman.app %>/wymeditor/editor/*.js",
                     "<%= yeoman.app %>/wymeditor/parser/*.js",
-                    "<%= yeoman.app %>/wymeditor/rangy/*.js"
+                    // TODO: For custom builds, will need to change this.
+                    "<%= yeoman.app %>/wymeditor/lang/*.js",
+                    "<%= yeoman.app %>/wymeditor/rangy/*.js",
+                    // TODO: For custom builds, will need to change this.
+                    '<%= yeoman.app %>/wymeditor/skins/{,*/}skin.js'
                 ],
                 dest: "<%= yeoman.dist %>/wymeditor/jquery.wymeditor.js"
             }
@@ -221,6 +235,7 @@ module.exports = function (grunt) {
         copy: {
             dist: {
                 files: [
+                    // Misc project files
                     {
                         expand: true,
                         dot: true,
@@ -235,15 +250,17 @@ module.exports = function (grunt) {
                             "package.json"
                         ]
                     },
+                    // Examples
                     {
                         expand: true,
                         dot: true,
                         cwd: '<%= yeoman.app %>',
                         dest: '<%= yeoman.dist %>',
                         src: [
-                            "examples/{,*/}*.{html,png,jpg,jpeg,gif,js,css}"
+                            "examples/{,*/}*.{html,js,css,png,jpg,jpeg,gif}"
                         ]
                     },
+                    // Bower components for the examples
                     {
                         expand: true,
                         dot: true,
@@ -253,18 +270,39 @@ module.exports = function (grunt) {
                             "{,*/}*.js"
                         ]
                     },
+                    // Plugins
                     {
                         expand: true,
                         dot: true,
                         cwd: '<%= yeoman.app %>/wymeditor',
                         dest: '<%= yeoman.dist %>/wymeditor',
                         src: [
-                            "lang/*.js",
-                            "plugins/{,*/}*.{png,jpg,jpeg,gif,js,css}",
-                            "skins/{,*/}*.{png,jpg,jpeg,gif,js,css}",
-                            "iframe/{,*/}*.{html,css,png,jpg,jpeg,gif,js,eot,ttf,woff}"
+                            "plugins/{,*/}*.{js,css,png,jpg,jpeg,gif}"
                         ]
                     },
+                    // Iframes
+                    {
+                        expand: true,
+                        dot: true,
+                        cwd: '<%= yeoman.app %>/wymeditor',
+                        dest: '<%= yeoman.dist %>/wymeditor',
+                        src: [
+                            "iframe/{,*/}*.{html,js,css,png,jpg,jpeg,gif,eot,ttf,woff}"
+                        ]
+                    },
+                    // Non-Javascript skin components
+                    // The javascript is included in jquery.wymeditor.js
+                    {
+                        expand: true,
+                        dot: true,
+                        cwd: '<%= yeoman.app %>/wymeditor',
+                        dest: '<%= yeoman.dist %>/wymeditor',
+                        src: [
+                            "skins/{,*/}*.{css,png,jpg,jpeg,gif}",
+                            "skins/{,*/}images/{,*/}*.{png,jpg,jpeg,gif}"
+                        ]
+                    },
+                    // Already-built Sphinx documentation
                     {
                         expand: true,
                         dot: true,
@@ -300,14 +338,18 @@ module.exports = function (grunt) {
 
     grunt.registerTask('server', function (target) {
         if (target === 'dist') {
-            return grunt.task.run(['build', 'connect:dist:keepalive']);
+            return grunt.task.run([
+                'build',
+                'connect:dist',
+                'watch:dist'
+            ]);
         }
 
         grunt.task.run([
             'clean:server',
             'htmlmin',
-            'connect:livereload',
-            'watch'
+            'connect:dev',
+            'watch:default'
         ]);
     });
 

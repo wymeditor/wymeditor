@@ -1,7 +1,7 @@
 {
   "name": "wymeditor",
   "description": "Pure js cross-browser WYSIWYM editor with a focus on the clean separation of content and styling.",
-  "version": "1.0.0-b6",
+  "version": "1.0.0-b6dev",
   "homepage": "http://wymeditor.github.io/wymeditor/",
   "repository": [
     {
@@ -57,11 +57,10 @@
     "grunt-contrib-sass": "~0.3.0",
     "grunt-contrib-stylus": "~0.5.0",
     "grunt-contrib-uglify": "~0.2.0",
-    "grunt-contrib-watch": "~0.5.2",
+    "grunt-contrib-watch": "~0.5.3",
     "grunt-rev": "~0.1.0",
     "grunt-usemin": "~0.1.10",
     "grunt-replace": "~0.4.4",
-    "connect-livereload": "~0.2.0",
     "time-grunt": "~0.1.1"
   },
   "engines": {

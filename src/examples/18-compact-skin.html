@@ -8,6 +8,9 @@
     <style type="text/css" media="screen">
       .container { white-space: nowrap; }
     </style>
+    <!-- build:css ../wymeditor/skins/compact/skin.css -->
+    <link rel="stylesheet" type="text/css" href="../wymeditor/skins/compact/skin.css" />
+    <!-- endbuild -->
 </head>
 <body>
     <div class="container">
@@ -21,14 +24,17 @@
     <!-- build:js ../wymeditor/jquery.wymeditor.js -->
     <script type="text/javascript" src="../test/load-src.dev.js"></script>
     <script type="text/javascript">
-        loadWymSrc('../');
+        loadWymSrc(
+                '../',
+                ['../wymeditor/skins/compact/skin.js']
+        );
     </script>
     <!-- endbuild -->
 
     <script type="text/javascript">
         $(document).ready(function() {
             $('.wymeditor').wymeditor({
-                skin: 'compact',
+                skin: 'compact'
             });
         });
     </script>

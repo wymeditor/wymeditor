@@ -11,43 +11,30 @@ WYMeditor.WymClassOpera.prototype.initIframe = function (iframe) {
     this._iframe = iframe;
     this._doc = iframe.contentWindow.document;
 
-    //add css rules from options
-    var styles = this._doc.styleSheets[0];
-    var aCss = eval(this._options.editorStyles);
-
-    this.addCssRules(this._doc, aCss);
-
     this._doc.title = this._wym._index;
 
-    //set the text direction
+    // Set the text direction
     jQuery('html', this._doc).attr('dir', this._options.direction);
 
-    //init designMode
     this._doc.designMode = "on";
 
-    //init html value
+    // Init html value
     this._html(this._wym._options.html);
 
-    //pre-bind functions
     if (jQuery.isFunction(this._options.preBind)) {
         this._options.preBind(this);
     }
 
-    //bind external events
+    // Bind external events
     this._wym.bindEvents();
 
-    //bind editor keydown events
     jQuery(this._doc).bind("keydown", this.keydown);
-
-    //bind editor events
     jQuery(this._doc).bind("keyup", this.keyup);
-
-    //post-init functions
     if (jQuery.isFunction(this._options.postInit)) {
         this._options.postInit(this);
     }
 
-    //add event listeners to doc elements, e.g. images
+    // Add event listeners to doc elements, e.g. images
     this.listen();
 
     jQuery(wym._element).trigger(
@@ -77,11 +64,6 @@ WYMeditor.WymClassOpera.prototype.selected = function() {
     } else {
         return null;
     }
-};
-
-WYMeditor.WymClassOpera.prototype.addCssRule = function(styles, oCss) {
-    styles.insertRule(
-            oCss.name + " {" + oCss.css + "}", styles.cssRules.length);
 };
 
 WYMeditor.WymClassOpera.prototype.keydown = function(evt) {

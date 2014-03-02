@@ -22,7 +22,6 @@ function setupWym(modificationCallback) {
     if (WYMeditor.INSTANCES.length === 0) {
         stop(); // Stop test running until the editor is initialized
         jQuery('.wymeditor').wymeditor({
-            stylesheet: 'styles.css',
             postInit: function (wym) {
                 // Determine if attempting to select a cell with a non-text
                 // inner node (a span) actually selects the inner node or
@@ -108,24 +107,6 @@ test("Commands", function () {
     deepEqual(jQuery('div.wym_html:visible', wymeditor._box).length, 0);
 });
 
-module("CssParser", {setup: setupWym});
-
-test("Configure classes items using CSS", function () {
-    expect(2);
-    ok(
-        jQuery('div.wym_classes ul', jQuery.wymeditors(0)._box).length > 0,
-        "Classes loaded"
-    );
-    deepEqual(
-        jQuery(
-            'div.wym_classes a:first-child',
-            jQuery.wymeditors(0)._box
-        ).attr('name'),
-        'date',
-        "First loaded class name"
-    );
-});
-
 module("XmlHelper", {setup: setupWym});
 
 test("Should escape URL's only once #69.1", function () {
@@ -148,23 +129,6 @@ test("Sanity check: _html()", function () {
     wymeditor._html(testText1);
     htmlEquals(wymeditor, testText1);
 });
-
-if (!jQuery.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
-    test("Adding combined CSS selectors", function () {
-        expect(1);
-
-        var wymeditor = jQuery.wymeditors(0),
-            doc = wymeditor._doc,
-            styles = doc.styleSheets[0];
-
-        wymeditor.addCssRule(
-            styles,
-            {name: 'p,h1,h2', css: 'font-style:italic'}
-        );
-        deepEqual(jQuery('p', doc).css('font-style'), 'italic', 'Font-style');
-    });
-}
-
 
 module("copy-paste", {setup: setupWym});
 
