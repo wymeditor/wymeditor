@@ -23,7 +23,7 @@ module.exports = function (grunt) {
             banner: "/*!\n" +
                 "WYMeditor - v<%= pkg.version %>\n\n" +
                 "Home page: <%= pkg.homepage %>\n\n" +
-                "Copyright (c) 2014 " +
+                "Copyright (c) <%= grunt.template.today('yyyy') %> " +
                 "<%= pkg.author.name %>;\n" +
                 "Licensed <%= _.pluck(pkg.licenses, 'type').join(', ') %>\n" +
                 "*/\n\n"
