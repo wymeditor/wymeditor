@@ -61,8 +61,7 @@
     "grunt-rev": "~0.1.0",
     "grunt-usemin": "~0.1.10",
     "grunt-replace": "~0.4.4",
-    "time-grunt": "~0.1.1",
-    "uglify-js": "2.4.12"
+    "time-grunt": "~0.1.1"
   },
   "engines": {
       "node": ">=0.8.0"
