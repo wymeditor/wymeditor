@@ -21,7 +21,8 @@ module.exports = function (grunt) {
         yeoman: yeomanConfig,
         meta: {
             banner: "/*!\n" +
-                "WYMeditor - v<%= pkg.version %>\n\n" +
+                "WYMeditor - v<%= pkg.version %> - " +
+                "<%= grunt.template.today('mm/dd/yyyy') %>\n\n" +
                 "Home page: <%= pkg.homepage %>\n\n" +
                 "Copyright (c) <%= grunt.template.today('yyyy') %> " +
                 "<%= pkg.author.name %>;\n" +
