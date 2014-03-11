@@ -259,11 +259,11 @@ module.exports = function (grunt) {
                             "examples/{,*/}*.{html,js,css,png,jpg,jpeg,gif}"
                         ]
                     },
-                    // Bower components for the examples
+                    // Vendored libraries for the examples
                     {
                         expand: true,
                         dot: true,
-                        cwd: '<%= yeoman.app %>/bower_components',
+                        cwd: '<%= yeoman.app %>/examples/vendor',
                         dest: '<%= yeoman.dist %>/examples/vendor',
                         src: [
                             "{,*/}*.js"

@@ -3,7 +3,6 @@ node_modules
 compiler.jar
 chef/*
 .vagrant/*
-src/bower_components/*
 dist/AUTHORS
 dist/CHANGELOG.md
 dist/GPL-license.txt
