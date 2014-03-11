@@ -13,3 +13,4 @@ Included Plugins with Download
     table
     tidy
     structured_headings
+    bidi
