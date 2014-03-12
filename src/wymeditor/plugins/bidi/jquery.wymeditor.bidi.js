@@ -20,32 +20,21 @@ WYMeditor.editor.prototype.bidi = function () {
     //Construct the buttons' html
     buttonLtr = [""
         , "<li class='wym_tools_direction_ltr'>"
-        ,     "<a name='ltr' title='{Left_to_Right}' href='#'"
-        ,     " style='background-image: url("
-        ,     wym._options.basePath
-        ,     "plugins/bidi/icons.png);'>"
+        ,     "<a name='ltr' title='{Left_to_Right}' href='#'>"
         ,         "{ltr}"
         ,     "</a>"
         , "</li>"
     ].join('');
     buttonRtl = [""
         , "<li class='wym_tools_direction_rtl'>"
-        ,     "<a name='rtl' title='{Right_to_Left}' href='#'"
-        ,         " style='background-image: url("
-        ,         wym._options.basePath
-        ,         "plugins/bidi/icons.png);"
-        ,         " background-position: 0px -24px;'>"
+        ,     "<a name='rtl' title='{Right_to_Left}' href='#'>"
         ,         "{ltr}"
         ,     "</a>"
         , "</li>"
     ].join('');
     buttonRmDir = [""
         , "<li class='wym_tools_direction_remove'>"
-        ,     "<a name='rmdir' title='{Default_Direction}' href='#'"
-        ,         " style='background-image: url("
-        ,         wym._options.basePath
-        ,         "plugins/bidi/icons.png);"
-        ,         " background-position: 0px -48px;'>"
+        ,     "<a name='rmdir' title='{Default_Direction}' href='#'>"
         ,         "{ltr}"
         ,     "</a>"
         , "</li>"
