@@ -1,0 +1,11 @@
+.wym_box .wym_buttons .wym_tools_direction_ltr a {
+    background-image: url("./icons.png");
+}
+.wym_box .wym_buttons .wym_tools_direction_rtl a {
+    background-image: url("./icons.png");
+    background-position: 0px -24px;
+}
+.wym_box .wym_buttons .wym_tools_direction_remove a {
+    background-image: url("./icons.png");
+    background-position: 0px -48px;
+}
