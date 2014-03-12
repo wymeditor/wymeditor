@@ -387,5 +387,4 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-replace");
     grunt.loadNpmTasks("grunt-contrib-htmlmin");
     grunt.loadNpmTasks("grunt-usemin");
-    grunt.loadNpmTasks("grunt-bower-install");
 };

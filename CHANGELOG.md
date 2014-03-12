@@ -70,6 +70,8 @@ All of these changes are documented in detail in the
   you must now install a [browser extension](http://feedback.livereload.com/knowledgebase/articles/86242-how-do-i-install-and-use-the-browser-extensions-).
   Automatic livereload injection was causing problems
   in older Internet Explorer.
+* Bower components are now installed automatically
+  when using the Vagrant setup.
 
 ### Skins
 
