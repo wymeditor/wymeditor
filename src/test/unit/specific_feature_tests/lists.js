@@ -2091,6 +2091,16 @@ test("Should correct invalid list nesting", function () {
     htmlEquals(wymeditor, expected);
 });
 
+test("Should correct IE8 pulling content into end of ul on backspace", function () {
+    expect(1);
+
+    var wymeditor = jQuery.wymeditors(0),
+        expected = "<ul><li>a<\/li><li>b<\/li><\/ul>",
+        invalid_html = "<ul><li>a<\/li>b<\/ul>";
+    wymeditor._html(invalid_html);
+    htmlEquals(wymeditor, expected);
+});
+
 test("Double indent correction", function () {
     expect(1);
 
