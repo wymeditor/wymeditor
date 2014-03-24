@@ -2102,18 +2102,18 @@ test("Should correct IE8 pulling content into end of ul on backspace", function 
             , '<li>b</li>'
         , '</ul>'
         ].join(""),
-        invalid_html = [""
+        invalidHtml = [""
         , '<ul>'
             , '<li>a</li>'
             , 'b'
         , '</ul>'
         ].join(""),
-        caret_location;
+        caretLocation;
 
-    wymeditor._html(invalid_html);
+    wymeditor._html(invalidHtml);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
-    caret_location = $body.find('ul')[0];
-    makeTextSelection(wymeditor, caret_location, caret_location, 1, 1);
+    caretLocation = $body.find('ul')[0];
+    makeTextSelection(wymeditor, caretLocation, caretLocation, 1, 1);
     simulateKey(WYMeditor.KEY.BACKSPACE, wymeditor._doc);
     htmlEquals(wymeditor, expected);
 });
