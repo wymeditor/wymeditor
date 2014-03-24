@@ -2095,8 +2095,18 @@ test("Adopt orphaned text inside list into li parents", function () {
     expect(1);
 
     var wymeditor = jQuery.wymeditors(0),
-        expected = "<ul><li>a<\/li><li>b<\/li><\/ul>",
-        invalid_html = "<ul><li>a<\/li>b<\/ul>";
+        expected = [""
+        , '<ul>'
+            , '<li>a</li>'
+            , '<li>b</li>'
+        , '</ul>'
+        ].join(""),
+        invalid_html = [""
+        , '<ul>'
+            , '<li>a</li>'
+            , 'b'
+        , '</ul>'
+        ].join("");
     wymeditor._html(invalid_html);
     htmlEquals(wymeditor, expected);
 });
