@@ -2091,7 +2091,7 @@ test("Should correct invalid list nesting", function () {
     htmlEquals(wymeditor, expected);
 });
 
-test("Should correct IE8 pulling content into end of ul on backspace", function () {
+test("Adopt orphaned text inside list into li parents", function () {
     expect(1);
 
     var wymeditor = jQuery.wymeditors(0),
