@@ -2091,10 +2091,11 @@ test("Should correct invalid list nesting", function () {
     htmlEquals(wymeditor, expected);
 });
 
-test("Adopt orphaned text inside list into li parents", function () {
+test("Should correct IE8 pulling content into end of ul on backspace", function () {
     expect(1);
 
     var wymeditor = jQuery.wymeditors(0),
+        $body,
         expected = [""
         , '<ul>'
             , '<li>a</li>'
@@ -2106,8 +2107,14 @@ test("Adopt orphaned text inside list into li parents", function () {
             , '<li>a</li>'
             , 'b'
         , '</ul>'
-        ].join("");
+        ].join(""),
+        caret_location;
+
     wymeditor._html(invalid_html);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    caret_location = $body.find('ul')[0];
+    makeTextSelection(wymeditor, caret_location, caret_location, 1, 1);
+    simulateKey(WYMeditor.KEY.BACKSPACE, wymeditor._doc);
     htmlEquals(wymeditor, expected);
 });
 
