@@ -2103,17 +2103,6 @@ var listWithOrphanedTextAfterLastLi = [""
     , '</ul>'
     ].join("");
 
-test("The parser should insert orphaned text at end of ul into a li",
-    function () {
-    expect(1);
-
-    var wymeditor = jQuery.wymeditors(0),
-        invalidHtml = listWithOrphanedTextAfterLastLi,
-        expected = fixedListWithOrphanedTextAfterLastLi;
-
-    wymeditor._html(invalidHtml);
-    htmlEquals(wymeditor, expected);
-});
 
 // IE8 bug https://github.com/wymeditor/wymeditor/issues/446
 if (jQuery.browser.msie && jQuery.browser.version == 8) {
