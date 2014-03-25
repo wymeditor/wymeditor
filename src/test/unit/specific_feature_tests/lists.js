@@ -2122,6 +2122,46 @@ test("Double indent correction", function () {
     htmlEquals(wymeditor, repairedHtml);
 });
 
+test("Text directly inside lists should be put inside list items", function () {
+    expect(1);
+
+    var wymeditor = jQuery.wymeditors(0),
+        brokenHtml = [""
+            , '<ol>'
+                , 'a'
+            , '</ol>'
+        ].join(""),
+        repairedHtml = [""
+            , '<ol>'
+                , '<li>a</li>'
+            , '</ol>'
+        ].join("");
+
+    jQuery(wymeditor._doc.body).html(brokenHtml);
+    wymeditor.correctInvalidListNesting(wymeditor.selected());
+    htmlEquals(wymeditor, repairedHtml);
+});
+
+test("Parser: Text directly inside lists should be put inside list items",
+    function () {
+    expect(1);
+
+    var wymeditor = jQuery.wymeditors(0),
+        brokenHtml = [""
+            , '<ol>'
+                , 'a'
+            , '</ol>'
+        ].join(""),
+        repairedHtml = [""
+            , '<ol>'
+                , '<li>a</li>'
+            , '</ol>'
+        ].join("");
+
+    wymeditor._html(brokenHtml);
+    htmlEquals(wymeditor, repairedHtml);
+});
+
 module("list-tabbing", {setup: setupWym});
 
 test("Tab key indents", function () {
