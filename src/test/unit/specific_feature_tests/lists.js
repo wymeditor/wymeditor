@@ -2099,7 +2099,7 @@ var listWithOrphanedTextAfterLastLi = [""
     ].join(""),
     fixedListWithOrphanedTextAfterLastLi = [""
     , '<ul>'
-        , '<li>a<br/>b</li>'
+        , '<li>a<br />b</li>'
     , '</ul>'
     ].join("");
 
