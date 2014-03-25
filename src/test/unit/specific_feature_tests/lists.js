@@ -2105,7 +2105,7 @@ var listWithOrphanedTextAfterLastLi = [""
 
 
 // IE8 bug https://github.com/wymeditor/wymeditor/issues/446
-if (jQuery.browser.msie && jQuery.browser.version == 8) {
+if (jQuery.browser.msie && jQuery.browser.version === 8) {
     test("Should correct IE8 pulling content into end of ul on backspace",
         function () {
         expect(1);
