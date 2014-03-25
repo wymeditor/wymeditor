@@ -2103,14 +2103,14 @@ var listWithOrphanedTextAfterLastLi = [""
     , '</ul>'
     ].join("");
 
-test("Should insert orphaned text at end of ul into a li", function () {
+test("The parser should insert orphaned text at end of ul into a li", function () {
     expect(1);
 
     var wymeditor = jQuery.wymeditors(0),
         invalidHtml = listWithOrphanedTextAfterLastLi,
         expected = fixedListWithOrphanedTextAfterLastLi;
 
-    jQuery(wymeditor._doc.body).html(invalidHtml);
+    wymeditor._html(invalidHtml);
     htmlEquals(wymeditor, expected);
 });
 
