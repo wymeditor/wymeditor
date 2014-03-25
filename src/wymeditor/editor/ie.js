@@ -255,7 +255,7 @@ WYMeditor.WymClassExplorer.prototype.keyup = function (evt) {
             wym.switchTo(container, defaultRootContainer);
         }
 
-        // Deal with IE8 specific bug.
+        // IE8 bug https://github.com/wymeditor/wymeditor/issues/446
         if (jQuery.browser.msie && jQuery.browser.version == 8) {
             wym.correctInvalidListNesting(wym.selected());
         }

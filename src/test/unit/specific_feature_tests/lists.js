@@ -2114,6 +2114,7 @@ test("Should insert orphaned text at end of ul into a li", function () {
     htmlEquals(wymeditor, expected);
 });
 
+// IE8 bug https://github.com/wymeditor/wymeditor/issues/446
 if (jQuery.browser.msie && jQuery.browser.version == 8) {
     test("Should correct IE8 pulling content into end of ul on backspace", function () {
         expect(1);
