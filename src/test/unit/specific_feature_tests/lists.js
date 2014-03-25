@@ -2116,23 +2116,25 @@ test("Should insert orphaned text at end of ul into a li", function () {
     htmlEquals(wymeditor, expected);
 });
 
-test("Should correct IE8 pulling content into end of ul on backspace", function () {
-    expect(1);
+if (jQuery.browser.msie && jQuery.browser.version == 8) {
+    test("Should correct IE8 pulling content into end of ul on backspace", function () {
+        expect(1);
 
-    var wymeditor = jQuery.wymeditors(0),
-        $body,
-        invalidHtml = listWithOrphanedTextAfterLastLi,
-        expected = fixedListWithOrphanedTextAfterLastLi,
-        caretLocation;
+        var wymeditor = jQuery.wymeditors(0),
+            $body,
+            invalidHtml = listWithOrphanedTextAfterLastLi,
+            expected = fixedListWithOrphanedTextAfterLastLi,
+            caretLocation;
 
-    wymeditor._html(invalidHtml);
-    jQuery(wymeditor._doc.body).html(invalidHtml);
-    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
-    caretLocation = $body.find('ul')[0];
-    makeTextSelection(wymeditor, caretLocation, caretLocation, 1, 1);
-    simulateKey(WYMeditor.KEY.BACKSPACE, wymeditor._doc);
-    htmlEquals(wymeditor, expected);
-});
+        wymeditor._html(invalidHtml);
+        jQuery(wymeditor._doc.body).html(invalidHtml);
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+        caretLocation = $body.find('ul')[0];
+        makeTextSelection(wymeditor, caretLocation, caretLocation, 1, 1);
+        simulateKey(WYMeditor.KEY.BACKSPACE, wymeditor._doc);
+        htmlEquals(wymeditor, expected);
+    });
+}
 
 test("Double indent correction", function () {
     expect(1);
