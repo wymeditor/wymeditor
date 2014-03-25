@@ -71,6 +71,8 @@ Any user should be able to follow the instructions in the README to make their
 own archive, but it's important to include an archive in a known place for ease
 of use.
 
+* Ensure that the checked-in version located in `dist/`
+  is up to date with the current source.
 * Follow the `README.md` instructions to create the `tar.gz` archive.
 * Tag the current version in git using [Semantic
   Versioning](http://semver.org/) and push the tag to github.
@@ -80,6 +82,8 @@ of use.
   from the CHANGELOG for the current version to the release description and
   upload the built `tar.gz` archive named according to the
   `wymeditor-<version>.tar.gz` format.
+* Update the website by building the site with jekyll
+  and then pushing to the `gh-pages` branch.
 
 Tell the World
 ==============

@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>RDFa editor</title>
+    <style type="text/css">
+        /* visual feedback */
+        .about         { background-color: #f99; }
+        .dc_creator    { background-color: #9f9; }
+        .dc_title      { background-color: #9ff; }
+        .foaf_Person   { background-color: #69c; }
+        .foaf_name     { background-color: #99c; }
+        .foaf_homepage { background-color: #c9c; }
+        .foaf_mbox     { background-color: #c6c; }
+        .foaf_phone    { background-color: #c3c; }
+    </style>
+    <link rel="stylesheet" href="../wymeditor/skins/default/skin.css">
+</head>
+<body>
+    <h1>WYMeditor based RDFa editor (proof of concept)</h1>
+    <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+    <p>More information on the forum: <a href="http://forum.wymeditor.org/forum/viewtopic.php?f=3&amp;p=2030">WYMeditor for RDFa</a></p>
+    <form method="post" action="">
+        <textarea class="wymeditor"></textarea>
+        <input type="submit" class="wymupdate" />
+    </form>
+
+    <script src="vendor/jquery/jquery.js"></script>
+    <script src="vendor/jquery/jquery.rdfquery.rdfa.min-1.0.js"></script>
+    <script src="../wymeditor/jquery.wymeditor.js"></script>
+    <script src="../wymeditor/plugins/rdfa/jquery.wymeditor.rdfa.js"></script>
+
+    <script type="text/javascript">
+        jQuery(function() {
+            jQuery('.wymeditor').wymeditor({
+                html: '<h2 class="dc_title" property="dc:title">The trouble with Bob<\/h2><h3 class="dc_creator" property="dc:creator">Alice<\/h3>'
+                    + '<p>The trouble with Bob is that he takes much better photos than I do.<\/p>'
+                    + '<p class="foaf_Person" typeof="foaf:Person">'
+                    + '<strong class="foaf_name" property="foaf:name">Alice Birpemswick<\/strong><br \/>'
+                    + 'Email: <a class="foaf_mbox" rel="foaf:mbox" href="mailto:alice@example.com">alice@example.com<\/a><br \/>'
+                    + 'Phone: <a class="foaf_phone" rel="foaf:phone" href="tel:+1-617-555-7332">+1 617.555.7332<\/a>'
+                    + '<\/p>',
+
+                postInit: function(wym) {
+                    var buttons = [
+                        { ns: 'foaf', attr: 'typeof', value: 'Person', title: "A person" },
+                        { ns: 'foaf', attr: 'rel', value: 'mbox', title: "Link to person's mailbox" },
+                        { attr: 'about', title: "What the content is about" }
+                    ];
+                    rdfa = wym.rdfa({
+                        'buttons': buttons
+                    });
+
+                    //feedback css
+                    // TODO: addCssRules was removed. If we're going to continue
+                    // supporting this example, then we'll need to add these as
+                    // standard CSS to a custom iframe, or support fully-dynamic
+                    // iframes that aren't loaded via `src`, but instead have
+                    // their contents injected.
+                    var rules = [
+                      { name: '.about',
+                        css: 'background-color: #f99;' },
+                      { name: '.dc_creator',
+                        css: 'background-color: #9f9;' },
+                      { name: '.dc_title',
+                        css: 'background-color: #9ff;' },
+                      { name: '.foaf_Person',
+                        css: 'background-color: #69c;' },
+                      { name: '.foaf_name',
+                        css: 'background-color: #99c;' },
+                      { name: '.foaf_homepage',
+                        css: 'background-color: #c9c;' },
+                      { name: '.foaf_mbox',
+                        css: 'background-color: #c6c;' },
+                      { name: '.foaf_phone',
+                        css: 'background-color: #c3c;' }
+                    ];
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>

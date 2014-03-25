@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>WYMeditor</title>
+    <link rel="stylesheet" href="../wymeditor/skins/seamless/skin.css">
+</head>
+<body>
+    <h1>WYMeditor with a seamless skin</h1>
+    <h2>Look ma! No double scrollbar!</h2>
+    <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+    <form method="post" action="">
+        <!--
+            The seamless skin uses the height of your textarea as the minimum
+            editor height.
+        -->
+        <textarea class="wymeditor" style="min-height: 600px"></textarea>
+        <input type="submit" class="wymupdate" />
+    </form>
+    <div class="more-content">The toolbar will stop floating here.<div>
+
+    <script src="vendor/jquery/jquery.js"></script>
+    <script src="../wymeditor/jquery.wymeditor.js"></script>
+
+    <script type="text/javascript">
+        jQuery(function() {
+            var stringToRepeat = '<p>Hello, World!<\/p>',
+                html = '';
+
+            for (var i = 0; i < 2; i++) {
+                html += stringToRepeat;
+            }
+            for (var i = 0; i < 5; i++) {
+                // A working image, relative to the iframe, with no height
+                html += stringToRepeat;
+                html += [''
+                    , '<img '
+                    , 'src="../../skins/wymeditor_icon.png'
+                    , '?cache_break=' + i + '"'
+                    , ' />'
+                ].join('');
+            }
+            html += '<p>After the images</p>';
+
+            jQuery('.wymeditor').wymeditor({
+                html: html,
+                skin: 'seamless',
+                // We already included the seamless skin's javascript so that we could
+                // use this constant
+                iframeHtml: WYMeditor.SKINS.seamless.OPTS.iframeHtml
+            });
+
+            jQuery('.more-content').append(jQuery(html));
+            jQuery('.more-content').append(jQuery(html));
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>WYMeditor: Plugins</title>
+    <link rel="stylesheet" href="../wymeditor/skins/default/skin.css">
+</head>
+<head>
+</head>
+
+<body>
+    <h1>WYMeditor: Plugins</h1>
+    <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+    <p>Hover over toolbar items to see their labels in the lower left.</p>
+    <form method="post" action="">
+        <textarea class="wymeditor"></textarea>
+        <input type="submit" class="wymupdate" />
+    </form>
+
+    <script src="vendor/jquery/jquery.js"></script>
+    <script src="../wymeditor/jquery.wymeditor.js"></script>
+
+    <!-- Load the hovertools plugin-->
+    <script type="text/javascript" src="../wymeditor/plugins/hovertools/jquery.wymeditor.hovertools.js"></script>
+
+    <script type="text/javascript">
+        // Use the 'postInit' option to initialize the plugin
+        // once WYMeditor is ready.,
+        $(function() {
+            var options = {
+                html: '<p>Hello, World!<\/p>',
+                postInit: function(wym) {
+                    // postInit is executed after WYMeditor initialization
+                    // 'wym' is the current WYMeditor instance
+
+                    // Let's activate the 'hovertools' plugin
+                    // to provide advanced feedback to our users.
+                    wym.hovertools();
+                }
+            };
+            $('.wymeditor').wymeditor(options);
+        });
+    </script>
+</body>
+</html>

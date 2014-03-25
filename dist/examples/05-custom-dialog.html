@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>WYMeditor: Custom Dialogs</title>
+    <link rel="stylesheet" href="../wymeditor/skins/default/skin.css">
+</head>
+
+<body>
+    <h1>WYMeditor: Custom Dialogs</h1>
+    <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+    <form method="post" action="">
+        <textarea class="wymeditor"></textarea>
+        <input type="submit" class="wymupdate" />
+    </form>
+
+    <script src="vendor/jquery/jquery.js"></script>
+    <script src="../wymeditor/jquery.wymeditor.js"></script>
+
+    <script type="text/javascript">
+        $(function() {
+            var ourCustomDialog = function(wym, dialogWindow) {
+                // 'wym' is the WYMeditor instance.
+                // 'dialogWindow' is the dialog's window object.
+                var dialogBody = dialogWindow.document.body,
+                    $dialogBody = $(dialogBody),
+                    // Add a 'select' box to the dialog populated with
+                    // predefined values.
+                    selectLink = String() +
+                    '<div class="row row-indent">' +
+                        '<select class="wym_select_link">' +
+                            '<option selected value="WYMeditor http://www.wymeditor.org/">' +
+                                'WYMeditor' +
+                            '</option>' +
+                            '<option selected value="Github https://github.com/wymeditor/wymeditor">' +
+                                'Github' +
+                            '</option>' +
+                            '<option selected value="GNU http://www.gnu.org/">' +
+                                'GNU' +
+                            '</option>' +
+                        '</select>' +
+                        '<input class="wym_choose" type="button" value="{Choose}" />' +
+                    '</div>';
+
+                // The {Choose} string will automagically be localized
+                // in the current language by 'replaceStrings()'.
+
+                // Add controls to the dialog.
+                $dialogBody
+                    .filter('.wym_dialog_link').find('fieldset').eq(0)
+                    .prepend(wym.replaceStrings(selectLink));
+
+                // Bind a function which will populate the URL and title fields
+                // when the user clicks on the wym_choose button.
+                $dialogBody
+                    .find('.wym_choose')
+                    .click(function() {
+                        var myval = $dialogBody.find('.wym_select_link').val();
+                        // Get the URL and the title
+                        $dialogBody
+                            .find('.wym_href')
+                            .val(myval.substring(myval.lastIndexOf(' ') + 1));
+                        $dialogBody
+                            .find('.wym_title')
+                            .val(myval.substr(0, myval.lastIndexOf(' ')));
+                    });
+            };
+
+            var options = {
+                html: '<p>Hello, World!<\/p>',
+                // postInitDialog is executed when the dialog is ready
+                postInitDialog: ourCustomDialog
+            }
+
+            $('.wymeditor').wymeditor(options);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>WYMeditor</title>
+    <link rel="stylesheet" type="text/css" href="../jquery/jquery.ui.resizable.css" />
+    <link rel="stylesheet" href="../wymeditor/skins/default/skin.css">
+</head>
+<body>
+    <h1>WYMeditor integration example - resizable plugin</h1>
+    <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+    <form method="post" action="">
+        <textarea class="wymeditor"></textarea>
+        <input type="submit" class="wymupdate" />
+    </form>
+
+    <script src="vendor/jquery/jquery.js"></script>
+    <script src="../wymeditor/jquery.wymeditor.js"></script>
+
+    <!-- REQUIRED: jQuery UI and jQuery UI resizable -->
+    <script type="text/javascript" src="../jquery/jquery-ui-1.8.11.custom.min.js"></script>
+    <script type="text/javascript" src="../wymeditor/plugins/hovertools/jquery.wymeditor.hovertools.js"></script>
+    <script type="text/javascript" src="../wymeditor/plugins/resizable/jquery.wymeditor.resizable.js"></script>
+
+    <script type="text/javascript">
+        jQuery(function() {
+            jQuery('.wymeditor').wymeditor({
+                html: '<p>Hello, World!<\/p>',
+                postInit: function(wym) {
+                    wym.hovertools();
+                    wym.resizable();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

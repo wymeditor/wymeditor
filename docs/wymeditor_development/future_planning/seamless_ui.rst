@@ -47,12 +47,13 @@ so that the height is pixel-perfect.
   * Images
   * Tables
 
-Responsive Containers/Classes
------------------------------
-
-Make the containers/classes menus responsive,
-floating down the right if there's room,
-but collapsing to drop-downs if there isn't.
+Also,
+investigate using `scrolling.js <https://github.com/pazguille/scrolling>`_
+to provide intelligent scroll debouncing.
+It uses ``requestAnimationFrame`` where supported
+and falls back to using a timeout
+to only hit the callback
+60 times per second.
 
 Inspiration/Examples
 ====================
@@ -62,15 +63,56 @@ zenpen
 
 `Zenpen <https://github.com/tholman/zenpen>`_
 
+Different Goals
+^^^^^^^^^^^^^^^
+
+Minimalism is the goal,
+so lists,
+tables,
+etc.
+not a thing.
+
 aloha-editor
 ------------
 
 `Aloha Editor <http://www.aloha-editor.org/demos/960-fluid-demo/>`_
 
+Different Goals
+^^^^^^^^^^^^^^^
+
+Accepts/produces all sorts of HTML by design,
+but does care about good HTML.
+Goal is general editing,
+and doesn't want to be opinionated about structure.
+
 Substance.io
 ------------
 
 Specifically, the Composer for `Substance <http://substance.io/>`_
+
+Different Goals
+^^^^^^^^^^^^^^^
+
+* Use internal JSON representation of blocks,
+  which means not useful on starting HTML doc.
+* Only aims at modern browsers (IE10+).
+* Tied to the substance backend?
+
+sir-trevor-js
+-------------
+
+`sir-trevor-js <https://github.com/madebymany/sir-trevor-js>`_
+uses the "blocks" concept,
+which is very similar to the way ``substance.io`` operates.
+It also uses an inline context menu
+that is a dead-ringer for the ``zenpen`` menu.
+
+Different Goals
+^^^^^^^^^^^^^^^
+
+* Use internal JSON representation of blocks,
+  which means not useful on starting HTML doc.
+* Only aims at modern browsers (IE10+).
 
 Useful Tools
 ============

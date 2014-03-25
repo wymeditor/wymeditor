@@ -7,6 +7,27 @@ WYMeditor.
 
 *release-date* TBD
 
+### Bring your own CSS: Backwards-Incompatible Changes
+
+All of these changes are documented in detail in the
+[Upgrading to Version 1 docs](http://wymeditor.readthedocs.org/en/latest/customizing_wymeditor/index.html#upgrading-to-version-1).
+
+* Skin CSS is no longer being included automatically. That means, that if
+  you're using the default skin, you'll need to add a line like the
+  following:
+  `<link rel="stylesheet" type="text/css"
+    href="wymeditor/skins/default/skin.css" />`
+* We're no longer automatically doing an AJAX HTTP request to load various
+  resources, including skin CSS/JS and language files. If you're using the
+  default WYMeditor bundle, all you'll notice is that WYMeditor loads more
+  quickly. If you're using a custom bundle, you'll need to be sure and include
+  the translations and skin that you need before editor initialization.
+* The default iframe has been modified with several usability improvements.
+  To continue to support users who need/prefer the previous iframe, that
+  option is now available as the `legacy` iframe.
+* Configuring editor styles via WYMeditor options is no longer supported.
+  The best language for using CSS is... CSS.
+
 ### Enhancements
 
 * The unit test suite has been fixed to now fully pass using jQuery 1.4.4, and
@@ -29,6 +50,28 @@ WYMeditor.
   still be applied to all of the list items in each of the selected lists. This
   behavior has been adjusted so that the indent and outdent tools will not
   apply to lists unless the selection is entirely contained within one list.
+  [#418](https://github.com/wymeditor/wymeditor/issues/418)
+* 1.0.0b5 introduced a regression bug which allowed `br` tags to exist at the
+  document root, even after parsing. This is no longer the case.
+  [#431](https://github.com/wymeditor/wymeditor/issues/431)
+
+### Infrastructure Improvements
+
+* Both the examples and the website are now hosted on github pages,
+  which means no more broken links.
+* We're now distributing an already-built version of WYMeditor
+  located in the ``dist/`` folder
+  as part of the repository.
+  This lowers the barrier to entry for trying out WYMeditor.
+  It will also allow us
+  to add [component](https://github.com/component/component) support.
+  Hooray better Javascript component packaging!
+* To take advantage of Livereload support in development,
+  you must now install a [browser extension](http://feedback.livereload.com/knowledgebase/articles/86242-how-do-i-install-and-use-the-browser-extensions-).
+  Automatic livereload injection was causing problems
+  in older Internet Explorer.
+* Bower components are now installed automatically
+  when using the Vagrant setup.
 
 ### Skins
 
@@ -38,8 +81,6 @@ Introducing the Seamless skin! This skin uses a resizing iframe
 and floating toolbar to make the WYMeditor UI less obtrusive.
 Your users will no longer see the second vertical scrollbar,
 removing one more thing separating them from their content.
-
-Note: The seamless skin currently requires jQuery 1.8 or higher.
 
 ### Build Process Improvements
 
@@ -304,7 +345,7 @@ are completed, this cycle will culminate in a 1.0.0 stable release.
   clues for blocks, resulting in fewer HTTP requests and better network
   performance. Additionally, the context clues have been expanded to provide a
   better "plain english" explanation of the elements. Give this new theme a
-  swing at [the example](http://wymeditor.no.de/wymeditor/examples/17-pretty-theme.html).
+  swing at [the example](http://wymeditor.github.io/wymeditor/dist/examples/17-pretty-theme.html).
 
   You can enable it in your project by passing the
   `iframeBasePath: "wymeditor/iframe/pretty/"` option to your WYMeditor instance.

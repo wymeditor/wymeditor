@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>WYMeditor</title>
+    <link rel="stylesheet" href="../wymeditor/skins/default/skin.css">
+</head>
+<body>
+    <h1>WYMeditor integration example - custom menu</h1>
+    <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+    <form method="post" action="">
+        <textarea class="wymeditor"></textarea>
+        <input type="submit" class="wymupdate" />
+    </form>
+
+    <script src="vendor/jquery/jquery.js"></script>
+    <script src="../wymeditor/jquery.wymeditor.js"></script>
+
+    <script type="text/javascript">
+        jQuery(function() {
+            jQuery('.wymeditor').wymeditor({
+                html: '<p>Hello, World!<\/p>',
+                // Customize the tools menu with toolsItems option
+                // 'name' is the name of the command which will be executed
+                // when the user clicks on the button
+                // 'title' is the button's title (automagically localized)
+                // 'css' is the button's class name
+                toolsItems: [
+                    {'name': 'Bold', 'title': 'Strong', 'css': 'wym_tools_strong'},
+                    {'name': 'Italic', 'title': 'Emphasis', 'css': 'wym_tools_emphasis'},
+                    {'name': 'CreateLink', 'title': 'Link', 'css': 'wym_tools_link'},
+                    {'name': 'Unlink', 'title': 'Unlink', 'css': 'wym_tools_unlink'},
+                    {'name': 'InsertImage', 'title': 'Image', 'css': 'wym_tools_image'},
+                    {'name': 'InsertOrderedList', 'title': 'Ordered_List',
+                        'css': 'wym_tools_ordered_list'},
+                    {'name': 'InsertUnorderedList', 'title': 'Unordered_List',
+                        'css': 'wym_tools_unordered_list'},
+                    {'name': 'InsertTable', 'title': 'Table', 'css': 'wym_tools_table'},
+                    {'name': 'Paste', 'title': 'Paste_From_Word',
+                        'css': 'wym_tools_paste'},
+                    {'name': 'Undo', 'title': 'Undo', 'css': 'wym_tools_undo'},
+                    {'name': 'Redo', 'title': 'Redo', 'css': 'wym_tools_redo'}
+                ]
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>WYMeditor</title>
+    <link rel="stylesheet" href="../wymeditor/skins/default/skin.css">
+</head>
+<body>
+    <h1>WYMeditor custom XHTML parser example</h1>
+    <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+    <form method="post" action="">
+        <textarea class="wymeditor"></textarea>
+        <input type="submit" class="wymupdate" />
+    </form>
+
+    <script src="vendor/jquery/jquery.js"></script>
+    <script src="../wymeditor/jquery.wymeditor.js"></script>
+
+    <script type="text/javascript">
+        WYMeditor.XhtmlLexer.prototype.addTokens = function() {
+            // These tokens are for Radiant CMS radius tags
+            this.addEntryPattern("</?r:", 'Text', 'Text');
+            this.addExitPattern(">", 'Text');
+
+            this.addCommentTokens('Text');
+            this.addScriptTokens('Text');
+            this.addCssTokens('Text');
+            this.addTagTokens('Text');
+        };
+
+        // Define allowed attributes and their values for <p>
+        WYMeditor.XhtmlValidator._tags['p'] = {
+            'attributes': {
+                'align':/^(right|left|center|justify)$/,
+                '0':'name'
+            }
+        };
+
+        // Add runat="server" attribute to <a> and <img>
+        jQuery.extend(WYMeditor.XhtmlValidator._tags['a']['attributes'], {'runat':/^(server)$/});
+        jQuery.extend(WYMeditor.XhtmlValidator._tags['img']['attributes'], {'runat':/^(server)$/});
+
+        jQuery(function() {
+            jQuery('.wymeditor').wymeditor({
+                html: '<p><a runat="server"><em>Runat server</em> link.</a></p>'
+                    + '<p align="right">Right aligned paragraph.</p>'
+                    + '<p><r:test>This text is inside a radius tag.</r:test></p>'
+                    + '<p>Nothing special here.</p>'
+            });
+        });
+    </script>
+</body>
+</html>

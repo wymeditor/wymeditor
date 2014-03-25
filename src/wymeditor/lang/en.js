@@ -38,8 +38,8 @@ WYMeditor.STRINGS.en = {
     Preview:          'Preview',
     Paste_From_Word:  'Paste from Word',
     Tools:            'Tools',
-    Containers:       'Containers',
-    Classes:          'Classes',
+    Containers:       'Formatting',
+    Classes:          'Style',
     Status:           'Status',
     Source_Code:      'Source code'
 };

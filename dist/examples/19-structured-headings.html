@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>WYMeditor</title>
+    <link rel="stylesheet" href="../wymeditor/skins/default/skin.css">
+</head>
+<body>
+    <h1>WYMeditor integration example - structured headings plugin</h1>
+    <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+    <form method="post" action="">
+        <textarea class="wymeditor"></textarea>
+        <input type="submit" class="wymupdate" />
+    </form>
+
+    <script src="vendor/jquery/jquery.js"></script>
+    <script src="../wymeditor/jquery.wymeditor.js"></script>
+
+    <!-- Structured headings plugin JS file -->
+    <script type="text/javascript"
+            src="../wymeditor/plugins/structured_headings/jquery.wymeditor.structured_headings.js">
+    </script>
+    <script type="text/javascript">
+        jQuery(function() {
+            jQuery('.wymeditor').wymeditor({
+                html:   '<p>Hello, world!<\/p>',
+                postInit: function(wym) {
+                    // Call this function to initialize the structured headings plugin
+                    wym.structuredHeadings();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

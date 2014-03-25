@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>WYMeditor</title>
+    <link rel="stylesheet" href="../wymeditor/skins/legacy/skin.css">
+</head>
+
+<body>
+    <h1>WYMeditor pre-1.0 Legacy Options</h1>
+    <p>
+        WYMeditor version 1.0 made some significant changes to the default skin
+        and editor styles. For folks who need the old UI, we've included a
+        (deprecated) skin and iframe to meet their needs. It's easy to provide
+        your own skin and iframe, though, so these will be removed according
+        to WYMeditor's deprecation policy.
+    </p>
+    <form method="post" action="">
+        <textarea class="wymeditor">&lt;p&gt;Hello, World!&lt;/p&gt;</textarea>
+        <input type="submit" class="wymupdate" />
+    </form>
+
+    <script src="vendor/jquery/jquery.js"></script>
+    <script src="../wymeditor/jquery.wymeditor.js"></script>
+    <script src="../wymeditor/skins/legacy/skin.js"></script>
+
+    <script type="text/javascript">
+        $(function() {
+            $('.wymeditor').wymeditor({
+                iframeBasePath: "../wymeditor/iframe/legacy/",
+                skin: "legacy"
+            });
+        });
+    </script>
+</body>
+</html>

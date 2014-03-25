@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>WYMeditor</title>
+    <link rel="stylesheet" href="../wymeditor/skins/default/skin.css">
+</head>
+
+<body>
+    <h1>WYMeditor integration example</h1>
+    <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+    <form method="post" action="">
+        <textarea class="wymeditor">
+
+&lt;p&gt;Paragraph &amp;lt;p&amp;gt; • Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum metus tellus, ultrices ac tristique vitae, laoreet et ante. Aliquam elit velit, porta sed volutpat vitae, sodales in dolor. Vestibulum eros odio, gravida et bibendum et, accumsan imperdiet eros. In at mauris nibh. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Praesent ultrices interdum velit, sit amet lacinia massa varius in. Sed vulputate dapibus nulla, et tincidunt urna faucibus eu. &lt;/p&gt;
+&lt;p class="some"&gt;Paragraph &amp;lt;p&amp;gt; with class "some" • Nullam bibendum rhoncus ullamcorper. Aliquam vitae ullamcorper metus. Phasellus vitae ipsum tortor, accumsan cursus nunc.&lt;/p&gt;
+&lt;h1&gt;Heading 1 &amp;lt;h1&amp;gt;&lt;/h1&gt;
+&lt;h1 class="first"&gt;Heading 1 &amp;lt;h1&amp;gt; with class "first"&lt;/h1&gt;
+&lt;h2&gt;Heading 2 &amp;lt;h2&amp;gt;&lt;/h2&gt;
+&lt;h2 class="other"&gt;Heading 2 &amp;lt;h2&amp;gt; with class "other"&lt;/h2&gt;
+&lt;h2&gt;&lt;a href="#"&gt;Linked Heading 2 &lt;/a&gt;&amp;lt;h2&amp;gt;&lt;/h2&gt;
+&lt;h3&gt;Heading 3 &amp;lt;h3&amp;gt;&lt;/h3&gt;
+&lt;h4&gt;Heading 4 &amp;lt;h4&amp;gt;&lt;/h4&gt;
+&lt;h5&gt;Heading 5 &amp;lt;h5&amp;gt;&lt;/h5&gt;
+&lt;h6&gt;Heading 6 &amp;lt;h6&amp;gt;&lt;/h6&gt;
+&lt;div&gt;Division, section &amp;lt;div&amp;gt; • Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.&lt;/div&gt;
+&lt;div class="messages error"&gt;Division, section &amp;lt;div&amp;gt; with class "messages error" • Vivamus metus orci, consectetur a consectetur sed, malesuada sed ligula. Nunc nibh quam, tempor sagittis rhoncus quis, placerat a elit.&lt;/div&gt;
+&lt;address&gt;Address &amp;lt;address&amp;gt; • Suspendisse laoreet pellentesque nibh id gravida. &lt;/address&gt;
+&lt;blockquote cite="#"&gt;Quoted section &amp;lt;blockquote&amp;gt; • Donec vulputate pretium egestas. Vivamus faucibus ultrices elit, sit amet dignissim mauris semper at. Mauris laoreet nisi sed dolor volutpat sagittis. Proin euismod varius nisl ut interdum. Maecenas tempor, ipsum placerat suscipit malesuada, sem ipsum ullamcorper purus, eu eleifend tortor ante ac arcu. &lt;/blockquote&gt;
+&lt;blockquote&gt;&lt;p&gt;Nested paragraph in quoted section  •  Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.&lt;/blockquote&gt;
+&lt;pre&gt;Preformatted text &amp;lt;pre&amp;gt; •
+    Proin hendrerit felis
+     vitae urna bibendum commodo.
+      Cras non augue vitae metus ullamcorper porttitor at et nisl.
+       Quisque dui lacus, vestibulum at placerat vitae, dignissim ac erat.&lt;/pre&gt;
+
+&lt;p&gt;Inline elements: strong, em, a href, span, abbr, acronym, q, cite, kbd, samp, var, dfn, code, del, ins, sup, sub • Lorem ipsum
+	&lt;strong&gt;important text &amp;lt;strong&amp;gt; and &amp;lt;b&amp;gt; • dolor sit amet&lt;/strong&gt;, consectetur
+	&lt;em&gt;emphasized text &amp;lt;em&amp;gt; and &amp;lt;i&amp;gt; • adipiscing elit&lt;/em&gt;. Vestibulum
+	&lt;a href="#"&gt;hyperlink &amp;lt;a href&amp;gt; • metus&lt;/a&gt; tellus, ultrices ac
+	&lt;span&gt;generic inline container &amp;lt;span&amp;gt; • tristique vitae&lt;/span&gt;, laoreet et ante. Sodales
+	&lt;abbr title="abbr"&gt;abbreviation &amp;lt;abbr&amp;gt; • ALIQUAM&lt;/abbr&gt; elit velit,
+	&lt;acronym title="acronym"&gt;acronym &amp;lt;acronym&amp;gt; • PORTA&lt;/acronym&gt; sed volutpat,
+	&lt;q&gt;short quotation &amp;lt;q&amp;gt; • Vestibulum eros odio&lt;/q&gt;, gravida et bibendum et,
+	&lt;cite&gt;title of a work &amp;lt;cite&amp;gt; • accumsan imperdiet&lt;/cite&gt; eros. In at mauris
+	&lt;kbd&gt;keyboard input &amp;lt;kbd&amp;gt; • vitae&lt;/kbd&gt; sodales in dolor. Cum sociis
+	&lt;samp&gt;sample output from a computer program &amp;lt;samp&amp;gt; • natoque penatibus&lt;/samp&gt; et magnis dis
+	&lt;var&gt;variable &amp;lt;var&amp;gt; • parturient&lt;/var&gt; montes, nascetur
+	&lt;dfn&gt;definition term &amp;lt;dfn&amp;gt; • ridiculus&lt;/dfn&gt; mus. Praesent
+	&lt;code&gt;computer code &amp;lt;code&amp;gt; • torqueo jumentum dolus esca&lt;/code&gt; suscipit,
+	&lt;del&gt;deleted text &amp;lt;del&amp;gt; • ultrices&lt;/del&gt; velit, sit amet
+	&lt;ins&gt;inserted text &amp;lt;ins&amp;gt; • acinia massa varius&lt;/ins&gt; in. Sed vulputate dapibus nulla, et
+	&lt;sup&gt;supscript text &amp;lt;sup&amp;gt; • tincidunt&lt;/sup&gt; urna faucibus eu. Neo damnum aliquam
+	&lt;sub&gt;subscript text &amp;lt;sub&amp;gt; • consequat&lt;/sub&gt;. Abdo genitus luptatum virtus singularis distineo validus ea. Gravis
+	&lt;strong class="myinlineclass"&gt;important text &amp;lt;strong&amp;gt; with class "myinlineclass" • oppeto huic incassum. Vulputate hos singularis veniam zelus singularis utinam vulputate sino quidne. Nutus neque quidem. Natu interdico melior.Oppeto vulpes meus jugis ut iriure valde consectetuer&lt;/strong&gt; abigo. Aptent bene ideo commoveo quadrum abbas. Vereor macto neo probo ille. Esse vulpes sino virtus rusticus brevitas mos. Cui ad vulputate et vero zelus feugiat os olim obruo. Facilisi quadrum proprius gravis velit humo nunc wisi imputo antehabeo.Valde dolore tation facilisi ullamcorper gemino gemino cui qui paratus. Camur in capto euismod. Brevitas vero iriure letalis valde oppeto plaga ullamcorper adipiscing inhibeo.
+&lt;/p&gt;
+
+&lt;h2&gt;Ordered List&lt;/h2&gt;
+&lt;ol&gt;
+	&lt;li&gt;Nullam ullamcorper porta sem quis aliquet. Integer sed metus justo.&lt;/li&gt;
+	&lt;li&gt;Lorem ipsum dolor sit amet consectetuer.&lt;/li&gt;
+	&lt;li&gt;Neo damnum aliquam consequat. Abdo genitus luptatum virtus singularis distineo validus ea. Gravis oppeto huic incassum torqueo jumentum dolus esca suscipit. Vulputate hos singularis veniam zelus singularis utinam vulputate sino quidne. Nutus neque quidem. Natu interdico melior.Oppeto vulpes meus jugis ut iriure valde consectetuer abigo. Aptent bene ideo commoveo quadrum abbas. Vereor macto neo probo ille.&lt;/li&gt;
+	&lt;li&gt;&lt;p&gt;Pellentesque dui mauris, mattis id lobortis porttitor, laoreet eu dui. Vestibulum eget ligula mauris, iaculis euismod sapien.&lt;/p&gt;&lt;p&gt;Donec quis justo lorem.&lt;/p&gt;&lt;/li&gt;
+	&lt;li&gt;Condimentum quis.&lt;/li&gt;
+	&lt;li&gt;Congue Quisque augue elit dolor.
+		&lt;ol&gt;
+			&lt;li&gt;Sed at tempus enim.&lt;/li&gt;
+			&lt;li&gt;Aliquam accumsan lorem eu dui tempus vel pellentesque magna hendrerit.&lt;/li&gt;
+			&lt;li&gt;Donec eleifend sodales lorem at varius. Pellentesque condimentum dui scelerisque eros consectetur blandit. Etiam posuere placerat arcu ut cursus. Mauris dui ligula, porta ut tincidunt quis, ornare ut dolor. Sed sed mollis felis. Suspendisse laoreet pellentesque nibh id gravida. Pellentesque dui mauris, mattis id lobortis porttitor, laoreet eu dui. Vestibulum eget ligula mauris, iaculis euismod sapien. Donec quis justo lorem.&lt;/li&gt;
+		&lt;/ol&gt;
+	&lt;/li&gt;
+	&lt;li&gt;Congue Quisque augue elit dolor nibh.&lt;/li&gt;
+	&lt;li&gt;Vestibulum feugiat tempor gravida.&lt;/li&gt;
+	&lt;li&gt;Donec vulputate pretium egestas.&lt;/li&gt;
+	&lt;li&gt;Vivamus faucibus ultrices elit, sit amet dignissim mauris semper at.&lt;/li&gt;
+	&lt;li&gt;Mauris laoreet nisi sed dolor volutpat sagittis.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2&gt;Unordered List&lt;/h2&gt;
+&lt;ul&gt;
+	&lt;li&gt;Donec quis justo lorem.&lt;/li&gt;
+	&lt;li&gt;Condimentum quis.&lt;/li&gt;
+	&lt;li&gt;Congue Quisque augue elit dolor.
+		&lt;ul class="special"&gt;
+			&lt;li&gt;Mauris laoreet nisi sed dolor volutpat sagittis. &lt;/li&gt;
+			&lt;li&gt;Proin euismod varius nisl ut interdum.
+				&lt;ul&gt;
+					&lt;li&gt;Maecenas tempor, ipsum placerat suscipit malesuada, sem ipsum ullamcorper purus, eu eleifend tortor ante ac arcu.&lt;/li&gt;
+					&lt;li&gt;Donec eleifend sodales lorem at varius.&lt;/li&gt;
+					&lt;li&gt;Nullam ullamcorper porta sem quis aliquet. Integer sed metus justo.&lt;/li&gt;
+				&lt;/ul&gt;
+			&lt;/li&gt;
+			&lt;li&gt;Suspendisse non lorem eget lacus tincidunt mattis.&lt;/li&gt;
+		&lt;/ul&gt;
+	&lt;/li&gt;
+	&lt;li&gt;Nunc cursus sem et pretium sapien eget.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul&gt;&lt;/ul&gt;
+
+&lt;h2&gt;Definition List&lt;/h2&gt;
+&lt;dl class="something"&gt;
+	&lt;dt&gt;Cras&lt;/dt&gt;
+	&lt;dd&gt;Phasellus convallis interdum dictum. &lt;/dd&gt;
+	&lt;dd&gt;Suspendisse lectus eros, vestibulum et sagittis eu, fringilla ac urna. Phasellus ullamcorper faucibus sapien, nec rhoncus orci gravida id. Quisque elementum leo at leo facilisis euismod. Nunc sit amet elit vitae arcu fermentum adipiscing eu at mauris.&lt;/dd&gt;
+	&lt;dt&gt;Aenean volutpat urna a risus congue fermentum.&lt;/dt&gt;
+	&lt;dd&gt;Curabitur id nunc ante, nec tincidunt odio. Nulla facilisi. In hac habitasse platea dictumst. Curabitur suscipit luctus aliquet. Pellentesque quis risus dolor.&lt;/dd&gt;
+&lt;/dl&gt;
+
+&lt;table width="50%" border="1"&gt;
+	&lt;caption&gt;Caption • Table with border 1.&lt;/caption&gt;
+	&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;th&gt;thead th • Aliquam&lt;/th&gt;
+			&lt;th&gt;thead th • Quisque&lt;/th&gt;
+			&lt;th&gt;thead th • Nunc&lt;/th&gt;
+		&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td&gt;tbody tr td • Curabitur suscipit luctus aliquet.&lt;/td&gt;
+			&lt;td&gt;tbody tr td • Nunc orci lorem, rhoncus eu elementum id, lacinia eget lorem. Nulla in neque viverra metus iaculis posuere. &lt;/td&gt;
+			&lt;td&gt;tbody tr td • Proin id leo condimentum ipsum commodo consequat.&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;Neo damnum aliquam consequat.&lt;/td&gt;
+			&lt;td&gt;Neo damnum aliquam consequat.&lt;/td&gt;
+			&lt;td&gt;Neo damnum aliquam consequat. &lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;Neo damnum aliquam consequat.&lt;/td&gt;
+			&lt;td&gt;Neo damnum aliquam consequat. Neo damnum aliquam consequat.&lt;/td&gt;
+			&lt;td&gt;Neo damnum aliquam consequat. Neo damnum aliquam consequat. Neo damnum aliquam consequat&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+
+        </textarea>
+        <input type="submit" class="wymupdate" />
+    </form>
+
+    <script src="vendor/jquery/jquery.js"></script>
+    <script src="../wymeditor/jquery.wymeditor.js"></script>
+
+    <script type="text/javascript">
+        /* Here we replace default theme to pretty.
+         */
+        jQuery(function() {
+            jQuery('.wymeditor').wymeditor({
+                iframeBasePath: "../wymeditor/iframe/pretty/",
+                postInit: function(wym) {
+                    //construct the button's html
+                    var html = "<li class=\"wym_tools_toogle_pretty_theme\">"
+                             + "<a name=\"TogglePrettyTheme\" href=\"#\""
+                             + " title=\"Toggle short and verbose theme style\""
+                             + " style=\"background-image:"
+                             + " url(../wymeditor/iframe/pretty/icon.png)\">"
+                             + "Toggle short and verbose theme style"
+                             + "</a></li>";
+                    //add the button to the tools box
+                    jQuery(wym._box)
+                    .find(wym._options.toolsSelector + wym._options.toolsListSelector)
+                    .append(html);
+                    //handle click event
+                    jQuery(wym._box)
+                    .find('li.wym_tools_toogle_pretty_theme a').click(function() {
+                        wym.toggleClass('short', 'BODY' );
+                        return(false);
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

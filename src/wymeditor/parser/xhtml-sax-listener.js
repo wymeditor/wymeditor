@@ -27,6 +27,9 @@ WYMeditor.XhtmlSaxListener = function() {
     this.tagsToUnwrapInLists =
         WYMeditor.DocumentStructureManager.VALID_DEFAULT_ROOT_CONTAINERS;
 
+    // If any of these inline tags is found in the root, just remove them.
+    this._rootInlineTagsToRemove = ['br'];
+
     // A counter to keep track of the number of extra block closing tags that
     // should be expected by the parser because of the removal of that
     // element's opening tag.
@@ -374,12 +377,12 @@ WYMeditor.XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes) {
 };
 
 WYMeditor.XhtmlSaxListener.prototype.inlineTag = function(tag, attributes) {
-    this._last_node_was_text = false;
     if (this._insideTagToRemove || this._shouldRemoveTag(tag, attributes)) {
         // If we're currently in a block marked for removal or if this tag is
         // marked for removal, don't add it to the output.
         return;
     }
+    this._last_node_was_text = false;
 
     attributes = this.validator.getValidTagAttributes(tag, attributes);
     attributes = this.removeUnwantedClasses(attributes);
@@ -592,11 +595,29 @@ WYMeditor.XhtmlSaxListener.prototype._getClosingTagContent = function(position, 
     ================
 
     Specifies if the passed tag with the passed attributes should be removed
-    from the output or not. This is determined by whether the tag has the class
-    WYMeditor.EDITOR_ONLY_CLASS or not. If the tag should be removed, the
-    function returns true. Otherwise, the function returns false.
+    from the output or not, based on the current state.
 */
 WYMeditor.XhtmlSaxListener.prototype._shouldRemoveTag = function(tag, attributes) {
+    if (this._isEditorOnlyTag(tag, attributes)) {
+        return true;
+    }
+    if (this._isRootInlineTagToRemove(tag, attributes, this._tag_stack)) {
+        return true;
+    }
+
+    return false;
+};
+
+/*
+    _isEditorOnlyTag
+    ================
+
+    Is the passed-in tag, as evaluated in the current state, a tag that should
+    only exist in the editor, but not in the final output. Editor-only tags
+    exist to aid with manipulation and browser-bug workarounds, but aren't
+    actual content that should be kept in the authoritative HTML.
+*/
+WYMeditor.XhtmlSaxListener.prototype._isEditorOnlyTag = function(tag, attributes) {
     var classes;
 
     if (!attributes["class"]) {
@@ -604,9 +625,28 @@ WYMeditor.XhtmlSaxListener.prototype._shouldRemoveTag = function(tag, attributes
     }
 
     classes = attributes["class"].split(" ");
-    if (jQuery.inArray(WYMeditor.EDITOR_ONLY_CLASS, classes) > -1) {
+    if (WYMeditor.Helper.contains(classes, WYMeditor.EDITOR_ONLY_CLASS)) {
         return true;
     }
     return false;
 };
 
+/*
+    Is this tag one of the tags that should be removed if found at the root.
+*/
+WYMeditor.XhtmlSaxListener.prototype._isRootInlineTagToRemove = function(
+    tag, attributes, currentTagStack
+) {
+    if (!this.isInlineTag(tag)) {
+        return false;
+    }
+    if (currentTagStack.length > 0) {
+        // We're not at the root
+        return false;
+    }
+
+    if (WYMeditor.Helper.contains(this._rootInlineTagsToRemove, tag)) {
+        return true;
+    }
+    return false;
+};

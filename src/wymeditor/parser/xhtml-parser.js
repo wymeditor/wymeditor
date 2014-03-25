@@ -25,7 +25,7 @@ WYMeditor.XhtmlParser.prototype.parse = function(raw) {
 
 WYMeditor.XhtmlParser.prototype.beforeParsing = function(raw) {
     if (raw.match(/class="MsoNormal"/) || raw.match(/ns = "urn:schemas-microsoft-com/)) {
-        // Usefull for cleaning up content pasted from other sources (MSWord)
+        // Useful for cleaning up content pasted from other sources (MSWord)
         this._Listener.avoidStylingTagsAndAttributes();
     }
 

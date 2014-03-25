@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>WYMeditor</title>
+    <link rel="stylesheet" href="../wymeditor/skins/default/skin.css">
+</head>
+<body>
+    <h1>WYMeditor integration example - custom button</h1>
+    <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+    <form method="post" action="">
+        <textarea class="wymeditor"></textarea>
+        <input type="submit" class="wymupdate" />
+    </form>
+
+    <script src="vendor/jquery/jquery.js"></script>
+    <script src="../wymeditor/jquery.wymeditor.js"></script>
+
+    <script type="text/javascript">
+        jQuery(function() {
+            jQuery('.wymeditor').wymeditor({
+                html: '<p>Hello, World!<\/p>',
+                postInit: function(wym) {
+                    //construct the button's html
+                    var html = "<li class='wym_tools_newbutton'>"
+                             + "<a name='NewButton' href='#'"
+                             + " style='background-image:"
+                             + " url(../wymeditor/skins/default/icons.png)'>"
+                             + "Do something"
+                             + "</a></li>";
+
+                    //add the button to the tools box
+                    jQuery(wym._box)
+                    .find(wym._options.toolsSelector + wym._options.toolsListSelector)
+                    .append(html);
+
+                    //handle click event
+                    jQuery(wym._box)
+                    .find('li.wym_tools_newbutton a').click(function() {
+                        //do something
+                        wym.paste('Lorem ipsum dolor sit amet, consectetuer adipiscing elit.');
+                        return(false);
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
