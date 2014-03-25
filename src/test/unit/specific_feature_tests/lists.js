@@ -2110,7 +2110,6 @@ test("Should insert orphaned text at end of ul into a li", function () {
         invalidHtml = listWithOrphanedTextAfterLastLi,
         expected = fixedListWithOrphanedTextAfterLastLi;
 
-    wymeditor._html(invalidHtml);
     jQuery(wymeditor._doc.body).html(invalidHtml);
     htmlEquals(wymeditor, expected);
 });
@@ -2125,7 +2124,6 @@ if (jQuery.browser.msie && jQuery.browser.version == 8) {
             expected = fixedListWithOrphanedTextAfterLastLi,
             caretLocation;
 
-        wymeditor._html(invalidHtml);
         jQuery(wymeditor._doc.body).html(invalidHtml);
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
         caretLocation = $body.find('ul')[0];
