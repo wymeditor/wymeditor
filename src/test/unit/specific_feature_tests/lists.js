@@ -2174,8 +2174,9 @@ test("Double indent correction", function () {
 });
 
 // Some browsers insert `p` elements into lists. Issue #430.
-test("When browsers create `p` inside `li`, correct this", function () {
-    expect(1);
+test("When browsers create `p` inside `li`, they actually mean a new `li` after\
+    that `li`", function () {
+    expect(1)
 
     var wymeditor = jQuery.wymeditors(0),
         $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
@@ -2202,17 +2203,14 @@ test("When browsers create `p` inside `li`, correct this", function () {
                         , '<li>'
                             , '2'
                         , '</li>'
-                        , '<li>'
-                        , '</li>'
-                        , '<li>'
-                        , '</li>'
                     , '</ol>'
+                , '</li>'
+                , '<li>'
                 , '</li>'
             , '</ol>'
         ].join("");
 
     jQuery(wymeditor._doc.body).html(brokenHtml);
-    simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
     htmlEquals(wymeditor, repairedHtml);
 });
 
