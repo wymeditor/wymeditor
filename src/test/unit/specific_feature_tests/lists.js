@@ -2122,6 +2122,49 @@ test("Double indent correction", function () {
     htmlEquals(wymeditor, repairedHtml);
 });
 
+// Some browsers insert `p` elements into lists. Issue #430.
+test("When browsers create `p` inside `li`, correct this", function () {
+    expect(1);
+
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        brokenHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , '1'
+                    , '<ol>'
+                        , '<li>'
+                            , '2'
+                        , '</li>'
+                    , '</ol>'
+                    , '<p>'
+                        , '<br>'
+                    , '</p>'
+                , '</li>'
+            , '</ol>'
+        ].join(""),
+        repairedHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , '1'
+                    , '<ol>'
+                        , '<li>'
+                            , '2'
+                        , '</li>'
+                        , '<li>'
+                        , '</li>'
+                        , '<li>'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+            , '</ol>'
+        ].join("");
+
+    jQuery(wymeditor._doc.body).html(brokenHtml);
+    simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
+    htmlEquals(wymeditor, repairedHtml);
+});
+
 module("list-tabbing", {setup: setupWym});
 
 test("Tab key indents", function () {
