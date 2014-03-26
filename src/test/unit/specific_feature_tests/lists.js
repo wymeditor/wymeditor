@@ -2124,7 +2124,7 @@ test("Double indent correction", function () {
 
 test("Parser: Text directly inside lists should be put inside list items",
     function () {
-    expect(1);
+    expect(3);
 
     var wymeditor = jQuery.wymeditors(0),
         brokenHtml = [""
@@ -2137,6 +2137,37 @@ test("Parser: Text directly inside lists should be put inside list items",
                 , '<li>a</li>'
             , '</ol>'
         ].join("");
+
+    wymeditor._html(brokenHtml);
+    htmlEquals(wymeditor, repairedHtml);
+
+    brokenHtml = [""
+        , '<ol>'
+            , '<li>a</li>'
+            , 'b'
+        , '</ol>'
+    ].join(""),
+    repairedHtml = [""
+        , '<ol>'
+            , '<li>a<br />b</li>'
+        , '</ol>'
+    ].join("");
+
+    wymeditor._html(brokenHtml);
+    htmlEquals(wymeditor, repairedHtml);
+
+    brokenHtml = [""
+        , '<ol>'
+            , 'a'
+            , '<li>b</li>'
+            , 'c'
+        , '</ol>'
+    ].join(""),
+    repairedHtml = [""
+        , '<ol>'
+            , '<li>a<br />b<br />c</li>'
+        , '</ol>'
+    ].join("");
 
     wymeditor._html(brokenHtml);
     htmlEquals(wymeditor, repairedHtml);
