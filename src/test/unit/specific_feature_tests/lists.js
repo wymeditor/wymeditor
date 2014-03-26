@@ -2103,15 +2103,21 @@ var listWithOrphanedTextAfterLastLi = [""
     , '</ul>'
     ].join("");
 
-test("The parser should insert orphaned text at end of ul into a li",
-    function () {
+test("Orphaned text at end of list should be inserted into the last li\
+        by correctInvalidListNesting", function () {
     expect(1);
 
     var wymeditor = jQuery.wymeditors(0),
+        $body,
         invalidHtml = listWithOrphanedTextAfterLastLi,
-        expected = fixedListWithOrphanedTextAfterLastLi;
+        expected = fixedListWithOrphanedTextAfterLastLi,
+        caretLocation;
 
-    wymeditor._html(invalidHtml);
+    jQuery(wymeditor._doc.body).html(invalidHtml);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    caretLocation = $body.find('ul')[0];
+    makeTextSelection(wymeditor, caretLocation, caretLocation, 1, 1);
+    wymeditor.correctInvalidListNesting($body.find('li')[0]);
     htmlEquals(wymeditor, expected);
 });
 
