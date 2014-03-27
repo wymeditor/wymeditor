@@ -2210,6 +2210,7 @@ test("When browsers create `p` inside `li`, they actually mean a new `li` after\
         ].join("");
 
     jQuery(wymeditor._doc.body).html(brokenHtml);
+    wymeditor.correctInvalidListNesting(wymeditor.selected());
     htmlEquals(wymeditor, repairedHtml);
 });
 
