@@ -2173,9 +2173,8 @@ test("Double indent correction", function () {
     htmlEquals(wymeditor, repairedHtml);
 });
 
-// Some browsers insert `p` elements into lists. Issue #430.
-test("When browsers create `p` inside `li`, they actually mean a new `li` after\
-    that `li`", function () {
+test("Issue #430: At end of list; Correcting function called directly.",
+    function () {
     expect(1);
 
     var wymeditor = jQuery.wymeditors(0),
@@ -2211,8 +2210,107 @@ test("When browsers create `p` inside `li`, they actually mean a new `li` after\
         ].join("");
 
     jQuery(wymeditor._doc.body).html(brokenHtml);
-    $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     wymeditor.correctInvalidListNesting($body.find('p')[0]);
+    htmlEquals(wymeditor, repairedHtml);
+});
+
+test("Issue #430: At end of list.", function () {
+    expect(1);
+
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        brokenHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , '1'
+                    , '<ol>'
+                        , '<li>'
+                            , '2'
+                        , '</li>'
+                    , '</ol>'
+                    , '<p>'
+                        , '<br>'
+                    , '</p>'
+                , '</li>'
+            , '</ol>'
+        ].join(""),
+        repairedHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , '1'
+                    , '<ol>'
+                        , '<li>'
+                            , '2'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li>'
+                , '</li>'
+            , '</ol>'
+        ].join("");
+
+    jQuery(wymeditor._doc.body).html(brokenHtml);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    makeSelection(wymeditor, $body.find('p')[0], $body.find('p')[0]);
+    simulateKey(WYMeditor.KEY.ENTER);
+    htmlEquals(wymeditor, repairedHtml);
+});
+
+// Another test, for a different case of issue #430, where the `p` is created
+// while there are `li` elements following the original one and the `p` element
+// ends up splitting the list into two lists, with it in the middle.
+test("Issue #430: Not at end of list.", function () {
+    expect(1);
+
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        brokenHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , '1'
+                    , '<ol>'
+                        , '<li>'
+                            , '1.1'
+                        , '</li>'
+                    , '</ol>'
+                    , '<p>'
+                        , '<br>'
+                    , '</p>'
+                    , '<ol>'
+                        , '<li>'
+                            , '1.2'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+            , '</ol>'
+        ].join(""),
+        repairedHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , '1'
+                    , '<ol>'
+                        , '<li>'
+                            , '1.1'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li>'
+                , '</li>'
+                , '<li>'
+                    , '<ol>'
+                        , '<li>'
+                            , '1.2'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+            , '</ol>'
+        ].join("");
+
+    jQuery(wymeditor._doc.body).html(brokenHtml);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    makeSelection(wymeditor, $body.find('p')[0], $body.find('p')[0]);
+    simulateKey(WYMeditor.KEY.ENTER);
     htmlEquals(wymeditor, repairedHtml);
 });
 
