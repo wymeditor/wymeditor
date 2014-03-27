@@ -1703,7 +1703,37 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
     // Travel up the dom until we're at the root ol/ul/li
     var currentNode = listItem,
         parentNode,
-        tagName;
+        tagName,
+        pToRemove;
+
+
+    // Browsers can sometimes create `p` elements within `li` elements. Issue 430.
+
+    // If it is a `p` and it's parent is a `li` then mark it for removal
+    if (currentNode.tagName.toLowerCase() === 'p' &&
+        currentNode.parentNode.tagName.toLowerCase() === 'li') {
+        pToRemove = currentNode;
+
+        // if the `p` element was created at the end of a list
+        if (jQuery.type(jQuery(currentNode).next()[0]) === 'undefined') {
+
+             //Insert a `li` where it is supposed to be: after the unwanted `p`
+             //element's parent.
+            jQuery(currentNode.parentNode).after("<li></li>");
+
+            // And remove the `p`.
+            pToRemove.remove()
+
+            // How do I migrate the DOM to the... result?
+            return
+        }
+
+        // Here write code to handle case where `p` was created in the middle
+        // of the list.
+
+        return
+    }
+
     if (typeof alreadyCorrected === 'undefined') {
         alreadyCorrected = false;
     }

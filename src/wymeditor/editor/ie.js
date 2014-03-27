@@ -266,5 +266,12 @@ WYMeditor.WymClassExplorer.prototype.keyup = function (evt) {
         // Fix formatting if necessary
         wym.fixBodyHtml();
     }
+
+    // Handle issue #430.
+    if (evt.which === WYMeditor.KEY.ENTER &&
+        container.tagName.toLowerCase() === "p" &&
+        container.parentNode.tagName.toLowerCase() === "li") {
+        wym.correctInvalidListNesting(container);
+    }
 };
 
