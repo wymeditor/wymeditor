@@ -2179,6 +2179,7 @@ test("When browsers create `p` inside `li`, they actually mean a new `li` after\
     expect(1);
 
     var wymeditor = jQuery.wymeditors(0),
+        $body,
         brokenHtml = [""
             , '<ol>'
                 , '<li>'
@@ -2210,7 +2211,8 @@ test("When browsers create `p` inside `li`, they actually mean a new `li` after\
         ].join("");
 
     jQuery(wymeditor._doc.body).html(brokenHtml);
-    wymeditor.correctInvalidListNesting(wymeditor.selected());
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+    wymeditor.correctInvalidListNesting($body.find('p')[0]);
     htmlEquals(wymeditor, repairedHtml);
 });
 
