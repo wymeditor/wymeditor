@@ -2207,12 +2207,21 @@ test("Issue #430: At end of list; Correcting function called directly.",
                 , '<li>'
                 , '</li>'
             , '</ol>'
-        ].join("");
+        ].join(""),
+        domHtml,
+        normalizedDomHtml;
 
     jQuery(wymeditor._doc.body).html(brokenHtml);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     wymeditor.correctInvalidListNesting($body.find('p')[0]);
-    htmlEquals(wymeditor, repairedHtml);
+
+    // Test against the HTML before the parser because the parser removes empty
+    // `li` elements that we have here.
+
+    // IE7 & IE8 have DOM with line breaks and all caps. Fix this.
+    domHtml = jQuery(wymeditor._doc.body).html();
+    normalizedDomHtml = domHtml.replace(/(\r\n|\n|\r)/gm,"").toLowerCase();
+    strictEqual(normalizedDomHtml, repairedHtml);
 });
 
 test("Issue #430: At end of list.", function () {
