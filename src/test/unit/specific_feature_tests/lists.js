@@ -2328,7 +2328,9 @@ test("Enter in empty list item in nested list: Not at end of list.",
                     , '</ol>'
                 , '</li>'
             , '</ol>'
-        ].join("");
+        ].join(""),
+        domHtml,
+        normalizedDomHtml;
 
     jQuery(wymeditor._doc.body).html(brokenHtml);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
