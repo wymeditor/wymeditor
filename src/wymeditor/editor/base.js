@@ -1724,7 +1724,6 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
             // And remove the `p`.
             jQuery(pToRemove).remove();
 
-            // How do I migrate the DOM to the... result?
             return
         }
 

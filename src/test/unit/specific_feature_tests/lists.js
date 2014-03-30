@@ -2173,8 +2173,9 @@ test("Double indent correction", function () {
     htmlEquals(wymeditor, repairedHtml);
 });
 
-test("Issue #430: At end of list; Correcting function called directly.",
-    function () {
+// Issue 430
+test("Enter in empty list item in nested list: At end of list: repairing\
+     function directly called", function () {
     expect(1);
 
     var wymeditor = jQuery.wymeditors(0),
@@ -2221,10 +2222,12 @@ test("Issue #430: At end of list; Correcting function called directly.",
     // IE7 & IE8 have DOM with line breaks and all caps. Fix this.
     domHtml = jQuery(wymeditor._doc.body).html();
     normalizedDomHtml = domHtml.replace(/(\r\n|\n|\r)/gm,"").toLowerCase();
+
     strictEqual(normalizedDomHtml, repairedHtml);
 });
 
-test("Issue #430: At end of list.", function () {
+// Issue 430
+test("Enter in empty list item in nested list: At end of list.", function () {
     expect(1);
 
     var wymeditor = jQuery.wymeditors(0),
@@ -2257,19 +2260,30 @@ test("Issue #430: At end of list.", function () {
                 , '<li>'
                 , '</li>'
             , '</ol>'
-        ].join("");
+        ].join(""),
+        domHtml,
+        normalizedDomHtml;
 
     jQuery(wymeditor._doc.body).html(brokenHtml);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     makeSelection(wymeditor, $body.find('p')[0], $body.find('p')[0]);
-    simulateKey(WYMeditor.KEY.ENTER);
-    htmlEquals(wymeditor, repairedHtml);
+    simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
+
+    // Test against the HTML before the parser because the parser removes empty
+    // `li` elements that we have here.
+
+    // IE7 & IE8 have DOM with line breaks and all caps. Fix this.
+    domHtml = jQuery(wymeditor._doc.body).html();
+    normalizedDomHtml = domHtml.replace(/(\r\n|\n|\r)/gm,"").toLowerCase();
+
+    strictEqual(normalizedDomHtml, repairedHtml);
 });
 
 // Another test, for a different case of issue #430, where the `p` is created
 // while there are `li` elements following the original one and the `p` element
 // ends up splitting the list into two lists, with it in the middle.
-test("Issue #430: Not at end of list.", function () {
+test("Enter in empty list item in nested list: Not at end of list.",
+    function () {
     expect(1);
 
     var wymeditor = jQuery.wymeditors(0),
@@ -2320,7 +2334,15 @@ test("Issue #430: Not at end of list.", function () {
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     makeSelection(wymeditor, $body.find('p')[0], $body.find('p')[0]);
     simulateKey(WYMeditor.KEY.ENTER);
-    htmlEquals(wymeditor, repairedHtml);
+
+    // Test against the HTML before the parser because the parser removes empty
+    // `li` elements that we have here.
+
+    // IE7 & IE8 have DOM with line breaks and all caps. Fix this.
+    domHtml = jQuery(wymeditor._doc.body).html();
+    normalizedDomHtml = domHtml.replace(/(\r\n|\n|\r)/gm,"").toLowerCase();
+
+    strictEqual(normalizedDomHtml, repairedHtml);
 });
 
 module("list-tabbing", {setup: setupWym});
