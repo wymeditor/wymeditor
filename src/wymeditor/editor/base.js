@@ -1710,7 +1710,8 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
     // Browsers can sometimes create `p` elements within `li` elements. Issue 430.
 
     // If it is the right kind of 'p'
-    if (currentNode.tagName.toLowerCase() === 'p' &&
+    if (currentNode !== null &&
+        currentNode.tagName.toLowerCase() === 'p' &&
         currentNode.parentNode.tagName.toLowerCase() === 'li' &&
         jQuery(currentNode).find('*').length === 1 &&
         jQuery(currentNode).children()[0].tagName.toLowerCase() === 'br') {
