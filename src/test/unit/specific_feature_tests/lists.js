@@ -2335,7 +2335,7 @@ test("Enter in empty list item in nested list: Not at end of list.",
     jQuery(wymeditor._doc.body).html(brokenHtml);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     makeSelection(wymeditor, $body.find('p')[0], $body.find('p')[0]);
-    simulateKey(WYMeditor.KEY.ENTER);
+    simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
 
     // Test against the HTML before the parser because the parser removes empty
     // `li` elements that we have here.
