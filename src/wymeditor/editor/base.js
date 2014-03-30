@@ -1711,7 +1711,9 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
 
     // If it is a `p` and it's parent is a `li` then mark it for removal
     if (currentNode.tagName.toLowerCase() === 'p' &&
-        currentNode.parentNode.tagName.toLowerCase() === 'li') {
+        currentNode.parentNode.tagName.toLowerCase() === 'li' &&
+        jQuery(currentNode).find('*').length === 1 &&
+        jQuery(currentNode).children()[0].tagName.toLowerCase() === 'br') {
         pToRemove = currentNode;
 
         // if the `p` element was created at the end of a list
