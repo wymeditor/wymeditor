@@ -89,7 +89,9 @@ WYMeditor.WymClassOpera.prototype.keyup = function(evt) {
     // Handle issue #430.
     if (evt.which === WYMeditor.KEY.ENTER &&
         container.tagName.toLowerCase() === "p" &&
-        container.parentNode.tagName.toLowerCase() === "li") {
+        container.parentNode.tagName.toLowerCase() === "li" &&
+        jQuery(container).find('*').length === 1 &&
+        jQuery(container).children()[0].tagName.toLowerCase() === "br") {
         wym.correctInvalidListNesting(container);
     }
 };
