@@ -1707,7 +1707,8 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
         pToRemove,
         liContentBeforeP,
         liContentAfterP,
-        parentList;
+        parentList,
+        parentLiIndex;
 
 
     // Browsers can sometimes create `p` elements within `li` elements. Issue 430.
@@ -1752,13 +1753,18 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
             // we're sitting on
             parentList = jQuery(currentNode).parent().parent();
 
+            // Get the index of the parent `li` for re-insertion later
+            parentLiIndex = jQuery(currentNode).parent('li').index()
+
             // Remove the parent `li` (branch we're sitting on)
             jQuery(currentNode).parent('li').remove();
 
             // Append three list items; one for the content from before the
             // `p`, one for replacing the `p` and one for the content from
             // after the `p`
-            parentList.append('<li></li><li></li><li></li>');
+            parentList.children().eq(parentLiIndex).before(
+                '<li></li><li></li><li></li>'
+            );
 
             // Append content from before the `p`
             parentList.children('li:first-child').append(liContentBeforeP);
