@@ -2173,9 +2173,9 @@ test("Double indent correction", function () {
     htmlEquals(wymeditor, repairedHtml);
 });
 
-// Issue 430
-test("Enter in empty list item in nested list: At end of list: repairing\
-     function directly called", function () {
+module("Enter key pressed while in empty `li` in nested list. Issue #430", {setup: setupWym});
+
+test("At end of list: repairing function directly called", function () {
     expect(1);
 
     var wymeditor = jQuery.wymeditors(0),
@@ -2226,8 +2226,7 @@ test("Enter in empty list item in nested list: At end of list: repairing\
     strictEqual(normalizedDomHtml, repairedHtml);
 });
 
-// Issue 430
-test("Enter in empty list item in nested list: At end of list.", function () {
+test("At end of list.", function () {
     expect(1);
 
     var wymeditor = jQuery.wymeditors(0),
@@ -2282,7 +2281,7 @@ test("Enter in empty list item in nested list: At end of list.", function () {
 // Another test, for a different case of issue #430, where the `p` is created
 // while there are `li` elements following the original one and the `p` element
 // ends up splitting the list into two lists, with it in the middle.
-test("Enter in empty list item in nested list: Not at end of list.",
+test("Not at end of list.",
     function () {
     expect(1);
 
