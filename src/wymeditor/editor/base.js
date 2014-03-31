@@ -1708,7 +1708,8 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
         liContentBeforeP,
         liContentAfterP,
         parentList,
-        parentLiIndex;
+        parentLiIndex,
+        threeLis = '<li></li><li></li><li></li>';
 
 
     // Browsers can sometimes create `p` elements within `li` elements. Issue 430.
@@ -1762,15 +1763,22 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
             // Append three list items; one for the content from before the
             // `p`, one for replacing the `p` and one for the content from
             // after the `p`
-            parentList.children().eq(parentLiIndex).before(
-                '<li></li><li></li><li></li>'
-            );
+            if (parentLiIndex === 0) {
+                parentList.prepend(threeLis);
+            }
+            else {
+                parentList.children().eq(parentLiIndex - 1).after(threeLis);
+            }
 
             // Append content from before the `p`
-            parentList.children('li:first-child').append(liContentBeforeP);
+            parentList.children('li').eq(parentLiIndex).append(
+                liContentBeforeP
+            );
 
             // Append content from after the `p`
-            parentList.children('li:nth-child(3)').append(liContentAfterP);
+            parentList.children('li').eq(parentLiIndex + 2).append(
+                liContentAfterP
+            );
 
             return
         }
