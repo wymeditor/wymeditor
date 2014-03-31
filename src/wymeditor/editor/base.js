@@ -1735,7 +1735,9 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
         }
 
         // If the 'p' element was created not at the end of a list.
-        if (currentNode.nextSibling.tagName.toLowerCase() === 'ol') {
+        if (currentNode.nextSibling.tagName.toLowerCase() === 'ol' ||
+            currentNode.nextSibling.tagName.toLowerCase() === 'ul'
+           ) {
 
             // Collect before `p`
             liContentBeforeP = jQuery(currentNode).parent().contents().slice(
