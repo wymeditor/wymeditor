@@ -1704,7 +1704,10 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
     var currentNode = listItem,
         parentNode,
         tagName,
-        pToRemove;
+        pToRemove,
+        liContentBeforeP,
+        liContentAfterP,
+        parentList;
 
 
     // Browsers can sometimes create `p` elements within `li` elements. Issue 430.
@@ -1731,10 +1734,38 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
             return
         }
 
-        // Here write code to handle case where `p` was created in the middle
-        // of the list.
+        // If the 'p' element was created not at the end of a list.
+        if (currentNode.nextSibling.tagName.toLowerCase() === 'ol') {
 
-        return
+            // Collect before `p`
+            liContentBeforeP = jQuery(currentNode).parent().contents().slice(
+                0, jQuery(currentNode).index() + 1
+            );
+            // And after it
+            liContentAfterP = jQuery(currentNode).parent().contents().slice(
+                jQuery(currentNode).index() + 2
+            );
+
+            // The parent list because we're going to cut the branch that
+            // we're sitting on
+            parentList = jQuery(currentNode).parent().parent();
+
+            // Remove the parent `li` (branch we're sitting on)
+            jQuery(currentNode).parent('li').remove();
+
+            // Append three list items; one for the content from before the
+            // `p`, one for replacing the `p` and one for the content from
+            // after the `p`
+            parentList.append('<li></li><li></li><li></li>');
+
+            // Append content from before the `p`
+            parentList.children('li:first-child').append(liContentBeforeP);
+
+            // Append content from after the `p`
+            parentList.children('li:nth-child(3)').append(liContentAfterP);
+
+            return
+        }
     }
 
     if (typeof alreadyCorrected === 'undefined') {
