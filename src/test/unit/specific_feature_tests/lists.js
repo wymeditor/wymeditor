@@ -2278,10 +2278,7 @@ test("At end of list.", function () {
     strictEqual(normalizedDomHtml, repairedHtml);
 });
 
-// Another test, for a different case of issue #430, where the `p` is created
-// while there are `li` elements following the original one and the `p` element
-// ends up splitting the list into two lists, with it in the middle.
-test("Not at end of list.",
+test("Not at end of list; parent is first `li`",
     function () {
     expect(1);
 
@@ -2351,6 +2348,93 @@ test("Not at end of list.",
                     , '<ol>'
                         , '<li>'
                             , 'two one'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+            , '</ol>'
+        ].join(""),
+        domHtml,
+        normalizedDomHtml;
+
+    jQuery(wymeditor._doc.body).html(brokenHtml);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    makeSelection(wymeditor, $body.find('p')[0], $body.find('p')[0]);
+    simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
+
+    // Test against the HTML before the parser because the parser removes empty
+    // `li` elements that we have here.
+
+    // IE7 & IE8 have DOM with line breaks and all caps. Fix this.
+    domHtml = jQuery(wymeditor._doc.body).html();
+    normalizedDomHtml = domHtml.replace(/(\r\n|\n|\r)/gm,"").toLowerCase();
+
+    strictEqual(normalizedDomHtml, repairedHtml);
+});
+
+test("Not at end of list; parent is second `li`",
+    function () {
+    expect(1);
+
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        brokenHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , 'parent one'
+                    , '<ol>'
+                        , '<li>'
+                            , 'one one'
+                        , '</li>'
+                        , '<li>'
+                            , 'one two'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li>'
+                    , 'parent two'
+                    , '<ol>'
+                        , '<li>'
+                            , 'two one'
+                        , '</li>'
+                    , '</ol>'
+                    , '<p>'
+                        , '<br>'
+                    , '</p>'
+                    , '<ol>'
+                        , '<li>'
+                            , 'two two'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+            , '</ol>'
+        ].join(""),
+        repairedHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , 'parent one'
+                    , '<ol>'
+                        , '<li>'
+                            , 'one one'
+                        , '</li>'
+                        , '<li>'
+                            , 'one two'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li>'
+                    , 'parent two'
+                    , '<ol>'
+                        , '<li>'
+                            , 'two one'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li>'
+                , '</li>'
+                , '<li>'
+                    , '<ol>'
+                        , '<li>'
+                            , 'two two'
                         , '</li>'
                     , '</ol>'
                 , '</li>'
