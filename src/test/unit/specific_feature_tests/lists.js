@@ -2325,7 +2325,7 @@ test("Enter in empty list item in nested list: Not at end of list.",
         repairedHtml = [""
             , '<ol>'
                 , '<li>'
-                    , 'parent'
+                    , 'parent one'
                     , '<ol>'
                         , '<li>'
                             , 'one'
