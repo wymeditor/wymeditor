@@ -1732,12 +1732,12 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
 
             // And remove the `p`.
             jQuery(pToRemove).remove();
-
-            return;
         }
 
         // If the 'p' element was created not at the end of a list.
-        if (currentNode.nextSibling.tagName.toLowerCase() === 'ol' ||
+        else if (
+            jQuery.type(jQuery(currentNode).next()[0]) !== 'undefined' &&
+            currentNode.nextSibling.tagName.toLowerCase() === 'ol' ||
             currentNode.nextSibling.tagName.toLowerCase() === 'ul'
            ) {
 
@@ -1745,6 +1745,7 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
             liContentBeforeP = jQuery(currentNode).parent().contents().slice(
                 0, jQuery(currentNode).index() + 1
             );
+
             // And after it
             liContentAfterP = jQuery(currentNode).parent().contents().slice(
                 jQuery(currentNode).index() + 2
@@ -1779,9 +1780,10 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
             parentList.children('li').eq(parentLiIndex + 2).append(
                 liContentAfterP
             );
-
-            return;
         }
+
+        // Dont proceed with further list correction.
+        return;
     }
 
     if (typeof alreadyCorrected === 'undefined') {
