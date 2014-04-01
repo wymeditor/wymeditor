@@ -1,7 +1,7 @@
 /* jshint camelcase: false, maxlen: 105 */
 /* global setupWym, SKIP_KNOWN_FAILING_TESTS,
 htmlEquals, makeTextSelection, moveSelector, simulateKey, normalizeHtml,
-makeSelection,
+makeSelection, strictEqual,
 ok, test, expect, deepEqual */
 "use strict";
 
@@ -2221,7 +2221,7 @@ test("At end of list: repairing function directly called", function () {
 
     // IE7 & IE8 have DOM with line breaks and all caps. Fix this.
     domHtml = jQuery(wymeditor._doc.body).html();
-    normalizedDomHtml = domHtml.replace(/(\r\n|\n|\r)/gm,"").toLowerCase();
+    normalizedDomHtml = domHtml.replace(/(\r\n|\n|\r)/gm, "").toLowerCase();
 
     strictEqual(normalizedDomHtml, repairedHtml);
 });
@@ -2273,7 +2273,7 @@ test("At end of list.", function () {
 
     // IE7 & IE8 have DOM with line breaks and all caps. Fix this.
     domHtml = jQuery(wymeditor._doc.body).html();
-    normalizedDomHtml = domHtml.replace(/(\r\n|\n|\r)/gm,"").toLowerCase();
+    normalizedDomHtml = domHtml.replace(/(\r\n|\n|\r)/gm, "").toLowerCase();
 
     strictEqual(normalizedDomHtml, repairedHtml);
 });
@@ -2366,7 +2366,7 @@ test("Not at end of list; parent is first `li`",
 
     // IE7 & IE8 have DOM with line breaks and all caps. Fix this.
     domHtml = jQuery(wymeditor._doc.body).html();
-    normalizedDomHtml = domHtml.replace(/(\r\n|\n|\r)/gm,"").toLowerCase();
+    normalizedDomHtml = domHtml.replace(/(\r\n|\n|\r)/gm, "").toLowerCase();
 
     strictEqual(normalizedDomHtml, repairedHtml);
 });
@@ -2453,7 +2453,7 @@ test("Not at end of list; parent is second `li`",
 
     // IE7 & IE8 have DOM with line breaks and all caps. Fix this.
     domHtml = jQuery(wymeditor._doc.body).html();
-    normalizedDomHtml = domHtml.replace(/(\r\n|\n|\r)/gm,"").toLowerCase();
+    normalizedDomHtml = domHtml.replace(/(\r\n|\n|\r)/gm, "").toLowerCase();
 
     strictEqual(normalizedDomHtml, repairedHtml);
 });

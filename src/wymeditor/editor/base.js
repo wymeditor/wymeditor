@@ -1733,7 +1733,7 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
             // And remove the `p`.
             jQuery(pToRemove).remove();
 
-            return
+            return;
         }
 
         // If the 'p' element was created not at the end of a list.
@@ -1755,7 +1755,7 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
             parentList = jQuery(currentNode).parent().parent();
 
             // Get the index of the parent `li` for re-insertion later
-            parentLiIndex = jQuery(currentNode).parent('li').index()
+            parentLiIndex = jQuery(currentNode).parent('li').index();
 
             // Remove the parent `li` (branch we're sitting on)
             jQuery(currentNode).parent('li').remove();
@@ -1780,7 +1780,7 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
                 liContentAfterP
             );
 
-            return
+            return;
         }
     }
 
