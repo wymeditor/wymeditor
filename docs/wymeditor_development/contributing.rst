@@ -86,7 +86,7 @@ the basic requirements are:
   or at least the libraries necessary to build it.
 * `grunt` and `bower` installed via ``NPM``.
 
-Then you're just need
+Then you just need to
 
 .. code-block:: shell-session
 

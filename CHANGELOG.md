@@ -54,6 +54,9 @@ All of these changes are documented in detail in the
 * 1.0.0b5 introduced a regression bug which allowed `br` tags to exist at the
   document root, even after parsing. This is no longer the case.
   [#431](https://github.com/wymeditor/wymeditor/issues/431)
+* IE8 has a bug in `designMode`, where it breaks lists under certain
+  circumstance. [#446](https://github.com/wymeditor/wymeditor/issues/446). This
+  is now properly handled.
 
 ### Infrastructure Improvements
 

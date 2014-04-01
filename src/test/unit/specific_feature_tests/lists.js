@@ -2091,6 +2091,57 @@ test("Should correct invalid list nesting", function () {
     htmlEquals(wymeditor, expected);
 });
 
+var listWithOrphanedTextAfterLastLi = [""
+    , '<ul>'
+        , '<li>a</li>'
+        , 'b'
+    , '</ul>'
+    ].join(""),
+    fixedListWithOrphanedTextAfterLastLi = [""
+    , '<ul>'
+        , '<li>a<br />b</li>'
+    , '</ul>'
+    ].join("");
+
+test("Orphaned text at end of list should be inserted into the last li\
+        by correctInvalidListNesting", function () {
+    expect(1);
+
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        invalidHtml = listWithOrphanedTextAfterLastLi,
+        expected = fixedListWithOrphanedTextAfterLastLi,
+        caretLocation;
+
+    jQuery(wymeditor._doc.body).html(invalidHtml);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    caretLocation = $body.find('ul')[0];
+    makeTextSelection(wymeditor, caretLocation, caretLocation, 1, 1);
+    wymeditor.correctInvalidListNesting($body.find('li')[0]);
+    htmlEquals(wymeditor, expected);
+});
+
+// IE8 bug https://github.com/wymeditor/wymeditor/issues/446
+if (jQuery.browser.msie && jQuery.browser.version === "8.0") {
+    test("Should correct IE8 pulling content into end of ul on backspace",
+        function () {
+        expect(1);
+
+        var wymeditor = jQuery.wymeditors(0),
+            $body,
+            invalidHtml = listWithOrphanedTextAfterLastLi,
+            expected = fixedListWithOrphanedTextAfterLastLi,
+            caretLocation;
+
+        jQuery(wymeditor._doc.body).html(invalidHtml);
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+        caretLocation = $body.find('ul')[0];
+        makeTextSelection(wymeditor, caretLocation, caretLocation, 1, 1);
+        simulateKey(WYMeditor.KEY.BACKSPACE, wymeditor._doc);
+        htmlEquals(wymeditor, expected);
+    });
+}
+
 test("Double indent correction", function () {
     expect(1);
 
