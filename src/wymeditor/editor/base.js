@@ -1733,7 +1733,7 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
             // Set caret position
             this.setFocusToNode(
                 jQuery(this._doc).find('body.wym_iframe [data-wym-caret=""]')[0]
-            )
+            );
 
             // And remove the `p`.
             jQuery(pToRemove).remove();
@@ -1789,7 +1789,7 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
             // Set caret
             this.setFocusToNode(
                 jQuery(this._doc).find('body.wym_iframe [data-wym-caret=""]')[0]
-            )
+            );
         }
 
         // Dont proceed with further list correction.
