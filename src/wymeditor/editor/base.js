@@ -1709,7 +1709,7 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
         liContentAfterP,
         parentList,
         parentLiIndex,
-        threeLis = '<li></li><li data-wym-caret></li><li></li>';
+        threeLis = '<li></li><li data-wym-caret=""></li><li></li>';
 
 
     // Browsers can sometimes create `p` elements within `li` elements. Issue 430.
@@ -1728,7 +1728,7 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
 
              //Insert a `li` where it is supposed to be: after the unwanted `p`
              //element's parent.
-            jQuery(currentNode.parentNode).after("<li data-wym-caret></li>");
+            jQuery(currentNode.parentNode).after('<li data-wym-caret=""></li>');
 
             // Set caret position
             this.setFocusToNode(
