@@ -2176,7 +2176,7 @@ test("Double indent correction", function () {
 module("Enter key pressed while in empty `li` in nested list. Issue #430", {setup: setupWym});
 
 test("At end of list: repairing function directly called", function () {
-    expect(1);
+    expect(2);
 
     var wymeditor = jQuery.wymeditors(0),
         $body,
@@ -2205,7 +2205,7 @@ test("At end of list: repairing function directly called", function () {
                         , '</li>'
                     , '</ol>'
                 , '</li>'
-                , '<li>'
+                , '<li data-wym-caret="">'
                 , '</li>'
             , '</ol>'
         ].join(""),
@@ -2224,10 +2224,14 @@ test("At end of list: repairing function directly called", function () {
     normalizedDomHtml = domHtml.replace(/(\r\n|\n|\r)/gm, "").toLowerCase();
 
     strictEqual(normalizedDomHtml, repairedHtml);
+    strictEqual(
+        wymeditor.selected(),
+        $body.find('ol li[data-wym-caret=""]')[0]
+    );
 });
 
 test("At end of list.", function () {
-    expect(1);
+    expect(2);
 
     var wymeditor = jQuery.wymeditors(0),
         $body,
@@ -2256,7 +2260,7 @@ test("At end of list.", function () {
                         , '</li>'
                     , '</ol>'
                 , '</li>'
-                , '<li>'
+                , '<li data-wym-caret="">'
                 , '</li>'
             , '</ol>'
         ].join(""),
@@ -2276,11 +2280,15 @@ test("At end of list.", function () {
     normalizedDomHtml = domHtml.replace(/(\r\n|\n|\r)/gm, "").toLowerCase();
 
     strictEqual(normalizedDomHtml, repairedHtml);
+    strictEqual(
+        wymeditor.selected(),
+        $body.find('ol li[data-wym-caret=""]')[0]
+    );
 });
 
 test("Not at end of list; parent is first `li`",
     function () {
-    expect(1);
+    expect(2);
 
     var wymeditor = jQuery.wymeditors(0),
         $body,
@@ -2331,7 +2339,7 @@ test("Not at end of list; parent is first `li`",
                         , '</li>'
                     , '</ol>'
                 , '</li>'
-                , '<li>'
+                , '<li data-wym-caret="">'
                 , '</li>'
                 , '<li>'
                     , '<ol>'
@@ -2369,11 +2377,15 @@ test("Not at end of list; parent is first `li`",
     normalizedDomHtml = domHtml.replace(/(\r\n|\n|\r)/gm, "").toLowerCase();
 
     strictEqual(normalizedDomHtml, repairedHtml);
+    strictEqual(
+        wymeditor.selected(),
+        $body.find('ol li[data-wym-caret=""]')[0]
+    );
 });
 
 test("Not at end of list; parent is second `li`",
     function () {
-    expect(1);
+    expect(2);
 
     var wymeditor = jQuery.wymeditors(0),
         $body,
@@ -2429,7 +2441,7 @@ test("Not at end of list; parent is second `li`",
                         , '</li>'
                     , '</ol>'
                 , '</li>'
-                , '<li>'
+                , '<li data-wym-caret="">'
                 , '</li>'
                 , '<li>'
                     , '<ol>'
@@ -2456,6 +2468,10 @@ test("Not at end of list; parent is second `li`",
     normalizedDomHtml = domHtml.replace(/(\r\n|\n|\r)/gm, "").toLowerCase();
 
     strictEqual(normalizedDomHtml, repairedHtml);
+    strictEqual(
+        wymeditor.selected(),
+        $body.find('ol li[data-wym-caret=""]')[0]
+    );
 });
 
 module("list-tabbing", {setup: setupWym});
