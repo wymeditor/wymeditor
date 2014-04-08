@@ -1737,10 +1737,9 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
 
             // And remove the `p`.
             jQuery(pToRemove).remove();
-        }
 
-        // If the 'p' element was created not at the end of a list.
-        else if (
+        } else if (
+            // If the 'p' element was created not at the end of a list.
             jQuery.type(jQuery(currentNode).next()[0]) !== 'undefined' &&
             currentNode.nextSibling.tagName.toLowerCase() === 'ol' ||
             currentNode.nextSibling.tagName.toLowerCase() === 'ul'
