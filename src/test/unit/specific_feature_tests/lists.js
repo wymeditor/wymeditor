@@ -2173,7 +2173,8 @@ test("Double indent correction", function () {
     htmlEquals(wymeditor, repairedHtml);
 });
 
-module("Enter key pressed while in empty `li` in nested list. Issue #430", {setup: setupWym});
+// This module is about issue #430
+module("list-correction-paragraph-removal", {setup: setupWym});
 
 test("At end of list: repairing function directly called", function () {
     expect(2);
