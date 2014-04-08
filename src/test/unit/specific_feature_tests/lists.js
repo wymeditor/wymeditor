@@ -2176,7 +2176,8 @@ test("Double indent correction", function () {
 // This module is about issue #430
 module("list-correction-paragraph-removal", {setup: setupWym});
 
-test("At end of list: repairing function directly called", function () {
+test("Paragraph is at end of list; repairing function directly called",
+    function () {
     expect(2);
 
     var wymeditor = jQuery.wymeditors(0),
@@ -2228,7 +2229,7 @@ test("At end of list: repairing function directly called", function () {
     );
 });
 
-test("At end of list.", function () {
+test("Paragraph is at end of list.", function () {
     expect(2);
 
     var wymeditor = jQuery.wymeditors(0),
@@ -2281,7 +2282,7 @@ test("At end of list.", function () {
     );
 });
 
-test("Not at end of list; parent is first `li`",
+test("Paragraph is not at end of list; parent is first `li`",
     function () {
     expect(2);
 
@@ -2375,7 +2376,7 @@ test("Not at end of list; parent is first `li`",
     );
 });
 
-test("Not at end of list; parent is second `li`",
+test("Paragraph is not at end of list; parent is second `li`",
     function () {
     expect(2);
 
