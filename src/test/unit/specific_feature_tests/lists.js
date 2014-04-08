@@ -2207,7 +2207,7 @@ test("Paragraph is at end of list; repairing function directly called",
                         , '</li>'
                     , '</ol>'
                 , '</li>'
-                , '<li data-wym-caret="">'
+                , '<li>'
                 , '</li>'
             , '</ol>'
         ].join(""),
@@ -2225,7 +2225,7 @@ test("Paragraph is at end of list; repairing function directly called",
     strictEqual(normalizedDomHtml, repairedHtml);
     strictEqual(
         wymeditor.selected(),
-        $body.find('ol li[data-wym-caret=""]')[0]
+        $body.find('li')[2]
     );
 });
 
@@ -2259,7 +2259,7 @@ test("Paragraph is at end of list.", function () {
                         , '</li>'
                     , '</ol>'
                 , '</li>'
-                , '<li data-wym-caret="">'
+                , '<li>'
                 , '</li>'
             , '</ol>'
         ].join(""),
@@ -2278,7 +2278,7 @@ test("Paragraph is at end of list.", function () {
     strictEqual(normalizedDomHtml, repairedHtml);
     strictEqual(
         wymeditor.selected(),
-        $body.find('ol li[data-wym-caret=""]')[0]
+        $body.find('li')[2]
     );
 });
 
@@ -2335,7 +2335,7 @@ test("Paragraph is not at end of list; parent is first `li`",
                         , '</li>'
                     , '</ol>'
                 , '</li>'
-                , '<li data-wym-caret="">'
+                , '<li>'
                 , '</li>'
                 , '<li>'
                     , '<ol>'
@@ -2372,7 +2372,7 @@ test("Paragraph is not at end of list; parent is first `li`",
     strictEqual(normalizedDomHtml, repairedHtml);
     strictEqual(
         wymeditor.selected(),
-        $body.find('ol li[data-wym-caret=""]')[0]
+        $body.find('li')[3]
     );
 });
 
@@ -2434,7 +2434,7 @@ test("Paragraph is not at end of list; parent is second `li`",
                         , '</li>'
                     , '</ol>'
                 , '</li>'
-                , '<li data-wym-caret="">'
+                , '<li>'
                 , '</li>'
                 , '<li>'
                     , '<ol>'
@@ -2460,7 +2460,7 @@ test("Paragraph is not at end of list; parent is second `li`",
     strictEqual(normalizedDomHtml, repairedHtml);
     strictEqual(
         wymeditor.selected(),
-        $body.find('ol li[data-wym-caret=""]')[0]
+        $body.find('ol li')[5]
     );
 });
 
