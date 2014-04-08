@@ -2036,6 +2036,33 @@ WYMeditor.editor.prototype._correctInvalidListNesting = function (listNode, alre
 };
 
 /**
+    editor.correctpotentialblockinlist
+    ==================================
+
+    Issue #430. Browsers create block elements like `p` when enter is pressed
+    inside an empty list item. This breaks desired list structure. This
+    function tests for this particular situation and calls for the correcting
+    function if it detects that this is indeed the case.
+
+    @param evtWhich the event, to check whether it is an enter
+    @param container the current container node, to test on perhaps deliver
+                     on to the correcting function.
+ */
+WYMeditor.editor.prototype.correctPotentialBlockInList = function (
+    evt_which, container
+    ) {
+    var wym = this;
+
+    if (evt_which === WYMeditor.KEY.ENTER &&
+        container.tagName.toLowerCase() === "p" &&
+        container.parentNode.tagName.toLowerCase() === "li" &&
+        jQuery(container).find('*').length === 1 &&
+        jQuery(container).children()[0].tagName.toLowerCase() === "br") {
+        wym.correctInvalidListNesting(container);
+    }
+};
+
+/**
     editor.getCommonParentList
     ==========================
 
