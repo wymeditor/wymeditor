@@ -2210,7 +2210,6 @@ test("At end of list: repairing function directly called", function () {
                 , '</li>'
             , '</ol>'
         ].join(""),
-        domHtml,
         normalizedDomHtml;
 
     jQuery(wymeditor._doc.body).html(brokenHtml);
@@ -2220,9 +2219,7 @@ test("At end of list: repairing function directly called", function () {
     // Test against the HTML before the parser because the parser removes empty
     // `li` elements that we have here.
 
-    // IE7 & IE8 have DOM with line breaks and all caps. Fix this.
-    domHtml = jQuery(wymeditor._doc.body).html();
-    normalizedDomHtml = domHtml.replace(/(\r\n|\n|\r)/gm, "").toLowerCase();
+    normalizedDomHtml = normalizeHtml(jQuery($body).get(0).firstChild);
 
     strictEqual(normalizedDomHtml, repairedHtml);
     strictEqual(
@@ -2265,7 +2262,6 @@ test("At end of list.", function () {
                 , '</li>'
             , '</ol>'
         ].join(""),
-        domHtml,
         normalizedDomHtml;
 
     jQuery(wymeditor._doc.body).html(brokenHtml);
@@ -2276,9 +2272,7 @@ test("At end of list.", function () {
     // Test against the HTML before the parser because the parser removes empty
     // `li` elements that we have here.
 
-    // IE7 & IE8 have DOM with line breaks and all caps. Fix this.
-    domHtml = jQuery(wymeditor._doc.body).html();
-    normalizedDomHtml = domHtml.replace(/(\r\n|\n|\r)/gm, "").toLowerCase();
+    normalizedDomHtml = normalizeHtml(jQuery($body).get(0).firstChild);
 
     strictEqual(normalizedDomHtml, repairedHtml);
     strictEqual(
@@ -2362,7 +2356,6 @@ test("Not at end of list; parent is first `li`",
                 , '</li>'
             , '</ol>'
         ].join(""),
-        domHtml,
         normalizedDomHtml;
 
     jQuery(wymeditor._doc.body).html(brokenHtml);
@@ -2373,9 +2366,7 @@ test("Not at end of list; parent is first `li`",
     // Test against the HTML before the parser because the parser removes empty
     // `li` elements that we have here.
 
-    // IE7 & IE8 have DOM with line breaks and all caps. Fix this.
-    domHtml = jQuery(wymeditor._doc.body).html();
-    normalizedDomHtml = domHtml.replace(/(\r\n|\n|\r)/gm, "").toLowerCase();
+    normalizedDomHtml = normalizeHtml(jQuery($body).get(0).firstChild);
 
     strictEqual(normalizedDomHtml, repairedHtml);
     strictEqual(
@@ -2453,7 +2444,6 @@ test("Not at end of list; parent is second `li`",
                 , '</li>'
             , '</ol>'
         ].join(""),
-        domHtml,
         normalizedDomHtml;
 
     jQuery(wymeditor._doc.body).html(brokenHtml);
@@ -2464,9 +2454,7 @@ test("Not at end of list; parent is second `li`",
     // Test against the HTML before the parser because the parser removes empty
     // `li` elements that we have here.
 
-    // IE7 & IE8 have DOM with line breaks and all caps. Fix this.
-    domHtml = jQuery(wymeditor._doc.body).html();
-    normalizedDomHtml = domHtml.replace(/(\r\n|\n|\r)/gm, "").toLowerCase();
+    normalizedDomHtml = normalizeHtml(jQuery($body).get(0).firstChild);
 
     strictEqual(normalizedDomHtml, repairedHtml);
     strictEqual(
