@@ -2376,6 +2376,101 @@ test("Paragraph is not at end of list; parent is first `li`",
     );
 });
 
+test("Paragraph is not at end of list; parent is first `li`; text in `p`",
+    function () {
+    expect(2);
+
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        brokenHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , 'parent one'
+                    , '<ol>'
+                        , '<li>'
+                            , 'one'
+                        , '</li>'
+                        , '<li>'
+                            , 'two'
+                        , '</li>'
+                    , '</ol>'
+                    , '<p>'
+                        , 'It has been brought to my attention...<br>'
+                    , '</p>'
+                    , '<ol>'
+                        , '<li>'
+                            , 'three'
+                        , '</li>'
+                        , '<li>'
+                            , 'four'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li>'
+                    , 'parent two'
+                    , '<ol>'
+                        , '<li>'
+                            , 'two one'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+            , '</ol>'
+        ].join(""),
+        repairedHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , 'parent one'
+                    , '<ol>'
+                        , '<li>'
+                            , 'one'
+                        , '</li>'
+                        , '<li>'
+                            , 'two'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li>'
+                    , 'It has been brought to my attention...<br>'
+                , '</li>'
+                , '<li>'
+                    , '<ol>'
+                        , '<li>'
+                            , 'three'
+                        , '</li>'
+                        , '<li>'
+                            , 'four'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li>'
+                    , 'parent two'
+                    , '<ol>'
+                        , '<li>'
+                            , 'two one'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+            , '</ol>'
+        ].join(""),
+        normalizedDomHtml;
+
+    jQuery(wymeditor._doc.body).html(brokenHtml);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    makeSelection(wymeditor, $body.find('p')[0], $body.find('p')[0]);
+    simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
+
+    // Test against the HTML before the parser because the parser removes empty
+    // `li` elements that we have here.
+
+    normalizedDomHtml = normalizeHtml(jQuery($body).get(0).firstChild);
+
+    strictEqual(normalizedDomHtml, repairedHtml);
+    strictEqual(
+        wymeditor.selected(),
+        $body.find('li')[3]
+    );
+});
+
 test("Paragraph is not at end of list; parent is second `li`",
     function () {
     expect(2);
@@ -2440,6 +2535,90 @@ test("Paragraph is not at end of list; parent is second `li`",
                     , '<ol>'
                         , '<li>'
                             , 'two two'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+            , '</ol>'
+        ].join(""),
+        normalizedDomHtml;
+
+    jQuery(wymeditor._doc.body).html(brokenHtml);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    makeSelection(wymeditor, $body.find('p')[0], $body.find('p')[0]);
+    simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
+
+    // Test against the HTML before the parser because the parser removes empty
+    // `li` elements that we have here.
+
+    normalizedDomHtml = normalizeHtml(jQuery($body).get(0).firstChild);
+
+    strictEqual(normalizedDomHtml, repairedHtml);
+    strictEqual(
+        wymeditor.selected(),
+        $body.find('ol li')[5]
+    );
+});
+
+test("Paragraph is not at end of list; parent is second `li`; variation",
+    function () {
+    expect(2);
+
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        brokenHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , 'parent one'
+                    , '<ol>'
+                        , '<li>'
+                            , 'one one'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li>'
+                , '</li>'
+                , '<li>'
+                    , '<ol>'
+                        , '<li>'
+                            , 'three one'
+                        , '</li>'
+                    , '</ol>'
+                    , '<p>'
+                        , '<br>'
+                    , '</p>'
+                    , '<ol>'
+                        , '<li>'
+                            , 'three two'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+            , '</ol>'
+        ].join(""),
+        repairedHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , 'parent one'
+                    , '<ol>'
+                        , '<li>'
+                            , 'one one'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li>'
+                , '</li>'
+                , '<li>'
+                    , '<ol>'
+                        , '<li>'
+                            , 'three one'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li>'
+                , '</li>'
+                , '<li>'
+                    , '<ol>'
+                        , '<li>'
+                            , 'three two'
                         , '</li>'
                     , '</ol>'
                 , '</li>'
