@@ -1733,6 +1733,11 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
                 jQuery(this._doc).find('body.wym_iframe [data-wym-caret=""]')[0]
             );
 
+            // Teleport contents of `p` to new `li`
+            jQuery(jQuery(this._doc).find(
+                'body.wym_iframe [data-wym-caret=""]')[0]).append(
+                jQuery(pToRemove).contents());
+
             // Clean up the caret position marker
             jQuery(this._doc).find(
                 'body.wym_iframe [data-wym-caret=""]'
@@ -1782,6 +1787,11 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
             parentList.children('li').eq(parentLiIndex).append(
                 liContentBeforeP
             );
+
+            // Teleport contents of `p` to it's replacement `li`
+            jQuery(jQuery(this._doc).find(
+                'body.wym_iframe [data-wym-caret=""]')[0]).append(
+                jQuery(pToRemove).contents());
 
             // Append content from after the `p`
             parentList.children('li').eq(parentLiIndex + 2).append(
