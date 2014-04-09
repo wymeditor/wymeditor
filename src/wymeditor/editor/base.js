@@ -1750,12 +1750,12 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
 
             // Collect before `p`
             liContentBeforeP = jQuery(currentNode).parent().contents().slice(
-                0, jQuery(currentNode).index() + 1
+                0, jQuery(currentNode).parent().contents().index(currentNode)
             );
 
             // And after it
             liContentAfterP = jQuery(currentNode).parent().contents().slice(
-                jQuery(currentNode).index() + 2
+                jQuery(currentNode).parent().contents().index(currentNode) + 1
             );
 
             // The parent list because we're going to cut the branch that
