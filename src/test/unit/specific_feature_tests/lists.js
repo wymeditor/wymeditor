@@ -2192,7 +2192,6 @@ test("Paragraph is at end of list; repairing function directly called",
                         , '</li>'
                     , '</ol>'
                     , '<p>'
-                        , '<br>'
                     , '</p>'
                 , '</li>'
             , '</ol>'
@@ -2244,7 +2243,6 @@ test("Paragraph is at end of list.", function () {
                         , '</li>'
                     , '</ol>'
                     , '<p>'
-                        , '<br>'
                     , '</p>'
                 , '</li>'
             , '</ol>'
@@ -2260,6 +2258,60 @@ test("Paragraph is at end of list.", function () {
                     , '</ol>'
                 , '</li>'
                 , '<li>'
+                , '</li>'
+            , '</ol>'
+        ].join(""),
+        normalizedDomHtml;
+
+    jQuery(wymeditor._doc.body).html(brokenHtml);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    makeSelection(wymeditor, $body.find('p')[0], $body.find('p')[0], 0, 0);
+    simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
+
+    // Test against the HTML before the parser because the parser removes empty
+    // `li` elements that we have here.
+
+    normalizedDomHtml = normalizeHtml(jQuery($body).get(0).firstChild);
+
+    strictEqual(normalizedDomHtml, repairedHtml);
+    strictEqual(
+        wymeditor.selected(),
+        $body.find('li')[2]
+    );
+});
+
+test("Paragraph is at end of list; text in `p`.", function () {
+    expect(2);
+
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        brokenHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , '1'
+                    , '<ol>'
+                        , '<li>'
+                            , '2'
+                        , '</li>'
+                    , '</ol>'
+                    , '<p>'
+                        , 'Teleport me!<br/>'
+                    , '</p>'
+                , '</li>'
+            , '</ol>'
+        ].join(""),
+        repairedHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , '1'
+                    , '<ol>'
+                        , '<li>'
+                            , '2'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li>'
+                    , 'Teleport me!<br/>'
                 , '</li>'
             , '</ol>'
         ].join(""),
@@ -2301,7 +2353,6 @@ test("Paragraph is not at end of list; parent is first `li`",
                         , '</li>'
                     , '</ol>'
                     , '<p>'
-                        , '<br>'
                     , '</p>'
                     , '<ol>'
                         , '<li>'
@@ -2361,7 +2412,7 @@ test("Paragraph is not at end of list; parent is first `li`",
 
     jQuery(wymeditor._doc.body).html(brokenHtml);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
-    makeSelection(wymeditor, $body.find('p')[0], $body.find('p')[0]);
+    makeSelection(wymeditor, $body.find('p')[0], $body.find('p')[0], 0, 0);
     simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
 
     // Test against the HTML before the parser because the parser removes empty
@@ -2395,7 +2446,7 @@ test("Paragraph is not at end of list; parent is first `li`; text in `p`",
                         , '</li>'
                     , '</ol>'
                     , '<p>'
-                        , 'It has been brought to my attention...<br>'
+                        , 'It has been brought to my attention...<br/>'
                     , '</p>'
                     , '<ol>'
                         , '<li>'
@@ -2430,7 +2481,7 @@ test("Paragraph is not at end of list; parent is first `li`; text in `p`",
                     , '</ol>'
                 , '</li>'
                 , '<li>'
-                    , 'It has been brought to my attention...<br>'
+                    , 'It has been brought to my attention...<br/>'
                 , '</li>'
                 , '<li>'
                     , '<ol>'
@@ -2498,7 +2549,6 @@ test("Paragraph is not at end of list; parent is second `li`",
                         , '</li>'
                     , '</ol>'
                     , '<p>'
-                        , '<br>'
                     , '</p>'
                     , '<ol>'
                         , '<li>'
@@ -2544,7 +2594,7 @@ test("Paragraph is not at end of list; parent is second `li`",
 
     jQuery(wymeditor._doc.body).html(brokenHtml);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
-    makeSelection(wymeditor, $body.find('p')[0], $body.find('p')[0]);
+    makeSelection(wymeditor, $body.find('p')[0], $body.find('p')[0], 0, 0);
     simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
 
     // Test against the HTML before the parser because the parser removes empty
@@ -2584,7 +2634,6 @@ test("Paragraph is not at end of list; parent is second `li`; variation",
                         , '</li>'
                     , '</ol>'
                     , '<p>'
-                        , '<br>'
                     , '</p>'
                     , '<ol>'
                         , '<li>'
@@ -2628,7 +2677,7 @@ test("Paragraph is not at end of list; parent is second `li`; variation",
 
     jQuery(wymeditor._doc.body).html(brokenHtml);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
-    makeSelection(wymeditor, $body.find('p')[0], $body.find('p')[0]);
+    makeSelection(wymeditor, $body.find('p')[0], $body.find('p')[0], 0, 0);
     simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
 
     // Test against the HTML before the parser because the parser removes empty
