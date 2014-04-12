@@ -17,60 +17,42 @@ WYMeditor.WymClassMozilla.NEEDS_CELL_FIX = parseInt(
     jQuery.browser.version < '2.0';
 
 WYMeditor.WymClassMozilla.prototype.initIframe = function (iframe) {
-    var wym = this,
-        styles,
-        aCss;
+    var wym = this;
 
     this._iframe = iframe;
     this._doc = iframe.contentDocument;
 
-    //add css rules from options
-    styles = this._doc.styleSheets[0];
-
-    aCss = eval(this._options.editorStyles);
-
-    this.addCssRules(this._doc, aCss);
-
     this._doc.title = this._wym._index;
 
-    //set the text direction
+    // Set the text direction
     jQuery('html', this._doc).attr('dir', this._options.direction);
 
-    //init html value
+    // Init html value
     this._html(this._wym._options.html);
 
-    //init designMode
     this.enableDesignMode();
 
-    //pre-bind functions
     if (jQuery.isFunction(this._options.preBind)) {
         this._options.preBind(this);
     }
 
-    //bind external events
+    // Bind external events
     this._wym.bindEvents();
 
-    //bind editor keydown events
     jQuery(this._doc).bind("keydown", this.keydown);
-
-    //bind editor keyup events
     jQuery(this._doc).bind("keyup", this.keyup);
-
-    //bind editor click events
     jQuery(this._doc).bind("click", this.click);
-
-    //bind editor focus events (used to reset designmode - Gecko bug)
+    // Bind editor focus events (used to reset designmode - Gecko bug)
     jQuery(this._doc).bind("focus", function () {
         // Fix scope
         wym.enableDesignMode.call(wym);
     });
 
-    //post-init functions
     if (jQuery.isFunction(this._options.postInit)) {
         this._options.postInit(this);
     }
 
-    //add event listeners to doc elements, e.g. images
+    // Add event listeners to doc elements, e.g. images
     this.listen();
 
     jQuery(wym._element).trigger(
@@ -129,12 +111,6 @@ WYMeditor.WymClassMozilla.prototype._exec = function (cmd, param) {
     }
 
     return true;
-};
-
-WYMeditor.WymClassMozilla.prototype.addCssRule = function (styles, oCss) {
-
-    styles.insertRule(oCss.name + " {" + oCss.css + "}",
-        styles.cssRules.length);
 };
 
 //keydown handler, mainly used for keyboard shortcuts

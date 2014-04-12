@@ -18,22 +18,16 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
         // all of the work in the next trigger
         return false;
     }
-    //add css rules from options
-    var aCss = eval(this._options.editorStyles),
-        wym;
-
-    this.addCssRules(this._doc, aCss);
-
     this._doc.title = this._wym._index;
 
-    //set the text direction
+    // Set the text direction
     jQuery('html', this._doc).attr('dir', this._options.direction);
 
-    //init html value
+    // Init html value
     jQuery(this._doc.body).html(this._wym._options.html);
 
-    //handle events
-    wym = this;
+    // Handle events
+    var wym = this;
 
     this._doc.body.onfocus = function () {
         wym._doc.designMode = "on";
@@ -80,8 +74,8 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
     return true;
 };
 
-(function (editorLoadSkin) {
-    WYMeditor.WymClassExplorer.prototype.loadSkin = function () {
+(function (editorInitSkin) {
+    WYMeditor.WymClassExplorer.prototype.initSkin = function () {
         // Mark container items as unselectable (#203)
         // Fix for issue explained:
         // http://stackoverflow.com/questions/
@@ -90,9 +84,9 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
             this._options.containerSelector
         ).attr('unselectable', 'on');
 
-        editorLoadSkin.call(this);
+        editorInitSkin.call(this);
     };
-}(WYMeditor.editor.prototype.loadSkin));
+}(WYMeditor.editor.prototype.initSkin));
 
 WYMeditor.WymClassExplorer.prototype._exec = function (cmd, param) {
     if (param) {
@@ -104,15 +98,6 @@ WYMeditor.WymClassExplorer.prototype._exec = function (cmd, param) {
 
 WYMeditor.WymClassExplorer.prototype.saveCaret = function () {
     this._doc.caretPos = this._doc.selection.createRange();
-};
-
-WYMeditor.WymClassExplorer.prototype.addCssRule = function (styles, oCss) {
-    // IE doesn't handle combined selectors (#196)
-    var selectors = oCss.name.split(','),
-        i;
-    for (i = 0; i < selectors.length; i++) {
-        styles.addRule(selectors[i], oCss.css);
-    }
 };
 
 WYMeditor.WymClassExplorer.prototype.insert = function (html) {
@@ -268,6 +253,14 @@ WYMeditor.WymClassExplorer.prototype.keyup = function (evt) {
         if (jQuery.inArray(name, notValidRootContainers) > -1 &&
                 parentName === WYMeditor.BODY) {
             wym.switchTo(container, defaultRootContainer);
+        }
+
+        // IE8 bug https://github.com/wymeditor/wymeditor/issues/446
+        if (jQuery.browser.msie && jQuery.browser.version === "8.0" &&
+           container.parentNode) {
+            if (parentName === 'ul' || parentName === 'ol') {
+                wym.correctInvalidListNesting(container);
+            }
         }
 
         // Fix formatting if necessary

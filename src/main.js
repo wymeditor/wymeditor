@@ -16,9 +16,7 @@ require.config({
         'parser.lexer': 'wymeditor/parser/lexer',
         'parser.xhtml-lexer': 'wymeditor/parser/xhtml-lexer',
         'parser.xhtml-parser': 'wymeditor/parser/xhtml-parser',
-        'parser.xhtml-sax-listener': 'wymeditor/parser/xhtml-sax-listener',
-        'parser.css-lexer': 'wymeditor/parser/css-lexer',
-        'parser.css-parser': 'wymeditor/parser/css-parser'
+        'parser.xhtml-sax-listener': 'wymeditor/parser/xhtml-sax-listener'
     },
     shim: {
         // Rangy
@@ -77,16 +75,8 @@ require.config({
         'parser.xhtml-lexer': {
             deps: ['parser.lexer'],
         },
-        'parser.css-lexer': {
-            deps: ['parser.lexer'],
-        },
         'parser.xhtml-parser': {
             deps: ['parser.xhtml-lexer'],
-        },
-        'parser.css-parser': {
-            deps: [
-                'parser.css-lexer'
-            ],
         }
     }
 });
@@ -102,7 +92,6 @@ define([
     'parser.xhtml-sax-listener',
     'parser.xhtml-parser',
     'parser.xml-helper',
-    'parser.css-parser',
     'parser.xhtml-validator'
 ], function () {
     'use strict';

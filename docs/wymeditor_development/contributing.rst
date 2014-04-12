@@ -86,7 +86,12 @@ the basic requirements are:
   or at least the libraries necessary to build it.
 * `grunt` and `bower` installed via ``NPM``.
 
-Then you're just a ``$ npm install`` away from being ready to go.
+Then you just need to
+
+.. code-block:: shell-session
+
+    $ npm install
+    $ node_modules/bower/bin/bower install
 
 .. note::
 

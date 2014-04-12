@@ -158,6 +158,9 @@
     position: absolute;
     background: white;
     font-size: 1.7em;
+    /* If there's a top margin, we hit a gap and break the hover
+     * when scrolling down */
+    margin-top: 0px;
     margin-left: -1px;
     padding: 5px 10px 5px 3px;
 }

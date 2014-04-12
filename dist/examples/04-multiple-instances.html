@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>WYMeditor: Multiple Editor Instances</title>
+    <link rel="stylesheet" href="../wymeditor/skins/default/skin.css">
 </head>
 
 <body>
@@ -39,16 +40,12 @@
 
     <script type="text/javascript">
         $(function() {
-            var options1 = {
-                stylesheet: 'styles.css'
-            }
+            var options1 = {}
             var options2 = {
-                html: '<p>Hello, World! I am editor 2<\/p>',
-                stylesheet: 'styles.css'
+                html: '<p>Hello, World! I am editor 2<\/p>'
             }
             var options3 = {
-                html: '<p>Hello, World! I am editor 3<\/p>',
-                stylesheet: 'styles.css'
+                html: '<p>Hello, World! I am editor 3<\/p>'
             }
             $('.wymeditor1').wymeditor(options1);
             $('.wymeditor2').wymeditor(options2);

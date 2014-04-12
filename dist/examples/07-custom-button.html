@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>WYMeditor</title>
+    <link rel="stylesheet" href="../wymeditor/skins/default/skin.css">
 </head>
 <body>
     <h1>WYMeditor integration example - custom button</h1>
@@ -21,7 +22,6 @@
         jQuery(function() {
             jQuery('.wymeditor').wymeditor({
                 html: '<p>Hello, World!<\/p>',
-                stylesheet: 'styles.css',
                 postInit: function(wym) {
                     //construct the button's html
                     var html = "<li class='wym_tools_newbutton'>"

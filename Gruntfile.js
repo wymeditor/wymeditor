@@ -21,8 +21,7 @@ module.exports = function (grunt) {
         yeoman: yeomanConfig,
         meta: {
             banner: "/*!\n" +
-                "WYMeditor - v<%= pkg.version %> - " +
-                "<%= grunt.template.today('mm/dd/yyyy') %>\n\n" +
+                "WYMeditor - v<%= pkg.version %>\n\n" +
                 "Home page: <%= pkg.homepage %>\n\n" +
                 "Copyright (c) <%= grunt.template.today('yyyy') %> " +
                 "<%= pkg.author.name %>;\n" +
@@ -209,7 +208,11 @@ module.exports = function (grunt) {
                     "<%= yeoman.app %>/wymeditor/core.js",
                     "<%= yeoman.app %>/wymeditor/editor/*.js",
                     "<%= yeoman.app %>/wymeditor/parser/*.js",
-                    "<%= yeoman.app %>/wymeditor/rangy/*.js"
+                    // TODO: For custom builds, will need to change this.
+                    "<%= yeoman.app %>/wymeditor/lang/*.js",
+                    "<%= yeoman.app %>/wymeditor/rangy/*.js",
+                    // TODO: For custom builds, will need to change this.
+                    '<%= yeoman.app %>/wymeditor/skins/{,*/}skin.js'
                 ],
                 dest: "<%= yeoman.dist %>/wymeditor/jquery.wymeditor.js"
             }
@@ -231,6 +234,7 @@ module.exports = function (grunt) {
         copy: {
             dist: {
                 files: [
+                    // Misc project files
                     {
                         expand: true,
                         dot: true,
@@ -245,15 +249,17 @@ module.exports = function (grunt) {
                             "package.json"
                         ]
                     },
+                    // Examples
                     {
                         expand: true,
                         dot: true,
                         cwd: '<%= yeoman.app %>',
                         dest: '<%= yeoman.dist %>',
                         src: [
-                            "examples/{,*/}*.{html,png,jpg,jpeg,gif,js,css}"
+                            "examples/{,*/}*.{html,js,css,png,jpg,jpeg,gif}"
                         ]
                     },
+                    // Bower components for the examples
                     {
                         expand: true,
                         dot: true,
@@ -263,18 +269,39 @@ module.exports = function (grunt) {
                             "{,*/}*.js"
                         ]
                     },
+                    // Plugins
                     {
                         expand: true,
                         dot: true,
                         cwd: '<%= yeoman.app %>/wymeditor',
                         dest: '<%= yeoman.dist %>/wymeditor',
                         src: [
-                            "lang/*.js",
-                            "plugins/{,*/}*.{png,jpg,jpeg,gif,js,css}",
-                            "skins/{,*/}*.{png,jpg,jpeg,gif,js,css}",
-                            "iframe/{,*/}*.{html,css,png,jpg,jpeg,gif,js,eot,ttf,woff}"
+                            "plugins/{,*/}*.{js,css,png,jpg,jpeg,gif}"
                         ]
                     },
+                    // Iframes
+                    {
+                        expand: true,
+                        dot: true,
+                        cwd: '<%= yeoman.app %>/wymeditor',
+                        dest: '<%= yeoman.dist %>/wymeditor',
+                        src: [
+                            "iframe/{,*/}*.{html,js,css,png,jpg,jpeg,gif,eot,ttf,woff}"
+                        ]
+                    },
+                    // Non-Javascript skin components
+                    // The javascript is included in jquery.wymeditor.js
+                    {
+                        expand: true,
+                        dot: true,
+                        cwd: '<%= yeoman.app %>/wymeditor',
+                        dest: '<%= yeoman.dist %>/wymeditor',
+                        src: [
+                            "skins/{,*/}*.{css,png,jpg,jpeg,gif}",
+                            "skins/{,*/}images/{,*/}*.{png,jpg,jpeg,gif}"
+                        ]
+                    },
+                    // Already-built Sphinx documentation
                     {
                         expand: true,
                         dot: true,
@@ -360,5 +387,4 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-replace");
     grunt.loadNpmTasks("grunt-contrib-htmlmin");
     grunt.loadNpmTasks("grunt-usemin");
-    grunt.loadNpmTasks("grunt-bower-install");
 };
