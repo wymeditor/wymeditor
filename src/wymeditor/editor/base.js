@@ -1722,7 +1722,7 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
         pToRemove = currentNode;
 
         // if the `p` element was created at the end of a list
-        if (jQuery.type(jQuery(currentNode).next()[0]) === 'undefined') {
+        if (jQuery(currentNode).next().length == 0) {
 
              //Insert a `li` where it is supposed to be: after the unwanted `p`
              //element's parent.
