@@ -1713,7 +1713,7 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
         currentNode.parentNode.tagName.toLowerCase() === 'li') {
 
         // Fix this `p` using the dedicated function
-        this._removePsFromList(currentNode);
+        this._correctBlockInList(currentNode);
 
         // Don't proceed with further list correction.
         return;
@@ -1796,7 +1796,7 @@ WYMeditor.editor.prototype._correctOrphanedListItem = function (listNode) {
 };
 
 /**
-    editor._removePsFromList
+    editor._correctBlockInList
     ========================
 
     Browsers insert `p` elements into lists. This breaks desired list
@@ -1804,7 +1804,7 @@ WYMeditor.editor.prototype._correctOrphanedListItem = function (listNode) {
 
     @param pToRemove The `p` element that requires replacing with a `li`
  */
-WYMeditor.editor.prototype._removePsFromList = function (pToRemove) {
+WYMeditor.editor.prototype._correctBlockInList= function (pToRemove) {
     var pSiblings,
         liContentBeforeP,
         liContentAfterP,
