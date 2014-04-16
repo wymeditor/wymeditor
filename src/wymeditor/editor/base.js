@@ -1804,7 +1804,7 @@ WYMeditor.editor.prototype._correctOrphanedListItem = function (listNode) {
 
     @param pToRemove The `p` element that requires replacing with a `li`
  */
-WYMeditor.editor.prototype._correctBlockInList= function (pToRemove) {
+WYMeditor.editor.prototype._correctBlockInList = function (pToRemove) {
     var pSiblings,
         liContentBeforeP,
         liContentAfterP,
