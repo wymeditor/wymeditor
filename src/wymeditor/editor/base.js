@@ -2090,7 +2090,7 @@ WYMeditor.editor.prototype.correctPotentialBlockInList = function (
     if (evt_which === WYMeditor.KEY.ENTER &&
         container.tagName.toLowerCase() === "p" &&
         container.parentNode.tagName.toLowerCase() === "li") {
-        wym.correctInvalidListNesting(container);
+        wym._correctBlockInList(container);
     }
 };
 
