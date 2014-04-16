@@ -1866,9 +1866,14 @@ WYMeditor.editor.prototype._removePsFromList = function (pToRemove) {
         // Append three list items; one for the content from before the
         // `p`, one for replacing the `p` and one for the content from
         // after the `p`
+
+        // If the parent `li` was first in the list
         if (parentLiIndex === 0) {
+            // Prepend the three `li`s to the list
             parentList.prepend(threeLis);
+        // If the parent `li` was not first in the list
         } else {
+            // Insert the three `li`s after the object that was before it
             parentList.children().eq(parentLiIndex - 1).after(threeLis);
         }
 
