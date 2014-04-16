@@ -1748,7 +1748,7 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
 
         } else if (
             // If the `p` element was created not at the end of a list.
-            jQuery.type(jQuery(currentNode).next()[0]) !== 'undefined' &&
+            jQuery(currentNode).next().length > 0  &&
             currentNode.nextSibling.tagName.toLowerCase() === 'ol' ||
             currentNode.nextSibling.tagName.toLowerCase() === 'ul'
            ) {
