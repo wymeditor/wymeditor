@@ -1702,118 +1702,18 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
 WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alreadyCorrected) {
     // Travel up the dom until we're at the root ol/ul/li
     var currentNode = listItem,
-        currentNodeSiblings,
         parentNode,
-        tagName,
-        pToRemove,
-        liContentBeforeP,
-        liContentAfterP,
-        parentList,
-        parentLiIndex,
-        threeLis = '<li></li><li data-wym-caret=""></li><li></li>',
-        newLi;
-
+        tagName;
 
     // Browsers can sometimes create `p` elements within `li` elements. Issue 430.
-
-    // If it is the right kind of 'p'
     if (currentNode !== null &&
         currentNode.tagName.toLowerCase() === 'p' &&
         currentNode.parentNode.tagName.toLowerCase() === 'li') {
 
-        pToRemove = currentNode;
+        // Fix this `p`
+        this._removePsFromList(currentNode);
 
-        // if the `p` element was created at the end of a list
-        if (jQuery(currentNode).next().length == 0) {
-
-             //Insert a `li` where it is supposed to be: after the unwanted `p`
-             //element's parent.
-            jQuery(currentNode.parentNode).after('<li data-wym-caret=""></li>');
-
-            // Save the new `li`
-            newLi = jQuery(this._doc).find('body.wym_iframe [data-wym-caret=""]')[0]
-
-            // Set caret position to the new `li`
-            this.setFocusToNode(newLi);
-
-            // Teleport contents of `p` to new `li`
-                jQuery(newLi).append(jQuery(pToRemove).contents());
-
-            // Clean up the caret position marker
-            jQuery(this._doc).find(
-                'body.wym_iframe [data-wym-caret=""]'
-            )[0].removeAttribute('data-wym-caret');
-
-            // And remove the `p`.
-            jQuery(pToRemove).remove();
-
-        } else if (
-            // If the `p` element was created not at the end of a list.
-            jQuery(currentNode).next().length > 0  &&
-            currentNode.nextSibling.tagName.toLowerCase() === 'ol' ||
-            currentNode.nextSibling.tagName.toLowerCase() === 'ul'
-           ) {
-
-            // Save the `p`'s siblings
-            currentNodeSiblings = jQuery(currentNode).parent().contents()
-
-            // Collect before `p`
-            liContentBeforeP = jQuery(currentNodeSiblings).slice(
-                0, jQuery(currentNodeSiblings).index(currentNode)
-            );
-
-            // And after it
-            liContentAfterP = currentNodeSiblings.slice(
-                currentNodeSiblings.index(currentNode) + 1
-            );
-
-            // The parent list because we're going to cut the branch that
-            // we're sitting on
-            parentList = jQuery(currentNode).parent().parent();
-
-            // Get the index of the parent `li` for re-insertion later
-            parentLiIndex = jQuery(currentNode).parent('li').index();
-
-            // Remove the parent `li` (branch we're sitting on)
-            jQuery(currentNode).parent('li').remove();
-
-            // Append three list items; one for the content from before the
-            // `p`, one for replacing the `p` and one for the content from
-            // after the `p`
-            if (parentLiIndex === 0) {
-                parentList.prepend(threeLis);
-            }
-            else {
-                parentList.children().eq(parentLiIndex - 1).after(threeLis);
-            }
-
-            // Append content from before the `p`
-            parentList.children('li').eq(parentLiIndex).append(
-                liContentBeforeP
-            );
-
-            // Teleport contents of `p` to it's replacement `li`
-            jQuery(jQuery(this._doc).find(
-                'body.wym_iframe [data-wym-caret=""]')[0]).append(
-                jQuery(pToRemove).contents());
-
-            // Append content from after the `p`
-            parentList.children('li').eq(parentLiIndex + 2).append(
-                liContentAfterP
-            );
-
-            // Set caret
-            this.setFocusToNode(
-                jQuery(this._doc).find('body.wym_iframe [data-wym-caret=""]')[0]
-            );
-
-            // Clean up the caret position marker
-            jQuery(this._doc).find(
-                'body.wym_iframe [data-wym-caret=""]'
-            )[0].removeAttribute('data-wym-caret');
-        }
-
-        // Dont proceed with further list correction.
+        // Don't proceed with further list correction.
         return;
     }
 
@@ -1891,6 +1791,111 @@ WYMeditor.editor.prototype._correctOrphanedListItem = function (listNode) {
 
     // Insert all of the adjacent orphaned lists inside the new parent
     jQuery(prevList).append($adjacentLis);
+};
+
+/**
+    editor._removePsFromList
+    ========================
+
+ */
+WYMeditor.editor.prototype._removePsFromList = function (pToRemove) {
+    var pSiblings,
+        liContentBeforeP,
+        liContentAfterP,
+        parentList,
+        parentLiIndex,
+        threeLis = '<li></li><li data-wym-caret=""></li><li></li>',
+        newLi;
+
+    // if the `p` element was created at the end of a list
+    if (jQuery(pToRemove).next().length === 0) {
+
+         //Insert a `li` where it is supposed to be: after the unwanted `p`
+         //element's parent.
+        jQuery(pToRemove.parentNode).after('<li data-wym-caret=""></li>');
+
+        // Save the new `li`
+        newLi = jQuery(this._doc).find('body.wym_iframe [data-wym-caret=""]')[0];
+
+        // Set caret position to the new `li`
+        this.setFocusToNode(newLi);
+
+        // Teleport contents of `p` to new `li`
+        jQuery(newLi).append(jQuery(pToRemove).contents());
+
+        // Clean up the caret position marker
+        jQuery(this._doc).find(
+            'body.wym_iframe [data-wym-caret=""]'
+        )[0].removeAttribute('data-wym-caret');
+
+        // And remove the `p`.
+        jQuery(pToRemove).remove();
+
+    } else if (
+        // If the `p` element was created not at the end of a list.
+        jQuery(pToRemove).next().length > 0  &&
+        pToRemove.nextSibling.tagName.toLowerCase() === 'ol' ||
+        pToRemove.nextSibling.tagName.toLowerCase() === 'ul'
+       ) {
+
+        // Save the `p`'s siblings
+        pSiblings = jQuery(pToRemove).parent().contents();
+
+        // Collect before `p`
+        liContentBeforeP = jQuery(pSiblings).slice(
+            0, jQuery(pSiblings).index(pToRemove)
+        );
+
+        // And after it
+        liContentAfterP = pSiblings.slice(
+            pSiblings.index(pToRemove) + 1
+        );
+
+        // The parent list because we're going to cut the branch that
+        // we're sitting on
+        parentList = jQuery(pToRemove).parent().parent();
+
+        // Get the index of the parent `li` for re-insertion later
+        parentLiIndex = jQuery(pToRemove).parent('li').index();
+
+        // Remove the parent `li` (branch we're sitting on)
+        jQuery(pToRemove).parent('li').remove();
+
+        // Append three list items; one for the content from before the
+        // `p`, one for replacing the `p` and one for the content from
+        // after the `p`
+        if (parentLiIndex === 0) {
+            parentList.prepend(threeLis);
+        }
+        else {
+            parentList.children().eq(parentLiIndex - 1).after(threeLis);
+        }
+
+        // Append content from before the `p`
+        parentList.children('li').eq(parentLiIndex).append(
+            liContentBeforeP
+        );
+
+        // Teleport contents of `p` to it's replacement `li`
+        jQuery(jQuery(this._doc).find(
+            'body.wym_iframe [data-wym-caret=""]')[0]).append(
+            jQuery(pToRemove).contents());
+
+        // Append content from after the `p`
+        parentList.children('li').eq(parentLiIndex + 2).append(
+            liContentAfterP
+        );
+
+        // Set caret
+        this.setFocusToNode(
+            jQuery(this._doc).find('body.wym_iframe [data-wym-caret=""]')[0]
+        );
+
+        // Clean up the caret position marker
+        jQuery(this._doc).find(
+            'body.wym_iframe [data-wym-caret=""]'
+        )[0].removeAttribute('data-wym-caret');
+    }
 };
 
 /**
