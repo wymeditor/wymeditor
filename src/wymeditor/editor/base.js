@@ -1868,8 +1868,7 @@ WYMeditor.editor.prototype._removePsFromList = function (pToRemove) {
         // after the `p`
         if (parentLiIndex === 0) {
             parentList.prepend(threeLis);
-        }
-        else {
+        } else {
             parentList.children().eq(parentLiIndex - 1).after(threeLis);
         }
 
