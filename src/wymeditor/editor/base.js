@@ -1797,6 +1797,10 @@ WYMeditor.editor.prototype._correctOrphanedListItem = function (listNode) {
     editor._removePsFromList
     ========================
 
+    Browsers insert `p` elements into lists. This breaks desired list
+    structure. Fix it.
+
+    @param pToRemove The `p` element that requires replacing with a `li`
  */
 WYMeditor.editor.prototype._removePsFromList = function (pToRemove) {
     var pSiblings,
