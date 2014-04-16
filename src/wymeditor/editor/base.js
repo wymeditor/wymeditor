@@ -1702,6 +1702,7 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
 WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alreadyCorrected) {
     // Travel up the dom until we're at the root ol/ul/li
     var currentNode = listItem,
+        currentNodeSiblings,
         parentNode,
         tagName,
         pToRemove,
@@ -1753,14 +1754,17 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
             currentNode.nextSibling.tagName.toLowerCase() === 'ul'
            ) {
 
+            // Save the `p`'s siblings
+            currentNodeSiblings = jQuery(currentNode).parent().contents()
+
             // Collect before `p`
-            liContentBeforeP = jQuery(currentNode).parent().contents().slice(
-                0, jQuery(currentNode).parent().contents().index(currentNode)
+            liContentBeforeP = jQuery(currentNodeSiblings).slice(
+                0, jQuery(currentNodeSiblings).index(currentNode)
             );
 
             // And after it
-            liContentAfterP = jQuery(currentNode).parent().contents().slice(
-                jQuery(currentNode).parent().contents().index(currentNode) + 1
+            liContentAfterP = currentNodeSiblings.slice(
+                currentNodeSiblings.index(currentNode) + 1
             );
 
             // The parent list because we're going to cut the branch that
