@@ -1828,9 +1828,7 @@ WYMeditor.editor.prototype._removePsFromList = function (pToRemove) {
         jQuery(newLi).append(jQuery(pToRemove).contents());
 
         // Clean up the caret position marker
-        jQuery(this._doc).find(
-            'body.wym_iframe [data-wym-caret=""]'
-        )[0].removeAttribute('data-wym-caret');
+        newLi.removeAttribute('data-wym-caret');
 
         // And remove the `p`.
         jQuery(pToRemove).remove();
@@ -1880,10 +1878,11 @@ WYMeditor.editor.prototype._removePsFromList = function (pToRemove) {
             liContentBeforeP
         );
 
+        // Save the new `li`
+        newLi = jQuery(this._doc).find('body.wym_iframe [data-wym-caret=""]')[0];
+
         // Teleport contents of `p` to it's replacement `li`
-        jQuery(jQuery(this._doc).find(
-            'body.wym_iframe [data-wym-caret=""]')[0]).append(
-            jQuery(pToRemove).contents());
+        jQuery(newLi).append(jQuery(pToRemove).contents());
 
         // Append content from after the `p`
         parentList.children('li').eq(parentLiIndex + 2).append(
@@ -1891,9 +1890,7 @@ WYMeditor.editor.prototype._removePsFromList = function (pToRemove) {
         );
 
         // Set caret
-        this.setFocusToNode(
-            jQuery(this._doc).find('body.wym_iframe [data-wym-caret=""]')[0]
-        );
+        this.setFocusToNode(newLi);
 
         // Clean up the caret position marker
         jQuery(this._doc).find(
