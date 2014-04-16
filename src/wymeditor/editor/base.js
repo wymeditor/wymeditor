@@ -1705,12 +1705,14 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
         parentNode,
         tagName;
 
-    // Browsers can sometimes create `p` elements within `li` elements. Issue 430.
+    // Browsers can sometimes create `p` elements within `li` elements. This
+    // is issue 430.
+    // Check for this issue: If the `currentNode` is a `p` within a `li`
     if (currentNode !== null &&
         currentNode.tagName.toLowerCase() === 'p' &&
         currentNode.parentNode.tagName.toLowerCase() === 'li') {
 
-        // Fix this `p`
+        // Fix this `p` using the dedicated function
         this._removePsFromList(currentNode);
 
         // Don't proceed with further list correction.
