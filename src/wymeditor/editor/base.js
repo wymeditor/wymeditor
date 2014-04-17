@@ -1702,6 +1702,7 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
 WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alreadyCorrected) {
     // Travel up the dom until we're at the root ol/ul/li
     var currentNode = listItem,
+        $currentNode,
         parentNode,
         tagName;
 
@@ -1740,8 +1741,11 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
         // We're still traversing up a list structure. Keep going
         currentNode = parentNode;
     }
+    // Cache a jQuery currentNode
+    $currentNode = jQuery(currentNode);
+
     // We have the root node. Make sure it's legit
-    if (jQuery(currentNode).is('li')) {
+    if ($currentNode.is('li')) {
         // We have an li as the "root" because its missing a parent list.
         // Correct this problem and then try again to correct the nesting.
         WYMeditor.console.log(
@@ -1750,7 +1754,7 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
         this._correctOrphanedListItem(currentNode);
         return this.correctInvalidListNesting(currentNode, true);
     }
-    if (!jQuery(currentNode).is('ol,ul')) {
+    if (!$currentNode.is('ol,ul')) {
         WYMeditor.console.error("Can't correct invalid list nesting. No root list found");
         return alreadyCorrected;
     }
