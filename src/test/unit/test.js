@@ -2,7 +2,7 @@
 /* global -$,
 ok, start, stop, test, expect, equal, deepEqual, sinon,
 htmlEquals, domEquals, moveSelector, makeTextSelection, isContentEditable,
-inPhantomjs, ListPlugin */
+inPhantomjs, ListPlugin, strictEqual, multiline */
 "use strict";
 
 // We need to be able to operate in a noConflict context. Doing this during our
@@ -95,6 +95,7 @@ test("Instantiate", function () {
     Tests that require the WYMeditor instance to already be initialized.
     Calling this funtion as a postInit argument ensures they can pass.
 */
+
 module("API", {setup: setupWym});
 
 test("Commands", function () {
@@ -1290,3 +1291,37 @@ test("Can set and get html with the html() function", function () {
               "Set and get with html() function");
 });
 
+module("helper_functions", {setup: setupWym});
+
+test("multi-line strings with `multiline`", function () {
+    expect(2);
+    var multilineString,
+        multilineIndentedString,
+        expected = [""
+            , 'Hi, Wes!\n'
+            , 'Great news!\n'
+            , '`multiline` is the new `.join()`!'
+        ].join('');
+
+    multilineString = multiline(function () {/*
+Hi, Wes!
+Great news!
+`multiline` is the new `.join()`!
+*/
+    });
+
+    strictEqual(multilineString, expected,
+        'Muti-line string created.'
+    );
+
+    multilineIndentedString = multiline(function () {/*
+        Hi, Wes!
+        Great news!
+        `multiline` is the new `.join()`!
+        */
+    });
+
+    strictEqual(multilineIndentedString, expected,
+        'Multi-line Indented string created.'
+    );
+});

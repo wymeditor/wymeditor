@@ -1,5 +1,5 @@
 /* exported isContentEditable, simulateKey, htmlEquals, domEquals, _htmlEquals,
- makeTextSelection, moveSelector */
+ makeTextSelection, moveSelector, multiline  */
 /* global rangy, strictEqual, deepEqual, html_beautify */
 "use strict";
 
@@ -240,4 +240,46 @@ function isContentEditable(element) {
         }
         return isContentEditable(element.parentNode);
     }
+}
+
+/*
+    A helper function to make writing multi-line strings comfortable.
+    Adapted from https://github.com/sindresorhus/multiline/ and
+    https://github.com/sindresorhus/strip-indent
+    Both of the MIT license.
+*/
+function multiline(fn) {
+
+    var reCommentContents,
+        multilined,
+        indentation,
+        indent,
+        stripRe;
+
+    /* jshint ignore:start */
+    reCommentContents = /\/\*!?(?:\@preserve)?[ \t]*(?:\r\n|\n)([\s\S]*?)(?:\r\n|\n)\s*\*\//;
+    /* jshint ignore:end */
+
+    if (typeof fn !== 'function') {
+        throw new TypeError('Expected a function.');
+    }
+
+    multilined = reCommentContents.exec(fn.toString());
+
+    if (!multilined) {
+        throw new TypeError('Multiline comment missing.');
+    }
+
+    indentation = multilined[1].match(/^[ \t]*(?=[^\s])/gm);
+
+    if (!indentation) {
+        return multilined[1];
+    }
+
+    indent = Math.min.apply(
+        Math, indentation.map(function (el) { return el.length; })
+    );
+    stripRe = new RegExp('^[ \\t]{' + indent + '}', 'gm');
+
+    return indent > 0 ? multilined[1].replace(stripRe, '') : multilined[1];
 }
