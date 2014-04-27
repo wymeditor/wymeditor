@@ -738,11 +738,15 @@ WYMeditor.editor.prototype.findUp = function (node, filter) {
     stripAttrs is false (or undefined), the attributes of node will be
     preserved through the switch.
 */
-WYMeditor.editor.prototype.switchTo = function (node, sType, stripAttrs) {
+WYMeditor.editor.prototype.switchTo = function (node, sType, stripAttrs, setFocus) {
     var newNode = this._doc.createElement(sType),
         html = jQuery(node).html(),
         attrs = node.attributes,
         i;
+
+    if (typeof setFocus === "undefined") {
+        setFocus = true;
+    }
 
     if (!stripAttrs) {
         for (i = 0; i < attrs.length; ++i) {
@@ -753,7 +757,11 @@ WYMeditor.editor.prototype.switchTo = function (node, sType, stripAttrs) {
     newNode.innerHTML = html;
     node.parentNode.replaceChild(newNode, node);
 
-    this.setFocusToNode(newNode);
+    if (setFocus === true) {
+        this.setFocusToNode(newNode);
+    }
+
+    return newNode;
 };
 
 WYMeditor.editor.prototype.replaceStrings = function (sVal) {
@@ -2543,8 +2551,14 @@ WYMeditor.editor.prototype.insertUnorderedlist = function () {
 
     Convert the selected block in to the specified type of list.
 
-    If the selection is already inside a list, switch the type of the nearest
-    parent list to an `<ol>`. If the selection is in a block element that can be a
+    If the selection is already inside a list and the `listType` doesn't match the current type,
+    switch the type of the nearest parent list to `listType` (e.g. switch an ol to
+    a ul).
+
+    If the selected list already matches the `listType`, pull the selected li
+    elements out of the list. Don't go across list levels, though.
+
+    If the selection is in a block element that can be a
     valid list, place that block element's contents inside an ordered list.
 
     Returns `true` if a change was made, `false` otherwise.
@@ -2563,10 +2577,14 @@ WYMeditor.editor.prototype._insertList = function (listType) {
     // change the type of that list.
     if (listItems.length !== 0) {
         // If the selection is across paragraphs and other items at the root level,
-        // don't indent
+        // don't do anything
         rootList = wym.getCommonParentList(listItems, true);
         if (rootList) {
-            this._changeListType(rootList, listType);
+            if (rootList.tagName.toLowerCase() === listType) {
+                this._removeItemsFromList(rootList, listItems);
+            } else {
+                this._changeListType(rootList, listType);
+            }
             return true;
         } else {
             // We have a selection across multiple root-level lists. Punt on
@@ -2625,6 +2643,24 @@ WYMeditor.editor.prototype._convertToList = function (blockElement, listType) {
     $newList = $blockElement.children();
 
     return $newList.get(0);
+};
+
+WYMeditor.editor.prototype._removeItemsFromList = function (rootList, listItems) {
+    var wym = this._wym,
+        newNode,
+        i;
+
+    for (i = 0; i < listItems.length; i++) {
+        // TODO: Handle li's that aren't at the start of the rootList
+        newNode = wym.switchTo(
+            listItems[i],
+            wym.documentStructureManager.structureRules.defaultRootContainer,
+            false,
+            false
+        );
+        jQuery(newNode).detach();
+        jQuery(rootList).before(newNode);
+    }
 };
 
 /**

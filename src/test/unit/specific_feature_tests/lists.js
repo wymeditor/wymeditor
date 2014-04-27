@@ -10,7 +10,7 @@ module("list-indent_outdent", {setup: setupWym});
 * Run a list manipulation and verify the results.
 *
 * @param elmntId An id for the li that will be modified
-* @param action A string with either 'indent' or 'outdent'
+* @param action A string with either 'indent', 'outdent', 'unordered' or 'ordered'
 * @param startHtml The starting HTML
 * @param expectedHtml The expected HTML result.
 * @param isText Should this be considered a text selection (as opposed to a DOM
@@ -129,7 +129,7 @@ function testListRoundTrip(elmntId, action, startHtml, expectedHtml, isText) {
 
     `startElmntId` Element id for the start of the selection
     `endElmntId` Element id for the end of the selection
-    `action` A string with either 'indent' or 'outdent'
+    `action` A string with either 'indent', 'outdent', 'unordered' or 'ordered'.
     `startHtml` The starting HTML
     `expectedHtml` The expected HTML result.
     `isText` Is this a Text selection (as opposed to a DOM selection). Defaults to false.
@@ -182,37 +182,38 @@ function testListMulti(
     htmlEquals(wymeditor, expectedHtml);
 }
 
-var nestedListHtml = String() +
-        '<ol>' +
-            '<li id="li_1">1</li>' +
-            '<li id="li_2">2' +
-                '<ol>' +
-                    '<li id="li_2_1">2_1</li>' +
-                    '<li id="li_2_2">2_2</li>' +
-                '</ol>' +
-            '</li>' +
-            '<li id="li_3">3' +
-                '<ol>' +
-                    '<li id="li_3_1">3_1</li>' +
-                '</ol>' +
-            '</li>' +
-            '<li id="li_4">4</li>' +
-            '<li id="li_5">5' +
-                '<ol>' +
-                    '<li id="li_5_1">5_1</li>' +
-                    '<li id="li_5_2">5_2</li>' +
-                    '<li id="li_5_3">5_3' +
-                        '<ul>' +
-                            '<li id="li_5_3_1">5_3_1</li>' +
-                        '</ul>' +
-                    '</li>' +
-                    '<li id="li_5_4">5_4</li>' +
-                '</ol>' +
-            '</li>' +
-            '<li id="li_6">6</li>' +
-            '<li id="li_7">7</li>' +
-            '<li id="li_8">8</li>' +
-        '</ol>';
+var nestedListHtml = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2'
+            , '<ol>'
+                , '<li id="li_2_1">2_1</li>'
+                , '<li id="li_2_2">2_2</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_3">3'
+            , '<ol>'
+                , '<li id="li_3_1">3_1</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_4">4</li>'
+        , '<li id="li_5">5'
+            , '<ol>'
+                , '<li id="li_5_1">5_1</li>'
+                , '<li id="li_5_2">5_2</li>'
+                , '<li id="li_5_3">5_3'
+                    , '<ul>'
+                        , '<li id="li_5_3_1">5_3_1</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li id="li_5_4">5_4</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_6">6</li>'
+        , '<li id="li_7">7</li>'
+        , '<li id="li_8">8</li>'
+    , '</ol>'
+].join('');
 
 var li_1_indentedHtml = String() +
         '<ol>' +
@@ -2974,3 +2975,395 @@ test("Outdent with table at the end of a list", function () {
            "Table outdented at the end of a list with no line break");
 });
 
+module("list-delisting", {setup: setupWym});
+
+var delistHtml = {};
+
+delistHtml.base = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2'
+            , '<ol>'
+                , '<li id="li_2_1">2_1</li>'
+                , '<li id="li_2_2">2_2</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_3">3'
+            , '<ol>'
+                , '<li id="li_3_1">3_1</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_4">4</li>'
+        , '<li id="li_5">5'
+            , '<ol>'
+                , '<li id="li_5_1">5_1</li>'
+                , '<li id="li_5_2">5_2</li>'
+                , '<li id="li_5_3">5_3'
+                    , '<ul>'
+                        , '<li id="li_5_3_1">5_3_1</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li id="li_5_4">5_4</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_6">6</li>'
+        , '<li id="li_7">7</li>'
+        , '<li id="li_8">8</li>'
+    , '</ol>'
+].join('');
+
+delistHtml.li_1__li_1 = [""
+    , '<p id="li_1">1</p>'
+    , '<ol>'
+        , '<li id="li_2">2'
+            , '<ol>'
+                , '<li id="li_2_1">2_1</li>'
+                , '<li id="li_2_2">2_2</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_3">3'
+            , '<ol>'
+                , '<li id="li_3_1">3_1</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_4">4</li>'
+        , '<li id="li_5">5'
+            , '<ol>'
+                , '<li id="li_5_1">5_1</li>'
+                , '<li id="li_5_2">5_2</li>'
+                , '<li id="li_5_3">5_3'
+                    , '<ul>'
+                        , '<li id="li_5_3_1">5_3_1</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li id="li_5_4">5_4</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_6">6</li>'
+        , '<li id="li_7">7</li>'
+        , '<li id="li_8">8</li>'
+    , '</ol>'
+].join('');
+test("De-list first item", function () {
+    expect(4);
+    var startItemId = 'li_1',
+        endItemId = 'li_1';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_1__li_1
+    );
+    testListMulti(
+        endItemId,
+        startItemId,
+        'ordered',
+        delistHtml.li_1__li_1,
+        delistHtml.base
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_1__li_1,
+        true
+    );
+    testListMulti(
+        endItemId,
+        startItemId,
+        'ordered',
+        delistHtml.li_1__li_1,
+        delistHtml.base,
+        true
+    );
+});
+
+delistHtml.li_1__li_3 = [""
+    , '<p id="li_1">1</p>'
+    , '<p id="li_2">2</p>'
+    , '<ol>'
+        , '<li id="li_2_1">2_1</li>'
+        , '<li id="li_2_2">2_2</li>'
+    , '</ol>'
+    , '<p id="li_3">3<p>'
+    , '<ol>'
+        , '<li id="li_3_1">3_1</li>'
+        , '<li id="li_4">4</li>'
+        , '<li id="li_5">5'
+            , '<ol>'
+                , '<li id="li_5_1">5_1</li>'
+                , '<li id="li_5_2">5_2</li>'
+                , '<li id="li_5_3">5_3'
+                    , '<ul>'
+                        , '<li id="li_5_3_1">5_3_1</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li id="li_5_4">5_4</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_6">6</li>'
+        , '<li id="li_7">7</li>'
+        , '<li id="li_8">8</li>'
+    , '</ol>'
+].join('');
+test("De-list across sublist", function () {
+    expect(4);
+    var startItemId = 'li_1',
+        endItemId = 'li_3';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_1__li_3
+    );
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_1__li_3,
+        true
+    );
+
+});
+
+var delistOverindentHtml = {};
+delistOverindentHtml.base = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2'
+            , '<ol>'
+                , '<li>'
+                    , '<ol>'
+                        , '<li id="li_2_1_1">2_1_1</li>'
+                        , '<li id="li_2_1_2">2_1_2</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li id="li_2_2">2_2</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_3">3</li>'
+    , '</ol>'
+].join('');
+delistOverindentHtml.li_1__li_2 = [""
+    , '<p id="li_1">1</p>'
+    , '<p id="li_2">2</p>'
+    , '<ol>'
+        , '<li>'
+            , '<ol>'
+                , '<li id="li_2_1_1">2_1_1</li>'
+                , '<li id="li_2_1_2">2_1_2</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_2_2">2_2</li>'
+        , '<li id="li_3">3</li>'
+    , '</ol>'
+].join('');
+test("Over-indented not invalid", function () {
+    expect(2);
+    var startItemId = 'li_1',
+        endItemId = 'li_2';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistOverindentHtml.base,
+        delistOverindentHtml.li_1__li_2
+    );
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistOverindentHtml.base,
+        delistOverindentHtml.li_1__li_2,
+        true
+    );
+    // This one can't be reversed
+});
+
+test("Not across indentation levels", function () {
+    expect(2);
+    var startItemId = 'li_1',
+        endItemId = 'li_3_1';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistOverindentHtml.base,
+        delistOverindentHtml.base
+    );
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistOverindentHtml.base,
+        delistOverindentHtml.base,
+        true
+    );
+});
+test("Not across lists", function () {
+    expect(2);
+    var startItemId = 'li_1',
+        endItemId = 'li2_1',
+        twoListsHtml = [delistHtml.base
+            , '<ol>'
+                , '<li id="li2_1">1</li>'
+            , '</ol>'
+        ].join('');
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        twoListsHtml,
+        twoListsHtml
+    );
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        twoListsHtml,
+        twoListsHtml,
+        true
+    );
+});
+test("Not across different sub-lists at same level", function () {
+    expect(2);
+    var startItemId = 'li_2_1',
+        endItemId = 'li_5_1';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.base
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.base,
+        true
+    );
+});
+
+delistHtml.li_2_1__li_2_2 = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2<br />'
+            , '<span id="li_2_1">2_1</span><br />'
+            , '<span id="li_2_2">2_2</span>'
+        , '</li>'
+        , '<li id="li_3">3'
+            , '<ol>'
+                , '<li id="li_3_1">3_1</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_4">4</li>'
+        , '<li id="li_5">5'
+            , '<ol>'
+                , '<li id="li_5_1">5_1</li>'
+                , '<li id="li_5_2">5_2</li>'
+                , '<li id="li_5_3">5_3'
+                    , '<ul>'
+                        , '<li id="li_5_3_1">5_3_1</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li id="li_5_4">5_4</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_6">6</li>'
+        , '<li id="li_7">7</li>'
+        , '<li id="li_8">8</li>'
+    , '</ol>'
+].join('');
+test("Same sublist", function () {
+    expect(4);
+    var startItemId = 'li_2_1',
+        endItemId = 'li_2_2';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_2_1__li_2_2
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_2_1__li_2_2,
+        true
+    );
+});
+
+delistHtml.li_6__li_7 = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2'
+            , '<ol>'
+                , '<li id="li_2_1">2_1</li>'
+                , '<li id="li_2_2">2_2</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_3">3'
+            , '<ol>'
+                , '<li id="li_3_1">3_1</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_4">4</li>'
+        , '<li id="li_5">5'
+            , '<ol>'
+                , '<li id="li_5_1">5_1</li>'
+                , '<li id="li_5_2">5_2</li>'
+                , '<li id="li_5_3">5_3'
+                    , '<ul>'
+                        , '<li id="li_5_3_1">5_3_1</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li id="li_5_4">5_4</li>'
+            , '</ol>'
+        , '</li>'
+    , '</ol>'
+    , '<p id="li_6">6</p>'
+    , '<p id="li_7">7</p>'
+    , '<ol>'
+        , '<li id="li_8">8</li>'
+    , '</ol>'
+].join('');
+test("Split lists", function () {
+    expect(2);
+    var startItemId = 'li_6',
+        endItemId = 'li_7';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_6__li_7
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_6__li_7,
+        true
+    );
+});
