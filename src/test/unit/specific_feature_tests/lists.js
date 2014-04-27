@@ -1,8 +1,7 @@
 /* jshint camelcase: false, maxlen: 105 */
 /* global setupWym, SKIP_KNOWN_FAILING_TESTS,
-htmlEquals, makeTextSelection, moveSelector, simulateKey, normalizeHtml,
-makeSelection, strictEqual,
-ok, test, expect, deepEqual */
+htmlEquals, domEquals, makeTextSelection, moveSelector, simulateKey,
+makeSelection, strictEqual, ok, test, expect */
 "use strict";
 
 module("list-indent_outdent", {setup: setupWym});
@@ -800,7 +799,7 @@ var nodeContentAfterSublistHtml = String() +
                     '<li id="li_1_1">1_1</li>' +
                     '<li id="li_1_2">1_2</li>' +
                 '</ul>' +
-                '<table><tr><td>td_1_3</td></tr></table>' +
+                '<table><tbody><tr><td>td_1_3</td></tr></tbody></table>' +
             '</li>' +
             '<li id="li_2">2</li>' +
         '</ol>';
@@ -812,7 +811,7 @@ var li_1_2_outdentedNodeContentAfterSublistHtml = String() +
                 '</ul>' +
             '</li>' +
             '<li id="li_1_2">1_2' +
-                '<table><tr><td>td_1_3</td></tr></table>' +
+                '<table><tbody><tr><td>td_1_3</td></tr></tbody></table>' +
             '</li>' +
             '<li id="li_2">2</li>' +
         '</ol>';
@@ -856,7 +855,7 @@ var spanInSublistHtml = String() +
                 '</ul>' +
                 'text_2 ' + // IE really likes this space
             '</li>' +
-            '<li id="li_3">3<br >' +
+            '<li id="li_3">3<br />' +
                 'text_3_1<span id="span_3_2">3_2</span>text_3_3' +
             '</li>' +
         '</ol>';
@@ -874,7 +873,7 @@ var span_3_2_indentedSpanInSublistHtml = String() +
                 '</ul>' +
                 'text_2 ' +
                 '<ol>' +
-                    '<li id="li_3">3<br >' +
+                    '<li id="li_3">3<br />' +
                         'text_3_1<span id="span_3_2">3_2</span>text_3_3' +
                     '</li>' +
                 '</ol>' +
@@ -1005,7 +1004,7 @@ module("list-invalid_nesting", {setup: setupWym});
 
 var invalidNestingNoPreviousHtml = String() +
         '<ol>' +
-            '<table id="table_1"><tr><td>td_1_1</td></tr></table>' +
+            '<table id="table_1"><tbody><tr><td>td_1_1</td></tr></tbody></table>' +
             '<ul>' +
                 '<li id="li_2_1">2_1' +
                     '<ul>' +
@@ -1020,7 +1019,7 @@ var invalidNestingNoPreviousHtml = String() +
             '<li id="li_4">4</li>' +
             'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
             '<li id="li_6">6</li>' +
-            '<table id="table_7"><tr><td>td_7_1</td></tr></table>' +
+            '<table id="table_7"><tbody><tr><td>td_7_1</td></tr></tbody></table>' +
             '<ol>' +
                 '<li id="li_8">8</li>' +
             '</ol>' +
@@ -1028,7 +1027,7 @@ var invalidNestingNoPreviousHtml = String() +
 var invalidNestingNoPreviousCorrectedHtml = String() +
         '<ol>' +
             '<li class="spacer_li">' +
-                '<table id="table_1"><tr><td>td_1_1</td></tr></table>' +
+                '<table id="table_1"><tbody><tr><td>td_1_1</td></tr></tbody></table>' +
                 '<ul>' +
                     '<li id="li_2_1">2_1' +
                         '<ul>' +
@@ -1046,7 +1045,7 @@ var invalidNestingNoPreviousCorrectedHtml = String() +
                 'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
             '</li>' +
             '<li id="li_6">6' +
-                '<table id="table_7"><tr><td>td_7_1</td></tr></table>' +
+                '<table id="table_7"><tbody><tr><td>td_7_1</td></tr></tbody></table>' +
                 '<ol>' +
                     '<li id="li_8">8</li>' +
                 '</ol>' +
@@ -1081,7 +1080,7 @@ var invalidNestingCorrectedHtml = String() +
                 '</ul>' +
                 'text_3 ' +
             '</li>' +
-            '<li id="li_4">4<br >' +
+            '<li id="li_4">4<br />' +
                 'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
             '</li>' +
         '</ol>';
@@ -1099,7 +1098,7 @@ var li_2_2_outdentInvalidNestingHtml = String() +
             '<li id="li_2_2">2_2<br />' +
                 'text_3 ' +
             '</li>' +
-            '<li id="li_4">4<br >' +
+            '<li id="li_4">4<br />' +
                 'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
             '</li>' +
         '</ol>';
@@ -1117,7 +1116,7 @@ var span_5_2_indentedInvalidNestingHtml = String() +
                 '</ul>' +
                 'text_3 ' +
                 '<ol>' +
-                    '<li id="li_4">4<br >' +
+                    '<li id="li_4">4<br />' +
                         'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
                     '</li>' +
                 '</ol>' +
@@ -1907,6 +1906,23 @@ var li_1_1_1_1_unorderedHtml = String() +
             '</li>' +
             '<li id="li_2">2</li>' +
         '</ol>';
+var li_1_1_1__li_1_1_1_1_unorderedHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1' +
+                '<ol>' +
+                    '<li id="li_1_1">1_1' +
+                        '<ul>' +
+                            '<li id="li_1_1_1">1_1_1' +
+                                '<ul>' +
+                                    '<li id="li_1_1_1_1">1_1_1_1</li>' +
+                                '</ul>' +
+                            '</li>' +
+                        '</ul>' +
+                    '</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_2">2</li>' +
+        '</ol>';
 
 test("Ordered to unordered second item", function () {
     expect(10);
@@ -1940,19 +1956,19 @@ test("Ordered to unordered one item", function () {
     testListRoundTrip('li_1_1_1_1', 'ordered', li_1_1_1_1_unorderedHtml, orderedHtml, true);
 });
 
-test("Prevent converting type with selection over multiple levels", function () {
+test("Converting type with selection over multiple levels", function () {
     expect(4);
 
     testListMulti('li_1_1_1', 'li_1_1_1_1', 'unordered',
-                  li_1_1_1_unorderedHtml, li_1_1_1_unorderedHtml);
+                  li_1_1_1_1_unorderedHtml, li_1_1_1__li_1_1_1_1_unorderedHtml);
     testListMulti('li_1_1_1', 'li_1_1_1_1', 'ordered',
-                  li_1_1_1_unorderedHtml, li_1_1_1_unorderedHtml);
+                  li_1_1_1_unorderedHtml, orderedHtml);
 
     // With text selection
     testListMulti('li_1_1_1', 'li_1_1_1_1', 'unordered',
-                  li_1_1_1_unorderedHtml, li_1_1_1_unorderedHtml, true);
+                  li_1_1_1_1_unorderedHtml, li_1_1_1__li_1_1_1_1_unorderedHtml, true);
     testListMulti('li_1_1_1', 'li_1_1_1_1', 'ordered',
-                  li_1_1_1_unorderedHtml, li_1_1_1_unorderedHtml, true);
+                  li_1_1_1_unorderedHtml, orderedHtml, true);
 });
 
 module("list-conversion_blocks", {setup: setupWym});
@@ -2210,19 +2226,13 @@ test("Paragraph is at end of list; repairing function directly called",
                 , '<li>'
                 , '</li>'
             , '</ol>'
-        ].join(""),
-        normalizedDomHtml;
+        ].join("");
 
     jQuery(wymeditor._doc.body).html(brokenHtml);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     wymeditor.correctInvalidListNesting($body.find('p')[0]);
 
-    // Test against the HTML before the parser because the parser removes empty
-    // `li` elements that we have here.
-
-    normalizedDomHtml = normalizeHtml(jQuery($body).get(0).firstChild);
-
-    strictEqual(normalizedDomHtml, repairedHtml);
+    domEquals(wymeditor, repairedHtml);
     strictEqual(
         wymeditor.selected(),
         $body.find('li')[2]
@@ -2261,8 +2271,7 @@ test("Paragraph is at end of list.", function () {
                 , '<li>'
                 , '</li>'
             , '</ol>'
-        ].join(""),
-        normalizedDomHtml;
+        ].join("");
 
     jQuery(wymeditor._doc.body).html(brokenHtml);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
@@ -2272,9 +2281,7 @@ test("Paragraph is at end of list.", function () {
     // Test against the HTML before the parser because the parser removes empty
     // `li` elements that we have here.
 
-    normalizedDomHtml = normalizeHtml(jQuery($body).get(0).firstChild);
-
-    strictEqual(normalizedDomHtml, repairedHtml);
+    domEquals(wymeditor, repairedHtml);
     strictEqual(
         wymeditor.selected(),
         $body.find('li')[2]
@@ -2296,7 +2303,7 @@ test("Paragraph is at end of list; text in `p`.", function () {
                         , '</li>'
                     , '</ol>'
                     , '<p>'
-                        , 'Teleport me!<br/>'
+                        , 'Teleport me!<br />'
                     , '</p>'
                 , '</li>'
             , '</ol>'
@@ -2312,11 +2319,10 @@ test("Paragraph is at end of list; text in `p`.", function () {
                     , '</ol>'
                 , '</li>'
                 , '<li>'
-                    , 'Teleport me!<br/>'
+                    , 'Teleport me!<br>'
                 , '</li>'
             , '</ol>'
-        ].join(""),
-        normalizedDomHtml;
+        ].join("");
 
     jQuery(wymeditor._doc.body).html(brokenHtml);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
@@ -2326,9 +2332,7 @@ test("Paragraph is at end of list; text in `p`.", function () {
     // Test against the HTML before the parser because the parser removes empty
     // `li` elements that we have here.
 
-    normalizedDomHtml = normalizeHtml(jQuery($body).get(0).firstChild);
-
-    strictEqual(normalizedDomHtml, repairedHtml);
+    domEquals(wymeditor, repairedHtml);
     strictEqual(
         wymeditor.selected(),
         $body.find('li')[2]
@@ -2408,8 +2412,7 @@ test("Paragraph is not at end of list; parent is first `li`",
                     , '</ol>'
                 , '</li>'
             , '</ol>'
-        ].join(""),
-        normalizedDomHtml;
+        ].join("");
 
     jQuery(wymeditor._doc.body).html(brokenHtml);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
@@ -2419,9 +2422,7 @@ test("Paragraph is not at end of list; parent is first `li`",
     // Test against the HTML before the parser because the parser removes empty
     // `li` elements that we have here.
 
-    normalizedDomHtml = normalizeHtml(jQuery($body).get(0).firstChild);
-
-    strictEqual(normalizedDomHtml, repairedHtml);
+    domEquals(wymeditor, repairedHtml);
     strictEqual(
         wymeditor.selected(),
         $body.find('li')[3]
@@ -2447,7 +2448,7 @@ test("Paragraph is not at end of list; parent is first `li`; text in `p`",
                         , '</li>'
                     , '</ol>'
                     , '<p>'
-                        , 'It has been brought to my attention...<br/>'
+                        , 'It has been brought to my attention...<br />'
                     , '</p>'
                     , '<ol>'
                         , '<li>'
@@ -2482,7 +2483,7 @@ test("Paragraph is not at end of list; parent is first `li`; text in `p`",
                     , '</ol>'
                 , '</li>'
                 , '<li>'
-                    , 'It has been brought to my attention...<br/>'
+                    , 'It has been brought to my attention...<br>'
                 , '</li>'
                 , '<li>'
                     , '<ol>'
@@ -2503,8 +2504,7 @@ test("Paragraph is not at end of list; parent is first `li`; text in `p`",
                     , '</ol>'
                 , '</li>'
             , '</ol>'
-        ].join(""),
-        normalizedDomHtml;
+        ].join("");
 
     jQuery(wymeditor._doc.body).html(brokenHtml);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
@@ -2514,9 +2514,7 @@ test("Paragraph is not at end of list; parent is first `li`; text in `p`",
     // Test against the HTML before the parser because the parser removes empty
     // `li` elements that we have here.
 
-    normalizedDomHtml = normalizeHtml(jQuery($body).get(0).firstChild);
-
-    strictEqual(normalizedDomHtml, repairedHtml);
+    domEquals(wymeditor, repairedHtml);
     strictEqual(
         wymeditor.selected(),
         $body.find('li')[3]
@@ -2590,8 +2588,7 @@ test("Paragraph is not at end of list; parent is second `li`",
                     , '</ol>'
                 , '</li>'
             , '</ol>'
-        ].join(""),
-        normalizedDomHtml;
+        ].join("");
 
     jQuery(wymeditor._doc.body).html(brokenHtml);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
@@ -2601,9 +2598,7 @@ test("Paragraph is not at end of list; parent is second `li`",
     // Test against the HTML before the parser because the parser removes empty
     // `li` elements that we have here.
 
-    normalizedDomHtml = normalizeHtml(jQuery($body).get(0).firstChild);
-
-    strictEqual(normalizedDomHtml, repairedHtml);
+    domEquals(wymeditor, repairedHtml);
     strictEqual(
         wymeditor.selected(),
         $body.find('ol li')[5]
@@ -2673,8 +2668,7 @@ test("Paragraph is not at end of list; parent is second `li`; variation",
                     , '</ol>'
                 , '</li>'
             , '</ol>'
-        ].join(""),
-        normalizedDomHtml;
+        ].join("");
 
     jQuery(wymeditor._doc.body).html(brokenHtml);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
@@ -2684,9 +2678,7 @@ test("Paragraph is not at end of list; parent is second `li`; variation",
     // Test against the HTML before the parser because the parser removes empty
     // `li` elements that we have here.
 
-    normalizedDomHtml = normalizeHtml(jQuery($body).get(0).firstChild);
-
-    strictEqual(normalizedDomHtml, repairedHtml);
+    domEquals(wymeditor, repairedHtml);
     strictEqual(
         wymeditor.selected(),
         $body.find('ol li')[5]
@@ -2830,7 +2822,7 @@ function changeIndent(wymeditor, html, selStart, selEnd, inOrOut) {
 
 var TEST_LINEBREAK_SPACER = '<br class="' +
                                 WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS + ' ' +
-                                WYMeditor.EDITOR_ONLY_CLASS + '"/>';
+                                WYMeditor.EDITOR_ONLY_CLASS + '">';
 
 var expectedMiddleIn = String() +
     '<ol>' +
@@ -2929,49 +2921,45 @@ var startEndOutNoBR = expectedEndOut.replace(TEST_LINEBREAK_SPACER, '');
 
 test("Indent with table in the middle of a list", function () {
     expect(1);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    var wymeditor = jQuery.wymeditors(0);
 
     changeIndent(wymeditor, expectedMiddleOutFull, '#li_2', '#li_3', 'indent');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedMiddleIn,
+    domEquals(wymeditor, expectedMiddleIn,
            "Table indented in the middle of a list");
 });
 
 test("Indent with table at the end of a list", function () {
     expect(2);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    var wymeditor = jQuery.wymeditors(0);
 
     changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'indent');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndIn,
+    domEquals(wymeditor, expectedEndIn,
            "Table indented at the end of a list");
 
     changeIndent(wymeditor, startEndOutNoBR, '#li_3', '#li_3', 'indent');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndIn,
+    domEquals(wymeditor, expectedEndIn,
            "Table indented at the end of a list with no line break");
 });
 
 test("Outdent with table in the middle of a list", function () {
     expect(1);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    var wymeditor = jQuery.wymeditors(0);
 
     changeIndent(wymeditor, expectedMiddleIn, '#li_2', '#li_2', 'outdent');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedMiddleOutPartial,
+    domEquals(wymeditor, expectedMiddleOutPartial,
            "Table outdented in the middle of a list");
 });
 
 test("Outdent with table at the end of a list", function () {
     expect(2);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    var wymeditor = jQuery.wymeditors(0);
 
     changeIndent(wymeditor, expectedEndIn, '#li_3', '#li_3', 'outdent');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndOut,
+    domEquals(wymeditor, expectedEndOut,
            "Table outdented at the end of a list");
 
     changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'outdent');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndOut,
+    domEquals(wymeditor, expectedEndOut,
            "Table outdented at the end of a list with no line break");
 });
 
@@ -3045,7 +3033,7 @@ delistHtml.li_1__li_1 = [""
     , '</ol>'
 ].join('');
 test("De-list first item", function () {
-    expect(4);
+    expect(2);
     var startItemId = 'li_1',
         endItemId = 'li_1';
 
@@ -3056,13 +3044,6 @@ test("De-list first item", function () {
         delistHtml.base,
         delistHtml.li_1__li_1
     );
-    testListMulti(
-        endItemId,
-        startItemId,
-        'ordered',
-        delistHtml.li_1__li_1,
-        delistHtml.base
-    );
     // Via text selection
     testListMulti(
         startItemId,
@@ -3072,12 +3053,60 @@ test("De-list first item", function () {
         delistHtml.li_1__li_1,
         true
     );
+});
+
+delistHtml.li_8__li_8 = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2'
+            , '<ol>'
+                , '<li id="li_2_1">2_1</li>'
+                , '<li id="li_2_2">2_2</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_3">3'
+            , '<ol>'
+                , '<li id="li_3_1">3_1</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_4">4</li>'
+        , '<li id="li_5">5'
+            , '<ol>'
+                , '<li id="li_5_1">5_1</li>'
+                , '<li id="li_5_2">5_2</li>'
+                , '<li id="li_5_3">5_3'
+                    , '<ul>'
+                        , '<li id="li_5_3_1">5_3_1</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li id="li_5_4">5_4</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_6">6</li>'
+        , '<li id="li_7">7</li>'
+    , '</ol>'
+    , '<p id="li_8">8</p>'
+].join('');
+
+test("De-list last item", function () {
+    expect(2);
+    var startItemId = 'li_8',
+        endItemId = 'li_8';
+
     testListMulti(
-        endItemId,
         startItemId,
+        endItemId,
         'ordered',
-        delistHtml.li_1__li_1,
         delistHtml.base,
+        delistHtml.li_8__li_8
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_8__li_8,
         true
     );
 });
@@ -3089,9 +3118,11 @@ delistHtml.li_1__li_3 = [""
         , '<li id="li_2_1">2_1</li>'
         , '<li id="li_2_2">2_2</li>'
     , '</ol>'
-    , '<p id="li_3">3<p>'
+    , '<p id="li_3">3</p>'
     , '<ol>'
         , '<li id="li_3_1">3_1</li>'
+    , '</ol>'
+    , '<ol>'
         , '<li id="li_4">4</li>'
         , '<li id="li_5">5'
             , '<ol>'
@@ -3188,24 +3219,39 @@ test("Over-indented not invalid", function () {
     // This one can't be reversed
 });
 
+delistOverindentHtml.li_1__li_3 = [""
+    , '<p id="li_1">1</p>'
+    , '<p id="li_2">2</p>'
+    , '<ol>'
+        , '<li>'
+            , '<ol>'
+                , '<li id="li_2_1_1">2_1_1</li>'
+                , '<li id="li_2_1_2">2_1_2</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_2_2">2_2</li>'
+    , '</ol>'
+    , '<p id="li_3">3</p>'
+].join('');
+
 test("Not across indentation levels", function () {
     expect(2);
     var startItemId = 'li_1',
-        endItemId = 'li_3_1';
+        endItemId = 'li_3';
 
     testListMulti(
         startItemId,
         endItemId,
         'ordered',
         delistOverindentHtml.base,
-        delistOverindentHtml.base
+        delistOverindentHtml.li_1__li_3
     );
     testListMulti(
         startItemId,
         endItemId,
         'ordered',
         delistOverindentHtml.base,
-        delistOverindentHtml.base,
+        delistOverindentHtml.li_1__li_3,
         true
     );
 });
@@ -3289,7 +3335,7 @@ delistHtml.li_2_1__li_2_2 = [""
     , '</ol>'
 ].join('');
 test("Same sublist", function () {
-    expect(4);
+    expect(2);
     var startItemId = 'li_2_1',
         endItemId = 'li_2_2';
 
