@@ -3492,7 +3492,28 @@ delistHtml.withNodesAfterSubList = [""
         , '</li>'
     , '</ol>'
 ].join('');
-test("Don't de-list an item when the user probably didn't mean to", function () {
+test("Don't de-list an item when selection is after a list.", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0),
+    selectedTextNode,
+    actionButton;
+
+    wymeditor._html(delistHtml.withNodesAfterSubList);
+    selectedTextNode = jQuery(wymeditor._doc).find('#li_2').contents()
+        .last()[0];
+    makeTextSelection(wymeditor, selectedTextNode, selectedTextNode, 0, 8);
+
+    actionButton = jQuery(wymeditor._box)
+        .find(wymeditor._options.toolsSelector)
+        .find('.wym_tools_ordered_list a');
+    actionButton.click();
+
+    htmlEquals(
+        wymeditor,
+        delistHtml.withNodesAfterSubList
+    );
+});
+test("Don't de-list an item when selection is after a list. Selection nested.", function () {
     expect(2);
     var startItemId = 'select_me',
         endItemId = 'select_me';
