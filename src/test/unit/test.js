@@ -1298,14 +1298,14 @@ test("multi-line strings with `multiline`", function () {
     var multilineString,
         multilineIndentedString,
         expected = [""
-            , 'Hi, Wes!\n'
-            , 'Great news!\n'
+            , '    Hi, Wes!\n'
+            , '        Great news!\n'
             , '`multiline` is the new `.join()`!'
         ].join('');
 
     multilineString = multiline(function () {/*
-Hi, Wes!
-Great news!
+    Hi, Wes!
+        Great news!
 `multiline` is the new `.join()`!
 */
     });
@@ -1315,8 +1315,8 @@ Great news!
     );
 
     multilineIndentedString = multiline(function () {/*
-        Hi, Wes!
-        Great news!
+            Hi, Wes!
+                Great news!
         `multiline` is the new `.join()`!
         */
     });
