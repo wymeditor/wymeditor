@@ -3032,7 +3032,7 @@ delistHtml.li_1__li_1 = [""
         , '<li id="li_8">8</li>'
     , '</ol>'
 ].join('');
-test("De-list first item", function () {
+test("Move to before parent list. Transform into default root container.", function () {
     expect(2);
     var startItemId = 'li_1',
         endItemId = 'li_1';
@@ -3088,7 +3088,7 @@ delistHtml.li_8__li_8 = [""
     , '<p id="li_8">8</p>'
 ].join('');
 
-test("De-list last item", function () {
+test("Move to after parent list.", function () {
     expect(2);
     var startItemId = 'li_8',
         endItemId = 'li_8';
@@ -3142,7 +3142,7 @@ delistHtml.li_1__li_3 = [""
     , '</ol>'
 ].join('');
 test("De-list across sublist", function () {
-    expect(4);
+    expect(2);
     var startItemId = 'li_1',
         endItemId = 'li_3';
 
@@ -3193,6 +3193,8 @@ delistOverindentHtml.li_1__li_2 = [""
             , '</ol>'
         , '</li>'
         , '<li id="li_2_2">2_2</li>'
+    , '</ol>'
+    , '<ol>'
         , '<li id="li_3">3</li>'
     , '</ol>'
 ].join('');
@@ -3255,33 +3257,96 @@ test("Not across indentation levels", function () {
         true
     );
 });
-test("Not across lists", function () {
-    expect(2);
-    var startItemId = 'li_1',
-        endItemId = 'li2_1',
-        twoListsHtml = [delistHtml.base
+delistHtml.twoListsHtml = [delistHtml.base
+    , '<ol>'
+        , '<li id="li2_1">1</li>'
+    , '</ol>'
+].join('');
+delistHtml.li_5_4__li2_1 = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2'
             , '<ol>'
-                , '<li id="li2_1">1</li>'
+                , '<li id="li_2_1">2_1</li>'
+                , '<li id="li_2_2">2_2</li>'
             , '</ol>'
-        ].join('');
+        , '</li>'
+        , '<li id="li_3">3'
+            , '<ol>'
+                , '<li id="li_3_1">3_1</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_4">4</li>'
+        , '<li id="li_5">5'
+            , '<ol>'
+                , '<li id="li_5_1">5_1</li>'
+                , '<li id="li_5_2">5_2</li>'
+                , '<li id="li_5_3">5_3'
+                    , '<ul>'
+                        , '<li id="li_5_3_1">5_3_1</li>'
+                    , '</ul>'
+                , '</li>'
+            , '</ol>'
+            , '<span id="li_5_4">5_4</span>'
+        , '</li>'
+    , '</ol>'
+    , '<p id="li_6">6</p>'
+    , '<p id="li_7">7</p>'
+    , '<p id="li_8">8</p>'
+    , '<p id="li2_1">1</p>'
+].join('');
+test("Across lists", function () {
+    expect(2);
+    var startItemId = 'li_5_4',
+        endItemId = 'li2_1';
 
     testListMulti(
         startItemId,
         endItemId,
         'ordered',
-        twoListsHtml,
-        twoListsHtml
+        delistHtml.twoListsHtml,
+        delistHtml.li_5_4__li2_1
     );
     testListMulti(
         startItemId,
         endItemId,
         'ordered',
-        twoListsHtml,
-        twoListsHtml,
+        delistHtml.twoListsHtml,
+        delistHtml.li_5_4__li2_1,
         true
     );
 });
-test("Not across different sub-lists at same level", function () {
+delistHtml.li_2_1__li_5_1= [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2'
+            , '<br /><span id="li_2_1">2_1</span>'
+            , '<br /><span id="li_2_2">2_2</span>'
+        , '</li>'
+    , '</ol>'
+    , '<p id="li_3">3</p>'
+    , '<ol>'
+        , '<li id="li_3_1">3_1</li>'
+    , '</ol>'
+    , '<p id="li_4">4</p>'
+    , '<p id="li_5">5</p>'
+    , '<ol>'
+        , '<li id="li_5_1">5_1</li>'
+        , '<li id="li_5_2">5_2</li>'
+        , '<li id="li_5_3">5_3'
+            , '<ul>'
+                , '<li id="li_5_3_1">5_3_1</li>'
+            , '</ul>'
+        , '</li>'
+        , '<li id="li_5_4">5_4</li>'
+    , '</ol>'
+    , '<ol>'
+        , '<li id="li_6">6</li>'
+        , '<li id="li_7">7</li>'
+        , '<li id="li_8">8</li>'
+    , '</ol>'
+].join('');
+test("Across different sub-lists at same level", function () {
     expect(2);
     var startItemId = 'li_2_1',
         endItemId = 'li_5_1';
@@ -3291,7 +3356,7 @@ test("Not across different sub-lists at same level", function () {
         endItemId,
         'ordered',
         delistHtml.base,
-        delistHtml.base
+        delistHtml.li_2_1__li_5_1
     );
     // Via text selection
     testListMulti(
@@ -3299,7 +3364,7 @@ test("Not across different sub-lists at same level", function () {
         endItemId,
         'ordered',
         delistHtml.base,
-        delistHtml.base,
+        delistHtml.li_2_1__li_5_1,
         true
     );
 });
@@ -3334,7 +3399,7 @@ delistHtml.li_2_1__li_2_2 = [""
         , '<li id="li_8">8</li>'
     , '</ol>'
 ].join('');
-test("Same sublist", function () {
+test("Transform into spans. De-list entire list.", function () {
     expect(2);
     var startItemId = 'li_2_1',
         endItemId = 'li_2_2';
@@ -3413,3 +3478,112 @@ test("Split lists", function () {
         true
     );
 });
+delistHtml.withNodesAfterSubList = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2'
+            , '<ol>'
+                , '<li id="li_2_1">2_1</li>'
+                , '<li>I have no attributes!</li>'
+                , '<li id="li_2_3">2_3</li>'
+            , '</ol>'
+            , '<span id="select_me">I am after a nested list.</span><br />'
+            , 'Me, too!'
+        , '</li>'
+    , '</ol>'
+].join('');
+test("Don't de-list an item when the user probably didn't mean to", function () {
+    expect(2);
+    var startItemId = 'select_me',
+        endItemId = 'select_me';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.withNodesAfterSubList,
+        delistHtml.withNodesAfterSubList
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.withNodesAfterSubList,
+        delistHtml.withNodesAfterSubList,
+        true
+    );
+});
+delistHtml.withNodesAfterSubList_li_2 = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+    , '</ol>'
+    , '<p id="li_2">2</p>'
+    , '<ol>'
+        , '<li id="li_2_1">2_1</li>'
+        , '<li>I have no attributes!</li>'
+        , '<li id="li_2_3">2_3</li>'
+    , '</ol>'
+    , '<p id="select_me">I am after a nested list.</p>'
+    , '<p>Me, too!</p>'
+].join('');
+test("textNode & inline element after block element. Transform `li`'s' contents to root containers.",
+    function () {
+        expect(2);
+        var startItemId = 'li_2',
+            endItemId = 'li_2';
+
+        testListMulti(
+            startItemId,
+            endItemId,
+            'ordered',
+            delistHtml.withNodesAfterSubList,
+            delistHtml.withNodesAfterSubList_li_2
+        );
+        // Via text selection
+        testListMulti(
+            startItemId,
+            endItemId,
+            'ordered',
+            delistHtml.withNodesAfterSubList,
+            delistHtml.withNodesAfterSubList_li_2,
+            true
+        );
+    }
+);
+delistHtml.withNodesAfterSubList_li_2_1__2_3 = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2'
+            , '<br /><span id="li_2_1">2_1</span>'
+            , '<br />I have no attributes!'
+            , '<br /><span id="li_2_3">2_3</span><br />'
+            , '<span id="select_me">I am after a nested list.</span><br />'
+            , 'Me, too!'
+        , '</li>'
+    , '</ol>'
+].join('');
+test("Add `br` elements after transforming `li` to `span`. Unwrap span if no attributes.",
+    function () {
+        expect(2);
+        var startItemId = 'li_2_1',
+            endItemId = 'li_2_3';
+
+        testListMulti(
+            startItemId,
+            endItemId,
+            'ordered',
+            delistHtml.withNodesAfterSubList,
+            delistHtml.withNodesAfterSubList_li_2_1__2_3
+        );
+        // Via text selection
+        testListMulti(
+            startItemId,
+            endItemId,
+            'ordered',
+            delistHtml.withNodesAfterSubList,
+            delistHtml.withNodesAfterSubList_li_2_1__2_3,
+            true
+        );
+    }
+);
