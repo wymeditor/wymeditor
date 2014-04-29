@@ -738,11 +738,15 @@ WYMeditor.editor.prototype.findUp = function (node, filter) {
     stripAttrs is false (or undefined), the attributes of node will be
     preserved through the switch.
 */
-WYMeditor.editor.prototype.switchTo = function (node, sType, stripAttrs) {
+WYMeditor.editor.prototype.switchTo = function (node, sType, stripAttrs, setFocus) {
     var newNode = this._doc.createElement(sType),
         html = jQuery(node).html(),
         attrs = node.attributes,
         i;
+
+    if (typeof setFocus === "undefined") {
+        setFocus = true;
+    }
 
     if (!stripAttrs) {
         for (i = 0; i < attrs.length; ++i) {
@@ -753,7 +757,11 @@ WYMeditor.editor.prototype.switchTo = function (node, sType, stripAttrs) {
     newNode.innerHTML = html;
     node.parentNode.replaceChild(newNode, node);
 
-    this.setFocusToNode(newNode);
+    if (setFocus === true) {
+        this.setFocusToNode(newNode);
+    }
+
+    return newNode;
 };
 
 WYMeditor.editor.prototype.replaceStrings = function (sVal) {
@@ -1550,7 +1558,14 @@ WYMeditor.editor.prototype._indentSingleItem = function (listItem) {
     Outdent a single list item via the dom, ensuring that the selected node moves in
     exactly one level and all other nodes stay at the same level.
  */
-WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
+WYMeditor.editor.prototype._outdentSingleItem = function (
+    listItem,
+    keepSublistContentsIndentation
+) {
+    keepSublistContentsIndentation =
+        typeof keepSublistContentsIndentation !== 'undefined' ?
+        keepSublistContentsIndentation : true;
+
     var wym = this,
         $liToOutdent,
         listType,
@@ -1622,7 +1637,11 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
 
     // If this node has one or more sublists, they will need to be indented
     // by one with a fake parent to hold their previous position
-    if ($sublistContents.length > 0) {
+    if (
+        $sublistContents.length > 0 &&
+        // This is a trigger to prevent this
+        keepSublistContentsIndentation === true
+    ) {
         spacerListHtml = '<' + listType + '>' +
             '<li class="spacer_li"></li>' +
             '</' + listType + '>';
@@ -1702,8 +1721,24 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
 WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alreadyCorrected) {
     // Travel up the dom until we're at the root ol/ul/li
     var currentNode = listItem,
+        $currentNode,
         parentNode,
         tagName;
+
+    // Browsers can sometimes create `p` elements within `li` elements. This
+    // is issue 430.
+    // Check for this issue: If the `currentNode` is a `p` within a `li`
+    if (currentNode !== null &&
+        currentNode.tagName.toLowerCase() === 'p' &&
+        currentNode.parentNode.tagName.toLowerCase() === 'li') {
+
+        // Fix this `p` using the dedicated function
+        this._correctBlockInList(currentNode);
+
+        // Don't proceed with further list correction.
+        return;
+    }
+
     if (typeof alreadyCorrected === 'undefined') {
         alreadyCorrected = false;
     }
@@ -1725,8 +1760,11 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
         // We're still traversing up a list structure. Keep going
         currentNode = parentNode;
     }
+    // Cache a jQuery currentNode
+    $currentNode = jQuery(currentNode);
+
     // We have the root node. Make sure it's legit
-    if (jQuery(currentNode).is('li')) {
+    if ($currentNode.is('li')) {
         // We have an li as the "root" because its missing a parent list.
         // Correct this problem and then try again to correct the nesting.
         WYMeditor.console.log(
@@ -1735,7 +1773,7 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
         this._correctOrphanedListItem(currentNode);
         return this.correctInvalidListNesting(currentNode, true);
     }
-    if (!jQuery(currentNode).is('ol,ul')) {
+    if (!$currentNode.is('ol,ul')) {
         WYMeditor.console.error("Can't correct invalid list nesting. No root list found");
         return alreadyCorrected;
     }
@@ -1778,6 +1816,116 @@ WYMeditor.editor.prototype._correctOrphanedListItem = function (listNode) {
 
     // Insert all of the adjacent orphaned lists inside the new parent
     jQuery(prevList).append($adjacentLis);
+};
+
+/**
+    editor._correctBlockInList
+    ========================
+
+    Browsers insert `p` elements into lists. This breaks desired list
+    structure. Fix it.
+
+    @param pToRemove The `p` element that requires replacing with a `li`
+ */
+WYMeditor.editor.prototype._correctBlockInList = function (pToRemove) {
+    var pSiblings,
+        liContentBeforeP,
+        liContentAfterP,
+        parentList,
+        parentLiIndex,
+        threeLis = '<li></li><li data-wym-caret=""></li><li></li>',
+        newLi;
+
+    // if the `p` element was created at the end of a list
+    if (jQuery(pToRemove).next().length === 0) {
+
+         //Insert a `li` where it is supposed to be: after the unwanted `p`
+         //element's parent.
+        jQuery(pToRemove.parentNode).after('<li data-wym-caret=""></li>');
+
+        // Save the new `li`
+        newLi = jQuery(this._doc).find('body.wym_iframe [data-wym-caret=""]')[0];
+
+        // Set caret position to the new `li`
+        this.setFocusToNode(newLi);
+
+        // Teleport contents of `p` to new `li`
+        jQuery(newLi).append(jQuery(pToRemove).contents());
+
+        // Clean up the caret position marker
+        newLi.removeAttribute('data-wym-caret');
+
+        // And remove the `p`.
+        jQuery(pToRemove).remove();
+
+    } else if (
+        // If the `p` element was created not at the end of a list.
+        jQuery(pToRemove).next().length > 0  &&
+        pToRemove.nextSibling.tagName.toLowerCase() === 'ol' ||
+        pToRemove.nextSibling.tagName.toLowerCase() === 'ul'
+       ) {
+
+        // Save the `p`'s siblings
+        pSiblings = jQuery(pToRemove).parent().contents();
+
+        // Collect before `p`
+        liContentBeforeP = jQuery(pSiblings).slice(
+            0, jQuery(pSiblings).index(pToRemove)
+        );
+
+        // And after it
+        liContentAfterP = pSiblings.slice(
+            pSiblings.index(pToRemove) + 1
+        );
+
+        // The parent list because we're going to cut the branch that
+        // we're sitting on
+        parentList = jQuery(pToRemove).parent().parent();
+
+        // Get the index of the parent `li` for re-insertion later
+        parentLiIndex = jQuery(pToRemove).parent('li').index();
+
+        // Remove the parent `li` (branch we're sitting on)
+        jQuery(pToRemove).parent('li').remove();
+
+        // Append three list items; one for the content from before the
+        // `p`, one for replacing the `p` and one for the content from
+        // after the `p`
+
+        // If the parent `li` was first in the list
+        if (parentLiIndex === 0) {
+            // Prepend the three `li`s to the list
+            parentList.prepend(threeLis);
+        // If the parent `li` was not first in the list
+        } else {
+            // Insert the three `li`s after the object that was before it
+            parentList.children().eq(parentLiIndex - 1).after(threeLis);
+        }
+
+        // Append content from before the `p`
+        parentList.children('li').eq(parentLiIndex).append(
+            liContentBeforeP
+        );
+
+        // Save the new `li`
+        newLi = jQuery(this._doc).find('body.wym_iframe [data-wym-caret=""]')[0];
+
+        // Teleport contents of `p` to it's replacement `li`
+        jQuery(newLi).append(jQuery(pToRemove).contents());
+
+        // Append content from after the `p`
+        parentList.children('li').eq(parentLiIndex + 2).append(
+            liContentAfterP
+        );
+
+        // Set caret
+        this.setFocusToNode(newLi);
+
+        // Clean up the caret position marker
+        jQuery(this._doc).find(
+            'body.wym_iframe [data-wym-caret=""]'
+        )[0].removeAttribute('data-wym-caret');
+    }
 };
 
 /**
@@ -1945,6 +2093,31 @@ WYMeditor.editor.prototype._correctInvalidListNesting = function (listNode, alre
 };
 
 /**
+    editor.correctpotentialblockinlist
+    ==================================
+
+    Issue #430. Browsers create block elements like `p` when enter is pressed
+    inside an empty list item. This breaks desired list structure. This
+    function tests for this particular situation and calls for the correcting
+    function if it detects that this is indeed the case.
+
+    @param evtWhich the event, to check whether it is an enter
+    @param container the current container node, to test on perhaps deliver
+                     on to the correcting function.
+ */
+WYMeditor.editor.prototype.correctPotentialBlockInList = function (
+    evt_which, container
+    ) {
+    var wym = this;
+
+    if (evt_which === WYMeditor.KEY.ENTER &&
+        container.tagName.toLowerCase() === "p" &&
+        container.parentNode.tagName.toLowerCase() === "li") {
+        wym._correctBlockInList(container);
+    }
+};
+
+/**
     editor.getCommonParentList
     ==========================
 
@@ -2006,12 +2179,24 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
         i,
         j,
         range,
+        selectedLiChild,
         selectedLi,
         nodes = [],
         liNodes = [],
         containsNodeTextFilter,
-        parentsToAdd,
         node;
+
+    // This is a helper function that is called within a loop later on.
+    // It is here because we don't write functions in a loop.
+    function returnIfHasParentLi(index, node) {
+        if (
+            node.parentNode &&
+            node.parentNode.tagName &&
+            node.parentNode.tagName.toLowerCase() === 'li'
+        ) {
+                return node;
+        }
+    }
 
     // Filter function to remove undesired nodes from what rangy.getNodes()
     // gives
@@ -2043,6 +2228,40 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
     // that are user-selected in each range
     for (i = 0; i < sel.rangeCount; i++) {
         range = sel.getRangeAt(i);
+
+        if (
+        // If range is within one parent list item and
+            wym.findUp(
+                range.startContainer,
+                'li'
+            ) === wym.findUp(
+                range.endContainer,
+               'li') &&
+        // is not across lists:
+            jQuery(range.getNodes()).filter('ol, ul').length === 0
+        ) {
+            // If the range is directly within a list item:
+            if (
+                range.startContainer.tagName &&
+                range.startContainer.tagName.toLowerCase() === 'li'
+            ) {
+                // Save the first node in the range
+                selectedLiChild = range.startContainer
+                    .childNodes[range.startOffset];
+            // Otherwise
+            } else {
+                // Save the closest ancestor of the range's container
+                // that is a child of a list item.
+                selectedLiChild = jQuery(range.startContainer)
+                    .parents().andSelf().map(returnIfHasParentLi).last();
+            }
+            // If a list precedes:
+            if (jQuery(selectedLiChild).prevAll('ol, ul').length > 0) {
+                // return the emtpy array.
+                return liNodes;
+            }
+        }
+
         if (range.collapsed === true) {
             // Collapsed ranges don't return the range they're in as part of
             // getNodes, so let's find the next list item up
@@ -2050,6 +2269,7 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
             if (selectedLi) {
                 nodes = nodes.concat([selectedLi]);
             }
+            liNodes = nodes;
         } else {
             // getNodes includes the parent list item whenever we have our
             // selection in a sublist. We need to make a distinction between
@@ -2072,7 +2292,7 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
             // We also need to include the parent li if we selected a non-li, non-list node.
             // eg. if we select text inside an li, the user is actually
             // selecting that entire li
-            parentsToAdd = [];
+            liNodes = [];
             for (j = 0; j < nodes.length; j++) {
                 node = nodes[j];
                 if (!jQuery(node).is('li,ol,ul')) {
@@ -2080,32 +2300,18 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
                     while (node.parentNode) {
                         node = node.parentNode;
                         if (jQuery(node).is('li')) {
-                            parentsToAdd.push(node);
+                            // If it isn't a duplicate
+                            if (jQuery.inArray(node, liNodes) === -1) {
+                                // Add it to liNodes
+                                liNodes.push(node);
+                            }
                             break;
                         }
                     }
                 }
             }
-            // Add in all of the new parents if they're not already included
-            // (no duplicates)
-            for (j = 0; j < parentsToAdd.length; j++) {
-                if (jQuery.inArray(parentsToAdd[j], nodes) === -1) {
-                    nodes.push(parentsToAdd[j]);
-                }
-            }
-
-
         }
     }
-
-    // Filter out the non-li nodes
-    for (i = 0; i < nodes.length; i++) {
-        if (nodes[i].nodeType === WYMeditor.NODE.ELEMENT &&
-                nodes[i].tagName.toLowerCase() === WYMeditor.LI) {
-            liNodes.push(nodes[i]);
-        }
-    }
-
     return liNodes;
 };
 
@@ -2387,50 +2593,58 @@ WYMeditor.editor.prototype.insertUnorderedlist = function () {
     editor._insertList
     =========================
 
-    Convert the selected block in to the specified type of list.
 
-    If the selection is already inside a list, switch the type of the nearest
-    parent list to an `<ol>`. If the selection is in a block element that can be a
-    valid list, place that block element's contents inside an ordered list.
-
-    Returns `true` if a change was made, `false` otherwise.
  */
 WYMeditor.editor.prototype._insertList = function (listType) {
     var wym = this._wym,
         sel = rangy.getIframeSelection(this._iframe),
         listItems,
-        rootList,
-        selectedBlock,
+        $listItems,
+        $parentListsOfDifferentType,
+        i,
         potentialListBlock;
 
+    // Get a list of of potentially selected list items.
     listItems = wym._getSelectedListItems(sel);
-
-    // If we've selected some list items all in the same list, we want to
-    // change the type of that list.
-    if (listItems.length !== 0) {
-        // If the selection is across paragraphs and other items at the root level,
-        // don't indent
-        rootList = wym.getCommonParentList(listItems, true);
-        if (rootList) {
-            this._changeListType(rootList, listType);
+    // If the selection contains list items:
+    if (listItems.length > 0) {
+        // Cache a jQuery object of the list items.
+        $listItems = jQuery(listItems);
+        // Get a jQuery object of potential parent lists of selected list
+        // items that are of a different list type.
+        $parentListsOfDifferentType = $listItems.parent().filter(
+            ':not(' + listType + ')'
+        );
+        // If there are any parent lists of selected list
+        // items that are of a different list type:
+        if ($parentListsOfDifferentType.length > 0) {
+            // Iterate through list items:
+            for (i = 0; i < $parentListsOfDifferentType.length; i++) {
+                // Call for the change of the type of the parent list item to
+                // the desired type.
+                this._changeListType($parentListsOfDifferentType[i], listType);
+            }
+            // Return true.
             return true;
+        // If all the list types of parent lists of selected list items are
+        // the same as the requested list type:
         } else {
-            // We have a selection across multiple root-level lists. Punt on
-            // this case for now.
-            // TODO: Handle multiple root-level lists properly
-            return false;
+            // Call for the de-listing of the selected list items.
+            this._removeItemsFromList($listItems);
+            // Return true.
+            return true;
         }
-
     }
-
-    // If we've selected a block-level item that's appropriate to convert in to a list,
-    // convert it.
-    selectedBlock = this.selected();
+    // Get a potential block element from selection that could be converted
+    // into a list:
     // TODO: Use `_containerRules['root']` minus the ol/ul and
     // `_containerRules['contentsCanConvertToList']
-    potentialListBlock = this.findUp(selectedBlock, WYMeditor.POTENTIAL_LIST_ELEMENTS);
+    potentialListBlock = this.findUp(this.selected(), WYMeditor.POTENTIAL_LIST_ELEMENTS);
+    // If it exists:
     if (potentialListBlock) {
+        // Call for the conversion of that block element into a list.
         this._convertToList(potentialListBlock, listType);
+        // Return true.
         return true;
     }
 
@@ -2473,6 +2687,207 @@ WYMeditor.editor.prototype._convertToList = function (blockElement, listType) {
     return $newList.get(0);
 };
 
+/**
+    editor._removeItemsFromList
+    ===========================
+
+    De-list the provided list items.
+
+    @param listItems An array of list items that are assumed to be
+                     of a single selection range and concurrent.
+
+*/
+WYMeditor.editor.prototype._removeItemsFromList = function ($listItems) {
+
+    var $listItem,
+        i,
+        j,
+        $childNodesToTransfer,
+        k,
+        rootContainer = this.documentStructureManager.structureRules.defaultRootContainer;
+
+    // Filter out all list items that have parents within the list items.
+    $listItems = $listItems.not($listItems.find('li'));
+    // Iterate through the list items:
+    for (i = 0; i < $listItems.length; i++) {
+        // Cache a jQuery object of the current list item in the iteration.
+        $listItem = jQuery($listItems[i]);
+
+        // At this stage we determine the type of element this list item
+        // will be transformed into.
+
+        // If the parent of the list item is nested within a list:
+        if ($listItem.parent().parent('li').length === 1) {
+            // Call for the transformation of it into a span element.
+            $listItem = jQuery(this.switchTo(
+                $listItem[0], 'span', false, false));
+        // If the parent of the list item is not nested within a list:
+        } else {
+            // Call for the transformation of it into a default root container.
+            $listItem = jQuery(this.switchTo(
+                $listItem[0],
+                rootContainer,
+                false,
+                false
+            ));
+        }
+
+        // The transformation should be complete and the object is no longer
+        // a list item, hence we call it 'the de-listed object'.
+        //
+        // At this stage we move the de-listed object according to its
+        // relation to its potential sibling nodes.
+
+        // If the de-listed object is the only node in its parent list:
+        if ($listItem.parent().children().length === 1) {
+            // Move it to before its parent list.
+            $listItem.parent().before($listItem);
+            //Remove its parent list.
+            $listItem.next().remove();
+        } else if (
+        // The de-listed object is the first node in its parent list.
+            $listItem[0] === $listItem.parent().children().first()[0]
+        ) {
+            // Move it to before its parent list.
+            $listItem.parent().before($listItem);
+        } else if (
+            // The de-listed object is not the first node in its parent list and
+            $listItem[0] !== $listItem.parent().children().first()[0] &&
+            // it is not the last node in its parent list.
+            $listItem[0] !== $listItem.parent().children().last()[0]
+        ) {
+            // Create a new list of the same type as its parent list before its
+            // parent list.
+            $listItem.parent().before([''
+                , '<' + $listItem.parent()[0].tagName + '>'
+                , '</' + $listItem.parent()[0].tagName + '>'
+                ].join('')
+            );
+            // Move all the sibling nodes that precede the de-listed item to
+            // the list that is before their parent list.
+            jQuery($listItem.prevAll().toArray().reverse()).appendTo(
+                $listItem.parent().prev()
+            );
+            // Move the de-listed item to before its parent list.
+            $listItem.parent().before($listItem);
+        // Else, if the de-listed object is the last node in its parent list:
+        } else if ($listItem[0] === $listItem.parent().children().last()[0]) {
+            // Move this iteration's de-listed item to after its parent list.
+            $listItem.parent().after($listItem);
+        }
+
+        // The de-listed object should now be at it's final destination.
+
+        // Iterate over the contents of the de-listed object.
+        for (j = 0; j < $listItem.contents().length; j++) {
+            if (
+            // If The node is an element and
+                $listItem.contents()[j].tagName &&
+            // is not the Rangy selection boundary:and
+                $listItem.contents(
+                    )[j].className !== 'rangySelectionBoundary' &&
+            // is a block type element and
+                jQuery.inArray(
+                    $listItem.contents()[j].tagName.toLowerCase(),
+                    WYMeditor.BLOCKS
+                ) !== -1
+            ) {
+                // Save the contents of the de-listed object starting from the first
+                // block type element onward.
+                $childNodesToTransfer = $listItem.contents().slice(j);
+                // If the de-listed object is of the default root container type:
+                if (
+                    $listItem[0].tagName.toLowerCase() ===
+                        rootContainer
+                ) {
+                    // Iterate over the previously saved partial contents of it:
+                    for (k = 0; k < $childNodesToTransfer.length; k++) {
+                        // If this node is a text node:
+                        if ($childNodesToTransfer[k].nodeType === 3) {
+                            // Wrap it with the default root container.
+                            $childNodesToTransfer.eq(k).wrap(
+                                '<' + rootContainer + ' />'
+                            );
+                        } else if (
+                        // Otherwise, if it is an element and
+                            ($childNodesToTransfer[k].tagName) &&
+                        // it is not a block element:
+                            jQuery.inArray(
+                                $childNodesToTransfer[k].tagName.toLowerCase(),
+                                WYMeditor.BLOCKS
+                            ) === -1
+                        ) {
+                            // Transform its type into the default root container.
+                            this.switchTo(
+                            $childNodesToTransfer[k],
+                            rootContainer, false, false
+                        );
+                        }
+                    }
+                }
+                // Move the partial contents of the de-listed object to after
+                // it.
+                $listItem.after($listItem.contents().slice(j));
+                // Break
+                break;
+            }
+        }
+
+        // At this stage we add `br` elements that may be necessary because
+        // by turning a `li` element into a `span` element we turn a block
+        // type element into an inline type element.
+
+        // If the de-listed object is a span:
+        if ($listItem[0].tagName.toLowerCase() === 'span') {
+            if (
+            // The de-listed object has a node immediately before it and
+                $listItem[0].previousSibling &&
+            // That is a text node, or
+                $listItem[0].previousSibling.nodeType === 3 ||
+            // The de-listed object has an element immediately before it and
+                $listItem.prev().length === 1 &&
+            // That is not a block type element:
+                jQuery.inArray(
+                    $listItem.prev()[0].tagName.toLowerCase(),
+                    WYMeditor.BLOCKS
+                ) === -1
+            ) {
+                // Insert a br element before the de-listed object.
+                $listItem.before('<br/>');
+            }
+            if (
+            // The de-listed object has a node immediately after it and
+                $listItem[0].nextSibling &&
+            // That is a text node, or
+                $listItem[0].nextSibling.nodeType === 3 ||
+            // The de-listed object has an element immediately after it and
+                $listItem.next().length === 1 &&
+            // That is not a block type element:
+                jQuery.inArray(
+                    $listItem.next()[0].tagName.toLowerCase(),
+                    WYMeditor.BLOCKS
+                ) === -1
+            ) {
+                // Insert a br element after the de-listed object.
+                $listItem.after('<br/>');
+            }
+
+            // The de-listed item should now have `br` elements before and/or
+            // after it, as appropriate.
+            //
+            // At this stage, if the span has no attributes, there is no use
+            // for it being a span so we replace it with it's contents.
+
+            // If the de-listed item has no attributes:
+            if ($listItem[0].attributes.length === 0) {
+                // Move its contents before it.
+                $listItem.before($listItem.contents());
+                // Remove it.
+                $listItem.remove();
+            }
+        }
+    }
+};
 /**
      editor.insertTable
      ==================

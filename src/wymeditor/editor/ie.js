@@ -266,5 +266,8 @@ WYMeditor.WymClassExplorer.prototype.keyup = function (evt) {
         // Fix formatting if necessary
         wym.fixBodyHtml();
     }
+
+    // Handle issue #430.
+    wym.correctPotentialBlockInList(evt.which, container);
 };
 

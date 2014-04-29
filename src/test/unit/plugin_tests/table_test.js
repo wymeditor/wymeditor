@@ -1,8 +1,8 @@
 /* jshint maxlen: 90 */
 /* global rangy,
 setupWym, SKIP_KNOWN_FAILING_TESTS,
-htmlEquals, moveSelector, simulateKey, makeSelection, normalizeHtml,
-ok, test, expect, deepEqual */
+htmlEquals, moveSelector, simulateKey, makeSelection, ok, test, expect,
+deepEqual */
 "use strict";
 
 /**
@@ -1113,7 +1113,7 @@ var mergeTd23Html = String() +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
                     '<td id="td_2_2">2_2</td>' +
-                    '<td id="td_2_3" colspan="2">2_4</td>' +
+                    '<td colspan="2" id="td_2_3">2_4</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
                     '<td id="td_3_1">3_1</td>' +
@@ -1140,7 +1140,7 @@ var mergeTd22Html = String() +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
-                    '<td id="td_2_2" colspan="2">2_2</td>' +
+                    '<td colspan="2" id="td_2_2">2_2</td>' +
                     '<td id="td_2_4">2_4</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
@@ -1173,7 +1173,7 @@ var mergeTd31Html = String() +
                     '<td id="td_2_4">2_4</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
-                    '<td id="td_3_1" colspan="2">3_13_2</td>' +
+                    '<td colspan="2" id="td_3_1">3_13_2</td>' +
                     '<td id="td_3_4">3_4</td>' +
                 '</tr>' +
                 '<tr id="tr_4">' +
@@ -1200,7 +1200,7 @@ var mergeTd31Td23Html = String() +
                     '<td id="td_2_4">2_4</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
-                    '<td id="td_3_1" colspan="3">3_13_2</td>' +
+                    '<td colspan="3" id="td_3_1">3_13_2</td>' +
                     '<td id="td_3_4">3_4</td>' +
                 '</tr>' +
                 '<tr id="tr_4">' +
@@ -1261,7 +1261,7 @@ var mergeTd42Td23LongRowspanHtml = String() +
                 '</tr>' +
                 '<tr id="tr_4">' +
                     '<td id="td_4_1">4_1</td>' +
-                    '<td id="td_4_2" colspan="2">4_2</td>' +
+                    '<td colspan="2" id="td_4_2">4_2</td>' +
                     '<td id="td_4_4">4_4</td>' +
                 '</tr>' +
             '</tbody>' +
@@ -1456,17 +1456,4 @@ test("getCellXIndex test", function () {
     testGetCellXIndex(mergeTableHtml, '#td_2_3', 2);
     testGetCellXIndex(mergeTableHtml, '#td_3_4', 3);
     testGetCellXIndex(mergeTableLongRowspanHtml, '#td_4_4', 3);
-});
-
-module("utils", {setup: setupWym});
-function testNormalize(testHtml) {
-    var normed = normalizeHtml(jQuery(testHtml)[0]);
-    deepEqual(normed, testHtml);
-}
-
-test("Test Normalize", function () {
-    expect(2);
-
-    testNormalize(mergeTableHtml);
-    testNormalize(mergeTd41Html);
 });

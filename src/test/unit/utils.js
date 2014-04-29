@@ -1,168 +1,24 @@
-/* exported isContentEditable, simulateKey, htmlEquals,
- makeTextSelection, moveSelector */
-/* global rangy, deepEqual */
+/* exported isContentEditable, simulateKey, htmlEquals, domEquals, _htmlEquals,
+ makeTextSelection, moveSelector, multiline  */
+/* global rangy, strictEqual, deepEqual, html_beautify */
 "use strict";
 
-// Regex expression shortcuts
-var preAmp = /&/g;
-var preLt = /</g;
-var preGt = />/g;
-var preQuot = /\"/g;
-
-// Attributes that should be ignored when normalizing HTML for comparison
-// across browsers. The variable is an array of arrays where each array should
-// have the name of the attribute to be ignored as the first element. The
-// second element in each array should be an array of values that specifies
-// that the attribute will only be ignored if it is one of those values. If
-// this second element is not provided, it will always ignore the attribute no
-// matter what the attribute's value is.
-var ignoreAttributes = [
-    ['_moz_editor_bogus_node'],
-    ['_moz_dirty'],
-    ['_wym_visited'],
-    ['sizset'],
-    ['tabindex'],
-    ['rowspan', ['1']]
-];
+// Options for the HTML beautifier.
+var htmlBeautifyOptions = {
+    'indent_inner_html': false,
+    'indent_size': 4,
+    'indent_car': ' ',
+    'wrap_line_length': 300,
+    'brace_style': 'collapse',
+    'unformatted': 'normal',
+    'preserve_newlines': true,
+    'max_preserve_newlines': 'unlimited',
+    'indent_handlebars': false
+};
 
 /**
-* Escape html special characters.
-*/
-function textToHtml(str) {
-    return str.replace(preAmp, '&amp;')
-        .replace(preLt, '&lt;')
-        .replace(preGt, '&gt;');
-}
-
-function attribToHtml(str) {
-    return str.replace(preAmp, '&amp;')
-        .replace(preLt, '&lt;')
-        .replace(preGt, '&gt;')
-        .replace(preQuot, '&quot;');
-}
-
-/**
-* Order HTML attributes for consistent HTML comparison.
-*
-* Adapted from google-code-prettify
-* prettify.js
-* Apache license, Copyright (C) 2006 Google Inc.
-*/
-function normalizeHtml(node) {
-    var html = '',
-        name,
-        attrs,
-        attr,
-        n,
-        child,
-        sortedAttrs,
-        attrName,
-        attrValue,
-        keepAttr,
-        i,
-        j,
-        $captions;
-
-    if (jQuery.browser.msie) {
-        $captions = jQuery(node).find('caption');
-        if ($captions.length) {
-            // Some versions of IE can unexpectedly add the caption of a table
-            // after the table body. This ensures the table caption is always
-            // at the start.
-            $captions.each(function () {
-                jQuery(this).prependTo(jQuery(this).parent());
-            });
-        }
-    }
-
-    switch (node.nodeType) {
-    case 1:  // an element
-        name = node.tagName.toLowerCase();
-
-        html += '<' + name;
-        attrs = node.attributes;
-        n = attrs.length;
-        if (n) {
-            // Node has attributes, order them
-            sortedAttrs = [];
-            for (i = n; --i >= 0;) {
-                attr = attrs[i];
-                attrName = attr.nodeName.toLowerCase();
-                attrValue = attr.nodeValue;
-                keepAttr = true;
-
-                // We only care about specified attributes
-                if (!attr.specified) {
-                    keepAttr = false;
-                }
-
-                // Ignore attributes that are only used in specific browsers.
-                for (j = 0; j < ignoreAttributes.length; ++j) {
-                    if (attrName === ignoreAttributes[j][0]) {
-                        if (!ignoreAttributes[j][1] ||
-                            jQuery.inArray(
-                                attrValue,
-                                ignoreAttributes[j][1]
-                            ) > -1) {
-
-                            keepAttr = false;
-                            break;
-                        }
-                    }
-
-                    // With some versions of jQuery on IE, sometimes attributes
-                    // named `sizcache` or `sizzle-` followed by a differing
-                    // string of numbers are added to elements, so regex must
-                    // be used to check for them.
-                    if (/sizcache\d*/.test(attrName) ||
-                        /sizzle-\d*/.test(attrName)) {
-                        keepAttr = false;
-                        break;
-                    }
-                }
-
-                if (keepAttr) {
-                    sortedAttrs.push(attr);
-                }
-            }
-            sortedAttrs.sort(function (a, b) {
-                return (a.name < b.name) ? -1 : a.name === b.name ? 0 : 1;
-            });
-            attrs = sortedAttrs;
-
-            for (i = 0; i < attrs.length; ++i) {
-                attr = attrs[i];
-                html += ' ' + attr.name.toLowerCase() +
-                    '="' + attribToHtml(attr.value) + '"';
-            }
-        }
-        if (name === "br" || name === "img" || name === "link") {
-            // close self-closing element
-            html += '/>';
-        } else {
-            html += '>';
-        }
-
-        for (child = node.firstChild; child; child = child.nextSibling) {
-            html += normalizeHtml(child);
-        }
-        if (node.firstChild || !/^(?:br|link|img)$/.test(name)) {
-            html += '<\/' + name + '>';
-        }
-
-        break;
-    case 3:
-    case 4: // text
-        html += textToHtml(node.nodeValue);
-        break;
-    }
-
-    return html;
-}
-
-/**
-* Ensure the cleaned xhtml coming from a WYMeditor instance matches the
-* expected HTML, accounting for differing whitespace and attribute ordering.
+* Compare between the XHTML from a WYMeditor instance and the expected XHTML.
+* Both are beautified before comparison.
 *
 * assertionString is the string message printed with the result of the
 * assertion checking this matching. This parameter is optional.
@@ -172,43 +28,49 @@ function normalizeHtml(node) {
 * Explorer (i.e. IE7-8). Defaults to false.
 */
 function htmlEquals(wymeditor, expected, assertionString, fixListSpacing) {
-    var xhtml = '',
-        normedActual = '',
-        normedExpected = '',
-        listTypeOptions,
-        tmpNodes,
-        i;
-    xhtml = jQuery.trim(wymeditor.xhtml());
-    if (xhtml === '') {
-        // In jQuery 1.2.x, jQuery('') returns an empty list, so we can't call
-        // normalizeHTML. On 1.3.x or higher upgrade, we can remove this
-        // check for the empty string
-        deepEqual(xhtml, expected, assertionString);
-        return;
-    }
+    var listTypeOptions,
+        actual = wymeditor.xhtml();
 
-    tmpNodes = jQuery(xhtml, wymeditor._doc);
-
-    for (i = 0; i < tmpNodes.length; i++) {
-        normedActual += normalizeHtml(tmpNodes[i]);
-    }
     if (fixListSpacing && jQuery.browser.msie &&
             parseInt(jQuery.browser.version, 10) < 9.0) {
-        normedActual = normedActual.replace(/\s(<br.*?\/>)/g, '$1');
+        actual = actual.replace(/\s(<br.*?\/>)/g, '$1');
 
         listTypeOptions = WYMeditor.LIST_TYPE_ELEMENTS.join('|');
-        normedActual = normedActual.replace(
+        actual = actual.replace(
             new RegExp('\\s(<(' + listTypeOptions + ').*?>)', 'g'),
             '$1'
         );
     }
 
-    tmpNodes = jQuery(expected, wymeditor._doc);
-    for (i = 0; i < tmpNodes.length; i++) {
-        normedExpected += normalizeHtml(tmpNodes[i]);
-    }
+    strictEqual(
+        /* jshint camelcase: false */
+        html_beautify(actual, htmlBeautifyOptions),
+        html_beautify(expected, htmlBeautifyOptions),
+        assertionString
+    );
+}
 
-    deepEqual(normedActual, normedExpected, assertionString);
+/* Compare between the unparsed code that is extracted from the DOM of a
+ * WYMeditor instance and the expected XHTML.
+ * Both are beautified before comparison.
+ */
+function domEquals(wymeditor, expected, assertionString) {
+    var actual = '';
+
+    // Save the DOM HTML from the WYMeditor instance.
+    jQuery(wymeditor._doc).find('body.wym_iframe').contents().each(
+        function () {
+            actual += this.outerHTML;
+        }
+    );
+
+    // Beautify and compare.
+    strictEqual(
+        /* jshint camelcase: false */
+        html_beautify(actual, htmlBeautifyOptions),
+        html_beautify(expected, htmlBeautifyOptions),
+        assertionString
+    );
 }
 
 function makeSelection(
@@ -378,4 +240,46 @@ function isContentEditable(element) {
         }
         return isContentEditable(element.parentNode);
     }
+}
+
+/*
+    A helper function to make writing multi-line strings comfortable.
+    Adapted from https://github.com/sindresorhus/multiline/ and
+    https://github.com/sindresorhus/strip-indent
+    Both of the MIT license.
+*/
+function multiline(fn) {
+
+    var reCommentContents,
+        multilined,
+        indentation,
+        indent,
+        stripRe;
+
+    /* jshint ignore:start */
+    reCommentContents = /\/\*!?(?:\@preserve)?[ \t]*(?:\r\n|\n)([\s\S]*?)(?:\r\n|\n)\s*\*\//;
+    /* jshint ignore:end */
+
+    if (typeof fn !== 'function') {
+        throw new TypeError('Expected a function.');
+    }
+
+    multilined = reCommentContents.exec(fn.toString());
+
+    if (!multilined) {
+        throw new TypeError('Multiline comment missing.');
+    }
+
+    indentation = multilined[1].match(/^[ \t]*(?=[^\s])/gm);
+
+    if (!indentation) {
+        return multilined[1];
+    }
+
+    indent = Math.min.apply(
+        Math, indentation.map(function (el) { return el.length; })
+    );
+    stripRe = new RegExp('^[ \\t]{' + indent + '}', 'gm');
+
+    return indent > 0 ? multilined[1].replace(stripRe, '') : multilined[1];
 }

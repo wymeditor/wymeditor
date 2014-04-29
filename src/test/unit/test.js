@@ -1,8 +1,8 @@
 /* jshint camelcase: false, maxlen: 100 */
 /* global -$,
 ok, start, stop, test, expect, equal, deepEqual, sinon,
-htmlEquals, moveSelector, makeTextSelection, isContentEditable, normalizeHtml,
-inPhantomjs, ListPlugin */
+htmlEquals, domEquals, moveSelector, makeTextSelection, isContentEditable,
+inPhantomjs, ListPlugin, strictEqual, multiline */
 "use strict";
 
 // We need to be able to operate in a noConflict context. Doing this during our
@@ -95,6 +95,7 @@ test("Instantiate", function () {
     Tests that require the WYMeditor instance to already be initialized.
     Calling this funtion as a postInit argument ensures they can pass.
 */
+
 module("API", {setup: setupWym});
 
 test("Commands", function () {
@@ -663,7 +664,7 @@ function setupTable(wymeditor, html, selection, selectionType,
 
 var TEST_LINEBREAK_SPACER = '<br class="' +
                                 WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS + ' ' +
-                                WYMeditor.EDITOR_ONLY_CLASS + '"/>';
+                                WYMeditor.EDITOR_ONLY_CLASS + '">';
 
 var listForTableInsertion = String() +
     '<ol>' +
@@ -926,123 +927,98 @@ module("table-insert_in_list", {setup: setupWym});
 
 test("Table insertion in the middle of a list with text selection", function () {
     expect(1);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    var wymeditor = jQuery.wymeditors(0);
 
     setupTable(wymeditor, listForTableInsertion, '#li_2', 'text',
                1, 1, 'test_1');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedMiddleOutFull,
-           "Table insertion in the middle of a list with text selection");
+    domEquals(wymeditor, expectedMiddleOutFull);
 });
 
 test("Table insertion at the end of a list with text selection", function () {
     expect(1);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    var wymeditor = jQuery.wymeditors(0);
 
     setupTable(
         wymeditor, listForTableInsertion, '#li_3', 'text', 1, 1, 'test_1');
-    deepEqual(
-        normalizeHtml($body.get(0).firstChild),
-        expectedEndOut,
-        "Table insertion at the end of a list with text selection"
-    );
+    domEquals(wymeditor, expectedEndOut);
 });
 
 test("Table insertion in the middle of a list with collapsed selection", function () {
     expect(1);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    var wymeditor = jQuery.wymeditors(0);
 
     setupTable(wymeditor, listForTableInsertion, '#li_2', 'collapsed',
                1, 1, 'test_1');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedMiddleOutFull,
-           "Table insertion in the middle of a list with collapsed selection");
+    domEquals(wymeditor, expectedMiddleOutFull);
 });
 
 test("Table insertion at the end of a list with collapsed selection", function () {
     expect(1);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    var wymeditor = jQuery.wymeditors(0);
 
     setupTable(wymeditor, listForTableInsertion, '#li_3', 'collapsed',
                1, 1, 'test_1');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndOut,
-           "Table insertion at the end of a list with collapsed selection");
+    domEquals(wymeditor, expectedEndOut);
 });
 
 // This test mimics the behavior that caused issue #406 which would
 // unexpectedly nest an inserted table into another table within a list.
 test("Table insertion with selection inside another table in a list", function () {
     expect(3);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    var wymeditor = jQuery.wymeditors(0);
 
     // Try insert in td element
     setupTable(wymeditor, expectedListOneTable, '#t1_1_1', 'collapsed',
                1, 1, 'test_2');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
-           "Table insertion with selection inside a td element in a list");
+    domEquals(wymeditor, expectedListTwoTables);
 
     // Try insert in th element
     setupTable(wymeditor, expectedListOneTable, '#t1_h_1', 'collapsed',
                1, 1, 'test_2');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
-           "Table insertion with selection inside a th element in a list");
+    domEquals(wymeditor, expectedListTwoTables);
 
     // Try insert in caption element
     setupTable(wymeditor, expectedListOneTable, '#t1_cap', 'collapsed',
                1, 1, 'test_2');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
-           "Table insertion with selection inside a caption element " +
-           "in a list");
+    domEquals(wymeditor, expectedListTwoTables);
 });
 
 test("Table insertion with direct selection of list item node", function () {
     expect(1);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    var wymeditor = jQuery.wymeditors(0);
 
     setupTable(wymeditor, expectedListOneTable, '#li_3', 'node',
                1, 1, 'test_2');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
-           "Table insertion with direct selection of list item node");
+    domEquals(wymeditor, expectedListTwoTables);
 });
 
 module("table-insert_in_sublist", {setup: setupWym});
 
 test("Single table insertion into a sublist", function () {
     expect(1);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    var wymeditor = jQuery.wymeditors(0);
 
     setupTable(wymeditor, sublistForTableInsertion, '#li_2', 'text',
                1, 1, 'test_1');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedSublistOneTable,
-           "Single table insertion within a sublist");
+    domEquals(wymeditor, expectedSublistOneTable);
 });
 
 test("Double table insertion into a sublist", function () {
     expect(1);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    var wymeditor = jQuery.wymeditors(0);
 
     setupTable(wymeditor, expectedSublistOneTable, '#li_2', 'text',
                2, 1, 'test_2');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedSublistTwoTables,
-           "Double table insertion within a sublist");
+    domEquals(wymeditor, expectedSublistTwoTables);
 });
 
 test("Triple table insertion into a sublist", function () {
     expect(1);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    var wymeditor = jQuery.wymeditors(0);
 
     setupTable(wymeditor, expectedSublistTwoTables, '#li_2', 'text',
                3, 1, 'test_3');
-    deepEqual(normalizeHtml($body.get(0).firstChild),
-           expectedSublistThreeTables,
-           "Triple table insertion within a sublist");
+    domEquals(wymeditor, expectedSublistThreeTables);
 });
 
 module("table-parse_spacers_in_list", {setup: setupWym});
@@ -1298,8 +1274,7 @@ module("html_from_editor-html_function", {setup: setupWym});
 test("Can set and get html with the html() function", function () {
     var wymeditor = jQuery.wymeditors(0),
         testHtml = "<p>Test</p>",
-        stub,
-        htmlNode;
+        stub;
 
     // Disable console warnings so that the deprecation warning added in issue
     // #364 isn't displayed. This warning is not necessary because this test is
@@ -1311,9 +1286,42 @@ test("Can set and get html with the html() function", function () {
     }
 
     wymeditor.html(testHtml);
-    htmlNode = jQuery(wymeditor.html(), wymeditor._doc);
     if (stub) { stub.restore(); }
-    deepEqual(normalizeHtml(htmlNode[0]), testHtml,
+    domEquals(wymeditor, testHtml,
               "Set and get with html() function");
 });
 
+module("helper_functions", {setup: setupWym});
+
+test("multi-line strings with `multiline`", function () {
+    expect(2);
+    var multilineString,
+        multilineIndentedString,
+        expected = [""
+            , '    Hi, Wes!\n'
+            , '        Great news!\n'
+            , '`multiline` is the new `.join()`!'
+        ].join('');
+
+    multilineString = multiline(function () {/*
+    Hi, Wes!
+        Great news!
+`multiline` is the new `.join()`!
+*/
+    });
+
+    strictEqual(multilineString, expected,
+        'Muti-line string created.'
+    );
+
+    multilineIndentedString = multiline(function () {/*
+            Hi, Wes!
+                Great news!
+        `multiline` is the new `.join()`!
+        */
+    });
+
+    strictEqual(multilineIndentedString, expected,
+        'Multi-line Indented string created.'
+    );
+});
