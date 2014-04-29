@@ -2179,11 +2179,24 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
         i,
         j,
         range,
+        selectedLiChild,
         selectedLi,
         nodes = [],
         liNodes = [],
         containsNodeTextFilter,
         node;
+
+    // This is a helper function that is called within a loop later on.
+    // It is here because we don't write functions in a loop.
+    function returnIfHasParentLi(index, node) {
+        if (
+            node.parentNode &&
+            node.parentNode.tagName &&
+            node.parentNode.tagName.toLowerCase() === 'li'
+        ) {
+                return node;
+        }
+    }
 
     // Filter function to remove undesired nodes from what rangy.getNodes()
     // gives
@@ -2218,16 +2231,35 @@ WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
 
         if (
         // If range is within one parent list item and
-            range.startContainer === range.endContainer &&
-        // is not across lists and
-            jQuery(range.getNodes()).filter('ol, ul').length === 0 &&
-        // there is a list preceding it:
-            jQuery(
-               range.startContainer.childNodes[range.startOffset]
-            ).prevAll('ol, ul').length > 0
+            wym.findUp(
+                range.startContainer,
+                'li'
+            ) === wym.findUp(
+                range.endContainer,
+               'li') &&
+        // is not across lists:
+            jQuery(range.getNodes()).filter('ol, ul').length === 0
         ) {
-            // return the emtpy array.
-            return liNodes;
+            // If the range is directly within a list item:
+            if (
+                range.startContainer.tagName &&
+                range.startContainer.tagName.toLowerCase() === 'li'
+            ) {
+                // Save the first node in the range
+                selectedLiChild = range.startContainer
+                    .childNodes[range.startOffset];
+            // Otherwise
+            } else {
+                // Save the closest ancestor of the range's container
+                // that is a child of a list item.
+                selectedLiChild = jQuery(range.startContainer)
+                    .parents().andSelf().map(returnIfHasParentLi).last();
+            }
+            // If a list precedes:
+            if (jQuery(selectedLiChild).prevAll('ol, ul').length > 0) {
+                // return the emtpy array.
+                return liNodes;
+            }
         }
 
         if (range.collapsed === true) {
