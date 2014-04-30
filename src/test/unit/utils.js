@@ -1,4 +1,4 @@
-/* exported isContentEditable, simulateKey, htmlEquals,
+/* exported isContentEditable, simulateKey, wymEqual,
  makeTextSelection, moveSelector */
 /* global rangy, deepEqual */
 "use strict";
@@ -161,8 +161,14 @@ function normalizeHtml(node) {
 }
 
 /**
-* Ensure the cleaned xhtml coming from a WYMeditor instance matches the
-* expected HTML, accounting for differing whitespace and attribute ordering.
+* Compares between the HTML in a WYMeditor instance and expected HTML.
+*
+* The HTML from the WYMeditor instance can be fetched either using the
+* normal method, `.xhtml`, or, it can be fetched directly from the DOM, which
+* bypasses the XHTML parser.
+*
+* In any case, the fetched HTML and the expected HTML are passed through
+* `normalizeHtml` and then compared.
 *
 * assertionString is the string message printed with the result of the
 * assertion checking this matching. This parameter is optional.
@@ -171,23 +177,33 @@ function normalizeHtml(node) {
 * breaks and list type elements should be removed in older versions of Internet
 * Explorer (i.e. IE7-8). Defaults to false.
 */
-function htmlEquals(wymeditor, expected, assertionString, fixListSpacing) {
-    var xhtml = '',
+function wymEqual(wymeditor, expected, assertionString, fixListSpacing,
+                  domTesting) {
+    var actual = '',
         normedActual = '',
         normedExpected = '',
         listTypeOptions,
         tmpNodes,
         i;
-    xhtml = jQuery.trim(wymeditor.xhtml());
-    if (xhtml === '') {
-        // In jQuery 1.2.x, jQuery('') returns an empty list, so we can't call
-        // normalizeHTML. On 1.3.x or higher upgrade, we can remove this
-        // check for the empty string
-        deepEqual(xhtml, expected, assertionString);
-        return;
+
+    // By default, we test the normal output of WYMeditor.
+    domTesting = typeof domTesting !== 'undefined' ? domTesting : false;
+
+    // If DOM testing mode is requested:
+    if (domTesting) {
+        // Extract the HTML from the DOM of the WYMeditor.
+        jQuery(wymeditor._doc).find('body.wym_iframe').contents().each(
+            function () {
+                actual += this.outerHTML;
+            }
+        );
+    // Otherwise:
+    } else {
+        // Get it through the API and trim it.
+        actual = jQuery.trim(wymeditor.xhtml());
     }
 
-    tmpNodes = jQuery(xhtml, wymeditor._doc);
+    tmpNodes = jQuery(actual, wymeditor._doc);
 
     for (i = 0; i < tmpNodes.length; i++) {
         normedActual += normalizeHtml(tmpNodes[i]);

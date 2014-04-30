@@ -1,8 +1,8 @@
 /* jshint camelcase: false, maxlen: 105 */
 /* global setupWym, SKIP_KNOWN_FAILING_TESTS,
-htmlEquals, makeTextSelection, moveSelector, simulateKey, normalizeHtml,
+wymEqual, makeTextSelection, moveSelector, simulateKey,
 makeSelection,
-ok, test, expect, deepEqual */
+ok, test, expect */
 "use strict";
 
 module("list-indent_outdent", {setup: setupWym});
@@ -68,7 +68,7 @@ function testList(elmntId, action, startHtml, expectedHtml, isText, doSelection)
         .find(buttonSelector);
     actionButton.click();
 
-    htmlEquals(wymeditor, expectedHtml);
+    wymEqual(wymeditor, expectedHtml);
 }
 
 /*
@@ -179,7 +179,7 @@ function testListMulti(
         .find(buttonSelector);
     actionButton.click();
 
-    htmlEquals(wymeditor, expectedHtml);
+    wymEqual(wymeditor, expectedHtml);
 }
 
 var nestedListHtml = String() +
@@ -1137,7 +1137,7 @@ test("Invalid nesting correction no spacer", function () {
     actionLi = $body.find('#li_4')[0];
 
     wymeditor.correctInvalidListNesting(actionLi);
-    htmlEquals(wymeditor, expectedHtml);
+    wymEqual(wymeditor, expectedHtml);
 });
 test("Invalid nesting correction requiring spacer", function () {
     expect(1);
@@ -1153,7 +1153,7 @@ test("Invalid nesting correction requiring spacer", function () {
     actionLi = $body.find('#li_2_2')[0];
 
     wymeditor.correctInvalidListNesting(actionLi);
-    htmlEquals(wymeditor, expectedHtml);
+    wymEqual(wymeditor, expectedHtml);
 });
 test("Invalid nesting outdent", function () {
     expect(5);
@@ -2083,12 +2083,12 @@ test("Should correct invalid list nesting", function () {
         invalid_ff_html = "<ul><li>a<\/li><ul><li>a.1<\/li><\/ul><li>b<br><\/li><\/ul>",
         invalid_ie_html = "<UL>\r\n<LI>a<\/LI>\r\n<UL>\r\n<LI>a.1<\/LI><\/UL>\r\n<LI>b<\/LI><\/UL>";
     wymeditor._html(invalid_ff_html);
-    htmlEquals(wymeditor, expected);
+    wymEqual(wymeditor, expected);
     // IE
     // IE has invalid sublist nesting
     expected = "<ul>\r\n<li>a<ul>\r\n<li>a.1<\/li><\/ul><\/li>\r\n<li>b<\/li><\/ul>";
     wymeditor._html(invalid_ie_html);
-    htmlEquals(wymeditor, expected);
+    wymEqual(wymeditor, expected);
 });
 
 var listWithOrphanedTextAfterLastLi = [""
@@ -2118,7 +2118,7 @@ test("Orphaned text at end of list should be inserted into the last li\
     caretLocation = $body.find('ul')[0];
     makeTextSelection(wymeditor, caretLocation, caretLocation, 1, 1);
     wymeditor.correctInvalidListNesting($body.find('li')[0]);
-    htmlEquals(wymeditor, expected);
+    wymEqual(wymeditor, expected);
 });
 
 // IE8 bug https://github.com/wymeditor/wymeditor/issues/446
@@ -2138,7 +2138,7 @@ if (jQuery.browser.msie && jQuery.browser.version === "8.0") {
         caretLocation = $body.find('ul')[0];
         makeTextSelection(wymeditor, caretLocation, caretLocation, 1, 1);
         simulateKey(WYMeditor.KEY.BACKSPACE, wymeditor._doc);
-        htmlEquals(wymeditor, expected);
+        wymEqual(wymeditor, expected);
     });
 }
 
@@ -2170,7 +2170,7 @@ test("Double indent correction", function () {
             '</ol>';
 
     wymeditor._html(brokenHtml);
-    htmlEquals(wymeditor, repairedHtml);
+    wymEqual(wymeditor, repairedHtml);
 });
 
 module("list-tabbing", {setup: setupWym});
@@ -2193,7 +2193,7 @@ test("Tab key indents", function () {
     moveSelector(wymeditor, actionElement);
 
     simulateKey(WYMeditor.KEY.TAB, actionElement);
-    htmlEquals(wymeditor, expectedHtml);
+    wymEqual(wymeditor, expectedHtml);
 });
 
 test("Shift+Tab outdents", function () {
@@ -2227,7 +2227,7 @@ test("Shift+Tab outdents", function () {
     moveSelector(wymeditor, actionElement);
 
     simulateKey(WYMeditor.KEY.TAB, actionElement, {'shiftKey': true});
-    htmlEquals(wymeditor, expectedHtml);
+    wymEqual(wymeditor, expectedHtml);
 });
 
 test("Tab has no effect outside lists", function () {
@@ -2248,7 +2248,7 @@ test("Tab has no effect outside lists", function () {
     moveSelector(wymeditor, actionElement);
 
     simulateKey(WYMeditor.KEY.TAB, actionElement);
-    htmlEquals(wymeditor, expectedHtml);
+    wymEqual(wymeditor, expectedHtml);
 });
 
 module("list-newline_normalization", {setup: setupWym});
@@ -2277,7 +2277,7 @@ test("Shouldn't eat newline text spacing in li", function () {
 
     wymeditor._html(initHtml);
     wymeditor.update();
-    htmlEquals(wymeditor, expectedHtml);
+    wymEqual(wymeditor, expectedHtml);
 });
 
 module("list-indent_outdent_with_table", {setup: setupWym});
@@ -2409,49 +2409,51 @@ var startEndOutNoBR = expectedEndOut.replace(TEST_LINEBREAK_SPACER, '');
 
 test("Indent with table in the middle of a list", function () {
     expect(1);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    var wymeditor = jQuery.wymeditors(0);
 
     changeIndent(wymeditor, expectedMiddleOutFull, '#li_2', '#li_3', 'indent');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedMiddleIn,
-           "Table indented in the middle of a list");
+    wymEqual(wymeditor, expectedMiddleIn,
+        "Table indented in the middle of a list",
+        false, true);
 });
 
 test("Indent with table at the end of a list", function () {
     expect(2);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    var wymeditor = jQuery.wymeditors(0);
 
     changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'indent');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndIn,
-           "Table indented at the end of a list");
+    wymEqual(wymeditor, expectedEndIn,
+        "Table indented at the end of a list",
+        false, true);
 
     changeIndent(wymeditor, startEndOutNoBR, '#li_3', '#li_3', 'indent');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndIn,
-           "Table indented at the end of a list with no line break");
+    wymEqual(wymeditor, expectedEndIn,
+        "Table indented at the end of a list with no line break",
+        false, true);
 });
 
 test("Outdent with table in the middle of a list", function () {
     expect(1);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    var wymeditor = jQuery.wymeditors(0);
 
     changeIndent(wymeditor, expectedMiddleIn, '#li_2', '#li_2', 'outdent');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedMiddleOutPartial,
-           "Table outdented in the middle of a list");
+    wymEqual(wymeditor, expectedMiddleOutPartial,
+        "Table outdented in the middle of a list",
+        false, true);
 });
 
 test("Outdent with table at the end of a list", function () {
     expect(2);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    var wymeditor = jQuery.wymeditors(0);
 
     changeIndent(wymeditor, expectedEndIn, '#li_3', '#li_3', 'outdent');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndOut,
-           "Table outdented at the end of a list");
+    wymEqual(wymeditor, expectedEndOut,
+        "Table outdented at the end of a list",
+        false, true);
 
     changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'outdent');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndOut,
-           "Table outdented at the end of a list with no line break");
+    wymEqual(wymeditor, expectedEndOut,
+        "Table outdented at the end of a list with no line break",
+        false, true);
 });
 

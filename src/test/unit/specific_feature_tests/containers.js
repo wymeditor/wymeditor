@@ -1,6 +1,6 @@
 /* jshint camelcase: false, maxlen: 85 */
 /* global setupWym,
-htmlEquals, makeTextSelection,
+wymEqual, makeTextSelection,
 ok, test, expect */
 "use strict";
 
@@ -48,7 +48,7 @@ test("DIV element is correctly converted to P", function () {
         $pContainerLink.click();
     }
 
-    htmlEquals(wymeditor, rootPCorrectHtml,
+    wymEqual(wymeditor, rootPCorrectHtml,
                "DIV element is correctly converted to P");
 });
 
@@ -72,7 +72,7 @@ test("P element is correctly converted to DIV", function () {
         $divContainerLink.click();
     }
 
-    htmlEquals(wymeditor, rootDivCorrectHtml,
+    wymEqual(wymeditor, rootDivCorrectHtml,
                "P element is correctly converted to DIV");
 });
 
@@ -131,7 +131,7 @@ test("Text node in the document root is wrapped in default container", function 
     textNode = $body.contents()[1];
     makeTextSelection(wymeditor, textNode, textNode, 1, 1);
     $body.trigger(keyup_event);
-    htmlEquals(wymeditor, correctRootTextNodeHtml,
+    wymEqual(wymeditor, correctRootTextNodeHtml,
             "Text node in the document root is wrapped in default container");
 });
 
@@ -154,7 +154,7 @@ test(
             inlineElement = $body.find('#inline-in-root');
             makeTextSelection(wymeditor, inlineElement, inlineElement, 1, 1);
             $body.trigger(keyup_event);
-            htmlEquals(
+            wymEqual(
                 wymeditor,
                 correctRootInlineElementHtml[i],
                 [""
