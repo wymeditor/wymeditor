@@ -2412,9 +2412,10 @@ test("Indent with table in the middle of a list", function () {
     var wymeditor = jQuery.wymeditors(0);
 
     changeIndent(wymeditor, expectedMiddleOutFull, '#li_2', '#li_3', 'indent');
-    wymEqual(wymeditor, expectedMiddleIn,
-        "Table indented in the middle of a list",
-        false, true);
+    wymEqual(wymeditor, expectedMiddleIn, {
+        assertionString: "Table indented in the middle of a list",
+        skipParser: true
+    });
 });
 
 test("Indent with table at the end of a list", function () {
@@ -2422,14 +2423,16 @@ test("Indent with table at the end of a list", function () {
     var wymeditor = jQuery.wymeditors(0);
 
     changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'indent');
-    wymEqual(wymeditor, expectedEndIn,
-        "Table indented at the end of a list",
-        false, true);
+    wymEqual(wymeditor, expectedEndIn, {
+        assertionString: "Table indented at the end of a list",
+        skipParser: true
+    });
 
     changeIndent(wymeditor, startEndOutNoBR, '#li_3', '#li_3', 'indent');
-    wymEqual(wymeditor, expectedEndIn,
-        "Table indented at the end of a list with no line break",
-        false, true);
+    wymEqual(wymeditor, expectedEndIn, {
+        assertionString: "Table indented at the end of a list with no line break",
+        skipParser: true
+    });
 });
 
 test("Outdent with table in the middle of a list", function () {
@@ -2437,9 +2440,10 @@ test("Outdent with table in the middle of a list", function () {
     var wymeditor = jQuery.wymeditors(0);
 
     changeIndent(wymeditor, expectedMiddleIn, '#li_2', '#li_2', 'outdent');
-    wymEqual(wymeditor, expectedMiddleOutPartial,
-        "Table outdented in the middle of a list",
-        false, true);
+    wymEqual(wymeditor, expectedMiddleOutPartial, {
+        assertionString: "Table outdented in the middle of a list",
+        skipParser: true
+    });
 });
 
 test("Outdent with table at the end of a list", function () {
@@ -2447,13 +2451,15 @@ test("Outdent with table at the end of a list", function () {
     var wymeditor = jQuery.wymeditors(0);
 
     changeIndent(wymeditor, expectedEndIn, '#li_3', '#li_3', 'outdent');
-    wymEqual(wymeditor, expectedEndOut,
-        "Table outdented at the end of a list",
-        false, true);
+    wymEqual(wymeditor, expectedEndOut, {
+        assertionString: "Table outdented at the end of a list",
+        skipParser: true
+    });
 
     changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'outdent');
-    wymEqual(wymeditor, expectedEndOut,
-        "Table outdented at the end of a list with no line break",
-        false, true);
+    wymEqual(wymeditor, expectedEndOut, {
+        assertionString: "Table outdented at the end of a list with no line break",
+        skipParser: true
+    });
 });
 

@@ -48,8 +48,9 @@ test("DIV element is correctly converted to P", function () {
         $pContainerLink.click();
     }
 
-    wymEqual(wymeditor, rootPCorrectHtml,
-               "DIV element is correctly converted to P");
+    wymEqual(wymeditor, rootPCorrectHtml, {
+            assertionString: "DIV element is correctly converted to P"
+    });
 });
 
 module("structure-default_root_div", {setup: setupDefaultRootContainerDivWym});
@@ -72,8 +73,9 @@ test("P element is correctly converted to DIV", function () {
         $divContainerLink.click();
     }
 
-    wymEqual(wymeditor, rootDivCorrectHtml,
-               "P element is correctly converted to DIV");
+    wymEqual(wymeditor, rootDivCorrectHtml, {
+            assertionString: "P element is correctly converted to DIV"
+    });
 });
 
 
@@ -131,8 +133,10 @@ test("Text node in the document root is wrapped in default container", function 
     textNode = $body.contents()[1];
     makeTextSelection(wymeditor, textNode, textNode, 1, 1);
     $body.trigger(keyup_event);
-    wymEqual(wymeditor, correctRootTextNodeHtml,
-            "Text node in the document root is wrapped in default container");
+    wymEqual(wymeditor, correctRootTextNodeHtml, {
+            assertionString: "Text node in the document root is wrapped in " +
+                "default container"
+    });
 });
 
 test(
@@ -154,16 +158,14 @@ test(
             inlineElement = $body.find('#inline-in-root');
             makeTextSelection(wymeditor, inlineElement, inlineElement, 1, 1);
             $body.trigger(keyup_event);
-            wymEqual(
-                wymeditor,
-                correctRootInlineElementHtml[i],
-                [""
+            wymEqual(wymeditor, correctRootInlineElementHtml[i], {
+                assertionString: [""
                     , "`"
                     , inlineElementsToTest[i]
                     , "` element in the document "
                     , "root is wrapped in default container"
                 ].join('')
-            );
+            });
         }
     }
 );

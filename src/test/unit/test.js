@@ -930,9 +930,10 @@ test("Table insertion in the middle of a list with text selection", function () 
 
     setupTable(wymeditor, listForTableInsertion, '#li_2', 'text',
                1, 1, 'test_1');
-    wymEqual(wymeditor, expectedMiddleOutFull,
-           "Table insertion in the middle of a list with text selection",
-            false, true);
+    wymEqual(wymeditor, expectedMiddleOutFull, {
+        assertionString: "Table insertion in the middle of a list with text selection",
+        skipParser: true
+    });
 });
 
 test("Table insertion at the end of a list with text selection", function () {
@@ -941,10 +942,10 @@ test("Table insertion at the end of a list with text selection", function () {
 
     setupTable(
         wymeditor, listForTableInsertion, '#li_3', 'text', 1, 1, 'test_1');
-    wymEqual(wymeditor,
-        expectedEndOut,
-        "Table insertion at the end of a list with text selection",
-        false, true);
+    wymEqual(wymeditor, expectedEndOut, {
+            assertionString: "Table insertion at the end of a list with text selection",
+            skipParser: true
+        });
 });
 
 test("Table insertion in the middle of a list with collapsed selection", function () {
@@ -953,9 +954,10 @@ test("Table insertion in the middle of a list with collapsed selection", functio
 
     setupTable(wymeditor, listForTableInsertion, '#li_2', 'collapsed',
                1, 1, 'test_1');
-    wymEqual(wymeditor, expectedMiddleOutFull,
-           "Table insertion in the middle of a list with collapsed selection",
-            false, true);
+    wymEqual(wymeditor, expectedMiddleOutFull, {
+        assertionString: "Table insertion in the middle of a list with collapsed selection",
+        skipParser: true
+    });
 });
 
 test("Table insertion at the end of a list with collapsed selection", function () {
@@ -964,9 +966,10 @@ test("Table insertion at the end of a list with collapsed selection", function (
 
     setupTable(wymeditor, listForTableInsertion, '#li_3', 'collapsed',
                1, 1, 'test_1');
-    wymEqual(wymeditor, expectedEndOut,
-           "Table insertion at the end of a list with collapsed selection",
-            false, true);
+    wymEqual(wymeditor, expectedEndOut, {
+        assertionString: "Table insertion at the end of a list with collapsed selection",
+        skipParser: true
+    });
 });
 
 // This test mimics the behavior that caused issue #406 which would
@@ -978,24 +981,27 @@ test("Table insertion with selection inside another table in a list", function (
     // Try insert in td element
     setupTable(wymeditor, expectedListOneTable, '#t1_1_1', 'collapsed',
                1, 1, 'test_2');
-    wymEqual(wymeditor, expectedListTwoTables,
-           "Table insertion with selection inside a td element in a list",
-            false, true);
+    wymEqual(wymeditor, expectedListTwoTables, {
+        assertionString: "Table insertion with selection inside a td element in a list",
+        skipParser: true
+    });
 
     // Try insert in th element
     setupTable(wymeditor, expectedListOneTable, '#t1_h_1', 'collapsed',
                1, 1, 'test_2');
-    wymEqual(wymeditor, expectedListTwoTables,
-           "Table insertion with selection inside a th element in a list",
-            false, true);
+    wymEqual(wymeditor, expectedListTwoTables, {
+        assertionString: "Table insertion with selection inside a th element in a list",
+        skipParser: true
+    });
 
     // Try insert in caption element
     setupTable(wymeditor, expectedListOneTable, '#t1_cap', 'collapsed',
                1, 1, 'test_2');
-    wymEqual(wymeditor, expectedListTwoTables,
-           "Table insertion with selection inside a caption element " +
+    wymEqual(wymeditor, expectedListTwoTables, {
+        assertionString: "Table insertion with selection inside a caption element " +
            "in a list",
-            false, true);
+        skipParser: true
+    });
 });
 
 test("Table insertion with direct selection of list item node", function () {
@@ -1004,9 +1010,10 @@ test("Table insertion with direct selection of list item node", function () {
 
     setupTable(wymeditor, expectedListOneTable, '#li_3', 'node',
                1, 1, 'test_2');
-    wymEqual(wymeditor, expectedListTwoTables,
-           "Table insertion with direct selection of list item node",
-            false, true);
+    wymEqual(wymeditor, expectedListTwoTables, {
+        assertionString: "Table insertion with direct selection of list item node",
+        skipParser: true
+    });
 });
 
 module("table-insert_in_sublist", {setup: setupWym});
@@ -1017,9 +1024,10 @@ test("Single table insertion into a sublist", function () {
 
     setupTable(wymeditor, sublistForTableInsertion, '#li_2', 'text',
                1, 1, 'test_1');
-    wymEqual(wymeditor, expectedSublistOneTable,
-           "Single table insertion within a sublist",
-            false, true);
+    wymEqual(wymeditor, expectedSublistOneTable, {
+        assertionString: "Single table insertion within a sublist",
+        skipParser: true
+    });
 });
 
 test("Double table insertion into a sublist", function () {
@@ -1028,9 +1036,10 @@ test("Double table insertion into a sublist", function () {
 
     setupTable(wymeditor, expectedSublistOneTable, '#li_2', 'text',
                2, 1, 'test_2');
-    wymEqual(wymeditor, expectedSublistTwoTables,
-           "Double table insertion within a sublist",
-            false, true);
+    wymEqual(wymeditor, expectedSublistTwoTables, {
+        assertionString: "Double table insertion within a sublist",
+        skipParser: true
+    });
 });
 
 test("Triple table insertion into a sublist", function () {
@@ -1040,9 +1049,10 @@ test("Triple table insertion into a sublist", function () {
     setupTable(wymeditor, expectedSublistTwoTables, '#li_2', 'text',
                3, 1, 'test_3');
     wymEqual(wymeditor,
-           expectedSublistThreeTables,
-           "Triple table insertion within a sublist",
-            false, true);
+           expectedSublistThreeTables, {
+               assertionString: "Triple table insertion within a sublist",
+               skipParser: true
+           });
 });
 
 module("table-parse_spacers_in_list", {setup: setupWym});

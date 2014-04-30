@@ -166,31 +166,30 @@ function normalizeHtml(node) {
 * The HTML from the WYMeditor instance can be fetched either using the
 * normal method, `.xhtml`, or, it can be fetched directly from the DOM, which
 * bypasses the XHTML parser.
-*
-* In any case, the fetched HTML and the expected HTML are passed through
-* `normalizeHtml` and then compared.
-*
-* assertionString is the string message printed with the result of the
-* assertion checking this matching. This parameter is optional.
-*
-* fixListSpacing is a boolean that specifies if leading spaces before line
-* breaks and list type elements should be removed in older versions of Internet
-* Explorer (i.e. IE7-8). Defaults to false.
 */
-function wymEqual(wymeditor, expected, assertionString, fixListSpacing,
-                  domTesting) {
-    var actual = '',
+function wymEqual(wymeditor, expected, options) {
+    var defaults = {
+            // The message printed with the result of the assertion checking
+            // this matching.
+            assertionString: null,
+            // A boolean that specifies whether leading spaces before line
+            // breaks and list type elements should be removed in old versions
+            // of Internet Explorer (i.e. IE7,8).
+            fixListSpacing: false,
+            skipParser: false
+        },
+        actual = '',
         normedActual = '',
         normedExpected = '',
         listTypeOptions,
         tmpNodes,
         i;
 
-    // By default, we test the normal output of WYMeditor.
-    domTesting = typeof domTesting !== 'undefined' ? domTesting : false;
+    // Apply defaults.
+    options = jQuery.extend({}, defaults, options);
 
-    // If DOM testing mode is requested:
-    if (domTesting) {
+    // If it is requested that the parser be skipped:
+    if (options.skipParser) {
         // Extract the HTML from the DOM of the WYMeditor.
         jQuery(wymeditor._doc).find('body.wym_iframe').contents().each(
             function () {
@@ -208,7 +207,7 @@ function wymEqual(wymeditor, expected, assertionString, fixListSpacing,
     for (i = 0; i < tmpNodes.length; i++) {
         normedActual += normalizeHtml(tmpNodes[i]);
     }
-    if (fixListSpacing && jQuery.browser.msie &&
+    if (options.fixListSpacing && jQuery.browser.msie &&
             parseInt(jQuery.browser.version, 10) < 9.0) {
         normedActual = normedActual.replace(/\s(<br.*?\/>)/g, '$1');
 
@@ -224,7 +223,7 @@ function wymEqual(wymeditor, expected, assertionString, fixListSpacing,
         normedExpected += normalizeHtml(tmpNodes[i]);
     }
 
-    deepEqual(normedActual, normedExpected, assertionString);
+    deepEqual(normedActual, normedExpected, options.assertionString);
 }
 
 function makeSelection(
