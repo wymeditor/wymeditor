@@ -1,4 +1,4 @@
-/* exported isContentEditable, simulateKey, htmlEquals,
+/* exported isContentEditable, simulateKey, htmlEquals, domEquals,
  makeTextSelection, moveSelector */
 /* global rangy, deepEqual, html_beautify */
 "use strict";
@@ -216,6 +216,56 @@ function htmlEquals(wymeditor, expected, assertionString, fixListSpacing) {
         normedExpected += normalizeHtml(tmpNodes[i]);
     }
 
+    deepEqual(
+        /* jshint camelcase: false */
+        html_beautify(normedActual, htmlBeautifyOptions),
+        html_beautify(normedExpected, htmlBeautifyOptions),
+        assertionString
+    );
+}
+/* Gets the unparsed code from the DOM of a WYMeditor instance, passes it
+ * through normalization and compares it with expected XHTML.
+ *
+ * Both sides of the comparison are beautified before comparison.
+ */
+function domEquals(wymeditor, expected, assertionString, fixListSpacing) {
+    var actual = '',
+        tmpNodes,
+        i,
+        normedActual,
+        listTypeOptions,
+        normedExpected;
+
+    // Save the DOM HTML from the WYMeditor instance.
+    jQuery(wymeditor._doc).find('body.wym_iframe').contents().each(
+        function () {
+            actual += this.outerHTML;
+        }
+    );
+
+    tmpNodes = jQuery(actual, wymeditor._doc);
+
+    for (i = 0; i < tmpNodes.length; i++) {
+        normedActual += normalizeHtml(tmpNodes[i]);
+    }
+    if (fixListSpacing && jQuery.browser.msie &&
+            parseInt(jQuery.browser.version, 10) < 9.0) {
+        normedActual = normedActual.replace(/\s(<br.*?\/>)/g, '$1');
+
+        listTypeOptions = WYMeditor.LIST_TYPE_ELEMENTS.join('|');
+        normedActual = normedActual.replace(
+            new RegExp('\\s(<(' + listTypeOptions + ').*?>)', 'g'),
+            '$1'
+        );
+    }
+
+    tmpNodes = jQuery(expected, wymeditor._doc);
+    for (i = 0; i < tmpNodes.length; i++) {
+        normedExpected += normalizeHtml(tmpNodes[i]);
+    }
+
+
+    // Beautify and compare.
     deepEqual(
         /* jshint camelcase: false */
         html_beautify(normedActual, htmlBeautifyOptions),
