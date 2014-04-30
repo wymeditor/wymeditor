@@ -1,8 +1,8 @@
 /* jshint camelcase: false, maxlen: 105 */
 /* global setupWym, SKIP_KNOWN_FAILING_TESTS,
-htmlEquals, makeTextSelection, moveSelector, simulateKey, normalizeHtml,
-makeSelection,
-ok, test, expect, deepEqual */
+htmlEquals, makeTextSelection, moveSelector, simulateKey,
+makeSelection, domEquals,
+ok, test, expect */
 "use strict";
 
 module("list-indent_outdent", {setup: setupWym});
@@ -2409,49 +2409,45 @@ var startEndOutNoBR = expectedEndOut.replace(TEST_LINEBREAK_SPACER, '');
 
 test("Indent with table in the middle of a list", function () {
     expect(1);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    var wymeditor = jQuery.wymeditors(0);
 
     changeIndent(wymeditor, expectedMiddleOutFull, '#li_2', '#li_3', 'indent');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedMiddleIn,
+    domEquals(wymeditor, expectedMiddleIn,
            "Table indented in the middle of a list");
 });
 
 test("Indent with table at the end of a list", function () {
     expect(2);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    var wymeditor = jQuery.wymeditors(0);
 
     changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'indent');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndIn,
+    domEquals(wymeditor, expectedEndIn,
            "Table indented at the end of a list");
 
     changeIndent(wymeditor, startEndOutNoBR, '#li_3', '#li_3', 'indent');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndIn,
+    domEquals(wymeditor, expectedEndIn,
            "Table indented at the end of a list with no line break");
 });
 
 test("Outdent with table in the middle of a list", function () {
     expect(1);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    var wymeditor = jQuery.wymeditors(0);
 
     changeIndent(wymeditor, expectedMiddleIn, '#li_2', '#li_2', 'outdent');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedMiddleOutPartial,
+    domEquals(wymeditor, expectedMiddleOutPartial,
            "Table outdented in the middle of a list");
 });
 
 test("Outdent with table at the end of a list", function () {
     expect(2);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    var wymeditor = jQuery.wymeditors(0);
 
     changeIndent(wymeditor, expectedEndIn, '#li_3', '#li_3', 'outdent');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndOut,
+    domEquals(wymeditor, expectedEndOut,
            "Table outdented at the end of a list");
 
     changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'outdent');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndOut,
+    domEquals(wymeditor, expectedEndOut,
            "Table outdented at the end of a list with no line break");
 });
 

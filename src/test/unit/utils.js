@@ -1,6 +1,6 @@
-/* exported isContentEditable, simulateKey, htmlEquals,
+/* exported isContentEditable, simulateKey, htmlEquals, domEquals,
  makeTextSelection, moveSelector */
-/* global rangy, deepEqual */
+/* global rangy, deepEqual, html_beautify */
 "use strict";
 
 // Regex expression shortcuts
@@ -160,6 +160,19 @@ function normalizeHtml(node) {
     return html;
 }
 
+// Options for the HTML beautifier.
+var htmlBeautifyOptions = {
+    'indent_inner_html': false,
+    'indent_size': 4,
+    'indent_car': ' ',
+    'wrap_line_length': 300,
+    'brace_style': 'collapse',
+    'unformatted': 'normal',
+    'preserve_newlines': true,
+    'max_preserve_newlines': 'unlimited',
+    'indent_handlebars': false
+};
+
 /**
 * Ensure the cleaned xhtml coming from a WYMeditor instance matches the
 * expected HTML, accounting for differing whitespace and attribute ordering.
@@ -170,6 +183,8 @@ function normalizeHtml(node) {
 * fixListSpacing is a boolean that specifies if leading spaces before line
 * breaks and list type elements should be removed in older versions of Internet
 * Explorer (i.e. IE7-8). Defaults to false.
+*
+* HTML is beautified before comparison.
 */
 function htmlEquals(wymeditor, expected, assertionString, fixListSpacing) {
     var xhtml = '',
@@ -179,13 +194,6 @@ function htmlEquals(wymeditor, expected, assertionString, fixListSpacing) {
         tmpNodes,
         i;
     xhtml = jQuery.trim(wymeditor.xhtml());
-    if (xhtml === '') {
-        // In jQuery 1.2.x, jQuery('') returns an empty list, so we can't call
-        // normalizeHTML. On 1.3.x or higher upgrade, we can remove this
-        // check for the empty string
-        deepEqual(xhtml, expected, assertionString);
-        return;
-    }
 
     tmpNodes = jQuery(xhtml, wymeditor._doc);
 
@@ -208,7 +216,62 @@ function htmlEquals(wymeditor, expected, assertionString, fixListSpacing) {
         normedExpected += normalizeHtml(tmpNodes[i]);
     }
 
-    deepEqual(normedActual, normedExpected, assertionString);
+    deepEqual(
+        /* jshint camelcase: false */
+        html_beautify(normedActual, htmlBeautifyOptions),
+        html_beautify(normedExpected, htmlBeautifyOptions),
+        assertionString
+    );
+}
+/* Gets the unparsed code from the DOM of a WYMeditor instance, passes it
+ * through normalization and compares it with expected XHTML.
+ *
+ * Both sides of the comparison are beautified before comparison.
+ */
+function domEquals(wymeditor, expected, assertionString, fixListSpacing) {
+    var actual = '',
+        tmpNodes,
+        i,
+        normedActual,
+        listTypeOptions,
+        normedExpected;
+
+    // Save the DOM HTML from the WYMeditor instance.
+    jQuery(wymeditor._doc).find('body.wym_iframe').contents().each(
+        function () {
+            actual += this.outerHTML;
+        }
+    );
+
+    tmpNodes = jQuery(actual, wymeditor._doc);
+
+    for (i = 0; i < tmpNodes.length; i++) {
+        normedActual += normalizeHtml(tmpNodes[i]);
+    }
+    if (fixListSpacing && jQuery.browser.msie &&
+            parseInt(jQuery.browser.version, 10) < 9.0) {
+        normedActual = normedActual.replace(/\s(<br.*?\/>)/g, '$1');
+
+        listTypeOptions = WYMeditor.LIST_TYPE_ELEMENTS.join('|');
+        normedActual = normedActual.replace(
+            new RegExp('\\s(<(' + listTypeOptions + ').*?>)', 'g'),
+            '$1'
+        );
+    }
+
+    tmpNodes = jQuery(expected, wymeditor._doc);
+    for (i = 0; i < tmpNodes.length; i++) {
+        normedExpected += normalizeHtml(tmpNodes[i]);
+    }
+
+
+    // Beautify and compare.
+    deepEqual(
+        /* jshint camelcase: false */
+        html_beautify(normedActual, htmlBeautifyOptions),
+        html_beautify(normedExpected, htmlBeautifyOptions),
+        assertionString
+    );
 }
 
 function makeSelection(
