@@ -1065,11 +1065,10 @@ if (!(// Browser is IE and
 
         setupTable(wymeditor, expectedSublistTwoTables, '#li_2', 'text',
                    3, 1, 'test_3');
-        wymEqual(wymeditor,
-               expectedSublistThreeTables, {
-                   assertionString: "Triple table insertion within a sublist",
-                   skipParser: true
-               });
+        wymEqual(wymeditor, expectedSublistThreeTables, {
+            assertionString: "Triple table insertion within a sublist",
+            skipParser: true
+        });
     });
 }
 

@@ -50,7 +50,7 @@ test("DIV element is correctly converted to P", function () {
 
     wymEqual(wymeditor, rootPCorrectHtml, {
             assertionString: "DIV element is correctly converted to P"
-    });
+        });
 });
 
 module("structure-default_root_div", {setup: setupDefaultRootContainerDivWym});
@@ -75,7 +75,7 @@ test("P element is correctly converted to DIV", function () {
 
     wymEqual(wymeditor, rootDivCorrectHtml, {
             assertionString: "P element is correctly converted to DIV"
-    });
+        });
 });
 
 
@@ -136,7 +136,7 @@ test("Text node in the document root is wrapped in default container", function 
     wymEqual(wymeditor, correctRootTextNodeHtml, {
             assertionString: "Text node in the document root is wrapped in " +
                 "default container"
-    });
+        });
 });
 
 test(

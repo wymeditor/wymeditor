@@ -219,7 +219,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
             wymEqual(wymeditor, correctHtmlInsertions[i - 1], {
                     assertionString: "Insertion of an H" + i +
                         " heading based on context."
-            });
+                });
         }
     };
 
@@ -371,7 +371,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
             $indentTool.click();
             wymEqual(wymeditor, correctHtmlIndent[i - 1], {
                     assertionString: "Indention of an H" + i + " heading"
-            });
+                });
         }
     };
 
@@ -409,7 +409,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
         $indentTool.click();
         wymEqual(wymeditor, htmlForHeadingIndention, {
                 assertionString: "Indention of default lowest heading level does nothing"
-        });
+            });
 
         // Customized highest heading level
         wymeditor.structuredHeadingsManager._options.lowestAllowableHeadingLevel = 4;
@@ -423,7 +423,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
         wymEqual(wymeditor, htmlForHeadingIndention, {
                 assertionString: "Indention of customized lowest heading " +
                     "level does nothing"
-        });
+            });
 
         // Restore default for other tests
         wymeditor.structuredHeadingsManager._options.lowestAllowableHeadingLevel = 6;
@@ -487,7 +487,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
             $outdentTool.click();
             wymEqual(wymeditor, correctHtmlOutdent[i - 2], {
                     assertionString: "Outdention of an H" + i + " heading"
-            });
+                });
         }
     };
 
@@ -526,7 +526,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
         wymEqual(wymeditor, htmlForHeadingOutdention, {
                 assertionString: "Outdention of default highest heading " +
                     "level does nothing"
-        });
+            });
 
         // Customized highest heading level
         wymeditor.structuredHeadingsManager._options.highestAllowableHeadingLevel = 3;
@@ -540,7 +540,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
         wymEqual(wymeditor, htmlForHeadingOutdention, {
                 assertionString: "Outdention of customized highest heading" +
                     " level does nothing"
-        });
+            });
 
         // Restore default for other tests
         wymeditor.structuredHeadingsManager._options.highestAllowableHeadingLevel = 1;
@@ -1503,6 +1503,6 @@ if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
         wymeditor._html(expectedHeadings);
         wymEqual(wymeditor, expectedParsedHeadings, {
                 assertionString: "Heading numbering stripped by parser"
-        });
+            });
     });
 }
