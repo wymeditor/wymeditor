@@ -2280,10 +2280,34 @@ test("Shouldn't eat newline text spacing in li", function () {
     wymEqual(wymeditor, expectedHtml);
 });
 
+/**
+    changeIndent
+    ============
+
+    Puts the html in the body of the wymeditor and applies either the indent or
+    outdent command to the selection ranging from the element with id selStart
+    to the element with id selEnd. selStart and selEnd should be strings in the
+    form '#<element_id>' where <element_id> is the id attribute of the element
+    to be selected. inOrOur should be the string 'indent' if the indent command
+    should be applied to the selection, or it should be the string 'outdent' if
+    the outdent command should be applied to the selection.
+*/
+function changeIndent(wymeditor, html, selStart, selEnd, inOrOut) {
+    var $body;
+
+    wymeditor._html(html);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    makeTextSelection(wymeditor, $body.find(selStart)[0],
+                      $body.find(selEnd)[0], 0, 1);
+    if (inOrOut === "indent") {
+        wymeditor.indent();
+    } else if (inOrOut === "outdent") {
+        wymeditor.outdent();
+    }
+}
+
 // These test fail in IE7 & IE8:
 // https://github.com/wymeditor/wymeditor/issues/498
-// JSHint ignore because of function definition in code block
-// jshint ignore:start
 if (!(// Browser is IE and
       jQuery.browser.msie &&
       // version 7.x until
@@ -2295,35 +2319,6 @@ if (!(// Browser is IE and
     // we are executing known failing tests:
     !SKIP_KNOWN_FAILING_TESTS) {
     module("list-indent_outdent_with_table", {setup: setupWym});
-
-    /**
-        changeIndent
-        ============
-
-        Puts the html in the body of the wymeditor and applies either the indent or
-        outdent command to the selection ranging from the element with id selStart
-        to the element with id selEnd. selStart and selEnd should be strings in the
-        form '#<element_id>' where <element_id> is the id attribute of the element
-        to be selected. inOrOur should be the string 'indent' if the indent command
-        should be applied to the selection, or it should be the string 'outdent' if
-        the outdent command should be applied to the selection.
-    */
-    // When examining issue #498 uncomment this function. It was commented out
-    // because it was put inside an `if` statement and that is not allowed in
-    // strict mode.
-    //function changeIndent(wymeditor, html, selStart, selEnd, inOrOut) {
-        //var $body;
-
-        //wymeditor._html(html);
-        //$body = jQuery(wymeditor._doc).find('body.wym_iframe');
-        //makeTextSelection(wymeditor, $body.find(selStart)[0],
-                          //$body.find(selEnd)[0], 0, 1);
-        //if (inOrOut === "indent") {
-            //wymeditor.indent();
-        //} else if (inOrOut === "outdent") {
-            //wymeditor.outdent();
-        //}
-    //}
 
     var TEST_LINEBREAK_SPACER = '<br class="' +
                                     WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS + ' ' +
@@ -2480,5 +2475,4 @@ if (!(// Browser is IE and
         });
     });
 }
-// jshint ignore:end
 
