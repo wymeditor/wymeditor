@@ -1,4 +1,4 @@
-/* exported isContentEditable, simulateKey, htmlEquals,
+/* exported isContentEditable, simulateKey, htmlEquals, normalizeHtml,
  makeTextSelection, moveSelector */
 /* global rangy, deepEqual */
 "use strict";
@@ -172,43 +172,30 @@ function normalizeHtml(node) {
 * Explorer (i.e. IE7-8). Defaults to false.
 */
 function htmlEquals(wymeditor, expected, assertionString, fixListSpacing) {
-    var xhtml = '',
-        normedActual = '',
-        normedExpected = '',
-        listTypeOptions,
-        tmpNodes,
-        i;
-    xhtml = jQuery.trim(wymeditor.xhtml());
-    if (xhtml === '') {
+    var actual,
+        listTypeOptions;
+
+    actual = jQuery.trim(wymeditor.xhtml());
+    if (actual === '') {
         // In jQuery 1.2.x, jQuery('') returns an empty list, so we can't call
         // normalizeHTML. On 1.3.x or higher upgrade, we can remove this
         // check for the empty string
-        deepEqual(xhtml, expected, assertionString);
+        deepEqual(actual, expected, assertionString);
         return;
     }
 
-    tmpNodes = jQuery(xhtml, wymeditor._doc);
-
-    for (i = 0; i < tmpNodes.length; i++) {
-        normedActual += normalizeHtml(tmpNodes[i]);
-    }
     if (fixListSpacing && jQuery.browser.msie &&
             parseInt(jQuery.browser.version, 10) < 9.0) {
-        normedActual = normedActual.replace(/\s(<br.*?\/>)/g, '$1');
+        actual = actual.replace(/\s(<br.*?\/>)/g, '$1');
 
         listTypeOptions = WYMeditor.LIST_TYPE_ELEMENTS.join('|');
-        normedActual = normedActual.replace(
+        actual = actual.replace(
             new RegExp('\\s(<(' + listTypeOptions + ').*?>)', 'g'),
             '$1'
         );
     }
 
-    tmpNodes = jQuery(expected, wymeditor._doc);
-    for (i = 0; i < tmpNodes.length; i++) {
-        normedExpected += normalizeHtml(tmpNodes[i]);
-    }
-
-    deepEqual(normedActual, normedExpected, assertionString);
+    deepEqual(actual, expected, assertionString);
 }
 
 function makeSelection(
