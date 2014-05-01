@@ -2300,19 +2300,22 @@ if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
         should be applied to the selection, or it should be the string 'outdent' if
         the outdent command should be applied to the selection.
     */
-    function changeIndent(wymeditor, html, selStart, selEnd, inOrOut) {
-        var $body;
+    // When examining issue #498 uncomment this function. It was commented out
+    // because it was put inside an `if` statement and that is not allowed in
+    // strict mode.
+    //function changeIndent(wymeditor, html, selStart, selEnd, inOrOut) {
+        //var $body;
 
-        wymeditor._html(html);
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
-        makeTextSelection(wymeditor, $body.find(selStart)[0],
-                          $body.find(selEnd)[0], 0, 1);
-        if (inOrOut === "indent") {
-            wymeditor.indent();
-        } else if (inOrOut === "outdent") {
-            wymeditor.outdent();
-        }
-    }
+        //wymeditor._html(html);
+        //$body = jQuery(wymeditor._doc).find('body.wym_iframe');
+        //makeTextSelection(wymeditor, $body.find(selStart)[0],
+                          //$body.find(selEnd)[0], 0, 1);
+        //if (inOrOut === "indent") {
+            //wymeditor.indent();
+        //} else if (inOrOut === "outdent") {
+            //wymeditor.outdent();
+        //}
+    //}
 
     var TEST_LINEBREAK_SPACER = '<br class="' +
                                     WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS + ' ' +
