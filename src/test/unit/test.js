@@ -1023,7 +1023,15 @@ if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
 
 // These test fail in IE7 & IE8:
 // https://github.com/wymeditor/wymeditor/issues/498
-if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
+if (!(// Browser is IE and
+      jQuery.browser.msie &&
+      // version 7.x until
+      parseInt(jQuery.browser.version, 10) >= 7 &&
+      // version 8.x
+      parseInt(jQuery.browser.version, 10) < 9
+     // or
+     ) ||
+    // we are executing known failing tests:
     !SKIP_KNOWN_FAILING_TESTS) {
     module("table-insert_in_sublist", {setup: setupWym});
 
