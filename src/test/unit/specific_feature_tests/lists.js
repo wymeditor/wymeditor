@@ -2280,99 +2280,124 @@ test("Shouldn't eat newline text spacing in li", function () {
     wymEqual(wymeditor, expectedHtml);
 });
 
-module("list-indent_outdent_with_table", {setup: setupWym});
+// These test fail in IE7 & IE8:
+// https://github.com/wymeditor/wymeditor/issues/498
+// JSHint ignore because of function definition in code block
+// jshint ignore:start
+if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
+    !SKIP_KNOWN_FAILING_TESTS) {
+    module("list-indent_outdent_with_table", {setup: setupWym});
 
-/**
-    changeIndent
-    ============
+    /**
+        changeIndent
+        ============
 
-    Puts the html in the body of the wymeditor and applies either the indent or
-    outdent command to the selection ranging from the element with id selStart
-    to the element with id selEnd. selStart and selEnd should be strings in the
-    form '#<element_id>' where <element_id> is the id attribute of the element
-    to be selected. inOrOur should be the string 'indent' if the indent command
-    should be applied to the selection, or it should be the string 'outdent' if
-    the outdent command should be applied to the selection.
-*/
-function changeIndent(wymeditor, html, selStart, selEnd, inOrOut) {
-    var $body;
+        Puts the html in the body of the wymeditor and applies either the indent or
+        outdent command to the selection ranging from the element with id selStart
+        to the element with id selEnd. selStart and selEnd should be strings in the
+        form '#<element_id>' where <element_id> is the id attribute of the element
+        to be selected. inOrOur should be the string 'indent' if the indent command
+        should be applied to the selection, or it should be the string 'outdent' if
+        the outdent command should be applied to the selection.
+    */
+    function changeIndent(wymeditor, html, selStart, selEnd, inOrOut) {
+        var $body;
 
-    wymeditor._html(html);
-    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
-    makeTextSelection(wymeditor, $body.find(selStart)[0],
-                      $body.find(selEnd)[0], 0, 1);
-    if (inOrOut === "indent") {
-        wymeditor.indent();
-    } else if (inOrOut === "outdent") {
-        wymeditor.outdent();
+        wymeditor._html(html);
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+        makeTextSelection(wymeditor, $body.find(selStart)[0],
+                          $body.find(selEnd)[0], 0, 1);
+        if (inOrOut === "indent") {
+            wymeditor.indent();
+        } else if (inOrOut === "outdent") {
+            wymeditor.outdent();
+        }
     }
-}
 
-var TEST_LINEBREAK_SPACER = '<br class="' +
-                                WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS + ' ' +
-                                WYMeditor.EDITOR_ONLY_CLASS + '"/>';
+    var TEST_LINEBREAK_SPACER = '<br class="' +
+                                    WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS + ' ' +
+                                    WYMeditor.EDITOR_ONLY_CLASS + '"/>';
 
-var expectedMiddleIn = String() +
-    '<ol>' +
-        '<li id="li_1">1' +
-            '<ol>' +
-                '<li id="li_2">2' +
-                    '<table>' +
-                        '<caption>test_1</caption>' +
-                        '<tbody>' +
+    var expectedMiddleIn = String() +
+        '<ol>' +
+            '<li id="li_1">1' +
+                '<ol>' +
+                    '<li id="li_2">2' +
+                        '<table>' +
+                            '<caption>test_1</caption>' +
+                            '<tbody>' +
+                            '<tr>' +
+                                '<td id="t1_1_1">1_1</td>' +
+                            '</tr>' +
+                            '</tbody>' +
+                        '</table>' +
+                        TEST_LINEBREAK_SPACER +
+                    '</li>' +
+                    '<li id="li_3">3</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>';
+
+    var expectedMiddleOutPartial = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2' +
+                '<table>' +
+                    '<caption>test_1</caption>' +
+                    '<tbody>' +
                         '<tr>' +
                             '<td id="t1_1_1">1_1</td>' +
                         '</tr>' +
-                        '</tbody>' +
-                    '</table>' +
-                    TEST_LINEBREAK_SPACER +
-                '</li>' +
-                '<li id="li_3">3</li>' +
-            '</ol>' +
-        '</li>' +
-    '</ol>';
+                    '</tbody>' +
+                '</table>' +
+                TEST_LINEBREAK_SPACER +
+                '<ol>' +
+                    '<li id="li_3">3</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>';
 
-var expectedMiddleOutPartial = String() +
-    '<ol>' +
-        '<li id="li_1">1</li>' +
-        '<li id="li_2">2' +
-            '<table>' +
-                '<caption>test_1</caption>' +
-                '<tbody>' +
-                    '<tr>' +
-                        '<td id="t1_1_1">1_1</td>' +
-                    '</tr>' +
-                '</tbody>' +
-            '</table>' +
-            TEST_LINEBREAK_SPACER +
+    var expectedMiddleOutFull = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2' +
+                '<table>' +
+                    '<caption>test_1</caption>' +
+                    '<tbody>' +
+                        '<tr>' +
+                            '<td id="t1_1_1">1_1</td>' +
+                        '</tr>' +
+                    '</tbody>' +
+                '</table>' +
+                TEST_LINEBREAK_SPACER +
+            '</li>' +
+            '<li id="li_3">3</li>' +
+        '</ol>';
+
+    var expectedEndIn = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2' +
+                '<ol>' +
+                    '<li id="li_3">3' +
+                        '<table>' +
+                            '<caption>test_1</caption>' +
+                            '<tbody>' +
+                                '<tr>' +
+                                    '<td id="t1_1_1">1_1</td>' +
+                                '</tr>' +
+                            '</tbody>' +
+                        '</table>' +
+                        TEST_LINEBREAK_SPACER +
+                    '</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>';
+
+    var expectedEndOut = String() +
             '<ol>' +
-                '<li id="li_3">3</li>' +
-            '</ol>' +
-        '</li>' +
-    '</ol>';
-
-var expectedMiddleOutFull = String() +
-    '<ol>' +
-        '<li id="li_1">1</li>' +
-        '<li id="li_2">2' +
-            '<table>' +
-                '<caption>test_1</caption>' +
-                '<tbody>' +
-                    '<tr>' +
-                        '<td id="t1_1_1">1_1</td>' +
-                    '</tr>' +
-                '</tbody>' +
-            '</table>' +
-            TEST_LINEBREAK_SPACER +
-        '</li>' +
-        '<li id="li_3">3</li>' +
-    '</ol>';
-
-var expectedEndIn = String() +
-    '<ol>' +
-        '<li id="li_1">1</li>' +
-        '<li id="li_2">2' +
-            '<ol>' +
+                '<li id="li_1">1</li>' +
+                '<li id="li_2">2</li>' +
                 '<li id="li_3">3' +
                     '<table>' +
                         '<caption>test_1</caption>' +
@@ -2384,82 +2409,65 @@ var expectedEndIn = String() +
                     '</table>' +
                     TEST_LINEBREAK_SPACER +
                 '</li>' +
-            '</ol>' +
-        '</li>' +
-    '</ol>';
+            '</ol>';
 
-var expectedEndOut = String() +
-        '<ol>' +
-            '<li id="li_1">1</li>' +
-            '<li id="li_2">2</li>' +
-            '<li id="li_3">3' +
-                '<table>' +
-                    '<caption>test_1</caption>' +
-                    '<tbody>' +
-                        '<tr>' +
-                            '<td id="t1_1_1">1_1</td>' +
-                        '</tr>' +
-                    '</tbody>' +
-                '</table>' +
-                TEST_LINEBREAK_SPACER +
-            '</li>' +
-        '</ol>';
+    var startEndOutNoBR = expectedEndOut.replace(TEST_LINEBREAK_SPACER, '');
 
-var startEndOutNoBR = expectedEndOut.replace(TEST_LINEBREAK_SPACER, '');
+    test("Indent with table in the middle of a list", function () {
+        expect(1);
+        var wymeditor = jQuery.wymeditors(0);
 
-test("Indent with table in the middle of a list", function () {
-    expect(1);
-    var wymeditor = jQuery.wymeditors(0);
-
-    changeIndent(wymeditor, expectedMiddleOutFull, '#li_2', '#li_3', 'indent');
-    wymEqual(wymeditor, expectedMiddleIn, {
-        assertionString: "Table indented in the middle of a list",
-        skipParser: true
-    });
-});
-
-test("Indent with table at the end of a list", function () {
-    expect(2);
-    var wymeditor = jQuery.wymeditors(0);
-
-    changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'indent');
-    wymEqual(wymeditor, expectedEndIn, {
-        assertionString: "Table indented at the end of a list",
-        skipParser: true
+        changeIndent(wymeditor, expectedMiddleOutFull, '#li_2', '#li_3', 'indent');
+        wymEqual(wymeditor, expectedMiddleIn, {
+            assertionString: "Table indented in the middle of a list",
+            skipParser: true
+        });
     });
 
-    changeIndent(wymeditor, startEndOutNoBR, '#li_3', '#li_3', 'indent');
-    wymEqual(wymeditor, expectedEndIn, {
-        assertionString: "Table indented at the end of a list with no line break",
-        skipParser: true
-    });
-});
+    test("Indent with table at the end of a list", function () {
+        expect(2);
+        var wymeditor = jQuery.wymeditors(0);
 
-test("Outdent with table in the middle of a list", function () {
-    expect(1);
-    var wymeditor = jQuery.wymeditors(0);
+        changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'indent');
+        wymEqual(wymeditor, expectedEndIn, {
+            assertionString: "Table indented at the end of a list",
+            skipParser: true
+        });
 
-    changeIndent(wymeditor, expectedMiddleIn, '#li_2', '#li_2', 'outdent');
-    wymEqual(wymeditor, expectedMiddleOutPartial, {
-        assertionString: "Table outdented in the middle of a list",
-        skipParser: true
-    });
-});
-
-test("Outdent with table at the end of a list", function () {
-    expect(2);
-    var wymeditor = jQuery.wymeditors(0);
-
-    changeIndent(wymeditor, expectedEndIn, '#li_3', '#li_3', 'outdent');
-    wymEqual(wymeditor, expectedEndOut, {
-        assertionString: "Table outdented at the end of a list",
-        skipParser: true
+        changeIndent(wymeditor, startEndOutNoBR, '#li_3', '#li_3', 'indent');
+        wymEqual(wymeditor, expectedEndIn, {
+            assertionString: "Table indented at the end of a list with no line break",
+            skipParser: true
+        });
     });
 
-    changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'outdent');
-    wymEqual(wymeditor, expectedEndOut, {
-        assertionString: "Table outdented at the end of a list with no line break",
-        skipParser: true
+    test("Outdent with table in the middle of a list", function () {
+        expect(1);
+        var wymeditor = jQuery.wymeditors(0);
+
+        changeIndent(wymeditor, expectedMiddleIn, '#li_2', '#li_2', 'outdent');
+        wymEqual(wymeditor, expectedMiddleOutPartial, {
+            assertionString: "Table outdented in the middle of a list",
+            skipParser: true
+        });
     });
-});
+
+    test("Outdent with table at the end of a list", function () {
+        expect(2);
+        var wymeditor = jQuery.wymeditors(0);
+
+        changeIndent(wymeditor, expectedEndIn, '#li_3', '#li_3', 'outdent');
+        wymEqual(wymeditor, expectedEndOut, {
+            assertionString: "Table outdented at the end of a list",
+            skipParser: true
+        });
+
+        changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'outdent');
+        wymEqual(wymeditor, expectedEndOut, {
+            assertionString: "Table outdented at the end of a list with no line break",
+            skipParser: true
+        });
+    });
+}
+// jshint ignore:end
 
