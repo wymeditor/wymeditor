@@ -202,7 +202,7 @@ function wymEqual(wymeditor, expected, options) {
         actual = jQuery.trim(wymeditor.xhtml());
     }
 
-    tmpNodes = jQuery(actual, wymeditor._doc);
+    tmpNodes = jQuery(actual);
 
     for (i = 0; i < tmpNodes.length; i++) {
         normedActual += normalizeHtml(tmpNodes[i]);
@@ -218,7 +218,7 @@ function wymEqual(wymeditor, expected, options) {
         );
     }
 
-    tmpNodes = jQuery(expected, wymeditor._doc);
+    tmpNodes = jQuery(expected);
     for (i = 0; i < tmpNodes.length; i++) {
         normedExpected += normalizeHtml(tmpNodes[i]);
     }
