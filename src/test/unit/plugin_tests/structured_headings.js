@@ -1,6 +1,6 @@
 /* jshint maxlen: 90 */
 /* global setupWym, SKIP_KNOWN_FAILING_TESTS,
-htmlEquals, makeTextSelection, normalizeHtml,
+wymEqual, makeTextSelection, normalizeHtml,
 ok, test, expect, deepEqual */
 "use strict";
 
@@ -216,8 +216,10 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
             paragraph = $body.find('#to_be_h' + i)[0];
             makeTextSelection(wymeditor, paragraph, paragraph);
             $headingContainerLink.click();
-            htmlEquals(wymeditor, correctHtmlInsertions[i - 1],
-                       "Insertion of an H" + i + " heading based on context.");
+            wymEqual(wymeditor, correctHtmlInsertions[i - 1], {
+                    assertionString: "Insertion of an H" + i +
+                        " heading based on context."
+                });
         }
     };
 
@@ -367,8 +369,9 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
             makeTextSelection(wymeditor, heading, heading,
                               selectionStart, selectionEnd);
             $indentTool.click();
-            htmlEquals(wymeditor, correctHtmlIndent[i - 1],
-                       "Indention of an H" + i + " heading");
+            wymEqual(wymeditor, correctHtmlIndent[i - 1], {
+                    assertionString: "Indention of an H" + i + " heading"
+                });
         }
     };
 
@@ -404,8 +407,9 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
         heading = $body.find('#h6_for_indent')[0];
         makeTextSelection(wymeditor, heading, heading);
         $indentTool.click();
-        htmlEquals(wymeditor, htmlForHeadingIndention,
-                   "Indention of default lowest heading level does nothing");
+        wymEqual(wymeditor, htmlForHeadingIndention, {
+                assertionString: "Indention of default lowest heading level does nothing"
+            });
 
         // Customized highest heading level
         wymeditor.structuredHeadingsManager._options.lowestAllowableHeadingLevel = 4;
@@ -416,8 +420,10 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
         heading = $body.find('#h4_for_indent')[0];
         makeTextSelection(wymeditor, heading, heading);
         $indentTool.click();
-        htmlEquals(wymeditor, htmlForHeadingIndention,
-                   "Indention of customized lowest heading level does nothing");
+        wymEqual(wymeditor, htmlForHeadingIndention, {
+                assertionString: "Indention of customized lowest heading " +
+                    "level does nothing"
+            });
 
         // Restore default for other tests
         wymeditor.structuredHeadingsManager._options.lowestAllowableHeadingLevel = 6;
@@ -441,9 +447,10 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
             heading = $body.find('#h' + i + '_no_indent')[0];
             makeTextSelection(wymeditor, heading, heading);
             $indentTool.click();
-            htmlEquals(wymeditor, htmlForHeadingIndention,
-                       "Indention of an H" + i + " heading directly after an " +
-                       "H" + (i - 1) + " heading does nothing");
+            wymEqual(wymeditor, htmlForHeadingIndention, {
+                assertionString: "Indention of an H" + i + " heading directly after an " +
+                "H" + (i - 1) + " heading does nothing"
+            });
         }
     });
 
@@ -478,8 +485,9 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
             makeTextSelection(wymeditor, heading, heading,
                               selectionStart, selectionEnd);
             $outdentTool.click();
-            htmlEquals(wymeditor, correctHtmlOutdent[i - 2],
-                       "Outdention of an H" + i + " heading");
+            wymEqual(wymeditor, correctHtmlOutdent[i - 2], {
+                    assertionString: "Outdention of an H" + i + " heading"
+                });
         }
     };
 
@@ -515,8 +523,10 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
         heading = $body.find('#h1_for_outdent')[0];
         makeTextSelection(wymeditor, heading, heading);
         $outdentTool.click();
-        htmlEquals(wymeditor, htmlForHeadingOutdention,
-                   "Outdention of default highest heading level does nothing");
+        wymEqual(wymeditor, htmlForHeadingOutdention, {
+                assertionString: "Outdention of default highest heading " +
+                    "level does nothing"
+            });
 
         // Customized highest heading level
         wymeditor.structuredHeadingsManager._options.highestAllowableHeadingLevel = 3;
@@ -527,8 +537,10 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
         heading = $body.find('#h3_for_outdent')[0];
         makeTextSelection(wymeditor, heading, heading);
         $outdentTool.click();
-        htmlEquals(wymeditor, htmlForHeadingOutdention,
-                   "Outdention of customized highest heading level does nothing");
+        wymEqual(wymeditor, htmlForHeadingOutdention, {
+                assertionString: "Outdention of customized highest heading" +
+                    " level does nothing"
+            });
 
         // Restore default for other tests
         wymeditor.structuredHeadingsManager._options.highestAllowableHeadingLevel = 1;
@@ -552,9 +564,10 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
             heading = $body.find('#h' + i + '_no_outdent')[0];
             makeTextSelection(wymeditor, heading, heading);
             $outdentTool.click();
-            htmlEquals(wymeditor, htmlForHeadingOutdention,
-                       "Outdention of an H" + i + " heading with a directly " +
-                       "following H" + (i + 1) + " heading does nothing");
+            wymEqual(wymeditor, htmlForHeadingOutdention, {
+                assertionString: "Outdention of an H" + i + " heading with a directly " +
+                    "following H" + (i + 1) + " heading does nothing"
+            });
         }
     });
 
@@ -608,7 +621,9 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
         makeTextSelection(wymeditor, startElement, endElement,
                           startIndex, endIndex);
         $tool.click();
-        htmlEquals(wymeditor, correctHtml, assertionString);
+        wymEqual(wymeditor, correctHtml, {
+            assertionString: assertionString
+        });
     };
 
     module("structured_headings-multiple_indent", {setup: setupWym});
@@ -1486,7 +1501,8 @@ if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
         var wymeditor = jQuery.wymeditors(0);
 
         wymeditor._html(expectedHeadings);
-        htmlEquals(wymeditor, expectedParsedHeadings,
-                   "Heading numbering stripped by parser");
+        wymEqual(wymeditor, expectedParsedHeadings, {
+                assertionString: "Heading numbering stripped by parser"
+            });
     });
 }

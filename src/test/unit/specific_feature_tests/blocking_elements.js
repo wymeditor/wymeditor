@@ -1,6 +1,6 @@
 /* jshint camelcase: false, maxlen: 85 */
 /* global setupWym,
-htmlEquals, moveSelector, simulateKey,
+wymEqual, moveSelector, simulateKey,
 makeSelection,
 test, expect, deepEqual */
 "use strict";
@@ -147,7 +147,7 @@ test("table has br spacers via ._html()", function () {
         }
     }
 
-    htmlEquals(wymeditor, tableHtml);
+    wymEqual(wymeditor, tableHtml);
 });
 
 test("table has br spacers via table insertion", function () {
@@ -177,7 +177,7 @@ test("table has br spacers via table insertion", function () {
         }
     }
 
-    htmlEquals(wymeditor, tableHtml);
+    wymEqual(wymeditor, tableHtml);
 });
 
 test("p + table has br spacers via ._html()", function () {
@@ -208,7 +208,7 @@ test("p + table has br spacers via ._html()", function () {
         }
     }
 
-    htmlEquals(wymeditor, pTableHtml);
+    wymEqual(wymeditor, pTableHtml);
 });
 
 test("p + table has br spacers via table insertion", function () {
@@ -247,7 +247,7 @@ test("p + table has br spacers via table insertion", function () {
         }
     }
 
-    htmlEquals(wymeditor, pTableHtml);
+    wymEqual(wymeditor, pTableHtml);
 });
 
 test("p + table + p has br spacers via ._html()", function () {
@@ -269,7 +269,7 @@ test("p + table + p has br spacers via ._html()", function () {
         deepEqual(children[4].tagName.toLowerCase(), 'p');
     }
 
-    htmlEquals(wymeditor, pTablePHtml);
+    wymEqual(wymeditor, pTablePHtml);
 });
 
 test("p + table + p has br spacers via table insertion", function () {
@@ -299,7 +299,7 @@ test("p + table + p has br spacers via table insertion", function () {
         deepEqual(children[4].tagName.toLowerCase(), 'p');
     }
 
-    htmlEquals(wymeditor, pTablePHtml);
+    wymEqual(wymeditor, pTablePHtml);
 });
 
 test("p + table + table + p has br spacers via ._html()", function () {
@@ -323,7 +323,7 @@ test("p + table + table + p has br spacers via ._html()", function () {
         deepEqual(children[6].tagName.toLowerCase(), 'p');
     }
 
-    htmlEquals(wymeditor, pTableTablePHtml);
+    wymEqual(wymeditor, pTableTablePHtml);
 });
 
 test("p + table + table + p has br spacers via table insertion", function () {
@@ -356,7 +356,7 @@ test("p + table + table + p has br spacers via table insertion", function () {
         deepEqual(children[6].tagName.toLowerCase(), 'p');
     }
 
-    htmlEquals(wymeditor, pTableTablePHtml);
+    wymEqual(wymeditor, pTableTablePHtml);
 });
 
 test("h1 + blockquote + pre has br spacers via ._html()", function () {
@@ -391,7 +391,7 @@ test("h1 + blockquote + pre has br spacers via ._html()", function () {
         }
     }
 
-    htmlEquals(wymeditor, h1BlockquotePreHtml);
+    wymEqual(wymeditor, h1BlockquotePreHtml);
 });
 
 test("br spacers aren't deleted when arrowing through them", function () {
@@ -492,7 +492,7 @@ test("br spacers don't cause lots of blank p's when arrowing down", function () 
         }
     }
 
-    htmlEquals(wymeditor, pTableHtml);
+    wymEqual(wymeditor, pTableHtml);
 });
 
 test("br spacers don't cause lots of blank p's when arrowing up", function () {
@@ -519,7 +519,7 @@ test("br spacers don't cause lots of blank p's when arrowing up", function () {
         deepEqual(children[4].tagName.toLowerCase(), 'p');
     }
 
-    htmlEquals(wymeditor, pTablePHtml);
+    wymEqual(wymeditor, pTablePHtml);
 });
 
 test("br spacers stay in place when content is inserted- post-br", function () {
@@ -551,7 +551,7 @@ test("br spacers stay in place when content is inserted- post-br", function () {
         deepEqual(children[3].tagName.toLowerCase(), 'p');
     }
 
-    htmlEquals(wymeditor, tableHtml + '<p>yo</p>');
+    wymEqual(wymeditor, tableHtml + '<p>yo</p>');
 });
 
 if (!no_keypress_textnode_wrap_browser) {
@@ -582,6 +582,6 @@ if (!no_keypress_textnode_wrap_browser) {
             deepEqual(children[3].tagName.toLowerCase(), 'br');
         }
 
-        htmlEquals(wymeditor, tableHtml);
+        wymEqual(wymeditor, tableHtml);
     });
 }
