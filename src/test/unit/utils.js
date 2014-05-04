@@ -1,6 +1,6 @@
 /* exported isContentEditable, simulateKey, wymEqual,
  makeTextSelection, moveSelector */
-/* global rangy, deepEqual */
+/* global rangy, deepEqual, html_beautify, expect */
 "use strict";
 
 // Regex expression shortcuts
@@ -160,12 +160,28 @@ function normalizeHtml(node) {
     return html;
 }
 
+// Options for the HTML beautifier.
+var htmlBeautifyOptions = {
+    'indent_inner_html': false,
+    'indent_size': 4,
+    'indent_car': ' ',
+    'wrap_line_length': 300,
+    'brace_style': 'collapse',
+    'unformatted': 'normal',
+    'preserve_newlines': true,
+    'max_preserve_newlines': 'unlimited',
+    'indent_handlebars': false
+};
+
 /**
 * Compares between the HTML in a WYMeditor instance and expected HTML.
 *
 * The HTML from the WYMeditor instance can be fetched either using the
 * normal method, `.xhtml`, or, it can be fetched directly from the DOM, which
 * bypasses the XHTML parser.
+*
+* A comparison is also made between beautified versions of the actual and the
+* expected HTML.
 */
 function wymEqual(wymeditor, expected, options) {
     var defaults = {
@@ -223,7 +239,21 @@ function wymEqual(wymeditor, expected, options) {
         normedExpected += normalizeHtml(tmpNodes[i]);
     }
 
+    // This is the QUnit assertion.
     deepEqual(normedActual, normedExpected, options.assertionString);
+    // If assertions are expected:
+    if (expect()) {
+        // Increment the number of expected assertions by one. This allows
+        // tests to treat this wymEqual helper as if it was one assertion.
+        expect(expect() + 1);
+    }
+    // Assert also on beautified HTML.
+    deepEqual(
+        /* jshint camelcase: false */
+        html_beautify(normedActual, htmlBeautifyOptions),
+        html_beautify(normedExpected, htmlBeautifyOptions),
+        options.assertionString + ' (beautified)'
+    );
 }
 
 function makeSelection(
