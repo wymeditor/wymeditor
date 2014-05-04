@@ -1,7 +1,7 @@
 /* jshint camelcase: false, maxlen: 100 */
 /* global -$,
 ok, start, stop, test, expect, equal, deepEqual, sinon,
-htmlEquals, moveSelector, makeTextSelection, isContentEditable, normalizeHtml,
+wymEqual, moveSelector, makeTextSelection, isContentEditable, normalizeHtml,
 inPhantomjs, ListPlugin */
 "use strict";
 
@@ -127,7 +127,7 @@ test("Sanity check: _html()", function () {
         wymeditor = jQuery.wymeditors(0);
 
     wymeditor._html(testText1);
-    htmlEquals(wymeditor, testText1);
+    wymEqual(wymeditor, testText1);
 });
 
 module("copy-paste", {setup: setupWym});
@@ -405,7 +405,7 @@ function testPaste(
     }
     wymeditor.paste(textToPaste);
 
-    htmlEquals(wymeditor, expectedHtml);
+    wymEqual(wymeditor, expectedHtml);
 }
 
 test("Body- Direct Paste", function () {
@@ -924,129 +924,156 @@ var startEndOutNoBR = expectedEndOut.replace(TEST_LINEBREAK_SPACER, '');
 
 module("table-insert_in_list", {setup: setupWym});
 
-test("Table insertion in the middle of a list with text selection", function () {
-    expect(1);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+// These test fail in IE7 & IE8:
+// TODO url
+if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
+    !SKIP_KNOWN_FAILING_TESTS) {
+    test("Table insertion in the middle of a list with text selection", function () {
+        expect(1);
+        var wymeditor = jQuery.wymeditors(0);
 
-    setupTable(wymeditor, listForTableInsertion, '#li_2', 'text',
-               1, 1, 'test_1');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedMiddleOutFull,
-           "Table insertion in the middle of a list with text selection");
-});
+        setupTable(wymeditor, listForTableInsertion, '#li_2', 'text',
+                   1, 1, 'test_1');
+        wymEqual(wymeditor, expectedMiddleOutFull, {
+            assertionString: "Table insertion in the middle of a list with text selection",
+            skipParser: true
+        });
+    });
 
-test("Table insertion at the end of a list with text selection", function () {
-    expect(1);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    test("Table insertion at the end of a list with text selection", function () {
+        expect(1);
+        var wymeditor = jQuery.wymeditors(0);
 
-    setupTable(
-        wymeditor, listForTableInsertion, '#li_3', 'text', 1, 1, 'test_1');
-    deepEqual(
-        normalizeHtml($body.get(0).firstChild),
-        expectedEndOut,
-        "Table insertion at the end of a list with text selection"
-    );
-});
+        setupTable(
+            wymeditor, listForTableInsertion, '#li_3', 'text', 1, 1, 'test_1');
+        wymEqual(wymeditor, expectedEndOut, {
+                assertionString: "Table insertion at the end of a list with text selection",
+                skipParser: true
+            });
+    });
 
-test("Table insertion in the middle of a list with collapsed selection", function () {
-    expect(1);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    test("Table insertion in the middle of a list with collapsed selection", function () {
+        expect(1);
+        var wymeditor = jQuery.wymeditors(0);
 
-    setupTable(wymeditor, listForTableInsertion, '#li_2', 'collapsed',
-               1, 1, 'test_1');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedMiddleOutFull,
-           "Table insertion in the middle of a list with collapsed selection");
-});
+        setupTable(wymeditor, listForTableInsertion, '#li_2', 'collapsed',
+                   1, 1, 'test_1');
+        wymEqual(wymeditor, expectedMiddleOutFull, {
+            assertionString: "Table insertion in the middle of a list with collapsed selection",
+            skipParser: true
+        });
+    });
 
-test("Table insertion at the end of a list with collapsed selection", function () {
-    expect(1);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    test("Table insertion at the end of a list with collapsed selection", function () {
+        expect(1);
+        var wymeditor = jQuery.wymeditors(0);
 
-    setupTable(wymeditor, listForTableInsertion, '#li_3', 'collapsed',
-               1, 1, 'test_1');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndOut,
-           "Table insertion at the end of a list with collapsed selection");
-});
+        setupTable(wymeditor, listForTableInsertion, '#li_3', 'collapsed',
+                   1, 1, 'test_1');
+        wymEqual(wymeditor, expectedEndOut, {
+            assertionString: "Table insertion at the end of a list with collapsed selection",
+            skipParser: true
+        });
+    });
 
-// This test mimics the behavior that caused issue #406 which would
-// unexpectedly nest an inserted table into another table within a list.
-test("Table insertion with selection inside another table in a list", function () {
-    expect(3);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    // This test mimics the behavior that caused issue #406 which would
+    // unexpectedly nest an inserted table into another table within a list.
+    test("Table insertion with selection inside another table in a list", function () {
+        expect(3);
+        var wymeditor = jQuery.wymeditors(0);
 
-    // Try insert in td element
-    setupTable(wymeditor, expectedListOneTable, '#t1_1_1', 'collapsed',
-               1, 1, 'test_2');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
-           "Table insertion with selection inside a td element in a list");
+        // Try insert in td element
+        setupTable(wymeditor, expectedListOneTable, '#t1_1_1', 'collapsed',
+                   1, 1, 'test_2');
+        wymEqual(wymeditor, expectedListTwoTables, {
+            assertionString: "Table insertion with selection inside a td element in a list",
+            skipParser: true
+        });
 
-    // Try insert in th element
-    setupTable(wymeditor, expectedListOneTable, '#t1_h_1', 'collapsed',
-               1, 1, 'test_2');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
-           "Table insertion with selection inside a th element in a list");
+        // Try insert in th element
+        setupTable(wymeditor, expectedListOneTable, '#t1_h_1', 'collapsed',
+                   1, 1, 'test_2');
+        wymEqual(wymeditor, expectedListTwoTables, {
+            assertionString: "Table insertion with selection inside a th element in a list",
+            skipParser: true
+        });
 
-    // Try insert in caption element
-    setupTable(wymeditor, expectedListOneTable, '#t1_cap', 'collapsed',
-               1, 1, 'test_2');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
-           "Table insertion with selection inside a caption element " +
-           "in a list");
-});
+        // Try insert in caption element
+        setupTable(wymeditor, expectedListOneTable, '#t1_cap', 'collapsed',
+                   1, 1, 'test_2');
+        wymEqual(wymeditor, expectedListTwoTables, {
+            assertionString: "Table insertion with selection inside a caption element " +
+               "in a list",
+            skipParser: true
+        });
+    });
 
-test("Table insertion with direct selection of list item node", function () {
-    expect(1);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    test("Table insertion with direct selection of list item node", function () {
+        expect(1);
+        var wymeditor = jQuery.wymeditors(0);
 
-    setupTable(wymeditor, expectedListOneTable, '#li_3', 'node',
-               1, 1, 'test_2');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedListTwoTables,
-           "Table insertion with direct selection of list item node");
-});
+        setupTable(wymeditor, expectedListOneTable, '#li_3', 'node',
+                   1, 1, 'test_2');
+        wymEqual(wymeditor, expectedListTwoTables, {
+            assertionString: "Table insertion with direct selection of list item node",
+            skipParser: true
+        });
+    });
+}
 
-module("table-insert_in_sublist", {setup: setupWym});
+// These test fail in IE7 & IE8:
+// https://github.com/wymeditor/wymeditor/issues/498
+if (!(// Browser is IE and
+      jQuery.browser.msie &&
+      // version 7.x until
+      parseInt(jQuery.browser.version, 10) >= 7 &&
+      // version 8.x
+      parseInt(jQuery.browser.version, 10) < 9
+     // or
+     ) ||
+    // we are executing known failing tests:
+    !SKIP_KNOWN_FAILING_TESTS) {
+    module("table-insert_in_sublist", {setup: setupWym});
 
-test("Single table insertion into a sublist", function () {
-    expect(1);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    test("Single table insertion into a sublist", function () {
+        expect(1);
+        var wymeditor = jQuery.wymeditors(0);
 
-    setupTable(wymeditor, sublistForTableInsertion, '#li_2', 'text',
-               1, 1, 'test_1');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedSublistOneTable,
-           "Single table insertion within a sublist");
-});
+        setupTable(wymeditor, sublistForTableInsertion, '#li_2', 'text',
+                   1, 1, 'test_1');
+        wymEqual(wymeditor, expectedSublistOneTable, {
+            assertionString: "Single table insertion within a sublist",
+            skipParser: true
+        });
+    });
 
-test("Double table insertion into a sublist", function () {
-    expect(1);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    test("Double table insertion into a sublist", function () {
+        expect(1);
+        var wymeditor = jQuery.wymeditors(0);
 
-    setupTable(wymeditor, expectedSublistOneTable, '#li_2', 'text',
-               2, 1, 'test_2');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedSublistTwoTables,
-           "Double table insertion within a sublist");
-});
+        setupTable(wymeditor, expectedSublistOneTable, '#li_2', 'text',
+                   2, 1, 'test_2');
+        wymEqual(wymeditor, expectedSublistTwoTables, {
+            assertionString: "Double table insertion within a sublist",
+            skipParser: true
+        });
+    });
 
-test("Triple table insertion into a sublist", function () {
-    expect(1);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    test("Triple table insertion into a sublist", function () {
+        expect(1);
+        var wymeditor = jQuery.wymeditors(0);
 
-    setupTable(wymeditor, expectedSublistTwoTables, '#li_2', 'text',
-               3, 1, 'test_3');
-    deepEqual(normalizeHtml($body.get(0).firstChild),
-           expectedSublistThreeTables,
-           "Triple table insertion within a sublist");
-});
+        setupTable(wymeditor, expectedSublistTwoTables, '#li_2', 'text',
+                   3, 1, 'test_3');
+        wymEqual(wymeditor, expectedSublistThreeTables, {
+            assertionString: "Triple table insertion within a sublist",
+            skipParser: true
+        });
+    });
+}
 
 module("table-parse_spacers_in_list", {setup: setupWym});
-// The tests in this module use the htmlEquals function from utils.js to parse
+// The tests in this module use the wymEqual function from utils.js to parse
 // the resulting html from tables being inserted into a list or sublist using
 // the parser to ensure that the line break spacers are properly removed.
 
@@ -1054,21 +1081,21 @@ test("Parse list with a table at the end", function () {
     var wymeditor = jQuery.wymeditors(0);
 
     wymeditor._html(expectedEndOut);
-    htmlEquals(wymeditor, startEndOutNoBR);
+    wymEqual(wymeditor, startEndOutNoBR);
 });
 
 test("Parse list with a table at the end in a sublist", function () {
     var wymeditor = jQuery.wymeditors(0);
 
     wymeditor._html(expectedEndIn);
-    htmlEquals(wymeditor, startEndInNoBR);
+    wymEqual(wymeditor, startEndInNoBR);
 });
 
 test("Parse list with multiple tables in a sublist", function () {
     var wymeditor = jQuery.wymeditors(0);
 
     wymeditor._html(expectedSublistThreeTables);
-    htmlEquals(wymeditor, sublistThreeTablesNoBR);
+    wymEqual(wymeditor, sublistThreeTablesNoBR);
 });
 
 module("table-td_th_switching", {setup: setupWym});
@@ -1115,7 +1142,7 @@ test("Colspan preserved when switching from td to th", function () {
 
     // Click "Table Header" option in the containers panel
     $thContainerLink.trigger('click');
-    htmlEquals(wymeditor, tableWithColspanTH);
+    wymEqual(wymeditor, tableWithColspanTH);
 });
 
 test("Colspan preserved when switching from th to td", function () {
@@ -1132,7 +1159,7 @@ test("Colspan preserved when switching from th to td", function () {
 
     // Click "Table Header" option in the containers panel
     $thContainerLink.trigger('click');
-    htmlEquals(wymeditor, tableWithColspanTD);
+    wymEqual(wymeditor, tableWithColspanTD);
 });
 
 module("preformatted-text", {setup: setupWym});
@@ -1169,7 +1196,7 @@ test("Double soft returns are allowed", function () {
     wymeditor.fixBodyHtml();
 
     expect(1);
-    htmlEquals(wymeditor, initHtml);
+    wymEqual(wymeditor, initHtml);
 });
 
 module("image-styling", {setup: setupWym});
@@ -1244,9 +1271,9 @@ if (!inPhantomjs || !SKIP_KNOWN_FAILING_TESTS) {
         $body.find(imageSelector).attr(WYMeditor.SRC, imageURL);
         if (jQuery.browser.msie) {
             // IE doesn't wrap the image in a paragraph
-            htmlEquals(wymeditor, expectedHtmlIE);
+            wymEqual(wymeditor, expectedHtmlIE);
         } else {
-            htmlEquals(wymeditor, expectedHtml);
+            wymEqual(wymeditor, expectedHtml);
         }
     });
 }
