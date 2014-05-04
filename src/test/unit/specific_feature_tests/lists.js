@@ -767,7 +767,7 @@ var li_1_2_outdentedTextContentAfterSublistHtml = String() +
                     '<li id="li_1_1">1_1</li>' +
                 '</ul>' +
             '</li>' +
-            '<li id="li_1_2">1_2<br />' +
+            '<li id="li_1_2">1_2<br/>' +
                 '1_3_content' +
             '</li>' +
             '<li id="li_2">2</li>' +
@@ -855,7 +855,7 @@ var spanInSublistHtml = String() +
                 '</ul>' +
                 'text_2 ' + // IE really likes this space
             '</li>' +
-            '<li id="li_3">3<br >' +
+            '<li id="li_3">3<br/>' +
                 'text_3_1<span id="span_3_2">3_2</span>text_3_3' +
             '</li>' +
         '</ol>';
@@ -873,7 +873,7 @@ var span_3_2_indentedSpanInSublistHtml = String() +
                 '</ul>' +
                 'text_2 ' +
                 '<ol>' +
-                    '<li id="li_3">3<br >' +
+                    '<li id="li_3">3<br/>' +
                         'text_3_1<span id="span_3_2">3_2</span>text_3_3' +
                     '</li>' +
                 '</ol>' +
@@ -1035,13 +1035,13 @@ var invalidNestingNoPreviousCorrectedHtml = String() +
                         '</ul>' +
                         'after2_1' +
                     '</li>' +
-                    '<li id="li_2_2">2_2<br />' +
+                    '<li id="li_2_2">2_2<br/>' +
                         'after2_2' +
                     '</li>' +
                 '</ul>' +
                 'text_3' +
             '</li>' +
-            '<li id="li_4">4<br />' +
+            '<li id="li_4">4<br/>' +
                 'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
             '</li>' +
             '<li id="li_6">6' +
@@ -1080,7 +1080,7 @@ var invalidNestingCorrectedHtml = String() +
                 '</ul>' +
                 'text_3 ' +
             '</li>' +
-            '<li id="li_4">4<br >' +
+            '<li id="li_4">4<br/>' +
                 'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
             '</li>' +
         '</ol>';
@@ -1095,10 +1095,10 @@ var li_2_2_outdentInvalidNestingHtml = String() +
                     '</li>' +
                 '</ul>' +
             '</li>' +
-            '<li id="li_2_2">2_2<br />' +
+            '<li id="li_2_2">2_2<br/>' +
                 'text_3 ' +
             '</li>' +
-            '<li id="li_4">4<br >' +
+            '<li id="li_4">4<br/>' +
                 'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
             '</li>' +
         '</ol>';
@@ -1116,7 +1116,7 @@ var span_5_2_indentedInvalidNestingHtml = String() +
                 '</ul>' +
                 'text_3 ' +
                 '<ol>' +
-                    '<li id="li_4">4<br >' +
+                    '<li id="li_4">4<br/>' +
                         'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
                     '</li>' +
                 '</ol>' +
@@ -1168,7 +1168,7 @@ test("Invalid nesting outdent", function () {
         false,
         false
     );
-    // Can't go the other way because of the <br /> business
+    // Can't go the other way because of the <br/> business
 
     // Via Text selection
     testList('li_2_2', 'outdent', invalidNestingHtml, invalidNestingCorrectedHtml, true);
@@ -2080,7 +2080,7 @@ test("Should correct invalid list nesting", function () {
     var wymeditor = jQuery.wymeditors(0),
         expected = "<ul><li>a<ul><li>a.1<\/li><\/ul><\/li><li>b<\/li><\/ul>",
     // FF
-        invalid_ff_html = "<ul><li>a<\/li><ul><li>a.1<\/li><\/ul><li>b<br><\/li><\/ul>",
+        invalid_ff_html = "<ul><li>a<\/li><ul><li>a.1<\/li><\/ul><li>b<br/><\/li><\/ul>",
         invalid_ie_html = "<UL>\r\n<LI>a<\/LI>\r\n<UL>\r\n<LI>a.1<\/LI><\/UL>\r\n<LI>b<\/LI><\/UL>";
     wymeditor._html(invalid_ff_html);
     wymEqual(wymeditor, expected);
@@ -2099,7 +2099,7 @@ var listWithOrphanedTextAfterLastLi = [""
     ].join(""),
     fixedListWithOrphanedTextAfterLastLi = [""
     , '<ul>'
-        , '<li>a<br />b</li>'
+        , '<li>a<br/>b</li>'
     , '</ul>'
     ].join("");
 

@@ -14,7 +14,7 @@ test, expect, deepEqual */
 // Should be able to add content before/after/between block elements
 module("Blocking Elements", {setup: setupWym});
 
-// Can't move the selection to a <br> element
+// Can't move the selection to a <br/> element
 var no_br_selection_browser = jQuery.browser.webkit || jQuery.browser.msie,
     // Can't move the selection to a <table> element
     no_table_selection_browser = jQuery.browser.webkit || jQuery.browser.msie,
@@ -395,7 +395,7 @@ test("h1 + blockquote + pre has br spacers via ._html()", function () {
 });
 
 test("br spacers aren't deleted when arrowing through them", function () {
-    // the spacer <br> shouldn't be turned in to a <p> when it gets cursor
+    // the spacer <br/> shouldn't be turned in to a <p> when it gets cursor
     // focus
     var wymeditor = jQuery.wymeditors(0),
         $body,
