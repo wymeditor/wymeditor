@@ -42,6 +42,8 @@ All of these changes are documented in detail in the
   editor if the list contained `p` or `div` elements, so unwrapping the content
   of those containers and preserving the content spacing with line breaks is a
   much more stable way to have editable content within lists.
+* We now include a translation file for traditional Chinese (`zh_tw`). Thanks
+  to Arthur CHAN for his first contribution.
 
 ### Bug Fixes
 

@@ -1,4 +1,4 @@
-/* exported isContentEditable, simulateKey, htmlEquals, normalizeHtml,
+/* exported isContentEditable, simulateKey, wymEqual, normalizeHtml,
  makeTextSelection, moveSelector */
 /* global rangy, deepEqual */
 "use strict";
@@ -161,30 +161,44 @@ function normalizeHtml(node) {
 }
 
 /**
-* Ensure the cleaned xhtml coming from a WYMeditor instance matches the
-* expected HTML, accounting for differing whitespace and attribute ordering.
+* Compares between the HTML in a WYMeditor instance and expected HTML.
 *
-* assertionString is the string message printed with the result of the
-* assertion checking this matching. This parameter is optional.
-*
-* fixListSpacing is a boolean that specifies if leading spaces before line
-* breaks and list type elements should be removed in older versions of Internet
-* Explorer (i.e. IE7-8). Defaults to false.
+* The HTML from the WYMeditor instance can be fetched either using the
+* normal method, `.xhtml`, or, it can be fetched directly from the DOM, which
+* bypasses the XHTML parser.
 */
-function htmlEquals(wymeditor, expected, assertionString, fixListSpacing) {
-    var actual,
+function wymEqual(wymeditor, expected, options) {
+    var defaults = {
+            // The message printed with the result of the assertion checking
+            // this matching.
+            assertionString: null,
+            // A boolean that specifies whether leading spaces before line
+            // breaks and list type elements should be removed in old versions
+            // of Internet Explorer (i.e. IE7,8).
+            fixListSpacing: false,
+            skipParser: false
+        },
+        actual = '',
         listTypeOptions;
 
-    actual = jQuery.trim(wymeditor.xhtml());
-    if (actual === '') {
-        // In jQuery 1.2.x, jQuery('') returns an empty list, so we can't call
-        // normalizeHTML. On 1.3.x or higher upgrade, we can remove this
-        // check for the empty string
-        deepEqual(actual, expected, assertionString);
-        return;
+    // Apply defaults.
+    options = jQuery.extend({}, defaults, options);
+
+    // If it is requested that the parser be skipped:
+    if (options.skipParser) {
+        // Extract the HTML from the DOM of the WYMeditor.
+        jQuery(wymeditor._doc).find('body.wym_iframe').contents().each(
+            function () {
+                actual += this.outerHTML;
+            }
+        );
+    // Otherwise:
+    } else {
+        // Get it through the API and trim it.
+        actual = jQuery.trim(wymeditor.xhtml());
     }
 
-    if (fixListSpacing && jQuery.browser.msie &&
+    if (options.fixListSpacing && jQuery.browser.msie &&
             parseInt(jQuery.browser.version, 10) < 9.0) {
         actual = actual.replace(/\s(<br.*?\/>)/g, '$1');
 
@@ -195,7 +209,7 @@ function htmlEquals(wymeditor, expected, assertionString, fixListSpacing) {
         );
     }
 
-    deepEqual(actual, expected, assertionString);
+    deepEqual(actual, expected, options.assertionString);
 }
 
 function makeSelection(

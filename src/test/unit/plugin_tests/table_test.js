@@ -1,7 +1,7 @@
 /* jshint maxlen: 90 */
 /* global rangy,
 setupWym, SKIP_KNOWN_FAILING_TESTS,
-htmlEquals, moveSelector, simulateKey, makeSelection, normalizeHtml,
+wymEqual, moveSelector, simulateKey, makeSelection, normalizeHtml,
 ok, test, expect, deepEqual */
 "use strict";
 
@@ -44,7 +44,7 @@ function testTable(
         }
     }
 
-    htmlEquals(wymeditor, expectedHtml);
+    wymEqual(wymeditor, expectedHtml);
 }
 
 function testTableTab(initialHtml, startSelector, endSelector) {
@@ -119,7 +119,7 @@ function testRowMerge(
     deepEqual(changesMade, true);
 
     // Verify that the resulting HTML matches the expected HTML
-    htmlEquals(wymeditor, expectedHtml);
+    wymEqual(wymeditor, expectedHtml);
 
     // Verify that our now-current selection matches the expected final
     // selection.
