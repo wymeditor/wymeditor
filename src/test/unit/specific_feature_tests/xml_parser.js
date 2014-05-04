@@ -884,6 +884,7 @@ var unwrapSingleInSublistHtml = String() +
                 '<li><{blockTag}>Test</{blockTag}></li>' +
                 '<li>Test</li>' +
             '</ul>' +
+        '</li>' +
         '<li><{blockTag}>Test</{blockTag}></li>' +
     '</ol>';
 
@@ -913,6 +914,7 @@ var unwrapSingleInNestedListHtml = String() +
                     '</ol>' +
                 '</li>' +
             '</ul>' +
+        '</li>' +
         '<li><{blockTag}>Test</{blockTag}></li>' +
     '</ol>';
 
@@ -1228,6 +1230,7 @@ var unwrapMultiInSublistHtml = String() +
                 '<li><{blockTag}>Test</{blockTag}></li>' +
                 '<li>Test</li>' +
             '</ul>' +
+        '</li>' +
         '<li><{blockTag}>Test</{blockTag}></li>' +
     '</ol>';
 
