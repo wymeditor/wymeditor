@@ -179,7 +179,7 @@ var fancyTableHtml = String() +
             '<tbody>' +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
-                    '<td id="td_1_2" colspan="2">1_2</td>' +
+                    '<td colspan="2" id="td_1_2">1_2</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
@@ -322,7 +322,7 @@ var addRowFancyTd12 = String() +
             '<tbody>' +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
-                    '<td id="td_1_2" colspan="2">1_2</td>' +
+                    '<td colspan="2" id="td_1_2">1_2</td>' +
                 '</tr>' +
                 '<tr>' +
                     '<td>&#160;</td>' +
@@ -346,7 +346,7 @@ var addRowFancyTd22 = String() +
             '<tbody>' +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
-                    '<td id="td_1_2" colspan="2">1_2</td>' +
+                    '<td colspan="2" id="td_1_2">1_2</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
@@ -369,7 +369,7 @@ var addRowFancyTd32 = String() +
             '<tbody>' +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
-                    '<td id="td_1_2" colspan="2">1_2</td>' +
+                    '<td colspan="2" id="td_1_2">1_2</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
@@ -393,7 +393,7 @@ var addColumnFancyTd12 = String() +
             '<tbody>' +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
-                    '<td id="td_1_2" colspan="2">1_2</td>' +
+                    '<td colspan="2" id="td_1_2">1_2</td>' +
                     '<td>&#160;</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
@@ -415,7 +415,7 @@ var addColumnFancyTd23 = String() +
             '<tbody>' +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
-                    '<td id="td_1_2" colspan="2">1_2</td>' +
+                    '<td colspan="2" id="td_1_2">1_2</td>' +
                     '<td>&#160;</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
@@ -437,7 +437,7 @@ var addColumnFancyTd32 = String() +
             '<tbody>' +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
-                    '<td id="td_1_2" colspan="2">1_2</td>' +
+                    '<td colspan="2" id="td_1_2">1_2</td>' +
                     '<td>&#160;</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
@@ -460,7 +460,7 @@ var addColumnFancyTd11 = String() +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
                     '<td>&#160;</td>' +
-                    '<td id="td_1_2" colspan="2">1_2</td>' +
+                    '<td colspan="2" id="td_1_2">1_2</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
@@ -482,7 +482,7 @@ var addColumnFancyTd21 = String() +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
                     '<td>&#160;</td>' +
-                    '<td id="td_1_2" colspan="2">1_2</td>' +
+                    '<td colspan="2" id="td_1_2">1_2</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
@@ -503,7 +503,7 @@ var addColumnFancyTd22 = String() +
             '<tbody>' +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
-                    '<td id="td_1_2" colspan="3">1_2</td>' +
+                    '<td colspan="3" id="td_1_2">1_2</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
@@ -1113,7 +1113,7 @@ var mergeTd23Html = String() +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
                     '<td id="td_2_2">2_2</td>' +
-                    '<td id="td_2_3" colspan="2">2_4</td>' +
+                    '<td colspan="2" id="td_2_3">2_4</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
                     '<td id="td_3_1">3_1</td>' +
@@ -1140,7 +1140,7 @@ var mergeTd22Html = String() +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
-                    '<td id="td_2_2" colspan="2">2_2</td>' +
+                    '<td colspan="2" id="td_2_2">2_2</td>' +
                     '<td id="td_2_4">2_4</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
@@ -1173,7 +1173,7 @@ var mergeTd31Html = String() +
                     '<td id="td_2_4">2_4</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
-                    '<td id="td_3_1" colspan="2">3_13_2</td>' +
+                    '<td colspan="2" id="td_3_1">3_13_2</td>' +
                     '<td id="td_3_4">3_4</td>' +
                 '</tr>' +
                 '<tr id="tr_4">' +
@@ -1200,7 +1200,7 @@ var mergeTd31Td23Html = String() +
                     '<td id="td_2_4">2_4</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
-                    '<td id="td_3_1" colspan="3">3_13_2</td>' +
+                    '<td colspan="3" id="td_3_1">3_13_2</td>' +
                     '<td id="td_3_4">3_4</td>' +
                 '</tr>' +
                 '<tr id="tr_4">' +
@@ -1261,7 +1261,7 @@ var mergeTd42Td23LongRowspanHtml = String() +
                 '</tr>' +
                 '<tr id="tr_4">' +
                     '<td id="td_4_1">4_1</td>' +
-                    '<td id="td_4_2" colspan="2">4_2</td>' +
+                    '<td colspan="2" id="td_4_2">4_2</td>' +
                     '<td id="td_4_4">4_4</td>' +
                 '</tr>' +
             '</tbody>' +

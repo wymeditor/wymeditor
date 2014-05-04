@@ -773,7 +773,7 @@ test("Remove 'apple-style-span' class", function () {
                 'Test' +
             '</span>',
         expectedHtmlMultiClass = String() +
-            '<span id="span_1" class="foo bar baz">' +
+            '<span class="foo bar baz" id="span_1">' +
                 'Test' +
             '</span>';
 
@@ -794,11 +794,11 @@ test("Class removal is case insensitive", function () {
         defaultClassesRemovedByParser = WYMeditor.CLASSES_REMOVED_BY_PARSER,
 
         startHtml = String() +
-            '<p id="p_1" class="FOO BaR baZ qUx">' +
+            '<p class="FOO BaR baZ qUx" id="p_1">' +
                 'Test' +
             '</p>',
         expectedHtml = String() +
-            '<p id="p_1" class="baZ">' +
+            '<p class="baZ" id="p_1">' +
                 'Test' +
             '</p>';
 
