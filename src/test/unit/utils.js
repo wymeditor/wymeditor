@@ -180,7 +180,6 @@ function wymEqual(wymeditor, expected, options) {
         },
         actual = '',
         normedActual = '',
-        normedExpected = '',
         listTypeOptions,
         tmpNodes,
         i;
@@ -218,12 +217,7 @@ function wymEqual(wymeditor, expected, options) {
         );
     }
 
-    tmpNodes = jQuery(expected);
-    for (i = 0; i < tmpNodes.length; i++) {
-        normedExpected += normalizeHtml(tmpNodes[i]);
-    }
-
-    deepEqual(normedActual, normedExpected, options.assertionString);
+    deepEqual(normedActual, expected, options.assertionString);
 }
 
 function makeSelection(
