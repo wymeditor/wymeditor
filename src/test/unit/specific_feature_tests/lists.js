@@ -799,7 +799,7 @@ var nodeContentAfterSublistHtml = String() +
                     '<li id="li_1_1">1_1</li>' +
                     '<li id="li_1_2">1_2</li>' +
                 '</ul>' +
-                '<table><tr><td>td_1_3</td></tr></table>' +
+                '<table><tbody><tr><td>td_1_3</td></tr></tbody></table>' +
             '</li>' +
             '<li id="li_2">2</li>' +
         '</ol>';
@@ -1004,7 +1004,7 @@ module("list-invalid_nesting", {setup: setupWym});
 
 var invalidNestingNoPreviousHtml = String() +
         '<ol>' +
-            '<table id="table_1"><tr><td>td_1_1</td></tr></table>' +
+            '<table id="table_1"><tbody><tr><td>td_1_1</td></tr></tbody></table>' +
             '<ul>' +
                 '<li id="li_2_1">2_1' +
                     '<ul>' +
@@ -1019,7 +1019,7 @@ var invalidNestingNoPreviousHtml = String() +
             '<li id="li_4">4</li>' +
             'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
             '<li id="li_6">6</li>' +
-            '<table id="table_7"><tr><td>td_7_1</td></tr></table>' +
+            '<table id="table_7"><tbody><tr><td>td_7_1</td></tr></tbody></table>' +
             '<ol>' +
                 '<li id="li_8">8</li>' +
             '</ol>' +
