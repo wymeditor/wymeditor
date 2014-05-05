@@ -811,7 +811,7 @@ var li_1_2_outdentedNodeContentAfterSublistHtml = String() +
                 '</ul>' +
             '</li>' +
             '<li id="li_1_2">1_2' +
-                '<table><tr><td>td_1_3</td></tr></table>' +
+                '<table><tbody><tr><td>td_1_3</td></tr></tbody></table>' +
             '</li>' +
             '<li id="li_2">2</li>' +
         '</ol>';
@@ -855,7 +855,7 @@ var spanInSublistHtml = String() +
                 '</ul>' +
                 'text_2 ' + // IE really likes this space
             '</li>' +
-            '<li id="li_3">3<br >' +
+            '<li id="li_3">3<br />' +
                 'text_3_1<span id="span_3_2">3_2</span>text_3_3' +
             '</li>' +
         '</ol>';
@@ -873,7 +873,7 @@ var span_3_2_indentedSpanInSublistHtml = String() +
                 '</ul>' +
                 'text_2 ' +
                 '<ol>' +
-                    '<li id="li_3">3<br >' +
+                    '<li id="li_3">3<br />' +
                         'text_3_1<span id="span_3_2">3_2</span>text_3_3' +
                     '</li>' +
                 '</ol>' +
@@ -1027,7 +1027,7 @@ var invalidNestingNoPreviousHtml = String() +
 var invalidNestingNoPreviousCorrectedHtml = String() +
         '<ol>' +
             '<li class="spacer_li">' +
-                '<table id="table_1"><tr><td>td_1_1</td></tr></table>' +
+                '<table id="table_1"><tbody><tr><td>td_1_1</td></tr></tbody></table>' +
                 '<ul>' +
                     '<li id="li_2_1">2_1' +
                         '<ul>' +
@@ -1045,7 +1045,7 @@ var invalidNestingNoPreviousCorrectedHtml = String() +
                 'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
             '</li>' +
             '<li id="li_6">6' +
-                '<table id="table_7"><tr><td>td_7_1</td></tr></table>' +
+                '<table id="table_7"><tbody><tr><td>td_7_1</td></tr></tbody></table>' +
                 '<ol>' +
                     '<li id="li_8">8</li>' +
                 '</ol>' +
@@ -1080,7 +1080,7 @@ var invalidNestingCorrectedHtml = String() +
                 '</ul>' +
                 'text_3 ' +
             '</li>' +
-            '<li id="li_4">4<br >' +
+            '<li id="li_4">4<br />' +
                 'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
             '</li>' +
         '</ol>';
@@ -1098,7 +1098,7 @@ var li_2_2_outdentInvalidNestingHtml = String() +
             '<li id="li_2_2">2_2<br />' +
                 'text_3 ' +
             '</li>' +
-            '<li id="li_4">4<br >' +
+            '<li id="li_4">4<br />' +
                 'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
             '</li>' +
         '</ol>';
@@ -1116,7 +1116,7 @@ var span_5_2_indentedInvalidNestingHtml = String() +
                 '</ul>' +
                 'text_3 ' +
                 '<ol>' +
-                    '<li id="li_4">4<br >' +
+                    '<li id="li_4">4<br />' +
                         'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
                     '</li>' +
                 '</ol>' +
@@ -1668,7 +1668,7 @@ var listsWithContentBetweenHtml = String() +
         '<li id="li_4">4</li>' +
         '<li id="li_5">5</li>' +
         '<li id="li_6">6</li>' +
-    '</ul>' +
+    '</ul>';
 
 test("Second-level with sub-node", function () {
     expect(4);
@@ -2080,13 +2080,13 @@ test("Should correct invalid list nesting", function () {
     var wymeditor = jQuery.wymeditors(0),
         expected = "<ul><li>a<ul><li>a.1<\/li><\/ul><\/li><li>b<\/li><\/ul>",
     // FF
-        invalid_ff_html = "<ul><li>a<\/li><ul><li>a.1<\/li><\/ul><li>b<br><\/li><\/ul>",
-        invalid_ie_html = "<UL>\r\n<LI>a<\/LI>\r\n<UL>\r\n<LI>a.1<\/LI><\/UL>\r\n<LI>b<\/LI><\/UL>";
+        invalid_ff_html = "<ul><li>a<\/li><ul><li>a.1<\/li><\/ul><li>b<br /><\/li><\/ul>",
+        invalid_ie_html = "<UL><LI>a<\/LI><UL><LI>a.1<\/LI><\/UL><LI>b<\/LI><\/UL>";
     wymeditor._html(invalid_ff_html);
     wymEqual(wymeditor, expected);
     // IE
     // IE has invalid sublist nesting
-    expected = "<ul>\r\n<li>a<ul>\r\n<li>a.1<\/li><\/ul><\/li>\r\n<li>b<\/li><\/ul>";
+    expected = "<ul><li>a<ul><li>a.1<\/li><\/ul><\/li><li>b<\/li><\/ul>";
     wymeditor._html(invalid_ie_html);
     wymEqual(wymeditor, expected);
 });
@@ -2802,7 +2802,7 @@ if (!(// Browser is IE and
 
     var TEST_LINEBREAK_SPACER = '<br class="' +
                                     WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS + ' ' +
-                                    WYMeditor.EDITOR_ONLY_CLASS + '"/>';
+                                    WYMeditor.EDITOR_ONLY_CLASS + '" />';
 
     var expectedMiddleIn = String() +
         '<ol>' +
