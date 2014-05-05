@@ -1668,7 +1668,7 @@ var listsWithContentBetweenHtml = String() +
         '<li id="li_4">4</li>' +
         '<li id="li_5">5</li>' +
         '<li id="li_6">6</li>' +
-    '</ul>' +
+    '</ul>';
 
 test("Second-level with sub-node", function () {
     expect(4);
