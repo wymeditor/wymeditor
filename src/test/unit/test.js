@@ -663,7 +663,7 @@ function setupTable(wymeditor, html, selection, selectionType,
 
 var TEST_LINEBREAK_SPACER = '<br class="' +
                                 WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS + ' ' +
-                                WYMeditor.EDITOR_ONLY_CLASS + '"/>';
+                                WYMeditor.EDITOR_ONLY_CLASS + '" />';
 
 var listForTableInsertion = String() +
     '<ol>' +
@@ -1253,7 +1253,7 @@ if (!inPhantomjs || !SKIP_KNOWN_FAILING_TESTS) {
 
             expectedHtml = String() +
                 '<p>' +
-                    '<img src="' + imageURL + '"/>' +
+                    '<img src="' + imageURL + '" />' +
                 '</p>',
             expectedHtmlIE = expectedHtml.replace(/<\/?p>/g, '');
 
