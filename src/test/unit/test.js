@@ -190,11 +190,11 @@ if (jQuery.browser !== 'msie') {
 
 var body_complexInsertionHtml = String() +
         '<p>' +
-            'sentence<br/>' +
-            'sentence2<br/>' +
-            '1.list1<br/>' +
-            '2.list2<br/>' +
-            '3.list3<br/>' +
+            'sentence<br />' +
+            'sentence2<br />' +
+            '1.list1<br />' +
+            '2.list2<br />' +
+            '3.list3<br />' +
             'sentence3' +
         '</p>' +
         '<p>' +
@@ -206,11 +206,11 @@ var body_complexInsertionHtml = String() +
 
 var h2_1_complexInsertionHtml = String() +
         '<h2 id="h2_1">' +
-            'sentence<br/>' +
-            'sentence2<br/>' +
-            '1.list1<br/>' +
-            '2.list2<br/>' +
-            '3.list3<br/>' +
+            'sentence<br />' +
+            'sentence2<br />' +
+            '1.list1<br />' +
+            '2.list2<br />' +
+            '3.list3<br />' +
             'sentence3' +
         '</h2>' +
         '<p>' +
@@ -223,11 +223,11 @@ var h2_1_complexInsertionHtml = String() +
 
 var h2_1_middle_complexInsertionHtml = String() +
         '<h2 id="h2_1">' +
-            'h2sentence<br/>' +
-            'sentence2<br/>' +
-            '1.list1<br/>' +
-            '2.list2<br/>' +
-            '3.list3<br/>' +
+            'h2sentence<br />' +
+            'sentence2<br />' +
+            '1.list1<br />' +
+            '2.list2<br />' +
+            '3.list3<br />' +
             'sentence3' +
         '</h2>' +
         '<p>' +
@@ -240,11 +240,11 @@ var h2_1_middle_complexInsertionHtml = String() +
 
 var h2_1_end_complexInsertionHtml = String() +
         '<h2 id="h2_1">' +
-            'h2_1sentence<br/>' +
-            'sentence2<br/>' +
-            '1.list1<br/>' +
-            '2.list2<br/>' +
-            '3.list3<br/>' +
+            'h2_1sentence<br />' +
+            'sentence2<br />' +
+            '1.list1<br />' +
+            '2.list2<br />' +
+            '3.list3<br />' +
             'sentence3' +
         '</h2>' +
         '<p>' +
@@ -256,11 +256,11 @@ var h2_1_end_complexInsertionHtml = String() +
 
 var p_2_complexInsertionHtml = String() +
         '<p id="p_2">' +
-            'sentence<br/>' +
-            'sentence2<br/>' +
-            '1.list1<br/>' +
-            '2.list2<br/>' +
-            '3.list3<br/>' +
+            'sentence<br />' +
+            'sentence2<br />' +
+            '1.list1<br />' +
+            '2.list2<br />' +
+            '3.list3<br />' +
             'sentence3' +
         '</p>' +
         '<p>' +
@@ -272,37 +272,37 @@ var p_2_complexInsertionHtml = String() +
 
 var td_1_1_complexInsertionHtml = String() +
         '<td id="td_1_1">' +
-            'sentence<br/>' +
-            'sentence2<br/>' +
-            '1.list1<br/>' +
-            '2.list2<br/>' +
-            '3.list3<br/>' +
-            'sentence3<br/><br/>' +
-            'gap<br/><br/>' +
+            'sentence<br />' +
+            'sentence2<br />' +
+            '1.list1<br />' +
+            '2.list2<br />' +
+            '3.list3<br />' +
+            'sentence3<br /><br />' +
+            'gap<br /><br />' +
             'gap21_1' +
         '</td>';
 
 var span_2_1_complexInsertionHtml = String() +
         '<td id="td_2_1">' +
             '<span id="span_2_1">' +
-                'sentence<br/>' +
-                'sentence2<br/>' +
-                '1.list1<br/>' +
-                '2.list2<br/>' +
-                '3.list3<br/>' +
-                'sentence3<br/><br/>' +
-                'gap<br/><br/>' +
+                'sentence<br />' +
+                'sentence2<br />' +
+                '1.list1<br />' +
+                '2.list2<br />' +
+                '3.list3<br />' +
+                'sentence3<br /><br />' +
+                'gap<br /><br />' +
                 'gap22_1' +
             '</span>' +
         '</td>';
 
 var li_1_complexInsertionHtml = String() +
         '<li id="li_1">' +
-            'sentence<br/>' +
-            'sentence2<br/>' +
-            '1.list1<br/>' +
-            '2.list2<br/>' +
-            '3.list3<br/>' +
+            'sentence<br />' +
+            'sentence2<br />' +
+            '1.list1<br />' +
+            '2.list2<br />' +
+            '3.list3<br />' +
             'sentence3' +
         '</li>' +
         '<li>' +
@@ -317,11 +317,11 @@ var li_1_complexInsertionHtml = String() +
 
 var li_2_2_complexInsertionHtml = String() +
         '<li id="li_2_2">' +
-            'sentence<br/>' +
-            'sentence2<br/>' +
-            '1.list1<br/>' +
-            '2.list2<br/>' +
-            '3.list3<br/>' +
+            'sentence<br />' +
+            'sentence2<br />' +
+            '1.list1<br />' +
+            '2.list2<br />' +
+            '3.list3<br />' +
             'sentence3' +
         '</li>' +
         '<li>' +
@@ -663,7 +663,7 @@ function setupTable(wymeditor, html, selection, selectionType,
 
 var TEST_LINEBREAK_SPACER = '<br class="' +
                                 WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS + ' ' +
-                                WYMeditor.EDITOR_ONLY_CLASS + '"/>';
+                                WYMeditor.EDITOR_ONLY_CLASS + '" />';
 
 var listForTableInsertion = String() +
     '<ol>' +
@@ -1188,7 +1188,7 @@ module("soft-return", {setup: setupWym});
 test("Double soft returns are allowed", function () {
     var initHtml = String() +
             '<ul>' +
-                '<li>li_1<br/><br/>stuff</li>' +
+                '<li>li_1<br /><br />stuff</li>' +
             '</ul>',
         wymeditor = jQuery.wymeditors(0);
     wymeditor._html(initHtml);
@@ -1253,7 +1253,7 @@ if (!inPhantomjs || !SKIP_KNOWN_FAILING_TESTS) {
 
             expectedHtml = String() +
                 '<p>' +
-                    '<img src="' + imageURL + '"/>' +
+                    '<img src="' + imageURL + '" />' +
                 '</p>',
             expectedHtmlIE = expectedHtml.replace(/<\/?p>/g, '');
 

@@ -24,7 +24,7 @@ test("Should correct orphaned sublists", function () {
                 '<ul>' +
                     '<li>a.1<\/li>' +
                 '<\/ul>' +
-                '<li>b<br/><\/li>' +
+                '<li>b<br /><\/li>' +
             '<\/ul>',
         wymeditor = jQuery.wymeditors(0);
     deepEqual(wymeditor.parser.parse(design_mode_pseudo_html), expected,
@@ -229,9 +229,9 @@ test("Shouldn't remove empty td elements", function () {
 test("Should remove PRE line breaks (BR)", function () {
     expect(1);
     var original = String() +
-            '<pre>One<br/>Two<br/>Three</pre>' +
+            '<pre>One<br />Two<br />Three</pre>' +
             '<p>Test</p>' +
-            '<pre>Three<br/>Four<br/>Five</pre>',
+            '<pre>Three<br />Four<br />Five</pre>',
         expected = String() +
             '<pre>One\r\nTwo\r\nThree</pre>' +
             '<p>Test</p>' +
@@ -315,7 +315,7 @@ test("Allow HR inside strong tags", function () {
 });
 
 test("Allow line breaks inside em tags", function () {
-    var html = '<em>hello<br/>world</em>',
+    var html = '<em>hello<br />world</em>',
         wymeditor = jQuery.wymeditors(0);
     deepEqual(wymeditor.parser.parse(html), html);
 });
@@ -326,7 +326,7 @@ test("Allow line breaks after strong in lists", function () {
         '<ol id="ol_1">' +
             '<li id="li_1">li_1' +
                 '<ol>' +
-                    '<li id="li_1_1"><strong>li_1_1</strong><br/>more text</li>' +
+                    '<li id="li_1_1"><strong>li_1_1</strong><br />more text</li>' +
                 '</ol>' +
             '</li>' +
         '</ol>',
@@ -334,7 +334,7 @@ test("Allow line breaks after strong in lists", function () {
         '<ol id="ol_1">' +
             '<li id="li_1">li_1' +
                 '<ol>' +
-                    '<li id="li_1_1"><strong>li_1_1</strong><br/>more text</li>' +
+                    '<li id="li_1_1"><strong>li_1_1</strong><br />more text</li>' +
                 '</ol>' +
             '</li>' +
         '</ol>',
@@ -994,8 +994,8 @@ function testUnwrapMultiContentInLI(
 
     // Insert line breaks in the correctHtml where needed
     correctHtml =
-        startHtml.replace(/(\{blockTag\}>)(\{otherContent\})/g, '$1<br/>$2')
-                 .replace(/(\{otherContent\})(<\{blockTag\})/g, '$1<br/>$2');
+        startHtml.replace(/(\{blockTag\}>)(\{otherContent\})/g, '$1<br />$2')
+                 .replace(/(\{otherContent\})(<\{blockTag\})/g, '$1<br />$2');
 
     // Strip the block tags from the correctHtml
     correctHtml = correctHtml.replace(/<\/?\{blockTag\}>/g, '');
@@ -1623,21 +1623,21 @@ var unwrapNestedDivCorrectHtml = String() +
         '<li>Before</li>' +
         '<li>' +
             'Plain text top' +
-            '<br/>' +
+            '<br />' +
             'Paragraph top' +
-            '<br/>' +
+            '<br />' +
             '<strong>Strong top</strong>' +
-            '<br/>' +
+            '<br />' +
             '<em>Emphasis top</em>' +
-            '<br/>' +
+            '<br />' +
             'Middle text' +
-            '<br/>' +
+            '<br />' +
             '<em>Emphasis bottom</em>' +
-            '<br/>' +
+            '<br />' +
             '<strong>Strong bottom</strong>' +
-            '<br/>' +
+            '<br />' +
             'Paragraph bottom' +
-            '<br/>' +
+            '<br />' +
             'Plain text bottom' +
         '</li>' +
         '<li>After</li>' +
@@ -1663,11 +1663,11 @@ blockElementsHtml.expected = [""
     , '<p>p2</p>'
 ].join('');
 blockElementsHtml.brInRoot = [""
-    , '<br/>'
+    , '<br />'
     , '<p>p1</p>'
-    , '<br/>'
+    , '<br />'
     , '<p>p2</p>'
-    , '<br/>'
+    , '<br />'
 ].join('');
 
 test("BR isn't allowed at the root", function () {
