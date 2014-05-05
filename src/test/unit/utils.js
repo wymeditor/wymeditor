@@ -138,7 +138,7 @@ function normalizeHtml(node) {
         }
         if (name === "br" || name === "img" || name === "link") {
             // close self-closing element
-            html += '/>';
+            html += ' />';
         } else {
             html += '>';
         }
