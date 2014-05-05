@@ -1420,6 +1420,7 @@ var unwrapMultiInNestedListHtml = String() +
                     '</ol>' +
                 '</li>' +
             '</ul>' +
+        '</li>' +
         '<li><{blockTag}>Test</{blockTag}></li>' +
     '</ol>';
 
