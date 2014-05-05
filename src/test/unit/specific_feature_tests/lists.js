@@ -811,7 +811,7 @@ var li_1_2_outdentedNodeContentAfterSublistHtml = String() +
                 '</ul>' +
             '</li>' +
             '<li id="li_1_2">1_2' +
-                '<table><tr><td>td_1_3</td></tr></table>' +
+                '<table><tbody><tr><td>td_1_3</td></tr></tbody></table>' +
             '</li>' +
             '<li id="li_2">2</li>' +
         '</ol>';
@@ -1027,7 +1027,7 @@ var invalidNestingNoPreviousHtml = String() +
 var invalidNestingNoPreviousCorrectedHtml = String() +
         '<ol>' +
             '<li class="spacer_li">' +
-                '<table id="table_1"><tr><td>td_1_1</td></tr></table>' +
+                '<table id="table_1"><tbody><tr><td>td_1_1</td></tr></tbody></table>' +
                 '<ul>' +
                     '<li id="li_2_1">2_1' +
                         '<ul>' +
@@ -1045,7 +1045,7 @@ var invalidNestingNoPreviousCorrectedHtml = String() +
                 'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
             '</li>' +
             '<li id="li_6">6' +
-                '<table id="table_7"><tr><td>td_7_1</td></tr></table>' +
+                '<table id="table_7"><tbody><tr><td>td_7_1</td></tr></tbody></table>' +
                 '<ol>' +
                     '<li id="li_8">8</li>' +
                 '</ol>' +
