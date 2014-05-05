@@ -109,8 +109,8 @@ var no_br_selection_browser = jQuery.browser.webkit || jQuery.browser.msie,
     h1BlockquotePreHtml = String() +
         '<h1>h1</h1>' +
         '<blockquote>bq1</blockquote>' +
-        '<pre>pre1\r\n' +
-        'spaced\r\n\r\n' +
+        '<pre>pre1\n' +
+        'spaced\n\n' +
         'double  spaced' +
         '</pre>';
 
