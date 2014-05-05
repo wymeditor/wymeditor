@@ -31,7 +31,10 @@ var ignoreAttributes = [
 function textToHtml(str) {
     return str.replace(preAmp, '&amp;')
         .replace(preLt, '&lt;')
-        .replace(preGt, '&gt;');
+        .replace(preGt, '&gt;')
+        // IE7 and IE8 produce carriage returns instead of newlines. Replace
+        // them with newlines.
+        .replace(/\r/g, '\n');
 }
 
 function attribToHtml(str) {
@@ -138,7 +141,7 @@ function normalizeHtml(node) {
         }
         if (name === "br" || name === "img" || name === "link") {
             // close self-closing element
-            html += '/>';
+            html += ' />';
         } else {
             html += '>';
         }
@@ -196,7 +199,6 @@ function wymEqual(wymeditor, expected, options) {
         },
         actual = '',
         normedActual = '',
-        normedExpected = '',
         listTypeOptions,
         tmpNodes,
         i;
@@ -234,13 +236,8 @@ function wymEqual(wymeditor, expected, options) {
         );
     }
 
-    tmpNodes = jQuery(expected);
-    for (i = 0; i < tmpNodes.length; i++) {
-        normedExpected += normalizeHtml(tmpNodes[i]);
-    }
-
     // This is the QUnit assertion.
-    deepEqual(normedActual, normedExpected, options.assertionString);
+    deepEqual(normedActual, expected, options.assertionString);
     // If assertions are expected:
     if (expect()) {
         // Increment the number of expected assertions by one. This allows
@@ -251,7 +248,7 @@ function wymEqual(wymeditor, expected, options) {
     deepEqual(
         /* jshint camelcase: false */
         html_beautify(normedActual, htmlBeautifyOptions),
-        html_beautify(normedExpected, htmlBeautifyOptions),
+        html_beautify(expected, htmlBeautifyOptions),
         options.assertionString + ' (beautified)'
     );
 }

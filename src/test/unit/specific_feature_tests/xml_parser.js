@@ -24,7 +24,7 @@ test("Should correct orphaned sublists", function () {
                 '<ul>' +
                     '<li>a.1<\/li>' +
                 '<\/ul>' +
-                '<li>b<br><\/li>' +
+                '<li>b<br /><\/li>' +
             '<\/ul>',
         wymeditor = jQuery.wymeditors(0);
     deepEqual(wymeditor.parser.parse(design_mode_pseudo_html), expected,
@@ -229,9 +229,9 @@ test("Shouldn't remove empty td elements", function () {
 test("Should remove PRE line breaks (BR)", function () {
     expect(1);
     var original = String() +
-            '<pre>One<br>Two<br>Three</pre>' +
+            '<pre>One<br />Two<br />Three</pre>' +
             '<p>Test</p>' +
-            '<pre>Three<br>Four<br>Five</pre>',
+            '<pre>Three<br />Four<br />Five</pre>',
         expected = String() +
             '<pre>One\r\nTwo\r\nThree</pre>' +
             '<p>Test</p>' +
@@ -334,7 +334,7 @@ test("Allow line breaks after strong in lists", function () {
         '<ol id="ol_1">' +
             '<li id="li_1">li_1' +
                 '<ol>' +
-                    '<li id="li_1_1"><strong>li_1_1</strong><br>more text</li>' +
+                    '<li id="li_1_1"><strong>li_1_1</strong><br />more text</li>' +
                 '</ol>' +
             '</li>' +
         '</ol>',
@@ -773,7 +773,7 @@ test("Remove 'apple-style-span' class", function () {
                 'Test' +
             '</span>',
         expectedHtmlMultiClass = String() +
-            '<span id="span_1" class="foo bar baz">' +
+            '<span class="foo bar baz" id="span_1">' +
                 'Test' +
             '</span>';
 
@@ -794,11 +794,11 @@ test("Class removal is case insensitive", function () {
         defaultClassesRemovedByParser = WYMeditor.CLASSES_REMOVED_BY_PARSER,
 
         startHtml = String() +
-            '<p id="p_1" class="FOO BaR baZ qUx">' +
+            '<p class="FOO BaR baZ qUx" id="p_1">' +
                 'Test' +
             '</p>',
         expectedHtml = String() +
-            '<p id="p_1" class="baZ">' +
+            '<p class="baZ" id="p_1">' +
                 'Test' +
             '</p>';
 
@@ -884,6 +884,7 @@ var unwrapSingleInSublistHtml = String() +
                 '<li><{blockTag}>Test</{blockTag}></li>' +
                 '<li>Test</li>' +
             '</ul>' +
+        '</li>' +
         '<li><{blockTag}>Test</{blockTag}></li>' +
     '</ol>';
 
@@ -913,6 +914,7 @@ var unwrapSingleInNestedListHtml = String() +
                     '</ol>' +
                 '</li>' +
             '</ul>' +
+        '</li>' +
         '<li><{blockTag}>Test</{blockTag}></li>' +
     '</ol>';
 
@@ -1228,6 +1230,7 @@ var unwrapMultiInSublistHtml = String() +
                 '<li><{blockTag}>Test</{blockTag}></li>' +
                 '<li>Test</li>' +
             '</ul>' +
+        '</li>' +
         '<li><{blockTag}>Test</{blockTag}></li>' +
     '</ol>';
 
@@ -1417,6 +1420,7 @@ var unwrapMultiInNestedListHtml = String() +
                     '</ol>' +
                 '</li>' +
             '</ul>' +
+        '</li>' +
         '<li><{blockTag}>Test</{blockTag}></li>' +
     '</ol>';
 
@@ -1660,7 +1664,7 @@ blockElementsHtml.expected = [""
     , '<p>p2</p>'
 ].join('');
 blockElementsHtml.brInRoot = [""
-    , '<br>'
+    , '<br />'
     , '<p>p1</p>'
     , '<br />'
     , '<p>p2</p>'
