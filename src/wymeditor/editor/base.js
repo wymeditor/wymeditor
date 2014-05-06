@@ -1835,6 +1835,13 @@ WYMeditor.editor.prototype._correctBlockInList = function (pToRemove) {
         $newLi.append(jQuery(pToRemove).contents());
         // Clean up the caret position marker
         $newLi[0].removeAttribute('data-wym-caret');
+        // If there are nodes after the `p`:
+        if ($pToRemove.nextAllContents().length > 0) {
+            // Add an empty `li` after the new li.
+            $newLi.after('<li></li>');
+            // Move those nodes there.
+            $newLi.next().append($pToRemove.nextAllContents());
+        }
         // And remove the `p`.
         $pToRemove.remove();
     } else if (
