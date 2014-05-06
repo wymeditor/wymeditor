@@ -1,6 +1,6 @@
 /* exported isContentEditable, simulateKey, wymEqual,
  makeTextSelection, moveSelector */
-/* global rangy, deepEqual */
+/* global rangy, deepEqual, html_beautify, expect, QUnit, strictEqual */
 "use strict";
 
 // Regex expression shortcuts
@@ -163,12 +163,28 @@ function normalizeHtml(node) {
     return html;
 }
 
+// Options for the HTML beautifier.
+var htmlBeautifyOptions = {
+    'indent_inner_html': false,
+    'indent_size': 4,
+    'indent_car': ' ',
+    'wrap_line_length': 300,
+    'brace_style': 'collapse',
+    'unformatted': 'normal',
+    'preserve_newlines': true,
+    'max_preserve_newlines': 'unlimited',
+    'indent_handlebars': false
+};
+
 /**
 * Compares between the HTML in a WYMeditor instance and expected HTML.
 *
 * The HTML from the WYMeditor instance can be fetched either using the
 * normal method, `.xhtml`, or, it can be fetched directly from the DOM, which
 * bypasses the XHTML parser.
+*
+* If the compared HTML strings are found to be different, a comparison is made
+* also between beautified versions of them.
 */
 function wymEqual(wymeditor, expected, options) {
     var defaults = {
@@ -220,7 +236,26 @@ function wymEqual(wymeditor, expected, options) {
         );
     }
 
-    deepEqual(normedActual, expected, options.assertionString);
+    // Assert: compare between normalized actual HTML and expected HTML.
+    strictEqual(normedActual, expected, options.assertionString);
+    // If the last assertion failed:
+    if (QUnit.config.current
+        .assertions[QUnit.config.current.assertions.length - 1]
+        .result === false) {
+        // If assertions are expected:
+        if (expect()) {
+            // Increment the number of expected assertions by one. This allows
+            // tests to treat this wymEqual helper as if it was one assertion.
+            expect(expect() + 1);
+        }
+        // Assert also on beautified HTML.
+        strictEqual(
+            /* jshint camelcase: false */
+            html_beautify(normedActual, htmlBeautifyOptions),
+            html_beautify(expected, htmlBeautifyOptions),
+            options.assertionString + ' (beautified)'
+        );
+    }
 }
 
 function makeSelection(
