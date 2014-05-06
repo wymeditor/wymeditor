@@ -2206,7 +2206,7 @@ test("Paragraph is at end of list; repairing function directly called",
                         , '</li>'
                     , '</ol>'
                 , '</li>'
-                , '<li>'
+                , '<li><br />'
                 , '</li>'
             , '</ol>'
         ].join("");
@@ -2254,7 +2254,7 @@ test("Paragraph is at end of list.", function () {
                         , '</li>'
                     , '</ol>'
                 , '</li>'
-                , '<li>'
+                , '<li><br />'
                 , '</li>'
             , '</ol>'
         ].join("");
@@ -2305,7 +2305,7 @@ test("Paragraph is at end of list; text in `p`.", function () {
                     , '</ol>'
                 , '</li>'
                 , '<li>'
-                    , 'Teleport me!<br />'
+                    , '<br />Teleport me!<br />'
                 , '</li>'
             , '</ol>'
         ].join("");
@@ -2354,8 +2354,8 @@ test("Paragraph is at end of list; text after `p`.", function () {
                         , '</li>'
                     , '</ol>'
                 , '</li>'
-                , '<li></li>'
-                , "I'm here!"
+                , '<li><br /></li>'
+                , "<li>I'm here!</li>"
             , '</ol>'
         ].join("");
 
@@ -2406,9 +2406,9 @@ test("Paragraph is at end of list; text after `p`; text in `p`.", function () {
                     , '</ol>'
                 , '</li>'
                 , '<li>'
-                    , 'Teleport me!<br />'
+                    , '<br />Teleport me!<br />'
                 , '</li>'
-                , "I'm here!"
+                , "<li>I'm here!</li>"
             , '</ol>'
         ].join("");
 
@@ -2478,7 +2478,7 @@ test("Paragraph is not at end of list; parent is first `li`",
                         , '</li>'
                     , '</ol>'
                 , '</li>'
-                , '<li>'
+                , '<li><br />'
                 , '</li>'
                 , '<li>'
                     , '<ol>'
@@ -2570,7 +2570,7 @@ test("Paragraph is not at end of list; parent is first `li`; text in `p`",
                     , '</ol>'
                 , '</li>'
                 , '<li>'
-                    , 'It has been brought to my attention...<br />'
+                    , '<br />It has been brought to my attention...<br />'
                 , '</li>'
                 , '<li>'
                     , '<ol>'
@@ -2665,7 +2665,7 @@ test("Paragraph is not at end of list; parent is second `li`",
                         , '</li>'
                     , '</ol>'
                 , '</li>'
-                , '<li>'
+                , '<li><br />'
                 , '</li>'
                 , '<li>'
                     , '<ol>'
@@ -2745,7 +2745,7 @@ test("Paragraph is not at end of list; parent is second `li`; variation",
                         , '</li>'
                     , '</ol>'
                 , '</li>'
-                , '<li>'
+                , '<li><br />'
                 , '</li>'
                 , '<li>'
                     , '<ol>'

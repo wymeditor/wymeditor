@@ -1816,7 +1816,7 @@ WYMeditor.editor.prototype._correctBlockInList = function (pToRemove) {
         $liContentAfterP,
         $parentList,
         parentLiIndex,
-        threeLis = '<li></li><li data-wym-caret=""></li><li></li>',
+        threeLis = '<li></li><li data-wym-caret=""><br /></li><li></li>',
         $newLi;
     // Cache a jQuery object of the `p` that will be removed.
     $pToRemove = jQuery(pToRemove);
@@ -1826,7 +1826,7 @@ WYMeditor.editor.prototype._correctBlockInList = function (pToRemove) {
     if ($pToRemove.next().length === 0) {
         //Insert a `li` where it is supposed to be: after the unwanted `p`
         //element's parent.
-        $pToRemove.parent().after('<li data-wym-caret=""></li>');
+        $pToRemove.parent().after('<li data-wym-caret=""><br /></li>');
         // Cache a jQuery object of the new `li`
         $newLi = $body.find('[data-wym-caret=""]');
         // Set caret position to the new `li`
