@@ -237,7 +237,7 @@ function wymEqual(wymeditor, expected, options) {
     }
 
     // This is the QUnit assertion.
-    deepEqual(normedActual, expected, options.assertionString);
+    strictEqual(normedActual, expected, options.assertionString);
     // If assertions are expected:
     if (expect()) {
         // Increment the number of expected assertions by one. This allows
@@ -245,7 +245,7 @@ function wymEqual(wymeditor, expected, options) {
         expect(expect() + 1);
     }
     // Assert also on beautified HTML.
-    deepEqual(
+    strictEqual(
         /* jshint camelcase: false */
         html_beautify(normedActual, htmlBeautifyOptions),
         html_beautify(expected, htmlBeautifyOptions),
