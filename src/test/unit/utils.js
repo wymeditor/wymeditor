@@ -1,6 +1,6 @@
 /* exported isContentEditable, simulateKey, wymEqual,
  makeTextSelection, moveSelector */
-/* global rangy, deepEqual, html_beautify, expect */
+/* global rangy, deepEqual, html_beautify, expect, QUnit, strictEqual */
 "use strict";
 
 // Regex expression shortcuts
@@ -183,8 +183,8 @@ var htmlBeautifyOptions = {
 * normal method, `.xhtml`, or, it can be fetched directly from the DOM, which
 * bypasses the XHTML parser.
 *
-* A comparison is also made between beautified versions of the actual and the
-* expected HTML.
+* If the compared HTML strings are found to be different, a comparison is made
+* also between beautified versions of them.
 */
 function wymEqual(wymeditor, expected, options) {
     var defaults = {
@@ -201,7 +201,8 @@ function wymEqual(wymeditor, expected, options) {
         normedActual = '',
         listTypeOptions,
         tmpNodes,
-        i;
+        i,
+        assertionsLength;
 
     // Apply defaults.
     options = jQuery.extend({}, defaults, options);
@@ -236,21 +237,26 @@ function wymEqual(wymeditor, expected, options) {
         );
     }
 
-    // This is the QUnit assertion.
+    // Save the current amount of assertions that ran so far.
+    assertionsLength = QUnit.config.current.assertions.length;
+    // Assert: compare between normalized actual HTML and expected HTML.
     strictEqual(normedActual, expected, options.assertionString);
-    // If assertions are expected:
-    if (expect()) {
-        // Increment the number of expected assertions by one. This allows
-        // tests to treat this wymEqual helper as if it was one assertion.
-        expect(expect() + 1);
+    // If the last assertion failed:
+    if (QUnit.config.current.assertions[assertionsLength].result === false) {
+        // If assertions are expected:
+        if (expect()) {
+            // Increment the number of expected assertions by one. This allows
+            // tests to treat this wymEqual helper as if it was one assertion.
+            expect(expect() + 1);
+        }
+        // Assert also on beautified HTML.
+        strictEqual(
+            /* jshint camelcase: false */
+            html_beautify(normedActual, htmlBeautifyOptions),
+            html_beautify(expected, htmlBeautifyOptions),
+            options.assertionString + ' (beautified)'
+        );
     }
-    // Assert also on beautified HTML.
-    strictEqual(
-        /* jshint camelcase: false */
-        html_beautify(normedActual, htmlBeautifyOptions),
-        html_beautify(expected, htmlBeautifyOptions),
-        options.assertionString + ' (beautified)'
-    );
 }
 
 function makeSelection(
