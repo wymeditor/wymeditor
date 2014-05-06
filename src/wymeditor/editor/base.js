@@ -1809,99 +1809,85 @@ WYMeditor.editor.prototype._correctOrphanedListItem = function (listNode) {
     @param pToRemove The `p` element that requires replacing with a `li`
  */
 WYMeditor.editor.prototype._correctBlockInList = function (pToRemove) {
-    var pSiblings,
-        liContentBeforeP,
-        liContentAfterP,
-        parentList,
+    var $pToRemove,
+        $pSiblings,
+        $body,
+        $liContentBeforeP,
+        $liContentAfterP,
+        $parentList,
         parentLiIndex,
         threeLis = '<li></li><li data-wym-caret=""></li><li></li>',
-        newLi;
-
+        $newLi;
+    // Cache a jQuery object of the `p` that will be removed.
+    $pToRemove = jQuery(pToRemove);
+    // Cache a jQuery object of the WYMeditor's body.
+    $body = jQuery(this._doc).find('body.wym_iframe');
     // if the `p` element was created at the end of a list
-    if (jQuery(pToRemove).next().length === 0) {
-
-         //Insert a `li` where it is supposed to be: after the unwanted `p`
-         //element's parent.
-        jQuery(pToRemove.parentNode).after('<li data-wym-caret=""></li>');
-
-        // Save the new `li`
-        newLi = jQuery(this._doc).find('body.wym_iframe [data-wym-caret=""]')[0];
-
+    if ($pToRemove.next().length === 0) {
+        //Insert a `li` where it is supposed to be: after the unwanted `p`
+        //element's parent.
+        $pToRemove.parent().after('<li data-wym-caret=""></li>');
+        // Cache a jQuery object of the new `li`
+        $newLi = $body.find('[data-wym-caret=""]');
         // Set caret position to the new `li`
-        this.setFocusToNode(newLi);
-
+        this.setFocusToNode($newLi[0]);
         // Teleport contents of `p` to new `li`
-        jQuery(newLi).append(jQuery(pToRemove).contents());
-
+        $newLi.append(jQuery(pToRemove).contents());
         // Clean up the caret position marker
-        newLi.removeAttribute('data-wym-caret');
-
+        $newLi[0].removeAttribute('data-wym-caret');
         // And remove the `p`.
-        jQuery(pToRemove).remove();
-
+        $pToRemove.remove();
     } else if (
         // If the `p` element was created not at the end of a list.
-        jQuery(pToRemove).next().length > 0  &&
-        pToRemove.nextSibling.tagName.toLowerCase() === 'ol' ||
-        pToRemove.nextSibling.tagName.toLowerCase() === 'ul'
+        $pToRemove[0].nextSibling &&
+        $pToRemove[0].nextSibling.tagName && (
+            $pToRemove[0].nextSibling.tagName.toLowerCase() === 'ol' ||
+            $pToRemove[0].nextSibling.tagName.toLowerCase() === 'ul'
+        )
        ) {
-
-        // Save the `p`'s siblings
-        pSiblings = jQuery(pToRemove).parent().contents();
-
+        // Cache a jQuery object of the `p`'s siblings
+        $pSiblings = $pToRemove.parent().contents();
         // Collect before `p`
-        liContentBeforeP = jQuery(pSiblings).slice(
-            0, jQuery(pSiblings).index(pToRemove)
+        $liContentBeforeP = $pSiblings.slice(0, $pSiblings
+            .index($pToRemove[0])
         );
-
         // And after it
-        liContentAfterP = pSiblings.slice(
-            pSiblings.index(pToRemove) + 1
+        $liContentAfterP = $pSiblings.slice(
+            $pSiblings.index($pToRemove[0]) + 1
         );
-
         // The parent list because we're going to cut the branch that
         // we're sitting on
-        parentList = jQuery(pToRemove).parent().parent();
-
+        $parentList = $pToRemove.parent().parent();
         // Get the index of the parent `li` for re-insertion later
-        parentLiIndex = jQuery(pToRemove).parent('li').index();
-
+        parentLiIndex = $pToRemove.parent('li').index();
         // Remove the parent `li` (branch we're sitting on)
-        jQuery(pToRemove).parent('li').remove();
-
+        $pToRemove.parent('li').remove();
         // Append three list items; one for the content from before the
         // `p`, one for replacing the `p` and one for the content from
         // after the `p`
-
         // If the parent `li` was first in the list
         if (parentLiIndex === 0) {
             // Prepend the three `li`s to the list
-            parentList.prepend(threeLis);
+            $parentList.prepend(threeLis);
         // If the parent `li` was not first in the list
         } else {
             // Insert the three `li`s after the object that was before it
-            parentList.children().eq(parentLiIndex - 1).after(threeLis);
+            $parentList.children().eq(parentLiIndex - 1).after(threeLis);
         }
-
         // Append content from before the `p`
-        parentList.children('li').eq(parentLiIndex).append(
-            liContentBeforeP
+        $parentList.children('li').eq(parentLiIndex).append(
+            $liContentBeforeP
         );
-
-        // Save the new `li`
-        newLi = jQuery(this._doc).find('body.wym_iframe [data-wym-caret=""]')[0];
-
+        // Cache a jQuery object of the new `li`
+        $newLi = $body.find('[data-wym-caret=""]');
         // Teleport contents of `p` to it's replacement `li`
-        jQuery(newLi).append(jQuery(pToRemove).contents());
-
+        $newLi.append($pToRemove.contents());
         // Append content from after the `p`
-        parentList.children('li').eq(parentLiIndex + 2).append(
-            liContentAfterP
+        $parentList.children('li').eq(parentLiIndex + 2).append(
+            $liContentAfterP
         );
-
         // Set caret
-        this.setFocusToNode(newLi);
-
+        this.setFocusToNode($newLi[0]);
         // Clean up the caret position marker
         jQuery(this._doc).find(
             'body.wym_iframe [data-wym-caret=""]'
