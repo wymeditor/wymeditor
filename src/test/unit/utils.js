@@ -201,8 +201,7 @@ function wymEqual(wymeditor, expected, options) {
         normedActual = '',
         listTypeOptions,
         tmpNodes,
-        i,
-        assertionsLength;
+        i;
 
     // Apply defaults.
     options = jQuery.extend({}, defaults, options);
@@ -237,12 +236,12 @@ function wymEqual(wymeditor, expected, options) {
         );
     }
 
-    // Save the current amount of assertions that ran so far.
-    assertionsLength = QUnit.config.current.assertions.length;
     // Assert: compare between normalized actual HTML and expected HTML.
     strictEqual(normedActual, expected, options.assertionString);
     // If the last assertion failed:
-    if (QUnit.config.current.assertions[assertionsLength].result === false) {
+    if (QUnit.config.current
+        .assertions[QUnit.config.current.assertions.length - 1]
+        .result === false) {
         // If assertions are expected:
         if (expect()) {
             // Increment the number of expected assertions by one. This allows
