@@ -1,6 +1,6 @@
 /* jshint camelcase: false, maxlen: 105 */
 /* global setupWym, SKIP_KNOWN_FAILING_TESTS,
-wymEqual, makeTextSelection, moveSelector, simulateKey,
+wymEqual, makeTextSelection, moveSelector, simulateKey, strictEqual, QUnit,
 makeSelection,
 ok, test, expect */
 "use strict";
@@ -2476,3 +2476,333 @@ if (!(// Browser is IE and
     });
 }
 
+// Issue #430
+module("list-correction-after-enter-in-empty-li", {setup: setupWym});
+
+// Define an empty object to store HTML strings for this module in.
+var afterEnterInEmptyLi = {};
+
+// Following are pairs of:
+//
+//  * Expected HTML string
+//  * Array of known broken HTML strings.
+
+afterEnterInEmptyLi.onlyLiExpected = [""
+    , '<ul>'
+        , '<li>0'
+            , '<br />'
+        , '</li>'
+    , '</ul>'
+].join('');
+
+afterEnterInEmptyLi.onlyLiBroken = [
+    [""
+        , '<ul>'
+            , '<li>0'
+                , '<p>'
+                    , '<br />'
+                , '</p>'
+            , '</li>'
+        , '</ul>'
+    ].join('')
+];
+
+afterEnterInEmptyLi.onlyLiTextAfterListExpected = [""
+    , '<ul>'
+        , '<li>0'
+            , '<br />'
+            , '<br />'
+            , 'foo'
+        , '</li>'
+    , '</ul>'
+].join('');
+
+afterEnterInEmptyLi.onlyLiTextAfterListBroken = [
+    [""
+        , '<ul>'
+            , '<li>0'
+                , '<p>'
+                    ,'<br />'
+                , '</p>'
+                , 'foo'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    [""
+        , '<ul>'
+            , '<li>0'
+                , '<div>'
+                    ,'<br />'
+                , '</div>'
+                , 'foo'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    [""
+        , '<ul>'
+            , '<li>0'
+                , '<p>'
+                    ,'\xA0'
+                , '</p>'
+                , 'foo'
+            , '</li>'
+        , '</ul>'
+    ].join('')
+];
+
+afterEnterInEmptyLi.lastLiExpected = [""
+    , '<ul>'
+        , '<li>0'
+            , '<ul>'
+                , '<li>0.0</li>'
+            , '</ul>'
+            , '<br />'
+        , '</li>'
+    , '</ul>'
+].join('');
+
+afterEnterInEmptyLi.lastLiBroken = [
+    [""
+        , '<ul>'
+            , '<li>0'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<p>'
+                    , '<br />'
+                , '</p>'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+[""
+    , '<ul>'
+        , '<li>0</li>'
+        , '<ul>'
+            , '<li>0.0</li>'
+        , '</ul>'
+        , '<li>'
+            , '<br />'
+        , '</li>'
+    , '</ul>'
+].join('')
+];
+
+
+afterEnterInEmptyLi.lastLiTextAfterListExpected = [""
+    , '<ul>'
+        , '<li>0'
+            , '<ul>'
+                , '<li>0.0</li>'
+            , '</ul>'
+            , '<br />'
+            , 'foo'
+        , '</li>'
+    , '</ul>'
+].join('');
+
+afterEnterInEmptyLi.lastLiTextAfterListBroken = [
+    [""
+        , '<ul>'
+            , '<li>0'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<p>'
+                    , '<br />'
+                , '</p>'
+                , 'foo'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+[""
+    , '<ul>'
+        , '<li>0'
+            , '<ul>'
+                , '<li>0.0</li>'
+            , '</ul>'
+            , '<div>'
+                , '<br />'
+            , '</div>'
+            , 'foo'
+        , '</li>'
+    , '</ul>'
+].join(''),
+[""
+    , '<ul>'
+        , '<li>0'
+            , '<ul>'
+                , '<li>0.0</li>'
+            , '</ul>'
+            , '<p>\xA0</p>'
+            , 'foo'
+        , '</li>'
+    , '</ul>'
+].join('')
+];
+
+afterEnterInEmptyLi.notLastExpected = [""
+    , '<ul>'
+        , '<li>0'
+            , '<ul>'
+                , '<li>0.0</li>'
+            , '</ul>'
+            , '<br />'
+            , '<ul>'
+                , '<li>0.2</li>'
+            , '</ul>'
+        , '</li>'
+    , '</ul>'
+].join('');
+
+afterEnterInEmptyLi.notLastBroken = [
+    [""
+        , '<ul>'
+            , '<li>0'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<p>'
+                    , '<br />'
+                , '</p>'
+                , '<ul>'
+                    , '<li>0.2</li>'
+                , '</ul>'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    [""
+        , '<ul>'
+            , '<li>0</li>'
+            , '<ul>'
+                , '<li>0.0</li>'
+            , '</ul>'
+            , '<li>'
+                , '<br />'
+            , '</li>'
+            , '<ul>'
+                , '<li>0.2</li>'
+            , '</ul>'
+        , '</ul>'
+    ].join(''),
+    [""
+        , '<ul>'
+            , '<li>0'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<p></p>'
+                , '<ul>'
+                    , '<li>0.2</li>'
+                , '</ul>'
+            , '</li>'
+        , '</ul>'
+    ].join('')
+];
+
+// The following is a helper function for performing tests on the above pairs.
+//
+// `testName` is the name of the test that will be run.
+// `expectedHtml` is the former from each of the pairs above.
+// `expectedAnchorNodeSelector` is a jQuery selector string that will be passed as an
+// argument to `.find` for specifying the node that is expected to contain
+// the caret after manipulation..
+// `expectedAnchorOffset` is the offset at which the caret is expected to be
+// after manipulation.
+// `brokenHtmls` is the latter from each of the pairs above.
+function testAfterEnterInEmptyLi (testName, expectedHtml,
+                                  expectedAnchorNodeSelector,
+                                  expectedAnchorOffset, brokenHtmls) {
+    var wymeditor,
+        $body,
+        i,
+        assertStr,
+        // Save some strings for reuse.
+        assertStrCallAppend = '; by calling repairing function',
+        assertStrKeyAppend = '; by key simulation';
+    // Perform the test:
+    test(testName, function () {
+        // Expect 5 times as many assertions as the amount of broken HTML
+        // strings.
+        expect(brokenHtmls.length * 5);
+        // Save the WYMeditor instance.
+        wymeditor = jQuery.wymeditors(0);
+        // Cache a jQuery object of the WYMeditor's iframe.
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+        // Iterate through broken HTML strings:
+        for (i = 0; i < brokenHtmls.length; i++) {
+            // Insert the current broken HTML string into the WYMeditor.
+            wymeditor._html(brokenHtmls[i]);
+            // Call the list correction function on the single offending element,
+            // which could be either a `p` or a `div`.
+            wymeditor.correctInvalidListNesting($body.find('p, div')[0]);
+            // Compose an assertion string.
+            assertStr = QUnit.config.current.testName +
+                '; broken HTML variation ' + (i + 1) + ' of ' +
+                brokenHtmls.length;
+            // Call for the comparison between expected and actual HTML strings,
+            // skipping the parser because it removes empty `li`s.
+            wymEqual(wymeditor, expectedHtml, {skipParser: true,
+                assertionString: assertStr + assertStrCallAppend
+            });
+            // Insert the current broken HTML string into the WYMeditor again.
+            wymeditor._html(brokenHtmls[i]);
+            // Set caret to the offending element.
+            makeSelection(wymeditor,
+                          $body.find('p, div')[0],
+                          $body.find('p, div')[0], 0, 0);
+            // Simulate an enter key press.
+            simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
+            // Call for the comparison between expected and actual HTML again.
+            wymEqual(wymeditor, expectedHtml, {skipParser: true,
+                assertionString: assertStr + assertStrKeyAppend
+            });
+            // Assert: The selection is collapsed.
+            ok(wymeditor.selection().isCollapsed,
+               assertStr + assertStrKeyAppend + '; selection is collapsed'
+              );
+            // Assert: The caret is located in the node where we expect.
+            strictEqual(wymeditor.selection().anchorNode,
+                        $body.find(expectedAnchorNodeSelector)[0],
+                        assertStr + assertStrKeyAppend + '; caret anchor node'
+                       );
+            // Assert: The caret is at the offset we expect.
+            strictEqual(wymeditor.selection().anchorOffset,
+                        expectedAnchorOffset,
+                        assertStr + assertStrKeyAppend + '; caret offset'
+                       );
+        }
+    });
+}
+
+// At this stage the helper function of this module is called for the tests to
+// be performed with each of the variations, represented by the pairs.
+
+testAfterEnterInEmptyLi('Only `li` in its list',
+                        afterEnterInEmptyLi.onlyLiExpected,
+                        'li', 2,
+                        afterEnterInEmptyLi.onlyLiBroken
+                       );
+
+testAfterEnterInEmptyLi('Only `li` and text node after list',
+                        afterEnterInEmptyLi.onlyLiTextAfterListExpected,
+                        'li', 2,
+                        afterEnterInEmptyLi.onlyLiTextAfterListBroken
+                       );
+
+testAfterEnterInEmptyLi('Last `li`',
+                        afterEnterInEmptyLi.lastLiExpected,
+                        'li', 2,
+                        afterEnterInEmptyLi.lastLiBroken
+                       );
+
+testAfterEnterInEmptyLi('Last `li` and text node after list',
+                        afterEnterInEmptyLi.lastLiTextAfterListExpected,
+                        'li', 2,
+                        afterEnterInEmptyLi.lastLiTextAfterListBroken
+                       );
+
+testAfterEnterInEmptyLi('Not last `li`',
+                        afterEnterInEmptyLi.notLastExpected,
+                        'li', 2,
+                        afterEnterInEmptyLi.notLastBroken
+                       );
