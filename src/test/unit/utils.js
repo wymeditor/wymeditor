@@ -211,7 +211,11 @@ function wymEqual(wymeditor, expected, options) {
         // Extract the HTML from the DOM of the WYMeditor.
         jQuery(wymeditor._doc).find('body.wym_iframe').contents().each(
             function () {
-                actual += this.outerHTML;
+                actual += this.outerHTML
+                // IE7 and IE8 provide HTML strings with carriage returns
+                // and newlines. Those are wholly unnecessary and upon DOM
+                // creation, IE7 and IE8 turn them into spaces. Remove them.
+                .replace(/\r/g, '').replace(/\n/g, '');
             }
         );
     // Otherwise:

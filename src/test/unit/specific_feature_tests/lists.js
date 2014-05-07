@@ -1,6 +1,6 @@
 /* jshint camelcase: false, maxlen: 105 */
 /* global setupWym, SKIP_KNOWN_FAILING_TESTS,
-wymEqual, makeTextSelection, moveSelector, simulateKey,
+wymEqual, makeTextSelection, moveSelector, simulateKey, strictEqual,
 makeSelection,
 ok, test, expect */
 "use strict";
@@ -2171,6 +2171,604 @@ test("Double indent correction", function () {
 
     wymeditor._html(brokenHtml);
     wymEqual(wymeditor, repairedHtml);
+});
+
+// This module is about issue #430
+module("list-correction-paragraph-removal", {setup: setupWym});
+
+test("Paragraph is at end of list; repairing function directly called",
+    function () {
+    expect(2);
+
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        brokenHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , '1'
+                    , '<ol>'
+                        , '<li>'
+                            , '2'
+                        , '</li>'
+                    , '</ol>'
+                    , '<p>'
+                    , '</p>'
+                , '</li>'
+            , '</ol>'
+        ].join(""),
+        repairedHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , '1'
+                    , '<ol>'
+                        , '<li>'
+                            , '2'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li><br />'
+                , '</li>'
+            , '</ol>'
+        ].join("");
+
+    jQuery(wymeditor._doc.body).html(brokenHtml);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    wymeditor.correctInvalidListNesting($body.find('p')[0]);
+
+    // Test against the HTML before the parser because the parser removes empty
+    // `li` elements that we have here.
+
+    wymEqual(wymeditor, repairedHtml, {skipParser: true});
+    strictEqual(
+        wymeditor.selected(),
+        $body.find('li')[2]
+    );
+});
+
+test("Paragraph is at end of list.", function () {
+    expect(2);
+
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        brokenHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , '1'
+                    , '<ol>'
+                        , '<li>'
+                            , '2'
+                        , '</li>'
+                    , '</ol>'
+                    , '<p>'
+                    , '</p>'
+                , '</li>'
+            , '</ol>'
+        ].join(""),
+        repairedHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , '1'
+                    , '<ol>'
+                        , '<li>'
+                            , '2'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li><br />'
+                , '</li>'
+            , '</ol>'
+        ].join("");
+
+    jQuery(wymeditor._doc.body).html(brokenHtml);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    makeSelection(wymeditor, $body.find('p')[0], $body.find('p')[0], 0, 0);
+    simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
+
+    // Test against the HTML before the parser because the parser removes empty
+    // `li` elements that we have here.
+
+    wymEqual(wymeditor, repairedHtml, {skipParser: true});
+    strictEqual(
+        wymeditor.selected(),
+        $body.find('li')[2]
+    );
+});
+
+test("Paragraph is at end of list; text in `p`.", function () {
+    expect(2);
+
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        brokenHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , '1'
+                    , '<ol>'
+                        , '<li>'
+                            , '2'
+                        , '</li>'
+                    , '</ol>'
+                    , '<p>'
+                        , 'Teleport me!<br />'
+                    , '</p>'
+                , '</li>'
+            , '</ol>'
+        ].join(""),
+        repairedHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , '1'
+                    , '<ol>'
+                        , '<li>'
+                            , '2'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li>'
+                    , '<br />Teleport me!<br />'
+                , '</li>'
+            , '</ol>'
+        ].join("");
+
+    jQuery(wymeditor._doc.body).html(brokenHtml);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    makeSelection(wymeditor, $body.find('p')[0], $body.find('p')[0]);
+    simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
+
+    // Test against the HTML before the parser because the parser removes empty
+    // `li` elements that we have here.
+
+    wymEqual(wymeditor, repairedHtml, {skipParser: true});
+    strictEqual(
+        wymeditor.selected(),
+        $body.find('li')[2]
+    );
+});
+
+test("Paragraph is at end of list; text after `p`.", function () {
+    expect(2);
+
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        brokenHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , '1'
+                    , '<ol>'
+                        , '<li>'
+                            , '2'
+                        , '</li>'
+                    , '</ol>'
+                    , '<p></p>'
+                    , "I'm here!"
+                , '</li>'
+            , '</ol>'
+        ].join(""),
+        repairedHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , '1'
+                    , '<ol>'
+                        , '<li>'
+                            , '2'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li><br /></li>'
+                , "<li>I'm here!</li>"
+            , '</ol>'
+        ].join("");
+
+    jQuery(wymeditor._doc.body).html(brokenHtml);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    makeSelection(wymeditor, $body.find('p')[0], $body.find('p')[0], 0, 0);
+    simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
+
+    // Test against the HTML before the parser because the parser removes empty
+    // `li` elements that we have here.
+
+    wymEqual(wymeditor, repairedHtml, {skipParser: true});
+    strictEqual(
+        wymeditor.selected(),
+        $body.find('li')[2]
+    );
+});
+
+test("Paragraph is at end of list; text after `p`; text in `p`.", function () {
+    expect(2);
+
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        brokenHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , '1'
+                    , '<ol>'
+                        , '<li>'
+                            , '2'
+                        , '</li>'
+                    , '</ol>'
+                    , '<p>'
+                        , 'Teleport me!<br />'
+                    , '</p>'
+                    , "I'm here!"
+                , '</li>'
+            , '</ol>'
+        ].join(""),
+        repairedHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , '1'
+                    , '<ol>'
+                        , '<li>'
+                            , '2'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li>'
+                    , '<br />Teleport me!<br />'
+                , '</li>'
+                , "<li>I'm here!</li>"
+            , '</ol>'
+        ].join("");
+
+    jQuery(wymeditor._doc.body).html(brokenHtml);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    makeSelection(wymeditor, $body.find('p')[0], $body.find('p')[0]);
+    simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
+
+    // Test against the HTML before the parser because the parser removes empty
+    // `li` elements that we have here.
+
+    wymEqual(wymeditor, repairedHtml, {skipParser: true});
+    strictEqual(
+        wymeditor.selected(),
+        $body.find('li')[2]
+    );
+});
+test("Paragraph is not at end of list; parent is first `li`",
+    function () {
+    expect(2);
+
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        brokenHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , 'parent one'
+                    , '<ol>'
+                        , '<li>'
+                            , 'one'
+                        , '</li>'
+                        , '<li>'
+                            , 'two'
+                        , '</li>'
+                    , '</ol>'
+                    , '<p>'
+                    , '</p>'
+                    , '<ol>'
+                        , '<li>'
+                            , 'three'
+                        , '</li>'
+                        , '<li>'
+                            , 'four'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li>'
+                    , 'parent two'
+                    , '<ol>'
+                        , '<li>'
+                            , 'two one'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+            , '</ol>'
+        ].join(""),
+        repairedHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , 'parent one'
+                    , '<ol>'
+                        , '<li>'
+                            , 'one'
+                        , '</li>'
+                        , '<li>'
+                            , 'two'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li><br />'
+                , '</li>'
+                , '<li>'
+                    , '<ol>'
+                        , '<li>'
+                            , 'three'
+                        , '</li>'
+                        , '<li>'
+                            , 'four'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li>'
+                    , 'parent two'
+                    , '<ol>'
+                        , '<li>'
+                            , 'two one'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+            , '</ol>'
+        ].join("");
+
+    jQuery(wymeditor._doc.body).html(brokenHtml);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    makeSelection(wymeditor, $body.find('p')[0], $body.find('p')[0], 0, 0);
+    simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
+
+    // Test against the HTML before the parser because the parser removes empty
+    // `li` elements that we have here.
+
+    wymEqual(wymeditor, repairedHtml, {skipParser: true});
+    strictEqual(
+        wymeditor.selected(),
+        $body.find('li')[3]
+    );
+});
+
+test("Paragraph is not at end of list; parent is first `li`; text in `p`",
+    function () {
+    expect(2);
+
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        brokenHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , 'parent one'
+                    , '<ol>'
+                        , '<li>'
+                            , 'one'
+                        , '</li>'
+                        , '<li>'
+                            , 'two'
+                        , '</li>'
+                    , '</ol>'
+                    , '<p>'
+                        , 'It has been brought to my attention...<br />'
+                    , '</p>'
+                    , '<ol>'
+                        , '<li>'
+                            , 'three'
+                        , '</li>'
+                        , '<li>'
+                            , 'four'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li>'
+                    , 'parent two'
+                    , '<ol>'
+                        , '<li>'
+                            , 'two one'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+            , '</ol>'
+        ].join(""),
+        repairedHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , 'parent one'
+                    , '<ol>'
+                        , '<li>'
+                            , 'one'
+                        , '</li>'
+                        , '<li>'
+                            , 'two'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li>'
+                    , '<br />It has been brought to my attention...<br />'
+                , '</li>'
+                , '<li>'
+                    , '<ol>'
+                        , '<li>'
+                            , 'three'
+                        , '</li>'
+                        , '<li>'
+                            , 'four'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li>'
+                    , 'parent two'
+                    , '<ol>'
+                        , '<li>'
+                            , 'two one'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+            , '</ol>'
+        ].join("");
+
+    jQuery(wymeditor._doc.body).html(brokenHtml);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    makeSelection(wymeditor, $body.find('p')[0], $body.find('p')[0]);
+    simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
+
+    // Test against the HTML before the parser because the parser removes empty
+    // `li` elements that we have here.
+
+    wymEqual(wymeditor, repairedHtml, {skipParser: true});
+    strictEqual(
+        wymeditor.selected(),
+        $body.find('li')[3]
+    );
+});
+
+test("Paragraph is not at end of list; parent is second `li`",
+    function () {
+    expect(2);
+
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        brokenHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , 'parent one'
+                    , '<ol>'
+                        , '<li>'
+                            , 'one one'
+                        , '</li>'
+                        , '<li>'
+                            , 'one two'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li>'
+                    , 'parent two'
+                    , '<ol>'
+                        , '<li>'
+                            , 'two one'
+                        , '</li>'
+                    , '</ol>'
+                    , '<p>'
+                    , '</p>'
+                    , '<ol>'
+                        , '<li>'
+                            , 'two two'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+            , '</ol>'
+        ].join(""),
+        repairedHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , 'parent one'
+                    , '<ol>'
+                        , '<li>'
+                            , 'one one'
+                        , '</li>'
+                        , '<li>'
+                            , 'one two'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li>'
+                    , 'parent two'
+                    , '<ol>'
+                        , '<li>'
+                            , 'two one'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li><br />'
+                , '</li>'
+                , '<li>'
+                    , '<ol>'
+                        , '<li>'
+                            , 'two two'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+            , '</ol>'
+        ].join("");
+
+    jQuery(wymeditor._doc.body).html(brokenHtml);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    makeSelection(wymeditor, $body.find('p')[0], $body.find('p')[0], 0, 0);
+    simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
+
+    // Test against the HTML before the parser because the parser removes empty
+    // `li` elements that we have here.
+
+    wymEqual(wymeditor, repairedHtml, {skipParser: true});
+    strictEqual(
+        wymeditor.selected(),
+        $body.find('ol li')[5]
+    );
+});
+
+test("Paragraph is not at end of list; parent is second `li`; variation",
+    function () {
+    expect(2);
+
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        brokenHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , 'parent one'
+                    , '<ol>'
+                        , '<li>'
+                            , 'one one'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li>'
+                , '</li>'
+                , '<li>'
+                    , '<ol>'
+                        , '<li>'
+                            , 'three one'
+                        , '</li>'
+                    , '</ol>'
+                    , '<p>'
+                    , '</p>'
+                    , '<ol>'
+                        , '<li>'
+                            , 'three two'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+            , '</ol>'
+        ].join(""),
+        repairedHtml = [""
+            , '<ol>'
+                , '<li>'
+                    , 'parent one'
+                    , '<ol>'
+                        , '<li>'
+                            , 'one one'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li>'
+                , '</li>'
+                , '<li>'
+                    , '<ol>'
+                        , '<li>'
+                            , 'three one'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li><br />'
+                , '</li>'
+                , '<li>'
+                    , '<ol>'
+                        , '<li>'
+                            , 'three two'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+            , '</ol>'
+        ].join("");
+
+    jQuery(wymeditor._doc.body).html(brokenHtml);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    makeSelection(wymeditor, $body.find('p')[0], $body.find('p')[0], 0, 0);
+    simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
+
+    // Test against the HTML before the parser because the parser removes empty
+    // `li` elements that we have here.
+    wymEqual(wymeditor, repairedHtml, {skipParser: true});
+    strictEqual(
+        wymeditor.selected(),
+        $body.find('ol li')[5]
+    );
 });
 
 module("list-tabbing", {setup: setupWym});

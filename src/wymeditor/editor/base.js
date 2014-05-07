@@ -1702,8 +1702,24 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
 WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alreadyCorrected) {
     // Travel up the dom until we're at the root ol/ul/li
     var currentNode = listItem,
+        $currentNode,
         parentNode,
         tagName;
+
+    // Browsers can sometimes create `p` elements within `li` elements. This
+    // is issue 430.
+    // Check for this issue: If the `currentNode` is a `p` within a `li`
+    if (currentNode !== null &&
+        currentNode.tagName.toLowerCase() === 'p' &&
+        currentNode.parentNode.tagName.toLowerCase() === 'li') {
+
+        // Fix this `p` using the dedicated function
+        this._correctBlockInList(currentNode);
+
+        // Don't proceed with further list correction.
+        return;
+    }
+
     if (typeof alreadyCorrected === 'undefined') {
         alreadyCorrected = false;
     }
@@ -1725,8 +1741,11 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
         // We're still traversing up a list structure. Keep going
         currentNode = parentNode;
     }
+    // Cache a jQuery currentNode
+    $currentNode = jQuery(currentNode);
+
     // We have the root node. Make sure it's legit
-    if (jQuery(currentNode).is('li')) {
+    if ($currentNode.is('li')) {
         // We have an li as the "root" because its missing a parent list.
         // Correct this problem and then try again to correct the nesting.
         WYMeditor.console.log(
@@ -1735,7 +1754,7 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
         this._correctOrphanedListItem(currentNode);
         return this.correctInvalidListNesting(currentNode, true);
     }
-    if (!jQuery(currentNode).is('ol,ul')) {
+    if (!$currentNode.is('ol,ul')) {
         WYMeditor.console.error("Can't correct invalid list nesting. No root list found");
         return alreadyCorrected;
     }
@@ -1778,6 +1797,109 @@ WYMeditor.editor.prototype._correctOrphanedListItem = function (listNode) {
 
     // Insert all of the adjacent orphaned lists inside the new parent
     jQuery(prevList).append($adjacentLis);
+};
+
+/**
+    editor._correctBlockInList
+    ========================
+
+    Browsers insert `p` elements into lists. This breaks desired list
+    structure. Fix it.
+
+    @param pToRemove The `p` element that requires replacing with a `li`
+ */
+WYMeditor.editor.prototype._correctBlockInList = function (pToRemove) {
+    var $pToRemove,
+        $pSiblings,
+        $body,
+        $liContentBeforeP,
+        $liContentAfterP,
+        $parentList,
+        parentLiIndex,
+        threeLis = '<li></li><li data-wym-caret=""><br /></li><li></li>',
+        $newLi;
+    // Cache a jQuery object of the `p` that will be removed.
+    $pToRemove = jQuery(pToRemove);
+    // Cache a jQuery object of the WYMeditor's body.
+    $body = jQuery(this._doc).find('body.wym_iframe');
+    // if the `p` element was created at the end of a list
+    if ($pToRemove.next().length === 0) {
+        //Insert a `li` where it is supposed to be: after the unwanted `p`
+        //element's parent.
+        $pToRemove.parent().after('<li data-wym-caret=""><br /></li>');
+        // Cache a jQuery object of the new `li`
+        $newLi = $body.find('[data-wym-caret=""]');
+        // Set caret position to the new `li`
+        this.setFocusToNode($newLi[0]);
+        // Teleport contents of `p` to new `li`
+        $newLi.append(jQuery(pToRemove).contents());
+        // Clean up the caret position marker
+        $newLi[0].removeAttribute('data-wym-caret');
+        // If there are nodes after the `p`:
+        if ($pToRemove.nextAllContents().length > 0) {
+            // Add an empty `li` after the new li.
+            $newLi.after('<li></li>');
+            // Move those nodes there.
+            $newLi.next().append($pToRemove.nextAllContents());
+        }
+        // And remove the `p`.
+        $pToRemove.remove();
+    } else if (
+        // If the `p` element was created not at the end of a list.
+        $pToRemove[0].nextSibling &&
+        $pToRemove[0].nextSibling.tagName && (
+            $pToRemove[0].nextSibling.tagName.toLowerCase() === 'ol' ||
+            $pToRemove[0].nextSibling.tagName.toLowerCase() === 'ul'
+        )
+       ) {
+        // Cache a jQuery object of the `p`'s siblings
+        $pSiblings = $pToRemove.parent().contents();
+        // Collect before `p`
+        $liContentBeforeP = $pSiblings.slice(0, $pSiblings
+            .index($pToRemove[0])
+        );
+        // And after it
+        $liContentAfterP = $pSiblings.slice(
+            $pSiblings.index($pToRemove[0]) + 1
+        );
+        // The parent list because we're going to cut the branch that
+        // we're sitting on
+        $parentList = $pToRemove.parent().parent();
+        // Get the index of the parent `li` for re-insertion later
+        parentLiIndex = $pToRemove.parent('li').index();
+        // Remove the parent `li` (branch we're sitting on)
+        $pToRemove.parent('li').remove();
+        // Append three list items; one for the content from before the
+        // `p`, one for replacing the `p` and one for the content from
+        // after the `p`
+        // If the parent `li` was first in the list
+        if (parentLiIndex === 0) {
+            // Prepend the three `li`s to the list
+            $parentList.prepend(threeLis);
+        // If the parent `li` was not first in the list
+        } else {
+            // Insert the three `li`s after the object that was before it
+            $parentList.children().eq(parentLiIndex - 1).after(threeLis);
+        }
+        // Append content from before the `p`
+        $parentList.children('li').eq(parentLiIndex).append(
+            $liContentBeforeP
+        );
+        // Cache a jQuery object of the new `li`
+        $newLi = $body.find('[data-wym-caret=""]');
+        // Teleport contents of `p` to it's replacement `li`
+        $newLi.append($pToRemove.contents());
+        // Append content from after the `p`
+        $parentList.children('li').eq(parentLiIndex + 2).append(
+            $liContentAfterP
+        );
+        // Set caret
+        this.setFocusToNode($newLi[0]);
+        // Clean up the caret position marker
+        jQuery(this._doc).find(
+            'body.wym_iframe [data-wym-caret=""]'
+        )[0].removeAttribute('data-wym-caret');
+    }
 };
 
 /**
@@ -1942,6 +2064,31 @@ WYMeditor.editor.prototype._correctInvalidListNesting = function (listNode, alre
     }
 
     return wasCorrected;
+};
+
+/**
+    editor.correctpotentialblockinlist
+    ==================================
+
+    Issue #430. Browsers create block elements like `p` when enter is pressed
+    inside an empty list item. This breaks desired list structure. This
+    function tests for this particular situation and calls for the correcting
+    function if it detects that this is indeed the case.
+
+    @param evtWhich the event, to check whether it is an enter
+    @param container the current container node, to test on perhaps deliver
+                     on to the correcting function.
+ */
+WYMeditor.editor.prototype.correctPotentialBlockInList = function (
+    evt_which, container
+    ) {
+    var wym = this;
+
+    if (evt_which === WYMeditor.KEY.ENTER &&
+        container.tagName.toLowerCase() === "p" &&
+        container.parentNode.tagName.toLowerCase() === "li") {
+        wym._correctBlockInList(container);
+    }
 };
 
 /**

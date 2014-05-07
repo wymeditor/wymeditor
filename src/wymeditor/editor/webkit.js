@@ -203,5 +203,9 @@ WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
         // Fix formatting if necessary
         wym.fixBodyHtml();
     }
+
+    // When selection is in empty `li` that is nested and enter is pressed
+    // list structure is broken in this browser. Call for a fix of this.
+    wym.correctInvalidListNesting(container);
 };
 

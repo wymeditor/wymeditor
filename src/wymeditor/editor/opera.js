@@ -85,4 +85,7 @@ WYMeditor.WymClassOpera.prototype.keyup = function(evt) {
     //'this' is the doc
     var wym = WYMeditor.INSTANCES[this.title];
     wym._selectedImage = null;
+
+    // Handle issue #430.
+    wym.correctPotentialBlockInList(evt.which, container);
 };
