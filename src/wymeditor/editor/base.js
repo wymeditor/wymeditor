@@ -436,28 +436,50 @@ WYMeditor.editor.prototype.selected = function () {
         isBodyTag,
         isTextNode;
 
-    if (node) {
-        if (jQuery.browser.msie) {
-            // For collapsed selections, we have to use the ghetto "caretPos"
-            // hack to find the selection, otherwise it always says that the
-            // body element is selected
-            isBodyTag = node.tagName && node.tagName.toLowerCase() === "body";
-            isTextNode = node.nodeName === "#text";
+    // If there is no node:
+    if (!node) {
+        // Return null.
+        return null;
+    }
+    if (jQuery.browser.msie) {
+        // For collapsed selections, we have to use the ghetto "caretPos"
+        // hack to find the selection, otherwise it always says that the
+        // body element is selected
+        isBodyTag = node.tagName && node.tagName.toLowerCase() === "body";
+        isTextNode = node.nodeName === "#text";
 
-            if (sel.isCollapsed && (isBodyTag || isTextNode)) {
-                caretPos = this._iframe.contentWindow.document.caretPos;
-                if (caretPos && caretPos.parentElement) {
-                    node = caretPos.parentElement();
-                }
+        if (sel.isCollapsed && (isBodyTag || isTextNode)) {
+            caretPos = this._iframe.contentWindow.document.caretPos;
+            if (caretPos && caretPos.parentElement) {
+                node = caretPos.parentElement();
             }
         }
-        if (node.nodeName === "#text") {
-            return node.parentNode;
-        } else {
-            return node;
-        }
+    }
+    if (node.nodeName === "#text") {
+        return node.parentNode;
+    // Otherwise, if
+    } else if (
+        // selection is collapsed and
+        sel.isCollapsed &&
+        // there is a focus node and
+        sel.focusNode &&
+        // the focus node has child nodes and
+        sel.focusNode.childNodes.length > 0 &&
+        // there is a selection offset and
+        sel.focusOffset &&
+        // one of the focus node's child nodes is at that offset and
+        sel.focusNode.childNodes[sel.focusOffset] &&
+        // that child has a tag and
+        sel.focusNode.childNodes[sel.focusOffset].tagName &&
+        // that tag is 'br':
+        sel.focusNode.childNodes[sel.focusOffset].tagName.toLowerCase() === 'br'
+    ) {
+        // Return that child to compensate for browser idiosyncrasies that
+        // Rangy should be compensating for but is not. See
+        // https://github.com/wymeditor/wymeditor/issues/504
+        return sel.focusNode.childNodes[sel.focusOffset];
     } else {
-        return null;
+        return node;
     }
 };
 
