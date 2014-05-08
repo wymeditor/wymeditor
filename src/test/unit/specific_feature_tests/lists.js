@@ -2796,30 +2796,35 @@ function testAfterEnterInEmptyLi (testName, expectedHtml,
 
 testAfterEnterInEmptyLi('Only `li` in its list',
                         afterEnterInEmptyLi.onlyLiExpected,
-                        'li', 2,
+                        'li',
+                        2,
                         afterEnterInEmptyLi.onlyLiBroken
                        );
 
 testAfterEnterInEmptyLi('Only `li` and text node after list',
                         afterEnterInEmptyLi.onlyLiTextAfterListExpected,
-                        'li', 2,
+                        'li',
+                        2,
                         afterEnterInEmptyLi.onlyLiTextAfterListBroken
                        );
 
 testAfterEnterInEmptyLi('Last `li`',
                         afterEnterInEmptyLi.lastLiExpected,
-                        'li', 2,
+                        'li',
+                        2,
                         afterEnterInEmptyLi.lastLiBroken
                        );
 
 testAfterEnterInEmptyLi('Last `li` and text node after list',
                         afterEnterInEmptyLi.lastLiTextAfterListExpected,
-                        'li', 2,
+                        'li',
+                        2,
                         afterEnterInEmptyLi.lastLiTextAfterListBroken
                        );
 
 testAfterEnterInEmptyLi('Not last `li`',
                         afterEnterInEmptyLi.notLastExpected,
-                        'li', 2,
+                        'li',
+                        2,
                         afterEnterInEmptyLi.notLastBroken
                        );
