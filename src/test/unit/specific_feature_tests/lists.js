@@ -2703,11 +2703,12 @@ afterEnterInEmptyLi.notLastBroken = [
 //
 // `testName` is the name of the test that will be run.
 // `expectedHtml` is the former from each of the pairs above.
-// `expectedAnchorNodeSelector` is a jQuery selector string that will be passed as an
-// argument to `.find` for specifying the node that is expected to contain
-// the caret after manipulation..
+// `expectedAnchorNodeSelector` is a jQuery selector string that will be passed
+//                              as an argument to `.find` for specifying the
+//                              node that is expected to contain the caret
+//                              after manipulation.
 // `expectedAnchorOffset` is the offset at which the caret is expected to be
-// after manipulation.
+//                        after manipulation.
 // `brokenHtmls` is the latter from each of the pairs above.
 function testAfterEnterInEmptyLi (testName, expectedHtml,
                                   expectedAnchorNodeSelector,
