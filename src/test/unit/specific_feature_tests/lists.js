@@ -2712,6 +2712,7 @@ afterEnterInEmptyLi.notLastBroken = [
 function testAfterEnterInEmptyLi (testName, expectedHtml,
                                   expectedAnchorNodeSelector,
                                   expectedAnchorOffset, brokenHtmls) {
+
     var wymeditor,
         $body,
         i,
@@ -2719,52 +2720,68 @@ function testAfterEnterInEmptyLi (testName, expectedHtml,
         // Save some strings for reuse.
         assertStrCallAppend = '; by calling repairing function',
         assertStrKeyAppend = '; by key simulation';
+
     // Perform the test:
     test(testName, function () {
+
         // Expect 5 times as many assertions as the amount of broken HTML
         // strings.
         expect(brokenHtmls.length * 5);
+
         // Save the WYMeditor instance.
         wymeditor = jQuery.wymeditors(0);
+
         // Cache a jQuery object of the WYMeditor's iframe.
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
         // Iterate through broken HTML strings:
         for (i = 0; i < brokenHtmls.length; i++) {
+
             // Insert the current broken HTML string into the WYMeditor.
             wymeditor._html(brokenHtmls[i]);
+
             // Call the list correction function on the single offending element,
             // which could be either a `p` or a `div`.
             wymeditor.correctInvalidListNesting($body.find('p, div')[0]);
+
             // Compose an assertion string.
             assertStr = QUnit.config.current.testName +
                 '; broken HTML variation ' + (i + 1) + ' of ' +
                 brokenHtmls.length;
+
             // Call for the comparison between expected and actual HTML strings,
             // skipping the parser because it removes empty `li`s.
             wymEqual(wymeditor, expectedHtml, {skipParser: true,
                 assertionString: assertStr + assertStrCallAppend
             });
+
             // Insert the current broken HTML string into the WYMeditor again.
             wymeditor._html(brokenHtmls[i]);
+
             // Set caret to the offending element.
             makeSelection(wymeditor,
                           $body.find('p, div')[0],
                           $body.find('p, div')[0], 0, 0);
+
             // Simulate an enter key press.
             simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
+
             // Call for the comparison between expected and actual HTML again.
             wymEqual(wymeditor, expectedHtml, {skipParser: true,
                 assertionString: assertStr + assertStrKeyAppend
             });
+
             // Assert: The selection is collapsed.
             ok(wymeditor.selection().isCollapsed,
                assertStr + assertStrKeyAppend + '; selection is collapsed'
               );
+
             // Assert: The caret is located in the node where we expect.
             strictEqual(wymeditor.selection().anchorNode,
                         $body.find(expectedAnchorNodeSelector)[0],
                         assertStr + assertStrKeyAppend + '; caret anchor node'
                        );
+
             // Assert: The caret is at the offset we expect.
             strictEqual(wymeditor.selection().anchorOffset,
                         expectedAnchorOffset,
