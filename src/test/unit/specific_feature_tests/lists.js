@@ -2614,7 +2614,7 @@ afterEnterInEmptyLi.lastLiTextAfterListBroken = [
             , '</li>'
         , '</ul>'
     ].join(''),
-[""
+    [""
     , '<ul>'
         , '<li>0'
             , '<ul>'
