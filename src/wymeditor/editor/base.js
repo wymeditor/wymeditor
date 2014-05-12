@@ -592,7 +592,7 @@ WYMeditor.editor.prototype.container = function (sType) {
                     newNode = this._doc.createElement(sType);
                     container.parentNode.insertBefore(newNode, container);
                     newNode.appendChild(container);
-                    this.setFocusToNode(newNode.firstChild);
+                    this.setFocusToNode(newNode.firstChild, true);
                 } else {
                     nodes = blockquote.childNodes;
                     lgt = nodes.length;
@@ -608,7 +608,7 @@ WYMeditor.editor.prototype.container = function (sType) {
                     }
                     blockquote.parentNode.removeChild(blockquote);
                     if (firstNode) {
-                        this.setFocusToNode(firstNode);
+                        this.setFocusToNode(firstNode, true);
                     }
                 }
             } else {
@@ -753,7 +753,7 @@ WYMeditor.editor.prototype.switchTo = function (node, sType, stripAttrs) {
     newNode.innerHTML = html;
     node.parentNode.replaceChild(newNode, node);
 
-    this.setFocusToNode(newNode);
+    this.setFocusToNode(newNode, true);
 };
 
 WYMeditor.editor.prototype.replaceStrings = function (sVal) {
@@ -1365,13 +1365,35 @@ WYMeditor.editor.prototype.unwrap = function () {
     this.insert(this._iframe.contentWindow.getSelection().toString());
 };
 
-WYMeditor.editor.prototype.setFocusToNode = function (node, toStart) {
-    var range = rangy.createRange(this._doc),
-        selection = rangy.getIframeSelection(this._iframe);
-    toStart = toStart || false;
+/**
+    editor.setFocusToNode
+    =====================
 
-    range.selectNodeContents(node);
-    range.collapse(toStart);
+    Sets a collapsed selection to a provided node or inside of it.
+
+    @param node A node to set the selection to.
+    @param inside If true the selection will be set inside the node, at the
+                     start.
+ */
+WYMeditor.editor.prototype.setFocusToNode = function (node, inside) {
+    var
+        // Save a range in the WYMeditor.
+        range = rangy.createRange(this._doc),
+        // Save the selection.
+        selection = rangy.getIframeSelection(this._iframe);
+
+    if (inside) {
+        // Set the range to encompass the contents of the node.
+        range.selectNodeContents(node);
+    } else {
+        // Set the range to encompass the node.
+        range.selectNode(node);
+    }
+
+    // Collapse it to the start.
+    range.collapse(true);
+
+    // Set the selection.
     selection.setSingleRange(range);
 };
 
