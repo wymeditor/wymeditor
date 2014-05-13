@@ -245,6 +245,10 @@ jQuery.extend(WYMeditor, {
     // effectively block the creation of new blocks.
     BLOCKING_ELEMENTS : ["table", "blockquote", "pre"],
 
+    // Elements that are not containers. They don't generally have any child
+    // nodes.
+    NON_CONTAINING_ELEMENTS : ["br", "hr", "img"],
+
     // The remaining `MAIN_CONTAINERS` that are not considered
     // `BLOCKING_ELEMENTS`
     NON_BLOCKING_ELEMENTS : ["p", "div", "h1", "h2", "h3", "h4", "h5", "h6"],
