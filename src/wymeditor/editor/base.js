@@ -424,7 +424,7 @@ WYMeditor.editor.prototype.selection = function () {
 };
 
 /**
-    WYMeditor.editor.selection
+    WYMeditor.editor.selected
     ==========================
 
     Return the selected node.
