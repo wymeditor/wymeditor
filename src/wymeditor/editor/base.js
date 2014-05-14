@@ -229,7 +229,7 @@ WYMeditor.editor.prototype.bindEvents = function () {
 
     // Handle click events on containers buttons
     jQuery(this._box).find(this._options.containerSelector).click(function () {
-        wym.container(jQuery(this).attr(WYMeditor.NAME));
+        wym.mainContainer(jQuery(this).attr(WYMeditor.NAME));
         return false;
     });
 
@@ -346,7 +346,7 @@ WYMeditor.editor.prototype.exec = function (cmd) {
     switch (cmd) {
 
     case WYMeditor.CREATE_LINK:
-        container = this.container();
+        container = this.mainContainer();
         if (container || this._selectedImage) {
             this.dialog(WYMeditor.DIALOG_LINK);
         }
@@ -544,12 +544,12 @@ WYMeditor.editor.prototype.selected_parents_contains = function (selector) {
 };
 
 /**
-    WYMeditor.editor.container
+    WYMeditor.editor.mainContainer
     ==========================
 
-    Get or set the selected container.
+    Get or set the selected main container.
 */
-WYMeditor.editor.prototype.container = function (sType) {
+WYMeditor.editor.prototype.mainContainer = function (sType) {
     if (typeof (sType) === 'undefined') {
         return this.selContainer();
     }
@@ -564,7 +564,7 @@ WYMeditor.editor.prototype.container = function (sType) {
         x;
 
     if (sType.toLowerCase() === WYMeditor.TH) {
-        container = this.container();
+        container = this.mainContainer();
 
         // Find the TD or TH container
         switch (container.tagName.toLowerCase()) {
@@ -574,7 +574,7 @@ WYMeditor.editor.prototype.container = function (sType) {
             break;
         default:
             aTypes = [WYMeditor.TD, WYMeditor.TH];
-            container = this.findUp(this.container(), aTypes);
+            container = this.findUp(this.mainContainer(), aTypes);
             break;
         }
 
@@ -601,13 +601,13 @@ WYMeditor.editor.prototype.container = function (sType) {
             WYMeditor.PRE,
             WYMeditor.BLOCKQUOTE
         ];
-        container = this.findUp(this.container(), aTypes);
+        container = this.findUp(this.mainContainer(), aTypes);
 
         if (container) {
             if (sType.toLowerCase() === WYMeditor.BLOCKQUOTE) {
                 // Blockquotes must contain a block level element
                 blockquote = this.findUp(
-                    this.container(),
+                    this.mainContainer(),
                     WYMeditor.BLOCKQUOTE
                 );
                 if (blockquote === null) {
@@ -2617,7 +2617,7 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
 
     // Find the currently-selected container
     container = jQuery(
-        this.findUp(this.container(), WYMeditor.POTENTIAL_TABLE_INSERT_ELEMENTS)
+        this.findUp(this.mainContainer(), WYMeditor.POTENTIAL_TABLE_INSERT_ELEMENTS)
     ).get(0);
 
     if (!container || !container.parentNode) {
