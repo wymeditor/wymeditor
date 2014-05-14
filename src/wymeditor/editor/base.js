@@ -424,8 +424,8 @@ WYMeditor.editor.prototype.selection = function () {
 };
 
 /**
-    WYMeditor.editor.selectedNode
-    ==========================
+    WYMeditor.editor.nodeAfterSel
+    =============================
 
     Returns the selected node in a collapsed selection.
 */
