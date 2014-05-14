@@ -137,22 +137,22 @@ TableEditor.prototype.bindEvents = function () {
     jQuery(wym._box).find(
         tableEditor._options.sAddRowButtonSelector
     ).click(function () {
-        return tableEditor.addRow(wym.selected());
+        return tableEditor.addRow(wym.selContainer());
     });
     jQuery(wym._box).find(
         tableEditor._options.sRemoveRowButtonSelector
     ).click(function () {
-        return tableEditor.removeRow(wym.selected());
+        return tableEditor.removeRow(wym.selContainer());
     });
     jQuery(wym._box).find(
         tableEditor._options.sAddColumnButtonSelector
     ).click(function () {
-        return tableEditor.addColumn(wym.selected());
+        return tableEditor.addColumn(wym.selContainer());
     });
     jQuery(wym._box).find(
         tableEditor._options.sRemoveColumnButtonSelector
     ).click(function () {
-        return tableEditor.removeColumn(wym.selected());
+        return tableEditor.removeColumn(wym.selContainer());
     });
 
     // Handle tab clicks
@@ -640,7 +640,7 @@ TableEditor.prototype.keyDown = function (evt) {
         tableEditor = wym.tableEditor;
 
     if (evt.which === WYMeditor.KEY.TAB) {
-        return tableEditor.selectNextCell(wym.selected());
+        return tableEditor.selectNextCell(wym.selContainer());
     }
 
     return null;

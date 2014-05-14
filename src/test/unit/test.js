@@ -1,6 +1,6 @@
 /* jshint camelcase: false, maxlen: 100 */
 /* global -$,
-ok, start, stop, test, expect, equal, deepEqual, sinon,
+ok, start, stop, test, expect, equal, deepEqual, sinon, strictEqual,
 wymEqual, moveSelector, makeTextSelection, isContentEditable, normalizeHtml,
 inPhantomjs, ListPlugin */
 "use strict";
@@ -56,7 +56,7 @@ function setupWym(modificationCallback) {
                 span = $body.find(spanSelector)[0];
                 wym.tableEditor.selectElement($body.find(tdSelector)[0]);
 
-                if (wym.selected() === span) {
+                if (wym.selContainer() === span) {
                     WYMeditor._isInnerSelector = true;
                 } else {
                     WYMeditor._isInnerSelector = false;
@@ -401,7 +401,7 @@ function testPaste(
         endElmnt = $body.find(pasteEndSelector).get(0);
         makeTextSelection(
             wymeditor, startElmnt, endElmnt, pasteStartIndex, pasteEndIndex);
-        deepEqual(wymeditor.selected(), startElmnt, "moveSelector");
+        deepEqual(wymeditor.selContainer(), startElmnt, "moveSelector");
     }
     wymeditor.paste(textToPaste);
 
@@ -1344,3 +1344,152 @@ test("Can set and get html with the html() function", function () {
               "Set and get with html() function");
 });
 
+module("selection", {setup: setupWym});
+
+var selTest = {};
+
+// HTML for the following test.
+selTest.setCollapsedHtml = [""
+    , '<p id="0">'
+        , '0.0'
+        , '<br id="0.1" />'
+        , '0.2'
+        , '<br id="0.3" />'
+        , '<span id="0.4">'
+        , '</span>'
+    , '</p>'
+    , '<p id="1">'
+        , '1.0'
+        , '<span id="1.1">'
+            , '1.1.0'
+            , '<br id="1.1.1" />'
+            , '1.1.2'
+        , '</span>'
+        , '1.2'
+    , '</p>'
+    , '<ul id="2">'
+        , '<li id="2.0">'
+            , '2.0.0'
+            , '<br id="2.0.1" />'
+            , '2.0.3'
+        , '</li>'
+        , '<li id="2.1">'
+            , '<br id="2.1.0" />'
+            , '2.1.1'
+        , '</li>'
+        , '<li id="2.2">'
+            , '<br id="2.2.0" />'
+        , '</li>'
+    , '</ul>'
+    , '<p id="3">'
+    , '</p>'
+    , '<blockquote id="4">'
+        , '<p id="4.0">'
+            , '4.0.1'
+        , '</p>'
+    , '</blockquote>'
+].join('');
+
+// This is a data-driven test for setting and getting collapsed selections.
+// Collapsed selections are practically the caret position.
+test("Set and get collapsed selection", function () {
+    var
+        // Save the WYMeditor instance.
+        wymeditor = jQuery.wymeditors(0),
+
+        $allNodes,
+        i,
+        curNode,
+        assertStrCount,
+        assertStrPre;
+
+    // Load the HTML into the WYMeditor.
+    wymeditor._html(selTest.setCollapsedHtml);
+
+    // Save a jQuery of all of the nodes in the WYMeditor's body.
+    $allNodes = jQuery(wymeditor._doc).find('body.wym_iframe *')
+        .contents().andSelf();
+
+    // Iterate through all of the nodes:
+    for (i = 0; i < $allNodes.length; i++) {
+
+        // Save the current node.
+        curNode = $allNodes[i];
+
+        // Set an assertion count string prefix.
+        assertStrCount = 'Selection ' + (i + 1) + ' of ' +
+            $allNodes.length + '; ';
+
+        if (
+            // the node is an element and
+            curNode.tagName &&
+            // it can contain child nodes
+            jQuery.inArray(
+                curNode.tagName.toLowerCase(),
+                WYMeditor.NON_CONTAINING_ELEMENTS
+            ) === -1
+        ) {
+            // Set an assertion string prefix.
+            assertStrPre = "select inside element; ";
+
+            // Set collapsed selection inside of it.
+            wymeditor.setFocusInNode(curNode);
+
+            if (
+                // it has at least one child node
+                curNode.childNodes.length > 0
+            ) {
+                // Expect one more assertion.
+                expect(expect() + 1);
+
+                // Assert: Its first child node is immediately after selection.
+                strictEqual(
+                    wymeditor.nodeAfterSel(),
+                    curNode.childNodes[0],
+                    assertStrCount + assertStrPre +
+                        "first child is immediately after selection."
+                );
+            }
+                // Expect one more assertion.
+                expect(expect() + 1);
+
+                // Assert: It contains the selection.
+                strictEqual(
+                    wymeditor.selContainer(),
+                    curNode,
+                    assertStrCount + assertStrPre + "node contains selection.");
+        }
+
+        if (
+            // node is not at root and
+            curNode.parentNode.tagName.toLowerCase() !== 'body' &&
+            // not directly inside `blockquote`
+            curNode.parentNode.tagName.toLowerCase() !== 'blockquote'
+        ) {
+            // Set an assertion string prefix.
+            assertStrPre = "select before node; ";
+
+            // Set collapsed selection immediately before it.
+            wymeditor.setFocusBeforeNode(curNode);
+
+            // Expect two more assertions.
+            expect(expect() + 2);
+
+            // Assert: Node is immediately after selection
+            strictEqual(
+                wymeditor.nodeAfter(),
+                curNode,
+                assertStrCount + assertStrPre +
+                    "node is immediately after selection."
+            );
+
+            // Assert: Node's parent contains selection.
+            strictEqual(
+                wymeditor.selContainer(),
+                curNode.parentNode,
+                assertStrCount + assertStrPre +
+                    "node's parent contains selection."
+            );
+        }
+    }
+});

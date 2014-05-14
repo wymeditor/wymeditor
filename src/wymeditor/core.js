@@ -863,7 +863,7 @@ WYMeditor.computeJqueryPath = function () {
 
 WYMeditor.INIT_DIALOG = function (index) {
     var wym = window.opener.WYMeditor.INSTANCES[index],
-        selected = wym.selected(),
+        selected = wym.selContainer(),
         dialogType = jQuery(wym._options.dialogTypeSelector).val(),
         sStamp = wym.uniqueStamp(),
         tableOnClick;

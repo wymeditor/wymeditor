@@ -38,7 +38,7 @@ ListPlugin.prototype.handleKeyDown = function(evt) {
     var wym = WYMeditor.INSTANCES[this.title];
     var listPlugin = wym.listPlugin;
 
-    var container = wym.selected();
+    var container = wym.selContainer();
     var name = container.tagName.toLowerCase();
     // We only care about tabs when we're inside a list
     if (name != "li") {

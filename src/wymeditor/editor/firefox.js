@@ -93,7 +93,7 @@ WYMeditor.WymClassMozilla.prototype._html = function (html) {
 };
 
 WYMeditor.WymClassMozilla.prototype._exec = function (cmd, param) {
-    if (!this.selected()) {
+    if (!this.selContainer()) {
         return false;
     }
 
@@ -104,7 +104,7 @@ WYMeditor.WymClassMozilla.prototype._exec = function (cmd, param) {
     }
 
     //set to P if parent = BODY
-    var container = this.selected();
+    var container = this.selContainer();
     if (container && container.tagName.toLowerCase() === WYMeditor.BODY) {
         this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
         this.fixBodyHtml();
@@ -159,7 +159,7 @@ WYMeditor.WymClassMozilla.prototype.keyup = function (evt) {
             !evt.metaKey &&
             !evt.ctrlKey) {
 
-        container = wym.selected();
+        container = wym.selContainer();
         name = container.tagName.toLowerCase();
         if (container.parentNode) {
             parentName = container.parentNode.tagName.toLowerCase();
@@ -187,7 +187,7 @@ WYMeditor.WymClassMozilla.prototype.keyup = function (evt) {
     if (wym.keyCanCreateBlockElement(evt.which)) {
         // If the selected container is a root container, make sure it is not a
         // different possible default root container than the chosen one.
-        container = wym.selected();
+        container = wym.selContainer();
         name = container.tagName.toLowerCase();
         if (container.parentNode) {
             parentName = container.parentNode.tagName.toLowerCase();
@@ -204,7 +204,7 @@ WYMeditor.WymClassMozilla.prototype.keyup = function (evt) {
 
 WYMeditor.WymClassMozilla.prototype.click = function () {
     var wym = WYMeditor.INSTANCES[this.title],
-        container = wym.selected(),
+        container = wym.selContainer(),
         sel;
 
     if (WYMeditor.WymClassMozilla.NEEDS_CELL_FIX === true) {
