@@ -1477,7 +1477,7 @@ test("Set and get collapsed selection", function () {
 
             // Assert: Node is immediately after selection
             strictEqual(
-                wymeditor.nodeAfter(),
+                wymeditor.nodeAfterSel(),
                 curNode,
                 assertStrCount + assertStrPre +
                     "node is immediately after selection."
