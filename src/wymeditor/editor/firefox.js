@@ -263,3 +263,11 @@ WYMeditor.WymClassMozilla.prototype.afterInsertTable = function (table) {
     }
 };
 
+WYMeditor.WymClassMozilla.prototype.nodeAfterSel = function () {
+    var
+        // Save selection.
+        sel = this.selection();
+
+    // Make Gecko behave like most browsers.
+    return sel.focusNode.childNodes[sel.focusOffset];
+};
