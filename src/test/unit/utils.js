@@ -357,7 +357,7 @@ function moveSelector(wymeditor, selectedElement) {
         makeSelection(wymeditor, selectedElement, selectedElement, 0, 0);
     }
 
-    deepEqual(wymeditor.selected(), selectedElement, "moveSelector");
+    deepEqual(wymeditor.selContainer(), selectedElement, "moveSelector");
 }
 
 
