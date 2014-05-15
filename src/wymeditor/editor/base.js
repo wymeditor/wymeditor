@@ -1414,7 +1414,7 @@ WYMeditor.editor.prototype.canSetFocusBeforeNode = function (node) {
 
 /**
     editor.setFocusBeforeNode
-    =====================
+    =========================
 
     Sets a collapsed selection to immediately before a provided node.
 
