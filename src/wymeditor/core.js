@@ -251,7 +251,7 @@ jQuery.extend(WYMeditor, {
 
     // Elements that should not contain collapsed selection directly.
     NO_CARET_ELEMENTS: ["br", "hr", "img", "ul", "ol", "table", "dl", "tbody",
-        "th", "tr"],
+        "thead", "tr", "colgroup"],
 
     // Inline elements.
     INLINE_ELEMENTS : ["b", "big", "i", "small", "tt", "abbr", "acronym",
