@@ -268,6 +268,17 @@ WYMeditor.WymClassMozilla.prototype.nodeAfterSel = function () {
         // Save selection.
         sel = this.selection();
 
+    // Selection must be collapsed.
+    this.selMustCollapsed();
+
+    if (
+        // the focus node has no children
+        sel.focusNode.childNodes.length === 0
+    ) {
+        // This is an error.
+        throw "There is no node immediately after selection.";
+    }
+
     // Make Gecko behave like most browsers.
     return sel.focusNode.childNodes[sel.focusOffset];
 };
