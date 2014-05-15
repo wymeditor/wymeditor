@@ -457,28 +457,26 @@ WYMeditor.editor.prototype.nodeAfterSel = function () {
 */
 WYMeditor.editor.prototype.selContainer = function () {
     var
-        // Get the selected node.
-        // TODO don't use this here because a selection may be inside an empty
-        // element.
-        selectedNode = this.nodeAfterSel();
+        // Save the selection's focus node.
+        focusNode = this.selection().focusNode;
 
         if (
-            // the selected node is text or
-            selectedNode.nodeType === 3 || (
+            // the focus node is text or
+            focusNode.nodeType === 3 || (
                 // is an element and
-                selectedNode.tagName &&
+                focusNode.tagName &&
                 // can't contain child nodes:
                 jQuery.inArray(
-                    selectedNode.tagName.toLowerCase(),
+                    focusNode.tagName.toLowerCase(),
                     WYMeditor.NON_CONTAINING_ELEMENTS
                 ) > -1
             )
         ) {
             // return its parent node.
-            return selectedNode.parentNode;
+            return focusNode.parentNode;
 
         } else {
-            return selectedNode;
+            return focusNode;
         }
 
 };
