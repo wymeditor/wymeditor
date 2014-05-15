@@ -249,6 +249,16 @@ jQuery.extend(WYMeditor, {
     // nodes.
     NON_CONTAINING_ELEMENTS : ["br", "hr", "img"],
 
+    // Elements that should not contain collapsed selection directly.
+    NO_CARET_ELEMENTS: ["br", "hr", "img", "ul", "ol", "table", "dl", "tbody",
+        "th", "tr"],
+
+    // Inline elements.
+    INLINE_ELEMENTS : ["b", "big", "i", "small", "tt", "abbr", "acronym",
+        "cite", "code", "dfn", "em", "kbd", "strong", "samp", "var", "a",
+        "bdo", "br", "img", "map", "object", "q", "script", "span", "sub",
+        "sup", "button", "input", "label", "select", "textarea"],
+
     // The remaining `MAIN_CONTAINERS` that are not considered
     // `BLOCKING_ELEMENTS`
     NON_BLOCKING_ELEMENTS : ["p", "div", "h1", "h2", "h3", "h4", "h5", "h6"],

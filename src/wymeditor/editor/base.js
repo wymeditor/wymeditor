@@ -1384,6 +1384,33 @@ WYMeditor.editor.prototype.wrap = function (left, right) {
 WYMeditor.editor.prototype.unwrap = function () {
     this.insert(this._iframe.contentWindow.getSelection().toString());
 };
+/**
+    editor.canSetFocusBeforeNode
+    ============================
+
+    Returns true if it is OK to set a collapsed selection immediately before
+    a node. Otherwise returns false.
+
+    @param node A node to check about.
+ */
+WYMeditor.editor.prototype.canSetFocusBeforeNode = function (node) {
+
+    if (
+        // the node is not text and
+        node.nodeType !== 3 &&
+        // the node is an element and
+        node.tagName &&
+        // it is not an inline element
+        jQuery.inArray(
+            node.tagName.toLowerCase(),
+            WYMeditor.INLINE_ELEMENTS
+        ) === -1
+    ) {
+        return false;
+    } else {
+        return true;
+    }
+};
 
 /**
     editor.setFocusBeforeNode
@@ -1404,17 +1431,13 @@ WYMeditor.editor.prototype.setFocusBeforeNode = function (node) {
         selection = rangy.getIframeSelection(this._iframe);
 
     if (
-        // the node is an element and
-        node.tagName &&
-        // it is of the main containers:
-        jQuery.inArray(
-            node.tagName.toLowerCase(),
-            WYMeditor.MAIN_CONTAINERS
-        ) > -1
+        // can't set a collapsed selection immediately before the node
+        !this.canSetFocusBeforeNode(node)
     ) {
         // It is an error.
-        throw "Will not place caret outside of a main container. Perhaps you" +
-            " mean to use `.setFocusInNode`, instead.";
+        throw "Will not set collapsed selection immediately before a " +
+            "node that is not inline. Perhaps you mean to use " +
+            "`.setFocusInNode`, instead.";
     }
 
     // Set the range to encompass the node.
@@ -1425,6 +1448,36 @@ WYMeditor.editor.prototype.setFocusBeforeNode = function (node) {
 
     // Set the selection.
     selection.setSingleRange(range);
+};
+
+/**
+    editor.canSetFocusInNode
+    ========================
+
+    Returns true if it is OK to set a collapsed selection inside a node.
+    Otherwise returns false.
+
+    @param node A node to check about.
+ */
+WYMeditor.editor.prototype.canSetFocusInNode = function (node) {
+
+    if (
+        // the node is text or
+        node.nodeType === 3 ||
+        (
+            // it is an element and
+            node.tagName &&
+            // an element that should not contain a collapsed selection:
+            jQuery.inArray(
+                node.tagName.toLowerCase(),
+                WYMeditor.NO_CARET_ELEMENTS
+            ) > -1
+        )
+    ) {
+        return false;
+    } else {
+        return true;
+    }
 };
 
 /**
@@ -1446,21 +1499,13 @@ WYMeditor.editor.prototype.setFocusInNode = function (node) {
         selection = rangy.getIframeSelection(this._iframe);
 
     if (
-        // the node is text or
-        node.nodeType === 3 ||
-        (
-            // it is an element and
-            node.tagName &&
-            // an element that can't contain child nodes:
-            jQuery.inArray(
-                node.tagName.toLowerCase(),
-                WYMeditor.NON_CONTAINING_ELEMENTS
-            ) > -1
-        )
+        // can't set a collapsed selection in the node
+        !this.canSetFocusInNode(node)
     ) {
         // It is an error.
-        throw "The node must be an element that can contain child nodes. " +
-            "Perhaps you want to use `setFocusBeforeNode`, instead.";
+        throw "The node must be an element that is allowed to contain a " +
+            "collapsed selection. Perhaps you want to use " +
+            "`setFocusBeforeNode`, instead.";
     }
 
     // Set the range to encompass the contents of the node.

@@ -1421,13 +1421,8 @@ test("Set and get collapsed selection", function () {
             $allNodes.length + '; ';
 
         if (
-            // the node is an element and
-            curNode.tagName &&
-            // it can contain child nodes
-            jQuery.inArray(
-                curNode.tagName.toLowerCase(),
-                WYMeditor.NON_CONTAINING_ELEMENTS
-            ) === -1
+            // it is OK to set a collapsed selection in this node
+            wymeditor.canSetFocusInNode(curNode)
         ) {
             // Set an assertion string prefix.
             assertStrPre = "select inside element; ";
@@ -1461,10 +1456,8 @@ test("Set and get collapsed selection", function () {
         }
 
         if (
-            // node is not at root and
-            curNode.parentNode.tagName.toLowerCase() !== 'body' &&
-            // not directly inside `blockquote`
-            curNode.parentNode.tagName.toLowerCase() !== 'blockquote'
+            // it is OK to set a collapsed selection before this node
+            wymeditor.canSetFocusBeforeNode(curNode)
         ) {
             // Set an assertion string prefix.
             assertStrPre = "select before node; ";
