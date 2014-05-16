@@ -1446,6 +1446,10 @@ selTest.setCollapsedHtml = [""
             , '7.3.0'
         , '</i>'
         , '7.4'
+        , '<strong id="7.5">'
+        , '</strong>'
+        , '<i id="7.6">'
+        , '</i>'
     , '</p>'
 ].join('');
 
