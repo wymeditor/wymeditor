@@ -361,13 +361,13 @@ function moveSelector(wymeditor, selectedElement) {
         // do it.
         wymeditor.setCaretIn(selectedElement);
 
-    if (
-        // assertions were expected
-        expect()
-    ) {
-        // Expect one more assertion.
-        expect(expect() + 1);
-    }
+        if (
+            // assertions were expected
+            expect()
+        ) {
+            // Expect one more assertion.
+            expect(expect() + 1);
+        }
 
         // Assert: It contains the selection.
         deepEqual(
@@ -385,13 +385,13 @@ function moveSelector(wymeditor, selectedElement) {
         // do it.
         wymeditor.setCaretBefore(selectedElement);
 
-    if (
-        // assertions were expected
-        expect()
-    ) {
-        // Expect one more assertion.
-        expect(expect() + 1);
-    }
+        if (
+            // assertions were expected
+            expect()
+        ) {
+            // Expect one more assertion.
+            expect(expect() + 1);
+        }
 
         // Assert: The selected element is immediately after the collapsed
         // selection.

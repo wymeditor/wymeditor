@@ -1,4 +1,4 @@
-/*jshint evil: true, camelcase: false, maxlen: 100 */
+*jshint evil: true, camelcase: false, maxlen: 100 */
 /* global -$, rangy */
 "use strict";
 
@@ -539,7 +539,7 @@ WYMeditor.editor.prototype.selected_contains = function (selector) {
 
 /**
     WYMeditor.editor.selected_parents_contains
-    ==================================
+    ==========================================
 
     Return an array of nodes that match the selector within
     the selection's parents.
@@ -556,7 +556,7 @@ WYMeditor.editor.prototype.selected_parents_contains = function (selector) {
 
 /**
     WYMeditor.editor.mainContainer
-    ==========================
+    ==============================
 
     Get or set the selected main container.
 */
@@ -949,7 +949,7 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
 
 /**
     editor._getBlockSepSelector
-    =============================
+    ===========================
 
     Build a string representing a jquery selector that will find all
     elements which need a spacer <br> before them. This includes all consecutive
@@ -1009,7 +1009,7 @@ WYMeditor.editor.prototype._getBlockSepSelector = function () {
 
 /*
     editor._getBlockInListSepSelector
-    ==================================
+    =================================
 
     Returns a selector for getting all of the block elements in lists
     or sublists. The block elements at the end of lists or sublists should have
@@ -1410,7 +1410,7 @@ WYMeditor.editor.prototype.canSetCaretBeforeStrong = function () {
 
 /**
     editor.canSetCaretBefore
-    ============================
+    ========================
 
     Returns true if it is OK to set a collapsed selection immediately before
     a node. Otherwise returns false.
@@ -1450,7 +1450,7 @@ WYMeditor.editor.prototype.canSetCaretBefore = function (node) {
 
 /**
     editor.setCaretBefore
-    =========================
+    =====================
 
     Sets a collapsed selection to immediately before a provided node.
 
@@ -1488,7 +1488,7 @@ WYMeditor.editor.prototype.setCaretBefore = function (node) {
 
 /**
    editor.canSetCaretAtStartOf
-   =================================
+   ===========================
 
    Rangy issue #209. Returns true.
  */
@@ -1498,7 +1498,7 @@ WYMeditor.editor.prototype.canSetCaretAtStartOf = function () {
 
 /**
     editor.canSetCaretIn
-    ========================
+    ====================
 
     Returns true if it is OK to set a collapsed selection inside a node.
     Otherwise returns false.
@@ -1543,7 +1543,7 @@ WYMeditor.editor.prototype.canSetCaretIn = function (node) {
 
 /**
     editor.setCaretIn
-    =====================
+    =================
 
     Sets a collapsed selection to inside provided container node, at the start.
 
@@ -1592,7 +1592,7 @@ WYMeditor.editor.prototype.setCaretIn = function (node) {
 
 /**
     editor.splitListItemContents
-    =============================
+    ============================
 
     Utility
 
@@ -1760,7 +1760,7 @@ WYMeditor.editor.prototype._indentSingleItem = function (listItem) {
 
 /**
     editor._outdentSingleItem
-    ========================
+    =========================
 
     Outdent a single list item via the dom, ensuring that the selected node moves in
     exactly one level and all other nodes stay at the same level.
@@ -1997,7 +1997,7 @@ WYMeditor.editor.prototype._correctOrphanedListItem = function (listNode) {
 
 /**
     editor._correctInvalidListNesting
-    ================================
+    =================================
 
     This is the function that actually does the list correction.
     correctInvalidListNesting is just a helper function that first finds the root
@@ -2520,7 +2520,7 @@ WYMeditor.editor.prototype.restoreSelectionAfterManipulation = function (manipul
 
 /**
     editor.insertOrderedlist
-    =========================
+    ========================
 
     Convert the selected block in to an ordered list.
 
@@ -2561,7 +2561,7 @@ WYMeditor.editor.prototype.insertOrderedlist = function () {
 
 /**
     editor.insertUnorderedlist
-    =========================
+    ==========================
 
     Convert the selected block in to an unordered list.
 
@@ -2600,7 +2600,7 @@ WYMeditor.editor.prototype.insertUnorderedlist = function () {
 
 /**
     editor._insertList
-    =========================
+    ==================
 
     Convert the selected block in to the specified type of list.
 
