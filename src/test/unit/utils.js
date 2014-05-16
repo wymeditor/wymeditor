@@ -346,18 +346,61 @@ function makeTextSelection(
 * Move the selection to the start of the given element within the editor.
 */
 function moveSelector(wymeditor, selectedElement) {
-    if (selectedElement.tagName.toLowerCase() === 'span') {
-        // Hack to make span element selections work outside of FF. Webkit and
-        // IE select the node before the span if you try a collapsed selection
-        // on a span node.
-        // Should probably be doing block vs inline detection here instead of
-        // hardcoding detection for a span element
-        makeSelection(wymeditor, selectedElement, selectedElement, 0, 1);
-    } else {
-        makeSelection(wymeditor, selectedElement, selectedElement, 0, 0);
+    if (
+        // assertions were expected
+        expect()
+    ) {
+        // expect one less assertion.
+        expect(expect() - 1);
     }
 
-    deepEqual(wymeditor.selContainer(), selectedElement, "moveSelector");
+    if (
+        // it is OK to set a collapsed selection inside the selected element
+        wymeditor.canSetCaretIn(selectedElement)
+    ) {
+        // do it.
+        wymeditor.setCaretIn(selectedElement);
+
+    if (
+        // assertions were expected
+        expect()
+    ) {
+        // Expect one more assertion.
+        expect(expect() + 1);
+    }
+
+        // Assert: It contains the selection.
+        deepEqual(
+            wymeditor.selContainer(),
+            selectedElement,
+            "selected is after caret."
+        );
+    }
+
+    if (
+        // it is OK to set a collapsed selection immediately before the
+        // selected element
+        wymeditor.canSetCaretBefore(selectedElement)
+    ) {
+        // do it.
+        wymeditor.setCaretBefore(selectedElement);
+
+    if (
+        // assertions were expected
+        expect()
+    ) {
+        // Expect one more assertion.
+        expect(expect() + 1);
+    }
+
+        // Assert: The selected element is immediately after the collapsed
+        // selection.
+        deepEqual(
+            wymeditor.nodeAfterSel(),
+            selectedElement,
+            "selected is after caret."
+        );
+    }
 }
 
 
