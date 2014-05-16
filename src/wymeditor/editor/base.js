@@ -432,9 +432,29 @@ WYMeditor.editor.prototype.selection = function () {
 WYMeditor.editor.prototype.nodeAfterSel = function () {
     var
         // Save the selection.
-        sel = this.selection();
+        sel = this.selection(),
+        // Save an error string in case there is no node.
+        noNodeErrorStr = "There is no node immediately after the selection.";
 
-
+    if (
+        // the anchor node is an element and
+        sel.anchorNode.tagName &&
+        // it is not an inline element
+        jQuery.inArray(
+            sel.anchorNode.tagName.toLowerCase(),
+            WYMeditor.INLINE_ELEMENTS
+        ) === -1
+    ) {
+        if (
+            // the anchor node doesn't have any child nodes
+            sel.anchorNode.childNodes.length === 0
+        ) {
+            // it is an error.
+            throw noNodeErrorStr;
+        }
+        // return the anchor node's first child node.
+        return sel.anchorNode.childNodes[0];
+    }
     // Return the selection's focus node.
     return sel.focusNode;
 };
