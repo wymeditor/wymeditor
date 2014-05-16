@@ -424,35 +424,16 @@ WYMeditor.editor.prototype.selection = function () {
 };
 
 /**
-    WYMeditor.editor.selMustCollapsed
-    =================================
-
-    Check whether selection is collapsed. If it is not throw an exception.
-*/
-WYMeditor.editor.prototype.selMustCollapsed = function () {
-
-    if (
-        // the selection is not collapsed
-        this.selection().isCollapsed === false
-    ) {
-        // it is an error.
-        throw "Selection must be collapsed.";
-    }
-};
-
-/**
     WYMeditor.editor.nodeAfterSel
     =============================
 
-    Returns the node that is immediately after a collapsed selection.
+    Returns the node that is immediately after the selection.
 */
 WYMeditor.editor.prototype.nodeAfterSel = function () {
     var
         // Save the selection.
         sel = this.selection();
 
-    // Selection must be collapsed.
-    this.selMustCollapsed();
 
     // Return the selection's focus node.
     return sel.focusNode;

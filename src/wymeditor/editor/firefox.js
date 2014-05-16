@@ -268,9 +268,6 @@ WYMeditor.WymClassMozilla.prototype.nodeAfterSel = function () {
         // Save selection.
         sel = this.selection();
 
-    // Selection must be collapsed.
-    this.selMustCollapsed();
-
     if (
         // the focus node has no children
         sel.focusNode.childNodes.length === 0
