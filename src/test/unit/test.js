@@ -1447,7 +1447,9 @@ test("Set and get collapsed selection", function () {
 
     // Save a jQuery of all of the nodes in the WYMeditor's body.
     $allNodes = jQuery(wymeditor._doc).find('body.wym_iframe *')
-        .contents().andSelf();
+        .contents().andSelf()
+        // excluding the WYMeditor utility elements.
+        .not('.wym-editor-only');
 
     // Iterate through all of the nodes:
     for (i = 0; i < $allNodes.length; i++) {
