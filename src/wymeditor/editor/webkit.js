@@ -205,6 +205,11 @@ WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
     }
 };
 
+// Rangy issue #210.
+WYMeditor.WymClassSafari.prototype.canSetCaretBeforeStrong = function () {
+    return false;
+};
+
 // Rangy issue #209.
 WYMeditor.WymClassSafari.prototype.canSetCaretAtStartOf = function (node) {
     if (

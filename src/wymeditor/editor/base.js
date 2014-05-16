@@ -1397,6 +1397,17 @@ WYMeditor.editor.prototype.wrap = function (left, right) {
 WYMeditor.editor.prototype.unwrap = function () {
     this.insert(this._iframe.contentWindow.getSelection().toString());
 };
+
+/**
+    editor.canSetCaretBeforeStrong
+    ==============================
+
+    Rangy issue #210. Always returns true.
+*/
+WYMeditor.editor.prototype.canSetCaretBeforeStrong = function () {
+    return true;
+};
+
 /**
     editor.canSetCaretBefore
     ============================
@@ -1421,7 +1432,19 @@ WYMeditor.editor.prototype.canSetCaretBefore = function (node) {
     ) {
         return false;
     } else {
-        return true;
+        if (
+            // it is an element and
+            node.tagName &&
+            // a 'strong' and
+            node.tagName.toLowerCase() === 'strong' &&
+            // it is possible to set a collapsed selection immediately before
+            // a 'strong' in the current browser (Rangy issue #210)
+            this.canSetCaretBeforeStrong()
+        ) {
+            return true;
+        } else {
+            return false;
+        }
     }
 };
 
