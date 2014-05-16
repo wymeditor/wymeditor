@@ -204,7 +204,7 @@ WYMeditor.WymClassExplorer.prototype.keyup = function (evt) {
             !evt.metaKey &&
             !evt.ctrlKey) {
 
-        container = wym.selContainer();
+        container = wym.selectedContainer();
         selectedNode = wym.selection().focusNode;
         if (container !== null) {
             name = container.tagName.toLowerCase();
@@ -245,7 +245,7 @@ WYMeditor.WymClassExplorer.prototype.keyup = function (evt) {
     if (wym.keyCanCreateBlockElement(evt.which)) {
         // If the selected container is a root container, make sure it is not a
         // different possible default root container than the chosen one.
-        container = wym.selContainer();
+        container = wym.selectedContainer();
         name = container.tagName.toLowerCase();
         if (container.parentNode) {
             parentName = container.parentNode.tagName.toLowerCase();

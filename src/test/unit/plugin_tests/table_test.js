@@ -62,7 +62,7 @@ function testTableTab(initialHtml, startSelector, endSelector) {
 
     simulateKey(WYMeditor.KEY.TAB, startElmnt);
 
-    actualSelection = wymeditor.selContainer();
+    actualSelection = wymeditor.selectedContainer();
     if (endSelector === null) {
         deepEqual(actualSelection, null);
     } else {
@@ -123,7 +123,7 @@ function testRowMerge(
 
     // Verify that our now-current selection matches the expected final
     // selection.
-    actualSelection = wymeditor.selContainer();
+    actualSelection = wymeditor.selectedContainer();
     if (expectedFinalSelector === null) {
         deepEqual(actualSelection, null);
     } else {

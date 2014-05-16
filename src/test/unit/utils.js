@@ -371,7 +371,7 @@ function moveSelector(wymeditor, selectedElement) {
 
         // Assert: It contains the selection.
         deepEqual(
-            wymeditor.selContainer(),
+            wymeditor.selectedContainer(),
             selectedElement,
             "selected is after caret."
         );

@@ -461,7 +461,7 @@ WYMeditor.SKINS.seamless = {
     scrollIfNeeded: function (wym) {
         var iframeOffset = jQuery(wym._iframe).offset(),
             iframeOffsetTop = iframeOffset.top,
-            $container = jQuery(wym.selContainer()),
+            $container = jQuery(wym.selectedContainer()),
             containerOffset = $container.offset(),
             viewportLowestY,
             containerLowestY,

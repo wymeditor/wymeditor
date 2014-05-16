@@ -47,7 +47,7 @@ WYMeditor.WymClassSafari.prototype.initIframe = function (iframe) {
 };
 
 WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
-    if (!this.selContainer()) {
+    if (!this.selectedContainer()) {
         return false;
     }
 
@@ -63,7 +63,7 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
         this._doc.execCommand(cmd, '', null);
     }
 
-    container = this.selContainer();
+    container = this.selectedContainer();
     if (container) {
         $container = jQuery(container);
         tagName = container.tagName.toLowerCase();
@@ -162,7 +162,7 @@ WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
             !evt.metaKey &&
             !evt.ctrlKey) {
 
-        container = wym.selContainer();
+        container = wym.selectedContainer();
         name = container.tagName.toLowerCase();
         if (container.parentNode) {
             parentName = container.parentNode.tagName.toLowerCase();
@@ -190,7 +190,7 @@ WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
     if (wym.keyCanCreateBlockElement(evt.which)) {
         // If the selected container is a root container, make sure it is not a
         // different possible default root container than the chosen one.
-        container = wym.selContainer();
+        container = wym.selectedContainer();
         name = container.tagName.toLowerCase();
         if (container.parentNode) {
             parentName = container.parentNode.tagName.toLowerCase();

@@ -460,7 +460,7 @@ WYMeditor.editor.prototype.nodeAfterSel = function () {
 };
 
 /**
-    WYMeditor.editor.selContainer
+    WYMeditor.editor.selectedContainer
     =============================
 
     Returns the selection's container.
@@ -468,7 +468,7 @@ WYMeditor.editor.prototype.nodeAfterSel = function () {
     Not to be confused with `.selMainContainer`, which returns the
     selection's main container.
 */
-WYMeditor.editor.prototype.selContainer = function () {
+WYMeditor.editor.prototype.selectedContainer = function () {
     var
         // Save the selection's focus node.
         focusNode = this.selection().focusNode;
@@ -546,7 +546,7 @@ WYMeditor.editor.prototype.selected_contains = function (selector) {
 */
 WYMeditor.editor.prototype.selected_parents_contains = function (selector) {
     var $matches = jQuery([]),
-        $selected = jQuery(this.selContainer());
+        $selected = jQuery(this.selectedContainer());
     if ($selected.is(selector)) {
         $matches = $matches.add($selected);
     }
@@ -562,7 +562,7 @@ WYMeditor.editor.prototype.selected_parents_contains = function (selector) {
 */
 WYMeditor.editor.prototype.mainContainer = function (sType) {
     if (typeof (sType) === 'undefined') {
-        return this.selContainer();
+        return this.selectedContainer();
     }
 
     var container = null,
@@ -699,7 +699,7 @@ WYMeditor.editor.prototype.toggleClass = function (sClass, jqexpr) {
     if (this._selectedImage) {
         container = this._selectedImage;
     } else {
-        container = jQuery(this.selContainer());
+        container = jQuery(this.selectedContainer());
     }
     container = jQuery(container).parentsOrSelf(jqexpr);
     jQuery(container).toggleClass(sClass);
@@ -1282,7 +1282,7 @@ WYMeditor.editor.prototype._handleMultilineBlockContainerPaste = function (
     paragraphs. May contain inline HTML.
 */
 WYMeditor.editor.prototype.paste = function (str) {
-    var container = this.selContainer(),
+    var container = this.selectedContainer(),
         paragraphStrings,
         j,
         textNodesToInsert,
@@ -2378,7 +2378,7 @@ WYMeditor.editor.prototype.indent = function () {
 
     // First, make sure this list is properly structured
     manipulationFunc = function () {
-        var selectedBlock = wym.selContainer(),
+        var selectedBlock = wym.selectedContainer(),
             potentialListBlock = wym.findUp(
                 selectedBlock,
                 ['ol', 'ul', 'li']
@@ -2438,7 +2438,7 @@ WYMeditor.editor.prototype.outdent = function () {
 
     // First, make sure this list is properly structured
     manipulationFunc = function () {
-        var selectedBlock = wym.selContainer(),
+        var selectedBlock = wym.selectedContainer(),
             potentialListBlock = wym.findUp(
                 selectedBlock,
                 ['ol', 'ul', 'li']
@@ -2537,7 +2537,7 @@ WYMeditor.editor.prototype.insertOrderedlist = function () {
 
     // First, make sure this list is properly structured
     manipulationFunc = function () {
-        var selectedBlock = wym.selContainer(),
+        var selectedBlock = wym.selectedContainer(),
             potentialListBlock = wym.findUp(
                 selectedBlock,
                 ['ol', 'ul', 'li']
@@ -2576,7 +2576,7 @@ WYMeditor.editor.prototype.insertUnorderedlist = function () {
 
     // First, make sure this list is properly structured
     manipulationFunc = function () {
-        var selectedBlock = wym.selContainer(),
+        var selectedBlock = wym.selectedContainer(),
             potentialListBlock = wym.findUp(
                 selectedBlock,
                 ['ol', 'ul', 'li']
@@ -2640,7 +2640,7 @@ WYMeditor.editor.prototype._insertList = function (listType) {
 
     // If we've selected a block-level item that's appropriate to convert in to a list,
     // convert it.
-    selectedBlock = this.selContainer();
+    selectedBlock = this.selectedContainer();
     // TODO: Use `_containerRules['root']` minus the ol/ul and
     // `_containerRules['contentsCanConvertToList']
     potentialListBlock = this.findUp(selectedBlock, WYMeditor.POTENTIAL_LIST_ELEMENTS);

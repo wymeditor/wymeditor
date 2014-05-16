@@ -56,7 +56,7 @@ function setupWym(modificationCallback) {
                 span = $body.find(spanSelector)[0];
                 wym.tableEditor.selectElement($body.find(tdSelector)[0]);
 
-                if (wym.selContainer() === span) {
+                if (wym.selectedContainer() === span) {
                     WYMeditor._isInnerSelector = true;
                 } else {
                     WYMeditor._isInnerSelector = false;
@@ -401,7 +401,7 @@ function testPaste(
         endElmnt = $body.find(pasteEndSelector).get(0);
         makeTextSelection(
             wymeditor, startElmnt, endElmnt, pasteStartIndex, pasteEndIndex);
-        deepEqual(wymeditor.selContainer(), startElmnt, "moveSelector");
+        deepEqual(wymeditor.selectedContainer(), startElmnt, "moveSelector");
     }
     wymeditor.paste(textToPaste);
 
@@ -1528,7 +1528,7 @@ test("Set and get collapsed selection", function () {
 
                 // Assert: It contains the selection.
                 strictEqual(
-                    wymeditor.selContainer(),
+                    wymeditor.selectedContainer(),
                     curNode,
                     assertStrCount + assertStrPre + "node contains selection.");
         }
@@ -1556,7 +1556,7 @@ test("Set and get collapsed selection", function () {
 
             // Assert: Node's parent contains selection.
             strictEqual(
-                wymeditor.selContainer(),
+                wymeditor.selectedContainer(),
                 curNode.parentNode,
                 assertStrCount + assertStrPre +
                     "node's parent contains selection."
