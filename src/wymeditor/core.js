@@ -247,7 +247,7 @@ jQuery.extend(WYMeditor, {
 
     // Elements that are not containers. They don't generally have any child
     // nodes.
-    NON_CONTAINING_ELEMENTS : ["br", "hr", "img"],
+    NON_CONTAINING_ELEMENTS : ["br", "hr", "img", "col"],
 
     // Elements that should not contain collapsed selection directly.
     NO_CARET_ELEMENTS: ["br", "hr", "img", "ul", "ol", "table", "dl", "tbody",
