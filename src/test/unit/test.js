@@ -1492,8 +1492,12 @@ test("Set and get collapsed selection", function () {
             wymeditor.setCaretIn(curNode);
 
             if (
-                // it has at least one child node
-                curNode.childNodes.length > 0
+                // it has at least one child node and
+                curNode.childNodes.length > 0 &&
+
+                // it is possible to set the caret at the start of it (Rangy
+                // issue #209)
+                wymeditor.canSetCaretAtStartOf(curNode)
             ) {
                 // Expect one more assertion.
                 expect(expect() + 1);

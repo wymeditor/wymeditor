@@ -1444,6 +1444,16 @@ WYMeditor.editor.prototype.setCaretBefore = function (node) {
 };
 
 /**
+   editor.canSetCaretAtStartOf
+   =================================
+
+   Rangy issue #209. Returns true.
+ */
+WYMeditor.editor.prototype.canSetCaretAtStartOf = function () {
+    return true;
+};
+
+/**
     editor.canSetCaretIn
     ========================
 
@@ -1468,9 +1478,24 @@ WYMeditor.editor.prototype.canSetCaretIn = function (node) {
         )
     ) {
         return false;
-    } else {
-        return true;
     }
+    if (
+        // Rangy issue #209.
+        // it is possible to set the caret at the start of it
+        !this.canSetCaretAtStartOf(node)
+    ) {
+        if (
+            // the node has no children
+            node.childNodes.length === 0
+        ) {
+            // Not possible to work-around this issue.
+            return false;
+        }
+        // it is possible to work-around this issue by setting a non-collapsed
+        // selection. Warn about this.
+        WYMeditor.console.warn("Can set a non-collapsed selection. Rangy issue #209.");
+    }
+    return true;
 };
 
 /**
@@ -1504,8 +1529,19 @@ WYMeditor.editor.prototype.setCaretIn = function (node) {
     // Set the range to encompass the contents of the node.
     range.selectNodeContents(node);
 
-    // Collapse it to the start.
-    range.collapse(true);
+    if (
+        // Rangy issue #209.
+        // it is possible to set the caret at the start of it
+        !this.canSetCaretAtStartOf(node)
+    ) {
+        // Don't collapse the range. As long as
+        // this occurs only in tests it is probably OK. Warn.
+        WYMeditor.console.warn("Can't set a collapsed selection. Setting " +
+           "a non-collapsed selection, instead. Rangy issue #209.");
+    } else {
+        // collapse it to the start.
+        range.collapse(true);
+    }
 
     // Set the selection.
     selection.setSingleRange(range);

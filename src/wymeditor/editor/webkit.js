@@ -205,3 +205,16 @@ WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
     }
 };
 
+// Rangy issue #209.
+WYMeditor.WymClassSafari.prototype.canSetCaretAtStartOf = function (node) {
+    if (
+        // it is an inline element
+        jQuery.inArray(
+            node.tagName.toLowerCase(),
+            WYMeditor.INLINE_ELEMENTS
+        ) > -1
+    ) {
+        return false;
+    }
+    return true;
+};

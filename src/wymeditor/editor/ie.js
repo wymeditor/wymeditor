@@ -268,3 +268,23 @@ WYMeditor.WymClassExplorer.prototype.keyup = function (evt) {
     }
 };
 
+// Rangy issue #209.
+WYMeditor.WymClassExplorer.prototype.canSetCaretAtStartOf = function (node) {
+    if (
+        // it is an inline element and
+        jQuery.inArray(
+            node.tagName.toLowerCase(),
+            WYMeditor.INLINE_ELEMENTS
+        ) > -1 && (
+            // the current browser is IE7 or
+            parseInt(jQuery.browser.version, 10) === 7 ||
+            // IE9 or
+            parseInt(jQuery.browser.version, 10) === 9 ||
+            // IE10
+            parseInt(jQuery.browser.version, 10) === 10
+        )
+    ) {
+        return false;
+    }
+    return true;
+};
