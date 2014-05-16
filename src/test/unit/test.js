@@ -1458,7 +1458,7 @@ test("Set and get collapsed selection", function () {
         curNode = $allNodes[i];
 
         // Set an assertion count string prefix.
-        assertStrCount = 'Selection ' + (i + 1) + ' of ' +
+        assertStrCount = 'node ' + (i + 1) + ' of ' +
             $allNodes.length + '; ';
 
         if (
