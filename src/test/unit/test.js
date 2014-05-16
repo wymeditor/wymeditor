@@ -1427,6 +1427,22 @@ selTest.setCollapsedHtml = [""
             , '</tr>'
         , '</tbody>'
     , '</table>'
+    , '<p id="6">'
+        , '6.0'
+        , '<strong id="6.1">'
+            , '6.1.0'
+        , '</strong>'
+        , '6.2'
+    , '</p>'
+    , '<p id="7">'
+        , '7.0'
+        , '<strong id="7.1">'
+            , '7.1.0'
+            , '<br id="7.1.1" />'
+            , '7.1.2'
+        , '</strong>'
+        , '7.2'
+    , '</p>'
 ].join('');
 
 // This is a data-driven test for setting and getting collapsed selections.
