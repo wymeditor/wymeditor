@@ -605,7 +605,7 @@ WYMeditor.editor.prototype.mainContainer = function (sType) {
                     newNode = this._doc.createElement(sType);
                     container.parentNode.insertBefore(newNode, container);
                     newNode.appendChild(container);
-                    this.setFocusInNode(newNode.firstChild);
+                    this.setCaretIn(newNode.firstChild);
                 } else {
                     nodes = blockquote.childNodes;
                     lgt = nodes.length;
@@ -621,7 +621,7 @@ WYMeditor.editor.prototype.mainContainer = function (sType) {
                     }
                     blockquote.parentNode.removeChild(blockquote);
                     if (firstNode) {
-                        this.setFocusInNode(firstNode);
+                        this.setCaretIn(firstNode);
                     }
                 }
             } else {
@@ -766,7 +766,7 @@ WYMeditor.editor.prototype.switchTo = function (node, sType, stripAttrs) {
     newNode.innerHTML = html;
     node.parentNode.replaceChild(newNode, node);
 
-    this.setFocusInNode(newNode);
+    this.setCaretIn(newNode);
 };
 
 WYMeditor.editor.prototype.replaceStrings = function (sVal) {
@@ -1378,7 +1378,7 @@ WYMeditor.editor.prototype.unwrap = function () {
     this.insert(this._iframe.contentWindow.getSelection().toString());
 };
 /**
-    editor.canSetFocusBeforeNode
+    editor.canSetCaretBefore
     ============================
 
     Returns true if it is OK to set a collapsed selection immediately before
@@ -1386,7 +1386,7 @@ WYMeditor.editor.prototype.unwrap = function () {
 
     @param node A node to check about.
  */
-WYMeditor.editor.prototype.canSetFocusBeforeNode = function (node) {
+WYMeditor.editor.prototype.canSetCaretBefore = function (node) {
 
     if (
         // the node is not text and
@@ -1406,17 +1406,17 @@ WYMeditor.editor.prototype.canSetFocusBeforeNode = function (node) {
 };
 
 /**
-    editor.setFocusBeforeNode
+    editor.setCaretBefore
     =========================
 
     Sets a collapsed selection to immediately before a provided node.
 
-    Not to be confused with `editor.setFocusInNode`, which sets a collapsed
+    Not to be confused with `editor.setCaretIn`, which sets a collapsed
     selection inside a container node, at the start.
 
     @param node A node to set the selection to immediately before of.
  */
-WYMeditor.editor.prototype.setFocusBeforeNode = function (node) {
+WYMeditor.editor.prototype.setCaretBefore = function (node) {
     var
         // Save a range in the WYMeditor.
         range = rangy.createRange(this._doc),
@@ -1425,12 +1425,12 @@ WYMeditor.editor.prototype.setFocusBeforeNode = function (node) {
 
     if (
         // can't set a collapsed selection immediately before the node
-        !this.canSetFocusBeforeNode(node)
+        !this.canSetCaretBefore(node)
     ) {
         // It is an error.
         throw "Will not set collapsed selection immediately before a " +
             "node that is not inline. Perhaps you mean to use " +
-            "`.setFocusInNode`, instead.";
+            "`.setCaretIn`, instead.";
     }
 
     // Set the range to encompass the node.
@@ -1444,7 +1444,7 @@ WYMeditor.editor.prototype.setFocusBeforeNode = function (node) {
 };
 
 /**
-    editor.canSetFocusInNode
+    editor.canSetCaretIn
     ========================
 
     Returns true if it is OK to set a collapsed selection inside a node.
@@ -1452,7 +1452,7 @@ WYMeditor.editor.prototype.setFocusBeforeNode = function (node) {
 
     @param node A node to check about.
  */
-WYMeditor.editor.prototype.canSetFocusInNode = function (node) {
+WYMeditor.editor.prototype.canSetCaretIn = function (node) {
 
     if (
         // the node is text or
@@ -1474,17 +1474,17 @@ WYMeditor.editor.prototype.canSetFocusInNode = function (node) {
 };
 
 /**
-    editor.setFocusInNode
+    editor.setCaretIn
     =====================
 
     Sets a collapsed selection to inside provided container node, at the start.
 
-    Not to be confused with `editor.setFocusBeforeNode`, which sets a collapsed
+    Not to be confused with `editor.setCaretBefore`, which sets a collapsed
     selection immediately before a node.
 
     @param node A node to set the selection inside of, at the start.
  */
-WYMeditor.editor.prototype.setFocusInNode = function (node) {
+WYMeditor.editor.prototype.setCaretIn = function (node) {
     var
         // Save a range in the WYMeditor.
         range = rangy.createRange(this._doc),
@@ -1493,12 +1493,12 @@ WYMeditor.editor.prototype.setFocusInNode = function (node) {
 
     if (
         // can't set a collapsed selection in the node
-        !this.canSetFocusInNode(node)
+        !this.canSetCaretIn(node)
     ) {
         // It is an error.
         throw "The node must be an element that is allowed to contain a " +
             "collapsed selection. Perhaps you want to use " +
-            "`setFocusBeforeNode`, instead.";
+            "`setCaretBefore`, instead.";
     }
 
     // Set the range to encompass the contents of the node.

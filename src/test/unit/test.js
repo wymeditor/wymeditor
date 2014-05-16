@@ -1483,13 +1483,13 @@ test("Set and get collapsed selection", function () {
 
         if (
             // it is OK to set a collapsed selection in this node
-            wymeditor.canSetFocusInNode(curNode)
+            wymeditor.canSetCaretIn(curNode)
         ) {
             // Set an assertion string prefix.
             assertStrPre = "select inside element; ";
 
             // Set collapsed selection inside of it.
-            wymeditor.setFocusInNode(curNode);
+            wymeditor.setCaretIn(curNode);
 
             if (
                 // it has at least one child node
@@ -1518,13 +1518,13 @@ test("Set and get collapsed selection", function () {
 
         if (
             // it is OK to set a collapsed selection before this node
-            wymeditor.canSetFocusBeforeNode(curNode)
+            wymeditor.canSetCaretBefore(curNode)
         ) {
             // Set an assertion string prefix.
             assertStrPre = "select before node; ";
 
             // Set collapsed selection immediately before it.
-            wymeditor.setFocusBeforeNode(curNode);
+            wymeditor.setCaretBefore(curNode);
 
             // Expect two more assertions.
             expect(expect() + 2);
