@@ -1402,7 +1402,9 @@ WYMeditor.editor.prototype.unwrap = function () {
     editor.canSetCaretBeforeStrong
     ==============================
 
-    Rangy issue #210. Always returns true.
+    // In short, some browsers can't set a collapsed selection immediately before
+    // a 'strong' element. Instead, the selection ends up one or more nodes
+    // before. Follow-up in Rangy issue #210.
 */
 WYMeditor.editor.prototype.canSetCaretBeforeStrong = function () {
     return true;
@@ -1440,6 +1442,9 @@ WYMeditor.editor.prototype.canSetCaretBefore = function (node) {
             // it is possible to set a collapsed selection immediately before
             // a 'strong' in the current browser (Rangy issue #210)
             this.canSetCaretBeforeStrong()
+            // In short, some browsers can't set a collapsed selection immediately before
+            // a 'strong' element. Instead, the selection ends up one or more nodes
+            // before. Follow-up in Rangy issue #210.
         ) {
             return true;
         } else {
