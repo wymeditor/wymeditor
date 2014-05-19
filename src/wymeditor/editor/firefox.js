@@ -264,6 +264,10 @@ WYMeditor.WymClassMozilla.prototype.afterInsertTable = function (table) {
 };
 
 WYMeditor.WymClassMozilla.prototype.nodeAfterSel = function () {
+// Gecko describes its selection different than other browsers. For other
+// browsers the focus node is the node that is after selection, generally.
+// In Gecko, the focus node is the parent of the node that is after selection.
+// Luckily, we are supplied with the focus offset.
     var
         // Save selection.
         sel = this.selection();
