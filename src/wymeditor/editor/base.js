@@ -777,6 +777,14 @@ WYMeditor.editor.prototype.switchTo = function (node, sType, stripAttrs) {
         attrs = node.attributes,
         i;
 
+    if (
+        // the node's is an 'img' element
+        node.tagName.toLowerCase() === 'img'
+    ) {
+        // it is an error.
+        throw "Will not change the tag of this element.";
+    }
+
     if (!stripAttrs) {
         for (i = 0; i < attrs.length; ++i) {
             newNode.setAttribute(attrs.item(i).nodeName,

@@ -1564,3 +1564,32 @@ test("Set and get collapsed selection", function () {
         }
     }
 });
+
+module("switchTo", {setup: setupWym});
+
+test("Refuses 'img' elements.", function () {
+    var
+        // Save the WYMeditor instance.
+        wymeditor = jQuery.wymeditors(0),
+
+        // Make some initial HTML.
+        html = '<p><img alt="" src="" /></p>';
+
+    // Load the HTML into the WYMeditor.
+    wymeditor._html(html);
+
+    try {
+        // `.switchTo` on the `img`.
+        wymeditor.switchTo(
+            jQuery(wymeditor._doc).find('body.wym_iframe').find('img')[0],
+            'span'
+        );
+    }
+    catch(err) {
+        strictEqual(
+            err,
+            "Will not change the tag of this element."
+        );
+    }
+
+});
