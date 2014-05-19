@@ -465,7 +465,7 @@ WYMeditor.editor.prototype.nodeAfterSel = function () {
 
     Returns the selection's container.
 
-    Not to be confused with `.selMainContainer`, which returns the
+    Not to be confused with `.mainContainer`, which sets and gets the
     selection's main container.
 */
 WYMeditor.editor.prototype.selectedContainer = function () {
