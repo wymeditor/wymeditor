@@ -100,21 +100,66 @@ Example:
 Unwrap the selection, by removing inline elements but keeping the selected
 text.
 
-**container(sType)**
+**nodeAfterSel()**
 
-Get or set the selected container.
+Get the node that is immediately after the selection, whether it is collapsed
+or not.
 
-Example: switch the container to Heading 1.
+**selectedContainer()**
+
+Get the selected container.
+
+This is currently supposed to be used with a collapsed selection only.
+
+**mainContainer(sType)**
+
+Get or set the main container in which the selection is entirely in.
+
+A main container is a root element in the document. For example, a paragraph
+or a 'div'. It is only allowed inside the root of the document and inside a
+blockquote element.
+
+Example: switch the main container to Heading 1.
 
 .. code-block:: javascript
 
-    wym.container('H1');
+    wym.mainContainer('H1');
 
-Example: get the selected container.
+Example: get the selected main container.
 
 .. code-block:: javascript
 
-    wym.status(wym.container().tagName);
+    wym.status(wym.mainContainer().tagName);
+
+**canSetCaretBefore(node)**
+
+Check whether it is possible to set a collapsed selection immediately before
+provided node.
+
+This check is useful for making sure that the caret will be placed in a place
+where typing is generally allowed. For example, not directly inside a 'ul'
+element.
+
+Returns true if yes and false if no.
+
+**setCaretBefore(node)**
+
+This sets a collapsed selection before the specified node.
+
+It checks whether this is possible, before doing so, using
+``canSetCaretBefore``.
+
+**canSetCaretIn(node)**
+
+Check whether it is possible to set a collapsed selection at the start inside a
+provided node. This is useful for the same reason as ``canSetCaretBefore``.
+
+**setCaretIn(element)**
+
+Sets a collapsed selection at the start inside a provided node.
+
+It checks whether this is possible, before doing so, using
+``canSetCaretIn``.
 
 **toggleClass(sClass, jqexpr)**
 
