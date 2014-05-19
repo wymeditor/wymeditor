@@ -346,6 +346,8 @@ function makeTextSelection(
 * Move the selection to the start of the given element within the editor.
 */
 function moveSelector(wymeditor, selectedElement) {
+    // This function was rewritten. Some of the existing callers were expecting
+    // assertions and others were not. so
     if (
         // assertions were expected
         expect()
