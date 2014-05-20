@@ -5,8 +5,6 @@ API
     In the code examples below, ``wym`` is a variable which refers to the
     WYMeditor instance, and which must be initialized.
 
-.. contents::
-
 Core
 ----
 
