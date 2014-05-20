@@ -592,7 +592,7 @@ WYMeditor.editor.prototype.container = function (sType) {
                     newNode = this._doc.createElement(sType);
                     container.parentNode.insertBefore(newNode, container);
                     newNode.appendChild(container);
-                    this.setFocusToNode(newNode.firstChild);
+                    this.setFocusInNode(newNode.firstChild);
                 } else {
                     nodes = blockquote.childNodes;
                     lgt = nodes.length;
@@ -608,7 +608,7 @@ WYMeditor.editor.prototype.container = function (sType) {
                     }
                     blockquote.parentNode.removeChild(blockquote);
                     if (firstNode) {
-                        this.setFocusToNode(firstNode);
+                        this.setFocusInNode(firstNode);
                     }
                 }
             } else {
@@ -753,7 +753,7 @@ WYMeditor.editor.prototype.switchTo = function (node, sType, stripAttrs) {
     newNode.innerHTML = html;
     node.parentNode.replaceChild(newNode, node);
 
-    this.setFocusToNode(newNode);
+    this.setFocusInNode(newNode);
 };
 
 WYMeditor.editor.prototype.replaceStrings = function (sVal) {
@@ -1365,13 +1365,91 @@ WYMeditor.editor.prototype.unwrap = function () {
     this.insert(this._iframe.contentWindow.getSelection().toString());
 };
 
-WYMeditor.editor.prototype.setFocusToNode = function (node, toStart) {
-    var range = rangy.createRange(this._doc),
-        selection = rangy.getIframeSelection(this._iframe);
-    toStart = toStart || false;
+/**
+    editor.setFocusBeforeNode
+    =====================
 
+    Sets a collapsed selection to immediately before a provided node.
+
+    Not to be confused with `editor.setFocusInNode`, which sets a collapsed
+    selection inside a container node, at the start.
+
+    @param node A node to set the selection to immediately before of.
+ */
+WYMeditor.editor.prototype.setFocusBeforeNode = function (node) {
+    var
+        // Save a range in the WYMeditor.
+        range = rangy.createRange(this._doc),
+        // Save the selection.
+        selection = rangy.getIframeSelection(this._iframe);
+
+    if (
+        // the node is an element and
+        node.tagName &&
+        // it is of the main containers:
+        jQuery.inArray(
+            node.tagName.toLowerCase(),
+            WYMeditor.MAIN_CONTAINERS
+        ) > -1
+    ) {
+        // It is an error.
+        throw "Will not place caret outside of a main container. Perhaps you" +
+            " mean to use `.setFocusInNode`, instead.";
+    }
+
+    // Set the range to encompass the node.
+    range.selectNode(node);
+
+    // Collapse it to the start.
+    range.collapse(true);
+
+    // Set the selection.
+    selection.setSingleRange(range);
+};
+
+/**
+    editor.setFocusInNode
+    =====================
+
+    Sets a collapsed selection to inside provided container node, at the start.
+
+    Not to be confused with `editor.setFocusBeforeNode`, which sets a collapsed
+    selection immediately before a node.
+
+    @param node A node to set the selection inside of, at the start.
+ */
+WYMeditor.editor.prototype.setFocusInNode = function (node) {
+    var
+        // Save a range in the WYMeditor.
+        range = rangy.createRange(this._doc),
+        // Save the selection.
+        selection = rangy.getIframeSelection(this._iframe);
+
+    if (
+        // the node is text or
+        node.nodeType === 3 ||
+        (
+            // it is an element and
+            node.tagName &&
+            // an element that can't contain child nodes:
+            jQuery.inArray(
+                node.tagName.toLowerCase(),
+                WYMeditor.NON_CONTAINING_ELEMENTS
+            ) > -1
+        )
+    ) {
+        // It is an error.
+        throw "The node must be an element that can contain child nodes. " +
+            "Perhaps you want to use `setFocusBeforeNode`, instead.";
+    }
+
+    // Set the range to encompass the contents of the node.
     range.selectNodeContents(node);
-    range.collapse(toStart);
+
+    // Collapse it to the start.
+    range.collapse(true);
+
+    // Set the selection.
     selection.setSingleRange(range);
 };
 
