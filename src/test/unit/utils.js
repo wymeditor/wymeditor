@@ -343,9 +343,9 @@ function makeTextSelection(
 
 
 /*
-* Move the selection to the start of the given element within the editor.
+* Set a collapsed selection at and, if possible, before `selecteNode`
 */
-function moveSelector(wymeditor, selectedElement) {
+function moveSelector(wymeditor, selectedNode) {
     // This function was rewritten. Some of the existing callers were expecting
     // assertions and others were not. so
     if (
@@ -357,9 +357,9 @@ function moveSelector(wymeditor, selectedElement) {
     }
 
     if (
-        wymeditor.canSetCaretIn(selectedElement)
+        wymeditor.canSetCaretIn(selectedNode)
     ) {
-        wymeditor.setCaretIn(selectedElement);
+        wymeditor.setCaretIn(selectedNode);
 
         if (
             expect()
@@ -369,15 +369,15 @@ function moveSelector(wymeditor, selectedElement) {
 
         deepEqual(
             wymeditor.selectedContainer(),
-            selectedElement,
+            selectedNode,
             "selected is after caret."
         );
     }
 
     if (
-        wymeditor.canSetCaretBefore(selectedElement)
+        wymeditor.canSetCaretBefore(selectedNode)
     ) {
-        wymeditor.setCaretBefore(selectedElement);
+        wymeditor.setCaretBefore(selectedNode);
 
         if (
             expect()
@@ -387,7 +387,7 @@ function moveSelector(wymeditor, selectedElement) {
 
         deepEqual(
             wymeditor.nodeAfterSel(),
-            selectedElement,
+            selectedNode,
             "selected is after caret."
         );
     }
