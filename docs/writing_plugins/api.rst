@@ -5,222 +5,214 @@ API
     In the code examples below, ``wym`` is a variable which refers to the
     WYMeditor instance, and which must be initialized.
 
-**box**
+Core
+----
 
-Return the WYMeditor container.
+``html(sHtml)``
+  Get or set the editor's HTML value.
 
-**html(sHtml)**
+  Example:
 
-Get or set the editor's HTML value.
+  .. code-block:: javascript
 
-Example:
+    wym.html("<p>Hello, World.</p>");
 
-.. code-block:: javascript
+``xhtml()``
+  Get the cleaned up editor's HTML value.
 
-  wym.html("<p>Hello, World.</p>");
+``update()``
+  Update the value of the element replaced by WYMeditor and the value of
+  the HTML source textarea.
 
-**xhtml**
+Selection Setting and Getting
+-----------------------------
 
-Get the cleaned up editor's HTML value.
+``nodeAfterSel()``
+  Get the node that is immediately after the selection, whether it is collapsed
+  or not.
 
-**exec(cmd)**
+``selectedContainer()``
+  Get the selected container.
 
-Execute a command.
+  This is currently supposed to be used with a collapsed selection only.
 
-*Supported command identifiers*
+``mainContainer(sType)``
+  Get or set the main container in which the selection is entirely in.
 
-*   Bold: set/unset ``strong`` on the selection
-*   Italic: set/unset ``em`` on the selection
-*   Superscript: set/unset ``sup`` on the selection
-*   Subscript: set/unset ``sub`` on the selection
-*   InsertOrderedList: create/remove an ordered list, based on the
-    selection
-*   InsertUnorderedList: create/remove an unordered list, based on the
-    selection
-*   Indent: `indent` the list element
-*   Outdent: `outdent` the list element
-*   Undo: undo an action
-*   Redo: redo an action
-*   CreateLink: open the link dialog and create/update a link on the
-    selection
-*   Unlink: remove a link, based on the selection
-*   InsertImage: open the image dialog and insert/update an image
-*   InsertTable: open the table dialog and insert a table
-*   Paste: opens the paste dialog and paste raw paragraphs from an
-    external application, e.g. Word
-*   ToggleHtml: show/hide the HTML value
-*   Preview: open the preview dialog
+  A main container is a root element in the document. For example, a paragraph
+  or a 'div'. It is only allowed inside the root of the document and inside a
+  blockquote element.
 
-**paste(data)**
+  Example: switch the main container to Heading 1.
 
-*Parameters*
+  .. code-block:: javascript
 
-* data: string
+      wym.mainContainer('H1');
 
-*Description*
+  Example: get the selected main container.
 
-    Paste raw text, inserting new paragraphs.
+  .. code-block:: javascript
 
-**insert(data)**
+      wym.status(wym.mainContainer().tagName);
 
-*Parameters*
+``canSetCaretBefore(node)``
+  Check whether it is possible to set a collapsed selection immediately before
+  provided node.
 
-* data: XHTML string
+  This check is useful for making sure that the caret will be placed in a place
+  where typing is generally allowed. For example, not directly inside a 'ul'
+  element.
 
-*Description*
+  Returns true if yes and false if no.
 
-    Insert XHTML string at the cursor position. If there's a selection, it is
-    replaced by ``data``.
+``setCaretBefore(node)``
+  This sets a collapsed selection before the specified node.
 
-Example:
+  It checks whether this is possible, before doing so, using
+  ``canSetCaretBefore``.
 
-.. code-block:: javascript
+``canSetCaretIn(node)``
+  Check whether it is possible to set a collapsed selection at the start inside
+  a provided node. This is useful for the same reason as ``canSetCaretBefore``.
 
-    wym.insert('<strong>Hello, World.</strong>');
+``setCaretIn(element)``
+  Sets a collapsed selection at the start inside a provided node.
 
-**wrap(left, right)**
+  It checks whether this is possible, before doing so, using
+  ``canSetCaretIn``.
 
-*Parameters*
+Content Manipulation
+--------------------
 
-* left: XHTML string
-* right: XHTML string
+``exec(cmd)``
+  Execute a command.
 
-*Description*
+  *Supported command identifiers*
 
-    Wrap the inline selection with XHTML.
+  *   Bold: set/unset ``strong`` on the selection
+  *   Italic: set/unset ``em`` on the selection
+  *   Superscript: set/unset ``sup`` on the selection
+  *   Subscript: set/unset ``sub`` on the selection
+  *   InsertOrderedList: create/remove an ordered list, based on the
+      selection
+  *   InsertUnorderedList: create/remove an unordered list, based on the
+      selection
+  *   Indent: `indent` the list element
+  *   Outdent: `outdent` the list element
+  *   Undo: undo an action
+  *   Redo: redo an action
+  *   CreateLink: open the link dialog and create/update a link on the
+      selection
+  *   Unlink: remove a link, based on the selection
+  *   InsertImage: open the image dialog and insert/update an image
+  *   InsertTable: open the table dialog and insert a table
+  *   Paste: opens the paste dialog and paste raw paragraphs from an
+      external application, e.g. Word
+  *   ToggleHtml: show/hide the HTML value
+  *   Preview: open the preview dialog
 
-Example:
+``paste(data)``
+  *Parameters*
 
-.. code-block:: javascript
+  * data: string
 
-    wym.wrap('<span class="city">', '</span>');
+  *Description*
 
-**unwrap()**
+  Paste raw text, inserting new paragraphs.
 
-Unwrap the selection, by removing inline elements but keeping the selected
-text.
+``insert(data)``
+  *Parameters*
 
-**nodeAfterSel()**
+  * data: XHTML string
 
-Get the node that is immediately after the selection, whether it is collapsed
-or not.
+  *Description*
 
-**selectedContainer()**
+      Insert XHTML string at the cursor position. If there's a selection, it is
+      replaced by ``data``.
 
-Get the selected container.
+  Example:
 
-This is currently supposed to be used with a collapsed selection only.
+  .. code-block:: javascript
 
-**mainContainer(sType)**
+      wym.insert('<strong>Hello, World.</strong>');
 
-Get or set the main container in which the selection is entirely in.
+``wrap(left, right)``
+  *Parameters*
 
-A main container is a root element in the document. For example, a paragraph
-or a 'div'. It is only allowed inside the root of the document and inside a
-blockquote element.
+  * left: XHTML string
+  * right: XHTML string
 
-Example: switch the main container to Heading 1.
+  *Description*
 
-.. code-block:: javascript
+      Wrap the inline selection with XHTML.
 
-    wym.mainContainer('H1');
+  Example:
 
-Example: get the selected main container.
+  .. code-block:: javascript
 
-.. code-block:: javascript
+      wym.wrap('<span class="city">', '</span>');
 
-    wym.status(wym.mainContainer().tagName);
+``unwrap()``
+  Unwrap the selection, by removing inline elements but keeping the selected
+  text.
 
-**canSetCaretBefore(node)**
+``toggleClass(sClass, jqexpr)``
+  Set or remove the class ``sClass`` on the selected container/parent
+  matching the jQuery expression ``jqexpr``.
 
-Check whether it is possible to set a collapsed selection immediately before
-provided node.
+  Example: set the class ``my-class`` on the selected paragraph with the
+  class ``my-other-class``.
 
-This check is useful for making sure that the caret will be placed in a place
-where typing is generally allowed. For example, not directly inside a 'ul'
-element.
+  .. code-block:: javascript
 
-Returns true if yes and false if no.
+      wym.toggleClass('.my-class', 'P.my-other-class')
 
-**setCaretBefore(node)**
+User Interface
+--------------
 
-This sets a collapsed selection before the specified node.
+``status(sMessage)``
+  Update the HTML value of WYMeditor' status bar.
 
-It checks whether this is possible, before doing so, using
-``canSetCaretBefore``.
+  Example:
 
-**canSetCaretIn(node)**
+  .. code-block:: javascript
 
-Check whether it is possible to set a collapsed selection at the start inside a
-provided node. This is useful for the same reason as ``canSetCaretBefore``.
+      wym.status("This is the status bar.");
 
-**setCaretIn(element)**
+``dialog(sType)``
+  Open a dialog of type ``sType``.
 
-Sets a collapsed selection at the start inside a provided node.
+  Supported values: Link, Image, Table, Paste_From_Word.
 
-It checks whether this is possible, before doing so, using
-``canSetCaretIn``.
+  Example:
 
-**toggleClass(sClass, jqexpr)**
+  .. code-block:: javascript
 
-Set or remove the class ``sClass`` on the selected container/parent
-matching the jQuery expression ``jqexpr``.
+      wym.dialog('Link');
 
-Example: set the class ``my-class`` on the selected paragraph with the
-class ``my-other-class``.
+``toggleHtml()``
+  Show/hide the HTML source.
 
-.. code-block:: javascript
+Internationalization
+--------------------
 
-    wym.toggleClass('.my-class', 'P.my-other-class')
+``replaceStrings(sVal)``
+  Localize the strings included in ``sVal``.
 
-**status(sMessage)**
+``encloseString(sVal)``
+  Enclose a string in string delimiters.
 
-Update the HTML value of WYMeditor' status bar.
+Utilities
+---------
 
-Example:
+``box``
+  The WYMeditor container.
 
-.. code-block:: javascript
+``jQuery.wymeditors(i)``
+  Returns the WYMeditor instance with index i (zero-based).
 
-    wym.status("This is the status bar.");
+  Example:
 
-**update**
+  .. code-block:: javascript
 
-Update the value of the element replaced by WYMeditor and the value of
-the HTML source textarea.
-
-**dialog(sType)**
-
-Open a dialog of type ``sType``.
-
-Supported values: Link, Image, Table, Paste_From_Word.
-
-Example:
-
-.. code-block:: javascript
-
-    wym.dialog('Link');
-
-**toggleHtml**
-
-Show/hide the HTML source.
-
-**replaceStrings(sVal)**
-
-Localize the strings included in ``sVal``.
-
-**encloseString(sVal)**
-
-Enclose a string in string delimiters.
-
-Custom jQuery properties
-------------------------
-
-**jQuery.wymeditors(i)**
-
-Returns the WYMeditor instance with index i (zero-based).
-
-Example:
-
-.. code-block:: javascript
-
-    jQuery.wymeditors(0).toggleHtml();
+      jQuery.wymeditors(0).toggleHtml();
