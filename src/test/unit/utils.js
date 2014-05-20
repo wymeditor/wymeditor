@@ -357,21 +357,16 @@ function moveSelector(wymeditor, selectedElement) {
     }
 
     if (
-        // it is OK to set a collapsed selection inside the selected element
         wymeditor.canSetCaretIn(selectedElement)
     ) {
-        // do it.
         wymeditor.setCaretIn(selectedElement);
 
         if (
-            // assertions were expected
             expect()
         ) {
-            // Expect one more assertion.
             expect(expect() + 1);
         }
 
-        // Assert: It contains the selection.
         deepEqual(
             wymeditor.selectedContainer(),
             selectedElement,
@@ -380,23 +375,16 @@ function moveSelector(wymeditor, selectedElement) {
     }
 
     if (
-        // it is OK to set a collapsed selection immediately before the
-        // selected element
         wymeditor.canSetCaretBefore(selectedElement)
     ) {
-        // do it.
         wymeditor.setCaretBefore(selectedElement);
 
         if (
-            // assertions were expected
             expect()
         ) {
-            // Expect one more assertion.
             expect(expect() + 1);
         }
 
-        // Assert: The selected element is immediately after the collapsed
-        // selection.
         deepEqual(
             wymeditor.nodeAfterSel(),
             selectedElement,

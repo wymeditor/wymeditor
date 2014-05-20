@@ -216,7 +216,6 @@ WYMeditor.WymClassSafari.prototype.canSetCaretBeforeStrong = function () {
 // Rangy issue #209.
 WYMeditor.WymClassSafari.prototype.canSetCaretAtStartOf = function (node) {
     if (
-        // it is an inline element
         jQuery.inArray(
             node.tagName.toLowerCase(),
             WYMeditor.INLINE_ELEMENTS

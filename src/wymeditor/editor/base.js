@@ -431,31 +431,23 @@ WYMeditor.editor.prototype.selection = function () {
 */
 WYMeditor.editor.prototype.nodeAfterSel = function () {
     var
-        // Save the selection.
         sel = this.selection(),
-        // Save an error string in case there is no node.
         noNodeErrorStr = "There is no node immediately after the selection.";
 
     if (
-        // the anchor node is an element and
         sel.anchorNode.tagName &&
-        // it is not an inline element
         jQuery.inArray(
             sel.anchorNode.tagName.toLowerCase(),
             WYMeditor.INLINE_ELEMENTS
         ) === -1
     ) {
         if (
-            // the anchor node doesn't have any child nodes
             sel.anchorNode.childNodes.length === 0
         ) {
-            // it is an error.
             throw noNodeErrorStr;
         }
-        // return the anchor node's first child node.
         return sel.anchorNode.childNodes[0];
     }
-    // Return the selection's focus node.
     return sel.focusNode;
 };
 
@@ -470,24 +462,20 @@ WYMeditor.editor.prototype.nodeAfterSel = function () {
 */
 WYMeditor.editor.prototype.selectedContainer = function () {
     var
-        // Save the selection's focus node.
         focusNode = this.selection().focusNode;
 
         if (
-            // the focus node is text or
             focusNode.nodeType === 3 || (
-                // is an element and
+
                 focusNode.tagName &&
-                // can't contain child nodes:
+
                 jQuery.inArray(
                     focusNode.tagName.toLowerCase(),
                     WYMeditor.NON_CONTAINING_ELEMENTS
                 ) > -1
             )
         ) {
-            // return its parent node.
             return focusNode.parentNode;
-
         } else {
             return focusNode;
         }
@@ -777,11 +765,7 @@ WYMeditor.editor.prototype.switchTo = function (node, sType, stripAttrs) {
         attrs = node.attributes,
         i;
 
-    if (
-        // the node's is an 'img' element
-        node.tagName.toLowerCase() === 'img'
-    ) {
-        // it is an error.
+    if (node.tagName.toLowerCase() === 'img') {
         throw "Will not change the tag of this element.";
     }
 
@@ -1430,11 +1414,8 @@ WYMeditor.editor.prototype.canSetCaretBeforeStrong = function () {
 WYMeditor.editor.prototype.canSetCaretBefore = function (node) {
 
     if (
-        // the node is not text and
         node.nodeType !== 3 &&
-        // the node is an element and
         node.tagName &&
-        // it is not an inline element
         jQuery.inArray(
             node.tagName.toLowerCase(),
             WYMeditor.INLINE_ELEMENTS
@@ -1443,12 +1424,8 @@ WYMeditor.editor.prototype.canSetCaretBefore = function (node) {
         return false;
     } else {
         if (
-            // it is an element and
             node.tagName &&
-            // a 'strong' and
             node.tagName.toLowerCase() === 'strong' &&
-            // it is possible to set a collapsed selection immediately before
-            // a 'strong' in the current browser (Rangy issue #210)
             this.canSetCaretBeforeStrong()
             // In short, some browsers can't set a collapsed selection immediately before
             // a 'strong' element. Instead, the selection ends up one or more nodes
@@ -1474,28 +1451,21 @@ WYMeditor.editor.prototype.canSetCaretBefore = function (node) {
  */
 WYMeditor.editor.prototype.setCaretBefore = function (node) {
     var
-        // Save a range in the WYMeditor.
         range = rangy.createRange(this._doc),
-        // Save the selection.
         selection = rangy.getIframeSelection(this._iframe);
 
     if (
-        // can't set a collapsed selection immediately before the node
         !this.canSetCaretBefore(node)
     ) {
-        // It is an error.
         throw "Will not set collapsed selection immediately before a " +
             "node that is not inline. Perhaps you mean to use " +
             "`.setCaretIn`, instead.";
     }
 
-    // Set the range to encompass the node.
     range.selectNode(node);
 
-    // Collapse it to the start.
     range.collapse(true);
 
-    // Set the selection.
     selection.setSingleRange(range);
 };
 
@@ -1521,12 +1491,9 @@ WYMeditor.editor.prototype.canSetCaretAtStartOf = function () {
 WYMeditor.editor.prototype.canSetCaretIn = function (node) {
 
     if (
-        // the node is text or
         node.nodeType === 3 ||
         (
-            // it is an element and
             node.tagName &&
-            // an element that should not contain a collapsed selection:
             jQuery.inArray(
                 node.tagName.toLowerCase(),
                 WYMeditor.NO_CARET_ELEMENTS
@@ -1537,17 +1504,15 @@ WYMeditor.editor.prototype.canSetCaretIn = function (node) {
     }
     if (
         // Rangy issue #209.
-        // it is possible to set the caret at the start of it
         !this.canSetCaretAtStartOf(node)
     ) {
         if (
-            // the node has no children
             node.childNodes.length === 0
         ) {
             // Not possible to work-around this issue.
             return false;
         }
-        // it is possible to work-around this issue by setting a non-collapsed
+        // It is possible to work-around this issue by setting a non-collapsed
         // selection. Warn about this.
         WYMeditor.console.warn("Can set a non-collapsed selection. Rangy issue #209.");
     }
@@ -1567,27 +1532,21 @@ WYMeditor.editor.prototype.canSetCaretIn = function (node) {
  */
 WYMeditor.editor.prototype.setCaretIn = function (node) {
     var
-        // Save a range in the WYMeditor.
         range = rangy.createRange(this._doc),
-        // Save the selection.
         selection = rangy.getIframeSelection(this._iframe);
 
     if (
-        // can't set a collapsed selection in the node
         !this.canSetCaretIn(node)
     ) {
-        // It is an error.
         throw "The node must be an element that is allowed to contain a " +
             "collapsed selection. Perhaps you want to use " +
             "`setCaretBefore`, instead.";
     }
 
-    // Set the range to encompass the contents of the node.
     range.selectNodeContents(node);
 
     if (
         // Rangy issue #209.
-        // it is possible to set the caret at the start of it
         !this.canSetCaretAtStartOf(node)
     ) {
         // Don't collapse the range. As long as
@@ -1595,11 +1554,9 @@ WYMeditor.editor.prototype.setCaretIn = function (node) {
         WYMeditor.console.warn("Can't set a collapsed selection. Setting " +
            "a non-collapsed selection, instead. Rangy issue #209.");
     } else {
-        // collapse it to the start.
         range.collapse(true);
     }
 
-    // Set the selection.
     selection.setSingleRange(range);
 };
 

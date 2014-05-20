@@ -1466,16 +1466,13 @@ selTest.setCollapsedHtml = [""
 // Collapsed selections are practically the caret position.
 test("Set and get collapsed selection", function () {
     var
-        // Save the WYMeditor instance.
         wymeditor = jQuery.wymeditors(0),
-
         $allNodes,
         i,
         curNode,
         assertStrCount,
         assertStrPre;
 
-    // Load the HTML into the WYMeditor.
     wymeditor._html(selTest.setCollapsedHtml);
 
     // Save a jQuery of all of the nodes in the WYMeditor's body.
@@ -1484,10 +1481,7 @@ test("Set and get collapsed selection", function () {
         // excluding the WYMeditor utility elements.
         .not('.wym-editor-only');
 
-    // Iterate through all of the nodes:
     for (i = 0; i < $allNodes.length; i++) {
-
-        // Save the current node.
         curNode = $allNodes[i];
 
         // Set an assertion count string prefix.
@@ -1495,27 +1489,22 @@ test("Set and get collapsed selection", function () {
             $allNodes.length + '; ';
 
         if (
-            // it is OK to set a collapsed selection in this node
             wymeditor.canSetCaretIn(curNode)
         ) {
             // Set an assertion string prefix.
             assertStrPre = "select inside element; ";
 
-            // Set collapsed selection inside of it.
             wymeditor.setCaretIn(curNode);
 
             if (
-                // it has at least one child node and
                 curNode.childNodes.length > 0 &&
 
-                // it is possible to set the caret at the start of it (Rangy
+                // Is it possible to set the caret at the start of it? (Rangy
                 // issue #209)
                 wymeditor.canSetCaretAtStartOf(curNode)
             ) {
-                // Expect one more assertion.
                 expect(expect() + 1);
 
-                // Assert: Its first child node is immediately after selection.
                 strictEqual(
                     wymeditor.nodeAfterSel(),
                     curNode.childNodes[0],
@@ -1523,10 +1512,8 @@ test("Set and get collapsed selection", function () {
                         "first child is immediately after selection."
                 );
             }
-                // Expect one more assertion.
                 expect(expect() + 1);
 
-                // Assert: It contains the selection.
                 strictEqual(
                     wymeditor.selectedContainer(),
                     curNode,
@@ -1534,16 +1521,13 @@ test("Set and get collapsed selection", function () {
         }
 
         if (
-            // it is OK to set a collapsed selection before this node
             wymeditor.canSetCaretBefore(curNode)
         ) {
             // Set an assertion string prefix.
             assertStrPre = "select before node; ";
 
-            // Set collapsed selection immediately before it.
             wymeditor.setCaretBefore(curNode);
 
-            // Expect two more assertions.
             expect(expect() + 2);
 
             // Assert: Node is immediately after selection
@@ -1569,13 +1553,10 @@ module("switchTo", {setup: setupWym});
 
 test("Refuses 'img' elements.", function () {
     var
-        // Save the WYMeditor instance.
         wymeditor = jQuery.wymeditors(0),
 
-        // Make some initial HTML.
         html = '<p><img alt="" src="" /></p>';
 
-    // Load the HTML into the WYMeditor.
     wymeditor._html(html);
 
     try {
