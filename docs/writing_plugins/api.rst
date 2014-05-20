@@ -156,6 +156,13 @@ Content Manipulation
   Unwrap the selection, by removing inline elements but keeping the selected
   text.
 
+``switchTo(node, sType, stripAttrs)``
+  Switch the type of the given ``node`` to type ``sType``.
+
+  If ``stripAttrs`` is true, the attributes of node will not be included in the new
+  type. If ``stripAttrs`` is false (or undefined), the attributes of node will be
+  preserved through the switch.
+
 ``toggleClass(sClass, jqexpr)``
   Set or remove the class ``sClass`` on the selected container/parent
   matching the jQuery expression ``jqexpr``.
