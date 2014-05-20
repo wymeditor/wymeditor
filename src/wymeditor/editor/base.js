@@ -539,6 +539,28 @@ WYMeditor.editor.prototype.selected_parents_contains = function (selector) {
 };
 
 /**
+    WYMeditor.editor.isInlineNode
+    =============================
+
+    Returns true if the provided node is an in-line type node. Otherwise
+    returns false.
+
+    @param node The node to check.
+*/
+
+WYMeditor.editor.prototype.isInlineNode = function (node) {
+    if (
+        jQuery.inArray(
+            node.tagName.toLowerCase(),
+            WYMeditor.INLINE_ELEMENTS
+        ) > -1
+    ) {
+        return true;
+    }
+    return false;
+};
+
+/**
     WYMeditor.editor.mainContainer
     ==============================
 

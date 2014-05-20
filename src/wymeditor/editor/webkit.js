@@ -215,12 +215,7 @@ WYMeditor.WymClassSafari.prototype.canSetCaretBeforeStrong = function () {
 
 // Rangy issue #209.
 WYMeditor.WymClassSafari.prototype.canSetCaretAtStartOf = function (node) {
-    if (
-        jQuery.inArray(
-            node.tagName.toLowerCase(),
-            WYMeditor.INLINE_ELEMENTS
-        ) > -1
-    ) {
+    if (this.isInlineNode(node)) {
         return false;
     }
     return true;

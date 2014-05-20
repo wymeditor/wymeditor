@@ -223,3 +223,6 @@ Utilities
   .. code-block:: javascript
 
       jQuery.wymeditors(0).toggleHtml();
+
+``isInlineNode(node)``
+  Returns true if the provided node is an inline type node. False, otherwise.

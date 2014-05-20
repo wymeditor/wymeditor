@@ -278,14 +278,10 @@ WYMeditor.WymClassExplorer.prototype.canSetCaretBeforeStrong = function () {
 
 // Rangy issue #209.
 WYMeditor.WymClassExplorer.prototype.canSetCaretAtStartOf = function (node) {
-    if (
-        // it is an inline element
-        jQuery.inArray(
-            node.tagName.toLowerCase(),
-            WYMeditor.INLINE_ELEMENTS
-        ) > -1
-    ) {
+
+    if (this.isInlineNode(node)) {
         return false;
     }
+
     return true;
 };
