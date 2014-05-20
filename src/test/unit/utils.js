@@ -347,25 +347,15 @@ function makeTextSelection(
 */
 function moveSelector(wymeditor, selectedNode) {
     // This function was rewritten. Some of the existing callers were expecting
-    // assertions and others were not. so
-    if (
-        // assertions were expected
-        expect()
-    ) {
-        // expect one less assertion.
-        expect(expect() - 1);
-    }
+    // assertions and others were not. Next line handles this gracefully.
+    if (expect()) {expect(expect() - 1);}
 
     if (
         wymeditor.canSetCaretIn(selectedNode)
     ) {
         wymeditor.setCaretIn(selectedNode);
 
-        if (
-            expect()
-        ) {
-            expect(expect() + 1);
-        }
+        if (expect()) {expect(expect() + 1);}
 
         deepEqual(
             wymeditor.selectedContainer(),
@@ -374,16 +364,11 @@ function moveSelector(wymeditor, selectedNode) {
         );
     }
 
-    if (
-        wymeditor.canSetCaretBefore(selectedNode)
-    ) {
+    if (wymeditor.canSetCaretBefore(selectedNode)) {
+
         wymeditor.setCaretBefore(selectedNode);
 
-        if (
-            expect()
-        ) {
-            expect(expect() + 1);
-        }
+        if (expect()) {expect(expect() + 1);}
 
         deepEqual(
             wymeditor.nodeAfterSel(),

@@ -268,12 +268,9 @@ WYMeditor.WymClassMozilla.prototype.nodeAfterSel = function () {
 // browsers the focus node is the node that is after selection, generally.
 // In Gecko, the focus node is the parent of the node that is after selection.
 // Luckily, we are supplied with the focus offset.
-    var
-        sel = this.selection();
+    var sel = this.selection();
 
-    if (
-        sel.focusNode.childNodes.length === 0
-    ) {
+    if (sel.focusNode.childNodes.length === 0) {
         throw "There is no node immediately after selection.";
     }
 

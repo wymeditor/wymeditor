@@ -430,8 +430,7 @@ WYMeditor.editor.prototype.selection = function () {
     Returns the node that is immediately after the selection.
 */
 WYMeditor.editor.prototype.nodeAfterSel = function () {
-    var
-        sel = this.selection(),
+    var sel = this.selection(),
         noNodeErrorStr = "There is no node immediately after the selection.";
 
     if (
@@ -441,9 +440,7 @@ WYMeditor.editor.prototype.nodeAfterSel = function () {
             WYMeditor.INLINE_ELEMENTS
         ) === -1
     ) {
-        if (
-            sel.anchorNode.childNodes.length === 0
-        ) {
+        if (sel.anchorNode.childNodes.length === 0) {
             throw noNodeErrorStr;
         }
         return sel.anchorNode.childNodes[0];
@@ -461,8 +458,7 @@ WYMeditor.editor.prototype.nodeAfterSel = function () {
     selection's main container.
 */
 WYMeditor.editor.prototype.selectedContainer = function () {
-    var
-        focusNode = this.selection().focusNode;
+    var focusNode = this.selection().focusNode;
 
         if (
             focusNode.nodeType === 3 || (
@@ -1454,9 +1450,7 @@ WYMeditor.editor.prototype.setCaretBefore = function (node) {
         range = rangy.createRange(this._doc),
         selection = rangy.getIframeSelection(this._iframe);
 
-    if (
-        !this.canSetCaretBefore(node)
-    ) {
+    if (!this.canSetCaretBefore(node)) {
         throw "Will not set collapsed selection immediately before a " +
             "node that is not inline. Perhaps you mean to use " +
             "`.setCaretIn`, instead.";
@@ -1502,13 +1496,10 @@ WYMeditor.editor.prototype.canSetCaretIn = function (node) {
     ) {
         return false;
     }
-    if (
-        // Rangy issue #209.
-        !this.canSetCaretAtStartOf(node)
-    ) {
-        if (
-            node.childNodes.length === 0
-        ) {
+    // Rangy issue #209.
+    if (!this.canSetCaretAtStartOf(node)) {
+
+        if (node.childNodes.length === 0) {
             // Not possible to work-around this issue.
             return false;
         }
@@ -1531,8 +1522,7 @@ WYMeditor.editor.prototype.canSetCaretIn = function (node) {
     @param node A node to set the selection inside of, at the start.
  */
 WYMeditor.editor.prototype.setCaretIn = function (node) {
-    var
-        range = rangy.createRange(this._doc),
+    var range = rangy.createRange(this._doc),
         selection = rangy.getIframeSelection(this._iframe);
 
     if (
@@ -1545,10 +1535,9 @@ WYMeditor.editor.prototype.setCaretIn = function (node) {
 
     range.selectNodeContents(node);
 
-    if (
-        // Rangy issue #209.
-        !this.canSetCaretAtStartOf(node)
-    ) {
+    // Rangy issue #209.
+    if (!this.canSetCaretAtStartOf(node)) {
+
         // Don't collapse the range. As long as
         // this occurs only in tests it is probably OK. Warn.
         WYMeditor.console.warn("Can't set a collapsed selection. Setting " +
