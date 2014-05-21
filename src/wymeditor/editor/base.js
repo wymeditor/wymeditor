@@ -41,7 +41,13 @@ WYMeditor.editor.prototype.init = function () {
         WymClass = new WYMeditor.WymClassOpera(this);
     } else if (jQuery.browser.safari || jQuery.browser.webkit ||
                jQuery.browser.chrome) {
-        WymClass = new WYMeditor.WymClassSafari(this);
+        if (jQuery.browser.version === '537.36') {
+            // This seems to indicate Blink. See:
+            // https://stackoverflow.com/questions/20655470
+            WymClass = new WYMeditor.WymClassBlink(this);
+        } else {
+            WymClass = new WYMeditor.WymClassWebKit(this);
+        }
     }
 
     if (WymClass === false) {

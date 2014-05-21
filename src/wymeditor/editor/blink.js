@@ -2,12 +2,12 @@
 /* global -$ */
 "use strict";
 
-WYMeditor.WymClassWebKit = function (wym) {
+WYMeditor.WymClassBlink = function (wym) {
     this._wym = wym;
     this._class = "class";
 };
 
-WYMeditor.WymClassWebKit.prototype.initIframe = function (iframe) {
+WYMeditor.WymClassBlink.prototype.initIframe = function (iframe) {
     var wym = this;
 
     wym._iframe = iframe;
@@ -46,7 +46,7 @@ WYMeditor.WymClassWebKit.prototype.initIframe = function (iframe) {
     );
 };
 
-WYMeditor.WymClassWebKit.prototype._exec = function (cmd, param) {
+WYMeditor.WymClassBlink.prototype._exec = function (cmd, param) {
     if (!this.selected()) {
         return false;
     }
@@ -106,7 +106,7 @@ WYMeditor.WymClassWebKit.prototype._exec = function (cmd, param) {
 };
 
 //keydown handler, mainly used for keyboard shortcuts
-WYMeditor.WymClassWebKit.prototype.keydown = function (e) {
+WYMeditor.WymClassBlink.prototype.keydown = function (e) {
     //'this' is the doc
     var wym = WYMeditor.INSTANCES[this.title];
 
@@ -131,7 +131,7 @@ WYMeditor.WymClassWebKit.prototype.keydown = function (e) {
 };
 
 // Keyup handler, mainly used for cleanups
-WYMeditor.WymClassWebKit.prototype.keyup = function (evt) {
+WYMeditor.WymClassBlink.prototype.keyup = function (evt) {
     //'this' is the doc
     var wym = WYMeditor.INSTANCES[this.title],
         container,
