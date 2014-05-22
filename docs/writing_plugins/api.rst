@@ -76,9 +76,7 @@ Example: get the selected main container.
 Check whether it is possible to set a collapsed selection immediately before
 provided node.
 
-This check is useful for making sure that the caret will be placed in a place
-where typing is generally allowed. For example, not directly inside a 'ul'
-element.
+For an example see the test named 'selection: Set and get collapsed selection'.
 
 Returns true if yes and false if no.
 
@@ -86,6 +84,12 @@ Returns true if yes and false if no.
 ========================
 
 This sets a collapsed selection before the specified node.
+
+.. note:: 
+  Due to browser and/or Rangy bugs it has been decided that ``node`` could be
+  either a text node or a ``br`` element and if it is a ``br`` element it must
+  either have no ``previousSibling`` or its ``previousSibling`` must be a text
+  node or a ``br`` element.
 
 It checks whether this is possible, before doing so, using
 ``canSetCaretBefore``.

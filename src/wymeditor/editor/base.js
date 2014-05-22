@@ -1421,18 +1421,6 @@ WYMeditor.editor.prototype.unwrap = function () {
 };
 
 /**
-    editor.canSetCaretBeforeStrong
-    ==============================
-
-    // In short, some browsers can't set a collapsed selection immediately before
-    // a 'strong' element. Instead, the selection ends up one or more nodes
-    // before. Follow-up in Rangy issue #210.
-*/
-WYMeditor.editor.prototype.canSetCaretBeforeStrong = function () {
-    return true;
-};
-
-/**
     editor.canSetCaretBefore
     ========================
 
@@ -1442,28 +1430,29 @@ WYMeditor.editor.prototype.canSetCaretBeforeStrong = function () {
     @param node A node to check about.
  */
 WYMeditor.editor.prototype.canSetCaretBefore = function (node) {
+    if (node.nodeType === 3) {
+        return true;
+    }
+    if (
+        node.tagName &&
+        node.tagName.toLowerCase() === 'br'
+    ) {
+        if (
+            !node.previousSibling
+        ) {
+            return true;
 
-    if (
-        node.nodeType !== 3 &&
-        node.tagName &&
-        jQuery.inArray(
-            node.tagName.toLowerCase(),
-            WYMeditor.INLINE_ELEMENTS
-        ) === -1
-    ) {
-        return false;
+        } else if (
+            node.previousSibling.tagName &&
+            node.previousSibling.tagName.toLowerCase() === 'br'
+        ) {
+            return true;
+
+        } else if (node.previousSibling.nodeType === 3) {
+            return true;
+        }
     }
-    if (
-        node.tagName &&
-        node.tagName.toLowerCase() === 'strong' &&
-        !this.canSetCaretBeforeStrong()
-        // In short, some browsers can't set a collapsed selection immediately before
-        // a 'strong' element. Instead, the selection ends up one or more nodes
-        // before. Follow-up in Rangy issue #210.
-    ) {
-        return false;
-    }
-    return true;
+    return false;
 };
 
 /**
@@ -1483,13 +1472,10 @@ WYMeditor.editor.prototype.setCaretBefore = function (node) {
         selection = rangy.getIframeSelection(this._iframe);
 
     if (!this.canSetCaretBefore(node)) {
-        throw "Will not set collapsed selection immediately before a " +
-            "node that is not inline. Perhaps you mean to use " +
-            "`.setCaretIn`, instead.";
+        throw "Can't set caret before this node.";
     }
 
     range.selectNode(node);
-
     range.collapse(true);
 
     selection.setSingleRange(range);
