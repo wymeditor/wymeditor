@@ -37,8 +37,6 @@ WYMeditor.editor.prototype.init = function () {
         WymClass = new WYMeditor.WymClassTrident(this);
     } else if (jQuery.browser.mozilla) {
         WymClass = new WYMeditor.WymClassGecko(this);
-    } else if (jQuery.browser.opera) {
-        WymClass = new WYMeditor.WymClassOpera(this);
     } else if (jQuery.browser.safari || jQuery.browser.webkit ||
                jQuery.browser.chrome) {
         if (jQuery.browser.version === '537.36') {

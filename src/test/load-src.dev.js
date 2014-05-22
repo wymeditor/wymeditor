@@ -37,7 +37,6 @@ function loadWymSrc(srcPath, extraRequirements, jqueryVersion) {
             srcPath + 'wymeditor/editor/blink.js',
             srcPath + 'wymeditor/editor/gecko.js',
             srcPath + 'wymeditor/editor/trident.js',
-            srcPath + 'wymeditor/editor/opera.js',
             srcPath + 'wymeditor/editor/webkit.js',
             srcPath + 'wymeditor/parser/xml-helper.js',
             srcPath + 'wymeditor/parser/xhtml-validator.js',
