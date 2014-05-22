@@ -520,6 +520,7 @@ test("Table is editable after insertion", function () {
     wymeditor._html('');
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    wymeditor.setCaretIn($body[0]);
     wymeditor.insertTable(3, 2, '', '');
 
     $body.find('td').each(function (index, td) {

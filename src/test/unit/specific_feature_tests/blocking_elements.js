@@ -155,9 +155,10 @@ test("table has br spacers via table insertion", function () {
         $body,
         children;
     wymeditor._html('');
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    wymeditor.setCaretIn($body[0]);
     wymeditor.insertTable(2, 3, '', '');
 
-    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     children = $body.children();
 
     if (is_double_br_browser) {
