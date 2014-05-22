@@ -188,7 +188,7 @@ StructuredHeadingsManager.prototype.bindEvents = function () {
 
     // Bind click event to the new single heading link
     $box.find(this._options.headingContainerPanelSelector).click(function () {
-        var container = wym.findUp(wym.container(), WYMeditor.MAIN_CONTAINERS);
+        var container = wym.findUp(wym.mainContainer(), WYMeditor.MAIN_CONTAINERS);
         headingManager.switchToHeading(container);
     });
 };

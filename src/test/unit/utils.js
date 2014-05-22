@@ -343,21 +343,39 @@ function makeTextSelection(
 
 
 /*
-* Move the selection to the start of the given element within the editor.
+* Set a collapsed selection at and, if possible, before `selecteNode`
 */
-function moveSelector(wymeditor, selectedElement) {
-    if (selectedElement.tagName.toLowerCase() === 'span') {
-        // Hack to make span element selections work outside of FF. Webkit and
-        // IE select the node before the span if you try a collapsed selection
-        // on a span node.
-        // Should probably be doing block vs inline detection here instead of
-        // hardcoding detection for a span element
-        makeSelection(wymeditor, selectedElement, selectedElement, 0, 1);
-    } else {
-        makeSelection(wymeditor, selectedElement, selectedElement, 0, 0);
+function moveSelector(wymeditor, selectedNode) {
+    // This function was rewritten. Some of the existing callers were expecting
+    // assertions and others were not. Next line handles this gracefully.
+    if (expect()) {expect(expect() - 1);}
+
+    if (
+        wymeditor.canSetCaretIn(selectedNode)
+    ) {
+        wymeditor.setCaretIn(selectedNode);
+
+        if (expect()) {expect(expect() + 1);}
+
+        deepEqual(
+            wymeditor.selectedContainer(),
+            selectedNode,
+            "selected is after caret."
+        );
     }
 
-    deepEqual(wymeditor.selected(), selectedElement, "moveSelector");
+    if (wymeditor.canSetCaretBefore(selectedNode)) {
+
+        wymeditor.setCaretBefore(selectedNode);
+
+        if (expect()) {expect(expect() + 1);}
+
+        deepEqual(
+            wymeditor.nodeAfterSel(),
+            selectedNode,
+            "selected is after caret."
+        );
+    }
 }
 
 

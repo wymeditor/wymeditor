@@ -1,15 +1,17 @@
+###
 API
-===
+###
 
 .. note:: 
     In the code examples below, ``wym`` is a variable which refers to the
     WYMeditor instance, and which must be initialized.
 
-**box**
+****
+Core
+****
 
-Return the WYMeditor container.
-
-**html(sHtml)**
+``html(sHtml)``
+===============
 
 Get or set the editor's HTML value.
 
@@ -19,11 +21,95 @@ Example:
 
   wym.html("<p>Hello, World.</p>");
 
-**xhtml**
+``xhtml()``
+===========
 
 Get the cleaned up editor's HTML value.
 
-**exec(cmd)**
+``update()``
+============
+
+Update the value of the element replaced by WYMeditor and the value of
+the HTML source textarea.
+
+*****************************
+Selection Setting and Getting
+*****************************
+
+``nodeAfterSel()``
+==================
+
+Get the node that is immediately after the selection, whether it is collapsed
+or not.
+
+``selectedContainer()``
+=======================
+
+Get the selected container.
+
+This is currently supposed to be used with a collapsed selection only.
+
+``mainContainer(sType)``
+========================
+
+Get or set the main container in which the selection is entirely in.
+
+A main container is a root element in the document. For example, a paragraph
+or a 'div'. It is only allowed inside the root of the document and inside a
+blockquote element.
+
+Example: switch the main container to Heading 1.
+
+.. code-block:: javascript
+
+    wym.mainContainer('H1');
+
+Example: get the selected main container.
+
+.. code-block:: javascript
+
+    wym.status(wym.mainContainer().tagName);
+
+``canSetCaretBefore(node)``
+===========================
+
+Check whether it is possible to set a collapsed selection immediately before
+provided node.
+
+This check is useful for making sure that the caret will be placed in a place
+where typing is generally allowed. For example, not directly inside a 'ul'
+element.
+
+Returns true if yes and false if no.
+
+``setCaretBefore(node)``
+========================
+
+This sets a collapsed selection before the specified node.
+
+It checks whether this is possible, before doing so, using
+``canSetCaretBefore``.
+
+``canSetCaretIn(node)``
+=======================
+
+Check whether it is possible to set a collapsed selection at the start inside
+a provided node. This is useful for the same reason as ``canSetCaretBefore``.
+
+``setCaretIn(element)``
+=======================
+
+Sets a collapsed selection at the start inside a provided node.
+
+It checks whether this is possible, before doing so, using
+``canSetCaretIn``.
+
+********************
+Content Manipulation
+********************
+
+``exec(cmd)``
+=============
 
 Execute a command.
 
@@ -51,7 +137,8 @@ Execute a command.
 *   ToggleHtml: show/hide the HTML value
 *   Preview: open the preview dialog
 
-**paste(data)**
+``paste(data)``
+===============
 
 *Parameters*
 
@@ -59,9 +146,10 @@ Execute a command.
 
 *Description*
 
-    Paste raw text, inserting new paragraphs.
+Paste raw text, inserting new paragraphs.
 
-**insert(data)**
+``insert(data)``
+================
 
 *Parameters*
 
@@ -78,7 +166,8 @@ Example:
 
     wym.insert('<strong>Hello, World.</strong>');
 
-**wrap(left, right)**
+``wrap(left, right)``
+=====================
 
 *Parameters*
 
@@ -95,28 +184,23 @@ Example:
 
     wym.wrap('<span class="city">', '</span>');
 
-**unwrap()**
+``unwrap()``
+============
 
 Unwrap the selection, by removing inline elements but keeping the selected
 text.
 
-**container(sType)**
+``switchTo(node, sType, stripAttrs)``
+=====================================
 
-Get or set the selected container.
+Switch the type of the given ``node`` to type ``sType``.
 
-Example: switch the container to Heading 1.
+If ``stripAttrs`` is true, the attributes of node will not be included in the new
+type. If ``stripAttrs`` is false (or undefined), the attributes of node will be
+preserved through the switch.
 
-.. code-block:: javascript
-
-    wym.container('H1');
-
-Example: get the selected container.
-
-.. code-block:: javascript
-
-    wym.status(wym.container().tagName);
-
-**toggleClass(sClass, jqexpr)**
+``toggleClass(sClass, jqexpr)``
+===============================
 
 Set or remove the class ``sClass`` on the selected container/parent
 matching the jQuery expression ``jqexpr``.
@@ -128,7 +212,12 @@ class ``my-other-class``.
 
     wym.toggleClass('.my-class', 'P.my-other-class')
 
-**status(sMessage)**
+**************
+User Interface
+**************
+
+``status(sMessage)``
+====================
 
 Update the HTML value of WYMeditor' status bar.
 
@@ -138,12 +227,8 @@ Example:
 
     wym.status("This is the status bar.");
 
-**update**
-
-Update the value of the element replaced by WYMeditor and the value of
-the HTML source textarea.
-
-**dialog(sType)**
+``dialog(sType)``
+=================
 
 Open a dialog of type ``sType``.
 
@@ -155,22 +240,35 @@ Example:
 
     wym.dialog('Link');
 
-**toggleHtml**
+``toggleHtml()``
+================
 
 Show/hide the HTML source.
 
-**replaceStrings(sVal)**
+********************
+Internationalization
+********************
+
+``replaceStrings(sVal)``
+========================
 
 Localize the strings included in ``sVal``.
 
-**encloseString(sVal)**
+``encloseString(sVal)``
+=======================
 
 Enclose a string in string delimiters.
 
-Custom jQuery properties
-------------------------
+Utilities
+---------
 
-**jQuery.wymeditors(i)**
+``box``
+=======
+
+The WYMeditor container.
+
+``jQuery.wymeditors(i)``
+========================
 
 Returns the WYMeditor instance with index i (zero-based).
 
@@ -179,3 +277,8 @@ Example:
 .. code-block:: javascript
 
     jQuery.wymeditors(0).toggleHtml();
+
+``isInlineNode(node)``
+======================
+
+Returns true if the provided node is an inline type node. False, otherwise.

@@ -226,57 +226,210 @@ jQuery.extend(WYMeditor, {
 
     // Containers that we allow at the root of the document (as a direct child
     // of the body tag)
-    MAIN_CONTAINERS : ["p", "div", "h1",  "h2",  "h3", "h4", "h5", "h6", "pre",
-        "blockquote"],
+    MAIN_CONTAINERS : [
+        "blockquote",
+        "div",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "p",
+        "pre"
+    ],
 
     // Containers that we explicitly do not allow at the root of the document.
     // These containers must be wrapped in a valid main container.
-    FORBIDDEN_MAIN_CONTAINERS : ["strong", "b", "em", "i", "sub", "sup", "a",
-                                 "span"],
+    FORBIDDEN_MAIN_CONTAINERS : [
+        "a",
+        "b",
+        "em",
+        "i",
+        "span",
+        "strong",
+        "sub",
+        "sup"
+    ],
 
     // All block (as opposed to inline) tags
-    BLOCKS : ["address", "blockquote", "div", "dl",
-        "fieldset", "form", "h1", "h2", "h3", "h4", "h5", "h6", "hr",
-        "noscript", "ol", "p", "pre", "table", "ul", "dd", "dt",
-        "li", "tbody", "td", "tfoot", "th", "thead", "tr"],
+    BLOCKS : [
+        "address",
+        "blockquote",
+        "dd",
+        "div",
+        "dl",
+        "dt",
+        "fieldset",
+        "form",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "hr",
+        "li",
+        "noscript",
+        "ol",
+        "p",
+        "pre",
+        "table",
+        "tbody",
+        "td",
+        "tfoot",
+        "th",
+        "thead",
+        "tr",
+        "ul"
+    ],
 
     // The subset of the `MAIN_CONTAINERS` that prevent the user from using
     // up/down/enter/backspace from moving above or below them. They
     // effectively block the creation of new blocks.
-    BLOCKING_ELEMENTS : ["table", "blockquote", "pre"],
+    BLOCKING_ELEMENTS : [
+        "blockquote",
+        "pre",
+        "table"
+    ],
 
     // Elements that are not containers. They don't generally have any child
     // nodes.
-    NON_CONTAINING_ELEMENTS : ["br", "hr", "img"],
+    NON_CONTAINING_ELEMENTS : [
+        "br",
+        "col",
+        "hr",
+        "img"
+    ],
+
+    // Elements that should not contain collapsed selection directly.
+    NO_CARET_ELEMENTS: [
+        "blockquote",
+        "br",
+        "col",
+        "colgroup",
+        "dl",
+        "hr",
+        "img",
+        "ol",
+        "table",
+        "tbody",
+        "tfoot",
+        "thead",
+        "tr",
+        "ul"
+    ],
+
+    // Inline elements.
+    INLINE_ELEMENTS : [
+        "a",
+        "abbr",
+        "acronym",
+        "b",
+        "bdo",
+        "big",
+        "br",
+        "button",
+        "cite",
+        "code",
+        "dfn",
+        "em",
+        "i",
+        "img",
+        "input",
+        "kbd",
+        "label",
+        "map",
+        "object",
+        "q",
+        "samp",
+        "script",
+        "select",
+        "small",
+        "span",
+        "strong",
+        "sub",
+        "sup",
+        "textarea",
+        "tt",
+        "var"
+    ],
 
     // The remaining `MAIN_CONTAINERS` that are not considered
     // `BLOCKING_ELEMENTS`
-    NON_BLOCKING_ELEMENTS : ["p", "div", "h1", "h2", "h3", "h4", "h5", "h6"],
+    NON_BLOCKING_ELEMENTS : [
+        "div",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "p"
+    ],
 
     // The elements that define a type of list.
-    LIST_TYPE_ELEMENTS : ["ul", "ol"],
+    LIST_TYPE_ELEMENTS : [
+        "ol",
+        "ul"
+    ],
 
     // The elements that define a heading
-    HEADING_ELEMENTS : ["h1", "h2", "h3", "h4", "h5", "h6"],
+    HEADING_ELEMENTS : [
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6"
+    ],
 
     // The elements that are allowed to be turned in to lists. If an item in
     // this array isn't in the MAIN_CONTAINERS array, then its contents will be
     // turned in to a list instead.
-    POTENTIAL_LIST_ELEMENTS : ["p", "div", "h1", "h2", "h3", "h4", "h5", "h6",
-        "pre", "blockquote", "td"],
+    POTENTIAL_LIST_ELEMENTS : [
+        "blockquote",
+        "div",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "p",
+        "pre",
+        "td"
+    ],
 
     // The elements that are allowed to have a table inserted after them or
     // within them.
-    POTENTIAL_TABLE_INSERT_ELEMENTS : ["p", "div", "h1",  "h2",  "h3", "h4",
-        "h5", "h6", "pre", "blockquote", "li"],
+    POTENTIAL_TABLE_INSERT_ELEMENTS : [
+        "blockquote",
+        "div",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "li",
+        "p",
+        "pre"
+    ],
 
     // The elements that are allowed to have a table inserted inline within
     // them.
-    INLINE_TABLE_INSERTION_ELEMENTS : ["li"],
+    INLINE_TABLE_INSERTION_ELEMENTS : [
+        "li"
+    ],
 
     // The elements used in tables that can be selected by the user by clicking
     // in them.
-    SELECTABLE_TABLE_ELEMENTS: ["td", "th", "caption"],
+    SELECTABLE_TABLE_ELEMENTS: [
+        "caption",
+        "td",
+        "th"
+    ],
 
     // Class for marking br elements used to space apart blocking elements in
     // the editor.
@@ -289,27 +442,29 @@ jQuery.extend(WYMeditor, {
 
     // Classes that will be removed from all tags' class attribute by the
     // parser.
-    CLASSES_REMOVED_BY_PARSER: ["apple-style-span"],
+    CLASSES_REMOVED_BY_PARSER: [
+        "apple-style-span"
+    ],
 
     // Keyboard mappings so that we don't have to remember that 38 means up
     // when reading keyboard handlers
     KEY : {
-        BACKSPACE: 8,
-        TAB: 9,
-        ENTER: 13,
-        CTRL: 17,
-        END: 35,
-        HOME: 36,
-        CURSOR: [37, 38, 39, 40],
-        LEFT: 37,
-        UP: 38,
-        RIGHT: 39,
-        DOWN: 40,
-        DELETE: 46,
         B: 66,
+        BACKSPACE: 8,
+        COMMAND: 224,
+        CTRL: 17,
+        CURSOR: [37, 38, 39, 40],
+        DELETE: 46,
+        DOWN: 40,
+        END: 35,
+        ENTER: 13,
+        HOME: 36,
         I: 73,
+        LEFT: 37,
         R: 82,
-        COMMAND: 224
+        RIGHT: 39,
+        TAB: 9,
+        UP: 38
     },
 
     // Key codes for the keys that can potentially create a block element when
@@ -325,8 +480,8 @@ jQuery.extend(WYMeditor, {
     ],
 
     EVENTS : {
-        'postIframeInitialization': 'wym-postIframeInitialization',
-        'postBlockMaybeCreated': 'wym-postBlockMaybeCreated'
+        'postBlockMaybeCreated': 'wym-postBlockMaybeCreated',
+        'postIframeInitialization': 'wym-postIframeInitialization'
     },
 
     // domNode.nodeType constants
@@ -863,7 +1018,7 @@ WYMeditor.computeJqueryPath = function () {
 
 WYMeditor.INIT_DIALOG = function (index) {
     var wym = window.opener.WYMeditor.INSTANCES[index],
-        selected = wym.selected(),
+        selected = wym.selectedContainer(),
         dialogType = jQuery(wym._options.dialogTypeSelector).val(),
         sStamp = wym.uniqueStamp(),
         tableOnClick;
