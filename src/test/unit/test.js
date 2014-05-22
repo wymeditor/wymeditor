@@ -1,6 +1,6 @@
 /* jshint camelcase: false, maxlen: 100 */
 /* global -$,
-ok, start, stop, test, expect, equal, deepEqual, sinon,
+ok, start, stop, test, expect, equal, deepEqual, sinon, strictEqual,
 wymEqual, moveSelector, makeTextSelection, isContentEditable, normalizeHtml,
 inPhantomjs, ListPlugin */
 "use strict";
@@ -56,7 +56,7 @@ function setupWym(modificationCallback) {
                 span = $body.find(spanSelector)[0];
                 wym.tableEditor.selectElement($body.find(tdSelector)[0]);
 
-                if (wym.selected() === span) {
+                if (wym.selectedContainer() === span) {
                     WYMeditor._isInnerSelector = true;
                 } else {
                     WYMeditor._isInnerSelector = false;
@@ -401,7 +401,7 @@ function testPaste(
         endElmnt = $body.find(pasteEndSelector).get(0);
         makeTextSelection(
             wymeditor, startElmnt, endElmnt, pasteStartIndex, pasteEndIndex);
-        deepEqual(wymeditor.selected(), startElmnt, "moveSelector");
+        deepEqual(wymeditor.selectedContainer(), startElmnt, "moveSelector");
     }
     wymeditor.paste(textToPaste);
 
@@ -520,6 +520,7 @@ test("Table is editable after insertion", function () {
     wymeditor._html('');
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    wymeditor.setCaretIn($body[0]);
     wymeditor.insertTable(3, 2, '', '');
 
     $body.find('td').each(function (index, td) {
@@ -1344,3 +1345,233 @@ test("Can set and get html with the html() function", function () {
               "Set and get with html() function");
 });
 
+module("selection", {setup: setupWym});
+
+var selTest = {};
+
+// HTML for the following test.
+selTest.setCollapsedHtml = [""
+    , '<p id="0">'
+        , '0.0'
+        , '<br id="0.1" />'
+        , '0.2'
+        , '<br id="0.3" />'
+        , '<span id="0.4">'
+        , '</span>'
+    , '</p>'
+    , '<p id="1">'
+        , '1.0'
+        , '<span id="1.1">'
+            , '1.1.0'
+            , '<br id="1.1.1" />'
+            , '1.1.2'
+        , '</span>'
+        , '1.2'
+    , '</p>'
+    , '<ul id="2">'
+        , '<li id="2.0">'
+            , '2.0.0'
+            , '<br id="2.0.1" />'
+            , '2.0.3'
+        , '</li>'
+        , '<li id="2.1">'
+            , '<br id="2.1.0" />'
+            , '2.1.1'
+        , '</li>'
+        , '<li id="2.2">'
+            , '<br id="2.2.0" />'
+        , '</li>'
+    , '</ul>'
+    , '<p id="3">'
+    , '</p>'
+    , '<blockquote id="4">'
+        , '<p id="4.0">'
+            , '4.0.1'
+        , '</p>'
+    , '</blockquote>'
+    , '<table id="5">'
+        , '<caption id="5.0">'
+            , '5.0.0'
+        , '</caption>'
+        , '<colgroup id="5.1">'
+            , '<col id="5.1.0">'
+            , '<col id="5.1.1">'
+        , '</colgroup>'
+        , '<thead id="5.2">'
+            , '<tr id="5.2.0">'
+                , '<th id="5.2.0.0">'
+                    , '5.2.0.0.0'
+                , '</th>'
+                , '<th id="5.2.0.1">'
+                    , '5.2.0.1.0'
+                , '</th>'
+            , '</tr>'
+        , '</thead>'
+        , '<tfoot id="5.3">'
+            , '<tr id="5.3.0">'
+                , '<th id="5.3.0.0">'
+                    , '5.3.0.0.0'
+                , '</th>'
+                , '<th id="5.3.0.1">'
+                    , '5.3.0.1.0'
+                , '</th>'
+            , '</tr>'
+        , '</tfoot>'
+        , '<tbody id="5.4">'
+            , '<tr id="5.4.0">'
+                , '<th id="5.4.0.0">'
+                    , '5.4.0.0.0'
+                , '</th>'
+                , '<th id="5.4.0.1">'
+                    , '5.4.0.1.0'
+                , '</th>'
+            , '</tr>'
+        , '</tbody>'
+    , '</table>'
+    , '<p id="6">'
+        , '6.0'
+        , '<strong id="6.1">'
+            , '6.1.0'
+        , '</strong>'
+        , '6.2'
+    , '</p>'
+    , '<p id="7">'
+        , '7.0'
+        , '<strong id="7.1">'
+            , '7.1.0'
+            , '<br id="7.1.1" />'
+            , '7.1.2'
+        , '</strong>'
+        , '7.2'
+        , '<i id="7.3">'
+            , '7.3.0'
+        , '</i>'
+        , '7.4'
+        , '<strong id="7.5">'
+        , '</strong>'
+        , '7.6'
+        , '<i id="7.7">'
+        , '</i>'
+        , '7.8'
+        , '<b id="7.9">'
+        , '</b>'
+        , '7.10'
+        , '<b id="7.11">'
+            , '7.11.0'
+        , '</b>'
+        , '7.12'
+    , '</p>'
+].join('');
+
+// This is a data-driven test for setting and getting collapsed selections.
+// Collapsed selections are practically the caret position.
+test("Set and get collapsed selection", function () {
+    var
+        wymeditor = jQuery.wymeditors(0),
+        $allNodes,
+        i,
+        curNode,
+        assertStrCount,
+        assertStrPre;
+
+    wymeditor._html(selTest.setCollapsedHtml);
+
+    // Save a jQuery of all of the nodes in the WYMeditor's body.
+    $allNodes = jQuery(wymeditor._doc).find('body.wym_iframe *')
+        .contents().andSelf()
+        // excluding the WYMeditor utility elements.
+        .not('.wym-editor-only');
+
+    for (i = 0; i < $allNodes.length; i++) {
+        curNode = $allNodes[i];
+
+        // Set an assertion count string prefix.
+        assertStrCount = 'node ' + (i + 1) + ' of ' +
+            $allNodes.length + '; ';
+
+        if (
+            wymeditor.canSetCaretIn(curNode)
+        ) {
+            // Set an assertion string prefix.
+            assertStrPre = "select inside element; ";
+
+            wymeditor.setCaretIn(curNode);
+
+            if (
+                curNode.childNodes.length > 0 &&
+
+                // Is it possible to set the caret at the start of it? (Rangy
+                // issue #209)
+                wymeditor.canSetCaretAtStartOf(curNode)
+            ) {
+                expect(expect() + 1);
+
+                strictEqual(
+                    wymeditor.nodeAfterSel(),
+                    curNode.childNodes[0],
+                    assertStrCount + assertStrPre +
+                        "first child is immediately after selection."
+                );
+            }
+                expect(expect() + 1);
+
+                strictEqual(
+                    wymeditor.selectedContainer(),
+                    curNode,
+                    assertStrCount + assertStrPre + "node contains selection.");
+        }
+
+        if (
+            wymeditor.canSetCaretBefore(curNode)
+        ) {
+            // Set an assertion string prefix.
+            assertStrPre = "select before node; ";
+
+            wymeditor.setCaretBefore(curNode);
+
+            expect(expect() + 2);
+
+            // Assert: Node is immediately after selection
+            strictEqual(
+                wymeditor.nodeAfterSel(),
+                curNode,
+                assertStrCount + assertStrPre +
+                    "node is immediately after selection."
+            );
+
+            // Assert: Node's parent contains selection.
+            strictEqual(
+                wymeditor.selectedContainer(),
+                curNode.parentNode,
+                assertStrCount + assertStrPre +
+                    "node's parent contains selection."
+            );
+        }
+    }
+});
+
+module("switchTo", {setup: setupWym});
+
+test("Refuses 'img' elements.", function () {
+    var
+        wymeditor = jQuery.wymeditors(0),
+
+        html = '<p><img alt="" src="" /></p>';
+
+    wymeditor._html(html);
+
+    try {
+        // `.switchTo` on the `img`.
+        wymeditor.switchTo(
+            jQuery(wymeditor._doc).find('body.wym_iframe').find('img')[0],
+            'span'
+        );
+    }
+    catch(err) {
+        strictEqual(
+            err,
+            "Will not change the tag of this element."
+        );
+    }
+
+});

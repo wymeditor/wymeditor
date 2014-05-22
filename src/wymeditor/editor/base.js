@@ -1,4 +1,4 @@
-/*jshint evil: true, camelcase: false, maxlen: 100 */
+/* jshint evil: true, camelcase: false, maxlen: 100 */
 /* global -$, rangy */
 "use strict";
 
@@ -229,7 +229,7 @@ WYMeditor.editor.prototype.bindEvents = function () {
 
     // Handle click events on containers buttons
     jQuery(this._box).find(this._options.containerSelector).click(function () {
-        wym.container(jQuery(this).attr(WYMeditor.NAME));
+        wym.mainContainer(jQuery(this).attr(WYMeditor.NAME));
         return false;
     });
 
@@ -346,7 +346,7 @@ WYMeditor.editor.prototype.exec = function (cmd) {
     switch (cmd) {
 
     case WYMeditor.CREATE_LINK:
-        container = this.container();
+        container = this.mainContainer();
         if (container || this._selectedImage) {
             this.dialog(WYMeditor.DIALOG_LINK);
         }
@@ -424,41 +424,58 @@ WYMeditor.editor.prototype.selection = function () {
 };
 
 /**
-    WYMeditor.editor.selection
-    ==========================
+    WYMeditor.editor.nodeAfterSel
+    =============================
 
-    Return the selected node.
+    Returns the node that is immediately after the selection.
 */
-WYMeditor.editor.prototype.selected = function () {
+WYMeditor.editor.prototype.nodeAfterSel = function () {
     var sel = this.selection(),
-        node = sel.focusNode,
-        caretPos,
-        isBodyTag,
-        isTextNode;
+        noNodeErrorStr = "There is no node immediately after the selection.";
 
-    if (node) {
-        if (jQuery.browser.msie) {
-            // For collapsed selections, we have to use the ghetto "caretPos"
-            // hack to find the selection, otherwise it always says that the
-            // body element is selected
-            isBodyTag = node.tagName && node.tagName.toLowerCase() === "body";
-            isTextNode = node.nodeName === "#text";
-
-            if (sel.isCollapsed && (isBodyTag || isTextNode)) {
-                caretPos = this._iframe.contentWindow.document.caretPos;
-                if (caretPos && caretPos.parentElement) {
-                    node = caretPos.parentElement();
-                }
-            }
+    if (
+        sel.anchorNode.tagName &&
+        jQuery.inArray(
+            sel.anchorNode.tagName.toLowerCase(),
+            WYMeditor.INLINE_ELEMENTS
+        ) === -1
+    ) {
+        if (sel.anchorNode.childNodes.length === 0) {
+            throw noNodeErrorStr;
         }
-        if (node.nodeName === "#text") {
-            return node.parentNode;
-        } else {
-            return node;
-        }
-    } else {
-        return null;
+        return sel.anchorNode.childNodes[0];
     }
+    return sel.focusNode;
+};
+
+/**
+    WYMeditor.editor.selectedContainer
+    =============================
+
+    Returns the selection's container.
+
+    Not to be confused with `.mainContainer`, which sets and gets the
+    selection's main container.
+*/
+WYMeditor.editor.prototype.selectedContainer = function () {
+    var focusNode = this.selection().focusNode;
+
+        if (
+            focusNode.nodeType === 3 || (
+
+                focusNode.tagName &&
+
+                jQuery.inArray(
+                    focusNode.tagName.toLowerCase(),
+                    WYMeditor.NON_CONTAINING_ELEMENTS
+                ) > -1
+            )
+        ) {
+            return focusNode.parentNode;
+        } else {
+            return focusNode;
+        }
+
 };
 
 /**
@@ -506,14 +523,14 @@ WYMeditor.editor.prototype.selected_contains = function (selector) {
 
 /**
     WYMeditor.editor.selected_parents_contains
-    ==================================
+    ==========================================
 
     Return an array of nodes that match the selector within
     the selection's parents.
 */
 WYMeditor.editor.prototype.selected_parents_contains = function (selector) {
     var $matches = jQuery([]),
-        $selected = jQuery(this.selected());
+        $selected = jQuery(this.selectedContainer());
     if ($selected.is(selector)) {
         $matches = $matches.add($selected);
     }
@@ -522,14 +539,36 @@ WYMeditor.editor.prototype.selected_parents_contains = function (selector) {
 };
 
 /**
-    WYMeditor.editor.container
-    ==========================
+    WYMeditor.editor.isInlineNode
+    =============================
 
-    Get or set the selected container.
+    Returns true if the provided node is an in-line type node. Otherwise
+    returns false.
+
+    @param node The node to check.
 */
-WYMeditor.editor.prototype.container = function (sType) {
+
+WYMeditor.editor.prototype.isInlineNode = function (node) {
+    if (
+        jQuery.inArray(
+            node.tagName.toLowerCase(),
+            WYMeditor.INLINE_ELEMENTS
+        ) > -1
+    ) {
+        return true;
+    }
+    return false;
+};
+
+/**
+    WYMeditor.editor.mainContainer
+    ==============================
+
+    Get or set the selected main container.
+*/
+WYMeditor.editor.prototype.mainContainer = function (sType) {
     if (typeof (sType) === 'undefined') {
-        return this.selected();
+        return this.selectedContainer();
     }
 
     var container = null,
@@ -542,7 +581,7 @@ WYMeditor.editor.prototype.container = function (sType) {
         x;
 
     if (sType.toLowerCase() === WYMeditor.TH) {
-        container = this.container();
+        container = this.mainContainer();
 
         // Find the TD or TH container
         switch (container.tagName.toLowerCase()) {
@@ -552,7 +591,7 @@ WYMeditor.editor.prototype.container = function (sType) {
             break;
         default:
             aTypes = [WYMeditor.TD, WYMeditor.TH];
-            container = this.findUp(this.container(), aTypes);
+            container = this.findUp(this.mainContainer(), aTypes);
             break;
         }
 
@@ -579,20 +618,20 @@ WYMeditor.editor.prototype.container = function (sType) {
             WYMeditor.PRE,
             WYMeditor.BLOCKQUOTE
         ];
-        container = this.findUp(this.container(), aTypes);
+        container = this.findUp(this.mainContainer(), aTypes);
 
         if (container) {
             if (sType.toLowerCase() === WYMeditor.BLOCKQUOTE) {
                 // Blockquotes must contain a block level element
                 blockquote = this.findUp(
-                    this.container(),
+                    this.mainContainer(),
                     WYMeditor.BLOCKQUOTE
                 );
                 if (blockquote === null) {
                     newNode = this._doc.createElement(sType);
                     container.parentNode.insertBefore(newNode, container);
                     newNode.appendChild(container);
-                    this.setFocusInNode(newNode.firstChild);
+                    this.setCaretIn(newNode.firstChild);
                 } else {
                     nodes = blockquote.childNodes;
                     lgt = nodes.length;
@@ -608,7 +647,7 @@ WYMeditor.editor.prototype.container = function (sType) {
                     }
                     blockquote.parentNode.removeChild(blockquote);
                     if (firstNode) {
-                        this.setFocusInNode(firstNode);
+                        this.setCaretIn(firstNode);
                     }
                 }
             } else {
@@ -666,7 +705,7 @@ WYMeditor.editor.prototype.toggleClass = function (sClass, jqexpr) {
     if (this._selectedImage) {
         container = this._selectedImage;
     } else {
-        container = jQuery(this.selected());
+        container = jQuery(this.selectedContainer());
     }
     container = jQuery(container).parentsOrSelf(jqexpr);
     jQuery(container).toggleClass(sClass);
@@ -744,6 +783,10 @@ WYMeditor.editor.prototype.switchTo = function (node, sType, stripAttrs) {
         attrs = node.attributes,
         i;
 
+    if (node.tagName.toLowerCase() === 'img') {
+        throw "Will not change the tag of this element.";
+    }
+
     if (!stripAttrs) {
         for (i = 0; i < attrs.length; ++i) {
             newNode.setAttribute(attrs.item(i).nodeName,
@@ -753,7 +796,7 @@ WYMeditor.editor.prototype.switchTo = function (node, sType, stripAttrs) {
     newNode.innerHTML = html;
     node.parentNode.replaceChild(newNode, node);
 
-    this.setFocusInNode(newNode);
+    this.setCaretIn(newNode);
 };
 
 WYMeditor.editor.prototype.replaceStrings = function (sVal) {
@@ -916,7 +959,7 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
 
 /**
     editor._getBlockSepSelector
-    =============================
+    ===========================
 
     Build a string representing a jquery selector that will find all
     elements which need a spacer <br> before them. This includes all consecutive
@@ -976,7 +1019,7 @@ WYMeditor.editor.prototype._getBlockSepSelector = function () {
 
 /*
     editor._getBlockInListSepSelector
-    ==================================
+    =================================
 
     Returns a selector for getting all of the block elements in lists
     or sublists. The block elements at the end of lists or sublists should have
@@ -1249,7 +1292,7 @@ WYMeditor.editor.prototype._handleMultilineBlockContainerPaste = function (
     paragraphs. May contain inline HTML.
 */
 WYMeditor.editor.prototype.paste = function (str) {
-    var container = this.selected(),
+    var container = this.selectedContainer(),
         paragraphStrings,
         j,
         textNodesToInsert,
@@ -1366,96 +1409,171 @@ WYMeditor.editor.prototype.unwrap = function () {
 };
 
 /**
-    editor.setFocusBeforeNode
+    editor.canSetCaretBeforeStrong
+    ==============================
+
+    // In short, some browsers can't set a collapsed selection immediately before
+    // a 'strong' element. Instead, the selection ends up one or more nodes
+    // before. Follow-up in Rangy issue #210.
+*/
+WYMeditor.editor.prototype.canSetCaretBeforeStrong = function () {
+    return true;
+};
+
+/**
+    editor.canSetCaretBefore
+    ========================
+
+    Returns true if it is OK to set a collapsed selection immediately before
+    a node. Otherwise returns false.
+
+    @param node A node to check about.
+ */
+WYMeditor.editor.prototype.canSetCaretBefore = function (node) {
+
+    if (
+        node.nodeType !== 3 &&
+        node.tagName &&
+        jQuery.inArray(
+            node.tagName.toLowerCase(),
+            WYMeditor.INLINE_ELEMENTS
+        ) === -1
+    ) {
+        return false;
+    } else {
+        if (
+            node.tagName &&
+            node.tagName.toLowerCase() === 'strong' &&
+            this.canSetCaretBeforeStrong()
+            // In short, some browsers can't set a collapsed selection immediately before
+            // a 'strong' element. Instead, the selection ends up one or more nodes
+            // before. Follow-up in Rangy issue #210.
+        ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+};
+
+/**
+    editor.setCaretBefore
     =====================
 
     Sets a collapsed selection to immediately before a provided node.
 
-    Not to be confused with `editor.setFocusInNode`, which sets a collapsed
+    Not to be confused with `editor.setCaretIn`, which sets a collapsed
     selection inside a container node, at the start.
 
     @param node A node to set the selection to immediately before of.
  */
-WYMeditor.editor.prototype.setFocusBeforeNode = function (node) {
+WYMeditor.editor.prototype.setCaretBefore = function (node) {
     var
-        // Save a range in the WYMeditor.
         range = rangy.createRange(this._doc),
-        // Save the selection.
         selection = rangy.getIframeSelection(this._iframe);
 
-    if (
-        // the node is an element and
-        node.tagName &&
-        // it is of the main containers:
-        jQuery.inArray(
-            node.tagName.toLowerCase(),
-            WYMeditor.MAIN_CONTAINERS
-        ) > -1
-    ) {
-        // It is an error.
-        throw "Will not place caret outside of a main container. Perhaps you" +
-            " mean to use `.setFocusInNode`, instead.";
+    if (!this.canSetCaretBefore(node)) {
+        throw "Will not set collapsed selection immediately before a " +
+            "node that is not inline. Perhaps you mean to use " +
+            "`.setCaretIn`, instead.";
     }
 
-    // Set the range to encompass the node.
     range.selectNode(node);
 
-    // Collapse it to the start.
     range.collapse(true);
 
-    // Set the selection.
     selection.setSingleRange(range);
 };
 
 /**
-    editor.setFocusInNode
-    =====================
+   editor.canSetCaretAtStartOf
+   ===========================
+
+   Rangy issue #209. Returns true.
+ */
+WYMeditor.editor.prototype.canSetCaretAtStartOf = function () {
+    return true;
+};
+
+/**
+    editor.canSetCaretIn
+    ====================
+
+    Returns true if it is OK to set a collapsed selection inside a node.
+    Otherwise returns false.
+
+    @param node A node to check about.
+ */
+WYMeditor.editor.prototype.canSetCaretIn = function (node) {
+
+    if (
+        node.nodeType === 3 ||
+        (
+            node.tagName &&
+            jQuery.inArray(
+                node.tagName.toLowerCase(),
+                WYMeditor.NO_CARET_ELEMENTS
+            ) > -1
+        )
+    ) {
+        return false;
+    }
+    // Rangy issue #209.
+    if (!this.canSetCaretAtStartOf(node)) {
+
+        if (node.childNodes.length === 0) {
+            // Not possible to work-around this issue.
+            return false;
+        }
+        // It is possible to work-around this issue by setting a non-collapsed
+        // selection. Warn about this.
+        WYMeditor.console.warn("Can set a non-collapsed selection. Rangy issue #209.");
+    }
+    return true;
+};
+
+/**
+    editor.setCaretIn
+    =================
 
     Sets a collapsed selection to inside provided container node, at the start.
 
-    Not to be confused with `editor.setFocusBeforeNode`, which sets a collapsed
+    Not to be confused with `editor.setCaretBefore`, which sets a collapsed
     selection immediately before a node.
 
     @param node A node to set the selection inside of, at the start.
  */
-WYMeditor.editor.prototype.setFocusInNode = function (node) {
-    var
-        // Save a range in the WYMeditor.
-        range = rangy.createRange(this._doc),
-        // Save the selection.
+WYMeditor.editor.prototype.setCaretIn = function (node) {
+    var range = rangy.createRange(this._doc),
         selection = rangy.getIframeSelection(this._iframe);
 
     if (
-        // the node is text or
-        node.nodeType === 3 ||
-        (
-            // it is an element and
-            node.tagName &&
-            // an element that can't contain child nodes:
-            jQuery.inArray(
-                node.tagName.toLowerCase(),
-                WYMeditor.NON_CONTAINING_ELEMENTS
-            ) > -1
-        )
+        !this.canSetCaretIn(node)
     ) {
-        // It is an error.
-        throw "The node must be an element that can contain child nodes. " +
-            "Perhaps you want to use `setFocusBeforeNode`, instead.";
+        throw "The node must be an element that is allowed to contain a " +
+            "collapsed selection. Perhaps you want to use " +
+            "`setCaretBefore`, instead.";
     }
 
-    // Set the range to encompass the contents of the node.
     range.selectNodeContents(node);
 
-    // Collapse it to the start.
-    range.collapse(true);
+    // Rangy issue #209.
+    if (!this.canSetCaretAtStartOf(node)) {
 
-    // Set the selection.
+        // Don't collapse the range. As long as
+        // this occurs only in tests it is probably OK. Warn.
+        WYMeditor.console.warn("Can't set a collapsed selection. Setting " +
+           "a non-collapsed selection, instead. Rangy issue #209.");
+    } else {
+        range.collapse(true);
+    }
+
     selection.setSingleRange(range);
 };
 
 /**
     editor.splitListItemContents
-    =============================
+    ============================
 
     Utility
 
@@ -1623,7 +1741,7 @@ WYMeditor.editor.prototype._indentSingleItem = function (listItem) {
 
 /**
     editor._outdentSingleItem
-    ========================
+    =========================
 
     Outdent a single list item via the dom, ensuring that the selected node moves in
     exactly one level and all other nodes stay at the same level.
@@ -1860,7 +1978,7 @@ WYMeditor.editor.prototype._correctOrphanedListItem = function (listNode) {
 
 /**
     editor._correctInvalidListNesting
-    ================================
+    =================================
 
     This is the function that actually does the list correction.
     correctInvalidListNesting is just a helper function that first finds the root
@@ -2241,7 +2359,7 @@ WYMeditor.editor.prototype.indent = function () {
 
     // First, make sure this list is properly structured
     manipulationFunc = function () {
-        var selectedBlock = wym.selected(),
+        var selectedBlock = wym.selectedContainer(),
             potentialListBlock = wym.findUp(
                 selectedBlock,
                 ['ol', 'ul', 'li']
@@ -2301,7 +2419,7 @@ WYMeditor.editor.prototype.outdent = function () {
 
     // First, make sure this list is properly structured
     manipulationFunc = function () {
-        var selectedBlock = wym.selected(),
+        var selectedBlock = wym.selectedContainer(),
             potentialListBlock = wym.findUp(
                 selectedBlock,
                 ['ol', 'ul', 'li']
@@ -2383,7 +2501,7 @@ WYMeditor.editor.prototype.restoreSelectionAfterManipulation = function (manipul
 
 /**
     editor.insertOrderedlist
-    =========================
+    ========================
 
     Convert the selected block in to an ordered list.
 
@@ -2400,7 +2518,7 @@ WYMeditor.editor.prototype.insertOrderedlist = function () {
 
     // First, make sure this list is properly structured
     manipulationFunc = function () {
-        var selectedBlock = wym.selected(),
+        var selectedBlock = wym.selectedContainer(),
             potentialListBlock = wym.findUp(
                 selectedBlock,
                 ['ol', 'ul', 'li']
@@ -2424,7 +2542,7 @@ WYMeditor.editor.prototype.insertOrderedlist = function () {
 
 /**
     editor.insertUnorderedlist
-    =========================
+    ==========================
 
     Convert the selected block in to an unordered list.
 
@@ -2439,7 +2557,7 @@ WYMeditor.editor.prototype.insertUnorderedlist = function () {
 
     // First, make sure this list is properly structured
     manipulationFunc = function () {
-        var selectedBlock = wym.selected(),
+        var selectedBlock = wym.selectedContainer(),
             potentialListBlock = wym.findUp(
                 selectedBlock,
                 ['ol', 'ul', 'li']
@@ -2463,7 +2581,7 @@ WYMeditor.editor.prototype.insertUnorderedlist = function () {
 
 /**
     editor._insertList
-    =========================
+    ==================
 
     Convert the selected block in to the specified type of list.
 
@@ -2503,7 +2621,7 @@ WYMeditor.editor.prototype._insertList = function (listType) {
 
     // If we've selected a block-level item that's appropriate to convert in to a list,
     // convert it.
-    selectedBlock = this.selected();
+    selectedBlock = this.selectedContainer();
     // TODO: Use `_containerRules['root']` minus the ol/ul and
     // `_containerRules['contentsCanConvertToList']
     potentialListBlock = this.findUp(selectedBlock, WYMeditor.POTENTIAL_LIST_ELEMENTS);
@@ -2595,7 +2713,7 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
 
     // Find the currently-selected container
     container = jQuery(
-        this.findUp(this.container(), WYMeditor.POTENTIAL_TABLE_INSERT_ELEMENTS)
+        this.findUp(this.mainContainer(), WYMeditor.POTENTIAL_TABLE_INSERT_ELEMENTS)
     ).get(0);
 
     if (!container || !container.parentNode) {
