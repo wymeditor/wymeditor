@@ -433,18 +433,30 @@ WYMeditor.editor.prototype.nodeAfterSel = function () {
     var sel = this.selection(),
         noNodeErrorStr = "There is no node immediately after the selection.";
 
+    // Different browsers describe selection differently. Here be dragons.
     if (
         sel.anchorNode.tagName &&
         jQuery.inArray(
             sel.anchorNode.tagName.toLowerCase(),
-            WYMeditor.INLINE_ELEMENTS
+            WYMeditor.NON_CONTAINING_ELEMENTS
         ) === -1
     ) {
         if (sel.anchorNode.childNodes.length === 0) {
             throw noNodeErrorStr;
         }
-        return sel.anchorNode.childNodes[0];
+        return sel.anchorNode.childNodes[sel.anchorOffset];
     }
+
+    if (
+        sel.focusNode.nodeType === 3 &&
+        sel.focusNode.data.length === sel.focusOffset
+    ) {
+        if (!sel.focusNode.nextSibling) {
+            throw noNodeErrorStr;
+        }
+        return sel.focusNode.nextSibling;
+    }
+
     return sel.focusNode;
 };
 
