@@ -1460,6 +1460,19 @@ selTest.setCollapsedHtml = [""
             , '7.11.0'
         , '</b>'
         , '7.12'
+        , '<span id="7.13">'
+            , '7.13.0'
+        , '</span>'
+        , '<span id="7.14">'
+            , '7.14.0'
+        , '</span>'
+        , '<br id="7.15" />'
+        , '<span id="7.16">'
+            , '7.16.0'
+        , '</span>'
+        , '<span id="7.17">'
+            , '7.17.0'
+        , '</span>'
     , '</p>'
 ].join('');
 
@@ -1500,9 +1513,8 @@ test("Set and get collapsed selection", function () {
             if (
                 curNode.childNodes.length > 0 &&
 
-                // Is it possible to set the caret at the start of it? (Rangy
-                // issue #209)
-                wymeditor.canSetCaretAtStartOf(curNode)
+                // Rangy issue #209
+                !wymeditor.isInlineNode(curNode)
             ) {
                 expect(expect() + 1);
 

@@ -267,13 +267,3 @@ WYMeditor.WymClassExplorer.prototype.keyup = function (evt) {
         wym.fixBodyHtml();
     }
 };
-
-// Rangy issue #209.
-WYMeditor.WymClassExplorer.prototype.canSetCaretAtStartOf = function (node) {
-
-    if (this.isInlineNode(node)) {
-        return false;
-    }
-
-    return true;
-};

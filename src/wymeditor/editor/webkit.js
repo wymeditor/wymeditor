@@ -204,11 +204,3 @@ WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
         wym.fixBodyHtml();
     }
 };
-
-// Rangy issue #209.
-WYMeditor.WymClassSafari.prototype.canSetCaretAtStartOf = function (node) {
-    if (this.isInlineNode(node)) {
-        return false;
-    }
-    return true;
-};

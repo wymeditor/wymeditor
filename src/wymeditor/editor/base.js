@@ -1482,16 +1482,6 @@ WYMeditor.editor.prototype.setCaretBefore = function (node) {
 };
 
 /**
-   editor.canSetCaretAtStartOf
-   ===========================
-
-   Rangy issue #209. Returns true.
- */
-WYMeditor.editor.prototype.canSetCaretAtStartOf = function () {
-    return true;
-};
-
-/**
     editor.canSetCaretIn
     ====================
 
@@ -1515,7 +1505,7 @@ WYMeditor.editor.prototype.canSetCaretIn = function (node) {
         return false;
     }
     // Rangy issue #209.
-    if (!this.canSetCaretAtStartOf(node)) {
+    if (this.isInlineNode(node)) {
 
         if (node.childNodes.length === 0) {
             // Not possible to work-around this issue.
@@ -1554,7 +1544,7 @@ WYMeditor.editor.prototype.setCaretIn = function (node) {
     range.selectNodeContents(node);
 
     // Rangy issue #209.
-    if (!this.canSetCaretAtStartOf(node)) {
+    if (this.isInlineNode(node)) {
 
         // Don't collapse the range. As long as
         // this occurs only in tests it is probably OK. Warn.
