@@ -42,7 +42,9 @@ WYMeditor.editor.prototype.init = function () {
         if (jQuery.browser.version === '537.36') {
             // This seems to indicate Blink. See:
             // https://stackoverflow.com/questions/20655470
-            WymClass = new WYMeditor.WymClassBlink(this);
+            //WymClass = new WYMeditor.WymClassBlink(this);
+            // For now we use the WebKit editor class in Blink.
+            WymClass = new WYMeditor.WymClassWebKit(this);
         } else {
             WymClass = new WYMeditor.WymClassWebKit(this);
         }

@@ -34,7 +34,6 @@ function loadWymSrc(srcPath, extraRequirements, jqueryVersion) {
             srcPath + 'wymeditor/core.js',
             srcPath + 'wymeditor/editor/base.js',
             srcPath + 'wymeditor/editor/document-structure-manager.js',
-            srcPath + 'wymeditor/editor/blink.js',
             srcPath + 'wymeditor/editor/gecko.js',
             srcPath + 'wymeditor/editor/trident.js',
             srcPath + 'wymeditor/editor/webkit.js',
