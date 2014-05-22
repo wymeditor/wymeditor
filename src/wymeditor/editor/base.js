@@ -1440,20 +1440,18 @@ WYMeditor.editor.prototype.canSetCaretBefore = function (node) {
         ) === -1
     ) {
         return false;
-    } else {
-        if (
-            node.tagName &&
-            node.tagName.toLowerCase() === 'strong' &&
-            this.canSetCaretBeforeStrong()
-            // In short, some browsers can't set a collapsed selection immediately before
-            // a 'strong' element. Instead, the selection ends up one or more nodes
-            // before. Follow-up in Rangy issue #210.
-        ) {
-            return true;
-        } else {
-            return false;
-        }
     }
+    if (
+        node.tagName &&
+        node.tagName.toLowerCase() === 'strong' &&
+        !this.canSetCaretBeforeStrong()
+        // In short, some browsers can't set a collapsed selection immediately before
+        // a 'strong' element. Instead, the selection ends up one or more nodes
+        // before. Follow-up in Rangy issue #210.
+    ) {
+        return false;
+    }
+    return true;
 };
 
 /**
