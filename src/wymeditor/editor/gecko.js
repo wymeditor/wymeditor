@@ -2,21 +2,21 @@
 /* global -$ */
 "use strict";
 
-WYMeditor.WymClassMozilla = function (wym) {
+WYMeditor.WymClassGecko = function (wym) {
     this._wym = wym;
     this._class = "class";
 };
 
 // Placeholder cell to allow content in TD cells for FF 3.5+
-WYMeditor.WymClassMozilla.CELL_PLACEHOLDER = '<br _moz_dirty="" />';
+WYMeditor.WymClassGecko.CELL_PLACEHOLDER = '<br _moz_dirty="" />';
 
 // Firefox 3.5 and 3.6 require the CELL_PLACEHOLDER and 4.0 doesn't
-WYMeditor.WymClassMozilla.NEEDS_CELL_FIX = parseInt(
+WYMeditor.WymClassGecko.NEEDS_CELL_FIX = parseInt(
     jQuery.browser.version, 10) === 1 &&
     jQuery.browser.version >= '1.9.1' &&
     jQuery.browser.version < '2.0';
 
-WYMeditor.WymClassMozilla.prototype.initIframe = function (iframe) {
+WYMeditor.WymClassGecko.prototype.initIframe = function (iframe) {
     var wym = this;
 
     this._iframe = iframe;
@@ -64,7 +64,7 @@ WYMeditor.WymClassMozilla.prototype.initIframe = function (iframe) {
 /** @name html
  * @description Get/Set the html value
  */
-WYMeditor.WymClassMozilla.prototype._html = function (html) {
+WYMeditor.WymClassGecko.prototype._html = function (html) {
     if (typeof html === 'string') {
         //disable designMode
         try {
@@ -92,7 +92,7 @@ WYMeditor.WymClassMozilla.prototype._html = function (html) {
     return false;
 };
 
-WYMeditor.WymClassMozilla.prototype._exec = function (cmd, param) {
+WYMeditor.WymClassGecko.prototype._exec = function (cmd, param) {
     if (!this.selectedContainer()) {
         return false;
     }
@@ -114,7 +114,7 @@ WYMeditor.WymClassMozilla.prototype._exec = function (cmd, param) {
 };
 
 //keydown handler, mainly used for keyboard shortcuts
-WYMeditor.WymClassMozilla.prototype.keydown = function (evt) {
+WYMeditor.WymClassGecko.prototype.keydown = function (evt) {
     //'this' is the doc
     var wym = WYMeditor.INSTANCES[this.title];
 
@@ -135,7 +135,7 @@ WYMeditor.WymClassMozilla.prototype.keydown = function (evt) {
 };
 
 // Keyup handler, mainly used for cleanups
-WYMeditor.WymClassMozilla.prototype.keyup = function (evt) {
+WYMeditor.WymClassGecko.prototype.keyup = function (evt) {
     // 'this' is the doc
     var wym = WYMeditor.INSTANCES[this.title],
         container,
@@ -202,17 +202,17 @@ WYMeditor.WymClassMozilla.prototype.keyup = function (evt) {
     }
 };
 
-WYMeditor.WymClassMozilla.prototype.click = function () {
+WYMeditor.WymClassGecko.prototype.click = function () {
     var wym = WYMeditor.INSTANCES[this.title],
         container = wym.selectedContainer(),
         sel;
 
-    if (WYMeditor.WymClassMozilla.NEEDS_CELL_FIX === true) {
+    if (WYMeditor.WymClassGecko.NEEDS_CELL_FIX === true) {
         if (container && container.tagName.toLowerCase() === WYMeditor.TR) {
             // Starting with FF 3.6, inserted tables need some content in their
             // cells before they're editable
             jQuery(WYMeditor.TD, wym._doc.body).append(
-                WYMeditor.WymClassMozilla.CELL_PLACEHOLDER);
+                WYMeditor.WymClassGecko.CELL_PLACEHOLDER);
 
             // The user is still going to need to move out of and then back in
             // to this cell if the table was inserted via an inner_html call
@@ -238,7 +238,7 @@ WYMeditor.WymClassMozilla.prototype.click = function () {
     }
 };
 
-WYMeditor.WymClassMozilla.prototype.enableDesignMode = function () {
+WYMeditor.WymClassGecko.prototype.enableDesignMode = function () {
     if (this._doc.designMode === "off") {
         try {
             this._doc.designMode = "on";
@@ -252,13 +252,13 @@ WYMeditor.WymClassMozilla.prototype.enableDesignMode = function () {
  * Fix new cell contents and ability to insert content at the front and end of
  * the contents.
  */
-WYMeditor.WymClassMozilla.prototype.afterInsertTable = function (table) {
-    if (WYMeditor.WymClassMozilla.NEEDS_CELL_FIX === true) {
+WYMeditor.WymClassGecko.prototype.afterInsertTable = function (table) {
+    if (WYMeditor.WymClassGecko.NEEDS_CELL_FIX === true) {
         // In certain FF versions, inserted tables need some content in their
         // cells before they're editable, otherwise the user has to move focus
         // in and then out of a cell first, even with our click() hack
         jQuery(table).find('td').each(function (index, element) {
-            jQuery(element).append(WYMeditor.WymClassMozilla.CELL_PLACEHOLDER);
+            jQuery(element).append(WYMeditor.WymClassGecko.CELL_PLACEHOLDER);
         });
     }
 };
