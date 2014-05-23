@@ -1529,22 +1529,21 @@ WYMeditor.editor.prototype.canSetCaretIn = function (node) {
 
     @param node A node to set the selection inside of, at the start.
  */
-WYMeditor.editor.prototype.setCaretIn = function (node) {
+WYMeditor.editor.prototype.setCaretIn = function (element) {
     var range = rangy.createRange(this._doc),
         selection = rangy.getIframeSelection(this._iframe);
 
     if (
-        !this.canSetCaretIn(node)
+        !this.canSetCaretIn(element)
     ) {
-        throw "The node must be an element that is allowed to contain a " +
-            "collapsed selection. Perhaps you want to use " +
-            "`setCaretBefore`, instead.";
+        throw "The element must be able to contain other elements. Perhaps " +
+            " you would like to use `setCaretBefore`, instead.";
     }
 
-    range.selectNodeContents(node);
+    range.selectNodeContents(element);
 
     // Rangy issue #209.
-    if (this.isInlineNode(node)) {
+    if (this.isInlineNode(element)) {
 
         // Don't collapse the range. As long as
         // this occurs only in tests it is probably OK. Warn.
