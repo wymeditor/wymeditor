@@ -34,14 +34,20 @@ WYMeditor.editor.prototype.init = function () {
         wym;
 
     if (jQuery.browser.msie) {
-        WymClass = new WYMeditor.WymClassExplorer(this);
+        WymClass = new WYMeditor.WymClassTrident(this);
     } else if (jQuery.browser.mozilla) {
-        WymClass = new WYMeditor.WymClassMozilla(this);
-    } else if (jQuery.browser.opera) {
-        WymClass = new WYMeditor.WymClassOpera(this);
+        WymClass = new WYMeditor.WymClassGecko(this);
     } else if (jQuery.browser.safari || jQuery.browser.webkit ||
                jQuery.browser.chrome) {
-        WymClass = new WYMeditor.WymClassSafari(this);
+        if (jQuery.browser.version === '537.36') {
+            // This seems to indicate Blink. See:
+            // https://stackoverflow.com/questions/20655470
+            //WymClass = new WYMeditor.WymClassBlink(this);
+            // For now we use the WebKit editor class in Blink.
+            WymClass = new WYMeditor.WymClassWebKit(this);
+        } else {
+            WymClass = new WYMeditor.WymClassWebKit(this);
+        }
     }
 
     if (WymClass === false) {
