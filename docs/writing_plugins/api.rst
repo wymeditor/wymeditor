@@ -36,6 +36,29 @@ the HTML source textarea.
 Selection Setting and Getting
 *****************************
 
+.. note::
+  For selection setting and selection getting WYMeditor uses the Rangy library
+  internally.
+
+  The Rangy library doesn't seem to provide a consistent interface for
+  selection getting. Instead, the selection could be in many cases described
+  differently in different browsers.
+
+  Additionally, erroneous selections are performed by some browsers under
+  certain conditions.
+
+  In light of this an effort has been made to provide reliable methods in
+  WYMeditor for selection setting an getting.
+
+  Core as well as plugin contriubtors are highly recommended to use these
+  methods and avoid using the Rangy API.
+
+  If you find these methods lack a feature that you require then please file an
+  issue describing your requirement so that we could look into answering it in
+  a consistent and reliable way.
+
+  Pull requests regarding this or any other issue are warmly welcomed.
+
 ``nodeAfterSel()``
 ==================
 
@@ -103,7 +126,15 @@ a provided node. This is useful for the same reason as ``canSetCaretBefore``.
 ``setCaretIn(element)``
 =======================
 
-Sets a collapsed selection at the start inside a provided node.
+Sets a collapsed selection at the start inside a provided element.
+
+.. note::
+  Due to what seems like browser bugs, setting the caret inside an inline element
+  results in a selection across the contents of that element.
+
+  For this reason it might not be useful for implementation of features.
+
+  It can, however, be useful in tests.
 
 It checks whether this is possible, before doing so, using
 ``canSetCaretIn``.
