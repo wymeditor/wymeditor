@@ -64,12 +64,6 @@ All of these changes are documented in detail in the
 * IE8 has a bug in `designMode`, where it breaks lists under certain
   circumstance. [#446](https://github.com/wymeditor/wymeditor/issues/446). This
   is now properly handled.
-* [#501](https://github.com/wymeditor/wymeditor/pull/501) Fixed a bug in unit
-  testing and some bugs in tests.
-* [#503](https://github.com/wymeditor/wymeditor/pull/503) Fixed a bug in some
-  table unit tests.
-* [#506](https://github.com/wymeditor/wymeditor/pull/506) Fixed a bug in unit
-  testing where IE7 and IE8 produced newlines and CR were not stripped.
 * [#517](https://github.com/wymeditor/wymeditor/pull/517) Fixed a bug regarding
   self-closing tags in our editor Iframes.
 
