@@ -2,12 +2,12 @@
 /* global -$ */
 "use strict";
 
-WYMeditor.WymClassSafari = function (wym) {
+WYMeditor.WymClassWebKit = function (wym) {
     this._wym = wym;
     this._class = "class";
 };
 
-WYMeditor.WymClassSafari.prototype.initIframe = function (iframe) {
+WYMeditor.WymClassWebKit.prototype.initIframe = function (iframe) {
     var wym = this;
 
     wym._iframe = iframe;
@@ -46,7 +46,7 @@ WYMeditor.WymClassSafari.prototype.initIframe = function (iframe) {
     );
 };
 
-WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
+WYMeditor.WymClassWebKit.prototype._exec = function (cmd, param) {
     if (!this.selectedContainer()) {
         return false;
     }
@@ -106,7 +106,7 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
 };
 
 //keydown handler, mainly used for keyboard shortcuts
-WYMeditor.WymClassSafari.prototype.keydown = function (e) {
+WYMeditor.WymClassWebKit.prototype.keydown = function (e) {
     //'this' is the doc
     var wym = WYMeditor.INSTANCES[this.title];
 
@@ -131,7 +131,7 @@ WYMeditor.WymClassSafari.prototype.keydown = function (e) {
 };
 
 // Keyup handler, mainly used for cleanups
-WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
+WYMeditor.WymClassWebKit.prototype.keyup = function (evt) {
     //'this' is the doc
     var wym = WYMeditor.INSTANCES[this.title],
         container,
@@ -203,20 +203,4 @@ WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
         // Fix formatting if necessary
         wym.fixBodyHtml();
     }
-};
-
-// Rangy issue #210.
-// In short, some browsers can't set a collapsed selection immediately before
-// a 'strong' element. Instead, the selection ends up one or more nodes
-// before. Follow-up in Rangy issue #210.
-WYMeditor.WymClassSafari.prototype.canSetCaretBeforeStrong = function () {
-    return false;
-};
-
-// Rangy issue #209.
-WYMeditor.WymClassSafari.prototype.canSetCaretAtStartOf = function (node) {
-    if (this.isInlineNode(node)) {
-        return false;
-    }
-    return true;
 };

@@ -2,12 +2,12 @@
 /* global rangy, -$ */
 "use strict";
 
-WYMeditor.WymClassExplorer = function (wym) {
+WYMeditor.WymClassTrident = function (wym) {
     this._wym = wym;
     this._class = "className";
 };
 
-WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
+WYMeditor.WymClassTrident.prototype.initIframe = function (iframe) {
     this._iframe = iframe;
     this._doc = iframe.contentWindow.document;
 
@@ -75,7 +75,7 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
 };
 
 (function (editorInitSkin) {
-    WYMeditor.WymClassExplorer.prototype.initSkin = function () {
+    WYMeditor.WymClassTrident.prototype.initSkin = function () {
         // Mark container items as unselectable (#203)
         // Fix for issue explained:
         // http://stackoverflow.com/questions/
@@ -88,7 +88,7 @@ WYMeditor.WymClassExplorer.prototype.initIframe = function (iframe) {
     };
 }(WYMeditor.editor.prototype.initSkin));
 
-WYMeditor.WymClassExplorer.prototype._exec = function (cmd, param) {
+WYMeditor.WymClassTrident.prototype._exec = function (cmd, param) {
     if (param) {
         this._doc.execCommand(cmd, false, param);
     } else {
@@ -96,11 +96,11 @@ WYMeditor.WymClassExplorer.prototype._exec = function (cmd, param) {
     }
 };
 
-WYMeditor.WymClassExplorer.prototype.saveCaret = function () {
+WYMeditor.WymClassTrident.prototype.saveCaret = function () {
     this._doc.caretPos = this._doc.selection.createRange();
 };
 
-WYMeditor.WymClassExplorer.prototype.insert = function (html) {
+WYMeditor.WymClassTrident.prototype.insert = function (html) {
 
     // Get the current selection
     var range = this._doc.selection.createRange(),
@@ -119,7 +119,7 @@ WYMeditor.WymClassExplorer.prototype.insert = function (html) {
     }
 };
 
-WYMeditor.WymClassExplorer.prototype.wrap = function (left, right) {
+WYMeditor.WymClassTrident.prototype.wrap = function (left, right) {
     // Get the current selection
     var range = this._doc.selection.createRange(),
         $selectionParents;
@@ -145,7 +145,7 @@ WYMeditor.WymClassExplorer.prototype.wrap = function (left, right) {
     @param containerType A string of an HTML tag that specifies the container
                          type to use for wrapping the node.
 */
-WYMeditor.WymClassExplorer.prototype.wrapWithContainer = function (
+WYMeditor.WymClassTrident.prototype.wrapWithContainer = function (
     node, containerType
 ) {
     var wym = this._wym,
@@ -161,7 +161,7 @@ WYMeditor.WymClassExplorer.prototype.wrapWithContainer = function (
     selection.setSingleRange(range);
 };
 
-WYMeditor.WymClassExplorer.prototype.unwrap = function () {
+WYMeditor.WymClassTrident.prototype.unwrap = function () {
     // Get the current selection
     var range = this._doc.selection.createRange(),
         $selectionParents,
@@ -179,7 +179,7 @@ WYMeditor.WymClassExplorer.prototype.unwrap = function () {
     }
 };
 
-WYMeditor.WymClassExplorer.prototype.keyup = function (evt) {
+WYMeditor.WymClassTrident.prototype.keyup = function (evt) {
     //'this' is the doc
     var wym = WYMeditor.INSTANCES[this.title],
         container,
@@ -266,22 +266,4 @@ WYMeditor.WymClassExplorer.prototype.keyup = function (evt) {
         // Fix formatting if necessary
         wym.fixBodyHtml();
     }
-};
-
-// Rangy issue #210.
-// In short, some browsers can't set a collapsed selection immediately before
-// a 'strong' element. Instead, the selection ends up one or more nodes
-// before. Follow-up in Rangy issue #210.
-WYMeditor.WymClassExplorer.prototype.canSetCaretBeforeStrong = function () {
-    return false;
-};
-
-// Rangy issue #209.
-WYMeditor.WymClassExplorer.prototype.canSetCaretAtStartOf = function (node) {
-
-    if (this.isInlineNode(node)) {
-        return false;
-    }
-
-    return true;
 };
