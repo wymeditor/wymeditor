@@ -36,6 +36,31 @@ the HTML source textarea.
 Selection Setting and Getting
 *****************************
 
+.. note::
+  For selection setting and selection getting, WYMeditor uses the Rangy library
+  internally.
+
+  The Rangy library doesn't seem to provide a consistent interface for
+  selection getting. Instead, the selection could be in many cases described
+  differently in different browsers.
+
+  Additionally, erroneous selections are performed by some browsers under
+  certain conditions.
+
+  In light of this, an effort has been made to provide reliable methods in
+  WYMeditor for selection setting an getting.
+
+  Core contributors, as well as plugin authors, are encouraged to use these
+  methods and to avoid using the Rangy API directly.
+
+  If you find these methods lack a feature that you require, then please file an
+  issue_ describing your requirement so that we could look into answering it in
+  a consistent and reliable way.
+
+  Pull requests regarding this or any other issue are warmly welcomed. For
+  detailed pull request recommendations, please see our documentation on
+  :doc:`../wymeditor_development/contributing`.
+
 ``nodeAfterSel()``
 ==================
 
@@ -76,9 +101,7 @@ Example: get the selected main container.
 Check whether it is possible to set a collapsed selection immediately before
 provided node.
 
-This check is useful for making sure that the caret will be placed in a place
-where typing is generally allowed. For example, not directly inside a 'ul'
-element.
+For an example see the test named 'selection: Set and get collapsed selection'.
 
 Returns true if yes and false if no.
 
@@ -86,6 +109,12 @@ Returns true if yes and false if no.
 ========================
 
 This sets a collapsed selection before the specified node.
+
+.. note:: 
+  Due to browser and/or Rangy bugs it has been decided that ``node`` could be
+  either a text node or a ``br`` element and if it is a ``br`` element it must
+  either have no ``previousSibling`` or its ``previousSibling`` must be a text
+  node or a ``br`` element.
 
 It checks whether this is possible, before doing so, using
 ``canSetCaretBefore``.
@@ -99,7 +128,15 @@ a provided node. This is useful for the same reason as ``canSetCaretBefore``.
 ``setCaretIn(element)``
 =======================
 
-Sets a collapsed selection at the start inside a provided node.
+Sets a collapsed selection at the start inside a provided element.
+
+.. note::
+  Due to what seems like browser bugs, setting the caret inside an inline element
+  results in a selection across the contents of that element.
+
+  For this reason it might not be useful for implementation of features.
+
+  It can, however, be useful in tests.
 
 It checks whether this is possible, before doing so, using
 ``canSetCaretIn``.
@@ -282,3 +319,5 @@ Example:
 ======================
 
 Returns true if the provided node is an inline type node. False, otherwise.
+
+.. _issue: https://github.com/wymeditor/wymeditor/issues

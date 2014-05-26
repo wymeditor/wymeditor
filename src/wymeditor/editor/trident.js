@@ -267,21 +267,3 @@ WYMeditor.WymClassTrident.prototype.keyup = function (evt) {
         wym.fixBodyHtml();
     }
 };
-
-// Rangy issue #210.
-// In short, some browsers can't set a collapsed selection immediately before
-// a 'strong' element. Instead, the selection ends up one or more nodes
-// before. Follow-up in Rangy issue #210.
-WYMeditor.WymClassExplorer.prototype.canSetCaretBeforeStrong = function () {
-    return false;
-};
-
-// Rangy issue #209.
-WYMeditor.WymClassExplorer.prototype.canSetCaretAtStartOf = function (node) {
-
-    if (this.isInlineNode(node)) {
-        return false;
-    }
-
-    return true;
-};

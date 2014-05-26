@@ -439,18 +439,30 @@ WYMeditor.editor.prototype.nodeAfterSel = function () {
     var sel = this.selection(),
         noNodeErrorStr = "There is no node immediately after the selection.";
 
+    // Different browsers describe selection differently. Here be dragons.
     if (
         sel.anchorNode.tagName &&
         jQuery.inArray(
             sel.anchorNode.tagName.toLowerCase(),
-            WYMeditor.INLINE_ELEMENTS
+            WYMeditor.NON_CONTAINING_ELEMENTS
         ) === -1
     ) {
         if (sel.anchorNode.childNodes.length === 0) {
             throw noNodeErrorStr;
         }
-        return sel.anchorNode.childNodes[0];
+        return sel.anchorNode.childNodes[sel.anchorOffset];
     }
+
+    if (
+        sel.focusNode.nodeType === WYMeditor.NODE.TEXT &&
+        sel.focusNode.data.length === sel.focusOffset
+    ) {
+        if (!sel.focusNode.nextSibling) {
+            throw noNodeErrorStr;
+        }
+        return sel.focusNode.nextSibling;
+    }
+
     return sel.focusNode;
 };
 
@@ -467,7 +479,7 @@ WYMeditor.editor.prototype.selectedContainer = function () {
     var focusNode = this.selection().focusNode;
 
         if (
-            focusNode.nodeType === 3 || (
+            focusNode.nodeType === WYMeditor.NODE.TEXT || (
 
                 focusNode.tagName &&
 
@@ -1415,18 +1427,6 @@ WYMeditor.editor.prototype.unwrap = function () {
 };
 
 /**
-    editor.canSetCaretBeforeStrong
-    ==============================
-
-    // In short, some browsers can't set a collapsed selection immediately before
-    // a 'strong' element. Instead, the selection ends up one or more nodes
-    // before. Follow-up in Rangy issue #210.
-*/
-WYMeditor.editor.prototype.canSetCaretBeforeStrong = function () {
-    return true;
-};
-
-/**
     editor.canSetCaretBefore
     ========================
 
@@ -1436,30 +1436,29 @@ WYMeditor.editor.prototype.canSetCaretBeforeStrong = function () {
     @param node A node to check about.
  */
 WYMeditor.editor.prototype.canSetCaretBefore = function (node) {
-
+    if (node.nodeType === WYMeditor.NODE.TEXT) {
+        return true;
+    }
     if (
-        node.nodeType !== 3 &&
         node.tagName &&
-        jQuery.inArray(
-            node.tagName.toLowerCase(),
-            WYMeditor.INLINE_ELEMENTS
-        ) === -1
+        node.tagName.toLowerCase() === 'br'
     ) {
-        return false;
-    } else {
         if (
-            node.tagName &&
-            node.tagName.toLowerCase() === 'strong' &&
-            this.canSetCaretBeforeStrong()
-            // In short, some browsers can't set a collapsed selection immediately before
-            // a 'strong' element. Instead, the selection ends up one or more nodes
-            // before. Follow-up in Rangy issue #210.
+            !node.previousSibling
         ) {
             return true;
-        } else {
-            return false;
+
+        } else if (
+            node.previousSibling.tagName &&
+            node.previousSibling.tagName.toLowerCase() === 'br'
+        ) {
+            return true;
+
+        } else if (node.previousSibling.nodeType === WYMeditor.NODE.TEXT) {
+            return true;
         }
     }
+    return false;
 };
 
 /**
@@ -1479,26 +1478,13 @@ WYMeditor.editor.prototype.setCaretBefore = function (node) {
         selection = rangy.getIframeSelection(this._iframe);
 
     if (!this.canSetCaretBefore(node)) {
-        throw "Will not set collapsed selection immediately before a " +
-            "node that is not inline. Perhaps you mean to use " +
-            "`.setCaretIn`, instead.";
+        throw "Can't set caret before this node.";
     }
 
     range.selectNode(node);
-
     range.collapse(true);
 
     selection.setSingleRange(range);
-};
-
-/**
-   editor.canSetCaretAtStartOf
-   ===========================
-
-   Rangy issue #209. Returns true.
- */
-WYMeditor.editor.prototype.canSetCaretAtStartOf = function () {
-    return true;
 };
 
 /**
@@ -1513,7 +1499,7 @@ WYMeditor.editor.prototype.canSetCaretAtStartOf = function () {
 WYMeditor.editor.prototype.canSetCaretIn = function (node) {
 
     if (
-        node.nodeType === 3 ||
+        node.nodeType === WYMeditor.NODE.TEXT ||
         (
             node.tagName &&
             jQuery.inArray(
@@ -1525,7 +1511,7 @@ WYMeditor.editor.prototype.canSetCaretIn = function (node) {
         return false;
     }
     // Rangy issue #209.
-    if (!this.canSetCaretAtStartOf(node)) {
+    if (this.isInlineNode(node)) {
 
         if (node.childNodes.length === 0) {
             // Not possible to work-around this issue.
@@ -1542,29 +1528,28 @@ WYMeditor.editor.prototype.canSetCaretIn = function (node) {
     editor.setCaretIn
     =================
 
-    Sets a collapsed selection to inside provided container node, at the start.
+    Sets a collapsed selection to inside provided container element, at the start.
 
     Not to be confused with `editor.setCaretBefore`, which sets a collapsed
     selection immediately before a node.
 
-    @param node A node to set the selection inside of, at the start.
+    @param element An element to set the selection inside of, at the start.
  */
-WYMeditor.editor.prototype.setCaretIn = function (node) {
+WYMeditor.editor.prototype.setCaretIn = function (element) {
     var range = rangy.createRange(this._doc),
         selection = rangy.getIframeSelection(this._iframe);
 
     if (
-        !this.canSetCaretIn(node)
+        !this.canSetCaretIn(element)
     ) {
-        throw "The node must be an element that is allowed to contain a " +
-            "collapsed selection. Perhaps you want to use " +
-            "`setCaretBefore`, instead.";
+        throw "The element must be able to contain other elements. Perhaps " +
+            " you would like to use `setCaretBefore`, instead.";
     }
 
-    range.selectNodeContents(node);
+    range.selectNodeContents(element);
 
     // Rangy issue #209.
-    if (!this.canSetCaretAtStartOf(node)) {
+    if (this.isInlineNode(element)) {
 
         // Don't collapse the range. As long as
         // this occurs only in tests it is probably OK. Warn.
