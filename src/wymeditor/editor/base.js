@@ -1522,12 +1522,12 @@ WYMeditor.editor.prototype.canSetCaretIn = function (node) {
     editor.setCaretIn
     =================
 
-    Sets a collapsed selection to inside provided container node, at the start.
+    Sets a collapsed selection to inside provided container element, at the start.
 
     Not to be confused with `editor.setCaretBefore`, which sets a collapsed
     selection immediately before a node.
 
-    @param node A node to set the selection inside of, at the start.
+    @param element An element to set the selection inside of, at the start.
  */
 WYMeditor.editor.prototype.setCaretIn = function (element) {
     var range = rangy.createRange(this._doc),
