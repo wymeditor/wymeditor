@@ -1150,7 +1150,7 @@ WYMeditor.MAKE_TABLE_ONCLICK = function (wym) {
 
 // Returns true if it is a text node with whitespaces only
 jQuery.fn.isPhantomNode = function () {
-    if (this[0].nodeType === 3) {
+    if (this[0].nodeType === WYMeditor.NODE.TEXT) {
         return !(/[^\t\n\r ]/.test(this[0].data));
     }
 
@@ -1259,7 +1259,7 @@ jQuery.fn.prevAllContents = function () {
 };
 
 WYMeditor.isPhantomNode = function (n) {
-    if (n.nodeType === 3) {
+    if (n.nodeType === WYMeditor.NODE.TEXT) {
         return !(/[^\t\n\r ]/.test(n.data));
     }
 
@@ -1275,7 +1275,7 @@ WYMeditor.isPhantomString = function (str) {
 jQuery.fn.parentsOrSelf = function (jqexpr) {
     var n = this;
 
-    if (n[0].nodeType === 3) {
+    if (n[0].nodeType === WYMeditor.NODE.TEXT) {
         n = n.parents().slice(0, 1);
     }
 

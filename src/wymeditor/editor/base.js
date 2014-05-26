@@ -448,7 +448,7 @@ WYMeditor.editor.prototype.nodeAfterSel = function () {
     }
 
     if (
-        sel.focusNode.nodeType === 3 &&
+        sel.focusNode.nodeType === WYMeditor.NODE.TEXT &&
         sel.focusNode.data.length === sel.focusOffset
     ) {
         if (!sel.focusNode.nextSibling) {
@@ -473,7 +473,7 @@ WYMeditor.editor.prototype.selectedContainer = function () {
     var focusNode = this.selection().focusNode;
 
         if (
-            focusNode.nodeType === 3 || (
+            focusNode.nodeType === WYMeditor.NODE.TEXT || (
 
                 focusNode.tagName &&
 
@@ -1430,7 +1430,7 @@ WYMeditor.editor.prototype.unwrap = function () {
     @param node A node to check about.
  */
 WYMeditor.editor.prototype.canSetCaretBefore = function (node) {
-    if (node.nodeType === 3) {
+    if (node.nodeType === WYMeditor.NODE.TEXT) {
         return true;
     }
     if (
@@ -1448,7 +1448,7 @@ WYMeditor.editor.prototype.canSetCaretBefore = function (node) {
         ) {
             return true;
 
-        } else if (node.previousSibling.nodeType === 3) {
+        } else if (node.previousSibling.nodeType === WYMeditor.NODE.TEXT) {
             return true;
         }
     }
@@ -1493,7 +1493,7 @@ WYMeditor.editor.prototype.setCaretBefore = function (node) {
 WYMeditor.editor.prototype.canSetCaretIn = function (node) {
 
     if (
-        node.nodeType === 3 ||
+        node.nodeType === WYMeditor.NODE.TEXT ||
         (
             node.tagName &&
             jQuery.inArray(
