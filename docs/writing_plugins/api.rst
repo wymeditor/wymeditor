@@ -37,7 +37,7 @@ Selection Setting and Getting
 *****************************
 
 .. note::
-  For selection setting and selection getting WYMeditor uses the Rangy library
+  For selection setting and selection getting, WYMeditor uses the Rangy library
   internally.
 
   The Rangy library doesn't seem to provide a consistent interface for
@@ -47,17 +47,19 @@ Selection Setting and Getting
   Additionally, erroneous selections are performed by some browsers under
   certain conditions.
 
-  In light of this an effort has been made to provide reliable methods in
+  In light of this, an effort has been made to provide reliable methods in
   WYMeditor for selection setting an getting.
 
-  Core as well as plugin contriubtors are highly recommended to use these
-  methods and avoid using the Rangy API.
+  Core contributors, as well as plugin authors, are encouraged to use these
+  methods and to avoid using the Rangy API directly.
 
-  If you find these methods lack a feature that you require then please file an
-  issue describing your requirement so that we could look into answering it in
+  If you find these methods lack a feature that you require, then please file an
+  issue_ describing your requirement so that we could look into answering it in
   a consistent and reliable way.
 
-  Pull requests regarding this or any other issue are warmly welcomed.
+  Pull requests regarding this or any other issue are warmly welcomed. For
+  detailed pull request recommendations, please see our documentation on
+  :doc:`../wymeditor_development/contributing`.
 
 ``nodeAfterSel()``
 ==================
@@ -317,3 +319,5 @@ Example:
 ======================
 
 Returns true if the provided node is an inline type node. False, otherwise.
+
+.. _issue: https://github.com/wymeditor/wymeditor/issues
