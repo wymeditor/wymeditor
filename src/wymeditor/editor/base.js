@@ -1501,6 +1501,9 @@ WYMeditor.editor.prototype.canSetCaretBefore = function (node) {
         ) {
             return true;
 
+        } else if (this.isBlockNode(node.previousSibling)) {
+            return true;
+
         } else if (node.previousSibling.nodeType === WYMeditor.NODE.TEXT) {
             return true;
         }
