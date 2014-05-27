@@ -2678,17 +2678,8 @@ var enterInEmptyLiNotLast = {
 //
 // `testNameSuff` is the suffix of the name of the test that will be run.
 // `expectedHtml` is the former from each of the pairs above.
-// `expectedContainerSelector` is a jQuery selector string that will be passed
-//                              as an argument to `.find` for specifying the
-//                              node that is expected to contain the caret
-//                              after manipulation.
 // `brokenHtmls` is the latter from each of the pairs above.
-function enterInEmptyLiTest (
-    testNameSuff,
-    expectedHtml,
-    expectedContainerSelector,
-    brokenHtmls
-) {
+function enterInEmptyLiTest (testNameSuff, expectedHtml, brokenHtmls) {
     var wymeditor,
         $body,
         i,
@@ -2743,8 +2734,8 @@ function enterInEmptyLiTest (
             );
 
             strictEqual(
-                wymeditor.selectedContainer(),
-                $body.find(expectedContainerSelector)[0],
+                wymeditor.nodeAfterSel().tagName.toLowerCase(),
+                'br',
                 assertStr + assertStrKeyAppend + '; caret position'
             );
         }
@@ -2756,31 +2747,26 @@ function enterInEmptyLiTest (
 enterInEmptyLiTest(
     'Only `li` in its list',
     enterInEmptyLiOnlyLi.fixed,
-    'li',
     enterInEmptyLiOnlyLi.broken
 );
 enterInEmptyLiTest(
     'Only `li` and text node after list',
     enterInEmptyLiOnlyLiTextAfterList.fixed,
-    'li',
     enterInEmptyLiOnlyLiTextAfterList.broken
 );
 enterInEmptyLiTest(
     'Last `li`',
     enterInEmptyLiLastLi.fixed,
-    'li',
     enterInEmptyLiLastLi.broken
 );
 enterInEmptyLiTest(
     'Last `li` and text node after list',
     enterInEmptyLiLastLiTextAfterList.fixed,
-    'li',
     enterInEmptyLiLastLiTextAfterList.broken
 );
 enterInEmptyLiTest(
     'Not last `li`',
     enterInEmptyLiNotLast.fixed,
-    'li',
     enterInEmptyLiNotLast.broken
 );
 
