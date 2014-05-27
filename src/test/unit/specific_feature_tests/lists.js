@@ -2790,3 +2790,139 @@ pOrDivAfterEnterInEmptyLi.test(
     'li',
     pOrDivAfterEnterInEmptyLi.notLastBroken
 );
+
+var invalidNestingAfterEnterInEmptyLi = [
+    {broken: [""
+        , '<ul>'
+            , '<li>0'
+            , '</li>'
+            , '<ul>'
+                , '<li>0.0</li>'
+                , '<li>0.1</li>'
+            , '</ul>'
+            , '<li id="new">'
+                , '<br />'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    fixed: [""
+        , '<ul>'
+            , '<li>0'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                    , '<li>0.1</li>'
+                , '</ul>'
+                , '<br />'
+            , '</li>'
+        , '</ul>'
+    ].join('')},
+    {broken: [""
+        , '<ul>'
+            , '<li>0'
+            , '</li>'
+            , '<ul>'
+                , '<li>0.0</li>'
+            , '</ul>'
+            , '<li id="new">'
+                , '<br />'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    fixed: [""
+        , '<ul>'
+            , '<li>0'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<br />'
+            , '</li>'
+        , '</ul>'
+    ].join('')},
+    {broken: [""
+        , '<ul>'
+            , '<li>0<br /><br />'
+            , '</li>'
+            , '<ul>'
+                , '<li>0.0</li>'
+            , '</ul>'
+            , '<li id="new">'
+                , '<br />'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    fixed: [""
+        , '<ul>'
+            , '<li>0<br /><br />'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<br />'
+            , '</li>'
+        , '</ul>'
+    ].join('')},
+    {broken: [""
+        , '<ul>'
+            , '<li>0'
+            , '</li>'
+            , '<ul>'
+                , '<li>0.0</li>'
+            , '</ul>'
+            , '<li id="new">'
+                , '<br />'
+            , '</li>'
+            , '<ul>'
+                , '<li>0.2</li>'
+            , '</ul>'
+        , '</ul>'
+    ].join(''),
+    fixed: [""
+        , '<ul>'
+            , '<li>0'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<br />'
+                , '<ul>'
+                    , '<li>0.2</li>'
+                , '</ul>'
+            , '</li>'
+        , '</ul>'
+    ].join('')}
+];
+
+test("Invalid list nesting", function () {
+    var i,
+        assertCountStr,
+        wymeditor = jQuery.wymeditors(0),
+        newLi;
+
+    expect(invalidNestingAfterEnterInEmptyLi.length * 2);
+
+    for (i = 0; i < invalidNestingAfterEnterInEmptyLi.length; i++) {
+
+        assertCountStr = 'Variation ' + (i + 1) + ' of ' +
+            (invalidNestingAfterEnterInEmptyLi.length) + '; ';
+
+        wymeditor._html(invalidNestingAfterEnterInEmptyLi[i].broken);
+
+        newLi = jQuery(wymeditor._doc).find('body.wym_iframe').find('#new')[0];
+
+        wymeditor.setCaretIn(newLi);
+
+        simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
+
+        wymEqual(
+            wymeditor,
+            invalidNestingAfterEnterInEmptyLi[i].fixed, {
+                skipParser: true,
+                assertionString: assertCountStr + 'HTML'
+            }
+        );
+
+        strictEqual(
+            wymeditor.nodeAfterSel().tagName.toLowerCase(),
+            'br',
+            assertCountStr + 'caret'
+        );
+    }
+});
