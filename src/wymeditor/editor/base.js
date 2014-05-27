@@ -591,6 +591,7 @@ WYMeditor.editor.prototype.isBlockNode= function (node) {
 
 WYMeditor.editor.prototype.isInlineNode = function (node) {
     if (
+        node.nodeType === WYMeditor.NODE.TEXT ||
         jQuery.inArray(
             node.tagName.toLowerCase(),
             WYMeditor.INLINE_ELEMENTS
