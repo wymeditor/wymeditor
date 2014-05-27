@@ -2481,45 +2481,42 @@ module("list-correction_after_enter_in_empty_li", {setup: setupWym});
 
 // Issue #430 case 1 of 3: a `p` or a `div` is created inside the parent `li`:
 
-var pOrDivAfterEnterInEmptyLi = {};
-
-// Following are pairs of:
+// Following objects are pairs of:
 //
-//  * String of expected HTML.
+//  * String of corrected HTML.
 //  * Array of known broken HTML strings.
-
-pOrDivAfterEnterInEmptyLi.onlyLiExpected = [""
-    , '<ul>'
-        , '<li>0'
-            , '<br />'
-            , '<br />'
-        , '</li>'
-    , '</ul>'
-].join('');
-
-pOrDivAfterEnterInEmptyLi.onlyLiBroken = [
-    [""
+var enterInEmptyLiOnlyLi = {
+    fixed: [""
         , '<ul>'
             , '<li>0'
-                , '<p>'
-                    , '<br />'
-                , '</p>'
+                , '<br />'
+                , '<br />'
             , '</li>'
         , '</ul>'
-    ].join('')
-];
-
-pOrDivAfterEnterInEmptyLi.onlyLiTextAfterListExpected = [""
-    , '<ul>'
-        , '<li>0'
-            , '<br />'
-            , '<br />'
-            , 'foo'
-        , '</li>'
-    , '</ul>'
-].join('');
-
-pOrDivAfterEnterInEmptyLi.onlyLiTextAfterListBroken = [
+    ].join(''),
+    broken: [
+        [""
+            , '<ul>'
+                , '<li>0'
+                    , '<p>'
+                        , '<br />'
+                    , '</p>'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    ]
+};
+var enterInEmptyLiOnlyLiTextAfterList = {
+    fixed: [""
+        , '<ul>'
+            , '<li>0'
+                , '<br />'
+                , '<br />'
+                , 'foo'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    broken: [
     [""
         , '<ul>'
             , '<li>0'
@@ -2550,131 +2547,132 @@ pOrDivAfterEnterInEmptyLi.onlyLiTextAfterListBroken = [
             , '</li>'
         , '</ul>'
     ].join('')
-];
-
-pOrDivAfterEnterInEmptyLi.lastLiExpected = [""
-    , '<ul>'
-        , '<li>0'
-            , '<ul>'
-                , '<li>0.0</li>'
-            , '</ul>'
-            , '<br />'
-        , '</li>'
-    , '</ul>'
-].join('');
-
-pOrDivAfterEnterInEmptyLi.lastLiBroken = [
-    [""
+    ]
+};
+var enterInEmptyLiLastLi = {
+    fixed: [""
         , '<ul>'
             , '<li>0'
                 , '<ul>'
                     , '<li>0.0</li>'
                 , '</ul>'
-                , '<p>'
-                    , '<br />'
-                , '</p>'
+                , '<br />'
             , '</li>'
         , '</ul>'
-    ].join('')
-];
-
-
-pOrDivAfterEnterInEmptyLi.lastLiTextAfterListExpected = [""
-    , '<ul>'
-        , '<li>0'
+    ].join(''),
+    broken: [
+        [""
             , '<ul>'
-                , '<li>0.0</li>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<p>'
+                        , '<br />'
+                    , '</p>'
+                , '</li>'
             , '</ul>'
-            , '<br />'
-            , 'foo'
-        , '</li>'
-    , '</ul>'
-].join('');
+        ].join('')
+    ]
+};
 
-pOrDivAfterEnterInEmptyLi.lastLiTextAfterListBroken = [
-    [""
+var enterInEmptyLiLastLiTextAfterList = {
+    fixed: [""
         , '<ul>'
             , '<li>0'
                 , '<ul>'
                     , '<li>0.0</li>'
                 , '</ul>'
-                , '<p>'
-                    , '<br />'
-                , '</p>'
+                , '<br />'
                 , 'foo'
             , '</li>'
         , '</ul>'
     ].join(''),
-    [""
-    , '<ul>'
-        , '<li>0'
+    broken: [
+        [""
             , '<ul>'
-                , '<li>0.0</li>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<p>'
+                        , '<br />'
+                    , '</p>'
+                    , 'foo'
+                , '</li>'
             , '</ul>'
-            , '<div>'
-                , '<br />'
-            , '</div>'
-            , 'foo'
-        , '</li>'
-    , '</ul>'
-].join(''),
-[""
-    , '<ul>'
-        , '<li>0'
-            , '<ul>'
-                , '<li>0.0</li>'
-            , '</ul>'
-            , '<p>\xA0</p>'
-            , 'foo'
-        , '</li>'
-    , '</ul>'
-].join('')
-];
-
-pOrDivAfterEnterInEmptyLi.notLastExpected = [""
-    , '<ul>'
-        , '<li>0'
-            , '<ul>'
-                , '<li>0.0</li>'
-            , '</ul>'
-            , '<br />'
-            , '<ul>'
-                , '<li>0.2</li>'
-            , '</ul>'
-        , '</li>'
-    , '</ul>'
-].join('');
-
-pOrDivAfterEnterInEmptyLi.notLastBroken = [
-    [""
+        ].join(''),
+        [""
         , '<ul>'
             , '<li>0'
                 , '<ul>'
                     , '<li>0.0</li>'
                 , '</ul>'
-                , '<p>'
+                , '<div>'
                     , '<br />'
-                , '</p>'
+                , '</div>'
+                , 'foo'
+            , '</li>'
+        , '</ul>'
+        ].join(''),
+        [""
+            , '<ul>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<p>\xA0</p>'
+                    , 'foo'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    ]
+};
+var enterInEmptyLiNotLast = {
+    fixed: [""
+        , '<ul>'
+            , '<li>0'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<br />'
                 , '<ul>'
                     , '<li>0.2</li>'
                 , '</ul>'
             , '</li>'
         , '</ul>'
     ].join(''),
-    [""
-        , '<ul>'
-            , '<li>0'
-                , '<ul>'
-                    , '<li>0.0</li>'
-                , '</ul>'
-                , '<p></p>'
-                , '<ul>'
-                    , '<li>0.2</li>'
-                , '</ul>'
-            , '</li>'
-        , '</ul>'
-    ].join('')
-];
+    broken: [
+        [""
+            , '<ul>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<p>'
+                        , '<br />'
+                    , '</p>'
+                    , '<ul>'
+                        , '<li>0.2</li>'
+                    , '</ul>'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        [""
+            , '<ul>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<p></p>'
+                    , '<ul>'
+                        , '<li>0.2</li>'
+                    , '</ul>'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    ]
+};
 
 // The following is a helper function for performing tests on the above pairs.
 //
@@ -2685,7 +2683,7 @@ pOrDivAfterEnterInEmptyLi.notLastBroken = [
 //                              node that is expected to contain the caret
 //                              after manipulation.
 // `brokenHtmls` is the latter from each of the pairs above.
-pOrDivAfterEnterInEmptyLi.test = function (
+function enterInEmptyLiTest (
     testNameSuff,
     expectedHtml,
     expectedContainerSelector,
@@ -2751,44 +2749,39 @@ pOrDivAfterEnterInEmptyLi.test = function (
             );
         }
     });
-};
+}
 
 // At this stage the helper function of this module is called for the tests to
 // be performed with each of the variations, represented by the pairs.
-
-pOrDivAfterEnterInEmptyLi.test(
+enterInEmptyLiTest(
     'Only `li` in its list',
-    pOrDivAfterEnterInEmptyLi.onlyLiExpected,
+    enterInEmptyLiOnlyLi.fixed,
     'li',
-    pOrDivAfterEnterInEmptyLi.onlyLiBroken
+    enterInEmptyLiOnlyLi.broken
 );
-
-pOrDivAfterEnterInEmptyLi.test(
+enterInEmptyLiTest(
     'Only `li` and text node after list',
-    pOrDivAfterEnterInEmptyLi.onlyLiTextAfterListExpected,
+    enterInEmptyLiOnlyLiTextAfterList.fixed,
     'li',
-    pOrDivAfterEnterInEmptyLi.onlyLiTextAfterListBroken
+    enterInEmptyLiOnlyLiTextAfterList.broken
 );
-
-pOrDivAfterEnterInEmptyLi.test(
+enterInEmptyLiTest(
     'Last `li`',
-    pOrDivAfterEnterInEmptyLi.lastLiExpected,
+    enterInEmptyLiLastLi.fixed,
     'li',
-    pOrDivAfterEnterInEmptyLi.lastLiBroken
+    enterInEmptyLiLastLi.broken
 );
-
-pOrDivAfterEnterInEmptyLi.test(
+enterInEmptyLiTest(
     'Last `li` and text node after list',
-    pOrDivAfterEnterInEmptyLi.lastLiTextAfterListExpected,
+    enterInEmptyLiLastLiTextAfterList.fixed,
     'li',
-    pOrDivAfterEnterInEmptyLi.lastLiTextAfterListBroken
+    enterInEmptyLiLastLiTextAfterList.broken
 );
-
-pOrDivAfterEnterInEmptyLi.test(
+enterInEmptyLiTest(
     'Not last `li`',
-    pOrDivAfterEnterInEmptyLi.notLastExpected,
+    enterInEmptyLiNotLast.fixed,
     'li',
-    pOrDivAfterEnterInEmptyLi.notLastBroken
+    enterInEmptyLiNotLast.broken
 );
 
 var invalidNestingAfterEnterInEmptyLi = [
