@@ -1,6 +1,6 @@
 /* jshint camelcase: false, maxlen: 105 */
 /* global setupWym, SKIP_KNOWN_FAILING_TESTS,
-wymEqual, makeTextSelection, moveSelector, simulateKey, strictEqual, QUnit,
+wymEqual, makeTextSelection, moveSelector, simulateKey, strictEqual,
 makeSelection,
 ok, test, expect */
 "use strict";
@@ -2477,25 +2477,27 @@ if (!(// Browser is IE and
 }
 
 // Issue #430
-module("list-correction-after-enter-in-empty-li", {setup: setupWym});
+module("list-correction_after_enter_in_empty_li", {setup: setupWym});
 
-// Define an empty object to store HTML strings for this module in.
-var afterEnterInEmptyLi = {};
+// Issue #430 case 1 of 3: a `p` or a `div` is created inside the parent `li`:
+
+var pOrDivAfterEnterInEmptyLi = {};
 
 // Following are pairs of:
 //
-//  * Expected HTML string
+//  * String of expected HTML.
 //  * Array of known broken HTML strings.
 
-afterEnterInEmptyLi.onlyLiExpected = [""
+pOrDivAfterEnterInEmptyLi.onlyLiExpected = [""
     , '<ul>'
         , '<li>0'
+            , '<br />'
             , '<br />'
         , '</li>'
     , '</ul>'
 ].join('');
 
-afterEnterInEmptyLi.onlyLiBroken = [
+pOrDivAfterEnterInEmptyLi.onlyLiBroken = [
     [""
         , '<ul>'
             , '<li>0'
@@ -2507,7 +2509,7 @@ afterEnterInEmptyLi.onlyLiBroken = [
     ].join('')
 ];
 
-afterEnterInEmptyLi.onlyLiTextAfterListExpected = [""
+pOrDivAfterEnterInEmptyLi.onlyLiTextAfterListExpected = [""
     , '<ul>'
         , '<li>0'
             , '<br />'
@@ -2517,7 +2519,7 @@ afterEnterInEmptyLi.onlyLiTextAfterListExpected = [""
     , '</ul>'
 ].join('');
 
-afterEnterInEmptyLi.onlyLiTextAfterListBroken = [
+pOrDivAfterEnterInEmptyLi.onlyLiTextAfterListBroken = [
     [""
         , '<ul>'
             , '<li>0'
@@ -2550,7 +2552,7 @@ afterEnterInEmptyLi.onlyLiTextAfterListBroken = [
     ].join('')
 ];
 
-afterEnterInEmptyLi.lastLiExpected = [""
+pOrDivAfterEnterInEmptyLi.lastLiExpected = [""
     , '<ul>'
         , '<li>0'
             , '<ul>'
@@ -2561,7 +2563,7 @@ afterEnterInEmptyLi.lastLiExpected = [""
     , '</ul>'
 ].join('');
 
-afterEnterInEmptyLi.lastLiBroken = [
+pOrDivAfterEnterInEmptyLi.lastLiBroken = [
     [""
         , '<ul>'
             , '<li>0'
@@ -2573,22 +2575,11 @@ afterEnterInEmptyLi.lastLiBroken = [
                 , '</p>'
             , '</li>'
         , '</ul>'
-    ].join(''),
-[""
-    , '<ul>'
-        , '<li>0</li>'
-        , '<ul>'
-            , '<li>0.0</li>'
-        , '</ul>'
-        , '<li>'
-            , '<br />'
-        , '</li>'
-    , '</ul>'
-].join('')
+    ].join('')
 ];
 
 
-afterEnterInEmptyLi.lastLiTextAfterListExpected = [""
+pOrDivAfterEnterInEmptyLi.lastLiTextAfterListExpected = [""
     , '<ul>'
         , '<li>0'
             , '<ul>'
@@ -2600,7 +2591,7 @@ afterEnterInEmptyLi.lastLiTextAfterListExpected = [""
     , '</ul>'
 ].join('');
 
-afterEnterInEmptyLi.lastLiTextAfterListBroken = [
+pOrDivAfterEnterInEmptyLi.lastLiTextAfterListBroken = [
     [""
         , '<ul>'
             , '<li>0'
@@ -2640,7 +2631,7 @@ afterEnterInEmptyLi.lastLiTextAfterListBroken = [
 ].join('')
 ];
 
-afterEnterInEmptyLi.notLastExpected = [""
+pOrDivAfterEnterInEmptyLi.notLastExpected = [""
     , '<ul>'
         , '<li>0'
             , '<ul>'
@@ -2654,7 +2645,7 @@ afterEnterInEmptyLi.notLastExpected = [""
     , '</ul>'
 ].join('');
 
-afterEnterInEmptyLi.notLastBroken = [
+pOrDivAfterEnterInEmptyLi.notLastBroken = [
     [""
         , '<ul>'
             , '<li>0'
@@ -2668,20 +2659,6 @@ afterEnterInEmptyLi.notLastBroken = [
                     , '<li>0.2</li>'
                 , '</ul>'
             , '</li>'
-        , '</ul>'
-    ].join(''),
-    [""
-        , '<ul>'
-            , '<li>0</li>'
-            , '<ul>'
-                , '<li>0.0</li>'
-            , '</ul>'
-            , '<li>'
-                , '<br />'
-            , '</li>'
-            , '<ul>'
-                , '<li>0.2</li>'
-            , '</ul>'
         , '</ul>'
     ].join(''),
     [""
@@ -2701,131 +2678,115 @@ afterEnterInEmptyLi.notLastBroken = [
 
 // The following is a helper function for performing tests on the above pairs.
 //
-// `testName` is the name of the test that will be run.
+// `testNameSuff` is the suffix of the name of the test that will be run.
 // `expectedHtml` is the former from each of the pairs above.
-// `expectedAnchorNodeSelector` is a jQuery selector string that will be passed
+// `expectedContainerSelector` is a jQuery selector string that will be passed
 //                              as an argument to `.find` for specifying the
 //                              node that is expected to contain the caret
 //                              after manipulation.
-// `expectedAnchorOffset` is the offset at which the caret is expected to be
-//                        after manipulation.
 // `brokenHtmls` is the latter from each of the pairs above.
-function testAfterEnterInEmptyLi (testName, expectedHtml,
-                                  expectedAnchorNodeSelector,
-                                  expectedAnchorOffset, brokenHtmls) {
-
+pOrDivAfterEnterInEmptyLi.test = function (
+    testNameSuff,
+    expectedHtml,
+    expectedContainerSelector,
+    brokenHtmls
+) {
     var wymeditor,
         $body,
         i,
         assertStr,
-        // Save some strings for reuse.
+        testName = '`p` or `div`: ' + testNameSuff,
         assertStrCallAppend = '; by calling repairing function',
         assertStrKeyAppend = '; by key simulation';
 
-    // Perform the test:
     test(testName, function () {
 
-        // Expect 5 times as many assertions as the amount of broken HTML
-        // strings.
-        expect(brokenHtmls.length * 5);
+        expect(brokenHtmls.length * 4);
 
-        // Save the WYMeditor instance.
         wymeditor = jQuery.wymeditors(0);
-
-        // Cache a jQuery object of the WYMeditor's iframe.
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
-        // Iterate through broken HTML strings:
         for (i = 0; i < brokenHtmls.length; i++) {
 
-            // Insert the current broken HTML string into the WYMeditor.
-            wymeditor._html(brokenHtmls[i]);
-
-            // Call the list correction function on the single offending element,
-            // which could be either a `p` or a `div`.
-            wymeditor.correctInvalidListNesting($body.find('p, div')[0]);
-
             // Compose an assertion string.
-            assertStr = QUnit.config.current.testName +
-                '; broken HTML variation ' + (i + 1) + ' of ' +
+            assertStr = 'Broken HTML variation ' + (i + 1) + ' of ' +
                 brokenHtmls.length;
 
-            // Call for the comparison between expected and actual HTML strings,
-            // skipping the parser because it removes empty `li`s.
-            wymEqual(wymeditor, expectedHtml, {skipParser: true,
-                assertionString: assertStr + assertStrCallAppend
-            });
-
-            // Insert the current broken HTML string into the WYMeditor again.
             wymeditor._html(brokenHtmls[i]);
 
-            // Set caret to the offending element.
-            makeSelection(wymeditor,
-                          $body.find('p, div')[0],
-                          $body.find('p, div')[0], 0, 0);
+            // Call the repairing function on the offending element.
+            wymeditor._correctBlockInList($body.find('p, div')[0]);
 
-            // Simulate an enter key press.
+            wymEqual(
+                wymeditor,
+                expectedHtml, {
+                    skipParser: true,
+                    assertionString: assertStr + assertStrCallAppend
+                }
+            );
+
+            wymeditor._html(brokenHtmls[i]);
+
+            wymeditor.setCaretIn($body.find('p, div')[0]);
+
             simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
 
-            // Call for the comparison between expected and actual HTML again.
-            wymEqual(wymeditor, expectedHtml, {skipParser: true,
-                assertionString: assertStr + assertStrKeyAppend
-            });
+            wymEqual(
+                wymeditor,
+                expectedHtml, {
+                    skipParser: true,
+                    assertionString: assertStr + assertStrKeyAppend
+                }
+            );
 
-            // Assert: The selection is collapsed.
-            ok(wymeditor.selection().isCollapsed,
+            ok(
+                wymeditor.selection().isCollapsed,
                assertStr + assertStrKeyAppend + '; selection is collapsed'
-              );
+            );
 
-            // Assert: The caret is located in the node where we expect.
-            strictEqual(wymeditor.selection().anchorNode,
-                        $body.find(expectedAnchorNodeSelector)[0],
-                        assertStr + assertStrKeyAppend + '; caret anchor node'
-                       );
-
-            // Assert: The caret is at the offset we expect.
-            strictEqual(wymeditor.selection().anchorOffset,
-                        expectedAnchorOffset,
-                        assertStr + assertStrKeyAppend + '; caret offset'
-                       );
+            strictEqual(
+                wymeditor.selectedContainer(),
+                $body.find(expectedContainerSelector)[0],
+                assertStr + assertStrKeyAppend + '; caret position'
+            );
         }
     });
-}
+};
 
 // At this stage the helper function of this module is called for the tests to
 // be performed with each of the variations, represented by the pairs.
 
-testAfterEnterInEmptyLi('Only `li` in its list',
-                        afterEnterInEmptyLi.onlyLiExpected,
-                        'li',
-                        2,
-                        afterEnterInEmptyLi.onlyLiBroken
-                       );
+pOrDivAfterEnterInEmptyLi.test(
+    'Only `li` in its list',
+    pOrDivAfterEnterInEmptyLi.onlyLiExpected,
+    'li',
+    pOrDivAfterEnterInEmptyLi.onlyLiBroken
+);
 
-testAfterEnterInEmptyLi('Only `li` and text node after list',
-                        afterEnterInEmptyLi.onlyLiTextAfterListExpected,
-                        'li',
-                        2,
-                        afterEnterInEmptyLi.onlyLiTextAfterListBroken
-                       );
+pOrDivAfterEnterInEmptyLi.test(
+    'Only `li` and text node after list',
+    pOrDivAfterEnterInEmptyLi.onlyLiTextAfterListExpected,
+    'li',
+    pOrDivAfterEnterInEmptyLi.onlyLiTextAfterListBroken
+);
 
-testAfterEnterInEmptyLi('Last `li`',
-                        afterEnterInEmptyLi.lastLiExpected,
-                        'li',
-                        2,
-                        afterEnterInEmptyLi.lastLiBroken
-                       );
+pOrDivAfterEnterInEmptyLi.test(
+    'Last `li`',
+    pOrDivAfterEnterInEmptyLi.lastLiExpected,
+    'li',
+    pOrDivAfterEnterInEmptyLi.lastLiBroken
+);
 
-testAfterEnterInEmptyLi('Last `li` and text node after list',
-                        afterEnterInEmptyLi.lastLiTextAfterListExpected,
-                        'li',
-                        2,
-                        afterEnterInEmptyLi.lastLiTextAfterListBroken
-                       );
+pOrDivAfterEnterInEmptyLi.test(
+    'Last `li` and text node after list',
+    pOrDivAfterEnterInEmptyLi.lastLiTextAfterListExpected,
+    'li',
+    pOrDivAfterEnterInEmptyLi.lastLiTextAfterListBroken
+);
 
-testAfterEnterInEmptyLi('Not last `li`',
-                        afterEnterInEmptyLi.notLastExpected,
-                        'li',
-                        2,
-                        afterEnterInEmptyLi.notLastBroken
-                       );
+pOrDivAfterEnterInEmptyLi.test(
+    'Not last `li`',
+    pOrDivAfterEnterInEmptyLi.notLastExpected,
+    'li',
+    pOrDivAfterEnterInEmptyLi.notLastBroken
+);
