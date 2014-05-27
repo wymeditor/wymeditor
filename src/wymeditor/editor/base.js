@@ -2018,7 +2018,7 @@ WYMeditor.editor.prototype.handlePotentialEnterInEmptyNestedLi = function (
                     this._correctBlockInList(container);
                 } else if (
                     container.childNodes[0].nodeType === 3 &&
-                    container.childNodes[0].data === '\xA0' // &nbsp;
+                    container.childNodes[0].data === WYMeditor.CHARS.NBSP
                 ) {
                     this._correctBlockInList(container);
                 }

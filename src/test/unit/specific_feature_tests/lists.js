@@ -2541,7 +2541,7 @@ var enterInEmptyLiOnlyLiTextAfterList = {
         , '<ul>'
             , '<li>0'
                 , '<p>'
-                    ,'\xA0'
+                    , WYMeditor.CHARS.NBSP
                 , '</p>'
                 , 'foo'
             , '</li>'
@@ -2621,7 +2621,7 @@ var enterInEmptyLiLastLiTextAfterList = {
                     , '<ul>'
                         , '<li>0.0</li>'
                     , '</ul>'
-                    , '<p>\xA0</p>'
+                    , '<p>' + WYMeditor.CHARS.NBSP + '</p>'
                     , 'foo'
                 , '</li>'
             , '</ul>'

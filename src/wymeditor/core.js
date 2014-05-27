@@ -431,6 +431,11 @@ jQuery.extend(WYMeditor, {
         "th"
     ],
 
+    // Characters.
+    CHARS: {
+        NBSP: '\xA0'
+    },
+
     // Class for marking br elements used to space apart blocking elements in
     // the editor.
     BLOCKING_ELEMENT_SPACER_CLASS: "wym-blocking-element-spacer",
