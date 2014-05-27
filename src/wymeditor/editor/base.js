@@ -557,6 +557,29 @@ WYMeditor.editor.prototype.selected_parents_contains = function (selector) {
 };
 
 /**
+    WYMeditor.editor.isBlockNode
+    =============================
+
+    Returns true if the provided node is a block type node. Otherwise
+    returns false.
+
+    @param node The node to check.
+*/
+
+WYMeditor.editor.prototype.isBlockNode= function (node) {
+    if (
+        node.tagName &&
+        jQuery.inArray(
+            node.tagName.toLowerCase(),
+            WYMeditor.BLOCKS
+        ) > -1
+    ) {
+        return true;
+    }
+    return false;
+};
+
+/**
     WYMeditor.editor.isInlineNode
     =============================
 
@@ -571,6 +594,29 @@ WYMeditor.editor.prototype.isInlineNode = function (node) {
         jQuery.inArray(
             node.tagName.toLowerCase(),
             WYMeditor.INLINE_ELEMENTS
+        ) > -1
+    ) {
+        return true;
+    }
+    return false;
+};
+
+/**
+    WYMeditor.editor.isListNode
+    =============================
+
+    Returns true if the provided node is a list element. Otherwise
+    returns false.
+
+    @param node The node to check.
+*/
+
+WYMeditor.editor.prototype.isListNode= function (node) {
+    if (
+        node.tagName &&
+        jQuery.inArray(
+            node.tagName.toLowerCase(),
+            WYMeditor.LIST_TYPE_ELEMENTS
         ) > -1
     ) {
         return true;
