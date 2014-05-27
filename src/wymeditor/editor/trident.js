@@ -255,6 +255,9 @@ WYMeditor.WymClassTrident.prototype.keyup = function (evt) {
             wym.switchTo(container, defaultRootContainer);
         }
 
+        // Call for the check for--and possible correction of--issue #430.
+        wym.handlePotentialEnterInEmptyNestedLi(evt.which, container);
+
         // IE8 bug https://github.com/wymeditor/wymeditor/issues/446
         if (jQuery.browser.msie && jQuery.browser.version === "8.0" &&
            container.parentNode) {

@@ -1978,6 +1978,119 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
     }
     return this._correctInvalidListNesting(currentNode, alreadyCorrected);
 };
+
+/**
+    editor.handlePotentialEnterInEmptyNestedLi
+    ==========================================
+
+    Identify whether issue #430 had occurred and if so call for its correction.
+
+    @param keyPressed The code of the key that was pressed, to check whether
+                      it is an enter.
+    @param container The currently selected container.
+ */
+
+WYMeditor.editor.prototype.handlePotentialEnterInEmptyNestedLi = function (
+    keyPressed, container) {
+
+    if (keyPressed !== WYMeditor.KEY.ENTER) {
+        // This isn't an occurrence of issue #430.
+        return null;
+    }
+
+    if (
+        // This is the first type of unwanted situation.
+        jQuery.inArray(
+            container.tagName.toLowerCase(),
+            ['p', 'div']
+        ) > -1 &&
+        container.parentNode.tagName.toLowerCase() === 'li'
+    ) {
+        switch (container.childNodes.length) {
+            case 0:
+                this._correctBlockInList(container);
+                break;
+            case 1:
+                if (
+                    container.childNodes[0].tagName &&
+                    container.childNodes[0].tagName.toLowerCase() === 'br'
+                ) {
+                    this._correctBlockInList(container);
+                } else if (
+                    container.childNodes[0].nodeType === 3 &&
+                    container.childNodes[0].data === '\xA0' // &nbsp;
+                ) {
+                    this._correctBlockInList(container);
+                }
+                break;
+        }
+    } else if (
+        // This is the second type of unwanted situation.
+        container.tagName.toLowerCase() === 'li' &&
+        container.previousSibling &&
+        this.isListNode(container.previousSibling) &&
+        container.previousSibling.previousSibling &&
+        container.previousSibling.previousSibling.tagName
+            .toLowerCase() === 'li' &&
+        this.isListNode(container.parentNode)
+    ) {
+        this._correctInvalidListNestingAfterEnterInEmptyLi(container);
+    }
+};
+
+/**
+    editor._correctBlockInList
+    ==========================
+
+    This corrects one of the cases that are caused by issue #430.
+
+    @param element This is the offending element that requires correction.
+*/
+
+WYMeditor.editor.prototype._correctBlockInList = function (element) {
+    var
+        $element = jQuery(element),
+        br = '<br />';
+
+        if (
+            element.previousSibling &&
+            element.previousSibling.nodeType === WYMeditor.NODE.TEXT
+           ) {
+            $element.before(br);
+        }
+
+        $element.before(br);
+
+        this.setCaretBefore($element[0].previousSibling);
+
+        $element.remove();
+
+};
+
+/**
+    editor._correctInvalidListNestingAfterEnterInEmptyLi
+    ====================================================
+
+    This corrects one of the cases that are caused by issue #430.
+
+    @param element This is the offending element that requires correction.
+*/
+
+WYMeditor.editor.prototype
+    ._correctInvalidListNestingAfterEnterInEmptyLi = function (element) {
+    var
+        $element = jQuery(element),
+        $firstPreviousLi = $element.prevAll('li').first();
+
+        $element.parent().contents().slice($firstPreviousLi.index() + 1)
+            .appendTo($firstPreviousLi);
+
+        $element.before('<br />');
+
+        this.setCaretBefore($element[0].previousSibling);
+
+        $element.remove();
+};
 /**
     editor._correctOrphanedListItem
     ===============================
