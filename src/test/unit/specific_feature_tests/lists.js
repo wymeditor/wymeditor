@@ -2517,36 +2517,36 @@ var enterInEmptyLiOnlyLiTextAfterList = {
         , '</ul>'
     ].join(''),
     broken: [
-    [""
-        , '<ul>'
-            , '<li>0'
-                , '<p>'
-                    ,'<br />'
-                , '</p>'
-                , 'foo'
-            , '</li>'
-        , '</ul>'
-    ].join(''),
-    [""
-        , '<ul>'
-            , '<li>0'
-                , '<div>'
-                    ,'<br />'
-                , '</div>'
-                , 'foo'
-            , '</li>'
-        , '</ul>'
-    ].join(''),
-    [""
-        , '<ul>'
-            , '<li>0'
-                , '<p>'
-                    , WYMeditor.COMMON.NBSP
-                , '</p>'
-                , 'foo'
-            , '</li>'
-        , '</ul>'
-    ].join('')
+        [""
+            , '<ul>'
+                , '<li>0'
+                    , '<p>'
+                        ,'<br />'
+                    , '</p>'
+                    , 'foo'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        [""
+            , '<ul>'
+                , '<li>0'
+                    , '<div>'
+                        ,'<br />'
+                    , '</div>'
+                    , 'foo'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        [""
+            , '<ul>'
+                , '<li>0'
+                    , '<p>'
+                        , WYMeditor.NBSP
+                    , '</p>'
+                    , 'foo'
+                , '</li>'
+            , '</ul>'
+        ].join('')
     ]
 };
 var enterInEmptyLiLastLi = {
@@ -2621,7 +2621,7 @@ var enterInEmptyLiLastLiTextAfterList = {
                     , '<ul>'
                         , '<li>0.0</li>'
                     , '</ul>'
-                    , '<p>' + WYMeditor.COMMON.NBSP + '</p>'
+                    , '<p>' + WYMeditor.NBSP + '</p>'
                     , 'foo'
                 , '</li>'
             , '</ul>'
@@ -2698,7 +2698,7 @@ function enterInEmptyLiTest (testNameSuff, expectedHtml, brokenHtmls) {
                 brokenHtmls.length;
 
             wymeditor._html(brokenHtmls[i]);
-            wymeditor._correctPOrDivAfterEnterInEmptyNestedLi(
+            wymeditor._replaceNodeWithBrAndSetCaret(
                 $body.find('p, div')[0]
             );
             wymEqual(
@@ -2765,163 +2765,170 @@ enterInEmptyLiTest(
 // results. There is no point imagining more cases without confirming that they
 // actually occurring in the browser. Especially because this kind of invalid
 // list nesting occurs under quite specific conditions, it seems.
-var invalidNestingAfterEnterInEmptyLi = [{
-    broken: [""
-        , '<ul>'
-            , '<li>0'
-            , '</li>'
+var invalidNestingAfterEnterInEmptyLi = [
+    {
+        broken: [""
             , '<ul>'
-                , '<li>0.0</li>'
-                , '<li>0.1</li>'
-            , '</ul>'
-            , '<li id="new">'
-                , '<br />'
-            , '</li>'
-        , '</ul>'
-    ].join(''),
-    fixed: [""
-        , '<ul>'
-            , '<li>0'
+                , '<li>0'
+                , '</li>'
                 , '<ul>'
                     , '<li>0.0</li>'
                     , '<li>0.1</li>'
                 , '</ul>'
-                , '<br />'
-            , '</li>'
-        , '</ul>'
-    ].join('')
-}, {
-    broken: [""
-        , '<ul>'
-            , '<li>0'
-            , '</li>'
-            , '<ul>'
-                , '<li>0.0</li>'
+                , '<li id="new">'
+                    , '<br />'
+                , '</li>'
             , '</ul>'
-            , '<li id="new">'
-                , '<br />'
-            , '</li>'
-        , '</ul>'
-    ].join(''),
-    fixed: [""
-        , '<ul>'
-            , '<li>0'
+        ].join(''),
+        fixed: [""
+            , '<ul>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                        , '<li>0.1</li>'
+                    , '</ul>'
+                    , '<br />'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    },
+    {
+        broken: [""
+            , '<ul>'
+                , '<li>0'
+                , '</li>'
                 , '<ul>'
                     , '<li>0.0</li>'
                 , '</ul>'
-                , '<br />'
-            , '</li>'
-        , '</ul>'
-    ].join('')
-}, {
-    broken: [""
-        , '<ul>'
-            , '<li>0'
-            , '</li>'
-            , '<ul>'
-                , '<li>0.0</li>'
+                , '<li id="new">'
+                    , '<br />'
+                , '</li>'
             , '</ul>'
-            , '<li id="new">'
-                , '<br />'
-            , '</li>'
-            , '<li>1</li>'
-        , '</ul>'
-    ].join(''),
-    fixed: [""
-        , '<ul>'
-            , '<li>0'
+        ].join(''),
+        fixed: [""
+            , '<ul>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<br />'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    },
+    {
+        broken: [""
+            , '<ul>'
+                , '<li>0'
+                , '</li>'
                 , '<ul>'
                     , '<li>0.0</li>'
                 , '</ul>'
-                , '<br />'
-            , '</li>'
-            , '<li>1</li>'
-        , '</ul>'
-    ].join('')
-}, {
-    broken: [""
-        , '<ul>'
-            , '<li>0<br /><br />'
-            , '</li>'
-            , '<ul>'
-                , '<li>0.0</li>'
+                , '<li id="new">'
+                    , '<br />'
+                , '</li>'
+                , '<li>1</li>'
             , '</ul>'
-            , '<li id="new">'
-                , '<br />'
-            , '</li>'
-        , '</ul>'
-    ].join(''),
-    fixed: [""
-        , '<ul>'
-            , '<li>0<br /><br />'
+        ].join(''),
+        fixed: [""
+            , '<ul>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<br />'
+                , '</li>'
+                , '<li>1</li>'
+            , '</ul>'
+        ].join('')
+    },
+    {
+        broken: [""
+            , '<ul>'
+                , '<li>0<br /><br />'
+                , '</li>'
                 , '<ul>'
                     , '<li>0.0</li>'
                 , '</ul>'
-                , '<br />'
-            , '</li>'
-        , '</ul>'
-    ].join('')
-}, {
-    broken: [""
-        , '<ul>'
-            , '<li>0'
-            , '</li>'
-            , '<ul>'
-                , '<li>0.0</li>'
+                , '<li id="new">'
+                    , '<br />'
+                , '</li>'
             , '</ul>'
-            , '<li id="new">'
-                , '<br />'
-            , '</li>'
+        ].join(''),
+        fixed: [""
             , '<ul>'
-                , '<li>0.2</li>'
+                , '<li>0<br /><br />'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<br />'
+                , '</li>'
             , '</ul>'
-        , '</ul>'
-    ].join(''),
-    fixed: [""
-        , '<ul>'
-            , '<li>0'
+        ].join('')
+    },
+    {
+        broken: [""
+            , '<ul>'
+                , '<li>0'
+                , '</li>'
                 , '<ul>'
                     , '<li>0.0</li>'
                 , '</ul>'
-                , '<br />'
+                , '<li id="new">'
+                    , '<br />'
+                , '</li>'
                 , '<ul>'
                     , '<li>0.2</li>'
                 , '</ul>'
-            , '</li>'
-        , '</ul>'
-    ].join('')
-}, {
-    broken: [""
-        , '<ul>'
-            , '<li>0'
-            , '</li>'
-            , '<ul>'
-                , '<li>0.0</li>'
             , '</ul>'
-            , '<li id="new">'
-                , '<br />'
-            , '</li>'
+        ].join(''),
+        fixed: [""
             , '<ul>'
-                , '<li>0.2</li>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<br />'
+                    , '<ul>'
+                        , '<li>0.2</li>'
+                    , '</ul>'
+                , '</li>'
             , '</ul>'
-            , '<li>1</li>'
-        , '</ul>'
-    ].join(''),
-    fixed: [""
-        , '<ul>'
-            , '<li>0'
+        ].join('')
+    },
+    {
+        broken: [""
+            , '<ul>'
+                , '<li>0'
+                , '</li>'
                 , '<ul>'
                     , '<li>0.0</li>'
                 , '</ul>'
-                , '<br />'
+                , '<li id="new">'
+                    , '<br />'
+                , '</li>'
                 , '<ul>'
                     , '<li>0.2</li>'
                 , '</ul>'
-            , '</li>'
-            , '<li>1</li>'
-        , '</ul>'
-    ].join('')
-}];
+                , '<li>1</li>'
+            , '</ul>'
+        ].join(''),
+        fixed: [""
+            , '<ul>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<br />'
+                    , '<ul>'
+                        , '<li>0.2</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li>1</li>'
+            , '</ul>'
+        ].join('')
+    }
+];
 
 test("Invalid list nesting", function () {
     var i,

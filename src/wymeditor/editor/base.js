@@ -566,7 +566,7 @@ WYMeditor.editor.prototype.selected_parents_contains = function (selector) {
     @param node The node to check.
 */
 
-WYMeditor.editor.prototype.isBlockNode= function (node) {
+WYMeditor.editor.prototype.isBlockNode = function (node) {
     if (
         node.tagName &&
         jQuery.inArray(
@@ -587,17 +587,9 @@ WYMeditor.editor.prototype.isBlockNode= function (node) {
     returns false.
 
     @param node The node to check.
-    @param brFalse If true and node is a 'br' element return false.
 */
 
-WYMeditor.editor.prototype.isInlineNode = function (node, brFalse) {
-    if (
-        brFalse &&
-        node.tagName &&
-        node.tagName.toLowerCase() === 'br'
-    ) {
-        return false;
-    }
+WYMeditor.editor.prototype.isInlineNode = function (node) {
     if (
         node.nodeType === WYMeditor.NODE.TEXT ||
         jQuery.inArray(
@@ -1023,7 +1015,7 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
         var $block = jQuery(this);
 
         if (!$block.next(blockingSelector).length &&
-           !$block.next(WYMeditor.BR).length) {
+           !$block.next('br').length) {
 
             $block.after(placeholderNode);
         }
@@ -1988,18 +1980,65 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
 };
 
 /**
-    editor._isInvalidListNestingAfterEnterInEmptyLi
-    ===============================================
+    editor._isPOrDivAfterEnterInEmptynestedLi(container)
+    ====================================================
 
     Detects one of the types of resulting DOM in issue #430.
+
+    The case is when a 'p' or a 'div' are introduced into the parent 'li'.
+    Since we don't allow a 'p' or a 'div' directly within 'li's it is replaced
+    with a 'br'.
 
     Returns true if detected positively and false otherwise.
 
     @param container An element to check this about.
  */
 
-WYMeditor.editor.prototype._isInvalidListNestingAfterEnterInEmptyLi = function
-    (container) {
+WYMeditor.editor.prototype._isPOrDivAfterEnterInEmptynestedLi = function
+(container) {
+    if (
+        jQuery.inArray(
+            container.tagName.toLowerCase(),
+            WYMeditor.DocumentStructureManager.VALID_DEFAULT_ROOT_CONTAINERS
+        ) > -1 &&
+        container.parentNode.tagName.toLowerCase() === 'li'
+    ) {
+        switch (container.childNodes.length) {
+            case 0:
+                return true;
+            case 1:
+                if (
+                    container.childNodes[0].tagName &&
+                    container.childNodes[0].tagName.toLowerCase() === 'br'
+                ) {
+                    return true;
+                } else if (
+                    container.childNodes[0].nodeType === WYMeditor.NODE.TEXT &&
+                    container.childNodes[0].data === WYMeditor.NBSP
+                ) {
+                    return true;
+                }
+        }
+    }
+    return false;
+};
+
+/**
+    editor._isSpilledListAfterEnterInEmptyLi
+    ========================================
+
+    Detects one of the types of resulting DOM in issue #430.
+
+    In this type of resulting DOM, the contents of a `li` have been
+    "spilled" after that `li`.
+
+    Returns true if detected positively and false otherwise.
+
+    @param container An element to check this about.
+ */
+
+WYMeditor.editor.prototype._isSpilledListAfterEnterInEmptyLi = function
+(container) {
     if (
         container.tagName.toLowerCase() === 'li' &&
         container.previousSibling &&
@@ -2044,100 +2083,78 @@ WYMeditor.editor.prototype.handlePotentialEnterInEmptyNestedLi = function (
         return null;
     }
 
-    if (
-        // This is the first type of unwanted situation.
-        jQuery.inArray(
-            container.tagName.toLowerCase(),
-            ['p', 'div']
-        ) > -1 &&
-        container.parentNode.tagName.toLowerCase() === 'li'
-    ) {
-        switch (container.childNodes.length) {
-            case 0:
-                this._correctPOrDivAfterEnterInEmptyNestedLi(container);
-                break;
-            case 1:
-                if (
-                    container.childNodes[0].tagName &&
-                    container.childNodes[0].tagName.toLowerCase() === 'br'
-                ) {
-                    this._correctPOrDivAfterEnterInEmptyNestedLi(container);
-                } else if (
-                    container.childNodes[0].nodeType === WYMeditor.NODE.TEXT &&
-                    container.childNodes[0].data === WYMeditor.COMMON.NBSP
-                ) {
-                    this._correctPOrDivAfterEnterInEmptyNestedLi(container);
-                }
-                break;
-        }
-    } else if (
-        // This is the second type of unwanted situation.
-        this._isInvalidListNestingAfterEnterInEmptyLi(container)
-    ) {
-        this._correctInvalidListNestingAfterEnterInEmptyLi(container);
+    if (this._isPOrDivAfterEnterInEmptynestedLi(container)) {
+        this._replaceNodeWithBrAndSetCaret(container);
+    } else if (this._isSpilledListAfterEnterInEmptyLi(container)) {
+        this._appendSiblingsUntilNextLiToPreviousLi(container);
+        this._replaceNodeWithBrAndSetCaret(container);
     }
 };
 
 /**
-    editor._correctPOrDivAfterEnterInEmptyNestedLi
-    ==============================================
+    editor._replaceNodeWithBrAndSetCaret
+    ====================================
 
-    This corrects one of the cases that are caused by issue #430.
+    Replaces a node with a `br` element and sets caret before it.
 
-    The case is when a 'p' or a 'div' are introduced into the parent 'li'.
-    Since we don't allow a 'p' or a 'div' directly within 'li's it is replaced
-    with a 'br'.
+    If the previousSibling is inline (except for a `br`) then another `br`
+    is added before.
 
-    If there previousSibling is inline (except for a 'br') then another 'br'
-    is added.
-
-    @param element This is the offending element that requires correction.
+    @param node This is the node to be replaced.
 */
-WYMeditor.editor.prototype._correctPOrDivAfterEnterInEmptyNestedLi = function
-    (element) {
-    var $element = jQuery(element);
+WYMeditor.editor.prototype._replaceNodeWithBrAndSetCaret = function (node) {
+    var $node = jQuery(node);
 
-    if (this.isInlineNode(element.previousSibling, true)) {
-        $element.before(WYMeditor.COMMON.BR);
+    if (
+        node.previousSibling &&
+        !node.previousSibling.tagName ||
+        node.previousSibling.tagName.toLowerCase() !== 'br' &&
+        this.isInlineNode(node.previousSibling)
+    ) {
+        $node.before('<br />');
     }
-        $element.before(WYMeditor.COMMON.BR);
-        this.setCaretBefore($element[0].previousSibling);
-        $element.remove();
+        $node.before('<br />');
+        this.setCaretBefore(node.previousSibling);
+        $node.remove();
 
 };
 
 /**
-    editor._correctInvalidListNestingAfterEnterInEmptyLi
-    ====================================================
+    editor._appendSiblingsUntilNextLiToPreviousLi
+    =============================================
 
-    This corrects one of the cases that are caused by issue #430.
+    This corrects the type of resulting DOM from issue #430 where the
+    contents of a `li` have been spilled to after that `li`.
 
-    The case here is when the whole list ends up right after it's parent 'li'.
+    It only corrects the spillage itself and doesn't modify the new `li`.
 
     @param newLi This is the new 'li' that was created. It is supposed to
                  contain the caret.
 */
 
-WYMeditor.editor.prototype
-    ._correctInvalidListNestingAfterEnterInEmptyLi = function (newLi) {
-    var $newLi= jQuery(newLi),
+WYMeditor.editor.prototype._appendSiblingsUntilNextLiToPreviousLi =
+    function (newLi) {
+
+    var $newLi = jQuery(newLi),
+        // The spilled nodes are a subset of these.
         $parentContents = $newLi.parent().contents(),
-        $sourceLi = $newLi.prevAll('li').first(),
+        // This is the `li` that spilled its contents.
+        $sadLi = $newLi.prevAll('li').first(),
+        // This is the next `li` after the newLi. If it exists, it marks the
+        // end of the spill.
         $nextLi = $newLi.nextAll('li').first(),
-        sliceStart = $sourceLi.index() + 1,
-        $orphans;
+        // The spill start index is after the source `li`.
+        spillStart = $sadLi.index() + 1,
+        $spilled;
 
     if ($nextLi.length === 1) {
-        $orphans = $parentContents.slice(sliceStart, $nextLi.index());
+        $spilled = $parentContents.slice(spillStart, $nextLi.index());
     } else {
-        $orphans = $parentContents.slice(sliceStart);
+        // There are no `li` elements after our newLi. The spill ends at the
+        // end of its parent.
+        $spilled = $parentContents.slice(spillStart);
     }
-    $sourceLi.append($orphans);
-
-    // And this replaces the new 'li' with a 'br'.
-    $newLi.before(WYMeditor.COMMON.BR);
-    this.setCaretBefore(newLi.previousSibling);
-    $newLi.remove();
+    $sadLi.append($spilled);
 };
 
 /**
