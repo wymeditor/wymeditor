@@ -197,34 +197,18 @@ function wymEqual(wymeditor, expected, options) {
             fixListSpacing: false,
             skipParser: false
         },
-        actual = '',
         normedActual = '',
         listTypeOptions,
         tmpNodes,
         i;
 
-    // Apply defaults.
     options = jQuery.extend({}, defaults, options);
 
-    // If it is requested that the parser be skipped:
     if (options.skipParser) {
-        // Extract the HTML from the DOM of the WYMeditor.
-        jQuery(wymeditor._doc).find('body.wym_iframe').contents().each(
-            function () {
-                actual += this.outerHTML
-                // IE7 and IE8 provide HTML strings with carriage returns
-                // and newlines. Those are wholly unnecessary and upon DOM
-                // creation, IE7 and IE8 turn them into spaces. Remove them.
-                .replace(/[\r\n]/g, '');
-            }
-        );
-    // Otherwise:
+        tmpNodes = jQuery(wymeditor._doc).find('body.wym_iframe').contents();
     } else {
-        // Get it through the API and trim it.
-        actual = jQuery.trim(wymeditor.xhtml());
+        tmpNodes = jQuery(wymeditor.xhtml());
     }
-
-    tmpNodes = jQuery(actual);
 
     for (i = 0; i < tmpNodes.length; i++) {
         normedActual += normalizeHtml(tmpNodes[i]);
