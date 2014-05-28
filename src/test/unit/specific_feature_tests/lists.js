@@ -2541,7 +2541,7 @@ var enterInEmptyLiOnlyLiTextAfterList = {
         , '<ul>'
             , '<li>0'
                 , '<p>'
-                    , WYMeditor.CHARS.NBSP
+                    , WYMeditor.COMMON.NBSP
                 , '</p>'
                 , 'foo'
             , '</li>'
@@ -2621,7 +2621,7 @@ var enterInEmptyLiLastLiTextAfterList = {
                     , '<ul>'
                         , '<li>0.0</li>'
                     , '</ul>'
-                    , '<p>' + WYMeditor.CHARS.NBSP + '</p>'
+                    , '<p>' + WYMeditor.COMMON.NBSP + '</p>'
                     , 'foo'
                 , '</li>'
             , '</ul>'
@@ -2689,23 +2689,18 @@ function enterInEmptyLiTest (testNameSuff, expectedHtml, brokenHtmls) {
         assertStrKeyAppend = '; by key simulation';
 
     test(testName, function () {
-
         expect(brokenHtmls.length * 4);
-
         wymeditor = jQuery.wymeditors(0);
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
         for (i = 0; i < brokenHtmls.length; i++) {
-
-            // Compose an assertion string.
             assertStr = 'Broken HTML variation ' + (i + 1) + ' of ' +
                 brokenHtmls.length;
 
             wymeditor._html(brokenHtmls[i]);
-
-            // Call the repairing function on the offending element.
-            wymeditor._correctBlockInList($body.find('p, div')[0]);
-
+            wymeditor._correctPOrDivAfterEnterInEmptyNestedLi(
+                $body.find('p, div')[0]
+            );
             wymEqual(
                 wymeditor,
                 expectedHtml, {
@@ -2715,9 +2710,7 @@ function enterInEmptyLiTest (testNameSuff, expectedHtml, brokenHtmls) {
             );
 
             wymeditor._html(brokenHtmls[i]);
-
             wymeditor.setCaretIn($body.find('p, div')[0]);
-
             simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
 
             wymEqual(
@@ -2727,12 +2720,10 @@ function enterInEmptyLiTest (testNameSuff, expectedHtml, brokenHtmls) {
                     assertionString: assertStr + assertStrKeyAppend
                 }
             );
-
             ok(
                 wymeditor.selection().isCollapsed,
-               assertStr + assertStrKeyAppend + '; selection is collapsed'
+                assertStr + assertStrKeyAppend + '; selection is collapsed'
             );
-
             strictEqual(
                 wymeditor.nodeAfterSel().tagName.toLowerCase(),
                 'br',
@@ -2770,8 +2761,12 @@ enterInEmptyLiTest(
     enterInEmptyLiNotLast.broken
 );
 
-var invalidNestingAfterEnterInEmptyLi = [
-    {broken: [""
+// All of the following broken HTML strings represent real-world browser
+// results. There is no point imagining more cases without confirming that they
+// actually occurring in the browser. Especially because this kind of invalid
+// list nesting occurs under quite specific conditions, it seems.
+var invalidNestingAfterEnterInEmptyLi = [{
+    broken: [""
         , '<ul>'
             , '<li>0'
             , '</li>'
@@ -2794,8 +2789,9 @@ var invalidNestingAfterEnterInEmptyLi = [
                 , '<br />'
             , '</li>'
         , '</ul>'
-    ].join('')},
-    {broken: [""
+    ].join('')
+}, {
+    broken: [""
         , '<ul>'
             , '<li>0'
             , '</li>'
@@ -2816,8 +2812,34 @@ var invalidNestingAfterEnterInEmptyLi = [
                 , '<br />'
             , '</li>'
         , '</ul>'
-    ].join('')},
-    {broken: [""
+    ].join('')
+}, {
+    broken: [""
+        , '<ul>'
+            , '<li>0'
+            , '</li>'
+            , '<ul>'
+                , '<li>0.0</li>'
+            , '</ul>'
+            , '<li id="new">'
+                , '<br />'
+            , '</li>'
+            , '<li>1</li>'
+        , '</ul>'
+    ].join(''),
+    fixed: [""
+        , '<ul>'
+            , '<li>0'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<br />'
+            , '</li>'
+            , '<li>1</li>'
+        , '</ul>'
+    ].join('')
+}, {
+    broken: [""
         , '<ul>'
             , '<li>0<br /><br />'
             , '</li>'
@@ -2838,8 +2860,9 @@ var invalidNestingAfterEnterInEmptyLi = [
                 , '<br />'
             , '</li>'
         , '</ul>'
-    ].join('')},
-    {broken: [""
+    ].join('')
+}, {
+    broken: [""
         , '<ul>'
             , '<li>0'
             , '</li>'
@@ -2866,8 +2889,39 @@ var invalidNestingAfterEnterInEmptyLi = [
                 , '</ul>'
             , '</li>'
         , '</ul>'
-    ].join('')}
-];
+    ].join('')
+}, {
+    broken: [""
+        , '<ul>'
+            , '<li>0'
+            , '</li>'
+            , '<ul>'
+                , '<li>0.0</li>'
+            , '</ul>'
+            , '<li id="new">'
+                , '<br />'
+            , '</li>'
+            , '<ul>'
+                , '<li>0.2</li>'
+            , '</ul>'
+            , '<li>1</li>'
+        , '</ul>'
+    ].join(''),
+    fixed: [""
+        , '<ul>'
+            , '<li>0'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<br />'
+                , '<ul>'
+                    , '<li>0.2</li>'
+                , '</ul>'
+            , '</li>'
+            , '<li>1</li>'
+        , '</ul>'
+    ].join('')
+}];
 
 test("Invalid list nesting", function () {
     var i,
@@ -2878,16 +2932,12 @@ test("Invalid list nesting", function () {
     expect(invalidNestingAfterEnterInEmptyLi.length * 2);
 
     for (i = 0; i < invalidNestingAfterEnterInEmptyLi.length; i++) {
-
         assertCountStr = 'Variation ' + (i + 1) + ' of ' +
             (invalidNestingAfterEnterInEmptyLi.length) + '; ';
 
         wymeditor._html(invalidNestingAfterEnterInEmptyLi[i].broken);
-
         newLi = jQuery(wymeditor._doc).find('body.wym_iframe').find('#new')[0];
-
         wymeditor.setCaretIn(newLi);
-
         simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
 
         wymEqual(
@@ -2897,7 +2947,6 @@ test("Invalid list nesting", function () {
                 assertionString: assertCountStr + 'HTML'
             }
         );
-
         strictEqual(
             wymeditor.nodeAfterSel().tagName.toLowerCase(),
             'br',

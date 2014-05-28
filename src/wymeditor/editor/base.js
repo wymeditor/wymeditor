@@ -587,9 +587,17 @@ WYMeditor.editor.prototype.isBlockNode= function (node) {
     returns false.
 
     @param node The node to check.
+    @param brFalse If true and node is a 'br' element return false.
 */
 
-WYMeditor.editor.prototype.isInlineNode = function (node) {
+WYMeditor.editor.prototype.isInlineNode = function (node, brFalse) {
+    if (
+        brFalse &&
+        node.tagName &&
+        node.tagName.toLowerCase() === 'br'
+    ) {
+        return false;
+    }
     if (
         node.nodeType === WYMeditor.NODE.TEXT ||
         jQuery.inArray(
@@ -1980,10 +1988,48 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
 };
 
 /**
+    editor._isInvalidListNestingAfterEnterInEmptyLi
+    ===============================================
+
+    Detects one of the types of resulting DOM in issue #430.
+
+    Returns true if detected positively and false otherwise.
+
+    @param container An element to check this about.
+ */
+
+WYMeditor.editor.prototype._isInvalidListNestingAfterEnterInEmptyLi = function
+    (container) {
+    if (
+        container.tagName.toLowerCase() === 'li' &&
+        container.previousSibling &&
+        this.isListNode(container.previousSibling) &&
+        container.previousSibling.previousSibling &&
+        container.previousSibling.previousSibling.tagName
+            .toLowerCase() === 'li' &&
+        this.isListNode(container.parentNode)
+    ) {
+        return true;
+    }
+    return false;
+};
+
+/**
     editor.handlePotentialEnterInEmptyNestedLi
     ==========================================
 
-    Identify whether issue #430 had occurred and if so call for its correction.
+    Issue #430. When the caret is in an empty nested `li` and the enter key is
+    pressed, browsers perform DOM manipulations that are different than what
+    we desire.
+
+    This detects two out of three types of the DOM manipulations and calls for
+    their correction.
+
+    The third type of DOM manipulation is harder to detect, but, luckily, it
+    is tolerable, so it goes undetected. This results in a difference in UX
+    across browsers.
+
+    For detailed information on this please see the issue #430's description.
 
     @param keyPressed The code of the key that was pressed, to check whether
                       it is an enter.
@@ -1994,7 +2040,7 @@ WYMeditor.editor.prototype.handlePotentialEnterInEmptyNestedLi = function (
     keyPressed, container) {
 
     if (keyPressed !== WYMeditor.KEY.ENTER) {
-        // This isn't an occurrence of issue #430.
+        // Only an enter key press can result a p/div in an empty nested list.
         return null;
     }
 
@@ -2008,61 +2054,54 @@ WYMeditor.editor.prototype.handlePotentialEnterInEmptyNestedLi = function (
     ) {
         switch (container.childNodes.length) {
             case 0:
-                this._correctBlockInList(container);
+                this._correctPOrDivAfterEnterInEmptyNestedLi(container);
                 break;
             case 1:
                 if (
                     container.childNodes[0].tagName &&
                     container.childNodes[0].tagName.toLowerCase() === 'br'
                 ) {
-                    this._correctBlockInList(container);
+                    this._correctPOrDivAfterEnterInEmptyNestedLi(container);
                 } else if (
-                    container.childNodes[0].nodeType === 3 &&
-                    container.childNodes[0].data === WYMeditor.CHARS.NBSP
+                    container.childNodes[0].nodeType === WYMeditor.NODE.TEXT &&
+                    container.childNodes[0].data === WYMeditor.COMMON.NBSP
                 ) {
-                    this._correctBlockInList(container);
+                    this._correctPOrDivAfterEnterInEmptyNestedLi(container);
                 }
                 break;
         }
     } else if (
         // This is the second type of unwanted situation.
-        container.tagName.toLowerCase() === 'li' &&
-        container.previousSibling &&
-        this.isListNode(container.previousSibling) &&
-        container.previousSibling.previousSibling &&
-        container.previousSibling.previousSibling.tagName
-            .toLowerCase() === 'li' &&
-        this.isListNode(container.parentNode)
+        this._isInvalidListNestingAfterEnterInEmptyLi(container)
     ) {
         this._correctInvalidListNestingAfterEnterInEmptyLi(container);
     }
 };
 
 /**
-    editor._correctBlockInList
-    ==========================
+    editor._correctPOrDivAfterEnterInEmptyNestedLi
+    ==============================================
 
     This corrects one of the cases that are caused by issue #430.
 
+    The case is when a 'p' or a 'div' are introduced into the parent 'li'.
+    Since we don't allow a 'p' or a 'div' directly within 'li's it is replaced
+    with a 'br'.
+
+    If there previousSibling is inline (except for a 'br') then another 'br'
+    is added.
+
     @param element This is the offending element that requires correction.
 */
+WYMeditor.editor.prototype._correctPOrDivAfterEnterInEmptyNestedLi = function
+    (element) {
+    var $element = jQuery(element);
 
-WYMeditor.editor.prototype._correctBlockInList = function (element) {
-    var
-        $element = jQuery(element),
-        br = '<br />';
-
-        if (
-            element.previousSibling &&
-            element.previousSibling.nodeType === WYMeditor.NODE.TEXT
-           ) {
-            $element.before(br);
-        }
-
-        $element.before(br);
-
+    if (this.isInlineNode(element.previousSibling, true)) {
+        $element.before(WYMeditor.COMMON.BR);
+    }
+        $element.before(WYMeditor.COMMON.BR);
         this.setCaretBefore($element[0].previousSibling);
-
         $element.remove();
 
 };
@@ -2073,24 +2112,34 @@ WYMeditor.editor.prototype._correctBlockInList = function (element) {
 
     This corrects one of the cases that are caused by issue #430.
 
-    @param element This is the offending element that requires correction.
+    The case here is when the whole list ends up right after it's parent 'li'.
+
+    @param newLi This is the new 'li' that was created. It is supposed to
+                 contain the caret.
 */
 
 WYMeditor.editor.prototype
-    ._correctInvalidListNestingAfterEnterInEmptyLi = function (element) {
-    var
-        $element = jQuery(element),
-        $firstPreviousLi = $element.prevAll('li').first();
+    ._correctInvalidListNestingAfterEnterInEmptyLi = function (newLi) {
+    var $newLi= jQuery(newLi),
+        $parentContents = $newLi.parent().contents(),
+        $sourceLi = $newLi.prevAll('li').first(),
+        $nextLi = $newLi.nextAll('li').first(),
+        sliceStart = $sourceLi.index() + 1,
+        $orphans;
 
-        $element.parent().contents().slice($firstPreviousLi.index() + 1)
-            .appendTo($firstPreviousLi);
+    if ($nextLi.length === 1) {
+        $orphans = $parentContents.slice(sliceStart, $nextLi.index());
+    } else {
+        $orphans = $parentContents.slice(sliceStart);
+    }
+    $sourceLi.append($orphans);
 
-        $element.before('<br />');
-
-        this.setCaretBefore($element[0].previousSibling);
-
-        $element.remove();
+    // And this replaces the new 'li' with a 'br'.
+    $newLi.before(WYMeditor.COMMON.BR);
+    this.setCaretBefore(newLi.previousSibling);
+    $newLi.remove();
 };
+
 /**
     editor._correctOrphanedListItem
     ===============================

@@ -236,9 +236,9 @@ var addRowTd32Html = String() +
                     '<td id="td_3_3">3_3</td>' +
                 '</tr>' +
                 '<tr>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                 '</tr>' +
             '</tbody>' +
         '</table>';
@@ -249,19 +249,19 @@ var addColumnTd32Html = String() +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
                     '<td id="td_1_2">1_2</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                     '<td id="td_1_3">1_3</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
                     '<td id="td_2_2">2_2</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                     '<td id="td_2_3">2_3</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
                     '<td id="td_3_1">3_1</td>' +
                     '<td id="td_3_2">3_2</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                     '<td id="td_3_3">3_3</td>' +
                 '</tr>' +
             '</tbody>' +
@@ -281,9 +281,9 @@ var addRowSpan21Html = String() +
                     '<td id="td_2_3">2_3</td>' +
                 '</tr>' +
                 '<tr>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
                     '<td id="td_3_1">3_1</td>' +
@@ -298,19 +298,19 @@ var addColumnSpan21Html = String() +
             '<tbody>' +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                     '<td id="td_1_2">1_2</td>' +
                     '<td id="td_1_3">1_3</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                     '<td id="td_2_2">2_2</td>' +
                     '<td id="td_2_3">2_3</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
                     '<td id="td_3_1">3_1</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                     '<td id="td_3_2">3_2</td>' +
                     '<td id="td_3_3">3_3</td>' +
                 '</tr>' +
@@ -325,9 +325,9 @@ var addRowFancyTd12 = String() +
                     '<td colspan="2" id="td_1_2">1_2</td>' +
                 '</tr>' +
                 '<tr>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
@@ -354,8 +354,8 @@ var addRowFancyTd22 = String() +
                     '<td id="td_2_3" rowspan="3">2_3</td>' +
                 '</tr>' +
                 '<tr>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
                     '<td id="td_3_1">3_1</td>' +
@@ -381,9 +381,9 @@ var addRowFancyTd32 = String() +
                     '<td id="td_3_2">3_2</td>' +
                 '</tr>' +
                 '<tr>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                 '</tr>' +
             '</tbody>' +
         '</table>';
@@ -394,18 +394,18 @@ var addColumnFancyTd12 = String() +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
                     '<td colspan="2" id="td_1_2">1_2</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
                     '<td id="td_2_2">2_2</td>' +
                     '<td id="td_2_3" rowspan="2">2_3</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
                     '<td id="td_3_1">3_1</td>' +
                     '<td id="td_3_2">3_2</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                 '</tr>' +
             '</tbody>' +
         '</table>';
@@ -416,18 +416,18 @@ var addColumnFancyTd23 = String() +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
                     '<td colspan="2" id="td_1_2">1_2</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
                     '<td id="td_2_2">2_2</td>' +
                     '<td id="td_2_3" rowspan="2">2_3</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
                     '<td id="td_3_1">3_1</td>' +
                     '<td id="td_3_2">3_2</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                 '</tr>' +
             '</tbody>' +
         '</table>';
@@ -438,18 +438,18 @@ var addColumnFancyTd32 = String() +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
                     '<td colspan="2" id="td_1_2">1_2</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
                     '<td id="td_2_2">2_2</td>' +
                     '<td id="td_2_3" rowspan="2">2_3</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
                     '<td id="td_3_1">3_1</td>' +
                     '<td id="td_3_2">3_2</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                 '</tr>' +
             '</tbody>' +
         '</table>';
@@ -459,18 +459,18 @@ var addColumnFancyTd11 = String() +
             '<tbody>' +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                     '<td colspan="2" id="td_1_2">1_2</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                     '<td id="td_2_2">2_2</td>' +
                     '<td id="td_2_3" rowspan="2">2_3</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
                     '<td id="td_3_1">3_1</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                     '<td id="td_3_2">3_2</td>' +
                 '</tr>' +
             '</tbody>' +
@@ -481,18 +481,18 @@ var addColumnFancyTd21 = String() +
             '<tbody>' +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                     '<td colspan="2" id="td_1_2">1_2</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                     '<td id="td_2_2">2_2</td>' +
                     '<td id="td_2_3" rowspan="2">2_3</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
                     '<td id="td_3_1">3_1</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                     '<td id="td_3_2">3_2</td>' +
                 '</tr>' +
             '</tbody>' +
@@ -508,13 +508,13 @@ var addColumnFancyTd22 = String() +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
                     '<td id="td_2_2">2_2</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                     '<td id="td_2_3" rowspan="2">2_3</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
                     '<td id="td_3_1">3_1</td>' +
                     '<td id="td_3_2">3_2</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                 '</tr>' +
             '</tbody>' +
         '</table>';
@@ -528,9 +528,9 @@ var addRowThTh13Html = String() +
                     '<th id="th_1_3">1_3</th>' +
                 '</tr>' +
                 '<tr>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
@@ -564,9 +564,9 @@ var addRowThTd32Html = String() +
                     '<td id="td_3_3">3_3</td>' +
                 '</tr>' +
                 '<tr>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                 '</tr>' +
             '</tbody>' +
         '</table>';
@@ -578,19 +578,19 @@ var addColumnThTh13Html = String() +
                     '<th id="th_1_1">1_1</th>' +
                     '<th id="th_1_2">1_2</th>' +
                     '<th id="th_1_3">1_3</th>' +
-                    '<th>' + WYMeditor.CHARS.NBSP + '</th>' +
+                    '<th>' + WYMeditor.COMMON.NBSP + '</th>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
                     '<td id="td_2_2">2_2</td>' +
                     '<td id="td_2_3">2_3</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
                     '<td id="td_3_1">3_1</td>' +
                     '<td id="td_3_2">3_2</td>' +
                     '<td id="td_3_3">3_3</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                 '</tr>' +
             '</tbody>' +
         '</table>';
@@ -601,19 +601,19 @@ var addColumnThTd32Html = String() +
                 '<tr id="tr_1">' +
                     '<th id="th_1_1">1_1</th>' +
                     '<th id="th_1_2">1_2</th>' +
-                    '<th>' + WYMeditor.CHARS.NBSP + '</th>' +
+                    '<th>' + WYMeditor.COMMON.NBSP + '</th>' +
                     '<th id="th_1_3">1_3</th>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
                     '<td id="td_2_2">2_2</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                     '<td id="td_2_3">2_3</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
                     '<td id="td_3_1">3_1</td>' +
                     '<td id="td_3_2">3_2</td>' +
-                    '<td>' + WYMeditor.CHARS.NBSP + '</td>' +
+                    '<td>' + WYMeditor.COMMON.NBSP + '</td>' +
                     '<td id="td_3_3">3_3</td>' +
                 '</tr>' +
             '</tbody>' +

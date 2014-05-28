@@ -431,8 +431,9 @@ jQuery.extend(WYMeditor, {
         "th"
     ],
 
-    // Characters.
-    CHARS: {
+    // Common strings.
+    COMMON: {
+        BR: '<br />',
         NBSP: '\xA0'
     },
 
