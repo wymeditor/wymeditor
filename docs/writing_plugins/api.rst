@@ -114,7 +114,7 @@ This sets a collapsed selection before the specified node.
   Due to browser and/or Rangy bugs it has been decided that ``node`` could be
   either a text node or a ``br`` element and if it is a ``br`` element it must
   either have no ``previousSibling`` or its ``previousSibling`` must be a text
-  node or a ``br`` element.
+  node, a ``br`` element or any block element.
 
 It checks whether this is possible, before doing so, using
 ``canSetCaretBefore``.

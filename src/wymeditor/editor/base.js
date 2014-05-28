@@ -557,6 +557,29 @@ WYMeditor.editor.prototype.selected_parents_contains = function (selector) {
 };
 
 /**
+    WYMeditor.editor.isBlockNode
+    =============================
+
+    Returns true if the provided node is a block type node. Otherwise
+    returns false.
+
+    @param node The node to check.
+*/
+
+WYMeditor.editor.prototype.isBlockNode = function (node) {
+    if (
+        node.tagName &&
+        jQuery.inArray(
+            node.tagName.toLowerCase(),
+            WYMeditor.BLOCKS
+        ) > -1
+    ) {
+        return true;
+    }
+    return false;
+};
+
+/**
     WYMeditor.editor.isInlineNode
     =============================
 
@@ -568,9 +591,33 @@ WYMeditor.editor.prototype.selected_parents_contains = function (selector) {
 
 WYMeditor.editor.prototype.isInlineNode = function (node) {
     if (
+        node.nodeType === WYMeditor.NODE.TEXT ||
         jQuery.inArray(
             node.tagName.toLowerCase(),
             WYMeditor.INLINE_ELEMENTS
+        ) > -1
+    ) {
+        return true;
+    }
+    return false;
+};
+
+/**
+    WYMeditor.editor.isListNode
+    =============================
+
+    Returns true if the provided node is a list element. Otherwise
+    returns false.
+
+    @param node The node to check.
+*/
+
+WYMeditor.editor.prototype.isListNode= function (node) {
+    if (
+        node.tagName &&
+        jQuery.inArray(
+            node.tagName.toLowerCase(),
+            WYMeditor.LIST_TYPE_ELEMENTS
         ) > -1
     ) {
         return true;
@@ -968,7 +1015,7 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
         var $block = jQuery(this);
 
         if (!$block.next(blockingSelector).length &&
-           !$block.next(WYMeditor.BR).length) {
+           !$block.next('br').length) {
 
             $block.after(placeholderNode);
         }
@@ -1454,6 +1501,9 @@ WYMeditor.editor.prototype.canSetCaretBefore = function (node) {
         ) {
             return true;
 
+        } else if (this.isBlockNode(node.previousSibling)) {
+            return true;
+
         } else if (node.previousSibling.nodeType === WYMeditor.NODE.TEXT) {
             return true;
         }
@@ -1928,6 +1978,185 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
     }
     return this._correctInvalidListNesting(currentNode, alreadyCorrected);
 };
+
+/**
+    editor._isPOrDivAfterEnterInEmptynestedLi(container)
+    ====================================================
+
+    Detects one of the types of resulting DOM in issue #430.
+
+    The case is when a 'p' or a 'div' are introduced into the parent 'li'.
+    Since we don't allow a 'p' or a 'div' directly within 'li's it is replaced
+    with a 'br'.
+
+    Returns true if detected positively and false otherwise.
+
+    @param container An element to check this about.
+ */
+
+WYMeditor.editor.prototype._isPOrDivAfterEnterInEmptynestedLi = function
+(container) {
+    if (
+        jQuery.inArray(
+            container.tagName.toLowerCase(),
+            WYMeditor.DocumentStructureManager.VALID_DEFAULT_ROOT_CONTAINERS
+        ) > -1 &&
+        container.parentNode.tagName.toLowerCase() === 'li'
+    ) {
+        switch (container.childNodes.length) {
+            case 0:
+                return true;
+            case 1:
+                if (
+                    container.childNodes[0].tagName &&
+                    container.childNodes[0].tagName.toLowerCase() === 'br'
+                ) {
+                    return true;
+                } else if (
+                    container.childNodes[0].nodeType === WYMeditor.NODE.TEXT &&
+                    container.childNodes[0].data === WYMeditor.NBSP
+                ) {
+                    return true;
+                }
+        }
+    }
+    return false;
+};
+
+/**
+    editor._isSpilledListAfterEnterInEmptyLi
+    ========================================
+
+    Detects one of the types of resulting DOM in issue #430.
+
+    In this type of resulting DOM, the contents of a `li` have been
+    "spilled" after that `li`.
+
+    Returns true if detected positively and false otherwise.
+
+    @param container An element to check this about.
+ */
+
+WYMeditor.editor.prototype._isSpilledListAfterEnterInEmptyLi = function
+(container) {
+    if (
+        container.tagName.toLowerCase() === 'li' &&
+        container.previousSibling &&
+        this.isListNode(container.previousSibling) &&
+        container.previousSibling.previousSibling &&
+        container.previousSibling.previousSibling.tagName
+            .toLowerCase() === 'li' &&
+        this.isListNode(container.parentNode)
+    ) {
+        return true;
+    }
+    return false;
+};
+
+/**
+    editor.handlePotentialEnterInEmptyNestedLi
+    ==========================================
+
+    Issue #430. When the caret is in an empty nested `li` and the enter key is
+    pressed, browsers perform DOM manipulations that are different than what
+    we desire.
+
+    This detects two out of three types of the DOM manipulations and calls for
+    their correction.
+
+    The third type of DOM manipulation is harder to detect, but, luckily, it
+    is tolerable, so it goes undetected. This results in a difference in UX
+    across browsers.
+
+    For detailed information on this please see the issue #430's description.
+
+    @param keyPressed The code of the key that was pressed, to check whether
+                      it is an enter.
+    @param container The currently selected container.
+ */
+
+WYMeditor.editor.prototype.handlePotentialEnterInEmptyNestedLi = function (
+    keyPressed, container) {
+
+    if (keyPressed !== WYMeditor.KEY.ENTER) {
+        // Only an enter key press can result a p/div in an empty nested list.
+        return null;
+    }
+
+    if (this._isPOrDivAfterEnterInEmptynestedLi(container)) {
+        this._replaceNodeWithBrAndSetCaret(container);
+    } else if (this._isSpilledListAfterEnterInEmptyLi(container)) {
+        this._appendSiblingsUntilNextLiToPreviousLi(container);
+        this._replaceNodeWithBrAndSetCaret(container);
+    }
+};
+
+/**
+    editor._replaceNodeWithBrAndSetCaret
+    ====================================
+
+    Replaces a node with a `br` element and sets caret before it.
+
+    If the previousSibling is inline (except for a `br`) then another `br`
+    is added before.
+
+    @param node This is the node to be replaced.
+*/
+WYMeditor.editor.prototype._replaceNodeWithBrAndSetCaret = function (node) {
+    var $node = jQuery(node);
+
+    if (
+        node.previousSibling &&
+        !node.previousSibling.tagName ||
+        node.previousSibling.tagName.toLowerCase() !== 'br' &&
+        this.isInlineNode(node.previousSibling)
+    ) {
+        $node.before('<br />');
+    }
+        $node.before('<br />');
+        this.setCaretBefore(node.previousSibling);
+        $node.remove();
+
+};
+
+/**
+    editor._appendSiblingsUntilNextLiToPreviousLi
+    =============================================
+
+    This corrects the type of resulting DOM from issue #430 where the
+    contents of a `li` have been spilled to after that `li`.
+
+    It only corrects the spillage itself and doesn't modify the new `li`.
+
+    @param newLi This is the new 'li' that was created. It is supposed to
+                 contain the caret.
+*/
+
+WYMeditor.editor.prototype._appendSiblingsUntilNextLiToPreviousLi =
+    function (newLi) {
+
+    var $newLi = jQuery(newLi),
+        // The spilled nodes are a subset of these.
+        $parentContents = $newLi.parent().contents(),
+        // This is the `li` that spilled its contents.
+        $sadLi = $newLi.prevAll('li').first(),
+        // This is the next `li` after the newLi. If it exists, it marks the
+        // end of the spill.
+        $nextLi = $newLi.nextAll('li').first(),
+        // The spill start index is after the source `li`.
+        spillStart = $sadLi.index() + 1,
+        $spilled;
+
+    if ($nextLi.length === 1) {
+        $spilled = $parentContents.slice(spillStart, $nextLi.index());
+    } else {
+        // There are no `li` elements after our newLi. The spill ends at the
+        // end of its parent.
+        $spilled = $parentContents.slice(spillStart);
+    }
+    $sadLi.append($spilled);
+};
+
 /**
     editor._correctOrphanedListItem
     ===============================

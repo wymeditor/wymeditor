@@ -1,6 +1,6 @@
 /* jshint camelcase: false, maxlen: 105 */
 /* global setupWym, SKIP_KNOWN_FAILING_TESTS,
-wymEqual, makeTextSelection, moveSelector, simulateKey,
+wymEqual, makeTextSelection, moveSelector, simulateKey, strictEqual,
 makeSelection,
 ok, test, expect */
 "use strict";
@@ -2476,3 +2476,488 @@ if (!(// Browser is IE and
     });
 }
 
+// Issue #430
+module("list-correction_after_enter_in_empty_li", {setup: setupWym});
+
+// Issue #430 case 1 of 3: a `p` or a `div` is created inside the parent `li`:
+
+// Following objects are pairs of:
+//
+//  * String of corrected HTML.
+//  * Array of known broken HTML strings.
+var enterInEmptyLiOnlyLi = {
+    fixed: [""
+        , '<ul>'
+            , '<li>0'
+                , '<br />'
+                , '<br />'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    broken: [
+        [""
+            , '<ul>'
+                , '<li>0'
+                    , '<p>'
+                        , '<br />'
+                    , '</p>'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    ]
+};
+var enterInEmptyLiOnlyLiTextAfterList = {
+    fixed: [""
+        , '<ul>'
+            , '<li>0'
+                , '<br />'
+                , '<br />'
+                , 'foo'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    broken: [
+        [""
+            , '<ul>'
+                , '<li>0'
+                    , '<p>'
+                        ,'<br />'
+                    , '</p>'
+                    , 'foo'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        [""
+            , '<ul>'
+                , '<li>0'
+                    , '<div>'
+                        ,'<br />'
+                    , '</div>'
+                    , 'foo'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        [""
+            , '<ul>'
+                , '<li>0'
+                    , '<p>'
+                        , WYMeditor.NBSP
+                    , '</p>'
+                    , 'foo'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    ]
+};
+var enterInEmptyLiLastLi = {
+    fixed: [""
+        , '<ul>'
+            , '<li>0'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<br />'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    broken: [
+        [""
+            , '<ul>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<p>'
+                        , '<br />'
+                    , '</p>'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    ]
+};
+
+var enterInEmptyLiLastLiTextAfterList = {
+    fixed: [""
+        , '<ul>'
+            , '<li>0'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<br />'
+                , 'foo'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    broken: [
+        [""
+            , '<ul>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<p>'
+                        , '<br />'
+                    , '</p>'
+                    , 'foo'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        [""
+        , '<ul>'
+            , '<li>0'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<div>'
+                    , '<br />'
+                , '</div>'
+                , 'foo'
+            , '</li>'
+        , '</ul>'
+        ].join(''),
+        [""
+            , '<ul>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<p>' + WYMeditor.NBSP + '</p>'
+                    , 'foo'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    ]
+};
+var enterInEmptyLiNotLast = {
+    fixed: [""
+        , '<ul>'
+            , '<li>0'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<br />'
+                , '<ul>'
+                    , '<li>0.2</li>'
+                , '</ul>'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    broken: [
+        [""
+            , '<ul>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<p>'
+                        , '<br />'
+                    , '</p>'
+                    , '<ul>'
+                        , '<li>0.2</li>'
+                    , '</ul>'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        [""
+            , '<ul>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<p></p>'
+                    , '<ul>'
+                        , '<li>0.2</li>'
+                    , '</ul>'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    ]
+};
+
+// The following is a helper function for performing tests on the above pairs.
+//
+// `testNameSuff` is the suffix of the name of the test that will be run.
+// `expectedHtml` is the former from each of the pairs above.
+// `brokenHtmls` is the latter from each of the pairs above.
+function enterInEmptyLiTest (testNameSuff, expectedHtml, brokenHtmls) {
+    var wymeditor,
+        $body,
+        i,
+        assertStr,
+        testName = '`p` or `div`: ' + testNameSuff,
+        assertStrCallAppend = '; by calling repairing function',
+        assertStrKeyAppend = '; by key simulation';
+
+    test(testName, function () {
+        expect(brokenHtmls.length * 4);
+        wymeditor = jQuery.wymeditors(0);
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+        for (i = 0; i < brokenHtmls.length; i++) {
+            assertStr = 'Broken HTML variation ' + (i + 1) + ' of ' +
+                brokenHtmls.length;
+
+            wymeditor._html(brokenHtmls[i]);
+            wymeditor._replaceNodeWithBrAndSetCaret(
+                $body.find('p, div')[0]
+            );
+            wymEqual(
+                wymeditor,
+                expectedHtml, {
+                    skipParser: true,
+                    assertionString: assertStr + assertStrCallAppend
+                }
+            );
+
+            wymeditor._html(brokenHtmls[i]);
+            wymeditor.setCaretIn($body.find('p, div')[0]);
+            simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
+
+            wymEqual(
+                wymeditor,
+                expectedHtml, {
+                    skipParser: true,
+                    assertionString: assertStr + assertStrKeyAppend
+                }
+            );
+            ok(
+                wymeditor.selection().isCollapsed,
+                assertStr + assertStrKeyAppend + '; selection is collapsed'
+            );
+            strictEqual(
+                wymeditor.nodeAfterSel().tagName.toLowerCase(),
+                'br',
+                assertStr + assertStrKeyAppend + '; caret position'
+            );
+        }
+    });
+}
+
+// At this stage the helper function of this module is called for the tests to
+// be performed with each of the variations, represented by the pairs.
+enterInEmptyLiTest(
+    'Only `li` in its list',
+    enterInEmptyLiOnlyLi.fixed,
+    enterInEmptyLiOnlyLi.broken
+);
+enterInEmptyLiTest(
+    'Only `li` and text node after list',
+    enterInEmptyLiOnlyLiTextAfterList.fixed,
+    enterInEmptyLiOnlyLiTextAfterList.broken
+);
+enterInEmptyLiTest(
+    'Last `li`',
+    enterInEmptyLiLastLi.fixed,
+    enterInEmptyLiLastLi.broken
+);
+enterInEmptyLiTest(
+    'Last `li` and text node after list',
+    enterInEmptyLiLastLiTextAfterList.fixed,
+    enterInEmptyLiLastLiTextAfterList.broken
+);
+enterInEmptyLiTest(
+    'Not last `li`',
+    enterInEmptyLiNotLast.fixed,
+    enterInEmptyLiNotLast.broken
+);
+
+// All of the following broken HTML strings represent real-world browser
+// results. There is no point imagining more cases without confirming that they
+// actually occurring in the browser. Especially because this kind of invalid
+// list nesting occurs under quite specific conditions, it seems.
+var invalidNestingAfterEnterInEmptyLi = [
+    {
+        broken: [""
+            , '<ul>'
+                , '<li>0'
+                , '</li>'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                    , '<li>0.1</li>'
+                , '</ul>'
+                , '<li id="new">'
+                    , '<br />'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        fixed: [""
+            , '<ul>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                        , '<li>0.1</li>'
+                    , '</ul>'
+                    , '<br />'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    },
+    {
+        broken: [""
+            , '<ul>'
+                , '<li>0'
+                , '</li>'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<li id="new">'
+                    , '<br />'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        fixed: [""
+            , '<ul>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<br />'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    },
+    {
+        broken: [""
+            , '<ul>'
+                , '<li>0'
+                , '</li>'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<li id="new">'
+                    , '<br />'
+                , '</li>'
+                , '<li>1</li>'
+            , '</ul>'
+        ].join(''),
+        fixed: [""
+            , '<ul>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<br />'
+                , '</li>'
+                , '<li>1</li>'
+            , '</ul>'
+        ].join('')
+    },
+    {
+        broken: [""
+            , '<ul>'
+                , '<li>0<br /><br />'
+                , '</li>'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<li id="new">'
+                    , '<br />'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        fixed: [""
+            , '<ul>'
+                , '<li>0<br /><br />'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<br />'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    },
+    {
+        broken: [""
+            , '<ul>'
+                , '<li>0'
+                , '</li>'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<li id="new">'
+                    , '<br />'
+                , '</li>'
+                , '<ul>'
+                    , '<li>0.2</li>'
+                , '</ul>'
+            , '</ul>'
+        ].join(''),
+        fixed: [""
+            , '<ul>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<br />'
+                    , '<ul>'
+                        , '<li>0.2</li>'
+                    , '</ul>'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    },
+    {
+        broken: [""
+            , '<ul>'
+                , '<li>0'
+                , '</li>'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<li id="new">'
+                    , '<br />'
+                , '</li>'
+                , '<ul>'
+                    , '<li>0.2</li>'
+                , '</ul>'
+                , '<li>1</li>'
+            , '</ul>'
+        ].join(''),
+        fixed: [""
+            , '<ul>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<br />'
+                    , '<ul>'
+                        , '<li>0.2</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li>1</li>'
+            , '</ul>'
+        ].join('')
+    }
+];
+
+test("Invalid list nesting", function () {
+    var i,
+        assertCountStr,
+        wymeditor = jQuery.wymeditors(0),
+        newLi;
+
+    expect(invalidNestingAfterEnterInEmptyLi.length * 2);
+
+    for (i = 0; i < invalidNestingAfterEnterInEmptyLi.length; i++) {
+        assertCountStr = 'Variation ' + (i + 1) + ' of ' +
+            (invalidNestingAfterEnterInEmptyLi.length) + '; ';
+
+        wymeditor._html(invalidNestingAfterEnterInEmptyLi[i].broken);
+        newLi = jQuery(wymeditor._doc).find('body.wym_iframe').find('#new')[0];
+        wymeditor.setCaretIn(newLi);
+        simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
+
+        wymEqual(
+            wymeditor,
+            invalidNestingAfterEnterInEmptyLi[i].fixed, {
+                skipParser: true,
+                assertionString: assertCountStr + 'HTML'
+            }
+        );
+        strictEqual(
+            wymeditor.nodeAfterSel().tagName.toLowerCase(),
+            'br',
+            assertCountStr + 'caret'
+        );
+    }
+});

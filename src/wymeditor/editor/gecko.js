@@ -197,6 +197,9 @@ WYMeditor.WymClassGecko.prototype.keyup = function (evt) {
             wym._exec(WYMeditor.FORMAT_BLOCK, defaultRootContainer);
         }
 
+        // Call for the check for--and possible correction of--issue #430.
+        wym.handlePotentialEnterInEmptyNestedLi(evt.which, container);
+
         // Fix formatting if necessary
         wym.fixBodyHtml();
     }
