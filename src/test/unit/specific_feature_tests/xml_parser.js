@@ -1680,3 +1680,181 @@ test("BR isn't allowed at the root", function () {
             assertionString: "BR removed from root"
         });
 });
+
+module("?", {setup: setupWym});
+
+var dontRemoveUsefulBrs = [
+    [""
+        , '<ul id="0">'
+            , '<li id="0.0">'
+                , '<strong id="0.0.0">'
+                    , '0.0.0.0'
+                , '</strong>'
+                , '<br id="0.0.1" />'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    [""
+        , '<ul id="0">'
+            , '<li id="0.0">'
+                , '<strong id="0.0.0">'
+                    , '0.0.0.0'
+                , '</strong>'
+                , '<br id="0.0.1" />'
+                , '<br id="0.0.2" />'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    [""
+        , '<ul id="0">'
+            , '<li id="0.0">'
+                , '<strong id="0.0.0">'
+                    , '0.0.0.0'
+                    , '<br id="0.0.0.1" />'
+                , '</strong>'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    [""
+        , '<ul id="0">'
+            , '<li id="0.0">'
+                , '<strong id="0.0.0">'
+                    , '0.0.0.0'
+                    , '<br id="0.0.0.1" />'
+                    , '<br id="0.0.0.2" />'
+                , '</strong>'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    [""
+        , '<ul id="0">'
+            , '<li id="0.0">'
+                , '<strong id="0.0.0">'
+                    , '0.0.0.0'
+                , '</strong>'
+                , '<br />'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    [""
+        , '<ul id="0">'
+            , '<li id="0.0">'
+                , '<strong id="0.0.0">'
+                    , '0.0.0.0'
+                , '</strong>'
+                , '<br />'
+                , '<br />'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    [""
+        , '<ul id="0">'
+            , '<li id="0.0">'
+                , '<strong id="0.0.0">'
+                    , '0.0.0.0'
+                    , '<br />'
+                , '</strong>'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    [""
+        , '<ul id="0">'
+            , '<li id="0.0">'
+                , '<strong id="0.0.0">'
+                    , '0.0.0.0'
+                    , '<br />'
+                    , '<br />'
+                , '</strong>'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    [""
+        , '<p id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+                , '<br id="0.0.1" />'
+            , '</strong>'
+        , '</p>'
+    ].join(''),
+    [""
+        , '<p id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+                , '<br id="0.0.1" />'
+                , '<br id="0.0.2" />'
+            , '</strong>'
+        , '</p>'
+    ].join(''),
+    [""
+        , '<p id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+            , '</strong>'
+            , '<br id="0.1" />'
+        , '</p>'
+    ].join(''),
+    [""
+        , '<p id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+            , '</strong>'
+            , '<br id="0.1" />'
+            , '<br id="0.2" />'
+        , '</p>'
+    ].join(''),
+    [""
+        , '<p id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+                , '<br />'
+            , '</strong>'
+        , '</p>'
+    ].join(''),
+    [""
+        , '<p id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+                , '<br />'
+                , '<br />'
+            , '</strong>'
+        , '</p>'
+    ].join(''),
+    [""
+        , '<p id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+            , '</strong>'
+            , '<br />'
+        , '</p>'
+    ].join(''),
+    [""
+        , '<p id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+            , '</strong>'
+            , '<br />'
+            , '<br />'
+        , '</p>'
+    ].join('')
+];
+
+test("Don't remove useful `br`s", function () {
+    var wymeditor = jQuery.wymeditors(0),
+        i,
+        html;
+
+    expect(dontRemoveUsefulBrs.length);
+
+    for (i = 0; i < dontRemoveUsefulBrs.length; i++) {
+        html = dontRemoveUsefulBrs[i];
+
+        wymeditor._html(html);
+        wymEqual(
+            wymeditor,
+            html, {
+                assertionString: 'Variation ' + (i + 1) + ' of ' +
+                    dontRemoveUsefulBrs.length
+            }
+        );
+    }
+});
