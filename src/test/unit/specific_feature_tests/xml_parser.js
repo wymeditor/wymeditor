@@ -6,6 +6,13 @@ test, expect, deepEqual */
 
 module("XmlParser", {setup: setupWym});
 
+test("Empty is empty", function () {
+    var wymeditor = jQuery.wymeditors(0);
+
+    wymeditor._html('');
+    wymEqual(wymeditor, '');
+});
+
 test("Should correct orphaned sublists", function () {
     expect(2);
     var expected = String() +
