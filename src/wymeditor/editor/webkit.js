@@ -22,11 +22,7 @@ WYMeditor.WymClassWebKit.prototype.initIframe = function (iframe) {
     wym._doc.designMode = "on";
 
     // Init html value
-    if (wym._element[0].value) {
-        wym._html(wym._element[0].value);
-    } else {
-        wym._html(wym._wym._options.html);
-    }
+    wym._html(wym._wym._options.html);
 
     if (jQuery.isFunction(wym._options.preBind)) {
         wym._options.preBind(wym);
