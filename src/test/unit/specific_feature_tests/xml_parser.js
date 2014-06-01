@@ -8,8 +8,14 @@ module("XmlParser", {setup: setupWym});
 
 test("Empty is empty", function () {
     var wymeditor = jQuery.wymeditors(0);
+    expect(2);
 
     wymeditor._html('');
+    wymEqual(wymeditor, '');
+
+    wymeditor._html('');
+    // Placing the caret inside shouldn't create any content.
+    wymeditor.setCaretIn(jQuery(wymeditor._doc).find('body.wym_iframe')[0]);
     wymEqual(wymeditor, '');
 });
 
