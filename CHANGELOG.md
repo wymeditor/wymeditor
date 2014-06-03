@@ -66,6 +66,11 @@ All of these changes are documented in detail in the
   is now properly handled.
 * [#517](https://github.com/wymeditor/wymeditor/pull/517) Fixed a bug regarding
   self-closing tags in our editor Iframes.
+* After an enter press in an empty, nested, `li`, browsers produced various
+  undesired results. This is now fixed. Caveat: there is still some
+  inconsistency amongst browsers, as in some a new `li` is produced and in
+  others a new `br`.
+  [#430](https://github.com/wymeditor/wymeditor/issues/430)
 
 ### Infrastructure Improvements
 
