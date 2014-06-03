@@ -2,7 +2,7 @@
 /* global -$,
 ok, start, stop, test, expect, equal, deepEqual, sinon, strictEqual,
 wymEqual, moveSelector, makeTextSelection, isContentEditable, normalizeHtml,
-inPhantomjs, ListPlugin, asyncTest */
+inPhantomjs, ListPlugin */
 /* exported setupMultipleTextareas, teardownMultipleTextareas */
 "use strict";
 
@@ -1625,21 +1625,6 @@ test("Refuses 'img' elements.", function () {
 
 });
 
-module("test");
-
-test("asynchronous test", function() {
-    stop();
-    setTimeout(
-        function() {
-            ok(true);
-            console.log('foo');
-            start();
-        },
-        500
-    );
-});
-
-
 module("multiple-instances", {
     setup: setupMultipleTextareas,
     teardown: teardownMultipleTextareas
@@ -1665,23 +1650,28 @@ test("We have multiple instances", function () {
 
 test("Load textarea value by default", function () {
     var $textareas = jQuery('#wym-form > textarea.wym'),
-        i,
-        textareaValue;
-        stop();
+        expectAssertAndStart,
+        i;
+
+    // This function is here so as to not create functions within a loop.
+    expectAssertAndStart = function(wym) {
+        expect(expect() + 1);
+        wymEqual(
+            wym,
+            // The index is the same as the textarea's index because it gets
+            // determined in the synchronous stage of the editor's
+            // initialization.
+            '<p>textarea ' + wym._index + '</p>'
+        );
+        start();
+    };
 
     for (i = 0; i < $textareas.length; i++) {
-        textareaValue = '<p>textarea ' + i + '</p>';
-        $textareas.eq(i).val(textareaValue);
+        $textareas.eq(i).val('<p>textarea ' + i + '</p>');
 
-        $textareas.eq(i).wymeditor({postInit: function(wym) {
-            start();
-            expect(expect() + 1);
-            wymEqual(
-                wym,
-                textareaValue
-            );
-            stop();
-        }});
+        // Some of the initialization of the WYMeditor is asynchronous. The
+        // assertions in this test are called from each editor's postInit.
+        stop();
+        $textareas.eq(i).wymeditor({postInit: expectAssertAndStart});
     }
-    start();
 });
