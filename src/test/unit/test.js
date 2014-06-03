@@ -1,8 +1,8 @@
 /* jshint camelcase: false, maxlen: 100 */
-/* global -$,
+/* global -$, console,
 ok, start, stop, test, expect, equal, deepEqual, sinon, strictEqual,
 wymEqual, moveSelector, makeTextSelection, isContentEditable, normalizeHtml,
-inPhantomjs, ListPlugin, asyncTest */
+inPhantomjs, ListPlugin */
 /* exported setupMultipleTextareas, teardownMultipleTextareas */
 "use strict";
 
@@ -1562,12 +1562,13 @@ test("Set and get collapsed selection", function () {
                         "first child is immediately after selection."
                 );
             }
-                expect(expect() + 1);
+            expect(expect() + 1);
 
-                strictEqual(
-                    wymeditor.selectedContainer(),
-                    curNode,
-                    assertStrCount + assertStrPre + "node contains selection.");
+            strictEqual(
+                wymeditor.selectedContainer(),
+                curNode,
+                assertStrCount + assertStrPre + "node contains selection."
+            );
         }
 
         if (
@@ -1616,7 +1617,7 @@ test("Refuses 'img' elements.", function () {
             'span'
         );
     }
-    catch(err) {
+    catch (err) {
         strictEqual(
             err,
             "Will not change the tag of this element."
@@ -1627,10 +1628,10 @@ test("Refuses 'img' elements.", function () {
 
 module("test");
 
-test("asynchronous test", function() {
+test("asynchronous test", function () {
     stop();
     setTimeout(
-        function() {
+        function () {
             ok(true);
             console.log('foo');
             start();
@@ -1666,22 +1667,33 @@ test("We have multiple instances", function () {
 test("Load textarea value by default", function () {
     var $textareas = jQuery('#wym-form > textarea.wym'),
         i,
-        textareaValue;
-        stop();
+        textareaValues = [],
+        numTextAreas = $textareas.length;
 
-    for (i = 0; i < $textareas.length; i++) {
-        textareaValue = '<p>textarea ' + i + '</p>';
-        $textareas.eq(i).val(textareaValue);
-
-        $textareas.eq(i).wymeditor({postInit: function(wym) {
-            start();
-            expect(expect() + 1);
-            wymEqual(
-                wym,
-                textareaValue
-            );
-            stop();
-        }});
+    expect(numTextAreas);
+    for (i = 0; i < numTextAreas; i++) {
+        textareaValues[i] = '<p>textarea ' + i + '</p>';
     }
-    start();
+
+    // Create all but the last editor with no postInit so that we can piggyback
+    // on the last postInit to ensure all editors are initialized.
+    for (i = 0; i < numTextAreas - 1; i++) {
+        $textareas.eq(i).val(textareaValues[i]);
+        $textareas.eq(i).wymeditor();
+    }
+
+    // Use the last postInit for our testing
+    stop();
+    $textareas.eq(numTextAreas - 1).wymeditor({
+        postInit: function () {
+            start();
+            for (i = 0; i < numTextAreas; i++) {
+                textareaValues[i] = '<p>textarea ' + i + '</p>';
+                wymEqual(
+                    jQuery.wymeditors(i),
+                    textareaValues[i]
+                );
+            }
+        }
+    });
 });
