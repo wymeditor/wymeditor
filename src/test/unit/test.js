@@ -2,7 +2,7 @@
 /* global -$,
 ok, start, stop, test, expect, equal, deepEqual, sinon, strictEqual,
 wymEqual, moveSelector, makeTextSelection, isContentEditable, normalizeHtml,
-inPhantomjs, ListPlugin */
+inPhantomjs, ListPlugin, asyncTest */
 /* exported setupMultipleTextareas, teardownMultipleTextareas */
 "use strict";
 
@@ -1625,6 +1625,21 @@ test("Refuses 'img' elements.", function () {
 
 });
 
+module("test");
+
+test("asynchronous test", function() {
+    stop();
+    setTimeout(
+        function() {
+            ok(true);
+            console.log('foo');
+            start();
+        },
+        500
+    );
+});
+
+
 module("multiple-instances", {
     setup: setupMultipleTextareas,
     teardown: teardownMultipleTextareas
@@ -1648,19 +1663,25 @@ test("We have multiple instances", function () {
 
 });
 
-test("Load textarea value be default", function () {
+test("Load textarea value by default", function () {
     var $textareas = jQuery('#wym-form > textarea.wym'),
         i,
         textareaValue;
+        stop();
 
     for (i = 0; i < $textareas.length; i++) {
         textareaValue = '<p>textarea ' + i + '</p>';
         $textareas.eq(i).val(textareaValue);
-        $textareas.eq(i).wymeditor();
-        expect(expect() + 1);
-        wymEqual(
-            jQuery.wymeditors(i),
-            textareaValue
-        );
+
+        $textareas.eq(i).wymeditor({postInit: function(wym) {
+            start();
+            expect(expect() + 1);
+            wymEqual(
+                wym,
+                textareaValue
+            );
+            stop();
+        }});
     }
+    start();
 });
