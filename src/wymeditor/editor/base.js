@@ -203,13 +203,13 @@ WYMeditor.editor.prototype.init = function () {
     // to work-around old ones and predict new ones, let's just ensure the
     // initialization only happens once. All methods of detecting load are
     // unreliable.
-    wym._iframe_initialized = false;
+    wym.iframeInitialized = false;
 
     jQuery(wym._box).find('iframe').load(function () {
-        if (wym._iframe_initialized === true) {
+        if (wym.iframeInitialized === true) {
             return;
         }
-        wym._iframe_initialized = wym.initIframe(this);
+        wym.initIframe(this);
     });
 
     wym.initSkin();

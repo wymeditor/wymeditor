@@ -59,6 +59,8 @@ WYMeditor.WymClassTrident.prototype.initIframe = function (iframe) {
 
     this._wym.bindEvents();
 
+    wym.iframeInitialized = true;
+
     if (jQuery.isFunction(this._options.postInit)) {
         this._options.postInit(this);
     }

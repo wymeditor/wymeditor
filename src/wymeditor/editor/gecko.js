@@ -48,6 +48,8 @@ WYMeditor.WymClassGecko.prototype.initIframe = function (iframe) {
         wym.enableDesignMode.call(wym);
     });
 
+    wym.iframeInitialized = true;
+
     if (jQuery.isFunction(this._options.postInit)) {
         this._options.postInit(this);
     }

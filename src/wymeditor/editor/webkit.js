@@ -33,6 +33,9 @@ WYMeditor.WymClassWebKit.prototype.initIframe = function (iframe) {
 
     jQuery(wym._doc).bind("keydown", wym.keydown);
     jQuery(wym._doc).bind("keyup", wym.keyup);
+
+    wym.iframeInitialized = true;
+
     if (jQuery.isFunction(wym._options.postInit)) {
         wym._options.postInit(wym);
     }
