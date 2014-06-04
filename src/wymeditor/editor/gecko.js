@@ -28,7 +28,11 @@ WYMeditor.WymClassGecko.prototype.initIframe = function (iframe) {
     jQuery('html', this._doc).attr('dir', this._options.direction);
 
     // Init html value
-    this._html(this._wym._options.html);
+    if (this._wym._options.html) {
+        this._html(this._wym._options.html);
+    } else {
+        this._html(this._element[0].value);
+    }
 
     this.enableDesignMode();
 
