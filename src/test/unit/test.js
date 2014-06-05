@@ -1666,9 +1666,10 @@ asyncTest("Load textarea value by default", function () {
         expectAssertAndStart,
         i;
 
+    expect($textareas.length);
+
     // This function is here so as to not create functions within a loop.
     expectAssertAndStart = function(wym) {
-        expect(expect() + 1);
         wymEqual(
             wym,
             // The index is the same as the textarea's index because it gets
@@ -1693,9 +1694,10 @@ asyncTest("Prefer explicit initial html option over textarea value", function ()
         i,
         initHtml = '<p>foo</p>';
 
+    expect($textareas.length);
+
     // This function is here so as to not create functions within a loop.
     expectAssertAndStart = function(wym) {
-        expect(expect() + 1);
         wymEqual(
             wym,
             // The index is the same as the textarea's index because it gets
@@ -1723,9 +1725,10 @@ asyncTest("Load textarea values by default in batch-initializations", function (
         expectAssertAndStart,
         i;
 
+    expect($textareas.length);
+
     // This function is here so as to not create functions within a loop.
     expectAssertAndStart = function(wym) {
-        expect(expect() + 1);
         wymEqual(
             wym,
             // The index is the same as the textarea's index because it gets
