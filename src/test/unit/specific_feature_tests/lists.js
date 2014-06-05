@@ -1,9 +1,130 @@
 /* jshint camelcase: false, maxlen: 105 */
 /* global setupWym, SKIP_KNOWN_FAILING_TESTS,
-wymEqual, makeTextSelection, moveSelector, simulateKey, strictEqual,
+wymEqual, makeTextSelection, moveSelector, simulateKey, strictEqual, deepEqual,
 makeSelection,
 ok, test, expect */
 "use strict";
+
+module("list-_getSelectedListItems", {setup: setupWym});
+
+// Variation matrix:
+//
+//  * Level changes: Base-3 from 000 to 333
+//  * Contents: Empty | Has contents
+//  * Level: Top | Nested | Double nested
+//  * Quantity: Single | Two | Three
+//  * Selection: Whole | Partial | Whole inside child | Partial inside child
+
+var getSelectedListItemsHtml = [""
+    , '<ul id="0">'
+        , '<li id="0-0">'
+            , '0-0-0'
+        , '</li>'
+        , '<li id="0-1">'
+            , '0-1-0'
+        , '</li>'
+        , '<li id="0-2">'
+            , '0-2-0'
+        , '</li>'
+        , '<li id="0-3">'
+            , '<ol id="0-3-0">'
+                , '<li id="0-3-0-0">'
+                    , '0-3-0-0-0'
+                , '</li>'
+                , '<li id="0-3-0-1">'
+                    , '0-3-0-1-0'
+                , '</li>'
+            , '</ol>'
+        , '</li>'
+    , '</ul>'
+    , '<ol id="1">'
+        , '<li id="1-1">'
+            , '1-1-0'
+        , '</li>'
+        , '<li id="1-2">'
+            , '1-2-0'
+            , '<ul id="1-2-1">'
+                , '<li id="1-2-1-1">'
+                    , '1-2-1-1-0'
+                , '</li>'
+            , '</ul>'
+            , '1-2-1'
+        , '</li>'
+    , '</ol>'
+].join('');
+
+var getSelectedListItemsSelections = [
+    // title:    The descriptive title of the selection.
+    // start[0]: `id` of the list item in which the selection will start.
+    // start[1]: Index of node inside `start[0]` with which the selection will
+    //           start.
+    // end:      Opposite of `start`.
+    // expected: Array of `id`s of list items which are expected to be returned
+    //           from `_getSelectedListItems`.
+    {
+        title:    "Single, top level, caret at start",
+        start:    ['0-0', 0],
+        end:      ['0-0', 0],
+        expected: ['0-0']
+    }
+];
+
+test("_getSelectedListItems", function () {
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        i,
+        currentSelection,
+        assertStrTitle,
+        startLiId,
+        startLi,
+        startIndex,
+        endLiId,
+        endLi,
+        endIndex,
+        assertStrSelection,
+        expectedLisIds;
+
+    function getSelectedLisIds() {
+        return jQuery.makeArray(
+            wymeditor._getSelectedListItems().map(function() {
+                return this.getAttribute('id');
+            })
+        );
+    }
+
+    wymeditor._html(getSelectedListItemsHtml);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+    expect(getSelectedListItemsSelections.length);
+
+    for (i = 0; i < getSelectedListItemsSelections.length; i++) {
+        currentSelection = getSelectedListItemsSelections[i];
+        assertStrTitle = currentSelection.title;
+        startLiId = currentSelection.start[0];
+        startLi = $body.find('#' + startLiId)[0];
+        startIndex = currentSelection.start[1];
+        endLiId = currentSelection.end[0];
+        endLi = $body.find('#' + endLiId)[0];
+        endIndex = currentSelection.end[1];
+        assertStrSelection =
+            'from li#' + startLiId + '@' + startIndex +
+            ' to li#' + endLiId + '@' + endIndex;
+        expectedLisIds = currentSelection.expected;
+
+        makeTextSelection(
+            wymeditor,
+            startLi,
+            endLi,
+            startIndex,
+            endIndex
+        );
+        deepEqual(
+            getSelectedLisIds(),
+            expectedLisIds,
+            assertStrTitle + '; ' + assertStrSelection
+        );
+    }
+});
 
 module("list-indent_outdent", {setup: setupWym});
 /**
