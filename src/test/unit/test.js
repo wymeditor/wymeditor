@@ -1700,9 +1700,6 @@ asyncTest("Prefer explicit initial html option over textarea value", function ()
     expectAssertAndStart = function(wym) {
         wymEqual(
             wym,
-            // The index is the same as the textarea's index because it gets
-            // determined in the synchronous stage of the editor's
-            // initialization.
             initHtml
         );
         if (allWymIframesInitialized()) {
