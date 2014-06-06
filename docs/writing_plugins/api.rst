@@ -32,6 +32,15 @@ Get the cleaned up editor's HTML value.
 Update the value of the element replaced by WYMeditor and the value of
 the HTML source textarea.
 
+``iframeInitialized``
+=====================
+
+A boolean. After an editor's ``iframe`` initialization, this is set to
+``true``.
+
+During the execution of :ref:`option-postinit`, for example, this can be
+expected to be ``true``, if the editor initialized succesfully.
+
 *****************************
 Selection Setting and Getting
 *****************************
