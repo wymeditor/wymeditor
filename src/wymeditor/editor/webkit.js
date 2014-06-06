@@ -40,17 +40,7 @@ WYMeditor.WymClassWebKit.prototype.initIframe = function (iframe) {
 
     wym.iframeInitialized = true;
 
-    if (jQuery.isFunction(wym._options.postInit)) {
-        wym._options.postInit(wym);
-    }
-
-    // Add event listeners to doc elements, e.g. images
-    wym.listen();
-
-    jQuery(wym._element).trigger(
-        WYMeditor.EVENTS.postIframeInitialization,
-        wym._wym
-    );
+    wym.postIframeInit(wym);
 };
 
 WYMeditor.WymClassWebKit.prototype._exec = function (cmd, param) {

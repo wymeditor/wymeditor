@@ -65,17 +65,7 @@ WYMeditor.WymClassTrident.prototype.initIframe = function (iframe) {
 
     wym.iframeInitialized = true;
 
-    if (jQuery.isFunction(this._options.postInit)) {
-        this._options.postInit(this);
-    }
-
-    // Add event listeners to doc elements, e.g. images
-    this.listen();
-
-    jQuery(wym._element).trigger(
-        WYMeditor.EVENTS.postIframeInitialization,
-        this._wym
-    );
+    wym.postIframeInit(wym);
 };
 
 (function (editorInitSkin) {

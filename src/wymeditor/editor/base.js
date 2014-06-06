@@ -216,6 +216,26 @@ WYMeditor.editor.prototype.init = function () {
 };
 
 /**
+    WYMeditor.editor.postIframeInit
+
+    Part of the editor's initialization, which must be done after the
+    iframe's initialization.
+*/
+WYMeditor.editor.prototype.postIframeInit = function (wym) {
+    if (jQuery.isFunction(wym._options.postInit)) {
+        wym._options.postInit(wym);
+    }
+
+    // Add event listeners to doc elements, e.g. images
+    wym.listen();
+
+    jQuery(wym._element).trigger(
+        WYMeditor.EVENTS.postIframeInitialization,
+        wym._wym
+    );
+};
+
+/**
     WYMeditor.editor.bindEvents
     ===========================
 
