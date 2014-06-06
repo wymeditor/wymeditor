@@ -1663,13 +1663,13 @@ test("We have multiple instances", function () {
 
 asyncTest("Load textarea value by default", function () {
     var $textareas = jQuery('#wym-form > textarea.wym'),
-        expectAssertAndStart,
+        assertAndStart,
         i;
 
     expect($textareas.length);
 
     // This function is here so as to not create functions within a loop.
-    expectAssertAndStart = function(wym) {
+    assertAndStart = function(wym) {
         wymEqual(
             wym,
             // The index is the same as the textarea's index because it gets
@@ -1684,20 +1684,20 @@ asyncTest("Load textarea value by default", function () {
 
     for (i = 0; i < $textareas.length; i++) {
         $textareas.eq(i).val('<p>textarea ' + i + '</p>');
-        $textareas.eq(i).wymeditor({postInit: expectAssertAndStart});
+        $textareas.eq(i).wymeditor({postInit: assertAndStart});
     }
 });
 
 asyncTest("Prefer explicit initial html option over textarea value", function () {
     var $textareas = jQuery('#wym-form > textarea.wym'),
-        expectAssertAndStart,
+        assertAndStart,
         i,
         initHtml = '<p>foo</p>';
 
     expect($textareas.length);
 
     // This function is here so as to not create functions within a loop.
-    expectAssertAndStart = function(wym) {
+    assertAndStart = function(wym) {
         wymEqual(
             wym,
             initHtml
@@ -1711,7 +1711,7 @@ asyncTest("Prefer explicit initial html option over textarea value", function ()
         $textareas.eq(i).val('<p>textarea ' + i + '</p>');
         $textareas.eq(i).wymeditor({
             html: initHtml,
-            postInit: expectAssertAndStart
+            postInit: assertAndStart
         });
     }
 
@@ -1719,13 +1719,13 @@ asyncTest("Prefer explicit initial html option over textarea value", function ()
 
 asyncTest("Load textarea values by default in batch-initializations", function () {
     var $textareas = jQuery('#wym-form > textarea.wym'),
-        expectAssertAndStart,
+        assertAndStart,
         i;
 
     expect($textareas.length);
 
     // This function is here so as to not create functions within a loop.
-    expectAssertAndStart = function(wym) {
+    assertAndStart = function(wym) {
         wymEqual(
             wym,
             // The index is the same as the textarea's index because it gets
@@ -1742,5 +1742,5 @@ asyncTest("Load textarea values by default in batch-initializations", function (
         $textareas.eq(i).val('<p>textarea ' + i + '</p>');
     }
 
-    $textareas.wymeditor({postInit: expectAssertAndStart});
+    $textareas.wymeditor({postInit: assertAndStart});
 });
