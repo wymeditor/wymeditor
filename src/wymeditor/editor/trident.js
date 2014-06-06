@@ -76,8 +76,6 @@ WYMeditor.WymClassTrident.prototype.initIframe = function (iframe) {
         WYMeditor.EVENTS.postIframeInitialization,
         this._wym
     );
-
-    return true;
 };
 
 (function (editorInitSkin) {
