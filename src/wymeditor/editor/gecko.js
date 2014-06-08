@@ -54,7 +54,7 @@ WYMeditor.WymClassGecko.prototype.initIframe = function (iframe) {
 
     wym.iframeInitialized = true;
 
-    wym.postIframeInit(wym);
+    wym.postIframeInit();
 };
 
 /** @name html

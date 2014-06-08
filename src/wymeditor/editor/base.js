@@ -221,7 +221,9 @@ WYMeditor.editor.prototype.init = function () {
     Part of the editor's initialization, which must be done after the
     iframe's initialization.
 */
-WYMeditor.editor.prototype.postIframeInit = function (wym) {
+WYMeditor.editor.prototype.postIframeInit = function () {
+    var wym = this;
+
     if (jQuery.isFunction(wym._options.postInit)) {
         wym._options.postInit(wym);
     }

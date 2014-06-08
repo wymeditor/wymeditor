@@ -40,7 +40,7 @@ WYMeditor.WymClassWebKit.prototype.initIframe = function (iframe) {
 
     wym.iframeInitialized = true;
 
-    wym.postIframeInit(wym);
+    wym.postIframeInit();
 };
 
 WYMeditor.WymClassWebKit.prototype._exec = function (cmd, param) {
