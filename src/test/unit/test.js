@@ -2,7 +2,7 @@
 /* global -$,
 ok, start, stop, test, expect, equal, deepEqual, sinon, strictEqual,
 wymEqual, moveSelector, makeTextSelection, isContentEditable, normalizeHtml,
-inPhantomjs, ListPlugin */
+inPhantomjs, ListPlugin, makeSelection */
 "use strict";
 
 // We need to be able to operate in a noConflict context. Doing this during our
@@ -1591,4 +1591,41 @@ test("Refuses 'img' elements.", function () {
         );
     }
 
+});
+
+module("makeSelection", {setup: setupWym});
+
+var makeSelectionHtml = [""
+    , '<ul id="0">'
+        , '<li id="0-0">'
+            , '0-0-0'
+        , '</li>'
+        , '<li id="0-1">'
+            , '0-1-0'
+        , '</li>'
+    , '</ul>'
+].join('');
+
+test("Reversed selection from end of a `li` to start of a previous `li`",
+    function () {
+    var wymeditor = jQuery.wymeditors(0),
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+    expect(1);
+
+    wymeditor._html(makeSelectionHtml);
+
+    makeSelection(
+        wymeditor,
+        $body.find('#0-1')[0],
+        $body.find('#0-0')[0],
+        1,
+        0
+    );
+
+    ok(
+        wymeditor.selection().iscollapsed === false,
+        "The selection is supposed to be across some nodes, but it is " +
+        "collapsed."
+    );
 });
