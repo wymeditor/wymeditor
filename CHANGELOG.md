@@ -71,6 +71,11 @@ All of these changes are documented in detail in the
   inconsistency amongst browsers, as in some a new `li` is produced and in
   others a new `br`.
   [#430](https://github.com/wymeditor/wymeditor/issues/430)
+* When batch-initializing editors without an explicit initial HTML, the value
+  of the first editor’s textarea that was non-empty was used as the initial
+  value for all of the following editors. This is now fixed; each editor is
+  initialized with its own textarea’s value.
+  [#437](https://github.com/wymeditor/wymeditor/pull/437)
 
 ### Infrastructure Improvements
 
