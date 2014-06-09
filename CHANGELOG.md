@@ -49,6 +49,9 @@ All of these changes are documented in detail in the
   HTML!
 * [#496](https://github.com/wymeditor/wymeditor/pull/496) For developers,
   skipping the parser in unit tests has been standardized.
+* A new selection getting and setting API.
+  [#513](https://github.com/wymeditor/wymeditor/pull/513),
+  [#523](https://github.com/wymeditor/wymeditor/pull/523)
 
 ### Bug Fixes
 
