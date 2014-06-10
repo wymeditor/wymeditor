@@ -48,10 +48,12 @@ documentation bundled with the source accurate.
 
 Checklist:
 
-* Ensure that the version number in `package.json` is the correct
-  version for the release.
+* Ensure that the version number is correct (no `dev` extension)
+  in these places:
+    * `package.json`
+    * `docs/conf.py`
 * Ensure all changes since the last version are noted in section specifically
-  for this release inside `CHANGELOG.md`. Users upgraded from a specific
+  for this release inside `CHANGELOG.md`. Users upgrading from a specific
   version should be able to easily see what changes might effect them.
 * If this release makes a transition from alpha to beta or beta to stable,
   consolidate point alpha/beta `CHANGELOG.md` entries in to a unified section
