@@ -2767,7 +2767,7 @@ WYMeditor.editor.prototype.insertUnorderedlist = function () {
  */
 WYMeditor.editor.prototype._insertList = function (listType) {
     var wym = this._wym,
-        sel = rangy.getIframeSelection(wym._frame),
+        sel = rangy.getIframeSelection(wym._iframe),
         listItems,
         rootList,
         selectedBlock,
