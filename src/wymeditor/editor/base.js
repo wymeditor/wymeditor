@@ -203,16 +203,38 @@ WYMeditor.editor.prototype.init = function () {
     // to work-around old ones and predict new ones, let's just ensure the
     // initialization only happens once. All methods of detecting load are
     // unreliable.
-    wym._iframe_initialized = false;
+    wym.iframeInitialized = false;
 
     jQuery(wym._box).find('iframe').load(function () {
-        if (wym._iframe_initialized === true) {
+        if (wym.iframeInitialized === true) {
             return;
         }
-        wym._iframe_initialized = wym.initIframe(this);
+        wym.initIframe(this);
     });
 
     wym.initSkin();
+};
+
+/**
+    WYMeditor.editor.postIframeInit
+
+    Part of the editor's initialization, which must be done after the
+    iframe's initialization.
+*/
+WYMeditor.editor.prototype.postIframeInit = function () {
+    var wym = this;
+
+    if (jQuery.isFunction(wym._options.postInit)) {
+        wym._options.postInit(wym);
+    }
+
+    // Add event listeners to doc elements, e.g. images
+    wym.listen();
+
+    jQuery(wym._element).trigger(
+        WYMeditor.EVENTS.postIframeInitialization,
+        wym._wym
+    );
 };
 
 /**

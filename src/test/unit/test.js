@@ -2,7 +2,8 @@
 /* global -$,
 ok, start, stop, test, expect, equal, deepEqual, sinon, strictEqual,
 wymEqual, moveSelector, makeTextSelection, isContentEditable, normalizeHtml,
-inPhantomjs, ListPlugin */
+inPhantomjs, ListPlugin, asyncTest */
+/* exported setupMultipleTextareas, teardownMultipleTextareas */
 "use strict";
 
 // We need to be able to operate in a noConflict context. Doing this during our
@@ -21,7 +22,7 @@ var SKIP_KNOWN_FAILING_TESTS = true;
 function setupWym(modificationCallback) {
     if (WYMeditor.INSTANCES.length === 0) {
         stop(); // Stop test running until the editor is initialized
-        jQuery('.wymeditor').wymeditor({
+        jQuery('.wym').wymeditor({
             postInit: function (wym) {
                 // Determine if attempting to select a cell with a non-text
                 // inner node (a span) actually selects the inner node or
@@ -81,6 +82,37 @@ function setupWym(modificationCallback) {
             start();
         }
     }
+}
+
+function setupMultipleTextareas() {
+    var $form = jQuery('#wym-form'),
+        textareas;
+
+    WYMeditor.INSTANCES = [];
+    $form.find('.wym_box').remove();
+    $form.find('#wym0').removeAttr('style');
+    $form.find('#wym0').val('');
+
+    textareas = [""
+        , '<textarea id="wym1" class="wym"></textarea>'
+        , '<textarea id="wym2" class="wym"></textarea>'
+        , '<textarea id="wym3" class="wym"></textarea>'
+        , '<textarea id="wym4" class="wym"></textarea>'
+        , '<textarea id="wym5" class="wym"></textarea>'
+        , '<textarea id="wym6" class="wym"></textarea>'
+        , '<textarea id="wym7" class="wym"></textarea>'
+        , '<textarea id="wym8" class="wym"></textarea>'
+    ].join('');
+    $form.find('textarea.wym').after(textareas);
+}
+
+function teardownMultipleTextareas() {
+    var $form = jQuery('#wym-form');
+
+    WYMeditor.INSTANCES = [];
+    $form.find('textarea.wym, .wym_box').slice(1).remove();
+    $form.find('#wym0').removeAttr('style');
+    $form.find('#wym0').val('');
 }
 
 module("Core", {setup: setupWym});
@@ -1591,4 +1623,124 @@ test("Refuses 'img' elements.", function () {
         );
     }
 
+});
+
+module("multiple-instances", {
+    setup: setupMultipleTextareas,
+    teardown: teardownMultipleTextareas
+});
+
+// Returns true if all WYMeditor Iframes are initialized.
+function allWymIframesInitialized() {
+    var i;
+
+    for (i = 0; i < WYMeditor.INSTANCES.length; i++) {
+        if (!WYMeditor.INSTANCES[i].iframeInitialized) {
+            return false;
+        } else if (i === WYMeditor.INSTANCES.length - 1) {
+            return true;
+        }
+    }
+}
+
+test("We have multiple instances", function () {
+    var AMOUNT = 9;
+
+    expect(2);
+    jQuery('#wym-form > .wym').wymeditor();
+    strictEqual(
+        WYMeditor.INSTANCES.length,
+        AMOUNT,
+        "Instances"
+    );
+    strictEqual(
+        jQuery('#wym-form > .wym_box').length,
+        AMOUNT,
+        "Boxes"
+    );
+
+});
+
+asyncTest("Load textarea value by default", function () {
+    var $textareas = jQuery('#wym-form > textarea.wym'),
+        assertAndStart,
+        i;
+
+    expect($textareas.length);
+
+    // This function is here so as to not create functions within a loop.
+    assertAndStart = function(wym) {
+        wymEqual(
+            wym,
+            // The index is the same as the textarea's index because it gets
+            // determined in the synchronous stage of the editor's
+            // initialization.
+            '<p>textarea ' + wym._index + '</p>'
+        );
+        if (allWymIframesInitialized()) {
+            start();
+        }
+    };
+
+    for (i = 0; i < $textareas.length; i++) {
+        $textareas.eq(i).val('<p>textarea ' + i + '</p>');
+        $textareas.eq(i).wymeditor({postInit: assertAndStart});
+    }
+});
+
+asyncTest("Prefer explicit initial html option over textarea value", function () {
+    var $textareas = jQuery('#wym-form > textarea.wym'),
+        assertAndStart,
+        i,
+        initHtml = '<p>foo</p>';
+
+    expect($textareas.length);
+
+    // This function is here so as to not create functions within a loop.
+    assertAndStart = function(wym) {
+        wymEqual(
+            wym,
+            initHtml
+        );
+        if (allWymIframesInitialized()) {
+            start();
+        }
+    };
+
+    for (i = 0; i < $textareas.length; i++) {
+        $textareas.eq(i).val('<p>textarea ' + i + '</p>');
+        $textareas.eq(i).wymeditor({
+            html: initHtml,
+            postInit: assertAndStart
+        });
+    }
+
+});
+
+asyncTest("Load textarea values by default in batch-initializations", function () {
+    var $textareas = jQuery('#wym-form > textarea.wym'),
+        assertAndStart,
+        i;
+
+    expect($textareas.length);
+
+    // This function is here so as to not create functions within a loop.
+    assertAndStart = function(wym) {
+        wymEqual(
+            wym,
+            // The index is the same as the textarea's index because it gets
+            // determined in the synchronous stage of the editor's
+            // initialization.
+            '<p>textarea ' + wym._index + '</p>'
+        );
+        if (allWymIframesInitialized()) {
+            start();
+        }
+    };
+
+    for (i = 0; i < $textareas.length; i++) {
+        $textareas.eq(i).val('<p>textarea ' + i + '</p>');
+    }
+
+    $textareas.wymeditor({postInit: assertAndStart});
 });

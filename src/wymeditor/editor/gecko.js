@@ -28,7 +28,11 @@ WYMeditor.WymClassGecko.prototype.initIframe = function (iframe) {
     jQuery('html', this._doc).attr('dir', this._options.direction);
 
     // Init html value
-    this._html(this._wym._options.html);
+    if (this._wym._options.html) {
+        this._html(this._wym._options.html);
+    } else {
+        this._html(this._element[0].value);
+    }
 
     this.enableDesignMode();
 
@@ -48,17 +52,9 @@ WYMeditor.WymClassGecko.prototype.initIframe = function (iframe) {
         wym.enableDesignMode.call(wym);
     });
 
-    if (jQuery.isFunction(this._options.postInit)) {
-        this._options.postInit(this);
-    }
+    wym.iframeInitialized = true;
 
-    // Add event listeners to doc elements, e.g. images
-    this.listen();
-
-    jQuery(wym._element).trigger(
-        WYMeditor.EVENTS.postIframeInitialization,
-        this._wym
-    );
+    wym.postIframeInit();
 };
 
 /** @name html

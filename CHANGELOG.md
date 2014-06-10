@@ -3,9 +3,13 @@
 This document tracks the enhancements and bug fixes between releases of
 WYMeditor.
 
-## 1.0.0b6 (Beta 6)
+## 1.0.0b7 (Beta 7)
 
 *release-date* TBD
+
+## 1.0.0b6 (Beta 6)
+
+*release-date* June 10, 2014
 
 ### Bring your own CSS: Backwards-Incompatible Changes
 
@@ -49,6 +53,9 @@ All of these changes are documented in detail in the
   HTML!
 * [#496](https://github.com/wymeditor/wymeditor/pull/496) For developers,
   skipping the parser in unit tests has been standardized.
+* A new selection getting and setting API.
+  [#513](https://github.com/wymeditor/wymeditor/pull/513),
+  [#523](https://github.com/wymeditor/wymeditor/pull/523)
 
 ### Bug Fixes
 
@@ -71,6 +78,13 @@ All of these changes are documented in detail in the
   inconsistency amongst browsers, as in some a new `li` is produced and in
   others a new `br`.
   [#430](https://github.com/wymeditor/wymeditor/issues/430)
+* When batch-initializing editors without an explicit initial HTML, the value
+  of the first editor’s textarea that was non-empty was used as the initial
+  value for all of the following editors. This is now fixed; each editor is
+  initialized with its own textarea’s value.
+  [#437](https://github.com/wymeditor/wymeditor/pull/437)
+* Fixed a layout bug in the seamless skin.
+  [#445](https://github.com/wymeditor/wymeditor/pull/445)
 
 ### Infrastructure Improvements
 

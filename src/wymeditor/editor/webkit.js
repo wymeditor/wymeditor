@@ -22,7 +22,11 @@ WYMeditor.WymClassWebKit.prototype.initIframe = function (iframe) {
     wym._doc.designMode = "on";
 
     // Init html value
-    wym._html(wym._wym._options.html);
+    if (wym._wym._options.html) {
+        wym._html(wym._wym._options.html);
+    } else {
+        wym._html(wym._element[0].value);
+    }
 
     if (jQuery.isFunction(wym._options.preBind)) {
         wym._options.preBind(wym);
@@ -33,17 +37,10 @@ WYMeditor.WymClassWebKit.prototype.initIframe = function (iframe) {
 
     jQuery(wym._doc).bind("keydown", wym.keydown);
     jQuery(wym._doc).bind("keyup", wym.keyup);
-    if (jQuery.isFunction(wym._options.postInit)) {
-        wym._options.postInit(wym);
-    }
 
-    // Add event listeners to doc elements, e.g. images
-    wym.listen();
+    wym.iframeInitialized = true;
 
-    jQuery(wym._element).trigger(
-        WYMeditor.EVENTS.postIframeInitialization,
-        wym._wym
-    );
+    wym.postIframeInit();
 };
 
 WYMeditor.WymClassWebKit.prototype._exec = function (cmd, param) {
