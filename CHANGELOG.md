@@ -79,6 +79,8 @@ All of these changes are documented in detail in the
   value for all of the following editors. This is now fixed; each editor is
   initialized with its own textarea’s value.
   [#437](https://github.com/wymeditor/wymeditor/pull/437)
+* Fixed a layout bug in the seamless skin.
+  [#445](https://github.com/wymeditor/wymeditor/pull/445)
 
 ### Infrastructure Improvements
 
