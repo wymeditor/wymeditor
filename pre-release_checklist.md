@@ -52,6 +52,7 @@ Checklist:
   in these places:
     * `package.json`
     * `docs/conf.py`
+    * The Custom vars in `_config.yml` for website generation
 * Ensure all changes since the last version are noted in section specifically
   for this release inside `CHANGELOG.md`. Users upgrading from a specific
   version should be able to easily see what changes might effect them.
@@ -65,6 +66,8 @@ Checklist:
   version.
 * Review the `README.md` for any changes that might be necessary as a result of
   changes in this release.
+  All changes made here will likely
+  also need to be made in ``index.html`` for the website.
 
 Build and Distribute the Archive
 ================================
@@ -84,9 +87,10 @@ of use.
   from the CHANGELOG for the current version to the release description and
   upload the built `tar.gz` archive named according to the
   `wymeditor-<version>.tar.gz` format.
-* Update the [website](http://wymeditor.readthedocs.org/en/latest/wymeditor_development/index.html#wymeditor-website)
-  by building the site with jekyll
-  and then pushing to the `gh-pages` branch.
+* Update the [website](http://wymeditor.readthedocs.org/en/latest/wymeditor_development/index.html#wymeditor-website).
+  First, review `index.html` for necessary changes,
+  then build the site with jekyll,
+  and then pushito the `gh-pages` branch.
 
 Tell the World
 ==============

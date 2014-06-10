@@ -22,6 +22,9 @@ customize to provide the specific capabilities your users need, and you want
 users focused on the structure of their content instead of tweaking fonts and
 margins, you should give WYMeditor a try.
 
+We also fully support Internet Explorer 7,
+for those poor souls who have no choice.
+
 ## Try It
 
 Want to see what WYMeditor can do? Try the [WYMeditor
@@ -81,7 +84,7 @@ WYMeditor is compatible with:
 
 ### Browsers
 
-* IE: 7, 8, 9 and 10
+* IE: 7, 8, 9, 10 and 11
 * Firefox: LTS and latests two major versions
 * Opera: Latest version
 * Safari: Latest version

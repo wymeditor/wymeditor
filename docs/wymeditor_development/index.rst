@@ -84,6 +84,22 @@ The focus of these should be:
 * README = Funnels to Website but contains project-wide info
 * docs = detailed user and development documentation
 
+Website Files
+=============
+
+Currently,
+we have a single-page website
+controlled by an ``index.html`` file,
+which uses a layout defined in ``_layouts/home.html``.
+This file uses several custom variables
+defined inside ``_config.yml``.
+
+Website Theme
+-------------
+
+Our theme is a ported version of a github pages layout.
+Its media and styles are located in ``website-media/``.
+
 Configuring Jekyll
 ==================
 
