@@ -62,10 +62,16 @@ WYMeditor Website
 
 The website at http://wymeditor.github.io/wymeditor/
 is served via Github pages
-and uses Jekyll.
+and uses `Jekyll <http://jekyllrb.com/>`_.
 Instead of dealing with different content
 between a ``gh-pages`` and master branch,
 ``master`` also contains the jekyll content.
+This also allows us to server the demos/examples
+via github pages,
+while also adding custom content.
+
+Website vs README vs Docs
+=========================
 
 Currently,
 there's a lot of overlap between the docs,
