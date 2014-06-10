@@ -1,19 +1,11 @@
 /* jshint camelcase: false, maxlen: 105 */
 /* global setupWym, SKIP_KNOWN_FAILING_TESTS,
-wymEqual, makeTextSelection, moveSelector, simulateKey, strictEqual, deepEqual,
+wymEqual, makeTextSelection, moveSelector, simulateKey, strictEqual, rangy,
 makeSelection,
 ok, test, expect */
 "use strict";
 
 module("list-_getSelectedListItems", {setup: setupWym});
-
-// Variation matrix:
-//
-//  * Level changes: Base-3 from 000 to 333
-//  * Contents: Empty | Has contents
-//  * Level: Top | Nested | Double nested
-//  * Quantity: Single | Two | Three
-//  * Selection: Whole | Partial | Whole inside child | Partial inside child
 
 var getSelectedListItemsHtml = [""
     , '<ul id="0">'
@@ -22,6 +14,8 @@ var getSelectedListItemsHtml = [""
         , '</li>'
         , '<li id="0-1">'
             , '0-1-0'
+            , '<br id="0-1-1" />'
+            , '0-1-2'
         , '</li>'
         , '<li id="0-2">'
             , '0-2-0'
@@ -33,6 +27,15 @@ var getSelectedListItemsHtml = [""
                 , '</li>'
                 , '<li id="0-3-0-1">'
                     , '0-3-0-1-0'
+                    , '<ol id="0-3-0-1-1">'
+                        , '<li id="0-3-0-1-1-0">'
+                            , '<span id="0-3-0-1-1-0-0">'
+                                , '0-3-0-1-1-0-0-0'
+                                , '<br id="0-3-0-1-1-0-0-1">'
+                                , '0-3-0-1-1-0-0-2'
+                            , '</span>'
+                        , '</li>'
+                    , '</ol>'
                 , '</li>'
             , '</ol>'
         , '</li>'
@@ -50,43 +53,75 @@ var getSelectedListItemsHtml = [""
             , '</ul>'
             , '1-2-1'
         , '</li>'
+        , '<li id="1-3">'
+            , '1-3-0'
+        , '</li>'
+        , '<li id="1-4">'
+            , '1-4-0'
+        , '</li>'
+    , '</ol>'
+    , '<ol id="2">'
+        , '<li id="2-0">'
+            , '2-0-0'
+        , '</li>'
+        , '<li id="2-1">'
+            , '2-1-0'
+        , '</li>'
+        , '<li id="2-2">'
+        , '</li>'
+        , '<li id="2-3">'
+            , '2-3-0'
+            , '<ol id="2-3-1">'
+                , '<li id="2-3-1-0">'
+                    , '2-3-1-0-0'
+                , '</li>'
+                , '<li id="2-3-1-1">'
+                , '</li>'
+            , '</ol>'
+            , '2-3-2'
+        , '</li>'
     , '</ol>'
 ].join('');
 
-var getSelectedListItemsSelections = [
-    // title:    The descriptive title of the selection.
-    // start[0]: `id` of the list item in which the selection will start.
-    // start[1]: Index of node inside `start[0]` with which the selection will
-    //           start.
-    // end:      Opposite of `start`.
-    // expected: Array of `id`s of list items which are expected to be returned
-    //           from `_getSelectedListItems`.
-    {
-        title:    "Single, top level, caret at start",
-        start:    ['0-0', 0],
-        end:      ['0-0', 0],
-        expected: ['0-0']
-    }
-];
+/**
+    testGetSelectedListItems
 
-test("_getSelectedListItems", function () {
+    This is a helper function for testing the
+    WYMeditor.editor._getSelectedListItems method.
+
+    It works by being provided a description of a selection to perform and a
+    list ids of of list items which are expected to be returned by the tested
+    method.
+
+    @param startElementId The `id` of the element in which the selection will
+                              start.
+    @param startIndex Index of node inside the above list item, with which
+                      the selection will start.
+    @param endElementId Opposite of startLiId.
+    @param endIndex Opposite of startLiIndex.
+    @param expectedLisIds  Array of `id`s of list items which are expected to
+                           be returned from `_getSelectedListItems`.
+    @param expectedLisIdsVariation An acceptable variation.
+*/
+function testGetSelectedListItems(
+    startElementId,
+    startIndex,
+    endElementId,
+    endIndex,
+    expectedLisIds,
+    expectedLisIdsVariation
+) {
     var wymeditor = jQuery.wymeditors(0),
         $body,
-        i,
-        currentSelection,
-        assertStrTitle,
-        startLiId,
-        startLi,
-        startIndex,
-        endLiId,
-        endLi,
-        endIndex,
-        assertStrSelection,
-        expectedLisIds;
+        startElement,
+        endElement,
+        assertStrSelection;
 
     function getSelectedLisIds() {
+        var sel = rangy.getIframeSelection(wymeditor._iframe);
+
         return jQuery.makeArray(
-            wymeditor._getSelectedListItems().map(function() {
+            jQuery(wymeditor._getSelectedListItems(sel)).map(function() {
                 return this.getAttribute('id');
             })
         );
@@ -95,35 +130,323 @@ test("_getSelectedListItems", function () {
     wymeditor._html(getSelectedListItemsHtml);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
-    expect(getSelectedListItemsSelections.length);
+    expect(1);
 
-    for (i = 0; i < getSelectedListItemsSelections.length; i++) {
-        currentSelection = getSelectedListItemsSelections[i];
-        assertStrTitle = currentSelection.title;
-        startLiId = currentSelection.start[0];
-        startLi = $body.find('#' + startLiId)[0];
-        startIndex = currentSelection.start[1];
-        endLiId = currentSelection.end[0];
-        endLi = $body.find('#' + endLiId)[0];
-        endIndex = currentSelection.end[1];
-        assertStrSelection =
-            'from li#' + startLiId + '@' + startIndex +
-            ' to li#' + endLiId + '@' + endIndex;
-        expectedLisIds = currentSelection.expected;
+    startElement = $body.find('#' + startElementId)[0];
+    endElement = $body.find('#' + endElementId)[0];
+    assertStrSelection =
+        'from li#' + startElementId + '@' + startIndex +
+        ' to li#' + endElementId + '@' + endIndex +
+        ': ' + expectedLisIds + ' | ' + expectedLisIdsVariation;
 
-        makeTextSelection(
-            wymeditor,
-            startLi,
-            endLi,
-            startIndex,
-            endIndex
-        );
-        deepEqual(
-            getSelectedLisIds(),
-            expectedLisIds,
-            assertStrTitle + '; ' + assertStrSelection
-        );
-    }
+    makeSelection(
+        wymeditor,
+        startElement,
+        endElement,
+        startIndex,
+        endIndex
+    );
+    ok(
+        getSelectedLisIds().toString() === expectedLisIds.toString() ||
+        getSelectedLisIds().toString() === expectedLisIdsVariation.toString(),
+        assertStrSelection
+    );
+}
+
+test("Single, top level, caret at start", function() {
+    testGetSelectedListItems(
+        '0-0', 0,
+        '0-0', 0,
+        ['0-0']
+    );
+});
+
+test("Single, top level, caret at end", function() {
+    testGetSelectedListItems(
+        '0-0', 1,
+        '0-0', 1,
+        ['0-0']
+    );
+});
+
+test("Single, top level, whole selection", function() {
+     testGetSelectedListItems(
+        '0-0', 0,
+        '0-0', 1,
+        ['0-0']
+    );
+});
+
+test("Single, top level, partial selection at start", function() {
+    testGetSelectedListItems(
+        '0-1', 0,
+        '0-1', 1,
+        ['0-1']
+    );
+});
+
+test("Single, top level, partial selection at end", function() {
+    testGetSelectedListItems(
+        '0-1', 2,
+        '0-1', 3,
+        ['0-1']
+    );
+});
+
+test("Single, second level, caret at start", function() {
+    testGetSelectedListItems(
+        '0-3-0-0', 0,
+        '0-3-0-0', 0,
+        ['0-3-0-0']
+    );
+});
+
+test("Single, third level, caret at start", function() {
+    testGetSelectedListItems(
+        '0-3-0-0', 0,
+        '0-3-0-0', 0,
+        ['0-3-0-0']
+    );
+});
+
+test("Single, third level, caret at start, inside child", function() {
+    testGetSelectedListItems(
+        '0-3-0-1-1-0-0', 0,
+        '0-3-0-1-1-0-0', 0,
+        ['0-3-0-1-1-0']
+    );
+});
+
+test("Single, third level, partial selection at start, inside child",
+    function() {
+    testGetSelectedListItems(
+        '0-3-0-1-1-0-0', 0,
+        '0-3-0-1-1-0-0', 1,
+        ['0-3-0-1-1-0']
+    );
+});
+
+test("Single, third level, partial selection at end, inside child",
+    function() {
+    testGetSelectedListItems(
+        '0-3-0-1-1-0-0', 2,
+        '0-3-0-1-1-0-0', 3,
+        ['0-3-0-1-1-0']
+    );
+});
+
+test("Single, third level, caret at end, inside child", function() {
+    testGetSelectedListItems(
+        '0-3-0-1-1-0-0', 3,
+        '0-3-0-1-1-0-0', 3,
+        ['0-3-0-1-1-0']
+    );
+});
+
+test("Across two, top level, selection from start to end", function() {
+    testGetSelectedListItems(
+        '0-0', 0,
+        '0-1', 3,
+        ['0-0', '0-1']
+    );
+});
+
+test("Across two, top level, selection from end to end", function() {
+    testGetSelectedListItems(
+        '0-0', 1,
+        '0-1', 3,
+        ['0-0', '0-1'],
+        ['0-1']
+    );
+});
+
+test("Across three, top level, selection from start to end", function() {
+    testGetSelectedListItems(
+        '0-0', 0,
+        '0-2', 1,
+        ['0-0', '0-1', '0-2']
+    );
+});
+
+test("Across three, top level, selection from end to end", function() {
+    testGetSelectedListItems(
+        '0-0', 1,
+        '0-2', 1,
+        ['0-0', '0-1', '0-2'],
+        ['0-1', '0-2']
+    );
+});
+
+test("In range selections, don't select items in which, directly, there is " +
+    "no text selection", function() {
+    testGetSelectedListItems(
+        '0-2', 0,
+        '0-3-0-0', 1,
+        ['0-2', '0-3-0-0']
+    );
+});
+
+test("Across five, across levels, selection from start to start", function() {
+    testGetSelectedListItems(
+        '0-2', 0,
+        '0-3-0-1-1-0', 0,
+        ['0-2', '0-3-0-0', '0-3-0-1']
+    );
+});
+
+test("Across five, across levels, selection from start to end", function() {
+    testGetSelectedListItems(
+        '0-2', 0,
+        '0-3-0-1-1-0', 1,
+        ['0-2', '0-3-0-0', '0-3-0-1', '0-3-0-1-1-0']
+    );
+});
+
+test("Across five, across levels, selection from end to start", function() {
+    testGetSelectedListItems(
+        '0-2', 1,
+        '0-3-0-1-1-0', 0,
+        ['0-2', '0-3-0-0', '0-3-0-1'],
+        ['0-3-0-0', '0-3-0-1']
+    );
+});
+
+test("Across five, across levels, selection from start to start, inside child",
+    function() {
+    testGetSelectedListItems(
+        '0-2', 0,
+        '0-3-0-1-1-0-0', 0,
+        ['0-2', '0-3-0-0', '0-3-0-1']
+    );
+});
+
+test("Across five, across levels, selection from start to somewhere, inside " +
+    "child", function() {
+    testGetSelectedListItems(
+        '0-2', 0,
+        '0-3-0-1-1-0-0', 1,
+        ['0-2', '0-3-0-0', '0-3-0-1', '0-3-0-1-1-0']
+    );
+});
+
+test("Across five, across levels, selection from start to end, inside child",
+    function() {
+    testGetSelectedListItems(
+        '0-2', 0,
+        '0-3-0-1-1-0-0', 3,
+        ['0-2', '0-3-0-0', '0-3-0-1', '0-3-0-1-1-0']
+    );
+});
+
+test("Across two, across levels, nested list is first child, selection from " +
+    "start to end", function() {
+    testGetSelectedListItems(
+        '0-3', 0,
+        '0-3-0-0', 1,
+        ['0-3-0-0']
+    );
+});
+
+test("Across two, across levels, selection from start to end", function() {
+    testGetSelectedListItems(
+        '1-2', 0,
+        '1-2-1-1', 1,
+        ['1-2', '1-2-1-1']
+    );
+});
+
+test("Across two, across levels, selection from before nested to start",
+    function() {
+    testGetSelectedListItems(
+        '1-2', 1,
+        '1-2-1-1', 0,
+        ['1-2', '1-2-1-1'],
+        ['1-2']
+    );
+});
+
+test("Across two, across levels, selection from before nested to end",
+    function() {
+    testGetSelectedListItems(
+        '1-2', 1,
+        '1-2-1-1', 1,
+        ['1-2', '1-2-1-1'],
+        ['1-2-1-1']
+    );
+});
+
+test("Across two, across levels, selection from start to start", function() {
+    testGetSelectedListItems(
+        '1-2', 0,
+        '1-2-1-1', 0,
+        ['1-2', '1-2-1-1'],
+        ['1-2']
+    );
+});
+
+test("Across two, across levels, selection from start to end", function() {
+    testGetSelectedListItems(
+        '1-2', 0,
+        '1-2-1-1', 1,
+        ['1-2', '1-2-1-1']
+    );
+});
+
+test("Empty list item is included when selected across", function() {
+    testGetSelectedListItems(
+        '2-1', 0,
+        '2-3', 1,
+        ['2-1', '2-2', '2-3']
+    );
+});
+
+test("Empty list item is included when selection starts at it", function() {
+    testGetSelectedListItems(
+        '2-2', 0,
+        '2-3', 1,
+        ['2-2', '2-3']
+    );
+});
+
+test("Empty list item is included when selection ends at it", function() {
+    testGetSelectedListItems(
+        '2-1', 0,
+        '2-2', 0,
+        ['2-1', '2-2']
+    );
+});
+
+test("Empty list item is selected when caret is inside of it", function() {
+    testGetSelectedListItems(
+        '2-2', 0,
+        '2-2', 0,
+        ['2-2']
+    );
+});
+
+test("Across separate lists", function() {
+    testGetSelectedListItems(
+        '1-3', 0,
+        '2-1', 1,
+        ['1-3', '1-4', '2-0', '2-1']
+    );
+});
+
+test("Across nesting descent", function() {
+    testGetSelectedListItems(
+        '1-2-1-1', 0,
+        '1-2', 3,
+        ['1-2', '1-2-1-1']
+    );
+});
+
+test("A whole journey", function() {
+    testGetSelectedListItems(
+        '0-0', 0,
+        '1-4', 1,
+        ['0-0', '0-1', '0-2', '0-3-0-0', '0-3-0-1', '0-3-0-1-1-0',
+         '1-1', '1-2', '1-2-1-1', '1-3', '1-4']
+    );
 });
 
 module("list-indent_outdent", {setup: setupWym});
