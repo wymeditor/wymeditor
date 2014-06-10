@@ -99,17 +99,19 @@ var getSelectedListItemsHtml = [""
                       the selection will start.
     @param endElementId Opposite of startLiId.
     @param endIndex Opposite of startLiIndex.
-    @param expectedLisIds  Array of `id`s of list items which are expected to
+    @param expectedLisIds0 Array of `id`s of list items which are expected to
                            be returned from `_getSelectedListItems`.
-    @param expectedLisIdsVariation An acceptable variation.
+    @param expectedLisIds1 An acceptable variation.
+    @param expectedLisIds2 Another acceptable variation.
 */
 function testGetSelectedListItems(
     startElementId,
     startIndex,
     endElementId,
     endIndex,
-    expectedLisIds,
-    expectedLisIdsVariation
+    expectedLisIds0,
+    expectedLisIds1,
+    expectedLisIds2
 ) {
     var wymeditor = jQuery.wymeditors(0),
         $body,
@@ -136,8 +138,7 @@ function testGetSelectedListItems(
     endElement = $body.find('#' + endElementId)[0];
     assertStrSelection =
         'from li#' + startElementId + '@' + startIndex +
-        ' to li#' + endElementId + '@' + endIndex +
-        ': ' + expectedLisIds + ' | ' + expectedLisIdsVariation;
+        ' to li#' + endElementId + '@' + endIndex;
 
     makeSelection(
         wymeditor,
@@ -147,8 +148,9 @@ function testGetSelectedListItems(
         endIndex
     );
     ok(
-        getSelectedLisIds().toString() === expectedLisIds.toString() ||
-        getSelectedLisIds().toString() === expectedLisIdsVariation.toString(),
+        getSelectedLisIds().toString() === expectedLisIds0.toString() ||
+        getSelectedLisIds().toString() === expectedLisIds1.toString() ||
+        getSelectedLisIds().toString() === expectedLisIds2.toString(),
         assertStrSelection
     );
 }
@@ -316,7 +318,8 @@ test("Across five, across levels, selection from start to start, inside child",
     testGetSelectedListItems(
         '0-2', 0,
         '0-3-0-1-1-0-0', 0,
-        ['0-2', '0-3-0-0', '0-3-0-1']
+        ['0-2', '0-3-0-0', '0-3-0-1'],
+        ['0-2', '0-3-0-0', '0-3-0-1', '0-3-0-1-1-0']
     );
 });
 
@@ -361,7 +364,8 @@ test("Across two, across levels, selection from before nested to start",
         '1-2', 1,
         '1-2-1-1', 0,
         ['1-2', '1-2-1-1'],
-        ['1-2']
+        ['1-2'],
+        []
     );
 });
 
@@ -408,11 +412,12 @@ test("Empty list item is included when selection starts at it", function() {
     );
 });
 
-test("Empty list item is included when selection ends at it", function() {
+test("Empty list item may be included when selection ends at it", function() {
     testGetSelectedListItems(
         '2-1', 0,
         '2-2', 0,
-        ['2-1', '2-2']
+        ['2-1', '2-2'],
+        ['2-1']
     );
 });
 
