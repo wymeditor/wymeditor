@@ -84,7 +84,8 @@ of use.
   from the CHANGELOG for the current version to the release description and
   upload the built `tar.gz` archive named according to the
   `wymeditor-<version>.tar.gz` format.
-* Update the website by building the site with jekyll
+* Update the [website](http://wymeditor.readthedocs.org/en/latest/wymeditor_development/index.html#wymeditor-website)
+  by building the site with jekyll
   and then pushing to the `gh-pages` branch.
 
 Tell the World
@@ -93,11 +94,6 @@ Tell the World
 If a new release is cut in the forest when nobody is there, does it make a
 sound? A new release isn't much good if nobody knows about it.
 
-* Make a new sticky thread on the [WYMeditor Forums](http://community.wymeditor.org)
-  announcing the new release with the title `Version <version> released`.
-  Highlight any major changes, link to the CHANGELOG and download and maybe
-  comment on plans for the next release.
-* Un-sticky any old forum threads.
 * Tweet out the good news to [@wymeditor](http://twitter.com/wymeditor).
 * Call your mother.
 
