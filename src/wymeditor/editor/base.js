@@ -2432,13 +2432,12 @@ WYMeditor.editor.prototype.getCommonParentList = function (listItems, getClosest
     editor._getSelectedListItems
     ============================
 
-    Determine which li nodes are "selected" from the user's standpoint.
+    Determine which `li` nodes are "selected" from the user's standpoint.
 
-    These are the li nodes that they would expect to be affected by an action
+    These are the `li` nodes that they would expect to be affected by an action
     with the given selection.
 
-    Generally, this means any li which has at least some of its text content
-    highlighted will be returned.
+    For a better understanding, comments are provided inside.
 
     @param selection A Rangy Selection object.
 */
