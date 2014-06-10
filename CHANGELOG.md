@@ -5,7 +5,7 @@ WYMeditor.
 
 ## 1.0.0b6 (Beta 6)
 
-*release-date* TBD
+*release-date* June 10, 2014
 
 ### Bring your own CSS: Backwards-Incompatible Changes
 
