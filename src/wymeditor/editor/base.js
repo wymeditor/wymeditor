@@ -2468,7 +2468,7 @@ WYMeditor.editor.prototype._getSelectedListItems = function (selection) {
 
     .closest('li')
 
-    // Add `li`s that are selected and are empty because they didn't
+    // Add `li`s that are selected and are empty. Because they didn't
     // get found by `.closest`. We can safely add them because they don't
     // contain other list items so surely if they are in the selection it is
     // because the user wants to manipulate them.
