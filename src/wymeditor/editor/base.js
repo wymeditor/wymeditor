@@ -2445,7 +2445,7 @@ WYMeditor.editor.prototype.getCommonParentList = function (listItems, getClosest
 WYMeditor.editor.prototype._getSelectedListItems = function (selection) {
     var wym = this,
         $selectedNodes,
-        $selectedLis;
+        selectedLis;
 
     if (selection.isCollapsed) {
         return jQuery(wym.selectedContainer()).closest('li');
@@ -2458,7 +2458,7 @@ WYMeditor.editor.prototype._getSelectedListItems = function (selection) {
     // get their closest parent list items. So we don't want the list elements.
     // Some list items may be empty and we do want those so we'll add them back
     // later.
-    $selectedLis = $selectedNodes.not('li, ol, ul')
+    selectedLis = $selectedNodes.not('li, ol, ul')
 
     // Add back the text nodes because jQuery.not always excludes them.
     .add($selectedNodes.filter(
@@ -2472,9 +2472,12 @@ WYMeditor.editor.prototype._getSelectedListItems = function (selection) {
     // get found by `.closest`. We can safely add them because they don't
     // contain other list items so surely if they are in the selection it is
     // because the user wants to manipulate them.
-    .add($selectedNodes.filter('li:empty'));
+    .add($selectedNodes.filter('li:empty'))
 
-    return jQuery.unique($selectedLis);
+    // The next method, `jQuery.unique`, requires a plain DOM array.
+    .get();
+
+    return jQuery.unique(selectedLis);
 };
 
 /**
