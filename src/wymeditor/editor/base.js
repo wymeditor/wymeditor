@@ -2443,11 +2443,12 @@ WYMeditor.editor.prototype.getCommonParentList = function (listItems, getClosest
     @param selection A Rangy Selection object.
 */
 WYMeditor.editor.prototype._getSelectedListItems = function (selection) {
+    var wym = this,
         $selectedNodes,
         $selectedLis;
 
-        return jQuery(this.selectedContainer()).closest('li');
     if (selection.isCollapsed) {
+        return jQuery(wym.selectedContainer()).closest('li');
     }
 
     // All the selected nodes in the selection's first range.
@@ -2461,7 +2462,7 @@ WYMeditor.editor.prototype._getSelectedListItems = function (selection) {
 
     // Add back the text nodes because jQuery.not always excludes them.
     .add($selectedNodes.filter(
-            function () {return this.nodeType === WYMeditor.NODE.TEXT;}
+            function () {return wym.nodeType === WYMeditor.NODE.TEXT;}
         )
     )
 
