@@ -2439,14 +2439,15 @@ WYMeditor.editor.prototype.getCommonParentList = function (listItems, getClosest
 
     Generally, this means any li which has at least some of its text content
     highlighted will be returned.
+
+    @param selection A Rangy Selection object.
 */
-WYMeditor.editor.prototype._getSelectedListItems = function () {
-    var selection = this.selection(),
+WYMeditor.editor.prototype._getSelectedListItems = function (selection) {
         $selectedNodes,
         $selectedLis;
 
-    if (this.selection().isCollapsed) {
         return jQuery(this.selectedContainer()).closest('li');
+    if (selection.isCollapsed) {
     }
 
     // All the selected nodes in the selection's first range.
@@ -2555,7 +2556,7 @@ WYMeditor.editor.prototype.indent = function () {
 
     // Gather the li nodes the user means to affect based on their current
     // selection
-    listItems = wym._getSelectedListItems();
+    listItems = wym._getSelectedListItems(sel);
     if (listItems.length === 0) {
         return false;
     }
@@ -2615,7 +2616,7 @@ WYMeditor.editor.prototype.outdent = function () {
 
     // Gather the li nodes the user means to affect based on their current
     // selection
-    listItems = wym._getSelectedListItems();
+    listItems = wym._getSelectedListItems(sel);
 
     if (listItems.length === 0) {
         return false;
@@ -2763,12 +2764,13 @@ WYMeditor.editor.prototype.insertUnorderedlist = function () {
  */
 WYMeditor.editor.prototype._insertList = function (listType) {
     var wym = this._wym,
+        sel = rangy.getIframeSelection(wym._frame),
         listItems,
         rootList,
         selectedBlock,
         potentialListBlock;
 
-    listItems = wym._getSelectedListItems();
+    listItems = wym._getSelectedListItems(sel);
 
     // If we've selected some list items all in the same list, we want to
     // change the type of that list.
