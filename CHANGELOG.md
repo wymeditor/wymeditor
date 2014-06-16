@@ -7,6 +7,16 @@ WYMeditor.
 
 *release-date* TBD
 
+### Backwards-Incompatible Changes
+
+* Since Beta 6, `WYMeditor.editor.selected` and `WYMeditor.editor.container`
+  were replaced with `WYMeditor.editor.selectedContainer` and
+  `WYMeditor.editor.mainContainer`, respectively. This was done without
+  properly deprecating them. The old functions were removed. In this beta
+  release, the old functions are re-introduced as wrappers of the new functions
+  and they produce deprecation warnings.
+  [##538](https://github.com/wymeditor/wymeditor/issues/538)
+
 ## 1.0.0b6 (Beta 6)
 
 *release-date* June 10, 2014
