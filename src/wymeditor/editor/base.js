@@ -2455,119 +2455,51 @@ WYMeditor.editor.prototype.getCommonParentList = function (listItems, getClosest
     editor._getSelectedListItems
     ============================
 
-    Based on the given selection, determine which li nodes are "selected" from
-    the user's standpoint. These are the li nodes that they would expect to be
-    affected by an action with the given selection.
+    Determine which `li` nodes are "selected" from the user's standpoint.
 
-    Generally, this means any li which has at least some of its text content
-    highlighted will be returned.
+    These are the `li` nodes that they would expect to be affected by an action
+    with the given selection.
+
+    For a better understanding, comments are provided inside.
+
+    @param selection A Rangy Selection object.
 */
-WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
+WYMeditor.editor.prototype._getSelectedListItems = function (selection) {
     var wym = this,
-        i,
-        j,
-        range,
-        selectedLi,
-        nodes = [],
-        liNodes = [],
-        containsNodeTextFilter,
-        parentsToAdd,
-        node;
+        $selectedNodes,
+        selectedLis;
 
-    // Filter function to remove undesired nodes from what rangy.getNodes()
-    // gives
-    containsNodeTextFilter = function (testNode) {
-        var fullyContainsNodeText;
-
-        // Include any partially-selected textNodes
-        if (rangy.dom.isCharacterDataNode(testNode)) {
-            return testNode;
-        }
-
-        try {
-            fullyContainsNodeText = range.containsNodeText(testNode);
-        } catch (e) {
-            // Rangy throws an exception on an internal
-            // intersection call on the last node that's
-            // actually in the selection
-            return true;
-        }
-
-        if (fullyContainsNodeText === true) {
-            // If we fully contain any text in this node, it's definitely
-            // selected
-            return true;
-        }
-    };
-
-    // Iterate through all of the selection ranges and include any li nodes
-    // that are user-selected in each range
-    for (i = 0; i < sel.rangeCount; i++) {
-        range = sel.getRangeAt(i);
-        if (range.collapsed === true) {
-            // Collapsed ranges don't return the range they're in as part of
-            // getNodes, so let's find the next list item up
-            selectedLi = wym.findUp(range.startContainer, 'li');
-            if (selectedLi) {
-                nodes = nodes.concat([selectedLi]);
-            }
-        } else {
-            // getNodes includes the parent list item whenever we have our
-            // selection in a sublist. We need to make a distinction between
-            // when the parent list item is actually selected and when it's
-            // only sort of selected because we're selecting a sub-item
-            // (meaning it's partially selected).
-            // In the following case, we don't want `2` as one of our nodes:
-            // 1
-            // 2
-            //   2.1
-            //   2|.2
-            // 3|
-            nodes = nodes.concat(
-                range.getNodes(
-                    [],
-                    containsNodeTextFilter
-                )
-            );
-
-            // We also need to include the parent li if we selected a non-li, non-list node.
-            // eg. if we select text inside an li, the user is actually
-            // selecting that entire li
-            parentsToAdd = [];
-            for (j = 0; j < nodes.length; j++) {
-                node = nodes[j];
-                if (!jQuery(node).is('li,ol,ul')) {
-                    // Crawl up the dom until we find an li
-                    while (node.parentNode) {
-                        node = node.parentNode;
-                        if (jQuery(node).is('li')) {
-                            parentsToAdd.push(node);
-                            break;
-                        }
-                    }
-                }
-            }
-            // Add in all of the new parents if they're not already included
-            // (no duplicates)
-            for (j = 0; j < parentsToAdd.length; j++) {
-                if (jQuery.inArray(parentsToAdd[j], nodes) === -1) {
-                    nodes.push(parentsToAdd[j]);
-                }
-            }
-
-
-        }
+    if (selection.isCollapsed) {
+        return jQuery(wym.selectedContainer()).closest('li');
     }
 
-    // Filter out the non-li nodes
-    for (i = 0; i < nodes.length; i++) {
-        if (nodes[i].nodeType === WYMeditor.NODE.ELEMENT &&
-                nodes[i].tagName.toLowerCase() === WYMeditor.LI) {
-            liNodes.push(nodes[i]);
-        }
-    }
+    // All the selected nodes in the selection's first range.
+    $selectedNodes = jQuery(selection.getRangeAt(0).getNodes());
 
-    return liNodes;
+    // The technique is to get selected contents of the list items and then
+    // get their closest parent list items. So we don't want the list elements.
+    // Some list items may be empty and we do want those so we'll add them back
+    // later.
+    selectedLis = $selectedNodes.not('li, ol, ul')
+
+    // Add back the text nodes because jQuery.not always excludes them.
+    .add($selectedNodes.filter(
+            function () {return wym.nodeType === WYMeditor.NODE.TEXT;}
+        )
+    )
+
+    .closest('li')
+
+    // Add `li`s that are selected and are empty. Because they didn't
+    // get found by `.closest`. We can safely add them because they don't
+    // contain other list items so surely if they are in the selection it is
+    // because the user wants to manipulate them.
+    .add($selectedNodes.filter('li:empty'))
+
+    // The next method, `jQuery.unique`, requires a plain DOM array.
+    .get();
+
+    return jQuery.unique(selectedLis);
 };
 
 /**
@@ -2858,7 +2790,7 @@ WYMeditor.editor.prototype.insertUnorderedlist = function () {
  */
 WYMeditor.editor.prototype._insertList = function (listType) {
     var wym = this._wym,
-        sel = rangy.getIframeSelection(this._iframe),
+        sel = rangy.getIframeSelection(wym._iframe),
         listItems,
         rootList,
         selectedBlock,
