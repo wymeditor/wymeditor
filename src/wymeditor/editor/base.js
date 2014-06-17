@@ -518,6 +518,18 @@ WYMeditor.editor.prototype.selectedContainer = function () {
 
 };
 
+// Deprecated in favor of `WYMeditor.editor.selectedContainer`.
+WYMeditor.editor.prototype.selected = function () {
+    var wym = this;
+
+    WYMeditor.console.warn(
+        "The function WYMeditor.editor.selected() is " +
+        "deprecated. Use WYMeditor.editor.selectedContainer"
+    );
+
+    return wym.selectedContainer();
+};
+
 /**
     WYMeditor.editor.selection_collapsed
     ====================================
@@ -747,6 +759,17 @@ WYMeditor.editor.prototype.mainContainer = function (sType) {
     }
 
     return false;
+};
+
+// Deprecated in favor of `WYMeditor.editor.mainContainer`.
+WYMeditor.editor.prototype.container = function (sType) {
+    var wym = this;
+
+    WYMeditor.console.warn(
+        "The function `WYMeditor.editor.container` is " +
+        "deprecated. Use `WYMeditor.editor.mainContainer`.");
+
+    return wym.mainContainer(sType);
 };
 
 /**
