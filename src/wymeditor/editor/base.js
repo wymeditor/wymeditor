@@ -2667,7 +2667,7 @@ WYMeditor.editor.prototype.outdent = function () {
 
     A helper function to ensure that the selection is restored to the same
     location after a potentially-complicated dom manipulation is performed. This
-    also handles the case where the dom manipulation throws and error by cleaning
+    also handles the case where the dom manipulation throws an error by cleaning
     up any selection markers that were added to the dom.
 
     `manipulationFunc` is a function that takes no arguments and performs the
