@@ -39,6 +39,11 @@ All green means you're good to go.
   test run considerably slower. It is possible to work around this issue by
   restarting the browser.
 
+.. note::
+
+  If testing in a virtual machine, for better performance, disabling virtual
+  memory may help.
+
 *******************************
 Running the Tests via ``grunt``
 *******************************
