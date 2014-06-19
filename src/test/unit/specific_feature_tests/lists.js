@@ -2355,6 +2355,23 @@ var li_1_1_1_1_unorderedHtml = String() +
             '</li>' +
             '<li id="li_2">2</li>' +
         '</ol>';
+var li_1_1_1__li_1_1_1_1_unorderedHtml = String() +
+        '<ol>' +
+            '<li id="li_1">1' +
+                '<ol>' +
+                    '<li id="li_1_1">1_1' +
+                        '<ul>' +
+                            '<li id="li_1_1_1">1_1_1' +
+                                '<ul>' +
+                                    '<li id="li_1_1_1_1">1_1_1_1</li>' +
+                                '</ul>' +
+                            '</li>' +
+                        '</ul>' +
+                    '</li>' +
+                '</ol>' +
+            '</li>' +
+            '<li id="li_2">2</li>' +
+        '</ol>';
 
 test("Ordered to unordered second item", function () {
     expect(10);
@@ -2388,19 +2405,19 @@ test("Ordered to unordered one item", function () {
     testListRoundTrip('li_1_1_1_1', 'ordered', li_1_1_1_1_unorderedHtml, orderedHtml, true);
 });
 
-test("Prevent converting type with selection over multiple levels", function () {
+test("Converting type with selection over multiple levels", function () {
     expect(4);
 
     testListMulti('li_1_1_1', 'li_1_1_1_1', 'unordered',
-                  li_1_1_1_unorderedHtml, li_1_1_1_unorderedHtml);
+                  li_1_1_1_1_unorderedHtml, li_1_1_1__li_1_1_1_1_unorderedHtml);
     testListMulti('li_1_1_1', 'li_1_1_1_1', 'ordered',
-                  li_1_1_1_unorderedHtml, li_1_1_1_unorderedHtml);
+                  li_1_1_1_unorderedHtml, orderedHtml);
 
     // With text selection
     testListMulti('li_1_1_1', 'li_1_1_1_1', 'unordered',
-                  li_1_1_1_unorderedHtml, li_1_1_1_unorderedHtml, true);
+                  li_1_1_1_1_unorderedHtml, li_1_1_1__li_1_1_1_1_unorderedHtml, true);
     testListMulti('li_1_1_1', 'li_1_1_1_1', 'ordered',
-                  li_1_1_1_unorderedHtml, li_1_1_1_unorderedHtml, true);
+                  li_1_1_1_unorderedHtml, orderedHtml, true);
 });
 
 module("list-conversion_blocks", {setup: setupWym});
@@ -3562,10 +3579,8 @@ test("Move to after parent list.", function () {
 delistHtml.li_1__li_3 = [""
     , '<p id="li_1">1</p>'
     , '<p id="li_2">2</p>'
-    , '<ol>'
-        , '<li id="li_2_1">2_1</li>'
-        , '<li id="li_2_2">2_2</li>'
-    , '</ol>'
+    , '<p id="li_2_1">2_1</p>'
+    , '<p id="li_2_2">2_2</p>'
     , '<p id="li_3">3</p>'
     , '<ol>'
         , '<li id="li_3_1">3_1</li>'
@@ -3674,17 +3689,16 @@ delistOverindentHtml.li_1__li_3 = [""
     , '<p id="li_2">2</p>'
     , '<ol>'
         , '<li>'
-            , '<ol>'
-                , '<li id="li_2_1_1">2_1_1</li>'
-                , '<li id="li_2_1_2">2_1_2</li>'
-            , '</ol>'
+            , '<span id="li_2_1_1">2_1_1</span>'
+            , '<br />'
+            , '<span id="li_2_1_2">2_1_2</span>'
         , '</li>'
-        , '<li id="li_2_2">2_2</li>'
     , '</ol>'
+    , '<p id="li_2_2">2_2</p>'
     , '<p id="li_3">3</p>'
 ].join('');
 
-test("Not across indentation levels", function () {
+test("Across indentation levels", function () {
     expect(2);
     var startItemId = 'li_1',
         endItemId = 'li_3';
@@ -3773,13 +3787,11 @@ delistHtml.li_2_1__li_5_1= [""
         , '</li>'
     , '</ol>'
     , '<p id="li_3">3</p>'
-    , '<ol>'
-        , '<li id="li_3_1">3_1</li>'
-    , '</ol>'
+    , '<p id="li_3_1">3_1</p>'
     , '<p id="li_4">4</p>'
     , '<p id="li_5">5</p>'
+    , '<p id="li_5_1">5_1</p>'
     , '<ol>'
-        , '<li id="li_5_1">5_1</li>'
         , '<li id="li_5_2">5_2</li>'
         , '<li id="li_5_3">5_3'
             , '<ul>'
@@ -3935,54 +3947,13 @@ delistHtml.withNodesAfterSubList = [""
                 , '<li>I have no attributes!</li>'
                 , '<li id="li_2_3">2_3</li>'
             , '</ol>'
+            , 'foo'
+            , '<br />'
             , '<span id="select_me">I am after a nested list.</span><br />'
             , 'Me, too!'
         , '</li>'
     , '</ol>'
 ].join('');
-test("Don't de-list an item when selection is after a list.", function () {
-    expect(1);
-    var wymeditor = jQuery.wymeditors(0),
-    selectedTextNode,
-    actionButton;
-
-    wymeditor._html(delistHtml.withNodesAfterSubList);
-    selectedTextNode = jQuery(wymeditor._doc).find('#li_2').contents()
-        .last()[0];
-    makeTextSelection(wymeditor, selectedTextNode, selectedTextNode, 0, 8);
-
-    actionButton = jQuery(wymeditor._box)
-        .find(wymeditor._options.toolsSelector)
-        .find('.wym_tools_ordered_list a');
-    actionButton.click();
-
-    wymEqual(
-        wymeditor,
-        delistHtml.withNodesAfterSubList
-    );
-});
-test("Don't de-list an item when selection is after a list. Selection nested.", function () {
-    expect(2);
-    var startItemId = 'select_me',
-        endItemId = 'select_me';
-
-    testListMulti(
-        startItemId,
-        endItemId,
-        'ordered',
-        delistHtml.withNodesAfterSubList,
-        delistHtml.withNodesAfterSubList
-    );
-    // Via text selection
-    testListMulti(
-        startItemId,
-        endItemId,
-        'ordered',
-        delistHtml.withNodesAfterSubList,
-        delistHtml.withNodesAfterSubList,
-        true
-    );
-});
 delistHtml.withNodesAfterSubList_li_2 = [""
     , '<ol>'
         , '<li id="li_1">1</li>'
@@ -3993,6 +3964,7 @@ delistHtml.withNodesAfterSubList_li_2 = [""
         , '<li>I have no attributes!</li>'
         , '<li id="li_2_3">2_3</li>'
     , '</ol>'
+    , '<p>foo</p>'
     , '<p id="select_me">I am after a nested list.</p>'
     , '<p>Me, too!</p>'
 ].join('');
@@ -4027,6 +3999,8 @@ delistHtml.withNodesAfterSubList_li_2_1__2_3 = [""
             , '<br /><span id="li_2_1">2_1</span>'
             , '<br />I have no attributes!'
             , '<br /><span id="li_2_3">2_3</span><br />'
+            , 'foo'
+            , '<br />'
             , '<span id="select_me">I am after a nested list.</span><br />'
             , 'Me, too!'
         , '</li>'
