@@ -638,7 +638,7 @@ WYMeditor.editor.prototype.isInlineNode = function (node) {
 
 /**
     WYMeditor.editor.isListNode
-    =============================
+    ===========================
 
     Returns true if the provided node is a list element. Otherwise
     returns false.
