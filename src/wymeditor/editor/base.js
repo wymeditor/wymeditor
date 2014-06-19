@@ -660,6 +660,62 @@ WYMeditor.editor.prototype.isListNode= function (node) {
 };
 
 /**
+   WYMeditor.editor.hasAttributes
+
+   Returns true if the provided node has any valuable attributes.
+
+   @param node The node.
+*/
+WYMeditor.editor.prototype.hasAttributes = function (element) {
+    var attributes,
+        i,
+        attrName,
+        attrValue;
+
+    attributes = element.attributes;
+    if (attributes.length === 0) {
+        return false;
+    }
+
+    // This loop is required for IE7 because it seems to populate
+    // the attributes property with all possible attributes. When
+    // support for IE7 is dropped the length check should be
+    // enough.
+    for (i = 0; i < attributes.length; i++) {
+        attrName = attributes[i].name;
+        // Getting the value through jQuery is rumored to normalizes it in some
+        // ways.
+        attrValue = jQuery(element).attr(attrName);
+        if (
+            jQuery.inArray(
+                attrName, [
+                    // These are attribute names which seem to
+                    // have values other than those in the value
+                    // check below. For example, 'null' or '0'.
+                    '_wym_visited',
+                    'dataFld',
+                    'onmouseup',
+                    'contentEditable',
+                    'dataFormatAs',
+                    'dataSrc',
+                    'tabIndex',
+                    'value'
+                ]
+            ) === -1 &&
+            jQuery.inArray(
+                attrValue,
+                // Attributes with these values don't interest us.
+                ['', undefined, false, null]
+            ) === -1
+        ) {
+            // We hit an attribute that we care about.
+            return true;
+        }
+    }
+    return false;
+};
+
+/**
     WYMeditor.editor.mainContainer
     ==============================
 
@@ -882,31 +938,55 @@ WYMeditor.editor.prototype.findUp = function (node, filter) {
     WYMeditor.editor.switchTo
     =========================
 
-    Switch the type of the given `node` to type `sType`. If stripAttrs is true,
-    the attributes of node will not be included in the the new type. If
-    stripAttrs is false (or undefined), the attributes of node will be
-    preserved through the switch.
-*/
-WYMeditor.editor.prototype.switchTo = function (node, sType, stripAttrs) {
-    var newNode = this._doc.createElement(sType),
-        html = jQuery(node).html(),
-        attrs = node.attributes,
-        i;
+    Switch the type of an element.
 
-    if (node.tagName.toLowerCase() === 'img') {
-        throw "Will not change the tag of this element.";
+    @param element The element.
+    @param sType A string of the desired type. For example, 'p'.
+    @param stripAttrs a boolean that determines whether the attributes of
+                      the element will be stripped or preserved.
+    @param setCaret A boolean that determines whether the caret will be set at
+                    the beginning, inside the element, after the switch. Default
+                    is false.
+
+*/
+WYMeditor.editor.prototype.switchTo = function (
+    element,
+    sType,
+    stripAttrs,
+    setCaret
+) {
+    var wym = this,
+        $element = jQuery(element),
+        newElement,
+        i,
+        attrs = element.attributes;
+
+    if (!element.tagName) {
+        throw "This must be an element.";
     }
+
+    if (element.tagName.toLowerCase() === 'img') {
+        throw "Will not change the type of an 'img' element.";
+    }
+
+    newElement = wym._doc.createElement(sType);
+    jQuery(newElement).append(element.childNodes);
+    $element.replaceWith(newElement);
 
     if (!stripAttrs) {
         for (i = 0; i < attrs.length; ++i) {
-            newNode.setAttribute(attrs.item(i).nodeName,
-                                 attrs.item(i).nodeValue);
+            newElement.setAttribute(
+                attrs.item(i).nodeName,
+                attrs.item(i).nodeValue
+            );
         }
     }
-    newNode.innerHTML = html;
-    node.parentNode.replaceChild(newNode, node);
 
-    this.setCaretIn(newNode);
+    if (setCaret) {
+        wym.setCaretIn(newElement);
+    }
+
+    return newElement;
 };
 
 WYMeditor.editor.prototype.replaceStrings = function (sVal) {
@@ -1832,7 +1912,14 @@ WYMeditor.editor.prototype._indentSingleItem = function (listItem) {
     Outdent a single list item via the dom, ensuring that the selected node moves in
     exactly one level and all other nodes stay at the same level.
  */
-WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
+WYMeditor.editor.prototype._outdentSingleItem = function (
+    listItem,
+    keepSublistContentsIndentation
+) {
+    keepSublistContentsIndentation =
+        typeof keepSublistContentsIndentation !== 'undefined' ?
+        keepSublistContentsIndentation : true;
+
     var wym = this,
         $liToOutdent,
         listType,
@@ -1904,7 +1991,11 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
 
     // If this node has one or more sublists, they will need to be indented
     // by one with a fake parent to hold their previous position
-    if ($sublistContents.length > 0) {
+    if (
+        $sublistContents.length > 0 &&
+        // This is a trigger to prevent this
+        keepSublistContentsIndentation === true
+    ) {
         spacerListHtml = '<' + listType + '>' +
             '<li class="spacer_li"></li>' +
             '</' + listType + '>';
@@ -2780,53 +2871,55 @@ WYMeditor.editor.prototype.insertUnorderedlist = function () {
     editor._insertList
     ==================
 
-    Convert the selected block in to the specified type of list.
+    This either manipulates existing lists or creates a new one.
 
-    If the selection is already inside a list, switch the type of the nearest
-    parent list to an `<ol>`. If the selection is in a block element that can be a
-    valid list, place that block element's contents inside an ordered list.
+    See in-line comments for an understanding.
 
     Returns `true` if a change was made, `false` otherwise.
+
+    @param listType A string, representing the user's action, either 'ul'
+                    or 'ol'.
  */
 WYMeditor.editor.prototype._insertList = function (listType) {
     var wym = this._wym,
         sel = rangy.getIframeSelection(wym._iframe),
         listItems,
-        rootList,
-        selectedBlock,
+        $listItems,
+        $parentListsOfDifferentType,
+        i,
         potentialListBlock;
 
     listItems = wym._getSelectedListItems(sel);
+    if (listItems.length > 0) {
+        // We have existing list items selected. This means either changing
+        // their parent lists' types or de-listing.
 
-    // If we've selected some list items all in the same list, we want to
-    // change the type of that list.
-    if (listItems.length !== 0) {
-        // If the selection is across paragraphs and other items at the root level,
-        // don't indent
-        rootList = wym.getCommonParentList(listItems, true);
-        if (rootList) {
-            this._changeListType(rootList, listType);
+        $listItems = jQuery(listItems);
+
+        $parentListsOfDifferentType = $listItems
+            .parent(':not(' + listType + ')');
+        if ($parentListsOfDifferentType.length > 0) {
+            // Some of the lists are of a different type than that which was
+            // requested. Change list type.
+            for (i = 0; i < $parentListsOfDifferentType.length; i++) {
+                wym._changeListType($parentListsOfDifferentType[i], listType);
+            }
             return true;
         } else {
-            // We have a selection across multiple root-level lists. Punt on
-            // this case for now.
-            // TODO: Handle multiple root-level lists properly
-            return false;
+            // List types are the same as requested. De-list.
+            wym._removeItemsFromList($listItems);
+            return true;
         }
-
     }
-
-    // If we've selected a block-level item that's appropriate to convert in to a list,
-    // convert it.
-    selectedBlock = this.selectedContainer();
+    // Get a potential block element from selection that could be converted
+    // into a list:
     // TODO: Use `_containerRules['root']` minus the ol/ul and
     // `_containerRules['contentsCanConvertToList']
-    potentialListBlock = this.findUp(selectedBlock, WYMeditor.POTENTIAL_LIST_ELEMENTS);
+    potentialListBlock = wym.findUp(wym.selectedContainer(), WYMeditor.POTENTIAL_LIST_ELEMENTS);
     if (potentialListBlock) {
-        this._convertToList(potentialListBlock, listType);
+        wym._convertToList(potentialListBlock, listType);
         return true;
     }
-
     // The user has something selected that wouldn't be a valid list
     return false;
 };
@@ -2864,6 +2957,180 @@ WYMeditor.editor.prototype._convertToList = function (blockElement, listType) {
     $newList = $blockElement.children();
 
     return $newList.get(0);
+};
+
+/**
+    editor._removeItemsFromList
+    ===========================
+
+    De-list the provided list items.
+
+    @param listItems A jQuery object of list items.
+*/
+WYMeditor.editor.prototype._removeItemsFromList = function ($listItems) {
+
+    var wym = this,
+        $listItem,
+        i,
+        j,
+        $childNodesToTransfer,
+        k,
+        $childNodeToTransfer,
+        rootContainer = wym.documentStructureManager.structureRules
+            .defaultRootContainer,
+        attributes;
+
+    // TODO: what about this? Could this be a better behavior?
+    // It is reasonable to de-list only a subset of the provided list items.
+    // The subset are the list items which are not ancestors of any other list
+    // items.
+    //$listItems = $listItems.not($listItems.find('li'));
+
+    for (i = 0; i < $listItems.length; i++) {
+        $listItem = $listItems.eq(i);
+
+        // Determine the type of element this list item will be transformed
+        // into and call for this transformation.
+        if ($listItem.parent().parent('li').length === 1) {
+            // The list item will end up inside another list item. Turn it into
+            // a `span`.
+            $listItem = jQuery(
+                wym.switchTo(
+                    $listItem[0],
+                    'span',
+                    false
+                )
+            );
+        } else {
+            // The list item will end up in the root of the document. Turn it
+            // into a default root container.
+            $listItem = jQuery(
+                wym.switchTo(
+                    $listItem[0],
+                    rootContainer,
+                    false
+                )
+            );
+        }
+        // The transformation should be complete and the element is no longer
+        // a list item, hence we call it 'the de-listed element'.
+
+        // Move the de-listed element according to its relation to its
+        // sibling nodes.
+        if ($listItem.parent().children().length === 1) {
+            // It is the only child in the list.
+
+            $listItem.parent().before($listItem);
+            // Remove the list because it is empty.
+            $listItem.next().remove();
+
+        } else if ($listItem[0] === $listItem.parent().children().first()[0]) {
+            // It is not the only child. It is the first child.
+
+            $listItem.parent().before($listItem);
+        } else if (
+            $listItem[0] !== $listItem.parent().children().first()[0] &&
+            $listItem[0] !== $listItem.parent().children().last()[0]
+        ) {
+            // It is not the first and not the last child.
+            $listItem.parent().before(
+                '<' + $listItem.parent()[0].tagName + '/>'
+            );
+            jQuery($listItem.prevAll().toArray().reverse())
+                .appendTo($listItem.parent().prev());
+            $listItem.parent().before($listItem);
+
+        } else if ($listItem[0] === $listItem.parent().children().last()[0]) {
+            // It is not the only child. It is the last child.
+            $listItem.parent().after($listItem);
+        }
+        // The de-listed element should now be at it's final destination.
+        // Now, deal with its contents.
+        for (j = 0; j < $listItem.contents().length; j++) {
+            if (
+                wym.isBlockNode($listItem.contents()[j]) &&
+                // Prevents a rangy selection boundary element from interfering.
+                $listItem.contents()[j]
+                    .className !== 'rangySelectionBoundary' &&
+                $listItem.contents()[j].tagName.toLowerCase() !== 'br'
+            ) {
+                // We have hit the first block child. From this child onward,
+                // the contents will be moved to after the de-listed element.
+                $childNodesToTransfer = $listItem.contents().slice(j);
+                if (
+                    $listItem[0].tagName.toLowerCase() ===
+                        rootContainer
+                ) {
+                    // The destination of these nodes is the root element.
+                    // Prepare them as such.
+                    for (k = 0; k < $childNodesToTransfer.length; k++) {
+                        $childNodeToTransfer = $childNodesToTransfer.eq(k);
+                        if (
+                            $childNodeToTransfer[0]
+                                .nodeType === WYMeditor.NODE.TEXT
+                        ) {
+                            $childNodeToTransfer.wrap(
+                                '<' + rootContainer + ' />'
+                            );
+                        } else if (
+                            $childNodeToTransfer[0].tagName &&
+                            !(wym.isBlockNode($childNodeToTransfer[0])) &&
+                            $childNodeToTransfer[0].tagName
+                                .toLowerCase() !== 'br'
+                        ) {
+                            wym.switchTo(
+                                $childNodesToTransfer[k],
+                                rootContainer,
+                                false
+                            );
+                        }
+                    }
+                    // Where the contents are going is no place for
+                    // line breaks.
+                    $listItem.children('br').remove();
+                }
+                // The contents should be ready now.
+                $listItem.after($listItem.contents().slice(j));
+                // The loop was for finding the first block element.
+                break;
+            }
+        }
+        // Add `br` elements that may be necessary because
+        // by turning a `li` element into a `span` element we turn a block
+        // type element into an in-line type element.
+        if ($listItem[0].tagName.toLowerCase() === 'span') {
+            if (
+                $listItem[0].previousSibling &&
+                $listItem[0].previousSibling.nodeType === WYMeditor
+                    .NODE.TEXT ||
+
+                $listItem.prev().length === 1 &&
+                wym.isBlockNode($listItem.prev()[0]) === false
+            ) {
+                $listItem.before('<br />');
+            }
+            if (
+                $listItem[0].nextSibling &&
+                $listItem[0].nextSibling.nodeType === WYMeditor
+                    .NODE.TEXT ||
+
+                $listItem.next().length === 1 &&
+                wym.isBlockNode($listItem.next()[0]) === false
+            ) {
+                $listItem.after('<br />');
+            }
+            // The de-listed item should now have `br` elements before and/or
+            // after it, as appropriate.
+
+            // If the de-listed element has no meaningful attributes, there is
+            // no use for it being a span.
+            attributes = $listItem[0].attributes;
+            if (!wym.hasAttributes($listItem[0])) {
+                $listItem.before($listItem.contents());
+                $listItem.remove();
+            }
+        }
+    }
 };
 
 /**
