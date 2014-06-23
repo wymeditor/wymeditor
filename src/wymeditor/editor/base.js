@@ -2945,7 +2945,10 @@ WYMeditor.editor.prototype._insertList = function (listType) {
     // into a list:
     // TODO: Use `_containerRules['root']` minus the ol/ul and
     // `_containerRules['contentsCanConvertToList']
-    potentialListBlock = wym.findUp(wym.selectedContainer(), WYMeditor.POTENTIAL_LIST_ELEMENTS);
+    potentialListBlock = wym.findUp(
+        wym.selectedContainer(),
+        WYMeditor.POTENTIAL_LIST_ELEMENTS
+    );
     if (potentialListBlock) {
         wym._convertToList(potentialListBlock, listType);
         return true;
