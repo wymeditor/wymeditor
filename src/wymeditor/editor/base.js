@@ -2574,7 +2574,9 @@ WYMeditor.editor.prototype._getSelectedListItems = function (selection) {
         $selectedContainer = jQuery(wym.selectedContainer());
 
         if ($selectedContainer.closest('li, table').is('table')) {
-            // Inside a table
+            // Inside a table and not inside a list inside it. This prevents
+            // the inclusion of the list item that might be an ancestor of the
+            // table.
             return [];
         }
         return $selectedContainer.closest('li');
