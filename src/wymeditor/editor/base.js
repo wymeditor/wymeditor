@@ -2882,7 +2882,23 @@ WYMeditor.editor.prototype.insertUnorderedlist = function () {
 
     This either manipulates existing lists or creates a new one.
 
-    See in-line comments for an understanding.
+    The action that will be performed depends on the contents of the
+    selection and their context.
+
+    This can result in one of:
+
+     1. Changing the type of lists.
+     2. Removing items from list.
+     3. Creating a list.
+     4. Nothing.
+
+    If existing list items are selected this means either changing list type
+    or de-listing. Changing list type occurs when selected list items all share
+    a list of a different type than the requested. Removing items from lists
+    occurs when selected list items are all of the same type as the requested.
+
+    If no list items are selected, then, if possible, a list will be created.
+    If not possible, no change is made.
 
     Returns `true` if a change was made, `false` otherwise.
 
