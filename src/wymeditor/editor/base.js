@@ -3001,7 +3001,6 @@ WYMeditor.editor.prototype._convertToList = function (blockElement, listType) {
     @param listItems A jQuery object of list items.
 */
 WYMeditor.editor.prototype._removeItemsFromList = function ($listItems) {
-
     var wym = this,
         $listItem,
         i,
