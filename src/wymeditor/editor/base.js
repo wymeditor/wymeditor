@@ -2895,7 +2895,7 @@ WYMeditor.editor.prototype._insertList = function (listType) {
         listItems,
         $listItems,
         $parentListsOfDifferentType,
-        i,
+        commonParentList,
         potentialListBlock;
 
     listItems = wym._getSelectedListItems(sel);
@@ -2909,11 +2909,16 @@ WYMeditor.editor.prototype._insertList = function (listType) {
             .parent(':not(' + listType + ')');
         if ($parentListsOfDifferentType.length > 0) {
             // Some of the lists are of a different type than that which was
-            // requested. Change list type.
-            for (i = 0; i < $parentListsOfDifferentType.length; i++) {
-                wym._changeListType($parentListsOfDifferentType[i], listType);
-            }
+            // requested.
+
+            // Change list type only if selected list items share a common parent
+            // list. TODO: Change types over several lists:
+            // https://github.com/wymeditor/wymeditor/issues/541
+            commonParentList = wym.getCommonParentList(listItems, true);
+            if (commonParentList) {
+                wym._changeListType(commonParentList, listType);
             return true;
+            }
         } else {
             // List types are the same as requested. De-list.
             wym._removeItemsFromList($listItems);

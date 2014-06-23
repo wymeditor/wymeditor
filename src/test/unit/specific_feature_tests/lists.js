@@ -2355,23 +2355,6 @@ var li_1_1_1_1_unorderedHtml = String() +
             '</li>' +
             '<li id="li_2">2</li>' +
         '</ol>';
-var li_1_1_1__li_1_1_1_1_unorderedHtml = String() +
-        '<ol>' +
-            '<li id="li_1">1' +
-                '<ol>' +
-                    '<li id="li_1_1">1_1' +
-                        '<ul>' +
-                            '<li id="li_1_1_1">1_1_1' +
-                                '<ul>' +
-                                    '<li id="li_1_1_1_1">1_1_1_1</li>' +
-                                '</ul>' +
-                            '</li>' +
-                        '</ul>' +
-                    '</li>' +
-                '</ol>' +
-            '</li>' +
-            '<li id="li_2">2</li>' +
-        '</ol>';
 
 test("Ordered to unordered second item", function () {
     expect(10);
@@ -2405,19 +2388,19 @@ test("Ordered to unordered one item", function () {
     testListRoundTrip('li_1_1_1_1', 'ordered', li_1_1_1_1_unorderedHtml, orderedHtml, true);
 });
 
-test("Converting type with selection over multiple levels", function () {
+test("Prevent converting type with selection over multiple levels", function () {
     expect(4);
 
     testListMulti('li_1_1_1', 'li_1_1_1_1', 'unordered',
-                  li_1_1_1_1_unorderedHtml, li_1_1_1__li_1_1_1_1_unorderedHtml);
+                  li_1_1_1_1_unorderedHtml, li_1_1_1_1_unorderedHtml);
     testListMulti('li_1_1_1', 'li_1_1_1_1', 'ordered',
-                  li_1_1_1_unorderedHtml, orderedHtml);
+                  li_1_1_1_unorderedHtml, li_1_1_1_unorderedHtml);
 
     // With text selection
     testListMulti('li_1_1_1', 'li_1_1_1_1', 'unordered',
-                  li_1_1_1_1_unorderedHtml, li_1_1_1__li_1_1_1_1_unorderedHtml, true);
+                  li_1_1_1_1_unorderedHtml, li_1_1_1_1_unorderedHtml, true);
     testListMulti('li_1_1_1', 'li_1_1_1_1', 'ordered',
-                  li_1_1_1_unorderedHtml, orderedHtml, true);
+                  li_1_1_1_unorderedHtml, li_1_1_1_unorderedHtml, true);
 });
 
 module("list-conversion_blocks", {setup: setupWym});
