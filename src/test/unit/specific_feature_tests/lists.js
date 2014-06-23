@@ -2660,7 +2660,6 @@ test("Make list inside table that is inside list.", function () {
     );
 });
 
-
 module("list-correction", {setup: setupWym});
 
 test("Should correct invalid list nesting", function () {
