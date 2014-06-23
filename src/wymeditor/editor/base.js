@@ -3143,39 +3143,59 @@ WYMeditor.editor.prototype._removeItemsFromList = function ($listItems) {
                 break;
             }
         }
-        // Add `br` elements that may be necessary because
-        // by turning a `li` element into a `span` element we turn a block
-        // type element into an in-line type element.
         if ($listItem[0].tagName.toLowerCase() === 'span') {
+            // Get rid of empty `span`s and ones that contain only `br`s.
             if (
-                $listItem[0].previousSibling &&
-                $listItem[0].previousSibling.nodeType === WYMeditor
-                    .NODE.TEXT ||
-
-                $listItem.prev().length === 1 &&
-                wym.isBlockNode($listItem.prev()[0]) === false
+                $listItem.contents(':not(.rangySelectionBoundary)')
+                    .length === 0 ||
+                $listItem.contents(':not(.rangySelectionBoundary)').length ===
+                    $listItem.contents('br').length
             ) {
-                $listItem.before('<br />');
-            }
-            if (
-                $listItem[0].nextSibling &&
-                $listItem[0].nextSibling.nodeType === WYMeditor
-                    .NODE.TEXT ||
-
-                $listItem.next().length === 1 &&
-                wym.isBlockNode($listItem.next()[0]) === false
-            ) {
-                $listItem.after('<br />');
-            }
-            // The de-listed item should now have `br` elements before and/or
-            // after it, as appropriate.
-
-            // If the de-listed element has no meaningful attributes, there is
-            // no use for it being a span.
-            attributes = $listItem[0].attributes;
-            if (!wym.hasRealAttributes($listItem[0])) {
-                $listItem.before($listItem.contents());
+                // The Rangy selection boundary `span` may be inside.
+                $listItem.before($listItem.contents('.rangySelectionBoundary'));
                 $listItem.remove();
+            }
+
+            if ($listItem.parent().length > 0) {
+                // The `span` wasn't removed.
+
+                // Add `br` elements that may be necessary because by turning
+                // a `li` element into a `span` element we turn a block
+                // type element into an in-line type element.
+                if (
+                    $listItem[0].previousSibling &&
+                    $listItem[0].previousSibling.nodeType === WYMeditor
+                        .NODE.TEXT ||
+
+                    $listItem.prevAll(':not(.rangySelectionBoundary)')
+                        .length > 0 &&
+                    wym.isBlockNode(
+                        $listItem.prevAll(':not(.rangySelectionBoundary)')[0]
+                    ) === false
+                ) {
+                    $listItem.before('<br />');
+                }
+                if (
+                    $listItem[0].nextSibling &&
+                    $listItem[0].nextSibling.nodeType === WYMeditor
+                        .NODE.TEXT ||
+
+                    $listItem.nextAll(':not(.rangySelectionBoundary)')
+                        .length > 0 &&
+                    wym.isBlockNode(
+                        $listItem.nextAll(':not(.rangySelectionBoundary)')[0]
+                    ) === false
+                ) {
+                    $listItem.after('<br />');
+                }
+
+                // If the de-listed element has no meaningful attributes, there is
+                // no use for it being a span.
+                attributes = $listItem[0].attributes;
+                if (!wym.hasRealAttributes($listItem[0])) {
+                    $listItem.before($listItem.contents());
+                    $listItem.remove();
+                }
             }
         }
     }

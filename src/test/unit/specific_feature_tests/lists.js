@@ -4153,6 +4153,53 @@ test("Add `br` elements after transforming `li` to `span`. Unwrap span if no att
         );
     }
 );
+delistHtml.withEmptyNestedLi = [""
+    , '<ul id="0">'
+        , '<li id="0_0">'
+            , '<ul id="0_0_0">'
+                , '<li id="0_0_0_0">'
+                , '</li>'
+                , '<li id="0_0_0_1">'
+                    , '<br id="0_0_0_1_0" />'
+                , '</li>'
+                , '<li id="0_0_0_2">'
+                    , '0_0_0_2_0'
+                , '</li>'
+            , '</ul>'
+        , '</li>'
+    , '</ul>'
+].join('');
+delistHtml.withEmptyNestedLi_deListed = [""
+    , '<ul id="0">'
+        , '<li id="0_0">'
+            , '<span id="0_0_0_2">'
+                , '0_0_0_2_0'
+            , '</span>'
+        , '</li>'
+    , '</ul>'
+].join('');
+test("Don't make empty spans", function () {
+    expect(2);
+    var startItemId = '0_0_0_0',
+        endItemId = '0_0_0_2';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'unordered',
+        delistHtml.withEmptyNestedLi,
+        delistHtml.withEmptyNestedLi_deListed
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'unordered',
+        delistHtml.withEmptyNestedLi,
+        delistHtml.withEmptyNestedLi_deListed,
+        true
+    );
+});
 delistHtml.withTable = [""
     , '<ul id="0">'
         , '<li id="0_0">'
