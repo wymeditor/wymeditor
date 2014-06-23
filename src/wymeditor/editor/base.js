@@ -660,13 +660,22 @@ WYMeditor.editor.prototype.isListNode= function (node) {
 };
 
 /**
-   WYMeditor.editor.hasAttributes
+   WYMeditor.editor.hasRealAttributes
 
-   Returns true if the provided node has any valuable attributes.
+   Returns true if the provided node has "real" attributes.
 
-   @param node The node.
+   Unlike sane browsers, IE7 provides all possible attributes in a node's
+   `attributes`. Thus, a simple check like `attributes.length > 0` isn't
+   enough (as long as we support IE7). This function tries to determine
+   whether the element really does have meaningful attributes, considering
+   IE7's behavior. This turns out to be not so simple, as IE7 populates
+   some attributes with truth-y values. So the mechanism is a kind of
+   a blacklist filter of IE7's junk-attributes. If an attribute passes this
+   blacklist filter, then this function returns true.
+
+   @param element The element.
 */
-WYMeditor.editor.prototype.hasAttributes = function (element) {
+WYMeditor.editor.prototype.hasRealAttributes = function (element) {
     var attributes,
         i,
         attrName,
@@ -3125,7 +3134,7 @@ WYMeditor.editor.prototype._removeItemsFromList = function ($listItems) {
             // If the de-listed element has no meaningful attributes, there is
             // no use for it being a span.
             attributes = $listItem[0].attributes;
-            if (!wym.hasAttributes($listItem[0])) {
+            if (!wym.hasRealAttributes($listItem[0])) {
                 $listItem.before($listItem.contents());
                 $listItem.remove();
             }
