@@ -2642,6 +2642,7 @@ var listWithTableHtml_make_list_inside = [""
     , '</ul>'
 ].join('');
 test("Make list inside table that is inside list.", function () {
+    expect(3);
     testList(
         '0_0_1_0_0_0',
         'unordered',
