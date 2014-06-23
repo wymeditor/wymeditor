@@ -80,6 +80,32 @@ var getSelectedListItemsHtml = [""
             , '</ol>'
             , '2-3-2'
         , '</li>'
+        , '<li id="2-4">'
+            , '2-4-0'
+            , '<table id="2-4-1">'
+                , '<tbody id="2-4-1-0">'
+                    , '<tr id="2-4-1-0-0">'
+                        , '<td id="2-4-1-0-0-0">'
+                            , '2-4-1-0-0-0-0'
+                        , '</td>'
+                        , '<td id="2-4-1-0-0-1">'
+                            , '2-4-1-0-0-1-0'
+                            , '<ul id="2-4-1-0-0-1-1">'
+                                , '<li id="2-4-1-0-0-1-1-0">'
+                                    , '2-4-1-0-0-1-1-0-0'
+                                , '</li>'
+                                , '<li id="2-4-1-0-0-1-1-1">'
+                                    , '2-4-1-0-0-1-1-1-0'
+                                , '</li>'
+                            , '</ul>'
+                        , '</td>'
+                    , '</tr>'
+                , '</tbody>'
+            , '</table>'
+        , '</li>'
+        , '<li id="2-5">'
+            , '2-5-0'
+        , '</li>'
     , '</ol>'
 ].join('');
 
@@ -451,6 +477,46 @@ test("A whole journey", function() {
         '1-4', 1,
         ['0-0', '0-1', '0-2', '0-3-0-0', '0-3-0-1', '0-3-0-1-1-0',
          '1-1', '1-2', '1-2-1-1', '1-3', '1-4']
+    );
+});
+
+test("Partially inside a table", function () {
+    testGetSelectedListItems(
+        '2-4', 0,
+        '2-4-1-0-0-0', 1,
+        ['2-4']
+    );
+});
+
+test("Collapsed, single, inside table", function () {
+    testGetSelectedListItems(
+        '2-4-1-0-0-1-1-0', 0,
+        '2-4-1-0-0-1-1-0', 0,
+        ['2-4-1-0-0-1-1-0']
+    );
+});
+
+test("Text, single, inside table", function () {
+    testGetSelectedListItems(
+        '2-4-1-0-0-1-1-0', 0,
+        '2-4-1-0-0-1-1-0', 1,
+        ['2-4-1-0-0-1-1-0']
+    );
+});
+
+test("Two items, inside table", function () {
+    testGetSelectedListItems(
+        '2-4-1-0-0-1-1-0', 0,
+        '2-4-1-0-0-1-1-1', 1,
+        ['2-4-1-0-0-1-1-0', '2-4-1-0-0-1-1-1']
+    );
+});
+
+test("Across table", function () {
+    testGetSelectedListItems(
+        '2-4', 0,
+        '2-5', 1,
+        ['2-4', '2-5']
     );
 });
 
@@ -2521,6 +2587,79 @@ test("Not joining different types", function () {
     testList('p_1', 'unordered', p_2_orderedHtml, p_1_unordered_p_2_ordered_pHtml, true);
 });
 
+module("list-in_table", {setup: setupWym});
+
+var listWithTableHtml = [""
+    , '<ul id="0">'
+        , '<li id="0_0">'
+            , '0_0_0'
+            , '<table id="0_0_1">'
+                , '<tbody id="0_0_1_0">'
+                    , '<tr id="0_0_1_0_0">'
+                        , '<td id="0_0_1_0_0_0">'
+                            , '0_0_1_0_0_0_0'
+                        , '</td>'
+                        , '<td id="0_0_1_0_0_1">'
+                            , '0_0_1_0_0_1_0'
+                            , '<ul id="0_0_1_0_0_1_1">'
+                                , '<li id="0_0_1_0_0_1_1_0">'
+                                    , '0_0_1_0_0_1_1_0_0'
+                                , '</li>'
+                            , '</ul>'
+                        , '</td>'
+                    , '</tr>'
+                , '</tbody>'
+            , '</table>'
+        , '</li>'
+    , '</ul>'
+].join('');
+var listWithTableHtml_make_list_inside = [""
+    , '<ul id="0">'
+        , '<li id="0_0">'
+            , '0_0_0'
+            , '<table id="0_0_1">'
+                , '<tbody id="0_0_1_0">'
+                    , '<tr id="0_0_1_0_0">'
+                        , '<td id="0_0_1_0_0_0">'
+                            , '<ul>'
+                                , '<li>'
+                                    , '0_0_1_0_0_0_0'
+                                , '</li>'
+                            , '</ul>'
+                        , '</td>'
+                        , '<td id="0_0_1_0_0_1">'
+                            , '0_0_1_0_0_1_0'
+                            , '<ul id="0_0_1_0_0_1_1">'
+                                , '<li id="0_0_1_0_0_1_1_0">'
+                                    , '0_0_1_0_0_1_1_0_0'
+                                , '</li>'
+                            , '</ul>'
+                        , '</td>'
+                    , '</tr>'
+                , '</tbody>'
+            , '</table>'
+        , '</li>'
+    , '</ul>'
+].join('');
+test("Make list inside table that is inside list.", function () {
+    testList(
+        '0_0_1_0_0_0',
+        'unordered',
+        listWithTableHtml,
+        listWithTableHtml_make_list_inside
+    );
+
+    // Using text selection
+    testList(
+        '0_0_1_0_0_0',
+        'unordered',
+        listWithTableHtml,
+        listWithTableHtml_make_list_inside,
+        true
+    );
+});
+
+
 module("list-correction", {setup: setupWym});
 
 test("Should correct invalid list nesting", function () {
@@ -4013,3 +4152,116 @@ test("Add `br` elements after transforming `li` to `span`. Unwrap span if no att
         );
     }
 );
+delistHtml.withTable = [""
+    , '<ul id="0">'
+        , '<li id="0_0">'
+            , '0_0_0'
+            , '<table id="0_0_1">'
+                , '<tbody id="0_0_1_0">'
+                    , '<tr id="0_0_1_0_0">'
+                        , '<td id="0_0_1_0_0_0">'
+                            , '0_0_1_0_0_0_0'
+                        , '</td>'
+                        , '<td id="0_0_1_0_0_1">'
+                            , '0_0_1_0_0_1_0'
+                            , '<ul id="0_0_1_0_0_1_1">'
+                                , '<li id="0_0_1_0_0_1_1_0">'
+                                    , '0_0_1_0_0_1_1_0_0'
+                                , '</li>'
+                            , '</ul>'
+                        , '</td>'
+                    , '</tr>'
+                , '</tbody>'
+            , '</table>'
+        , '</li>'
+    , '</ul>'
+].join('');
+delistHtml.withTable_deListedInside = [""
+    , '<ul id="0">'
+        , '<li id="0_0">'
+            , '0_0_0'
+            , '<table id="0_0_1">'
+                , '<tbody id="0_0_1_0">'
+                    , '<tr id="0_0_1_0_0">'
+                        , '<td id="0_0_1_0_0_0">'
+                            , '0_0_1_0_0_0_0'
+                        , '</td>'
+                        , '<td id="0_0_1_0_0_1">'
+                            , '0_0_1_0_0_1_0'
+                            , '<br />'
+                            , '<span id="0_0_1_0_0_1_1_0">'
+                                , '0_0_1_0_0_1_1_0_0'
+                            , '</span>'
+                        , '</td>'
+                    , '</tr>'
+                , '</tbody>'
+            , '</table>'
+        , '</li>'
+    , '</ul>'
+].join('');
+test("De-list inside table.", function () {
+    expect(2);
+    var startItemId = '0_0_1_0_0_1_1_0',
+        endItemId = '0_0_1_0_0_1_1_0';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'unordered',
+        delistHtml.withTable,
+        delistHtml.withTable_deListedInside
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'unordered',
+        delistHtml.withTable,
+        delistHtml.withTable_deListedInside,
+        true
+    );
+});
+delistHtml.withTable_parentDeListed = [""
+    , '<p id="0_0">'
+        , '0_0_0'
+    , '</p>'
+    , '<table id="0_0_1">'
+        , '<tbody id="0_0_1_0">'
+            , '<tr id="0_0_1_0_0">'
+                , '<td id="0_0_1_0_0_0">'
+                    , '0_0_1_0_0_0_0'
+                , '</td>'
+                , '<td id="0_0_1_0_0_1">'
+                    , '0_0_1_0_0_1_0'
+                    , '<ul id="0_0_1_0_0_1_1">'
+                        , '<li id="0_0_1_0_0_1_1_0">'
+                            , '0_0_1_0_0_1_1_0_0'
+                        , '</li>'
+                    , '</ul>'
+                , '</td>'
+            , '</tr>'
+        , '</tbody>'
+    , '</table>'
+].join('');
+test("De-list parent of table.", function () {
+    expect(2);
+    var startItemId = '0_0',
+        endItemId = '0_0';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'unordered',
+        delistHtml.withTable,
+        delistHtml.withTable_parentDeListed
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'unordered',
+        delistHtml.withTable,
+        delistHtml.withTable_parentDeListed,
+        true
+    );
+});

@@ -2566,21 +2566,35 @@ WYMeditor.editor.prototype.getCommonParentList = function (listItems, getClosest
 */
 WYMeditor.editor.prototype._getSelectedListItems = function (selection) {
     var wym = this,
+        $selectedContainer,
         $selectedNodes,
-        selectedLis;
+        $selectedLis;
 
     if (selection.isCollapsed) {
-        return jQuery(wym.selectedContainer()).closest('li');
+        $selectedContainer = jQuery(wym.selectedContainer());
+
+        if ($selectedContainer.closest('li, table').is('table')) {
+            // Inside a table
+            return [];
+        }
+        return $selectedContainer.closest('li');
     }
 
     // All the selected nodes in the selection's first range.
     $selectedNodes = jQuery(selection.getRangeAt(0).getNodes());
 
+    if ($selectedNodes.closest('li, table').filter('li').length === 0) {
+        // Selection is in a table before it is in a list. This prevents
+        // inclusion of the list item that the table may be contained
+        // in.
+        return [];
+    }
+
     // The technique is to get selected contents of the list items and then
     // get their closest parent list items. So we don't want the list elements.
     // Some list items may be empty and we do want those so we'll add them back
     // later.
-    selectedLis = $selectedNodes.not('li, ol, ul')
+    $selectedLis = $selectedNodes.not('li, ol, ul')
 
     // Add back the text nodes because jQuery.not always excludes them.
     .add($selectedNodes.filter(
@@ -2596,10 +2610,11 @@ WYMeditor.editor.prototype._getSelectedListItems = function (selection) {
     // because the user wants to manipulate them.
     .add($selectedNodes.filter('li:empty'))
 
-    // The next method, `jQuery.unique`, requires a plain DOM array.
-    .get();
+    // Exclude list items that are children of table elements that are in the
+    // selection.
+    .not($selectedNodes.filter('table').find('li'));
 
-    return jQuery.unique(selectedLis);
+    return jQuery.unique($selectedLis.get());
 };
 
 /**
@@ -3012,7 +3027,8 @@ WYMeditor.editor.prototype._removeItemsFromList = function ($listItems) {
             .defaultRootContainer,
         attributes;
 
-    // TODO: what about this? Could this be a better behavior?
+    // This is left here for future reference because it may or may not be a
+    // better behavior:
     // It is reasonable to de-list only a subset of the provided list items.
     // The subset are the list items which are not ancestors of any other list
     // items.
@@ -3023,9 +3039,9 @@ WYMeditor.editor.prototype._removeItemsFromList = function ($listItems) {
 
         // Determine the type of element this list item will be transformed
         // into and call for this transformation.
-        if ($listItem.parent().parent('li').length === 1) {
-            // The list item will end up inside another list item. Turn it into
-            // a `span`.
+        if ($listItem.parent().parent('li, th, td').length === 1) {
+            // The list item will end up inside another list item or inside a
+            // table cell. Turn it into a `span`.
             $listItem = jQuery(
                 wym.switchTo(
                     $listItem[0],
