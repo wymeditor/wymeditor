@@ -16,6 +16,9 @@ WYMeditor.
   release, the old functions are re-introduced as wrappers of the new functions
   and they produce deprecation warnings.
   [##538](https://github.com/wymeditor/wymeditor/issues/538)
+* `WYMeditor.editor.switchTo` no longer sets the caret into the
+  switched element by default.
+  [#540](https://github.com/wymeditor/wymeditor/pull/540)
 
 ## 1.0.0b6 (Beta 6)
 
