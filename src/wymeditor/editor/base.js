@@ -3016,6 +3016,7 @@ WYMeditor.editor.prototype._removeItemsFromList = function ($listItems) {
         $listItem,
         i,
         j,
+        listItemChild,
         $childNodesToTransfer,
         k,
         $childNodeToTransfer,
@@ -3091,12 +3092,12 @@ WYMeditor.editor.prototype._removeItemsFromList = function ($listItems) {
         // The de-listed element should now be at it's final destination.
         // Now, deal with its contents.
         for (j = 0; j < $listItem.contents().length; j++) {
+            listItemChild = $listItem.contents()[j];
             if (
-                wym.isBlockNode($listItem.contents()[j]) &&
+                wym.isBlockNode(listItemChild) &&
                 // Prevents a rangy selection boundary element from interfering.
-                $listItem.contents()[j]
-                    .className !== 'rangySelectionBoundary' &&
-                $listItem.contents()[j].tagName.toLowerCase() !== 'br'
+                listItemChild.className !== 'rangySelectionBoundary' &&
+                listItemChild.tagName.toLowerCase() !== 'br'
             ) {
                 // We have hit the first block child. From this child onward,
                 // the contents will be moved to after the de-listed element.
