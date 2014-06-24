@@ -3161,9 +3161,7 @@ WYMeditor.editor.prototype._removeItemsFromList = function ($listItems) {
                 // The Rangy selection boundary `span` may be inside.
                 $listItem.before($listItem.contents('.rangySelectionBoundary'));
                 $listItem.remove();
-            }
-
-            if ($listItem.parent().length > 0) {
+            } else {
                 // The `span` wasn't removed.
 
                 // Add `br` elements that may be necessary because by turning
