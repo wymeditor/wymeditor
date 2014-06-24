@@ -646,7 +646,7 @@ WYMeditor.editor.prototype.isInlineNode = function (node) {
     @param node The node to check.
 */
 
-WYMeditor.editor.prototype.isListNode= function (node) {
+WYMeditor.editor.prototype.isListNode = function (node) {
     if (
         node.tagName &&
         jQuery.inArray(
