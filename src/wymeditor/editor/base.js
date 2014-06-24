@@ -1921,14 +1921,7 @@ WYMeditor.editor.prototype._indentSingleItem = function (listItem) {
     Outdent a single list item via the dom, ensuring that the selected node moves in
     exactly one level and all other nodes stay at the same level.
  */
-WYMeditor.editor.prototype._outdentSingleItem = function (
-    listItem,
-    keepSublistContentsIndentation
-) {
-    keepSublistContentsIndentation =
-        typeof keepSublistContentsIndentation !== 'undefined' ?
-        keepSublistContentsIndentation : true;
-
+WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
     var wym = this,
         $liToOutdent,
         listType,
@@ -2000,11 +1993,7 @@ WYMeditor.editor.prototype._outdentSingleItem = function (
 
     // If this node has one or more sublists, they will need to be indented
     // by one with a fake parent to hold their previous position
-    if (
-        $sublistContents.length > 0 &&
-        // This is a trigger to prevent this
-        keepSublistContentsIndentation === true
-    ) {
+    if ($sublistContents.length > 0) {
         spacerListHtml = '<' + listType + '>' +
             '<li class="spacer_li"></li>' +
             '</' + listType + '>';
