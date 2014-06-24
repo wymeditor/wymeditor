@@ -3130,9 +3130,6 @@ WYMeditor.editor.prototype._removeItemsFromList = function ($listItems) {
                             );
                         }
                     }
-                    // Where the contents are going is no place for
-                    // line breaks.
-                    $listItem.children('br').remove();
                 }
                 // The contents should be ready now.
                 $listItem.after($listItem.contents().slice(j));
@@ -3140,6 +3137,10 @@ WYMeditor.editor.prototype._removeItemsFromList = function ($listItems) {
                 break;
             }
         }
+        // `br`s may have been transferred to the root container. They don't
+        // belong there.
+        jQuery(wym._doc).find('body.wym_iframe').children('br').remove();
+
         if ($listItem[0].tagName.toLowerCase() === 'span') {
             // Get rid of empty `span`s and ones that contain only `br`s.
             if (
