@@ -3640,6 +3640,71 @@ test("Move to before parent list. Transform into default root container.", funct
     );
 });
 
+delistHtml.withBrs= [""
+    , '<ul id="0">'
+        , '<li id="0_0">'
+            , '0_0_0'
+            , '<ul id="0_0_1">'
+                , '<li id="0_0_1_0">'
+                    , '0_0_1_0_0'
+                    , '<br id="0_0_1_0_1" />'
+                    , '0_0_1_0_2'
+                , '</li>'
+            , '</ul>'
+            , '0_0_2'
+            , '<br id="0_0_3" />'
+            , '0_0_4'
+            , '<br id="0_0_5" />'
+        , '</li>'
+        , '<li id="0_1">'
+            , '0_1_0'
+            , '<br id="0_1_1" />'
+        , '</li>'
+    , '</ul>'
+].join('');
+delistHtml.withBrs_li_0_0__li_0_1 = [""
+    , '<p id="0_0">'
+        , '0_0_0'
+    , '</p>'
+    , '<p id="0_0_1_0">'
+        , '0_0_1_0_0'
+        , '<br id="0_0_1_0_1" />'
+        , '0_0_1_0_2'
+    , '</p>'
+    , '<p>'
+        , '0_0_2'
+    , '</p>'
+    , '<p>'
+        , '0_0_4'
+    , '</p>'
+    , '<p id="0_1">'
+        , '0_1_0'
+        , '<br id="0_1_1" />'
+    , '</p>'
+].join('');
+test("De-list two items, one nested in other.", function () {
+    expect(2);
+    var startItemId = '0_0',
+        endItemId = '0_1';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'unordered',
+        delistHtml.withBrs,
+        delistHtml.withBrs_li_0_0__li_0_1
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'unordered',
+        delistHtml.withBrs,
+        delistHtml.withBrs_li_0_0__li_0_1,
+        true
+    );
+});
+
 delistHtml.li_8__li_8 = [""
     , '<ol>'
         , '<li id="li_1">1</li>'
