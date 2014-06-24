@@ -2598,6 +2598,11 @@ WYMeditor.editor.prototype._getSelectedListItems = function (selection) {
     // later.
     $selectedLis = $selectedNodes.not('li, ol, ul')
 
+    // IE doesn't include the Rangy selection boundary `span` in the above
+    // `.getNodes`. This effects an edge case, where a `li` contains only
+    // that `span`.
+    .add($selectedNodes.find('.rangySelectionBoundary'))
+
     // Add back the text nodes because jQuery.not always excludes them.
     .add($selectedNodes.filter(
             function () {return wym.nodeType === WYMeditor.NODE.TEXT;}
