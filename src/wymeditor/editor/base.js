@@ -2083,7 +2083,7 @@ WYMeditor.editor.prototype._isPOrDivAfterEnterInEmptynestedLi = function
  */
 
 WYMeditor.editor.prototype._isSpilledListAfterEnterInEmptyLi = function
-(container) {
+    (container) {
     if (
         container.tagName.toLowerCase() === 'li' &&
         container.previousSibling &&
