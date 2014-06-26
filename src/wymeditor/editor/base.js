@@ -2944,7 +2944,7 @@ WYMeditor.editor.prototype._insertList = function (listType) {
             commonParentList = wym.getCommonParentList(listItems, true);
             if (commonParentList) {
                 wym._changeListType(commonParentList, listType);
-            return true;
+                return true;
             }
         } else {
             // List types are the same as requested. De-list.
