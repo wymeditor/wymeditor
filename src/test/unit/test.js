@@ -3,7 +3,13 @@
 ok, start, stop, test, expect, equal, deepEqual, sinon, strictEqual,
 wymEqual, moveSelector, makeTextSelection, isContentEditable, normalizeHtml,
 inPhantomjs, ListPlugin, asyncTest */
-/* exported setupMultipleTextareas, teardownMultipleTextareas */
+/* exported
+setupWym,
+setupMultipleTextareas,
+teardownMultipleTextareas,
+no_br_selection_browser,
+is_double_br_browser
+*/
 "use strict";
 
 // We need to be able to operate in a noConflict context. Doing this during our
@@ -17,7 +23,15 @@ jQuery.noConflict();
 // because new contributors don't know which tests are "supposed to be
 // failing." That lack of knowing makes the test suite much less useful than a
 // test suite that should always be passing in all supported browsers.
-var SKIP_KNOWN_FAILING_TESTS = true;
+var SKIP_KNOWN_FAILING_TESTS = true,
+    // Can't move the selection to a <br /> element
+    no_br_selection_browser = jQuery.browser.webkit || jQuery.browser.msie,
+    // Double-br browsers need placeholders both before and after blocking
+    // elements. Others just need placeholders before
+    is_double_br_browser = (jQuery.browser.mozilla ||
+        jQuery.browser.webkit ||
+        jQuery.browser.safari ||
+        (jQuery.browser.msie && jQuery.browser.version >= "7.0"));
 
 function setupWym(modificationCallback) {
     if (WYMeditor.INSTANCES.length === 0) {
@@ -1562,12 +1576,12 @@ test("Set and get collapsed selection", function () {
                         "first child is immediately after selection."
                 );
             }
-                expect(expect() + 1);
+            expect(expect() + 1);
 
-                strictEqual(
-                    wymeditor.selectedContainer(),
-                    curNode,
-                    assertStrCount + assertStrPre + "node contains selection.");
+            strictEqual(
+                wymeditor.selectedContainer(),
+                curNode,
+                assertStrCount + assertStrPre + "node contains selection.");
         }
 
         if (
@@ -1616,10 +1630,10 @@ test("Refuses 'img' elements.", function () {
             'span'
         );
     }
-    catch(err) {
+    catch (err) {
         strictEqual(
             err,
-            "Will not change the tag of this element."
+            "Will not change the type of an 'img' element."
         );
     }
 
@@ -1669,7 +1683,7 @@ asyncTest("Load textarea value by default", function () {
     expect($textareas.length);
 
     // This function is here so as to not create functions within a loop.
-    assertAndStart = function(wym) {
+    assertAndStart = function (wym) {
         wymEqual(
             wym,
             // The index is the same as the textarea's index because it gets
@@ -1697,7 +1711,7 @@ asyncTest("Prefer explicit initial html option over textarea value", function ()
     expect($textareas.length);
 
     // This function is here so as to not create functions within a loop.
-    assertAndStart = function(wym) {
+    assertAndStart = function (wym) {
         wymEqual(
             wym,
             initHtml
@@ -1725,7 +1739,7 @@ asyncTest("Load textarea values by default in batch-initializations", function (
     expect($textareas.length);
 
     // This function is here so as to not create functions within a loop.
-    assertAndStart = function(wym) {
+    assertAndStart = function (wym) {
         wymEqual(
             wym,
             // The index is the same as the textarea's index because it gets

@@ -1,5 +1,6 @@
 /* jshint camelcase: false, maxlen: 85 */
-/* global setupWym,
+/* global
+setupWym, no_br_selection_browser, is_double_br_browser,
 wymEqual, moveSelector, simulateKey,
 makeSelection,
 test, expect, deepEqual */
@@ -14,18 +15,10 @@ test, expect, deepEqual */
 // Should be able to add content before/after/between block elements
 module("Blocking Elements", {setup: setupWym});
 
-// Can't move the selection to a <br /> element
-var no_br_selection_browser = jQuery.browser.webkit || jQuery.browser.msie,
-    // Can't move the selection to a <table> element
-    no_table_selection_browser = jQuery.browser.webkit || jQuery.browser.msie,
+// Can't move the selection to a <table> element
+var no_table_selection_browser = jQuery.browser.webkit || jQuery.browser.msie,
     // keyup/keydown can't be used to fix textnode wrapping
     no_keypress_textnode_wrap_browser = jQuery.browser.msie,
-    // Double-br browsers need placeholders both before and after blocking
-    // elements. Others just need placeholders before
-    is_double_br_browser = (jQuery.browser.mozilla ||
-        jQuery.browser.webkit ||
-        jQuery.browser.safari ||
-        (jQuery.browser.msie && jQuery.browser.version >= "7.0")),
 
     tableHtml = String() +
         '<table>' +
