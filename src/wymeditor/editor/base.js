@@ -3216,6 +3216,9 @@ WYMeditor.editor.prototype._removeItemsFromList = function ($listItems) {
             }
         }
     }
+
+    // Reintroduce any necessary DOM-level corrections for editing purposes
+    wym.fixBodyHtml();
 };
 
 /**
