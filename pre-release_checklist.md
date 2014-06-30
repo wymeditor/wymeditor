@@ -85,21 +85,24 @@ Any user should be able to follow the instructions in the README to make their
 own archive, but it's important to include an archive in a known place for ease
 of use.
 
-* Ensure that the checked-in version located in `dist/`
-  is up to date with the current source
-  by [Building WYMeditor](http://wymeditor.readthedocs.org/en/latest/wymeditor_development/building_wymeditor.html).
-* Build the [website](http://wymeditor.readthedocs.org/en/latest/wymeditor_development/index.html#wymeditor-website)
-  using jekyll
-  and then push it to the `gh-pages` branch.
-  to create the `tar.gz` archive.
-* Tag the current version in git using [Semantic
-  Versioning](http://semver.org/) and push the tag to github.
-* Navigate to the [WYMeditor
-  Releases](https://github.com/wymeditor/wymeditor/releases) page on github and
-  draft a new release for the tag of the current version. Add the information
-  from the CHANGELOG for the current version to the release description and
-  upload the built `tar.gz` archive named according to the
-  `wymeditor-<version>.tar.gz` format.
+1. Ensure that the checked-in version located in `dist/`
+   is up to date with the current source
+   by [Building WYMeditor](http://wymeditor.readthedocs.org/en/latest/wymeditor_development/building_wymeditor.html).
+2.* Build the [website](http://wymeditor.readthedocs.org/en/latest/wymeditor_development/index.html#wymeditor-website)
+   using jekyll
+   and then push it to the `gh-pages` branch.
+   to create the `tar.gz` archive.
+3. Tag the current version in git using [Semantic
+   Versioning](http://semver.org/) and push the tag to github.
+4. Navigate to the [WYMeditor Releases](https://github.com/wymeditor/wymeditor/releases)
+   page on github and
+   draft a new release for the tag of the current version.
+
+   1. Add the information from the CHANGELOG for the current version
+   to the release description.
+   2. Using the **Attach binaries** feature,
+   upload the built `tar.gz` archive
+   named according to the `wymeditor-<version>.tar.gz` format.
 
 Tell the World
 ==============
