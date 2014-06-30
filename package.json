@@ -1,7 +1,7 @@
 {
   "name": "wymeditor",
   "description": "Pure js cross-browser WYSIWYM editor with a focus on the clean separation of content and styling.",
-  "version": "1.0.0-b7dev",
+  "version": "1.0.0-b7",
   "homepage": "http://wymeditor.github.io/wymeditor/",
   "repository": [
     {

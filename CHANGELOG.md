@@ -3,9 +3,16 @@
 This document tracks the enhancements and bug fixes between releases of
 WYMeditor.
 
-## 1.0.0b7 (Beta 7)
+## 1.0.0b7 (Beta 7): De-listing
 
-*release-date* TBD
+*release-date* June 30, 2014
+
+### Enhancements
+
+* Hooray de-listing! It's taken a while to get here, but you can now remove
+  items from lists by hitting the "ordered list" or "unordered list" buttons
+  when you have list items selected. No more getting stuck in list land, a land
+  from whence there is no escape!
 
 ### Backwards-Incompatible Changes
 
