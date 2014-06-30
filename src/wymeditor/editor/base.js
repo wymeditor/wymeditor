@@ -660,9 +660,16 @@ WYMeditor.editor.prototype.isListNode = function (node) {
 };
 
 /**
-   WYMeditor.editor.hasRealAttributes
+   WYMeditor.editor.unwrapIfMeaninglessSpan
 
-   Returns true if the provided node has "real" attributes.
+   If the given node is a span with no useful attributes, unwrap it.
+
+   For certain editing actions (mostly list indent/outdent), it's necessary to
+   wrap content in a span element to retain grouping because it's not obvious that
+   the content will stay together without grouping. This method detects that
+   specific situation and then unwraps the content if the span is in fact not
+   necessary. It handles the fact that IE7 throws attributes on spans, even if
+   they're completely empty.
 
    Unlike sane browsers, IE7 provides all possible attributes in a node's
    `attributes`. Thus, a simple check like `attributes.length > 0` isn't
@@ -675,8 +682,9 @@ WYMeditor.editor.prototype.isListNode = function (node) {
 
    @param element The element.
 */
-WYMeditor.editor.prototype.hasRealAttributes = function (element) {
-    var attributes,
+WYMeditor.editor.prototype.unwrapIfMeaninglessSpan = function (element) {
+    var $element = jQuery(element),
+        attributes,
         i,
         attrName,
         attrValue,
@@ -690,11 +698,26 @@ WYMeditor.editor.prototype.hasRealAttributes = function (element) {
             'dataSrc',
             'tabIndex',
             'value'
+        ],
+        // Any attribute with these values isn't interesting
+        falsyAttrValues = [
+            '',
+            undefined,
+            false,
+            null
         ];
+
+    if (!element || typeof (element.tagName) === 'undefined' ||
+        element.tagName.toLowerCase() !== 'span') {
+        return false;
+    }
 
     attributes = element.attributes;
     if (attributes.length === 0) {
-        return false;
+        // Early return for spans with no attributes
+        $element.before($element.contents());
+        $element.remove();
+        return true;
     }
 
     // This loop is required for IE7 because it seems to populate
@@ -705,20 +728,22 @@ WYMeditor.editor.prototype.hasRealAttributes = function (element) {
         attrName = attributes[i].name;
         // Getting the value through jQuery is rumored to normalizes it in some
         // ways.
-        attrValue = jQuery(element).attr(attrName);
+        attrValue = $element.attr(attrName);
         if (
             jQuery.inArray(attrName, meaninglessAttrNames) === -1 &&
             jQuery.inArray(
                 attrValue,
-                // Attributes with these values don't interest us.
-                ['', undefined, false, null]
+                falsyAttrValues
             ) === -1
         ) {
-            // We hit an attribute that we care about.
-            return true;
+            // We hit an attribute making this non-meaningless
+            return false;
         }
     }
-    return false;
+
+    $element.before($element.contents());
+    $element.remove();
+    return true;
 };
 
 /**
@@ -2597,7 +2622,6 @@ WYMeditor.editor.prototype._getSelectedListItems = function (selection) {
             }
         )
     )
-
     .closest('li')
 
     // Add `li`s that are selected and are empty. Because they didn't
@@ -3188,10 +3212,7 @@ WYMeditor.editor.prototype._removeItemsFromList = function ($listItems) {
                 // If the de-listed element has no meaningful attributes, there is
                 // no use for it being a span.
                 attributes = $listItem[0].attributes;
-                if (!wym.hasRealAttributes($listItem[0])) {
-                    $listItem.before($listItem.contents());
-                    $listItem.remove();
-                }
+                wym.unwrapIfMeaninglessSpan($listItem[0]);
             }
         }
     }
