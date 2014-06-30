@@ -75,10 +75,8 @@ Checklist:
   changes in this release.
   All changes made here will likely
   also need to be made in ``index.html`` for the website.
-* Update the [website](http://wymeditor.readthedocs.org/en/latest/wymeditor_development/index.html#wymeditor-website).
-  First, make any necessary changes to `index.html`.
-  then build the site with jekyll,
-  and then pushito the `gh-pages` branch.
+* Update the [website](http://wymeditor.readthedocs.org/en/latest/wymeditor_development/index.html#wymeditor-website) content,
+  making any necessary changes to `index.html`.
 
 Build and Distribute the Archive
 ================================
@@ -88,11 +86,12 @@ own archive, but it's important to include an archive in a known place for ease
 of use.
 
 * Ensure that the checked-in version located in `dist/`
-  is up to date with the current source.
+  is up to date with the current source
+  by [Building WYMeditor](http://wymeditor.readthedocs.org/en/latest/wymeditor_development/building_wymeditor.html).
 * Build the [website](http://wymeditor.readthedocs.org/en/latest/wymeditor_development/index.html#wymeditor-website)
   using jekyll
   and then push it to the `gh-pages` branch.
-* Follow the `README.md` instructions to create the `tar.gz` archive.
+  to create the `tar.gz` archive.
 * Tag the current version in git using [Semantic
   Versioning](http://semver.org/) and push the tag to github.
 * Navigate to the [WYMeditor
