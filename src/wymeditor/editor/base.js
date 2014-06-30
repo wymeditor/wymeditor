@@ -500,21 +500,21 @@ WYMeditor.editor.prototype.nodeAfterSel = function () {
 WYMeditor.editor.prototype.selectedContainer = function () {
     var focusNode = this.selection().focusNode;
 
-        if (
-            focusNode.nodeType === WYMeditor.NODE.TEXT || (
+    if (
+        focusNode.nodeType === WYMeditor.NODE.TEXT || (
 
-                focusNode.tagName &&
+            focusNode.tagName &&
 
-                jQuery.inArray(
-                    focusNode.tagName.toLowerCase(),
-                    WYMeditor.NON_CONTAINING_ELEMENTS
-                ) > -1
-            )
-        ) {
-            return focusNode.parentNode;
-        } else {
-            return focusNode;
-        }
+            jQuery.inArray(
+                focusNode.tagName.toLowerCase(),
+                WYMeditor.NON_CONTAINING_ELEMENTS
+            ) > -1
+        )
+    ) {
+        return focusNode.parentNode;
+    } else {
+        return focusNode;
+    }
 
 };
 
@@ -679,7 +679,18 @@ WYMeditor.editor.prototype.hasRealAttributes = function (element) {
     var attributes,
         i,
         attrName,
-        attrValue;
+        attrValue,
+        // We don't care about any of these attributes
+        meaninglessAttrNames = [
+            '_wym_visited',
+            'dataFld',
+            'onmouseup',
+            'contentEditable',
+            'dataFormatAs',
+            'dataSrc',
+            'tabIndex',
+            'value'
+        ];
 
     attributes = element.attributes;
     if (attributes.length === 0) {
@@ -696,21 +707,7 @@ WYMeditor.editor.prototype.hasRealAttributes = function (element) {
         // ways.
         attrValue = jQuery(element).attr(attrName);
         if (
-            jQuery.inArray(
-                attrName, [
-                    // These are attribute names which seem to
-                    // have values other than those in the value
-                    // check below. For example, 'null' or '0'.
-                    '_wym_visited',
-                    'dataFld',
-                    'onmouseup',
-                    'contentEditable',
-                    'dataFormatAs',
-                    'dataSrc',
-                    'tabIndex',
-                    'value'
-                ]
-            ) === -1 &&
+            jQuery.inArray(attrName, meaninglessAttrNames) === -1 &&
             jQuery.inArray(
                 attrValue,
                 // Attributes with these values don't interest us.
@@ -2138,20 +2135,20 @@ WYMeditor.editor.prototype._isPOrDivAfterEnterInEmptynestedLi = function
         container.parentNode.tagName.toLowerCase() === 'li'
     ) {
         switch (container.childNodes.length) {
-            case 0:
+        case 0:
+            return true;
+        case 1:
+            if (
+                container.childNodes[0].tagName &&
+                container.childNodes[0].tagName.toLowerCase() === 'br'
+            ) {
                 return true;
-            case 1:
-                if (
-                    container.childNodes[0].tagName &&
-                    container.childNodes[0].tagName.toLowerCase() === 'br'
-                ) {
-                    return true;
-                } else if (
-                    container.childNodes[0].nodeType === WYMeditor.NODE.TEXT &&
-                    container.childNodes[0].data === WYMeditor.NBSP
-                ) {
-                    return true;
-                }
+            } else if (
+                container.childNodes[0].nodeType === WYMeditor.NODE.TEXT &&
+                container.childNodes[0].data === WYMeditor.NBSP
+            ) {
+                return true;
+            }
         }
     }
     return false;
@@ -2247,10 +2244,10 @@ WYMeditor.editor.prototype._replaceNodeWithBrAndSetCaret = function (node) {
     ) {
         $node.before('<br />');
     }
-        $node.before('<br />');
-        this.setCaretBefore(node.previousSibling);
-        $node.remove();
 
+    $node.before('<br />');
+    this.setCaretBefore(node.previousSibling);
+    $node.remove();
 };
 
 /**
@@ -2593,8 +2590,11 @@ WYMeditor.editor.prototype._getSelectedListItems = function (selection) {
     .add($selectedNodes.find('.rangySelectionBoundary'))
 
     // Add back the text nodes because jQuery.not always excludes them.
-    .add($selectedNodes.filter(
-            function () {return wym.nodeType === WYMeditor.NODE.TEXT;}
+    .add(
+        $selectedNodes.filter(
+            function () {
+                return wym.nodeType === WYMeditor.NODE.TEXT;
+            }
         )
     )
 
