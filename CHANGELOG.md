@@ -3,6 +3,14 @@
 This document tracks the enhancements and bug fixes between releases of
 WYMeditor.
 
+## 1.0.0b8 (Beta 8)
+
+*release-date* TBD
+
+### Enhancements
+
+* TODO
+
 ## 1.0.0b7 (Beta 7): De-listing
 
 *release-date* June 30, 2014
