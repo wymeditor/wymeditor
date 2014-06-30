@@ -1619,7 +1619,7 @@ test("Refuses 'img' elements.", function () {
     catch(err) {
         strictEqual(
             err,
-            "Will not change the tag of this element."
+            "Will not change the type of an 'img' element."
         );
     }
 
