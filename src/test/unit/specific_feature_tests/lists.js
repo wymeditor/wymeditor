@@ -1,8 +1,9 @@
 /* jshint camelcase: false, maxlen: 105 */
-/* global setupWym, SKIP_KNOWN_FAILING_TESTS,
+/* global
+setupWym, SKIP_KNOWN_FAILING_TESTS, is_double_br_browser,
 wymEqual, makeTextSelection, moveSelector, simulateKey, strictEqual, rangy,
 makeSelection,
-ok, test, expect */
+ok, test, expect, deepEqual */
 "use strict";
 
 module("list-_getSelectedListItems", {setup: setupWym});
@@ -149,7 +150,7 @@ function testGetSelectedListItems(
         var sel = rangy.getIframeSelection(wymeditor._iframe);
 
         return jQuery.makeArray(
-            jQuery(wymeditor._getSelectedListItems(sel)).map(function() {
+            jQuery(wymeditor._getSelectedListItems(sel)).map(function () {
                 return this.getAttribute('id');
             })
         );
@@ -181,7 +182,7 @@ function testGetSelectedListItems(
     );
 }
 
-test("Single, top level, caret at start", function() {
+test("Single, top level, caret at start", function () {
     testGetSelectedListItems(
         '0-0', 0,
         '0-0', 0,
@@ -189,7 +190,7 @@ test("Single, top level, caret at start", function() {
     );
 });
 
-test("Single, top level, caret at end", function() {
+test("Single, top level, caret at end", function () {
     testGetSelectedListItems(
         '0-0', 1,
         '0-0', 1,
@@ -197,15 +198,15 @@ test("Single, top level, caret at end", function() {
     );
 });
 
-test("Single, top level, whole selection", function() {
-     testGetSelectedListItems(
+test("Single, top level, whole selection", function () {
+    testGetSelectedListItems(
         '0-0', 0,
         '0-0', 1,
         ['0-0']
     );
 });
 
-test("Single, top level, partial selection at start", function() {
+test("Single, top level, partial selection at start", function () {
     testGetSelectedListItems(
         '0-1', 0,
         '0-1', 1,
@@ -213,7 +214,7 @@ test("Single, top level, partial selection at start", function() {
     );
 });
 
-test("Single, top level, partial selection at end", function() {
+test("Single, top level, partial selection at end", function () {
     testGetSelectedListItems(
         '0-1', 2,
         '0-1', 3,
@@ -221,7 +222,7 @@ test("Single, top level, partial selection at end", function() {
     );
 });
 
-test("Single, second level, caret at start", function() {
+test("Single, second level, caret at start", function () {
     testGetSelectedListItems(
         '0-3-0-0', 0,
         '0-3-0-0', 0,
@@ -229,7 +230,7 @@ test("Single, second level, caret at start", function() {
     );
 });
 
-test("Single, third level, caret at start", function() {
+test("Single, third level, caret at start", function () {
     testGetSelectedListItems(
         '0-3-0-0', 0,
         '0-3-0-0', 0,
@@ -237,7 +238,7 @@ test("Single, third level, caret at start", function() {
     );
 });
 
-test("Single, third level, caret at start, inside child", function() {
+test("Single, third level, caret at start, inside child", function () {
     testGetSelectedListItems(
         '0-3-0-1-1-0-0', 0,
         '0-3-0-1-1-0-0', 0,
@@ -246,7 +247,7 @@ test("Single, third level, caret at start, inside child", function() {
 });
 
 test("Single, third level, partial selection at start, inside child",
-    function() {
+    function () {
     testGetSelectedListItems(
         '0-3-0-1-1-0-0', 0,
         '0-3-0-1-1-0-0', 1,
@@ -255,7 +256,7 @@ test("Single, third level, partial selection at start, inside child",
 });
 
 test("Single, third level, partial selection at end, inside child",
-    function() {
+    function () {
     testGetSelectedListItems(
         '0-3-0-1-1-0-0', 2,
         '0-3-0-1-1-0-0', 3,
@@ -263,7 +264,7 @@ test("Single, third level, partial selection at end, inside child",
     );
 });
 
-test("Single, third level, caret at end, inside child", function() {
+test("Single, third level, caret at end, inside child", function () {
     testGetSelectedListItems(
         '0-3-0-1-1-0-0', 3,
         '0-3-0-1-1-0-0', 3,
@@ -271,7 +272,7 @@ test("Single, third level, caret at end, inside child", function() {
     );
 });
 
-test("Across two, top level, selection from start to end", function() {
+test("Across two, top level, selection from start to end", function () {
     testGetSelectedListItems(
         '0-0', 0,
         '0-1', 3,
@@ -279,7 +280,7 @@ test("Across two, top level, selection from start to end", function() {
     );
 });
 
-test("Across two, top level, selection from end to end", function() {
+test("Across two, top level, selection from end to end", function () {
     testGetSelectedListItems(
         '0-0', 1,
         '0-1', 3,
@@ -288,7 +289,7 @@ test("Across two, top level, selection from end to end", function() {
     );
 });
 
-test("Across three, top level, selection from start to end", function() {
+test("Across three, top level, selection from start to end", function () {
     testGetSelectedListItems(
         '0-0', 0,
         '0-2', 1,
@@ -296,7 +297,7 @@ test("Across three, top level, selection from start to end", function() {
     );
 });
 
-test("Across three, top level, selection from end to end", function() {
+test("Across three, top level, selection from end to end", function () {
     testGetSelectedListItems(
         '0-0', 1,
         '0-2', 1,
@@ -306,7 +307,7 @@ test("Across three, top level, selection from end to end", function() {
 });
 
 test("In range selections, don't select items in which, directly, there is " +
-    "no text selection", function() {
+    "no text selection", function () {
     testGetSelectedListItems(
         '0-2', 0,
         '0-3-0-0', 1,
@@ -314,7 +315,7 @@ test("In range selections, don't select items in which, directly, there is " +
     );
 });
 
-test("Across five, across levels, selection from start to start", function() {
+test("Across five, across levels, selection from start to start", function () {
     testGetSelectedListItems(
         '0-2', 0,
         '0-3-0-1-1-0', 0,
@@ -322,7 +323,7 @@ test("Across five, across levels, selection from start to start", function() {
     );
 });
 
-test("Across five, across levels, selection from start to end", function() {
+test("Across five, across levels, selection from start to end", function () {
     testGetSelectedListItems(
         '0-2', 0,
         '0-3-0-1-1-0', 1,
@@ -330,7 +331,7 @@ test("Across five, across levels, selection from start to end", function() {
     );
 });
 
-test("Across five, across levels, selection from end to start", function() {
+test("Across five, across levels, selection from end to start", function () {
     testGetSelectedListItems(
         '0-2', 1,
         '0-3-0-1-1-0', 0,
@@ -340,7 +341,7 @@ test("Across five, across levels, selection from end to start", function() {
 });
 
 test("Across five, across levels, selection from start to start, inside child",
-    function() {
+    function () {
     testGetSelectedListItems(
         '0-2', 0,
         '0-3-0-1-1-0-0', 0,
@@ -350,7 +351,7 @@ test("Across five, across levels, selection from start to start, inside child",
 });
 
 test("Across five, across levels, selection from start to somewhere, inside " +
-    "child", function() {
+    "child", function () {
     testGetSelectedListItems(
         '0-2', 0,
         '0-3-0-1-1-0-0', 1,
@@ -359,7 +360,7 @@ test("Across five, across levels, selection from start to somewhere, inside " +
 });
 
 test("Across five, across levels, selection from start to end, inside child",
-    function() {
+    function () {
     testGetSelectedListItems(
         '0-2', 0,
         '0-3-0-1-1-0-0', 3,
@@ -368,7 +369,7 @@ test("Across five, across levels, selection from start to end, inside child",
 });
 
 test("Across two, across levels, nested list is first child, selection from " +
-    "start to end", function() {
+    "start to end", function () {
     testGetSelectedListItems(
         '0-3', 0,
         '0-3-0-0', 1,
@@ -376,7 +377,7 @@ test("Across two, across levels, nested list is first child, selection from " +
     );
 });
 
-test("Across two, across levels, selection from start to end", function() {
+test("Across two, across levels, selection from start to end", function () {
     testGetSelectedListItems(
         '1-2', 0,
         '1-2-1-1', 1,
@@ -385,7 +386,7 @@ test("Across two, across levels, selection from start to end", function() {
 });
 
 test("Across two, across levels, selection from before nested to start",
-    function() {
+    function () {
     testGetSelectedListItems(
         '1-2', 1,
         '1-2-1-1', 0,
@@ -396,7 +397,7 @@ test("Across two, across levels, selection from before nested to start",
 });
 
 test("Across two, across levels, selection from before nested to end",
-    function() {
+    function () {
     testGetSelectedListItems(
         '1-2', 1,
         '1-2-1-1', 1,
@@ -405,7 +406,7 @@ test("Across two, across levels, selection from before nested to end",
     );
 });
 
-test("Across two, across levels, selection from start to start", function() {
+test("Across two, across levels, selection from start to start", function () {
     testGetSelectedListItems(
         '1-2', 0,
         '1-2-1-1', 0,
@@ -414,7 +415,7 @@ test("Across two, across levels, selection from start to start", function() {
     );
 });
 
-test("Across two, across levels, selection from start to end", function() {
+test("Across two, across levels, selection from start to end", function () {
     testGetSelectedListItems(
         '1-2', 0,
         '1-2-1-1', 1,
@@ -422,7 +423,7 @@ test("Across two, across levels, selection from start to end", function() {
     );
 });
 
-test("Empty list item is included when selected across", function() {
+test("Empty list item is included when selected across", function () {
     testGetSelectedListItems(
         '2-1', 0,
         '2-3', 1,
@@ -430,7 +431,7 @@ test("Empty list item is included when selected across", function() {
     );
 });
 
-test("Empty list item is included when selection starts at it", function() {
+test("Empty list item is included when selection starts at it", function () {
     testGetSelectedListItems(
         '2-2', 0,
         '2-3', 1,
@@ -438,7 +439,7 @@ test("Empty list item is included when selection starts at it", function() {
     );
 });
 
-test("Empty list item may be included when selection ends at it", function() {
+test("Empty list item may be included when selection ends at it", function () {
     testGetSelectedListItems(
         '2-1', 0,
         '2-2', 0,
@@ -447,7 +448,7 @@ test("Empty list item may be included when selection ends at it", function() {
     );
 });
 
-test("Empty list item is selected when caret is inside of it", function() {
+test("Empty list item is selected when caret is inside of it", function () {
     testGetSelectedListItems(
         '2-2', 0,
         '2-2', 0,
@@ -455,7 +456,7 @@ test("Empty list item is selected when caret is inside of it", function() {
     );
 });
 
-test("Across separate lists", function() {
+test("Across separate lists", function () {
     testGetSelectedListItems(
         '1-3', 0,
         '2-1', 1,
@@ -463,7 +464,7 @@ test("Across separate lists", function() {
     );
 });
 
-test("Across nesting descent", function() {
+test("Across nesting descent", function () {
     testGetSelectedListItems(
         '1-2-1-1', 0,
         '1-2', 3,
@@ -471,7 +472,7 @@ test("Across nesting descent", function() {
     );
 });
 
-test("A whole journey", function() {
+test("A whole journey", function () {
     testGetSelectedListItems(
         '0-0', 0,
         '1-4', 1,
@@ -3107,7 +3108,7 @@ var enterInEmptyLiOnlyLiTextAfterList = {
             , '<ul>'
                 , '<li>0'
                     , '<p>'
-                        ,'<br />'
+                        , '<br />'
                     , '</p>'
                     , 'foo'
                 , '</li>'
@@ -3117,7 +3118,7 @@ var enterInEmptyLiOnlyLiTextAfterList = {
             , '<ul>'
                 , '<li>0'
                     , '<div>'
-                        ,'<br />'
+                        , '<br />'
                     , '</div>'
                     , 'foo'
                 , '</li>'
@@ -3265,7 +3266,7 @@ var enterInEmptyLiNotLast = {
 // `testNameSuff` is the suffix of the name of the test that will be run.
 // `expectedHtml` is the former from each of the pairs above.
 // `brokenHtmls` is the latter from each of the pairs above.
-function enterInEmptyLiTest (testNameSuff, expectedHtml, brokenHtmls) {
+function enterInEmptyLiTest(testNameSuff, expectedHtml, brokenHtmls) {
     var wymeditor,
         $body,
         i,
@@ -3640,7 +3641,7 @@ test("Move to before parent list. Transform into default root container.", funct
     );
 });
 
-delistHtml.withBrs= [""
+delistHtml.withBrs = [""
     , '<ul id="0">'
         , '<li id="0_0">'
             , '0_0_0'
@@ -3963,7 +3964,7 @@ test("Across lists", function () {
         true
     );
 });
-delistHtml.li_2_1__li_5_1= [""
+delistHtml.li_2_1__li_5_1 = [""
     , '<ol>'
         , '<li id="li_1">1</li>'
         , '<li id="li_2">2'
@@ -4370,4 +4371,90 @@ test("De-list parent of table.", function () {
         delistHtml.withTable_parentDeListed,
         true
     );
+});
+
+var consecutiveTablesDelist = {};
+consecutiveTablesDelist.base = [""
+    , '<ol>'
+        , '<li id="li_0">'
+            , '0'
+            , '<table id="t_0">'
+                , '<tbody id="tbody_0">'
+                    , '<tr id="tr_0_0">'
+                        , '<td id="td_0_0_0">'
+                            , '0_0_0'
+                        , '</td>'
+                    , '</tr>'
+                , '</tbody>'
+            , '</table>'
+        , '</li>'
+    , '</ol>'
+    , '<table id="t_1">'
+        , '<tbody id="tbody_1">'
+            , '<tr id="tr_1_0">'
+                , '<td id="td_1_0_0">'
+                    , '1_0_0'
+                , '</td>'
+            , '</tr>'
+        , '</tbody>'
+    , '</table>'
+].join('');
+consecutiveTablesDelist.li_0 = [""
+    , '<p id="li_0">0</p>'
+    , '<table id="t_0">'
+        , '<tbody id="tbody_0">'
+            , '<tr id="tr_0_0">'
+                , '<td id="td_0_0_0">'
+                    , '0_0_0'
+                , '</td>'
+            , '</tr>'
+        , '</tbody>'
+    , '</table>'
+    , '<table id="t_1">'
+        , '<tbody id="tbody_1">'
+            , '<tr id="tr_1_0">'
+                , '<td id="td_1_0_0">'
+                    , '1_0_0'
+                , '</td>'
+            , '</tr>'
+        , '</tbody>'
+    , '</table>'
+].join('');
+test("De-listing keeps spacer brs for blocking_elements", function () {
+    expect(2);
+    var startItemId = 'li_0',
+        $body,
+        children,
+        wymeditor = jQuery.wymeditors(0);
+
+    testList(
+        startItemId,
+        'ordered',
+        consecutiveTablesDelist.base,
+        consecutiveTablesDelist.li_0
+    );
+    // Now we need to verify that the spacer brs still exist in the DOM
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    children = $body.children();
+
+    if (is_double_br_browser) {
+        expect(7);
+        deepEqual(children.length, 5);
+        if (children.length === 5) {
+            deepEqual(children[0].tagName.toLowerCase(), 'br');
+            deepEqual(children[1].tagName.toLowerCase(), 'table');
+            deepEqual(children[2].tagName.toLowerCase(), 'br');
+            deepEqual(children[3].tagName.toLowerCase(), 'table');
+            deepEqual(children[4].tagName.toLowerCase(), 'br');
+        }
+    } else {
+        expect(6);
+        deepEqual(children.length, 4);
+        if (children.length === 4) {
+            deepEqual(children[0].tagName.toLowerCase(), 'br');
+            deepEqual(children[1].tagName.toLowerCase(), 'table');
+            deepEqual(children[2].tagName.toLowerCase(), 'br');
+            deepEqual(children[3].tagName.toLowerCase(), 'table');
+        }
+    }
 });
