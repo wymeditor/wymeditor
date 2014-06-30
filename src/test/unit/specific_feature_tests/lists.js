@@ -4438,23 +4438,25 @@ test("De-listing keeps spacer brs for blocking_elements", function () {
     children = $body.children();
 
     if (is_double_br_browser) {
-        expect(7);
-        deepEqual(children.length, 5);
-        if (children.length === 5) {
-            deepEqual(children[0].tagName.toLowerCase(), 'br');
-            deepEqual(children[1].tagName.toLowerCase(), 'table');
-            deepEqual(children[2].tagName.toLowerCase(), 'br');
-            deepEqual(children[3].tagName.toLowerCase(), 'table');
-            deepEqual(children[4].tagName.toLowerCase(), 'br');
+        expect(9);
+        deepEqual(children.length, 6);
+        if (children.length === 6) {
+            deepEqual(children[0].tagName.toLowerCase(), 'p');
+            deepEqual(children[1].tagName.toLowerCase(), 'br');
+            deepEqual(children[2].tagName.toLowerCase(), 'table');
+            deepEqual(children[3].tagName.toLowerCase(), 'br');
+            deepEqual(children[4].tagName.toLowerCase(), 'table');
+            deepEqual(children[5].tagName.toLowerCase(), 'br');
         }
     } else {
-        expect(6);
-        deepEqual(children.length, 4);
-        if (children.length === 4) {
-            deepEqual(children[0].tagName.toLowerCase(), 'br');
-            deepEqual(children[1].tagName.toLowerCase(), 'table');
-            deepEqual(children[2].tagName.toLowerCase(), 'br');
-            deepEqual(children[3].tagName.toLowerCase(), 'table');
+        expect(8);
+        deepEqual(children.length, 5);
+        if (children.length === 5) {
+            deepEqual(children[0].tagName.toLowerCase(), 'p');
+            deepEqual(children[1].tagName.toLowerCase(), 'br');
+            deepEqual(children[2].tagName.toLowerCase(), 'table');
+            deepEqual(children[3].tagName.toLowerCase(), 'br');
+            deepEqual(children[4].tagName.toLowerCase(), 'table');
         }
     }
 });
