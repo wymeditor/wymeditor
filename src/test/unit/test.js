@@ -38,49 +38,13 @@ function setupWym(modificationCallback) {
         stop(); // Stop test running until the editor is initialized
         jQuery('.wym').wymeditor({
             postInit: function (wym) {
-                // Determine if attempting to select a cell with a non-text
-                // inner node (a span) actually selects the inner node or
-                // selects the cell itself. FF for example, selects the cell
-                // while webkit selects the inner.
-                var initialHtml = [""
-                    , '<table>'
-                        , '<tbody>'
-                            , '<tr>'
-                                , '<td id="td_1_1">'
-                                    , '<span id="span_1_1">span_1_1</span>'
-                                , '</td>'
-                            , '</tr>'
-                        , '</tbody>'
-                    , '</table>'
-                    ].join(''),
-                    spanSelector = '#span_1_1',
-                    tdSelector = '#td_1_1',
-                    $body,
-                    td,
-                    span;
-
                 wym.listPlugin = new ListPlugin({}, wym);
                 wym.tableEditor = wym.table();
-
                 wym.structuredHeadings();
-
-                wym._html(initialHtml);
-
-                $body = jQuery(wym._doc).find('body.wym_iframe');
-                td = $body.find(tdSelector)[0];
-                span = $body.find(spanSelector)[0];
-                wym.tableEditor.selectElement($body.find(tdSelector)[0]);
-
-                if (wym.selectedContainer() === span) {
-                    WYMeditor._isInnerSelector = true;
-                } else {
-                    WYMeditor._isInnerSelector = false;
-                }
 
                 if (typeof modificationCallback === 'function') {
                     modificationCallback(wym);
                 }
-
                 // Re-start test running now that we're finished initializing
                 start();
             }

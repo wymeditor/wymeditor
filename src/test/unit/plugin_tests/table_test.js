@@ -63,6 +63,10 @@ function testTableTab(initialHtml, startSelector, endSelector) {
     simulateKey(WYMeditor.KEY.TAB, startElmnt);
 
     actualSelection = wymeditor.selectedContainer();
+    // In some browsers the selection will be in a child span. That seems ok.
+    if (actualSelection.tagName.toLowerCase() === 'span') {
+        actualSelection = actualSelection.parentNode;
+    }
     if (endSelector === null) {
         deepEqual(actualSelection, null);
     } else {
@@ -124,6 +128,10 @@ function testRowMerge(
     // Verify that our now-current selection matches the expected final
     // selection.
     actualSelection = wymeditor.selectedContainer();
+    // In some browsers the selection will be in a child span. That seems ok.
+    if (actualSelection.tagName.toLowerCase() === 'span') {
+        actualSelection = actualSelection.parentNode;
+    }
     if (expectedFinalSelector === null) {
         deepEqual(actualSelection, null);
     } else {
@@ -849,20 +857,12 @@ test("Tab from th to cell right", function () {
 test("Tab to next row", function () {
     expect(3);
     var expectedSelector = '#td_2_1';
-    if (WYMeditor._isInnerSelector) {
-        expectedSelector = '#span_2_1';
-    }
     testTableTab(basicTableHtml, '#td_1_3', expectedSelector);
 });
 
 test("Tab from th to next row", function () {
     expect(3);
-    var expectedSelector = '#span_2_1';
-    if (jQuery.browser.mozilla ||
-        (jQuery.browser.msie && parseInt(jQuery.browser.version, 10) >= 9.0)
-    ) {
-        expectedSelector = '#td_2_1';
-    }
+    var expectedSelector = '#td_2_1';
     testTableTab(thTableHtml, '#th_1_3', expectedSelector);
 });
 
@@ -1355,9 +1355,6 @@ test("With span", function () {
     expect(5);
 
     var endSelection = '#td_2_1';
-    if (WYMeditor._isInnerSelector) {
-        endSelection = '#span_2_1';
-    }
     testRowMerge(mergeTableHtml, mergeSpan21Html, '#span_2_1', '#td_2_2', endSelection);
 });
 
