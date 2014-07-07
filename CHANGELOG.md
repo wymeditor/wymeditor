@@ -11,6 +11,15 @@ WYMeditor.
 
 * TODO
 
+### Development Process Improvements
+
+* [#547](https://github.com/wymeditor/wymeditor/pull/547/)-
+  Downgraded our jshint version to 2.4.4
+  so that we still get whitespace/indentation warnings.
+  jshint 2.5.0 [dropped support](https://github.com/jshint/jshint/issues/1677)
+  for those warnings,
+  despite them being super useful for code style consistency.
+
 ## 1.0.0b7 (Beta 7): De-listing
 
 *release-date* June 30, 2014
