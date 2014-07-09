@@ -1,9 +1,10 @@
 /* jshint maxlen: 79 */
-/* global setupWym,
+/* global
+prepareUnitTestModule,
 test, expect, deepEqual */
 "use strict";
 
-module("EmbedPlugin", {setup: setupWym});
+module("EmbedPlugin", {setup: prepareUnitTestModule});
 
 var YOUTUBE_VIDEO_URL = [""
     , 'http://www.youtube.com/'

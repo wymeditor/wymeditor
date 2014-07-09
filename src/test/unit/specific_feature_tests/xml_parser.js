@@ -1,10 +1,10 @@
 /* jshint camelcase: false, maxlen: 100 */
-/* global setupWym, wymEqual,
+/* global wymEqual, prepareUnitTestModule,
 test, expect, deepEqual */
 "use strict";
 // Tests for the XML parser
 
-module("XmlParser", {setup: setupWym});
+module("XmlParser", {setup: prepareUnitTestModule});
 
 test("Empty is empty", function () {
     var wymeditor = jQuery.wymeditors(0);
@@ -370,7 +370,7 @@ test("Allow line breaks after strong in lists", function () {
     wymEqual(wymeditor, listHtml);
 });
 
-module("XmlParser-editor_only_elements", {setup: setupWym});
+module("XmlParser-editor_only_elements", {setup: prepareUnitTestModule});
 
 var TEXT_CONTAINER_ELEMENTS = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
                                'pre', 'blockquote', 'div'];
@@ -563,7 +563,7 @@ test("Remove nested editor-only elements", function () {
         });
 });
 
-module("XmlParser-editor_only_invalid_lists", {setup: setupWym});
+module("XmlParser-editor_only_invalid_lists", {setup: prepareUnitTestModule});
 
 var invalidULEndNesting = String() +
     '<ul id="ul_top">' +
@@ -730,7 +730,7 @@ test("Remove editor-only UL with invalid LI nesting within it", function () {
 });
 
 
-module("XmlParser-fix_style_spans", {setup: setupWym});
+module("XmlParser-fix_style_spans", {setup: prepareUnitTestModule});
 
 var startSpan = '<p>Test<span>Test</span></p>';
 
@@ -767,7 +767,7 @@ test("Fix subscript style span", function () {
     testStyleSpan("sub", "vertical-align:sub;", "Fix subscript style span");
 });
 
-module("XmlParser-remove_unwanted_classes", {setup: setupWym});
+module("XmlParser-remove_unwanted_classes", {setup: prepareUnitTestModule});
 
 test("Remove 'apple-style-span' class", function () {
     expect(2);
@@ -826,7 +826,7 @@ test("Class removal is case insensitive", function () {
     WYMeditor.CLASSES_REMOVED_BY_PARSER = defaultClassesRemovedByParser;
 });
 
-module("XmlParser-unwrap_single_tag_in_list_item", {setup: setupWym});
+module("XmlParser-unwrap_single_tag_in_list_item", {setup: prepareUnitTestModule});
 
 var tagsToUnwrapInLists =
     WYMeditor.DocumentStructureManager.VALID_DEFAULT_ROOT_CONTAINERS;
@@ -1054,7 +1054,7 @@ function testUnwrapMultiContentInLI(
     }
 }
 
-module("XmlParser-unwrap_multiple_tags_in_list", {setup: setupWym});
+module("XmlParser-unwrap_multiple_tags_in_list", {setup: prepareUnitTestModule});
 
 var unwrapMultiInListHtml = String() +
     '<ul>' +
@@ -1232,7 +1232,7 @@ test("Unwrap root container content surrounded by table elements in simple " +
 });
 
 
-module("XmlParser-unwrap_multiple_tags_in_sublist", {setup: setupWym});
+module("XmlParser-unwrap_multiple_tags_in_sublist", {setup: prepareUnitTestModule});
 
 var unwrapMultiInSublistHtml = String() +
     '<ol>' +
@@ -1416,7 +1416,7 @@ test("Unwrap root container content surrounded by table elements in simple " +
     );
 });
 
-module("XmlParser-unwrap_multiple_tags_in_nested_list", {setup: setupWym});
+module("XmlParser-unwrap_multiple_tags_in_nested_list", {setup: prepareUnitTestModule});
 
 var unwrapMultiInNestedListHtml = String() +
     '<ol>' +
@@ -1605,7 +1605,7 @@ test("Unwrap root container content surrounded by table elements in nested " +
     );
 });
 
-module("XmlParser-unwrap_nested_tags_in_list", {setup: setupWym});
+module("XmlParser-unwrap_nested_tags_in_list", {setup: prepareUnitTestModule});
 
 var unwrapNestedDivStartHtml = String() +
     '<ul>' +
@@ -1669,7 +1669,7 @@ test("Unwrap content of nested DIV elements in list item", function () {
     });
 });
 
-module("XmlParser-allowed_block_elements", {setup: setupWym});
+module("XmlParser-allowed_block_elements", {setup: prepareUnitTestModule});
 
 var blockElementsHtml = {};
 blockElementsHtml.expected = [""

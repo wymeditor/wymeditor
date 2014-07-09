@@ -1,6 +1,6 @@
 /* jshint maxlen: 90 */
 /* global rangy,
-setupWym, SKIP_KNOWN_FAILING_TESTS,
+SKIP_KNOWN_FAILING_TESTS, prepareUnitTestModule,
 wymEqual, moveSelector, simulateKey, makeSelection, normalizeHtml,
 ok, test, expect, deepEqual */
 "use strict";
@@ -158,7 +158,7 @@ function testGetCellXIndex(initialHtml, cellSelector, expectedIndex) {
     deepEqual(actual, expectedIndex);
 }
 
-module("Table Modification", {setup: setupWym});
+module("Table Modification", {setup: prepareUnitTestModule});
 
 var basicTableHtml = String() +
         '<table>' +
@@ -687,7 +687,7 @@ var removedColumn3And2Html = String() +
             '</tbody>' +
         '</table>';
 
-module("table- add/remove", {setup: setupWym});
+module("table- add/remove", {setup: prepareUnitTestModule});
 test("no-op on non-table elements", function () {
     expect(4);
 
@@ -741,7 +741,7 @@ test("Deleting all columns removes table", function () {
     testTable('#span_2_1', 'remove', 'column', removedColumn3And2Html, '');
 });
 
-module("table- colspan/rowspan add/remove", {setup: setupWym});
+module("table- colspan/rowspan add/remove", {setup: prepareUnitTestModule});
 test("Row", function () {
     expect(2);
 
@@ -843,7 +843,7 @@ test("Row with TH first th row", function () {
     testTable('#tr_1 + tr td', 'remove', 'row', addRowThTh13Html, thTableHtml, 2);
 });
 
-module("table- tab movement", {setup: setupWym});
+module("table- tab movement", {setup: prepareUnitTestModule});
 test("Tab to cell right", function () {
     expect(3);
     testTableTab(basicTableHtml, '#td_1_1', '#td_1_2');
@@ -885,7 +885,7 @@ test("Tab outside of table", function () {
     testTableTab(basicTableHtml + '<p id="p_1">p1</p>', '#p_1', '#p_1');
 });
 
-module("table-row_merge", {setup: setupWym});
+module("table-row_merge", {setup: prepareUnitTestModule});
 
 var mergeTableHtml = String() +
         '<table>' +
@@ -1358,7 +1358,7 @@ test("With span", function () {
     testRowMerge(mergeTableHtml, mergeSpan21Html, '#span_2_1', '#td_2_2', endSelection);
 });
 
-module("table-row_merge_rowspan", {setup: setupWym});
+module("table-row_merge_rowspan", {setup: prepareUnitTestModule});
 if (!jQuery.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
     test("Across rowspan", function () {
         expect(5);
@@ -1455,7 +1455,7 @@ test("getCellXIndex test", function () {
     testGetCellXIndex(mergeTableLongRowspanHtml, '#td_4_4', 3);
 });
 
-module("utils", {setup: setupWym});
+module("utils", {setup: prepareUnitTestModule});
 function testNormalize(testHtml) {
     var normed = normalizeHtml(jQuery(testHtml)[0]);
     deepEqual(normed, testHtml);
