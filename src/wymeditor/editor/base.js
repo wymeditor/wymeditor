@@ -331,6 +331,31 @@ WYMeditor.editor.prototype._html = function (html) {
 };
 
 /**
+    WYMeditor.editor.teardown
+    =========================
+
+    Removes the editor and replaces the 'wym-initialized' class on the textarea
+    with 'wym-tore-down'.
+*/
+WYMeditor.editor.prototype.teardown = function () {
+    var wym = this,
+        instances = WYMeditor.INSTANCES,
+        i;
+
+    wym._box.remove();
+    wym._element
+        .removeClass('wym-initialized')
+        .addClass('wym-tore-down')
+        .show();
+    instances.splice(wym._index, 1);
+
+    // Refresh each editor's _index value
+    for (i = 0; i < instances.length; i++) {
+        instances[i]._index = i;
+    }
+};
+
+/**
     WYMeditor.editor.html
     =====================
 
