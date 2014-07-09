@@ -517,6 +517,14 @@ jQuery.extend(WYMeditor, {
 
     */
     editor : function (elem, options) {
+        var i;
+
+        for (i = 0; i < WYMeditor.INSTANCES.length; i++) {
+            if (elem[0] === WYMeditor.INSTANCES[i]._element[0]) {
+                throw "It seems that this textarea already belongs to a " +
+                    "WYMeditor instance.";
+            }
+        }
         // Store the instance in the INSTANCES array and store the index
         this._index = WYMeditor.INSTANCES.push(this) - 1;
         // The element replaced by the editor
