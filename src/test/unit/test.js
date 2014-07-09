@@ -1646,7 +1646,8 @@ module(
                 amount: MULTIPLE_INSTANCES_AMOUNT,
                 initialized: false
             });
-        }
+        },
+        teardown: teardownAllWyms
     }
 );
 
