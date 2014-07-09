@@ -922,6 +922,27 @@ jQuery.extend({
     }
 });
 
+jQuery.extend({
+    getWymeditorByTextarea: function (textarea) {
+        var i;
+        if (
+            !(
+                textarea &&
+                textarea.tagName &&
+                textarea.tagName.toLowerCase() === 'textarea'
+            )
+        ) {
+            throw "jQuery.getWymeditorByTextarea requires a textarea element.";
+        }
+        for (i = 0; i < WYMeditor.INSTANCES.length; i++) {
+            if (textarea === WYMeditor.INSTANCES[i]._element[0]) {
+                return WYMeditor.INSTANCES[i];
+            }
+        }
+        return false;
+    }
+});
+
 /**
     WYMeditor.computeWymPath
     ========================
