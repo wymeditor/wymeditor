@@ -212,6 +212,8 @@ WYMeditor.editor.prototype.init = function () {
         wym.initIframe(this);
     });
 
+    wym._element.addClass('wym-initialized');
+
     wym.initSkin();
 };
 
