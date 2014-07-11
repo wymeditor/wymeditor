@@ -2247,19 +2247,19 @@ test("One `br` variations with `id`s", function () {
 });
 
 test("One `br` variations without `id`s", function () {
-    testNoChangeInHtmlArray(oneBrVariationsWithId);
+    testNoChangeInHtmlArray(oneBrVariationsNoId);
 });
 
 test("Two `br` variations with `id`s", function () {
-    testNoChangeInHtmlArray(oneBrVariationsWithId);
+    testNoChangeInHtmlArray(twoBrVariationsWithId);
 });
 
 test("Two `br` variations without `id`s", function () {
-    testNoChangeInHtmlArray(oneBrVariationsWithId);
+    testNoChangeInHtmlArray(twoBrVariationsNoId);
 });
 
 test("Three `br` variations with `id`s", function () {
-    testNoChangeInHtmlArray(oneBrVariationsWithId);
+    testNoChangeInHtmlArray(threeBrVariationsWithId);
 });
 
 test("Three `br` variations without `id`s", function () {
