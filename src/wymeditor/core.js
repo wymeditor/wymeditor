@@ -522,11 +522,6 @@ jQuery.extend(WYMeditor, {
         // The element replaced by the editor
         this._element = elem;
         this._options = options;
-        // Store the element's inner value
-        if (!this._options.html) {
-            this._options.html = jQuery(elem).val();
-        }
-
         // Path to the WYMeditor core
         this._options.wymPath = this._options.wymPath ||
             WYMeditor.computeWymPath();

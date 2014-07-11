@@ -1,9 +1,525 @@
 /* jshint camelcase: false, maxlen: 105 */
-/* global setupWym, SKIP_KNOWN_FAILING_TESTS,
-wymEqual, makeTextSelection, moveSelector, simulateKey, strictEqual,
+/* global
+setupWym, SKIP_KNOWN_FAILING_TESTS, is_double_br_browser,
+wymEqual, makeTextSelection, moveSelector, simulateKey, strictEqual, rangy,
 makeSelection,
-ok, test, expect */
+ok, test, expect, deepEqual */
 "use strict";
+
+module("list-_getSelectedListItems", {setup: setupWym});
+
+var getSelectedListItemsHtml = [""
+    , '<ul id="0">'
+        , '<li id="0-0">'
+            , '0-0-0'
+        , '</li>'
+        , '<li id="0-1">'
+            , '0-1-0'
+            , '<br id="0-1-1" />'
+            , '0-1-2'
+        , '</li>'
+        , '<li id="0-2">'
+            , '0-2-0'
+        , '</li>'
+        , '<li id="0-3">'
+            , '<ol id="0-3-0">'
+                , '<li id="0-3-0-0">'
+                    , '0-3-0-0-0'
+                , '</li>'
+                , '<li id="0-3-0-1">'
+                    , '0-3-0-1-0'
+                    , '<ol id="0-3-0-1-1">'
+                        , '<li id="0-3-0-1-1-0">'
+                            , '<span id="0-3-0-1-1-0-0">'
+                                , '0-3-0-1-1-0-0-0'
+                                , '<br id="0-3-0-1-1-0-0-1">'
+                                , '0-3-0-1-1-0-0-2'
+                            , '</span>'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+            , '</ol>'
+        , '</li>'
+    , '</ul>'
+    , '<ol id="1">'
+        , '<li id="1-1">'
+            , '1-1-0'
+        , '</li>'
+        , '<li id="1-2">'
+            , '1-2-0'
+            , '<ul id="1-2-1">'
+                , '<li id="1-2-1-1">'
+                    , '1-2-1-1-0'
+                , '</li>'
+            , '</ul>'
+            , '1-2-1'
+        , '</li>'
+        , '<li id="1-3">'
+            , '1-3-0'
+        , '</li>'
+        , '<li id="1-4">'
+            , '1-4-0'
+        , '</li>'
+    , '</ol>'
+    , '<ol id="2">'
+        , '<li id="2-0">'
+            , '2-0-0'
+        , '</li>'
+        , '<li id="2-1">'
+            , '2-1-0'
+        , '</li>'
+        , '<li id="2-2">'
+        , '</li>'
+        , '<li id="2-3">'
+            , '2-3-0'
+            , '<ol id="2-3-1">'
+                , '<li id="2-3-1-0">'
+                    , '2-3-1-0-0'
+                , '</li>'
+                , '<li id="2-3-1-1">'
+                , '</li>'
+            , '</ol>'
+            , '2-3-2'
+        , '</li>'
+        , '<li id="2-4">'
+            , '2-4-0'
+            , '<table id="2-4-1">'
+                , '<tbody id="2-4-1-0">'
+                    , '<tr id="2-4-1-0-0">'
+                        , '<td id="2-4-1-0-0-0">'
+                            , '2-4-1-0-0-0-0'
+                        , '</td>'
+                        , '<td id="2-4-1-0-0-1">'
+                            , '2-4-1-0-0-1-0'
+                            , '<ul id="2-4-1-0-0-1-1">'
+                                , '<li id="2-4-1-0-0-1-1-0">'
+                                    , '2-4-1-0-0-1-1-0-0'
+                                , '</li>'
+                                , '<li id="2-4-1-0-0-1-1-1">'
+                                    , '2-4-1-0-0-1-1-1-0'
+                                , '</li>'
+                            , '</ul>'
+                        , '</td>'
+                    , '</tr>'
+                , '</tbody>'
+            , '</table>'
+        , '</li>'
+        , '<li id="2-5">'
+            , '2-5-0'
+        , '</li>'
+    , '</ol>'
+].join('');
+
+/**
+    testGetSelectedListItems
+
+    This is a helper function for testing the
+    WYMeditor.editor._getSelectedListItems method.
+
+    It works by being provided a description of a selection to perform and a
+    list ids of of list items which are expected to be returned by the tested
+    method.
+
+    @param startElementId The `id` of the element in which the selection will
+                              start.
+    @param startIndex Index of node inside the above list item, with which
+                      the selection will start.
+    @param endElementId Opposite of startLiId.
+    @param endIndex Opposite of startLiIndex.
+    @param expectedLisIds0 Array of `id`s of list items which are expected to
+                           be returned from `_getSelectedListItems`.
+    @param expectedLisIds1 An acceptable variation.
+    @param expectedLisIds2 Another acceptable variation.
+*/
+function testGetSelectedListItems(
+    startElementId,
+    startIndex,
+    endElementId,
+    endIndex,
+    expectedLisIds0,
+    expectedLisIds1,
+    expectedLisIds2
+) {
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        startElement,
+        endElement,
+        assertStrSelection;
+
+    function getSelectedLisIds() {
+        var sel = rangy.getIframeSelection(wymeditor._iframe);
+
+        return jQuery.makeArray(
+            jQuery(wymeditor._getSelectedListItems(sel)).map(function () {
+                return this.getAttribute('id');
+            })
+        );
+    }
+
+    wymeditor._html(getSelectedListItemsHtml);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+    expect(1);
+
+    startElement = $body.find('#' + startElementId)[0];
+    endElement = $body.find('#' + endElementId)[0];
+    assertStrSelection =
+        'from li#' + startElementId + '@' + startIndex +
+        ' to li#' + endElementId + '@' + endIndex;
+
+    makeSelection(
+        wymeditor,
+        startElement,
+        endElement,
+        startIndex,
+        endIndex
+    );
+    ok(
+        getSelectedLisIds().toString() === expectedLisIds0.toString() ||
+        getSelectedLisIds().toString() === expectedLisIds1.toString() ||
+        getSelectedLisIds().toString() === expectedLisIds2.toString(),
+        assertStrSelection
+    );
+}
+
+test("Single, top level, caret at start", function () {
+    testGetSelectedListItems(
+        '0-0', 0,
+        '0-0', 0,
+        ['0-0']
+    );
+});
+
+test("Single, top level, caret at end", function () {
+    testGetSelectedListItems(
+        '0-0', 1,
+        '0-0', 1,
+        ['0-0']
+    );
+});
+
+test("Single, top level, whole selection", function () {
+    testGetSelectedListItems(
+        '0-0', 0,
+        '0-0', 1,
+        ['0-0']
+    );
+});
+
+test("Single, top level, partial selection at start", function () {
+    testGetSelectedListItems(
+        '0-1', 0,
+        '0-1', 1,
+        ['0-1']
+    );
+});
+
+test("Single, top level, partial selection at end", function () {
+    testGetSelectedListItems(
+        '0-1', 2,
+        '0-1', 3,
+        ['0-1']
+    );
+});
+
+test("Single, second level, caret at start", function () {
+    testGetSelectedListItems(
+        '0-3-0-0', 0,
+        '0-3-0-0', 0,
+        ['0-3-0-0']
+    );
+});
+
+test("Single, third level, caret at start", function () {
+    testGetSelectedListItems(
+        '0-3-0-0', 0,
+        '0-3-0-0', 0,
+        ['0-3-0-0']
+    );
+});
+
+test("Single, third level, caret at start, inside child", function () {
+    testGetSelectedListItems(
+        '0-3-0-1-1-0-0', 0,
+        '0-3-0-1-1-0-0', 0,
+        ['0-3-0-1-1-0']
+    );
+});
+
+test("Single, third level, partial selection at start, inside child",
+    function () {
+    testGetSelectedListItems(
+        '0-3-0-1-1-0-0', 0,
+        '0-3-0-1-1-0-0', 1,
+        ['0-3-0-1-1-0']
+    );
+});
+
+test("Single, third level, partial selection at end, inside child",
+    function () {
+    testGetSelectedListItems(
+        '0-3-0-1-1-0-0', 2,
+        '0-3-0-1-1-0-0', 3,
+        ['0-3-0-1-1-0']
+    );
+});
+
+test("Single, third level, caret at end, inside child", function () {
+    testGetSelectedListItems(
+        '0-3-0-1-1-0-0', 3,
+        '0-3-0-1-1-0-0', 3,
+        ['0-3-0-1-1-0']
+    );
+});
+
+test("Across two, top level, selection from start to end", function () {
+    testGetSelectedListItems(
+        '0-0', 0,
+        '0-1', 3,
+        ['0-0', '0-1']
+    );
+});
+
+test("Across two, top level, selection from end to end", function () {
+    testGetSelectedListItems(
+        '0-0', 1,
+        '0-1', 3,
+        ['0-0', '0-1'],
+        ['0-1']
+    );
+});
+
+test("Across three, top level, selection from start to end", function () {
+    testGetSelectedListItems(
+        '0-0', 0,
+        '0-2', 1,
+        ['0-0', '0-1', '0-2']
+    );
+});
+
+test("Across three, top level, selection from end to end", function () {
+    testGetSelectedListItems(
+        '0-0', 1,
+        '0-2', 1,
+        ['0-0', '0-1', '0-2'],
+        ['0-1', '0-2']
+    );
+});
+
+test("In range selections, don't select items in which, directly, there is " +
+    "no text selection", function () {
+    testGetSelectedListItems(
+        '0-2', 0,
+        '0-3-0-0', 1,
+        ['0-2', '0-3-0-0']
+    );
+});
+
+test("Across five, across levels, selection from start to start", function () {
+    testGetSelectedListItems(
+        '0-2', 0,
+        '0-3-0-1-1-0', 0,
+        ['0-2', '0-3-0-0', '0-3-0-1']
+    );
+});
+
+test("Across five, across levels, selection from start to end", function () {
+    testGetSelectedListItems(
+        '0-2', 0,
+        '0-3-0-1-1-0', 1,
+        ['0-2', '0-3-0-0', '0-3-0-1', '0-3-0-1-1-0']
+    );
+});
+
+test("Across five, across levels, selection from end to start", function () {
+    testGetSelectedListItems(
+        '0-2', 1,
+        '0-3-0-1-1-0', 0,
+        ['0-2', '0-3-0-0', '0-3-0-1'],
+        ['0-3-0-0', '0-3-0-1']
+    );
+});
+
+test("Across five, across levels, selection from start to start, inside child",
+    function () {
+    testGetSelectedListItems(
+        '0-2', 0,
+        '0-3-0-1-1-0-0', 0,
+        ['0-2', '0-3-0-0', '0-3-0-1'],
+        ['0-2', '0-3-0-0', '0-3-0-1', '0-3-0-1-1-0']
+    );
+});
+
+test("Across five, across levels, selection from start to somewhere, inside " +
+    "child", function () {
+    testGetSelectedListItems(
+        '0-2', 0,
+        '0-3-0-1-1-0-0', 1,
+        ['0-2', '0-3-0-0', '0-3-0-1', '0-3-0-1-1-0']
+    );
+});
+
+test("Across five, across levels, selection from start to end, inside child",
+    function () {
+    testGetSelectedListItems(
+        '0-2', 0,
+        '0-3-0-1-1-0-0', 3,
+        ['0-2', '0-3-0-0', '0-3-0-1', '0-3-0-1-1-0']
+    );
+});
+
+test("Across two, across levels, nested list is first child, selection from " +
+    "start to end", function () {
+    testGetSelectedListItems(
+        '0-3', 0,
+        '0-3-0-0', 1,
+        ['0-3-0-0']
+    );
+});
+
+test("Across two, across levels, selection from start to end", function () {
+    testGetSelectedListItems(
+        '1-2', 0,
+        '1-2-1-1', 1,
+        ['1-2', '1-2-1-1']
+    );
+});
+
+test("Across two, across levels, selection from before nested to start",
+    function () {
+    testGetSelectedListItems(
+        '1-2', 1,
+        '1-2-1-1', 0,
+        ['1-2', '1-2-1-1'],
+        ['1-2'],
+        []
+    );
+});
+
+test("Across two, across levels, selection from before nested to end",
+    function () {
+    testGetSelectedListItems(
+        '1-2', 1,
+        '1-2-1-1', 1,
+        ['1-2', '1-2-1-1'],
+        ['1-2-1-1']
+    );
+});
+
+test("Across two, across levels, selection from start to start", function () {
+    testGetSelectedListItems(
+        '1-2', 0,
+        '1-2-1-1', 0,
+        ['1-2', '1-2-1-1'],
+        ['1-2']
+    );
+});
+
+test("Across two, across levels, selection from start to end", function () {
+    testGetSelectedListItems(
+        '1-2', 0,
+        '1-2-1-1', 1,
+        ['1-2', '1-2-1-1']
+    );
+});
+
+test("Empty list item is included when selected across", function () {
+    testGetSelectedListItems(
+        '2-1', 0,
+        '2-3', 1,
+        ['2-1', '2-2', '2-3']
+    );
+});
+
+test("Empty list item is included when selection starts at it", function () {
+    testGetSelectedListItems(
+        '2-2', 0,
+        '2-3', 1,
+        ['2-2', '2-3']
+    );
+});
+
+test("Empty list item may be included when selection ends at it", function () {
+    testGetSelectedListItems(
+        '2-1', 0,
+        '2-2', 0,
+        ['2-1', '2-2'],
+        ['2-1']
+    );
+});
+
+test("Empty list item is selected when caret is inside of it", function () {
+    testGetSelectedListItems(
+        '2-2', 0,
+        '2-2', 0,
+        ['2-2']
+    );
+});
+
+test("Across separate lists", function () {
+    testGetSelectedListItems(
+        '1-3', 0,
+        '2-1', 1,
+        ['1-3', '1-4', '2-0', '2-1']
+    );
+});
+
+test("Across nesting descent", function () {
+    testGetSelectedListItems(
+        '1-2-1-1', 0,
+        '1-2', 3,
+        ['1-2', '1-2-1-1']
+    );
+});
+
+test("A whole journey", function () {
+    testGetSelectedListItems(
+        '0-0', 0,
+        '1-4', 1,
+        ['0-0', '0-1', '0-2', '0-3-0-0', '0-3-0-1', '0-3-0-1-1-0',
+         '1-1', '1-2', '1-2-1-1', '1-3', '1-4']
+    );
+});
+
+test("Partially inside a table", function () {
+    testGetSelectedListItems(
+        '2-4', 0,
+        '2-4-1-0-0-0', 1,
+        ['2-4']
+    );
+});
+
+test("Collapsed, single, inside table", function () {
+    testGetSelectedListItems(
+        '2-4-1-0-0-1-1-0', 0,
+        '2-4-1-0-0-1-1-0', 0,
+        ['2-4-1-0-0-1-1-0']
+    );
+});
+
+test("Text, single, inside table", function () {
+    testGetSelectedListItems(
+        '2-4-1-0-0-1-1-0', 0,
+        '2-4-1-0-0-1-1-0', 1,
+        ['2-4-1-0-0-1-1-0']
+    );
+});
+
+test("Two items, inside table", function () {
+    testGetSelectedListItems(
+        '2-4-1-0-0-1-1-0', 0,
+        '2-4-1-0-0-1-1-1', 1,
+        ['2-4-1-0-0-1-1-0', '2-4-1-0-0-1-1-1']
+    );
+});
+
+test("Across table", function () {
+    testGetSelectedListItems(
+        '2-4', 0,
+        '2-5', 1,
+        ['2-4', '2-5']
+    );
+});
 
 module("list-indent_outdent", {setup: setupWym});
 /**
@@ -1943,13 +2459,13 @@ test("Prevent converting type with selection over multiple levels", function () 
     expect(4);
 
     testListMulti('li_1_1_1', 'li_1_1_1_1', 'unordered',
-                  li_1_1_1_unorderedHtml, li_1_1_1_unorderedHtml);
+                  li_1_1_1_1_unorderedHtml, li_1_1_1_1_unorderedHtml);
     testListMulti('li_1_1_1', 'li_1_1_1_1', 'ordered',
                   li_1_1_1_unorderedHtml, li_1_1_1_unorderedHtml);
 
     // With text selection
     testListMulti('li_1_1_1', 'li_1_1_1_1', 'unordered',
-                  li_1_1_1_unorderedHtml, li_1_1_1_unorderedHtml, true);
+                  li_1_1_1_1_unorderedHtml, li_1_1_1_1_unorderedHtml, true);
     testListMulti('li_1_1_1', 'li_1_1_1_1', 'ordered',
                   li_1_1_1_unorderedHtml, li_1_1_1_unorderedHtml, true);
 });
@@ -2070,6 +2586,77 @@ test("Not joining different types", function () {
     // Using text selection
     testList('p_2', 'unordered', p_1_orderedHtml, p_1_ordered_p_2_unordered_pHtml, true);
     testList('p_1', 'unordered', p_2_orderedHtml, p_1_unordered_p_2_ordered_pHtml, true);
+});
+
+module("list-in_table", {setup: setupWym});
+
+var listWithTableHtml = [""
+    , '<ul id="0">'
+        , '<li id="0_0">'
+            , '0_0_0'
+            , '<table id="0_0_1">'
+                , '<tbody id="0_0_1_0">'
+                    , '<tr id="0_0_1_0_0">'
+                        , '<td id="0_0_1_0_0_0">'
+                            , '0_0_1_0_0_0_0'
+                        , '</td>'
+                        , '<td id="0_0_1_0_0_1">'
+                            , '<ul id="0_0_1_0_0_1_0">'
+                                , '<li id="0_0_1_0_0_1_0_0">'
+                                    , '0_0_1_0_0_1_0_0_0'
+                                , '</li>'
+                            , '</ul>'
+                        , '</td>'
+                    , '</tr>'
+                , '</tbody>'
+            , '</table>'
+        , '</li>'
+    , '</ul>'
+].join('');
+var listWithTableHtml_make_list_inside = [""
+    , '<ul id="0">'
+        , '<li id="0_0">'
+            , '0_0_0'
+            , '<table id="0_0_1">'
+                , '<tbody id="0_0_1_0">'
+                    , '<tr id="0_0_1_0_0">'
+                        , '<td id="0_0_1_0_0_0">'
+                            , '<ul>'
+                                , '<li>'
+                                    , '0_0_1_0_0_0_0'
+                                , '</li>'
+                            , '</ul>'
+                        , '</td>'
+                        , '<td id="0_0_1_0_0_1">'
+                            , '<ul id="0_0_1_0_0_1_0">'
+                                , '<li id="0_0_1_0_0_1_0_0">'
+                                    , '0_0_1_0_0_1_0_0_0'
+                                , '</li>'
+                            , '</ul>'
+                        , '</td>'
+                    , '</tr>'
+                , '</tbody>'
+            , '</table>'
+        , '</li>'
+    , '</ul>'
+].join('');
+test("Make list inside table that is inside list.", function () {
+    expect(3);
+    testList(
+        '0_0_1_0_0_0',
+        'unordered',
+        listWithTableHtml,
+        listWithTableHtml_make_list_inside
+    );
+
+    // Using text selection
+    testList(
+        '0_0_1_0_0_0',
+        'unordered',
+        listWithTableHtml,
+        listWithTableHtml_make_list_inside,
+        true
+    );
 });
 
 module("list-correction", {setup: setupWym});
@@ -2521,7 +3108,7 @@ var enterInEmptyLiOnlyLiTextAfterList = {
             , '<ul>'
                 , '<li>0'
                     , '<p>'
-                        ,'<br />'
+                        , '<br />'
                     , '</p>'
                     , 'foo'
                 , '</li>'
@@ -2531,7 +3118,7 @@ var enterInEmptyLiOnlyLiTextAfterList = {
             , '<ul>'
                 , '<li>0'
                     , '<div>'
-                        ,'<br />'
+                        , '<br />'
                     , '</div>'
                     , 'foo'
                 , '</li>'
@@ -2679,7 +3266,7 @@ var enterInEmptyLiNotLast = {
 // `testNameSuff` is the suffix of the name of the test that will be run.
 // `expectedHtml` is the former from each of the pairs above.
 // `brokenHtmls` is the latter from each of the pairs above.
-function enterInEmptyLiTest (testNameSuff, expectedHtml, brokenHtmls) {
+function enterInEmptyLiTest(testNameSuff, expectedHtml, brokenHtmls) {
     var wymeditor,
         $body,
         i,
@@ -2959,5 +3546,917 @@ test("Invalid list nesting", function () {
             'br',
             assertCountStr + 'caret'
         );
+    }
+});
+
+module("list-delisting", {setup: setupWym});
+
+var delistHtml = {};
+
+delistHtml.base = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2'
+            , '<ol>'
+                , '<li id="li_2_1">2_1</li>'
+                , '<li id="li_2_2">2_2</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_3">3'
+            , '<ol>'
+                , '<li id="li_3_1">3_1</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_4">4</li>'
+        , '<li id="li_5">5'
+            , '<ol>'
+                , '<li id="li_5_1">5_1</li>'
+                , '<li id="li_5_2">5_2</li>'
+                , '<li id="li_5_3">5_3'
+                    , '<ul>'
+                        , '<li id="li_5_3_1">5_3_1</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li id="li_5_4">5_4</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_6">6</li>'
+        , '<li id="li_7">7</li>'
+        , '<li id="li_8">8</li>'
+    , '</ol>'
+].join('');
+
+delistHtml.li_1__li_1 = [""
+    , '<p id="li_1">1</p>'
+    , '<ol>'
+        , '<li id="li_2">2'
+            , '<ol>'
+                , '<li id="li_2_1">2_1</li>'
+                , '<li id="li_2_2">2_2</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_3">3'
+            , '<ol>'
+                , '<li id="li_3_1">3_1</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_4">4</li>'
+        , '<li id="li_5">5'
+            , '<ol>'
+                , '<li id="li_5_1">5_1</li>'
+                , '<li id="li_5_2">5_2</li>'
+                , '<li id="li_5_3">5_3'
+                    , '<ul>'
+                        , '<li id="li_5_3_1">5_3_1</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li id="li_5_4">5_4</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_6">6</li>'
+        , '<li id="li_7">7</li>'
+        , '<li id="li_8">8</li>'
+    , '</ol>'
+].join('');
+test("Move to before parent list. Transform into default root container.", function () {
+    expect(2);
+    var startItemId = 'li_1',
+        endItemId = 'li_1';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_1__li_1
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_1__li_1,
+        true
+    );
+});
+
+delistHtml.withBrs = [""
+    , '<ul id="0">'
+        , '<li id="0_0">'
+            , '0_0_0'
+            , '<ul id="0_0_1">'
+                , '<li id="0_0_1_0">'
+                    , '0_0_1_0_0'
+                    , '<br id="0_0_1_0_1" />'
+                    , '0_0_1_0_2'
+                , '</li>'
+            , '</ul>'
+            , '0_0_2'
+            , '<br id="0_0_3" />'
+            , '0_0_4'
+            , '<br id="0_0_5" />'
+        , '</li>'
+        , '<li id="0_1">'
+            , '0_1_0'
+            , '<br id="0_1_1" />'
+        , '</li>'
+    , '</ul>'
+].join('');
+delistHtml.withBrs_li_0_0__li_0_1 = [""
+    , '<p id="0_0">'
+        , '0_0_0'
+    , '</p>'
+    , '<p id="0_0_1_0">'
+        , '0_0_1_0_0'
+        , '<br id="0_0_1_0_1" />'
+        , '0_0_1_0_2'
+    , '</p>'
+    , '<p>'
+        , '0_0_2'
+    , '</p>'
+    , '<p>'
+        , '0_0_4'
+    , '</p>'
+    , '<p id="0_1">'
+        , '0_1_0'
+        , '<br id="0_1_1" />'
+    , '</p>'
+].join('');
+test("De-list two items, one nested in other.", function () {
+    expect(2);
+    var startItemId = '0_0',
+        endItemId = '0_1';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'unordered',
+        delistHtml.withBrs,
+        delistHtml.withBrs_li_0_0__li_0_1
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'unordered',
+        delistHtml.withBrs,
+        delistHtml.withBrs_li_0_0__li_0_1,
+        true
+    );
+});
+
+delistHtml.li_8__li_8 = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2'
+            , '<ol>'
+                , '<li id="li_2_1">2_1</li>'
+                , '<li id="li_2_2">2_2</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_3">3'
+            , '<ol>'
+                , '<li id="li_3_1">3_1</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_4">4</li>'
+        , '<li id="li_5">5'
+            , '<ol>'
+                , '<li id="li_5_1">5_1</li>'
+                , '<li id="li_5_2">5_2</li>'
+                , '<li id="li_5_3">5_3'
+                    , '<ul>'
+                        , '<li id="li_5_3_1">5_3_1</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li id="li_5_4">5_4</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_6">6</li>'
+        , '<li id="li_7">7</li>'
+    , '</ol>'
+    , '<p id="li_8">8</p>'
+].join('');
+
+test("Move to after parent list.", function () {
+    expect(2);
+    var startItemId = 'li_8',
+        endItemId = 'li_8';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_8__li_8
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_8__li_8,
+        true
+    );
+});
+
+delistHtml.li_1__li_3 = [""
+    , '<p id="li_1">1</p>'
+    , '<p id="li_2">2</p>'
+    , '<p id="li_2_1">2_1</p>'
+    , '<p id="li_2_2">2_2</p>'
+    , '<p id="li_3">3</p>'
+    , '<ol>'
+        , '<li id="li_3_1">3_1</li>'
+    , '</ol>'
+    , '<ol>'
+        , '<li id="li_4">4</li>'
+        , '<li id="li_5">5'
+            , '<ol>'
+                , '<li id="li_5_1">5_1</li>'
+                , '<li id="li_5_2">5_2</li>'
+                , '<li id="li_5_3">5_3'
+                    , '<ul>'
+                        , '<li id="li_5_3_1">5_3_1</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li id="li_5_4">5_4</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_6">6</li>'
+        , '<li id="li_7">7</li>'
+        , '<li id="li_8">8</li>'
+    , '</ol>'
+].join('');
+test("De-list across sublist", function () {
+    expect(2);
+    var startItemId = 'li_1',
+        endItemId = 'li_3';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_1__li_3
+    );
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_1__li_3,
+        true
+    );
+
+});
+
+var delistOverindentHtml = {};
+delistOverindentHtml.base = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2'
+            , '<ol>'
+                , '<li>'
+                    , '<ol>'
+                        , '<li id="li_2_1_1">2_1_1</li>'
+                        , '<li id="li_2_1_2">2_1_2</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li id="li_2_2">2_2</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_3">3</li>'
+    , '</ol>'
+].join('');
+delistOverindentHtml.li_1__li_2 = [""
+    , '<p id="li_1">1</p>'
+    , '<p id="li_2">2</p>'
+    , '<ol>'
+        , '<li>'
+            , '<ol>'
+                , '<li id="li_2_1_1">2_1_1</li>'
+                , '<li id="li_2_1_2">2_1_2</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_2_2">2_2</li>'
+    , '</ol>'
+    , '<ol>'
+        , '<li id="li_3">3</li>'
+    , '</ol>'
+].join('');
+test("Over-indented not invalid", function () {
+    expect(2);
+    var startItemId = 'li_1',
+        endItemId = 'li_2';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistOverindentHtml.base,
+        delistOverindentHtml.li_1__li_2
+    );
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistOverindentHtml.base,
+        delistOverindentHtml.li_1__li_2,
+        true
+    );
+    // This one can't be reversed
+});
+
+delistOverindentHtml.li_1__li_3 = [""
+    , '<p id="li_1">1</p>'
+    , '<p id="li_2">2</p>'
+    , '<ol>'
+        , '<li>'
+            , '<span id="li_2_1_1">2_1_1</span>'
+            , '<br />'
+            , '<span id="li_2_1_2">2_1_2</span>'
+        , '</li>'
+    , '</ol>'
+    , '<p id="li_2_2">2_2</p>'
+    , '<p id="li_3">3</p>'
+].join('');
+
+test("Across indentation levels", function () {
+    expect(2);
+    var startItemId = 'li_1',
+        endItemId = 'li_3';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistOverindentHtml.base,
+        delistOverindentHtml.li_1__li_3
+    );
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistOverindentHtml.base,
+        delistOverindentHtml.li_1__li_3,
+        true
+    );
+});
+delistHtml.twoListsHtml = [delistHtml.base
+    , '<ol>'
+        , '<li id="li2_1">1</li>'
+    , '</ol>'
+].join('');
+delistHtml.li_5_4__li2_1 = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2'
+            , '<ol>'
+                , '<li id="li_2_1">2_1</li>'
+                , '<li id="li_2_2">2_2</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_3">3'
+            , '<ol>'
+                , '<li id="li_3_1">3_1</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_4">4</li>'
+        , '<li id="li_5">5'
+            , '<ol>'
+                , '<li id="li_5_1">5_1</li>'
+                , '<li id="li_5_2">5_2</li>'
+                , '<li id="li_5_3">5_3'
+                    , '<ul>'
+                        , '<li id="li_5_3_1">5_3_1</li>'
+                    , '</ul>'
+                , '</li>'
+            , '</ol>'
+            , '<span id="li_5_4">5_4</span>'
+        , '</li>'
+    , '</ol>'
+    , '<p id="li_6">6</p>'
+    , '<p id="li_7">7</p>'
+    , '<p id="li_8">8</p>'
+    , '<p id="li2_1">1</p>'
+].join('');
+test("Across lists", function () {
+    expect(2);
+    var startItemId = 'li_5_4',
+        endItemId = 'li2_1';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.twoListsHtml,
+        delistHtml.li_5_4__li2_1
+    );
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.twoListsHtml,
+        delistHtml.li_5_4__li2_1,
+        true
+    );
+});
+delistHtml.li_2_1__li_5_1 = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2'
+            , '<br /><span id="li_2_1">2_1</span>'
+            , '<br /><span id="li_2_2">2_2</span>'
+        , '</li>'
+    , '</ol>'
+    , '<p id="li_3">3</p>'
+    , '<p id="li_3_1">3_1</p>'
+    , '<p id="li_4">4</p>'
+    , '<p id="li_5">5</p>'
+    , '<p id="li_5_1">5_1</p>'
+    , '<ol>'
+        , '<li id="li_5_2">5_2</li>'
+        , '<li id="li_5_3">5_3'
+            , '<ul>'
+                , '<li id="li_5_3_1">5_3_1</li>'
+            , '</ul>'
+        , '</li>'
+        , '<li id="li_5_4">5_4</li>'
+    , '</ol>'
+    , '<ol>'
+        , '<li id="li_6">6</li>'
+        , '<li id="li_7">7</li>'
+        , '<li id="li_8">8</li>'
+    , '</ol>'
+].join('');
+test("Across different sub-lists at same level", function () {
+    expect(2);
+    var startItemId = 'li_2_1',
+        endItemId = 'li_5_1';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_2_1__li_5_1
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_2_1__li_5_1,
+        true
+    );
+});
+
+delistHtml.li_2_1__li_2_2 = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2<br />'
+            , '<span id="li_2_1">2_1</span><br />'
+            , '<span id="li_2_2">2_2</span>'
+        , '</li>'
+        , '<li id="li_3">3'
+            , '<ol>'
+                , '<li id="li_3_1">3_1</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_4">4</li>'
+        , '<li id="li_5">5'
+            , '<ol>'
+                , '<li id="li_5_1">5_1</li>'
+                , '<li id="li_5_2">5_2</li>'
+                , '<li id="li_5_3">5_3'
+                    , '<ul>'
+                        , '<li id="li_5_3_1">5_3_1</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li id="li_5_4">5_4</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_6">6</li>'
+        , '<li id="li_7">7</li>'
+        , '<li id="li_8">8</li>'
+    , '</ol>'
+].join('');
+test("Transform into spans. De-list entire list.", function () {
+    expect(2);
+    var startItemId = 'li_2_1',
+        endItemId = 'li_2_2';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_2_1__li_2_2
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_2_1__li_2_2,
+        true
+    );
+});
+
+delistHtml.li_6__li_7 = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2'
+            , '<ol>'
+                , '<li id="li_2_1">2_1</li>'
+                , '<li id="li_2_2">2_2</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_3">3'
+            , '<ol>'
+                , '<li id="li_3_1">3_1</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_4">4</li>'
+        , '<li id="li_5">5'
+            , '<ol>'
+                , '<li id="li_5_1">5_1</li>'
+                , '<li id="li_5_2">5_2</li>'
+                , '<li id="li_5_3">5_3'
+                    , '<ul>'
+                        , '<li id="li_5_3_1">5_3_1</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li id="li_5_4">5_4</li>'
+            , '</ol>'
+        , '</li>'
+    , '</ol>'
+    , '<p id="li_6">6</p>'
+    , '<p id="li_7">7</p>'
+    , '<ol>'
+        , '<li id="li_8">8</li>'
+    , '</ol>'
+].join('');
+test("Split lists", function () {
+    expect(2);
+    var startItemId = 'li_6',
+        endItemId = 'li_7';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_6__li_7
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_6__li_7,
+        true
+    );
+});
+delistHtml.withNodesAfterSubList = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2'
+            , '<ol>'
+                , '<li id="li_2_1">2_1</li>'
+                , '<li>I have no attributes!</li>'
+                , '<li id="li_2_3">2_3</li>'
+            , '</ol>'
+            , 'foo'
+            , '<br />'
+            , '<span id="select_me">I am after a nested list.</span><br />'
+            , 'Me, too!'
+        , '</li>'
+    , '</ol>'
+].join('');
+delistHtml.withNodesAfterSubList_li_2 = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+    , '</ol>'
+    , '<p id="li_2">2</p>'
+    , '<ol>'
+        , '<li id="li_2_1">2_1</li>'
+        , '<li>I have no attributes!</li>'
+        , '<li id="li_2_3">2_3</li>'
+    , '</ol>'
+    , '<p>foo</p>'
+    , '<p id="select_me">I am after a nested list.</p>'
+    , '<p>Me, too!</p>'
+].join('');
+test("textNode & inline element after block element. Transform `li`'s' contents to root containers.",
+    function () {
+        expect(2);
+        var startItemId = 'li_2',
+            endItemId = 'li_2';
+
+        testListMulti(
+            startItemId,
+            endItemId,
+            'ordered',
+            delistHtml.withNodesAfterSubList,
+            delistHtml.withNodesAfterSubList_li_2
+        );
+        // Via text selection
+        testListMulti(
+            startItemId,
+            endItemId,
+            'ordered',
+            delistHtml.withNodesAfterSubList,
+            delistHtml.withNodesAfterSubList_li_2,
+            true
+        );
+    }
+);
+delistHtml.withNodesAfterSubList_li_2_1__2_3 = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2'
+            , '<br /><span id="li_2_1">2_1</span>'
+            , '<br />I have no attributes!'
+            , '<br /><span id="li_2_3">2_3</span><br />'
+            , 'foo'
+            , '<br />'
+            , '<span id="select_me">I am after a nested list.</span><br />'
+            , 'Me, too!'
+        , '</li>'
+    , '</ol>'
+].join('');
+test("Add `br` elements after transforming `li` to `span`. Unwrap span if no attributes.",
+    function () {
+        expect(2);
+        var startItemId = 'li_2_1',
+            endItemId = 'li_2_3';
+
+        testListMulti(
+            startItemId,
+            endItemId,
+            'ordered',
+            delistHtml.withNodesAfterSubList,
+            delistHtml.withNodesAfterSubList_li_2_1__2_3
+        );
+        // Via text selection
+        testListMulti(
+            startItemId,
+            endItemId,
+            'ordered',
+            delistHtml.withNodesAfterSubList,
+            delistHtml.withNodesAfterSubList_li_2_1__2_3,
+            true
+        );
+    }
+);
+delistHtml.withEmptyNestedLi = [""
+    , '<ul id="0">'
+        , '<li id="0_0">'
+            , '<ul id="0_0_0">'
+                , '<li id="0_0_0_0">'
+                , '</li>'
+                , '<li id="0_0_0_1">'
+                    , '<br id="0_0_0_1_0" />'
+                , '</li>'
+                , '<li id="0_0_0_2">'
+                    , '0_0_0_2_0'
+                , '</li>'
+            , '</ul>'
+        , '</li>'
+    , '</ul>'
+].join('');
+delistHtml.withEmptyNestedLi_deListed = [""
+    , '<ul id="0">'
+        , '<li id="0_0">'
+            , '<span id="0_0_0_2">'
+                , '0_0_0_2_0'
+            , '</span>'
+        , '</li>'
+    , '</ul>'
+].join('');
+test("Don't make empty spans", function () {
+    expect(2);
+    var startItemId = '0_0_0_0',
+        endItemId = '0_0_0_2';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'unordered',
+        delistHtml.withEmptyNestedLi,
+        delistHtml.withEmptyNestedLi_deListed
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'unordered',
+        delistHtml.withEmptyNestedLi,
+        delistHtml.withEmptyNestedLi_deListed,
+        true
+    );
+});
+delistHtml.withTable = [""
+    , '<ul id="0">'
+        , '<li id="0_0">'
+            , '0_0_0'
+            , '<table id="0_0_1">'
+                , '<tbody id="0_0_1_0">'
+                    , '<tr id="0_0_1_0_0">'
+                        , '<td id="0_0_1_0_0_0">'
+                            , '0_0_1_0_0_0_0'
+                        , '</td>'
+                        , '<td id="0_0_1_0_0_1">'
+                            , '<ul id="0_0_1_0_0_1_0">'
+                                , '<li id="0_0_1_0_0_1_0_0">'
+                                    , '0_0_1_0_0_1_0_0_0'
+                                , '</li>'
+                            , '</ul>'
+                        , '</td>'
+                    , '</tr>'
+                , '</tbody>'
+            , '</table>'
+        , '</li>'
+    , '</ul>'
+].join('');
+delistHtml.withTable_deListedInside = [""
+    , '<ul id="0">'
+        , '<li id="0_0">'
+            , '0_0_0'
+            , '<table id="0_0_1">'
+                , '<tbody id="0_0_1_0">'
+                    , '<tr id="0_0_1_0_0">'
+                        , '<td id="0_0_1_0_0_0">'
+                            , '0_0_1_0_0_0_0'
+                        , '</td>'
+                        , '<td id="0_0_1_0_0_1">'
+                            , '<span id="0_0_1_0_0_1_0_0">'
+                                , '0_0_1_0_0_1_0_0_0'
+                            , '</span>'
+                        , '</td>'
+                    , '</tr>'
+                , '</tbody>'
+            , '</table>'
+        , '</li>'
+    , '</ul>'
+].join('');
+test("De-list inside table.", function () {
+    expect(2);
+    var startItemId = '0_0_1_0_0_1_0_0',
+        endItemId = '0_0_1_0_0_1_0_0';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'unordered',
+        delistHtml.withTable,
+        delistHtml.withTable_deListedInside
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'unordered',
+        delistHtml.withTable,
+        delistHtml.withTable_deListedInside,
+        true
+    );
+});
+delistHtml.withTable_parentDeListed = [""
+    , '<p id="0_0">'
+        , '0_0_0'
+    , '</p>'
+    , '<table id="0_0_1">'
+        , '<tbody id="0_0_1_0">'
+            , '<tr id="0_0_1_0_0">'
+                , '<td id="0_0_1_0_0_0">'
+                    , '0_0_1_0_0_0_0'
+                , '</td>'
+                , '<td id="0_0_1_0_0_1">'
+                    , '<ul id="0_0_1_0_0_1_0">'
+                        , '<li id="0_0_1_0_0_1_0_0">'
+                            , '0_0_1_0_0_1_0_0_0'
+                        , '</li>'
+                    , '</ul>'
+                , '</td>'
+            , '</tr>'
+        , '</tbody>'
+    , '</table>'
+].join('');
+test("De-list parent of table.", function () {
+    expect(2);
+    var startItemId = '0_0',
+        endItemId = '0_0';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'unordered',
+        delistHtml.withTable,
+        delistHtml.withTable_parentDeListed
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'unordered',
+        delistHtml.withTable,
+        delistHtml.withTable_parentDeListed,
+        true
+    );
+});
+
+var consecutiveTablesDelist = {};
+consecutiveTablesDelist.base = [""
+    , '<ol>'
+        , '<li id="li_0">'
+            , '0'
+            , '<table id="t_0">'
+                , '<tbody id="tbody_0">'
+                    , '<tr id="tr_0_0">'
+                        , '<td id="td_0_0_0">'
+                            , '0_0_0'
+                        , '</td>'
+                    , '</tr>'
+                , '</tbody>'
+            , '</table>'
+        , '</li>'
+    , '</ol>'
+    , '<table id="t_1">'
+        , '<tbody id="tbody_1">'
+            , '<tr id="tr_1_0">'
+                , '<td id="td_1_0_0">'
+                    , '1_0_0'
+                , '</td>'
+            , '</tr>'
+        , '</tbody>'
+    , '</table>'
+].join('');
+consecutiveTablesDelist.li_0 = [""
+    , '<p id="li_0">0</p>'
+    , '<table id="t_0">'
+        , '<tbody id="tbody_0">'
+            , '<tr id="tr_0_0">'
+                , '<td id="td_0_0_0">'
+                    , '0_0_0'
+                , '</td>'
+            , '</tr>'
+        , '</tbody>'
+    , '</table>'
+    , '<table id="t_1">'
+        , '<tbody id="tbody_1">'
+            , '<tr id="tr_1_0">'
+                , '<td id="td_1_0_0">'
+                    , '1_0_0'
+                , '</td>'
+            , '</tr>'
+        , '</tbody>'
+    , '</table>'
+].join('');
+test("De-listing keeps spacer brs for blocking_elements", function () {
+    expect(2);
+    var startItemId = 'li_0',
+        $body,
+        children,
+        wymeditor = jQuery.wymeditors(0);
+
+    testList(
+        startItemId,
+        'ordered',
+        consecutiveTablesDelist.base,
+        consecutiveTablesDelist.li_0
+    );
+    // Now we need to verify that the spacer brs still exist in the DOM
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    children = $body.children();
+
+    if (is_double_br_browser) {
+        expect(9);
+        deepEqual(children.length, 6);
+        if (children.length === 6) {
+            deepEqual(children[0].tagName.toLowerCase(), 'p');
+            deepEqual(children[1].tagName.toLowerCase(), 'br');
+            deepEqual(children[2].tagName.toLowerCase(), 'table');
+            deepEqual(children[3].tagName.toLowerCase(), 'br');
+            deepEqual(children[4].tagName.toLowerCase(), 'table');
+            deepEqual(children[5].tagName.toLowerCase(), 'br');
+        }
+    } else {
+        expect(8);
+        deepEqual(children.length, 5);
+        if (children.length === 5) {
+            deepEqual(children[0].tagName.toLowerCase(), 'p');
+            deepEqual(children[1].tagName.toLowerCase(), 'br');
+            deepEqual(children[2].tagName.toLowerCase(), 'table');
+            deepEqual(children[3].tagName.toLowerCase(), 'br');
+            deepEqual(children[4].tagName.toLowerCase(), 'table');
+        }
     }
 });
