@@ -345,7 +345,7 @@ WYMeditor.editor.prototype.vanish = function () {
     wym._box.remove();
     wym._element
         .removeClass('wym-initialized')
-        .addClass('wym-tore-down')
+        .addClass('wym-vanished')
         .show();
     instances.splice(wym._index, 1);
 
