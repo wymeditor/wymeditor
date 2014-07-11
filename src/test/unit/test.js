@@ -52,7 +52,7 @@ function teardownAllWyms() {
 }
 
 function prepareUnitTestModule(options) {
-    var defaults = {},
+    var defaults,
         $textareas,
         i,
         $wymForm = jQuery('#wym-form'),
@@ -64,15 +64,21 @@ function prepareUnitTestModule(options) {
 
     stop();
 
-    defaults.editorCount = 1;
-    defaults.initialized = true;
-    defaults.postInit = function (wym) {
-        // TODO: We should not load all these plugins by default.
-        wym.listPlugin = new ListPlugin({}, wym);
-        wym.tableEditor = wym.table();
-        wym.structuredHeadings();
-        if (allWymIframesInitialized()) {
-            start();
+    defaults = {
+        // How many editor textareas shall be created for this module.
+        editorCount: 1,
+        // Whether to initialize these textareas with WYMeditors or not.
+        initialized: true,
+        // A postInit (see customization documentation) function to be passed
+        // to the editors' initialization calls.
+        postInit: function (wym) {
+            // TODO: We should not load all these plugins by default.
+            wym.listPlugin = new ListPlugin({}, wym);
+            wym.tableEditor = wym.table();
+            wym.structuredHeadings();
+            if (allWymIframesInitialized()) {
+                start();
+            }
         }
     };
 
