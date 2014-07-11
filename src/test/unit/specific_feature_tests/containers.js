@@ -5,7 +5,7 @@ wymEqual, makeTextSelection,
 ok, test, expect,
 start,
 ListPlugin,
-teardownAllWyms
+vanishAllWyms
 */
 "use strict";
 
