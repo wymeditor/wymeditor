@@ -124,7 +124,7 @@ function prepareUnitTestModule(options) {
     }
 
     $uninitializedTextareas = $wymForm
-        .find('textarea.wym:not(.wym-initialized)');
+        .find('textarea.wym:not([data-wym-initialized])');
     if (
         options.initialized &&
         $uninitializedTextareas.length > 0

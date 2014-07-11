@@ -212,7 +212,7 @@ WYMeditor.editor.prototype.init = function () {
         wym.initIframe(this);
     });
 
-    wym._element.addClass('wym-initialized');
+    wym._element.attr('data-wym-initialized', '');
 
     wym.initSkin();
 };
@@ -335,7 +335,7 @@ WYMeditor.editor.prototype._html = function (html) {
     =========================
 
     Removes the WYMeditor instance from existence and replaces the
-    'wym-initialized' class on the textarea with 'wym-vanished'.
+    'data-wym-initialized' attirbute of its textarea with 'data-wym-vanished'.
 */
 WYMeditor.editor.prototype.vanish = function () {
     var wym = this,
@@ -344,8 +344,8 @@ WYMeditor.editor.prototype.vanish = function () {
 
     wym._box.remove();
     wym._element
-        .removeClass('wym-initialized')
-        .addClass('wym-vanished')
+        .removeAttr('data-wym-initialized')
+        .attr('data-wym-vanished', '')
         .show();
     instances.splice(wym._index, 1);
 
