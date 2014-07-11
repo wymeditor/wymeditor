@@ -64,7 +64,7 @@ function prepareUnitTestModule(options) {
 
     stop();
 
-    defaults.amount = 1;
+    defaults.editorCount = 1;
     defaults.initialized = true;
     defaults.postInit = function (wym) {
         // TODO: We should not load all these plugins by default.
@@ -92,11 +92,11 @@ function prepareUnitTestModule(options) {
         throw "There are more editors than textareas.";
     }
 
-    textareasDifference = options.amount - $textareas.length;
+    textareasDifference = options.editorCount - $textareas.length;
 
     if (textareasDifference > 0) {
         // Add textareas
-        for (i = $textareas.length; i < options.amount; i++) {
+        for (i = $textareas.length; i < options.editorCount; i++) {
             newTextarea = '<textarea id="wym' + i + '" class="wym"></textarea>';
             if (i === 0) {
                 $wymForm.prepend(newTextarea);
@@ -1644,7 +1644,7 @@ module(
     {
         setup: function () {
             prepareUnitTestModule({
-                amount: MULTIPLE_INSTANCES_AMOUNT,
+                editorCount: MULTIPLE_INSTANCES_AMOUNT,
                 initialized: false
             });
         },
