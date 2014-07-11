@@ -51,9 +51,8 @@ function teardownAllWyms() {
     }
 }
 
-function prepareUnitTestModule(passedOptions) {
+function prepareUnitTestModule(options) {
     var defaults = {},
-        options = {},
         $textareas,
         i,
         $wymForm = jQuery('#wym-form'),
@@ -76,12 +75,14 @@ function prepareUnitTestModule(passedOptions) {
             start();
         }
     };
-    jQuery.extend(options, defaults, passedOptions);
 
-    if (
-        passedOptions.postInit ||
-        !options.initialized
-    ) {
+    if (options.postInit) {
+        teardownAllWyms();
+    }
+
+    options = jQuery.extend(defaults, options);
+
+    if (options.initialized === false) {
         teardownAllWyms();
     }
 
