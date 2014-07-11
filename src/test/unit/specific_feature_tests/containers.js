@@ -71,7 +71,7 @@ module(
                 }
             });
         },
-        teardown: teardownAllWyms
+        teardown: vanishAllWyms
     }
 );
 

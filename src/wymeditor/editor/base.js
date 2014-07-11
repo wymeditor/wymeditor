@@ -331,13 +331,13 @@ WYMeditor.editor.prototype._html = function (html) {
 };
 
 /**
-    WYMeditor.editor.teardown
+    WYMeditor.editor.vanish
     =========================
 
     Removes the editor and replaces the 'wym-initialized' class on the textarea
-    with 'wym-tore-down'.
+    with 'wym-vanished'.
 */
-WYMeditor.editor.prototype.teardown = function () {
+WYMeditor.editor.prototype.vanish = function () {
     var wym = this,
         instances = WYMeditor.INSTANCES,
         i;

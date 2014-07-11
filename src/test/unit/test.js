@@ -45,9 +45,9 @@ function allWymIframesInitialized() {
     }
 }
 
-function teardownAllWyms() {
+function vanishAllWyms() {
     while (WYMeditor.INSTANCES.length > 0) {
-        WYMeditor.INSTANCES[0].teardown();
+        WYMeditor.INSTANCES[0].vanish();
     }
 }
 
@@ -83,13 +83,13 @@ function prepareUnitTestModule(options) {
     };
 
     if (options.postInit) {
-        teardownAllWyms();
+        vanishAllWyms();
     }
 
     options = jQuery.extend(defaults, options);
 
     if (options.initialized === false) {
-        teardownAllWyms();
+        vanishAllWyms();
     }
 
     $textareas = $wymForm.find('textarea.wym');
@@ -117,7 +117,7 @@ function prepareUnitTestModule(options) {
         for (i = 0; i < $textareasToRemove.length; i++) {
             wymeditor = jQuery.getWymeditorByTextarea($textareasToRemove[i]);
             if (wymeditor) {
-                wymeditor.teardown();
+                wymeditor.vanish();
             }
         }
         $textareasToRemove.remove();
@@ -1654,7 +1654,7 @@ module(
                 initialized: false
             });
         },
-        teardown: teardownAllWyms
+        teardown: vanishAllWyms
     }
 );
 
