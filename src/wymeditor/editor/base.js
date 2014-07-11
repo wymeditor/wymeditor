@@ -334,8 +334,8 @@ WYMeditor.editor.prototype._html = function (html) {
     WYMeditor.editor.vanish
     =========================
 
-    Removes the editor and replaces the 'wym-initialized' class on the textarea
-    with 'wym-vanished'.
+    Removes the WYMeditor instance from existence and replaces the
+    'wym-initialized' class on the textarea with 'wym-vanished'.
 */
 WYMeditor.editor.prototype.vanish = function () {
     var wym = this,
