@@ -20,8 +20,8 @@ Anatomy of an Editor Initialization
 So what actually happens when you call
 ``$('#my-textarea').wymeditor()``?
 
-1. Your existing ``textarea`` is hidden.
-2. An iframe is created in that location.
-3. The WYMeditor toolbars and interface load.
-4. The iframe is initialized
-   with the content from your ``textarea``.
+#. Your existing ``textarea`` is hidden.
+#. An iframe is created in that location.
+#. The attribute ``data-wym-initialized`` is added to the ``textarea``.
+#. The WYMeditor toolbars and interface load.
+#. The iframe is initialized with the content from your ``textarea``.
