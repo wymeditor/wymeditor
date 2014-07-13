@@ -41,6 +41,16 @@ A boolean. After an editor's ``iframe`` initialization, this is set to
 During the execution of :ref:`option-postinit`, for example, this can be
 expected to be ``true``, if the editor initialized succesfully.
 
+``vanish()``
+============
+
+Removes the WYMeditor instance from existence and replaces the
+'data-wym-initialized' attirbute of its textarea with 'data-wym-vanished'.
+
+.. code-block:: javascript
+
+  wym.vanish();
+
 *****************************
 Selection Setting and Getting
 *****************************
