@@ -212,7 +212,7 @@ WYMeditor.editor.prototype.init = function () {
         wym.initIframe(this);
     });
 
-    wym._element.attr('data-wym-initialized', '');
+    wym._element.attr('data-wym-initialized', 'yes');
 
     wym.initSkin();
 };
