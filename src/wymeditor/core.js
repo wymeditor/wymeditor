@@ -915,6 +915,40 @@ jQuery.extend({
 });
 
 /**
+    WYMeditor.isInternetExplorerPre11
+    =================================
+
+    Returns true if the current browser is an Internet Explorer version
+    previous to 11. Otherwise, returns false.
+*/
+WYMeditor.isInternetExplorerPre11 = function () {
+    if (
+        jQuery.browser.msie &&
+        jQuery.browser.versionNumber < 11
+    ) {
+        return true;
+    }
+    return false;
+};
+
+/**
+    WYMeditor.isInternetExplorer11OrNewer
+    =====================================
+
+    Returns true if the current browser is an Internet Explorer version 11 or
+    newer. Otherwise, returns false.
+*/
+WYMeditor.isInternetExplorer11OrNewer = function () {
+    if (
+        jQuery.browser.msie &&
+        jQuery.browser.versionNumber >= 11
+    ) {
+        return true;
+    }
+    return false;
+};
+
+/**
     WYMeditor.computeWymPath
     ========================
 
