@@ -51,6 +51,23 @@ Removes the WYMeditor instance from existence and replaces the
 
   wym.vanish();
 
+``jQuery.getWymeditorByTextarea()``
+===================================
+
+Get the WYMeditor instance of a textarea element. If an editor is not
+initialized for the textarea, returns false.
+
+.. code-block:: javascript
+
+  var myWym,
+      myDocument;
+
+  myWym = jQuery.getWymeditorByTextarea(jQuery('textarea#myDocument'));
+
+  if (myWym) {
+    myDocument = myWym.xhtml();
+  }
+
 *****************************
 Selection Setting and Getting
 *****************************
