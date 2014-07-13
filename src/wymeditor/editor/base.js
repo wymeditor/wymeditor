@@ -33,9 +33,14 @@ WYMeditor.editor.prototype.init = function () {
         oContainer,
         wym;
 
-    if (jQuery.browser.msie) {
+    if (WYMeditor.isInternetExplorerPre11()) {
+        // TODO: WymClassTridentPre...
         WymClass = new WYMeditor.WymClassTrident(this);
-    } else if (jQuery.browser.mozilla) {
+    } else if (
+        jQuery.browser.mozilla ||
+        // IE11 acts a lot like Gecko.
+        WYMeditor.isInternetExplorer11OrNewer()
+    ) {
         WymClass = new WYMeditor.WymClassGecko(this);
     } else if (jQuery.browser.safari || jQuery.browser.webkit ||
                jQuery.browser.chrome) {
