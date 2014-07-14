@@ -700,7 +700,7 @@ TableEditor.prototype.selectElement = function (elmnt) {
         // ie8 can raise an "unkown runtime error" trying to empty the range
     }
     // IE selection hack
-    if (jQuery.browser.msie) {
+    if (WYMeditor.isInternetExplorerPre11()) {
         this._wym.saveCaret();
     }
 };
