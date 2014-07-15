@@ -213,8 +213,11 @@ function wymEqual(wymeditor, expected, options) {
     for (i = 0; i < tmpNodes.length; i++) {
         normedActual += normalizeHtml(tmpNodes[i]);
     }
-    if (options.fixListSpacing && jQuery.browser.msie &&
-            parseInt(jQuery.browser.version, 10) < 9.0) {
+    if (
+        options.fixListSpacing &&
+        jQuery.browser.msie &&
+        jQuery.browser.versionNumber < 9
+    ) {
         normedActual = normedActual.replace(/\s(<br.*?\/>)/g, '$1');
 
         listTypeOptions = WYMeditor.LIST_TYPE_ELEMENTS.join('|');
@@ -277,8 +280,8 @@ function makeSelection(
     // We need to handle internet explorer selection differently
     sel.setSingleRange(range);
 
-    // IE selection hack
-    if (jQuery.browser.msie) {
+    // Old IE selection hack
+    if (WYMeditor.isInternetExplorerPre11()) {
         wymeditor.saveCaret();
     }
 }

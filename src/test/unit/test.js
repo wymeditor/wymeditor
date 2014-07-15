@@ -25,13 +25,18 @@ jQuery.noConflict();
 // test suite that should always be passing in all supported browsers.
 var SKIP_KNOWN_FAILING_TESTS = true,
     // Can't move the selection to a <br /> element
-    no_br_selection_browser = jQuery.browser.webkit || jQuery.browser.msie,
+    no_br_selection_browser = jQuery.browser.webkit ||
+        WYMeditor.isInternetExplorerPre11(),
     // Double-br browsers need placeholders both before and after blocking
     // elements. Others just need placeholders before
     is_double_br_browser = (jQuery.browser.mozilla ||
         jQuery.browser.webkit ||
         jQuery.browser.safari ||
-        (jQuery.browser.msie && jQuery.browser.version >= "7.0"));
+        (
+            WYMeditor.isInternetExplorerPre11() &&
+            jQuery.browser.versionNumber >= 7
+        )
+    );
 
 function setupWym(modificationCallback) {
     if (WYMeditor.INSTANCES.length === 0) {
