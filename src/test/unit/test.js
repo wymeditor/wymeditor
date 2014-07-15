@@ -1309,7 +1309,7 @@ if (!inPhantomjs || !SKIP_KNOWN_FAILING_TESTS) {
            "Image is not a child of a sibling of the wymeditor body");
 
         $body.find(imageSelector).attr(WYMeditor.SRC, imageURL);
-        if (jQuery.browser.msie) {
+        if (WYMeditor.isInternetExplorerPre11()) {
             // IE doesn't wrap the image in a paragraph
             wymEqual(wymeditor, expectedHtmlIE);
         } else {
