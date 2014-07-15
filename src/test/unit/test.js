@@ -236,6 +236,7 @@ var complexCopyText = String() +
         'gap\r\n\r\n' +
         'gap2';
 if (jQuery.browser !== 'msie') {
+    // TODO: This will always be true. Probably a human error. Investigate.
     complexCopyText = complexCopyText.replace(/\r/g, '');
 }
 
