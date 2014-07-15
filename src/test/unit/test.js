@@ -1074,56 +1074,43 @@ if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
     });
 }
 
-// These test fail in IE7 & IE8:
-// https://github.com/wymeditor/wymeditor/issues/498
-if (!(// Browser is IE and
-      jQuery.browser.msie &&
-      // version 7.x until
-      parseInt(jQuery.browser.version, 10) >= 7 &&
-      // version 8.x
-      parseInt(jQuery.browser.version, 10) < 9
-     // or
-     ) ||
-    // we are executing known failing tests:
-    !SKIP_KNOWN_FAILING_TESTS) {
-    module("table-insert_in_sublist", {setup: setupWym});
+module("table-insert_in_sublist", {setup: setupWym});
 
-    test("Single table insertion into a sublist", function () {
-        expect(1);
-        var wymeditor = jQuery.wymeditors(0);
+test("Single table insertion into a sublist", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0);
 
-        setupTable(wymeditor, sublistForTableInsertion, '#li_2', 'text',
-                   1, 1, 'test_1');
-        wymEqual(wymeditor, expectedSublistOneTable, {
-            assertionString: "Single table insertion within a sublist",
-            skipParser: true
-        });
+    setupTable(wymeditor, sublistForTableInsertion, '#li_2', 'text',
+               1, 1, 'test_1');
+    wymEqual(wymeditor, expectedSublistOneTable, {
+        assertionString: "Single table insertion within a sublist",
+        skipParser: true
     });
+});
 
-    test("Double table insertion into a sublist", function () {
-        expect(1);
-        var wymeditor = jQuery.wymeditors(0);
+test("Double table insertion into a sublist", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0);
 
-        setupTable(wymeditor, expectedSublistOneTable, '#li_2', 'text',
-                   2, 1, 'test_2');
-        wymEqual(wymeditor, expectedSublistTwoTables, {
-            assertionString: "Double table insertion within a sublist",
-            skipParser: true
-        });
+    setupTable(wymeditor, expectedSublistOneTable, '#li_2', 'text',
+               2, 1, 'test_2');
+    wymEqual(wymeditor, expectedSublistTwoTables, {
+        assertionString: "Double table insertion within a sublist",
+        skipParser: true
     });
+});
 
-    test("Triple table insertion into a sublist", function () {
-        expect(1);
-        var wymeditor = jQuery.wymeditors(0);
+test("Triple table insertion into a sublist", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0);
 
-        setupTable(wymeditor, expectedSublistTwoTables, '#li_2', 'text',
-                   3, 1, 'test_3');
-        wymEqual(wymeditor, expectedSublistThreeTables, {
-            assertionString: "Triple table insertion within a sublist",
-            skipParser: true
-        });
+    setupTable(wymeditor, expectedSublistTwoTables, '#li_2', 'text',
+               3, 1, 'test_3');
+    wymEqual(wymeditor, expectedSublistThreeTables, {
+        assertionString: "Triple table insertion within a sublist",
+        skipParser: true
     });
-}
+});
 
 module("table-parse_spacers_in_list", {setup: setupWym});
 // The tests in this module use the wymEqual function from utils.js to parse
