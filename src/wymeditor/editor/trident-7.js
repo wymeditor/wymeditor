@@ -12,8 +12,8 @@ jQuery.extend(
     WYMeditor.WymClassGecko.prototype
 );
 
-WYMeditor.copyPropsFromObjectToObject(
-    WYMeditor.WymClassTrident7.prototype,
+jQuery.copyPropsFromObjectToObject(
     WYMeditor.WymClassTridentPre7.prototype,
     []
+    WYMeditor.WymClassTrident7.prototype,
 );

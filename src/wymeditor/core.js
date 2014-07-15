@@ -915,30 +915,32 @@ jQuery.extend({
 });
 
 /**
-    WYMeditor.copyPropsFromObjectToObject
+    jQuery.copyPropsFromObjectToObject
     =====================================
 
     General helper function that copies specified list of properties from a
     specified origin object to a specified target object.
 
-    @param target The target object.
     @param origin The origin object.
+    @param target The target object.
     @param propNames An array of strings, representing the properties to copy.
 */
-WYMeditor.copyPropsFromObjectToObject = function (target, origin, propNames) {
-    var i,
-        propName,
-        prop,
-        props = {};
+jQuery.extend({
+    copyPropsFromObjectToObject: function (origin, target, propNames) {
+        var i,
+            propName,
+            prop,
+            props = {};
 
-    for (i = 0; i < propNames.length; i++) {
-        propName = propNames[i];
-        prop = origin[propName];
-        props[propName] = prop;
+        for (i = 0; i < propNames.length; i++) {
+            propName = propNames[i];
+            prop = origin[propName];
+            props[propName] = prop;
+        }
+
+        jQuery.extend(target, props);
     }
-
-    jQuery.extend(target, props);
-};
+});
 
 /**
     WYMeditor.isInternetExplorerPre11
