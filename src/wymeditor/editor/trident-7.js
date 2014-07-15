@@ -15,5 +15,8 @@ jQuery.extend(
 jQuery.copyPropsFromObjectToObject(
     WYMeditor.WymClassTridentPre7.prototype,
     WYMeditor.WymClassTrident7.prototype,
-    []
+    [
+        'keyup',
+        'wrapWithContainer'
+    ]
 );
