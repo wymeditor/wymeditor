@@ -699,7 +699,7 @@ TableEditor.prototype.selectElement = function (elmnt) {
     } catch (err) {
         // ie8 can raise an "unkown runtime error" trying to empty the range
     }
-    // IE selection hack
+    // Old IE selection hack
     if (WYMeditor.isInternetExplorerPre11()) {
         this._wym.saveCaret();
     }
