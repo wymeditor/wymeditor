@@ -56,7 +56,7 @@ function loadWymSrc(srcPath, extraRequirements, jqueryVersion) {
         ];
     }
 
-    jqueryBrowserRequirement = [srcPath + 'jquery/jquery.browser.min.js'];
+    jqueryBrowserRequirement = [srcPath + 'lib/jquery.browser.js'];
 
     requirements = requirements.concat(
         jqueryRequirement,

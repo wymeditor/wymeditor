@@ -1,9 +1,9 @@
+bower_components/*
 .*swp
 node_modules
 compiler.jar
 chef/*
 .vagrant/*
-src/bower_components/*
 dist/AUTHORS
 dist/CHANGELOG.md
 dist/GPL-license.txt
@@ -13,3 +13,4 @@ dist/README.md
 dist/*.gz
 _gh_pages
 docs/.build/*
+src/lib/*

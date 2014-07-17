@@ -333,6 +333,31 @@ module.exports = function (grunt) {
                 cwd: "<%= yeoman.dist %>",
                 src: ["./**"]
             }
+        },
+        'bower-install-simple': {
+            options: {
+                color: true,
+                cwd: process.cwd(),
+                forceLatest: false,
+                production: false,
+                interactive: true,
+                directory: "bower_components"
+            }
+        },
+        'bower-linker': {
+            dev: {
+                options: {
+                    copy: false,
+                    cwd: '.',
+                    force: false,
+                    map: {
+                        '*': '/'
+                    },
+                    offline: true,
+                    root: "<%= yeoman.app %>/lib",
+                    vendor: false
+                }
+            }
         }
     });
 
@@ -346,6 +371,7 @@ module.exports = function (grunt) {
         }
 
         grunt.task.run([
+            'bower-install-simple',
             'clean:server',
             'htmlmin',
             'connect:dev',
@@ -362,6 +388,7 @@ module.exports = function (grunt) {
     grunt.registerTask('build', [
         'clean:dist',
         'useminPrepare',
+        'bower-install-simple',
         'concat',
         'uglify',
         'copy:dist',
@@ -388,4 +415,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-replace");
     grunt.loadNpmTasks("grunt-contrib-htmlmin");
     grunt.loadNpmTasks("grunt-usemin");
+    grunt.loadNpmTasks("grunt-bower-install-simple");
+    grunt.loadNpmTasks('grunt-bower-linker');
 };

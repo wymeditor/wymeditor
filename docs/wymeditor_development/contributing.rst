@@ -91,7 +91,6 @@ Then you just need to
 .. code-block:: shell-session
 
     $ npm install
-    $ node_modules/bower/bin/bower install
 
 .. note::
 
