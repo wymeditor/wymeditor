@@ -235,10 +235,10 @@ var complexCopyText = String() +
         'sentence3\r\n\r\n' +
         'gap\r\n\r\n' +
         'gap2';
-if (jQuery.browser !== 'msie') {
-    // TODO: This will always be true. Probably a human error. Investigate.
-    complexCopyText = complexCopyText.replace(/\r/g, '');
-}
+//if (jQuery.browser !== 'msie') {
+    // This was always true so commented out. Probably a human error.
+complexCopyText = complexCopyText.replace(/\r/g, '');
+//}
 
 var body_complexInsertionHtml = String() +
         '<p>' +
