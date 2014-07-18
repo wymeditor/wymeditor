@@ -341,14 +341,14 @@ module.exports = function (grunt) {
                 forceLatest: false,
                 production: false,
                 interactive: true,
-                directory: "bower_components"
+                directory: "src/bower_components"
             }
         },
         'bower-linker': {
             dev: {
                 options: {
                     copy: false,
-                    cwd: '.',
+                    cwd: 'src',
                     force: false,
                     map: {
                         '*': '/'
