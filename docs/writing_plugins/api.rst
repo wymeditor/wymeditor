@@ -324,6 +324,22 @@ Example:
 
     jQuery.wymeditors(0).toggleHtml();
 
+``jQuery.copyPropsFromObjectToObject(origin, target, props)``
+=============================================================
+
+General helper function that copies specified list of properties from a
+specified origin object to a specified target object.
+
+Example:
+
+.. code-block:: javascript
+
+    var foo = {A: 'a', B: 'b', C: 'c'},
+        bar = {Y: 'y'};
+    jQuery.copyPropsFromObjectToObject(foo, bar, ['A', 'B']);
+
+``bar`` will then be ``{A: 'a', B: 'b', Y: 'y'}``.
+
 ``isInlineNode(node)``
 ======================
 
