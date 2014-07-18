@@ -33,8 +33,8 @@ var SKIP_KNOWN_FAILING_TESTS = true,
         jQuery.browser.webkit ||
         jQuery.browser.safari ||
         (
-            WYMeditor.isInternetExplorerPre11() &&
-            jQuery.browser.versionNumber >= 7
+            jQuery.browser.msie &&
+            jQuery.browser.versionNumber <= 9
         )
     );
 
