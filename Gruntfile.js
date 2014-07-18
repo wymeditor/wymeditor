@@ -371,7 +371,7 @@ module.exports = function (grunt) {
         }
 
         grunt.task.run([
-            'bower-install-simple',
+            'bower',
             'clean:server',
             'htmlmin',
             'connect:dev',
@@ -380,6 +380,7 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('test', [
+        'bower',
         'clean:server',
         'connect:test',
         'qunit'
@@ -388,7 +389,7 @@ module.exports = function (grunt) {
     grunt.registerTask('build', [
         'clean:dist',
         'useminPrepare',
-        'bower-install-simple',
+        'bower',
         'concat',
         'uglify',
         'copy:dist',
@@ -401,6 +402,11 @@ module.exports = function (grunt) {
         'jshint',
         'test',
         'build'
+    ]);
+
+    grunt.registerTask('bower', [
+        'bower-install-simple',
+        'bower-linker:dev',
     ]);
 
     grunt.loadNpmTasks("grunt-contrib-uglify");
