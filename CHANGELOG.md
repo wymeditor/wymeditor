@@ -9,7 +9,19 @@ WYMeditor.
 
 ### Enhancements
 
-* TODO
+* A new helper function in the form of a jQuery plugin,
+  ``jQuery.copyPropsFromObjectToObject``. It copies specified properties from
+  an object to another.
+
+### Backwards-Incompatible Changes
+
+* The jQuery.browser plugin was introduced as a dependency, even for jQuery
+  versions from before its removal. That is, all jQuery version. It matters
+  because the ``jQuery.browser`` that is in old jQuery versions thinks that
+  IE11 is Mozilla (can’t blame it, really).
+* jQuery-migrate is no longer required at all.
+* WYMeditor instances under IE11 were, until now initialized as
+  ``WymClassGecko``. Now they initialize as ``WymClassTrident7``.
 
 ### Development Process Improvements
 
@@ -19,6 +31,9 @@ WYMeditor.
   jshint 2.5.0 [dropped support](https://github.com/jshint/jshint/issues/1677)
   for those warnings,
   despite them being super useful for code style consistency.
+* Frontend package management (with Bower) is now automatic, via the task
+  runner, Grunt.
+* Failing tests in IE11 were fixed.
 
 ## 1.0.0b7 (Beta 7): De-listing
 
