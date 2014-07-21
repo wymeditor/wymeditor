@@ -346,3 +346,15 @@ Example:
 Returns true if the provided node is an inline type node. False, otherwise.
 
 .. _issue: https://github.com/wymeditor/wymeditor/issues
+
+``WYMeditor.isInternetExplorer*()``
+===================================
+
+``WYMeditor.isInternetExplorerPre11()`` and
+``WYMeditor.isInternetExplorer11OrNewer()``.
+
+Internet Explorer's engine, Trident, had changed considerably in version 7,
+which is the version that IE11 has, and now behaves very similarly to Mozilla.
+
+These two functions help detect whether the running browser is IE before 11 or
+IE11-or-newer, by returning a boolean.
