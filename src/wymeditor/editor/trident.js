@@ -33,9 +33,9 @@ WYMeditor.WymClassTrident.prototype.initIframe = function (iframe) {
     // Handle events
     var wym = this;
 
-    this._doc.body.onfocus = function () {
+    this._doc.body.onload = function () {
         wym._doc.designMode = "on";
-        wym._doc = iframe.contentWindow.document;
+        wym._doc = wym._iframe.contentWindow.document;
     };
     this._doc.onbeforedeactivate = function () {
         wym.saveCaret();
