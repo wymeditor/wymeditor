@@ -41,6 +41,33 @@ A boolean. After an editor's ``iframe`` initialization, this is set to
 During the execution of :ref:`option-postinit`, for example, this can be
 expected to be ``true``, if the editor initialized succesfully.
 
+``vanish()``
+============
+
+Removes the WYMeditor instance from existence and replaces the
+'data-wym-initialized' attribute of its textarea with 'data-wym-vanished'.
+
+.. code-block:: javascript
+
+  wym.vanish();
+
+``jQuery.getWymeditorByTextarea()``
+===================================
+
+Get the WYMeditor instance of a textarea element. If an editor is not
+initialized for the textarea, returns false.
+
+.. code-block:: javascript
+
+  var myWym,
+      myDocument;
+
+  myWym = jQuery.getWymeditorByTextarea(jQuery('textarea#myDocument'));
+
+  if (myWym) {
+    myDocument = myWym.xhtml();
+  }
+
 *****************************
 Selection Setting and Getting
 *****************************

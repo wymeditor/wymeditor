@@ -6,7 +6,6 @@ inPhantomjs, ListPlugin, asyncTest */
 /* exported
 setupWym,
 setupMultipleTextareas,
-teardownMultipleTextareas,
 no_br_selection_browser,
 is_double_br_browser
 */
@@ -33,103 +32,112 @@ var SKIP_KNOWN_FAILING_TESTS = true,
         jQuery.browser.safari ||
         (jQuery.browser.msie && jQuery.browser.version >= "7.0"));
 
-function setupWym(modificationCallback) {
-    if (WYMeditor.INSTANCES.length === 0) {
-        stop(); // Stop test running until the editor is initialized
-        jQuery('.wym').wymeditor({
-            postInit: function (wym) {
-                // Determine if attempting to select a cell with a non-text
-                // inner node (a span) actually selects the inner node or
-                // selects the cell itself. FF for example, selects the cell
-                // while webkit selects the inner.
-                var initialHtml = [""
-                    , '<table>'
-                        , '<tbody>'
-                            , '<tr>'
-                                , '<td id="td_1_1">'
-                                    , '<span id="span_1_1">span_1_1</span>'
-                                , '</td>'
-                            , '</tr>'
-                        , '</tbody>'
-                    , '</table>'
-                    ].join(''),
-                    spanSelector = '#span_1_1',
-                    tdSelector = '#td_1_1',
-                    $body,
-                    td,
-                    span;
+// Returns true if all WYMeditor Iframes are initialized.
+function allWymIframesInitialized() {
+    var i;
 
-                wym.listPlugin = new ListPlugin({}, wym);
-                wym.tableEditor = wym.table();
-
-                wym.structuredHeadings();
-
-                wym._html(initialHtml);
-
-                $body = jQuery(wym._doc).find('body.wym_iframe');
-                td = $body.find(tdSelector)[0];
-                span = $body.find(spanSelector)[0];
-                wym.tableEditor.selectElement($body.find(tdSelector)[0]);
-
-                if (wym.selectedContainer() === span) {
-                    WYMeditor._isInnerSelector = true;
-                } else {
-                    WYMeditor._isInnerSelector = false;
-                }
-
-                if (typeof modificationCallback === 'function') {
-                    modificationCallback(wym);
-                }
-
-                // Re-start test running now that we're finished initializing
-                start();
-            }
-        });
-    } else {
-        var wym;
-        wym = WYMeditor.INSTANCES[0];
-        wym.documentStructureManager.setDefaultRootContainer('p');
-
-        if (typeof modificationCallback === 'function') {
-            stop();
-            modificationCallback(wym);
-            start();
+    for (i = 0; i < WYMeditor.INSTANCES.length; i++) {
+        if (!WYMeditor.INSTANCES[i].iframeInitialized) {
+            return false;
+        } else if (i === WYMeditor.INSTANCES.length - 1) {
+            return true;
         }
     }
 }
 
-function setupMultipleTextareas() {
-    var $form = jQuery('#wym-form'),
-        textareas;
-
-    WYMeditor.INSTANCES = [];
-    $form.find('.wym_box').remove();
-    $form.find('#wym0').removeAttr('style');
-    $form.find('#wym0').val('');
-
-    textareas = [""
-        , '<textarea id="wym1" class="wym"></textarea>'
-        , '<textarea id="wym2" class="wym"></textarea>'
-        , '<textarea id="wym3" class="wym"></textarea>'
-        , '<textarea id="wym4" class="wym"></textarea>'
-        , '<textarea id="wym5" class="wym"></textarea>'
-        , '<textarea id="wym6" class="wym"></textarea>'
-        , '<textarea id="wym7" class="wym"></textarea>'
-        , '<textarea id="wym8" class="wym"></textarea>'
-    ].join('');
-    $form.find('textarea.wym').after(textareas);
+function vanishAllWyms() {
+    while (WYMeditor.INSTANCES.length > 0) {
+        WYMeditor.INSTANCES[0].vanish();
+    }
 }
 
-function teardownMultipleTextareas() {
-    var $form = jQuery('#wym-form');
+function prepareUnitTestModule(options) {
+    var defaults,
+        $textareas,
+        i,
+        $wymForm = jQuery('#wym-form'),
+        textareasDifference,
+        newTextarea,
+        $textareasToRemove,
+        wymeditor,
+        $uninitializedTextareas;
 
-    WYMeditor.INSTANCES = [];
-    $form.find('textarea.wym, .wym_box').slice(1).remove();
-    $form.find('#wym0').removeAttr('style');
-    $form.find('#wym0').val('');
+    stop();
+
+    defaults = {
+        // How many editor textareas shall be created for this module.
+        editorCount: 1,
+        // Whether to initialize these textareas with WYMeditors or not.
+        initialized: true,
+        // A postInit (see customization documentation) function to be passed
+        // to the editors' initialization calls.
+        postInit: function (wym) {
+            // TODO: We should not load all these plugins by default.
+            wym.listPlugin = new ListPlugin({}, wym);
+            wym.tableEditor = wym.table();
+            wym.structuredHeadings();
+            if (allWymIframesInitialized()) {
+                start();
+            }
+        }
+    };
+
+    if (options.postInit) {
+        vanishAllWyms();
+    }
+
+    options = jQuery.extend(defaults, options);
+
+    if (options.initialized === false) {
+        vanishAllWyms();
+    }
+
+    $textareas = $wymForm.find('textarea.wym');
+
+    if (WYMeditor.INSTANCES.length > $textareas.length) {
+        throw "There are more editors than textareas.";
+    }
+
+    textareasDifference = options.editorCount - $textareas.length;
+
+    if (textareasDifference > 0) {
+        // Add textareas
+        for (i = $textareas.length; i < options.editorCount; i++) {
+            newTextarea = '<textarea id="wym' + i + '" class="wym"></textarea>';
+            if (i === 0) {
+                $wymForm.prepend(newTextarea);
+            } else {
+                $wymForm.find('textarea.wym, .wym_box').last()
+                    .after(newTextarea);
+            }
+        }
+    } else if (textareasDifference < 0) {
+        // Remove textareas
+        $textareasToRemove = $textareas.slice(textareasDifference);
+        for (i = 0; i < $textareasToRemove.length; i++) {
+            wymeditor = jQuery.getWymeditorByTextarea($textareasToRemove[i]);
+            if (wymeditor) {
+                wymeditor.vanish();
+            }
+        }
+        $textareasToRemove.remove();
+    }
+
+    $uninitializedTextareas = $wymForm
+        .find('textarea.wym:not([data-wym-initialized])');
+    if (
+        options.initialized &&
+        $uninitializedTextareas.length > 0
+    ) {
+        $uninitializedTextareas.wymeditor({
+            postInit: options.postInit
+        });
+    } else {
+        start();
+    }
 }
 
-module("Core", {setup: setupWym});
+module("Core", {setup: prepareUnitTestModule});
 
 test("Instantiate", function () {
     expect(2);
@@ -137,11 +145,8 @@ test("Instantiate", function () {
     deepEqual(typeof jQuery.wymeditors(0), 'object',
               "Type of first WYMeditor instance, using jQuery.wymeditors(0)");
 });
-/*
-    Tests that require the WYMeditor instance to already be initialized.
-    Calling this funtion as a postInit argument ensures they can pass.
-*/
-module("API", {setup: setupWym});
+
+module("API", {setup: prepareUnitTestModule});
 
 test("Commands", function () {
     expect(2);
@@ -153,7 +158,7 @@ test("Commands", function () {
     deepEqual(jQuery('div.wym_html:visible', wymeditor._box).length, 0);
 });
 
-module("XmlHelper", {setup: setupWym});
+module("XmlHelper", {setup: prepareUnitTestModule});
 
 test("Should escape URL's only once #69.1", function () {
     expect(2);
@@ -165,7 +170,7 @@ test("Should escape URL's only once #69.1", function () {
             "Avoids double entity escaping");
 });
 
-module("Post Init", {setup: setupWym});
+module("Post Init", {setup: prepareUnitTestModule});
 
 test("Sanity check: _html()", function () {
     expect(1);
@@ -176,7 +181,7 @@ test("Sanity check: _html()", function () {
     wymEqual(wymeditor, testText1);
 });
 
-module("copy-paste", {setup: setupWym});
+module("copy-paste", {setup: prepareUnitTestModule});
 
 var basicParagraphsHtml = String() +
         '<h2 id="h2_1">h2_1</h2>' +
@@ -555,7 +560,7 @@ test("List- 2nd level li li_2_2", function () {
     );
 });
 
-module("table-insertion", {setup: setupWym});
+module("table-insertion", {setup: prepareUnitTestModule});
 
 test("Table is editable after insertion", function () {
     expect(7);
@@ -969,7 +974,7 @@ var startEndInNoBR = expectedEndIn.replace(TEST_LINEBREAK_SPACER, '');
 
 var startEndOutNoBR = expectedEndOut.replace(TEST_LINEBREAK_SPACER, '');
 
-module("table-insert_in_list", {setup: setupWym});
+module("table-insert_in_list", {setup: prepareUnitTestModule});
 
 // These test fail in IE7 & IE8:
 // TODO url
@@ -1080,7 +1085,7 @@ if (!(// Browser is IE and
      ) ||
     // we are executing known failing tests:
     !SKIP_KNOWN_FAILING_TESTS) {
-    module("table-insert_in_sublist", {setup: setupWym});
+    module("table-insert_in_sublist", {setup: prepareUnitTestModule});
 
     test("Single table insertion into a sublist", function () {
         expect(1);
@@ -1119,7 +1124,7 @@ if (!(// Browser is IE and
     });
 }
 
-module("table-parse_spacers_in_list", {setup: setupWym});
+module("table-parse_spacers_in_list", {setup: prepareUnitTestModule});
 // The tests in this module use the wymEqual function from utils.js to parse
 // the resulting html from tables being inserted into a list or sublist using
 // the parser to ensure that the line break spacers are properly removed.
@@ -1145,7 +1150,7 @@ test("Parse list with multiple tables in a sublist", function () {
     wymEqual(wymeditor, sublistThreeTablesNoBR);
 });
 
-module("table-td_th_switching", {setup: setupWym});
+module("table-td_th_switching", {setup: prepareUnitTestModule});
 
 var tableWithColspanTD = String() +
     '<table>' +
@@ -1209,7 +1214,7 @@ test("Colspan preserved when switching from th to td", function () {
     wymEqual(wymeditor, tableWithColspanTD);
 });
 
-module("preformatted-text", {setup: setupWym});
+module("preformatted-text", {setup: prepareUnitTestModule});
 
 test("Preformatted text retains spacing", function () {
     var wymeditor = jQuery.wymeditors(0),
@@ -1230,7 +1235,7 @@ test("Preformatted text retains spacing", function () {
     deepEqual(wymeditor.xhtml(), preHtml);
 });
 
-module("soft-return", {setup: setupWym});
+module("soft-return", {setup: prepareUnitTestModule});
 
 test("Double soft returns are allowed", function () {
     var initHtml = String() +
@@ -1246,7 +1251,7 @@ test("Double soft returns are allowed", function () {
     wymEqual(wymeditor, initHtml);
 });
 
-module("image-styling", {setup: setupWym});
+module("image-styling", {setup: prepareUnitTestModule});
 
 test("_selected image is saved on mousedown", function () {
     var initHtml = [""
@@ -1287,7 +1292,7 @@ test("_selected image is saved on mousedown", function () {
 // the editor in Phantom.js. This test still works fine in all other supported
 // browsers.
 if (!inPhantomjs || !SKIP_KNOWN_FAILING_TESTS) {
-    module("image-insertion", {setup: setupWym});
+    module("image-insertion", {setup: prepareUnitTestModule});
 
     test("Image insertion outside of a container", function () {
         expect(3);
@@ -1325,7 +1330,7 @@ if (!inPhantomjs || !SKIP_KNOWN_FAILING_TESTS) {
     });
 }
 
-module("header-no_span", {setup: setupWym});
+module("header-no_span", {setup: prepareUnitTestModule});
 
 /**
     checkTagInContainer
@@ -1367,7 +1372,7 @@ test("No span added to header after bolding", function () {
 });
 
 
-module("html_from_editor-html_function", {setup: setupWym});
+module("html_from_editor-html_function", {setup: prepareUnitTestModule});
 
 test("Can set and get html with the html() function", function () {
     var wymeditor = jQuery.wymeditors(0),
@@ -1391,7 +1396,7 @@ test("Can set and get html with the html() function", function () {
               "Set and get with html() function");
 });
 
-module("selection", {setup: setupWym});
+module("selection", {setup: prepareUnitTestModule});
 
 var selTest = {};
 
@@ -1613,7 +1618,7 @@ test("Set and get collapsed selection", function () {
     }
 });
 
-module("switchTo", {setup: setupWym});
+module("switchTo", {setup: prepareUnitTestModule});
 
 test("Refuses 'img' elements.", function () {
     var
@@ -1639,37 +1644,31 @@ test("Refuses 'img' elements.", function () {
 
 });
 
-module("multiple-instances", {
-    setup: setupMultipleTextareas,
-    teardown: teardownMultipleTextareas
-});
-
-// Returns true if all WYMeditor Iframes are initialized.
-function allWymIframesInitialized() {
-    var i;
-
-    for (i = 0; i < WYMeditor.INSTANCES.length; i++) {
-        if (!WYMeditor.INSTANCES[i].iframeInitialized) {
-            return false;
-        } else if (i === WYMeditor.INSTANCES.length - 1) {
-            return true;
-        }
+var MULTIPLE_INSTANCES_AMOUNT = 3;
+module(
+    "multiple-instances",
+    {
+        setup: function () {
+            prepareUnitTestModule({
+                editorCount: MULTIPLE_INSTANCES_AMOUNT,
+                initialized: false
+            });
+        },
+        teardown: vanishAllWyms
     }
-}
+);
 
 test("We have multiple instances", function () {
-    var AMOUNT = 9;
-
     expect(2);
     jQuery('#wym-form > .wym').wymeditor();
     strictEqual(
         WYMeditor.INSTANCES.length,
-        AMOUNT,
+        MULTIPLE_INSTANCES_AMOUNT,
         "Instances"
     );
     strictEqual(
         jQuery('#wym-form > .wym_box').length,
-        AMOUNT,
+        MULTIPLE_INSTANCES_AMOUNT,
         "Boxes"
     );
 

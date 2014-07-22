@@ -1,5 +1,6 @@
 /* jshint maxlen: 90 */
-/* global setupWym, SKIP_KNOWN_FAILING_TESTS,
+/* global SKIP_KNOWN_FAILING_TESTS,
+prepareUnitTestModule,
 wymEqual, makeTextSelection, normalizeHtml,
 ok, test, expect, deepEqual */
 "use strict";
@@ -34,7 +35,7 @@ function getHtmlAfterKeyup(wymeditor) {
     return bodyHtml;
 }
 
-module("structured_headings-initialize_interface", {setup: setupWym});
+module("structured_headings-initialize_interface", {setup: prepareUnitTestModule});
 
 test("Single 'Heading' option in containers panel", function () {
     expect(2);
@@ -68,7 +69,7 @@ test("Single 'Heading' option in containers panel", function () {
        "Generic heading option listed in the containers panel");
 });
 
-module("structured_headings-initialize_styles", {setup: setupWym});
+module("structured_headings-initialize_styles", {setup: prepareUnitTestModule});
 
 test("Stylesheet added to iframe", function () {
     expect(2);
@@ -110,7 +111,7 @@ test("Stylesheet added to iframe", function () {
     ok(successfulRequest, "Stylesheet successfully loads on request");
 });
 
-module("structured_headings-css_access", {setup: setupWym});
+module("structured_headings-css_access", {setup: prepareUnitTestModule});
 
 test("CSS stored for user access through console", function () {
     expect(1);
@@ -139,7 +140,7 @@ var testMultiIndentOutdent = function () {};
 if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
     !SKIP_KNOWN_FAILING_TESTS) {
 
-    module("structured_headings-heading_insertion", {setup: setupWym});
+    module("structured_headings-heading_insertion", {setup: prepareUnitTestModule});
 
     var htmlForHeadingInsertion = String() +
         '<h1>H1</h1>' +
@@ -338,7 +339,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
         }
     }
 
-    module("structured_headings-indent", {setup: setupWym});
+    module("structured_headings-indent", {setup: prepareUnitTestModule});
 
     /**
         testHeadingIndent
@@ -454,7 +455,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
         }
     });
 
-    module("structured_headings-outdent", {setup: setupWym});
+    module("structured_headings-outdent", {setup: prepareUnitTestModule});
 
     /**
         testHeadingOutdent
@@ -626,7 +627,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
         });
     };
 
-    module("structured_headings-multiple_indent", {setup: setupWym});
+    module("structured_headings-multiple_indent", {setup: prepareUnitTestModule});
 
     var basicMultiIndentStart = String() +
         '<h1>Test</h1>' +
@@ -993,7 +994,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
 
     });
 
-    module("structured_headings-multiple_outdent", {setup: setupWym});
+    module("structured_headings-multiple_outdent", {setup: prepareUnitTestModule});
 
     var basicMultiOutdentStart = String() +
         '<h1>Test</h1>' +
@@ -1457,7 +1458,7 @@ if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
         ''
     );
 
-    module("structured_headings-ie7_polyfill", {setup: setupWym});
+    module("structured_headings-ie7_polyfill", {setup: prepareUnitTestModule});
 
     test("Heading numbering properly added on keyup", function () {
         expect(1);
