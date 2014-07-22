@@ -45,7 +45,7 @@ expected to be ``true``, if the editor initialized succesfully.
 ============
 
 Removes the WYMeditor instance from existence and replaces the
-'data-wym-initialized' attirbute of its textarea with 'data-wym-vanished'.
+'data-wym-initialized' attribute of its textarea with 'data-wym-vanished'.
 
 .. code-block:: javascript
 
