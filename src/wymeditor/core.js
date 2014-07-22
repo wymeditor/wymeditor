@@ -517,6 +517,10 @@ jQuery.extend(WYMeditor, {
 
     */
     editor : function (elem, options) {
+        if (jQuery.getWymeditorByTextarea(elem[0])) {
+            throw "It seems that this textarea already belongs to a " +
+                "WYMeditor instance.";
+        }
         // Store the instance in the INSTANCES array and store the index
         this._index = WYMeditor.INSTANCES.push(this) - 1;
         // The element replaced by the editor
@@ -911,6 +915,27 @@ jQuery.fn.wymeditor = function (options) {
 jQuery.extend({
     wymeditors: function (i) {
         return WYMeditor.INSTANCES[i];
+    }
+});
+
+jQuery.extend({
+    getWymeditorByTextarea: function (textarea) {
+        var i;
+        if (
+            !(
+                textarea &&
+                textarea.tagName &&
+                textarea.tagName.toLowerCase() === 'textarea'
+            )
+        ) {
+            throw "jQuery.getWymeditorByTextarea requires a textarea element.";
+        }
+        for (i = 0; i < WYMeditor.INSTANCES.length; i++) {
+            if (textarea === WYMeditor.INSTANCES[i]._element[0]) {
+                return WYMeditor.INSTANCES[i];
+            }
+        }
+        return false;
     }
 });
 
