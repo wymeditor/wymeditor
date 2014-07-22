@@ -79,12 +79,10 @@ If you want a custom,
 non-Vagrant environment,
 the basic requirements are:
 
-* A working NPM and nodejs installation
 * ``git`` and whatever tools you need to build from source.
   eg. ``sudo apt-get install build-essential``
-* A working `PhantomJS <http://phantomjs.org/>`_ installation
-  or at least the libraries necessary to build it.
-* `grunt` and `bower` installed via ``NPM``.
+* Node.JS and NPM.
+* `grunt-cli`
 
 Then you just need to
 
