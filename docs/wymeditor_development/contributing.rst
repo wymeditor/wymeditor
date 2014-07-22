@@ -98,6 +98,16 @@ Then you just need to
     script,
     which we use for configuring the Vagrant machine.
 
+Front-end dependencies with Bower
+=================================
+
+Our front-end dependencies are pulled in by Bower.
+
+Grunt orchestrates this automatically so you don't have to think about it.
+
+If you changed ``bower.json`` and want those changes to take affect, just
+restart the server or run ``grunt bower``.
+
 .. _vagrant-environment-setup:
 
 Environment Setup with Vagrant
