@@ -334,6 +334,8 @@ module.exports = function (grunt) {
                 src: ["./**"]
             }
         },
+        // This task installs the Bower components, as configured in
+        // `bower.json`.
         'bower-install-simple': {
             options: {
                 color: true,
@@ -345,6 +347,10 @@ module.exports = function (grunt) {
             }
         },
         'bower-linker': {
+            // This task copies the libraries that are required by WYMeditor
+            // for use in the development environment. It copies the specific
+            // files that are required, from the Bower installation directory,
+            // into the development environment.
             dev: {
                 options: {
                     copy: false,
@@ -404,6 +410,8 @@ module.exports = function (grunt) {
         'build'
     ]);
 
+    // This task combines the installation of Bower components and the copying
+    // of the library files for use in the development environment.
     grunt.registerTask('bower', [
         'bower-install-simple',
         'bower-linker:dev',
