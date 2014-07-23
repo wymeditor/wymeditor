@@ -13,6 +13,10 @@ WYMeditor.
   ``jQuery.copyPropsFromObjectToObject``. It copies specified properties from
   an object to another.
 
+### Bug Fixes
+
+* Some fixes in Internet Explorer 11’s initialization, bug fixes and tests.
+
 ### Backwards-Incompatible Changes
 
 * The jQuery.browser plugin was introduced as a dependency, even for jQuery
@@ -20,8 +24,6 @@ WYMeditor.
   because the ``jQuery.browser`` that is in old jQuery versions thinks that
   IE11 is Mozilla (can’t blame it, really).
 * jQuery-migrate is no longer required at all.
-* WYMeditor instances under IE11 were, until now initialized as
-  ``WymClassGecko``. Now they initialize as ``WymClassTrident7``.
 
 ### Development Process Improvements
 
