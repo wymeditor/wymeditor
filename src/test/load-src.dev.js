@@ -2,22 +2,6 @@
 /*jshint evil: true */
 "use strict";
 
-function versionToInt(major, minor, build) {
-    major = major * 100 * 100;
-    minor = minor * 100;
-
-    return major + minor + build;
-}
-
-function parseVersionString(str) {
-    var components = str.split('.'),
-        major = parseInt(components[0], 10) || 0,
-        minor = parseInt(components[1], 10) || 0,
-        build = parseInt(components[2], 10) || 0;
-
-    return versionToInt(major, minor, build);
-}
-
 /**
     loadWymSrc
     ==========
@@ -35,7 +19,8 @@ function loadWymSrc(srcPath, extraRequirements, jqueryVersion) {
             srcPath + 'wymeditor/editor/base.js',
             srcPath + 'wymeditor/editor/document-structure-manager.js',
             srcPath + 'wymeditor/editor/gecko.js',
-            srcPath + 'wymeditor/editor/trident.js',
+            srcPath + 'wymeditor/editor/trident-pre-7.js',
+            srcPath + 'wymeditor/editor/trident-7.js',
             srcPath + 'wymeditor/editor/webkit.js',
             srcPath + 'wymeditor/parser/xml-helper.js',
             srcPath + 'wymeditor/parser/xhtml-validator.js',
@@ -48,13 +33,10 @@ function loadWymSrc(srcPath, extraRequirements, jqueryVersion) {
             srcPath + 'wymeditor/lang/en.js',
             srcPath + 'wymeditor/skins/default/skin.js'
         ],
-        jqueryMigrateRequirement = [],
+        jqueryBrowserRequirement = [],
         jqueryRequirement = [],
         requirements = [],
-        i,
-        jqVersionInt,
-        jqMigrateMinInt,
-        jqueryMigrateMin = {major: 1, minor: 8, build: 0};
+        i;
 
     // Default to using local jquery
     if (typeof jqueryVersion  === 'undefined') {
@@ -74,20 +56,11 @@ function loadWymSrc(srcPath, extraRequirements, jqueryVersion) {
         ];
     }
 
-    // Include jquery-migrate, if the jQuery version requires it
-    jqVersionInt = parseVersionString(jqueryVersion);
-    jqMigrateMinInt = versionToInt(
-        jqueryMigrateMin.major,
-        jqueryMigrateMin.minor,
-        jqueryMigrateMin.build
-    );
-    if (jqVersionInt >= jqMigrateMinInt) {
-        jqueryMigrateRequirement = [srcPath + 'jquery/jquery-migrate.min.js'];
-    }
+    jqueryBrowserRequirement = [srcPath + 'lib/jquery.browser.js'];
 
     requirements = requirements.concat(
         jqueryRequirement,
-        jqueryMigrateRequirement,
+        jqueryBrowserRequirement,
         baseRequirements,
         extraRequirements
     );

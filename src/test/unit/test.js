@@ -24,13 +24,18 @@ jQuery.noConflict();
 // test suite that should always be passing in all supported browsers.
 var SKIP_KNOWN_FAILING_TESTS = true,
     // Can't move the selection to a <br /> element
-    no_br_selection_browser = jQuery.browser.webkit || jQuery.browser.msie,
+    no_br_selection_browser = jQuery.browser.webkit ||
+        WYMeditor.isInternetExplorerPre11(),
     // Double-br browsers need placeholders both before and after blocking
     // elements. Others just need placeholders before
     is_double_br_browser = (jQuery.browser.mozilla ||
         jQuery.browser.webkit ||
         jQuery.browser.safari ||
-        (jQuery.browser.msie && jQuery.browser.version >= "7.0"));
+        (
+            jQuery.browser.msie &&
+            jQuery.browser.versionNumber <= 9
+        )
+    );
 
 // Returns true if all WYMeditor Iframes are initialized.
 function allWymIframesInitialized() {
@@ -235,9 +240,10 @@ var complexCopyText = String() +
         'sentence3\r\n\r\n' +
         'gap\r\n\r\n' +
         'gap2';
-if (jQuery.browser !== 'msie') {
-    complexCopyText = complexCopyText.replace(/\r/g, '');
-}
+//if (jQuery.browser !== 'msie') {
+    // This was always true so commented out. Probably a human error.
+complexCopyText = complexCopyText.replace(/\r/g, '');
+//}
 
 var body_complexInsertionHtml = String() +
         '<p>' +
@@ -1073,56 +1079,43 @@ if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
     });
 }
 
-// These test fail in IE7 & IE8:
-// https://github.com/wymeditor/wymeditor/issues/498
-if (!(// Browser is IE and
-      jQuery.browser.msie &&
-      // version 7.x until
-      parseInt(jQuery.browser.version, 10) >= 7 &&
-      // version 8.x
-      parseInt(jQuery.browser.version, 10) < 9
-     // or
-     ) ||
-    // we are executing known failing tests:
-    !SKIP_KNOWN_FAILING_TESTS) {
-    module("table-insert_in_sublist", {setup: prepareUnitTestModule});
+module("table-insert_in_sublist", {setup: prepareUnitTestModule});
 
-    test("Single table insertion into a sublist", function () {
-        expect(1);
-        var wymeditor = jQuery.wymeditors(0);
+test("Single table insertion into a sublist", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0);
 
-        setupTable(wymeditor, sublistForTableInsertion, '#li_2', 'text',
-                   1, 1, 'test_1');
-        wymEqual(wymeditor, expectedSublistOneTable, {
-            assertionString: "Single table insertion within a sublist",
-            skipParser: true
-        });
+    setupTable(wymeditor, sublistForTableInsertion, '#li_2', 'text',
+               1, 1, 'test_1');
+    wymEqual(wymeditor, expectedSublistOneTable, {
+        assertionString: "Single table insertion within a sublist",
+        skipParser: true
     });
+});
 
-    test("Double table insertion into a sublist", function () {
-        expect(1);
-        var wymeditor = jQuery.wymeditors(0);
+test("Double table insertion into a sublist", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0);
 
-        setupTable(wymeditor, expectedSublistOneTable, '#li_2', 'text',
-                   2, 1, 'test_2');
-        wymEqual(wymeditor, expectedSublistTwoTables, {
-            assertionString: "Double table insertion within a sublist",
-            skipParser: true
-        });
+    setupTable(wymeditor, expectedSublistOneTable, '#li_2', 'text',
+               2, 1, 'test_2');
+    wymEqual(wymeditor, expectedSublistTwoTables, {
+        assertionString: "Double table insertion within a sublist",
+        skipParser: true
     });
+});
 
-    test("Triple table insertion into a sublist", function () {
-        expect(1);
-        var wymeditor = jQuery.wymeditors(0);
+test("Triple table insertion into a sublist", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0);
 
-        setupTable(wymeditor, expectedSublistTwoTables, '#li_2', 'text',
-                   3, 1, 'test_3');
-        wymEqual(wymeditor, expectedSublistThreeTables, {
-            assertionString: "Triple table insertion within a sublist",
-            skipParser: true
-        });
+    setupTable(wymeditor, expectedSublistTwoTables, '#li_2', 'text',
+               3, 1, 'test_3');
+    wymEqual(wymeditor, expectedSublistThreeTables, {
+        assertionString: "Triple table insertion within a sublist",
+        skipParser: true
     });
-}
+});
 
 module("table-parse_spacers_in_list", {setup: prepareUnitTestModule});
 // The tests in this module use the wymEqual function from utils.js to parse
@@ -1313,6 +1306,7 @@ if (!inPhantomjs || !SKIP_KNOWN_FAILING_TESTS) {
         // inserting the image with its src set to a unique stamp for
         // identification rather than its actual src.
         wymeditor._html('');
+        wymeditor.setCaretIn($body[0]);
         wymeditor._exec(WYMeditor.INSERT_IMAGE, imageStamp);
 
         ok(!$body.siblings(imageSelector).length,

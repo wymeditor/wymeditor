@@ -33,8 +33,10 @@ WYMeditor.editor.prototype.init = function () {
         oContainer,
         wym;
 
-    if (jQuery.browser.msie) {
-        WymClass = new WYMeditor.WymClassTrident(this);
+    if (WYMeditor.isInternetExplorerPre11()) {
+        WymClass = new WYMeditor.WymClassTridentPre7(this);
+    } else if (WYMeditor.isInternetExplorer11OrNewer()) {
+        WymClass = new WYMeditor.WymClassTrident7(this);
     } else if (jQuery.browser.mozilla) {
         WymClass = new WYMeditor.WymClassGecko(this);
     } else if (jQuery.browser.safari || jQuery.browser.webkit ||

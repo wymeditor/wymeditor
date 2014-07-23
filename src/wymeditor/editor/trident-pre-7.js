@@ -2,12 +2,12 @@
 /* global rangy, -$ */
 "use strict";
 
-WYMeditor.WymClassTrident = function (wym) {
+WYMeditor.WymClassTridentPre7 = function (wym) {
     this._wym = wym;
     this._class = "className";
 };
 
-WYMeditor.WymClassTrident.prototype.initIframe = function (iframe) {
+WYMeditor.WymClassTridentPre7.prototype.initIframe = function (iframe) {
     this._iframe = iframe;
     this._doc = iframe.contentWindow.document;
 
@@ -69,7 +69,7 @@ WYMeditor.WymClassTrident.prototype.initIframe = function (iframe) {
 };
 
 (function (editorInitSkin) {
-    WYMeditor.WymClassTrident.prototype.initSkin = function () {
+    WYMeditor.WymClassTridentPre7.prototype.initSkin = function () {
         // Mark container items as unselectable (#203)
         // Fix for issue explained:
         // http://stackoverflow.com/questions/
@@ -82,7 +82,7 @@ WYMeditor.WymClassTrident.prototype.initIframe = function (iframe) {
     };
 }(WYMeditor.editor.prototype.initSkin));
 
-WYMeditor.WymClassTrident.prototype._exec = function (cmd, param) {
+WYMeditor.WymClassTridentPre7.prototype._exec = function (cmd, param) {
     if (param) {
         this._doc.execCommand(cmd, false, param);
     } else {
@@ -90,11 +90,11 @@ WYMeditor.WymClassTrident.prototype._exec = function (cmd, param) {
     }
 };
 
-WYMeditor.WymClassTrident.prototype.saveCaret = function () {
+WYMeditor.WymClassTridentPre7.prototype.saveCaret = function () {
     this._doc.caretPos = this._doc.selection.createRange();
 };
 
-WYMeditor.WymClassTrident.prototype.insert = function (html) {
+WYMeditor.WymClassTridentPre7.prototype.insert = function (html) {
 
     // Get the current selection
     var range = this._doc.selection.createRange(),
@@ -113,7 +113,7 @@ WYMeditor.WymClassTrident.prototype.insert = function (html) {
     }
 };
 
-WYMeditor.WymClassTrident.prototype.wrap = function (left, right) {
+WYMeditor.WymClassTridentPre7.prototype.wrap = function (left, right) {
     // Get the current selection
     var range = this._doc.selection.createRange(),
         $selectionParents;
@@ -139,7 +139,7 @@ WYMeditor.WymClassTrident.prototype.wrap = function (left, right) {
     @param containerType A string of an HTML tag that specifies the container
                          type to use for wrapping the node.
 */
-WYMeditor.WymClassTrident.prototype.wrapWithContainer = function (
+WYMeditor.WymClassTridentPre7.prototype.wrapWithContainer = function (
     node, containerType
 ) {
     var wym = this._wym,
@@ -155,7 +155,7 @@ WYMeditor.WymClassTrident.prototype.wrapWithContainer = function (
     selection.setSingleRange(range);
 };
 
-WYMeditor.WymClassTrident.prototype.unwrap = function () {
+WYMeditor.WymClassTridentPre7.prototype.unwrap = function () {
     // Get the current selection
     var range = this._doc.selection.createRange(),
         $selectionParents,
@@ -173,7 +173,7 @@ WYMeditor.WymClassTrident.prototype.unwrap = function () {
     }
 };
 
-WYMeditor.WymClassTrident.prototype.keyup = function (evt) {
+WYMeditor.WymClassTridentPre7.prototype.keyup = function (evt) {
     //'this' is the doc
     var wym = WYMeditor.INSTANCES[this.title],
         container,

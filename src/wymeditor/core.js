@@ -940,6 +940,68 @@ jQuery.extend({
 });
 
 /**
+    jQuery.copyPropsFromObjectToObject
+    =====================================
+
+    General helper function that copies specified list of properties from a
+    specified origin object to a specified target object.
+
+    @param origin The origin object.
+    @param target The target object.
+    @param propNames An array of strings, representing the properties to copy.
+*/
+jQuery.extend({
+    copyPropsFromObjectToObject: function (origin, target, propNames) {
+        var i,
+            propName,
+            prop,
+            props = {};
+
+        for (i = 0; i < propNames.length; i++) {
+            propName = propNames[i];
+            prop = origin[propName];
+            props[propName] = prop;
+        }
+
+        jQuery.extend(target, props);
+    }
+});
+
+/**
+    WYMeditor.isInternetExplorerPre11
+    =================================
+
+    Returns true if the current browser is an Internet Explorer version
+    previous to 11. Otherwise, returns false.
+*/
+WYMeditor.isInternetExplorerPre11 = function () {
+    if (
+        jQuery.browser.msie &&
+        jQuery.browser.versionNumber < 11
+    ) {
+        return true;
+    }
+    return false;
+};
+
+/**
+    WYMeditor.isInternetExplorer11OrNewer
+    =====================================
+
+    Returns true if the current browser is an Internet Explorer version 11 or
+    newer. Otherwise, returns false.
+*/
+WYMeditor.isInternetExplorer11OrNewer = function () {
+    if (
+        jQuery.browser.msie &&
+        jQuery.browser.versionNumber >= 11
+    ) {
+        return true;
+    }
+    return false;
+};
+
+/**
     WYMeditor.computeWymPath
     ========================
 

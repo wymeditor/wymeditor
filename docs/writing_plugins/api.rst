@@ -351,9 +351,37 @@ Example:
 
     jQuery.wymeditors(0).toggleHtml();
 
+``jQuery.copyPropsFromObjectToObject(origin, target, props)``
+=============================================================
+
+General helper function that copies specified list of properties from a
+specified origin object to a specified target object.
+
+Example:
+
+.. code-block:: javascript
+
+    var foo = {A: 'a', B: 'b', C: 'c'},
+        bar = {Y: 'y'};
+    jQuery.copyPropsFromObjectToObject(foo, bar, ['A', 'B']);
+
+``bar`` will then be ``{A: 'a', B: 'b', Y: 'y'}``.
+
 ``isInlineNode(node)``
 ======================
 
 Returns true if the provided node is an inline type node. False, otherwise.
 
 .. _issue: https://github.com/wymeditor/wymeditor/issues
+
+``WYMeditor.isInternetExplorer*()``
+===================================
+
+``WYMeditor.isInternetExplorerPre11()`` and
+``WYMeditor.isInternetExplorer11OrNewer()``.
+
+Internet Explorer's engine, Trident, had changed considerably in version 7,
+which is the version that IE11 has, and now behaves very similarly to Mozilla.
+
+These two functions help detect whether the running browser is IE before 11 or
+IE11-or-newer, by returning a boolean.
