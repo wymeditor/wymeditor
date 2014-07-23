@@ -1306,6 +1306,7 @@ if (!inPhantomjs || !SKIP_KNOWN_FAILING_TESTS) {
         // inserting the image with its src set to a unique stamp for
         // identification rather than its actual src.
         wymeditor._html('');
+        wymeditor.setCaretIn($body[0]);
         wymeditor._exec(WYMeditor.INSERT_IMAGE, imageStamp);
 
         ok(!$body.siblings(imageSelector).length,
@@ -1314,7 +1315,7 @@ if (!inPhantomjs || !SKIP_KNOWN_FAILING_TESTS) {
            "Image is not a child of a sibling of the wymeditor body");
 
         $body.find(imageSelector).attr(WYMeditor.SRC, imageURL);
-        if (WYMeditor.isInternetExplorerPre11()) {
+        if (jQuery.browser.msie) {
             // IE doesn't wrap the image in a paragraph
             wymEqual(wymeditor, expectedHtmlIE);
         } else {
