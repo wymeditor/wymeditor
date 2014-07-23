@@ -207,7 +207,13 @@ module.exports = function (grunt) {
             dist: {
                 src: [
                     "<%= yeoman.app %>/wymeditor/core.js",
-                    "<%= yeoman.app %>/wymeditor/editor/*.js",
+                    "<%= yeoman.app %>/wymeditor/editor/base.js",
+                    "<%= yeoman.app %>/wymeditor/editor/" +
+                        "document-structure-manager.js",
+                    "<%= yeoman.app %>/wymeditor/editor/gecko.js",
+                    "<%= yeoman.app %>/wymeditor/editor/webkit.js",
+                    "<%= yeoman.app %>/wymeditor/editor/trident-pre-7.js",
+                    "<%= yeoman.app %>/wymeditor/editor/trident-7.js",
                     "<%= yeoman.app %>/wymeditor/parser/*.js",
                     // TODO: For custom builds, will need to change this.
                     "<%= yeoman.app %>/wymeditor/lang/*.js",
