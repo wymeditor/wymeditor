@@ -360,7 +360,7 @@ module.exports = function (grunt) {
             dev: {
                 options: {
                     copy: false,
-                    cwd: 'src',
+                    cwd: "<%= yeoman.app %>",
                     force: false,
                     map: {
                         '*': '/'
