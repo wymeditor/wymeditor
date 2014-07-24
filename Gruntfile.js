@@ -363,7 +363,15 @@ module.exports = function (grunt) {
                     cwd: 'src',
                     force: false,
                     map: {
-                        '*': '/'
+                        'require.js': '/',
+                        'jquery.js': '/',
+                        'jquery.browser.js': '/',
+                        // Originates from js-beautify
+                        'beautify-html.js': '/',
+                        // following two also originate from js-beautify and we
+                        // don't use them so tuck them away nicely.
+                        'beautify.js': '/redundant/',
+                        'beautify-css.js': '/redundant/'
                     },
                     offline: true,
                     root: "<%= yeoman.app %>/lib",
