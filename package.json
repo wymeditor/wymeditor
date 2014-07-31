@@ -62,7 +62,6 @@
     "grunt-replace": "~0.4.4",
     "grunt-rev": "~0.1.0",
     "grunt-usemin": "~0.1.10",
-    "js-beautify": "~1.5.1",
     "time-grunt": "~0.1.1"
   },
   "engines": {
