@@ -292,7 +292,9 @@ WYMeditor.editor.prototype._bindSetFocusToDocumentToButtons = function () {
     $buttons.bind('click', function () {
         wym._iframe.contentWindow.focus();
     });
-
+    // This bound the focus setting but it binds it, naturally, at the end
+    // of the event chain. We need it at the start.
+    // The following puts it at the start.
     $buttons.each(function (index, element) {
         var $button = jQuery(element),
             clickEvents;
