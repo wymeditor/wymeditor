@@ -262,7 +262,7 @@ function makeSelection(
         // might be something that rangy can handle.
         endElementIndex = 1;
     }
-    var sel = rangy.getIframeSelection(wymeditor._iframe),
+    var sel = wymeditor.selection(),
         range = rangy.createRange(wymeditor._doc);
 
     range.setStart(startElement, startElementIndex);

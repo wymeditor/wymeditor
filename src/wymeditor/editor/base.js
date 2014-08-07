@@ -1542,25 +1542,21 @@ WYMeditor.editor.prototype._handleMultilineBlockContainerPaste = function (
     paragraphs. May contain inline HTML.
 */
 WYMeditor.editor.prototype.paste = function (str) {
-    var container = this.selectedContainer(),
+    var wym = this,
+        container = wym.selectedContainer(),
         paragraphStrings,
         j,
         textNodesToInsert,
         blockSplitter,
-        $container,
+        $container = jQuery(container),
         html = '',
         paragraphs,
         i,
         isSingleLine = false,
-        sel,
+        sel = wym.selection(),
         textNode,
-        wym,
-        range,
+        range = sel.getRangeAt(0),
         insertionNodes;
-    wym = this;
-    sel = rangy.getIframeSelection(wym._iframe);
-    range = sel.getRangeAt(0);
-    $container = jQuery(container);
 
     // Start by collapsing the range to the start of the selection. We're
     // punting on implementing a paste that also replaces existing content for
@@ -1633,7 +1629,8 @@ WYMeditor.editor.prototype.paste = function (str) {
 
 WYMeditor.editor.prototype.insert = function (html) {
     // Do we have a selection?
-    var selection = this._iframe.contentWindow.getSelection(),
+    var wym = this,
+        selection = wym.selection(),
         range,
         node;
     if (selection.focusNode !== null) {
@@ -1644,7 +1641,7 @@ WYMeditor.editor.prototype.insert = function (html) {
         range.insertNode(node);
     } else {
         // Fall back to the internal paste function if there's no selection
-        this.paste(html);
+        wym.paste(html);
     }
 };
 
@@ -1708,9 +1705,9 @@ WYMeditor.editor.prototype.canSetCaretBefore = function (node) {
     @param node A node to set the selection to immediately before of.
  */
 WYMeditor.editor.prototype.setCaretBefore = function (node) {
-    var
-        range = rangy.createRange(this._doc),
-        selection = rangy.getIframeSelection(this._iframe);
+    var wym = this,
+        range = rangy.createRange(wym._doc),
+        selection = wym.selection();
 
     if (!this.canSetCaretBefore(node)) {
         throw "Can't set caret before this node.";
@@ -1771,11 +1768,12 @@ WYMeditor.editor.prototype.canSetCaretIn = function (node) {
     @param element An element to set the selection inside of, at the start.
  */
 WYMeditor.editor.prototype.setCaretIn = function (element) {
-    var range = rangy.createRange(this._doc),
-        selection = rangy.getIframeSelection(this._iframe);
+    var wym = this,
+        range = rangy.createRange(wym._doc),
+        selection = wym.selection();
 
     if (
-        !this.canSetCaretIn(element)
+        !wym.canSetCaretIn(element)
     ) {
         throw "The element must be able to contain other elements. Perhaps " +
             " you would like to use `setCaretBefore`, instead.";
@@ -1784,7 +1782,7 @@ WYMeditor.editor.prototype.setCaretIn = function (element) {
     range.selectNodeContents(element);
 
     // Rangy issue #209.
-    if (this.isInlineNode(element)) {
+    if (wym.isInlineNode(element)) {
 
         // Don't collapse the range. As long as
         // this occurs only in tests it is probably OK. Warn.
@@ -2712,8 +2710,8 @@ WYMeditor.editor.prototype._selectionOnlyInList = function (sel) {
     Only list items that have a common list will be indented.
  */
 WYMeditor.editor.prototype.indent = function () {
-    var wym = this._wym,
-        sel = rangy.getIframeSelection(this._iframe),
+    var wym = this,
+        sel = wym.selection(),
         listItems,
         manipulationFunc,
         i;
@@ -2736,7 +2734,7 @@ WYMeditor.editor.prototype.indent = function () {
 
     // We just changed and restored the selection when possibly correcting the
     // lists
-    sel = rangy.getIframeSelection(this._iframe);
+    sel = wym.selection();
 
     // If all of the selected nodes are not contained within one list, don't
     // perform the action.
@@ -2772,8 +2770,8 @@ WYMeditor.editor.prototype.indent = function () {
     behavior and valid HTML.
 */
 WYMeditor.editor.prototype.outdent = function () {
-    var wym = this._wym,
-        sel = rangy.getIframeSelection(this._iframe),
+    var wym = this,
+        sel = wym.selection(),
         listItems,
         manipulationFunc,
         i;
@@ -2796,7 +2794,7 @@ WYMeditor.editor.prototype.outdent = function () {
 
     // We just changed and restored the selection when possibly correcting the
     // lists
-    sel = rangy.getIframeSelection(this._iframe);
+    sel = wym.selection();
 
     // If all of the selected nodes are not contained within one list, don't
     // perform the action.
@@ -2971,7 +2969,7 @@ WYMeditor.editor.prototype.insertUnorderedlist = function () {
  */
 WYMeditor.editor.prototype._insertList = function (listType) {
     var wym = this._wym,
-        sel = rangy.getIframeSelection(wym._iframe),
+        sel = wym.selection(),
         listItems,
         $listItems,
         $parentListsOfDifferentType,

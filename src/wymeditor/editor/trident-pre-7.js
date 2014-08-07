@@ -148,7 +148,7 @@ WYMeditor.WymClassTridentPre7.prototype.wrapWithContainer = function (
         range;
 
     $wrappedNode = jQuery(node).wrap('<' + containerType + ' />');
-    selection = rangy.getIframeSelection(wym._iframe);
+    selection = wym.selection();
     range = rangy.createRange(wym._doc);
     range.selectNodeContents($wrappedNode[0]);
     range.collapse();

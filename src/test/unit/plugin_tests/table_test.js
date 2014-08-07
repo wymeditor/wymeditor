@@ -1,5 +1,5 @@
 /* jshint maxlen: 90 */
-/* global rangy,
+/* global
 SKIP_KNOWN_FAILING_TESTS, prepareUnitTestModule,
 wymEqual, moveSelector, simulateKey, makeSelection, normalizeHtml,
 ok, test, expect, deepEqual */
@@ -118,7 +118,7 @@ function testRowMerge(
 
     // Use rangy to get a cross-browser selection object and perform the actual
     // merge
-    sel = rangy.getIframeSelection(wymeditor._iframe);
+    sel = wymeditor.selection();
     changesMade = wymeditor.tableEditor.mergeRow(sel);
     deepEqual(changesMade, true);
 

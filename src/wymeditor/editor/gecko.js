@@ -226,7 +226,7 @@ WYMeditor.WymClassGecko.prototype.click = function () {
     if (container && container.tagName.toLowerCase() === WYMeditor.BODY) {
         // A click in the body means there is no content at all, so we
         // should automatically create a starter paragraph
-        sel = wym._iframe.contentWindow.getSelection();
+        sel = wym.selection();
         if (sel.isCollapsed === true) {
             // If the selection isn't collapsed, we might have a selection that
             // drags over the body, but we shouldn't turn everything in to a
