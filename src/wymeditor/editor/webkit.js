@@ -7,40 +7,11 @@ WYMeditor.WymClassWebKit = function (wym) {
     this._class = "class";
 };
 
-WYMeditor.WymClassWebKit.prototype.initIframe = function (iframe) {
+WYMeditor.WymClassWebKit.prototype._docEventQuirks = function () {
     var wym = this;
-
-    wym._iframe = iframe;
-    wym._doc = iframe.contentDocument;
-
-    wym._doc.title = wym._wym._index;
-
-    // Set the text direction
-    jQuery('html', wym._doc).attr('dir', wym._options.direction);
-
-    // Init designMode
-    wym._doc.designMode = "on";
-
-    // Init html value
-    if (wym._wym._options.html) {
-        wym._html(wym._wym._options.html);
-    } else {
-        wym._html(wym._element[0].value);
-    }
-
-    if (jQuery.isFunction(wym._options.preBind)) {
-        wym._options.preBind(wym);
-    }
-
-    // Bind external events
-    wym._wym.bindEvents();
 
     jQuery(wym._doc).bind("keydown", wym.keydown);
     jQuery(wym._doc).bind("keyup", wym.keyup);
-
-    wym.iframeInitialized = true;
-
-    wym.postIframeInit();
 };
 
 WYMeditor.WymClassWebKit.prototype._exec = function (cmd, param) {

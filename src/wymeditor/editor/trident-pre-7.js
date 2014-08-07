@@ -7,65 +7,47 @@ WYMeditor.WymClassTridentPre7 = function (wym) {
     this._class = "className";
 };
 
-WYMeditor.WymClassTridentPre7.prototype.initIframe = function (iframe) {
-    this._iframe = iframe;
-    this._doc = iframe.contentWindow.document;
+WYMeditor.WymClassTridentPre7.prototype._onEditorIframeLoad = function (wym) {
+    wym._assignWymDoc();
 
-    if (this._doc.designMode !== "On") {
-        this._doc.designMode = "On";
-        // Initializing designMode triggers the load event again, thus
-        // triggering this method again. We can short-circuit this run and do
-        // all of the work in the next trigger
-        return false;
-    }
-    this._doc.title = this._wym._index;
-
-    // Set the text direction
-    jQuery('html', this._doc).attr('dir', this._options.direction);
-
-    // Init html value
-    if (this._wym._options.html) {
-        this._html(this._wym._options.html);
+    if (wym._isDesignModeOn() === false) {
+        wym._doc.designMode = "On";
     } else {
-        this._html(this._element[0].value);
+        // At least some Internet Explorer versions reload the Iframe when its
+        // designMode property is set to "on". So this will run on the second
+        // time this handler is called.
+        wym._afterDesignModeOn();
     }
+};
 
-    // Handle events
+WYMeditor.WymClassTridentPre7.prototype._assignWymDoc = function () {
     var wym = this;
 
-    this._doc.body.onload = function () {
-        wym._doc.designMode = "on";
-        wym._doc = wym._iframe.contentWindow.document;
-    };
-    this._doc.onbeforedeactivate = function () {
+    wym._doc = wym._iframe.contentWindow.document;
+};
+
+WYMeditor.WymClassTridentPre7.prototype._docEventQuirks = function () {
+    var wym = this;
+
+    wym._doc.onbeforedeactivate = function () {
         wym.saveCaret();
     };
-    jQuery(this._doc).bind('keyup', wym.keyup);
-    this._doc.onkeyup = function () {
+    jQuery(wym._doc).bind('keyup', wym.keyup);
+    wym._doc.onkeyup = function () {
         wym.saveCaret();
     };
-    this._doc.onclick = function () {
+    wym._doc.onclick = function () {
         wym.saveCaret();
     };
 
-    this._doc.body.onbeforepaste = function () {
+    wym._doc.body.onbeforepaste = function () {
         wym._iframe.contentWindow.event.returnValue = false;
     };
 
-    this._doc.body.onpaste = function () {
+    wym._doc.body.onpaste = function () {
         wym._iframe.contentWindow.event.returnValue = false;
         wym.paste(window.clipboardData.getData("Text"));
     };
-
-    if (jQuery.isFunction(this._options.preBind)) {
-        this._options.preBind(this);
-    }
-
-    this._wym.bindEvents();
-
-    wym.iframeInitialized = true;
-
-    wym.postIframeInit();
 };
 
 (function (editorInitSkin) {

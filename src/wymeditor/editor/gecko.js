@@ -16,32 +16,8 @@ WYMeditor.WymClassGecko.NEEDS_CELL_FIX = parseInt(
     jQuery.browser.version >= '1.9.1' &&
     jQuery.browser.version < '2.0';
 
-WYMeditor.WymClassGecko.prototype.initIframe = function (iframe) {
+WYMeditor.WymClassGecko.prototype._docEventQuirks = function () {
     var wym = this;
-
-    this._iframe = iframe;
-    this._doc = iframe.contentDocument;
-
-    this._doc.title = this._wym._index;
-
-    // Set the text direction
-    jQuery('html', this._doc).attr('dir', this._options.direction);
-
-    // Init html value
-    if (this._wym._options.html) {
-        this._html(this._wym._options.html);
-    } else {
-        this._html(this._element[0].value);
-    }
-
-    this.enableDesignMode();
-
-    if (jQuery.isFunction(this._options.preBind)) {
-        this._options.preBind(this);
-    }
-
-    // Bind external events
-    this._wym.bindEvents();
 
     jQuery(this._doc).bind("keydown", this.keydown);
     jQuery(this._doc).bind("keyup", this.keyup);
@@ -49,12 +25,8 @@ WYMeditor.WymClassGecko.prototype.initIframe = function (iframe) {
     // Bind editor focus events (used to reset designmode - Gecko bug)
     jQuery(this._doc).bind("focus", function () {
         // Fix scope
-        wym.enableDesignMode.call(wym);
+        wym._enableDesignModeOnIframe.call(wym);
     });
-
-    wym.iframeInitialized = true;
-
-    wym.postIframeInit();
 };
 
 /** @name html
@@ -83,9 +55,9 @@ WYMeditor.WymClassGecko.prototype._html = function (html) {
         wym._wym.fixBodyHtml();
 
         //re-init designMode
-        this.enableDesignMode();
+        wym._enableDesignModeOnIframe();
     } else {
-        return jQuery(this._doc.body).html();
+        return jQuery(wym._doc.body).html();
     }
     return false;
 };
@@ -239,7 +211,7 @@ WYMeditor.WymClassGecko.prototype.click = function () {
     }
 };
 
-WYMeditor.WymClassGecko.prototype.enableDesignMode = function () {
+WYMeditor.WymClassGecko.prototype._enableDesignModeOnIframe = function () {
     if (this._doc.designMode === "off") {
         try {
             this._doc.designMode = "on";

@@ -207,11 +207,10 @@ WYMeditor.editor.prototype.init = function () {
     // unreliable.
     wym.iframeInitialized = false;
 
-    jQuery(wym._box).find('iframe').load(function () {
-        if (wym.iframeInitialized === true) {
-            return;
-        }
-        wym.initIframe(this);
+    wym._iframe = jQuery(wym._box).find('iframe')[0];
+
+    jQuery(wym._iframe).load(function () {
+        wym._onEditorIframeLoad(wym);
     });
 
     wym._element.attr('data-wym-initialized', 'yes');
@@ -220,17 +219,130 @@ WYMeditor.editor.prototype.init = function () {
 };
 
 /**
-    WYMeditor.editor.postIframeInit
+    WYMeditor.editor._assignWymDoc
+    ==============================
 
-    Part of the editor's initialization, which must be done after the
-    iframe's initialization.
+    Assigns an editor's document to the `_doc` property.
 */
-WYMeditor.editor.prototype.postIframeInit = function () {
+WYMeditor.editor.prototype._assignWymDoc = function () {
     var wym = this;
+
+    wym._doc = wym._iframe.contentDocument;
+};
+
+/**
+    WYMeditor.editor._isDesignModeOn
+    ================================
+
+    Returns true if the designMode property of the editor's document is "On".
+    Returns false, otherwise.
+*/
+WYMeditor.editor.prototype._isDesignModeOn = function () {
+    var wym = this;
+
+    if (wym._doc.designMode === "On") {
+        return true;
+    }
+    return false;
+};
+
+/**
+    WYMeditor.editor._onEditorIframeLoad
+    ==============================
+
+    This is a part of the initialization of an editor.
+
+    The initialization procedure of an editor turns asynchronous because part of
+    it must occur after the loading of the editor's Iframe.
+
+    This function is suppposed to be the event handler of the loading of the
+    editor's Iframe. Therefore, it is the first step since the initialization
+    procedure gets asynchronous.
+
+    @param wym WYMeditor.editor The editor instance that's being initialized.
+*/
+WYMeditor.editor.prototype._onEditorIframeLoad = function (wym) {
+    wym._assignWymDoc();
+    wym._doc.designMode = "On";
+    wym._afterDesignModeOn();
+};
+
+/**
+    WYMeditor.editor._bindSetFocusDocumentToButtons
+    ===============================================
+
+    Binds a click event handler to all UI buttons, that returns focus to the
+    document.
+
+    Importantly, the event is bound at the start of the event chain.
+*/
+WYMeditor.editor.prototype._bindSetFocusToDocumentToButtons = function () {
+    var wym = this,
+        buttonsSelector,
+        $buttons;
+
+    buttonsSelector = [
+        wym._options.toolSelector,
+        wym._options.containerSelector,
+        wym._options.classSelector
+    ].join(', ');
+
+    $buttons = jQuery(wym._box).find(buttonsSelector);
+
+    $buttons.bind('click', function () {
+        wym._iframe.contentWindow.focus();
+    });
+
+    $buttons.each(function (index, element) {
+        var $button = jQuery(element),
+            clickEvents;
+
+        clickEvents = $button.data('events').click;
+        clickEvents.unshift(clickEvents.pop());
+        $button.data('events').click = clickEvents;
+    });
+};
+
+
+/**
+    WYMeditor.editor._afterDesignModeOn
+    ===================================
+
+    This is part of the initialization of an editor, designed to be called
+    after the editor's document is in designMode.
+*/
+WYMeditor.editor.prototype._afterDesignModeOn = function () {
+    var wym = this;
+
+    if (wym.iframeInitialized === true) {
+        return;
+    }
+
+    wym._assignWymDoc();
+
+    wym._doc.title = this._wym._index;
+
+    // Set the text direction.
+    jQuery('html', this._doc).attr('dir', this._options.direction);
+
+    wym._docEventQuirks();
+
+    wym._initializeDocumentContent();
+
+    if (jQuery.isFunction(wym._options.preBind)) {
+        wym._options.preBind(wym);
+    }
+
+    wym._bindUIEvents();
+
+    wym.iframeInitialized = true;
 
     if (jQuery.isFunction(wym._options.postInit)) {
         wym._options.postInit(wym);
     }
+
+    // UI buttons could have been added in the above postInit.
+    wym._bindSetFocusToDocumentToButtons();
 
     // Add event listeners to doc elements, e.g. images
     wym.listen();
@@ -242,32 +354,59 @@ WYMeditor.editor.prototype.postIframeInit = function () {
 };
 
 /**
-    WYMeditor.editor.bindEvents
-    ===========================
+    WYMeditor.editor._initializeDocumentContent
+    ===========================================
 
-    Bind all event handlers including tool/container clicks, focus events
-    and change events.
+    Populates the editor's document with the initial content, according to the
+    configuration and/or the textarea element's value.
 */
-WYMeditor.editor.prototype.bindEvents = function () {
+WYMeditor.editor.prototype._initializeDocumentContent = function () {
+    var wym = this;
+
+    if (wym._options.html) {
+        // Populate from the configuration option
+        wym._html(wym._options.html);
+    } else {
+        // Populate from the textarea element
+        wym._html(wym._element[0].value);
+    }
+};
+
+/**
+    WYMeditor.editor._docEventQuirks
+    ================================
+
+    Misc. event bindings on the editor's document, that may be required.
+*/
+WYMeditor.editor.prototype._docEventQuirks = function () {
+    return;
+};
+
+/**
+    WYMeditor.editor._bindUIEvents
+    ==============================
+
+    Binds event handlers for the UI elements.
+*/
+WYMeditor.editor.prototype._bindUIEvents = function () {
     var wym = this,
         $html_val;
 
-    // Handle click events on tools buttons
-    jQuery(this._box).find(this._options.toolSelector).click(function () {
-        wym._iframe.contentWindow.focus(); //See #154
+    // Tools buttons
+    jQuery(wym._box).find(wym._options.toolSelector).click(function () {
         wym.exec(jQuery(this).attr(WYMeditor.NAME));
         return false;
     });
 
-    // Handle click events on containers buttons
-    jQuery(this._box).find(this._options.containerSelector).click(function () {
+    // Containers buttons
+    jQuery(wym._box).find(wym._options.containerSelector).click(function () {
         wym.mainContainer(jQuery(this).attr(WYMeditor.NAME));
         return false;
     });
 
-    // Handle keyup event on html value: set the editor value
+    // Handle keyup event on the HTML value textarea: set the editor value
     // Handle focus/blur events to check if the element has focus, see #147
-    $html_val = jQuery(this._box).find(this._options.htmlValSelector);
+    $html_val = jQuery(wym._box).find(wym._options.htmlValSelector);
     $html_val.keyup(function () {
         jQuery(wym._doc.body).html(jQuery(this).val());
     });
@@ -279,7 +418,7 @@ WYMeditor.editor.prototype.bindEvents = function () {
     });
 
     // Handle click events on classes buttons
-    jQuery(this._box).find(this._options.classSelector).click(function () {
+    jQuery(wym._box).find(wym._options.classSelector).click(function () {
         var aClasses = eval(wym._options.classesItems),
             sName = jQuery(this).attr(WYMeditor.NAME),
 
@@ -290,14 +429,16 @@ WYMeditor.editor.prototype.bindEvents = function () {
             jqexpr = oClass.expr;
             wym.toggleClass(sName, jqexpr);
         }
-        wym._iframe.contentWindow.focus(); //See #154
         return false;
     });
 
     // Handle update event on update element
-    jQuery(this._options.updateSelector).bind(this._options.updateEvent, function () {
-        wym.update();
-    });
+    jQuery(wym._options.updateSelector).bind(
+        wym._options.updateEvent,
+        function () {
+            wym.update();
+        }
+    );
 };
 
 WYMeditor.editor.prototype.ready = function () {
