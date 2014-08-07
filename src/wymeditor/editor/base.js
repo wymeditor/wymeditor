@@ -470,12 +470,15 @@ WYMeditor.editor.prototype.exec = function (cmd) {
     Override the default selection function to use rangy.
 */
 WYMeditor.editor.prototype.selection = function () {
+    var wym = this,
+        iframe = wym._iframe,
+        sel;
+
     if (window.rangy && !rangy.initialized) {
         rangy.init();
     }
 
-    var iframe = this._iframe,
-        sel = rangy.getIframeSelection(iframe);
+    sel = rangy.getIframeSelection(iframe);
 
     return sel;
 };
@@ -1646,13 +1649,17 @@ WYMeditor.editor.prototype.insert = function (html) {
 };
 
 WYMeditor.editor.prototype.wrap = function (left, right) {
-    this.insert(
-        left + this._iframe.contentWindow.getSelection().toString() + right
+    var wym = this;
+
+    wym.insert(
+        left + wym._iframe.contentWindow.getSelection().toString() + right
     );
 };
 
 WYMeditor.editor.prototype.unwrap = function () {
-    this.insert(this._iframe.contentWindow.getSelection().toString());
+    var wym = this;
+
+    wym.insert(wym._iframe.contentWindow.getSelection().toString());
 };
 
 /**
@@ -2837,7 +2844,10 @@ WYMeditor.editor.prototype.outdent = function () {
     potentially destroyed the selection.
 */
 WYMeditor.editor.prototype.restoreSelectionAfterManipulation = function (manipulationFunc) {
-    var savedSelection = rangy.saveSelection(rangy.dom.getIframeWindow(this._iframe)),
+    var wym = this,
+        savedSelection = rangy.saveSelection(
+            rangy.dom.getIframeWindow(wym._iframe)
+        ),
         changesMade = true;
 
     // If something goes wrong, we don't want to leave selection markers

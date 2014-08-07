@@ -61,10 +61,12 @@ WYMeditor.WymClassGecko.prototype.initIframe = function (iframe) {
  * @description Get/Set the html value
  */
 WYMeditor.WymClassGecko.prototype._html = function (html) {
+    var wym = this;
+
     if (typeof html === 'string') {
         //disable designMode
         try {
-            this._doc.designMode = "off";
+            wym._doc.designMode = "off";
         } catch (e) {
             //do nothing
         }
@@ -77,8 +79,8 @@ WYMeditor.WymClassGecko.prototype._html = function (html) {
         html = html.replace(/<\/strong>/gi, "</b>");
 
         //update the html body
-        jQuery(this._doc.body).html(html);
-        this._wym.fixBodyHtml();
+        jQuery(wym._doc.body).html(html);
+        wym._wym.fixBodyHtml();
 
         //re-init designMode
         this.enableDesignMode();
