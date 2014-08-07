@@ -248,7 +248,7 @@ WYMeditor.editor.prototype._isDesignModeOn = function () {
 
 /**
     WYMeditor.editor._onEditorIframeLoad
-    ==============================
+    ====================================
 
     This is a part of the initialization of an editor.
 
