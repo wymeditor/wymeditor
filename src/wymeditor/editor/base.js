@@ -259,7 +259,7 @@ WYMeditor.editor.prototype._isDesignModeOn = function () {
     editor's Iframe. Therefore, it is the first step since the initialization
     procedure gets asynchronous.
 
-    @param wym WYMeditor.editor The editor instance that's being initialized.
+    @param wym The editor instance that's being initialized.
 */
 WYMeditor.editor.prototype._onEditorIframeLoad = function (wym) {
     wym._assignWymDoc();
