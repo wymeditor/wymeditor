@@ -540,7 +540,7 @@ jQuery.extend(WYMeditor, {
             this._options.basePath + WYMeditor.IFRAME_DEFAULT;
 
         // Initialize the editor instance
-        this.init();
+        this._init();
     }
 });
 

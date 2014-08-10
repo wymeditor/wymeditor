@@ -9,7 +9,7 @@
     Initialize a wymeditor instance, including detecting the
     current browser and enabling the browser-specific subclass.
 */
-WYMeditor.editor.prototype.init = function () {
+WYMeditor.editor.prototype._init = function () {
     // Load the browser-specific subclass
     // If this browser isn't supported, do nothing
     var WymClass = false,
