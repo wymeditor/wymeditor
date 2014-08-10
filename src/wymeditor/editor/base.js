@@ -701,7 +701,8 @@ WYMeditor.editor.prototype.selected = function () {
     Return true if all selections are collapsed, false otherwise.
 */
 WYMeditor.editor.prototype.selection_collapsed = function () {
-    var sel = this.selection(),
+    var wym = this,
+        sel = wym.selection(),
         collapsed = false;
 
     jQuery.each(sel.getAllRanges(), function () {
@@ -723,7 +724,8 @@ WYMeditor.editor.prototype.selection_collapsed = function () {
     within the current selection.
 */
 WYMeditor.editor.prototype.selected_contains = function (selector) {
-    var sel = this.selection(),
+    var wym = this,
+        sel = wym.selection(),
         matches = [];
 
     jQuery.each(sel.getAllRanges(), function () {
