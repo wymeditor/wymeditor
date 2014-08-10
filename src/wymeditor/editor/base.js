@@ -289,7 +289,7 @@ WYMeditor.editor.prototype._bindSetFocusToDocumentToButtons = function () {
 
     $buttons = jQuery(wym._box).find(buttonsSelector);
 
-    jQuery.bindEventHandlerAtStart(
+    jQuery._bindEventHandlerAtStart(
         $buttons,
         'click',
         function () {

@@ -941,7 +941,7 @@ jQuery.extend({
 
 // Binds a jQuery event to elements at the start of the event chain for that type.
 jQuery.extend({
-    bindEventHandlerAtStart: function ($elements, eventType, handler) {
+    _bindEventHandlerAtStart: function ($elements, eventType, handler) {
         var _data;
 
         $elements.bind(eventType, handler);
