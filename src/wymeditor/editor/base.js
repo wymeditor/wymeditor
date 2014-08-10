@@ -436,10 +436,6 @@ WYMeditor.editor.prototype._bindUIEvents = function () {
     );
 };
 
-WYMeditor.editor.prototype.ready = function () {
-    return this._doc !== null;
-};
-
 /**
     WYMeditor.editor.box
     ====================
