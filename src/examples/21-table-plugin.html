@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>WYMeditor</title>
+    <title>WYMeditor Example: Table-Editing plugin</title>
     <!-- build:css ../wymeditor/skins/default/skin.css -->
     <link rel="stylesheet" type="text/css" href="../wymeditor/skins/default/skin.css" />
     <!-- endbuild -->
@@ -13,6 +13,7 @@
 <body>
     <h1>Table plugin</h1>
     <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+    <p>This is an example of the Table-Editing plugin.</p>
     <form method="post" action="">
         <textarea class="wymeditor">&lt;p&gt;Hello, World!&lt;/p&gt;</textarea>
         <input type="submit" class="wymupdate" />
@@ -32,17 +33,12 @@
     <script type="text/javascript" src="../wymeditor/plugins/table/jquery.wymeditor.table.js"></script>
 
     <script type="text/javascript">
-        /* Here we replace each element with class 'wymeditor'
-         * (typically textareas) by a WYMeditor instance.
-         *
-         * We could use the 'html' option, to initialize the editor's content.
-         * If this option isn't set, the content is retrieved from
-         * the element being replaced.
-         */
         $(function() {
-                $('.wymeditor').wymeditor({postInit: function (wym) {
-                    wym.table();
-                }});
+                $('.wymeditor').wymeditor({
+                    postInit: function (wym) {
+                        wym.table();
+                    }
+                });
         });
     </script>
 </body>
