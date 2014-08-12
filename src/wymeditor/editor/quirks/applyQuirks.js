@@ -1,5 +1,4 @@
-/* jshint evil: true, camelcase: false, maxlen: 100 */
-/* global -$ */
+/* jshint evil: true, maxlen: 100 */
 "use strict";
 
 // This file applies the browser-specific quirks.
