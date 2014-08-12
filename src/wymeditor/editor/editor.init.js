@@ -250,31 +250,16 @@ WYMeditor._init.prototype._onEditorIframeLoad = function () {
 };
 
 /**
-    WYMeditor._init._setButtonsUnselectable
-    =======================================
+    WYMeditor._init._UiQuirks
+    =========================
 
-    // Mark UI buttons as unselectable (#203)
-    // Fix for issue explained:
-    // http://stackoverflow.com/questions/
-    // 1470932/ie8-iframe-designmode-loses-selection
+    Hook for quirks regarding fixing stuff in the UI.
+
+    Conveniently called after plugins had a chance to modify the UI.
 */
-WYMeditor._init.prototype
-    ._setButtonsUnselectable = function () {
-    var init = this,
-        wym = init._wym,
-        buttonsSelector,
-        $buttons;
-
-    buttonsSelector = [
-        wym._options.toolSelector,
-        wym._options.containerSelector,
-        wym._options.classSelector
-    ].join(', ');
-
-    $buttons = jQuery(wym._box).find(buttonsSelector);
-    $buttons.attr('unselectable', 'on');
+WYMeditor._init.prototype._UiQuirks = function () {
+    return;
 };
-
 
 /**
     WYMeditor._init._afterDesignModeOn
@@ -310,10 +295,9 @@ WYMeditor._init.prototype._afterDesignModeOn = function () {
         wym._options.postInit(wym);
     }
 
-    // An IE8 issue. See function definition.
-    // Must be called after `postInit` in order to affect buttons that may have
-    // been added by plugins.
-    init._setButtonsUnselectable();
+    // Must be called after `postInit` because that is plugin's chance to alter
+    // the UI.
+    init._UiQuirks();
 
     // Add event listeners to doc elements, e.g. images
     init._listen();

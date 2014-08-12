@@ -56,6 +56,32 @@ WYMeditor._quirks._tridentPre7._init._docEventQuirks = function () {
     };
 };
 
+WYMeditor._quirks._tridentPre7._init._setButtonsUnselectable = function () {
+    var init = this,
+        wym = init._wym,
+        buttonsSelector,
+        $buttons;
+
+    buttonsSelector = [
+        wym._options.toolSelector,
+        wym._options.containerSelector,
+        wym._options.classSelector
+    ].join(', ');
+
+    $buttons = jQuery(wym._box).find(buttonsSelector);
+    $buttons.attr('unselectable', 'on');
+};
+
+WYMeditor._quirks._tridentPre7._init._UiQuirks = function () {
+    var init = this;
+    if (jQuery.browser.versionNumber === 8) {
+        // Mark UI buttons as unselectable (#203)
+        // Issue explained here:
+        // http://stackoverflow.com/questions/1470932
+        init._setButtonsUnselectable();
+    }
+};
+
 WYMeditor._quirks._tridentPre7.editor = {};
 
 WYMeditor._quirks._tridentPre7.editor._exec = function (cmd, param) {
@@ -73,11 +99,12 @@ WYMeditor._quirks._tridentPre7.editor.saveCaret = function () {
 };
 
 WYMeditor._quirks._tridentPre7.editor.insert = function (html) {
-    var wym = this;
+    var wym = this,
+        range,
+        $selectionParents;
 
     // Get the current selection
-    var range = wym._doc.selection.createRange(),
-        $selectionParents;
+    range = wym._doc.selection.createRange();
 
     // Check if the current selection is inside the editor
     $selectionParents = jQuery(range.parentElement()).parents();
