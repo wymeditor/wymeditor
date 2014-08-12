@@ -102,7 +102,7 @@ function normalizeHtml(node) {
             for (i = n; --i >= 0;) {
                 attr = attrs[i];
                 attrName = attr.nodeName.toLowerCase();
-                attrValue = attr.nodeValue;
+                attrValue = attr.value;
                 keepAttr = true;
 
                 // We only care about specified attributes
