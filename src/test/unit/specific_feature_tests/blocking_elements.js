@@ -17,7 +17,7 @@ module("Blocking Elements", {setup: prepareUnitTestModule});
 
 // Can't move the selection to a <table> element
 var no_table_selection_browser = jQuery.browser.webkit ||
-    WYMeditor.isInternetExplorerPre11(),
+    WYMeditor._quirkName === 'tridentPre7',
     // keyup/keydown can't be used to fix textnode wrapping
     no_keypress_textnode_wrap_browser = jQuery.browser.msie,
 

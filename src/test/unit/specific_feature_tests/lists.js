@@ -1335,7 +1335,7 @@ var li_1_2_outdentedNodeContentAfterSublistHtml = String() +
 // This test doesn't pass in older versions of IE because they add an extra
 // space onto the end of an `li` element's text content. The functionality
 // tested still works in those older IE versions.
-if (!WYMeditor.isInternetExplorerPre11() || !SKIP_KNOWN_FAILING_TESTS) {
+if (WYMeditor._quirkName !== 'tridentPre7' || !SKIP_KNOWN_FAILING_TESTS) {
     test("Content after sublist node indent/outdent", function () {
         expect(3);
 

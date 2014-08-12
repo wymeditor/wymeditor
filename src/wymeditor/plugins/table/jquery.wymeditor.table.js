@@ -701,7 +701,7 @@ TableEditor.prototype.selectElement = function (elmnt) {
         // ie8 can raise an "unkown runtime error" trying to empty the range
     }
     // Old IE selection hack
-    if (WYMeditor.isInternetExplorerPre11()) {
+    if (WYMeditor._quirkName === 'tridentPre7') {
         this._wym.saveCaret();
     }
 };

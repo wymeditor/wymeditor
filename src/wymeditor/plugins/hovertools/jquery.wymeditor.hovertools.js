@@ -33,7 +33,7 @@ WYMeditor.editor.prototype.hovertools = function() {
                 jqexpr = oClass.expr;
                 // Don't use jQuery.find() on the iframe body
                 // because of MSIE + jQuery + expando issue (#JQ1143)
-                if (!WYMeditor.isInternetExplorerPre11()) {
+                if (WYMeditor._quirkName !== 'tridentPre7') {
                     jQuery(wym._doc).find(jqexpr).css('background-color','#cfc');
                 }
             }
@@ -41,7 +41,7 @@ WYMeditor.editor.prototype.hovertools = function() {
         function() {
             // Don't use jQuery.find() on the iframe body
             // because of MSIE + jQuery + expando issue (#JQ1143)
-            if (!WYMeditor.isInternetExplorerPre11()) {
+            if (WYMeditor.quirkName !== 'tridentPre7') {
                 jQuery(wym._doc).find('*').removeAttr('style');
             }
         }

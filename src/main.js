@@ -4,13 +4,15 @@ require.config({
         'rangy-selectionsaverestore':
             'wymeditor/rangy/rangy-selectionsaverestore',
         'wymeditor.core': 'wymeditor/core',
-        'editor.base': 'wymeditor/editor/base',
+        'editor.editor._init': 'wymeditor/editor/editor.init',
+        'editor.editor': 'wymeditor/editor/editor',
         'editor.document-structure-manager':
             'wymeditor/editor/document-structure-manager',
-        'editor.gecko': 'wymeditor/editor/gecko',
-        'editor.trident-pre-7': 'wymeditor/editor/trident-pre-7',
-        'editor.trident-7': 'wymeditor/editor/trident-7',
-        'editor.webkit': 'wymeditor/editor/webkit',
+        'editor.quirks.gecko': 'wymeditor/editor/quirks/gecko',
+        'editor.quirks.trident-pre-7': 'wymeditor/editor/quirks/trident-pre-7',
+        'editor.quirks.trident-7': 'wymeditor/editor/quirks/trident-7',
+        'editor.quirks.webkit': 'wymeditor/editor/quirks/webkit',
+        'editor.quirks.applyQuirks': 'wymeditor/editor/quirks/applyQuirks',
         'parser.xml-helper': 'wymeditor/parser/xml-helper',
         'parser.xhtml-validator': 'wymeditor/parser/xhtml-validator',
         'parser.parallel-regex': 'wymeditor/parser/parallel-regex',
@@ -33,24 +35,36 @@ require.config({
                 'rangy-core'
             ]
         },
-        // Editor
-        'editor.base': {
-            deps: ['wymeditor.core']
-        },
         'editor.document-structure-manager': {
             deps: ['wymeditor.core']
         },
-        'editor.gecko': {
-            deps: ['editor.base']
+        // Editor initializer
+        'editor.init': {
+            deps: ['wymeditor.core']
         },
-        'editor.trident-pre-7': {
-            deps: ['editor.base']
+        // Editor
+        'editor.editor': {
+            deps: ['wymeditor.init']
         },
-        'editor.trident-7': {
-            deps: ['editor.base']
+        'editor.quirks.gecko': {
+            deps: ['editor.editor']
         },
-        'editor.webkit': {
-            deps: ['editor.base']
+        'editor.quirks.trident-pre-7': {
+            deps: ['editor.editor']
+        },
+        'editor.quirks.trident-7': {
+            deps: ['editor.editor']
+        },
+        'editor.quirks.webkit': {
+            deps: ['editor.editor']
+        },
+        'editor.quirks.applyQuirks': {
+            deps: [
+                'editor.quirks.gecko',
+                'editor.quirks.trident-pre-7',
+                'editor.quirks.trident-7',
+                'editor.quirks.webkit'
+            ]
         },
         // Parser
         'parser.xml-helper': {
@@ -85,12 +99,14 @@ require.config({
 
 define([
     'wymeditor.core',
-    'editor.base',
+    'editor.editor',
+    'editor.editor.init',
     'editor.document-structure-manager',
-    'editor.gecko',
-    'editor.trident-pre-7',
-    'editor.trident-7',
-    'editor.webkit',
+    'editor.quirks.gecko',
+    'editor.quirks.trident-pre-7',
+    'editor.quirks.trident-7',
+    'editor.quirks.webkit',
+    'editor.quirks.applyQuirks',
     'parser.xhtml-sax-listener',
     'parser.xhtml-parser',
     'parser.xml-helper',
