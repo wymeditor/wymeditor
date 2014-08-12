@@ -575,7 +575,7 @@ WYMeditor._startup._getQuirkName = function () {
 
 /**
     WYMeditor._startup._applyQuirks
-    ==============================
+    ===============================
 
     Applies the correct browser-engine-specific overrides to WYMeditor methods.
 */
