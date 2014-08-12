@@ -310,7 +310,9 @@ WYMeditor._init.prototype._afterDesignModeOn = function () {
         wym._options.postInit(wym);
     }
 
-     //UI buttons could have been added in the above postInit.
+    // An IE8 issue. See function definition.
+    // Must be called after `postInit` in order to affect buttons that may have
+    // been added by plugins.
     init._setButtonsUnselectable();
 
     // Add event listeners to doc elements, e.g. images
