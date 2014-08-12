@@ -5,6 +5,10 @@
 // This file contains the quirks for pre-7 Trident.
 WYMeditor._quirks._tridentPre7 = {};
 
+WYMeditor._quirks._tridentPre7.startupQuirks = function () {
+    WYMeditor.CLASS = 'className';
+};
+
 WYMeditor._quirks._tridentPre7._init = {};
 
 WYMeditor._quirks._tridentPre7._init

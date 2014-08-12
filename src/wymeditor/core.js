@@ -595,7 +595,7 @@ WYMeditor._startup._applyQuirks = function () {
 
     for (subsystemPrototype in quirk) {
         if (
-            typeof subsystemPrototype === 'string' &&
+            typeof quirk[subsystemPrototype] === 'object' &&
             quirk.hasOwnProperty(subsystemPrototype)
         ) {
             jQuery.extend(
@@ -607,6 +607,10 @@ WYMeditor._startup._applyQuirks = function () {
     // For reference
     WYMeditor._quirkName = quirkName;
     WYMeditor._assignedQuirk = quirk;
+
+    if (typeof quirk._startUpQuirks === 'function') {
+        quirk._startUpQuirks();
+    }
 };
 
 /********** jQuery Plugin Definition **********/
