@@ -1,7 +1,7 @@
 /* jshint camelcase: false, maxlen: 105 */
 /* global
 SKIP_KNOWN_FAILING_TESTS, is_double_br_browser, prepareUnitTestModule,
-wymEqual, makeTextSelection, moveSelector, simulateKey, strictEqual, rangy,
+wymEqual, makeTextSelection, moveSelector, simulateKey, strictEqual,
 makeSelection,
 ok, test, expect, deepEqual */
 "use strict";
@@ -147,7 +147,7 @@ function testGetSelectedListItems(
         assertStrSelection;
 
     function getSelectedLisIds() {
-        var sel = rangy.getIframeSelection(wymeditor._iframe);
+        var sel = wymeditor.selection();
 
         return jQuery.makeArray(
             jQuery(wymeditor._getSelectedListItems(sel)).map(function () {
@@ -1335,7 +1335,7 @@ var li_1_2_outdentedNodeContentAfterSublistHtml = String() +
 // This test doesn't pass in older versions of IE because they add an extra
 // space onto the end of an `li` element's text content. The functionality
 // tested still works in those older IE versions.
-if (!WYMeditor.isInternetExplorerPre11() || !SKIP_KNOWN_FAILING_TESTS) {
+if (WYMeditor._quirkName !== 'tridentPre7' || !SKIP_KNOWN_FAILING_TESTS) {
     test("Content after sublist node indent/outdent", function () {
         expect(3);
 

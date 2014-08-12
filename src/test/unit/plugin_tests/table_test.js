@@ -1,5 +1,5 @@
 /* jshint maxlen: 90 */
-/* global rangy,
+/* global
 SKIP_KNOWN_FAILING_TESTS, prepareUnitTestModule,
 wymEqual, moveSelector, simulateKey, makeSelection, normalizeHtml,
 ok, test, expect, deepEqual */
@@ -118,7 +118,7 @@ function testRowMerge(
 
     // Use rangy to get a cross-browser selection object and perform the actual
     // merge
-    sel = rangy.getIframeSelection(wymeditor._iframe);
+    sel = wymeditor.selection();
     changesMade = wymeditor.tableEditor.mergeRow(sel);
     deepEqual(changesMade, true);
 
@@ -1359,7 +1359,7 @@ test("With span", function () {
 });
 
 module("table-row_merge_rowspan", {setup: prepareUnitTestModule});
-if (!WYMeditor.isInternetExplorerPre11() || !SKIP_KNOWN_FAILING_TESTS) {
+if (WYMeditor._quirkName !== 'tridentPre7' || !SKIP_KNOWN_FAILING_TESTS) {
     test("Across rowspan", function () {
         expect(5);
 
@@ -1367,7 +1367,7 @@ if (!WYMeditor.isInternetExplorerPre11() || !SKIP_KNOWN_FAILING_TESTS) {
     });
 }
 
-if (!WYMeditor.isInternetExplorerPre11() || !SKIP_KNOWN_FAILING_TESTS) {
+if (WYMeditor._quirkName !== 'tridentPre7' || !SKIP_KNOWN_FAILING_TESTS) {
     test("Into rowspan", function () {
         expect(5);
 

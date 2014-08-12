@@ -25,7 +25,7 @@ jQuery.noConflict();
 var SKIP_KNOWN_FAILING_TESTS = true,
     // Can't move the selection to a <br /> element
     no_br_selection_browser = jQuery.browser.webkit ||
-        WYMeditor.isInternetExplorerPre11(),
+        WYMeditor._quirkName === 'tridentPre7',
     // Double-br browsers need placeholders both before and after blocking
     // elements. Others just need placeholders before
     is_double_br_browser = (jQuery.browser.mozilla ||
@@ -1266,7 +1266,10 @@ test("_selected image is saved on mousedown", function () {
     // Editor starts with no selected image. Use equal instead of deepEqual
     // because wymeditor._selectedImage intermittently changes between being
     // undefined and null, but either value should be acceptable for this test.
-    equal(wymeditor._selectedImage, undefined);
+    equal(
+        typeof wymeditor._selectedImage,
+        'undefined'
+    );
 
     // Clicking on a non-image doesn't change that
     $noimage = $body.find('#noimage');

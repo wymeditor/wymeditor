@@ -2,69 +2,45 @@
 /* global -$ */
 "use strict";
 
-WYMeditor.WymClassGecko = function (wym) {
-    this._wym = wym;
-    this._class = "class";
+// This file contains the quirks for Gecko.
+WYMeditor._quirks._gecko = {};
+
+WYMeditor._quirks._gecko._init = {};
+
+WYMeditor._quirks._gecko._init._docEventQuirks = function () {
+    var init = this,
+        wym = init._wym;
+
+    jQuery(wym._doc).bind("keydown", wym.keydown);
+    jQuery(wym._doc).bind("keyup", wym.keyup);
+    jQuery(wym._doc).bind("click", wym.click);
+    // Bind editor focus events (used to reset designmode - Gecko bug)
+    jQuery(wym._doc).bind("focus", function () {
+        wym._init._enableDesignModeOnIframe();
+    });
 };
 
+WYMeditor._quirks._gecko.editor = {};
+
 // Placeholder cell to allow content in TD cells for FF 3.5+
-WYMeditor.WymClassGecko.CELL_PLACEHOLDER = '<br _moz_dirty="" />';
+WYMeditor._quirks._gecko.editor.CELL_PLACEHOLDER = '<br _moz_dirty="" />';
 
 // Firefox 3.5 and 3.6 require the CELL_PLACEHOLDER and 4.0 doesn't
-WYMeditor.WymClassGecko.NEEDS_CELL_FIX = parseInt(
+WYMeditor._quirks._gecko.editor.NEEDS_CELL_FIX = parseInt(
     jQuery.browser.version, 10) === 1 &&
     jQuery.browser.version >= '1.9.1' &&
     jQuery.browser.version < '2.0';
 
-WYMeditor.WymClassGecko.prototype.initIframe = function (iframe) {
-    var wym = this;
-
-    this._iframe = iframe;
-    this._doc = iframe.contentDocument;
-
-    this._doc.title = this._wym._index;
-
-    // Set the text direction
-    jQuery('html', this._doc).attr('dir', this._options.direction);
-
-    // Init html value
-    if (this._wym._options.html) {
-        this._html(this._wym._options.html);
-    } else {
-        this._html(this._element[0].value);
-    }
-
-    this.enableDesignMode();
-
-    if (jQuery.isFunction(this._options.preBind)) {
-        this._options.preBind(this);
-    }
-
-    // Bind external events
-    this._wym.bindEvents();
-
-    jQuery(this._doc).bind("keydown", this.keydown);
-    jQuery(this._doc).bind("keyup", this.keyup);
-    jQuery(this._doc).bind("click", this.click);
-    // Bind editor focus events (used to reset designmode - Gecko bug)
-    jQuery(this._doc).bind("focus", function () {
-        // Fix scope
-        wym.enableDesignMode.call(wym);
-    });
-
-    wym.iframeInitialized = true;
-
-    wym.postIframeInit();
-};
-
 /** @name html
  * @description Get/Set the html value
  */
-WYMeditor.WymClassGecko.prototype._html = function (html) {
+WYMeditor._quirks._gecko.editor._html = function (html) {
+    var wym = this;
+
     if (typeof html === 'string') {
         //disable designMode
         try {
-            this._doc.designMode = "off";
+            wym._doc.designMode = "off";
         } catch (e) {
             //do nothing
         }
@@ -77,42 +53,45 @@ WYMeditor.WymClassGecko.prototype._html = function (html) {
         html = html.replace(/<\/strong>/gi, "</b>");
 
         //update the html body
-        jQuery(this._doc.body).html(html);
-        this._wym.fixBodyHtml();
+        jQuery(wym._doc.body).html(html);
+        wym.fixBodyHtml();
 
         //re-init designMode
-        this.enableDesignMode();
+        wym._init._enableDesignModeOnIframe();
     } else {
-        return jQuery(this._doc.body).html();
+        return jQuery(wym._doc.body).html();
     }
     return false;
 };
 
-WYMeditor.WymClassGecko.prototype._exec = function (cmd, param) {
-    if (!this.selectedContainer()) {
+WYMeditor._quirks._gecko.editor._exec = function (cmd, param) {
+    var wym = this,
+        container;
+
+    if (!wym.selectedContainer()) {
         return false;
     }
 
     if (param) {
-        this._doc.execCommand(cmd, '', param);
+        wym._doc.execCommand(cmd, '', param);
     } else {
-        this._doc.execCommand(cmd, '', null);
+        wym._doc.execCommand(cmd, '', null);
     }
 
     //set to P if parent = BODY
-    var container = this.selectedContainer();
+    container = wym.selectedContainer();
     if (container && container.tagName.toLowerCase() === WYMeditor.BODY) {
-        this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
-        this.fixBodyHtml();
+        wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
+        wym.fixBodyHtml();
     }
 
     return true;
 };
 
-//keydown handler, mainly used for keyboard shortcuts
-WYMeditor.WymClassGecko.prototype.keydown = function (evt) {
-    //'this' is the doc
-    var wym = WYMeditor.INSTANCES[this.title];
+// keydown handler, mainly used for keyboard shortcuts
+WYMeditor._quirks._gecko.editor.keydown = function (evt) {
+    var doc = this,
+        wym = WYMeditor.INSTANCES[doc.title];
 
     if (evt.ctrlKey) {
         if (evt.which === 66) {
@@ -131,9 +110,9 @@ WYMeditor.WymClassGecko.prototype.keydown = function (evt) {
 };
 
 // Keyup handler, mainly used for cleanups
-WYMeditor.WymClassGecko.prototype.keyup = function (evt) {
-    // 'this' is the doc
-    var wym = WYMeditor.INSTANCES[this.title],
+WYMeditor._quirks._gecko.editor.keyup = function (evt) {
+    var doc = this,
+        wym = WYMeditor.INSTANCES[doc.title],
         container,
         defaultRootContainer,
         notValidRootContainers,
@@ -201,17 +180,18 @@ WYMeditor.WymClassGecko.prototype.keyup = function (evt) {
     }
 };
 
-WYMeditor.WymClassGecko.prototype.click = function () {
-    var wym = WYMeditor.INSTANCES[this.title],
+WYMeditor._quirks._gecko.editor.click = function () {
+    var doc = this,
+        wym = WYMeditor.INSTANCES[doc.title],
         container = wym.selectedContainer(),
         sel;
 
-    if (WYMeditor.WymClassGecko.NEEDS_CELL_FIX === true) {
+    if (WYMeditor._quirks._gecko.editor.NEEDS_CELL_FIX === true) {
         if (container && container.tagName.toLowerCase() === WYMeditor.TR) {
             // Starting with FF 3.6, inserted tables need some content in their
             // cells before they're editable
             jQuery(WYMeditor.TD, wym._doc.body).append(
-                WYMeditor.WymClassGecko.CELL_PLACEHOLDER);
+                WYMeditor._quirks._gecko.CELL_PLACEHOLDER);
 
             // The user is still going to need to move out of and then back in
             // to this cell if the table was inserted via an inner_html call
@@ -226,7 +206,7 @@ WYMeditor.WymClassGecko.prototype.click = function () {
     if (container && container.tagName.toLowerCase() === WYMeditor.BODY) {
         // A click in the body means there is no content at all, so we
         // should automatically create a starter paragraph
-        sel = wym._iframe.contentWindow.getSelection();
+        sel = wym.selection();
         if (sel.isCollapsed === true) {
             // If the selection isn't collapsed, we might have a selection that
             // drags over the body, but we shouldn't turn everything in to a
@@ -237,12 +217,15 @@ WYMeditor.WymClassGecko.prototype.click = function () {
     }
 };
 
-WYMeditor.WymClassGecko.prototype.enableDesignMode = function () {
-    if (this._doc.designMode === "off") {
+WYMeditor._quirks._gecko._init._enableDesignModeOnIframe = function () {
+    var init = this,
+        wym = init._wym;
+
+    if (wym._doc.designMode === "off") {
         try {
-            this._doc.designMode = "on";
-            this._doc.execCommand("styleWithCSS", '', false);
-            this._doc.execCommand("enableObjectResizing", false, true);
+            wym._doc.designMode = "on";
+            wym._doc.execCommand("styleWithCSS", '', false);
+            wym._doc.execCommand("enableObjectResizing", false, true);
         } catch (e) {}
     }
 };
@@ -251,13 +234,13 @@ WYMeditor.WymClassGecko.prototype.enableDesignMode = function () {
  * Fix new cell contents and ability to insert content at the front and end of
  * the contents.
  */
-WYMeditor.WymClassGecko.prototype.afterInsertTable = function (table) {
-    if (WYMeditor.WymClassGecko.NEEDS_CELL_FIX === true) {
+WYMeditor._quirks._gecko.editor.afterInsertTable = function (table) {
+    if (WYMeditor._quirks._gecko.editor.NEEDS_CELL_FIX === true) {
         // In certain FF versions, inserted tables need some content in their
         // cells before they're editable, otherwise the user has to move focus
         // in and then out of a cell first, even with our click() hack
         jQuery(table).find('td').each(function (index, element) {
-            jQuery(element).append(WYMeditor.WymClassGecko.CELL_PLACEHOLDER);
+            jQuery(element).append(WYMeditor._quirks._gecko.CELL_PLACEHOLDER);
         });
     }
 };

@@ -22,7 +22,18 @@ var ignoreAttributes = [
     ['_wym_visited'],
     ['sizset'],
     ['tabindex'],
-    ['rowspan', ['1']]
+    ['rowspan', ['1']],
+    // The following 10 mouse and keyboard events were found on IE7.
+    ['onclick'],
+    ['ondblclick'],
+    ['onkeydown'],
+    ['onkeypress'],
+    ['onkeyup'],
+    ['onmousedown'],
+    ['onmousemove'],
+    ['onmouseout'],
+    ['onmouseover'],
+    ['onmouseup']
 ];
 
 /**
@@ -91,7 +102,7 @@ function normalizeHtml(node) {
             for (i = n; --i >= 0;) {
                 attr = attrs[i];
                 attrName = attr.nodeName.toLowerCase();
-                attrValue = attr.nodeValue;
+                attrValue = attr.value;
                 keepAttr = true;
 
                 // We only care about specified attributes
@@ -262,7 +273,7 @@ function makeSelection(
         // might be something that rangy can handle.
         endElementIndex = 1;
     }
-    var sel = rangy.getIframeSelection(wymeditor._iframe),
+    var sel = wymeditor.selection(),
         range = rangy.createRange(wymeditor._doc);
 
     range.setStart(startElement, startElementIndex);
@@ -281,7 +292,7 @@ function makeSelection(
     sel.setSingleRange(range);
 
     // Old IE selection hack
-    if (WYMeditor.isInternetExplorerPre11()) {
+    if (WYMeditor._quirkName === 'tridentPre7') {
         wymeditor.saveCaret();
     }
 }
