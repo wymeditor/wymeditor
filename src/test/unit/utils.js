@@ -22,7 +22,18 @@ var ignoreAttributes = [
     ['_wym_visited'],
     ['sizset'],
     ['tabindex'],
-    ['rowspan', ['1']]
+    ['rowspan', ['1']],
+    // The following 10 mouse and keyboard events were found on IE7.
+    ['onclick'],
+    ['ondblclick'],
+    ['onkeydown'],
+    ['onkeypress'],
+    ['onkeyup'],
+    ['onmousedown'],
+    ['onmousemove'],
+    ['onmouseout'],
+    ['onmouseover'],
+    ['onmouseup']
 ];
 
 /**
