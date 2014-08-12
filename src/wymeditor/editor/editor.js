@@ -710,7 +710,7 @@ WYMeditor.editor.prototype.toggleClass = function (sClass, jqexpr) {
     } else {
         $container = jQuery(wym.selectedContainer());
     }
-    //$container = $container.parentsOrSelf(jqexpr);
+    $container = $container.parentsOrSelf(jqexpr);
     $container.toggleClass(sClass);
 
     if (!$container.attr(WYMeditor.CLASS)) {
