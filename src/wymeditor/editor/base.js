@@ -1046,17 +1046,18 @@ WYMeditor.editor.prototype.keyCanCreateBlockElement = function (keyCode) {
     Toggle a class on the selected element or one of its parents
 */
 WYMeditor.editor.prototype.toggleClass = function (sClass, jqexpr) {
-    var container = null;
-    if (this._selectedImage) {
-        container = this._selectedImage;
+    var wym = this,
+        $container;
+    if (wym._selectedImage) {
+        $container = jQuery(wym._selectedImage);
     } else {
-        container = jQuery(this.selectedContainer());
+        $container = jQuery(wym.selectedContainer());
     }
-    container = jQuery(container).parentsOrSelf(jqexpr);
-    jQuery(container).toggleClass(sClass);
+    $container = $container.parentsOrSelf(jqexpr);
+    $container.toggleClass(sClass);
 
-    if (!jQuery(container).attr(WYMeditor.CLASS)) {
-        jQuery(container).removeAttr(this._class);
+    if (!$container.attr(WYMeditor.CLASS)) {
+        $container.removeAttr(wym._class);
     }
 };
 
