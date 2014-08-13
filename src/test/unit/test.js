@@ -1266,7 +1266,10 @@ test("_selected image is saved on mousedown", function () {
     // Editor starts with no selected image. Use equal instead of deepEqual
     // because wymeditor._selectedImage intermittently changes between being
     // undefined and null, but either value should be acceptable for this test.
-    equal(wymeditor._selectedImage, undefined);
+    equal(
+        typeof wymeditor._selectedImage,
+        'undefined'
+    );
 
     // Clicking on a non-image doesn't change that
     $noimage = $body.find('#noimage');

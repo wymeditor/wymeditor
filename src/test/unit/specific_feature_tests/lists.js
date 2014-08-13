@@ -1,7 +1,7 @@
 /* jshint camelcase: false, maxlen: 105 */
 /* global
 SKIP_KNOWN_FAILING_TESTS, is_double_br_browser, prepareUnitTestModule,
-wymEqual, makeTextSelection, moveSelector, simulateKey, strictEqual, rangy,
+wymEqual, makeTextSelection, moveSelector, simulateKey, strictEqual,
 makeSelection,
 ok, test, expect, deepEqual */
 "use strict";
@@ -147,7 +147,7 @@ function testGetSelectedListItems(
         assertStrSelection;
 
     function getSelectedLisIds() {
-        var sel = rangy.getIframeSelection(wymeditor._iframe);
+        var sel = wymeditor.selection();
 
         return jQuery.makeArray(
             jQuery(wymeditor._getSelectedListItems(sel)).map(function () {

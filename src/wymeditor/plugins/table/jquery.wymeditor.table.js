@@ -130,7 +130,7 @@ TableEditor.prototype.bindEvents = function () {
     jQuery(wym._box).find(
         tableEditor._options.sMergeRowButtonSelector
     ).click(function () {
-        var sel = rangy.getIframeSelection(wym._iframe);
+        var sel = wym.selection();
         tableEditor.mergeRow(sel);
         return false;
     });
@@ -687,7 +687,8 @@ TableEditor.prototype.selectNextCell = function (elmnt) {
  * Select the given element using rangy selectors.
  */
 TableEditor.prototype.selectElement = function (elmnt) {
-    var sel = rangy.getIframeSelection(this._wym._iframe),
+    var wym = this._wym,
+        sel = wym.selection(),
         range = rangy.createRange(this._wym._doc);
 
     range.setStart(elmnt, 0);
