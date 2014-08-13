@@ -12,10 +12,14 @@ WYMeditor.
 * A new helper function in the form of a jQuery plugin,
   ``jQuery.copyPropsFromObjectToObject``. It copies specified properties from
   an object to another.
+* An example for the table editing plugin.
 
 ### Bug Fixes
 
 * Some fixes in Internet Explorer 11’s initialization, bug fixes and tests.
+* [#563](https://github.com/wymeditor/wymeditor/pull/563)-clicking on some UI
+  Elements, including anything that was added by plugins, caused loss of focus
+  and selection in IE8.
 
 ### Backwards-Incompatible Changes
 

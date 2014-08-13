@@ -57,6 +57,9 @@ WYMeditor._quirks._tridentPre7._init._docEventQuirks = function () {
 };
 
 WYMeditor._quirks._tridentPre7._init._setButtonsUnselectable = function () {
+    // Mark UI buttons as unselectable (#203)
+    // Issue explained here:
+    // http://stackoverflow.com/questions/1470932
     var init = this,
         wym = init._wym,
         buttonsSelector,
@@ -263,7 +266,6 @@ WYMeditor._quirks._tridentPre7.editor.keyup = function (evt) {
         // IE8 bug https://github.com/wymeditor/wymeditor/issues/446
         if (
             evt.which === WYMeditor.KEY.BACKSPACE &&
-            jQuery.browser.msie &&
             jQuery.browser.versionNumber === 8 &&
             container.parentNode && (
                 parentName === 'ul' ||

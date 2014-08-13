@@ -704,17 +704,17 @@ WYMeditor.editor.prototype.keyCanCreateBlockElement = function (keyCode) {
 */
 WYMeditor.editor.prototype.toggleClass = function (sClass, jqexpr) {
     var wym = this,
-        container = null;
+        $container;
     if (wym._selectedImage) {
-        container = wym._selectedImage;
+        $container = jQuery(wym._selectedImage);
     } else {
-        container = jQuery(wym.selectedContainer());
+        $container = jQuery(wym.selectedContainer());
     }
-    container = jQuery(container).parentsOrSelf(jqexpr);
-    jQuery(container).toggleClass(sClass);
+    $container = $container.parentsOrSelf(jqexpr);
+    $container.toggleClass(sClass);
 
-    if (!jQuery(container).attr(WYMeditor.CLASS)) {
-        jQuery(container).removeAttr(wym._class);
+    if (!$container.attr(WYMeditor.CLASS)) {
+        $container.removeAttr(wym._class);
     }
 };
 
