@@ -939,42 +939,6 @@ jQuery.extend({
     }
 });
 
-// Binds a jQuery event to elements at the start of the event chain for that type.
-jQuery.extend({
-    _bindEventHandlerAtStart: function ($elements, eventType, handler) {
-        var _data;
-
-        $elements.bind(eventType, handler);
-        // This bound the event, naturally, at the end of the event chain. We
-        // need it at the start.
-
-        if (typeof jQuery._data === 'function') {
-            // Since jQuery 1.8.1, it seems, that the events object isn't
-            // available through the public API `.data` method.
-            // Using `$._data, where it exists, seems to work.
-            _data = true;
-        }
-
-        $elements.each(function (index, element) {
-            var events;
-
-            if (_data) {
-                events = jQuery._data(element, 'events')[eventType];
-            } else {
-                events = jQuery(element).data('events')[eventType];
-            }
-
-            events.unshift(events.pop());
-
-            if (_data) {
-                jQuery._data(element, 'events')[eventType] = events;
-            } else {
-                jQuery(element).data('events')[eventType] = events;
-            }
-        });
-    }
-});
-
 /**
     jQuery.copyPropsFromObjectToObject
     =====================================

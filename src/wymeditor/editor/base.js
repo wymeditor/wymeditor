@@ -268,34 +268,15 @@ WYMeditor.editor.prototype._onEditorIframeLoad = function (wym) {
 };
 
 /**
-    WYMeditor.editor._bindSetFocusDocumentToButtons
-    ===============================================
+    WYMeditor.editor._UiQuirks
+    ==========================
 
-    Binds a click event handler to all UI buttons, that returns focus to the
-    document.
+    A hook for browser quirks that work on the UI.
 
-    Importantly, the event is bound at the start of the event chain.
+    To be run after plugins had a chance to modify the UI.
 */
-WYMeditor.editor.prototype._bindSetFocusToDocumentToButtons = function () {
-    var wym = this,
-        buttonsSelector,
-        $buttons;
-
-    buttonsSelector = [
-        wym._options.toolSelector,
-        wym._options.containerSelector,
-        wym._options.classSelector
-    ].join(', ');
-
-    $buttons = jQuery(wym._box).find(buttonsSelector);
-
-    jQuery._bindEventHandlerAtStart(
-        $buttons,
-        'click',
-        function () {
-            wym._iframe.contentWindow.focus();
-        }
-    );
+WYMeditor.editor.prototype._UiQuirks = function () {
+    return;
 };
 
 
@@ -336,8 +317,9 @@ WYMeditor.editor.prototype._afterDesignModeOn = function () {
         wym._options.postInit(wym);
     }
 
-    // UI buttons could have been added in the above postInit.
-    wym._bindSetFocusToDocumentToButtons();
+    // Apply browser quirks regarding UI. Importantly, after `postInit`, where
+    // plugins had a chance to modify the UI (add buttons, etc.).
+    wym._UiQuirks();
 
     // Add event listeners to doc elements, e.g. images
     wym.listen();

@@ -50,19 +50,28 @@ WYMeditor.WymClassTridentPre7.prototype._docEventQuirks = function () {
     };
 };
 
-(function (editorInitSkin) {
-    WYMeditor.WymClassTridentPre7.prototype.initSkin = function () {
-        // Mark container items as unselectable (#203)
-        // Fix for issue explained:
-        // http://stackoverflow.com/questions/
-        // 1470932/ie8-iframe-designmode-loses-selection
-        jQuery(this._box).find(
-            this._options.containerSelector
-        ).attr('unselectable', 'on');
+WYMeditor.WymClassTridentPre7.prototype._setButtonsUnselectable = function () {
+    // Mark UI buttons as unselectable (#203)
+    // Issue explained here:
+    // http://stackoverflow.com/questions/1470932
+    var wym = this,
+    buttonsSelector,
+    $buttons;
+    buttonsSelector = [
+        wym._options.toolSelector,
+        wym._options.containerSelector,
+        wym._options.classSelector
+    ].join(', ');
+    $buttons = jQuery(wym._box).find(buttonsSelector);
+    $buttons.attr('unselectable', 'on');
+};
 
-        editorInitSkin.call(this);
-    };
-}(WYMeditor.editor.prototype.initSkin));
+WYMeditor.WymClassTridentPre7.prototype._UiQuirks = function () {
+    var wym = this;
+    if (jQuery.browser.versionNumber === 8) {
+        wym._setButtonsUnselectable();
+    }
+};
 
 WYMeditor.WymClassTridentPre7.prototype._exec = function (cmd, param) {
     if (param) {
