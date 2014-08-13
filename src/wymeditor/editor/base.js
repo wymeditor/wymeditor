@@ -9,7 +9,7 @@
     Initialize a wymeditor instance, including detecting the
     current browser and enabling the browser-specific subclass.
 */
-WYMeditor.editor.prototype.init = function () {
+WYMeditor.editor.prototype._init = function () {
     // Load the browser-specific subclass
     // If this browser isn't supported, do nothing
     var WymClass = false,
@@ -207,11 +207,10 @@ WYMeditor.editor.prototype.init = function () {
     // unreliable.
     wym.iframeInitialized = false;
 
-    jQuery(wym._box).find('iframe').load(function () {
-        if (wym.iframeInitialized === true) {
-            return;
-        }
-        wym.initIframe(this);
+    wym._iframe = jQuery(wym._box).find('iframe')[0];
+
+    jQuery(wym._iframe).load(function () {
+        wym._onEditorIframeLoad(wym);
     });
 
     wym._element.attr('data-wym-initialized', 'yes');
@@ -220,17 +219,107 @@ WYMeditor.editor.prototype.init = function () {
 };
 
 /**
-    WYMeditor.editor.postIframeInit
+    WYMeditor.editor._assignWymDoc
+    ==============================
 
-    Part of the editor's initialization, which must be done after the
-    iframe's initialization.
+    Assigns an editor's document to the `_doc` property.
 */
-WYMeditor.editor.prototype.postIframeInit = function () {
+WYMeditor.editor.prototype._assignWymDoc = function () {
     var wym = this;
+
+    wym._doc = wym._iframe.contentDocument;
+};
+
+/**
+    WYMeditor.editor._isDesignModeOn
+    ================================
+
+    Returns true if the designMode property of the editor's document is "On".
+    Returns false, otherwise.
+*/
+WYMeditor.editor.prototype._isDesignModeOn = function () {
+    var wym = this;
+
+    if (wym._doc.designMode === "On") {
+        return true;
+    }
+    return false;
+};
+
+/**
+    WYMeditor.editor._onEditorIframeLoad
+    ====================================
+
+    This is a part of the initialization of an editor.
+
+    The initialization procedure of an editor turns asynchronous because part of
+    it must occur after the loading of the editor's Iframe.
+
+    This function is suppposed to be the event handler of the loading of the
+    editor's Iframe. Therefore, it is the first step since the initialization
+    procedure gets asynchronous.
+
+    @param wym The editor instance that's being initialized.
+*/
+WYMeditor.editor.prototype._onEditorIframeLoad = function (wym) {
+    wym._assignWymDoc();
+    wym._doc.designMode = "On";
+    wym._afterDesignModeOn();
+};
+
+/**
+    WYMeditor.editor._UiQuirks
+    ==========================
+
+    A hook for browser quirks that work on the UI.
+
+    To be run after plugins had a chance to modify the UI.
+*/
+WYMeditor.editor.prototype._UiQuirks = function () {
+    return;
+};
+
+
+/**
+    WYMeditor.editor._afterDesignModeOn
+    ===================================
+
+    This is part of the initialization of an editor, designed to be called
+    after the editor's document is in designMode.
+*/
+WYMeditor.editor.prototype._afterDesignModeOn = function () {
+    var wym = this;
+
+    if (wym.iframeInitialized === true) {
+        return;
+    }
+
+    wym._assignWymDoc();
+
+    wym._doc.title = this._wym._index;
+
+    // Set the text direction.
+    jQuery('html', this._doc).attr('dir', this._options.direction);
+
+    wym._docEventQuirks();
+
+    wym._initializeDocumentContent();
+
+    if (jQuery.isFunction(wym._options.preBind)) {
+        wym._options.preBind(wym);
+    }
+
+    wym._bindUIEvents();
+
+    wym.iframeInitialized = true;
 
     if (jQuery.isFunction(wym._options.postInit)) {
         wym._options.postInit(wym);
     }
+
+    // Apply browser quirks regarding UI. Importantly, after `postInit`, where
+    // plugins had a chance to modify the UI (add buttons, etc.).
+    wym._UiQuirks();
 
     // Add event listeners to doc elements, e.g. images
     wym.listen();
@@ -242,32 +331,59 @@ WYMeditor.editor.prototype.postIframeInit = function () {
 };
 
 /**
-    WYMeditor.editor.bindEvents
-    ===========================
+    WYMeditor.editor._initializeDocumentContent
+    ===========================================
 
-    Bind all event handlers including tool/container clicks, focus events
-    and change events.
+    Populates the editor's document with the initial content, according to the
+    configuration and/or the textarea element's value.
 */
-WYMeditor.editor.prototype.bindEvents = function () {
+WYMeditor.editor.prototype._initializeDocumentContent = function () {
+    var wym = this;
+
+    if (wym._options.html) {
+        // Populate from the configuration option
+        wym._html(wym._options.html);
+    } else {
+        // Populate from the textarea element
+        wym._html(wym._element[0].value);
+    }
+};
+
+/**
+    WYMeditor.editor._docEventQuirks
+    ================================
+
+    Misc. event bindings on the editor's document, that may be required.
+*/
+WYMeditor.editor.prototype._docEventQuirks = function () {
+    return;
+};
+
+/**
+    WYMeditor.editor._bindUIEvents
+    ==============================
+
+    Binds event handlers for the UI elements.
+*/
+WYMeditor.editor.prototype._bindUIEvents = function () {
     var wym = this,
         $html_val;
 
-    // Handle click events on tools buttons
-    jQuery(this._box).find(this._options.toolSelector).click(function () {
-        wym._iframe.contentWindow.focus(); //See #154
+    // Tools buttons
+    jQuery(wym._box).find(wym._options.toolSelector).click(function () {
         wym.exec(jQuery(this).attr(WYMeditor.NAME));
         return false;
     });
 
-    // Handle click events on containers buttons
-    jQuery(this._box).find(this._options.containerSelector).click(function () {
+    // Containers buttons
+    jQuery(wym._box).find(wym._options.containerSelector).click(function () {
         wym.mainContainer(jQuery(this).attr(WYMeditor.NAME));
         return false;
     });
 
-    // Handle keyup event on html value: set the editor value
+    // Handle keyup event on the HTML value textarea: set the editor value
     // Handle focus/blur events to check if the element has focus, see #147
-    $html_val = jQuery(this._box).find(this._options.htmlValSelector);
+    $html_val = jQuery(wym._box).find(wym._options.htmlValSelector);
     $html_val.keyup(function () {
         jQuery(wym._doc.body).html(jQuery(this).val());
     });
@@ -279,7 +395,7 @@ WYMeditor.editor.prototype.bindEvents = function () {
     });
 
     // Handle click events on classes buttons
-    jQuery(this._box).find(this._options.classSelector).click(function () {
+    jQuery(wym._box).find(wym._options.classSelector).click(function () {
         var aClasses = eval(wym._options.classesItems),
             sName = jQuery(this).attr(WYMeditor.NAME),
 
@@ -290,18 +406,16 @@ WYMeditor.editor.prototype.bindEvents = function () {
             jqexpr = oClass.expr;
             wym.toggleClass(sName, jqexpr);
         }
-        wym._iframe.contentWindow.focus(); //See #154
         return false;
     });
 
     // Handle update event on update element
-    jQuery(this._options.updateSelector).bind(this._options.updateEvent, function () {
-        wym.update();
-    });
-};
-
-WYMeditor.editor.prototype.ready = function () {
-    return this._doc !== null;
+    jQuery(wym._options.updateSelector).bind(
+        wym._options.updateEvent,
+        function () {
+            wym.update();
+        }
+    );
 };
 
 /**
@@ -470,12 +584,15 @@ WYMeditor.editor.prototype.exec = function (cmd) {
     Override the default selection function to use rangy.
 */
 WYMeditor.editor.prototype.selection = function () {
+    var wym = this,
+        iframe = wym._iframe,
+        sel;
+
     if (window.rangy && !rangy.initialized) {
         rangy.init();
     }
 
-    var iframe = this._iframe,
-        sel = rangy.getIframeSelection(iframe);
+    sel = rangy.getIframeSelection(iframe);
 
     return sel;
 };
@@ -566,7 +683,8 @@ WYMeditor.editor.prototype.selected = function () {
     Return true if all selections are collapsed, false otherwise.
 */
 WYMeditor.editor.prototype.selection_collapsed = function () {
-    var sel = this.selection(),
+    var wym = this,
+        sel = wym.selection(),
         collapsed = false;
 
     jQuery.each(sel.getAllRanges(), function () {
@@ -588,7 +706,8 @@ WYMeditor.editor.prototype.selection_collapsed = function () {
     within the current selection.
 */
 WYMeditor.editor.prototype.selected_contains = function (selector) {
-    var sel = this.selection(),
+    var wym = this,
+        sel = wym.selection(),
         matches = [];
 
     jQuery.each(sel.getAllRanges(), function () {
@@ -1543,25 +1662,21 @@ WYMeditor.editor.prototype._handleMultilineBlockContainerPaste = function (
     paragraphs. May contain inline HTML.
 */
 WYMeditor.editor.prototype.paste = function (str) {
-    var container = this.selectedContainer(),
+    var wym = this,
+        container = wym.selectedContainer(),
         paragraphStrings,
         j,
         textNodesToInsert,
         blockSplitter,
-        $container,
+        $container = jQuery(container),
         html = '',
         paragraphs,
         i,
         isSingleLine = false,
-        sel,
+        sel = wym.selection(),
         textNode,
-        wym,
-        range,
+        range = sel.getRangeAt(0),
         insertionNodes;
-    wym = this;
-    sel = rangy.getIframeSelection(wym._iframe);
-    range = sel.getRangeAt(0);
-    $container = jQuery(container);
 
     // Start by collapsing the range to the start of the selection. We're
     // punting on implementing a paste that also replaces existing content for
@@ -1634,7 +1749,8 @@ WYMeditor.editor.prototype.paste = function (str) {
 
 WYMeditor.editor.prototype.insert = function (html) {
     // Do we have a selection?
-    var selection = this._iframe.contentWindow.getSelection(),
+    var wym = this,
+        selection = wym.selection(),
         range,
         node;
     if (selection.focusNode !== null) {
@@ -1645,18 +1761,22 @@ WYMeditor.editor.prototype.insert = function (html) {
         range.insertNode(node);
     } else {
         // Fall back to the internal paste function if there's no selection
-        this.paste(html);
+        wym.paste(html);
     }
 };
 
 WYMeditor.editor.prototype.wrap = function (left, right) {
-    this.insert(
-        left + this._iframe.contentWindow.getSelection().toString() + right
+    var wym = this;
+
+    wym.insert(
+        left + wym._iframe.contentWindow.getSelection().toString() + right
     );
 };
 
 WYMeditor.editor.prototype.unwrap = function () {
-    this.insert(this._iframe.contentWindow.getSelection().toString());
+    var wym = this;
+
+    wym.insert(wym._iframe.contentWindow.getSelection().toString());
 };
 
 /**
@@ -1709,9 +1829,9 @@ WYMeditor.editor.prototype.canSetCaretBefore = function (node) {
     @param node A node to set the selection to immediately before of.
  */
 WYMeditor.editor.prototype.setCaretBefore = function (node) {
-    var
-        range = rangy.createRange(this._doc),
-        selection = rangy.getIframeSelection(this._iframe);
+    var wym = this,
+        range = rangy.createRange(wym._doc),
+        selection = wym.selection();
 
     if (!this.canSetCaretBefore(node)) {
         throw "Can't set caret before this node.";
@@ -1772,11 +1892,12 @@ WYMeditor.editor.prototype.canSetCaretIn = function (node) {
     @param element An element to set the selection inside of, at the start.
  */
 WYMeditor.editor.prototype.setCaretIn = function (element) {
-    var range = rangy.createRange(this._doc),
-        selection = rangy.getIframeSelection(this._iframe);
+    var wym = this,
+        range = rangy.createRange(wym._doc),
+        selection = wym.selection();
 
     if (
-        !this.canSetCaretIn(element)
+        !wym.canSetCaretIn(element)
     ) {
         throw "The element must be able to contain other elements. Perhaps " +
             " you would like to use `setCaretBefore`, instead.";
@@ -1785,7 +1906,7 @@ WYMeditor.editor.prototype.setCaretIn = function (element) {
     range.selectNodeContents(element);
 
     // Rangy issue #209.
-    if (this.isInlineNode(element)) {
+    if (wym.isInlineNode(element)) {
 
         // Don't collapse the range. As long as
         // this occurs only in tests it is probably OK. Warn.
@@ -2713,8 +2834,8 @@ WYMeditor.editor.prototype._selectionOnlyInList = function (sel) {
     Only list items that have a common list will be indented.
  */
 WYMeditor.editor.prototype.indent = function () {
-    var wym = this._wym,
-        sel = rangy.getIframeSelection(this._iframe),
+    var wym = this,
+        sel = wym.selection(),
         listItems,
         manipulationFunc,
         i;
@@ -2737,7 +2858,7 @@ WYMeditor.editor.prototype.indent = function () {
 
     // We just changed and restored the selection when possibly correcting the
     // lists
-    sel = rangy.getIframeSelection(this._iframe);
+    sel = wym.selection();
 
     // If all of the selected nodes are not contained within one list, don't
     // perform the action.
@@ -2773,8 +2894,8 @@ WYMeditor.editor.prototype.indent = function () {
     behavior and valid HTML.
 */
 WYMeditor.editor.prototype.outdent = function () {
-    var wym = this._wym,
-        sel = rangy.getIframeSelection(this._iframe),
+    var wym = this,
+        sel = wym.selection(),
         listItems,
         manipulationFunc,
         i;
@@ -2797,7 +2918,7 @@ WYMeditor.editor.prototype.outdent = function () {
 
     // We just changed and restored the selection when possibly correcting the
     // lists
-    sel = rangy.getIframeSelection(this._iframe);
+    sel = wym.selection();
 
     // If all of the selected nodes are not contained within one list, don't
     // perform the action.
@@ -2840,7 +2961,10 @@ WYMeditor.editor.prototype.outdent = function () {
     potentially destroyed the selection.
 */
 WYMeditor.editor.prototype.restoreSelectionAfterManipulation = function (manipulationFunc) {
-    var savedSelection = rangy.saveSelection(rangy.dom.getIframeWindow(this._iframe)),
+    var wym = this,
+        savedSelection = rangy.saveSelection(
+            rangy.dom.getIframeWindow(wym._iframe)
+        ),
         changesMade = true;
 
     // If something goes wrong, we don't want to leave selection markers
@@ -2972,7 +3096,7 @@ WYMeditor.editor.prototype.insertUnorderedlist = function () {
  */
 WYMeditor.editor.prototype._insertList = function (listType) {
     var wym = this._wym,
-        sel = rangy.getIframeSelection(wym._iframe),
+        sel = wym.selection(),
         listItems,
         $listItems,
         $parentListsOfDifferentType,
