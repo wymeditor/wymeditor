@@ -2,32 +2,38 @@
 /* global rangy, -$ */
 "use strict";
 
-WYMeditor.WymClassTridentPre7 = function (wym) {
-    this._wym = wym;
-    this._class = "className";
-};
+// This file contains the quirks for pre-7 Trident.
+WYMeditor._quirks._tridentPre7 = {};
 
-WYMeditor.WymClassTridentPre7.prototype._onEditorIframeLoad = function (wym) {
-    wym._assignWymDoc();
+WYMeditor._quirks._tridentPre7._init = {};
 
-    if (wym._isDesignModeOn() === false) {
+WYMeditor._quirks._tridentPre7._init
+    ._onEditorIframeLoad = function () {
+    var init = this,
+        wym = init._wym;
+
+    wym._init._assignWymDoc();
+
+    if (wym._init._isDesignModeOn() === false) {
         wym._doc.designMode = "On";
     } else {
         // Pre-7 Trident Internet Explorer versions reload the Iframe when its
         // designMode property is set to "on". So this will run on the second
         // time this handler is called.
-        wym._afterDesignModeOn();
+        wym._init._afterDesignModeOn();
     }
 };
 
-WYMeditor.WymClassTridentPre7.prototype._assignWymDoc = function () {
-    var wym = this;
+WYMeditor._quirks._tridentPre7._init._assignWymDoc = function () {
+    var init = this,
+        wym = init._wym;
 
     wym._doc = wym._iframe.contentWindow.document;
 };
 
-WYMeditor.WymClassTridentPre7.prototype._docEventQuirks = function () {
-    var wym = this;
+WYMeditor._quirks._tridentPre7._init._docEventQuirks = function () {
+    var init = this,
+        wym = init._wym;
 
     wym._doc.onbeforedeactivate = function () {
         wym.saveCaret();
@@ -50,68 +56,81 @@ WYMeditor.WymClassTridentPre7.prototype._docEventQuirks = function () {
     };
 };
 
-WYMeditor.WymClassTridentPre7.prototype._setButtonsUnselectable = function () {
+WYMeditor._quirks._tridentPre7._init._setButtonsUnselectable = function () {
     // Mark UI buttons as unselectable (#203)
     // Issue explained here:
     // http://stackoverflow.com/questions/1470932
-    var wym = this,
-    buttonsSelector,
-    $buttons;
+    var init = this,
+        wym = init._wym,
+        buttonsSelector,
+        $buttons;
+
     buttonsSelector = [
         wym._options.toolSelector,
         wym._options.containerSelector,
         wym._options.classSelector
     ].join(', ');
+
     $buttons = jQuery(wym._box).find(buttonsSelector);
     $buttons.attr('unselectable', 'on');
 };
 
-WYMeditor.WymClassTridentPre7.prototype._UiQuirks = function () {
-    var wym = this;
+WYMeditor._quirks._tridentPre7._init._UiQuirks = function () {
+    var init = this;
     if (jQuery.browser.versionNumber === 8) {
-        wym._setButtonsUnselectable();
+        // Mark UI buttons as unselectable (#203)
+        // Issue explained here:
+        // http://stackoverflow.com/questions/1470932
+        init._setButtonsUnselectable();
     }
 };
 
-WYMeditor.WymClassTridentPre7.prototype._exec = function (cmd, param) {
+WYMeditor._quirks._tridentPre7.editor = {};
+
+WYMeditor._quirks._tridentPre7.editor._exec = function (cmd, param) {
+    var wym = this;
     if (param) {
-        this._doc.execCommand(cmd, false, param);
+        wym._doc.execCommand(cmd, false, param);
     } else {
-        this._doc.execCommand(cmd);
+        wym._doc.execCommand(cmd);
     }
 };
 
-WYMeditor.WymClassTridentPre7.prototype.saveCaret = function () {
-    this._doc.caretPos = this._doc.selection.createRange();
+WYMeditor._quirks._tridentPre7.editor.saveCaret = function () {
+    var wym = this;
+    wym._doc.caretPos = wym._doc.selection.createRange();
 };
 
-WYMeditor.WymClassTridentPre7.prototype.insert = function (html) {
+WYMeditor._quirks._tridentPre7.editor.insert = function (html) {
+    var wym = this,
+        range,
+        $selectionParents;
 
     // Get the current selection
-    var range = this._doc.selection.createRange(),
-        $selectionParents;
+    range = wym._doc.selection.createRange();
 
     // Check if the current selection is inside the editor
     $selectionParents = jQuery(range.parentElement()).parents();
-    if ($selectionParents.is(this._options.iframeBodySelector)) {
+    if ($selectionParents.is(wym._options.iframeBodySelector)) {
         try {
             // Overwrite selection with provided html
             range.pasteHTML(html);
         } catch (e) {}
     } else {
         // Fall back to the internal paste function if there's no selection
-        this.paste(html);
+        wym.paste(html);
     }
 };
 
-WYMeditor.WymClassTridentPre7.prototype.wrap = function (left, right) {
+WYMeditor._quirks._tridentPre7.editor.wrap = function (left, right) {
+    var wym = this;
     // Get the current selection
-    var range = this._doc.selection.createRange(),
+    var range = wym._doc.selection.createRange(),
         $selectionParents;
 
     // Check if the current selection is inside the editor
     $selectionParents = jQuery(range.parentElement()).parents();
-    if ($selectionParents.is(this._options.iframeBodySelector)) {
+    if ($selectionParents.is(wym._options.iframeBodySelector)) {
         try {
             // Overwrite selection with provided html
             range.pasteHTML(left + range.text + right);
@@ -130,10 +149,10 @@ WYMeditor.WymClassTridentPre7.prototype.wrap = function (left, right) {
     @param containerType A string of an HTML tag that specifies the container
                          type to use for wrapping the node.
 */
-WYMeditor.WymClassTridentPre7.prototype.wrapWithContainer = function (
+WYMeditor._quirks._tridentPre7.editor.wrapWithContainer = function (
     node, containerType
 ) {
-    var wym = this._wym,
+    var wym = this,
         $wrappedNode,
         selection,
         range;
@@ -146,27 +165,28 @@ WYMeditor.WymClassTridentPre7.prototype.wrapWithContainer = function (
     selection.setSingleRange(range);
 };
 
-WYMeditor.WymClassTridentPre7.prototype.unwrap = function () {
+WYMeditor._quirks._tridentPre7.editor.unwrap = function () {
     // Get the current selection
-    var range = this._doc.selection.createRange(),
+    var wym = this,
+        range = wym._doc.selection.createRange(),
         $selectionParents,
         text;
 
     // Check if the current selection is inside the editor
     $selectionParents = jQuery(range.parentElement()).parents();
-    if ($selectionParents.is(this._options.iframeBodySelector)) {
+    if ($selectionParents.is(wym._options.iframeBodySelector)) {
         try {
             // Unwrap selection
             text = range.text;
-            this._exec('Cut');
+            wym._exec('Cut');
             range.pasteHTML(text);
         } catch (e) {}
     }
 };
 
-WYMeditor.WymClassTridentPre7.prototype.keyup = function (evt) {
-    //'this' is the doc
-    var wym = WYMeditor.INSTANCES[this.title],
+WYMeditor._quirks._tridentPre7.editor.keyup = function (evt) {
+    var doc = this,
+        wym = WYMeditor.INSTANCES[doc.title],
         container,
         defaultRootContainer,
         notValidRootContainers,
@@ -179,7 +199,7 @@ WYMeditor.WymClassTridentPre7.prototype.keyup = function (evt) {
         wym.documentStructureManager.structureRules.notValidRootContainers;
     defaultRootContainer =
         wym.documentStructureManager.structureRules.defaultRootContainer;
-    this._selectedImage = null;
+    doc._selectedImage = null;
 
     // If the pressed key can't create a block element and is not a command,
     // check to make sure the selection is properly wrapped in a container

@@ -25,7 +25,7 @@ jQuery.noConflict();
 var SKIP_KNOWN_FAILING_TESTS = true,
     // Can't move the selection to a <br /> element
     no_br_selection_browser = jQuery.browser.webkit ||
-        WYMeditor.isInternetExplorerPre11(),
+        WYMeditor._quirkName === 'tridentPre7',
     // Double-br browsers need placeholders both before and after blocking
     // elements. Others just need placeholders before
     is_double_br_browser = (jQuery.browser.mozilla ||

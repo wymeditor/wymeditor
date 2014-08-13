@@ -292,7 +292,7 @@ function makeSelection(
     sel.setSingleRange(range);
 
     // Old IE selection hack
-    if (WYMeditor.isInternetExplorerPre11()) {
+    if (WYMeditor._quirkName === 'tridentPre7') {
         wymeditor.saveCaret();
     }
 }

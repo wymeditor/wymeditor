@@ -1359,7 +1359,7 @@ test("With span", function () {
 });
 
 module("table-row_merge_rowspan", {setup: prepareUnitTestModule});
-if (!WYMeditor.isInternetExplorerPre11() || !SKIP_KNOWN_FAILING_TESTS) {
+if (WYMeditor._quirkName !== 'tridentPre7' || !SKIP_KNOWN_FAILING_TESTS) {
     test("Across rowspan", function () {
         expect(5);
 
@@ -1367,7 +1367,7 @@ if (!WYMeditor.isInternetExplorerPre11() || !SKIP_KNOWN_FAILING_TESTS) {
     });
 }
 
-if (!WYMeditor.isInternetExplorerPre11() || !SKIP_KNOWN_FAILING_TESTS) {
+if (WYMeditor._quirkName !== 'tridentPre7' || !SKIP_KNOWN_FAILING_TESTS) {
     test("Into rowspan", function () {
         expect(5);
 

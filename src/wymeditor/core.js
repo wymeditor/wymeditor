@@ -489,61 +489,125 @@ jQuery.extend(WYMeditor, {
         ELEMENT: 1,
         ATTRIBUTE: 2,
         TEXT: 3
-    },
-
-    /**
-        WYMeditor.editor
-        ================
-
-        WYMeditor editor main class, instantiated for each editor occurrence.
-
-        See also: WYMeditor.editor.init
-
-        Use
-        ---
-
-        Initializes main values (index, elements, paths, ...)
-        and calls WYMeditor.editor.init which initializes the editor.
-
-        ### Parameters
-
-        elem - The HTML element to be replaced by the editor.
-
-        options - The hash of options.
-
-        ### Returns
-
-        Nothing.
-
-    */
-    editor : function (elem, options) {
-        if (jQuery.getWymeditorByTextarea(elem[0])) {
-            throw "It seems that this textarea already belongs to a " +
-                "WYMeditor instance.";
-        }
-        // Store the instance in the INSTANCES array and store the index
-        this._index = WYMeditor.INSTANCES.push(this) - 1;
-        // The element replaced by the editor
-        this._element = elem;
-        this._options = options;
-        // Path to the WYMeditor core
-        this._options.wymPath = this._options.wymPath ||
-            WYMeditor.computeWymPath();
-        // Path to the main JS files
-        this._options.basePath = this._options.basePath ||
-            WYMeditor.computeBasePath(this._options.wymPath);
-        // Path to jQuery (for loading in pop-up dialogs)
-        this._options.jQueryPath = this._options.jQueryPath ||
-            WYMeditor.computeJqueryPath();
-        // The designmode iframe's base path
-        this._options.iframeBasePath = this._options.iframeBasePath ||
-            this._options.basePath + WYMeditor.IFRAME_DEFAULT;
-
-        // Initialize the editor instance
-        this._init();
     }
 });
 
+// Empty object for browser-engine specific overrides.
+WYMeditor._quirks = {};
+
+/**
+    Startup Functions
+    =================
+*/
+WYMeditor._startup = {};
+
+/**
+    WYMeditor._startup._isInternetExplorerPre11
+    ==========================================
+
+    Returns true if the current browser is an Internet Explorer version
+    previous to 11. Otherwise, returns false.
+*/
+WYMeditor._startup._isInternetExplorerPre11 = function () {
+    if (
+        jQuery.browser.msie &&
+        jQuery.browser.versionNumber < 11
+    ) {
+        return true;
+    }
+    return false;
+};
+
+/**
+    WYMeditor._startup._isInternetExplorer11OrNewer
+    ==============================================
+
+    Returns true if the current browser is an Internet Explorer version 11 or
+    newer. Otherwise, returns false.
+*/
+WYMeditor._startup._isInternetExplorer11OrNewer = function () {
+    if (
+        jQuery.browser.msie &&
+        jQuery.browser.versionNumber >= 11
+    ) {
+        return true;
+    }
+    return false;
+};
+
+/**
+    WYMeditor._startup._getQuirkName
+    ==================================
+
+    Returns a browser quirk name, using browser detection.
+
+    The name corresponds to browser-engine-specific override objects in
+    `WYMeditor._quirks`.
+
+    If none of the supported browsers (or older versions of them) are detected,
+    returns false.
+*/
+WYMeditor._startup._getQuirkName = function () {
+    if (jQuery.browser.mozilla) {
+        return 'gecko';
+    } else if (WYMeditor._startup._isInternetExplorerPre11()) {
+        return 'tridentPre7';
+    } else if (WYMeditor._startup._isInternetExplorer11OrNewer()) {
+        return 'trident7';
+    } else if (
+        jQuery.browser.safari ||
+        jQuery.browser.webkit ||
+        jQuery.browser.chrome
+    ) {
+        if (jQuery.browser.version === '537.36') {
+            // This seems to indicate Blink. See:
+            // https://stackoverflow.com/questions/20655470 .
+            // For now we use the WebKit overrides in Blink.
+            return 'webKit';
+        } else {
+            return 'webKit';
+        }
+    } else {
+        // We don't seem to support this browser.
+        return false;
+    }
+};
+
+/**
+    WYMeditor._startup._applyQuirks
+    ==============================
+
+    Applies the correct browser-engine-specific overrides to WYMeditor methods.
+*/
+WYMeditor._startup._applyQuirks = function () {
+    var quirkName,
+        quirk,
+        subsystemPrototype;
+
+    quirkName = WYMeditor._startup._getQuirkName();
+
+    if (quirkName === false) {
+        // This browser is not supported.
+        return;
+    }
+
+    quirk = WYMeditor._quirks['_' + quirkName];
+
+    for (subsystemPrototype in quirk) {
+        if (
+            typeof subsystemPrototype === 'string' &&
+            quirk.hasOwnProperty(subsystemPrototype)
+        ) {
+            jQuery.extend(
+                WYMeditor[subsystemPrototype].prototype,
+                quirk[subsystemPrototype]
+            );
+        }
+    }
+    // For reference
+    WYMeditor._quirkName = quirkName;
+    WYMeditor._assignedQuirk = quirk;
+};
 
 /********** jQuery Plugin Definition **********/
 
@@ -560,6 +624,10 @@ jQuery.extend(WYMeditor, {
     `jQuery(".wymeditor").wymeditor({});`
 */
 jQuery.fn.wymeditor = function (options) {
+    if (typeof WYMeditor._assignedQuirk !== 'object') {
+        // The browser is not supported.
+        return;
+    }
 
     options = jQuery.extend({
 
@@ -968,40 +1036,6 @@ jQuery.extend({
 });
 
 /**
-    WYMeditor.isInternetExplorerPre11
-    =================================
-
-    Returns true if the current browser is an Internet Explorer version
-    previous to 11. Otherwise, returns false.
-*/
-WYMeditor.isInternetExplorerPre11 = function () {
-    if (
-        jQuery.browser.msie &&
-        jQuery.browser.versionNumber < 11
-    ) {
-        return true;
-    }
-    return false;
-};
-
-/**
-    WYMeditor.isInternetExplorer11OrNewer
-    =====================================
-
-    Returns true if the current browser is an Internet Explorer version 11 or
-    newer. Otherwise, returns false.
-*/
-WYMeditor.isInternetExplorer11OrNewer = function () {
-    if (
-        jQuery.browser.msie &&
-        jQuery.browser.versionNumber >= 11
-    ) {
-        return true;
-    }
-    return false;
-};
-
-/**
     WYMeditor.computeWymPath
     ========================
 
@@ -1229,7 +1263,6 @@ WYMeditor.MAKE_TABLE_ONCLICK = function (wym) {
 
 
 /********** HELPERS **********/
-
 // Returns true if it is a text node with whitespaces only
 jQuery.fn.isPhantomNode = function () {
     if (this[0].nodeType === WYMeditor.NODE.TEXT) {
@@ -1455,5 +1488,3 @@ WYMeditor.Helper = {
         return null;
     }
 };
-
-

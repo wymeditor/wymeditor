@@ -2,48 +2,52 @@
 /* global -$ */
 "use strict";
 
-WYMeditor.WymClassWebKit = function (wym) {
-    this._wym = wym;
-    this._class = "class";
-};
+// This file contains the overrides for WebKit.
+WYMeditor._quirks._webKit = {};
 
-WYMeditor.WymClassWebKit.prototype._docEventQuirks = function () {
-    var wym = this;
+WYMeditor._quirks._webKit._init = {};
+
+WYMeditor._quirks._webKit._init._docEventQuirks = function () {
+    var init = this,
+        wym = init._wym;
 
     jQuery(wym._doc).bind("keydown", wym.keydown);
     jQuery(wym._doc).bind("keyup", wym.keyup);
 };
 
-WYMeditor.WymClassWebKit.prototype._exec = function (cmd, param) {
-    if (!this.selectedContainer()) {
-        return false;
-    }
+WYMeditor._quirks._webKit.editor = {};
 
-    var container,
+WYMeditor._quirks._webKit.editor._exec = function (cmd, param) {
+    var wym = this,
+        container,
         $container,
         tagName,
         structureRules,
         noClassOrAppleSpan;
 
-    if (param) {
-        this._doc.execCommand(cmd, '', param);
-    } else {
-        this._doc.execCommand(cmd, '', null);
+    if (!wym.selectedContainer()) {
+        return false;
     }
 
-    container = this.selectedContainer();
+    if (param) {
+        wym._doc.execCommand(cmd, '', param);
+    } else {
+        wym._doc.execCommand(cmd, '', null);
+    }
+
+    container = wym.selectedContainer();
     if (container) {
         $container = jQuery(container);
         tagName = container.tagName.toLowerCase();
 
         // Wrap this content in the default root container if we're in the body
         if (tagName === WYMeditor.BODY) {
-            structureRules = this.documentStructureManager.structureRules;
-            this._exec(
+            structureRules = wym.documentStructureManager.structureRules;
+            wym._exec(
                 WYMeditor.FORMAT_BLOCK,
                 structureRules.defaultRootContainer
             );
-            this.fixBodyHtml();
+            wym.fixBodyHtml();
         }
 
         // If the cmd was FORMAT_BLOCK, check if the block was moved outside
@@ -73,10 +77,10 @@ WYMeditor.WymClassWebKit.prototype._exec = function (cmd, param) {
     return true;
 };
 
-//keydown handler, mainly used for keyboard shortcuts
-WYMeditor.WymClassWebKit.prototype.keydown = function (e) {
-    //'this' is the doc
-    var wym = WYMeditor.INSTANCES[this.title];
+// keydown handler, mainly used for keyboard shortcuts
+WYMeditor._quirks._webKit.editor.keydown = function (e) {
+    var doc = this,
+        wym = WYMeditor.INSTANCES[doc.title];
 
     if (e.ctrlKey) {
         if (e.which === WYMeditor.KEY.B) {
@@ -98,10 +102,10 @@ WYMeditor.WymClassWebKit.prototype.keydown = function (e) {
     }
 };
 
-// Keyup handler, mainly used for cleanups
-WYMeditor.WymClassWebKit.prototype.keyup = function (evt) {
-    //'this' is the doc
-    var wym = WYMeditor.INSTANCES[this.title],
+// keyup handler, mainly used for cleanups
+WYMeditor._quirks._webKit.editor.keyup = function (evt) {
+    var doc = this,
+        wym = WYMeditor.INSTANCES[doc.title],
         container,
         defaultRootContainer,
         notValidRootContainers,
