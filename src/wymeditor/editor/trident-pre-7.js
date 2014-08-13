@@ -244,11 +244,15 @@ WYMeditor.WymClassTridentPre7.prototype.keyup = function (evt) {
         wym.handlePotentialEnterInEmptyNestedLi(evt.which, container);
 
         // IE8 bug https://github.com/wymeditor/wymeditor/issues/446
-        if (jQuery.browser.msie && jQuery.browser.version === "8.0" &&
-           container.parentNode) {
-            if (parentName === 'ul' || parentName === 'ol') {
-                wym.correctInvalidListNesting(container);
-            }
+        if (
+            evt.which === WYMeditor.KEY.BACKSPACE &&
+            jQuery.browser.versionNumber === 8 &&
+            container.parentNode && (
+                parentName === 'ul' ||
+                parentName === 'ol'
+            )
+        ) {
+            wym.correctInvalidListNesting(container);
         }
 
         // Fix formatting if necessary
