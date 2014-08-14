@@ -1145,9 +1145,12 @@ WYMeditor.editor.prototype.switchTo = function (
         throw "Will not change the type of an 'img' element.";
     }
 
-    newElement = wym._doc.createElement(sType);
-    jQuery(newElement).append(element.childNodes);
-    $element.replaceWith(newElement);
+    wym.restoreSelectionAfterManipulation(function () {
+        newElement = wym._doc.createElement(sType);
+        jQuery(newElement).append(element.childNodes);
+        $element.replaceWith(newElement);
+        return true;
+    });
 
     if (!stripAttrs) {
         for (i = 0; i < attrs.length; ++i) {
