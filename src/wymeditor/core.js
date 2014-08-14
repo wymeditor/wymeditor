@@ -1365,9 +1365,11 @@ jQuery.fn.parentsOrSelf = function (jqexpr) {
         addBackName = 'andSelf';
     }
 
-    jqexpr = jqexpr || '';
-
-    return $n.parents()[addBackName](jqexpr);
+    if (jqexpr) {
+        return $n.parents()[addBackName](jqexpr);
+    } else {
+        return $n.parents()[addBackName]();
+    }
 };
 
 /*
