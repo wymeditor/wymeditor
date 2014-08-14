@@ -1695,7 +1695,7 @@ test("BR isn't allowed at the root", function () {
         });
 });
 
-module("XmlParser-two_consecutive_br_limit", {setup: setupWym});
+module("XmlParser-two_consecutive_br_limit", {setup: prepareUnitTestModule});
 
 var oneBrVariationsWithId = [
     [""
