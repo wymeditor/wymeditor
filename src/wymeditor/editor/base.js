@@ -268,6 +268,26 @@ WYMeditor.editor.prototype._onEditorIframeLoad = function (wym) {
 };
 
 /**
+    WYMeditor.editor._getButtons
+    ============================
+
+    Returns a jQuery of all UI buttons.
+*/
+WYMeditor.editor.prototype._getButtons = function () {
+    var wym = this,
+        buttonsSelector,
+        $buttons;
+
+    buttonsSelector = [
+        wym._options.toolSelector,
+        wym._options.containerSelector,
+        wym._options.classSelector
+    ].join(', ');
+    $buttons = jQuery(wym._box).find(buttonsSelector);
+
+    return $buttons;
+};
+
     WYMeditor.editor._UiQuirks
     ==========================
 
