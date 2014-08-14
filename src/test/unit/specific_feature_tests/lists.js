@@ -1,12 +1,12 @@
 /* jshint camelcase: false, maxlen: 105 */
 /* global
-setupWym, SKIP_KNOWN_FAILING_TESTS, is_double_br_browser,
-wymEqual, makeTextSelection, moveSelector, simulateKey, strictEqual, rangy,
+SKIP_KNOWN_FAILING_TESTS, is_double_br_browser, prepareUnitTestModule,
+wymEqual, makeTextSelection, moveSelector, simulateKey, strictEqual,
 makeSelection,
 ok, test, expect, deepEqual */
 "use strict";
 
-module("list-_getSelectedListItems", {setup: setupWym});
+module("list-_getSelectedListItems", {setup: prepareUnitTestModule});
 
 var getSelectedListItemsHtml = [""
     , '<ul id="0">'
@@ -147,7 +147,7 @@ function testGetSelectedListItems(
         assertStrSelection;
 
     function getSelectedLisIds() {
-        var sel = rangy.getIframeSelection(wymeditor._iframe);
+        var sel = wymeditor.selection();
 
         return jQuery.makeArray(
             jQuery(wymeditor._getSelectedListItems(sel)).map(function () {
@@ -521,7 +521,7 @@ test("Across table", function () {
     );
 });
 
-module("list-indent_outdent", {setup: setupWym});
+module("list-indent_outdent", {setup: prepareUnitTestModule});
 /**
 * Run a list manipulation and verify the results.
 *
@@ -1335,7 +1335,7 @@ var li_1_2_outdentedNodeContentAfterSublistHtml = String() +
 // This test doesn't pass in older versions of IE because they add an extra
 // space onto the end of an `li` element's text content. The functionality
 // tested still works in those older IE versions.
-if (!jQuery.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
+if (!WYMeditor.isInternetExplorerPre11() || !SKIP_KNOWN_FAILING_TESTS) {
     test("Content after sublist node indent/outdent", function () {
         expect(3);
 
@@ -1429,7 +1429,7 @@ test("Span in sublist indent/outdent", function () {
 });
 
 
-module("list-content_reordering", {setup: setupWym});
+module("list-content_reordering", {setup: prepareUnitTestModule});
 
 var doubleSublistHtml = String() +
         '<ol>' +
@@ -1516,7 +1516,7 @@ test("Two same-level sublist last outdent", function () {
     testListRoundTrip('li_1_6', 'indent', li_1_6_doubleSublistOutdentedHtml, doubleSublistHtml, true);
 });
 
-module("list-invalid_nesting", {setup: setupWym});
+module("list-invalid_nesting", {setup: prepareUnitTestModule});
 
 var invalidNestingNoPreviousHtml = String() +
         '<ol>' +
@@ -1740,7 +1740,7 @@ test("Invalid unwrapped text indent", function () {
     );
 });
 
-module("list-invalid_orphaned_listitem", {setup: setupWym});
+module("list-invalid_orphaned_listitem", {setup: prepareUnitTestModule});
 
 // Lists that have been "over-closed" and thus have li elements that don't have
 // parent lists
@@ -1984,7 +1984,7 @@ test("Correction breaks on text", function () {
 });
 
 
-module("list-multi_selection", {setup: setupWym});
+module("list-multi_selection", {setup: prepareUnitTestModule});
 
 var li_2_1_to_li_2_2_indentedHtml = String() +
         '<ol>' +
@@ -2255,7 +2255,7 @@ test("Selecting multiple lists with content between prevents indent/outdent", fu
                   listsWithContentBetweenHtml, true);
 });
 
-module("list-broken_html", {setup: setupWym});
+module("list-broken_html", {setup: prepareUnitTestModule});
 
 var doubleIndentHtml = String() +
         '<ol>' +
@@ -2352,7 +2352,7 @@ test("Triple outdent doesn't break HTML", function () {
     );
 });
 
-module("list-conversion_type", {setup: setupWym});
+module("list-conversion_type", {setup: prepareUnitTestModule});
 
 var orderedHtml = String() +
         '<ol>' +
@@ -2470,7 +2470,7 @@ test("Prevent converting type with selection over multiple levels", function () 
                   li_1_1_1_unorderedHtml, li_1_1_1_unorderedHtml, true);
 });
 
-module("list-conversion_blocks", {setup: setupWym});
+module("list-conversion_blocks", {setup: prepareUnitTestModule});
 var pHtml = String() +
         '<p id="p_1">content 1</p>' +
         '<p id="p_2"><strong id="strong_2">content</strong> 2</p>' +
@@ -2588,7 +2588,7 @@ test("Not joining different types", function () {
     testList('p_1', 'unordered', p_2_orderedHtml, p_1_unordered_p_2_ordered_pHtml, true);
 });
 
-module("list-in_table", {setup: setupWym});
+module("list-in_table", {setup: prepareUnitTestModule});
 
 var listWithTableHtml = [""
     , '<ul id="0">'
@@ -2659,7 +2659,7 @@ test("Make list inside table that is inside list.", function () {
     );
 });
 
-module("list-correction", {setup: setupWym});
+module("list-correction", {setup: prepareUnitTestModule});
 
 test("Should correct invalid list nesting", function () {
     expect(2);
@@ -2760,7 +2760,7 @@ test("Double indent correction", function () {
     wymEqual(wymeditor, repairedHtml);
 });
 
-module("list-tabbing", {setup: setupWym});
+module("list-tabbing", {setup: prepareUnitTestModule});
 
 test("Tab key indents", function () {
     expect(2);
@@ -2838,7 +2838,7 @@ test("Tab has no effect outside lists", function () {
     wymEqual(wymeditor, expectedHtml);
 });
 
-module("list-newline_normalization", {setup: setupWym});
+module("list-newline_normalization", {setup: prepareUnitTestModule});
 
 test("Shouldn't eat newline text spacing in li", function () {
     expect(1);
@@ -2905,7 +2905,7 @@ if (!(// Browser is IE and
      ) ||
     // we are executing known failing tests:
     !SKIP_KNOWN_FAILING_TESTS) {
-    module("list-indent_outdent_with_table", {setup: setupWym});
+    module("list-indent_outdent_with_table", {setup: prepareUnitTestModule});
 
     var TEST_LINEBREAK_SPACER = '<br class="' +
                                     WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS + ' ' +
@@ -3064,7 +3064,7 @@ if (!(// Browser is IE and
 }
 
 // Issue #430
-module("list-correction_after_enter_in_empty_li", {setup: setupWym});
+module("list-correction_after_enter_in_empty_li", {setup: prepareUnitTestModule});
 
 // Issue #430 case 1 of 3: a `p` or a `div` is created inside the parent `li`:
 
@@ -3549,7 +3549,7 @@ test("Invalid list nesting", function () {
     }
 });
 
-module("list-delisting", {setup: setupWym});
+module("list-delisting", {setup: prepareUnitTestModule});
 
 var delistHtml = {};
 

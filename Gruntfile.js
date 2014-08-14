@@ -207,7 +207,13 @@ module.exports = function (grunt) {
             dist: {
                 src: [
                     "<%= yeoman.app %>/wymeditor/core.js",
-                    "<%= yeoman.app %>/wymeditor/editor/*.js",
+                    "<%= yeoman.app %>/wymeditor/editor/base.js",
+                    "<%= yeoman.app %>/wymeditor/editor/" +
+                        "document-structure-manager.js",
+                    "<%= yeoman.app %>/wymeditor/editor/gecko.js",
+                    "<%= yeoman.app %>/wymeditor/editor/webkit.js",
+                    "<%= yeoman.app %>/wymeditor/editor/trident-pre-7.js",
+                    "<%= yeoman.app %>/wymeditor/editor/trident-7.js",
                     "<%= yeoman.app %>/wymeditor/parser/*.js",
                     // TODO: For custom builds, will need to change this.
                     "<%= yeoman.app %>/wymeditor/lang/*.js",
@@ -333,6 +339,45 @@ module.exports = function (grunt) {
                 cwd: "<%= yeoman.dist %>",
                 src: ["./**"]
             }
+        },
+        // This task installs the Bower components, as configured in
+        // `bower.json`.
+        'bower-install-simple': {
+            options: {
+                color: true,
+                cwd: process.cwd(),
+                forceLatest: false,
+                production: false,
+                interactive: true,
+                directory: "src/bower_components"
+            }
+        },
+        'bower-linker': {
+            // This task copies the libraries that are required by WYMeditor
+            // for use in the development environment. It copies the specific
+            // files that are required, from the Bower installation directory,
+            // into the development environment.
+            dev: {
+                options: {
+                    copy: false,
+                    cwd: "<%= yeoman.app %>",
+                    force: false,
+                    map: {
+                        'require.js': '/',
+                        'jquery.js': '/',
+                        'jquery.browser.js': '/',
+                        // Originates from js-beautify
+                        'beautify-html.js': '/',
+                        // following two also originate from js-beautify and we
+                        // don't use them so tuck them away nicely.
+                        'beautify.js': '/redundant/',
+                        'beautify-css.js': '/redundant/'
+                    },
+                    offline: true,
+                    root: "<%= yeoman.app %>/lib",
+                    vendor: false
+                }
+            }
         }
     });
 
@@ -346,6 +391,7 @@ module.exports = function (grunt) {
         }
 
         grunt.task.run([
+            'bower',
             'clean:server',
             'htmlmin',
             'connect:dev',
@@ -354,6 +400,7 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('test', [
+        'bower',
         'clean:server',
         'connect:test',
         'qunit'
@@ -362,6 +409,7 @@ module.exports = function (grunt) {
     grunt.registerTask('build', [
         'clean:dist',
         'useminPrepare',
+        'bower',
         'concat',
         'uglify',
         'copy:dist',
@@ -376,6 +424,13 @@ module.exports = function (grunt) {
         'build'
     ]);
 
+    // This task combines the installation of Bower components and the copying
+    // of the library files for use in the development environment.
+    grunt.registerTask('bower', [
+        'bower-install-simple',
+        'bower-linker:dev',
+    ]);
+
     grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks("grunt-contrib-concat");
@@ -388,4 +443,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-replace");
     grunt.loadNpmTasks("grunt-contrib-htmlmin");
     grunt.loadNpmTasks("grunt-usemin");
+    grunt.loadNpmTasks("grunt-bower-install-simple");
+    grunt.loadNpmTasks('grunt-bower-linker');
 };

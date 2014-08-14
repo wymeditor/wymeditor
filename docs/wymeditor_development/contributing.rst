@@ -79,19 +79,16 @@ If you want a custom,
 non-Vagrant environment,
 the basic requirements are:
 
-* A working NPM and nodejs installation
 * ``git`` and whatever tools you need to build from source.
   eg. ``sudo apt-get install build-essential``
-* A working `PhantomJS <http://phantomjs.org/>`_ installation
-  or at least the libraries necessary to build it.
-* `grunt` and `bower` installed via ``NPM``.
+* Node.JS and NPM.
+* `grunt-cli`
 
 Then you just need to
 
 .. code-block:: shell-session
 
     $ npm install
-    $ node_modules/bower/bin/bower install
 
 .. note::
 
@@ -100,6 +97,16 @@ Then you just need to
     `vagrant_provision.sh <https://github.com/wymeditor/wymeditor/blob/master/vagrant_provision.sh>`_
     script,
     which we use for configuring the Vagrant machine.
+
+Front-end dependencies with Bower
+=================================
+
+Our front-end dependencies are pulled in by Bower.
+
+Grunt orchestrates this automatically so you don't have to think about it.
+
+If you changed ``bower.json`` and want those changes to take affect, just
+restart the server or run ``grunt bower``.
 
 .. _vagrant-environment-setup:
 

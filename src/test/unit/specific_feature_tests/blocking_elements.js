@@ -1,6 +1,6 @@
 /* jshint camelcase: false, maxlen: 85 */
 /* global
-setupWym, no_br_selection_browser, is_double_br_browser,
+no_br_selection_browser, is_double_br_browser, prepareUnitTestModule,
 wymEqual, moveSelector, simulateKey,
 makeSelection,
 test, expect, deepEqual */
@@ -13,10 +13,11 @@ test, expect, deepEqual */
 */
 
 // Should be able to add content before/after/between block elements
-module("Blocking Elements", {setup: setupWym});
+module("Blocking Elements", {setup: prepareUnitTestModule});
 
 // Can't move the selection to a <table> element
-var no_table_selection_browser = jQuery.browser.webkit || jQuery.browser.msie,
+var no_table_selection_browser = jQuery.browser.webkit ||
+    WYMeditor.isInternetExplorerPre11(),
     // keyup/keydown can't be used to fix textnode wrapping
     no_keypress_textnode_wrap_browser = jQuery.browser.msie,
 

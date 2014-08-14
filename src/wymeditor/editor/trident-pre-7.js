@@ -2,87 +2,78 @@
 /* global rangy, -$ */
 "use strict";
 
-WYMeditor.WymClassTrident = function (wym) {
+WYMeditor.WymClassTridentPre7 = function (wym) {
     this._wym = wym;
     this._class = "className";
 };
 
-WYMeditor.WymClassTrident.prototype.initIframe = function (iframe) {
-    this._iframe = iframe;
-    this._doc = iframe.contentWindow.document;
+WYMeditor.WymClassTridentPre7.prototype._onEditorIframeLoad = function (wym) {
+    wym._assignWymDoc();
 
-    if (this._doc.designMode !== "On") {
-        this._doc.designMode = "On";
-        // Initializing designMode triggers the load event again, thus
-        // triggering this method again. We can short-circuit this run and do
-        // all of the work in the next trigger
-        return false;
-    }
-    this._doc.title = this._wym._index;
-
-    // Set the text direction
-    jQuery('html', this._doc).attr('dir', this._options.direction);
-
-    // Init html value
-    if (this._wym._options.html) {
-        this._html(this._wym._options.html);
+    if (wym._isDesignModeOn() === false) {
+        wym._doc.designMode = "On";
     } else {
-        this._html(this._element[0].value);
+        // Pre-7 Trident Internet Explorer versions reload the Iframe when its
+        // designMode property is set to "on". So this will run on the second
+        // time this handler is called.
+        wym._afterDesignModeOn();
     }
+};
 
-    // Handle events
+WYMeditor.WymClassTridentPre7.prototype._assignWymDoc = function () {
     var wym = this;
 
-    this._doc.body.onfocus = function () {
-        wym._doc.designMode = "on";
-        wym._doc = iframe.contentWindow.document;
-    };
-    this._doc.onbeforedeactivate = function () {
+    wym._doc = wym._iframe.contentWindow.document;
+};
+
+WYMeditor.WymClassTridentPre7.prototype._docEventQuirks = function () {
+    var wym = this;
+
+    wym._doc.onbeforedeactivate = function () {
         wym.saveCaret();
     };
-    jQuery(this._doc).bind('keyup', wym.keyup);
-    this._doc.onkeyup = function () {
+    jQuery(wym._doc).bind('keyup', wym.keyup);
+    wym._doc.onkeyup = function () {
         wym.saveCaret();
     };
-    this._doc.onclick = function () {
+    wym._doc.onclick = function () {
         wym.saveCaret();
     };
 
-    this._doc.body.onbeforepaste = function () {
+    wym._doc.body.onbeforepaste = function () {
         wym._iframe.contentWindow.event.returnValue = false;
     };
 
-    this._doc.body.onpaste = function () {
+    wym._doc.body.onpaste = function () {
         wym._iframe.contentWindow.event.returnValue = false;
         wym.paste(window.clipboardData.getData("Text"));
     };
-
-    if (jQuery.isFunction(this._options.preBind)) {
-        this._options.preBind(this);
-    }
-
-    this._wym.bindEvents();
-
-    wym.iframeInitialized = true;
-
-    wym.postIframeInit();
 };
 
-(function (editorInitSkin) {
-    WYMeditor.WymClassTrident.prototype.initSkin = function () {
-        // Mark container items as unselectable (#203)
-        // Fix for issue explained:
-        // http://stackoverflow.com/questions/
-        // 1470932/ie8-iframe-designmode-loses-selection
-        jQuery(this._box).find(
-            this._options.containerSelector
-        ).attr('unselectable', 'on');
+WYMeditor.WymClassTridentPre7.prototype._setButtonsUnselectable = function () {
+    // Mark UI buttons as unselectable (#203)
+    // Issue explained here:
+    // http://stackoverflow.com/questions/1470932
+    var wym = this,
+    buttonsSelector,
+    $buttons;
+    buttonsSelector = [
+        wym._options.toolSelector,
+        wym._options.containerSelector,
+        wym._options.classSelector
+    ].join(', ');
+    $buttons = jQuery(wym._box).find(buttonsSelector);
+    $buttons.attr('unselectable', 'on');
+};
 
-        editorInitSkin.call(this);
-    };
-}(WYMeditor.editor.prototype.initSkin));
+WYMeditor.WymClassTridentPre7.prototype._UiQuirks = function () {
+    var wym = this;
+    if (jQuery.browser.versionNumber === 8) {
+        wym._setButtonsUnselectable();
+    }
+};
 
-WYMeditor.WymClassTrident.prototype._exec = function (cmd, param) {
+WYMeditor.WymClassTridentPre7.prototype._exec = function (cmd, param) {
     if (param) {
         this._doc.execCommand(cmd, false, param);
     } else {
@@ -90,11 +81,11 @@ WYMeditor.WymClassTrident.prototype._exec = function (cmd, param) {
     }
 };
 
-WYMeditor.WymClassTrident.prototype.saveCaret = function () {
+WYMeditor.WymClassTridentPre7.prototype.saveCaret = function () {
     this._doc.caretPos = this._doc.selection.createRange();
 };
 
-WYMeditor.WymClassTrident.prototype.insert = function (html) {
+WYMeditor.WymClassTridentPre7.prototype.insert = function (html) {
 
     // Get the current selection
     var range = this._doc.selection.createRange(),
@@ -113,7 +104,7 @@ WYMeditor.WymClassTrident.prototype.insert = function (html) {
     }
 };
 
-WYMeditor.WymClassTrident.prototype.wrap = function (left, right) {
+WYMeditor.WymClassTridentPre7.prototype.wrap = function (left, right) {
     // Get the current selection
     var range = this._doc.selection.createRange(),
         $selectionParents;
@@ -139,7 +130,7 @@ WYMeditor.WymClassTrident.prototype.wrap = function (left, right) {
     @param containerType A string of an HTML tag that specifies the container
                          type to use for wrapping the node.
 */
-WYMeditor.WymClassTrident.prototype.wrapWithContainer = function (
+WYMeditor.WymClassTridentPre7.prototype.wrapWithContainer = function (
     node, containerType
 ) {
     var wym = this._wym,
@@ -148,14 +139,14 @@ WYMeditor.WymClassTrident.prototype.wrapWithContainer = function (
         range;
 
     $wrappedNode = jQuery(node).wrap('<' + containerType + ' />');
-    selection = rangy.getIframeSelection(wym._iframe);
+    selection = wym.selection();
     range = rangy.createRange(wym._doc);
     range.selectNodeContents($wrappedNode[0]);
     range.collapse();
     selection.setSingleRange(range);
 };
 
-WYMeditor.WymClassTrident.prototype.unwrap = function () {
+WYMeditor.WymClassTridentPre7.prototype.unwrap = function () {
     // Get the current selection
     var range = this._doc.selection.createRange(),
         $selectionParents,
@@ -173,7 +164,7 @@ WYMeditor.WymClassTrident.prototype.unwrap = function () {
     }
 };
 
-WYMeditor.WymClassTrident.prototype.keyup = function (evt) {
+WYMeditor.WymClassTridentPre7.prototype.keyup = function (evt) {
     //'this' is the doc
     var wym = WYMeditor.INSTANCES[this.title],
         container,
@@ -253,11 +244,15 @@ WYMeditor.WymClassTrident.prototype.keyup = function (evt) {
         wym.handlePotentialEnterInEmptyNestedLi(evt.which, container);
 
         // IE8 bug https://github.com/wymeditor/wymeditor/issues/446
-        if (jQuery.browser.msie && jQuery.browser.version === "8.0" &&
-           container.parentNode) {
-            if (parentName === 'ul' || parentName === 'ol') {
-                wym.correctInvalidListNesting(container);
-            }
+        if (
+            evt.which === WYMeditor.KEY.BACKSPACE &&
+            jQuery.browser.versionNumber === 8 &&
+            container.parentNode && (
+                parentName === 'ul' ||
+                parentName === 'ol'
+            )
+        ) {
+            wym.correctInvalidListNesting(container);
         }
 
         // Fix formatting if necessary

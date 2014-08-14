@@ -34,11 +34,10 @@
       "url": "http://opensource.org/licenses/gpl-2.0.php"
     }
   ],
-  "dependencies": {
-    "bower": "~1.2.4"
-  },
   "devDependencies": {
     "grunt": "~0.4.1",
+    "grunt-bower-install-simple": "^0.9.3",
+    "grunt-bower-linker": "^0.1.4",
     "grunt-contrib-clean": "~0.5.0",
     "grunt-contrib-coffee": "~0.7.0",
     "grunt-contrib-compass": "~0.2.0",
@@ -63,7 +62,6 @@
     "grunt-replace": "~0.4.4",
     "grunt-rev": "~0.1.0",
     "grunt-usemin": "~0.1.10",
-    "js-beautify": "~1.5.1",
     "time-grunt": "~0.1.1"
   },
   "engines": {

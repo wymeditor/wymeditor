@@ -21,8 +21,8 @@
 //Extend WYMeditor
 WYMeditor.editor.prototype.fullscreen = function() {
     var wym = this,
-        $box = jQuery(this._box),
-        $iframe = jQuery(this._iframe),
+        $box = jQuery(wym._box),
+        $iframe = jQuery(wym._iframe),
         $overlay = null,
         $window = jQuery(window),
 

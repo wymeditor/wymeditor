@@ -1,13 +1,15 @@
 require.config({
     paths: {
         'rangy-core': 'wymeditor/rangy/rangy-core',
-        'rangy-selectionsaverestore': 'wymeditor/rangy/rangy-selectionsaverestore',
+        'rangy-selectionsaverestore':
+            'wymeditor/rangy/rangy-selectionsaverestore',
         'wymeditor.core': 'wymeditor/core',
         'editor.base': 'wymeditor/editor/base',
-        'editor.document-structure-manager': 'wymeditor/editor/document-structure-manager',
-        'editor.firefox': 'wymeditor/editor/firefox',
-        'editor.ie': 'wymeditor/editor/ie',
-        'editor.opera': 'wymeditor/editor/opera',
+        'editor.document-structure-manager':
+            'wymeditor/editor/document-structure-manager',
+        'editor.gecko': 'wymeditor/editor/gecko',
+        'editor.trident-pre-7': 'wymeditor/editor/trident-pre-7',
+        'editor.trident-7': 'wymeditor/editor/trident-7',
         'editor.webkit': 'wymeditor/editor/webkit',
         'parser.xml-helper': 'wymeditor/parser/xml-helper',
         'parser.xhtml-validator': 'wymeditor/parser/xhtml-validator',
@@ -38,13 +40,13 @@ require.config({
         'editor.document-structure-manager': {
             deps: ['wymeditor.core']
         },
-        'editor.firefox': {
+        'editor.gecko': {
             deps: ['editor.base']
         },
-        'editor.ie': {
+        'editor.trident-pre-7': {
             deps: ['editor.base']
         },
-        'editor.opera': {
+        'editor.trident-7': {
             deps: ['editor.base']
         },
         'editor.webkit': {
@@ -52,31 +54,31 @@ require.config({
         },
         // Parser
         'parser.xml-helper': {
-            deps: ['wymeditor.core'],
+            deps: ['wymeditor.core']
         },
         'parser.parallel-regex': {
-            deps: ['wymeditor.core'],
+            deps: ['wymeditor.core']
         },
         'parser.state-stack': {
-            deps: ['wymeditor.core'],
+            deps: ['wymeditor.core']
         },
         'parser.xhtml-validator': {
-            deps: ['wymeditor.core'],
+            deps: ['wymeditor.core']
         },
         'parser.xhtml-sax-listener': {
-            deps: ['parser.xml-helper'],
+            deps: ['parser.xml-helper']
         },
         'parser.lexer': {
             deps: [
                 'parser.state-stack',
                 'parser.parallel-regex'
-            ],
+            ]
         },
         'parser.xhtml-lexer': {
-            deps: ['parser.lexer'],
+            deps: ['parser.lexer']
         },
         'parser.xhtml-parser': {
-            deps: ['parser.xhtml-lexer'],
+            deps: ['parser.xhtml-lexer']
         }
     }
 });
@@ -85,9 +87,9 @@ define([
     'wymeditor.core',
     'editor.base',
     'editor.document-structure-manager',
-    'editor.firefox',
-    'editor.ie',
-    'editor.opera',
+    'editor.gecko',
+    'editor.trident-pre-7',
+    'editor.trident-7',
     'editor.webkit',
     'parser.xhtml-sax-listener',
     'parser.xhtml-parser',

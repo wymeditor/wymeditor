@@ -1,6 +1,6 @@
 /* jshint maxlen: 90 */
-/* global rangy,
-setupWym, SKIP_KNOWN_FAILING_TESTS,
+/* global
+SKIP_KNOWN_FAILING_TESTS, prepareUnitTestModule,
 wymEqual, moveSelector, simulateKey, makeSelection, normalizeHtml,
 ok, test, expect, deepEqual */
 "use strict";
@@ -63,6 +63,10 @@ function testTableTab(initialHtml, startSelector, endSelector) {
     simulateKey(WYMeditor.KEY.TAB, startElmnt);
 
     actualSelection = wymeditor.selectedContainer();
+    // In some browsers the selection will be in a child span. That seems ok.
+    if (actualSelection.tagName.toLowerCase() === 'span') {
+        actualSelection = actualSelection.parentNode;
+    }
     if (endSelector === null) {
         deepEqual(actualSelection, null);
     } else {
@@ -114,7 +118,7 @@ function testRowMerge(
 
     // Use rangy to get a cross-browser selection object and perform the actual
     // merge
-    sel = rangy.getIframeSelection(wymeditor._iframe);
+    sel = wymeditor.selection();
     changesMade = wymeditor.tableEditor.mergeRow(sel);
     deepEqual(changesMade, true);
 
@@ -124,6 +128,10 @@ function testRowMerge(
     // Verify that our now-current selection matches the expected final
     // selection.
     actualSelection = wymeditor.selectedContainer();
+    // In some browsers the selection will be in a child span. That seems ok.
+    if (actualSelection.tagName.toLowerCase() === 'span') {
+        actualSelection = actualSelection.parentNode;
+    }
     if (expectedFinalSelector === null) {
         deepEqual(actualSelection, null);
     } else {
@@ -150,7 +158,7 @@ function testGetCellXIndex(initialHtml, cellSelector, expectedIndex) {
     deepEqual(actual, expectedIndex);
 }
 
-module("Table Modification", {setup: setupWym});
+module("Table Modification", {setup: prepareUnitTestModule});
 
 var basicTableHtml = String() +
         '<table>' +
@@ -679,7 +687,7 @@ var removedColumn3And2Html = String() +
             '</tbody>' +
         '</table>';
 
-module("table- add/remove", {setup: setupWym});
+module("table- add/remove", {setup: prepareUnitTestModule});
 test("no-op on non-table elements", function () {
     expect(4);
 
@@ -733,7 +741,7 @@ test("Deleting all columns removes table", function () {
     testTable('#span_2_1', 'remove', 'column', removedColumn3And2Html, '');
 });
 
-module("table- colspan/rowspan add/remove", {setup: setupWym});
+module("table- colspan/rowspan add/remove", {setup: prepareUnitTestModule});
 test("Row", function () {
     expect(2);
 
@@ -835,7 +843,7 @@ test("Row with TH first th row", function () {
     testTable('#tr_1 + tr td', 'remove', 'row', addRowThTh13Html, thTableHtml, 2);
 });
 
-module("table- tab movement", {setup: setupWym});
+module("table- tab movement", {setup: prepareUnitTestModule});
 test("Tab to cell right", function () {
     expect(3);
     testTableTab(basicTableHtml, '#td_1_1', '#td_1_2');
@@ -849,20 +857,12 @@ test("Tab from th to cell right", function () {
 test("Tab to next row", function () {
     expect(3);
     var expectedSelector = '#td_2_1';
-    if (WYMeditor._isInnerSelector) {
-        expectedSelector = '#span_2_1';
-    }
     testTableTab(basicTableHtml, '#td_1_3', expectedSelector);
 });
 
 test("Tab from th to next row", function () {
     expect(3);
-    var expectedSelector = '#span_2_1';
-    if (jQuery.browser.mozilla ||
-        (jQuery.browser.msie && parseInt(jQuery.browser.version, 10) >= 9.0)
-    ) {
-        expectedSelector = '#td_2_1';
-    }
+    var expectedSelector = '#td_2_1';
     testTableTab(thTableHtml, '#th_1_3', expectedSelector);
 });
 
@@ -885,7 +885,7 @@ test("Tab outside of table", function () {
     testTableTab(basicTableHtml + '<p id="p_1">p1</p>', '#p_1', '#p_1');
 });
 
-module("table-row_merge", {setup: setupWym});
+module("table-row_merge", {setup: prepareUnitTestModule});
 
 var mergeTableHtml = String() +
         '<table>' +
@@ -1355,14 +1355,11 @@ test("With span", function () {
     expect(5);
 
     var endSelection = '#td_2_1';
-    if (WYMeditor._isInnerSelector) {
-        endSelection = '#span_2_1';
-    }
     testRowMerge(mergeTableHtml, mergeSpan21Html, '#span_2_1', '#td_2_2', endSelection);
 });
 
-module("table-row_merge_rowspan", {setup: setupWym});
-if (!jQuery.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
+module("table-row_merge_rowspan", {setup: prepareUnitTestModule});
+if (!WYMeditor.isInternetExplorerPre11() || !SKIP_KNOWN_FAILING_TESTS) {
     test("Across rowspan", function () {
         expect(5);
 
@@ -1370,7 +1367,7 @@ if (!jQuery.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
     });
 }
 
-if (!jQuery.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
+if (!WYMeditor.isInternetExplorerPre11() || !SKIP_KNOWN_FAILING_TESTS) {
     test("Into rowspan", function () {
         expect(5);
 
@@ -1458,7 +1455,7 @@ test("getCellXIndex test", function () {
     testGetCellXIndex(mergeTableLongRowspanHtml, '#td_4_4', 3);
 });
 
-module("utils", {setup: setupWym});
+module("utils", {setup: prepareUnitTestModule});
 function testNormalize(testHtml) {
     var normed = normalizeHtml(jQuery(testHtml)[0]);
     deepEqual(normed, testHtml);

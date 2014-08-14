@@ -517,6 +517,10 @@ jQuery.extend(WYMeditor, {
 
     */
     editor : function (elem, options) {
+        if (jQuery.getWymeditorByTextarea(elem[0])) {
+            throw "It seems that this textarea already belongs to a " +
+                "WYMeditor instance.";
+        }
         // Store the instance in the INSTANCES array and store the index
         this._index = WYMeditor.INSTANCES.push(this) - 1;
         // The element replaced by the editor
@@ -536,7 +540,7 @@ jQuery.extend(WYMeditor, {
             this._options.basePath + WYMeditor.IFRAME_DEFAULT;
 
         // Initialize the editor instance
-        this.init();
+        this._init();
     }
 });
 
@@ -914,6 +918,89 @@ jQuery.extend({
     }
 });
 
+jQuery.extend({
+    getWymeditorByTextarea: function (textarea) {
+        var i;
+        if (
+            !(
+                textarea &&
+                textarea.tagName &&
+                textarea.tagName.toLowerCase() === 'textarea'
+            )
+        ) {
+            throw "jQuery.getWymeditorByTextarea requires a textarea element.";
+        }
+        for (i = 0; i < WYMeditor.INSTANCES.length; i++) {
+            if (textarea === WYMeditor.INSTANCES[i]._element[0]) {
+                return WYMeditor.INSTANCES[i];
+            }
+        }
+        return false;
+    }
+});
+
+/**
+    jQuery.copyPropsFromObjectToObject
+    =====================================
+
+    General helper function that copies specified list of properties from a
+    specified origin object to a specified target object.
+
+    @param origin The origin object.
+    @param target The target object.
+    @param propNames An array of strings, representing the properties to copy.
+*/
+jQuery.extend({
+    copyPropsFromObjectToObject: function (origin, target, propNames) {
+        var i,
+            propName,
+            prop,
+            props = {};
+
+        for (i = 0; i < propNames.length; i++) {
+            propName = propNames[i];
+            prop = origin[propName];
+            props[propName] = prop;
+        }
+
+        jQuery.extend(target, props);
+    }
+});
+
+/**
+    WYMeditor.isInternetExplorerPre11
+    =================================
+
+    Returns true if the current browser is an Internet Explorer version
+    previous to 11. Otherwise, returns false.
+*/
+WYMeditor.isInternetExplorerPre11 = function () {
+    if (
+        jQuery.browser.msie &&
+        jQuery.browser.versionNumber < 11
+    ) {
+        return true;
+    }
+    return false;
+};
+
+/**
+    WYMeditor.isInternetExplorer11OrNewer
+    =====================================
+
+    Returns true if the current browser is an Internet Explorer version 11 or
+    newer. Otherwise, returns false.
+*/
+WYMeditor.isInternetExplorer11OrNewer = function () {
+    if (
+        jQuery.browser.msie &&
+        jQuery.browser.versionNumber >= 11
+    ) {
+        return true;
+    }
+    return false;
+};
+
 /**
     WYMeditor.computeWymPath
     ========================
@@ -1268,17 +1355,17 @@ WYMeditor.isPhantomString = function (str) {
 // Returns the Parents or the node itself
 // jqexpr = a jQuery expression
 jQuery.fn.parentsOrSelf = function (jqexpr) {
-    var n = this;
+    var $n = this;
 
-    if (n[0].nodeType === WYMeditor.NODE.TEXT) {
-        n = n.parents().slice(0, 1);
+    if ($n[0].nodeType === WYMeditor.NODE.TEXT) {
+        $n = $n.parents().slice(0, 1);
     }
 
-//  if (n.is(jqexpr)) // XXX should work, but doesn't (probably a jQuery bug)
-    if (n.filter(jqexpr).size() === 1) {
-        return n;
+//  if ($n.is(jqexpr)) // XXX should work, but doesn't (probably a jQuery bug)
+    if ($n.filter(jqexpr).size() === 1) {
+        return $n;
     } else {
-        return n.parents(jqexpr).slice(0, 1);
+        return $n.parents(jqexpr).slice(0, 1);
     }
 };
 

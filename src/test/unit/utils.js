@@ -22,7 +22,18 @@ var ignoreAttributes = [
     ['_wym_visited'],
     ['sizset'],
     ['tabindex'],
-    ['rowspan', ['1']]
+    ['rowspan', ['1']],
+    // The following 10 mouse and keyboard events were found on IE7.
+    ['onclick'],
+    ['ondblclick'],
+    ['onkeydown'],
+    ['onkeypress'],
+    ['onkeyup'],
+    ['onmousedown'],
+    ['onmousemove'],
+    ['onmouseout'],
+    ['onmouseover'],
+    ['onmouseup']
 ];
 
 /**
@@ -91,7 +102,7 @@ function normalizeHtml(node) {
             for (i = n; --i >= 0;) {
                 attr = attrs[i];
                 attrName = attr.nodeName.toLowerCase();
-                attrValue = attr.nodeValue;
+                attrValue = attr.value;
                 keepAttr = true;
 
                 // We only care about specified attributes
@@ -213,8 +224,11 @@ function wymEqual(wymeditor, expected, options) {
     for (i = 0; i < tmpNodes.length; i++) {
         normedActual += normalizeHtml(tmpNodes[i]);
     }
-    if (options.fixListSpacing && jQuery.browser.msie &&
-            parseInt(jQuery.browser.version, 10) < 9.0) {
+    if (
+        options.fixListSpacing &&
+        jQuery.browser.msie &&
+        jQuery.browser.versionNumber < 9
+    ) {
         normedActual = normedActual.replace(/\s(<br.*?\/>)/g, '$1');
 
         listTypeOptions = WYMeditor.LIST_TYPE_ELEMENTS.join('|');
@@ -259,7 +273,7 @@ function makeSelection(
         // might be something that rangy can handle.
         endElementIndex = 1;
     }
-    var sel = rangy.getIframeSelection(wymeditor._iframe),
+    var sel = wymeditor.selection(),
         range = rangy.createRange(wymeditor._doc);
 
     range.setStart(startElement, startElementIndex);
@@ -277,8 +291,8 @@ function makeSelection(
     // We need to handle internet explorer selection differently
     sel.setSingleRange(range);
 
-    // IE selection hack
-    if (jQuery.browser.msie) {
+    // Old IE selection hack
+    if (WYMeditor.isInternetExplorerPre11()) {
         wymeditor.saveCaret();
     }
 }

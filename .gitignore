@@ -13,3 +13,4 @@ dist/README.md
 dist/*.gz
 _gh_pages
 docs/.build/*
+src/lib/*
