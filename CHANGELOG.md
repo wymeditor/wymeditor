@@ -20,6 +20,9 @@ WYMeditor.
 * [#563](https://github.com/wymeditor/wymeditor/pull/563)-clicking on some UI
   Elements, including anything that was added by plugins, caused loss of focus
   and selection in IE8.
+* [#546](https://github.com/wymeditor/wymeditor/pull/546)-Clicking on any UI
+  element would cause loss of focus in non-IE browsers. Changing main
+  containers would cause loss of selection.
 
 ### Backwards-Incompatible Changes
 
