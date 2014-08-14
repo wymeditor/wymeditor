@@ -913,13 +913,13 @@ WYMeditor.editor.prototype.mainContainer = function (sType) {
 
     if (typeof (sType) === 'undefined') {
         return jQuery(wym.selectedContainer())
-            .parents()
+            .parentsOrSelf()
             .not('html, body, blockquote')
             .last()[0];
     }
 
     if (sType.toLowerCase() === WYMeditor.TH) {
-        container = wym.mainContainer();
+        container = wym.selectedContainer();
 
         // Find the TD or TH container
         switch (container.tagName.toLowerCase()) {
@@ -929,7 +929,7 @@ WYMeditor.editor.prototype.mainContainer = function (sType) {
             break;
         default:
             aTypes = [WYMeditor.TD, WYMeditor.TH];
-            container = wym.findUp(wym.mainContainer(), aTypes);
+            container = wym.findUp(wym.selectedContainer(), aTypes);
             break;
         }
 
@@ -956,13 +956,13 @@ WYMeditor.editor.prototype.mainContainer = function (sType) {
             WYMeditor.PRE,
             WYMeditor.BLOCKQUOTE
         ];
-        container = wym.findUp(wym.mainContainer(), aTypes);
+        container = wym.findUp(wym.selectedContainer(), aTypes);
 
         if (container) {
             if (sType.toLowerCase() === WYMeditor.BLOCKQUOTE) {
                 // Blockquotes must contain a block level element
                 blockquote = wym.findUp(
-                    wym.mainContainer(),
+                    wym.selectedContainer(),
                     WYMeditor.BLOCKQUOTE
                 );
                 if (blockquote === null) {
@@ -3423,7 +3423,7 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
 
     // Find the currently-selected container
     container = jQuery(
-        this.findUp(this.mainContainer(), WYMeditor.POTENTIAL_TABLE_INSERT_ELEMENTS)
+        this.findUp(this.selectedContainer(), WYMeditor.POTENTIAL_TABLE_INSERT_ELEMENTS)
     ).get(0);
 
     if (!container || !container.parentNode) {
