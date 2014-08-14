@@ -1161,7 +1161,7 @@ WYMeditor.editor.prototype.switchTo = function (
         for (i = 0; i < attrs.length; ++i) {
             newElement.setAttribute(
                 attrs.item(i).nodeName,
-                attrs.item(i).nodeValue
+                attrs.item(i).value
             );
         }
     }
