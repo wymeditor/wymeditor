@@ -1355,18 +1355,19 @@ WYMeditor.isPhantomString = function (str) {
 // Returns the Parents or the node itself
 // jqexpr = a jQuery expression
 jQuery.fn.parentsOrSelf = function (jqexpr) {
-    var $n = this;
+    var $n = this,
+        addBackName;
 
-    if ($n[0].nodeType === WYMeditor.NODE.TEXT) {
-        $n = $n.parents().slice(0, 1);
-    }
-
-//  if ($n.is(jqexpr)) // XXX should work, but doesn't (probably a jQuery bug)
-    if ($n.filter(jqexpr).size() === 1) {
-        return $n;
+    if (jQuery.fn.addBack) {
+        addBackName = 'addBack';
     } else {
-        return $n.parents(jqexpr).slice(0, 1);
+        // `andSelf` is deprecated.
+        addBackName = 'andSelf';
     }
+
+    jqexpr = jqexpr || '';
+
+    return $n.parents()[addBackName](jqexpr);
 };
 
 /*
