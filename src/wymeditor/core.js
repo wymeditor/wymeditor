@@ -1458,5 +1458,3 @@ WYMeditor.Helper = {
         return null;
     }
 };
-
-
