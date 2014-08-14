@@ -1124,16 +1124,12 @@ WYMeditor.editor.prototype.findUp = function (node, filter) {
     @param sType A string of the desired type. For example, 'p'.
     @param stripAttrs a boolean that determines whether the attributes of
                       the element will be stripped or preserved.
-    @param setCaret A boolean that determines whether the caret will be set at
-                    the beginning, inside the element, after the switch. Default
-                    is false.
 
 */
 WYMeditor.editor.prototype.switchTo = function (
     element,
     sType,
-    stripAttrs,
-    setCaret
+    stripAttrs
 ) {
     var wym = this,
         $element = jQuery(element),
@@ -1160,10 +1156,6 @@ WYMeditor.editor.prototype.switchTo = function (
                 attrs.item(i).value
             );
         }
-    }
-
-    if (setCaret) {
-        wym.setCaretIn(newElement);
     }
 
     return newElement;
