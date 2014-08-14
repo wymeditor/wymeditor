@@ -98,6 +98,22 @@ WYMeditor.WymClassWebKit.prototype.keydown = function (e) {
     }
 };
 
+// A `div` can be created by breaking out of a list in some cases. Issue #549.
+WYMeditor.WymClassWebKit.prototype._inListBreakoutDiv = function (evtWhich) {
+    var wym = this,
+        $mainContainer = jQuery(wym.mainContainer());
+
+    if (
+        evtWhich === WYMeditor.KEY.ENTER &&
+        $mainContainer.is('div') &&
+        wym.documentStructureManager.defaultRootContainer !== 'div' &&
+        $mainContainer.prev('ol, ul').length === 1
+    ) {
+        return true;
+    }
+    return false;
+};
+
 // Keyup handler, mainly used for cleanups
 WYMeditor.WymClassWebKit.prototype.keyup = function (evt) {
     //'this' is the doc
@@ -106,7 +122,8 @@ WYMeditor.WymClassWebKit.prototype.keyup = function (evt) {
         defaultRootContainer,
         notValidRootContainers,
         name,
-        parentName;
+        parentName,
+        mainContainer;
 
     notValidRootContainers =
         wym.documentStructureManager.structureRules.notValidRootContainers;
@@ -170,6 +187,15 @@ WYMeditor.WymClassWebKit.prototype.keyup = function (evt) {
 
         // Call for the check for--and possible correction of--issue #430.
         wym.handlePotentialEnterInEmptyNestedLi(evt.which, container);
+
+        // Issue #549.
+        if (wym._inListBreakoutDiv(evt.which)) {
+            mainContainer = wym.switchTo(
+                wym.mainContainer(),
+                defaultRootContainer
+            );
+            wym.setCaretIn(mainContainer);
+        }
 
         // Fix formatting if necessary
         wym.fixBodyHtml();
