@@ -1,7 +1,12 @@
 /* jshint camelcase: false, maxlen: 85 */
-/* global setupWym,
-htmlEquals, makeTextSelection,
-ok, test, expect */
+/* global
+prepareUnitTestModule,
+wymEqual, makeTextSelection,
+ok, test, expect,
+start,
+ListPlugin,
+vanishAllWyms
+*/
 "use strict";
 
 var insertPStartHtml = String() +
@@ -22,13 +27,7 @@ var rootDivCorrectHtml = String() +
     '<div id="replaceMe">Replace me</div>' +
     '<p>Some text after the replaced container</p>';
 
-function setupDefaultRootContainerDivWym() {
-    setupWym(function (wym) {
-        wym.documentStructureManager.setDefaultRootContainer('div');
-    });
-}
-
-module("structure-default_root_p", {setup: setupWym});
+module("structure-default_root_p", {setup: prepareUnitTestModule});
 
 test("DIV element is correctly converted to P", function () {
     expect(2);
@@ -48,11 +47,33 @@ test("DIV element is correctly converted to P", function () {
         $pContainerLink.click();
     }
 
-    htmlEquals(wymeditor, rootPCorrectHtml,
-               "DIV element is correctly converted to P");
+    wymEqual(wymeditor, rootPCorrectHtml, {
+            assertionString: "DIV element is correctly converted to P"
+        });
 });
 
-module("structure-default_root_div", {setup: setupDefaultRootContainerDivWym});
+module(
+    "structure-default_root_div",
+    {
+        setup: function () {
+            prepareUnitTestModule({
+                postInit: function (wym) {
+                    wym.documentStructureManager
+                        .setDefaultRootContainer('div');
+                    // TODO: Don't load these three plugins by default. We do
+                    // this because we have no other coverage of how
+                    // plugins may affect tests.
+                    wym.listPlugin = new ListPlugin({}, wym);
+                    wym.tableEditor = wym.table();
+                    wym.structuredHeadings();
+
+                    start();
+                }
+            });
+        },
+        teardown: vanishAllWyms
+    }
+);
 
 test("P element is correctly converted to DIV", function () {
     expect(2);
@@ -72,12 +93,13 @@ test("P element is correctly converted to DIV", function () {
         $divContainerLink.click();
     }
 
-    htmlEquals(wymeditor, rootDivCorrectHtml,
-               "P element is correctly converted to DIV");
+    wymEqual(wymeditor, rootDivCorrectHtml, {
+            assertionString: "P element is correctly converted to DIV"
+        });
 });
 
 
-module("structure-wrap_root_inline_elements", {setup: setupWym});
+module("structure-wrap_root_inline_elements", {setup: prepareUnitTestModule});
 
 var inlineElementsToTest = ['strong', 'em', 'a', 'sub', 'sup', 'span'],
     startRootInlineElementHtml = [],
@@ -131,8 +153,10 @@ test("Text node in the document root is wrapped in default container", function 
     textNode = $body.contents()[1];
     makeTextSelection(wymeditor, textNode, textNode, 1, 1);
     $body.trigger(keyup_event);
-    htmlEquals(wymeditor, correctRootTextNodeHtml,
-            "Text node in the document root is wrapped in default container");
+    wymEqual(wymeditor, correctRootTextNodeHtml, {
+            assertionString: "Text node in the document root is wrapped in " +
+                "default container"
+        });
 });
 
 test(
@@ -154,16 +178,14 @@ test(
             inlineElement = $body.find('#inline-in-root');
             makeTextSelection(wymeditor, inlineElement, inlineElement, 1, 1);
             $body.trigger(keyup_event);
-            htmlEquals(
-                wymeditor,
-                correctRootInlineElementHtml[i],
-                [""
+            wymEqual(wymeditor, correctRootInlineElementHtml[i], {
+                assertionString: [""
                     , "`"
                     , inlineElementsToTest[i]
                     , "` element in the document "
                     , "root is wrapped in default container"
                 ].join('')
-            );
+            });
         }
     }
 );

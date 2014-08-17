@@ -33,6 +33,17 @@ Open up a browser to `http://localhost:9000/test/unit/ <http://localhost:9000/te
 
 All green means you're good to go.
 
+.. note::
+
+  In Internet Explorer 7, after the first test run, it appears that subsequent
+  test run considerably slower. It is possible to work around this issue by
+  restarting the browser.
+
+.. note::
+
+  If testing in a virtual machine, for better performance, disabling virtual
+  memory may help.
+
 *******************************
 Running the Tests via ``grunt``
 *******************************

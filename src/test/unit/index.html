@@ -48,6 +48,9 @@
             "sinon/sinon-1.7.3.js",
             "sinon/sinon-qunit-1.0.0.js",
 
+            // An HTML beautifier
+            "../../lib/beautify-html.js",
+
             // Test files
             "utils.js",
             "test.js",
@@ -77,8 +80,8 @@
     <div id="qunit-testrunner-toolbar"></div>
     <h2 id="qunit-userAgent"></h2>
     <div>
-        <form method="post" action="">
-            <textarea class="wymeditor"></textarea>
+        <form id="wym-form" method="post" action="">
+            <textarea id="wym0" class="wym"></textarea>
             <input type="submit" class="wymupdate" />
             <input type="button" class="wymclear" name="Clear" value="Clear" />
         </form>

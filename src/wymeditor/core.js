@@ -142,137 +142,294 @@ jQuery.extend(WYMeditor, {
 
 */
 
-    VERSION             : "@@VERSION",
-    INSTANCES           : [],
-    STRINGS             : [],
-    SKINS               : [],
-    NAME                : "name",
-    INDEX               : "{Wym_Index}",
-    WYM_INDEX           : "wym_index",
+    A                   : "a",
+    ALT                 : "alt",
     BASE_PATH           : "{Wym_Base_Path}",
-    WYM_PATH            : "{Wym_Wym_Path}",
-    IFRAME_BASE_PATH    : "{Wym_Iframe_Base_Path}",
-    IFRAME_DEFAULT      : "iframe/default/",
-    JQUERY_PATH         : "{Wym_Jquery_Path}",
-    DIRECTION           : "{Wym_Direction}",
-    LOGO                : "{Wym_Logo}",
-    TOOLS               : "{Wym_Tools}",
-    TOOLS_ITEMS         : "{Wym_Tools_Items}",
-    TOOL_NAME           : "{Wym_Tool_Name}",
-    TOOL_TITLE          : "{Wym_Tool_Title}",
-    TOOL_CLASS          : "{Wym_Tool_Class}",
+    BLOCKQUOTE          : "blockquote",
+    BODY                : "body",
+    BOLD                : "Bold",
+    CLASS               : "class",
     CLASSES             : "{Wym_Classes}",
     CLASSES_ITEMS       : "{Wym_Classes_Items}",
     CLASS_NAME          : "{Wym_Class_Name}",
     CLASS_TITLE         : "{Wym_Class_Title}",
     CONTAINERS          : "{Wym_Containers}",
     CONTAINERS_ITEMS    : "{Wym_Containers_Items}",
+    CONTAINER_CLASS     : "{Wym_Container_Class}",
     CONTAINER_NAME      : "{Wym_Container_Name}",
     CONTAINER_TITLE     : "{Wym_Containers_Title}",
-    CONTAINER_CLASS     : "{Wym_Container_Class}",
-    HTML                : "{Wym_Html}",
-    IFRAME              : "{Wym_Iframe}",
-    STATUS              : "{Wym_Status}",
-    DIALOG_TITLE        : "{Wym_Dialog_Title}",
+    CREATE_LINK         : "CreateLink",
     DIALOG_BODY         : "{Wym_Dialog_Body}",
-    NEWLINE             : "\n",
-    STRING              : "string",
-    BODY                : "body",
+    DIALOG_IMAGE        : "Image",
+    DIALOG_LINK         : "Link",
+    DIALOG_PASTE        : "Paste_From_Word",
+    DIALOG_TABLE        : "Table",
+    DIALOG_TITLE        : "{Wym_Dialog_Title}",
+    DIRECTION           : "{Wym_Direction}",
     DIV                 : "div",
-    P                   : "p",
+    FORMAT_BLOCK        : "FormatBlock",
     H1                  : "h1",
     H2                  : "h2",
     H3                  : "h3",
     H4                  : "h4",
     H5                  : "h5",
     H6                  : "h6",
-    PRE                 : "pre",
-    BLOCKQUOTE          : "blockquote",
-    A                   : "a",
-    BR                  : "br",
+    HREF                : "href",
+    HTML                : "{Wym_Html}",
+    IFRAME              : "{Wym_Iframe}",
+    IFRAME_BASE_PATH    : "{Wym_Iframe_Base_Path}",
+    IFRAME_DEFAULT      : "iframe/default/",
     IMG                 : "img",
+    INDENT              : "Indent",
+    INDEX               : "{Wym_Index}",
+    INSERT_HTML         : "InsertHTML",
+    INSERT_IMAGE        : "InsertImage",
+    INSERT_ORDEREDLIST  : "InsertOrderedList",
+    INSERT_TABLE        : "InsertTable",
+    INSERT_UNORDEREDLIST: "InsertUnorderedList",
+    INSTANCES           : [],
+    ITALIC              : "Italic",
+    JQUERY_PATH         : "{Wym_Jquery_Path}",
+    LI                  : "li",
+    LOGO                : "{Wym_Logo}",
+    NAME                : "name",
+    NBSP                : '\xA0',
+    NEWLINE             : "\n",
+    OL                  : "ol",
+    OUTDENT             : "Outdent",
+    P                   : "p",
+    PASTE               : "Paste",
+    PRE                 : "pre",
+    PREVIEW             : "Preview",
+    REL                 : "rel",
+    SKINS               : [],
+    SRC                 : "src",
+    STATUS              : "{Wym_Status}",
+    STRING              : "string",
+    STRINGS             : [],
     TABLE               : "table",
-    TR                  : "tr",
     TD                  : "td",
     TH                  : "th",
-    UL                  : "ul",
-    OL                  : "ol",
-    LI                  : "li",
-    CLASS               : "class",
-    HREF                : "href",
-    SRC                 : "src",
     TITLE               : "title",
-    REL                 : "rel",
-    ALT                 : "alt",
-    DIALOG_LINK         : "Link",
-    DIALOG_IMAGE        : "Image",
-    DIALOG_TABLE        : "Table",
-    DIALOG_PASTE        : "Paste_From_Word",
-    BOLD                : "Bold",
-    ITALIC              : "Italic",
-    CREATE_LINK         : "CreateLink",
-    INSERT_IMAGE        : "InsertImage",
-    INSERT_TABLE        : "InsertTable",
-    INSERT_HTML         : "InsertHTML",
-    PASTE               : "Paste",
-    INDENT              : "Indent",
-    OUTDENT             : "Outdent",
     TOGGLE_HTML         : "ToggleHtml",
-    FORMAT_BLOCK        : "FormatBlock",
-    PREVIEW             : "Preview",
+    TOOLS               : "{Wym_Tools}",
+    TOOLS_ITEMS         : "{Wym_Tools_Items}",
+    TOOL_CLASS          : "{Wym_Tool_Class}",
+    TOOL_NAME           : "{Wym_Tool_Name}",
+    TOOL_TITLE          : "{Wym_Tool_Title}",
+    TR                  : "tr",
+    UL                  : "ul",
     UNLINK              : "Unlink",
-    INSERT_UNORDEREDLIST: "InsertUnorderedList",
-    INSERT_ORDEREDLIST  : "InsertOrderedList",
+    VERSION             : "@@VERSION",
+    WYM_INDEX           : "wym_index",
+    WYM_PATH            : "{Wym_Wym_Path}",
 
     // Containers that we allow at the root of the document (as a direct child
     // of the body tag)
-    MAIN_CONTAINERS : ["p", "div", "h1",  "h2",  "h3", "h4", "h5", "h6", "pre",
-        "blockquote"],
+    MAIN_CONTAINERS : [
+        "blockquote",
+        "div",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "p",
+        "pre"
+    ],
 
     // Containers that we explicitly do not allow at the root of the document.
     // These containers must be wrapped in a valid main container.
-    FORBIDDEN_MAIN_CONTAINERS : ["strong", "b", "em", "i", "sub", "sup", "a",
-                                 "span"],
+    FORBIDDEN_MAIN_CONTAINERS : [
+        "a",
+        "b",
+        "em",
+        "i",
+        "span",
+        "strong",
+        "sub",
+        "sup"
+    ],
 
     // All block (as opposed to inline) tags
-    BLOCKS : ["address", "blockquote", "div", "dl",
-        "fieldset", "form", "h1", "h2", "h3", "h4", "h5", "h6", "hr",
-        "noscript", "ol", "p", "pre", "table", "ul", "dd", "dt",
-        "li", "tbody", "td", "tfoot", "th", "thead", "tr"],
+    BLOCKS : [
+        "address",
+        "blockquote",
+        "dd",
+        "div",
+        "dl",
+        "dt",
+        "fieldset",
+        "form",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "hr",
+        "li",
+        "noscript",
+        "ol",
+        "p",
+        "pre",
+        "table",
+        "tbody",
+        "td",
+        "tfoot",
+        "th",
+        "thead",
+        "tr",
+        "ul"
+    ],
 
     // The subset of the `MAIN_CONTAINERS` that prevent the user from using
     // up/down/enter/backspace from moving above or below them. They
     // effectively block the creation of new blocks.
-    BLOCKING_ELEMENTS : ["table", "blockquote", "pre"],
+    BLOCKING_ELEMENTS : [
+        "blockquote",
+        "pre",
+        "table"
+    ],
+
+    // Elements that are not containers. They don't generally have any child
+    // nodes.
+    NON_CONTAINING_ELEMENTS : [
+        "br",
+        "col",
+        "hr",
+        "img"
+    ],
+
+    // Elements that should not contain collapsed selection directly.
+    NO_CARET_ELEMENTS: [
+        "blockquote",
+        "br",
+        "col",
+        "colgroup",
+        "dl",
+        "hr",
+        "img",
+        "ol",
+        "table",
+        "tbody",
+        "tfoot",
+        "thead",
+        "tr",
+        "ul"
+    ],
+
+    // Inline elements.
+    INLINE_ELEMENTS : [
+        "a",
+        "abbr",
+        "acronym",
+        "b",
+        "bdo",
+        "big",
+        "br",
+        "button",
+        "cite",
+        "code",
+        "dfn",
+        "em",
+        "i",
+        "img",
+        "input",
+        "kbd",
+        "label",
+        "map",
+        "object",
+        "q",
+        "samp",
+        "script",
+        "select",
+        "small",
+        "span",
+        "strong",
+        "sub",
+        "sup",
+        "textarea",
+        "tt",
+        "var"
+    ],
 
     // The remaining `MAIN_CONTAINERS` that are not considered
     // `BLOCKING_ELEMENTS`
-    NON_BLOCKING_ELEMENTS : ["p", "div", "h1", "h2", "h3", "h4", "h5", "h6"],
+    NON_BLOCKING_ELEMENTS : [
+        "div",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "p"
+    ],
 
     // The elements that define a type of list.
-    LIST_TYPE_ELEMENTS : ["ul", "ol"],
+    LIST_TYPE_ELEMENTS : [
+        "ol",
+        "ul"
+    ],
 
     // The elements that define a heading
-    HEADING_ELEMENTS : ["h1", "h2", "h3", "h4", "h5", "h6"],
+    HEADING_ELEMENTS : [
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6"
+    ],
 
     // The elements that are allowed to be turned in to lists. If an item in
     // this array isn't in the MAIN_CONTAINERS array, then its contents will be
     // turned in to a list instead.
-    POTENTIAL_LIST_ELEMENTS : ["p", "div", "h1", "h2", "h3", "h4", "h5", "h6",
-        "pre", "blockquote", "td"],
+    POTENTIAL_LIST_ELEMENTS : [
+        "blockquote",
+        "div",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "p",
+        "pre",
+        "td"
+    ],
 
     // The elements that are allowed to have a table inserted after them or
     // within them.
-    POTENTIAL_TABLE_INSERT_ELEMENTS : ["p", "div", "h1",  "h2",  "h3", "h4",
-        "h5", "h6", "pre", "blockquote", "li"],
+    POTENTIAL_TABLE_INSERT_ELEMENTS : [
+        "blockquote",
+        "div",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "li",
+        "p",
+        "pre"
+    ],
 
     // The elements that are allowed to have a table inserted inline within
     // them.
-    INLINE_TABLE_INSERTION_ELEMENTS : ["li"],
+    INLINE_TABLE_INSERTION_ELEMENTS : [
+        "li"
+    ],
 
     // The elements used in tables that can be selected by the user by clicking
     // in them.
-    SELECTABLE_TABLE_ELEMENTS: ["td", "th", "caption"],
+    SELECTABLE_TABLE_ELEMENTS: [
+        "caption",
+        "td",
+        "th"
+    ],
 
     // Class for marking br elements used to space apart blocking elements in
     // the editor.
@@ -285,27 +442,29 @@ jQuery.extend(WYMeditor, {
 
     // Classes that will be removed from all tags' class attribute by the
     // parser.
-    CLASSES_REMOVED_BY_PARSER: ["apple-style-span"],
+    CLASSES_REMOVED_BY_PARSER: [
+        "apple-style-span"
+    ],
 
     // Keyboard mappings so that we don't have to remember that 38 means up
     // when reading keyboard handlers
     KEY : {
-        BACKSPACE: 8,
-        TAB: 9,
-        ENTER: 13,
-        CTRL: 17,
-        END: 35,
-        HOME: 36,
-        CURSOR: [37, 38, 39, 40],
-        LEFT: 37,
-        UP: 38,
-        RIGHT: 39,
-        DOWN: 40,
-        DELETE: 46,
         B: 66,
+        BACKSPACE: 8,
+        COMMAND: 224,
+        CTRL: 17,
+        CURSOR: [37, 38, 39, 40],
+        DELETE: 46,
+        DOWN: 40,
+        END: 35,
+        ENTER: 13,
+        HOME: 36,
         I: 73,
+        LEFT: 37,
         R: 82,
-        COMMAND: 224
+        RIGHT: 39,
+        TAB: 9,
+        UP: 38
     },
 
     // Key codes for the keys that can potentially create a block element when
@@ -321,8 +480,8 @@ jQuery.extend(WYMeditor, {
     ],
 
     EVENTS : {
-        'postIframeInitialization': 'wym-postIframeInitialization',
-        'postBlockMaybeCreated': 'wym-postBlockMaybeCreated'
+        'postBlockMaybeCreated': 'wym-postBlockMaybeCreated',
+        'postIframeInitialization': 'wym-postIframeInitialization'
     },
 
     // domNode.nodeType constants
@@ -358,16 +517,15 @@ jQuery.extend(WYMeditor, {
 
     */
     editor : function (elem, options) {
+        if (jQuery.getWymeditorByTextarea(elem[0])) {
+            throw "It seems that this textarea already belongs to a " +
+                "WYMeditor instance.";
+        }
         // Store the instance in the INSTANCES array and store the index
         this._index = WYMeditor.INSTANCES.push(this) - 1;
         // The element replaced by the editor
         this._element = elem;
         this._options = options;
-        // Store the element's inner value
-        if (!this._options.html) {
-            this._options.html = jQuery(elem).val();
-        }
-
         // Path to the WYMeditor core
         this._options.wymPath = this._options.wymPath ||
             WYMeditor.computeWymPath();
@@ -382,7 +540,7 @@ jQuery.extend(WYMeditor, {
             this._options.basePath + WYMeditor.IFRAME_DEFAULT;
 
         // Initialize the editor instance
-        this.init();
+        this._init();
     }
 });
 
@@ -760,6 +918,89 @@ jQuery.extend({
     }
 });
 
+jQuery.extend({
+    getWymeditorByTextarea: function (textarea) {
+        var i;
+        if (
+            !(
+                textarea &&
+                textarea.tagName &&
+                textarea.tagName.toLowerCase() === 'textarea'
+            )
+        ) {
+            throw "jQuery.getWymeditorByTextarea requires a textarea element.";
+        }
+        for (i = 0; i < WYMeditor.INSTANCES.length; i++) {
+            if (textarea === WYMeditor.INSTANCES[i]._element[0]) {
+                return WYMeditor.INSTANCES[i];
+            }
+        }
+        return false;
+    }
+});
+
+/**
+    jQuery.copyPropsFromObjectToObject
+    =====================================
+
+    General helper function that copies specified list of properties from a
+    specified origin object to a specified target object.
+
+    @param origin The origin object.
+    @param target The target object.
+    @param propNames An array of strings, representing the properties to copy.
+*/
+jQuery.extend({
+    copyPropsFromObjectToObject: function (origin, target, propNames) {
+        var i,
+            propName,
+            prop,
+            props = {};
+
+        for (i = 0; i < propNames.length; i++) {
+            propName = propNames[i];
+            prop = origin[propName];
+            props[propName] = prop;
+        }
+
+        jQuery.extend(target, props);
+    }
+});
+
+/**
+    WYMeditor.isInternetExplorerPre11
+    =================================
+
+    Returns true if the current browser is an Internet Explorer version
+    previous to 11. Otherwise, returns false.
+*/
+WYMeditor.isInternetExplorerPre11 = function () {
+    if (
+        jQuery.browser.msie &&
+        jQuery.browser.versionNumber < 11
+    ) {
+        return true;
+    }
+    return false;
+};
+
+/**
+    WYMeditor.isInternetExplorer11OrNewer
+    =====================================
+
+    Returns true if the current browser is an Internet Explorer version 11 or
+    newer. Otherwise, returns false.
+*/
+WYMeditor.isInternetExplorer11OrNewer = function () {
+    if (
+        jQuery.browser.msie &&
+        jQuery.browser.versionNumber >= 11
+    ) {
+        return true;
+    }
+    return false;
+};
+
 /**
     WYMeditor.computeWymPath
     ========================
@@ -859,7 +1100,7 @@ WYMeditor.computeJqueryPath = function () {
 
 WYMeditor.INIT_DIALOG = function (index) {
     var wym = window.opener.WYMeditor.INSTANCES[index],
-        selected = wym.selected(),
+        selected = wym.selectedContainer(),
         dialogType = jQuery(wym._options.dialogTypeSelector).val(),
         sStamp = wym.uniqueStamp(),
         tableOnClick;
@@ -991,7 +1232,7 @@ WYMeditor.MAKE_TABLE_ONCLICK = function (wym) {
 
 // Returns true if it is a text node with whitespaces only
 jQuery.fn.isPhantomNode = function () {
-    if (this[0].nodeType === 3) {
+    if (this[0].nodeType === WYMeditor.NODE.TEXT) {
         return !(/[^\t\n\r ]/.test(this[0].data));
     }
 
@@ -1100,7 +1341,7 @@ jQuery.fn.prevAllContents = function () {
 };
 
 WYMeditor.isPhantomNode = function (n) {
-    if (n.nodeType === 3) {
+    if (n.nodeType === WYMeditor.NODE.TEXT) {
         return !(/[^\t\n\r ]/.test(n.data));
     }
 
@@ -1114,17 +1355,20 @@ WYMeditor.isPhantomString = function (str) {
 // Returns the Parents or the node itself
 // jqexpr = a jQuery expression
 jQuery.fn.parentsOrSelf = function (jqexpr) {
-    var n = this;
+    var $n = this,
+        addBackName;
 
-    if (n[0].nodeType === 3) {
-        n = n.parents().slice(0, 1);
+    if (jQuery.fn.addBack) {
+        addBackName = 'addBack';
+    } else {
+        // `andSelf` is deprecated.
+        addBackName = 'andSelf';
     }
 
-//  if (n.is(jqexpr)) // XXX should work, but doesn't (probably a jQuery bug)
-    if (n.filter(jqexpr).size() === 1) {
-        return n;
+    if (jqexpr) {
+        return $n.parents()[addBackName](jqexpr);
     } else {
-        return n.parents(jqexpr).slice(0, 1);
+        return $n.parents()[addBackName]();
     }
 };
 
@@ -1214,5 +1458,3 @@ WYMeditor.Helper = {
         return null;
     }
 };
-
-

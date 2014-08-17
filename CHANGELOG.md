@@ -3,9 +3,71 @@
 This document tracks the enhancements and bug fixes between releases of
 WYMeditor.
 
-## 1.0.0b6 (Beta 6)
+## 1.0.0b8 (Beta 8)
 
 *release-date* TBD
+
+### Enhancements
+
+* A new helper function in the form of a jQuery plugin,
+  ``jQuery.copyPropsFromObjectToObject``. It copies specified properties from
+  an object to another.
+* An example for the table editing plugin.
+
+### Bug Fixes
+
+* Some fixes in Internet Explorer 11’s initialization, bug fixes and tests.
+* [#563](https://github.com/wymeditor/wymeditor/pull/563)-clicking on some UI
+  Elements, including anything that was added by plugins, caused loss of focus
+  and selection in IE8.
+
+### Backwards-Incompatible Changes
+
+* The jQuery.browser plugin was introduced as a dependency, even for jQuery
+  versions from before its removal. That is, all jQuery version. It matters
+  because the ``jQuery.browser`` that is in old jQuery versions thinks that
+  IE11 is Mozilla (can’t blame it, really).
+* jQuery-migrate is no longer required at all.
+
+### Development Process Improvements
+
+* [#547](https://github.com/wymeditor/wymeditor/pull/547/)-
+  Downgraded our jshint version to 2.4.4
+  so that we still get whitespace/indentation warnings.
+  jshint 2.5.0 [dropped support](https://github.com/jshint/jshint/issues/1677)
+  for those warnings,
+  despite them being super useful for code style consistency.
+* Frontend package management (with Bower) is now automatic, via the task
+  runner, Grunt.
+* Failing tests in IE11 were fixed.
+
+## 1.0.0b7 (Beta 7): De-listing
+
+*release-date* June 30, 2014
+
+### Enhancements
+
+* Hooray de-listing! It's taken a while to get here, but you can now remove
+  items from lists by hitting the "ordered list" or "unordered list" buttons
+  when you have list items selected. No more getting stuck in list land, a land
+  from whence there is no escape!
+
+### Backwards-Incompatible Changes
+
+* Since Beta 6, `WYMeditor.editor.selected` and `WYMeditor.editor.container`
+  were replaced with `WYMeditor.editor.selectedContainer` and
+  `WYMeditor.editor.mainContainer`, respectively. This was done without
+  properly deprecating them. The old functions were removed. In this beta
+  release, the old functions are re-introduced as wrappers of the new functions
+  and they produce deprecation warnings.
+  [##538](https://github.com/wymeditor/wymeditor/issues/538)
+* `WYMeditor.editor.switchTo` no longer sets the caret into the
+  switched element by default.
+  [#540](https://github.com/wymeditor/wymeditor/pull/540)
+
+## 1.0.0b6 (Beta 6)
+
+*release-date* June 10, 2014
 
 ### Bring your own CSS: Backwards-Incompatible Changes
 
@@ -42,6 +104,16 @@ All of these changes are documented in detail in the
   editor if the list contained `p` or `div` elements, so unwrapping the content
   of those containers and preserving the content spacing with line breaks is a
   much more stable way to have editable content within lists.
+* We now include a translation file for traditional Chinese (`zh_tw`). Thanks
+  to Arthur CHAN for his first contribution.
+* [#500](https://github.com/wymeditor/wymeditor/issues/500) For developers the
+  HTML comparisons in failed unit tests are now also displayed as beautified
+  HTML!
+* [#496](https://github.com/wymeditor/wymeditor/pull/496) For developers,
+  skipping the parser in unit tests has been standardized.
+* A new selection getting and setting API.
+  [#513](https://github.com/wymeditor/wymeditor/pull/513),
+  [#523](https://github.com/wymeditor/wymeditor/pull/523)
 
 ### Bug Fixes
 
@@ -54,6 +126,23 @@ All of these changes are documented in detail in the
 * 1.0.0b5 introduced a regression bug which allowed `br` tags to exist at the
   document root, even after parsing. This is no longer the case.
   [#431](https://github.com/wymeditor/wymeditor/issues/431)
+* IE8 has a bug in `designMode`, where it breaks lists under certain
+  circumstance. [#446](https://github.com/wymeditor/wymeditor/issues/446). This
+  is now properly handled.
+* [#517](https://github.com/wymeditor/wymeditor/pull/517) Fixed a bug regarding
+  self-closing tags in our editor Iframes.
+* After an enter press in an empty, nested, `li`, browsers produced various
+  undesired results. This is now fixed. Caveat: there is still some
+  inconsistency amongst browsers, as in some a new `li` is produced and in
+  others a new `br`.
+  [#430](https://github.com/wymeditor/wymeditor/issues/430)
+* When batch-initializing editors without an explicit initial HTML, the value
+  of the first editor’s textarea that was non-empty was used as the initial
+  value for all of the following editors. This is now fixed; each editor is
+  initialized with its own textarea’s value.
+  [#437](https://github.com/wymeditor/wymeditor/pull/437)
+* Fixed a layout bug in the seamless skin.
+  [#445](https://github.com/wymeditor/wymeditor/pull/445)
 
 ### Infrastructure Improvements
 

@@ -1,5 +1,4 @@
 /* jshint maxlen: 90 */
-/* global -$, rangy */
 "use strict";
 
 // In case the script is included on a page without WYMeditor, define the
@@ -169,15 +168,16 @@ StructuredHeadingsManager.prototype.createUI = function () {
 StructuredHeadingsManager.prototype.bindEvents = function () {
     var headingManager = this,
         wym = this._wym,
-        $box = jQuery(wym._box);
+        $box = jQuery(wym._box),
+        sel;
 
     // Bind click events to tool buttons
     $box.find(this._options.headingOutdentToolSelector).click(function () {
-        var sel = rangy.getIframeSelection(wym._iframe);
+        sel = wym.selection();
         headingManager.changeSelectedHeadingsLevel(sel, "up");
     });
     $box.find(this._options.headingIndentToolSelector).click(function () {
-        var sel = rangy.getIframeSelection(wym._iframe);
+        sel = wym.selection();
         headingManager.changeSelectedHeadingsLevel(sel, "down");
     });
     if (this._options.enableFixHeadingStructureButton) {
@@ -188,8 +188,7 @@ StructuredHeadingsManager.prototype.bindEvents = function () {
 
     // Bind click event to the new single heading link
     $box.find(this._options.headingContainerPanelSelector).click(function () {
-        var container = wym.findUp(wym.container(), WYMeditor.MAIN_CONTAINERS);
-        headingManager.switchToHeading(container);
+        headingManager.switchToHeading(wym.mainContainer());
     });
 };
 

@@ -1,6 +1,6 @@
-/* exported isContentEditable, simulateKey, htmlEquals,
+/* exported isContentEditable, simulateKey, wymEqual,
  makeTextSelection, moveSelector */
-/* global rangy, deepEqual */
+/* global rangy, deepEqual, html_beautify, expect, QUnit, strictEqual */
 "use strict";
 
 // Regex expression shortcuts
@@ -22,7 +22,18 @@ var ignoreAttributes = [
     ['_wym_visited'],
     ['sizset'],
     ['tabindex'],
-    ['rowspan', ['1']]
+    ['rowspan', ['1']],
+    // The following 10 mouse and keyboard events were found on IE7.
+    ['onclick'],
+    ['ondblclick'],
+    ['onkeydown'],
+    ['onkeypress'],
+    ['onkeyup'],
+    ['onmousedown'],
+    ['onmousemove'],
+    ['onmouseout'],
+    ['onmouseover'],
+    ['onmouseup']
 ];
 
 /**
@@ -31,7 +42,10 @@ var ignoreAttributes = [
 function textToHtml(str) {
     return str.replace(preAmp, '&amp;')
         .replace(preLt, '&lt;')
-        .replace(preGt, '&gt;');
+        .replace(preGt, '&gt;')
+        // IE7 and IE8 produce carriage returns instead of newlines. Replace
+        // them with newlines.
+        .replace(/\r/g, '\n');
 }
 
 function attribToHtml(str) {
@@ -88,7 +102,7 @@ function normalizeHtml(node) {
             for (i = n; --i >= 0;) {
                 attr = attrs[i];
                 attrName = attr.nodeName.toLowerCase();
-                attrValue = attr.nodeValue;
+                attrValue = attr.value;
                 keepAttr = true;
 
                 // We only care about specified attributes
@@ -138,7 +152,7 @@ function normalizeHtml(node) {
         }
         if (name === "br" || name === "img" || name === "link") {
             // close self-closing element
-            html += '/>';
+            html += ' />';
         } else {
             html += '>';
         }
@@ -160,40 +174,61 @@ function normalizeHtml(node) {
     return html;
 }
 
+// Options for the HTML beautifier.
+var htmlBeautifyOptions = {
+    'indent_inner_html': false,
+    'indent_size': 4,
+    'indent_car': ' ',
+    'wrap_line_length': 300,
+    'brace_style': 'collapse',
+    'unformatted': 'normal',
+    'preserve_newlines': true,
+    'max_preserve_newlines': 'unlimited',
+    'indent_handlebars': false
+};
+
 /**
-* Ensure the cleaned xhtml coming from a WYMeditor instance matches the
-* expected HTML, accounting for differing whitespace and attribute ordering.
+* Compares between the HTML in a WYMeditor instance and expected HTML.
 *
-* assertionString is the string message printed with the result of the
-* assertion checking this matching. This parameter is optional.
+* The HTML from the WYMeditor instance can be fetched either using the
+* normal method, `.xhtml`, or, it can be fetched directly from the DOM, which
+* bypasses the XHTML parser.
 *
-* fixListSpacing is a boolean that specifies if leading spaces before line
-* breaks and list type elements should be removed in older versions of Internet
-* Explorer (i.e. IE7-8). Defaults to false.
+* If the compared HTML strings are found to be different, a comparison is made
+* also between beautified versions of them.
 */
-function htmlEquals(wymeditor, expected, assertionString, fixListSpacing) {
-    var xhtml = '',
+function wymEqual(wymeditor, expected, options) {
+    var defaults = {
+            // The message printed with the result of the assertion checking
+            // this matching.
+            assertionString: null,
+            // A boolean that specifies whether leading spaces before line
+            // breaks and list type elements should be removed in old versions
+            // of Internet Explorer (i.e. IE7,8).
+            fixListSpacing: false,
+            skipParser: false
+        },
         normedActual = '',
-        normedExpected = '',
         listTypeOptions,
         tmpNodes,
         i;
-    xhtml = jQuery.trim(wymeditor.xhtml());
-    if (xhtml === '') {
-        // In jQuery 1.2.x, jQuery('') returns an empty list, so we can't call
-        // normalizeHTML. On 1.3.x or higher upgrade, we can remove this
-        // check for the empty string
-        deepEqual(xhtml, expected, assertionString);
-        return;
-    }
 
-    tmpNodes = jQuery(xhtml, wymeditor._doc);
+    options = jQuery.extend({}, defaults, options);
+
+    if (options.skipParser) {
+        tmpNodes = jQuery(wymeditor._doc).find('body.wym_iframe').contents();
+    } else {
+        tmpNodes = jQuery(wymeditor.xhtml());
+    }
 
     for (i = 0; i < tmpNodes.length; i++) {
         normedActual += normalizeHtml(tmpNodes[i]);
     }
-    if (fixListSpacing && jQuery.browser.msie &&
-            parseInt(jQuery.browser.version, 10) < 9.0) {
+    if (
+        options.fixListSpacing &&
+        jQuery.browser.msie &&
+        jQuery.browser.versionNumber < 9
+    ) {
         normedActual = normedActual.replace(/\s(<br.*?\/>)/g, '$1');
 
         listTypeOptions = WYMeditor.LIST_TYPE_ELEMENTS.join('|');
@@ -203,12 +238,26 @@ function htmlEquals(wymeditor, expected, assertionString, fixListSpacing) {
         );
     }
 
-    tmpNodes = jQuery(expected, wymeditor._doc);
-    for (i = 0; i < tmpNodes.length; i++) {
-        normedExpected += normalizeHtml(tmpNodes[i]);
+    // Assert: compare between normalized actual HTML and expected HTML.
+    strictEqual(normedActual, expected, options.assertionString);
+    // If the last assertion failed:
+    if (QUnit.config.current
+        .assertions[QUnit.config.current.assertions.length - 1]
+        .result === false) {
+        // If assertions are expected:
+        if (expect()) {
+            // Increment the number of expected assertions by one. This allows
+            // tests to treat this wymEqual helper as if it was one assertion.
+            expect(expect() + 1);
+        }
+        // Assert also on beautified HTML.
+        strictEqual(
+            /* jshint camelcase: false */
+            html_beautify(normedActual, htmlBeautifyOptions),
+            html_beautify(expected, htmlBeautifyOptions),
+            options.assertionString + ' (beautified)'
+        );
     }
-
-    deepEqual(normedActual, normedExpected, assertionString);
 }
 
 function makeSelection(
@@ -224,7 +273,7 @@ function makeSelection(
         // might be something that rangy can handle.
         endElementIndex = 1;
     }
-    var sel = rangy.getIframeSelection(wymeditor._iframe),
+    var sel = wymeditor.selection(),
         range = rangy.createRange(wymeditor._doc);
 
     range.setStart(startElement, startElementIndex);
@@ -242,8 +291,8 @@ function makeSelection(
     // We need to handle internet explorer selection differently
     sel.setSingleRange(range);
 
-    // IE selection hack
-    if (jQuery.browser.msie) {
+    // Old IE selection hack
+    if (WYMeditor.isInternetExplorerPre11()) {
         wymeditor.saveCaret();
     }
 }
@@ -292,21 +341,45 @@ function makeTextSelection(
 
 
 /*
-* Move the selection to the start of the given element within the editor.
+* Set a collapsed selection at and, if possible, before `selecteNode`
 */
-function moveSelector(wymeditor, selectedElement) {
-    if (selectedElement.tagName.toLowerCase() === 'span') {
-        // Hack to make span element selections work outside of FF. Webkit and
-        // IE select the node before the span if you try a collapsed selection
-        // on a span node.
-        // Should probably be doing block vs inline detection here instead of
-        // hardcoding detection for a span element
-        makeSelection(wymeditor, selectedElement, selectedElement, 0, 1);
-    } else {
-        makeSelection(wymeditor, selectedElement, selectedElement, 0, 0);
+function moveSelector(wymeditor, selectedNode) {
+    // This function was rewritten. Some of the existing callers were expecting
+    // assertions and others were not. Next line handles this gracefully.
+    if (expect()) {
+        expect(expect() - 1);
     }
 
-    deepEqual(wymeditor.selected(), selectedElement, "moveSelector");
+    if (
+        wymeditor.canSetCaretIn(selectedNode)
+    ) {
+        wymeditor.setCaretIn(selectedNode);
+
+        if (expect()) {
+            expect(expect() + 1);
+        }
+
+        deepEqual(
+            wymeditor.selectedContainer(),
+            selectedNode,
+            "selected is after caret."
+        );
+    }
+
+    if (wymeditor.canSetCaretBefore(selectedNode)) {
+
+        wymeditor.setCaretBefore(selectedNode);
+
+        if (expect()) {
+            expect(expect() + 1);
+        }
+
+        deepEqual(
+            wymeditor.nodeAfterSel(),
+            selectedNode,
+            "selected is after caret."
+        );
+    }
 }
 
 

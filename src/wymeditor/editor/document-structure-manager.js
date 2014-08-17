@@ -232,7 +232,7 @@ WYMeditor.DocumentStructureManager.prototype.adjustDefaultRootContainerUI = func
 
         // Bind click event for the new link
         $newContainerItem.find('a').click(function () {
-            wym.container(jQuery(this).attr(WYMeditor.NAME));
+            wym.mainContainer(jQuery(this).attr(WYMeditor.NAME));
             return false;
         });
     }

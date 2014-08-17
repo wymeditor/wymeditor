@@ -2,42 +2,22 @@
 /* global -$ */
 "use strict";
 
-WYMeditor.WymClassMozilla = function (wym) {
+WYMeditor.WymClassGecko = function (wym) {
     this._wym = wym;
     this._class = "class";
 };
 
 // Placeholder cell to allow content in TD cells for FF 3.5+
-WYMeditor.WymClassMozilla.CELL_PLACEHOLDER = '<br _moz_dirty="" />';
+WYMeditor.WymClassGecko.CELL_PLACEHOLDER = '<br _moz_dirty="" />';
 
 // Firefox 3.5 and 3.6 require the CELL_PLACEHOLDER and 4.0 doesn't
-WYMeditor.WymClassMozilla.NEEDS_CELL_FIX = parseInt(
+WYMeditor.WymClassGecko.NEEDS_CELL_FIX = parseInt(
     jQuery.browser.version, 10) === 1 &&
     jQuery.browser.version >= '1.9.1' &&
     jQuery.browser.version < '2.0';
 
-WYMeditor.WymClassMozilla.prototype.initIframe = function (iframe) {
+WYMeditor.WymClassGecko.prototype._docEventQuirks = function () {
     var wym = this;
-
-    this._iframe = iframe;
-    this._doc = iframe.contentDocument;
-
-    this._doc.title = this._wym._index;
-
-    // Set the text direction
-    jQuery('html', this._doc).attr('dir', this._options.direction);
-
-    // Init html value
-    this._html(this._wym._options.html);
-
-    this.enableDesignMode();
-
-    if (jQuery.isFunction(this._options.preBind)) {
-        this._options.preBind(this);
-    }
-
-    // Bind external events
-    this._wym.bindEvents();
 
     jQuery(this._doc).bind("keydown", this.keydown);
     jQuery(this._doc).bind("keyup", this.keyup);
@@ -45,30 +25,20 @@ WYMeditor.WymClassMozilla.prototype.initIframe = function (iframe) {
     // Bind editor focus events (used to reset designmode - Gecko bug)
     jQuery(this._doc).bind("focus", function () {
         // Fix scope
-        wym.enableDesignMode.call(wym);
+        wym._enableDesignModeOnIframe.call(wym);
     });
-
-    if (jQuery.isFunction(this._options.postInit)) {
-        this._options.postInit(this);
-    }
-
-    // Add event listeners to doc elements, e.g. images
-    this.listen();
-
-    jQuery(wym._element).trigger(
-        WYMeditor.EVENTS.postIframeInitialization,
-        this._wym
-    );
 };
 
 /** @name html
  * @description Get/Set the html value
  */
-WYMeditor.WymClassMozilla.prototype._html = function (html) {
+WYMeditor.WymClassGecko.prototype._html = function (html) {
+    var wym = this;
+
     if (typeof html === 'string') {
         //disable designMode
         try {
-            this._doc.designMode = "off";
+            wym._doc.designMode = "off";
         } catch (e) {
             //do nothing
         }
@@ -81,19 +51,19 @@ WYMeditor.WymClassMozilla.prototype._html = function (html) {
         html = html.replace(/<\/strong>/gi, "</b>");
 
         //update the html body
-        jQuery(this._doc.body).html(html);
-        this._wym.fixBodyHtml();
+        jQuery(wym._doc.body).html(html);
+        wym._wym.fixBodyHtml();
 
         //re-init designMode
-        this.enableDesignMode();
+        wym._enableDesignModeOnIframe();
     } else {
-        return jQuery(this._doc.body).html();
+        return jQuery(wym._doc.body).html();
     }
     return false;
 };
 
-WYMeditor.WymClassMozilla.prototype._exec = function (cmd, param) {
-    if (!this.selected()) {
+WYMeditor.WymClassGecko.prototype._exec = function (cmd, param) {
+    if (!this.selectedContainer()) {
         return false;
     }
 
@@ -104,7 +74,7 @@ WYMeditor.WymClassMozilla.prototype._exec = function (cmd, param) {
     }
 
     //set to P if parent = BODY
-    var container = this.selected();
+    var container = this.selectedContainer();
     if (container && container.tagName.toLowerCase() === WYMeditor.BODY) {
         this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
         this.fixBodyHtml();
@@ -114,7 +84,7 @@ WYMeditor.WymClassMozilla.prototype._exec = function (cmd, param) {
 };
 
 //keydown handler, mainly used for keyboard shortcuts
-WYMeditor.WymClassMozilla.prototype.keydown = function (evt) {
+WYMeditor.WymClassGecko.prototype.keydown = function (evt) {
     //'this' is the doc
     var wym = WYMeditor.INSTANCES[this.title];
 
@@ -135,7 +105,7 @@ WYMeditor.WymClassMozilla.prototype.keydown = function (evt) {
 };
 
 // Keyup handler, mainly used for cleanups
-WYMeditor.WymClassMozilla.prototype.keyup = function (evt) {
+WYMeditor.WymClassGecko.prototype.keyup = function (evt) {
     // 'this' is the doc
     var wym = WYMeditor.INSTANCES[this.title],
         container,
@@ -159,7 +129,7 @@ WYMeditor.WymClassMozilla.prototype.keyup = function (evt) {
             !evt.metaKey &&
             !evt.ctrlKey) {
 
-        container = wym.selected();
+        container = wym.selectedContainer();
         name = container.tagName.toLowerCase();
         if (container.parentNode) {
             parentName = container.parentNode.tagName.toLowerCase();
@@ -187,7 +157,7 @@ WYMeditor.WymClassMozilla.prototype.keyup = function (evt) {
     if (wym.keyCanCreateBlockElement(evt.which)) {
         // If the selected container is a root container, make sure it is not a
         // different possible default root container than the chosen one.
-        container = wym.selected();
+        container = wym.selectedContainer();
         name = container.tagName.toLowerCase();
         if (container.parentNode) {
             parentName = container.parentNode.tagName.toLowerCase();
@@ -197,22 +167,25 @@ WYMeditor.WymClassMozilla.prototype.keyup = function (evt) {
             wym._exec(WYMeditor.FORMAT_BLOCK, defaultRootContainer);
         }
 
+        // Call for the check for--and possible correction of--issue #430.
+        wym.handlePotentialEnterInEmptyNestedLi(evt.which, container);
+
         // Fix formatting if necessary
         wym.fixBodyHtml();
     }
 };
 
-WYMeditor.WymClassMozilla.prototype.click = function () {
+WYMeditor.WymClassGecko.prototype.click = function () {
     var wym = WYMeditor.INSTANCES[this.title],
-        container = wym.selected(),
+        container = wym.selectedContainer(),
         sel;
 
-    if (WYMeditor.WymClassMozilla.NEEDS_CELL_FIX === true) {
+    if (WYMeditor.WymClassGecko.NEEDS_CELL_FIX === true) {
         if (container && container.tagName.toLowerCase() === WYMeditor.TR) {
             // Starting with FF 3.6, inserted tables need some content in their
             // cells before they're editable
             jQuery(WYMeditor.TD, wym._doc.body).append(
-                WYMeditor.WymClassMozilla.CELL_PLACEHOLDER);
+                WYMeditor.WymClassGecko.CELL_PLACEHOLDER);
 
             // The user is still going to need to move out of and then back in
             // to this cell if the table was inserted via an inner_html call
@@ -227,7 +200,7 @@ WYMeditor.WymClassMozilla.prototype.click = function () {
     if (container && container.tagName.toLowerCase() === WYMeditor.BODY) {
         // A click in the body means there is no content at all, so we
         // should automatically create a starter paragraph
-        sel = wym._iframe.contentWindow.getSelection();
+        sel = wym.selection();
         if (sel.isCollapsed === true) {
             // If the selection isn't collapsed, we might have a selection that
             // drags over the body, but we shouldn't turn everything in to a
@@ -238,7 +211,7 @@ WYMeditor.WymClassMozilla.prototype.click = function () {
     }
 };
 
-WYMeditor.WymClassMozilla.prototype.enableDesignMode = function () {
+WYMeditor.WymClassGecko.prototype._enableDesignModeOnIframe = function () {
     if (this._doc.designMode === "off") {
         try {
             this._doc.designMode = "on";
@@ -252,14 +225,13 @@ WYMeditor.WymClassMozilla.prototype.enableDesignMode = function () {
  * Fix new cell contents and ability to insert content at the front and end of
  * the contents.
  */
-WYMeditor.WymClassMozilla.prototype.afterInsertTable = function (table) {
-    if (WYMeditor.WymClassMozilla.NEEDS_CELL_FIX === true) {
+WYMeditor.WymClassGecko.prototype.afterInsertTable = function (table) {
+    if (WYMeditor.WymClassGecko.NEEDS_CELL_FIX === true) {
         // In certain FF versions, inserted tables need some content in their
         // cells before they're editable, otherwise the user has to move focus
         // in and then out of a cell first, even with our click() hack
         jQuery(table).find('td').each(function (index, element) {
-            jQuery(element).append(WYMeditor.WymClassMozilla.CELL_PLACEHOLDER);
+            jQuery(element).append(WYMeditor.WymClassGecko.CELL_PLACEHOLDER);
         });
     }
 };
-

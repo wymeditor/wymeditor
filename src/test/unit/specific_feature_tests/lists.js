@@ -1,11 +1,527 @@
 /* jshint camelcase: false, maxlen: 105 */
-/* global setupWym, SKIP_KNOWN_FAILING_TESTS,
-htmlEquals, makeTextSelection, moveSelector, simulateKey, normalizeHtml,
+/* global
+SKIP_KNOWN_FAILING_TESTS, is_double_br_browser, prepareUnitTestModule,
+wymEqual, makeTextSelection, moveSelector, simulateKey, strictEqual,
 makeSelection,
 ok, test, expect, deepEqual */
 "use strict";
 
-module("list-indent_outdent", {setup: setupWym});
+module("list-_getSelectedListItems", {setup: prepareUnitTestModule});
+
+var getSelectedListItemsHtml = [""
+    , '<ul id="0">'
+        , '<li id="0-0">'
+            , '0-0-0'
+        , '</li>'
+        , '<li id="0-1">'
+            , '0-1-0'
+            , '<br id="0-1-1" />'
+            , '0-1-2'
+        , '</li>'
+        , '<li id="0-2">'
+            , '0-2-0'
+        , '</li>'
+        , '<li id="0-3">'
+            , '<ol id="0-3-0">'
+                , '<li id="0-3-0-0">'
+                    , '0-3-0-0-0'
+                , '</li>'
+                , '<li id="0-3-0-1">'
+                    , '0-3-0-1-0'
+                    , '<ol id="0-3-0-1-1">'
+                        , '<li id="0-3-0-1-1-0">'
+                            , '<span id="0-3-0-1-1-0-0">'
+                                , '0-3-0-1-1-0-0-0'
+                                , '<br id="0-3-0-1-1-0-0-1">'
+                                , '0-3-0-1-1-0-0-2'
+                            , '</span>'
+                        , '</li>'
+                    , '</ol>'
+                , '</li>'
+            , '</ol>'
+        , '</li>'
+    , '</ul>'
+    , '<ol id="1">'
+        , '<li id="1-1">'
+            , '1-1-0'
+        , '</li>'
+        , '<li id="1-2">'
+            , '1-2-0'
+            , '<ul id="1-2-1">'
+                , '<li id="1-2-1-1">'
+                    , '1-2-1-1-0'
+                , '</li>'
+            , '</ul>'
+            , '1-2-1'
+        , '</li>'
+        , '<li id="1-3">'
+            , '1-3-0'
+        , '</li>'
+        , '<li id="1-4">'
+            , '1-4-0'
+        , '</li>'
+    , '</ol>'
+    , '<ol id="2">'
+        , '<li id="2-0">'
+            , '2-0-0'
+        , '</li>'
+        , '<li id="2-1">'
+            , '2-1-0'
+        , '</li>'
+        , '<li id="2-2">'
+        , '</li>'
+        , '<li id="2-3">'
+            , '2-3-0'
+            , '<ol id="2-3-1">'
+                , '<li id="2-3-1-0">'
+                    , '2-3-1-0-0'
+                , '</li>'
+                , '<li id="2-3-1-1">'
+                , '</li>'
+            , '</ol>'
+            , '2-3-2'
+        , '</li>'
+        , '<li id="2-4">'
+            , '2-4-0'
+            , '<table id="2-4-1">'
+                , '<tbody id="2-4-1-0">'
+                    , '<tr id="2-4-1-0-0">'
+                        , '<td id="2-4-1-0-0-0">'
+                            , '2-4-1-0-0-0-0'
+                        , '</td>'
+                        , '<td id="2-4-1-0-0-1">'
+                            , '2-4-1-0-0-1-0'
+                            , '<ul id="2-4-1-0-0-1-1">'
+                                , '<li id="2-4-1-0-0-1-1-0">'
+                                    , '2-4-1-0-0-1-1-0-0'
+                                , '</li>'
+                                , '<li id="2-4-1-0-0-1-1-1">'
+                                    , '2-4-1-0-0-1-1-1-0'
+                                , '</li>'
+                            , '</ul>'
+                        , '</td>'
+                    , '</tr>'
+                , '</tbody>'
+            , '</table>'
+        , '</li>'
+        , '<li id="2-5">'
+            , '2-5-0'
+        , '</li>'
+    , '</ol>'
+].join('');
+
+/**
+    testGetSelectedListItems
+
+    This is a helper function for testing the
+    WYMeditor.editor._getSelectedListItems method.
+
+    It works by being provided a description of a selection to perform and a
+    list ids of of list items which are expected to be returned by the tested
+    method.
+
+    @param startElementId The `id` of the element in which the selection will
+                              start.
+    @param startIndex Index of node inside the above list item, with which
+                      the selection will start.
+    @param endElementId Opposite of startLiId.
+    @param endIndex Opposite of startLiIndex.
+    @param expectedLisIds0 Array of `id`s of list items which are expected to
+                           be returned from `_getSelectedListItems`.
+    @param expectedLisIds1 An acceptable variation.
+    @param expectedLisIds2 Another acceptable variation.
+*/
+function testGetSelectedListItems(
+    startElementId,
+    startIndex,
+    endElementId,
+    endIndex,
+    expectedLisIds0,
+    expectedLisIds1,
+    expectedLisIds2
+) {
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        startElement,
+        endElement,
+        assertStrSelection;
+
+    function getSelectedLisIds() {
+        var sel = wymeditor.selection();
+
+        return jQuery.makeArray(
+            jQuery(wymeditor._getSelectedListItems(sel)).map(function () {
+                return this.getAttribute('id');
+            })
+        );
+    }
+
+    wymeditor._html(getSelectedListItemsHtml);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+    expect(1);
+
+    startElement = $body.find('#' + startElementId)[0];
+    endElement = $body.find('#' + endElementId)[0];
+    assertStrSelection =
+        'from li#' + startElementId + '@' + startIndex +
+        ' to li#' + endElementId + '@' + endIndex;
+
+    makeSelection(
+        wymeditor,
+        startElement,
+        endElement,
+        startIndex,
+        endIndex
+    );
+    ok(
+        getSelectedLisIds().toString() === expectedLisIds0.toString() ||
+        getSelectedLisIds().toString() === expectedLisIds1.toString() ||
+        getSelectedLisIds().toString() === expectedLisIds2.toString(),
+        assertStrSelection
+    );
+}
+
+test("Single, top level, caret at start", function () {
+    testGetSelectedListItems(
+        '0-0', 0,
+        '0-0', 0,
+        ['0-0']
+    );
+});
+
+test("Single, top level, caret at end", function () {
+    testGetSelectedListItems(
+        '0-0', 1,
+        '0-0', 1,
+        ['0-0']
+    );
+});
+
+test("Single, top level, whole selection", function () {
+    testGetSelectedListItems(
+        '0-0', 0,
+        '0-0', 1,
+        ['0-0']
+    );
+});
+
+test("Single, top level, partial selection at start", function () {
+    testGetSelectedListItems(
+        '0-1', 0,
+        '0-1', 1,
+        ['0-1']
+    );
+});
+
+test("Single, top level, partial selection at end", function () {
+    testGetSelectedListItems(
+        '0-1', 2,
+        '0-1', 3,
+        ['0-1']
+    );
+});
+
+test("Single, second level, caret at start", function () {
+    testGetSelectedListItems(
+        '0-3-0-0', 0,
+        '0-3-0-0', 0,
+        ['0-3-0-0']
+    );
+});
+
+test("Single, third level, caret at start", function () {
+    testGetSelectedListItems(
+        '0-3-0-0', 0,
+        '0-3-0-0', 0,
+        ['0-3-0-0']
+    );
+});
+
+test("Single, third level, caret at start, inside child", function () {
+    testGetSelectedListItems(
+        '0-3-0-1-1-0-0', 0,
+        '0-3-0-1-1-0-0', 0,
+        ['0-3-0-1-1-0']
+    );
+});
+
+test("Single, third level, partial selection at start, inside child",
+    function () {
+    testGetSelectedListItems(
+        '0-3-0-1-1-0-0', 0,
+        '0-3-0-1-1-0-0', 1,
+        ['0-3-0-1-1-0']
+    );
+});
+
+test("Single, third level, partial selection at end, inside child",
+    function () {
+    testGetSelectedListItems(
+        '0-3-0-1-1-0-0', 2,
+        '0-3-0-1-1-0-0', 3,
+        ['0-3-0-1-1-0']
+    );
+});
+
+test("Single, third level, caret at end, inside child", function () {
+    testGetSelectedListItems(
+        '0-3-0-1-1-0-0', 3,
+        '0-3-0-1-1-0-0', 3,
+        ['0-3-0-1-1-0']
+    );
+});
+
+test("Across two, top level, selection from start to end", function () {
+    testGetSelectedListItems(
+        '0-0', 0,
+        '0-1', 3,
+        ['0-0', '0-1']
+    );
+});
+
+test("Across two, top level, selection from end to end", function () {
+    testGetSelectedListItems(
+        '0-0', 1,
+        '0-1', 3,
+        ['0-0', '0-1'],
+        ['0-1']
+    );
+});
+
+test("Across three, top level, selection from start to end", function () {
+    testGetSelectedListItems(
+        '0-0', 0,
+        '0-2', 1,
+        ['0-0', '0-1', '0-2']
+    );
+});
+
+test("Across three, top level, selection from end to end", function () {
+    testGetSelectedListItems(
+        '0-0', 1,
+        '0-2', 1,
+        ['0-0', '0-1', '0-2'],
+        ['0-1', '0-2']
+    );
+});
+
+test("In range selections, don't select items in which, directly, there is " +
+    "no text selection", function () {
+    testGetSelectedListItems(
+        '0-2', 0,
+        '0-3-0-0', 1,
+        ['0-2', '0-3-0-0']
+    );
+});
+
+test("Across five, across levels, selection from start to start", function () {
+    testGetSelectedListItems(
+        '0-2', 0,
+        '0-3-0-1-1-0', 0,
+        ['0-2', '0-3-0-0', '0-3-0-1']
+    );
+});
+
+test("Across five, across levels, selection from start to end", function () {
+    testGetSelectedListItems(
+        '0-2', 0,
+        '0-3-0-1-1-0', 1,
+        ['0-2', '0-3-0-0', '0-3-0-1', '0-3-0-1-1-0']
+    );
+});
+
+test("Across five, across levels, selection from end to start", function () {
+    testGetSelectedListItems(
+        '0-2', 1,
+        '0-3-0-1-1-0', 0,
+        ['0-2', '0-3-0-0', '0-3-0-1'],
+        ['0-3-0-0', '0-3-0-1']
+    );
+});
+
+test("Across five, across levels, selection from start to start, inside child",
+    function () {
+    testGetSelectedListItems(
+        '0-2', 0,
+        '0-3-0-1-1-0-0', 0,
+        ['0-2', '0-3-0-0', '0-3-0-1'],
+        ['0-2', '0-3-0-0', '0-3-0-1', '0-3-0-1-1-0']
+    );
+});
+
+test("Across five, across levels, selection from start to somewhere, inside " +
+    "child", function () {
+    testGetSelectedListItems(
+        '0-2', 0,
+        '0-3-0-1-1-0-0', 1,
+        ['0-2', '0-3-0-0', '0-3-0-1', '0-3-0-1-1-0']
+    );
+});
+
+test("Across five, across levels, selection from start to end, inside child",
+    function () {
+    testGetSelectedListItems(
+        '0-2', 0,
+        '0-3-0-1-1-0-0', 3,
+        ['0-2', '0-3-0-0', '0-3-0-1', '0-3-0-1-1-0']
+    );
+});
+
+test("Across two, across levels, nested list is first child, selection from " +
+    "start to end", function () {
+    testGetSelectedListItems(
+        '0-3', 0,
+        '0-3-0-0', 1,
+        ['0-3-0-0']
+    );
+});
+
+test("Across two, across levels, selection from start to end", function () {
+    testGetSelectedListItems(
+        '1-2', 0,
+        '1-2-1-1', 1,
+        ['1-2', '1-2-1-1']
+    );
+});
+
+test("Across two, across levels, selection from before nested to start",
+    function () {
+    testGetSelectedListItems(
+        '1-2', 1,
+        '1-2-1-1', 0,
+        ['1-2', '1-2-1-1'],
+        ['1-2'],
+        []
+    );
+});
+
+test("Across two, across levels, selection from before nested to end",
+    function () {
+    testGetSelectedListItems(
+        '1-2', 1,
+        '1-2-1-1', 1,
+        ['1-2', '1-2-1-1'],
+        ['1-2-1-1']
+    );
+});
+
+test("Across two, across levels, selection from start to start", function () {
+    testGetSelectedListItems(
+        '1-2', 0,
+        '1-2-1-1', 0,
+        ['1-2', '1-2-1-1'],
+        ['1-2']
+    );
+});
+
+test("Across two, across levels, selection from start to end", function () {
+    testGetSelectedListItems(
+        '1-2', 0,
+        '1-2-1-1', 1,
+        ['1-2', '1-2-1-1']
+    );
+});
+
+test("Empty list item is included when selected across", function () {
+    testGetSelectedListItems(
+        '2-1', 0,
+        '2-3', 1,
+        ['2-1', '2-2', '2-3']
+    );
+});
+
+test("Empty list item is included when selection starts at it", function () {
+    testGetSelectedListItems(
+        '2-2', 0,
+        '2-3', 1,
+        ['2-2', '2-3']
+    );
+});
+
+test("Empty list item may be included when selection ends at it", function () {
+    testGetSelectedListItems(
+        '2-1', 0,
+        '2-2', 0,
+        ['2-1', '2-2'],
+        ['2-1']
+    );
+});
+
+test("Empty list item is selected when caret is inside of it", function () {
+    testGetSelectedListItems(
+        '2-2', 0,
+        '2-2', 0,
+        ['2-2']
+    );
+});
+
+test("Across separate lists", function () {
+    testGetSelectedListItems(
+        '1-3', 0,
+        '2-1', 1,
+        ['1-3', '1-4', '2-0', '2-1']
+    );
+});
+
+test("Across nesting descent", function () {
+    testGetSelectedListItems(
+        '1-2-1-1', 0,
+        '1-2', 3,
+        ['1-2', '1-2-1-1']
+    );
+});
+
+test("A whole journey", function () {
+    testGetSelectedListItems(
+        '0-0', 0,
+        '1-4', 1,
+        ['0-0', '0-1', '0-2', '0-3-0-0', '0-3-0-1', '0-3-0-1-1-0',
+         '1-1', '1-2', '1-2-1-1', '1-3', '1-4']
+    );
+});
+
+test("Partially inside a table", function () {
+    testGetSelectedListItems(
+        '2-4', 0,
+        '2-4-1-0-0-0', 1,
+        ['2-4']
+    );
+});
+
+test("Collapsed, single, inside table", function () {
+    testGetSelectedListItems(
+        '2-4-1-0-0-1-1-0', 0,
+        '2-4-1-0-0-1-1-0', 0,
+        ['2-4-1-0-0-1-1-0']
+    );
+});
+
+test("Text, single, inside table", function () {
+    testGetSelectedListItems(
+        '2-4-1-0-0-1-1-0', 0,
+        '2-4-1-0-0-1-1-0', 1,
+        ['2-4-1-0-0-1-1-0']
+    );
+});
+
+test("Two items, inside table", function () {
+    testGetSelectedListItems(
+        '2-4-1-0-0-1-1-0', 0,
+        '2-4-1-0-0-1-1-1', 1,
+        ['2-4-1-0-0-1-1-0', '2-4-1-0-0-1-1-1']
+    );
+});
+
+test("Across table", function () {
+    testGetSelectedListItems(
+        '2-4', 0,
+        '2-5', 1,
+        ['2-4', '2-5']
+    );
+});
+
+module("list-indent_outdent", {setup: prepareUnitTestModule});
 /**
 * Run a list manipulation and verify the results.
 *
@@ -68,7 +584,7 @@ function testList(elmntId, action, startHtml, expectedHtml, isText, doSelection)
         .find(buttonSelector);
     actionButton.click();
 
-    htmlEquals(wymeditor, expectedHtml);
+    wymEqual(wymeditor, expectedHtml);
 }
 
 /*
@@ -179,7 +695,7 @@ function testListMulti(
         .find(buttonSelector);
     actionButton.click();
 
-    htmlEquals(wymeditor, expectedHtml);
+    wymEqual(wymeditor, expectedHtml);
 }
 
 var nestedListHtml = String() +
@@ -799,7 +1315,7 @@ var nodeContentAfterSublistHtml = String() +
                     '<li id="li_1_1">1_1</li>' +
                     '<li id="li_1_2">1_2</li>' +
                 '</ul>' +
-                '<table><tr><td>td_1_3</td></tr></table>' +
+                '<table><tbody><tr><td>td_1_3</td></tr></tbody></table>' +
             '</li>' +
             '<li id="li_2">2</li>' +
         '</ol>';
@@ -811,7 +1327,7 @@ var li_1_2_outdentedNodeContentAfterSublistHtml = String() +
                 '</ul>' +
             '</li>' +
             '<li id="li_1_2">1_2' +
-                '<table><tr><td>td_1_3</td></tr></table>' +
+                '<table><tbody><tr><td>td_1_3</td></tr></tbody></table>' +
             '</li>' +
             '<li id="li_2">2</li>' +
         '</ol>';
@@ -819,7 +1335,7 @@ var li_1_2_outdentedNodeContentAfterSublistHtml = String() +
 // This test doesn't pass in older versions of IE because they add an extra
 // space onto the end of an `li` element's text content. The functionality
 // tested still works in those older IE versions.
-if (!jQuery.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
+if (!WYMeditor.isInternetExplorerPre11() || !SKIP_KNOWN_FAILING_TESTS) {
     test("Content after sublist node indent/outdent", function () {
         expect(3);
 
@@ -855,7 +1371,7 @@ var spanInSublistHtml = String() +
                 '</ul>' +
                 'text_2 ' + // IE really likes this space
             '</li>' +
-            '<li id="li_3">3<br >' +
+            '<li id="li_3">3<br />' +
                 'text_3_1<span id="span_3_2">3_2</span>text_3_3' +
             '</li>' +
         '</ol>';
@@ -873,7 +1389,7 @@ var span_3_2_indentedSpanInSublistHtml = String() +
                 '</ul>' +
                 'text_2 ' +
                 '<ol>' +
-                    '<li id="li_3">3<br >' +
+                    '<li id="li_3">3<br />' +
                         'text_3_1<span id="span_3_2">3_2</span>text_3_3' +
                     '</li>' +
                 '</ol>' +
@@ -913,7 +1429,7 @@ test("Span in sublist indent/outdent", function () {
 });
 
 
-module("list-content_reordering", {setup: setupWym});
+module("list-content_reordering", {setup: prepareUnitTestModule});
 
 var doubleSublistHtml = String() +
         '<ol>' +
@@ -1000,11 +1516,11 @@ test("Two same-level sublist last outdent", function () {
     testListRoundTrip('li_1_6', 'indent', li_1_6_doubleSublistOutdentedHtml, doubleSublistHtml, true);
 });
 
-module("list-invalid_nesting", {setup: setupWym});
+module("list-invalid_nesting", {setup: prepareUnitTestModule});
 
 var invalidNestingNoPreviousHtml = String() +
         '<ol>' +
-            '<table id="table_1"><tr><td>td_1_1</td></tr></table>' +
+            '<table id="table_1"><tbody><tr><td>td_1_1</td></tr></tbody></table>' +
             '<ul>' +
                 '<li id="li_2_1">2_1' +
                     '<ul>' +
@@ -1019,7 +1535,7 @@ var invalidNestingNoPreviousHtml = String() +
             '<li id="li_4">4</li>' +
             'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
             '<li id="li_6">6</li>' +
-            '<table id="table_7"><tr><td>td_7_1</td></tr></table>' +
+            '<table id="table_7"><tbody><tr><td>td_7_1</td></tr></tbody></table>' +
             '<ol>' +
                 '<li id="li_8">8</li>' +
             '</ol>' +
@@ -1027,7 +1543,7 @@ var invalidNestingNoPreviousHtml = String() +
 var invalidNestingNoPreviousCorrectedHtml = String() +
         '<ol>' +
             '<li class="spacer_li">' +
-                '<table id="table_1"><tr><td>td_1_1</td></tr></table>' +
+                '<table id="table_1"><tbody><tr><td>td_1_1</td></tr></tbody></table>' +
                 '<ul>' +
                     '<li id="li_2_1">2_1' +
                         '<ul>' +
@@ -1045,7 +1561,7 @@ var invalidNestingNoPreviousCorrectedHtml = String() +
                 'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
             '</li>' +
             '<li id="li_6">6' +
-                '<table id="table_7"><tr><td>td_7_1</td></tr></table>' +
+                '<table id="table_7"><tbody><tr><td>td_7_1</td></tr></tbody></table>' +
                 '<ol>' +
                     '<li id="li_8">8</li>' +
                 '</ol>' +
@@ -1080,7 +1596,7 @@ var invalidNestingCorrectedHtml = String() +
                 '</ul>' +
                 'text_3 ' +
             '</li>' +
-            '<li id="li_4">4<br >' +
+            '<li id="li_4">4<br />' +
                 'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
             '</li>' +
         '</ol>';
@@ -1098,7 +1614,7 @@ var li_2_2_outdentInvalidNestingHtml = String() +
             '<li id="li_2_2">2_2<br />' +
                 'text_3 ' +
             '</li>' +
-            '<li id="li_4">4<br >' +
+            '<li id="li_4">4<br />' +
                 'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
             '</li>' +
         '</ol>';
@@ -1116,7 +1632,7 @@ var span_5_2_indentedInvalidNestingHtml = String() +
                 '</ul>' +
                 'text_3 ' +
                 '<ol>' +
-                    '<li id="li_4">4<br >' +
+                    '<li id="li_4">4<br />' +
                         'text_5_1<span id="span_5_2">5_2</span>text_5_3' +
                     '</li>' +
                 '</ol>' +
@@ -1137,7 +1653,7 @@ test("Invalid nesting correction no spacer", function () {
     actionLi = $body.find('#li_4')[0];
 
     wymeditor.correctInvalidListNesting(actionLi);
-    htmlEquals(wymeditor, expectedHtml);
+    wymEqual(wymeditor, expectedHtml);
 });
 test("Invalid nesting correction requiring spacer", function () {
     expect(1);
@@ -1153,7 +1669,7 @@ test("Invalid nesting correction requiring spacer", function () {
     actionLi = $body.find('#li_2_2')[0];
 
     wymeditor.correctInvalidListNesting(actionLi);
-    htmlEquals(wymeditor, expectedHtml);
+    wymEqual(wymeditor, expectedHtml);
 });
 test("Invalid nesting outdent", function () {
     expect(5);
@@ -1224,7 +1740,7 @@ test("Invalid unwrapped text indent", function () {
     );
 });
 
-module("list-invalid_orphaned_listitem", {setup: setupWym});
+module("list-invalid_orphaned_listitem", {setup: prepareUnitTestModule});
 
 // Lists that have been "over-closed" and thus have li elements that don't have
 // parent lists
@@ -1468,7 +1984,7 @@ test("Correction breaks on text", function () {
 });
 
 
-module("list-multi_selection", {setup: setupWym});
+module("list-multi_selection", {setup: prepareUnitTestModule});
 
 var li_2_1_to_li_2_2_indentedHtml = String() +
         '<ol>' +
@@ -1668,7 +2184,7 @@ var listsWithContentBetweenHtml = String() +
         '<li id="li_4">4</li>' +
         '<li id="li_5">5</li>' +
         '<li id="li_6">6</li>' +
-    '</ul>' +
+    '</ul>';
 
 test("Second-level with sub-node", function () {
     expect(4);
@@ -1739,7 +2255,7 @@ test("Selecting multiple lists with content between prevents indent/outdent", fu
                   listsWithContentBetweenHtml, true);
 });
 
-module("list-broken_html", {setup: setupWym});
+module("list-broken_html", {setup: prepareUnitTestModule});
 
 var doubleIndentHtml = String() +
         '<ol>' +
@@ -1836,7 +2352,7 @@ test("Triple outdent doesn't break HTML", function () {
     );
 });
 
-module("list-conversion_type", {setup: setupWym});
+module("list-conversion_type", {setup: prepareUnitTestModule});
 
 var orderedHtml = String() +
         '<ol>' +
@@ -1943,18 +2459,18 @@ test("Prevent converting type with selection over multiple levels", function () 
     expect(4);
 
     testListMulti('li_1_1_1', 'li_1_1_1_1', 'unordered',
-                  li_1_1_1_unorderedHtml, li_1_1_1_unorderedHtml);
+                  li_1_1_1_1_unorderedHtml, li_1_1_1_1_unorderedHtml);
     testListMulti('li_1_1_1', 'li_1_1_1_1', 'ordered',
                   li_1_1_1_unorderedHtml, li_1_1_1_unorderedHtml);
 
     // With text selection
     testListMulti('li_1_1_1', 'li_1_1_1_1', 'unordered',
-                  li_1_1_1_unorderedHtml, li_1_1_1_unorderedHtml, true);
+                  li_1_1_1_1_unorderedHtml, li_1_1_1_1_unorderedHtml, true);
     testListMulti('li_1_1_1', 'li_1_1_1_1', 'ordered',
                   li_1_1_1_unorderedHtml, li_1_1_1_unorderedHtml, true);
 });
 
-module("list-conversion_blocks", {setup: setupWym});
+module("list-conversion_blocks", {setup: prepareUnitTestModule});
 var pHtml = String() +
         '<p id="p_1">content 1</p>' +
         '<p id="p_2"><strong id="strong_2">content</strong> 2</p>' +
@@ -2072,7 +2588,78 @@ test("Not joining different types", function () {
     testList('p_1', 'unordered', p_2_orderedHtml, p_1_unordered_p_2_ordered_pHtml, true);
 });
 
-module("list-correction", {setup: setupWym});
+module("list-in_table", {setup: prepareUnitTestModule});
+
+var listWithTableHtml = [""
+    , '<ul id="0">'
+        , '<li id="0_0">'
+            , '0_0_0'
+            , '<table id="0_0_1">'
+                , '<tbody id="0_0_1_0">'
+                    , '<tr id="0_0_1_0_0">'
+                        , '<td id="0_0_1_0_0_0">'
+                            , '0_0_1_0_0_0_0'
+                        , '</td>'
+                        , '<td id="0_0_1_0_0_1">'
+                            , '<ul id="0_0_1_0_0_1_0">'
+                                , '<li id="0_0_1_0_0_1_0_0">'
+                                    , '0_0_1_0_0_1_0_0_0'
+                                , '</li>'
+                            , '</ul>'
+                        , '</td>'
+                    , '</tr>'
+                , '</tbody>'
+            , '</table>'
+        , '</li>'
+    , '</ul>'
+].join('');
+var listWithTableHtml_make_list_inside = [""
+    , '<ul id="0">'
+        , '<li id="0_0">'
+            , '0_0_0'
+            , '<table id="0_0_1">'
+                , '<tbody id="0_0_1_0">'
+                    , '<tr id="0_0_1_0_0">'
+                        , '<td id="0_0_1_0_0_0">'
+                            , '<ul>'
+                                , '<li>'
+                                    , '0_0_1_0_0_0_0'
+                                , '</li>'
+                            , '</ul>'
+                        , '</td>'
+                        , '<td id="0_0_1_0_0_1">'
+                            , '<ul id="0_0_1_0_0_1_0">'
+                                , '<li id="0_0_1_0_0_1_0_0">'
+                                    , '0_0_1_0_0_1_0_0_0'
+                                , '</li>'
+                            , '</ul>'
+                        , '</td>'
+                    , '</tr>'
+                , '</tbody>'
+            , '</table>'
+        , '</li>'
+    , '</ul>'
+].join('');
+test("Make list inside table that is inside list.", function () {
+    expect(3);
+    testList(
+        '0_0_1_0_0_0',
+        'unordered',
+        listWithTableHtml,
+        listWithTableHtml_make_list_inside
+    );
+
+    // Using text selection
+    testList(
+        '0_0_1_0_0_0',
+        'unordered',
+        listWithTableHtml,
+        listWithTableHtml_make_list_inside,
+        true
+    );
+});
+
+module("list-correction", {setup: prepareUnitTestModule});
 
 test("Should correct invalid list nesting", function () {
     expect(2);
@@ -2080,16 +2667,67 @@ test("Should correct invalid list nesting", function () {
     var wymeditor = jQuery.wymeditors(0),
         expected = "<ul><li>a<ul><li>a.1<\/li><\/ul><\/li><li>b<\/li><\/ul>",
     // FF
-        invalid_ff_html = "<ul><li>a<\/li><ul><li>a.1<\/li><\/ul><li>b<br><\/li><\/ul>",
-        invalid_ie_html = "<UL>\r\n<LI>a<\/LI>\r\n<UL>\r\n<LI>a.1<\/LI><\/UL>\r\n<LI>b<\/LI><\/UL>";
+        invalid_ff_html = "<ul><li>a<\/li><ul><li>a.1<\/li><\/ul><li>b<br /><\/li><\/ul>",
+        invalid_ie_html = "<UL><LI>a<\/LI><UL><LI>a.1<\/LI><\/UL><LI>b<\/LI><\/UL>";
     wymeditor._html(invalid_ff_html);
-    htmlEquals(wymeditor, expected);
+    wymEqual(wymeditor, expected);
     // IE
     // IE has invalid sublist nesting
-    expected = "<ul>\r\n<li>a<ul>\r\n<li>a.1<\/li><\/ul><\/li>\r\n<li>b<\/li><\/ul>";
+    expected = "<ul><li>a<ul><li>a.1<\/li><\/ul><\/li><li>b<\/li><\/ul>";
     wymeditor._html(invalid_ie_html);
-    htmlEquals(wymeditor, expected);
+    wymEqual(wymeditor, expected);
 });
+
+var listWithOrphanedTextAfterLastLi = [""
+    , '<ul>'
+        , '<li>a</li>'
+        , 'b'
+    , '</ul>'
+    ].join(""),
+    fixedListWithOrphanedTextAfterLastLi = [""
+    , '<ul>'
+        , '<li>a<br />b</li>'
+    , '</ul>'
+    ].join("");
+
+test("Orphaned text at end of list should be inserted into the last li\
+        by correctInvalidListNesting", function () {
+    expect(1);
+
+    var wymeditor = jQuery.wymeditors(0),
+        $body,
+        invalidHtml = listWithOrphanedTextAfterLastLi,
+        expected = fixedListWithOrphanedTextAfterLastLi,
+        caretLocation;
+
+    jQuery(wymeditor._doc.body).html(invalidHtml);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    caretLocation = $body.find('ul')[0];
+    makeTextSelection(wymeditor, caretLocation, caretLocation, 1, 1);
+    wymeditor.correctInvalidListNesting($body.find('li')[0]);
+    wymEqual(wymeditor, expected);
+});
+
+// IE8 bug https://github.com/wymeditor/wymeditor/issues/446
+if (jQuery.browser.msie && jQuery.browser.version === "8.0") {
+    test("Should correct IE8 pulling content into end of ul on backspace",
+        function () {
+        expect(1);
+
+        var wymeditor = jQuery.wymeditors(0),
+            $body,
+            invalidHtml = listWithOrphanedTextAfterLastLi,
+            expected = fixedListWithOrphanedTextAfterLastLi,
+            caretLocation;
+
+        jQuery(wymeditor._doc.body).html(invalidHtml);
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+        caretLocation = $body.find('ul')[0];
+        makeTextSelection(wymeditor, caretLocation, caretLocation, 1, 1);
+        simulateKey(WYMeditor.KEY.BACKSPACE, wymeditor._doc);
+        wymEqual(wymeditor, expected);
+    });
+}
 
 test("Double indent correction", function () {
     expect(1);
@@ -2119,7 +2757,7 @@ test("Double indent correction", function () {
             '</ol>';
 
     wymeditor._html(brokenHtml);
-    htmlEquals(wymeditor, repairedHtml);
+    wymEqual(wymeditor, repairedHtml);
 });
 
 test("Parser: Text directly inside lists should be put inside list items",
@@ -2139,7 +2777,7 @@ test("Parser: Text directly inside lists should be put inside list items",
         ].join("");
 
     wymeditor._html(brokenHtml);
-    htmlEquals(wymeditor, repairedHtml);
+    wymEqual(wymeditor, repairedHtml);
 
     brokenHtml = [""
         , '<ol>'
@@ -2154,7 +2792,7 @@ test("Parser: Text directly inside lists should be put inside list items",
     ].join("");
 
     wymeditor._html(brokenHtml);
-    htmlEquals(wymeditor, repairedHtml);
+    wymEqual(wymeditor, repairedHtml);
 
     brokenHtml = [""
         , '<ol>'
@@ -2170,10 +2808,10 @@ test("Parser: Text directly inside lists should be put inside list items",
     ].join("");
 
     wymeditor._html(brokenHtml);
-    htmlEquals(wymeditor, repairedHtml);
+    wymEqual(wymeditor, repairedHtml);
 });
 
-module("list-tabbing", {setup: setupWym});
+module("list-tabbing", {setup: prepareUnitTestModule});
 
 test("Tab key indents", function () {
     expect(2);
@@ -2193,7 +2831,7 @@ test("Tab key indents", function () {
     moveSelector(wymeditor, actionElement);
 
     simulateKey(WYMeditor.KEY.TAB, actionElement);
-    htmlEquals(wymeditor, expectedHtml);
+    wymEqual(wymeditor, expectedHtml);
 });
 
 test("Shift+Tab outdents", function () {
@@ -2227,7 +2865,7 @@ test("Shift+Tab outdents", function () {
     moveSelector(wymeditor, actionElement);
 
     simulateKey(WYMeditor.KEY.TAB, actionElement, {'shiftKey': true});
-    htmlEquals(wymeditor, expectedHtml);
+    wymEqual(wymeditor, expectedHtml);
 });
 
 test("Tab has no effect outside lists", function () {
@@ -2248,10 +2886,10 @@ test("Tab has no effect outside lists", function () {
     moveSelector(wymeditor, actionElement);
 
     simulateKey(WYMeditor.KEY.TAB, actionElement);
-    htmlEquals(wymeditor, expectedHtml);
+    wymEqual(wymeditor, expectedHtml);
 });
 
-module("list-newline_normalization", {setup: setupWym});
+module("list-newline_normalization", {setup: prepareUnitTestModule});
 
 test("Shouldn't eat newline text spacing in li", function () {
     expect(1);
@@ -2277,10 +2915,8 @@ test("Shouldn't eat newline text spacing in li", function () {
 
     wymeditor._html(initHtml);
     wymeditor.update();
-    htmlEquals(wymeditor, expectedHtml);
+    wymEqual(wymeditor, expectedHtml);
 });
-
-module("list-indent_outdent_with_table", {setup: setupWym});
 
 /**
     changeIndent
@@ -2308,71 +2944,104 @@ function changeIndent(wymeditor, html, selStart, selEnd, inOrOut) {
     }
 }
 
-var TEST_LINEBREAK_SPACER = '<br class="' +
-                                WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS + ' ' +
-                                WYMeditor.EDITOR_ONLY_CLASS + '"/>';
+// These test fail in IE7 & IE8:
+// https://github.com/wymeditor/wymeditor/issues/498
+if (!(// Browser is IE and
+      jQuery.browser.msie &&
+      // version 7.x until
+      parseInt(jQuery.browser.version, 10) >= 7 &&
+      // version 8.x
+      parseInt(jQuery.browser.version, 10) < 9
+     // or
+     ) ||
+    // we are executing known failing tests:
+    !SKIP_KNOWN_FAILING_TESTS) {
+    module("list-indent_outdent_with_table", {setup: prepareUnitTestModule});
 
-var expectedMiddleIn = String() +
-    '<ol>' +
-        '<li id="li_1">1' +
-            '<ol>' +
-                '<li id="li_2">2' +
-                    '<table>' +
-                        '<caption>test_1</caption>' +
-                        '<tbody>' +
+    var TEST_LINEBREAK_SPACER = '<br class="' +
+                                    WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS + ' ' +
+                                    WYMeditor.EDITOR_ONLY_CLASS + '" />';
+
+    var expectedMiddleIn = String() +
+        '<ol>' +
+            '<li id="li_1">1' +
+                '<ol>' +
+                    '<li id="li_2">2' +
+                        '<table>' +
+                            '<caption>test_1</caption>' +
+                            '<tbody>' +
+                            '<tr>' +
+                                '<td id="t1_1_1">1_1</td>' +
+                            '</tr>' +
+                            '</tbody>' +
+                        '</table>' +
+                        TEST_LINEBREAK_SPACER +
+                    '</li>' +
+                    '<li id="li_3">3</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>';
+
+    var expectedMiddleOutPartial = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2' +
+                '<table>' +
+                    '<caption>test_1</caption>' +
+                    '<tbody>' +
                         '<tr>' +
                             '<td id="t1_1_1">1_1</td>' +
                         '</tr>' +
-                        '</tbody>' +
-                    '</table>' +
-                    TEST_LINEBREAK_SPACER +
-                '</li>' +
-                '<li id="li_3">3</li>' +
-            '</ol>' +
-        '</li>' +
-    '</ol>';
+                    '</tbody>' +
+                '</table>' +
+                TEST_LINEBREAK_SPACER +
+                '<ol>' +
+                    '<li id="li_3">3</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>';
 
-var expectedMiddleOutPartial = String() +
-    '<ol>' +
-        '<li id="li_1">1</li>' +
-        '<li id="li_2">2' +
-            '<table>' +
-                '<caption>test_1</caption>' +
-                '<tbody>' +
-                    '<tr>' +
-                        '<td id="t1_1_1">1_1</td>' +
-                    '</tr>' +
-                '</tbody>' +
-            '</table>' +
-            TEST_LINEBREAK_SPACER +
+    var expectedMiddleOutFull = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2' +
+                '<table>' +
+                    '<caption>test_1</caption>' +
+                    '<tbody>' +
+                        '<tr>' +
+                            '<td id="t1_1_1">1_1</td>' +
+                        '</tr>' +
+                    '</tbody>' +
+                '</table>' +
+                TEST_LINEBREAK_SPACER +
+            '</li>' +
+            '<li id="li_3">3</li>' +
+        '</ol>';
+
+    var expectedEndIn = String() +
+        '<ol>' +
+            '<li id="li_1">1</li>' +
+            '<li id="li_2">2' +
+                '<ol>' +
+                    '<li id="li_3">3' +
+                        '<table>' +
+                            '<caption>test_1</caption>' +
+                            '<tbody>' +
+                                '<tr>' +
+                                    '<td id="t1_1_1">1_1</td>' +
+                                '</tr>' +
+                            '</tbody>' +
+                        '</table>' +
+                        TEST_LINEBREAK_SPACER +
+                    '</li>' +
+                '</ol>' +
+            '</li>' +
+        '</ol>';
+
+    var expectedEndOut = String() +
             '<ol>' +
-                '<li id="li_3">3</li>' +
-            '</ol>' +
-        '</li>' +
-    '</ol>';
-
-var expectedMiddleOutFull = String() +
-    '<ol>' +
-        '<li id="li_1">1</li>' +
-        '<li id="li_2">2' +
-            '<table>' +
-                '<caption>test_1</caption>' +
-                '<tbody>' +
-                    '<tr>' +
-                        '<td id="t1_1_1">1_1</td>' +
-                    '</tr>' +
-                '</tbody>' +
-            '</table>' +
-            TEST_LINEBREAK_SPACER +
-        '</li>' +
-        '<li id="li_3">3</li>' +
-    '</ol>';
-
-var expectedEndIn = String() +
-    '<ol>' +
-        '<li id="li_1">1</li>' +
-        '<li id="li_2">2' +
-            '<ol>' +
+                '<li id="li_1">1</li>' +
+                '<li id="li_2">2</li>' +
                 '<li id="li_3">3' +
                     '<table>' +
                         '<caption>test_1</caption>' +
@@ -2384,74 +3053,1461 @@ var expectedEndIn = String() +
                     '</table>' +
                     TEST_LINEBREAK_SPACER +
                 '</li>' +
-            '</ol>' +
-        '</li>' +
-    '</ol>';
+            '</ol>';
 
-var expectedEndOut = String() +
-        '<ol>' +
-            '<li id="li_1">1</li>' +
-            '<li id="li_2">2</li>' +
-            '<li id="li_3">3' +
-                '<table>' +
-                    '<caption>test_1</caption>' +
-                    '<tbody>' +
-                        '<tr>' +
-                            '<td id="t1_1_1">1_1</td>' +
-                        '</tr>' +
-                    '</tbody>' +
-                '</table>' +
-                TEST_LINEBREAK_SPACER +
-            '</li>' +
-        '</ol>';
+    var startEndOutNoBR = expectedEndOut.replace(TEST_LINEBREAK_SPACER, '');
 
-var startEndOutNoBR = expectedEndOut.replace(TEST_LINEBREAK_SPACER, '');
+    test("Indent with table in the middle of a list", function () {
+        expect(1);
+        var wymeditor = jQuery.wymeditors(0);
 
-test("Indent with table in the middle of a list", function () {
-    expect(1);
-    var wymeditor = jQuery.wymeditors(0),
+        changeIndent(wymeditor, expectedMiddleOutFull, '#li_2', '#li_3', 'indent');
+        wymEqual(wymeditor, expectedMiddleIn, {
+            assertionString: "Table indented in the middle of a list",
+            skipParser: true
+        });
+    });
+
+    test("Indent with table at the end of a list", function () {
+        expect(2);
+        var wymeditor = jQuery.wymeditors(0);
+
+        changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'indent');
+        wymEqual(wymeditor, expectedEndIn, {
+            assertionString: "Table indented at the end of a list",
+            skipParser: true
+        });
+
+        changeIndent(wymeditor, startEndOutNoBR, '#li_3', '#li_3', 'indent');
+        wymEqual(wymeditor, expectedEndIn, {
+            assertionString: "Table indented at the end of a list with no line break",
+            skipParser: true
+        });
+    });
+
+    test("Outdent with table in the middle of a list", function () {
+        expect(1);
+        var wymeditor = jQuery.wymeditors(0);
+
+        changeIndent(wymeditor, expectedMiddleIn, '#li_2', '#li_2', 'outdent');
+        wymEqual(wymeditor, expectedMiddleOutPartial, {
+            assertionString: "Table outdented in the middle of a list",
+            skipParser: true
+        });
+    });
+
+    test("Outdent with table at the end of a list", function () {
+        expect(2);
+        var wymeditor = jQuery.wymeditors(0);
+
+        changeIndent(wymeditor, expectedEndIn, '#li_3', '#li_3', 'outdent');
+        wymEqual(wymeditor, expectedEndOut, {
+            assertionString: "Table outdented at the end of a list",
+            skipParser: true
+        });
+
+        changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'outdent');
+        wymEqual(wymeditor, expectedEndOut, {
+            assertionString: "Table outdented at the end of a list with no line break",
+            skipParser: true
+        });
+    });
+}
+
+// Issue #430
+module("list-correction_after_enter_in_empty_li", {setup: prepareUnitTestModule});
+
+// Issue #430 case 1 of 3: a `p` or a `div` is created inside the parent `li`:
+
+// Following objects are pairs of:
+//
+//  * String of corrected HTML.
+//  * Array of known broken HTML strings.
+var enterInEmptyLiOnlyLi = {
+    fixed: [""
+        , '<ul>'
+            , '<li>0'
+                , '<br />'
+                , '<br />'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    broken: [
+        [""
+            , '<ul>'
+                , '<li>0'
+                    , '<p>'
+                        , '<br />'
+                    , '</p>'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    ]
+};
+var enterInEmptyLiOnlyLiTextAfterList = {
+    fixed: [""
+        , '<ul>'
+            , '<li>0'
+                , '<br />'
+                , '<br />'
+                , 'foo'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    broken: [
+        [""
+            , '<ul>'
+                , '<li>0'
+                    , '<p>'
+                        , '<br />'
+                    , '</p>'
+                    , 'foo'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        [""
+            , '<ul>'
+                , '<li>0'
+                    , '<div>'
+                        , '<br />'
+                    , '</div>'
+                    , 'foo'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        [""
+            , '<ul>'
+                , '<li>0'
+                    , '<p>'
+                        , WYMeditor.NBSP
+                    , '</p>'
+                    , 'foo'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    ]
+};
+var enterInEmptyLiLastLi = {
+    fixed: [""
+        , '<ul>'
+            , '<li>0'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<br />'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    broken: [
+        [""
+            , '<ul>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<p>'
+                        , '<br />'
+                    , '</p>'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    ]
+};
+
+var enterInEmptyLiLastLiTextAfterList = {
+    fixed: [""
+        , '<ul>'
+            , '<li>0'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<br />'
+                , 'foo'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    broken: [
+        [""
+            , '<ul>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<p>'
+                        , '<br />'
+                    , '</p>'
+                    , 'foo'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        [""
+        , '<ul>'
+            , '<li>0'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<div>'
+                    , '<br />'
+                , '</div>'
+                , 'foo'
+            , '</li>'
+        , '</ul>'
+        ].join(''),
+        [""
+            , '<ul>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<p>' + WYMeditor.NBSP + '</p>'
+                    , 'foo'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    ]
+};
+var enterInEmptyLiNotLast = {
+    fixed: [""
+        , '<ul>'
+            , '<li>0'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<br />'
+                , '<ul>'
+                    , '<li>0.2</li>'
+                , '</ul>'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    broken: [
+        [""
+            , '<ul>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<p>'
+                        , '<br />'
+                    , '</p>'
+                    , '<ul>'
+                        , '<li>0.2</li>'
+                    , '</ul>'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        [""
+            , '<ul>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<p></p>'
+                    , '<ul>'
+                        , '<li>0.2</li>'
+                    , '</ul>'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    ]
+};
+
+// The following is a helper function for performing tests on the above pairs.
+//
+// `testNameSuff` is the suffix of the name of the test that will be run.
+// `expectedHtml` is the former from each of the pairs above.
+// `brokenHtmls` is the latter from each of the pairs above.
+function enterInEmptyLiTest(testNameSuff, expectedHtml, brokenHtmls) {
+    var wymeditor,
+        $body,
+        i,
+        assertStr,
+        testName = '`p` or `div`: ' + testNameSuff,
+        assertStrCallAppend = '; by calling repairing function',
+        assertStrKeyAppend = '; by key simulation';
+
+    test(testName, function () {
+        expect(brokenHtmls.length * 4);
+        wymeditor = jQuery.wymeditors(0);
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
-    changeIndent(wymeditor, expectedMiddleOutFull, '#li_2', '#li_3', 'indent');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedMiddleIn,
-           "Table indented in the middle of a list");
+        for (i = 0; i < brokenHtmls.length; i++) {
+            assertStr = 'Broken HTML variation ' + (i + 1) + ' of ' +
+                brokenHtmls.length;
+
+            wymeditor._html(brokenHtmls[i]);
+            wymeditor._replaceNodeWithBrAndSetCaret(
+                $body.find('p, div')[0]
+            );
+            wymEqual(
+                wymeditor,
+                expectedHtml, {
+                    skipParser: true,
+                    assertionString: assertStr + assertStrCallAppend
+                }
+            );
+
+            wymeditor._html(brokenHtmls[i]);
+            wymeditor.setCaretIn($body.find('p, div')[0]);
+            simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
+
+            wymEqual(
+                wymeditor,
+                expectedHtml, {
+                    skipParser: true,
+                    assertionString: assertStr + assertStrKeyAppend
+                }
+            );
+            ok(
+                wymeditor.selection().isCollapsed,
+                assertStr + assertStrKeyAppend + '; selection is collapsed'
+            );
+            strictEqual(
+                wymeditor.nodeAfterSel().tagName.toLowerCase(),
+                'br',
+                assertStr + assertStrKeyAppend + '; caret position'
+            );
+        }
+    });
+}
+
+// At this stage the helper function of this module is called for the tests to
+// be performed with each of the variations, represented by the pairs.
+enterInEmptyLiTest(
+    'Only `li` in its list',
+    enterInEmptyLiOnlyLi.fixed,
+    enterInEmptyLiOnlyLi.broken
+);
+enterInEmptyLiTest(
+    'Only `li` and text node after list',
+    enterInEmptyLiOnlyLiTextAfterList.fixed,
+    enterInEmptyLiOnlyLiTextAfterList.broken
+);
+enterInEmptyLiTest(
+    'Last `li`',
+    enterInEmptyLiLastLi.fixed,
+    enterInEmptyLiLastLi.broken
+);
+enterInEmptyLiTest(
+    'Last `li` and text node after list',
+    enterInEmptyLiLastLiTextAfterList.fixed,
+    enterInEmptyLiLastLiTextAfterList.broken
+);
+enterInEmptyLiTest(
+    'Not last `li`',
+    enterInEmptyLiNotLast.fixed,
+    enterInEmptyLiNotLast.broken
+);
+
+// All of the following broken HTML strings represent real-world browser
+// results. There is no point imagining more cases without confirming that they
+// actually occurring in the browser. Especially because this kind of invalid
+// list nesting occurs under quite specific conditions, it seems.
+var invalidNestingAfterEnterInEmptyLi = [
+    {
+        broken: [""
+            , '<ul>'
+                , '<li>0'
+                , '</li>'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                    , '<li>0.1</li>'
+                , '</ul>'
+                , '<li id="new">'
+                    , '<br />'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        fixed: [""
+            , '<ul>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                        , '<li>0.1</li>'
+                    , '</ul>'
+                    , '<br />'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    },
+    {
+        broken: [""
+            , '<ul>'
+                , '<li>0'
+                , '</li>'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<li id="new">'
+                    , '<br />'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        fixed: [""
+            , '<ul>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<br />'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    },
+    {
+        broken: [""
+            , '<ul>'
+                , '<li>0'
+                , '</li>'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<li id="new">'
+                    , '<br />'
+                , '</li>'
+                , '<li>1</li>'
+            , '</ul>'
+        ].join(''),
+        fixed: [""
+            , '<ul>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<br />'
+                , '</li>'
+                , '<li>1</li>'
+            , '</ul>'
+        ].join('')
+    },
+    {
+        broken: [""
+            , '<ul>'
+                , '<li>0<br /><br />'
+                , '</li>'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<li id="new">'
+                    , '<br />'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        fixed: [""
+            , '<ul>'
+                , '<li>0<br /><br />'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<br />'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    },
+    {
+        broken: [""
+            , '<ul>'
+                , '<li>0'
+                , '</li>'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<li id="new">'
+                    , '<br />'
+                , '</li>'
+                , '<ul>'
+                    , '<li>0.2</li>'
+                , '</ul>'
+            , '</ul>'
+        ].join(''),
+        fixed: [""
+            , '<ul>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<br />'
+                    , '<ul>'
+                        , '<li>0.2</li>'
+                    , '</ul>'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    },
+    {
+        broken: [""
+            , '<ul>'
+                , '<li>0'
+                , '</li>'
+                , '<ul>'
+                    , '<li>0.0</li>'
+                , '</ul>'
+                , '<li id="new">'
+                    , '<br />'
+                , '</li>'
+                , '<ul>'
+                    , '<li>0.2</li>'
+                , '</ul>'
+                , '<li>1</li>'
+            , '</ul>'
+        ].join(''),
+        fixed: [""
+            , '<ul>'
+                , '<li>0'
+                    , '<ul>'
+                        , '<li>0.0</li>'
+                    , '</ul>'
+                    , '<br />'
+                    , '<ul>'
+                        , '<li>0.2</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li>1</li>'
+            , '</ul>'
+        ].join('')
+    }
+];
+
+test("Invalid list nesting", function () {
+    var i,
+        assertCountStr,
+        wymeditor = jQuery.wymeditors(0),
+        newLi;
+
+    expect(invalidNestingAfterEnterInEmptyLi.length * 2);
+
+    for (i = 0; i < invalidNestingAfterEnterInEmptyLi.length; i++) {
+        assertCountStr = 'Variation ' + (i + 1) + ' of ' +
+            (invalidNestingAfterEnterInEmptyLi.length) + '; ';
+
+        wymeditor._html(invalidNestingAfterEnterInEmptyLi[i].broken);
+        newLi = jQuery(wymeditor._doc).find('body.wym_iframe').find('#new')[0];
+        wymeditor.setCaretIn(newLi);
+        simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
+
+        wymEqual(
+            wymeditor,
+            invalidNestingAfterEnterInEmptyLi[i].fixed, {
+                skipParser: true,
+                assertionString: assertCountStr + 'HTML'
+            }
+        );
+        strictEqual(
+            wymeditor.nodeAfterSel().tagName.toLowerCase(),
+            'br',
+            assertCountStr + 'caret'
+        );
+    }
 });
 
-test("Indent with table at the end of a list", function () {
+module("list-delisting", {setup: prepareUnitTestModule});
+
+var delistHtml = {};
+
+delistHtml.base = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2'
+            , '<ol>'
+                , '<li id="li_2_1">2_1</li>'
+                , '<li id="li_2_2">2_2</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_3">3'
+            , '<ol>'
+                , '<li id="li_3_1">3_1</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_4">4</li>'
+        , '<li id="li_5">5'
+            , '<ol>'
+                , '<li id="li_5_1">5_1</li>'
+                , '<li id="li_5_2">5_2</li>'
+                , '<li id="li_5_3">5_3'
+                    , '<ul>'
+                        , '<li id="li_5_3_1">5_3_1</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li id="li_5_4">5_4</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_6">6</li>'
+        , '<li id="li_7">7</li>'
+        , '<li id="li_8">8</li>'
+    , '</ol>'
+].join('');
+
+delistHtml.li_1__li_1 = [""
+    , '<p id="li_1">1</p>'
+    , '<ol>'
+        , '<li id="li_2">2'
+            , '<ol>'
+                , '<li id="li_2_1">2_1</li>'
+                , '<li id="li_2_2">2_2</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_3">3'
+            , '<ol>'
+                , '<li id="li_3_1">3_1</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_4">4</li>'
+        , '<li id="li_5">5'
+            , '<ol>'
+                , '<li id="li_5_1">5_1</li>'
+                , '<li id="li_5_2">5_2</li>'
+                , '<li id="li_5_3">5_3'
+                    , '<ul>'
+                        , '<li id="li_5_3_1">5_3_1</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li id="li_5_4">5_4</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_6">6</li>'
+        , '<li id="li_7">7</li>'
+        , '<li id="li_8">8</li>'
+    , '</ol>'
+].join('');
+test("Move to before parent list. Transform into default root container.", function () {
     expect(2);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    var startItemId = 'li_1',
+        endItemId = 'li_1';
 
-    changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'indent');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndIn,
-           "Table indented at the end of a list");
-
-    changeIndent(wymeditor, startEndOutNoBR, '#li_3', '#li_3', 'indent');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndIn,
-           "Table indented at the end of a list with no line break");
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_1__li_1
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_1__li_1,
+        true
+    );
 });
 
-test("Outdent with table in the middle of a list", function () {
-    expect(1);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
-
-    changeIndent(wymeditor, expectedMiddleIn, '#li_2', '#li_2', 'outdent');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedMiddleOutPartial,
-           "Table outdented in the middle of a list");
-});
-
-test("Outdent with table at the end of a list", function () {
+delistHtml.withBrs = [""
+    , '<ul id="0">'
+        , '<li id="0_0">'
+            , '0_0_0'
+            , '<ul id="0_0_1">'
+                , '<li id="0_0_1_0">'
+                    , '0_0_1_0_0'
+                    , '<br id="0_0_1_0_1" />'
+                    , '0_0_1_0_2'
+                , '</li>'
+            , '</ul>'
+            , '0_0_2'
+            , '<br id="0_0_3" />'
+            , '0_0_4'
+            , '<br id="0_0_5" />'
+        , '</li>'
+        , '<li id="0_1">'
+            , '0_1_0'
+            , '<br id="0_1_1" />'
+        , '</li>'
+    , '</ul>'
+].join('');
+delistHtml.withBrs_li_0_0__li_0_1 = [""
+    , '<p id="0_0">'
+        , '0_0_0'
+    , '</p>'
+    , '<p id="0_0_1_0">'
+        , '0_0_1_0_0'
+        , '<br id="0_0_1_0_1" />'
+        , '0_0_1_0_2'
+    , '</p>'
+    , '<p>'
+        , '0_0_2'
+    , '</p>'
+    , '<p>'
+        , '0_0_4'
+    , '</p>'
+    , '<p id="0_1">'
+        , '0_1_0'
+        , '<br id="0_1_1" />'
+    , '</p>'
+].join('');
+test("De-list two items, one nested in other.", function () {
     expect(2);
-    var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    var startItemId = '0_0',
+        endItemId = '0_1';
 
-    changeIndent(wymeditor, expectedEndIn, '#li_3', '#li_3', 'outdent');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndOut,
-           "Table outdented at the end of a list");
-
-    changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'outdent');
-    deepEqual(normalizeHtml($body.get(0).firstChild), expectedEndOut,
-           "Table outdented at the end of a list with no line break");
+    testListMulti(
+        startItemId,
+        endItemId,
+        'unordered',
+        delistHtml.withBrs,
+        delistHtml.withBrs_li_0_0__li_0_1
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'unordered',
+        delistHtml.withBrs,
+        delistHtml.withBrs_li_0_0__li_0_1,
+        true
+    );
 });
 
+delistHtml.li_8__li_8 = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2'
+            , '<ol>'
+                , '<li id="li_2_1">2_1</li>'
+                , '<li id="li_2_2">2_2</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_3">3'
+            , '<ol>'
+                , '<li id="li_3_1">3_1</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_4">4</li>'
+        , '<li id="li_5">5'
+            , '<ol>'
+                , '<li id="li_5_1">5_1</li>'
+                , '<li id="li_5_2">5_2</li>'
+                , '<li id="li_5_3">5_3'
+                    , '<ul>'
+                        , '<li id="li_5_3_1">5_3_1</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li id="li_5_4">5_4</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_6">6</li>'
+        , '<li id="li_7">7</li>'
+    , '</ol>'
+    , '<p id="li_8">8</p>'
+].join('');
+
+test("Move to after parent list.", function () {
+    expect(2);
+    var startItemId = 'li_8',
+        endItemId = 'li_8';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_8__li_8
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_8__li_8,
+        true
+    );
+});
+
+delistHtml.li_1__li_3 = [""
+    , '<p id="li_1">1</p>'
+    , '<p id="li_2">2</p>'
+    , '<p id="li_2_1">2_1</p>'
+    , '<p id="li_2_2">2_2</p>'
+    , '<p id="li_3">3</p>'
+    , '<ol>'
+        , '<li id="li_3_1">3_1</li>'
+    , '</ol>'
+    , '<ol>'
+        , '<li id="li_4">4</li>'
+        , '<li id="li_5">5'
+            , '<ol>'
+                , '<li id="li_5_1">5_1</li>'
+                , '<li id="li_5_2">5_2</li>'
+                , '<li id="li_5_3">5_3'
+                    , '<ul>'
+                        , '<li id="li_5_3_1">5_3_1</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li id="li_5_4">5_4</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_6">6</li>'
+        , '<li id="li_7">7</li>'
+        , '<li id="li_8">8</li>'
+    , '</ol>'
+].join('');
+test("De-list across sublist", function () {
+    expect(2);
+    var startItemId = 'li_1',
+        endItemId = 'li_3';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_1__li_3
+    );
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_1__li_3,
+        true
+    );
+
+});
+
+var delistOverindentHtml = {};
+delistOverindentHtml.base = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2'
+            , '<ol>'
+                , '<li>'
+                    , '<ol>'
+                        , '<li id="li_2_1_1">2_1_1</li>'
+                        , '<li id="li_2_1_2">2_1_2</li>'
+                    , '</ol>'
+                , '</li>'
+                , '<li id="li_2_2">2_2</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_3">3</li>'
+    , '</ol>'
+].join('');
+delistOverindentHtml.li_1__li_2 = [""
+    , '<p id="li_1">1</p>'
+    , '<p id="li_2">2</p>'
+    , '<ol>'
+        , '<li>'
+            , '<ol>'
+                , '<li id="li_2_1_1">2_1_1</li>'
+                , '<li id="li_2_1_2">2_1_2</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_2_2">2_2</li>'
+    , '</ol>'
+    , '<ol>'
+        , '<li id="li_3">3</li>'
+    , '</ol>'
+].join('');
+test("Over-indented not invalid", function () {
+    expect(2);
+    var startItemId = 'li_1',
+        endItemId = 'li_2';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistOverindentHtml.base,
+        delistOverindentHtml.li_1__li_2
+    );
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistOverindentHtml.base,
+        delistOverindentHtml.li_1__li_2,
+        true
+    );
+    // This one can't be reversed
+});
+
+delistOverindentHtml.li_1__li_3 = [""
+    , '<p id="li_1">1</p>'
+    , '<p id="li_2">2</p>'
+    , '<ol>'
+        , '<li>'
+            , '<span id="li_2_1_1">2_1_1</span>'
+            , '<br />'
+            , '<span id="li_2_1_2">2_1_2</span>'
+        , '</li>'
+    , '</ol>'
+    , '<p id="li_2_2">2_2</p>'
+    , '<p id="li_3">3</p>'
+].join('');
+
+test("Across indentation levels", function () {
+    expect(2);
+    var startItemId = 'li_1',
+        endItemId = 'li_3';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistOverindentHtml.base,
+        delistOverindentHtml.li_1__li_3
+    );
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistOverindentHtml.base,
+        delistOverindentHtml.li_1__li_3,
+        true
+    );
+});
+delistHtml.twoListsHtml = [delistHtml.base
+    , '<ol>'
+        , '<li id="li2_1">1</li>'
+    , '</ol>'
+].join('');
+delistHtml.li_5_4__li2_1 = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2'
+            , '<ol>'
+                , '<li id="li_2_1">2_1</li>'
+                , '<li id="li_2_2">2_2</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_3">3'
+            , '<ol>'
+                , '<li id="li_3_1">3_1</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_4">4</li>'
+        , '<li id="li_5">5'
+            , '<ol>'
+                , '<li id="li_5_1">5_1</li>'
+                , '<li id="li_5_2">5_2</li>'
+                , '<li id="li_5_3">5_3'
+                    , '<ul>'
+                        , '<li id="li_5_3_1">5_3_1</li>'
+                    , '</ul>'
+                , '</li>'
+            , '</ol>'
+            , '<span id="li_5_4">5_4</span>'
+        , '</li>'
+    , '</ol>'
+    , '<p id="li_6">6</p>'
+    , '<p id="li_7">7</p>'
+    , '<p id="li_8">8</p>'
+    , '<p id="li2_1">1</p>'
+].join('');
+test("Across lists", function () {
+    expect(2);
+    var startItemId = 'li_5_4',
+        endItemId = 'li2_1';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.twoListsHtml,
+        delistHtml.li_5_4__li2_1
+    );
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.twoListsHtml,
+        delistHtml.li_5_4__li2_1,
+        true
+    );
+});
+delistHtml.li_2_1__li_5_1 = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2'
+            , '<br /><span id="li_2_1">2_1</span>'
+            , '<br /><span id="li_2_2">2_2</span>'
+        , '</li>'
+    , '</ol>'
+    , '<p id="li_3">3</p>'
+    , '<p id="li_3_1">3_1</p>'
+    , '<p id="li_4">4</p>'
+    , '<p id="li_5">5</p>'
+    , '<p id="li_5_1">5_1</p>'
+    , '<ol>'
+        , '<li id="li_5_2">5_2</li>'
+        , '<li id="li_5_3">5_3'
+            , '<ul>'
+                , '<li id="li_5_3_1">5_3_1</li>'
+            , '</ul>'
+        , '</li>'
+        , '<li id="li_5_4">5_4</li>'
+    , '</ol>'
+    , '<ol>'
+        , '<li id="li_6">6</li>'
+        , '<li id="li_7">7</li>'
+        , '<li id="li_8">8</li>'
+    , '</ol>'
+].join('');
+test("Across different sub-lists at same level", function () {
+    expect(2);
+    var startItemId = 'li_2_1',
+        endItemId = 'li_5_1';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_2_1__li_5_1
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_2_1__li_5_1,
+        true
+    );
+});
+
+delistHtml.li_2_1__li_2_2 = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2<br />'
+            , '<span id="li_2_1">2_1</span><br />'
+            , '<span id="li_2_2">2_2</span>'
+        , '</li>'
+        , '<li id="li_3">3'
+            , '<ol>'
+                , '<li id="li_3_1">3_1</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_4">4</li>'
+        , '<li id="li_5">5'
+            , '<ol>'
+                , '<li id="li_5_1">5_1</li>'
+                , '<li id="li_5_2">5_2</li>'
+                , '<li id="li_5_3">5_3'
+                    , '<ul>'
+                        , '<li id="li_5_3_1">5_3_1</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li id="li_5_4">5_4</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_6">6</li>'
+        , '<li id="li_7">7</li>'
+        , '<li id="li_8">8</li>'
+    , '</ol>'
+].join('');
+test("Transform into spans. De-list entire list.", function () {
+    expect(2);
+    var startItemId = 'li_2_1',
+        endItemId = 'li_2_2';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_2_1__li_2_2
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_2_1__li_2_2,
+        true
+    );
+});
+
+delistHtml.li_6__li_7 = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2'
+            , '<ol>'
+                , '<li id="li_2_1">2_1</li>'
+                , '<li id="li_2_2">2_2</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_3">3'
+            , '<ol>'
+                , '<li id="li_3_1">3_1</li>'
+            , '</ol>'
+        , '</li>'
+        , '<li id="li_4">4</li>'
+        , '<li id="li_5">5'
+            , '<ol>'
+                , '<li id="li_5_1">5_1</li>'
+                , '<li id="li_5_2">5_2</li>'
+                , '<li id="li_5_3">5_3'
+                    , '<ul>'
+                        , '<li id="li_5_3_1">5_3_1</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li id="li_5_4">5_4</li>'
+            , '</ol>'
+        , '</li>'
+    , '</ol>'
+    , '<p id="li_6">6</p>'
+    , '<p id="li_7">7</p>'
+    , '<ol>'
+        , '<li id="li_8">8</li>'
+    , '</ol>'
+].join('');
+test("Split lists", function () {
+    expect(2);
+    var startItemId = 'li_6',
+        endItemId = 'li_7';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_6__li_7
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'ordered',
+        delistHtml.base,
+        delistHtml.li_6__li_7,
+        true
+    );
+});
+delistHtml.withNodesAfterSubList = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2'
+            , '<ol>'
+                , '<li id="li_2_1">2_1</li>'
+                , '<li>I have no attributes!</li>'
+                , '<li id="li_2_3">2_3</li>'
+            , '</ol>'
+            , 'foo'
+            , '<br />'
+            , '<span id="select_me">I am after a nested list.</span><br />'
+            , 'Me, too!'
+        , '</li>'
+    , '</ol>'
+].join('');
+delistHtml.withNodesAfterSubList_li_2 = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+    , '</ol>'
+    , '<p id="li_2">2</p>'
+    , '<ol>'
+        , '<li id="li_2_1">2_1</li>'
+        , '<li>I have no attributes!</li>'
+        , '<li id="li_2_3">2_3</li>'
+    , '</ol>'
+    , '<p>foo</p>'
+    , '<p id="select_me">I am after a nested list.</p>'
+    , '<p>Me, too!</p>'
+].join('');
+test("textNode & inline element after block element. Transform `li`'s' contents to root containers.",
+    function () {
+        expect(2);
+        var startItemId = 'li_2',
+            endItemId = 'li_2';
+
+        testListMulti(
+            startItemId,
+            endItemId,
+            'ordered',
+            delistHtml.withNodesAfterSubList,
+            delistHtml.withNodesAfterSubList_li_2
+        );
+        // Via text selection
+        testListMulti(
+            startItemId,
+            endItemId,
+            'ordered',
+            delistHtml.withNodesAfterSubList,
+            delistHtml.withNodesAfterSubList_li_2,
+            true
+        );
+    }
+);
+delistHtml.withNodesAfterSubList_li_2_1__2_3 = [""
+    , '<ol>'
+        , '<li id="li_1">1</li>'
+        , '<li id="li_2">2'
+            , '<br /><span id="li_2_1">2_1</span>'
+            , '<br />I have no attributes!'
+            , '<br /><span id="li_2_3">2_3</span><br />'
+            , 'foo'
+            , '<br />'
+            , '<span id="select_me">I am after a nested list.</span><br />'
+            , 'Me, too!'
+        , '</li>'
+    , '</ol>'
+].join('');
+test("Add `br` elements after transforming `li` to `span`. Unwrap span if no attributes.",
+    function () {
+        expect(2);
+        var startItemId = 'li_2_1',
+            endItemId = 'li_2_3';
+
+        testListMulti(
+            startItemId,
+            endItemId,
+            'ordered',
+            delistHtml.withNodesAfterSubList,
+            delistHtml.withNodesAfterSubList_li_2_1__2_3
+        );
+        // Via text selection
+        testListMulti(
+            startItemId,
+            endItemId,
+            'ordered',
+            delistHtml.withNodesAfterSubList,
+            delistHtml.withNodesAfterSubList_li_2_1__2_3,
+            true
+        );
+    }
+);
+delistHtml.withEmptyNestedLi = [""
+    , '<ul id="0">'
+        , '<li id="0_0">'
+            , '<ul id="0_0_0">'
+                , '<li id="0_0_0_0">'
+                , '</li>'
+                , '<li id="0_0_0_1">'
+                    , '<br id="0_0_0_1_0" />'
+                , '</li>'
+                , '<li id="0_0_0_2">'
+                    , '0_0_0_2_0'
+                , '</li>'
+            , '</ul>'
+        , '</li>'
+    , '</ul>'
+].join('');
+delistHtml.withEmptyNestedLi_deListed = [""
+    , '<ul id="0">'
+        , '<li id="0_0">'
+            , '<span id="0_0_0_2">'
+                , '0_0_0_2_0'
+            , '</span>'
+        , '</li>'
+    , '</ul>'
+].join('');
+test("Don't make empty spans", function () {
+    expect(2);
+    var startItemId = '0_0_0_0',
+        endItemId = '0_0_0_2';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'unordered',
+        delistHtml.withEmptyNestedLi,
+        delistHtml.withEmptyNestedLi_deListed
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'unordered',
+        delistHtml.withEmptyNestedLi,
+        delistHtml.withEmptyNestedLi_deListed,
+        true
+    );
+});
+delistHtml.withTable = [""
+    , '<ul id="0">'
+        , '<li id="0_0">'
+            , '0_0_0'
+            , '<table id="0_0_1">'
+                , '<tbody id="0_0_1_0">'
+                    , '<tr id="0_0_1_0_0">'
+                        , '<td id="0_0_1_0_0_0">'
+                            , '0_0_1_0_0_0_0'
+                        , '</td>'
+                        , '<td id="0_0_1_0_0_1">'
+                            , '<ul id="0_0_1_0_0_1_0">'
+                                , '<li id="0_0_1_0_0_1_0_0">'
+                                    , '0_0_1_0_0_1_0_0_0'
+                                , '</li>'
+                            , '</ul>'
+                        , '</td>'
+                    , '</tr>'
+                , '</tbody>'
+            , '</table>'
+        , '</li>'
+    , '</ul>'
+].join('');
+delistHtml.withTable_deListedInside = [""
+    , '<ul id="0">'
+        , '<li id="0_0">'
+            , '0_0_0'
+            , '<table id="0_0_1">'
+                , '<tbody id="0_0_1_0">'
+                    , '<tr id="0_0_1_0_0">'
+                        , '<td id="0_0_1_0_0_0">'
+                            , '0_0_1_0_0_0_0'
+                        , '</td>'
+                        , '<td id="0_0_1_0_0_1">'
+                            , '<span id="0_0_1_0_0_1_0_0">'
+                                , '0_0_1_0_0_1_0_0_0'
+                            , '</span>'
+                        , '</td>'
+                    , '</tr>'
+                , '</tbody>'
+            , '</table>'
+        , '</li>'
+    , '</ul>'
+].join('');
+test("De-list inside table.", function () {
+    expect(2);
+    var startItemId = '0_0_1_0_0_1_0_0',
+        endItemId = '0_0_1_0_0_1_0_0';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'unordered',
+        delistHtml.withTable,
+        delistHtml.withTable_deListedInside
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'unordered',
+        delistHtml.withTable,
+        delistHtml.withTable_deListedInside,
+        true
+    );
+});
+delistHtml.withTable_parentDeListed = [""
+    , '<p id="0_0">'
+        , '0_0_0'
+    , '</p>'
+    , '<table id="0_0_1">'
+        , '<tbody id="0_0_1_0">'
+            , '<tr id="0_0_1_0_0">'
+                , '<td id="0_0_1_0_0_0">'
+                    , '0_0_1_0_0_0_0'
+                , '</td>'
+                , '<td id="0_0_1_0_0_1">'
+                    , '<ul id="0_0_1_0_0_1_0">'
+                        , '<li id="0_0_1_0_0_1_0_0">'
+                            , '0_0_1_0_0_1_0_0_0'
+                        , '</li>'
+                    , '</ul>'
+                , '</td>'
+            , '</tr>'
+        , '</tbody>'
+    , '</table>'
+].join('');
+test("De-list parent of table.", function () {
+    expect(2);
+    var startItemId = '0_0',
+        endItemId = '0_0';
+
+    testListMulti(
+        startItemId,
+        endItemId,
+        'unordered',
+        delistHtml.withTable,
+        delistHtml.withTable_parentDeListed
+    );
+    // Via text selection
+    testListMulti(
+        startItemId,
+        endItemId,
+        'unordered',
+        delistHtml.withTable,
+        delistHtml.withTable_parentDeListed,
+        true
+    );
+});
+
+var consecutiveTablesDelist = {};
+consecutiveTablesDelist.base = [""
+    , '<ol>'
+        , '<li id="li_0">'
+            , '0'
+            , '<table id="t_0">'
+                , '<tbody id="tbody_0">'
+                    , '<tr id="tr_0_0">'
+                        , '<td id="td_0_0_0">'
+                            , '0_0_0'
+                        , '</td>'
+                    , '</tr>'
+                , '</tbody>'
+            , '</table>'
+        , '</li>'
+    , '</ol>'
+    , '<table id="t_1">'
+        , '<tbody id="tbody_1">'
+            , '<tr id="tr_1_0">'
+                , '<td id="td_1_0_0">'
+                    , '1_0_0'
+                , '</td>'
+            , '</tr>'
+        , '</tbody>'
+    , '</table>'
+].join('');
+consecutiveTablesDelist.li_0 = [""
+    , '<p id="li_0">0</p>'
+    , '<table id="t_0">'
+        , '<tbody id="tbody_0">'
+            , '<tr id="tr_0_0">'
+                , '<td id="td_0_0_0">'
+                    , '0_0_0'
+                , '</td>'
+            , '</tr>'
+        , '</tbody>'
+    , '</table>'
+    , '<table id="t_1">'
+        , '<tbody id="tbody_1">'
+            , '<tr id="tr_1_0">'
+                , '<td id="td_1_0_0">'
+                    , '1_0_0'
+                , '</td>'
+            , '</tr>'
+        , '</tbody>'
+    , '</table>'
+].join('');
+test("De-listing keeps spacer brs for blocking_elements", function () {
+    expect(2);
+    var startItemId = 'li_0',
+        $body,
+        children,
+        wymeditor = jQuery.wymeditors(0);
+
+    testList(
+        startItemId,
+        'ordered',
+        consecutiveTablesDelist.base,
+        consecutiveTablesDelist.li_0
+    );
+    // Now we need to verify that the spacer brs still exist in the DOM
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    children = $body.children();
+
+    if (is_double_br_browser) {
+        expect(9);
+        deepEqual(children.length, 6);
+        if (children.length === 6) {
+            deepEqual(children[0].tagName.toLowerCase(), 'p');
+            deepEqual(children[1].tagName.toLowerCase(), 'br');
+            deepEqual(children[2].tagName.toLowerCase(), 'table');
+            deepEqual(children[3].tagName.toLowerCase(), 'br');
+            deepEqual(children[4].tagName.toLowerCase(), 'table');
+            deepEqual(children[5].tagName.toLowerCase(), 'br');
+        }
+    } else {
+        expect(8);
+        deepEqual(children.length, 5);
+        if (children.length === 5) {
+            deepEqual(children[0].tagName.toLowerCase(), 'p');
+            deepEqual(children[1].tagName.toLowerCase(), 'br');
+            deepEqual(children[2].tagName.toLowerCase(), 'table');
+            deepEqual(children[3].tagName.toLowerCase(), 'br');
+            deepEqual(children[4].tagName.toLowerCase(), 'table');
+        }
+    }
+});

@@ -1,10 +1,23 @@
 /* jshint camelcase: false, maxlen: 100 */
-/* global setupWym, htmlEquals,
+/* global wymEqual, prepareUnitTestModule,
 test, expect, deepEqual */
 "use strict";
 // Tests for the XML parser
 
-module("XmlParser", {setup: setupWym});
+module("XmlParser", {setup: prepareUnitTestModule});
+
+test("Empty is empty", function () {
+    var wymeditor = jQuery.wymeditors(0);
+    expect(2);
+
+    wymeditor._html('');
+    wymEqual(wymeditor, '');
+
+    wymeditor._html('');
+    // Placing the caret inside shouldn't create any content.
+    wymeditor.setCaretIn(jQuery(wymeditor._doc).find('body.wym_iframe')[0]);
+    wymEqual(wymeditor, '');
+});
 
 test("Should correct orphaned sublists", function () {
     expect(2);
@@ -24,7 +37,7 @@ test("Should correct orphaned sublists", function () {
                 '<ul>' +
                     '<li>a.1<\/li>' +
                 '<\/ul>' +
-                '<li>b<br><\/li>' +
+                '<li>b<br /><\/li>' +
             '<\/ul>',
         wymeditor = jQuery.wymeditors(0);
     deepEqual(wymeditor.parser.parse(design_mode_pseudo_html), expected,
@@ -210,13 +223,13 @@ test("Don't over-close lists", function () {
 
     // Now throw the browser/dom in the mix
     wymeditor._html(orphanedLiHtml);
-    htmlEquals(wymeditor, orphanedLiHtml);
+    wymEqual(wymeditor, orphanedLiHtml);
 
     wymeditor._html(simpleOrphanedLiHtml);
-    htmlEquals(wymeditor, simpleOrphanedLiHtml);
+    wymEqual(wymeditor, simpleOrphanedLiHtml);
 
     wymeditor._html(listAfterText);
-    htmlEquals(wymeditor, listAfterText);
+    wymEqual(wymeditor, listAfterText);
 });
 
 test("Shouldn't remove empty td elements", function () {
@@ -229,9 +242,9 @@ test("Shouldn't remove empty td elements", function () {
 test("Should remove PRE line breaks (BR)", function () {
     expect(1);
     var original = String() +
-            '<pre>One<br>Two<br>Three</pre>' +
+            '<pre>One<br />Two<br />Three</pre>' +
             '<p>Test</p>' +
-            '<pre>Three<br>Four<br>Five</pre>',
+            '<pre>Three<br />Four<br />Five</pre>',
         expected = String() +
             '<pre>One\r\nTwo\r\nThree</pre>' +
             '<p>Test</p>' +
@@ -334,7 +347,7 @@ test("Allow line breaks after strong in lists", function () {
         '<ol id="ol_1">' +
             '<li id="li_1">li_1' +
                 '<ol>' +
-                    '<li id="li_1_1"><strong>li_1_1</strong><br>more text</li>' +
+                    '<li id="li_1_1"><strong>li_1_1</strong><br />more text</li>' +
                 '</ol>' +
             '</li>' +
         '</ol>',
@@ -351,13 +364,13 @@ test("Allow line breaks after strong in lists", function () {
 
     // Now throw the browser/dom in the mix
     wymeditor._html(listHtml);
-    htmlEquals(wymeditor, listHtml);
+    wymEqual(wymeditor, listHtml);
 
     wymeditor._html(listHtmlUnclosedBr);
-    htmlEquals(wymeditor, listHtml);
+    wymEqual(wymeditor, listHtml);
 });
 
-module("XmlParser-editor_only_elements", {setup: setupWym});
+module("XmlParser-editor_only_elements", {setup: prepareUnitTestModule});
 
 var TEXT_CONTAINER_ELEMENTS = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
                                'pre', 'blockquote', 'div'];
@@ -390,8 +403,9 @@ test("Remove editor-only text container elements", function () {
         $element.addClass(WYMeditor.EDITOR_ONLY_CLASS);
         $body.find('#before-editor-only-element').after($element);
 
-        htmlEquals(wymeditor, editorOnlyContainerStartHtml,
-                   "Remove editor-only `" + tagName + "` element");
+        wymEqual(wymeditor, editorOnlyContainerStartHtml, {
+            assertionString: "Remove editor-only `" + tagName + "` element"
+        });
     }
 });
 
@@ -412,8 +426,9 @@ test("Remove editor-only text inline elements", function () {
         $element.addClass(WYMeditor.EDITOR_ONLY_CLASS);
         $body.find('#test-container').append($element);
 
-        htmlEquals(wymeditor, editorOnlyInlineStartHtml,
-                   "Remove editor-only `" + tagName + "` inline element");
+        wymEqual(wymeditor, editorOnlyInlineStartHtml, {
+                assertionString: "Remove editor-only `" + tagName + "` inline element"
+            });
     }
 });
 
@@ -434,8 +449,9 @@ test("Remove editor-only table", function () {
     table += '</table>';
     $body.find('#before-editor-only-element').after(table);
 
-    htmlEquals(wymeditor, editorOnlyContainerStartHtml,
-               "Remove editor-only `table`");
+    wymEqual(wymeditor, editorOnlyContainerStartHtml, {
+        assertionString: "Remove editor-only `table`"
+    });
 });
 
 test("Remove editor-only lists", function () {
@@ -458,8 +474,9 @@ test("Remove editor-only lists", function () {
         list += '</' + listType + '>';
         $body.find('#before-editor-only-element').after(list);
 
-        htmlEquals(wymeditor, editorOnlyContainerStartHtml,
-                   "Remove editor-only `" + listType + "` list");
+        wymEqual(wymeditor, editorOnlyContainerStartHtml, {
+            assertionString: "Remove editor-only `" + listType + "` list"
+        });
     }
 });
 
@@ -479,8 +496,9 @@ test("Remove editor-only self-closing elements", function () {
         $element.addClass(WYMeditor.EDITOR_ONLY_CLASS);
         $body.find('#before-editor-only-element').after($element);
 
-        htmlEquals(wymeditor, editorOnlyContainerStartHtml,
-                   "Remove editor-only `" + tagName + "` element");
+        wymEqual(wymeditor, editorOnlyContainerStartHtml, {
+            assertionString: "Remove editor-only `" + tagName + "` element"
+        });
     }
 });
 
@@ -499,8 +517,9 @@ test("Remove editor-only element with multiple classes", function () {
     $element.addClass("baz");
     $body.find('#before-editor-only-element').after($element);
 
-    htmlEquals(wymeditor, editorOnlyContainerStartHtml,
-               "Remove editor-only `p` element with multiple classes");
+    wymEqual(wymeditor, editorOnlyContainerStartHtml, {
+        assertionString: "Remove editor-only `p` element with multiple classes"
+    });
 });
 
 test("Remove nested editor-only elements", function () {
@@ -539,11 +558,12 @@ test("Remove nested editor-only elements", function () {
     $container.append($span);
 
     $body.find('#before-editor-only-element').after($container);
-    htmlEquals(wymeditor, editorOnlyContainerStartHtml,
-               "Remove nested editor-only elements");
+    wymEqual(wymeditor, editorOnlyContainerStartHtml, {
+            assertionString: "Remove nested editor-only elements"
+        });
 });
 
-module("XmlParser-editor_only_invalid_lists", {setup: setupWym});
+module("XmlParser-editor_only_invalid_lists", {setup: prepareUnitTestModule});
 
 var invalidULEndNesting = String() +
     '<ul id="ul_top">' +
@@ -613,8 +633,9 @@ test("Remove editor-only invalid UL with LI sibling before it", function () {
     $body.find('#ul_2').addClass(WYMeditor.EDITOR_ONLY_CLASS);
 
     expectedHtml = validULEndNesting.replace(/<ul id="ul\_2".*?<\/ul>/, '');
-    htmlEquals(wymeditor, expectedHtml,
-               "Remove editor-only invalid UL with LI sibling before it");
+    wymEqual(wymeditor, expectedHtml, {
+            assertionString: "Remove editor-only invalid UL with LI sibling before it"
+        });
 });
 
 test("Remove editor-only invalid UL that's the first child of a UL", function () {
@@ -627,8 +648,9 @@ test("Remove editor-only invalid UL that's the first child of a UL", function ()
     $body.find('#ul_1').addClass(WYMeditor.EDITOR_ONLY_CLASS);
 
     expectedHtml = invalidULStartNesting.replace(/<ul id="ul\_1".*?<\/ul>/, '');
-    htmlEquals(wymeditor, expectedHtml,
-               "Remove editor-only UL that's the first child of a UL");
+    wymEqual(wymeditor, expectedHtml, {
+            assertionString: "Remove editor-only UL that's the first child of a UL"
+        });
 });
 
 test("Remove editor-only LI with invalid UL sibling after it", function () {
@@ -642,8 +664,9 @@ test("Remove editor-only LI with invalid UL sibling after it", function () {
 
     expectedHtml = validULEndNesting.replace(/<ul id="ul\_2".*?<\/ul>/, '');
     expectedHtml = expectedHtml.replace(/<li id="li\_2".*?<\/li>/, '');
-    htmlEquals(wymeditor, expectedHtml,
-               "Remove editor-only LI with invalid UL sibling after it");
+    wymEqual(wymeditor, expectedHtml, {
+            assertionString: "Remove editor-only LI with invalid UL sibling after it"
+        });
 });
 
 test("Remove editor-only LI with invalid UL sibling before it", function () {
@@ -656,8 +679,9 @@ test("Remove editor-only LI with invalid UL sibling before it", function () {
     $body.find('#li_2').addClass(WYMeditor.EDITOR_ONLY_CLASS);
 
     expectedHtml = validULStartNesting.replace(/<li id="li\_2".*?<\/li>/, '');
-    htmlEquals(wymeditor, expectedHtml,
-               "Remove editor-only LI with invalid UL sibling before it");
+    wymEqual(wymeditor, expectedHtml, {
+            assertionString: "Remove editor-only LI with invalid UL sibling before it"
+        });
 });
 
 test("Remove editor-only invalid LI nested within an LI", function () {
@@ -670,8 +694,9 @@ test("Remove editor-only invalid LI nested within an LI", function () {
     $body.find('#li_2').addClass(WYMeditor.EDITOR_ONLY_CLASS);
 
     expectedHtml = validLINesting.replace(/<li id="li\_2".*?<\/li>/, '');
-    htmlEquals(wymeditor, expectedHtml,
-               "Remove editor-only LI with invalid UL sibling before it");
+    wymEqual(wymeditor, expectedHtml, {
+            assertionString: "Remove editor-only LI with invalid UL sibling before it"
+        });
 });
 
 test("Remove editor-only LI with an invalid LI nested within it", function () {
@@ -684,8 +709,9 @@ test("Remove editor-only LI with an invalid LI nested within it", function () {
     $body.find('#li_1').addClass(WYMeditor.EDITOR_ONLY_CLASS);
 
     expectedHtml = validLINesting.replace(/<li id="li\_1".*?<\/li>/, '');
-    htmlEquals(wymeditor, expectedHtml,
-               "Remove editor-only LI with an invalid LI nested within it");
+    wymEqual(wymeditor, expectedHtml, {
+            assertionString: "Remove editor-only LI with an invalid LI nested within it"
+        });
 });
 
 test("Remove editor-only UL with invalid LI nesting within it", function () {
@@ -698,12 +724,13 @@ test("Remove editor-only UL with invalid LI nesting within it", function () {
     $body.find('#ul_top').addClass(WYMeditor.EDITOR_ONLY_CLASS);
 
     expectedHtml = "";
-    htmlEquals(wymeditor, expectedHtml,
-               "Remove editor-only UL with invalid LI nesting within it");
+    wymEqual(wymeditor, expectedHtml, {
+            assertionString: "Remove editor-only UL with invalid LI nesting within it"
+        });
 });
 
 
-module("XmlParser-fix_style_spans", {setup: setupWym});
+module("XmlParser-fix_style_spans", {setup: prepareUnitTestModule});
 
 var startSpan = '<p>Test<span>Test</span></p>';
 
@@ -715,7 +742,9 @@ function testStyleSpan(newTag, spanStyle, assertionString) {
     wymeditor._html(startSpan);
     $body.find('span').attr('style', spanStyle);
 
-    htmlEquals(wymeditor, expectedHtml, assertionString);
+    wymEqual(wymeditor, expectedHtml, {
+            assertionString: assertionString
+        });
 }
 
 test("Fix bold style span", function () {
@@ -738,7 +767,7 @@ test("Fix subscript style span", function () {
     testStyleSpan("sub", "vertical-align:sub;", "Fix subscript style span");
 });
 
-module("XmlParser-remove_unwanted_classes", {setup: setupWym});
+module("XmlParser-remove_unwanted_classes", {setup: prepareUnitTestModule});
 
 test("Remove 'apple-style-span' class", function () {
     expect(2);
@@ -757,17 +786,19 @@ test("Remove 'apple-style-span' class", function () {
                 'Test' +
             '</span>',
         expectedHtmlMultiClass = String() +
-            '<span id="span_1" class="foo bar baz">' +
+            '<span class="foo bar baz" id="span_1">' +
                 'Test' +
             '</span>';
 
     wymeditor._html(startHtmlSingleClass);
-    htmlEquals(wymeditor, expectedHtmlSingleClass,
-               "'apple-style-span' removed from span with one class");
+    wymEqual(wymeditor, expectedHtmlSingleClass, {
+            assertionString: "'apple-style-span' removed from span with one class"
+        });
 
     wymeditor._html(startHtmlMultiClass);
-    htmlEquals(wymeditor, expectedHtmlMultiClass,
-               "'apple-style-span' removed from span with multiple classes");
+    wymEqual(wymeditor, expectedHtmlMultiClass, {
+            assertionString: "'apple-style-span' removed from span with multiple classes"
+        });
 });
 
 test("Class removal is case insensitive", function () {
@@ -776,25 +807,26 @@ test("Class removal is case insensitive", function () {
         defaultClassesRemovedByParser = WYMeditor.CLASSES_REMOVED_BY_PARSER,
 
         startHtml = String() +
-            '<p id="p_1" class="FOO BaR baZ qUx">' +
+            '<p class="FOO BaR baZ qUx" id="p_1">' +
                 'Test' +
             '</p>',
         expectedHtml = String() +
-            '<p id="p_1" class="baZ">' +
+            '<p class="baZ" id="p_1">' +
                 'Test' +
             '</p>';
 
     WYMeditor.CLASSES_REMOVED_BY_PARSER = ["Bar", "quX", "foo"];
 
     wymeditor._html(startHtml);
-    htmlEquals(wymeditor, expectedHtml,
-               "Class removal is case insensitive");
+    wymEqual(wymeditor, expectedHtml, {
+            assertionString: "Class removal is case insensitive"
+        });
 
     // Restore default
     WYMeditor.CLASSES_REMOVED_BY_PARSER = defaultClassesRemovedByParser;
 });
 
-module("XmlParser-unwrap_single_tag_in_list_item", {setup: setupWym});
+module("XmlParser-unwrap_single_tag_in_list_item", {setup: prepareUnitTestModule});
 
 var tagsToUnwrapInLists =
     WYMeditor.DocumentStructureManager.VALID_DEFAULT_ROOT_CONTAINERS;
@@ -831,7 +863,10 @@ function testUnwrapSingleContentInLI(
         iterString = assertionString.replace(/\{blockTag\}/g,
                                              tagsToUnwrapInLists[i]);
         wymeditor._html(iterStartHtml);
-        htmlEquals(wymeditor, correctHtml, iterString, true);
+        wymEqual(wymeditor, correctHtml, {
+            assertionString: iterString,
+            fixListSpacing: true
+        });
     }
 }
 
@@ -862,6 +897,7 @@ var unwrapSingleInSublistHtml = String() +
                 '<li><{blockTag}>Test</{blockTag}></li>' +
                 '<li>Test</li>' +
             '</ul>' +
+        '</li>' +
         '<li><{blockTag}>Test</{blockTag}></li>' +
     '</ol>';
 
@@ -891,6 +927,7 @@ var unwrapSingleInNestedListHtml = String() +
                     '</ol>' +
                 '</li>' +
             '</ul>' +
+        '</li>' +
         '<li><{blockTag}>Test</{blockTag}></li>' +
     '</ol>';
 
@@ -1009,12 +1046,15 @@ function testUnwrapMultiContentInLI(
                 .replace(/\{otherContent\}/g, otherContentTags[j]);
 
             wymeditor._html(iterStartHtml);
-            htmlEquals(wymeditor, iterCorrectHtml, iterString, true);
+            wymEqual(wymeditor, iterCorrectHtml, {
+                assertionString: iterString,
+                fixListSpacing: true
+            });
         }
     }
 }
 
-module("XmlParser-unwrap_multiple_tags_in_list", {setup: setupWym});
+module("XmlParser-unwrap_multiple_tags_in_list", {setup: prepareUnitTestModule});
 
 var unwrapMultiInListHtml = String() +
     '<ul>' +
@@ -1192,7 +1232,7 @@ test("Unwrap root container content surrounded by table elements in simple " +
 });
 
 
-module("XmlParser-unwrap_multiple_tags_in_sublist", {setup: setupWym});
+module("XmlParser-unwrap_multiple_tags_in_sublist", {setup: prepareUnitTestModule});
 
 var unwrapMultiInSublistHtml = String() +
     '<ol>' +
@@ -1203,6 +1243,7 @@ var unwrapMultiInSublistHtml = String() +
                 '<li><{blockTag}>Test</{blockTag}></li>' +
                 '<li>Test</li>' +
             '</ul>' +
+        '</li>' +
         '<li><{blockTag}>Test</{blockTag}></li>' +
     '</ol>';
 
@@ -1375,7 +1416,7 @@ test("Unwrap root container content surrounded by table elements in simple " +
     );
 });
 
-module("XmlParser-unwrap_multiple_tags_in_nested_list", {setup: setupWym});
+module("XmlParser-unwrap_multiple_tags_in_nested_list", {setup: prepareUnitTestModule});
 
 var unwrapMultiInNestedListHtml = String() +
     '<ol>' +
@@ -1392,6 +1433,7 @@ var unwrapMultiInNestedListHtml = String() +
                     '</ol>' +
                 '</li>' +
             '</ul>' +
+        '</li>' +
         '<li><{blockTag}>Test</{blockTag}></li>' +
     '</ol>';
 
@@ -1563,7 +1605,7 @@ test("Unwrap root container content surrounded by table elements in nested " +
     );
 });
 
-module("XmlParser-unwrap_nested_tags_in_list", {setup: setupWym});
+module("XmlParser-unwrap_nested_tags_in_list", {setup: prepareUnitTestModule});
 
 var unwrapNestedDivStartHtml = String() +
     '<ul>' +
@@ -1621,12 +1663,13 @@ test("Unwrap content of nested DIV elements in list item", function () {
     var wymeditor = jQuery.wymeditors(0);
 
     wymeditor._html(unwrapNestedDivStartHtml);
-    htmlEquals(wymeditor, unwrapNestedDivCorrectHtml,
-               "Unwrap content of nested `div` elements in a list item",
-               true);
+    wymEqual(wymeditor, unwrapNestedDivCorrectHtml, {
+        assertionString: "Unwrap content of nested `div` elements in a list item",
+        fixListSpacing: true
+    });
 });
 
-module("XmlParser-allowed_block_elements", {setup: setupWym});
+module("XmlParser-allowed_block_elements", {setup: prepareUnitTestModule});
 
 var blockElementsHtml = {};
 blockElementsHtml.expected = [""
@@ -1634,7 +1677,7 @@ blockElementsHtml.expected = [""
     , '<p>p2</p>'
 ].join('');
 blockElementsHtml.brInRoot = [""
-    , '<br>'
+    , '<br />'
     , '<p>p1</p>'
     , '<br />'
     , '<p>p2</p>'
@@ -1646,9 +1689,7 @@ test("BR isn't allowed at the root", function () {
     var wymeditor = jQuery.wymeditors(0);
 
     wymeditor._html(blockElementsHtml.brInRoot);
-    htmlEquals(
-        wymeditor,
-        blockElementsHtml.expected,
-       "BR removed from root"
-    );
+    wymEqual(wymeditor, blockElementsHtml.expected, {
+            assertionString: "BR removed from root"
+        });
 });

@@ -3,7 +3,13 @@
   "version": "1.0.0-b6",
   "dependencies": {
     "requirejs": "~2.1",
-    "jquery": "~1.4"
+    "jquery": "~1.4.4",
+    "jquery.browser": "~0.0.6"
   },
-  "devDependencies": {}
+  "devDependencies": {
+      "js-beautify": "https://github.com/beautify-web/js-beautify.git#1.5"
+  },
+  "resolutions": {
+    "jquery": "~1.4.4"
+  }
 }

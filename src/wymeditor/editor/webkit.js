@@ -2,52 +2,20 @@
 /* global -$ */
 "use strict";
 
-WYMeditor.WymClassSafari = function (wym) {
+WYMeditor.WymClassWebKit = function (wym) {
     this._wym = wym;
     this._class = "class";
 };
 
-WYMeditor.WymClassSafari.prototype.initIframe = function (iframe) {
+WYMeditor.WymClassWebKit.prototype._docEventQuirks = function () {
     var wym = this;
-
-    wym._iframe = iframe;
-    wym._doc = iframe.contentDocument;
-
-    wym._doc.title = wym._wym._index;
-
-    // Set the text direction
-    jQuery('html', wym._doc).attr('dir', wym._options.direction);
-
-    // Init designMode
-    wym._doc.designMode = "on";
-
-    // Init html value
-    wym._html(wym._wym._options.html);
-
-    if (jQuery.isFunction(wym._options.preBind)) {
-        wym._options.preBind(wym);
-    }
-
-    // Bind external events
-    wym._wym.bindEvents();
 
     jQuery(wym._doc).bind("keydown", wym.keydown);
     jQuery(wym._doc).bind("keyup", wym.keyup);
-    if (jQuery.isFunction(wym._options.postInit)) {
-        wym._options.postInit(wym);
-    }
-
-    // Add event listeners to doc elements, e.g. images
-    wym.listen();
-
-    jQuery(wym._element).trigger(
-        WYMeditor.EVENTS.postIframeInitialization,
-        wym._wym
-    );
 };
 
-WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
-    if (!this.selected()) {
+WYMeditor.WymClassWebKit.prototype._exec = function (cmd, param) {
+    if (!this.selectedContainer()) {
         return false;
     }
 
@@ -63,7 +31,7 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
         this._doc.execCommand(cmd, '', null);
     }
 
-    container = this.selected();
+    container = this.selectedContainer();
     if (container) {
         $container = jQuery(container);
         tagName = container.tagName.toLowerCase();
@@ -106,7 +74,7 @@ WYMeditor.WymClassSafari.prototype._exec = function (cmd, param) {
 };
 
 //keydown handler, mainly used for keyboard shortcuts
-WYMeditor.WymClassSafari.prototype.keydown = function (e) {
+WYMeditor.WymClassWebKit.prototype.keydown = function (e) {
     //'this' is the doc
     var wym = WYMeditor.INSTANCES[this.title];
 
@@ -130,15 +98,32 @@ WYMeditor.WymClassSafari.prototype.keydown = function (e) {
     }
 };
 
+// A `div` can be created by breaking out of a list in some cases. Issue #549.
+WYMeditor.WymClassWebKit.prototype._inListBreakoutDiv = function (evtWhich) {
+    var wym = this,
+        $mainContainer = jQuery(wym.mainContainer());
+
+    if (
+        evtWhich === WYMeditor.KEY.ENTER &&
+        $mainContainer.is('div') &&
+        wym.documentStructureManager.defaultRootContainer !== 'div' &&
+        $mainContainer.prev('ol, ul').length === 1
+    ) {
+        return true;
+    }
+    return false;
+};
+
 // Keyup handler, mainly used for cleanups
-WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
+WYMeditor.WymClassWebKit.prototype.keyup = function (evt) {
     //'this' is the doc
     var wym = WYMeditor.INSTANCES[this.title],
         container,
         defaultRootContainer,
         notValidRootContainers,
         name,
-        parentName;
+        parentName,
+        mainContainer;
 
     notValidRootContainers =
         wym.documentStructureManager.structureRules.notValidRootContainers;
@@ -162,7 +147,7 @@ WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
             !evt.metaKey &&
             !evt.ctrlKey) {
 
-        container = wym.selected();
+        container = wym.selectedContainer();
         name = container.tagName.toLowerCase();
         if (container.parentNode) {
             parentName = container.parentNode.tagName.toLowerCase();
@@ -190,7 +175,7 @@ WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
     if (wym.keyCanCreateBlockElement(evt.which)) {
         // If the selected container is a root container, make sure it is not a
         // different possible default root container than the chosen one.
-        container = wym.selected();
+        container = wym.selectedContainer();
         name = container.tagName.toLowerCase();
         if (container.parentNode) {
             parentName = container.parentNode.tagName.toLowerCase();
@@ -200,8 +185,19 @@ WYMeditor.WymClassSafari.prototype.keyup = function (evt) {
             wym._exec(WYMeditor.FORMAT_BLOCK, defaultRootContainer);
         }
 
+        // Call for the check for--and possible correction of--issue #430.
+        wym.handlePotentialEnterInEmptyNestedLi(evt.which, container);
+
+        // Issue #549.
+        if (wym._inListBreakoutDiv(evt.which)) {
+            mainContainer = wym.switchTo(
+                wym.mainContainer(),
+                defaultRootContainer
+            );
+            wym.setCaretIn(mainContainer);
+        }
+
         // Fix formatting if necessary
         wym.fixBodyHtml();
     }
 };
-

@@ -146,7 +146,7 @@ WYMeditor.RDFa.prototype.setButtons = function () {
 
 WYMeditor.RDFa.prototype.clickButtonHandler = function (evt) {
     var wym = evt.data.instance,
-        selected  = wym.selected();
+        selected  = wym.selectedContainer();
 
     //the attribute already exists, remove it
     if (typeof jQuery(selected).attr(evt.data.attr) !== 'undefined' &&

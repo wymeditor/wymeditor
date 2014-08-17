@@ -1,7 +1,7 @@
 /* jshint maxlen: 90 */
-/* global rangy,
-setupWym, SKIP_KNOWN_FAILING_TESTS,
-htmlEquals, moveSelector, simulateKey, makeSelection, normalizeHtml,
+/* global
+SKIP_KNOWN_FAILING_TESTS, prepareUnitTestModule,
+wymEqual, moveSelector, simulateKey, makeSelection, normalizeHtml,
 ok, test, expect, deepEqual */
 "use strict";
 
@@ -44,7 +44,7 @@ function testTable(
         }
     }
 
-    htmlEquals(wymeditor, expectedHtml);
+    wymEqual(wymeditor, expectedHtml);
 }
 
 function testTableTab(initialHtml, startSelector, endSelector) {
@@ -62,7 +62,11 @@ function testTableTab(initialHtml, startSelector, endSelector) {
 
     simulateKey(WYMeditor.KEY.TAB, startElmnt);
 
-    actualSelection = wymeditor.selected();
+    actualSelection = wymeditor.selectedContainer();
+    // In some browsers the selection will be in a child span. That seems ok.
+    if (actualSelection.tagName.toLowerCase() === 'span') {
+        actualSelection = actualSelection.parentNode;
+    }
     if (endSelector === null) {
         deepEqual(actualSelection, null);
     } else {
@@ -114,16 +118,20 @@ function testRowMerge(
 
     // Use rangy to get a cross-browser selection object and perform the actual
     // merge
-    sel = rangy.getIframeSelection(wymeditor._iframe);
+    sel = wymeditor.selection();
     changesMade = wymeditor.tableEditor.mergeRow(sel);
     deepEqual(changesMade, true);
 
     // Verify that the resulting HTML matches the expected HTML
-    htmlEquals(wymeditor, expectedHtml);
+    wymEqual(wymeditor, expectedHtml);
 
     // Verify that our now-current selection matches the expected final
     // selection.
-    actualSelection = wymeditor.selected();
+    actualSelection = wymeditor.selectedContainer();
+    // In some browsers the selection will be in a child span. That seems ok.
+    if (actualSelection.tagName.toLowerCase() === 'span') {
+        actualSelection = actualSelection.parentNode;
+    }
     if (expectedFinalSelector === null) {
         deepEqual(actualSelection, null);
     } else {
@@ -150,7 +158,7 @@ function testGetCellXIndex(initialHtml, cellSelector, expectedIndex) {
     deepEqual(actual, expectedIndex);
 }
 
-module("Table Modification", {setup: setupWym});
+module("Table Modification", {setup: prepareUnitTestModule});
 
 var basicTableHtml = String() +
         '<table>' +
@@ -179,7 +187,7 @@ var fancyTableHtml = String() +
             '<tbody>' +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
-                    '<td id="td_1_2" colspan="2">1_2</td>' +
+                    '<td colspan="2" id="td_1_2">1_2</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
@@ -236,9 +244,9 @@ var addRowTd32Html = String() +
                     '<td id="td_3_3">3_3</td>' +
                 '</tr>' +
                 '<tr>' +
-                    '<td>&#160;</td>' +
-                    '<td>&#160;</td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                 '</tr>' +
             '</tbody>' +
         '</table>';
@@ -249,19 +257,19 @@ var addColumnTd32Html = String() +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
                     '<td id="td_1_2">1_2</td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                     '<td id="td_1_3">1_3</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
                     '<td id="td_2_2">2_2</td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                     '<td id="td_2_3">2_3</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
                     '<td id="td_3_1">3_1</td>' +
                     '<td id="td_3_2">3_2</td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                     '<td id="td_3_3">3_3</td>' +
                 '</tr>' +
             '</tbody>' +
@@ -281,9 +289,9 @@ var addRowSpan21Html = String() +
                     '<td id="td_2_3">2_3</td>' +
                 '</tr>' +
                 '<tr>' +
-                    '<td>&#160;</td>' +
-                    '<td>&#160;</td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
                     '<td id="td_3_1">3_1</td>' +
@@ -298,19 +306,19 @@ var addColumnSpan21Html = String() +
             '<tbody>' +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                     '<td id="td_1_2">1_2</td>' +
                     '<td id="td_1_3">1_3</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                     '<td id="td_2_2">2_2</td>' +
                     '<td id="td_2_3">2_3</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
                     '<td id="td_3_1">3_1</td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                     '<td id="td_3_2">3_2</td>' +
                     '<td id="td_3_3">3_3</td>' +
                 '</tr>' +
@@ -322,12 +330,12 @@ var addRowFancyTd12 = String() +
             '<tbody>' +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
-                    '<td id="td_1_2" colspan="2">1_2</td>' +
+                    '<td colspan="2" id="td_1_2">1_2</td>' +
                 '</tr>' +
                 '<tr>' +
-                    '<td>&#160;</td>' +
-                    '<td>&#160;</td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
@@ -346,7 +354,7 @@ var addRowFancyTd22 = String() +
             '<tbody>' +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
-                    '<td id="td_1_2" colspan="2">1_2</td>' +
+                    '<td colspan="2" id="td_1_2">1_2</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
@@ -354,8 +362,8 @@ var addRowFancyTd22 = String() +
                     '<td id="td_2_3" rowspan="3">2_3</td>' +
                 '</tr>' +
                 '<tr>' +
-                    '<td>&#160;</td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
                     '<td id="td_3_1">3_1</td>' +
@@ -369,7 +377,7 @@ var addRowFancyTd32 = String() +
             '<tbody>' +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
-                    '<td id="td_1_2" colspan="2">1_2</td>' +
+                    '<td colspan="2" id="td_1_2">1_2</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
@@ -381,9 +389,9 @@ var addRowFancyTd32 = String() +
                     '<td id="td_3_2">3_2</td>' +
                 '</tr>' +
                 '<tr>' +
-                    '<td>&#160;</td>' +
-                    '<td>&#160;</td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                 '</tr>' +
             '</tbody>' +
         '</table>';
@@ -393,19 +401,19 @@ var addColumnFancyTd12 = String() +
             '<tbody>' +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
-                    '<td id="td_1_2" colspan="2">1_2</td>' +
-                    '<td>&#160;</td>' +
+                    '<td colspan="2" id="td_1_2">1_2</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
                     '<td id="td_2_2">2_2</td>' +
                     '<td id="td_2_3" rowspan="2">2_3</td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
                     '<td id="td_3_1">3_1</td>' +
                     '<td id="td_3_2">3_2</td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                 '</tr>' +
             '</tbody>' +
         '</table>';
@@ -415,19 +423,19 @@ var addColumnFancyTd23 = String() +
             '<tbody>' +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
-                    '<td id="td_1_2" colspan="2">1_2</td>' +
-                    '<td>&#160;</td>' +
+                    '<td colspan="2" id="td_1_2">1_2</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
                     '<td id="td_2_2">2_2</td>' +
                     '<td id="td_2_3" rowspan="2">2_3</td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
                     '<td id="td_3_1">3_1</td>' +
                     '<td id="td_3_2">3_2</td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                 '</tr>' +
             '</tbody>' +
         '</table>';
@@ -437,19 +445,19 @@ var addColumnFancyTd32 = String() +
             '<tbody>' +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
-                    '<td id="td_1_2" colspan="2">1_2</td>' +
-                    '<td>&#160;</td>' +
+                    '<td colspan="2" id="td_1_2">1_2</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
                     '<td id="td_2_2">2_2</td>' +
                     '<td id="td_2_3" rowspan="2">2_3</td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
                     '<td id="td_3_1">3_1</td>' +
                     '<td id="td_3_2">3_2</td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                 '</tr>' +
             '</tbody>' +
         '</table>';
@@ -459,18 +467,18 @@ var addColumnFancyTd11 = String() +
             '<tbody>' +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
-                    '<td>&#160;</td>' +
-                    '<td id="td_1_2" colspan="2">1_2</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
+                    '<td colspan="2" id="td_1_2">1_2</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                     '<td id="td_2_2">2_2</td>' +
                     '<td id="td_2_3" rowspan="2">2_3</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
                     '<td id="td_3_1">3_1</td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                     '<td id="td_3_2">3_2</td>' +
                 '</tr>' +
             '</tbody>' +
@@ -481,18 +489,18 @@ var addColumnFancyTd21 = String() +
             '<tbody>' +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
-                    '<td>&#160;</td>' +
-                    '<td id="td_1_2" colspan="2">1_2</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
+                    '<td colspan="2" id="td_1_2">1_2</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                     '<td id="td_2_2">2_2</td>' +
                     '<td id="td_2_3" rowspan="2">2_3</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
                     '<td id="td_3_1">3_1</td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                     '<td id="td_3_2">3_2</td>' +
                 '</tr>' +
             '</tbody>' +
@@ -503,18 +511,18 @@ var addColumnFancyTd22 = String() +
             '<tbody>' +
                 '<tr id="tr_1">' +
                     '<td id="td_1_1">1_1</td>' +
-                    '<td id="td_1_2" colspan="3">1_2</td>' +
+                    '<td colspan="3" id="td_1_2">1_2</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
                     '<td id="td_2_2">2_2</td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                     '<td id="td_2_3" rowspan="2">2_3</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
                     '<td id="td_3_1">3_1</td>' +
                     '<td id="td_3_2">3_2</td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                 '</tr>' +
             '</tbody>' +
         '</table>';
@@ -528,9 +536,9 @@ var addRowThTh13Html = String() +
                     '<th id="th_1_3">1_3</th>' +
                 '</tr>' +
                 '<tr>' +
-                    '<td>&#160;</td>' +
-                    '<td>&#160;</td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
@@ -564,9 +572,9 @@ var addRowThTd32Html = String() +
                     '<td id="td_3_3">3_3</td>' +
                 '</tr>' +
                 '<tr>' +
-                    '<td>&#160;</td>' +
-                    '<td>&#160;</td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                 '</tr>' +
             '</tbody>' +
         '</table>';
@@ -578,19 +586,19 @@ var addColumnThTh13Html = String() +
                     '<th id="th_1_1">1_1</th>' +
                     '<th id="th_1_2">1_2</th>' +
                     '<th id="th_1_3">1_3</th>' +
-                    '<th>&#160;</th>' +
+                    '<th>' + WYMeditor.NBSP + '</th>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
                     '<td id="td_2_2">2_2</td>' +
                     '<td id="td_2_3">2_3</td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
                     '<td id="td_3_1">3_1</td>' +
                     '<td id="td_3_2">3_2</td>' +
                     '<td id="td_3_3">3_3</td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                 '</tr>' +
             '</tbody>' +
         '</table>';
@@ -601,19 +609,19 @@ var addColumnThTd32Html = String() +
                 '<tr id="tr_1">' +
                     '<th id="th_1_1">1_1</th>' +
                     '<th id="th_1_2">1_2</th>' +
-                    '<th>&#160;</th>' +
+                    '<th>' + WYMeditor.NBSP + '</th>' +
                     '<th id="th_1_3">1_3</th>' +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
                     '<td id="td_2_2">2_2</td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                     '<td id="td_2_3">2_3</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
                     '<td id="td_3_1">3_1</td>' +
                     '<td id="td_3_2">3_2</td>' +
-                    '<td>&#160;</td>' +
+                    '<td>' + WYMeditor.NBSP + '</td>' +
                     '<td id="td_3_3">3_3</td>' +
                 '</tr>' +
             '</tbody>' +
@@ -679,7 +687,7 @@ var removedColumn3And2Html = String() +
             '</tbody>' +
         '</table>';
 
-module("table- add/remove", {setup: setupWym});
+module("table- add/remove", {setup: prepareUnitTestModule});
 test("no-op on non-table elements", function () {
     expect(4);
 
@@ -733,7 +741,7 @@ test("Deleting all columns removes table", function () {
     testTable('#span_2_1', 'remove', 'column', removedColumn3And2Html, '');
 });
 
-module("table- colspan/rowspan add/remove", {setup: setupWym});
+module("table- colspan/rowspan add/remove", {setup: prepareUnitTestModule});
 test("Row", function () {
     expect(2);
 
@@ -835,7 +843,7 @@ test("Row with TH first th row", function () {
     testTable('#tr_1 + tr td', 'remove', 'row', addRowThTh13Html, thTableHtml, 2);
 });
 
-module("table- tab movement", {setup: setupWym});
+module("table- tab movement", {setup: prepareUnitTestModule});
 test("Tab to cell right", function () {
     expect(3);
     testTableTab(basicTableHtml, '#td_1_1', '#td_1_2');
@@ -849,20 +857,12 @@ test("Tab from th to cell right", function () {
 test("Tab to next row", function () {
     expect(3);
     var expectedSelector = '#td_2_1';
-    if (WYMeditor._isInnerSelector) {
-        expectedSelector = '#span_2_1';
-    }
     testTableTab(basicTableHtml, '#td_1_3', expectedSelector);
 });
 
 test("Tab from th to next row", function () {
     expect(3);
-    var expectedSelector = '#span_2_1';
-    if (jQuery.browser.mozilla ||
-        (jQuery.browser.msie && parseInt(jQuery.browser.version, 10) >= 9.0))
-    {
-        expectedSelector = '#td_2_1';
-    }
+    var expectedSelector = '#td_2_1';
     testTableTab(thTableHtml, '#th_1_3', expectedSelector);
 });
 
@@ -885,7 +885,7 @@ test("Tab outside of table", function () {
     testTableTab(basicTableHtml + '<p id="p_1">p1</p>', '#p_1', '#p_1');
 });
 
-module("table-row_merge", {setup: setupWym});
+module("table-row_merge", {setup: prepareUnitTestModule});
 
 var mergeTableHtml = String() +
         '<table>' +
@@ -1113,7 +1113,7 @@ var mergeTd23Html = String() +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
                     '<td id="td_2_2">2_2</td>' +
-                    '<td id="td_2_3" colspan="2">2_4</td>' +
+                    '<td colspan="2" id="td_2_3">2_4</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
                     '<td id="td_3_1">3_1</td>' +
@@ -1140,7 +1140,7 @@ var mergeTd22Html = String() +
                 '</tr>' +
                 '<tr id="tr_2">' +
                     '<td id="td_2_1"><span id="span_2_1">2_1</span></td>' +
-                    '<td id="td_2_2" colspan="2">2_2</td>' +
+                    '<td colspan="2" id="td_2_2">2_2</td>' +
                     '<td id="td_2_4">2_4</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
@@ -1173,7 +1173,7 @@ var mergeTd31Html = String() +
                     '<td id="td_2_4">2_4</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
-                    '<td id="td_3_1" colspan="2">3_13_2</td>' +
+                    '<td colspan="2" id="td_3_1">3_13_2</td>' +
                     '<td id="td_3_4">3_4</td>' +
                 '</tr>' +
                 '<tr id="tr_4">' +
@@ -1200,7 +1200,7 @@ var mergeTd31Td23Html = String() +
                     '<td id="td_2_4">2_4</td>' +
                 '</tr>' +
                 '<tr id="tr_3">' +
-                    '<td id="td_3_1" colspan="3">3_13_2</td>' +
+                    '<td colspan="3" id="td_3_1">3_13_2</td>' +
                     '<td id="td_3_4">3_4</td>' +
                 '</tr>' +
                 '<tr id="tr_4">' +
@@ -1261,7 +1261,7 @@ var mergeTd42Td23LongRowspanHtml = String() +
                 '</tr>' +
                 '<tr id="tr_4">' +
                     '<td id="td_4_1">4_1</td>' +
-                    '<td id="td_4_2" colspan="2">4_2</td>' +
+                    '<td colspan="2" id="td_4_2">4_2</td>' +
                     '<td id="td_4_4">4_4</td>' +
                 '</tr>' +
             '</tbody>' +
@@ -1355,14 +1355,11 @@ test("With span", function () {
     expect(5);
 
     var endSelection = '#td_2_1';
-    if (WYMeditor._isInnerSelector) {
-        endSelection = '#span_2_1';
-    }
     testRowMerge(mergeTableHtml, mergeSpan21Html, '#span_2_1', '#td_2_2', endSelection);
 });
 
-module("table-row_merge_rowspan", {setup: setupWym});
-if (!jQuery.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
+module("table-row_merge_rowspan", {setup: prepareUnitTestModule});
+if (!WYMeditor.isInternetExplorerPre11() || !SKIP_KNOWN_FAILING_TESTS) {
     test("Across rowspan", function () {
         expect(5);
 
@@ -1370,7 +1367,7 @@ if (!jQuery.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
     });
 }
 
-if (!jQuery.browser.msie || !SKIP_KNOWN_FAILING_TESTS) {
+if (!WYMeditor.isInternetExplorerPre11() || !SKIP_KNOWN_FAILING_TESTS) {
     test("Into rowspan", function () {
         expect(5);
 
@@ -1458,7 +1455,7 @@ test("getCellXIndex test", function () {
     testGetCellXIndex(mergeTableLongRowspanHtml, '#td_4_4', 3);
 });
 
-module("utils", {setup: setupWym});
+module("utils", {setup: prepareUnitTestModule});
 function testNormalize(testHtml) {
     var normed = normalizeHtml(jQuery(testHtml)[0]);
     deepEqual(normed, testHtml);

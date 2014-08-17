@@ -1,6 +1,7 @@
 /* jshint camelcase: false, maxlen: 85 */
-/* global setupWym,
-htmlEquals, moveSelector, simulateKey,
+/* global
+no_br_selection_browser, is_double_br_browser, prepareUnitTestModule,
+wymEqual, moveSelector, simulateKey,
 makeSelection,
 test, expect, deepEqual */
 "use strict";
@@ -12,20 +13,13 @@ test, expect, deepEqual */
 */
 
 // Should be able to add content before/after/between block elements
-module("Blocking Elements", {setup: setupWym});
+module("Blocking Elements", {setup: prepareUnitTestModule});
 
-// Can't move the selection to a <br> element
-var no_br_selection_browser = jQuery.browser.webkit || jQuery.browser.msie,
-    // Can't move the selection to a <table> element
-    no_table_selection_browser = jQuery.browser.webkit || jQuery.browser.msie,
+// Can't move the selection to a <table> element
+var no_table_selection_browser = jQuery.browser.webkit ||
+    WYMeditor.isInternetExplorerPre11(),
     // keyup/keydown can't be used to fix textnode wrapping
     no_keypress_textnode_wrap_browser = jQuery.browser.msie,
-    // Double-br browsers need placeholders both before and after blocking
-    // elements. Others just need placeholders before
-    is_double_br_browser = (jQuery.browser.mozilla ||
-        jQuery.browser.webkit ||
-        jQuery.browser.safari ||
-        (jQuery.browser.msie && jQuery.browser.version >= "7.0")),
 
     tableHtml = String() +
         '<table>' +
@@ -109,8 +103,8 @@ var no_br_selection_browser = jQuery.browser.webkit || jQuery.browser.msie,
     h1BlockquotePreHtml = String() +
         '<h1>h1</h1>' +
         '<blockquote>bq1</blockquote>' +
-        '<pre>pre1\r\n' +
-        'spaced\r\n\r\n' +
+        '<pre>pre1\n' +
+        'spaced\n\n' +
         'double  spaced' +
         '</pre>';
 
@@ -147,7 +141,7 @@ test("table has br spacers via ._html()", function () {
         }
     }
 
-    htmlEquals(wymeditor, tableHtml);
+    wymEqual(wymeditor, tableHtml);
 });
 
 test("table has br spacers via table insertion", function () {
@@ -155,9 +149,10 @@ test("table has br spacers via table insertion", function () {
         $body,
         children;
     wymeditor._html('');
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    wymeditor.setCaretIn($body[0]);
     wymeditor.insertTable(2, 3, '', '');
 
-    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     children = $body.children();
 
     if (is_double_br_browser) {
@@ -177,7 +172,7 @@ test("table has br spacers via table insertion", function () {
         }
     }
 
-    htmlEquals(wymeditor, tableHtml);
+    wymEqual(wymeditor, tableHtml);
 });
 
 test("p + table has br spacers via ._html()", function () {
@@ -208,7 +203,7 @@ test("p + table has br spacers via ._html()", function () {
         }
     }
 
-    htmlEquals(wymeditor, pTableHtml);
+    wymEqual(wymeditor, pTableHtml);
 });
 
 test("p + table has br spacers via table insertion", function () {
@@ -247,7 +242,7 @@ test("p + table has br spacers via table insertion", function () {
         }
     }
 
-    htmlEquals(wymeditor, pTableHtml);
+    wymEqual(wymeditor, pTableHtml);
 });
 
 test("p + table + p has br spacers via ._html()", function () {
@@ -269,7 +264,7 @@ test("p + table + p has br spacers via ._html()", function () {
         deepEqual(children[4].tagName.toLowerCase(), 'p');
     }
 
-    htmlEquals(wymeditor, pTablePHtml);
+    wymEqual(wymeditor, pTablePHtml);
 });
 
 test("p + table + p has br spacers via table insertion", function () {
@@ -299,7 +294,7 @@ test("p + table + p has br spacers via table insertion", function () {
         deepEqual(children[4].tagName.toLowerCase(), 'p');
     }
 
-    htmlEquals(wymeditor, pTablePHtml);
+    wymEqual(wymeditor, pTablePHtml);
 });
 
 test("p + table + table + p has br spacers via ._html()", function () {
@@ -323,7 +318,7 @@ test("p + table + table + p has br spacers via ._html()", function () {
         deepEqual(children[6].tagName.toLowerCase(), 'p');
     }
 
-    htmlEquals(wymeditor, pTableTablePHtml);
+    wymEqual(wymeditor, pTableTablePHtml);
 });
 
 test("p + table + table + p has br spacers via table insertion", function () {
@@ -356,7 +351,7 @@ test("p + table + table + p has br spacers via table insertion", function () {
         deepEqual(children[6].tagName.toLowerCase(), 'p');
     }
 
-    htmlEquals(wymeditor, pTableTablePHtml);
+    wymEqual(wymeditor, pTableTablePHtml);
 });
 
 test("h1 + blockquote + pre has br spacers via ._html()", function () {
@@ -391,11 +386,11 @@ test("h1 + blockquote + pre has br spacers via ._html()", function () {
         }
     }
 
-    htmlEquals(wymeditor, h1BlockquotePreHtml);
+    wymEqual(wymeditor, h1BlockquotePreHtml);
 });
 
 test("br spacers aren't deleted when arrowing through them", function () {
-    // the spacer <br> shouldn't be turned in to a <p> when it gets cursor
+    // the spacer <br /> shouldn't be turned in to a <p> when it gets cursor
     // focus
     var wymeditor = jQuery.wymeditors(0),
         $body,
@@ -492,7 +487,7 @@ test("br spacers don't cause lots of blank p's when arrowing down", function () 
         }
     }
 
-    htmlEquals(wymeditor, pTableHtml);
+    wymEqual(wymeditor, pTableHtml);
 });
 
 test("br spacers don't cause lots of blank p's when arrowing up", function () {
@@ -519,7 +514,7 @@ test("br spacers don't cause lots of blank p's when arrowing up", function () {
         deepEqual(children[4].tagName.toLowerCase(), 'p');
     }
 
-    htmlEquals(wymeditor, pTablePHtml);
+    wymEqual(wymeditor, pTablePHtml);
 });
 
 test("br spacers stay in place when content is inserted- post-br", function () {
@@ -551,7 +546,7 @@ test("br spacers stay in place when content is inserted- post-br", function () {
         deepEqual(children[3].tagName.toLowerCase(), 'p');
     }
 
-    htmlEquals(wymeditor, tableHtml + '<p>yo</p>');
+    wymEqual(wymeditor, tableHtml + '<p>yo</p>');
 });
 
 if (!no_keypress_textnode_wrap_browser) {
@@ -582,6 +577,6 @@ if (!no_keypress_textnode_wrap_browser) {
             deepEqual(children[3].tagName.toLowerCase(), 'br');
         }
 
-        htmlEquals(wymeditor, tableHtml);
+        wymEqual(wymeditor, tableHtml);
     });
 }

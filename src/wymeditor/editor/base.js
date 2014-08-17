@@ -1,4 +1,4 @@
-/*jshint evil: true, camelcase: false, maxlen: 100 */
+/* jshint evil: true, camelcase: false, maxlen: 100 */
 /* global -$, rangy */
 "use strict";
 
@@ -9,7 +9,7 @@
     Initialize a wymeditor instance, including detecting the
     current browser and enabling the browser-specific subclass.
 */
-WYMeditor.editor.prototype.init = function () {
+WYMeditor.editor.prototype._init = function () {
     // Load the browser-specific subclass
     // If this browser isn't supported, do nothing
     var WymClass = false,
@@ -33,15 +33,23 @@ WYMeditor.editor.prototype.init = function () {
         oContainer,
         wym;
 
-    if (jQuery.browser.msie) {
-        WymClass = new WYMeditor.WymClassExplorer(this);
+    if (WYMeditor.isInternetExplorerPre11()) {
+        WymClass = new WYMeditor.WymClassTridentPre7(this);
+    } else if (WYMeditor.isInternetExplorer11OrNewer()) {
+        WymClass = new WYMeditor.WymClassTrident7(this);
     } else if (jQuery.browser.mozilla) {
-        WymClass = new WYMeditor.WymClassMozilla(this);
-    } else if (jQuery.browser.opera) {
-        WymClass = new WYMeditor.WymClassOpera(this);
+        WymClass = new WYMeditor.WymClassGecko(this);
     } else if (jQuery.browser.safari || jQuery.browser.webkit ||
                jQuery.browser.chrome) {
-        WymClass = new WYMeditor.WymClassSafari(this);
+        if (jQuery.browser.version === '537.36') {
+            // This seems to indicate Blink. See:
+            // https://stackoverflow.com/questions/20655470
+            //WymClass = new WYMeditor.WymClassBlink(this);
+            // For now we use the WebKit editor class in Blink.
+            WymClass = new WYMeditor.WymClassWebKit(this);
+        } else {
+            WymClass = new WYMeditor.WymClassWebKit(this);
+        }
     }
 
     if (WymClass === false) {
@@ -197,45 +205,185 @@ WYMeditor.editor.prototype.init = function () {
     // to work-around old ones and predict new ones, let's just ensure the
     // initialization only happens once. All methods of detecting load are
     // unreliable.
-    wym._iframe_initialized = false;
+    wym.iframeInitialized = false;
 
-    jQuery(wym._box).find('iframe').load(function () {
-        if (wym._iframe_initialized === true) {
-            return;
-        }
-        wym._iframe_initialized = wym.initIframe(this);
+    wym._iframe = jQuery(wym._box).find('iframe')[0];
+
+    jQuery(wym._iframe).load(function () {
+        wym._onEditorIframeLoad(wym);
     });
+
+    wym._element.attr('data-wym-initialized', 'yes');
 
     wym.initSkin();
 };
 
 /**
-    WYMeditor.editor.bindEvents
-    ===========================
+    WYMeditor.editor._assignWymDoc
+    ==============================
 
-    Bind all event handlers including tool/container clicks, focus events
-    and change events.
+    Assigns an editor's document to the `_doc` property.
 */
-WYMeditor.editor.prototype.bindEvents = function () {
+WYMeditor.editor.prototype._assignWymDoc = function () {
+    var wym = this;
+
+    wym._doc = wym._iframe.contentDocument;
+};
+
+/**
+    WYMeditor.editor._isDesignModeOn
+    ================================
+
+    Returns true if the designMode property of the editor's document is "On".
+    Returns false, otherwise.
+*/
+WYMeditor.editor.prototype._isDesignModeOn = function () {
+    var wym = this;
+
+    if (wym._doc.designMode === "On") {
+        return true;
+    }
+    return false;
+};
+
+/**
+    WYMeditor.editor._onEditorIframeLoad
+    ====================================
+
+    This is a part of the initialization of an editor.
+
+    The initialization procedure of an editor turns asynchronous because part of
+    it must occur after the loading of the editor's Iframe.
+
+    This function is suppposed to be the event handler of the loading of the
+    editor's Iframe. Therefore, it is the first step since the initialization
+    procedure gets asynchronous.
+
+    @param wym The editor instance that's being initialized.
+*/
+WYMeditor.editor.prototype._onEditorIframeLoad = function (wym) {
+    wym._assignWymDoc();
+    wym._doc.designMode = "On";
+    wym._afterDesignModeOn();
+};
+
+/**
+    WYMeditor.editor._UiQuirks
+    ==========================
+
+    A hook for browser quirks that work on the UI.
+
+    To be run after plugins had a chance to modify the UI.
+*/
+WYMeditor.editor.prototype._UiQuirks = function () {
+    return;
+};
+
+
+/**
+    WYMeditor.editor._afterDesignModeOn
+    ===================================
+
+    This is part of the initialization of an editor, designed to be called
+    after the editor's document is in designMode.
+*/
+WYMeditor.editor.prototype._afterDesignModeOn = function () {
+    var wym = this;
+
+    if (wym.iframeInitialized === true) {
+        return;
+    }
+
+    wym._assignWymDoc();
+
+    wym._doc.title = this._wym._index;
+
+    // Set the text direction.
+    jQuery('html', this._doc).attr('dir', this._options.direction);
+
+    wym._docEventQuirks();
+
+    wym._initializeDocumentContent();
+
+    if (jQuery.isFunction(wym._options.preBind)) {
+        wym._options.preBind(wym);
+    }
+
+    wym._bindUIEvents();
+
+    wym.iframeInitialized = true;
+
+    if (jQuery.isFunction(wym._options.postInit)) {
+        wym._options.postInit(wym);
+    }
+
+    // Apply browser quirks regarding UI. Importantly, after `postInit`, where
+    // plugins had a chance to modify the UI (add buttons, etc.).
+    wym._UiQuirks();
+
+    // Add event listeners to doc elements, e.g. images
+    wym.listen();
+
+    jQuery(wym._element).trigger(
+        WYMeditor.EVENTS.postIframeInitialization,
+        wym._wym
+    );
+};
+
+/**
+    WYMeditor.editor._initializeDocumentContent
+    ===========================================
+
+    Populates the editor's document with the initial content, according to the
+    configuration and/or the textarea element's value.
+*/
+WYMeditor.editor.prototype._initializeDocumentContent = function () {
+    var wym = this;
+
+    if (wym._options.html) {
+        // Populate from the configuration option
+        wym._html(wym._options.html);
+    } else {
+        // Populate from the textarea element
+        wym._html(wym._element[0].value);
+    }
+};
+
+/**
+    WYMeditor.editor._docEventQuirks
+    ================================
+
+    Misc. event bindings on the editor's document, that may be required.
+*/
+WYMeditor.editor.prototype._docEventQuirks = function () {
+    return;
+};
+
+/**
+    WYMeditor.editor._bindUIEvents
+    ==============================
+
+    Binds event handlers for the UI elements.
+*/
+WYMeditor.editor.prototype._bindUIEvents = function () {
     var wym = this,
         $html_val;
 
-    // Handle click events on tools buttons
-    jQuery(this._box).find(this._options.toolSelector).click(function () {
-        wym._iframe.contentWindow.focus(); //See #154
+    // Tools buttons
+    jQuery(wym._box).find(wym._options.toolSelector).click(function () {
         wym.exec(jQuery(this).attr(WYMeditor.NAME));
         return false;
     });
 
-    // Handle click events on containers buttons
-    jQuery(this._box).find(this._options.containerSelector).click(function () {
-        wym.container(jQuery(this).attr(WYMeditor.NAME));
+    // Containers buttons
+    jQuery(wym._box).find(wym._options.containerSelector).click(function () {
+        wym.mainContainer(jQuery(this).attr(WYMeditor.NAME));
         return false;
     });
 
-    // Handle keyup event on html value: set the editor value
+    // Handle keyup event on the HTML value textarea: set the editor value
     // Handle focus/blur events to check if the element has focus, see #147
-    $html_val = jQuery(this._box).find(this._options.htmlValSelector);
+    $html_val = jQuery(wym._box).find(wym._options.htmlValSelector);
     $html_val.keyup(function () {
         jQuery(wym._doc.body).html(jQuery(this).val());
     });
@@ -247,7 +395,7 @@ WYMeditor.editor.prototype.bindEvents = function () {
     });
 
     // Handle click events on classes buttons
-    jQuery(this._box).find(this._options.classSelector).click(function () {
+    jQuery(wym._box).find(wym._options.classSelector).click(function () {
         var aClasses = eval(wym._options.classesItems),
             sName = jQuery(this).attr(WYMeditor.NAME),
 
@@ -258,18 +406,16 @@ WYMeditor.editor.prototype.bindEvents = function () {
             jqexpr = oClass.expr;
             wym.toggleClass(sName, jqexpr);
         }
-        wym._iframe.contentWindow.focus(); //See #154
         return false;
     });
 
     // Handle update event on update element
-    jQuery(this._options.updateSelector).bind(this._options.updateEvent, function () {
-        wym.update();
-    });
-};
-
-WYMeditor.editor.prototype.ready = function () {
-    return this._doc !== null;
+    jQuery(wym._options.updateSelector).bind(
+        wym._options.updateEvent,
+        function () {
+            wym.update();
+        }
+    );
 };
 
 /**
@@ -297,6 +443,31 @@ WYMeditor.editor.prototype._html = function (html) {
         this.update();
     } else {
         return jQuery(this._doc.body).html();
+    }
+};
+
+/**
+    WYMeditor.editor.vanish
+    =========================
+
+    Removes the WYMeditor instance from existence and replaces the
+    'data-wym-initialized' attirbute of its textarea with 'data-wym-vanished'.
+*/
+WYMeditor.editor.prototype.vanish = function () {
+    var wym = this,
+        instances = WYMeditor.INSTANCES,
+        i;
+
+    wym._box.remove();
+    wym._element
+        .removeAttr('data-wym-initialized')
+        .attr('data-wym-vanished', '')
+        .show();
+    instances.splice(wym._index, 1);
+
+    // Refresh each editor's _index value
+    for (i = 0; i < instances.length; i++) {
+        instances[i]._index = i;
     }
 };
 
@@ -346,7 +517,7 @@ WYMeditor.editor.prototype.exec = function (cmd) {
     switch (cmd) {
 
     case WYMeditor.CREATE_LINK:
-        container = this.container();
+        container = this.mainContainer();
         if (container || this._selectedImage) {
             this.dialog(WYMeditor.DIALOG_LINK);
         }
@@ -413,52 +584,96 @@ WYMeditor.editor.prototype.exec = function (cmd) {
     Override the default selection function to use rangy.
 */
 WYMeditor.editor.prototype.selection = function () {
+    var wym = this,
+        iframe = wym._iframe,
+        sel;
+
     if (window.rangy && !rangy.initialized) {
         rangy.init();
     }
 
-    var iframe = this._iframe,
-        sel = rangy.getIframeSelection(iframe);
+    sel = rangy.getIframeSelection(iframe);
 
     return sel;
 };
 
 /**
-    WYMeditor.editor.selection
-    ==========================
+    WYMeditor.editor.nodeAfterSel
+    =============================
 
-    Return the selected node.
+    Returns the node that is immediately after the selection.
 */
-WYMeditor.editor.prototype.selected = function () {
+WYMeditor.editor.prototype.nodeAfterSel = function () {
     var sel = this.selection(),
-        node = sel.focusNode,
-        caretPos,
-        isBodyTag,
-        isTextNode;
+        noNodeErrorStr = "There is no node immediately after the selection.";
 
-    if (node) {
-        if (jQuery.browser.msie) {
-            // For collapsed selections, we have to use the ghetto "caretPos"
-            // hack to find the selection, otherwise it always says that the
-            // body element is selected
-            isBodyTag = node.tagName && node.tagName.toLowerCase() === "body";
-            isTextNode = node.nodeName === "#text";
-
-            if (sel.isCollapsed && (isBodyTag || isTextNode)) {
-                caretPos = this._iframe.contentWindow.document.caretPos;
-                if (caretPos && caretPos.parentElement) {
-                    node = caretPos.parentElement();
-                }
-            }
+    // Different browsers describe selection differently. Here be dragons.
+    if (
+        sel.anchorNode.tagName &&
+        jQuery.inArray(
+            sel.anchorNode.tagName.toLowerCase(),
+            WYMeditor.NON_CONTAINING_ELEMENTS
+        ) === -1
+    ) {
+        if (sel.anchorNode.childNodes.length === 0) {
+            throw noNodeErrorStr;
         }
-        if (node.nodeName === "#text") {
-            return node.parentNode;
-        } else {
-            return node;
-        }
-    } else {
-        return null;
+        return sel.anchorNode.childNodes[sel.anchorOffset];
     }
+
+    if (
+        sel.focusNode.nodeType === WYMeditor.NODE.TEXT &&
+        sel.focusNode.data.length === sel.focusOffset
+    ) {
+        if (!sel.focusNode.nextSibling) {
+            throw noNodeErrorStr;
+        }
+        return sel.focusNode.nextSibling;
+    }
+
+    return sel.focusNode;
+};
+
+/**
+    WYMeditor.editor.selectedContainer
+    =============================
+
+    Returns the selection's container.
+
+    Not to be confused with `.mainContainer`, which sets and gets the
+    selection's main container.
+*/
+WYMeditor.editor.prototype.selectedContainer = function () {
+    var focusNode = this.selection().focusNode;
+
+    if (
+        focusNode.nodeType === WYMeditor.NODE.TEXT || (
+
+            focusNode.tagName &&
+
+            jQuery.inArray(
+                focusNode.tagName.toLowerCase(),
+                WYMeditor.NON_CONTAINING_ELEMENTS
+            ) > -1
+        )
+    ) {
+        return focusNode.parentNode;
+    } else {
+        return focusNode;
+    }
+
+};
+
+// Deprecated in favor of `WYMeditor.editor.selectedContainer`.
+WYMeditor.editor.prototype.selected = function () {
+    var wym = this;
+
+    WYMeditor.console.warn(
+        "The function WYMeditor.editor.selected() is " +
+        "deprecated. Use WYMeditor.editor.selectedContainer"
+    );
+
+    return wym.selectedContainer();
 };
 
 /**
@@ -468,7 +683,8 @@ WYMeditor.editor.prototype.selected = function () {
     Return true if all selections are collapsed, false otherwise.
 */
 WYMeditor.editor.prototype.selection_collapsed = function () {
-    var sel = this.selection(),
+    var wym = this,
+        sel = wym.selection(),
         collapsed = false;
 
     jQuery.each(sel.getAllRanges(), function () {
@@ -490,7 +706,8 @@ WYMeditor.editor.prototype.selection_collapsed = function () {
     within the current selection.
 */
 WYMeditor.editor.prototype.selected_contains = function (selector) {
-    var sel = this.selection(),
+    var wym = this,
+        sel = wym.selection(),
         matches = [];
 
     jQuery.each(sel.getAllRanges(), function () {
@@ -506,14 +723,14 @@ WYMeditor.editor.prototype.selected_contains = function (selector) {
 
 /**
     WYMeditor.editor.selected_parents_contains
-    ==================================
+    ==========================================
 
     Return an array of nodes that match the selector within
     the selection's parents.
 */
 WYMeditor.editor.prototype.selected_parents_contains = function (selector) {
     var $matches = jQuery([]),
-        $selected = jQuery(this.selected());
+        $selected = jQuery(this.selectedContainer());
     if ($selected.is(selector)) {
         $matches = $matches.add($selected);
     }
@@ -522,17 +739,170 @@ WYMeditor.editor.prototype.selected_parents_contains = function (selector) {
 };
 
 /**
-    WYMeditor.editor.container
-    ==========================
+    WYMeditor.editor.isBlockNode
+    =============================
 
-    Get or set the selected container.
+    Returns true if the provided node is a block type node. Otherwise
+    returns false.
+
+    @param node The node to check.
 */
-WYMeditor.editor.prototype.container = function (sType) {
-    if (typeof (sType) === 'undefined') {
-        return this.selected();
+
+WYMeditor.editor.prototype.isBlockNode = function (node) {
+    if (
+        node.tagName &&
+        jQuery.inArray(
+            node.tagName.toLowerCase(),
+            WYMeditor.BLOCKS
+        ) > -1
+    ) {
+        return true;
+    }
+    return false;
+};
+
+/**
+    WYMeditor.editor.isInlineNode
+    =============================
+
+    Returns true if the provided node is an in-line type node. Otherwise
+    returns false.
+
+    @param node The node to check.
+*/
+
+WYMeditor.editor.prototype.isInlineNode = function (node) {
+    if (
+        node.nodeType === WYMeditor.NODE.TEXT ||
+        jQuery.inArray(
+            node.tagName.toLowerCase(),
+            WYMeditor.INLINE_ELEMENTS
+        ) > -1
+    ) {
+        return true;
+    }
+    return false;
+};
+
+/**
+    WYMeditor.editor.isListNode
+    ===========================
+
+    Returns true if the provided node is a list element. Otherwise
+    returns false.
+
+    @param node The node to check.
+*/
+
+WYMeditor.editor.prototype.isListNode = function (node) {
+    if (
+        node.tagName &&
+        jQuery.inArray(
+            node.tagName.toLowerCase(),
+            WYMeditor.LIST_TYPE_ELEMENTS
+        ) > -1
+    ) {
+        return true;
+    }
+    return false;
+};
+
+/**
+   WYMeditor.editor.unwrapIfMeaninglessSpan
+
+   If the given node is a span with no useful attributes, unwrap it.
+
+   For certain editing actions (mostly list indent/outdent), it's necessary to
+   wrap content in a span element to retain grouping because it's not obvious that
+   the content will stay together without grouping. This method detects that
+   specific situation and then unwraps the content if the span is in fact not
+   necessary. It handles the fact that IE7 throws attributes on spans, even if
+   they're completely empty.
+
+   Unlike sane browsers, IE7 provides all possible attributes in a node's
+   `attributes`. Thus, a simple check like `attributes.length > 0` isn't
+   enough (as long as we support IE7). This function tries to determine
+   whether the element really does have meaningful attributes, considering
+   IE7's behavior. This turns out to be not so simple, as IE7 populates
+   some attributes with truth-y values. So the mechanism is a kind of
+   a blacklist filter of IE7's junk-attributes. If an attribute passes this
+   blacklist filter, then this function returns true.
+
+   @param element The element.
+*/
+WYMeditor.editor.prototype.unwrapIfMeaninglessSpan = function (element) {
+    var $element = jQuery(element),
+        attributes,
+        i,
+        attrName,
+        attrValue,
+        // We don't care about any of these attributes
+        meaninglessAttrNames = [
+            '_wym_visited',
+            'dataFld',
+            'onmouseup',
+            'contentEditable',
+            'dataFormatAs',
+            'dataSrc',
+            'tabIndex',
+            'value'
+        ],
+        // Any attribute with these values isn't interesting
+        falsyAttrValues = [
+            '',
+            undefined,
+            false,
+            null
+        ];
+
+    if (!element || typeof (element.tagName) === 'undefined' ||
+        element.tagName.toLowerCase() !== 'span') {
+        return false;
     }
 
-    var container = null,
+    attributes = element.attributes;
+    if (attributes.length === 0) {
+        // Early return for spans with no attributes
+        $element.before($element.contents());
+        $element.remove();
+        return true;
+    }
+
+    // This loop is required for IE7 because it seems to populate
+    // the attributes property with all possible attributes. When
+    // support for IE7 is dropped the length check should be
+    // enough.
+    for (i = 0; i < attributes.length; i++) {
+        attrName = attributes[i].name;
+        // Getting the value through jQuery is rumored to normalizes it in some
+        // ways.
+        attrValue = $element.attr(attrName);
+        if (
+            jQuery.inArray(attrName, meaninglessAttrNames) === -1 &&
+            jQuery.inArray(
+                attrValue,
+                falsyAttrValues
+            ) === -1
+        ) {
+            // We hit an attribute making this non-meaningless
+            return false;
+        }
+    }
+
+    $element.before($element.contents());
+    $element.remove();
+    return true;
+};
+
+/**
+    WYMeditor.editor.mainContainer
+    ==============================
+
+    Get or set the selected main container.
+*/
+WYMeditor.editor.prototype.mainContainer = function (sType) {
+    var wym = this,
+        container = null,
         aTypes,
         newNode,
         blockquote,
@@ -541,8 +911,15 @@ WYMeditor.editor.prototype.container = function (sType) {
         firstNode,
         x;
 
+    if (typeof (sType) === 'undefined') {
+        return jQuery(wym.selectedContainer())
+            .parentsOrSelf()
+            .not('html, body, blockquote')
+            .last()[0];
+    }
+
     if (sType.toLowerCase() === WYMeditor.TH) {
-        container = this.container();
+        container = wym.selectedContainer();
 
         // Find the TD or TH container
         switch (container.tagName.toLowerCase()) {
@@ -552,7 +929,7 @@ WYMeditor.editor.prototype.container = function (sType) {
             break;
         default:
             aTypes = [WYMeditor.TD, WYMeditor.TH];
-            container = this.findUp(this.container(), aTypes);
+            container = wym.findUp(wym.selectedContainer(), aTypes);
             break;
         }
 
@@ -562,8 +939,8 @@ WYMeditor.editor.prototype.container = function (sType) {
             if (container.tagName.toLowerCase() === WYMeditor.TD) {
                 sType = WYMeditor.TH;
             }
-            this.switchTo(container, sType, false);
-            this.update();
+            wym.switchTo(container, sType, false);
+            wym.update();
         }
     } else {
         // Set the container type
@@ -579,20 +956,20 @@ WYMeditor.editor.prototype.container = function (sType) {
             WYMeditor.PRE,
             WYMeditor.BLOCKQUOTE
         ];
-        container = this.findUp(this.container(), aTypes);
+        container = wym.findUp(wym.selectedContainer(), aTypes);
 
         if (container) {
             if (sType.toLowerCase() === WYMeditor.BLOCKQUOTE) {
                 // Blockquotes must contain a block level element
-                blockquote = this.findUp(
-                    this.container(),
+                blockquote = wym.findUp(
+                    wym.selectedContainer(),
                     WYMeditor.BLOCKQUOTE
                 );
                 if (blockquote === null) {
-                    newNode = this._doc.createElement(sType);
+                    newNode = wym._doc.createElement(sType);
                     container.parentNode.insertBefore(newNode, container);
                     newNode.appendChild(container);
-                    this.setFocusToNode(newNode.firstChild);
+                    wym.setCaretIn(newNode.firstChild);
                 } else {
                     nodes = blockquote.childNodes;
                     lgt = nodes.length;
@@ -608,19 +985,30 @@ WYMeditor.editor.prototype.container = function (sType) {
                     }
                     blockquote.parentNode.removeChild(blockquote);
                     if (firstNode) {
-                        this.setFocusToNode(firstNode);
+                        wym.setCaretIn(firstNode);
                     }
                 }
             } else {
                 // Not a blockquote
-                this.switchTo(container, sType);
+                wym.switchTo(container, sType);
             }
 
-            this.update();
+            wym.update();
         }
     }
 
     return false;
+};
+
+// Deprecated in favor of `WYMeditor.editor.mainContainer`.
+WYMeditor.editor.prototype.container = function (sType) {
+    var wym = this;
+
+    WYMeditor.console.warn(
+        "The function `WYMeditor.editor.container` is " +
+        "deprecated. Use `WYMeditor.editor.mainContainer`.");
+
+    return wym.mainContainer(sType);
 };
 
 /**
@@ -662,17 +1050,18 @@ WYMeditor.editor.prototype.keyCanCreateBlockElement = function (keyCode) {
     Toggle a class on the selected element or one of its parents
 */
 WYMeditor.editor.prototype.toggleClass = function (sClass, jqexpr) {
-    var container = null;
-    if (this._selectedImage) {
-        container = this._selectedImage;
+    var wym = this,
+        $container;
+    if (wym._selectedImage) {
+        $container = jQuery(wym._selectedImage);
     } else {
-        container = jQuery(this.selected());
+        $container = jQuery(wym.selectedContainer());
     }
-    container = jQuery(container).parentsOrSelf(jqexpr);
-    jQuery(container).toggleClass(sClass);
+    $container = $container.parentsOrSelf(jqexpr);
+    $container.toggleClass(sClass);
 
-    if (!jQuery(container).attr(WYMeditor.CLASS)) {
-        jQuery(container).removeAttr(this._class);
+    if (!$container.attr(WYMeditor.CLASS)) {
+        $container.removeAttr(wym._class);
     }
 };
 
@@ -733,27 +1122,55 @@ WYMeditor.editor.prototype.findUp = function (node, filter) {
     WYMeditor.editor.switchTo
     =========================
 
-    Switch the type of the given `node` to type `sType`. If stripAttrs is true,
-    the attributes of node will not be included in the the new type. If
-    stripAttrs is false (or undefined), the attributes of node will be
-    preserved through the switch.
+    Switch the type of an element.
+
+    @param element The element.
+    @param sType A string of the desired type. For example, 'p'.
+    @param stripAttrs a boolean that determines whether the attributes of
+                      the element will be stripped or preserved.
+    @param setCaret A boolean that determines whether the caret will be set at
+                    the beginning, inside the element, after the switch. Default
+                    is false.
+
 */
-WYMeditor.editor.prototype.switchTo = function (node, sType, stripAttrs) {
-    var newNode = this._doc.createElement(sType),
-        html = jQuery(node).html(),
-        attrs = node.attributes,
-        i;
+WYMeditor.editor.prototype.switchTo = function (
+    element,
+    sType,
+    stripAttrs,
+    setCaret
+) {
+    var wym = this,
+        $element = jQuery(element),
+        newElement,
+        i,
+        attrs = element.attributes;
+
+    if (!element.tagName) {
+        throw "This must be an element.";
+    }
+
+    if (element.tagName.toLowerCase() === 'img') {
+        throw "Will not change the type of an 'img' element.";
+    }
+
+    newElement = wym._doc.createElement(sType);
+    jQuery(newElement).append(element.childNodes);
+    $element.replaceWith(newElement);
 
     if (!stripAttrs) {
         for (i = 0; i < attrs.length; ++i) {
-            newNode.setAttribute(attrs.item(i).nodeName,
-                                 attrs.item(i).nodeValue);
+            newElement.setAttribute(
+                attrs.item(i).nodeName,
+                attrs.item(i).value
+            );
         }
     }
-    newNode.innerHTML = html;
-    node.parentNode.replaceChild(newNode, node);
 
-    this.setFocusToNode(newNode);
+    if (setCaret) {
+        wym.setCaretIn(newElement);
+    }
+
+    return newElement;
 };
 
 WYMeditor.editor.prototype.replaceStrings = function (sVal) {
@@ -907,7 +1324,7 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
         var $block = jQuery(this);
 
         if (!$block.next(blockingSelector).length &&
-           !$block.next(WYMeditor.BR).length) {
+           !$block.next('br').length) {
 
             $block.after(placeholderNode);
         }
@@ -916,7 +1333,7 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
 
 /**
     editor._getBlockSepSelector
-    =============================
+    ===========================
 
     Build a string representing a jquery selector that will find all
     elements which need a spacer <br> before them. This includes all consecutive
@@ -976,7 +1393,7 @@ WYMeditor.editor.prototype._getBlockSepSelector = function () {
 
 /*
     editor._getBlockInListSepSelector
-    ==================================
+    =================================
 
     Returns a selector for getting all of the block elements in lists
     or sublists. The block elements at the end of lists or sublists should have
@@ -1249,25 +1666,21 @@ WYMeditor.editor.prototype._handleMultilineBlockContainerPaste = function (
     paragraphs. May contain inline HTML.
 */
 WYMeditor.editor.prototype.paste = function (str) {
-    var container = this.selected(),
+    var wym = this,
+        container = wym.selectedContainer(),
         paragraphStrings,
         j,
         textNodesToInsert,
         blockSplitter,
-        $container,
+        $container = jQuery(container),
         html = '',
         paragraphs,
         i,
         isSingleLine = false,
-        sel,
+        sel = wym.selection(),
         textNode,
-        wym,
-        range,
+        range = sel.getRangeAt(0),
         insertionNodes;
-    wym = this;
-    sel = rangy.getIframeSelection(wym._iframe);
-    range = sel.getRangeAt(0);
-    $container = jQuery(container);
 
     // Start by collapsing the range to the start of the selection. We're
     // punting on implementing a paste that also replaces existing content for
@@ -1340,7 +1753,8 @@ WYMeditor.editor.prototype.paste = function (str) {
 
 WYMeditor.editor.prototype.insert = function (html) {
     // Do we have a selection?
-    var selection = this._iframe.contentWindow.getSelection(),
+    var wym = this,
+        selection = wym.selection(),
         range,
         node;
     if (selection.focusNode !== null) {
@@ -1351,33 +1765,167 @@ WYMeditor.editor.prototype.insert = function (html) {
         range.insertNode(node);
     } else {
         // Fall back to the internal paste function if there's no selection
-        this.paste(html);
+        wym.paste(html);
     }
 };
 
 WYMeditor.editor.prototype.wrap = function (left, right) {
-    this.insert(
-        left + this._iframe.contentWindow.getSelection().toString() + right
+    var wym = this;
+
+    wym.insert(
+        left + wym._iframe.contentWindow.getSelection().toString() + right
     );
 };
 
 WYMeditor.editor.prototype.unwrap = function () {
-    this.insert(this._iframe.contentWindow.getSelection().toString());
+    var wym = this;
+
+    wym.insert(wym._iframe.contentWindow.getSelection().toString());
 };
 
-WYMeditor.editor.prototype.setFocusToNode = function (node, toStart) {
-    var range = rangy.createRange(this._doc),
-        selection = rangy.getIframeSelection(this._iframe);
-    toStart = toStart || false;
+/**
+    editor.canSetCaretBefore
+    ========================
 
-    range.selectNodeContents(node);
-    range.collapse(toStart);
+    Returns true if it is OK to set a collapsed selection immediately before
+    a node. Otherwise returns false.
+
+    @param node A node to check about.
+ */
+WYMeditor.editor.prototype.canSetCaretBefore = function (node) {
+    if (node.nodeType === WYMeditor.NODE.TEXT) {
+        return true;
+    }
+    if (
+        node.tagName &&
+        node.tagName.toLowerCase() === 'br'
+    ) {
+        if (
+            !node.previousSibling
+        ) {
+            return true;
+
+        } else if (
+            node.previousSibling.tagName &&
+            node.previousSibling.tagName.toLowerCase() === 'br'
+        ) {
+            return true;
+
+        } else if (this.isBlockNode(node.previousSibling)) {
+            return true;
+
+        } else if (node.previousSibling.nodeType === WYMeditor.NODE.TEXT) {
+            return true;
+        }
+    }
+    return false;
+};
+
+/**
+    editor.setCaretBefore
+    =====================
+
+    Sets a collapsed selection to immediately before a provided node.
+
+    Not to be confused with `editor.setCaretIn`, which sets a collapsed
+    selection inside a container node, at the start.
+
+    @param node A node to set the selection to immediately before of.
+ */
+WYMeditor.editor.prototype.setCaretBefore = function (node) {
+    var wym = this,
+        range = rangy.createRange(wym._doc),
+        selection = wym.selection();
+
+    if (!this.canSetCaretBefore(node)) {
+        throw "Can't set caret before this node.";
+    }
+
+    range.selectNode(node);
+    range.collapse(true);
+
+    selection.setSingleRange(range);
+};
+
+/**
+    editor.canSetCaretIn
+    ====================
+
+    Returns true if it is OK to set a collapsed selection inside a node.
+    Otherwise returns false.
+
+    @param node A node to check about.
+ */
+WYMeditor.editor.prototype.canSetCaretIn = function (node) {
+
+    if (
+        node.nodeType === WYMeditor.NODE.TEXT ||
+        (
+            node.tagName &&
+            jQuery.inArray(
+                node.tagName.toLowerCase(),
+                WYMeditor.NO_CARET_ELEMENTS
+            ) > -1
+        )
+    ) {
+        return false;
+    }
+    // Rangy issue #209.
+    if (this.isInlineNode(node)) {
+
+        if (node.childNodes.length === 0) {
+            // Not possible to work-around this issue.
+            return false;
+        }
+        // It is possible to work-around this issue by setting a non-collapsed
+        // selection. Warn about this.
+        WYMeditor.console.warn("Can set a non-collapsed selection. Rangy issue #209.");
+    }
+    return true;
+};
+
+/**
+    editor.setCaretIn
+    =================
+
+    Sets a collapsed selection to inside provided container element, at the start.
+
+    Not to be confused with `editor.setCaretBefore`, which sets a collapsed
+    selection immediately before a node.
+
+    @param element An element to set the selection inside of, at the start.
+ */
+WYMeditor.editor.prototype.setCaretIn = function (element) {
+    var wym = this,
+        range = rangy.createRange(wym._doc),
+        selection = wym.selection();
+
+    if (
+        !wym.canSetCaretIn(element)
+    ) {
+        throw "The element must be able to contain other elements. Perhaps " +
+            " you would like to use `setCaretBefore`, instead.";
+    }
+
+    range.selectNodeContents(element);
+
+    // Rangy issue #209.
+    if (wym.isInlineNode(element)) {
+
+        // Don't collapse the range. As long as
+        // this occurs only in tests it is probably OK. Warn.
+        WYMeditor.console.warn("Can't set a collapsed selection. Setting " +
+           "a non-collapsed selection, instead. Rangy issue #209.");
+    } else {
+        range.collapse(true);
+    }
+
     selection.setSingleRange(range);
 };
 
 /**
     editor.splitListItemContents
-    =============================
+    ============================
 
     Utility
 
@@ -1545,7 +2093,7 @@ WYMeditor.editor.prototype._indentSingleItem = function (listItem) {
 
 /**
     editor._outdentSingleItem
-    ========================
+    =========================
 
     Outdent a single list item via the dom, ensuring that the selected node moves in
     exactly one level and all other nodes stay at the same level.
@@ -1741,6 +2289,185 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
     }
     return this._correctInvalidListNesting(currentNode, alreadyCorrected);
 };
+
+/**
+    editor._isPOrDivAfterEnterInEmptynestedLi(container)
+    ====================================================
+
+    Detects one of the types of resulting DOM in issue #430.
+
+    The case is when a 'p' or a 'div' are introduced into the parent 'li'.
+    Since we don't allow a 'p' or a 'div' directly within 'li's it is replaced
+    with a 'br'.
+
+    Returns true if detected positively and false otherwise.
+
+    @param container An element to check this about.
+ */
+
+WYMeditor.editor.prototype._isPOrDivAfterEnterInEmptynestedLi = function
+(container) {
+    if (
+        jQuery.inArray(
+            container.tagName.toLowerCase(),
+            WYMeditor.DocumentStructureManager.VALID_DEFAULT_ROOT_CONTAINERS
+        ) > -1 &&
+        container.parentNode.tagName.toLowerCase() === 'li'
+    ) {
+        switch (container.childNodes.length) {
+        case 0:
+            return true;
+        case 1:
+            if (
+                container.childNodes[0].tagName &&
+                container.childNodes[0].tagName.toLowerCase() === 'br'
+            ) {
+                return true;
+            } else if (
+                container.childNodes[0].nodeType === WYMeditor.NODE.TEXT &&
+                container.childNodes[0].data === WYMeditor.NBSP
+            ) {
+                return true;
+            }
+        }
+    }
+    return false;
+};
+
+/**
+    editor._isSpilledListAfterEnterInEmptyLi
+    ========================================
+
+    Detects one of the types of resulting DOM in issue #430.
+
+    In this type of resulting DOM, the contents of a `li` have been
+    "spilled" after that `li`.
+
+    Returns true if detected positively and false otherwise.
+
+    @param container An element to check this about.
+ */
+
+WYMeditor.editor.prototype._isSpilledListAfterEnterInEmptyLi = function
+    (container) {
+    if (
+        container.tagName.toLowerCase() === 'li' &&
+        container.previousSibling &&
+        this.isListNode(container.previousSibling) &&
+        container.previousSibling.previousSibling &&
+        container.previousSibling.previousSibling.tagName
+            .toLowerCase() === 'li' &&
+        this.isListNode(container.parentNode)
+    ) {
+        return true;
+    }
+    return false;
+};
+
+/**
+    editor.handlePotentialEnterInEmptyNestedLi
+    ==========================================
+
+    Issue #430. When the caret is in an empty nested `li` and the enter key is
+    pressed, browsers perform DOM manipulations that are different than what
+    we desire.
+
+    This detects two out of three types of the DOM manipulations and calls for
+    their correction.
+
+    The third type of DOM manipulation is harder to detect, but, luckily, it
+    is tolerable, so it goes undetected. This results in a difference in UX
+    across browsers.
+
+    For detailed information on this please see the issue #430's description.
+
+    @param keyPressed The code of the key that was pressed, to check whether
+                      it is an enter.
+    @param container The currently selected container.
+ */
+
+WYMeditor.editor.prototype.handlePotentialEnterInEmptyNestedLi = function (
+    keyPressed, container) {
+
+    if (keyPressed !== WYMeditor.KEY.ENTER) {
+        // Only an enter key press can result a p/div in an empty nested list.
+        return null;
+    }
+
+    if (this._isPOrDivAfterEnterInEmptynestedLi(container)) {
+        this._replaceNodeWithBrAndSetCaret(container);
+    } else if (this._isSpilledListAfterEnterInEmptyLi(container)) {
+        this._appendSiblingsUntilNextLiToPreviousLi(container);
+        this._replaceNodeWithBrAndSetCaret(container);
+    }
+};
+
+/**
+    editor._replaceNodeWithBrAndSetCaret
+    ====================================
+
+    Replaces a node with a `br` element and sets caret before it.
+
+    If the previousSibling is inline (except for a `br`) then another `br`
+    is added before.
+
+    @param node This is the node to be replaced.
+*/
+WYMeditor.editor.prototype._replaceNodeWithBrAndSetCaret = function (node) {
+    var $node = jQuery(node);
+
+    if (
+        node.previousSibling &&
+        !node.previousSibling.tagName ||
+        node.previousSibling.tagName.toLowerCase() !== 'br' &&
+        this.isInlineNode(node.previousSibling)
+    ) {
+        $node.before('<br />');
+    }
+
+    $node.before('<br />');
+    this.setCaretBefore(node.previousSibling);
+    $node.remove();
+};
+
+/**
+    editor._appendSiblingsUntilNextLiToPreviousLi
+    =============================================
+
+    This corrects the type of resulting DOM from issue #430 where the
+    contents of a `li` have been spilled to after that `li`.
+
+    It only corrects the spillage itself and doesn't modify the new `li`.
+
+    @param newLi This is the new 'li' that was created. It is supposed to
+                 contain the caret.
+*/
+
+WYMeditor.editor.prototype._appendSiblingsUntilNextLiToPreviousLi =
+    function (newLi) {
+
+    var $newLi = jQuery(newLi),
+        // The spilled nodes are a subset of these.
+        $parentContents = $newLi.parent().contents(),
+        // This is the `li` that spilled its contents.
+        $sadLi = $newLi.prevAll('li').first(),
+        // This is the next `li` after the newLi. If it exists, it marks the
+        // end of the spill.
+        $nextLi = $newLi.nextAll('li').first(),
+        // The spill start index is after the source `li`.
+        spillStart = $sadLi.index() + 1,
+        $spilled;
+
+    if ($nextLi.length === 1) {
+        $spilled = $parentContents.slice(spillStart, $nextLi.index());
+    } else {
+        // There are no `li` elements after our newLi. The spill ends at the
+        // end of its parent.
+        $spilled = $parentContents.slice(spillStart);
+    }
+    $sadLi.append($spilled);
+};
+
 /**
     editor._correctOrphanedListItem
     ===============================
@@ -1782,7 +2509,7 @@ WYMeditor.editor.prototype._correctOrphanedListItem = function (listNode) {
 
 /**
     editor._correctInvalidListNesting
-    ================================
+    =================================
 
     This is the function that actually does the list correction.
     correctInvalidListNesting is just a helper function that first finds the root
@@ -1994,119 +2721,75 @@ WYMeditor.editor.prototype.getCommonParentList = function (listItems, getClosest
     editor._getSelectedListItems
     ============================
 
-    Based on the given selection, determine which li nodes are "selected" from
-    the user's standpoint. These are the li nodes that they would expect to be
-    affected by an action with the given selection.
+    Determine which `li` nodes are "selected" from the user's standpoint.
 
-    Generally, this means any li which has at least some of its text content
-    highlighted will be returned.
+    These are the `li` nodes that they would expect to be affected by an action
+    with the given selection.
+
+    For a better understanding, comments are provided inside.
+
+    @param selection A Rangy Selection object.
 */
-WYMeditor.editor.prototype._getSelectedListItems = function (sel) {
+WYMeditor.editor.prototype._getSelectedListItems = function (selection) {
     var wym = this,
-        i,
-        j,
-        range,
-        selectedLi,
-        nodes = [],
-        liNodes = [],
-        containsNodeTextFilter,
-        parentsToAdd,
-        node;
+        $selectedContainer,
+        $selectedNodes,
+        $selectedLis;
 
-    // Filter function to remove undesired nodes from what rangy.getNodes()
-    // gives
-    containsNodeTextFilter = function (testNode) {
-        var fullyContainsNodeText;
+    if (selection.isCollapsed) {
+        $selectedContainer = jQuery(wym.selectedContainer());
 
-        // Include any partially-selected textNodes
-        if (rangy.dom.isCharacterDataNode(testNode)) {
-            return testNode;
+        if ($selectedContainer.closest('li, table').is('table')) {
+            // Inside a table and not inside a list inside it. This prevents
+            // the inclusion of the list item that might be an ancestor of the
+            // table.
+            return [];
         }
-
-        try {
-            fullyContainsNodeText = range.containsNodeText(testNode);
-        } catch (e) {
-            // Rangy throws an exception on an internal
-            // intersection call on the last node that's
-            // actually in the selection
-            return true;
-        }
-
-        if (fullyContainsNodeText === true) {
-            // If we fully contain any text in this node, it's definitely
-            // selected
-            return true;
-        }
-    };
-
-    // Iterate through all of the selection ranges and include any li nodes
-    // that are user-selected in each range
-    for (i = 0; i < sel.rangeCount; i++) {
-        range = sel.getRangeAt(i);
-        if (range.collapsed === true) {
-            // Collapsed ranges don't return the range they're in as part of
-            // getNodes, so let's find the next list item up
-            selectedLi = wym.findUp(range.startContainer, 'li');
-            if (selectedLi) {
-                nodes = nodes.concat([selectedLi]);
-            }
-        } else {
-            // getNodes includes the parent list item whenever we have our
-            // selection in a sublist. We need to make a distinction between
-            // when the parent list item is actually selected and when it's
-            // only sort of selected because we're selecting a sub-item
-            // (meaning it's partially selected).
-            // In the following case, we don't want `2` as one of our nodes:
-            // 1
-            // 2
-            //   2.1
-            //   2|.2
-            // 3|
-            nodes = nodes.concat(
-                range.getNodes(
-                    [],
-                    containsNodeTextFilter
-                )
-            );
-
-            // We also need to include the parent li if we selected a non-li, non-list node.
-            // eg. if we select text inside an li, the user is actually
-            // selecting that entire li
-            parentsToAdd = [];
-            for (j = 0; j < nodes.length; j++) {
-                node = nodes[j];
-                if (!jQuery(node).is('li,ol,ul')) {
-                    // Crawl up the dom until we find an li
-                    while (node.parentNode) {
-                        node = node.parentNode;
-                        if (jQuery(node).is('li')) {
-                            parentsToAdd.push(node);
-                            break;
-                        }
-                    }
-                }
-            }
-            // Add in all of the new parents if they're not already included
-            // (no duplicates)
-            for (j = 0; j < parentsToAdd.length; j++) {
-                if (jQuery.inArray(parentsToAdd[j], nodes) === -1) {
-                    nodes.push(parentsToAdd[j]);
-                }
-            }
-
-
-        }
+        return $selectedContainer.closest('li');
     }
 
-    // Filter out the non-li nodes
-    for (i = 0; i < nodes.length; i++) {
-        if (nodes[i].nodeType === WYMeditor.NODE.ELEMENT &&
-                nodes[i].tagName.toLowerCase() === WYMeditor.LI) {
-            liNodes.push(nodes[i]);
-        }
+    // All the selected nodes in the selection's first range.
+    $selectedNodes = jQuery(selection.getRangeAt(0).getNodes());
+
+    if ($selectedNodes.closest('li, table').filter('li').length === 0) {
+        // Selection is in a table before it is in a list. This prevents
+        // inclusion of the list item that the table may be contained
+        // in.
+        return [];
     }
 
-    return liNodes;
+    // The technique is to get selected contents of the list items and then
+    // get their closest parent list items. So we don't want the list elements.
+    // Some list items may be empty and we do want those so we'll add them back
+    // later.
+    $selectedLis = $selectedNodes.not('li, ol, ul')
+
+    // IE doesn't include the Rangy selection boundary `span` in the above
+    // `.getNodes`. This effects an edge case, where a `li` contains only
+    // that `span`.
+    .add($selectedNodes.find('.rangySelectionBoundary'))
+
+    // Add back the text nodes because jQuery.not always excludes them.
+    .add(
+        $selectedNodes.filter(
+            function () {
+                return wym.nodeType === WYMeditor.NODE.TEXT;
+            }
+        )
+    )
+    .closest('li')
+
+    // Add `li`s that are selected and are empty. Because they didn't
+    // get found by `.closest`. We can safely add them because they don't
+    // contain other list items so surely if they are in the selection it is
+    // because the user wants to manipulate them.
+    .add($selectedNodes.filter('li:empty'))
+
+    // Exclude list items that are children of table elements that are in the
+    // selection.
+    .not($selectedNodes.filter('table').find('li'));
+
+    return jQuery.unique($selectedLis.get());
 };
 
 /**
@@ -2155,15 +2838,15 @@ WYMeditor.editor.prototype._selectionOnlyInList = function (sel) {
     Only list items that have a common list will be indented.
  */
 WYMeditor.editor.prototype.indent = function () {
-    var wym = this._wym,
-        sel = rangy.getIframeSelection(this._iframe),
+    var wym = this,
+        sel = wym.selection(),
         listItems,
         manipulationFunc,
         i;
 
     // First, make sure this list is properly structured
     manipulationFunc = function () {
-        var selectedBlock = wym.selected(),
+        var selectedBlock = wym.selectedContainer(),
             potentialListBlock = wym.findUp(
                 selectedBlock,
                 ['ol', 'ul', 'li']
@@ -2179,7 +2862,7 @@ WYMeditor.editor.prototype.indent = function () {
 
     // We just changed and restored the selection when possibly correcting the
     // lists
-    sel = rangy.getIframeSelection(this._iframe);
+    sel = wym.selection();
 
     // If all of the selected nodes are not contained within one list, don't
     // perform the action.
@@ -2215,15 +2898,15 @@ WYMeditor.editor.prototype.indent = function () {
     behavior and valid HTML.
 */
 WYMeditor.editor.prototype.outdent = function () {
-    var wym = this._wym,
-        sel = rangy.getIframeSelection(this._iframe),
+    var wym = this,
+        sel = wym.selection(),
         listItems,
         manipulationFunc,
         i;
 
     // First, make sure this list is properly structured
     manipulationFunc = function () {
-        var selectedBlock = wym.selected(),
+        var selectedBlock = wym.selectedContainer(),
             potentialListBlock = wym.findUp(
                 selectedBlock,
                 ['ol', 'ul', 'li']
@@ -2239,7 +2922,7 @@ WYMeditor.editor.prototype.outdent = function () {
 
     // We just changed and restored the selection when possibly correcting the
     // lists
-    sel = rangy.getIframeSelection(this._iframe);
+    sel = wym.selection();
 
     // If all of the selected nodes are not contained within one list, don't
     // perform the action.
@@ -2274,7 +2957,7 @@ WYMeditor.editor.prototype.outdent = function () {
 
     A helper function to ensure that the selection is restored to the same
     location after a potentially-complicated dom manipulation is performed. This
-    also handles the case where the dom manipulation throws and error by cleaning
+    also handles the case where the dom manipulation throws an error by cleaning
     up any selection markers that were added to the dom.
 
     `manipulationFunc` is a function that takes no arguments and performs the
@@ -2282,7 +2965,10 @@ WYMeditor.editor.prototype.outdent = function () {
     potentially destroyed the selection.
 */
 WYMeditor.editor.prototype.restoreSelectionAfterManipulation = function (manipulationFunc) {
-    var savedSelection = rangy.saveSelection(rangy.dom.getIframeWindow(this._iframe)),
+    var wym = this,
+        savedSelection = rangy.saveSelection(
+            rangy.dom.getIframeWindow(wym._iframe)
+        ),
         changesMade = true;
 
     // If something goes wrong, we don't want to leave selection markers
@@ -2305,7 +2991,7 @@ WYMeditor.editor.prototype.restoreSelectionAfterManipulation = function (manipul
 
 /**
     editor.insertOrderedlist
-    =========================
+    ========================
 
     Convert the selected block in to an ordered list.
 
@@ -2322,7 +3008,7 @@ WYMeditor.editor.prototype.insertOrderedlist = function () {
 
     // First, make sure this list is properly structured
     manipulationFunc = function () {
-        var selectedBlock = wym.selected(),
+        var selectedBlock = wym.selectedContainer(),
             potentialListBlock = wym.findUp(
                 selectedBlock,
                 ['ol', 'ul', 'li']
@@ -2346,7 +3032,7 @@ WYMeditor.editor.prototype.insertOrderedlist = function () {
 
 /**
     editor.insertUnorderedlist
-    =========================
+    ==========================
 
     Convert the selected block in to an unordered list.
 
@@ -2361,7 +3047,7 @@ WYMeditor.editor.prototype.insertUnorderedlist = function () {
 
     // First, make sure this list is properly structured
     manipulationFunc = function () {
-        var selectedBlock = wym.selected(),
+        var selectedBlock = wym.selectedContainer(),
             potentialListBlock = wym.findUp(
                 selectedBlock,
                 ['ol', 'ul', 'li']
@@ -2385,55 +3071,81 @@ WYMeditor.editor.prototype.insertUnorderedlist = function () {
 
 /**
     editor._insertList
-    =========================
+    ==================
 
-    Convert the selected block in to the specified type of list.
+    This either manipulates existing lists or creates a new one.
 
-    If the selection is already inside a list, switch the type of the nearest
-    parent list to an `<ol>`. If the selection is in a block element that can be a
-    valid list, place that block element's contents inside an ordered list.
+    The action that will be performed depends on the contents of the
+    selection and their context.
+
+    This can result in one of:
+
+     1. Changing the type of lists.
+     2. Removing items from list.
+     3. Creating a list.
+     4. Nothing.
+
+    If existing list items are selected this means either changing list type
+    or de-listing. Changing list type occurs when selected list items all share
+    a list of a different type than the requested. Removing items from lists
+    occurs when selected list items are all of the same type as the requested.
+
+    If no list items are selected, then, if possible, a list will be created.
+    If not possible, no change is made.
 
     Returns `true` if a change was made, `false` otherwise.
+
+    @param listType A string, representing the user's action, either 'ul'
+                    or 'ol'.
  */
 WYMeditor.editor.prototype._insertList = function (listType) {
     var wym = this._wym,
-        sel = rangy.getIframeSelection(this._iframe),
+        sel = wym.selection(),
         listItems,
-        rootList,
-        selectedBlock,
+        $listItems,
+        $parentListsOfDifferentType,
+        commonParentList,
         potentialListBlock;
 
     listItems = wym._getSelectedListItems(sel);
+    if (listItems.length > 0) {
+        // We have existing list items selected. This means either changing
+        // their parent lists' types or de-listing.
 
-    // If we've selected some list items all in the same list, we want to
-    // change the type of that list.
-    if (listItems.length !== 0) {
-        // If the selection is across paragraphs and other items at the root level,
-        // don't indent
-        rootList = wym.getCommonParentList(listItems, true);
-        if (rootList) {
-            this._changeListType(rootList, listType);
-            return true;
+        $listItems = jQuery(listItems);
+
+        $parentListsOfDifferentType = $listItems
+            .parent(':not(' + listType + ')');
+        if ($parentListsOfDifferentType.length > 0) {
+            // Some of the lists are of a different type than that which was
+            // requested.
+
+            // Change list type only if selected list items share a common parent
+            // list. TODO: Change types over several lists:
+            // https://github.com/wymeditor/wymeditor/issues/541
+            commonParentList = wym.getCommonParentList(listItems, true);
+            if (commonParentList) {
+                wym._changeListType(commonParentList, listType);
+                return true;
+            }
         } else {
-            // We have a selection across multiple root-level lists. Punt on
-            // this case for now.
-            // TODO: Handle multiple root-level lists properly
-            return false;
+            // List types are the same as requested. De-list.
+            wym._removeItemsFromList($listItems);
+            return true;
         }
-
     }
-
-    // If we've selected a block-level item that's appropriate to convert in to a list,
-    // convert it.
-    selectedBlock = this.selected();
+    // Get a potential block element from selection that could be converted
+    // into a list:
     // TODO: Use `_containerRules['root']` minus the ol/ul and
     // `_containerRules['contentsCanConvertToList']
-    potentialListBlock = this.findUp(selectedBlock, WYMeditor.POTENTIAL_LIST_ELEMENTS);
+    potentialListBlock = wym.findUp(
+        wym.selectedContainer(),
+        WYMeditor.POTENTIAL_LIST_ELEMENTS
+    );
     if (potentialListBlock) {
-        this._convertToList(potentialListBlock, listType);
+        wym._convertToList(potentialListBlock, listType);
         return true;
     }
-
     // The user has something selected that wouldn't be a valid list
     return false;
 };
@@ -2471,6 +3183,200 @@ WYMeditor.editor.prototype._convertToList = function (blockElement, listType) {
     $newList = $blockElement.children();
 
     return $newList.get(0);
+};
+
+/**
+    editor._removeItemsFromList
+    ===========================
+
+    De-list the provided list items.
+
+    @param listItems A jQuery object of list items.
+*/
+WYMeditor.editor.prototype._removeItemsFromList = function ($listItems) {
+    var wym = this,
+        $listItem,
+        i,
+        j,
+        listItemChild,
+        $childNodesToTransfer,
+        k,
+        $childNodeToTransfer,
+        rootContainer = wym.documentStructureManager.structureRules
+            .defaultRootContainer,
+        attributes;
+
+    // This is left here for future reference because it may or may not be a
+    // better behavior:
+    // It is reasonable to de-list only a subset of the provided list items.
+    // The subset are the list items which are not ancestors of any other list
+    // items.
+    //$listItems = $listItems.not($listItems.find('li'));
+
+    for (i = 0; i < $listItems.length; i++) {
+        $listItem = $listItems.eq(i);
+
+        // Determine the type of element this list item will be transformed
+        // into and call for this transformation.
+        if ($listItem.parent().parent('li, th, td').length === 1) {
+            // The list item will end up inside another list item or inside a
+            // table cell. Turn it into a `span`.
+            $listItem = jQuery(
+                wym.switchTo(
+                    $listItem[0],
+                    'span',
+                    false
+                )
+            );
+        } else {
+            // The list item will end up in the root of the document. Turn it
+            // into a default root container.
+            $listItem = jQuery(
+                wym.switchTo(
+                    $listItem[0],
+                    rootContainer,
+                    false
+                )
+            );
+        }
+        // The transformation should be complete and the element is no longer
+        // a list item, hence we call it 'the de-listed element'.
+
+        // Move the de-listed element according to its relation to its
+        // sibling nodes.
+        if ($listItem.parent().children().length === 1) {
+            // It is the only child in the list.
+
+            $listItem.parent().before($listItem);
+            // Remove the list because it is empty.
+            $listItem.next().remove();
+
+        } else if ($listItem[0] === $listItem.parent().children().first()[0]) {
+            // It is not the only child. It is the first child.
+
+            $listItem.parent().before($listItem);
+        } else if (
+            $listItem[0] !== $listItem.parent().children().first()[0] &&
+            $listItem[0] !== $listItem.parent().children().last()[0]
+        ) {
+            // It is not the first and not the last child.
+            $listItem.parent().before(
+                '<' + $listItem.parent()[0].tagName + '/>'
+            );
+            jQuery($listItem.prevAll().toArray().reverse())
+                .appendTo($listItem.parent().prev());
+            $listItem.parent().before($listItem);
+
+        } else if ($listItem[0] === $listItem.parent().children().last()[0]) {
+            // It is not the only child. It is the last child.
+            $listItem.parent().after($listItem);
+        }
+        // The de-listed element should now be at it's final destination.
+        // Now, deal with its contents.
+        for (j = 0; j < $listItem.contents().length; j++) {
+            listItemChild = $listItem.contents()[j];
+            if (
+                wym.isBlockNode(listItemChild) &&
+                // Prevents a rangy selection boundary element from interfering.
+                listItemChild.className !== 'rangySelectionBoundary' &&
+                listItemChild.tagName.toLowerCase() !== 'br'
+            ) {
+                // We have hit the first block child. From this child onward,
+                // the contents will be moved to after the de-listed element.
+                $childNodesToTransfer = $listItem.contents().slice(j);
+                if (
+                    $listItem[0].tagName.toLowerCase() ===
+                        rootContainer
+                ) {
+                    // The destination of these nodes is the root element.
+                    // Prepare them as such.
+                    for (k = 0; k < $childNodesToTransfer.length; k++) {
+                        $childNodeToTransfer = $childNodesToTransfer.eq(k);
+                        if (
+                            $childNodeToTransfer[0]
+                                .nodeType === WYMeditor.NODE.TEXT
+                        ) {
+                            $childNodeToTransfer.wrap(
+                                '<' + rootContainer + ' />'
+                            );
+                        } else if (
+                            $childNodeToTransfer[0].tagName &&
+                            !(wym.isBlockNode($childNodeToTransfer[0])) &&
+                            $childNodeToTransfer[0].tagName
+                                .toLowerCase() !== 'br'
+                        ) {
+                            wym.switchTo(
+                                $childNodesToTransfer[k],
+                                rootContainer,
+                                false
+                            );
+                        }
+                    }
+                }
+                // The contents should be ready now.
+                $listItem.after($listItem.contents().slice(j));
+                // The loop was for finding the first block element.
+                break;
+            }
+        }
+        // `br`s may have been transferred to the root container. They don't
+        // belong there.
+        jQuery(wym._doc).find('body.wym_iframe').children('br').remove();
+
+        if ($listItem[0].tagName.toLowerCase() === 'span') {
+            // Get rid of empty `span`s and ones that contain only `br`s.
+            if (
+                $listItem.contents(':not(.rangySelectionBoundary)')
+                    .length === 0 ||
+                $listItem.contents(':not(.rangySelectionBoundary)').length ===
+                    $listItem.contents('br').length
+            ) {
+                // The Rangy selection boundary `span` may be inside.
+                $listItem.before($listItem.contents('.rangySelectionBoundary'));
+                $listItem.remove();
+            } else {
+                // The `span` wasn't removed.
+
+                // Add `br` elements that may be necessary because by turning
+                // a `li` element into a `span` element we turn a block
+                // type element into an in-line type element.
+                if (
+                    $listItem[0].previousSibling &&
+                    $listItem[0].previousSibling.nodeType === WYMeditor
+                        .NODE.TEXT ||
+
+                    $listItem.prevAll(':not(.rangySelectionBoundary)')
+                        .length > 0 &&
+                    wym.isBlockNode(
+                        $listItem.prevAll(':not(.rangySelectionBoundary)')[0]
+                    ) === false
+                ) {
+                    $listItem.before('<br />');
+                }
+                if (
+                    $listItem[0].nextSibling &&
+                    $listItem[0].nextSibling.nodeType === WYMeditor
+                        .NODE.TEXT ||
+
+                    $listItem.nextAll(':not(.rangySelectionBoundary)')
+                        .length > 0 &&
+                    wym.isBlockNode(
+                        $listItem.nextAll(':not(.rangySelectionBoundary)')[0]
+                    ) === false
+                ) {
+                    $listItem.after('<br />');
+                }
+
+                // If the de-listed element has no meaningful attributes, there is
+                // no use for it being a span.
+                attributes = $listItem[0].attributes;
+                wym.unwrapIfMeaninglessSpan($listItem[0]);
+            }
+        }
+    }
+
+    // Reintroduce any necessary DOM-level corrections for editing purposes
+    wym.fixBodyHtml();
 };
 
 /**
@@ -2517,7 +3423,7 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
 
     // Find the currently-selected container
     container = jQuery(
-        this.findUp(this.container(), WYMeditor.POTENTIAL_TABLE_INSERT_ELEMENTS)
+        this.findUp(this.selectedContainer(), WYMeditor.POTENTIAL_TABLE_INSERT_ELEMENTS)
     ).get(0);
 
     if (!container || !container.parentNode) {
