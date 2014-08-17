@@ -1168,6 +1168,10 @@ WYMeditor.INIT_DIALOG = function (index) {
         sStamp = wym.uniqueStamp(),
         tableOnClick;
 
+    jQuery(window).bind('beforeunload', function () {
+        wym.focusOnDocument();
+    });
+
     if (dialogType === WYMeditor.DIALOG_LINK) {
         // ensure that we select the link to populate the fields
         if (selected && selected.tagName &&
