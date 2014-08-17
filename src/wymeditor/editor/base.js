@@ -289,7 +289,20 @@ WYMeditor.editor.prototype._getButtons = function () {
 };
 
 /**
-    WYMeditor.editor._bindFocusContentWindowToButtons
+    WYMeditor.editor.focusOnDocument
+    ================================
+
+    Sets focus on the document.
+*/
+WYMeditor.editor.prototype.focusOnDocument = function () {
+    var wym = this,
+        doc = wym._iframe.contentWindow;
+
+    doc.focus();
+};
+
+/**
+    WYMeditor.editor._bindFocusOnDocumentToButtons
     =================================================
 
     Binds a handler to clicks on the UI buttons, that sets focus back to the
@@ -298,13 +311,13 @@ WYMeditor.editor.prototype._getButtons = function () {
     Doesn't bind to dialog-opening buttons, because that would cause them to
     fall behind the opening window, in some browsers.
 */
-WYMeditor.editor.prototype._bindFocusContentWindowToButtons = function () {
+WYMeditor.editor.prototype._bindFocusOnDocumentToButtons = function () {
     var wym = this,
         $buttons = wym._getButtons();
 
     $buttons = $buttons.parent().not('.wym_opens_dialog').children('a');
     $buttons.click(function () {
-        wym._iframe.contentWindow.focus();
+        wym.focusOnDocument();
     });
 };
 
@@ -360,7 +373,7 @@ WYMeditor.editor.prototype._afterDesignModeOn = function () {
 
     // Importantly, these two are  after `postInit`, where plugins had a chance
     // to modify the UI (add buttons, etc.).
-    wym._bindFocusContentWindowToButtons();
+    wym._bindFocusOnDocumentToButtons();
     wym._UiQuirks();
 
     // Add event listeners to doc elements, e.g. images

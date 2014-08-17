@@ -318,6 +318,23 @@ Example:
 
 Show/hide the HTML source.
 
+``focusOnDocument()``
+=====================
+
+Set the browser's focus on the document.
+
+This may be useful for returning focus to the document, for a smooth user
+experience, after some UI interaction.
+
+For example, you may want to bind it as a handler for a dialog's window
+``beforeclose`` event. For example:
+
+.. code-block:: javascript
+
+    jQuery(window).bind('beforeunload', function () {
+        wym.focusOnDocument();
+    });
+
 ********************
 Internationalization
 ********************
