@@ -268,12 +268,12 @@ WYMeditor.editor.prototype._onEditorIframeLoad = function (wym) {
 };
 
 /**
-    WYMeditor.editor._getButtons
+    WYMeditor.editor.getButtons
     ============================
 
     Returns a jQuery of all UI buttons.
 */
-WYMeditor.editor.prototype._getButtons = function () {
+WYMeditor.editor.prototype.getButtons = function () {
     var wym = this,
         buttonsSelector,
         $buttons;
@@ -313,7 +313,7 @@ WYMeditor.editor.prototype.focusOnDocument = function () {
 */
 WYMeditor.editor.prototype._bindFocusOnDocumentToButtons = function () {
     var wym = this,
-        $buttons = wym._getButtons();
+        $buttons = wym.getButtons();
 
     $buttons = $buttons.parent().not('.wym_opens_dialog').children('a');
     $buttons.click(function () {

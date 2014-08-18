@@ -335,6 +335,17 @@ For example, you may want to bind it as a handler for a dialog's window
         wym.focusOnDocument();
     });
 
+``getButtons()``
+================
+
+Returns a jQuery object, containing all the UI buttons.
+
+Example:
+
+.. code-block:: javascript
+
+    var $buttons = wym.getButtons();
+
 ********************
 Internationalization
 ********************
