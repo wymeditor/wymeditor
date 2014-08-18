@@ -55,7 +55,7 @@ WYMeditor.WymClassTridentPre7.prototype._setButtonsUnselectable = function () {
     // Issue explained here:
     // http://stackoverflow.com/questions/1470932
     var wym = this,
-        $buttons = wym._getButtons();
+        $buttons = wym.getButtons();
 
     $buttons.attr('unselectable', 'on');
 };
