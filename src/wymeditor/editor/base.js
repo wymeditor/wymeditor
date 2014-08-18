@@ -1200,12 +1200,9 @@ WYMeditor.editor.prototype.switchTo = function (
         throw "Will not change the type of an 'img' element.";
     }
 
-    wym.restoreSelectionAfterManipulation(function () {
-        newElement = wym._doc.createElement(sType);
-        jQuery(newElement).append(element.childNodes);
-        $element.replaceWith(newElement);
-        return true;
-    });
+    newElement = wym._doc.createElement(sType);
+    jQuery(newElement).append(element.childNodes);
+    $element.replaceWith(newElement);
 
     if (!stripAttrs) {
         for (i = 0; i < attrs.length; ++i) {
