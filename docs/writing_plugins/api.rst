@@ -327,7 +327,7 @@ This may be useful for returning focus to the document, for a smooth user
 experience, after some UI interaction.
 
 For example, you may want to bind it as a handler for a dialog's window
-``beforeclose`` event. For example:
+``beforeunload`` event. For example:
 
 .. code-block:: javascript
 
