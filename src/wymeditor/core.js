@@ -627,9 +627,9 @@ jQuery.fn.wymeditor = function (options) {
 
         toolsItems: [
             {
-            'name': 'Bold',
-            'title': 'Strong',
-            'css': 'wym_tools_strong'
+                'name': 'Bold',
+                'title': 'Strong',
+                'css': 'wym_tools_strong'
             },
             {
                 'name': 'Italic',
