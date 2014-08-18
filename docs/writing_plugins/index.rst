@@ -108,3 +108,18 @@ For example:
 
     The ``embed`` plugin currently violates this,
     which is a bug.
+
+Mark your dialog-opening buttons
+================================
+
+If your plugin includes buttons that open dialog windows, mark the list item
+with the class ``wym_opens_dialog``. This will prevent your dialog window from
+opening in the background.
+
+Handle focus
+============
+
+When UI interactions steal focus from the document, consider using
+``editor.focusOnDocument``.
+
+For example, right before a dialog window closes.
