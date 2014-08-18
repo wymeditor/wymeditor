@@ -20,6 +20,9 @@ WYMeditor.
 * [#563](https://github.com/wymeditor/wymeditor/pull/563)-clicking on some UI
   Elements, including anything that was added by plugins, caused loss of focus
   and selection in IE8.
+* [#546](https://github.com/wymeditor/wymeditor/pull/546)-Clicking on any UI
+  element would cause loss of focus in non-IE browsers. Changing main
+  containers would cause loss of selection.
 
 ### Backwards-Incompatible Changes
 
@@ -28,6 +31,10 @@ WYMeditor.
   because the ``jQuery.browser`` that is in old jQuery versions thinks that
   IE11 is Mozilla (can’t blame it, really).
 * jQuery-migrate is no longer required at all.
+* [#546](https://github.com/wymeditor/wymeditor/pull/546)-Buttons that cause
+  dialog windows to open should now be marked with the class
+  ``wym_opens_dialog``. Without this class they will pop up in the
+  background. Notice that the class must be on the list item.
 
 ### Development Process Improvements
 

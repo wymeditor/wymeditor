@@ -168,15 +168,16 @@ StructuredHeadingsManager.prototype.createUI = function () {
 StructuredHeadingsManager.prototype.bindEvents = function () {
     var headingManager = this,
         wym = this._wym,
-        $box = jQuery(wym._box);
+        $box = jQuery(wym._box),
+        sel;
 
     // Bind click events to tool buttons
     $box.find(this._options.headingOutdentToolSelector).click(function () {
-        var sel = wym.selection();
+        sel = wym.selection();
         headingManager.changeSelectedHeadingsLevel(sel, "up");
     });
     $box.find(this._options.headingIndentToolSelector).click(function () {
-        var sel = wym.selection();
+        sel = wym.selection();
         headingManager.changeSelectedHeadingsLevel(sel, "down");
     });
     if (this._options.enableFixHeadingStructureButton) {
@@ -187,8 +188,7 @@ StructuredHeadingsManager.prototype.bindEvents = function () {
 
     // Bind click event to the new single heading link
     $box.find(this._options.headingContainerPanelSelector).click(function () {
-        var container = wym.findUp(wym.mainContainer(), WYMeditor.MAIN_CONTAINERS);
-        headingManager.switchToHeading(container);
+        headingManager.switchToHeading(wym.mainContainer());
     });
 };
 

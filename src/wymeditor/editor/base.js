@@ -268,6 +268,60 @@ WYMeditor.editor.prototype._onEditorIframeLoad = function (wym) {
 };
 
 /**
+    WYMeditor.editor.getButtons
+    ============================
+
+    Returns a jQuery of all UI buttons.
+*/
+WYMeditor.editor.prototype.getButtons = function () {
+    var wym = this,
+        buttonsSelector,
+        $buttons;
+
+    buttonsSelector = [
+        wym._options.toolSelector,
+        wym._options.containerSelector,
+        wym._options.classSelector
+    ].join(', ');
+    $buttons = jQuery(wym._box).find(buttonsSelector);
+
+    return $buttons;
+};
+
+/**
+    WYMeditor.editor.focusOnDocument
+    ================================
+
+    Sets focus on the document.
+*/
+WYMeditor.editor.prototype.focusOnDocument = function () {
+    var wym = this,
+        doc = wym._iframe.contentWindow;
+
+    doc.focus();
+};
+
+/**
+    WYMeditor.editor._bindFocusOnDocumentToButtons
+    =================================================
+
+    Binds a handler to clicks on the UI buttons, that sets focus back to the
+    document.
+
+    Doesn't bind to dialog-opening buttons, because that would cause them to
+    fall behind the opening window, in some browsers.
+*/
+WYMeditor.editor.prototype._bindFocusOnDocumentToButtons = function () {
+    var wym = this,
+        $buttons = wym.getButtons();
+
+    $buttons = $buttons.parent().not('.wym_opens_dialog').children('a');
+    $buttons.click(function () {
+        wym.focusOnDocument();
+    });
+};
+
+/**
     WYMeditor.editor._UiQuirks
     ==========================
 
@@ -317,8 +371,9 @@ WYMeditor.editor.prototype._afterDesignModeOn = function () {
         wym._options.postInit(wym);
     }
 
-    // Apply browser quirks regarding UI. Importantly, after `postInit`, where
-    // plugins had a chance to modify the UI (add buttons, etc.).
+    // Importantly, these two are  after `postInit`, where plugins had a chance
+    // to modify the UI (add buttons, etc.).
+    wym._bindFocusOnDocumentToButtons();
     wym._UiQuirks();
 
     // Add event listeners to doc elements, e.g. images
@@ -901,11 +956,8 @@ WYMeditor.editor.prototype.unwrapIfMeaninglessSpan = function (element) {
     Get or set the selected main container.
 */
 WYMeditor.editor.prototype.mainContainer = function (sType) {
-    if (typeof (sType) === 'undefined') {
-        return this.selectedContainer();
-    }
-
-    var container = null,
+    var wym = this,
+        container = null,
         aTypes,
         newNode,
         blockquote,
@@ -914,8 +966,15 @@ WYMeditor.editor.prototype.mainContainer = function (sType) {
         firstNode,
         x;
 
+    if (typeof (sType) === 'undefined') {
+        return jQuery(wym.selectedContainer())
+            .parentsOrSelf()
+            .not('html, body, blockquote')
+            .last()[0];
+    }
+
     if (sType.toLowerCase() === WYMeditor.TH) {
-        container = this.mainContainer();
+        container = wym.selectedContainer();
 
         // Find the TD or TH container
         switch (container.tagName.toLowerCase()) {
@@ -925,7 +984,7 @@ WYMeditor.editor.prototype.mainContainer = function (sType) {
             break;
         default:
             aTypes = [WYMeditor.TD, WYMeditor.TH];
-            container = this.findUp(this.mainContainer(), aTypes);
+            container = wym.findUp(wym.selectedContainer(), aTypes);
             break;
         }
 
@@ -935,8 +994,11 @@ WYMeditor.editor.prototype.mainContainer = function (sType) {
             if (container.tagName.toLowerCase() === WYMeditor.TD) {
                 sType = WYMeditor.TH;
             }
-            this.switchTo(container, sType, false);
-            this.update();
+            wym.restoreSelectionAfterManipulation(function () {
+                wym.switchTo(container, sType, false);
+                return true;
+            });
+            wym.update();
         }
     } else {
         // Set the container type
@@ -952,20 +1014,20 @@ WYMeditor.editor.prototype.mainContainer = function (sType) {
             WYMeditor.PRE,
             WYMeditor.BLOCKQUOTE
         ];
-        container = this.findUp(this.mainContainer(), aTypes);
+        container = wym.findUp(wym.selectedContainer(), aTypes);
 
         if (container) {
             if (sType.toLowerCase() === WYMeditor.BLOCKQUOTE) {
                 // Blockquotes must contain a block level element
-                blockquote = this.findUp(
-                    this.mainContainer(),
+                blockquote = wym.findUp(
+                    wym.selectedContainer(),
                     WYMeditor.BLOCKQUOTE
                 );
                 if (blockquote === null) {
-                    newNode = this._doc.createElement(sType);
+                    newNode = wym._doc.createElement(sType);
                     container.parentNode.insertBefore(newNode, container);
                     newNode.appendChild(container);
-                    this.setCaretIn(newNode.firstChild);
+                    wym.setCaretIn(newNode.firstChild);
                 } else {
                     nodes = blockquote.childNodes;
                     lgt = nodes.length;
@@ -981,15 +1043,18 @@ WYMeditor.editor.prototype.mainContainer = function (sType) {
                     }
                     blockquote.parentNode.removeChild(blockquote);
                     if (firstNode) {
-                        this.setCaretIn(firstNode);
+                        wym.setCaretIn(firstNode);
                     }
                 }
             } else {
                 // Not a blockquote
-                this.switchTo(container, sType);
+                wym.restoreSelectionAfterManipulation(function () {
+                    wym.switchTo(container, sType, false);
+                    return true;
+                });
             }
 
-            this.update();
+            wym.update();
         }
     }
 
@@ -1124,16 +1189,12 @@ WYMeditor.editor.prototype.findUp = function (node, filter) {
     @param sType A string of the desired type. For example, 'p'.
     @param stripAttrs a boolean that determines whether the attributes of
                       the element will be stripped or preserved.
-    @param setCaret A boolean that determines whether the caret will be set at
-                    the beginning, inside the element, after the switch. Default
-                    is false.
 
 */
 WYMeditor.editor.prototype.switchTo = function (
     element,
     sType,
-    stripAttrs,
-    setCaret
+    stripAttrs
 ) {
     var wym = this,
         $element = jQuery(element),
@@ -1157,13 +1218,9 @@ WYMeditor.editor.prototype.switchTo = function (
         for (i = 0; i < attrs.length; ++i) {
             newElement.setAttribute(
                 attrs.item(i).nodeName,
-                attrs.item(i).nodeValue
+                attrs.item(i).value
             );
         }
-    }
-
-    if (setCaret) {
-        wym.setCaretIn(newElement);
     }
 
     return newElement;
@@ -3419,7 +3476,7 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
 
     // Find the currently-selected container
     container = jQuery(
-        this.findUp(this.mainContainer(), WYMeditor.POTENTIAL_TABLE_INSERT_ELEMENTS)
+        this.findUp(this.selectedContainer(), WYMeditor.POTENTIAL_TABLE_INSERT_ELEMENTS)
     ).get(0);
 
     if (!container || !container.parentNode) {
