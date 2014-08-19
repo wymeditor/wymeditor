@@ -13,6 +13,7 @@ WYMeditor.XhtmlSaxListener = function() {
     this._insert_before_closing = [];
     this._insert_after_closing = [];
     this._last_node_was_text = false;
+    this._consecutive_brs = 0;
 
     // A string of the tag name of the last open tag added to the output.
     this._lastAddedOpenTag = '';
@@ -604,6 +605,9 @@ WYMeditor.XhtmlSaxListener.prototype._shouldRemoveTag = function(tag, attributes
     if (this._isRootInlineTagToRemove(tag, attributes, this._tag_stack)) {
         return true;
     }
+    if (this._isThirdConsecutiveBrWithNoAttributes(tag, attributes)) {
+        return true;
+    }
 
     return false;
 };
@@ -646,6 +650,36 @@ WYMeditor.XhtmlSaxListener.prototype._isRootInlineTagToRemove = function(
     }
 
     if (WYMeditor.Helper.contains(this._rootInlineTagsToRemove, tag)) {
+        return true;
+    }
+    return false;
+};
+
+/*
+    Is this tag a third consecutive `br` element that has no attributes.
+*/
+WYMeditor.XhtmlSaxListener.prototype
+    ._isThirdConsecutiveBrWithNoAttributes = function (tag, attributes) {
+    var key;
+    if (tag !== 'br') {
+        this._consecutive_brs = 0;
+        return false;
+    }
+    if (
+        this._consecutive_brs !== 0 &&
+        this._last_node_was_text
+    ) {
+        this._consecutive_brs = 0;
+        return false;
+    }
+    for (key in attributes) {
+        if (attributes.hasOwnProperty(key)) {
+            this._consecutive_brs = 0;
+            return false;
+        }
+    }
+    this._consecutive_brs ++;
+    if (this._consecutive_brs > 2) {
         return true;
     }
     return false;
