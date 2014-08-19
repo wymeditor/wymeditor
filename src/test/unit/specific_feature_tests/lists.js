@@ -3549,6 +3549,183 @@ test("Invalid list nesting", function () {
     }
 });
 
+module("list-correction_li_in_li_after_enter", {setup: prepareUnitTestModule});
+
+var liInLiAfterEnter = [
+    {
+        broken: [""
+            , '<ul id="0">'
+                , '<li id="0-0">'
+                    , '0-0-0'
+                    , '<ul id="0-0-1">'
+                        , '<li id="0-0-1-0">'
+                            , '0-0-1-0-0'
+                        , '</li>'
+                    , '</ul>'
+                    , '<li id="0-0">'
+                        , '<br />'
+                    , '</li>'
+                    , '0-0-2'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        fixed: [""
+            , '<ul id="0">'
+                , '<li id="0-0">'
+                    , '0-0-0'
+                    , '<ul id="0-0-1">'
+                        , '<li id="0-0-1-0">'
+                            , '0-0-1-0-0'
+                        , '</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li>'
+                    , '<br />'
+                    , '0-0-2'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    },
+    {
+        broken: [""
+            , '<ul id="0">'
+                , '<li id="0-0">'
+                    , '0-0-0'
+                    , '<ul id="0-0-1">'
+                        , '<li id="0-0-1-0">'
+                            , '0-0-1-0-0'
+                        , '</li>'
+                    , '</ul>'
+                    , '<li id="0-0">'
+                        , '<br />'
+                    , '</li>'
+                    , '0-0-2'
+                    , '<ul id="0-0-3">'
+                        , '<li id="0-0-3-0">'
+                            , '0-0-3-0-0'
+                        , '</li>'
+                    , '</ul>'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        fixed: [""
+            , '<ul id="0">'
+                , '<li id="0-0">'
+                    , '0-0-0'
+                    , '<ul id="0-0-1">'
+                        , '<li id="0-0-1-0">'
+                            , '0-0-1-0-0'
+                        , '</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li>'
+                    , '<br />'
+                    , '0-0-2'
+                    , '<ul id="0-0-3">'
+                        , '<li id="0-0-3-0">'
+                            , '0-0-3-0-0'
+                        , '</li>'
+                    , '</ul>'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    },
+    {
+        broken: [""
+            , '<ul id="0">'
+                , '<li id="0-0">'
+                    , '0-0-0'
+                    , '<ul id="0-0-1">'
+                        , '<li id="0-0-1-0">'
+                            , '0-0-1-0-0'
+                        , '</li>'
+                    , '</ul>'
+                    , '<li id="0-0">'
+                        , '<br />'
+                    , '</li>'
+                    , '<br id="0-0-2"'
+                    , '<ul id="0-0-3">'
+                        , '<li id="0-0-3-0">'
+                            , '0-0-3-0-0'
+                        , '</li>'
+                    , '</ul>'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        fixed: [""
+            , '<ul id="0">'
+                , '<li id="0-0">'
+                    , '0-0-0'
+                    , '<ul id="0-0-1">'
+                        , '<li id="0-0-1-0">'
+                            , '0-0-1-0-0'
+                        , '</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li>'
+                    , '<br />'
+                    , '<br id="0-0-2"'
+                    , '<ul id="0-0-3">'
+                        , '<li id="0-0-3-0">'
+                            , '0-0-3-0-0'
+                        , '</li>'
+                    , '</ul>'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    }
+];
+
+test("Simple", function () {
+    var i,
+        dataLength = liInLiAfterEnter.length,
+        wymeditor = jQuery.wymeditors(0),
+        htmls,
+        broken,
+        fixed,
+        $body,
+        $originLiAndErrorLi,
+        originLi,
+        errorLi,
+        countString,
+        splitLi;
+
+    expect(2 * dataLength);
+
+    for (i = 0; i < dataLength; i++) {
+        countString = '; variation ' + (i + 1) + ' of ' + dataLength;
+        htmls = liInLiAfterEnter[i];
+        broken = htmls.broken;
+        fixed = htmls.fixed;
+
+        wymeditor._html(broken);
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+        $originLiAndErrorLi = $body.find('#0-0');
+        originLi = $originLiAndErrorLi[0];
+        errorLi = $originLiAndErrorLi[1];
+        wymeditor.setCaretIn(errorLi);
+        simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
+
+        wymEqual(
+            wymeditor,
+            fixed,
+            {
+                skipParser: true,
+                assertionString: 'HTML' + countString
+            }
+        );
+
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+        splitLi = $body.find('li:not([id])')[0];
+
+        deepEqual(
+            wymeditor.selectedContainer(),
+            splitLi,
+            'Selection' + countString
+        );
+    }
+});
+
 module("list-delisting", {setup: prepareUnitTestModule});
 
 var delistHtml = {};
