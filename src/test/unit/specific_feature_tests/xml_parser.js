@@ -29,7 +29,7 @@ test("Should correct orphaned sublists", function () {
                         '<li>a.1<\/li>' +
                     '<\/ul>' +
                 '<\/li>' +
-                '<li>b<\/li>' +
+                '<li>b<br /><\/li>' +
             '<\/ul>',
         // FF
         design_mode_pseudo_html = String() +
