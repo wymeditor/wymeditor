@@ -372,7 +372,8 @@ WYMeditor.XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes) {
         this._addSpacerBeforeElementInLI = false;
     }
 
-    this.output += this.helper.tag(tag, attributes, true);
+    this._lastAddedOpeningTagString = this.helper.tag(tag, attributes, true);
+    this.output += this._lastAddedOpeningTagString
     this._lastAddedOpenTag = tag;
     this._lastTagRemoved = false;
 };
@@ -416,7 +417,15 @@ WYMeditor.XhtmlSaxListener.prototype.closeBlockTag = function(tag) {
         this._insideLI = false;
     }
 
-    this.output = this.output.replace(/<br \/>$/, '') +
+    this.output = this.output.replace(
+        new RegExp(
+            this._lastAddedOpeningTagString + '<br />$',
+            ''
+        ),
+        this._lastAddedOpeningTagString
+    );
+
+    this.output = this.output +
         this._getClosingTagContent('before', tag) +
         "</"+tag+">" +
         this._getClosingTagContent('after', tag);
