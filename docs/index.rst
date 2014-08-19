@@ -18,7 +18,7 @@ Browser Compatibility
 
 WYMeditor is compatible with:
 
-* IE: 7, 8, 9 and 10
+* IE: 7, 8, 9 ,10 and 11
 * Firefox: LTS and latest two major versions
 * Opera: Latest Version
 * Safari: Latest Version
