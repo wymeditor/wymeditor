@@ -25,6 +25,8 @@ WYMeditor.
   containers would cause loss of selection.
 * [#542](https://github.com/wymeditor/wymeditor/issues/542)-`li` in `li` was
   created in Blink in some cases.
+* [#570](https://github.com/wymeditor/wymeditor/pull/570)-Parser to strip more
+  than two consecutive line-breaks.
 
 ### Backwards-Incompatible Changes
 

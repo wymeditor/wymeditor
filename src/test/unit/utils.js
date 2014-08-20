@@ -1,4 +1,4 @@
-/* exported isContentEditable, simulateKey, wymEqual,
+/* exported isContentEditable, simulateKey, wymEqual, testNoChangeInHtmlArray,
  makeTextSelection, moveSelector */
 /* global rangy, deepEqual, html_beautify, expect, QUnit, strictEqual */
 "use strict";
@@ -450,5 +450,30 @@ function isContentEditable(element) {
             return false;
         }
         return isContentEditable(element.parentNode);
+    }
+}
+
+/*
+    Given an array of HTML strings, for each string, load it into a
+    the WYMeditor and assert that the output is exactly the same.
+*/
+function testNoChangeInHtmlArray(htmlArray) {
+    var wymeditor = jQuery.wymeditors(0),
+        i,
+        html;
+
+    expect(htmlArray.length);
+
+    for (i = 0; i < htmlArray.length; i++) {
+        html = htmlArray[i];
+
+        wymeditor._html(html);
+        wymEqual(
+            wymeditor,
+            html, {
+                assertionString: 'Variation ' + (i + 1) + ' of ' +
+                    htmlArray.length
+            }
+        );
     }
 }

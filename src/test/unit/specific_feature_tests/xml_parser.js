@@ -1,5 +1,6 @@
 /* jshint camelcase: false, maxlen: 100 */
 /* global wymEqual, prepareUnitTestModule,
+testNoChangeInHtmlArray,
 test, expect, deepEqual */
 "use strict";
 // Tests for the XML parser
@@ -28,7 +29,7 @@ test("Should correct orphaned sublists", function () {
                         '<li>a.1<\/li>' +
                     '<\/ul>' +
                 '<\/li>' +
-                '<li>b<\/li>' +
+                '<li>b<br /><\/li>' +
             '<\/ul>',
         // FF
         design_mode_pseudo_html = String() +
@@ -1692,4 +1693,590 @@ test("BR isn't allowed at the root", function () {
     wymEqual(wymeditor, blockElementsHtml.expected, {
             assertionString: "BR removed from root"
         });
+});
+
+module("XmlParser-two_consecutive_br_limit", {setup: prepareUnitTestModule});
+
+var oneBrVariationsWithId = [
+    [""
+        , '<ul id="0">'
+            , '<li id="0.0">'
+                , '<strong id="0.0.0">'
+                    , '0.0.0.0'
+                , '</strong>'
+                , '<br id="0.0.1" />'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    [""
+        , '<ul id="0">'
+            , '<li id="0.0">'
+                , '<strong id="0.0.0">'
+                    , '0.0.0.0'
+                    , '<br id="0.0.0.1" />'
+                , '</strong>'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    [""
+        , '<p id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+                , '<br id="0.0.1" />'
+            , '</strong>'
+        , '</p>'
+    ].join(''),
+    [""
+        , '<p id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+            , '</strong>'
+            , '<br id="0.1" />'
+        , '</p>'
+    ].join(''),
+    [""
+        , '<h1 id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+                , '<br id="0.0.1" />'
+            , '</strong>'
+        , '</h1>'
+    ].join(''),
+    [""
+        , '<h1 id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+            , '</strong>'
+            , '<br id="0.1" />'
+        , '</h1>'
+    ].join(''),
+    [""
+        , '<table id="0">'
+            , '<tbody id="0.0">'
+                , '<tr id="0.0.0">'
+                    , '<td id="0.0.0.0">'
+                        , '<strong id="0.0">'
+                            , '0.0.0'
+                            , '<br id="0.0.1" />'
+                        , '</strong>'
+                    , '</td>'
+                , '</tr>'
+            , '</tbody>'
+        , '</table>'
+    ].join(''),
+    [""
+        , '<table id="0">'
+            , '<tbody id="0.0">'
+                , '<tr id="0.0.0">'
+                    , '<td id="0.0.0.0">'
+                        , '<strong id="0.0">'
+                            , '0.0.0'
+                        , '</strong>'
+                        , '<br id="0.1" />'
+                    , '</td>'
+                , '</tr>'
+            , '</tbody>'
+        , '</table>'
+    ].join('')
+];
+
+var oneBrVariationsNoId = [
+    [""
+        , '<ul id="0">'
+            , '<li id="0.0">'
+                , '<strong id="0.0.0">'
+                    , '0.0.0.0'
+                , '</strong>'
+                , '<br />'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    [""
+        , '<ul id="0">'
+            , '<li id="0.0">'
+                , '<strong id="0.0.0">'
+                    , '0.0.0.0'
+                    , '<br />'
+                , '</strong>'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    [""
+        , '<p id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+                , '<br />'
+            , '</strong>'
+        , '</p>'
+    ].join(''),
+    [""
+        , '<p id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+            , '</strong>'
+            , '<br />'
+        , '</p>'
+    ].join(''),
+    [""
+        , '<h1 id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+                , '<br />'
+            , '</strong>'
+        , '</h1>'
+    ].join(''),
+    [""
+        , '<h1 id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+            , '</strong>'
+            , '<br />'
+        , '</h1>'
+    ].join(''),
+    [""
+        , '<table id="0">'
+            , '<tbody id="0.0">'
+                , '<tr id="0.0.0">'
+                    , '<td id="0.0.0.0">'
+                        , '<strong id="0.0">'
+                            , '0.0.0'
+                            , '<br />'
+                        , '</strong>'
+                    , '</td>'
+                , '</tr>'
+            , '</tbody>'
+        , '</table>'
+    ].join(''),
+    [""
+        , '<table id="0">'
+            , '<tbody id="0.0">'
+                , '<tr id="0.0.0">'
+                    , '<td id="0.0.0.0">'
+                        , '<strong id="0.0">'
+                            , '0.0.0'
+                        , '</strong>'
+                        , '<br />'
+                    , '</td>'
+                , '</tr>'
+            , '</tbody>'
+        , '</table>'
+    ].join('')
+];
+
+var twoBrVariationsWithId = [
+    [""
+        , '<ul id="0">'
+            , '<li id="0.0">'
+                , '<strong id="0.0.0">'
+                    , '0.0.0.0'
+                , '</strong>'
+                , '<br id="0.0.1" />'
+                , '<br id="0.0.2" />'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    [""
+        , '<ul id="0">'
+            , '<li id="0.0">'
+                , '<strong id="0.0.0">'
+                    , '0.0.0.0'
+                    , '<br id="0.0.0.1" />'
+                    , '<br id="0.0.0.2" />'
+                , '</strong>'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    [""
+        , '<p id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+            , '</strong>'
+            , '<br id="0.1" />'
+            , '<br id="0.2" />'
+        , '</p>'
+    ].join(''),
+    [""
+        , '<p id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+                , '<br id="0.0.1" />'
+                , '<br id="0.0.2" />'
+            , '</strong>'
+        , '</p>'
+    ].join(''),
+    [""
+        , '<h1 id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+                , '<br id="0.0.1" />'
+                , '<br id="0.0.2" />'
+            , '</strong>'
+        , '</h1>'
+    ].join(''),
+    [""
+        , '<h1 id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+            , '</strong>'
+            , '<br id="0.1" />'
+            , '<br id="0.2" />'
+        , '</h1>'
+    ].join(''),
+    [""
+        , '<table id="0">'
+            , '<tbody id="0.0">'
+                , '<tr id="0.0.0">'
+                    , '<td id="0.0.0.0">'
+                        , '<strong id="0.0">'
+                            , '0.0.0'
+                        , '</strong>'
+                        , '<br id="0.1" />'
+                        , '<br id="0.2" />'
+                    , '</td>'
+                , '</tr>'
+            , '</tbody>'
+        , '</table>'
+    ].join(''),
+    [""
+        , '<table id="0">'
+            , '<tbody id="0.0">'
+                , '<tr id="0.0.0">'
+                    , '<td id="0.0.0.0">'
+                        , '<strong id="0.0">'
+                            , '0.0.0'
+                            , '<br id="0.0.1" />'
+                            , '<br id="0.0.2" />'
+                        , '</strong>'
+                    , '</td>'
+                , '</tr>'
+            , '</tbody>'
+        , '</table>'
+    ].join('')
+];
+
+var twoBrVariationsNoId = [
+    [""
+        , '<ul id="0">'
+            , '<li id="0.0">'
+                , '<strong id="0.0.0">'
+                    , '0.0.0.0'
+                , '</strong>'
+                , '<br />'
+                , '<br />'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    [""
+        , '<ul id="0">'
+            , '<li id="0.0">'
+                , '<strong id="0.0.0">'
+                    , '0.0.0.0'
+                    , '<br />'
+                    , '<br />'
+                , '</strong>'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    [""
+        , '<p id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+                , '<br />'
+                , '<br />'
+            , '</strong>'
+        , '</p>'
+    ].join(''),
+    [""
+        , '<p id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+            , '</strong>'
+            , '<br />'
+            , '<br />'
+        , '</p>'
+    ].join(''),
+    [""
+        , '<h1 id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+                , '<br />'
+                , '<br />'
+            , '</strong>'
+        , '</h1>'
+    ].join(''),
+    [""
+        , '<h1 id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+            , '</strong>'
+            , '<br />'
+            , '<br />'
+        , '</h1>'
+    ].join(''),
+    [""
+        , '<table id="0">'
+            , '<tbody id="0.0">'
+                , '<tr id="0.0.0">'
+                    , '<td id="0.0.0.0">'
+                        , '<strong id="0.0">'
+                            , '0.0.0'
+                            , '<br />'
+                            , '<br />'
+                        , '</strong>'
+                    , '</td>'
+                , '</tr>'
+            , '</tbody>'
+        , '</table>'
+    ].join(''),
+    [""
+        , '<table id="0">'
+            , '<tbody id="0.0">'
+                , '<tr id="0.0.0">'
+                    , '<td id="0.0.0.0">'
+                        , '<strong id="0.0">'
+                            , '0.0.0'
+                        , '</strong>'
+                        , '<br />'
+                        , '<br />'
+                    , '</td>'
+                , '</tr>'
+            , '</tbody>'
+        , '</table>'
+    ].join('')
+];
+
+var threeBrVariationsWithId = [
+    [""
+        , '<ul id="0">'
+            , '<li id="0.0">'
+                , '<strong id="0.0.0">'
+                    , '0.0.0.0'
+                , '</strong>'
+                , '<br id="0.0.1" />'
+                , '<br id="0.0.2" />'
+                , '<br id="0.0.3" />'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    [""
+        , '<ul id="0">'
+            , '<li id="0.0">'
+                , '<strong id="0.0.0">'
+                    , '0.0.0.0'
+                    , '<br id="0.0.0.1" />'
+                    , '<br id="0.0.0.2" />'
+                    , '<br id="0.0.0.3" />'
+                , '</strong>'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    [""
+        , '<p id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+                , '<br id="0.0.1" />'
+                , '<br id="0.0.2" />'
+                , '<br id="0.0.3" />'
+            , '</strong>'
+        , '</p>'
+    ].join(''),
+    [""
+        , '<p id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+            , '</strong>'
+            , '<br id="0.1" />'
+            , '<br id="0.2" />'
+            , '<br id="0.3" />'
+        , '</p>'
+    ].join(''),
+    [""
+        , '<h1 id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+                , '<br id="0.0.1" />'
+                , '<br id="0.0.2" />'
+                , '<br id="0.0.3" />'
+            , '</strong>'
+        , '</h1>'
+    ].join(''),
+    [""
+        , '<h1 id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+            , '</strong>'
+            , '<br id="0.1" />'
+            , '<br id="0.2" />'
+            , '<br id="0.3" />'
+        , '</h1>'
+    ].join(''),
+    [""
+        , '<table id="0">'
+            , '<tbody id="0.0">'
+                , '<tr id="0.0.0">'
+                    , '<td id="0.0.0.0">'
+                        , '<strong id="0.0">'
+                            , '0.0.0'
+                            , '<br id="0.0.1" />'
+                            , '<br id="0.0.2" />'
+                            , '<br id="0.0.3" />'
+                        , '</strong>'
+                    , '</td>'
+                , '</tr>'
+            , '</tbody>'
+        , '</table>'
+    ].join(''),
+    [""
+        , '<table id="0">'
+            , '<tbody id="0.0">'
+                , '<tr id="0.0.0">'
+                    , '<td id="0.0.0.0">'
+                        , '<strong id="0.0">'
+                            , '0.0.0'
+                        , '</strong>'
+                        , '<br id="0.1" />'
+                        , '<br id="0.2" />'
+                        , '<br id="0.3" />'
+                    , '</td>'
+                , '</tr>'
+            , '</tbody>'
+        , '</table>'
+    ].join('')
+];
+
+var threeBrVariationsNoId = [
+    [""
+        , '<ul id="0">'
+            , '<li id="0.0">'
+                , '<strong id="0.0.0">'
+                    , '0.0.0.0'
+                , '</strong>'
+                , '<br />'
+                , '<br />'
+                , '<br />'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    [""
+        , '<ul id="0">'
+            , '<li id="0.0">'
+                , '<strong id="0.0.0">'
+                    , '0.0.0.0'
+                    , '<br />'
+                    , '<br />'
+                    , '<br />'
+                , '</strong>'
+            , '</li>'
+        , '</ul>'
+    ].join(''),
+    [""
+        , '<p id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+                , '<br />'
+                , '<br />'
+                , '<br />'
+            , '</strong>'
+        , '</p>'
+    ].join(''),
+    [""
+        , '<p id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+            , '</strong>'
+            , '<br />'
+            , '<br />'
+            , '<br />'
+        , '</p>'
+    ].join(''),
+    [""
+        , '<h1 id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+                , '<br />'
+                , '<br />'
+                , '<br />'
+            , '</strong>'
+        , '</h1>'
+    ].join(''),
+    [""
+        , '<h1 id="0">'
+            , '<strong id="0.0">'
+                , '0.0.0'
+            , '</strong>'
+            , '<br />'
+            , '<br />'
+            , '<br />'
+        , '</h1>'
+    ].join(''),
+    [""
+        , '<table id="0">'
+            , '<tbody id="0.0">'
+                , '<tr id="0.0.0">'
+                    , '<td id="0.0.0.0">'
+                        , '<strong id="0.0">'
+                            , '0.0.0'
+                            , '<br />'
+                            , '<br />'
+                            , '<br />'
+                        , '</strong>'
+                    , '</td>'
+                , '</tr>'
+            , '</tbody>'
+        , '</table>'
+    ].join(''),
+    [""
+        , '<table id="0">'
+            , '<tbody id="0.0">'
+                , '<tr id="0.0.0">'
+                    , '<td id="0.0.0.0">'
+                        , '<strong id="0.0">'
+                            , '0.0.0'
+                        , '</strong>'
+                        , '<br />'
+                        , '<br />'
+                        , '<br />'
+                    , '</td>'
+                , '</tr>'
+            , '</tbody>'
+        , '</table>'
+    ].join('')
+];
+
+test("One `br` variations with `id`s", function () {
+    testNoChangeInHtmlArray(oneBrVariationsWithId);
+});
+
+test("One `br` variations without `id`s", function () {
+    testNoChangeInHtmlArray(oneBrVariationsNoId);
+});
+
+test("Two `br` variations with `id`s", function () {
+    testNoChangeInHtmlArray(twoBrVariationsWithId);
+});
+
+test("Two `br` variations without `id`s", function () {
+    testNoChangeInHtmlArray(twoBrVariationsNoId);
+});
+
+test("Three `br` variations with `id`s", function () {
+    testNoChangeInHtmlArray(threeBrVariationsWithId);
+});
+
+test("Three `br` variations without `id`s", function () {
+    var wymeditor = jQuery.wymeditors(0),
+        i;
+
+    expect(threeBrVariationsNoId.length);
+
+    for (i = 0; i < threeBrVariationsNoId.length; i++) {
+        wymeditor._html(threeBrVariationsNoId[i]);
+        wymEqual(
+            wymeditor,
+            twoBrVariationsNoId[i], {
+                assertionString: 'Variation ' + (i + 1) + ' of ' +
+                    threeBrVariationsNoId.length
+            }
+        );
+    }
 });
