@@ -23,6 +23,8 @@ WYMeditor.
 * [#546](https://github.com/wymeditor/wymeditor/pull/546)-Clicking on any UI
   element would cause loss of focus in non-IE browsers. Changing main
   containers would cause loss of selection.
+* [#570](https://github.com/wymeditor/wymeditor/pull/570)-Parser to strip more
+  than two consecutive line-breaks.
 
 ### Backwards-Incompatible Changes
 
