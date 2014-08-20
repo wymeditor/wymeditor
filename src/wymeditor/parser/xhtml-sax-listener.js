@@ -417,6 +417,8 @@ WYMeditor.XhtmlSaxListener.prototype.closeBlockTag = function(tag) {
         this._insideLI = false;
     }
 
+    // If a `br` is the only tag within the element that is being closed,
+    // remove that `br` tag.
     this.output = this.output.replace(
         new RegExp(
             this._lastAddedOpeningTagString + '<br />$',
