@@ -2665,7 +2665,7 @@ test("Should correct invalid list nesting", function () {
     expect(2);
 
     var wymeditor = jQuery.wymeditors(0),
-        expected = "<ul><li>a<ul><li>a.1<\/li><\/ul><\/li><li>b<\/li><\/ul>",
+        expected = "<ul><li>a<ul><li>a.1<\/li><\/ul><\/li><li>b<br /><\/li><\/ul>",
     // FF
         invalid_ff_html = "<ul><li>a<\/li><ul><li>a.1<\/li><\/ul><li>b<br /><\/li><\/ul>",
         invalid_ie_html = "<UL><LI>a<\/LI><UL><LI>a.1<\/LI><\/UL><LI>b<\/LI><\/UL>";
