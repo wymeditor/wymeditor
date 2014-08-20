@@ -3,6 +3,7 @@
 SKIP_KNOWN_FAILING_TESTS, is_double_br_browser, prepareUnitTestModule,
 wymEqual, makeTextSelection, moveSelector, simulateKey, strictEqual,
 makeSelection,
+html_beautify,
 ok, test, expect, deepEqual */
 "use strict";
 
@@ -3690,7 +3691,21 @@ test("`li` in `li` after enter", function () {
         countString,
         splitLi;
 
-    expect(2 * dataLength);
+    if (SKIP_KNOWN_FAILING_TESTS) {
+        // Chromium seems to perform a DOM manipulation on the `broken` HTMLs
+        // that we desire to use as a starting point for this test.
+        // It seems that this DOM manipulation occurs in native code and it is
+        // unclear how to prevent it.
+        // So we can't seem to perform this test.
+        expect(0);
+        return;
+    }
+    if (jQuery.browser.webkit !== true) {
+        expect(0);
+        return;
+    }
+
+    expect(3 * dataLength);
 
     for (i = 0; i < dataLength; i++) {
         countString = '; variation ' + (i + 1) + ' of ' + dataLength;
@@ -3698,7 +3713,23 @@ test("`li` in `li` after enter", function () {
         broken = htmls.broken;
         fixed = htmls.fixed;
 
-        wymeditor._html(broken);
+        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+        // Here the starting-point HTML is injected.
+        $body.html(broken);
+
+        // By the time we get here it is already different than what we had
+        // provided. These two assertions prove it.
+        strictEqual(
+            $body.html(),
+            broken,
+            "Document identical to injected HTML."
+        );
+        strictEqual(
+            html_beautify($body.html()),
+            html_beautify(broken),
+            "Document identical to injected HTML; beautified."
+        );
+
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
         $originLiAndErrorLi = $body.find('#0-0');
         originLi = $originLiAndErrorLi[0];
