@@ -115,6 +115,7 @@ WYMeditor.WymClassWebKit.prototype._inListBreakoutDiv = function (evtWhich) {
 };
 
 // Checks whether this is issue #542.
+// Watch out--Unit test for this is skipped.
 WYMeditor.WymClassWebKit.prototype._isLiInLiAfterEnter = function (evtWhich) {
     var wym = this,
         nodeAfterSel = wym.nodeAfterSel(),
@@ -175,6 +176,7 @@ WYMeditor.WymClassWebKit.prototype._isLiInLiAfterEnter = function (evtWhich) {
 };
 
 // Fixes issue #542.
+// Watch out--Unit test for this is skipped.
 WYMeditor.WymClassWebKit.prototype
     ._fixLiInLiAfterEnter = function () {
     var wym = this,
@@ -261,6 +263,7 @@ WYMeditor.WymClassWebKit.prototype.keyup = function (evt) {
             wym._exec(WYMeditor.FORMAT_BLOCK, defaultRootContainer);
         }
 
+        // Watch out--Unit test for this is skipped.
         if (wym._isLiInLiAfterEnter(evt.which, container)) {
             wym._fixLiInLiAfterEnter();
             return;
