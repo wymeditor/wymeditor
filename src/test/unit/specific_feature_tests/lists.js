@@ -3676,7 +3676,7 @@ var liInLiAfterEnter = [
     }
 ];
 
-test("Simple", function () {
+test("`li` in `li` after enter", function () {
     var i,
         dataLength = liInLiAfterEnter.length,
         wymeditor = jQuery.wymeditors(0),
