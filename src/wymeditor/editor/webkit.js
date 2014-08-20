@@ -119,6 +119,7 @@ WYMeditor.WymClassWebKit.prototype._inListBreakoutDiv = function (evtWhich) {
 WYMeditor.WymClassWebKit.prototype._isLiInLiAfterEnter = function (evtWhich) {
     var wym = this,
         nodeAfterSel = wym.nodeAfterSel(),
+        parentNode,
         previousSibling,
         previousSiblingChild,
         previousPreviousSibling;
@@ -127,12 +128,23 @@ WYMeditor.WymClassWebKit.prototype._isLiInLiAfterEnter = function (evtWhich) {
         return false;
     }
 
-    if (nodeAfterSel.parentNode.tagName.toLowerCase() !== 'li') {
+    if (!nodeAfterSel) {
+        return false;
+    }
+
+    parentNode = nodeAfterSel.parentNode;
+    if (!parentNode) {
+        return false;
+    }
+    if (typeof parentNode.tagName !== 'string') {
+        return false;
+    }
+    if (parentNode.tagName.toLowerCase() !== 'li') {
         return false;
     }
 
     previousSibling = nodeAfterSel.previousSibling;
-    if (typeof previousSibling !== 'object') {
+    if (!previousSibling) {
         return false;
     }
     if (typeof previousSibling.tagName !== 'string') {
@@ -146,7 +158,7 @@ WYMeditor.WymClassWebKit.prototype._isLiInLiAfterEnter = function (evtWhich) {
         return false;
     }
     previousSiblingChild = previousSibling.childNodes[0];
-    if (typeof previousSiblingChild !== 'object') {
+    if (!previousSiblingChild) {
         return false;
     }
     if (typeof previousSiblingChild.tagName !== 'string') {
@@ -157,7 +169,7 @@ WYMeditor.WymClassWebKit.prototype._isLiInLiAfterEnter = function (evtWhich) {
     }
 
     previousPreviousSibling = previousSibling.previousSibling;
-    if (typeof previousPreviousSibling !== 'object') {
+    if (!previousPreviousSibling) {
         return false;
     }
     if (typeof previousPreviousSibling.tagName !== 'string') {
