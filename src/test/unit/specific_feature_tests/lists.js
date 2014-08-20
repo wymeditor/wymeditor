@@ -3552,7 +3552,7 @@ test("Invalid list nesting", function () {
 
 module("list-correction_li_in_li_after_enter", {setup: prepareUnitTestModule});
 
-var liInLiAfterEnter = [
+var liInLiAfterEnterHtmls = [
     {
         broken: [""
             , '<ul id="0">'
@@ -3677,18 +3677,14 @@ var liInLiAfterEnter = [
     }
 ];
 
-test("`li` in `li` after enter", function () {
-    var i,
-        dataLength = liInLiAfterEnter.length,
-        wymeditor = jQuery.wymeditors(0),
-        htmls,
+function testLiInLiAfterEnter(htmls) {
+    var wymeditor = jQuery.wymeditors(0),
         broken,
         fixed,
         $body,
         $originLiAndErrorLi,
         originLi,
         errorLi,
-        countString,
         splitLi;
 
     if (jQuery.browser.webkit !== true) {
@@ -3710,56 +3706,62 @@ test("`li` in `li` after enter", function () {
         );
         return;
     }
-    expect(3 * dataLength);
+    expect(3);
 
-    for (i = 0; i < dataLength; i++) {
-        countString = '; variation ' + (i + 1) + ' of ' + dataLength;
-        htmls = liInLiAfterEnter[i];
-        broken = htmls.broken;
-        fixed = htmls.fixed;
+    broken = htmls.broken;
+    fixed = htmls.fixed;
 
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
-        // Here the starting-point HTML is injected.
-        $body.html(broken);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    // Here the starting-point HTML is injected.
+    $body.html(broken);
 
-        // By the time we get here it is already different than what we had
-        // provided. These two assertions prove it.
-        strictEqual(
-            $body.html(),
-            broken,
-            "Document identical to injected HTML."
-        );
-        strictEqual(
-            html_beautify($body.html()),
-            html_beautify(broken),
-            "Document identical to injected HTML; beautified."
-        );
+    // By the time we get here it is already different than what we had
+    // provided. These two assertions prove it.
+    strictEqual(
+        $body.html(),
+        broken,
+        "Document identical to injected HTML."
+    );
+    strictEqual(
+        html_beautify($body.html()),
+        html_beautify(broken),
+        "Document identical to injected HTML; beautified."
+    );
 
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
-        $originLiAndErrorLi = $body.find('#0-0');
-        originLi = $originLiAndErrorLi[0];
-        errorLi = $originLiAndErrorLi[1];
-        wymeditor.setCaretIn(errorLi);
-        simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    $originLiAndErrorLi = $body.find('#0-0');
+    originLi = $originLiAndErrorLi[0];
+    errorLi = $originLiAndErrorLi[1];
+    wymeditor.setCaretIn(errorLi);
+    simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
 
-        wymEqual(
-            wymeditor,
-            fixed,
-            {
-                skipParser: true,
-                assertionString: 'HTML' + countString
-            }
-        );
+    wymEqual(
+        wymeditor,
+        fixed,
+        {
+            skipParser: true,
+            assertionString: 'HTML'
+        }
+    );
 
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
-        splitLi = $body.find('li:not([id])')[0];
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    splitLi = $body.find('li:not([id])')[0];
 
-        deepEqual(
-            wymeditor.selectedContainer(),
-            splitLi,
-            'Selection' + countString
-        );
-    }
+    deepEqual(
+        wymeditor.selectedContainer(),
+        splitLi,
+        'Selection'
+    );
+}
+
+test("Caret before text, nothing follows", function () {
+    testLiInLiAfterEnter(liInLiAfterEnterHtmls[0]);
+});
+test("Caret before text, list follows", function () {
+    testLiInLiAfterEnter(liInLiAfterEnterHtmls[1]);
+});
+test("`br` before text, list follows", function () {
+    testLiInLiAfterEnter(liInLiAfterEnterHtmls[2]);
 });
 
 module("list-delisting", {setup: prepareUnitTestModule});
