@@ -3691,20 +3691,25 @@ test("`li` in `li` after enter", function () {
         countString,
         splitLi;
 
-    if (SKIP_KNOWN_FAILING_TESTS) {
-        // Chromium seems to perform a DOM manipulation on the `broken` HTMLs
-        // that we desire to use as a starting point for this test.
-        // It seems that this DOM manipulation occurs in native code and it is
-        // unclear how to prevent it.
-        // So we can't seem to perform this test.
-        expect(0);
-        return;
-    }
     if (jQuery.browser.webkit !== true) {
-        expect(0);
+        expect(1);
+        ok(true, "TEST SKIPPED: This test is only relevant in Blink/WebKit.");
         return;
     }
 
+    if (SKIP_KNOWN_FAILING_TESTS) {
+        expect(1);
+        ok(
+            true,
+            "TEST SKIPPED: " +
+            "Chromium seems to perform a DOM manipulation on the " +
+            "`broken` HTMLs that we desire to use as a starting point for " +
+            "this test. It seems that this DOM manipulation occurs in " +
+            "native code and it is unclear how to prevent it. So we can't " +
+            "seem to perform this test."
+        );
+        return;
+    }
     expect(3 * dataLength);
 
     for (i = 0; i < dataLength; i++) {
