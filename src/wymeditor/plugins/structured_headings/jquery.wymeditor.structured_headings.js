@@ -527,8 +527,7 @@ StructuredHeadingsManager.prototype.enableIE7Polyfill = function () {
         prevSpanCharTotal = 0;
 
     $body.keyup(function (evt) {
-        var body = this,
-            headingTotal,
+        var headingTotal,
             spanCharTotal;
         if (jQuery.inArray(evt.which,
             WYMeditor.STRUCTURED_HEADINGS_POTENTIAL_HEADING_MODIFICATION_KEYS) > -1) {
@@ -537,9 +536,9 @@ StructuredHeadingsManager.prototype.enableIE7Polyfill = function () {
             spanCharTotal = 0;
 
             $body.find('.' + WYMeditor.STRUCTURED_HEADINGS_NUMBERING_SPAN_CLASS)
-                 .each(function () {
-
-                spanCharTotal += body.innerHTML.length;
+                .each(function () {
+                var span = this;
+                spanCharTotal += span.innerHTML.length;
             });
 
             if (headingTotal !== prevHeadingTotal ||

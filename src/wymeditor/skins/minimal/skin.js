@@ -8,11 +8,11 @@ jQuery.fn.selectify = function() {
                 jQuery("h2", element).css("background-position", "0px -18px");
                 jQuery("ul", element).fadeIn("fast");
             },
-		    function() {
+            function() {
                 var element = this;
-		        jQuery("h2", element).css("background-position", "");
-		        jQuery("ul", element).fadeOut("fast");
-		    }
+                jQuery("h2", element).css("background-position", "");
+                jQuery("ul", element).fadeOut("fast");
+            }
         );
     });
 };

@@ -4,8 +4,8 @@
 
 WYMeditor.WymClassWebKit = function (wym) {
     var wymClassWebKit = this;
-    wymClassWebKit = wym;
-    wymClassWebKit = "class";
+    wymClassWebKit._wym = wym;
+    wymClassWebKit._class = "class";
 };
 
 WYMeditor.WymClassWebKit.prototype._docEventQuirks = function () {
