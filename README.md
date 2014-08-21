@@ -35,13 +35,11 @@ WYMeditor can do.
 
 ## Quick Start
 
-1. WYMeditor requires a version of [jQuery](http://jquery.com/) between 1.3.0
-   and 1.9.1. First ensure that your page includes jQuery.
-
-    *Note*: If a version of jQuery at or above 1.8.0 is used, WYMeditor also
-    requires [jQuery Migrate](https://github.com/jquery/jquery-migrate/).
-    Ensure that your page also includes jQuery Migrate after jQuery is
-    included.
+1. WYMeditor requires a version of [jQuery](http://jquery.com/) between 1.4.4
+   and 2.1.x, and
+   [jquery.browser](https://github.com/gabceb/jquery-browser-plugin) version
+   0.0.6.
+   First ensure that your page includes these.
 
 2. Download the Version 1.0.0b7 archive from the [release
    page](https://github.com/wymeditor/wymeditor/releases/tag/v1.0.0b7)
@@ -78,11 +76,9 @@ WYMeditor can do.
 More examples with different plugins and configuration options can be found in
 your `examples` directory.
 
-## Compatibility
+## Browser Compatibility
 
 WYMeditor is compatible with:
-
-### Browsers
 
 * IE: 7, 8, 9, 10 and 11
 * Firefox: LTS and latests two major versions
@@ -90,11 +86,12 @@ WYMeditor is compatible with:
 * Safari: Latest version
 * Google Chrome: Latest two major versions
 
-### jQuery
+## Requirements
 
-* Versions 1.3.X to 1.7.X
-* Version 1.8.x to 1.9.X when you include
-  [jquery-migrate](https://github.com/jquery/jquery-migrate/)
+* jQuery: any version between 1.4.4 and 2.1.x.
+  With jQuery 2.x and newer, there is no support for IE8 and older.
+* [jquery.browser](https://github.com/gabceb/jquery-browser-plugin) version
+  0.0.6
 
 ## Contributing to WYMeditor
 
