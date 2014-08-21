@@ -659,8 +659,7 @@ WYMeditor.editor.prototype.selection = function () {
     Returns the node that is immediately after the selection.
 */
 WYMeditor.editor.prototype.nodeAfterSel = function () {
-    var sel = this.selection(),
-        noNodeErrorStr = "There is no node immediately after the selection.";
+    var sel = this.selection();
 
     // Different browsers describe selection differently. Here be dragons.
     if (
@@ -671,7 +670,7 @@ WYMeditor.editor.prototype.nodeAfterSel = function () {
         ) === -1
     ) {
         if (sel.anchorNode.childNodes.length === 0) {
-            throw noNodeErrorStr;
+            return;
         }
         return sel.anchorNode.childNodes[sel.anchorOffset];
     }
@@ -681,7 +680,7 @@ WYMeditor.editor.prototype.nodeAfterSel = function () {
         sel.focusNode.data.length === sel.focusOffset
     ) {
         if (!sel.focusNode.nextSibling) {
-            throw noNodeErrorStr;
+            return;
         }
         return sel.focusNode.nextSibling;
     }
