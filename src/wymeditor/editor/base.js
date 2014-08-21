@@ -379,7 +379,7 @@ WYMeditor.editor.prototype._afterDesignModeOn = function () {
 
     jQuery(wym._element).trigger(
         WYMeditor.EVENTS.postIframeInitialization,
-        wym._wym
+        wym
     );
 };
 
@@ -1528,7 +1528,7 @@ WYMeditor.editor.prototype.fixDoubleBr = function () {
 */
 WYMeditor.editor.prototype.dialog = function (dialogType, dialogFeatures, bodyHtml) {
     var wym = this,
-        features = dialogFeatures || wym._wym._options.dialogFeatures,
+        features = dialogFeatures || wym._options.dialogFeatures,
         wDialog = window.open('', 'dialog', features),
         sBodyHtml,
         h = WYMeditor.Helper,
