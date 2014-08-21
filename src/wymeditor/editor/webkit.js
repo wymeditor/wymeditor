@@ -275,7 +275,7 @@ WYMeditor.WymClassWebKit.prototype.keyup = function (evt) {
             wym._exec(WYMeditor.FORMAT_BLOCK, defaultRootContainer);
         }
 
-        // Watch out--Unit test for this is skipped.
+        // Issue #542
         if (wym._isLiInLiAfterEnter(evt.which, container)) {
             wym._fixLiInLiAfterEnter();
             return;

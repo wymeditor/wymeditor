@@ -3552,8 +3552,8 @@ test("Invalid list nesting", function () {
 
 module("list-correction_li_in_li_after_enter", {setup: prepareUnitTestModule});
 
-var liInLiAfterEnterHtmls = [
-    {
+var liInLiAfterEnterHtmls = {
+    beforeTextThenNothing: {
         broken: [""
             , '<ul id="0">'
                 , '<li id="0-0">'
@@ -3566,6 +3566,19 @@ var liInLiAfterEnterHtmls = [
                     , '<li id="new-0-0">'
                         , '<br />'
                     , '</li>'
+                    , '0-0-2'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        startHtml: [""
+            , '<ul id="0">'
+                , '<li id="0-0">'
+                    , '0-0-0'
+                    , '<ul id="0-0-1">'
+                        , '<li id="0-0-1-0">'
+                            , '0-0-1-0-0'
+                        , '</li>'
+                    , '</ul>'
                     , '0-0-2'
                 , '</li>'
             , '</ul>'
@@ -3587,7 +3600,7 @@ var liInLiAfterEnterHtmls = [
             , '</ul>'
         ].join('')
     },
-    {
+    beforeTextThenList: {
         broken: [""
             , '<ul id="0">'
                 , '<li id="0-0">'
@@ -3600,6 +3613,24 @@ var liInLiAfterEnterHtmls = [
                     , '<li id="new-0-0">'
                         , '<br />'
                     , '</li>'
+                    , '0-0-2'
+                    , '<ul id="0-0-3">'
+                        , '<li id="0-0-3-0">'
+                            , '0-0-3-0-0'
+                        , '</li>'
+                    , '</ul>'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        startHtml: [""
+            , '<ul id="0">'
+                , '<li id="0-0">'
+                    , '0-0-0'
+                    , '<ul id="0-0-1">'
+                        , '<li id="0-0-1-0">'
+                            , '0-0-1-0-0'
+                        , '</li>'
+                    , '</ul>'
                     , '0-0-2'
                     , '<ul id="0-0-3">'
                         , '<li id="0-0-3-0">'
@@ -3631,7 +3662,7 @@ var liInLiAfterEnterHtmls = [
             , '</ul>'
         ].join('')
     },
-    {
+    beforeBrThenList: {
         broken: [""
             , '<ul id="0">'
                 , '<li id="0-0">'
@@ -3644,7 +3675,25 @@ var liInLiAfterEnterHtmls = [
                     , '<li id="new-0-0">'
                         , '<br />'
                     , '</li>'
-                    , '<br id="0-0-2"'
+                    , '<br id="0-0-2" />'
+                    , '<ul id="0-0-3">'
+                        , '<li id="0-0-3-0">'
+                            , '0-0-3-0-0'
+                        , '</li>'
+                    , '</ul>'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        startHtml: [""
+            , '<ul id="0">'
+                , '<li id="0-0">'
+                    , '0-0-0'
+                    , '<ul id="0-0-1">'
+                        , '<li id="0-0-1-0">'
+                            , '0-0-1-0-0'
+                        , '</li>'
+                    , '</ul>'
+                    , '<br id="0-0-2"/>'
                     , '<ul id="0-0-3">'
                         , '<li id="0-0-3-0">'
                             , '0-0-3-0-0'
@@ -3665,7 +3714,7 @@ var liInLiAfterEnterHtmls = [
                 , '</li>'
                 , '<li>'
                     , '<br />'
-                    , '<br id="0-0-2"'
+                    , '<br id="0-0-2" />'
                     , '<ul id="0-0-3">'
                         , '<li id="0-0-3-0">'
                             , '0-0-3-0-0'
@@ -3674,15 +3723,18 @@ var liInLiAfterEnterHtmls = [
                 , '</li>'
             , '</ul>'
         ].join('')
+    },
+    makeDomLikeWeActuallyRequire: function ($body) {
+        $body.find('#0-0-1').after('<li id="new-0-0"><br /></li>');
     }
-];
+};
 
 function testLiInLiAfterEnter(htmls) {
     var wymeditor = jQuery.wymeditors(0),
         broken,
+        startHtml,
         fixed,
         $body,
-        $originLiAndErrorLi,
         originLi,
         errorLi,
         splitLi;
@@ -3693,46 +3745,34 @@ function testLiInLiAfterEnter(htmls) {
         return;
     }
 
-    if (SKIP_KNOWN_FAILING_TESTS) {
-        expect(1);
-        ok(
-            true,
-            "TEST SKIPPED: " +
-            "Chromium seems to perform a DOM manipulation on the " +
-            "`broken` HTMLs that we desire to use as a starting point for " +
-            "this test. It seems that this DOM manipulation occurs in " +
-            "native code and it is unclear how to prevent it. So we can't " +
-            "seem to perform this test."
-        );
-        return;
-    }
     expect(3);
 
     broken = htmls.broken;
+    startHtml = htmls.startHtml;
     fixed = htmls.fixed;
-
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
-    // Here the starting-point HTML is injected.
-    $body.html(broken);
 
-    // By the time we get here it is already different than what we had
-    // provided. These two assertions prove it.
-    strictEqual(
-        $body.html(),
+    // `broken` is the HTML that we want to start with. When we tried inserting
+    // that into the editor, the resulting DOM wasn't as expected.
+    // Thus we get to our desired DOM in two steps. This is the first step.
+    wymeditor._html(startHtml);
+    // This is the second step. It gets us the DOM we want, that is identical
+    // to `broken`.
+    liInLiAfterEnterHtmls.makeDomLikeWeActuallyRequire($body);
+    // Now, we check that we indeed got this DOM, so that we could go on with
+    // the actual test.
+    wymEqual(
+        wymeditor,
         broken,
-        "Document identical to injected HTML."
-    );
-    strictEqual(
-        html_beautify($body.html()),
-        html_beautify(broken),
-        "Document identical to injected HTML; beautified."
+        {
+            skipParser: true,
+            assertionString: "We achieved our desired broken DOM."
+        }
     );
 
-    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
-    $originLiAndErrorLi = $body.find('#0-0');
-    originLi = $originLiAndErrorLi[0];
-    errorLi = $originLiAndErrorLi[1];
-    wymeditor.setCaretIn(errorLi);
+    originLi = $body.find('#0-0')[0];
+    errorLi = $body.find('#new-0-0')[0];
+    wymeditor.setCaretBefore(errorLi.nextSibling);
     simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
 
     wymEqual(
@@ -3744,7 +3784,6 @@ function testLiInLiAfterEnter(htmls) {
         }
     );
 
-    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     splitLi = $body.find('li:not([id])')[0];
 
     deepEqual(
@@ -3755,13 +3794,13 @@ function testLiInLiAfterEnter(htmls) {
 }
 
 test("Caret before text, nothing follows", function () {
-    testLiInLiAfterEnter(liInLiAfterEnterHtmls[0]);
+    testLiInLiAfterEnter(liInLiAfterEnterHtmls.beforeTextThenNothing);
 });
 test("Caret before text, list follows", function () {
-    testLiInLiAfterEnter(liInLiAfterEnterHtmls[1]);
+    testLiInLiAfterEnter(liInLiAfterEnterHtmls.beforeTextThenList);
 });
 test("`br` before text, list follows", function () {
-    testLiInLiAfterEnter(liInLiAfterEnterHtmls[2]);
+    testLiInLiAfterEnter(liInLiAfterEnterHtmls.beforeBrThenList);
 });
 
 module("list-delisting", {setup: prepareUnitTestModule});
