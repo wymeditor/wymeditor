@@ -9,19 +9,16 @@ Quick Start Instructions
 Include jQuery
 ==============
 
-WYMeditor requires a version of jQuery between 1.3.x and 1.9.x.
-First ensure that your page includes jQuery.
+WYMeditor requires a version of jQuery between 1.4.4 and 2.1.x
+and :ref;`jquery.browser` version 0.0.6.
+
+First ensure that your page includes these.
 
 .. note::
 
-    If a version of jQuery at or above 1.8.0 is used,
-    WYMeditor also requires `jQuery Migrate`_.
-    Ensure that your page also includes jQuery Migrate
-    after jQuery is included.
-    For detailed instructions,
-    see :ref:`jquery-migrate`
+    With jQUery 2.x and newer, there is no support for IE8 and older.
 
-.. _`jQuery Migrate`: https://github.com/jquery/jquery-migrate/
+.. _`jquery.browser`: https://github.com/gabceb/jquery-browser-plugin
 
 Download a Pre-built Release of WYMeditor
 =========================================
@@ -194,18 +191,9 @@ and ``jquery.js``, respectively.
 For details,
 see :doc:`/customizing_wymeditor/index`.
 
-.. _jquery-migrate:
-
-****************************
-Example Using jQuery Migrate
-****************************
-
-If you're already using jQuery 1.8.x or 1.9x,
-never fear!
-You're supported via the jquery-migrate project.
-
-Just source ``jquery-migrate.min.js``
-between ``jquery`` and ``wymeditor``.
+*******
+Example
+*******
 
 .. code-block:: html
 
@@ -214,8 +202,8 @@ between ``jquery`` and ``wymeditor``.
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
             <title>WYMeditor Quickstart</title>
             <script type="text/javascript" src="jquery/jquery.js"></script>
-            <!-- Include jQuery Migrate **after** jQuery -->
-            <script type="text/javascript" src="jquery/jquery-migrate.min.js"></script>
+            <!-- Include jquery.browser **after** jQuery -->
+            <script type="text/javascript" src="jquery/jquery-browser.min.js"></script>
             <!-- But before jquery.wymeditor -->
             <script type="text/javascript" src="wymeditor/jquery.wymeditor.min.js"></script>
         </head>
