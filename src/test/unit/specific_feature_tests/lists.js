@@ -3550,6 +3550,259 @@ test("Invalid list nesting", function () {
     }
 });
 
+module("list-correction_li_in_li_after_enter", {setup: prepareUnitTestModule});
+
+var liInLiAfterEnterHtmls = {
+    beforeTextThenNothing: {
+        broken: [""
+            , '<ul id="0">'
+                , '<li id="0-0">'
+                    , '0-0-0'
+                    , '<ul id="0-0-1">'
+                        , '<li id="0-0-1-0">'
+                            , '0-0-1-0-0'
+                        , '</li>'
+                    , '</ul>'
+                    , '<li id="new-0-0">'
+                        , '<br />'
+                    , '</li>'
+                    , '0-0-2'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        startHtml: [""
+            , '<ul id="0">'
+                , '<li id="0-0">'
+                    , '0-0-0'
+                    , '<ul id="0-0-1">'
+                        , '<li id="0-0-1-0">'
+                            , '0-0-1-0-0'
+                        , '</li>'
+                    , '</ul>'
+                    , '0-0-2'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        fixed: [""
+            , '<ul id="0">'
+                , '<li id="0-0">'
+                    , '0-0-0'
+                    , '<ul id="0-0-1">'
+                        , '<li id="0-0-1-0">'
+                            , '0-0-1-0-0'
+                        , '</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li>'
+                    , '<br />'
+                    , '0-0-2'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    },
+    beforeTextThenList: {
+        broken: [""
+            , '<ul id="0">'
+                , '<li id="0-0">'
+                    , '0-0-0'
+                    , '<ul id="0-0-1">'
+                        , '<li id="0-0-1-0">'
+                            , '0-0-1-0-0'
+                        , '</li>'
+                    , '</ul>'
+                    , '<li id="new-0-0">'
+                        , '<br />'
+                    , '</li>'
+                    , '0-0-2'
+                    , '<ul id="0-0-3">'
+                        , '<li id="0-0-3-0">'
+                            , '0-0-3-0-0'
+                        , '</li>'
+                    , '</ul>'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        startHtml: [""
+            , '<ul id="0">'
+                , '<li id="0-0">'
+                    , '0-0-0'
+                    , '<ul id="0-0-1">'
+                        , '<li id="0-0-1-0">'
+                            , '0-0-1-0-0'
+                        , '</li>'
+                    , '</ul>'
+                    , '0-0-2'
+                    , '<ul id="0-0-3">'
+                        , '<li id="0-0-3-0">'
+                            , '0-0-3-0-0'
+                        , '</li>'
+                    , '</ul>'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        fixed: [""
+            , '<ul id="0">'
+                , '<li id="0-0">'
+                    , '0-0-0'
+                    , '<ul id="0-0-1">'
+                        , '<li id="0-0-1-0">'
+                            , '0-0-1-0-0'
+                        , '</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li>'
+                    , '<br />'
+                    , '0-0-2'
+                    , '<ul id="0-0-3">'
+                        , '<li id="0-0-3-0">'
+                            , '0-0-3-0-0'
+                        , '</li>'
+                    , '</ul>'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    },
+    beforeBrThenList: {
+        broken: [""
+            , '<ul id="0">'
+                , '<li id="0-0">'
+                    , '0-0-0'
+                    , '<ul id="0-0-1">'
+                        , '<li id="0-0-1-0">'
+                            , '0-0-1-0-0'
+                        , '</li>'
+                    , '</ul>'
+                    , '<li id="new-0-0">'
+                        , '<br />'
+                    , '</li>'
+                    , '<br id="0-0-2" />'
+                    , '<ul id="0-0-3">'
+                        , '<li id="0-0-3-0">'
+                            , '0-0-3-0-0'
+                        , '</li>'
+                    , '</ul>'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        startHtml: [""
+            , '<ul id="0">'
+                , '<li id="0-0">'
+                    , '0-0-0'
+                    , '<ul id="0-0-1">'
+                        , '<li id="0-0-1-0">'
+                            , '0-0-1-0-0'
+                        , '</li>'
+                    , '</ul>'
+                    , '<br id="0-0-2"/>'
+                    , '<ul id="0-0-3">'
+                        , '<li id="0-0-3-0">'
+                            , '0-0-3-0-0'
+                        , '</li>'
+                    , '</ul>'
+                , '</li>'
+            , '</ul>'
+        ].join(''),
+        fixed: [""
+            , '<ul id="0">'
+                , '<li id="0-0">'
+                    , '0-0-0'
+                    , '<ul id="0-0-1">'
+                        , '<li id="0-0-1-0">'
+                            , '0-0-1-0-0'
+                        , '</li>'
+                    , '</ul>'
+                , '</li>'
+                , '<li>'
+                    , '<br />'
+                    , '<br id="0-0-2" />'
+                    , '<ul id="0-0-3">'
+                        , '<li id="0-0-3-0">'
+                            , '0-0-3-0-0'
+                        , '</li>'
+                    , '</ul>'
+                , '</li>'
+            , '</ul>'
+        ].join('')
+    },
+    makeDomLikeWeActuallyRequire: function ($body) {
+        $body.find('#0-0-1').after('<li id="new-0-0"><br /></li>');
+    }
+};
+
+function testLiInLiAfterEnter(htmls) {
+    var wymeditor = jQuery.wymeditors(0),
+        broken,
+        startHtml,
+        fixed,
+        $body,
+        originLi,
+        errorLi,
+        splitLi;
+
+    if (jQuery.browser.webkit !== true) {
+        expect(1);
+        ok(true, "TEST SKIPPED: This test is only relevant in Blink/WebKit.");
+        return;
+    }
+
+    expect(3);
+
+    broken = htmls.broken;
+    startHtml = htmls.startHtml;
+    fixed = htmls.fixed;
+    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+
+    // `broken` is the HTML that we want to start with. When we tried inserting
+    // that into the editor, the resulting DOM wasn't as expected.
+    // Thus we get to our desired DOM in two steps. This is the first step.
+    wymeditor._html(startHtml);
+    // This is the second step. It gets us the DOM we want, that is identical
+    // to `broken`.
+    liInLiAfterEnterHtmls.makeDomLikeWeActuallyRequire($body);
+    // Now, we check that we indeed got this DOM, so that we could go on with
+    // the actual test.
+    wymEqual(
+        wymeditor,
+        broken,
+        {
+            skipParser: true,
+            assertionString: "We achieved our desired broken DOM."
+        }
+    );
+
+    originLi = $body.find('#0-0')[0];
+    errorLi = $body.find('#new-0-0')[0];
+    wymeditor.setCaretBefore(errorLi.nextSibling);
+    simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
+
+    wymEqual(
+        wymeditor,
+        fixed,
+        {
+            skipParser: true,
+            assertionString: 'HTML'
+        }
+    );
+
+    splitLi = $body.find('li:not([id])')[0];
+
+    deepEqual(
+        wymeditor.selectedContainer(),
+        splitLi,
+        'Selection'
+    );
+}
+
+test("Caret before text, nothing follows", function () {
+    testLiInLiAfterEnter(liInLiAfterEnterHtmls.beforeTextThenNothing);
+});
+test("Caret before text, list follows", function () {
+    testLiInLiAfterEnter(liInLiAfterEnterHtmls.beforeTextThenList);
+});
+test("`br` before text, list follows", function () {
+    testLiInLiAfterEnter(liInLiAfterEnterHtmls.beforeBrThenList);
+});
+
 module("list-delisting", {setup: prepareUnitTestModule});
 
 var delistHtml = {};

@@ -671,8 +671,7 @@ WYMeditor.editor.prototype.selection = function () {
 */
 WYMeditor.editor.prototype.nodeAfterSel = function () {
     var wym = this,
-        sel = wym.selection(),
-        noNodeErrorStr = "There is no node immediately after the selection.";
+       sel = wym.selection();
 
     // Different browsers describe selection differently. Here be dragons.
     if (
@@ -683,7 +682,7 @@ WYMeditor.editor.prototype.nodeAfterSel = function () {
         ) === -1
     ) {
         if (sel.anchorNode.childNodes.length === 0) {
-            throw noNodeErrorStr;
+            return;
         }
         return sel.anchorNode.childNodes[sel.anchorOffset];
     }
@@ -693,7 +692,7 @@ WYMeditor.editor.prototype.nodeAfterSel = function () {
         sel.focusNode.data.length === sel.focusOffset
     ) {
         if (!sel.focusNode.nextSibling) {
-            throw noNodeErrorStr;
+            return;
         }
         return sel.focusNode.nextSibling;
     }

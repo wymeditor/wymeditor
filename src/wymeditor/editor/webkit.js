@@ -116,6 +116,94 @@ WYMeditor.WymClassWebKit.prototype._inListBreakoutDiv = function (evtWhich) {
     return false;
 };
 
+// Checks whether this is issue #542.
+WYMeditor.WymClassWebKit.prototype._isLiInLiAfterEnter = function (evtWhich) {
+    var wym = this,
+        nodeAfterSel = wym.nodeAfterSel(),
+        parentNode,
+        previousSibling,
+        previousSiblingChild,
+        previousPreviousSibling;
+
+    if (evtWhich !== WYMeditor.KEY.ENTER) {
+        return false;
+    }
+
+    if (!nodeAfterSel) {
+        return false;
+    }
+
+    parentNode = nodeAfterSel.parentNode;
+    if (!parentNode) {
+        return false;
+    }
+    if (typeof parentNode.tagName !== 'string') {
+        return false;
+    }
+    if (parentNode.tagName.toLowerCase() !== 'li') {
+        return false;
+    }
+
+    previousSibling = nodeAfterSel.previousSibling;
+    if (!previousSibling) {
+        return false;
+    }
+    if (typeof previousSibling.tagName !== 'string') {
+        return false;
+    }
+    if (previousSibling.tagName.toLowerCase() !== 'li') {
+        return false;
+    }
+
+    if (previousSibling.childNodes.length !== 1) {
+        return false;
+    }
+    previousSiblingChild = previousSibling.childNodes[0];
+    if (!previousSiblingChild) {
+        return false;
+    }
+    if (typeof previousSiblingChild.tagName !== 'string') {
+        return false;
+    }
+    if (previousSiblingChild.tagName.toLowerCase() !== 'br') {
+        return false;
+    }
+
+    previousPreviousSibling = previousSibling.previousSibling;
+    if (!previousPreviousSibling) {
+        return false;
+    }
+    if (typeof previousPreviousSibling.tagName !== 'string') {
+        return false;
+    }
+    if (
+        jQuery.inArray(
+        previousPreviousSibling.tagName.toLowerCase(),
+        ['ol', 'ul']
+        ) === -1
+    ) {
+        return false;
+    }
+
+    return true;
+};
+
+// Fixes issue #542.
+WYMeditor.WymClassWebKit.prototype
+    ._fixLiInLiAfterEnter = function () {
+    var wym = this,
+        nodeAfterSel = wym.nodeAfterSel(),
+        $errorLi = jQuery(nodeAfterSel.previousSibling),
+        $parentLi = $errorLi.parent('li'),
+        errorLiIndex = $parentLi.contents().index($errorLi),
+        $contentsAfterErrorLi = $parentLi.contents().slice(errorLiIndex + 1);
+
+    $errorLi.remove();
+    $parentLi.after('<li><br /></li>');
+    $parentLi.next().append($contentsAfterErrorLi);
+    wym.setCaretBefore($parentLi.next('li').children().first('br')[0]);
+};
+
 // Keyup handler, mainly used for cleanups
 WYMeditor.WymClassWebKit.prototype.keyup = function (evt) {
     var doc = this,
@@ -185,6 +273,12 @@ WYMeditor.WymClassWebKit.prototype.keyup = function (evt) {
         if (jQuery.inArray(name, notValidRootContainers) > -1 &&
                 parentName === WYMeditor.BODY) {
             wym._exec(WYMeditor.FORMAT_BLOCK, defaultRootContainer);
+        }
+
+        // Issue #542
+        if (wym._isLiInLiAfterEnter(evt.which, container)) {
+            wym._fixLiInLiAfterEnter();
+            return;
         }
 
         // Call for the check for--and possible correction of--issue #430.

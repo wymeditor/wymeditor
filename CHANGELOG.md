@@ -23,6 +23,8 @@ WYMeditor.
 * [#546](https://github.com/wymeditor/wymeditor/pull/546)-Clicking on any UI
   element would cause loss of focus in non-IE browsers. Changing main
   containers would cause loss of selection.
+* [#542](https://github.com/wymeditor/wymeditor/issues/542)-`li` in `li` was
+  created in Blink in some cases.
 * [#570](https://github.com/wymeditor/wymeditor/pull/570)-Parser to strip more
   than two consecutive line-breaks.
 
