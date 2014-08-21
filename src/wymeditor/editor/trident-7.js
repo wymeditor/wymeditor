@@ -7,8 +7,9 @@
  */
 
 WYMeditor.WymClassTrident7 = function (wym) {
-    this._wym = wym;
-    this._class = "class";
+    var wymClassTrident7 =  this;
+    wymClassTrident7._wym = wym;
+    wymClassTrident7._class = "class";
 };
 
 jQuery.extend(

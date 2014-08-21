@@ -1,7 +1,8 @@
 "use strict";
 
 function WymTidy(options, wym) {
-    var wandUrl = wym._options.basePath + "plugins/tidy/wand.png";
+    var wymTidy = this,
+        wandUrl = wym._options.basePath + "plugins/tidy/wand.png";
     options = jQuery.extend({
         sUrl:            wym._options.basePath + "plugins/tidy/tidy.php",
         sButtonHtml:     "" +
@@ -16,28 +17,30 @@ function WymTidy(options, wym) {
 
     }, options);
 
-    this._options = options;
-    this._wym = wym;
+    wymTidy._options = options;
+    wymTidy._wym = wym;
 }
 
 //Extend WYMeditor
 WYMeditor.editor.prototype.tidy = function (options) {
-    var tidy = new WymTidy(options, this);
+    var wym = this,
+        tidy = new WymTidy(options, wym);
     return tidy;
 };
 
 
 //WymTidy initialization
 WymTidy.prototype.init = function () {
-    var tidy = this;
+    var tidy = this,
+        wym = tidy._wym;
 
-    jQuery(this._wym._box).find(
-        this._wym._options.toolsSelector + this._wym._options.toolsListSelector
-    ).append(this._options.sButtonHtml);
+    jQuery(wym._box).find(
+        wym._options.toolsSelector + wym._options.toolsListSelector
+    ).append(tidy._options.sButtonHtml);
 
     //handle click event
-    jQuery(this._wym._box).find(
-        this._options.sButtonSelector
+    jQuery(wym._box).find(
+        tidy._options.sButtonSelector
     ).click(
         function () {
             tidy.cleanup();
@@ -48,11 +51,12 @@ WymTidy.prototype.init = function () {
 
 //WymTidy cleanup
 WymTidy.prototype.cleanup = function () {
-    var wym = this._wym,
+    var tidy = this,
+        wym = tidy._wym,
         html = "<html><body>" + wym.xhtml() + "</body></html>";
 
     jQuery.post(
-        this._options.sUrl,
+        tidy._options.sUrl,
         {html: html},
         function (data) {
             if (data.length > 0 && data !== '0') {

@@ -9,21 +9,23 @@
  */
 
 function ListPlugin(options, wym) {
-    this._options = jQuery.extend({}, options);
-    this._wym = wym;
+    var listPlugin = this;
+    ListPlugin._options = jQuery.extend({}, options);
+    listPlugin._wym = wym;
 
-    this.init();
+    listPlugin.init();
 }
 
 ListPlugin.prototype.init = function() {
-    this._wym.listPlugin = this;
+    var listPlugin = this;
+    listPlugin._wym.listPlugin = listPlugin;
 
-    this.bindEvents();
+    listPlugin.bindEvents();
 };
 
 ListPlugin.prototype.bindEvents = function() {
-    var listPlugin = this;
-    var wym = this._wym;
+    var listPlugin = this,
+        wym = listPlugin._wym;
 
     // Bind a key listener so we can handle tabs
     // With jQuery 1.3, live() can be used to simplify handler logic
@@ -34,12 +36,11 @@ ListPlugin.prototype.bindEvents = function() {
  * Handle any tab presses when inside list items and indent/outdent.
  */
 ListPlugin.prototype.handleKeyDown = function(evt) {
-   //'this' is the editor._doc
-    var wym = WYMeditor.INSTANCES[this.title];
-    var listPlugin = wym.listPlugin;
-
-    var container = wym.selectedContainer();
-    var name = container.tagName.toLowerCase();
+    var doc = this,
+        wym = WYMeditor.INSTANCES[doc.title],
+        listPlugin = wym.listPlugin,
+        container = wym.selectedContainer();
+        name = container.tagName.toLowerCase();
     // We only care about tabs when we're inside a list
     if (name != "li") {
         return null;

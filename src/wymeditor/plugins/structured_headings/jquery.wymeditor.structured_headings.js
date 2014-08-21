@@ -65,6 +65,7 @@ function getHeadingLevel(heading) {
     @class
 */
 function StructuredHeadingsManager(options, wym) {
+    var shm = this;
     options = jQuery.extend({
         headingIndentToolSelector: "li.wym_tools_indent a",
         headingOutdentToolSelector: "li.wym_tools_outdent a",
@@ -92,15 +93,15 @@ function StructuredHeadingsManager(options, wym) {
 
     }, options);
 
-    this._headingElements = WYMeditor.HEADING_ELEMENTS
+    shm._headingElements = WYMeditor.HEADING_ELEMENTS
         .slice(options.highestAllowableHeadingLevel - 1,
                options.lowestAllowableHeadingLevel);
-    this._limitedHeadingSel = this._headingElements.join(", ");
-    this._fullHeadingSel = WYMeditor.HEADING_ELEMENTS.join(", ");
-    this._options = options;
-    this._wym = wym;
+    shm._limitedHeadingSel = shm._headingElements.join(", ");
+    shm._fullHeadingSel = WYMeditor.HEADING_ELEMENTS.join(", ");
+    shm._options = options;
+    shm._wym = wym;
 
-    this.init();
+    shm.init();
 }
 
 /**
@@ -113,12 +114,13 @@ function StructuredHeadingsManager(options, wym) {
     IE7 heading numbering polyfill if necessary.
 */
 StructuredHeadingsManager.prototype.init = function () {
-    this.createUI();
-    this.bindEvents();
-    this.addCssStylesheet();
+    var shm = this;
+    shm.createUI();
+    shm.bindEvents();
+    shm.addCssStylesheet();
 
     if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
-        this.enableIE7Polyfill();
+        shm.enableIE7Polyfill();
     }
 };
 
@@ -130,7 +132,8 @@ StructuredHeadingsManager.prototype.init = function () {
     tool bar and modifying the container selection panel.
 */
 StructuredHeadingsManager.prototype.createUI = function () {
-    var wym = this._wym,
+    var shm = this,
+        wym = shm._wym,
         $tools = jQuery(wym._box).find(
             wym._options.toolsSelector + wym._options.toolsListSelector
         ),
@@ -139,8 +142,8 @@ StructuredHeadingsManager.prototype.createUI = function () {
         i;
 
     // Add tool panel buttons if necessary
-    if (this._options.enableFixHeadingStructureButton) {
-        $tools.append(this._options.fixHeadingStructureButtonHtml);
+    if (shm._options.enableFixHeadingStructureButton) {
+        $tools.append(shm._options.fixHeadingStructureButtonHtml);
     }
 
     // Remove normal heading links from the containers panel list
@@ -155,7 +158,7 @@ StructuredHeadingsManager.prototype.createUI = function () {
     }
 
     // Add new single heading container to the containers panel list
-    $containerItems.eq(0).after(this._options.headingContainerPanelHtml);
+    $containerItems.eq(0).after(shm._options.headingContainerPanelHtml);
 };
 
 /**
@@ -166,29 +169,29 @@ StructuredHeadingsManager.prototype.createUI = function () {
     link in the containers panel.
 */
 StructuredHeadingsManager.prototype.bindEvents = function () {
-    var headingManager = this,
-        wym = this._wym,
+    var shm = this,
+        wym = shm._wym,
         $box = jQuery(wym._box),
         sel;
 
     // Bind click events to tool buttons
-    $box.find(this._options.headingOutdentToolSelector).click(function () {
+    $box.find(shm._options.headingOutdentToolSelector).click(function () {
         sel = wym.selection();
-        headingManager.changeSelectedHeadingsLevel(sel, "up");
+        shm.changeSelectedHeadingsLevel(sel, "up");
     });
-    $box.find(this._options.headingIndentToolSelector).click(function () {
+    $box.find(shm._options.headingIndentToolSelector).click(function () {
         sel = wym.selection();
-        headingManager.changeSelectedHeadingsLevel(sel, "down");
+        shm.changeSelectedHeadingsLevel(sel, "down");
     });
-    if (this._options.enableFixHeadingStructureButton) {
-        $box.find(this._options.fixHeadingStructureSelector).click(function () {
-            headingManager.fixHeadingStructure();
+    if (shm._options.enableFixHeadingStructureButton) {
+        $box.find(shm._options.fixHeadingStructureSelector).click(function () {
+            shm.fixHeadingStructure();
         });
     }
 
     // Bind click event to the new single heading link
-    $box.find(this._options.headingContainerPanelSelector).click(function () {
-        headingManager.switchToHeading(wym.mainContainer());
+    $box.find(shm._options.headingContainerPanelSelector).click(function () {
+        shm.switchToHeading(wym.mainContainer());
     });
 };
 
@@ -200,7 +203,8 @@ StructuredHeadingsManager.prototype.bindEvents = function () {
     and stores the CSS for access through the printCss function.
 */
 StructuredHeadingsManager.prototype.addCssStylesheet = function () {
-    var wym = this._wym,
+    var shm = this,
+        wym = shm._wym,
         iframeHead = jQuery(wym._doc).find('head')[0],
         stylesheetHref,
         cssLink,
@@ -245,20 +249,21 @@ StructuredHeadingsManager.prototype.addCssStylesheet = function () {
                    heading level raised
 */
 StructuredHeadingsManager.prototype.canRaiseHeadingLevel = function (heading) {
-    var headingLevel = getHeadingLevel(heading),
+    var shm = this,
+        headingLevel = getHeadingLevel(heading),
         headingLevelDifference,
         nextHeading,
         nextHeadingLevel;
 
     // The level of a heading cannot be raised if it is already at the highest
     // allowable level.
-    if (headingLevel === this._options.highestAllowableHeadingLevel) {
+    if (headingLevel === shm._options.highestAllowableHeadingLevel) {
         return false;
     }
 
     // The level of a heading cannot be raised if the heading level is any
     // higher than the level of its following heading.
-    nextHeading = jQuery(heading).nextAll(this._fullHeadingSel)[0];
+    nextHeading = jQuery(heading).nextAll(shm._fullHeadingSel)[0];
     if (nextHeading) {
         nextHeadingLevel = getHeadingLevel(nextHeading);
         headingLevelDifference = headingLevel - nextHeadingLevel;
@@ -282,20 +287,21 @@ StructuredHeadingsManager.prototype.canRaiseHeadingLevel = function (heading) {
                    heading level lowered
 */
 StructuredHeadingsManager.prototype.canLowerHeadingLevel = function (heading) {
-    var headingLevel = getHeadingLevel(heading),
+    var shm = this,
+        headingLevel = getHeadingLevel(heading),
         headingLevelDifference,
         prevHeading,
         prevHeadingLevel;
 
     // The level of a heading cannot be lowered if it is already at the lowest
     // allowable level.
-    if (headingLevel === this._options.lowestAllowableHeadingLevel) {
+    if (headingLevel === shm._options.lowestAllowableHeadingLevel) {
         return false;
     }
 
     // The user cannot lower the level of a heading if the heading level is any
     // lower than the level of its previous heading.
-    prevHeading = jQuery(heading).prevAll(this._fullHeadingSel)[0];
+    prevHeading = jQuery(heading).prevAll(shm._fullHeadingSel)[0];
     if (prevHeading) {
         prevHeadingLevel = getHeadingLevel(prevHeading);
         headingLevelDifference = prevHeadingLevel - headingLevel;
@@ -333,8 +339,8 @@ StructuredHeadingsManager.prototype.canLowerHeadingLevel = function (heading) {
 StructuredHeadingsManager.prototype.changeSelectedHeadingsLevel = function (
     selection, upOrDown
 ) {
-    var wym = this._wym,
-        headingManager = this,
+    var shm = this,
+        wym = shm._wym,
         shouldRaise = (upOrDown === 'up'),
         i,
         iStart = (shouldRaise ? selection.rangeCount - 1 : 0),
@@ -349,7 +355,7 @@ StructuredHeadingsManager.prototype.changeSelectedHeadingsLevel = function (
         headingNodeFilter;
 
     headingNodeFilter = function (testNode) {
-        return jQuery(testNode).is(headingManager._fullHeadingSel);
+        return jQuery(testNode).is(shm._fullHeadingSel);
     };
 
     // Iterate through the headings in the selection from bottom to top if the
@@ -365,7 +371,7 @@ StructuredHeadingsManager.prototype.changeSelectedHeadingsLevel = function (
             // use findUp to get the containing heading.
             heading = wym.findUp(range.startContainer,
                                  WYMeditor.HEADING_ELEMENTS);
-            this.changeHeadingLevel(heading, upOrDown);
+            shm.changeHeadingLevel(heading, upOrDown);
         } else {
             // Use getNodes to get the selected headings
             headingList = range.getNodes(false, headingNodeFilter);
@@ -380,7 +386,7 @@ StructuredHeadingsManager.prototype.changeSelectedHeadingsLevel = function (
             jStart = (shouldRaise ? headingList.length - 1 : 0);
             jLimit = (shouldRaise ? -1 : headingList.length);
             for (j = jStart; j !== jLimit; j += iterChange) {
-                this.changeHeadingLevel(headingList[j], upOrDown);
+                shm.changeHeadingLevel(headingList[j], upOrDown);
             }
         }
     }
@@ -404,7 +410,8 @@ StructuredHeadingsManager.prototype.changeSelectedHeadingsLevel = function (
 StructuredHeadingsManager.prototype.changeHeadingLevel = function (
     heading, upOrDown
 ) {
-    var wym = this._wym,
+    var shm = this,
+        wym = shm._wym,
         changeLevelUp = (upOrDown === "up"),
         levelAdjustment = (changeLevelUp ? -1 : 1),
         headingLevel;
@@ -417,16 +424,16 @@ StructuredHeadingsManager.prototype.changeHeadingLevel = function (
     // Check if the requested change in the heading level is valid. If it is
     // not valid, don't modify the heading.
     headingLevel = getHeadingLevel(heading);
-    if (changeLevelUp && !this.canRaiseHeadingLevel(heading)) {
+    if (changeLevelUp && !shm.canRaiseHeadingLevel(heading)) {
         return;
     }
-    if (!changeLevelUp && !this.canLowerHeadingLevel(heading)) {
+    if (!changeLevelUp && !shm.canLowerHeadingLevel(heading)) {
         return;
     }
 
     wym.switchTo(heading, 'h' + (headingLevel + levelAdjustment));
     if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
-        this.numberHeadingsIE7();
+        shm.numberHeadingsIE7();
     }
 };
 
@@ -442,7 +449,8 @@ StructuredHeadingsManager.prototype.changeHeadingLevel = function (
     @param node The DOM node to be switched to a heading.
 */
 StructuredHeadingsManager.prototype.switchToHeading = function (node) {
-    var wym = this._wym,
+    var shm = this,
+        wym = shm._wym,
         $prevHeading;
 
     // If the node doesn't exist, don't do anything.
@@ -450,15 +458,15 @@ StructuredHeadingsManager.prototype.switchToHeading = function (node) {
         return;
     }
 
-    $prevHeading = jQuery(node).prev(this._fullHeadingSel);
+    $prevHeading = jQuery(node).prev(shm._fullHeadingSel);
     if ($prevHeading.length) {
         wym.switchTo(node, $prevHeading[0].nodeName);
     } else {
-        wym.switchTo(node, 'h' + this._options.highestAllowableHeadingLevel);
+        wym.switchTo(node, 'h' + shm._options.highestAllowableHeadingLevel);
     }
 
     if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
-        this.numberHeadingsIE7();
+        shm.numberHeadingsIE7();
     }
 };
 
@@ -475,9 +483,10 @@ StructuredHeadingsManager.prototype.switchToHeading = function (node) {
     make it smarter.
 */
 StructuredHeadingsManager.prototype.fixHeadingStructure = function () {
-    var wym = this._wym,
+    var shm = this,
+        wym = shm._wym,
         $headings = jQuery(wym._doc).find('body.wym_iframe')
-                                    .find(this._limitedHeadingSel),
+                                    .find(shm._limitedHeadingSel),
         heading,
         headingLevel,
         prevHeadingLevel,
@@ -509,8 +518,8 @@ StructuredHeadingsManager.prototype.fixHeadingStructure = function () {
     and lower.
 */
 StructuredHeadingsManager.prototype.enableIE7Polyfill = function () {
-    var wym = this._wym,
-        headingManager = this,
+    var shm = this,
+        wym = shm._wym,
         $body = jQuery(wym._doc).find('body.wym_iframe'),
         $containersPanelLinks = jQuery(wym._box)
             .find(wym._options.containersSelector + ' li > a'),
@@ -518,22 +527,25 @@ StructuredHeadingsManager.prototype.enableIE7Polyfill = function () {
         prevSpanCharTotal = 0;
 
     $body.keyup(function (evt) {
+        var body = this,
+            headingTotal,
+            spanCharTotal;
         if (jQuery.inArray(evt.which,
             WYMeditor.STRUCTURED_HEADINGS_POTENTIAL_HEADING_MODIFICATION_KEYS) > -1) {
 
-            var headingTotal = $body.find(headingManager._limitedHeadingSel).length,
-                spanCharTotal = 0;
+            headingTotal = $body.find(shm._limitedHeadingSel).length;
+            spanCharTotal = 0;
 
             $body.find('.' + WYMeditor.STRUCTURED_HEADINGS_NUMBERING_SPAN_CLASS)
                  .each(function () {
 
-                spanCharTotal += this.innerHTML.length;
+                spanCharTotal += body.innerHTML.length;
             });
 
             if (headingTotal !== prevHeadingTotal ||
                 spanCharTotal !== prevSpanCharTotal) {
 
-                prevSpanCharTotal = headingManager.numberHeadingsIE7();
+                prevSpanCharTotal = shm.numberHeadingsIE7();
             }
 
             prevHeadingTotal = headingTotal;
@@ -541,7 +553,7 @@ StructuredHeadingsManager.prototype.enableIE7Polyfill = function () {
     });
 
     $containersPanelLinks.click(function () {
-        headingManager.numberHeadingsIE7();
+        shm.numberHeadingsIE7();
     });
 };
 
@@ -671,7 +683,8 @@ function numberHeadingsIE7(doc, addClass) {
     numberHeadingsIE7 function in the plugin file for easier use.
 */
 StructuredHeadingsManager.prototype.numberHeadingsIE7 = function () {
-    numberHeadingsIE7(this._wym._doc, true);
+    var shm = this;
+    numberHeadingsIE7(shm._wym._doc, true);
 };
 
 /**
@@ -696,8 +709,9 @@ WYMeditor.printStructuredHeadingsCSS = function () {
     @param options A configuration object.
 */
 WYMeditor.editor.prototype.structuredHeadings = function (options) {
-    var structuredHeadingsManager = new StructuredHeadingsManager(options, this);
-    this.structuredHeadingsManager = structuredHeadingsManager;
+    var wym = this,
+    structuredHeadingsManager = new StructuredHeadingsManager(options, wym);
+    wym.structuredHeadingsManager = structuredHeadingsManager;
 
     return structuredHeadingsManager;
 };

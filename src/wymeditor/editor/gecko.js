@@ -3,8 +3,9 @@
 "use strict";
 
 WYMeditor.WymClassGecko = function (wym) {
-    this._wym = wym;
-    this._class = "class";
+    var wymClassGecko = this;
+    wymClassGecko._wym = wym;
+    wymClassGecko._class = "class";
 };
 
 // Placeholder cell to allow content in TD cells for FF 3.5+
@@ -19,11 +20,11 @@ WYMeditor.WymClassGecko.NEEDS_CELL_FIX = parseInt(
 WYMeditor.WymClassGecko.prototype._docEventQuirks = function () {
     var wym = this;
 
-    jQuery(this._doc).bind("keydown", this.keydown);
-    jQuery(this._doc).bind("keyup", this.keyup);
-    jQuery(this._doc).bind("click", this.click);
+    jQuery(wym._doc).bind("keydown", wym.keydown);
+    jQuery(wym._doc).bind("keyup", wym.keyup);
+    jQuery(wym._doc).bind("click", wym.click);
     // Bind editor focus events (used to reset designmode - Gecko bug)
-    jQuery(this._doc).bind("focus", function () {
+    jQuery(wym._doc).bind("focus", function () {
         // Fix scope
         wym._enableDesignModeOnIframe.call(wym);
     });
@@ -63,21 +64,23 @@ WYMeditor.WymClassGecko.prototype._html = function (html) {
 };
 
 WYMeditor.WymClassGecko.prototype._exec = function (cmd, param) {
-    if (!this.selectedContainer()) {
+    var wym = this,
+        container;
+    if (!wym.selectedContainer()) {
         return false;
     }
 
     if (param) {
-        this._doc.execCommand(cmd, '', param);
+        wym._doc.execCommand(cmd, '', param);
     } else {
-        this._doc.execCommand(cmd, '', null);
+        wym._doc.execCommand(cmd, '', null);
     }
 
     //set to P if parent = BODY
-    var container = this.selectedContainer();
+    container = wym.selectedContainer();
     if (container && container.tagName.toLowerCase() === WYMeditor.BODY) {
-        this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
-        this.fixBodyHtml();
+        wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
+        wym.fixBodyHtml();
     }
 
     return true;
@@ -85,8 +88,8 @@ WYMeditor.WymClassGecko.prototype._exec = function (cmd, param) {
 
 //keydown handler, mainly used for keyboard shortcuts
 WYMeditor.WymClassGecko.prototype.keydown = function (evt) {
-    //'this' is the doc
-    var wym = WYMeditor.INSTANCES[this.title];
+    var doc = this,
+        wym = WYMeditor.INSTANCES[doc.title];
 
     if (evt.ctrlKey) {
         if (evt.which === 66) {
@@ -106,8 +109,8 @@ WYMeditor.WymClassGecko.prototype.keydown = function (evt) {
 
 // Keyup handler, mainly used for cleanups
 WYMeditor.WymClassGecko.prototype.keyup = function (evt) {
-    // 'this' is the doc
-    var wym = WYMeditor.INSTANCES[this.title],
+    var doc = this,
+        wym = WYMeditor.INSTANCES[doc.title],
         container,
         defaultRootContainer,
         notValidRootContainers,
@@ -176,7 +179,8 @@ WYMeditor.WymClassGecko.prototype.keyup = function (evt) {
 };
 
 WYMeditor.WymClassGecko.prototype.click = function () {
-    var wym = WYMeditor.INSTANCES[this.title],
+    var doc = this,
+        wym = WYMeditor.INSTANCES[doc.title],
         container = wym.selectedContainer(),
         sel;
 
@@ -212,11 +216,12 @@ WYMeditor.WymClassGecko.prototype.click = function () {
 };
 
 WYMeditor.WymClassGecko.prototype._enableDesignModeOnIframe = function () {
-    if (this._doc.designMode === "off") {
+    var wym = this;
+    if (wym._doc.designMode === "off") {
         try {
-            this._doc.designMode = "on";
-            this._doc.execCommand("styleWithCSS", '', false);
-            this._doc.execCommand("enableObjectResizing", false, true);
+            wym._doc.designMode = "on";
+            wym._doc.execCommand("styleWithCSS", '', false);
+            wym._doc.execCommand("enableObjectResizing", false, true);
         } catch (e) {}
     }
 };

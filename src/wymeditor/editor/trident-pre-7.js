@@ -3,8 +3,9 @@
 "use strict";
 
 WYMeditor.WymClassTridentPre7 = function (wym) {
-    this._wym = wym;
-    this._class = "className";
+    var wymClassTridentPre7 = this;
+    wymClassTridentPre7._wym = wym;
+    wymClassTridentPre7._class = "className";
 };
 
 WYMeditor.WymClassTridentPre7.prototype._onEditorIframeLoad = function (wym) {
@@ -68,44 +69,47 @@ WYMeditor.WymClassTridentPre7.prototype._UiQuirks = function () {
 };
 
 WYMeditor.WymClassTridentPre7.prototype._exec = function (cmd, param) {
+    var wym = this;
     if (param) {
-        this._doc.execCommand(cmd, false, param);
+        wym._doc.execCommand(cmd, false, param);
     } else {
-        this._doc.execCommand(cmd);
+        wym._doc.execCommand(cmd);
     }
 };
 
 WYMeditor.WymClassTridentPre7.prototype.saveCaret = function () {
-    this._doc.caretPos = this._doc.selection.createRange();
+    var wym = this;
+    wym._doc.caretPos = wym._doc.selection.createRange();
 };
 
 WYMeditor.WymClassTridentPre7.prototype.insert = function (html) {
-
-    // Get the current selection
-    var range = this._doc.selection.createRange(),
+    var wym = this,
+        // Get the current selection
+        range = wym._doc.selection.createRange(),
         $selectionParents;
 
     // Check if the current selection is inside the editor
     $selectionParents = jQuery(range.parentElement()).parents();
-    if ($selectionParents.is(this._options.iframeBodySelector)) {
+    if ($selectionParents.is(wym._options.iframeBodySelector)) {
         try {
             // Overwrite selection with provided html
             range.pasteHTML(html);
         } catch (e) {}
     } else {
         // Fall back to the internal paste function if there's no selection
-        this.paste(html);
+        wym.paste(html);
     }
 };
 
 WYMeditor.WymClassTridentPre7.prototype.wrap = function (left, right) {
-    // Get the current selection
-    var range = this._doc.selection.createRange(),
+    var wym = this,
+        // Get the current selection
+        range = wym._doc.selection.createRange(),
         $selectionParents;
 
     // Check if the current selection is inside the editor
     $selectionParents = jQuery(range.parentElement()).parents();
-    if ($selectionParents.is(this._options.iframeBodySelector)) {
+    if ($selectionParents.is(wym._options.iframeBodySelector)) {
         try {
             // Overwrite selection with provided html
             range.pasteHTML(left + range.text + right);
@@ -127,7 +131,7 @@ WYMeditor.WymClassTridentPre7.prototype.wrap = function (left, right) {
 WYMeditor.WymClassTridentPre7.prototype.wrapWithContainer = function (
     node, containerType
 ) {
-    var wym = this._wym,
+    var wym = this,
         $wrappedNode,
         selection,
         range;
@@ -141,26 +145,27 @@ WYMeditor.WymClassTridentPre7.prototype.wrapWithContainer = function (
 };
 
 WYMeditor.WymClassTridentPre7.prototype.unwrap = function () {
-    // Get the current selection
-    var range = this._doc.selection.createRange(),
+    var wym = this,
+        // Get the current selection
+        range = wym._doc.selection.createRange(),
         $selectionParents,
         text;
 
     // Check if the current selection is inside the editor
     $selectionParents = jQuery(range.parentElement()).parents();
-    if ($selectionParents.is(this._options.iframeBodySelector)) {
+    if ($selectionParents.is(wym._options.iframeBodySelector)) {
         try {
             // Unwrap selection
             text = range.text;
-            this._exec('Cut');
+            wym._exec('Cut');
             range.pasteHTML(text);
         } catch (e) {}
     }
 };
 
 WYMeditor.WymClassTridentPre7.prototype.keyup = function (evt) {
-    //'this' is the doc
-    var wym = WYMeditor.INSTANCES[this.title],
+    var doc = this,
+        wym = WYMeditor.INSTANCES[doc.title],
         container,
         defaultRootContainer,
         notValidRootContainers,
@@ -173,7 +178,7 @@ WYMeditor.WymClassTridentPre7.prototype.keyup = function (evt) {
         wym.documentStructureManager.structureRules.notValidRootContainers;
     defaultRootContainer =
         wym.documentStructureManager.structureRules.defaultRootContainer;
-    this._selectedImage = null;
+    doc._selectedImage = null;
 
     // If the pressed key can't create a block element and is not a command,
     // check to make sure the selection is properly wrapped in a container

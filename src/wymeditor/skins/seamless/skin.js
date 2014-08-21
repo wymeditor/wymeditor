@@ -82,15 +82,17 @@
   * ======================= */
 
     $.fn.wymAffix = function (option) {
-        return this.each(function () {
-            var $this = $(this)
-                , data = $this.data('affix')
+        var $elements = this;
+        return $elements.each(function () {
+            var element = this,
+                $element = $(element)
+                , data = $element.data('affix')
                 , options = typeof option === 'object' && option;
 
             if (!data) {
-                $this.data(
+                $element.data(
                     'affix',
-                    (data = new Affix(this, options))
+                    (data = new Affix(element, options))
                 );
             }
             if (typeof option === 'string') {
@@ -197,7 +199,8 @@ WYMeditor.SKINS.seamless = {
         // Make dropdowns also work on click, for mobile devices
         jQuery(".wym_dropdown", wym._box).click(
             function () {
-                jQuery(this).toggleClass("hover");
+                var dropDown = this;
+                jQuery(dropDown).toggleClass("hover");
             }
         );
 
