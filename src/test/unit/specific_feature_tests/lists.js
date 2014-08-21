@@ -3,7 +3,6 @@
 SKIP_KNOWN_FAILING_TESTS, is_double_br_browser, prepareUnitTestModule,
 wymEqual, makeTextSelection, moveSelector, simulateKey, strictEqual,
 makeSelection,
-html_beautify,
 ok, test, expect, deepEqual */
 "use strict";
 
