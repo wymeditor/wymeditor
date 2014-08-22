@@ -57,6 +57,7 @@ Checklist:
   in these places:
     * `package.json`
     * `docs/conf.py`
+    * `bower.json`
     * The Custom vars in `_config.yml` for website generation
 * Ensure all changes since the last version are noted in section specifically
   for this release inside `CHANGELOG.md`. Users upgrading from a specific
