@@ -3,8 +3,9 @@
 "use strict";
 
 WYMeditor.WymClassWebKit = function (wym) {
-    this._wym = wym;
-    this._class = "class";
+    var wymClassWebKit = this;
+    wymClassWebKit._wym = wym;
+    wymClassWebKit._class = "class";
 };
 
 WYMeditor.WymClassWebKit.prototype._docEventQuirks = function () {
@@ -15,35 +16,36 @@ WYMeditor.WymClassWebKit.prototype._docEventQuirks = function () {
 };
 
 WYMeditor.WymClassWebKit.prototype._exec = function (cmd, param) {
-    if (!this.selectedContainer()) {
-        return false;
-    }
-
-    var container,
+    var wym = this,
+        container,
         $container,
         tagName,
         structureRules,
         noClassOrAppleSpan;
 
-    if (param) {
-        this._doc.execCommand(cmd, '', param);
-    } else {
-        this._doc.execCommand(cmd, '', null);
+    if (!wym.selectedContainer()) {
+        return false;
     }
 
-    container = this.selectedContainer();
+    if (param) {
+        wym._doc.execCommand(cmd, '', param);
+    } else {
+        wym._doc.execCommand(cmd, '', null);
+    }
+
+    container = wym.selectedContainer();
     if (container) {
         $container = jQuery(container);
         tagName = container.tagName.toLowerCase();
 
         // Wrap this content in the default root container if we're in the body
         if (tagName === WYMeditor.BODY) {
-            structureRules = this.documentStructureManager.structureRules;
-            this._exec(
+            structureRules = wym.documentStructureManager.structureRules;
+            wym._exec(
                 WYMeditor.FORMAT_BLOCK,
                 structureRules.defaultRootContainer
             );
-            this.fixBodyHtml();
+            wym.fixBodyHtml();
         }
 
         // If the cmd was FORMAT_BLOCK, check if the block was moved outside
@@ -75,8 +77,8 @@ WYMeditor.WymClassWebKit.prototype._exec = function (cmd, param) {
 
 //keydown handler, mainly used for keyboard shortcuts
 WYMeditor.WymClassWebKit.prototype.keydown = function (e) {
-    //'this' is the doc
-    var wym = WYMeditor.INSTANCES[this.title];
+    var doc = this,
+        wym = WYMeditor.INSTANCES[doc.title];
 
     if (e.ctrlKey) {
         if (e.which === WYMeditor.KEY.B) {
@@ -204,8 +206,8 @@ WYMeditor.WymClassWebKit.prototype
 
 // Keyup handler, mainly used for cleanups
 WYMeditor.WymClassWebKit.prototype.keyup = function (evt) {
-    //'this' is the doc
-    var wym = WYMeditor.INSTANCES[this.title],
+    var doc = this,
+        wym = WYMeditor.INSTANCES[doc.title],
         container,
         defaultRootContainer,
         notValidRootContainers,

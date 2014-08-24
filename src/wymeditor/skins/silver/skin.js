@@ -1,16 +1,20 @@
 /* This file is part of the Silver skin for WYMeditor by Scott Edwin Lewis */
 
 jQuery.fn.selectify = function() {
-    return this.each(function() {
-        jQuery(this).hover(
+    var $elements = this;
+    return $elements.each(function() {
+        var element = this;
+        jQuery(element).hover(
             function() {
-                jQuery("h2", this).css("background-position", "0px -18px");
-                jQuery("ul", this).fadeIn("fast");
+                var element = this;
+                jQuery("h2", element).css("background-position", "0px -18px");
+                jQuery("ul", element).fadeIn("fast");
             },
-		    function() {
-		        jQuery("h2", this).css("background-position", "");
-		        jQuery("ul", this).fadeOut("fast");
-		    }
+            function() {
+                var element = this;
+                jQuery("h2", element).css("background-position", "");
+                jQuery("ul", element).fadeOut("fast");
+            }
         );
     });
 };
@@ -53,9 +57,11 @@ WYMeditor.SKINS.silver = {
 
         //make hover work under IE < 7
         jQuery(wym._box).find(".wym_section").hover(function(){
-          jQuery(this).addClass("hover");
+          var section = this;
+          jQuery(section).addClass("hover");
         },function(){
-          jQuery(this).removeClass("hover");
+          var section = this;
+          jQuery(section).removeClass("hover");
         });
     }
 };

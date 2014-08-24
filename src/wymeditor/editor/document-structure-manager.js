@@ -20,9 +20,10 @@
  *
  */
 WYMeditor.DocumentStructureManager = function (wym, defaultRootContainer) {
-    this._wym = wym;
-    this.structureRules = WYMeditor.DocumentStructureManager.DEFAULTS;
-    this.setDefaultRootContainer(defaultRootContainer);
+    var dsm = this;
+    dsm._wym = wym;
+    dsm.structureRules = WYMeditor.DocumentStructureManager.DEFAULTS;
+    dsm.setDefaultRootContainer(defaultRootContainer);
 };
 
 jQuery.extend(WYMeditor.DocumentStructureManager, {
@@ -129,11 +130,12 @@ WYMeditor.DocumentStructureManager.prototype.setDefaultRootContainer = function
 (
     defaultRootContainer
 ) {
-    var validContainers,
+    var dsm = this,
+        validContainers,
         index,
         DSManager;
 
-    if (this.structureRules.defaultRootContainer === defaultRootContainer) {
+    if (dsm.structureRules.defaultRootContainer === defaultRootContainer) {
         // This is already our current configuration. No need to do the
         // work again.
         return;
@@ -151,15 +153,15 @@ WYMeditor.DocumentStructureManager.prototype.setDefaultRootContainer = function
         );
     }
 
-    this.structureRules.defaultRootContainer = defaultRootContainer;
+    dsm.structureRules.defaultRootContainer = defaultRootContainer;
 
     // No other possible option for default root containers is valid expect for
     // the one choosen default root container
-    this.structureRules.notValidRootContainers =
+    dsm.structureRules.notValidRootContainers =
         WYMeditor.DocumentStructureManager.VALID_DEFAULT_ROOT_CONTAINERS;
-    this.structureRules.notValidRootContainers.splice(index, 1);
+    dsm.structureRules.notValidRootContainers.splice(index, 1);
 
-    this.adjustDefaultRootContainerUI();
+    dsm.adjustDefaultRootContainerUI();
 
     // TODO: Actually do all of the switching required to move from p to div or
     // from div to p for the topLevelContainer
@@ -175,8 +177,9 @@ WYMeditor.DocumentStructureManager.prototype.setDefaultRootContainer = function
     default root container.
 */
 WYMeditor.DocumentStructureManager.prototype.adjustDefaultRootContainerUI = function () {
-    var wym = this._wym,
-        defaultRootContainer = this.structureRules.defaultRootContainer,
+    var dsm = this,
+        wym = dsm._wym,
+        defaultRootContainer = dsm.structureRules.defaultRootContainer,
         $containerItems,
         $containerLink,
         $newContainerItem,
@@ -197,7 +200,7 @@ WYMeditor.DocumentStructureManager.prototype.adjustDefaultRootContainerUI = func
         $containerLink = $containerItems.eq(i).find('a');
         containerName = $containerLink.attr('name').toLowerCase();
         if (jQuery.inArray(containerName,
-                           this.structureRules.notValidRootContainers) > -1) {
+                           dsm.structureRules.notValidRootContainers) > -1) {
             $containerItems.eq(i).remove();
         }
         if (containerName === defaultRootContainer) {
@@ -232,7 +235,8 @@ WYMeditor.DocumentStructureManager.prototype.adjustDefaultRootContainerUI = func
 
         // Bind click event for the new link
         $newContainerItem.find('a').click(function () {
-            wym.mainContainer(jQuery(this).attr(WYMeditor.NAME));
+            var button = this;
+            wym.mainContainer(jQuery(button).attr(WYMeditor.NAME));
             return false;
         });
     }

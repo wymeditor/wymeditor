@@ -151,7 +151,8 @@ function testGetSelectedListItems(
 
         return jQuery.makeArray(
             jQuery(wymeditor._getSelectedListItems(sel)).map(function () {
-                return this.getAttribute('id');
+                var element = this;
+                return element.getAttribute('id');
             })
         );
     }
