@@ -970,7 +970,7 @@ jQuery.fn.wymeditor = function (options) {
 
     return $textareas.each(function () {
         var textarea = this;
-        // Assigning to _editor because the return value from new isn't
+        // Assigning to _wym because the return value from new isn't
         // actually used, but we need to use new to properly change the
         // prototype
         textarea._wym = new WYMeditor.editor(jQuery(textarea), options);
