@@ -27,8 +27,8 @@ WYMeditor.editor.prototype.hovertools = function() {
     jQuery(wym._box).find(wym._options.classSelector).hover(
         function() {
             var button = this,
-                aClasses = eval(wym._options.classesItems);
-                sName = jQuery(button).attr(WYMeditor.NAME);
+                aClasses = eval(wym._options.classesItems),
+                sName = jQuery(button).attr(WYMeditor.NAME),
                 oClass = WYMeditor.Helper.findByName(aClasses, sName);
 
             if (oClass){
