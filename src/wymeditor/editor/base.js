@@ -3,7 +3,7 @@
 "use strict";
 
 /**
-    WYMeditor.editor.init
+    WYMeditor.editor._init
     =====================
 
     Initialize a wymeditor instance, including detecting the
