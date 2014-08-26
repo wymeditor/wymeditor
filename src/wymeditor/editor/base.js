@@ -4,7 +4,7 @@
 
 /**
     WYMeditor.editor._init
-    =====================
+    ======================
 
     Initialize a wymeditor instance, including detecting the
     current browser and enabling the browser-specific subclass.
