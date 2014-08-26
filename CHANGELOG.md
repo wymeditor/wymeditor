@@ -3,7 +3,7 @@
 This document tracks the enhancements and bug fixes between releases of
 WYMeditor.
 
-## 1.0.0b8 (Beta 8)
+## 1.0.0-beta.8
 
 *release-date* TBD
 
@@ -30,6 +30,7 @@ WYMeditor.
 
 ### Backwards-Incompatible Changes
 
+* Version number scheme changed to adhere to Semantic Versioning 2.x.
 * The jQuery.browser plugin was introduced as a dependency, even for jQuery
   versions from before its removal. That is, all jQuery version. It matters
   because the ``jQuery.browser`` that is in old jQuery versions thinks that

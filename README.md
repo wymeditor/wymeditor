@@ -43,8 +43,8 @@ WYMeditor can do.
     Ensure that your page also includes jQuery Migrate after jQuery is
     included.
 
-2. Download the Version 1.0.0b7 archive from the [release
-   page](https://github.com/wymeditor/wymeditor/releases/tag/v1.0.0b7)
+2. Download the Version 1.0.0-beta.8 archive from the [release
+   page](https://github.com/wymeditor/wymeditor/releases/tag/v1.0.0-beta.8)
    and extract the contents to a folder in your project.
 
 3. Include the `wymeditor/jquery.wymeditor.min.js` file on your page using this
