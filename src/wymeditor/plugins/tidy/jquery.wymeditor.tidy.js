@@ -53,7 +53,7 @@ WymTidy.prototype.init = function () {
 WymTidy.prototype.cleanup = function () {
     var tidy = this,
         wym = tidy._wym,
-        html = "<html><body>" + wym.xhtml() + "</body></html>";
+        html = "<html><body>" + wym.html() + "</body></html>";
 
     jQuery.post(
         tidy._options.sUrl,
@@ -63,7 +63,7 @@ WymTidy.prototype.cleanup = function () {
                 if (data.indexOf("<?php") === 0) {
                     wym.status("Ooops... Is PHP installed?");
                 } else {
-                    wym._html(data);
+                    wym.html(data);
                     wym.status("HTML has been cleaned up.");
                 }
             } else {

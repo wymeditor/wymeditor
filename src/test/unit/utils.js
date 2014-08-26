@@ -218,7 +218,7 @@ function wymEqual(wymeditor, expected, options) {
     if (options.skipParser) {
         tmpNodes = jQuery(wymeditor._doc).find('body.wym_iframe').contents();
     } else {
-        tmpNodes = jQuery(wymeditor.xhtml());
+        tmpNodes = jQuery(wymeditor.html());
     }
 
     for (i = 0; i < tmpNodes.length; i++) {
