@@ -3285,7 +3285,7 @@ function enterInEmptyLiTest(testNameSuff, expectedHtml, brokenHtmls) {
             assertStr = 'Broken HTML variation ' + (i + 1) + ' of ' +
                 brokenHtmls.length;
 
-            wymeditor.html(brokenHtmls[i]);
+            wymeditor.rawHtml(brokenHtmls[i]);
             wymeditor._replaceNodeWithBrAndSetCaret(
                 $body.find('p, div')[0]
             );
@@ -3297,7 +3297,7 @@ function enterInEmptyLiTest(testNameSuff, expectedHtml, brokenHtmls) {
                 }
             );
 
-            wymeditor.html(brokenHtmls[i]);
+            wymeditor.rawHtml(brokenHtmls[i]);
             wymeditor.setCaretIn($body.find('p, div')[0]);
             simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
 
