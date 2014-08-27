@@ -1,6 +1,6 @@
 {
   "name": "wymeditor",
-  "version": "1.0.0-b6",
+  "version": "1.0.0-beta.8+dev",
   "dependencies": {
     "requirejs": "~2.1",
     "jquery": "~1.4.4",

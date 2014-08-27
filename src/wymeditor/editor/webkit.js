@@ -3,8 +3,9 @@
 "use strict";
 
 WYMeditor.WymClassWebKit = function (wym) {
-    this._wym = wym;
-    this._class = "class";
+    var wymClassWebKit = this;
+    wymClassWebKit._wym = wym;
+    wymClassWebKit._class = "class";
 };
 
 WYMeditor.WymClassWebKit.prototype._docEventQuirks = function () {
@@ -15,35 +16,36 @@ WYMeditor.WymClassWebKit.prototype._docEventQuirks = function () {
 };
 
 WYMeditor.WymClassWebKit.prototype._exec = function (cmd, param) {
-    if (!this.selectedContainer()) {
-        return false;
-    }
-
-    var container,
+    var wym = this,
+        container,
         $container,
         tagName,
         structureRules,
         noClassOrAppleSpan;
 
-    if (param) {
-        this._doc.execCommand(cmd, '', param);
-    } else {
-        this._doc.execCommand(cmd, '', null);
+    if (!wym.selectedContainer()) {
+        return false;
     }
 
-    container = this.selectedContainer();
+    if (param) {
+        wym._doc.execCommand(cmd, '', param);
+    } else {
+        wym._doc.execCommand(cmd, '', null);
+    }
+
+    container = wym.selectedContainer();
     if (container) {
         $container = jQuery(container);
         tagName = container.tagName.toLowerCase();
 
         // Wrap this content in the default root container if we're in the body
         if (tagName === WYMeditor.BODY) {
-            structureRules = this.documentStructureManager.structureRules;
-            this._exec(
+            structureRules = wym.documentStructureManager.structureRules;
+            wym._exec(
                 WYMeditor.FORMAT_BLOCK,
                 structureRules.defaultRootContainer
             );
-            this.fixBodyHtml();
+            wym.fixBodyHtml();
         }
 
         // If the cmd was FORMAT_BLOCK, check if the block was moved outside
@@ -75,8 +77,8 @@ WYMeditor.WymClassWebKit.prototype._exec = function (cmd, param) {
 
 //keydown handler, mainly used for keyboard shortcuts
 WYMeditor.WymClassWebKit.prototype.keydown = function (e) {
-    //'this' is the doc
-    var wym = WYMeditor.INSTANCES[this.title];
+    var doc = this,
+        wym = WYMeditor.INSTANCES[doc.title];
 
     if (e.ctrlKey) {
         if (e.which === WYMeditor.KEY.B) {
@@ -114,10 +116,98 @@ WYMeditor.WymClassWebKit.prototype._inListBreakoutDiv = function (evtWhich) {
     return false;
 };
 
+// Checks whether this is issue #542.
+WYMeditor.WymClassWebKit.prototype._isLiInLiAfterEnter = function (evtWhich) {
+    var wym = this,
+        nodeAfterSel = wym.nodeAfterSel(),
+        parentNode,
+        previousSibling,
+        previousSiblingChild,
+        previousPreviousSibling;
+
+    if (evtWhich !== WYMeditor.KEY.ENTER) {
+        return false;
+    }
+
+    if (!nodeAfterSel) {
+        return false;
+    }
+
+    parentNode = nodeAfterSel.parentNode;
+    if (!parentNode) {
+        return false;
+    }
+    if (typeof parentNode.tagName !== 'string') {
+        return false;
+    }
+    if (parentNode.tagName.toLowerCase() !== 'li') {
+        return false;
+    }
+
+    previousSibling = nodeAfterSel.previousSibling;
+    if (!previousSibling) {
+        return false;
+    }
+    if (typeof previousSibling.tagName !== 'string') {
+        return false;
+    }
+    if (previousSibling.tagName.toLowerCase() !== 'li') {
+        return false;
+    }
+
+    if (previousSibling.childNodes.length !== 1) {
+        return false;
+    }
+    previousSiblingChild = previousSibling.childNodes[0];
+    if (!previousSiblingChild) {
+        return false;
+    }
+    if (typeof previousSiblingChild.tagName !== 'string') {
+        return false;
+    }
+    if (previousSiblingChild.tagName.toLowerCase() !== 'br') {
+        return false;
+    }
+
+    previousPreviousSibling = previousSibling.previousSibling;
+    if (!previousPreviousSibling) {
+        return false;
+    }
+    if (typeof previousPreviousSibling.tagName !== 'string') {
+        return false;
+    }
+    if (
+        jQuery.inArray(
+        previousPreviousSibling.tagName.toLowerCase(),
+        ['ol', 'ul']
+        ) === -1
+    ) {
+        return false;
+    }
+
+    return true;
+};
+
+// Fixes issue #542.
+WYMeditor.WymClassWebKit.prototype
+    ._fixLiInLiAfterEnter = function () {
+    var wym = this,
+        nodeAfterSel = wym.nodeAfterSel(),
+        $errorLi = jQuery(nodeAfterSel.previousSibling),
+        $parentLi = $errorLi.parent('li'),
+        errorLiIndex = $parentLi.contents().index($errorLi),
+        $contentsAfterErrorLi = $parentLi.contents().slice(errorLiIndex + 1);
+
+    $errorLi.remove();
+    $parentLi.after('<li><br /></li>');
+    $parentLi.next().append($contentsAfterErrorLi);
+    wym.setCaretBefore($parentLi.next('li').children().first('br')[0]);
+};
+
 // Keyup handler, mainly used for cleanups
 WYMeditor.WymClassWebKit.prototype.keyup = function (evt) {
-    //'this' is the doc
-    var wym = WYMeditor.INSTANCES[this.title],
+    var doc = this,
+        wym = WYMeditor.INSTANCES[doc.title],
         container,
         defaultRootContainer,
         notValidRootContainers,
@@ -183,6 +273,12 @@ WYMeditor.WymClassWebKit.prototype.keyup = function (evt) {
         if (jQuery.inArray(name, notValidRootContainers) > -1 &&
                 parentName === WYMeditor.BODY) {
             wym._exec(WYMeditor.FORMAT_BLOCK, defaultRootContainer);
+        }
+
+        // Issue #542
+        if (wym._isLiInLiAfterEnter(evt.which, container)) {
+            wym._fixLiInLiAfterEnter();
+            return;
         }
 
         // Call for the check for--and possible correction of--issue #430.

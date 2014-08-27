@@ -32,14 +32,15 @@
 
     header.ready(function() {
         WYMeditor.XhtmlLexer.prototype.addTokens = function() {
+            var lexer = this;
           // These tokens are for Radiant CMS radius tags
-          this.addEntryPattern("</?r:", 'Text', 'Text');
-          this.addExitPattern(">", 'Text');
+          lexer.addEntryPattern("</?r:", 'Text', 'Text');
+          lexer.addExitPattern(">", 'Text');
 
-          this.addCommentTokens('Text');
-          this.addScriptTokens('Text');
-          this.addCssTokens('Text');
-          this.addTagTokens('Text');
+          lexer.addCommentTokens('Text');
+          lexer.addScriptTokens('Text');
+          lexer.addCssTokens('Text');
+          lexer.addTagTokens('Text');
         };
 
         WYMeditor.XhtmlValidator._tags["p"] = {

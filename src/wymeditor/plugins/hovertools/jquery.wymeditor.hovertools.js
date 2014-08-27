@@ -12,9 +12,10 @@ WYMeditor.editor.prototype.hovertools = function() {
     wym.status('&#160;');
 
     // Bind events on buttons
-    jQuery(this._box).find(this._options.toolSelector).hover(
+    jQuery(wym._box).find(wym._options.toolSelector).hover(
         function() {
-            wym.status(jQuery(this).html());
+            var button = this;
+            wym.status(jQuery(button).html());
         },
         function() {
             wym.status('&#160;');
@@ -23,11 +24,12 @@ WYMeditor.editor.prototype.hovertools = function() {
 
     // Classes: add/remove a style attr to matching elems
     // while mouseover/mouseout
-    jQuery(this._box).find(this._options.classSelector).hover(
+    jQuery(wym._box).find(wym._options.classSelector).hover(
         function() {
-            var aClasses = eval(wym._options.classesItems);
-            var sName = jQuery(this).attr(WYMeditor.NAME);
-            var oClass = WYMeditor.Helper.findByName(aClasses, sName);
+            var button = this,
+                aClasses = eval(wym._options.classesItems),
+                sName = jQuery(button).attr(WYMeditor.NAME),
+                oClass = WYMeditor.Helper.findByName(aClasses, sName);
 
             if (oClass){
                 jqexpr = oClass.expr;

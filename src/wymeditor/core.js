@@ -521,26 +521,27 @@ jQuery.extend(WYMeditor, {
             throw "It seems that this textarea already belongs to a " +
                 "WYMeditor instance.";
         }
+        var wym = this;
         // Store the instance in the INSTANCES array and store the index
-        this._index = WYMeditor.INSTANCES.push(this) - 1;
+        wym._index = WYMeditor.INSTANCES.push(wym) - 1;
         // The element replaced by the editor
-        this._element = elem;
-        this._options = options;
+        wym._element = elem;
+        wym._options = options;
         // Path to the WYMeditor core
-        this._options.wymPath = this._options.wymPath ||
+        wym._options.wymPath = wym._options.wymPath ||
             WYMeditor.computeWymPath();
         // Path to the main JS files
-        this._options.basePath = this._options.basePath ||
-            WYMeditor.computeBasePath(this._options.wymPath);
+        wym._options.basePath = wym._options.basePath ||
+            WYMeditor.computeBasePath(wym._options.wymPath);
         // Path to jQuery (for loading in pop-up dialogs)
-        this._options.jQueryPath = this._options.jQueryPath ||
+        wym._options.jQueryPath = wym._options.jQueryPath ||
             WYMeditor.computeJqueryPath();
         // The designmode iframe's base path
-        this._options.iframeBasePath = this._options.iframeBasePath ||
-            this._options.basePath + WYMeditor.IFRAME_DEFAULT;
+        wym._options.iframeBasePath = wym._options.iframeBasePath ||
+            wym._options.basePath + WYMeditor.IFRAME_DEFAULT;
 
         // Initialize the editor instance
-        this._init();
+        wym._init();
     }
 });
 
@@ -560,6 +561,7 @@ jQuery.extend(WYMeditor, {
     `jQuery(".wymeditor").wymeditor({});`
 */
 jQuery.fn.wymeditor = function (options) {
+    var $textareas = this;
 
     options = jQuery.extend({
 
@@ -966,11 +968,12 @@ jQuery.fn.wymeditor = function (options) {
 
     }, options);
 
-    return this.each(function () {
-        // Assigning to _editor because the return value from new isn't
+    return $textareas.each(function () {
+        var textarea = this;
+        // Assigning to _wym because the return value from new isn't
         // actually used, but we need to use new to properly change the
         // prototype
-        this._wym = new WYMeditor.editor(jQuery(this), options);
+        textarea._wym = new WYMeditor.editor(jQuery(textarea), options);
     });
 };
 
@@ -1299,8 +1302,9 @@ WYMeditor.MAKE_TABLE_ONCLICK = function (wym) {
 
 // Returns true if it is a text node with whitespaces only
 jQuery.fn.isPhantomNode = function () {
-    if (this[0].nodeType === WYMeditor.NODE.TEXT) {
-        return !(/[^\t\n\r ]/.test(this[0].data));
+    var $nodes = this;
+    if ($nodes[0].nodeType === WYMeditor.NODE.TEXT) {
+        return !(/[^\t\n\r ]/.test($nodes[0].data));
     }
 
     return false;
@@ -1314,9 +1318,10 @@ jQuery.fn.isPhantomNode = function () {
     works on the first element in the given jQuery collection..
 */
 jQuery.fn.nextContentsUntil = function (selector, filter) {
-    var matched = [],
+    var $nodes = this,
+        matched = [],
         $matched,
-        cur = this.get(0);
+        cur = $nodes.get(0);
 
     selector = selector ? selector : '';
     filter = filter ? filter : '';
@@ -1353,7 +1358,8 @@ jQuery.fn.nextContentsUntil = function (selector, filter) {
     Mostly cribbed from the jQuery source.
 */
 jQuery.fn.nextAllContents = function () {
-    return jQuery(this).nextContentsUntil('', '');
+    var $nodes = this;
+    return jQuery($nodes).nextContentsUntil('', '');
 };
 
 /**
@@ -1364,9 +1370,10 @@ jQuery.fn.nextAllContents = function () {
     works on the first element in the given jQuery collection..
 */
 jQuery.fn.prevContentsUntil = function (selector, filter) {
-    var matched = [],
+    var $nodes = this,
+        matched = [],
         $matched,
-        cur = this.get(0);
+        cur = $nodes.get(0);
 
     selector = selector ? selector : '';
     filter = filter ? filter : '';
@@ -1404,7 +1411,8 @@ jQuery.fn.prevContentsUntil = function (selector, filter) {
     Mostly cribbed from the jQuery source.
 */
 jQuery.fn.prevAllContents = function () {
-    return jQuery(this).prevContentsUntil('', '');
+    var $nodes = this;
+    return jQuery($nodes).prevContentsUntil('', '');
 };
 
 WYMeditor.isPhantomNode = function (n) {
