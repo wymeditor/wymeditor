@@ -7,7 +7,7 @@
     "requirejs": "~2.1",
     "jquery": "~1.4.4",
     "jquery.browser": "~0.0.6",
-      "js-beautify": "https://github.com/beautify-web/js-beautify.git#1.5"
+    "js-beautify": "https://github.com/beautify-web/js-beautify.git#1.5"
   },
   "resolutions": {
     "jquery": "~1.4.4"
