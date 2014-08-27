@@ -9,16 +9,13 @@ Quick Start Instructions
 Include jQuery
 ==============
 
-WYMeditor requires a version of jQuery between 1.4.4 and 2.1.x
-and :ref;`jquery.browser` version 0.0.6.
+WYMeditor requires a version of jQuery between 1.4.4 and 2.1.x.
 
-First ensure that your page includes these.
+Make sure that your page includes it.
 
 .. note::
 
     With jQUery 2.x and newer, there is no support for IE8 and older.
-
-.. _`jquery.browser`: https://github.com/gabceb/jquery-browser-plugin
 
 Download a Pre-built Release of WYMeditor
 =========================================
@@ -202,9 +199,6 @@ Example
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
             <title>WYMeditor Quickstart</title>
             <script type="text/javascript" src="jquery/jquery.js"></script>
-            <!-- Include jquery.browser **after** jQuery -->
-            <script type="text/javascript" src="jquery/jquery-browser.min.js"></script>
-            <!-- But before jquery.wymeditor -->
             <script type="text/javascript" src="wymeditor/jquery.wymeditor.min.js"></script>
         </head>
         <body>

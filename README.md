@@ -36,10 +36,8 @@ WYMeditor can do.
 ## Quick Start
 
 1. WYMeditor requires a version of [jQuery](http://jquery.com/) between 1.4.4
-   and 2.1.x, and
-   [jquery.browser](https://github.com/gabceb/jquery-browser-plugin) version
-   0.0.6.
-   First ensure that your page includes these.
+   and 2.1.x.
+   Make sure that your page includes it.
 
 2. Download the Version 1.0.0-beta.8 archive from the [release
    page](https://github.com/wymeditor/wymeditor/releases/tag/v1.0.0-beta.8)
@@ -90,8 +88,18 @@ WYMeditor is compatible with:
 
 * jQuery: any version between 1.4.4 and 2.1.x.
   With jQuery 2.x and newer, there is no support for IE8 and older.
-* [jquery.browser](https://github.com/gabceb/jquery-browser-plugin) version
-  0.0.6
+
+### Included requirements
+
+These requirements are included inside the distributed WYMeditor JavaScript
+file.
+
+* [jquery.browser](https://github.com/gabceb/jquery-browser-plugin); defines /
+  overrides `jQuery.browser`
+* [Rangy](https://github.com/timdown/rangy/); defines / overrides global
+  `Rangy`
+* [rangy-selectionsaverestore](https://github.com/timdown/rangy/); a Rangy
+  module.
 
 ## Contributing to WYMeditor
 
