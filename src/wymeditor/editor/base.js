@@ -538,22 +538,6 @@ WYMeditor.editor.prototype.vanish = function () {
 };
 
 /**
-    WYMeditor.editor.html
-    =====================
-
-    Get or set the wymbox html value. HTML is parsed before it is inserted and
-    parsed before it is return. Use rawHtml() if parsing is not wanted/needed.
-*/
-WYMeditor.editor.prototype.html = function (html) {
-    var wym = this;
-    if (typeof html === 'string') {
-        wym.editor.rawHtml(wym.parser.parse(html));
-    } else {
-        return wym.parser.parse(wym.editor.rawHtml());
-    }
-};
-
-/**
     WYMeditor.editor.rawHtml
     =====================
 
@@ -567,6 +551,22 @@ WYMeditor.editor.prototype.rawHtml = function (html) {
         wym.update();
     } else {
         return jQuery(wym._doc.body).html();
+    }
+};
+
+/**
+    WYMeditor.editor.html
+    =====================
+
+    Get or set the wymbox html value. HTML is parsed before it is inserted and
+    parsed before it is return. Use rawHtml() if parsing is not wanted/needed.
+*/
+WYMeditor.editor.prototype.html = function (html) {
+    var wym = this;
+    if (typeof html === 'string') {
+        wym.rawHtml(wym.parser.parse(html));
+    } else {
+        return wym.parser.parse(wym.rawHtml());
     }
 };
 
