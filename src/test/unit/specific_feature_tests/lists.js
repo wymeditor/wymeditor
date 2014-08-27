@@ -3530,7 +3530,7 @@ test("Invalid list nesting", function () {
         assertCountStr = 'Variation ' + (i + 1) + ' of ' +
             (invalidNestingAfterEnterInEmptyLi.length) + '; ';
 
-        wymeditor.html(invalidNestingAfterEnterInEmptyLi[i].broken);
+        wymeditor.rawHtml(invalidNestingAfterEnterInEmptyLi[i].broken);
         newLi = jQuery(wymeditor._doc).find('body.wym_iframe').find('#new')[0];
         wymeditor.setCaretIn(newLi);
         simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
