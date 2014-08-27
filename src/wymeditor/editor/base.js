@@ -492,9 +492,10 @@ WYMeditor.editor.prototype.box = function () {
     WYMeditor.editor._html
     ======================
 
-    Deprecated. Use WYMeditor.editor.html() to get parsed html value, or use
+    Deprecated. Use WYMeditor.editor.html() to get/set parsed html value, or use
     WYMeditor.editor.rawHtml() to get/set raw html.
-    Get or set the wymbox html value. If you want to get the wymbox html, you
+
+    Original Description: Get or set the wymbox html value. If you want to get the wymbox html, you
     should use WYMeditor.editor.xhtml() instead of this so that the html is
     parsed and receives cross-browser cleanup. Only use this if you have a
     specific reason not to use WYMeditor.editor.xhtml().
@@ -540,8 +541,9 @@ WYMeditor.editor.prototype.vanish = function () {
     WYMeditor.editor.html
     =====================
 
+    Get or set the wymbox html value. HTML is parsed before it is inserted and
+    parsed before it is return. Use rawHtml() if parsing is not wanted/needed.
 */
-
 WYMeditor.editor.prototype.html = function (html) {
     var wym = this;
     if (typeof html === 'string') {
@@ -551,6 +553,13 @@ WYMeditor.editor.prototype.html = function (html) {
     }
 };
 
+/**
+    WYMeditor.editor.rawHtml
+    =====================
+
+    Get or set the wymbox html value. HTML is NOT parsed when either set/get.
+    Use html() if you are unsure what this function does.
+*/
 WYMeditor.editor.prototype.rawHtml = function (html) {
     var wym = this;
     if (typeof html === 'string') {
@@ -565,14 +574,17 @@ WYMeditor.editor.prototype.rawHtml = function (html) {
     WYMeditor.editor.xhtml
     ======================
 
-    Take the current editor's DOM and apply strict xhtml nesting rules to
-    enforce a valid, well-formed, semantic xhtml result.
+    Deprecated. Use WYMeditor.editor.html() to get parsed html value, or use
+    WYMeditor.editor.rawHtml() to get/set raw html.
+
+    Original Description: Take the current editor's DOM and apply strict xhtml
+    nesting rules to enforce a valid, well-formed, semantic xhtml result.
 */
 WYMeditor.editor.prototype.xhtml = function () {
     WYMeditor.console.warn("The function WYMeditor.editor.xhtml() is deprecated. " +
                             "Use WYMeditor.editor.html() instead.");
     var wym = this;
-    return wym.parser.parse(wym.html());
+    return wym.html();
 };
 
 /**

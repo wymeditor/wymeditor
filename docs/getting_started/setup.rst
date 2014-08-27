@@ -66,7 +66,7 @@ The ``textarea`` provides a few things:
 * Its text is used
   as the initial HTML
   inside the editor.
-* Whenever ``xhtml()`` is called on the editor,
+* Whenever ``html()`` is called on the editor,
   the resulting parsed html
   is placed inside the
   (hidden) ``textarea``.
@@ -102,7 +102,7 @@ Let's also start with some existing content.
     automatically receives the updated  HTML
     on form submit.
     Otherwise,
-    you'll need to call ``xhtml()`` yourself.
+    you'll need to call ``html()`` yourself.
 
 
 Use ``wymeditor()`` to Create an Editor
