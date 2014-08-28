@@ -115,11 +115,11 @@ if (jQuery.browser.webkit || jQuery.browser.safari) {
 
 // If there is no element in front of a table in FF or ie, it's not possible
 // to put content in front of that table.
-test("table has br spacers via .html()", function () {
+test("table has br spacers via .rawHtml()", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
-    wymeditor.html(tableHtml);
+    wymeditor.rawHtml(tableHtml);
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     children = $body.children();
@@ -148,7 +148,7 @@ test("table has br spacers via table insertion", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
-    wymeditor.html('');
+    wymeditor.rawHtml('');
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     wymeditor.setCaretIn($body[0]);
     wymeditor.insertTable(2, 3, '', '');
@@ -175,11 +175,11 @@ test("table has br spacers via table insertion", function () {
     wymEqual(wymeditor, tableHtml);
 });
 
-test("p + table has br spacers via .html()", function () {
+test("p + table has br spacers via .rawHtml()", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
-    wymeditor.html(pTableHtml);
+    wymeditor.rawHtml(pTableHtml);
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     children = $body.children();
@@ -211,7 +211,7 @@ test("p + table has br spacers via table insertion", function () {
         $body,
         first_p,
         children;
-    wymeditor.html('<p>p1</p>');
+    wymeditor.rawHtml('<p>p1</p>');
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
@@ -245,11 +245,11 @@ test("p + table has br spacers via table insertion", function () {
     wymEqual(wymeditor, pTableHtml);
 });
 
-test("p + table + p has br spacers via .html()", function () {
+test("p + table + p has br spacers via .rawHtml()", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
-    wymeditor.html(pTablePHtml);
+    wymeditor.rawHtml(pTablePHtml);
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     children = $body.children();
@@ -272,7 +272,7 @@ test("p + table + p has br spacers via table insertion", function () {
         $body,
         first_p,
         children;
-    wymeditor.html('<p>p1</p><p>p2</p>');
+    wymeditor.rawHtml('<p>p1</p><p>p2</p>');
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
@@ -297,11 +297,11 @@ test("p + table + p has br spacers via table insertion", function () {
     wymEqual(wymeditor, pTablePHtml);
 });
 
-test("p + table + table + p has br spacers via .html()", function () {
+test("p + table + table + p has br spacers via .rawHtml()", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
-    wymeditor.html(pTableTablePHtml);
+    wymeditor.rawHtml(pTableTablePHtml);
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     children = $body.children();
@@ -326,7 +326,7 @@ test("p + table + table + p has br spacers via table insertion", function () {
         $body,
         first_p,
         children;
-    wymeditor.html('<p>p1</p><p>p2</p>');
+    wymeditor.rawHtml('<p>p1</p><p>p2</p>');
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
@@ -354,11 +354,11 @@ test("p + table + table + p has br spacers via table insertion", function () {
     wymEqual(wymeditor, pTableTablePHtml);
 });
 
-test("h1 + blockquote + pre has br spacers via .html()", function () {
+test("h1 + blockquote + pre has br spacers via .rawHtml()", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
-    wymeditor.html(h1BlockquotePreHtml);
+    wymeditor.rawHtml(h1BlockquotePreHtml);
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     children = $body.children();
@@ -395,7 +395,7 @@ test("br spacers aren't deleted when arrowing through them", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
-    wymeditor.html(pTablePHtml);
+    wymeditor.rawHtml(pTablePHtml);
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
@@ -430,7 +430,7 @@ test("br spacers aren't deleted when arrowing through them", function () {
     });
 
     // Reset the HTML
-    wymeditor.html(pTablePHtml);
+    wymeditor.rawHtml(pTablePHtml);
     wymeditor.fixBodyHtml();
 
     // Go through each top-level element and hit the UP key
@@ -457,7 +457,7 @@ test("br spacers don't cause lots of blank p's when arrowing down", function () 
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
-    wymeditor.html(pTableHtml);
+    wymeditor.rawHtml(pTableHtml);
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
@@ -494,7 +494,7 @@ test("br spacers don't cause lots of blank p's when arrowing up", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
-    wymeditor.html(pTablePHtml);
+    wymeditor.rawHtml(pTablePHtml);
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
@@ -523,7 +523,7 @@ test("br spacers stay in place when content is inserted- post-br", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
-    wymeditor.html(tableHtml);
+    wymeditor.rawHtml(tableHtml);
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
@@ -557,7 +557,7 @@ if (!no_keypress_textnode_wrap_browser) {
         var wymeditor = jQuery.wymeditors(0),
             $body,
             children;
-        wymeditor.html(tableHtml);
+        wymeditor.rawHtml(tableHtml);
 
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 

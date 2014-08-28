@@ -467,7 +467,7 @@ function testNoChangeInHtmlArray(htmlArray) {
     for (i = 0; i < htmlArray.length; i++) {
         html = htmlArray[i];
 
-        wymeditor.html(html);
+        wymeditor.rawHtml(html);
         wymEqual(
             wymeditor,
             html, {

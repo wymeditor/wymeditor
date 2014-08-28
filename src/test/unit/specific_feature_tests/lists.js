@@ -157,7 +157,7 @@ function testGetSelectedListItems(
         );
     }
 
-    wymeditor.html(getSelectedListItemsHtml);
+    wymeditor.rawHtml(getSelectedListItemsHtml);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
     expect(1);
@@ -546,7 +546,7 @@ function testList(elmntId, action, startHtml, expectedHtml, isText, doSelection)
     }
 
     if (doSelection) {
-        wymeditor.html(startHtml);
+        wymeditor.rawHtml(startHtml);
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
         actionLi = $body.find('#' + elmntId)[0];
 
@@ -660,7 +660,7 @@ function testListMulti(
         endLi,
         buttonSelector,
         actionButton;
-    wymeditor.html(startHtml);
+    wymeditor.rawHtml(startHtml);
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     startLi = $body.find('#' + startElmntId)[0];
@@ -1649,7 +1649,7 @@ test("Invalid nesting correction no spacer", function () {
         startHtml = invalidNestingHtml,
         expectedHtml = invalidNestingCorrectedHtml;
 
-    wymeditor.html(startHtml);
+    wymeditor.rawHtml(startHtml);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     actionLi = $body.find('#li_4')[0];
 
@@ -1665,7 +1665,7 @@ test("Invalid nesting correction requiring spacer", function () {
         startHtml = invalidNestingNoPreviousHtml,
         expectedHtml = invalidNestingNoPreviousCorrectedHtml;
 
-    wymeditor.html(startHtml);
+    wymeditor.rawHtml(startHtml);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     actionLi = $body.find('#li_2_2')[0];
 
@@ -2670,12 +2670,12 @@ test("Should correct invalid list nesting", function () {
     // FF
         invalid_ff_html = "<ul><li>a<\/li><ul><li>a.1<\/li><\/ul><li>b<br /><\/li><\/ul>",
         invalid_ie_html = "<UL><LI>a<\/LI><UL><LI>a.1<\/LI><\/UL><LI>b<\/LI><\/UL>";
-    wymeditor.html(invalid_ff_html);
+    wymeditor.rawHtml(invalid_ff_html);
     wymEqual(wymeditor, expected);
     // IE
     // IE has invalid sublist nesting
     expected = "<ul><li>a<ul><li>a.1<\/li><\/ul><\/li><li>b<\/li><\/ul>";
-    wymeditor.html(invalid_ie_html);
+    wymeditor.rawHtml(invalid_ie_html);
     wymEqual(wymeditor, expected);
 });
 
@@ -2757,7 +2757,7 @@ test("Double indent correction", function () {
                 '</li>' +
             '</ol>';
 
-    wymeditor.html(brokenHtml);
+    wymeditor.rawHtml(brokenHtml);
     wymEqual(wymeditor, repairedHtml);
 });
 
@@ -2773,7 +2773,7 @@ test("Tab key indents", function () {
         actionElement,
 
         wymeditor = jQuery.wymeditors(0);
-    wymeditor.html(initHtml);
+    wymeditor.rawHtml(initHtml);
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     actionElement = $body.find('#' + elmntId)[0];
@@ -2807,7 +2807,7 @@ test("Shift+Tab outdents", function () {
         actionElement,
 
         wymeditor = jQuery.wymeditors(0);
-    wymeditor.html(initHtml);
+    wymeditor.rawHtml(initHtml);
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     actionElement = $body.find('#' + elmntId)[0];
@@ -2828,7 +2828,7 @@ test("Tab has no effect outside lists", function () {
         actionElement,
 
         wymeditor = jQuery.wymeditors(0);
-    wymeditor.html(initHtml);
+    wymeditor.rawHtml(initHtml);
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     actionElement = $body.find('#' + elmntId)[0];
@@ -2863,7 +2863,7 @@ test("Shouldn't eat newline text spacing in li", function () {
             '</ul>',
         wymeditor = jQuery.wymeditors(0);
 
-    wymeditor.html(initHtml);
+    wymeditor.rawHtml(initHtml);
     wymeditor.update();
     wymEqual(wymeditor, expectedHtml);
 });
@@ -2883,7 +2883,7 @@ test("Shouldn't eat newline text spacing in li", function () {
 function changeIndent(wymeditor, html, selStart, selEnd, inOrOut) {
     var $body;
 
-    wymeditor.html(html);
+    wymeditor.rawHtml(html);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     makeTextSelection(wymeditor, $body.find(selStart)[0],
                       $body.find(selEnd)[0], 0, 1);
@@ -3755,7 +3755,7 @@ function testLiInLiAfterEnter(htmls) {
     // `broken` is the HTML that we want to start with. When we tried inserting
     // that into the editor, the resulting DOM wasn't as expected.
     // Thus we get to our desired DOM in two steps. This is the first step.
-    wymeditor.html(startHtml);
+    wymeditor.rawHtml(startHtml);
     // This is the second step. It gets us the DOM we want, that is identical
     // to `broken`.
     liInLiAfterEnterHtmls.makeDomLikeWeActuallyRequire($body);

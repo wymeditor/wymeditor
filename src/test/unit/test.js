@@ -177,12 +177,12 @@ test("Should escape URL's only once #69.1", function () {
 
 module("Post Init", {setup: prepareUnitTestModule});
 
-test("Sanity check: html()", function () {
+test("Sanity check: rawHtml()", function () {
     expect(1);
     var testText1 = '<p>This is some text with which to test.<\/p>',
         wymeditor = jQuery.wymeditors(0);
 
-    wymeditor.html(testText1);
+    wymeditor.rawHtml(testText1);
     wymEqual(wymeditor, testText1);
 });
 
@@ -438,7 +438,7 @@ function testPaste(
     }
 
     wymeditor = jQuery.wymeditors(0);
-    wymeditor.html(startHtml);
+    wymeditor.rawHtml(startHtml);
 
     // Escape slashes for the regexp
     elmntRegex = new RegExp(elmntStartHtml.replace('/', '\\/'), 'g');
@@ -574,7 +574,7 @@ test("Table is editable after insertion", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         dm;
-    wymeditor.html('');
+    wymeditor.rawHtml('');
 
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     wymeditor.setCaretIn($body[0]);
@@ -610,7 +610,7 @@ if (jQuery.browser.mozilla) {
 
         var wymeditor = jQuery.wymeditors(0),
             $body;
-        wymeditor.html('');
+        wymeditor.rawHtml('');
 
         $body = jQuery(wymeditor._doc).find('body.wym_iframe');
         wymeditor.insertTable(3, 2, '', '');
@@ -627,14 +627,14 @@ if (jQuery.browser.mozilla) {
 
     });
 
-    test("Table cells are editable in FF > 3.5: html() insert", function () {
+    test("Table cells are editable in FF > 3.5: rawHtml() insert", function () {
         expect(12);
 
         var wymeditor = jQuery.wymeditors(0),
             $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
-        wymeditor.html('');
-        wymeditor.html(table_3_2_html);
+        wymeditor.rawHtml('');
+        wymeditor.rawHtml(table_3_2_html);
         $body.find('td').each(function (index, td) {
             // Both FF 3.6 and 4.0 add spacer brs with design mode
             deepEqual(td.childNodes.length, 1);
@@ -685,7 +685,7 @@ function setupTable(wymeditor, html, selection, selectionType,
         cellStr,
         idStr = 't' + caption.slice(-1);
 
-    wymeditor.html(html);
+    wymeditor.rawHtml(html);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
     $element = $body.find(selection);
 
@@ -1125,21 +1125,21 @@ module("table-parse_spacers_in_list", {setup: prepareUnitTestModule});
 test("Parse list with a table at the end", function () {
     var wymeditor = jQuery.wymeditors(0);
 
-    wymeditor.html(expectedEndOut);
+    wymeditor.rawHtml(expectedEndOut);
     wymEqual(wymeditor, startEndOutNoBR);
 });
 
 test("Parse list with a table at the end in a sublist", function () {
     var wymeditor = jQuery.wymeditors(0);
 
-    wymeditor.html(expectedEndIn);
+    wymeditor.rawHtml(expectedEndIn);
     wymEqual(wymeditor, startEndInNoBR);
 });
 
 test("Parse list with multiple tables in a sublist", function () {
     var wymeditor = jQuery.wymeditors(0);
 
-    wymeditor.html(expectedSublistThreeTables);
+    wymeditor.rawHtml(expectedSublistThreeTables);
     wymEqual(wymeditor, sublistThreeTablesNoBR);
 });
 
@@ -1181,7 +1181,7 @@ test("Colspan preserved when switching from td to th", function () {
         $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
         $tableCell;
 
-    wymeditor.html(tableWithColspanTD);
+    wymeditor.rawHtml(tableWithColspanTD);
     $tableCell = $body.find('td[colspan="2"]');
     makeTextSelection(wymeditor, $tableCell[0], $tableCell[0], 0, 1);
 
@@ -1198,7 +1198,7 @@ test("Colspan preserved when switching from th to td", function () {
         $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
         $tableCell;
 
-    wymeditor.html(tableWithColspanTH);
+    wymeditor.rawHtml(tableWithColspanTH);
     $tableCell = $body.find('th[colspan="2"]');
     makeTextSelection(wymeditor, $tableCell[0], $tableCell[0], 0, 1);
 
@@ -1222,7 +1222,7 @@ test("Preformatted text retains spacing", function () {
         preHtml = preHtml.replace(/\r/g, '');
     }
 
-    wymeditor.html(preHtml);
+    wymeditor.rawHtml(preHtml);
 
     expect(1);
     deepEqual(wymeditor.html(), preHtml);
@@ -1236,7 +1236,7 @@ test("Double soft returns are allowed", function () {
                 '<li>li_1<br /><br />stuff</li>' +
             '</ul>',
         wymeditor = jQuery.wymeditors(0);
-    wymeditor.html(initHtml);
+    wymeditor.rawHtml(initHtml);
 
     wymeditor.fixBodyHtml();
 
@@ -1260,7 +1260,7 @@ test("_selected image is saved on mousedown", function () {
 
     expect(3);
 
-    wymeditor.html(initHtml);
+    wymeditor.rawHtml(initHtml);
     $body = jQuery(wymeditor._doc).find('body.wym_iframe');
 
     // Editor starts with no selected image. Use equal instead of deepEqual
@@ -1308,7 +1308,7 @@ if (!inPhantomjs || !SKIP_KNOWN_FAILING_TESTS) {
         // Mimic the way images are inserted by the insert image tool by first
         // inserting the image with its src set to a unique stamp for
         // identification rather than its actual src.
-        wymeditor.html('');
+        wymeditor.rawHtml('');
         wymeditor.setCaretIn($body[0]);
         wymeditor._exec(WYMeditor.INSERT_IMAGE, imageStamp);
 
@@ -1347,7 +1347,7 @@ function checkTagInContainer(wymeditor, containerType, tagName, command) {
             'Test' +
         '</' + containerType + '>';
 
-    wymeditor.html(initHtml);
+    wymeditor.rawHtml(initHtml);
     $container = $body.find(containerType);
     makeTextSelection(wymeditor, $container, $container, 0, 4);
 
@@ -1540,7 +1540,7 @@ test("Set and get collapsed selection", function () {
         assertStrCount,
         assertStrPre;
 
-    wymeditor.html(selTest.setCollapsedHtml);
+    wymeditor.rawHtml(selTest.setCollapsedHtml);
 
     // Save a jQuery of all of the nodes in the WYMeditor's body.
     $allNodes = jQuery(wymeditor._doc).find('body.wym_iframe *')
@@ -1623,7 +1623,7 @@ test("Refuses 'img' elements.", function () {
 
         html = '<p><img alt="" src="" /></p>';
 
-    wymeditor.html(html);
+    wymeditor.rawHtml(html);
 
     try {
         // `.switchTo` on the `img`.

@@ -40,7 +40,7 @@ test("DIV element is correctly converted to P", function () {
     ok($pContainerLink.length,
        "Paragraph container link exists in containers panel");
 
-    wymeditor.html(insertPStartHtml);
+    wymeditor.rawHtml(insertPStartHtml);
     divToReplace = $body.find('#replaceMe')[0];
     makeTextSelection(wymeditor, divToReplace, divToReplace);
     if ($pContainerLink.length) {
@@ -86,7 +86,7 @@ test("P element is correctly converted to DIV", function () {
     ok($divContainerLink.length,
        "Div container link exists in containers panel");
 
-    wymeditor.html(insertDivStartHtml);
+    wymeditor.rawHtml(insertDivStartHtml);
     pToReplace = $body.find('#replaceMe')[0];
     makeTextSelection(wymeditor, pToReplace, pToReplace);
     if ($divContainerLink.length) {
@@ -149,7 +149,7 @@ test("Text node in the document root is wrapped in default container", function 
     keyup_event = jQuery.Event('keyup');
     keyup_event.which = WYMeditor.KEY.R;
 
-    wymeditor.html(startRootTextNodeHtml);
+    wymeditor.rawHtml(startRootTextNodeHtml);
     textNode = $body.contents()[1];
     makeTextSelection(wymeditor, textNode, textNode, 1, 1);
     $body.trigger(keyup_event);
@@ -174,7 +174,7 @@ test(
         keyup_event.which = WYMeditor.KEY.R;
 
         for (i = 0; i < inlineElementsToTest.length; ++i) {
-            wymeditor.html(startRootInlineElementHtml[i]);
+            wymeditor.rawHtml(startRootInlineElementHtml[i]);
             inlineElement = $body.find('#inline-in-root');
             makeTextSelection(wymeditor, inlineElement, inlineElement, 1, 1);
             $body.trigger(keyup_event);
