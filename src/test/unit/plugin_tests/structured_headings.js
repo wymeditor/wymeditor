@@ -213,7 +213,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
             i;
 
         for (i = 1; i < 7; ++i) {
-            wymeditor.html(htmlForHeadingInsertion);
+            wymeditor.rawHtml(htmlForHeadingInsertion);
             paragraph = $body.find('#to_be_h' + i)[0];
             makeTextSelection(wymeditor, paragraph, paragraph);
             $headingContainerLink.click();
