@@ -628,7 +628,7 @@ if (jQuery.browser.mozilla) {
     });
 
     test("Table cells are editable in FF > 3.5: _html() insert", function () {
-        expect(12);
+        expect(6);
 
         var wymeditor = jQuery.wymeditors(0),
             $body = jQuery(wymeditor._doc).find('body.wym_iframe');
@@ -636,8 +636,6 @@ if (jQuery.browser.mozilla) {
         wymeditor._html('');
         wymeditor._html(table_3_2_html);
         $body.find('td').each(function (index, td) {
-            // Both FF 3.6 and 4.0 add spacer brs with design mode
-            deepEqual(td.childNodes.length, 1);
             deepEqual(isContentEditable(td), true);
         });
     });

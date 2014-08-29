@@ -30,39 +30,6 @@ WYMeditor.WymClassGecko.prototype._docEventQuirks = function () {
     });
 };
 
-/** @name html
- * @description Get/Set the html value
- */
-WYMeditor.WymClassGecko.prototype._html = function (html) {
-    var wym = this;
-
-    if (typeof html === 'string') {
-        //disable designMode
-        try {
-            wym._doc.designMode = "off";
-        } catch (e) {
-            //do nothing
-        }
-
-        //replace em by i and strong by bold
-        //(designMode issue)
-        html = html.replace(/<em(\b[^>]*)>/gi, "<i$1>");
-        html = html.replace(/<\/em>/gi, "</i>");
-        html = html.replace(/<strong(\b[^>]*)>/gi, "<b$1>");
-        html = html.replace(/<\/strong>/gi, "</b>");
-
-        //update the html body
-        jQuery(wym._doc.body).html(html);
-        wym._wym.fixBodyHtml();
-
-        //re-init designMode
-        wym._enableDesignModeOnIframe();
-    } else {
-        return jQuery(wym._doc.body).html();
-    }
-    return false;
-};
-
 WYMeditor.WymClassGecko.prototype._exec = function (cmd, param) {
     var wym = this,
         container;
