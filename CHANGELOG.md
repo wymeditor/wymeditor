@@ -31,8 +31,9 @@ WYMeditor.
 ### Backwards-Incompatible Changes
 
 * Version number scheme changed to adhere to Semantic Versioning 2.x.
-* The jQuery.browser plugin was introduced as a dependency, even for jQuery
-  versions from before its removal. That is, all jQuery version. It matters
+* The jQuery.browser plugin, a new dependency, is included in the distribution.
+  It is required for all jQuery versions; even the older ones, which still had
+  a `jQuery.browser` object included. It matters
   because the ``jQuery.browser`` that is in old jQuery versions thinks that
   IE11 is Mozilla (can’t blame it, really).
 * jQuery-migrate is no longer required at all.
