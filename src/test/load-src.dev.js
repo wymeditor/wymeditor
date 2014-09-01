@@ -15,6 +15,7 @@ function loadWymSrc(srcPath, extraRequirements, jqueryVersion) {
         baseRequirements = [
             srcPath + 'wymeditor/rangy/rangy-core.js',
             srcPath + 'wymeditor/rangy/rangy-selectionsaverestore.js',
+            srcPath + 'wymeditor/jquery-extensions.js',
             srcPath + 'wymeditor/core.js',
             srcPath + 'wymeditor/editor/base.js',
             srcPath + 'wymeditor/editor/document-structure-manager.js',
