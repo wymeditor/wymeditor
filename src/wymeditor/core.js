@@ -1482,12 +1482,6 @@ WYMeditor.changeNodeType = function (node, newTag) {
 
 WYMeditor.Helper = {
 
-    //replace all instances of 'old' by 'rep' in 'str' string
-    replaceAll: function (str, old, rep) {
-        var rExp = new RegExp(old, "g");
-        return str.replace(rExp, rep);
-    },
-
     //insert 'inserted' at position 'pos' in 'str' string
     insertAt: function (str, inserted, pos) {
         return str.substr(0, pos) + inserted + str.substring(pos);
@@ -1507,18 +1501,6 @@ WYMeditor.Helper = {
             }
         }
         return false;
-    },
-
-    //return 'item' position in 'arr' array, or -1
-    indexOf: function (arr, item) {
-        var ret = -1, i;
-        for (i = 0; i < arr.length; i += 1) {
-            if (arr[i] === item) {
-                ret = i;
-                break;
-            }
-        }
-        return ret;
     },
 
     //return 'item' object in 'arr' array, checking its 'name' property, or null
