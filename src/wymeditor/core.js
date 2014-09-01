@@ -1493,11 +1493,6 @@ WYMeditor.Helper = {
         return str.substr(0, pos) + inserted + str.substring(pos);
     },
 
-    //trim 'str' string
-    trim: function (str) {
-        return str.replace(/^(\s*)|(\s*)$/gm, '');
-    },
-
     //return true if 'arr' array contains 'elem', or false
     contains: function (arr, elem) {
         var i;
