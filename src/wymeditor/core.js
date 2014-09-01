@@ -1493,11 +1493,6 @@ WYMeditor.Helper = {
         return str.substr(0, pos) + inserted + str.substring(pos);
     },
 
-    //trim 'str' string
-    trim: function (str) {
-        return str.replace(/^(\s*)|(\s*)$/gm, '');
-    },
-
     //return true if 'arr' array contains 'elem', or false
     contains: function (arr, elem) {
         var i;
@@ -1507,18 +1502,6 @@ WYMeditor.Helper = {
             }
         }
         return false;
-    },
-
-    //return 'item' position in 'arr' array, or -1
-    indexOf: function (arr, item) {
-        var ret = -1, i;
-        for (i = 0; i < arr.length; i += 1) {
-            if (arr[i] === item) {
-                ret = i;
-                break;
-            }
-        }
-        return ret;
     },
 
     //return 'item' object in 'arr' array, checking its 'name' property, or null

@@ -207,6 +207,7 @@ module.exports = function (grunt) {
             dist: {
                 src: [
                     "<%= yeoman.app %>/lib/jquery.browser.js",
+                    ",%= yeoman.app %>/wymeditor/jquery-extensions.js",
                     "<%= yeoman.app %>/wymeditor/core.js",
                     "<%= yeoman.app %>/wymeditor/editor/base.js",
                     "<%= yeoman.app %>/wymeditor/editor/" +
