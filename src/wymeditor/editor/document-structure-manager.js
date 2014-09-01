@@ -212,18 +212,18 @@ WYMeditor.DocumentStructureManager.prototype.adjustDefaultRootContainerUI = func
     // needed
     if (newContainerLinkNeeded) {
         newContainerLinkHtml = wym._options.containersItemHtml;
-        newContainerLinkHtml = WYMeditor.Helper.replaceAll(
+        newContainerLinkHtml = jQuery.replaceAllInStr(
             newContainerLinkHtml,
             WYMeditor.CONTAINER_NAME,
             defaultRootContainer.toUpperCase()
         );
         DSManager = WYMeditor.DocumentStructureManager;
-        newContainerLinkHtml = WYMeditor.Helper.replaceAll(
+        newContainerLinkHtml = jQuery.replaceAllInStr(
             newContainerLinkHtml,
             WYMeditor.CONTAINER_TITLE,
             DSManager.DEFAULT_ROOT_CONTAINER_TITLES[defaultRootContainer]
         );
-        newContainerLinkHtml = WYMeditor.Helper.replaceAll(
+        newContainerLinkHtml = jQuery.replaceAllInStr(
             newContainerLinkHtml,
             WYMeditor.CONTAINER_CLASS,
             "wym_containers_" + defaultRootContainer
