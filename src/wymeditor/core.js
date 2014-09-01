@@ -1482,12 +1482,6 @@ WYMeditor.changeNodeType = function (node, newTag) {
 
 WYMeditor.Helper = {
 
-    //replace all instances of 'old' by 'rep' in 'str' string
-    replaceAll: function (str, old, rep) {
-        var rExp = new RegExp(old, "g");
-        return str.replace(rExp, rep);
-    },
-
     //insert 'inserted' at position 'pos' in 'str' string
     insertAt: function (str, inserted, pos) {
         return str.substr(0, pos) + inserted + str.substring(pos);
