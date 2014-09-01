@@ -1498,17 +1498,6 @@ WYMeditor.Helper = {
         return str.replace(/^(\s*)|(\s*)$/gm, '');
     },
 
-    //return true if 'arr' array contains 'elem', or false
-    contains: function (arr, elem) {
-        var i;
-        for (i = 0; i < arr.length; i += 1) {
-            if (arr[i] === elem) {
-                return true;
-            }
-        }
-        return false;
-    },
-
     //return 'item' object in 'arr' array, checking its 'name' property, or null
     findByName: function (arr, name) {
         var i, item;
