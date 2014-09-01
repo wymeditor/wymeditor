@@ -1,4 +1,4 @@
-/* jshint evil: true, camelcase: false, maxlen: 100 */
+/* jshint evil: true */
 "use strict";
 
 /*
