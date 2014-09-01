@@ -471,13 +471,13 @@ WYMeditor.XhtmlSaxListener.prototype.allowStylingTagsAndAttributes = function() 
 };
 
 WYMeditor.XhtmlSaxListener.prototype.isBlockTag = function(tag) {
-    return !WYMeditor.Helper.contains(this.avoided_tags, tag) &&
-            WYMeditor.Helper.contains(this.block_tags, tag);
+    return !jQuery.arrayContains(this.avoided_tags, tag) &&
+            jQuery.arrayContains(this.block_tags, tag);
 };
 
 WYMeditor.XhtmlSaxListener.prototype.isInlineTag = function(tag) {
-    return !WYMeditor.Helper.contains(this.avoided_tags, tag) &&
-            WYMeditor.Helper.contains(this.inline_tags, tag);
+    return !jQuery.arrayContains(this.avoided_tags, tag) &&
+            jQuery.arrayContains(this.inline_tags, tag);
 };
 
 WYMeditor.XhtmlSaxListener.prototype.insertContentAfterClosingTag = function(tag, content) {
@@ -640,7 +640,7 @@ WYMeditor.XhtmlSaxListener.prototype._isEditorOnlyTag = function(tag, attributes
     }
 
     classes = attributes["class"].split(" ");
-    if (WYMeditor.Helper.contains(classes, WYMeditor.EDITOR_ONLY_CLASS)) {
+    if (jQuery.arrayContains(classes, WYMeditor.EDITOR_ONLY_CLASS)) {
         return true;
     }
     return false;
@@ -660,7 +660,7 @@ WYMeditor.XhtmlSaxListener.prototype._isRootInlineTagToRemove = function(
         return false;
     }
 
-    if (WYMeditor.Helper.contains(this._rootInlineTagsToRemove, tag)) {
+    if (jQuery.arrayContains(this._rootInlineTagsToRemove, tag)) {
         return true;
     }
     return false;
