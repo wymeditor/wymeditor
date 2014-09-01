@@ -1507,17 +1507,5 @@ WYMeditor.Helper = {
             }
         }
         return false;
-    },
-
-    //return 'item' object in 'arr' array, checking its 'name' property, or null
-    findByName: function (arr, name) {
-        var i, item;
-        for (i = 0; i < arr.length; i += 1) {
-            item = arr[i];
-            if (item.name === name) {
-                return item;
-            }
-        }
-        return null;
     }
 };
