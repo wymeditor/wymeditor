@@ -3634,6 +3634,32 @@ WYMeditor.editor.prototype.initSkin = function () {
 };
 
 /**
+    WYMeditor.editor.body
+    =====================
+
+    Returns the document's body element.
+*/
+WYMeditor.editor.prototype.body = function () {
+    var wym = this,
+        body;
+
+    if (!wym._doc.body) {
+        throw "The document seems to have no body element.";
+    }
+
+    body = wym._doc.body;
+
+    if (
+        !body.tagName ||
+        body.tagName.toLowerCase() !== 'body'
+    ) {
+        throw "The document's body doesn't seem to be a `body` element.";
+    }
+
+    return body;
+};
+
+/**
     WYMEditor.editor.$body
     ======================
 
