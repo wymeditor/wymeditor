@@ -1488,11 +1488,6 @@ WYMeditor.Helper = {
         return str.replace(rExp, rep);
     },
 
-    //insert 'inserted' at position 'pos' in 'str' string
-    insertAt: function (str, inserted, pos) {
-        return str.substr(0, pos) + inserted + str.substring(pos);
-    },
-
     //return true if 'arr' array contains 'elem', or false
     contains: function (arr, elem) {
         var i;
