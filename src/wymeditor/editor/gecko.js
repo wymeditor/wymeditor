@@ -44,13 +44,6 @@ WYMeditor.WymClassGecko.prototype.rawHtml = function (html) {
             //do nothing
         }
 
-        //replace em by i and strong by bold
-        //(designMode issue)
-        html = html.replace(/<em(\b[^>]*)>/gi, "<i$1>");
-        html = html.replace(/<\/em>/gi, "</i>");
-        html = html.replace(/<strong(\b[^>]*)>/gi, "<b$1>");
-        html = html.replace(/<\/strong>/gi, "</b>");
-
         //update the html body
         jQuery(wym._doc.body).html(html);
         wym._wym.fixBodyHtml();

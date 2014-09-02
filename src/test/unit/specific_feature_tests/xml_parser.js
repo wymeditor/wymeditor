@@ -16,7 +16,7 @@ test("Empty is empty", function () {
 
     wymeditor.rawHtml('');
     // Placing the caret inside shouldn't create any content.
-    wymeditor.setCaretIn(jQuery(wymeditor._doc).find('body.wym_iframe')[0]);
+    wymeditor.setCaretIn(wymeditor.body());
     wymEqual(wymeditor, '');
 });
 
@@ -390,7 +390,7 @@ var editorOnlyInlineStartHtml = String() +
 test("Remove editor-only text container elements", function () {
     expect(TEXT_CONTAINER_ELEMENTS.length);
     var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $body = wymeditor.$body(),
         $element,
         tagName,
         i;
@@ -413,7 +413,7 @@ test("Remove editor-only text container elements", function () {
 test("Remove editor-only text inline elements", function () {
     expect(TEXT_INLINE_ELEMENTS.length);
     var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $body = wymeditor.$body(),
         $element,
         tagName,
         i;
@@ -436,7 +436,7 @@ test("Remove editor-only text inline elements", function () {
 test("Remove editor-only table", function () {
     expect(1);
     var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $body = wymeditor.$body(),
         table,
         i;
 
@@ -458,7 +458,7 @@ test("Remove editor-only table", function () {
 test("Remove editor-only lists", function () {
     expect(WYMeditor.LIST_TYPE_ELEMENTS.length);
     var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $body = wymeditor.$body(),
         listType,
         list,
         i,
@@ -484,7 +484,7 @@ test("Remove editor-only lists", function () {
 test("Remove editor-only self-closing elements", function () {
     expect(SELF_CLOSING_ELEMENTS.length);
     var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $body = wymeditor.$body(),
         $element,
         tagName,
         i;
@@ -506,7 +506,7 @@ test("Remove editor-only self-closing elements", function () {
 test("Remove editor-only element with multiple classes", function () {
     expect(1);
     var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $body = wymeditor.$body(),
         $element;
 
     wymeditor.rawHtml(editorOnlyContainerStartHtml);
@@ -526,7 +526,7 @@ test("Remove editor-only element with multiple classes", function () {
 test("Remove nested editor-only elements", function () {
     expect(1);
     var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $body = wymeditor.$body(),
         $container,
         $span,
         $strong,
@@ -627,7 +627,7 @@ var validLINesting = String() +
 test("Remove editor-only invalid UL with LI sibling before it", function () {
     expect(1);
     var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $body = wymeditor.$body(),
         expectedHtml;
 
     wymeditor.rawHtml(invalidULEndNesting);
@@ -642,7 +642,7 @@ test("Remove editor-only invalid UL with LI sibling before it", function () {
 test("Remove editor-only invalid UL that's the first child of a UL", function () {
     expect(1);
     var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $body = wymeditor.$body(),
         expectedHtml;
 
     wymeditor.rawHtml(invalidULStartNesting);
@@ -657,7 +657,7 @@ test("Remove editor-only invalid UL that's the first child of a UL", function ()
 test("Remove editor-only LI with invalid UL sibling after it", function () {
     expect(1);
     var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $body = wymeditor.$body(),
         expectedHtml;
 
     wymeditor.rawHtml(invalidULEndNesting);
@@ -673,7 +673,7 @@ test("Remove editor-only LI with invalid UL sibling after it", function () {
 test("Remove editor-only LI with invalid UL sibling before it", function () {
     expect(1);
     var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $body = wymeditor.$body(),
         expectedHtml;
 
     wymeditor.rawHtml(invalidULStartNesting);
@@ -688,7 +688,7 @@ test("Remove editor-only LI with invalid UL sibling before it", function () {
 test("Remove editor-only invalid LI nested within an LI", function () {
     expect(1);
     var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $body = wymeditor.$body(),
         expectedHtml;
 
     wymeditor.rawHtml(invalidLINesting);
@@ -703,7 +703,7 @@ test("Remove editor-only invalid LI nested within an LI", function () {
 test("Remove editor-only LI with an invalid LI nested within it", function () {
     expect(1);
     var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $body = wymeditor.$body(),
         expectedHtml;
 
     wymeditor.rawHtml(invalidLINesting);
@@ -718,7 +718,7 @@ test("Remove editor-only LI with an invalid LI nested within it", function () {
 test("Remove editor-only UL with invalid LI nesting within it", function () {
     expect(1);
     var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $body = wymeditor.$body(),
         expectedHtml;
 
     wymeditor.rawHtml(invalidLINesting);
@@ -737,7 +737,7 @@ var startSpan = '<p>Test<span>Test</span></p>';
 
 function testStyleSpan(newTag, spanStyle, assertionString) {
     var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $body = wymeditor.$body(),
         expectedHtml = startSpan.replace(/span/g, newTag);
 
     wymeditor.rawHtml(startSpan);

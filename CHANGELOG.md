@@ -13,6 +13,8 @@ WYMeditor.
   ``jQuery.copyPropsFromObjectToObject``. It copies specified properties from
   an object to another.
 * An example for the table editing plugin.
+* Two new functions that get the body of the document; one gets it as a
+  jQuery object: `WYMeditor.editor.body` and `WYMeditor.editor.$body`.
 
 ### Bug Fixes
 
@@ -31,8 +33,9 @@ WYMeditor.
 ### Backwards-Incompatible Changes
 
 * Version number scheme changed to adhere to Semantic Versioning 2.x.
-* The jQuery.browser plugin was introduced as a dependency, even for jQuery
-  versions from before its removal. That is, all jQuery version. It matters
+* The jQuery.browser plugin, a new dependency, is included in the distribution.
+  It is required for all jQuery versions; even the older ones, which still had
+  a `jQuery.browser` object included. It matters
   because the ``jQuery.browser`` that is in old jQuery versions thinks that
   IE11 is Mozilla (can’t blame it, really).
 * jQuery-migrate is no longer required at all.

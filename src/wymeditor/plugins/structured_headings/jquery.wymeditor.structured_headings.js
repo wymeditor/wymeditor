@@ -485,8 +485,7 @@ StructuredHeadingsManager.prototype.switchToHeading = function (node) {
 StructuredHeadingsManager.prototype.fixHeadingStructure = function () {
     var shm = this,
         wym = shm._wym,
-        $headings = jQuery(wym._doc).find('body.wym_iframe')
-                                    .find(shm._limitedHeadingSel),
+        $headings = wym.$body().find(shm._limitedHeadingSel),
         heading,
         headingLevel,
         prevHeadingLevel,
@@ -520,7 +519,7 @@ StructuredHeadingsManager.prototype.fixHeadingStructure = function () {
 StructuredHeadingsManager.prototype.enableIE7Polyfill = function () {
     var shm = this,
         wym = shm._wym,
-        $body = jQuery(wym._doc).find('body.wym_iframe'),
+        $body = wym.$body(),
         $containersPanelLinks = jQuery(wym._box)
             .find(wym._options.containersSelector + ' li > a'),
         prevHeadingTotal = 0,

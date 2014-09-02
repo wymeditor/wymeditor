@@ -71,6 +71,28 @@ initialized for the textarea, returns false.
     myDocument = myWym.html();
   }
 
+``body()``
+==========
+
+Returns the document's ``body`` element.
+
+Example; get the root-level nodes in the document:
+
+.. code-block:: javascript
+
+  var rootNodes = wym.body().childNodes;
+
+``$body()``
+===========
+
+Returns a jQuery object of the document's body element.
+
+Example; find first paragraph in the document:
+
+.. code-block:: javascript
+
+  var $firstP = wym.$body().children('p').first();
+
 *****************************
 Selection Setting and Getting
 *****************************

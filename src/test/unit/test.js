@@ -447,7 +447,7 @@ function testPaste(
         elmntExpectedHtml
     );
 
-    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    $body = wymeditor.$body();
 
     wymeditor._doc.body.focus();
     if (pasteStartSelector === '') {
@@ -576,7 +576,7 @@ test("Table is editable after insertion", function () {
         dm;
     wymeditor.rawHtml('');
 
-    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    $body = wymeditor.$body();
     wymeditor.setCaretIn($body[0]);
     wymeditor.insertTable(3, 2, '', '');
 
@@ -612,7 +612,7 @@ if (jQuery.browser.mozilla) {
             $body;
         wymeditor.rawHtml('');
 
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+        $body = wymeditor.$body();
         wymeditor.insertTable(3, 2, '', '');
 
         $body.find('td').each(function (index, td) {
@@ -631,7 +631,7 @@ if (jQuery.browser.mozilla) {
         expect(12);
 
         var wymeditor = jQuery.wymeditors(0),
-            $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+            $body = wymeditor.$body();
 
         wymeditor.rawHtml('');
         wymeditor.rawHtml(table_3_2_html);
@@ -686,7 +686,7 @@ function setupTable(wymeditor, html, selection, selectionType,
         idStr = 't' + caption.slice(-1);
 
     wymeditor.rawHtml(html);
-    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    $body = wymeditor.$body();
     $element = $body.find(selection);
 
     if (selectionType === 'node') {
@@ -1178,7 +1178,7 @@ test("Colspan preserved when switching from td to th", function () {
     var wymeditor = jQuery.wymeditors(0),
         $thContainerLink = jQuery(wymeditor._box)
             .find(wymeditor._options.containersSelector + ' a[name="TH"]'),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $body = wymeditor.$body(),
         $tableCell;
 
     wymeditor.rawHtml(tableWithColspanTD);
@@ -1195,7 +1195,7 @@ test("Colspan preserved when switching from th to td", function () {
     var wymeditor = jQuery.wymeditors(0),
         $thContainerLink = jQuery(wymeditor._box)
             .find(wymeditor._options.containersSelector + ' a[name="TH"]'),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $body = wymeditor.$body(),
         $tableCell;
 
     wymeditor.rawHtml(tableWithColspanTH);
@@ -1261,7 +1261,7 @@ test("_selected image is saved on mousedown", function () {
     expect(3);
 
     wymeditor.rawHtml(initHtml);
-    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    $body = wymeditor.$body();
 
     // Editor starts with no selected image. Use equal instead of deepEqual
     // because wymeditor._selectedImage intermittently changes between being
@@ -1293,7 +1293,7 @@ if (!inPhantomjs || !SKIP_KNOWN_FAILING_TESTS) {
     test("Image insertion outside of a container", function () {
         expect(3);
         var wymeditor = jQuery.wymeditors(0),
-            $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+            $body = wymeditor.$body(),
 
             imageURL = 'http://www.google.com/intl/en_com/images/srpr/logo3w.png',
             imageStamp = wymeditor.uniqueStamp(),
@@ -1339,7 +1339,7 @@ module("header-no_span", {setup: prepareUnitTestModule});
     tagName element was created within the container.
 */
 function checkTagInContainer(wymeditor, containerType, tagName, command) {
-    var $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+    var $body = wymeditor.$body(),
         $container,
 
         initHtml = String() +
@@ -1543,8 +1543,7 @@ test("Set and get collapsed selection", function () {
     wymeditor.rawHtml(selTest.setCollapsedHtml);
 
     // Save a jQuery of all of the nodes in the WYMeditor's body.
-    $allNodes = jQuery(wymeditor._doc).find('body.wym_iframe *')
-        .contents().andSelf()
+    $allNodes = wymeditor.$body().find('*')
         // excluding the WYMeditor utility elements.
         .not('.wym-editor-only');
 
@@ -1628,7 +1627,7 @@ test("Refuses 'img' elements.", function () {
     try {
         // `.switchTo` on the `img`.
         wymeditor.switchTo(
-            jQuery(wymeditor._doc).find('body.wym_iframe').find('img')[0],
+            wymeditor.$body().find('img')[0],
             'span'
         );
     }

@@ -6,22 +6,18 @@ Setting up WYMeditor
 Quick Start Instructions
 ************************
 
+.. _Include jQuery:
+
 Include jQuery
 ==============
 
-WYMeditor requires a version of jQuery between 1.3.x and 1.9.x.
-First ensure that your page includes jQuery.
+WYMeditor requires a version of jQuery between 1.4.4 and 2.1.x.
+
+Make sure that your page includes it.
 
 .. note::
 
-    If a version of jQuery at or above 1.8.0 is used,
-    WYMeditor also requires `jQuery Migrate`_.
-    Ensure that your page also includes jQuery Migrate
-    after jQuery is included.
-    For detailed instructions,
-    see :ref:`jquery-migrate`
-
-.. _`jQuery Migrate`: https://github.com/jquery/jquery-migrate/
+    With jQuery 2.x and newer, there is no support for IE8 and older.
 
 Download a Pre-built Release of WYMeditor
 =========================================
@@ -34,6 +30,31 @@ in to a folder in your project
 
 
 .. _`WYMeditor Releases Github Page`: https://github.com/wymeditor/wymeditor/releases
+
+Or install via Bower
+====================
+
+WYMeditor is available via `Bower`_.
+
+jQuery 2.x does not support IE8 and older.
+
+WYMeditor does support IE7 and IE8.
+
+WYMeditor's Bower manifest defines a range of jQuery versions as a
+dependency.
+
+The latest jQuery version in this range is the newest jQuery version that
+still supports these browsers.
+
+WYMeditor does support jQuery 2.x, with the acknowledgement that it will not
+function in IE7 and IE8.
+
+If you decide to use jQuery 2.x, please feel free to override the top limit,
+while making sure you supply a jQuery version that WYMeditor supports.
+
+See :ref:`Include jQuery` for WYMeditor's range of supported jQuery versions.
+
+.. _`Bower`: http://bower.io/
 
 Source the WYMeditor Javascript
 ===============================
@@ -194,18 +215,9 @@ and ``jquery.js``, respectively.
 For details,
 see :doc:`/customizing_wymeditor/index`.
 
-.. _jquery-migrate:
-
-****************************
-Example Using jQuery Migrate
-****************************
-
-If you're already using jQuery 1.8.x or 1.9x,
-never fear!
-You're supported via the jquery-migrate project.
-
-Just source ``jquery-migrate.min.js``
-between ``jquery`` and ``wymeditor``.
+*******
+Example
+*******
 
 .. code-block:: html
 
@@ -214,9 +226,6 @@ between ``jquery`` and ``wymeditor``.
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
             <title>WYMeditor Quickstart</title>
             <script type="text/javascript" src="jquery/jquery.js"></script>
-            <!-- Include jQuery Migrate **after** jQuery -->
-            <script type="text/javascript" src="jquery/jquery-migrate.min.js"></script>
-            <!-- But before jquery.wymeditor -->
             <script type="text/javascript" src="wymeditor/jquery.wymeditor.min.js"></script>
         </head>
         <body>

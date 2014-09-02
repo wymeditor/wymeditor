@@ -34,7 +34,7 @@ test("DIV element is correctly converted to P", function () {
     var wymeditor = jQuery.wymeditors(0),
         $pContainerLink = jQuery(wymeditor._box).find(
             wymeditor._options.containerSelector + '[name="P"]'),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $body = wymeditor.$body(),
         divToReplace;
 
     ok($pContainerLink.length,
@@ -80,7 +80,7 @@ test("P element is correctly converted to DIV", function () {
     var wymeditor = jQuery.wymeditors(0),
         $divContainerLink = jQuery(wymeditor._box).find(
             wymeditor._options.containerSelector + '[name="DIV"]'),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $body = wymeditor.$body(),
         pToReplace;
 
     ok($divContainerLink.length,
@@ -141,7 +141,7 @@ for (i = 0; i < inlineElementsToTest.length; ++i) {
 test("Text node in the document root is wrapped in default container", function () {
     expect(1);
     var wymeditor = jQuery.wymeditors(0),
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        $body = wymeditor.$body(),
         keyup_event,
         textNode;
 
@@ -164,7 +164,7 @@ test(
     function () {
         expect(inlineElementsToTest.length);
         var wymeditor = jQuery.wymeditors(0),
-            $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+            $body = wymeditor.$body(),
             keyup_event,
             inlineElement,
             i;
