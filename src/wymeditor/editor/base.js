@@ -517,7 +517,7 @@ WYMeditor.editor.prototype._bindUIEvents = function () {
             aClasses = eval(wym._options.classesItems),
             sName = jQuery(classButton).attr(WYMeditor.NAME),
 
-            oClass = WYMeditor.Helper.findByName(aClasses, sName),
+            oClass = jQuery.getFromArrayByName(aClasses, sName),
             jqexpr;
 
         if (oClass) {
