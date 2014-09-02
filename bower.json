@@ -1,6 +1,13 @@
 {
   "name": "wymeditor",
   "version": "1.0.0-beta.8+dev",
+  "keywords": [
+      "semantic",
+      "wysiwym",
+      "web",
+      "html",
+      "editor"
+  ],
   "dependencies": {
       "jquery": "1.4.4 - ~1.11.1"
   },
