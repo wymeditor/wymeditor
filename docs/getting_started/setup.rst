@@ -15,7 +15,7 @@ Make sure that your page includes it.
 
 .. note::
 
-    With jQUery 2.x and newer, there is no support for IE8 and older.
+    With jQuery 2.x and newer, there is no support for IE8 and older.
 
 Download a Pre-built Release of WYMeditor
 =========================================
