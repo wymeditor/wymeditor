@@ -3667,9 +3667,8 @@ WYMeditor.editor.prototype.body = function () {
 */
 WYMeditor.editor.prototype.$body = function () {
     var wym = this,
-        $body;
+        body;
 
-    $body = jQuery(wym._doc).find('body.wym_iframe');
-
-    return $body;
+    body = wym.body();
+    return jQuery(body);
 };
