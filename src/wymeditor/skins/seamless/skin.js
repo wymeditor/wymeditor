@@ -320,7 +320,7 @@ WYMeditor.SKINS.seamless = {
             skinOpts.resizeAfterImagesLoadTimer = null;
         }
 
-        images = jQuery(wym._doc).find('img');
+        images = wym.$body().find('img');
         imagesLength = images.length;
 
         if (imagesLength === 0) {
