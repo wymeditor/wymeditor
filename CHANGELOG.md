@@ -13,6 +13,8 @@ WYMeditor.
   ``jQuery.copyPropsFromObjectToObject``. It copies specified properties from
   an object to another.
 * An example for the table editing plugin.
+* Two new functions that get the body of the document; one gets it as a
+  jQuery object: `WYMeditor.editor.body` and `WYMeditor.editor.$body`.
 
 ### Bug Fixes
 
