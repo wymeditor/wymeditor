@@ -3632,3 +3632,18 @@ WYMeditor.editor.prototype.initSkin = function () {
         );
     }
 };
+
+/**
+    WYMEditor.editor.$body
+    ======================
+
+    Returns a jQuery object of the document's body element.
+*/
+WYMeditor.editor.prototype.$body = function () {
+    var wym = this,
+        $body;
+
+    $body = jQuery(wym._doc).find('body.wym_iframe');
+
+    return $body;
+};
