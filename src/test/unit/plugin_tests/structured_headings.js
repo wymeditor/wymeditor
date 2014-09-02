@@ -20,7 +20,7 @@ var NUMBERING_SPAN_CLASS = WYMeditor.STRUCTURED_HEADINGS_NUMBERING_SPAN_CLASS;
     normalized html of the body after the keyup event was applied.
 */
 function getHtmlAfterKeyup(wymeditor) {
-    var $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+    var $body = wymeditor.$body(),
         keyupEvent,
         bodyHtml;
 
@@ -205,7 +205,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
                         insertion.
     */
     testHeadingInsertion = function (wymeditor) {
-        var $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        var $body = wymeditor.$body(),
             $headingContainerLink = jQuery(wymeditor._box).find(
                 wymeditor.structuredHeadingsManager._options.headingContainerPanelSelector
             ),
@@ -356,7 +356,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
                              in the tests. Can be either 'text' or 'collapsed'.
     */
     testHeadingIndent = function (wymeditor, selectionType) {
-        var $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        var $body = wymeditor.$body(),
             $indentTool = jQuery(wymeditor._box).find(
                 wymeditor.structuredHeadingsManager._options.headingIndentToolSelector),
             selectionStart = 0,
@@ -395,7 +395,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
     test("Lowest heading level does not indent", function () {
         expect(2);
         var wymeditor = jQuery.wymeditors(0),
-            $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+            $body = wymeditor.$body(),
             $indentTool = jQuery(wymeditor._box).find(
                 wymeditor.structuredHeadingsManager._options.headingIndentToolSelector),
             heading;
@@ -434,7 +434,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
          "previous heading level", function () {
         expect(4);
         var wymeditor = jQuery.wymeditors(0),
-            $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+            $body = wymeditor.$body(),
             $indentTool = jQuery(wymeditor._box).find(
                 wymeditor.structuredHeadingsManager._options.headingIndentToolSelector),
             heading,
@@ -472,7 +472,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
                              in the tests. Can be either 'text' or 'collapsed'.
     */
     testHeadingOutdent = function (wymeditor, selectionType) {
-        var $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        var $body = wymeditor.$body(),
             $outdentTool = jQuery(wymeditor._box).find(
                 wymeditor.structuredHeadingsManager._options.headingOutdentToolSelector),
             selectionStart = 0,
@@ -511,7 +511,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
     test("Highest heading level does not outdent", function () {
         expect(2);
         var wymeditor = jQuery.wymeditors(0),
-            $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+            $body = wymeditor.$body(),
             $outdentTool = jQuery(wymeditor._box).find(
                 wymeditor.structuredHeadingsManager._options.headingOutdentToolSelector),
             heading;
@@ -551,7 +551,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
          "following heading level", function () {
         expect(4);
         var wymeditor = jQuery.wymeditors(0),
-            $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+            $body = wymeditor.$body(),
             $outdentTool = jQuery(wymeditor._box).find(
                 wymeditor.structuredHeadingsManager._options.headingOutdentToolSelector),
             heading,
@@ -603,7 +603,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
         wymeditor, indentOrOutdent, startHtml, correctHtml,
         startIndex, endIndex, assertionString
     ) {
-        var $body = jQuery(wymeditor._doc).find('body.wym_iframe'),
+        var $body = wymeditor.$body(),
             $tool,
             startElement,
             endElement;

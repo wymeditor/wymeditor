@@ -36,7 +36,7 @@ WYMeditor.editor.prototype.hovertools = function() {
                 // Don't use jQuery.find() on the iframe body
                 // because of MSIE + jQuery + expando issue (#JQ1143)
                 if (!WYMeditor.isInternetExplorerPre11()) {
-                    jQuery(wym._doc).find(jqexpr).css('background-color','#cfc');
+                    wym.$body().find(jqexpr).css('background-color','#cfc');
                 }
             }
         },
@@ -44,7 +44,7 @@ WYMeditor.editor.prototype.hovertools = function() {
             // Don't use jQuery.find() on the iframe body
             // because of MSIE + jQuery + expando issue (#JQ1143)
             if (!WYMeditor.isInternetExplorerPre11()) {
-                jQuery(wym._doc).find('*').removeAttr('style');
+                wym.$body().find('*').removeAttr('style');
             }
         }
     );

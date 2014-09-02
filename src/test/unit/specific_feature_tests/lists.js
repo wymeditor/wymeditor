@@ -158,7 +158,7 @@ function testGetSelectedListItems(
     }
 
     wymeditor._html(getSelectedListItemsHtml);
-    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    $body = wymeditor.$body();
 
     expect(1);
 
@@ -547,7 +547,7 @@ function testList(elmntId, action, startHtml, expectedHtml, isText, doSelection)
 
     if (doSelection) {
         wymeditor._html(startHtml);
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+        $body = wymeditor.$body();
         actionLi = $body.find('#' + elmntId)[0];
 
         if (isText === true) {
@@ -662,7 +662,7 @@ function testListMulti(
         actionButton;
     wymeditor._html(startHtml);
 
-    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    $body = wymeditor.$body();
     startLi = $body.find('#' + startElmntId)[0];
     endLi = $body.find('#' + endElmntId)[0];
 
@@ -1650,7 +1650,7 @@ test("Invalid nesting correction no spacer", function () {
         expectedHtml = invalidNestingCorrectedHtml;
 
     wymeditor._html(startHtml);
-    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    $body = wymeditor.$body();
     actionLi = $body.find('#li_4')[0];
 
     wymeditor.correctInvalidListNesting(actionLi);
@@ -1666,7 +1666,7 @@ test("Invalid nesting correction requiring spacer", function () {
         expectedHtml = invalidNestingNoPreviousCorrectedHtml;
 
     wymeditor._html(startHtml);
-    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    $body = wymeditor.$body();
     actionLi = $body.find('#li_2_2')[0];
 
     wymeditor.correctInvalidListNesting(actionLi);
@@ -2702,7 +2702,7 @@ test("Orphaned text at end of list should be inserted into the last li\
         caretLocation;
 
     jQuery(wymeditor._doc.body).html(invalidHtml);
-    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    $body = wymeditor.$body();
     caretLocation = $body.find('ul')[0];
     makeTextSelection(wymeditor, caretLocation, caretLocation, 1, 1);
     wymeditor.correctInvalidListNesting($body.find('li')[0]);
@@ -2722,7 +2722,7 @@ if (jQuery.browser.msie && jQuery.browser.version === "8.0") {
             caretLocation;
 
         jQuery(wymeditor._doc.body).html(invalidHtml);
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+        $body = wymeditor.$body();
         caretLocation = $body.find('ul')[0];
         makeTextSelection(wymeditor, caretLocation, caretLocation, 1, 1);
         simulateKey(WYMeditor.KEY.BACKSPACE, wymeditor._doc);
@@ -2775,7 +2775,7 @@ test("Tab key indents", function () {
         wymeditor = jQuery.wymeditors(0);
     wymeditor._html(initHtml);
 
-    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    $body = wymeditor.$body();
     actionElement = $body.find('#' + elmntId)[0];
 
     moveSelector(wymeditor, actionElement);
@@ -2809,7 +2809,7 @@ test("Shift+Tab outdents", function () {
         wymeditor = jQuery.wymeditors(0);
     wymeditor._html(initHtml);
 
-    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    $body = wymeditor.$body();
     actionElement = $body.find('#' + elmntId)[0];
 
     moveSelector(wymeditor, actionElement);
@@ -2830,7 +2830,7 @@ test("Tab has no effect outside lists", function () {
         wymeditor = jQuery.wymeditors(0);
     wymeditor._html(initHtml);
 
-    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    $body = wymeditor.$body();
     actionElement = $body.find('#' + elmntId)[0];
 
     moveSelector(wymeditor, actionElement);
@@ -2884,7 +2884,7 @@ function changeIndent(wymeditor, html, selStart, selEnd, inOrOut) {
     var $body;
 
     wymeditor._html(html);
-    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    $body = wymeditor.$body();
     makeTextSelection(wymeditor, $body.find(selStart)[0],
                       $body.find(selEnd)[0], 0, 1);
     if (inOrOut === "indent") {
@@ -3279,7 +3279,7 @@ function enterInEmptyLiTest(testNameSuff, expectedHtml, brokenHtmls) {
     test(testName, function () {
         expect(brokenHtmls.length * 4);
         wymeditor = jQuery.wymeditors(0);
-        $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+        $body = wymeditor.$body();
 
         for (i = 0; i < brokenHtmls.length; i++) {
             assertStr = 'Broken HTML variation ' + (i + 1) + ' of ' +
@@ -3531,7 +3531,7 @@ test("Invalid list nesting", function () {
             (invalidNestingAfterEnterInEmptyLi.length) + '; ';
 
         wymeditor._html(invalidNestingAfterEnterInEmptyLi[i].broken);
-        newLi = jQuery(wymeditor._doc).find('body.wym_iframe').find('#new')[0];
+        newLi = wymeditor.$body().find('#new')[0];
         wymeditor.setCaretIn(newLi);
         simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
 
@@ -3750,7 +3750,7 @@ function testLiInLiAfterEnter(htmls) {
     broken = htmls.broken;
     startHtml = htmls.startHtml;
     fixed = htmls.fixed;
-    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    $body = wymeditor.$body();
 
     // `broken` is the HTML that we want to start with. When we tried inserting
     // that into the editor, the resulting DOM wasn't as expected.
@@ -4688,7 +4688,7 @@ test("De-listing keeps spacer brs for blocking_elements", function () {
         consecutiveTablesDelist.li_0
     );
     // Now we need to verify that the spacer brs still exist in the DOM
-    $body = jQuery(wymeditor._doc).find('body.wym_iframe');
+    $body = wymeditor.$body();
     children = $body.children();
 
     if (is_double_br_browser) {

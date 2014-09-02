@@ -500,7 +500,7 @@ WYMeditor.editor.prototype._bindUIEvents = function () {
     $html_val = jQuery(wym._box).find(wym._options.htmlValSelector);
     $html_val.keyup(function () {
         var valTextarea = this;
-        jQuery(wym._doc.body).html(jQuery(valTextarea).val());
+        wym.$body().html(jQuery(valTextarea).val());
     });
     $html_val.focus(function () {
         var valTextarea = this;
@@ -559,10 +559,10 @@ WYMeditor.editor.prototype.box = function () {
 WYMeditor.editor.prototype._html = function (html) {
     var wym = this;
     if (typeof html === 'string') {
-        jQuery(wym._doc.body).html(html);
+        wym.$body().html(html);
         wym.update();
     } else {
-        return jQuery(wym._doc.body).html();
+        return wym.$body().html();
     }
 };
 
@@ -1393,7 +1393,7 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
     var wym = this,
         blockingSelector =
             WYMeditor.DocumentStructureManager.CONTAINERS_BLOCKING_NAVIGATION.join(', '),
-        $body = jQuery(wym._doc).find('body.wym_iframe'),
+        $body = wym.$body(),
         children = $body.children(),
 
         placeholderNode,
@@ -1560,7 +1560,7 @@ WYMeditor.editor.prototype._getBlockInListSepSelector = function () {
 */
 WYMeditor.editor.prototype.fixDoubleBr = function () {
     var wym = this,
-        $body = jQuery(wym._doc).find('body.wym_iframe'),
+        $body = wym.$body(),
         $last_br;
 
     // Strip consecutive brs unless they're in a pre tag
@@ -3465,7 +3465,7 @@ WYMeditor.editor.prototype._removeItemsFromList = function ($listItems) {
         }
         // `br`s may have been transferred to the root container. They don't
         // belong there.
-        jQuery(wym._doc).find('body.wym_iframe').children('br').remove();
+        wym.$body().children('br').remove();
 
         if ($listItem[0].tagName.toLowerCase() === 'span') {
             // Get rid of empty `span`s and ones that contain only `br`s.
@@ -3573,7 +3573,7 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
 
     if (!container || !container.parentNode) {
         // No valid selected container. Put the table at the end.
-        jQuery(wym._doc.body).append(table);
+        wym.$body().append(table);
 
     } else if (jQuery.inArray(container.nodeName.toLowerCase(),
                        WYMeditor.INLINE_TABLE_INSERTION_ELEMENTS) > -1) {
@@ -3632,7 +3632,7 @@ WYMeditor.editor.prototype.listen = function () {
     // Don't use jQuery.find() on the iframe body
     // because of MSIE + jQuery + expando issue (#JQ1143)
 
-    jQuery(wym._doc.body).bind("mousedown", function (e) {
+    wym.$body().bind("mousedown", function (e) {
         wym.mousedown(e);
     });
 
@@ -3689,4 +3689,44 @@ WYMeditor.editor.prototype.initSkin = function () {
             "Chosen skin _" + wym.options.skin + "_ not found."
         );
     }
+};
+
+/**
+    WYMeditor.editor.body
+    =====================
+
+    Returns the document's body element.
+*/
+WYMeditor.editor.prototype.body = function () {
+    var wym = this,
+        body;
+
+    if (!wym._doc.body) {
+        throw "The document seems to have no body element.";
+    }
+
+    body = wym._doc.body;
+
+    if (
+        !body.tagName ||
+        body.tagName.toLowerCase() !== 'body'
+    ) {
+        throw "The document's body doesn't seem to be a `body` element.";
+    }
+
+    return body;
+};
+
+/**
+    WYMEditor.editor.$body
+    ======================
+
+    Returns a jQuery object of the document's body element.
+*/
+WYMeditor.editor.prototype.$body = function () {
+    var wym = this,
+        body;
+
+    body = wym.body();
+    return jQuery(body);
 };
