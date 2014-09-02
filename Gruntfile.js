@@ -206,6 +206,7 @@ module.exports = function (grunt) {
         concat: {
             dist: {
                 src: [
+                    "<%= yeoman.app %>/lib/jquery.browser.js",
                     "<%= yeoman.app %>/wymeditor/core.js",
                     "<%= yeoman.app %>/wymeditor/editor/base.js",
                     "<%= yeoman.app %>/wymeditor/editor/" +
@@ -217,7 +218,9 @@ module.exports = function (grunt) {
                     "<%= yeoman.app %>/wymeditor/parser/*.js",
                     // TODO: For custom builds, will need to change this.
                     "<%= yeoman.app %>/wymeditor/lang/*.js",
-                    "<%= yeoman.app %>/wymeditor/rangy/*.js",
+                    "<%= yeoman.app %>/wymeditor/rangy/rangy-core.js",
+                    "<%= yeoman.app %>/wymeditor/rangy/" +
+                        "rangy-selectionsaverestore.js",
                     // TODO: For custom builds, will need to change this.
                     '<%= yeoman.app %>/wymeditor/skins/{,*/}skin.js'
                 ],

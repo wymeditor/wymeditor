@@ -28,7 +28,7 @@ WYMeditor.SKINS.compact = {
                 postInit.call(wym, wym);
             }
 
-            jQuery(wym._doc.body).css('background-color', '#f0f0f0');
+            wym.$body().css('background-color', '#f0f0f0');
         };
     }
 };
