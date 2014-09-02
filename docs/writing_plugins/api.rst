@@ -68,6 +68,17 @@ initialized for the textarea, returns false.
     myDocument = myWym.xhtml();
   }
 
+``body()``
+==========
+
+Returns the document's ``body`` element.
+
+Example; get the root-level nodes in the document:
+
+.. code-block:: javascript
+
+  var rootNodes = wym.body().childNodes;
+
 ``$body()``
 ===========
 
