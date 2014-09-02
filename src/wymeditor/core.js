@@ -1482,12 +1482,6 @@ WYMeditor.changeNodeType = function (node, newTag) {
 
 WYMeditor.Helper = {
 
-    //replace all instances of 'old' by 'rep' in 'str' string
-    replaceAll: function (str, old, rep) {
-        var rExp = new RegExp(old, "g");
-        return str.replace(rExp, rep);
-    },
-
     //return true if 'arr' array contains 'elem', or false
     contains: function (arr, elem) {
         var i;

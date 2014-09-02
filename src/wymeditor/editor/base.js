@@ -16,7 +16,6 @@ WYMeditor.editor.prototype._init = function () {
         WymClass = false,
         SaxListener,
         prop,
-        h,
         iframeHtml,
         boxHtml,
         aTools,
@@ -94,12 +93,14 @@ WYMeditor.editor.prototype._init = function () {
         jQuery.data(wym._element.get(0), WYMeditor.WYM_INDEX, wym._index);
     }
 
-    h = WYMeditor.Helper;
-
     // Construct the iframe
     iframeHtml = wym._options.iframeHtml;
-    iframeHtml = h.replaceAll(iframeHtml, WYMeditor.INDEX, wym._index);
-    iframeHtml = h.replaceAll(
+    iframeHtml = jQuery.replaceAllInStr(
+        iframeHtml,
+        WYMeditor.INDEX,
+        wym._index
+    );
+    iframeHtml = jQuery.replaceAllInStr(
         iframeHtml,
         WYMeditor.IFRAME_BASE_PATH,
         wym._options.iframeBasePath
@@ -108,13 +109,41 @@ WYMeditor.editor.prototype._init = function () {
     // Construct wymbox
     boxHtml = jQuery(wym._box).html();
 
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.LOGO, wym._options.logoHtml);
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.TOOLS, wym._options.toolsHtml);
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.CONTAINERS, wym._options.containersHtml);
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.CLASSES, wym._options.classesHtml);
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.HTML, wym._options.htmlHtml);
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.IFRAME, iframeHtml);
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.STATUS, wym._options.statusHtml);
+    boxHtml = jQuery.replaceAllInStr(
+        boxHtml,
+        WYMeditor.LOGO,
+        wym._options.logoHtml
+    );
+    boxHtml = jQuery.replaceAllInStr(
+        boxHtml,
+        WYMeditor.TOOLS,
+        wym._options.toolsHtml
+    );
+    boxHtml = jQuery.replaceAllInStr(
+        boxHtml,
+        WYMeditor.CONTAINERS,
+        wym._options.containersHtml
+    );
+    boxHtml = jQuery.replaceAllInStr(
+        boxHtml,
+        WYMeditor.CLASSES,
+        wym._options.classesHtml
+    );
+    boxHtml = jQuery.replaceAllInStr(
+        boxHtml,
+        WYMeditor.HTML,
+        wym._options.htmlHtml
+    );
+    boxHtml = jQuery.replaceAllInStr(
+        boxHtml,
+        WYMeditor.IFRAME,
+        iframeHtml
+    );
+    boxHtml = jQuery.replaceAllInStr(
+        boxHtml,
+        WYMeditor.STATUS,
+        wym._options.statusHtml
+    );
 
     // Construct the tools list
     aTools = eval(wym._options.toolsItems);
@@ -126,17 +155,28 @@ WYMeditor.editor.prototype._init = function () {
         if (oTool.name && oTool.title) {
             sTool = wym._options.toolsItemHtml;
         }
-        sTool = h.replaceAll(sTool, WYMeditor.TOOL_NAME, oTool.name);
-        sTool = h.replaceAll(
+        sTool = jQuery.replaceAllInStr(
+            sTool,
+            WYMeditor.TOOL_NAME,
+            oTool.name);
+        sTool = jQuery.replaceAllInStr(
             sTool,
             WYMeditor.TOOL_TITLE,
             wym._options.stringDelimiterLeft + oTool.title + wym._options.stringDelimiterRight
         );
-        sTool = h.replaceAll(sTool, WYMeditor.TOOL_CLASS, oTool.css);
+        sTool = jQuery.replaceAllInStr(
+            sTool,
+            WYMeditor.TOOL_CLASS,
+            oTool.css
+        );
         sTools += sTool;
     }
 
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.TOOLS_ITEMS, sTools);
+    boxHtml = jQuery.replaceAllInStr(
+        boxHtml,
+        WYMeditor.TOOLS_ITEMS,
+        sTools
+    );
 
     // Construct the classes list
     aClasses = eval(wym._options.classesItems);
@@ -148,12 +188,24 @@ WYMeditor.editor.prototype._init = function () {
         if (oClass.name && oClass.title) {
             sClass = wym._options.classesItemHtml;
         }
-        sClass = h.replaceAll(sClass, WYMeditor.CLASS_NAME, oClass.name);
-        sClass = h.replaceAll(sClass, WYMeditor.CLASS_TITLE, oClass.title);
+        sClass = jQuery.replaceAllInStr(
+            sClass,
+            WYMeditor.CLASS_NAME,
+            oClass.name
+        );
+        sClass = jQuery.replaceAllInStr(
+            sClass,
+            WYMeditor.CLASS_TITLE,
+            oClass.title
+        );
         sClasses += sClass;
     }
 
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.CLASSES_ITEMS, sClasses);
+    boxHtml = jQuery.replaceAllInStr(
+        boxHtml,
+        WYMeditor.CLASSES_ITEMS,
+        sClasses
+    );
 
     // Construct the containers list
     aContainers = eval(wym._options.containersItems);
@@ -165,16 +217,19 @@ WYMeditor.editor.prototype._init = function () {
         if (oContainer.name && oContainer.title) {
             sContainer = wym._options.containersItemHtml;
         }
-        sContainer = h.replaceAll(
+        sContainer = jQuery.replaceAllInStr(
             sContainer,
             WYMeditor.CONTAINER_NAME,
             oContainer.name
         );
-        sContainer = h.replaceAll(sContainer, WYMeditor.CONTAINER_TITLE,
+        sContainer = jQuery.replaceAllInStr(
+            sContainer,
+            WYMeditor.CONTAINER_TITLE,
             wym._options.stringDelimiterLeft +
             oContainer.title +
-            wym._options.stringDelimiterRight);
-        sContainer = h.replaceAll(
+            wym._options.stringDelimiterRight
+        );
+        sContainer = jQuery.replaceAllInStr(
             sContainer,
             WYMeditor.CONTAINER_CLASS,
             oContainer.css
@@ -182,7 +237,11 @@ WYMeditor.editor.prototype._init = function () {
         sContainers += sContainer;
     }
 
-    boxHtml = h.replaceAll(boxHtml, WYMeditor.CONTAINERS_ITEMS, sContainers);
+    boxHtml = jQuery.replaceAllInStr(
+        boxHtml,
+        WYMeditor.CONTAINERS_ITEMS,
+        sContainers
+    );
 
     // I10n
     boxHtml = wym.replaceStrings(boxHtml);
@@ -1260,7 +1319,7 @@ WYMeditor.editor.prototype.replaceStrings = function (sVal) {
     // Replace all the strings in sVal and return it
     for (key in WYMeditor.STRINGS[wym._options.lang]) {
         if (WYMeditor.STRINGS[wym._options.lang].hasOwnProperty(key)) {
-            sVal = WYMeditor.Helper.replaceAll(
+            sVal = jQuery.replaceAllInStr(
                 sVal,
                 wym._options.stringDelimiterLeft + key + wym._options.stringDelimiterRight,
                 WYMeditor.STRINGS[wym._options.lang][key]
@@ -1530,7 +1589,6 @@ WYMeditor.editor.prototype.dialog = function (dialogType, dialogFeatures, bodyHt
         features = dialogFeatures || wym._options.dialogFeatures,
         wDialog = window.open('', 'dialog', features),
         sBodyHtml,
-        h = WYMeditor.Helper,
         dialogHtml,
         doc;
 
@@ -1561,37 +1619,37 @@ WYMeditor.editor.prototype.dialog = function (dialogType, dialogFeatures, bodyHt
 
         // Construct the dialog
         dialogHtml = wym._options.dialogHtml;
-        dialogHtml = h.replaceAll(
+        dialogHtml = jQuery.replaceAllInStr(
             dialogHtml,
             WYMeditor.BASE_PATH,
             wym._options.basePath
         );
-        dialogHtml = h.replaceAll(
+        dialogHtml = jQuery.replaceAllInStr(
             dialogHtml,
             WYMeditor.DIRECTION,
             wym._options.direction
         );
-        dialogHtml = h.replaceAll(
+        dialogHtml = jQuery.replaceAllInStr(
             dialogHtml,
             WYMeditor.WYM_PATH,
             wym._options.wymPath
         );
-        dialogHtml = h.replaceAll(
+        dialogHtml = jQuery.replaceAllInStr(
             dialogHtml,
             WYMeditor.JQUERY_PATH,
             wym._options.jQueryPath
         );
-        dialogHtml = h.replaceAll(
+        dialogHtml = jQuery.replaceAllInStr(
             dialogHtml,
             WYMeditor.DIALOG_TITLE,
             wym.encloseString(dialogType)
         );
-        dialogHtml = h.replaceAll(
+        dialogHtml = jQuery.replaceAllInStr(
             dialogHtml,
             WYMeditor.DIALOG_BODY,
             sBodyHtml
         );
-        dialogHtml = h.replaceAll(
+        dialogHtml = jQuery.replaceAllInStr(
             dialogHtml,
             WYMeditor.INDEX,
             wym._index
