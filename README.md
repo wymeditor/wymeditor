@@ -67,8 +67,6 @@ WYMeditor can do.
     <input type="submit" class="wymupdate" />
     ```
 
-6. ???
-
 7. Profit!
 
 More examples with different plugins and configuration options can be found in
