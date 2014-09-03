@@ -468,13 +468,19 @@ WYMeditor.editor.prototype._bindUIEvents = function () {
         return false;
     });
 
-    // Handle update event on update element
-    jQuery(wym._options.updateSelector).bind(
-        wym._options.updateEvent,
-        function () {
+    if(wym._options.autoUpdate) {
+        // If a document is structured properly, there should be no need to
+        // traverse further up the chain than the nearest parent 'form'
+        var sel = jQuery(wym._doc).parents('form');
+        WYMeditor.on(sel, wym._options.autoUpdateEvent, function() {
             wym.update();
-        }
-    );
+        });
+    } else {
+        // Handle update event on update element
+        WYMeditor.on(wym._options.updateSelector, wym._options.updateEvent, function() {
+            wym.update();
+        });
+    }
 };
 
 /**

@@ -574,6 +574,7 @@ jQuery.fn.wymeditor = function (options) {
         lang:       "en",
         direction:  "ltr",
         customCommands: [],
+        autoUpdate: true,
 
         // These values will override the default for their respective
         // `DocumentStructureManager.structureRules`
@@ -808,8 +809,11 @@ jQuery.fn.wymeditor = function (options) {
         dialogPasteSelector:   ".wym_dialog_paste",
         dialogPreviewSelector: ".wym_dialog_preview",
 
-        updateSelector:    ".wymupdate",
+        updateSelector:    "[data-wym-update]",
         updateEvent:       "click",
+
+        // there is no autoUpdateSelector since it just looks for the parent form
+        autoUpdateEvent:       "submit",
 
         dialogFeatures:    "menubar=no,titlebar=no,toolbar=no,resizable=no" +
             ",width=560,height=300,top=0,left=0",
@@ -1445,6 +1449,16 @@ jQuery.fn.parentsOrSelf = function (jqexpr) {
     } else {
         return $n.parents()[addBackName]();
     }
+};
+
+WYMeditor.on = function(sel, e, cb) {
+    if( typeof jQuery.prototype.on === "function") {
+        return jQuery(sel).on(e, cb);
+    }
+    else {
+        return jQuery(sel).bind(e, cb);
+    }
+
 };
 
 /*
