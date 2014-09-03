@@ -925,7 +925,8 @@ WYMeditor.editor.prototype.unwrapIfMeaninglessSpan = function (element) {
             '',
             undefined,
             false,
-            null
+            null,
+            'null'
         ];
 
     if (!element || typeof (element.tagName) === 'undefined' ||
