@@ -107,15 +107,15 @@ different files:
 * ``_config.yml`` in three different lines near the end
 * ``README.md`` at the second step in "Quick Start"
 
-By modifying "version string", in the following instructions, it is meant that
-the version strings be modified in all of these files.
+Throughout these instructions, when asked to modify the version string, it is
+meant that the version strings be modified in all of these files.
 
-#. Remove the ``dev`` build metadata from the version string.
-   Also, remove the ``+`` because there is no more build metadata.
+Remove the ``dev`` build metadata from the version string.
+Also, remove the ``+`` because there is no more build metadata.
 
-   While you're doing that, make sure that the version strings are otherwise correct.
+While you're doing that, make sure that the version strings are otherwise correct.
 
-   They should be already the version that you mean to release.
+They should be already the version that you mean to release.
 
 Update the changelog
 ^^^^^^^^^^^^^^^^^^^^
