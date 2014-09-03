@@ -150,6 +150,11 @@ Build WYMeditor
    This will make the checked–in build at ``dist/`` representitive of the
    source code.
 
+#. Check that examples work when served from ``dist/`` by using ``grunt
+   server:dist``.
+
+#. Commit the changes in ``dist/``.
+
 Ship it!
 ^^^^^^^^
 
