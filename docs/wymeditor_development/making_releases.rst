@@ -158,13 +158,11 @@ Build WYMeditor
 Ship it!
 ^^^^^^^^
 
-#. In Git, tag the current version
-   and push the tag to the project's repository.
-
 #. Look joyously at the `current releases`.
 
-#. Publish the tag as a new release with:
+#. Publish a new release from the master branch with:
 
+   * The version string as the tag that will be created
    * The change–log for this release (not the entire contents of the change–log
      file) as the description
    * The WYMeditor build, ``wymeditor-<version>.tag.gz``, as an attached binary
