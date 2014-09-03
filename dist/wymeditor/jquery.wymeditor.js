@@ -1,12 +1,124 @@
+/*!
+ * jQuery Browser Plugin v0.0.6
+ * https://github.com/gabceb/jquery-browser-plugin
+ *
+ * Original jquery-browser code Copyright 2005, 2013 jQuery Foundation, Inc. and other contributors
+ * http://jquery.org/license
+ *
+ * Modifications Copyright 2013 Gabriel Cebrian
+ * https://github.com/gabceb
+ *
+ * Released under the MIT license
+ *
+ * Date: 2013-07-29T17:23:27-07:00
+ */
+
+(function( jQuery, window, undefined ) {
+  "use strict";
+
+  var matched, browser;
+
+  jQuery.uaMatch = function( ua ) {
+    ua = ua.toLowerCase();
+
+  	var match = /(opr)[\/]([\w.]+)/.exec( ua ) ||
+  		/(chrome)[ \/]([\w.]+)/.exec( ua ) ||
+  		/(version)[ \/]([\w.]+).*(safari)[ \/]([\w.]+)/.exec( ua ) ||
+  		/(webkit)[ \/]([\w.]+)/.exec( ua ) ||
+  		/(opera)(?:.*version|)[ \/]([\w.]+)/.exec( ua ) ||
+  		/(msie) ([\w.]+)/.exec( ua ) ||
+  		ua.indexOf("trident") >= 0 && /(rv)(?::| )([\w.]+)/.exec( ua ) ||
+  		ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec( ua ) ||
+  		[];
+
+  	var platform_match = /(ipad)/.exec( ua ) ||
+  		/(iphone)/.exec( ua ) ||
+  		/(android)/.exec( ua ) ||
+  		/(windows phone)/.exec( ua ) ||
+  		/(win)/.exec( ua ) ||
+  		/(mac)/.exec( ua ) ||
+  		/(linux)/.exec( ua ) ||
+  		/(cros)/i.exec( ua ) ||
+  		[];
+
+  	return {
+  		browser: match[ 3 ] || match[ 1 ] || "",
+  		version: match[ 2 ] || "0",
+  		platform: platform_match[ 0 ] || ""
+  	};
+  };
+
+  matched = jQuery.uaMatch( window.navigator.userAgent );
+  browser = {};
+
+  if ( matched.browser ) {
+  	browser[ matched.browser ] = true;
+  	browser.version = matched.version;
+  	browser.versionNumber = parseInt(matched.version);
+  }
+
+  if ( matched.platform ) {
+  	browser[ matched.platform ] = true;
+  }
+
+  // These are all considered mobile platforms, meaning they run a mobile browser
+  if ( browser.android || browser.ipad || browser.iphone || browser[ "windows phone" ] ) {
+  	browser.mobile = true;
+  }
+
+  // These are all considered desktop platforms, meaning they run a desktop browser
+  if ( browser.cros || browser.mac || browser.linux || browser.win ) {
+  	browser.desktop = true;
+  }
+
+  // Chrome, Opera 15+ and Safari are webkit based browsers
+  if ( browser.chrome || browser.opr || browser.safari ) {
+  	browser.webkit = true;
+  }
+
+  // IE11 has a new token so we will assign it msie to avoid breaking changes
+  if ( browser.rv )
+  {
+  	var ie = "msie";
+
+  	matched.browser = ie;
+  	browser[ie] = true;
+  }
+
+  // Opera 15+ are identified as opr
+  if ( browser.opr )
+  {
+  	var opera = "opera";
+
+  	matched.browser = opera;
+  	browser[opera] = true;
+  }
+
+  // Stock Android browsers are marked as Safari on Android.
+  if ( browser.safari && browser.android )
+  {
+  	var android = "android";
+
+  	matched.browser = android;
+  	browser[android] = true;
+  }
+
+  // Assign the name and platform variable
+  browser.name = matched.browser;
+  browser.platform = matched.platform;
+
+
+  jQuery.browser = browser;
+})( jQuery, window );
 /* jshint strict: false, maxlen: 90, evil: true */
 /* global -$, WYMeditor: true, console */
 
-/*@version 1.0.0-b7 */
+/*@version 1.0.0-beta.8 */
 /**
     WYMeditor
     =========
 
-    version 1.0.0-b7
+    version 1.0.0-beta.8
 
     WYMeditor : what you see is What You Mean web-based editor
 
@@ -220,7 +332,7 @@ jQuery.extend(WYMeditor, {
     TR                  : "tr",
     UL                  : "ul",
     UNLINK              : "Unlink",
-    VERSION             : "1.0.0-b7",
+    VERSION             : "1.0.0-beta.8",
     WYM_INDEX           : "wym_index",
     WYM_PATH            : "{Wym_Wym_Path}",
 
@@ -517,26 +629,31 @@ jQuery.extend(WYMeditor, {
 
     */
     editor : function (elem, options) {
+        if (jQuery.getWymeditorByTextarea(elem[0])) {
+            throw "It seems that this textarea already belongs to a " +
+                "WYMeditor instance.";
+        }
+        var wym = this;
         // Store the instance in the INSTANCES array and store the index
-        this._index = WYMeditor.INSTANCES.push(this) - 1;
+        wym._index = WYMeditor.INSTANCES.push(wym) - 1;
         // The element replaced by the editor
-        this._element = elem;
-        this._options = options;
+        wym._element = elem;
+        wym._options = options;
         // Path to the WYMeditor core
-        this._options.wymPath = this._options.wymPath ||
+        wym._options.wymPath = wym._options.wymPath ||
             WYMeditor.computeWymPath();
         // Path to the main JS files
-        this._options.basePath = this._options.basePath ||
-            WYMeditor.computeBasePath(this._options.wymPath);
+        wym._options.basePath = wym._options.basePath ||
+            WYMeditor.computeBasePath(wym._options.wymPath);
         // Path to jQuery (for loading in pop-up dialogs)
-        this._options.jQueryPath = this._options.jQueryPath ||
+        wym._options.jQueryPath = wym._options.jQueryPath ||
             WYMeditor.computeJqueryPath();
         // The designmode iframe's base path
-        this._options.iframeBasePath = this._options.iframeBasePath ||
-            this._options.basePath + WYMeditor.IFRAME_DEFAULT;
+        wym._options.iframeBasePath = wym._options.iframeBasePath ||
+            wym._options.basePath + WYMeditor.IFRAME_DEFAULT;
 
         // Initialize the editor instance
-        this.init();
+        wym._init();
     }
 });
 
@@ -556,6 +673,7 @@ jQuery.extend(WYMeditor, {
     `jQuery(".wymeditor").wymeditor({});`
 */
 jQuery.fn.wymeditor = function (options) {
+    var $textareas = this;
 
     options = jQuery.extend({
 
@@ -622,28 +740,91 @@ jQuery.fn.wymeditor = function (options) {
             '</li>',
 
         toolsItems: [
-            {'name': 'Bold', 'title': 'Strong', 'css': 'wym_tools_strong'},
-            {'name': 'Italic', 'title': 'Emphasis', 'css': 'wym_tools_emphasis'},
-            {'name': 'Superscript', 'title': 'Superscript',
-                'css': 'wym_tools_superscript'},
-            {'name': 'Subscript', 'title': 'Subscript',
-                'css': 'wym_tools_subscript'},
-            {'name': 'InsertOrderedList', 'title': 'Ordered_List',
-                'css': 'wym_tools_ordered_list'},
-            {'name': 'InsertUnorderedList', 'title': 'Unordered_List',
-                'css': 'wym_tools_unordered_list'},
-            {'name': 'Indent', 'title': 'Indent', 'css': 'wym_tools_indent'},
-            {'name': 'Outdent', 'title': 'Outdent', 'css': 'wym_tools_outdent'},
-            {'name': 'Undo', 'title': 'Undo', 'css': 'wym_tools_undo'},
-            {'name': 'Redo', 'title': 'Redo', 'css': 'wym_tools_redo'},
-            {'name': 'CreateLink', 'title': 'Link', 'css': 'wym_tools_link'},
-            {'name': 'Unlink', 'title': 'Unlink', 'css': 'wym_tools_unlink'},
-            {'name': 'InsertImage', 'title': 'Image', 'css': 'wym_tools_image'},
-            {'name': 'InsertTable', 'title': 'Table', 'css': 'wym_tools_table'},
-            {'name': 'Paste', 'title': 'Paste_From_Word',
-                'css': 'wym_tools_paste'},
-            {'name': 'ToggleHtml', 'title': 'HTML', 'css': 'wym_tools_html'},
-            {'name': 'Preview', 'title': 'Preview', 'css': 'wym_tools_preview'}
+            {
+                'name': 'Bold',
+                'title': 'Strong',
+                'css': 'wym_tools_strong'
+            },
+            {
+                'name': 'Italic',
+                'title': 'Emphasis',
+                'css': 'wym_tools_emphasis'
+            },
+            {
+                'name': 'Superscript',
+                'title': 'Superscript',
+                'css': 'wym_tools_superscript'
+            },
+            {
+                'name': 'Subscript',
+                'title': 'Subscript',
+                'css': 'wym_tools_subscript'
+            },
+            {
+                'name': 'InsertOrderedList',
+                'title': 'Ordered_List',
+                'css': 'wym_tools_ordered_list'
+            },
+            {
+                'name': 'InsertUnorderedList',
+                'title': 'Unordered_List',
+                'css': 'wym_tools_unordered_list'
+            },
+            {
+                'name': 'Indent',
+                'title': 'Indent',
+                'css': 'wym_tools_indent'
+            },
+            {
+                'name': 'Outdent',
+                'title': 'Outdent',
+                'css': 'wym_tools_outdent'
+            },
+            {
+                'name': 'Undo',
+                'title': 'Undo',
+                'css': 'wym_tools_undo'
+            },
+            {
+                'name': 'Redo',
+                'title': 'Redo',
+                'css': 'wym_tools_redo'
+            },
+            {
+                'name': 'CreateLink',
+                'title': 'Link',
+                'css': 'wym_tools_link wym_opens_dialog'
+            },
+            {
+                'name': 'Unlink',
+                'title': 'Unlink',
+                'css': 'wym_tools_unlink'
+            },
+            {
+                'name': 'InsertImage',
+                'title': 'Image',
+                'css': 'wym_tools_image wym_opens_dialog'
+            },
+            {
+                'name': 'InsertTable',
+                'title': 'Table',
+                'css': 'wym_tools_table wym_opens_dialog'
+            },
+            {
+                'name': 'Paste',
+                'title': 'Paste_From_Word',
+                'css': 'wym_tools_paste wym_opens_dialog'
+            },
+            {
+                'name': 'ToggleHtml',
+                'title': 'HTML',
+                'css': 'wym_tools_html'
+            },
+            {
+                'name': 'Preview',
+                'title': 'Preview',
+                'css': 'wym_tools_preview wym_opens_dialog'
+            }
         ],
 
         containersHtml: String() +
@@ -899,11 +1080,12 @@ jQuery.fn.wymeditor = function (options) {
 
     }, options);
 
-    return this.each(function () {
-        // Assigning to _editor because the return value from new isn't
+    return $textareas.each(function () {
+        var textarea = this;
+        // Assigning to _wym because the return value from new isn't
         // actually used, but we need to use new to properly change the
         // prototype
-        this._wym = new WYMeditor.editor(jQuery(this), options);
+        textarea._wym = new WYMeditor.editor(jQuery(textarea), options);
     });
 };
 
@@ -913,6 +1095,89 @@ jQuery.extend({
         return WYMeditor.INSTANCES[i];
     }
 });
+
+jQuery.extend({
+    getWymeditorByTextarea: function (textarea) {
+        var i;
+        if (
+            !(
+                textarea &&
+                textarea.tagName &&
+                textarea.tagName.toLowerCase() === 'textarea'
+            )
+        ) {
+            throw "jQuery.getWymeditorByTextarea requires a textarea element.";
+        }
+        for (i = 0; i < WYMeditor.INSTANCES.length; i++) {
+            if (textarea === WYMeditor.INSTANCES[i]._element[0]) {
+                return WYMeditor.INSTANCES[i];
+            }
+        }
+        return false;
+    }
+});
+
+/**
+    jQuery.copyPropsFromObjectToObject
+    =====================================
+
+    General helper function that copies specified list of properties from a
+    specified origin object to a specified target object.
+
+    @param origin The origin object.
+    @param target The target object.
+    @param propNames An array of strings, representing the properties to copy.
+*/
+jQuery.extend({
+    copyPropsFromObjectToObject: function (origin, target, propNames) {
+        var i,
+            propName,
+            prop,
+            props = {};
+
+        for (i = 0; i < propNames.length; i++) {
+            propName = propNames[i];
+            prop = origin[propName];
+            props[propName] = prop;
+        }
+
+        jQuery.extend(target, props);
+    }
+});
+
+/**
+    WYMeditor.isInternetExplorerPre11
+    =================================
+
+    Returns true if the current browser is an Internet Explorer version
+    previous to 11. Otherwise, returns false.
+*/
+WYMeditor.isInternetExplorerPre11 = function () {
+    if (
+        jQuery.browser.msie &&
+        jQuery.browser.versionNumber < 11
+    ) {
+        return true;
+    }
+    return false;
+};
+
+/**
+    WYMeditor.isInternetExplorer11OrNewer
+    =====================================
+
+    Returns true if the current browser is an Internet Explorer version 11 or
+    newer. Otherwise, returns false.
+*/
+WYMeditor.isInternetExplorer11OrNewer = function () {
+    if (
+        jQuery.browser.msie &&
+        jQuery.browser.versionNumber >= 11
+    ) {
+        return true;
+    }
+    return false;
+};
 
 /**
     WYMeditor.computeWymPath
@@ -1017,6 +1282,10 @@ WYMeditor.INIT_DIALOG = function (index) {
         dialogType = jQuery(wym._options.dialogTypeSelector).val(),
         sStamp = wym.uniqueStamp(),
         tableOnClick;
+
+    jQuery(window).bind('beforeunload', function () {
+        wym.focusOnDocument();
+    });
 
     if (dialogType === WYMeditor.DIALOG_LINK) {
         // ensure that we select the link to populate the fields
@@ -1145,8 +1414,9 @@ WYMeditor.MAKE_TABLE_ONCLICK = function (wym) {
 
 // Returns true if it is a text node with whitespaces only
 jQuery.fn.isPhantomNode = function () {
-    if (this[0].nodeType === WYMeditor.NODE.TEXT) {
-        return !(/[^\t\n\r ]/.test(this[0].data));
+    var $nodes = this;
+    if ($nodes[0].nodeType === WYMeditor.NODE.TEXT) {
+        return !(/[^\t\n\r ]/.test($nodes[0].data));
     }
 
     return false;
@@ -1160,9 +1430,10 @@ jQuery.fn.isPhantomNode = function () {
     works on the first element in the given jQuery collection..
 */
 jQuery.fn.nextContentsUntil = function (selector, filter) {
-    var matched = [],
+    var $nodes = this,
+        matched = [],
         $matched,
-        cur = this.get(0);
+        cur = $nodes.get(0);
 
     selector = selector ? selector : '';
     filter = filter ? filter : '';
@@ -1199,7 +1470,8 @@ jQuery.fn.nextContentsUntil = function (selector, filter) {
     Mostly cribbed from the jQuery source.
 */
 jQuery.fn.nextAllContents = function () {
-    return jQuery(this).nextContentsUntil('', '');
+    var $nodes = this;
+    return jQuery($nodes).nextContentsUntil('', '');
 };
 
 /**
@@ -1210,9 +1482,10 @@ jQuery.fn.nextAllContents = function () {
     works on the first element in the given jQuery collection..
 */
 jQuery.fn.prevContentsUntil = function (selector, filter) {
-    var matched = [],
+    var $nodes = this,
+        matched = [],
         $matched,
-        cur = this.get(0);
+        cur = $nodes.get(0);
 
     selector = selector ? selector : '';
     filter = filter ? filter : '';
@@ -1250,7 +1523,8 @@ jQuery.fn.prevContentsUntil = function (selector, filter) {
     Mostly cribbed from the jQuery source.
 */
 jQuery.fn.prevAllContents = function () {
-    return jQuery(this).prevContentsUntil('', '');
+    var $nodes = this;
+    return jQuery($nodes).prevContentsUntil('', '');
 };
 
 WYMeditor.isPhantomNode = function (n) {
@@ -1268,17 +1542,20 @@ WYMeditor.isPhantomString = function (str) {
 // Returns the Parents or the node itself
 // jqexpr = a jQuery expression
 jQuery.fn.parentsOrSelf = function (jqexpr) {
-    var n = this;
+    var $n = this,
+        addBackName;
 
-    if (n[0].nodeType === WYMeditor.NODE.TEXT) {
-        n = n.parents().slice(0, 1);
+    if (jQuery.fn.addBack) {
+        addBackName = 'addBack';
+    } else {
+        // `andSelf` is deprecated.
+        addBackName = 'andSelf';
     }
 
-//  if (n.is(jqexpr)) // XXX should work, but doesn't (probably a jQuery bug)
-    if (n.filter(jqexpr).size() === 1) {
-        return n;
+    if (jqexpr) {
+        return $n.parents()[addBackName](jqexpr);
     } else {
-        return n.parents(jqexpr).slice(0, 1);
+        return $n.parents()[addBackName]();
     }
 };
 
@@ -1369,23 +1646,22 @@ WYMeditor.Helper = {
     }
 };
 
-
-
 /* jshint evil: true, camelcase: false, maxlen: 100 */
 /* global -$, rangy */
 "use strict";
 
 /**
-    WYMeditor.editor.init
-    =====================
+    WYMeditor.editor._init
+    ======================
 
     Initialize a wymeditor instance, including detecting the
     current browser and enabling the browser-specific subclass.
 */
-WYMeditor.editor.prototype.init = function () {
+WYMeditor.editor.prototype._init = function () {
     // Load the browser-specific subclass
     // If this browser isn't supported, do nothing
-    var WymClass = false,
+    var wym = this,
+        WymClass = false,
         SaxListener,
         prop,
         h,
@@ -1403,23 +1679,24 @@ WYMeditor.editor.prototype.init = function () {
         aContainers,
         sContainers,
         sContainer,
-        oContainer,
-        wym;
+        oContainer;
 
-    if (jQuery.browser.msie) {
-        WymClass = new WYMeditor.WymClassTrident(this);
+    if (WYMeditor.isInternetExplorerPre11()) {
+        WymClass = new WYMeditor.WymClassTridentPre7(wym);
+    } else if (WYMeditor.isInternetExplorer11OrNewer()) {
+        WymClass = new WYMeditor.WymClassTrident7(wym);
     } else if (jQuery.browser.mozilla) {
-        WymClass = new WYMeditor.WymClassGecko(this);
+        WymClass = new WYMeditor.WymClassGecko(wym);
     } else if (jQuery.browser.safari || jQuery.browser.webkit ||
                jQuery.browser.chrome) {
         if (jQuery.browser.version === '537.36') {
             // This seems to indicate Blink. See:
             // https://stackoverflow.com/questions/20655470
-            //WymClass = new WYMeditor.WymClassBlink(this);
+            //WymClass = new WYMeditor.WymClassBlink(wym);
             // For now we use the WebKit editor class in Blink.
-            WymClass = new WYMeditor.WymClassWebKit(this);
+            WymClass = new WYMeditor.WymClassWebKit(wym);
         } else {
-            WymClass = new WYMeditor.WymClassWebKit(this);
+            WymClass = new WYMeditor.WymClassWebKit(wym);
         }
     }
 
@@ -1427,17 +1704,17 @@ WYMeditor.editor.prototype.init = function () {
         return;
     }
 
-    if (jQuery.isFunction(this._options.preInit)) {
-        this._options.preInit(this);
+    if (jQuery.isFunction(wym._options.preInit)) {
+        wym._options.preInit(wym);
     }
 
-    this.parser = null;
-    this.helper = null;
+    wym.parser = null;
+    wym.helper = null;
 
     SaxListener = new WYMeditor.XhtmlSaxListener();
-    this.parser = new WYMeditor.XhtmlParser(SaxListener);
+    wym.parser = new WYMeditor.XhtmlParser(SaxListener);
 
-    this.helper = new WYMeditor.XmlHelper();
+    wym.helper = new WYMeditor.XmlHelper();
 
     // Extend the editor object with the browser-specific version.
     // We're not using jQuery.extend because we *want* to copy properties via
@@ -1448,10 +1725,8 @@ WYMeditor.editor.prototype.init = function () {
         // because we want to go up the prototype chain to get all of the
         // browser-specific editor methods. This is kind of a code smell,
         // but works just fine.
-        this[prop] = WymClass[prop];
+        wym[prop] = WymClass[prop];
     }
-
-    wym = this;
 
     // Load wymbox
     wym._box = jQuery(wym._element).hide().after(
@@ -1578,79 +1853,258 @@ WYMeditor.editor.prototype.init = function () {
     // unreliable.
     wym.iframeInitialized = false;
 
-    jQuery(wym._box).find('iframe').load(function () {
-        if (wym.iframeInitialized === true) {
-            return;
-        }
-        wym.initIframe(this);
+    wym._iframe = jQuery(wym._box).find('iframe')[0];
+
+    jQuery(wym._iframe).load(function () {
+        wym._onEditorIframeLoad(wym);
     });
+
+    wym._element.attr('data-wym-initialized', 'yes');
 
     wym.initSkin();
 };
 
 /**
-    WYMeditor.editor.postIframeInit
+    WYMeditor.editor._assignWymDoc
+    ==============================
 
-    Part of the editor's initialization, which must be done after the
-    iframe's initialization.
+    Assigns an editor's document to the `_doc` property.
 */
-WYMeditor.editor.prototype.postIframeInit = function () {
+WYMeditor.editor.prototype._assignWymDoc = function () {
     var wym = this;
+
+    wym._doc = wym._iframe.contentDocument;
+};
+
+/**
+    WYMeditor.editor._isDesignModeOn
+    ================================
+
+    Returns true if the designMode property of the editor's document is "On".
+    Returns false, otherwise.
+*/
+WYMeditor.editor.prototype._isDesignModeOn = function () {
+    var wym = this;
+
+    if (wym._doc.designMode === "On") {
+        return true;
+    }
+    return false;
+};
+
+/**
+    WYMeditor.editor._onEditorIframeLoad
+    ====================================
+
+    This is a part of the initialization of an editor.
+
+    The initialization procedure of an editor turns asynchronous because part of
+    it must occur after the loading of the editor's Iframe.
+
+    This function is suppposed to be the event handler of the loading of the
+    editor's Iframe. Therefore, it is the first step since the initialization
+    procedure gets asynchronous.
+
+    @param wym The editor instance that's being initialized.
+*/
+WYMeditor.editor.prototype._onEditorIframeLoad = function (wym) {
+    wym._assignWymDoc();
+    wym._doc.designMode = "On";
+    wym._afterDesignModeOn();
+};
+
+/**
+    WYMeditor.editor.getButtons
+    ============================
+
+    Returns a jQuery of all UI buttons.
+*/
+WYMeditor.editor.prototype.getButtons = function () {
+    var wym = this,
+        buttonsSelector,
+        $buttons;
+
+    buttonsSelector = [
+        wym._options.toolSelector,
+        wym._options.containerSelector,
+        wym._options.classSelector
+    ].join(', ');
+    $buttons = jQuery(wym._box).find(buttonsSelector);
+
+    return $buttons;
+};
+
+/**
+    WYMeditor.editor.focusOnDocument
+    ================================
+
+    Sets focus on the document.
+*/
+WYMeditor.editor.prototype.focusOnDocument = function () {
+    var wym = this,
+        doc = wym._iframe.contentWindow;
+
+    doc.focus();
+};
+
+/**
+    WYMeditor.editor._bindFocusOnDocumentToButtons
+    =================================================
+
+    Binds a handler to clicks on the UI buttons, that sets focus back to the
+    document.
+
+    Doesn't bind to dialog-opening buttons, because that would cause them to
+    fall behind the opening window, in some browsers.
+*/
+WYMeditor.editor.prototype._bindFocusOnDocumentToButtons = function () {
+    var wym = this,
+        $buttons = wym.getButtons();
+
+    $buttons = $buttons.parent().not('.wym_opens_dialog').children('a');
+    $buttons.click(function () {
+        wym.focusOnDocument();
+    });
+};
+
+/**
+    WYMeditor.editor._UiQuirks
+    ==========================
+
+    A hook for browser quirks that work on the UI.
+
+    To be run after plugins had a chance to modify the UI.
+*/
+WYMeditor.editor.prototype._UiQuirks = function () {
+    return;
+};
+
+
+/**
+    WYMeditor.editor._afterDesignModeOn
+    ===================================
+
+    This is part of the initialization of an editor, designed to be called
+    after the editor's document is in designMode.
+*/
+WYMeditor.editor.prototype._afterDesignModeOn = function () {
+    var wym = this;
+
+    if (wym.iframeInitialized === true) {
+        return;
+    }
+
+    wym._assignWymDoc();
+
+    wym._doc.title = wym._index;
+
+    // Set the text direction.
+    jQuery('html', wym._doc).attr('dir', wym._options.direction);
+
+    wym._docEventQuirks();
+
+    wym._initializeDocumentContent();
+
+    if (jQuery.isFunction(wym._options.preBind)) {
+        wym._options.preBind(wym);
+    }
+
+    wym._bindUIEvents();
+
+    wym.iframeInitialized = true;
 
     if (jQuery.isFunction(wym._options.postInit)) {
         wym._options.postInit(wym);
     }
+
+    // Importantly, these two are  after `postInit`, where plugins had a chance
+    // to modify the UI (add buttons, etc.).
+    wym._bindFocusOnDocumentToButtons();
+    wym._UiQuirks();
 
     // Add event listeners to doc elements, e.g. images
     wym.listen();
 
     jQuery(wym._element).trigger(
         WYMeditor.EVENTS.postIframeInitialization,
-        wym._wym
+        wym
     );
 };
 
 /**
-    WYMeditor.editor.bindEvents
-    ===========================
+    WYMeditor.editor._initializeDocumentContent
+    ===========================================
 
-    Bind all event handlers including tool/container clicks, focus events
-    and change events.
+    Populates the editor's document with the initial content, according to the
+    configuration and/or the textarea element's value.
 */
-WYMeditor.editor.prototype.bindEvents = function () {
+WYMeditor.editor.prototype._initializeDocumentContent = function () {
+    var wym = this;
+
+    if (wym._options.html) {
+        // Populate from the configuration option
+        wym._html(wym._options.html);
+    } else {
+        // Populate from the textarea element
+        wym._html(wym._element[0].value);
+    }
+};
+
+/**
+    WYMeditor.editor._docEventQuirks
+    ================================
+
+    Misc. event bindings on the editor's document, that may be required.
+*/
+WYMeditor.editor.prototype._docEventQuirks = function () {
+    return;
+};
+
+/**
+    WYMeditor.editor._bindUIEvents
+    ==============================
+
+    Binds event handlers for the UI elements.
+*/
+WYMeditor.editor.prototype._bindUIEvents = function () {
     var wym = this,
         $html_val;
 
-    // Handle click events on tools buttons
-    jQuery(this._box).find(this._options.toolSelector).click(function () {
-        wym._iframe.contentWindow.focus(); //See #154
-        wym.exec(jQuery(this).attr(WYMeditor.NAME));
+    // Tools buttons
+    jQuery(wym._box).find(wym._options.toolSelector).click(function () {
+        var button = this;
+        wym.exec(jQuery(button).attr(WYMeditor.NAME));
         return false;
     });
 
-    // Handle click events on containers buttons
-    jQuery(this._box).find(this._options.containerSelector).click(function () {
-        wym.mainContainer(jQuery(this).attr(WYMeditor.NAME));
+    // Containers buttons
+    jQuery(wym._box).find(wym._options.containerSelector).click(function () {
+        var containerButton = this;
+        wym.mainContainer(jQuery(containerButton).attr(WYMeditor.NAME));
         return false;
     });
 
-    // Handle keyup event on html value: set the editor value
+    // Handle keyup event on the HTML value textarea: set the editor value
     // Handle focus/blur events to check if the element has focus, see #147
-    $html_val = jQuery(this._box).find(this._options.htmlValSelector);
+    $html_val = jQuery(wym._box).find(wym._options.htmlValSelector);
     $html_val.keyup(function () {
-        jQuery(wym._doc.body).html(jQuery(this).val());
+        var valTextarea = this;
+        wym.$body().html(jQuery(valTextarea).val());
     });
     $html_val.focus(function () {
-        jQuery(this).toggleClass('hasfocus');
+        var valTextarea = this;
+        jQuery(valTextarea).toggleClass('hasfocus');
     });
     $html_val.blur(function () {
-        jQuery(this).toggleClass('hasfocus');
+        var valTextarea = this;
+        jQuery(valTextarea).toggleClass('hasfocus');
     });
 
     // Handle click events on classes buttons
-    jQuery(this._box).find(this._options.classSelector).click(function () {
-        var aClasses = eval(wym._options.classesItems),
-            sName = jQuery(this).attr(WYMeditor.NAME),
+    jQuery(wym._box).find(wym._options.classSelector).click(function () {
+        var classButton = this,
+            aClasses = eval(wym._options.classesItems),
+            sName = jQuery(classButton).attr(WYMeditor.NAME),
 
             oClass = WYMeditor.Helper.findByName(aClasses, sName),
             jqexpr;
@@ -1659,18 +2113,16 @@ WYMeditor.editor.prototype.bindEvents = function () {
             jqexpr = oClass.expr;
             wym.toggleClass(sName, jqexpr);
         }
-        wym._iframe.contentWindow.focus(); //See #154
         return false;
     });
 
     // Handle update event on update element
-    jQuery(this._options.updateSelector).bind(this._options.updateEvent, function () {
-        wym.update();
-    });
-};
-
-WYMeditor.editor.prototype.ready = function () {
-    return this._doc !== null;
+    jQuery(wym._options.updateSelector).bind(
+        wym._options.updateEvent,
+        function () {
+            wym.update();
+        }
+    );
 };
 
 /**
@@ -1680,7 +2132,8 @@ WYMeditor.editor.prototype.ready = function () {
     Get the wymbox container.
 */
 WYMeditor.editor.prototype.box = function () {
-    return this._box;
+    var wym = this;
+    return wym._box;
 };
 
 /**
@@ -1693,11 +2146,37 @@ WYMeditor.editor.prototype.box = function () {
     specific reason not to use WYMeditor.editor.xhtml().
 */
 WYMeditor.editor.prototype._html = function (html) {
+    var wym = this;
     if (typeof html === 'string') {
-        jQuery(this._doc.body).html(html);
-        this.update();
+        wym.$body().html(html);
+        wym.update();
     } else {
-        return jQuery(this._doc.body).html();
+        return wym.$body().html();
+    }
+};
+
+/**
+    WYMeditor.editor.vanish
+    =========================
+
+    Removes the WYMeditor instance from existence and replaces the
+    'data-wym-initialized' attirbute of its textarea with 'data-wym-vanished'.
+*/
+WYMeditor.editor.prototype.vanish = function () {
+    var wym = this,
+        instances = WYMeditor.INSTANCES,
+        i;
+
+    wym._box.remove();
+    wym._element
+        .removeAttr('data-wym-initialized')
+        .attr('data-wym-vanished', '')
+        .show();
+    instances.splice(wym._index, 1);
+
+    // Refresh each editor's _index value
+    for (i = 0; i < instances.length; i++) {
+        instances[i]._index = i;
     }
 };
 
@@ -1709,13 +2188,14 @@ WYMeditor.editor.prototype._html = function (html) {
     Calling this function will give a console warning.
 */
 WYMeditor.editor.prototype.html = function (html) {
+    var wym = this;
     WYMeditor.console.warn("The function WYMeditor.editor.html() is deprecated. " +
                            "Use either WYMeditor.editor.xhtml() or " +
                            "WYMeditor.editor._html() instead.");
     if (typeof html === 'string') {
-        this._html(html);
+        wym._html(html);
     } else {
-        return this._html();
+        return wym._html();
     }
 };
 
@@ -1727,7 +2207,8 @@ WYMeditor.editor.prototype.html = function (html) {
     enforce a valid, well-formed, semantic xhtml result.
 */
 WYMeditor.editor.prototype.xhtml = function () {
-    return this.parser.parse(this._html());
+    var wym = this;
+    return wym.parser.parse(wym._html());
 };
 
 /**
@@ -1743,65 +2224,68 @@ WYMeditor.editor.prototype.xhtml = function () {
     execCommand in some cases).
 */
 WYMeditor.editor.prototype.exec = function (cmd) {
-    var container, custom_run, _this = this;
+    var wym = this,
+        container,
+        custom_run;
     switch (cmd) {
 
     case WYMeditor.CREATE_LINK:
-        container = this.mainContainer();
-        if (container || this._selectedImage) {
-            this.dialog(WYMeditor.DIALOG_LINK);
+        container = wym.mainContainer();
+        if (container || wym._selectedImage) {
+            wym.dialog(WYMeditor.DIALOG_LINK);
         }
         break;
 
     case WYMeditor.INSERT_IMAGE:
-        this.dialog(WYMeditor.DIALOG_IMAGE);
+        wym.dialog(WYMeditor.DIALOG_IMAGE);
         break;
 
     case WYMeditor.INSERT_TABLE:
-        this.dialog(WYMeditor.DIALOG_TABLE);
+        wym.dialog(WYMeditor.DIALOG_TABLE);
         break;
 
     case WYMeditor.PASTE:
-        this.dialog(WYMeditor.DIALOG_PASTE);
+        wym.dialog(WYMeditor.DIALOG_PASTE);
         break;
 
     case WYMeditor.TOGGLE_HTML:
-        this.update();
-        this.toggleHtml();
+        wym.update();
+        wym.toggleHtml();
         break;
 
     case WYMeditor.PREVIEW:
-        this.dialog(WYMeditor.PREVIEW, this._options.dialogFeaturesPreview);
+        wym.dialog(WYMeditor.PREVIEW, wym._options.dialogFeaturesPreview);
         break;
 
     case WYMeditor.INSERT_ORDEREDLIST:
-        this.insertOrderedlist();
+        wym.insertOrderedlist();
         break;
 
     case WYMeditor.INSERT_UNORDEREDLIST:
-        this.insertUnorderedlist();
+        wym.insertUnorderedlist();
         break;
 
     case WYMeditor.INDENT:
-        this.indent();
+        wym.indent();
         break;
 
     case WYMeditor.OUTDENT:
-        this.outdent();
+        wym.outdent();
         break;
 
 
     default:
         custom_run = false;
-        jQuery.each(this._options.customCommands, function () {
-            if (cmd === this.name) {
+        jQuery.each(wym._options.customCommands, function () {
+            var customCommand = this;
+            if (cmd === customCommand.name) {
                 custom_run = true;
-                this.run.apply(_this);
+                customCommand.run.apply(wym);
                 return false;
             }
         });
         if (!custom_run) {
-            this._exec(cmd);
+            wym._exec(cmd);
         }
         break;
     }
@@ -1814,12 +2298,15 @@ WYMeditor.editor.prototype.exec = function (cmd) {
     Override the default selection function to use rangy.
 */
 WYMeditor.editor.prototype.selection = function () {
+    var wym = this,
+        iframe = wym._iframe,
+        sel;
+
     if (window.rangy && !rangy.initialized) {
         rangy.init();
     }
 
-    var iframe = this._iframe,
-        sel = rangy.getIframeSelection(iframe);
+    sel = rangy.getIframeSelection(iframe);
 
     return sel;
 };
@@ -1831,8 +2318,8 @@ WYMeditor.editor.prototype.selection = function () {
     Returns the node that is immediately after the selection.
 */
 WYMeditor.editor.prototype.nodeAfterSel = function () {
-    var sel = this.selection(),
-        noNodeErrorStr = "There is no node immediately after the selection.";
+    var wym = this,
+       sel = wym.selection();
 
     // Different browsers describe selection differently. Here be dragons.
     if (
@@ -1843,7 +2330,7 @@ WYMeditor.editor.prototype.nodeAfterSel = function () {
         ) === -1
     ) {
         if (sel.anchorNode.childNodes.length === 0) {
-            throw noNodeErrorStr;
+            return;
         }
         return sel.anchorNode.childNodes[sel.anchorOffset];
     }
@@ -1853,7 +2340,7 @@ WYMeditor.editor.prototype.nodeAfterSel = function () {
         sel.focusNode.data.length === sel.focusOffset
     ) {
         if (!sel.focusNode.nextSibling) {
-            throw noNodeErrorStr;
+            return;
         }
         return sel.focusNode.nextSibling;
     }
@@ -1871,7 +2358,8 @@ WYMeditor.editor.prototype.nodeAfterSel = function () {
     selection's main container.
 */
 WYMeditor.editor.prototype.selectedContainer = function () {
-    var focusNode = this.selection().focusNode;
+    var wym = this,
+        focusNode = wym.selection().focusNode;
 
     if (
         focusNode.nodeType === WYMeditor.NODE.TEXT || (
@@ -1910,11 +2398,13 @@ WYMeditor.editor.prototype.selected = function () {
     Return true if all selections are collapsed, false otherwise.
 */
 WYMeditor.editor.prototype.selection_collapsed = function () {
-    var sel = this.selection(),
+    var wym = this,
+        sel = wym.selection(),
         collapsed = false;
 
     jQuery.each(sel.getAllRanges(), function () {
-        if (this.collapsed) {
+        var range = this;
+        if (range.collapsed) {
             collapsed = true;
             //break
             return false;
@@ -1932,13 +2422,16 @@ WYMeditor.editor.prototype.selection_collapsed = function () {
     within the current selection.
 */
 WYMeditor.editor.prototype.selected_contains = function (selector) {
-    var sel = this.selection(),
+    var wym = this,
+        sel = wym.selection(),
         matches = [];
 
     jQuery.each(sel.getAllRanges(), function () {
-        jQuery.each(this.getNodes(), function () {
-            if (jQuery(this).is(selector)) {
-                matches.push(this);
+        var range = this;
+        jQuery.each(range.getNodes(), function () {
+            var node = this;
+            if (jQuery(node).is(selector)) {
+                matches.push(node);
             }
         });
     });
@@ -1954,8 +2447,9 @@ WYMeditor.editor.prototype.selected_contains = function (selector) {
     the selection's parents.
 */
 WYMeditor.editor.prototype.selected_parents_contains = function (selector) {
-    var $matches = jQuery([]),
-        $selected = jQuery(this.selectedContainer());
+    var wym = this,
+        $matches = jQuery([]),
+        $selected = jQuery(wym.selectedContainer());
     if ($selected.is(selector)) {
         $matches = $matches.add($selected);
     }
@@ -2070,14 +2564,17 @@ WYMeditor.editor.prototype.unwrapIfMeaninglessSpan = function (element) {
             'dataFormatAs',
             'dataSrc',
             'tabIndex',
-            'value'
+            'value',
+            'hideFocus',
+            'disabled'
         ],
         // Any attribute with these values isn't interesting
         falsyAttrValues = [
             '',
             undefined,
             false,
-            null
+            null,
+            'null'
         ];
 
     if (!element || typeof (element.tagName) === 'undefined' ||
@@ -2126,11 +2623,8 @@ WYMeditor.editor.prototype.unwrapIfMeaninglessSpan = function (element) {
     Get or set the selected main container.
 */
 WYMeditor.editor.prototype.mainContainer = function (sType) {
-    if (typeof (sType) === 'undefined') {
-        return this.selectedContainer();
-    }
-
-    var container = null,
+    var wym = this,
+        container = null,
         aTypes,
         newNode,
         blockquote,
@@ -2139,8 +2633,15 @@ WYMeditor.editor.prototype.mainContainer = function (sType) {
         firstNode,
         x;
 
+    if (typeof (sType) === 'undefined') {
+        return jQuery(wym.selectedContainer())
+            .parentsOrSelf()
+            .not('html, body, blockquote')
+            .last()[0];
+    }
+
     if (sType.toLowerCase() === WYMeditor.TH) {
-        container = this.mainContainer();
+        container = wym.selectedContainer();
 
         // Find the TD or TH container
         switch (container.tagName.toLowerCase()) {
@@ -2150,7 +2651,7 @@ WYMeditor.editor.prototype.mainContainer = function (sType) {
             break;
         default:
             aTypes = [WYMeditor.TD, WYMeditor.TH];
-            container = this.findUp(this.mainContainer(), aTypes);
+            container = wym.findUp(wym.selectedContainer(), aTypes);
             break;
         }
 
@@ -2160,8 +2661,11 @@ WYMeditor.editor.prototype.mainContainer = function (sType) {
             if (container.tagName.toLowerCase() === WYMeditor.TD) {
                 sType = WYMeditor.TH;
             }
-            this.switchTo(container, sType, false);
-            this.update();
+            wym.restoreSelectionAfterManipulation(function () {
+                wym.switchTo(container, sType, false);
+                return true;
+            });
+            wym.update();
         }
     } else {
         // Set the container type
@@ -2177,20 +2681,20 @@ WYMeditor.editor.prototype.mainContainer = function (sType) {
             WYMeditor.PRE,
             WYMeditor.BLOCKQUOTE
         ];
-        container = this.findUp(this.mainContainer(), aTypes);
+        container = wym.findUp(wym.selectedContainer(), aTypes);
 
         if (container) {
             if (sType.toLowerCase() === WYMeditor.BLOCKQUOTE) {
                 // Blockquotes must contain a block level element
-                blockquote = this.findUp(
-                    this.mainContainer(),
+                blockquote = wym.findUp(
+                    wym.selectedContainer(),
                     WYMeditor.BLOCKQUOTE
                 );
                 if (blockquote === null) {
-                    newNode = this._doc.createElement(sType);
+                    newNode = wym._doc.createElement(sType);
                     container.parentNode.insertBefore(newNode, container);
                     newNode.appendChild(container);
-                    this.setCaretIn(newNode.firstChild);
+                    wym.setCaretIn(newNode.firstChild);
                 } else {
                     nodes = blockquote.childNodes;
                     lgt = nodes.length;
@@ -2206,15 +2710,18 @@ WYMeditor.editor.prototype.mainContainer = function (sType) {
                     }
                     blockquote.parentNode.removeChild(blockquote);
                     if (firstNode) {
-                        this.setCaretIn(firstNode);
+                        wym.setCaretIn(firstNode);
                     }
                 }
             } else {
                 // Not a blockquote
-                this.switchTo(container, sType);
+                wym.restoreSelectionAfterManipulation(function () {
+                    wym.switchTo(container, sType, false);
+                    return true;
+                });
             }
 
-            this.update();
+            wym.update();
         }
     }
 
@@ -2271,17 +2778,18 @@ WYMeditor.editor.prototype.keyCanCreateBlockElement = function (keyCode) {
     Toggle a class on the selected element or one of its parents
 */
 WYMeditor.editor.prototype.toggleClass = function (sClass, jqexpr) {
-    var container = null;
-    if (this._selectedImage) {
-        container = this._selectedImage;
+    var wym = this,
+        $container;
+    if (wym._selectedImage) {
+        $container = jQuery(wym._selectedImage);
     } else {
-        container = jQuery(this.selectedContainer());
+        $container = jQuery(wym.selectedContainer());
     }
-    container = jQuery(container).parentsOrSelf(jqexpr);
-    jQuery(container).toggleClass(sClass);
+    $container = $container.parentsOrSelf(jqexpr);
+    $container.toggleClass(sClass);
 
-    if (!jQuery(container).attr(WYMeditor.CLASS)) {
-        jQuery(container).removeAttr(this._class);
+    if (!$container.attr(WYMeditor.CLASS)) {
+        $container.removeAttr(wym._class);
     }
 };
 
@@ -2348,16 +2856,12 @@ WYMeditor.editor.prototype.findUp = function (node, filter) {
     @param sType A string of the desired type. For example, 'p'.
     @param stripAttrs a boolean that determines whether the attributes of
                       the element will be stripped or preserved.
-    @param setCaret A boolean that determines whether the caret will be set at
-                    the beginning, inside the element, after the switch. Default
-                    is false.
 
 */
 WYMeditor.editor.prototype.switchTo = function (
     element,
     sType,
-    stripAttrs,
-    setCaret
+    stripAttrs
 ) {
     var wym = this,
         $element = jQuery(element),
@@ -2381,25 +2885,22 @@ WYMeditor.editor.prototype.switchTo = function (
         for (i = 0; i < attrs.length; ++i) {
             newElement.setAttribute(
                 attrs.item(i).nodeName,
-                attrs.item(i).nodeValue
+                attrs.item(i).value
             );
         }
-    }
-
-    if (setCaret) {
-        wym.setCaretIn(newElement);
     }
 
     return newElement;
 };
 
 WYMeditor.editor.prototype.replaceStrings = function (sVal) {
-    var key;
+    var wym = this,
+        key;
     // Check if the language file has already been loaded
     // if not, get it via a synchronous ajax call
-    if (!WYMeditor.STRINGS[this._options.lang]) {
+    if (!WYMeditor.STRINGS[wym._options.lang]) {
         WYMeditor.console.error(
-            "WYMeditor: language '" + this._options.lang + "' not found."
+            "WYMeditor: language '" + wym._options.lang + "' not found."
         );
         WYMeditor.console.error(
             "Unable to perform i10n."
@@ -2408,12 +2909,12 @@ WYMeditor.editor.prototype.replaceStrings = function (sVal) {
     }
 
     // Replace all the strings in sVal and return it
-    for (key in WYMeditor.STRINGS[this._options.lang]) {
-        if (WYMeditor.STRINGS[this._options.lang].hasOwnProperty(key)) {
+    for (key in WYMeditor.STRINGS[wym._options.lang]) {
+        if (WYMeditor.STRINGS[wym._options.lang].hasOwnProperty(key)) {
             sVal = WYMeditor.Helper.replaceAll(
                 sVal,
-                this._options.stringDelimiterLeft + key + this._options.stringDelimiterRight,
-                WYMeditor.STRINGS[this._options.lang][key]
+                wym._options.stringDelimiterLeft + key + wym._options.stringDelimiterRight,
+                WYMeditor.STRINGS[wym._options.lang][key]
             );
         }
     }
@@ -2421,9 +2922,10 @@ WYMeditor.editor.prototype.replaceStrings = function (sVal) {
 };
 
 WYMeditor.editor.prototype.encloseString = function (sVal) {
-    return this._options.stringDelimiterLeft +
+    var wym = this;
+    return wym._options.stringDelimiterLeft +
         sVal +
-        this._options.stringDelimiterRight;
+        wym._options.stringDelimiterRight;
 };
 
 /**
@@ -2433,8 +2935,9 @@ WYMeditor.editor.prototype.encloseString = function (sVal) {
     Print the given string as a status message.
 */
 WYMeditor.editor.prototype.status = function (sMessage) {
+    var wym = this;
     // Print status message
-    jQuery(this._box).find(this._options.statusSelector).html(sMessage);
+    jQuery(wym._box).find(wym._options.statusSelector).html(sMessage);
 };
 
 /**
@@ -2444,12 +2947,13 @@ WYMeditor.editor.prototype.status = function (sMessage) {
     Update the element and textarea values.
 */
 WYMeditor.editor.prototype.update = function () {
-    var html;
+    var wym = this,
+        html;
 
-    html = this.xhtml();
-    jQuery(this._element).val(html);
-    jQuery(this._box).find(this._options.htmlValSelector).not('.hasfocus').val(html); //#147
-    this.fixBodyHtml();
+    html = wym.xhtml();
+    jQuery(wym._element).val(html);
+    jQuery(wym._box).find(wym._options.htmlValSelector).not('.hasfocus').val(html); //#147
+    wym.fixBodyHtml();
 };
 
 /**
@@ -2478,9 +2982,10 @@ WYMeditor.editor.prototype.fixBodyHtml = function () {
     start/end of the document.
 */
 WYMeditor.editor.prototype.spaceBlockingElements = function () {
-    var blockingSelector =
+    var wym = this,
+        blockingSelector =
             WYMeditor.DocumentStructureManager.CONTAINERS_BLOCKING_NAVIGATION.join(', '),
-        $body = jQuery(this._doc).find('body.wym_iframe'),
+        $body = wym.$body(),
         children = $body.children(),
 
         placeholderNode,
@@ -2523,13 +3028,13 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
         }
     }
 
-    blockSepSelector = this._getBlockSepSelector();
+    blockSepSelector = wym._getBlockSepSelector();
 
     // Put placeholder nodes between consecutive blocking elements and between
     // blocking elements and normal block-level elements
     $body.find(blockSepSelector).before(placeholderNode);
 
-    blockInListSepSelector = this._getBlockInListSepSelector();
+    blockInListSepSelector = wym._getBlockInListSepSelector();
     $blockInList = $body.find(blockInListSepSelector);
 
     // The $blockInList selection must be iterated over to only add placeholder
@@ -2541,7 +3046,8 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
     // blocking element in a list item is already handled by the
     // blockSepSelector used before this.
     $blockInList.each(function () {
-        var $block = jQuery(this);
+        var block = this,
+            $block = jQuery(block);
 
         if (!$block.next(blockingSelector).length &&
            !$block.next('br').length) {
@@ -2561,15 +3067,15 @@ WYMeditor.editor.prototype.spaceBlockingElements = function () {
     elements.
 */
 WYMeditor.editor.prototype._getBlockSepSelector = function () {
-    if (typeof (this._blockSpacersSel) !== 'undefined') {
-        return this._blockSpacersSel;
-    }
-
     var wym = this,
         blockCombo = [],
         containersBlockingNav =
             WYMeditor.DocumentStructureManager.CONTAINERS_BLOCKING_NAVIGATION,
         containersNotBlockingNav;
+
+    if (typeof (wym._blockSpacersSel) !== 'undefined') {
+        return wym._blockSpacersSel;
+    }
 
     // Generate the list of non-blocking elements by removing the blocking
     // elements from the list of validRootContainers
@@ -2607,8 +3113,8 @@ WYMeditor.editor.prototype._getBlockSepSelector = function () {
             );
         }
     );
-    this._blockSpacersSel = blockCombo.join(', ');
-    return this._blockSpacersSel;
+    wym._blockSpacersSel = blockCombo.join(', ');
+    return wym._blockSpacersSel;
 };
 
 /*
@@ -2620,11 +3126,12 @@ WYMeditor.editor.prototype._getBlockSepSelector = function () {
     a spacer line break after them in the editor at all times.
 */
 WYMeditor.editor.prototype._getBlockInListSepSelector = function () {
-    if (typeof (this._blockInListSpacersSel) !== 'undefined') {
-        return this._blockInListSpacersSel;
-    }
+    var wym = this,
+        blockCombo = [];
 
-    var blockCombo = [];
+    if (typeof (wym._blockInListSpacersSel) !== 'undefined') {
+        return wym._blockInListSpacersSel;
+    }
 
     jQuery.each(WYMeditor.LIST_TYPE_ELEMENTS, function (indexO, elementO) {
         jQuery.each(WYMeditor.BLOCKING_ELEMENTS, function (indexI, elementI) {
@@ -2632,8 +3139,8 @@ WYMeditor.editor.prototype._getBlockInListSepSelector = function () {
         });
     });
 
-    this._blockInListSpacersSel = blockCombo.join(', ');
-    return this._blockInListSpacersSel;
+    wym._blockInListSpacersSel = blockCombo.join(', ');
+    return wym._blockInListSpacersSel;
 };
 
 /**
@@ -2644,7 +3151,8 @@ WYMeditor.editor.prototype._getBlockInListSepSelector = function () {
     paragraphs, usually after hitting enter from an existing paragraph.
 */
 WYMeditor.editor.prototype.fixDoubleBr = function () {
-    var $body = jQuery(this._doc).find('body.wym_iframe'),
+    var wym = this,
+        $body = wym.$body(),
         $last_br;
 
     // Strip consecutive brs unless they're in a pre tag
@@ -2669,7 +3177,8 @@ WYMeditor.editor.prototype.fixDoubleBr = function () {
     Open a dialog box
 */
 WYMeditor.editor.prototype.dialog = function (dialogType, dialogFeatures, bodyHtml) {
-    var features = dialogFeatures || this._wym._options.dialogFeatures,
+    var wym = this,
+        features = dialogFeatures || wym._options.dialogFeatures,
         wDialog = window.open('', 'dialog', features),
         sBodyHtml,
         h = WYMeditor.Helper,
@@ -2682,19 +3191,19 @@ WYMeditor.editor.prototype.dialog = function (dialogType, dialogFeatures, bodyHt
         switch (dialogType) {
 
         case (WYMeditor.DIALOG_LINK):
-            sBodyHtml = this._options.dialogLinkHtml;
+            sBodyHtml = wym._options.dialogLinkHtml;
             break;
         case (WYMeditor.DIALOG_IMAGE):
-            sBodyHtml = this._options.dialogImageHtml;
+            sBodyHtml = wym._options.dialogImageHtml;
             break;
         case (WYMeditor.DIALOG_TABLE):
-            sBodyHtml = this._options.dialogTableHtml;
+            sBodyHtml = wym._options.dialogTableHtml;
             break;
         case (WYMeditor.DIALOG_PASTE):
-            sBodyHtml = this._options.dialogPasteHtml;
+            sBodyHtml = wym._options.dialogPasteHtml;
             break;
         case (WYMeditor.PREVIEW):
-            sBodyHtml = this._options.dialogPreviewHtml;
+            sBodyHtml = wym._options.dialogPreviewHtml;
             break;
         default:
             sBodyHtml = bodyHtml;
@@ -2702,31 +3211,31 @@ WYMeditor.editor.prototype.dialog = function (dialogType, dialogFeatures, bodyHt
         }
 
         // Construct the dialog
-        dialogHtml = this._options.dialogHtml;
+        dialogHtml = wym._options.dialogHtml;
         dialogHtml = h.replaceAll(
             dialogHtml,
             WYMeditor.BASE_PATH,
-            this._options.basePath
+            wym._options.basePath
         );
         dialogHtml = h.replaceAll(
             dialogHtml,
             WYMeditor.DIRECTION,
-            this._options.direction
+            wym._options.direction
         );
         dialogHtml = h.replaceAll(
             dialogHtml,
             WYMeditor.WYM_PATH,
-            this._options.wymPath
+            wym._options.wymPath
         );
         dialogHtml = h.replaceAll(
             dialogHtml,
             WYMeditor.JQUERY_PATH,
-            this._options.jQueryPath
+            wym._options.jQueryPath
         );
         dialogHtml = h.replaceAll(
             dialogHtml,
             WYMeditor.DIALOG_TITLE,
-            this.encloseString(dialogType)
+            wym.encloseString(dialogType)
         );
         dialogHtml = h.replaceAll(
             dialogHtml,
@@ -2736,10 +3245,10 @@ WYMeditor.editor.prototype.dialog = function (dialogType, dialogFeatures, bodyHt
         dialogHtml = h.replaceAll(
             dialogHtml,
             WYMeditor.INDEX,
-            this._index
+            wym._index
         );
 
-        dialogHtml = this.replaceStrings(dialogHtml);
+        dialogHtml = wym.replaceStrings(dialogHtml);
 
         doc = wDialog.document;
         doc.write(dialogHtml);
@@ -2754,7 +3263,8 @@ WYMeditor.editor.prototype.dialog = function (dialogType, dialogFeatures, bodyHt
     Show/Hide the HTML textarea.
 */
 WYMeditor.editor.prototype.toggleHtml = function () {
-    jQuery(this._box).find(this._options.htmlSelector).toggle();
+    var wym = this;
+    jQuery(wym._box).find(wym._options.htmlSelector).toggle();
 };
 
 WYMeditor.editor.prototype.uniqueStamp = function () {
@@ -2886,25 +3396,21 @@ WYMeditor.editor.prototype._handleMultilineBlockContainerPaste = function (
     paragraphs. May contain inline HTML.
 */
 WYMeditor.editor.prototype.paste = function (str) {
-    var container = this.selectedContainer(),
+    var wym = this,
+        container = wym.selectedContainer(),
         paragraphStrings,
         j,
         textNodesToInsert,
         blockSplitter,
-        $container,
+        $container = jQuery(container),
         html = '',
         paragraphs,
         i,
         isSingleLine = false,
-        sel,
+        sel = wym.selection(),
         textNode,
-        wym,
-        range,
+        range = sel.getRangeAt(0),
         insertionNodes;
-    wym = this;
-    sel = rangy.getIframeSelection(wym._iframe);
-    range = sel.getRangeAt(0);
-    $container = jQuery(container);
 
     // Start by collapsing the range to the start of the selection. We're
     // punting on implementing a paste that also replaces existing content for
@@ -2928,8 +3434,8 @@ WYMeditor.editor.prototype.paste = function (str) {
             // Easy case. Wrap the string in p tags
             paragraphs = jQuery(
                 '<p>' + paragraphStrings[0] + '</p>',
-                this._doc
-            ).appendTo(this._doc.body);
+                wym._doc
+            ).appendTo(wym._doc.body);
         } else {
             // Need to build paragraphs and insert them at the end
             blockSplitter = 'p';
@@ -2953,7 +3459,7 @@ WYMeditor.editor.prototype.paste = function (str) {
         // Pasting inside an existing element
         if (isSingleLine || $container.is('pre')) {
             // Easy case. Insert a text node at the current selection
-            textNode = this._doc.createTextNode(str);
+            textNode = wym._doc.createTextNode(str);
             range.insertNode(textNode);
         } else if ($container.is('p,h1,h2,h3,h4,h5,h6,li')) {
             wym._handleMultilineBlockContainerPaste(wym, $container, range, paragraphStrings);
@@ -2964,7 +3470,7 @@ WYMeditor.editor.prototype.paste = function (str) {
             for (i = textNodesToInsert.length - 1; i >= 0; i -= 1) {
                 // Going backwards because rangy.insertNode leaves the
                 // selection in front of the inserted node
-                textNode = this._doc.createTextNode(textNodesToInsert[i]);
+                textNode = wym._doc.createTextNode(textNodesToInsert[i]);
                 range.insertNode(textNode);
                 if (i > 0) {
                     // Don't insert an opening br
@@ -2977,7 +3483,8 @@ WYMeditor.editor.prototype.paste = function (str) {
 
 WYMeditor.editor.prototype.insert = function (html) {
     // Do we have a selection?
-    var selection = this._iframe.contentWindow.getSelection(),
+    var wym = this,
+        selection = wym.selection(),
         range,
         node;
     if (selection.focusNode !== null) {
@@ -2988,18 +3495,22 @@ WYMeditor.editor.prototype.insert = function (html) {
         range.insertNode(node);
     } else {
         // Fall back to the internal paste function if there's no selection
-        this.paste(html);
+        wym.paste(html);
     }
 };
 
 WYMeditor.editor.prototype.wrap = function (left, right) {
-    this.insert(
-        left + this._iframe.contentWindow.getSelection().toString() + right
+    var wym = this;
+
+    wym.insert(
+        left + wym._iframe.contentWindow.getSelection().toString() + right
     );
 };
 
 WYMeditor.editor.prototype.unwrap = function () {
-    this.insert(this._iframe.contentWindow.getSelection().toString());
+    var wym = this;
+
+    wym.insert(wym._iframe.contentWindow.getSelection().toString());
 };
 
 /**
@@ -3012,6 +3523,7 @@ WYMeditor.editor.prototype.unwrap = function () {
     @param node A node to check about.
  */
 WYMeditor.editor.prototype.canSetCaretBefore = function (node) {
+    var wym = this;
     if (node.nodeType === WYMeditor.NODE.TEXT) {
         return true;
     }
@@ -3030,7 +3542,7 @@ WYMeditor.editor.prototype.canSetCaretBefore = function (node) {
         ) {
             return true;
 
-        } else if (this.isBlockNode(node.previousSibling)) {
+        } else if (wym.isBlockNode(node.previousSibling)) {
             return true;
 
         } else if (node.previousSibling.nodeType === WYMeditor.NODE.TEXT) {
@@ -3052,11 +3564,11 @@ WYMeditor.editor.prototype.canSetCaretBefore = function (node) {
     @param node A node to set the selection to immediately before of.
  */
 WYMeditor.editor.prototype.setCaretBefore = function (node) {
-    var
-        range = rangy.createRange(this._doc),
-        selection = rangy.getIframeSelection(this._iframe);
+    var wym = this,
+        range = rangy.createRange(wym._doc),
+        selection = wym.selection();
 
-    if (!this.canSetCaretBefore(node)) {
+    if (!wym.canSetCaretBefore(node)) {
         throw "Can't set caret before this node.";
     }
 
@@ -3076,7 +3588,7 @@ WYMeditor.editor.prototype.setCaretBefore = function (node) {
     @param node A node to check about.
  */
 WYMeditor.editor.prototype.canSetCaretIn = function (node) {
-
+    var wym = this;
     if (
         node.nodeType === WYMeditor.NODE.TEXT ||
         (
@@ -3090,7 +3602,7 @@ WYMeditor.editor.prototype.canSetCaretIn = function (node) {
         return false;
     }
     // Rangy issue #209.
-    if (this.isInlineNode(node)) {
+    if (wym.isInlineNode(node)) {
 
         if (node.childNodes.length === 0) {
             // Not possible to work-around this issue.
@@ -3115,11 +3627,12 @@ WYMeditor.editor.prototype.canSetCaretIn = function (node) {
     @param element An element to set the selection inside of, at the start.
  */
 WYMeditor.editor.prototype.setCaretIn = function (element) {
-    var range = rangy.createRange(this._doc),
-        selection = rangy.getIframeSelection(this._iframe);
+    var wym = this,
+        range = rangy.createRange(wym._doc),
+        selection = wym.selection();
 
     if (
-        !this.canSetCaretIn(element)
+        !wym.canSetCaretIn(element)
     ) {
         throw "The element must be able to contain other elements. Perhaps " +
             " you would like to use `setCaretBefore`, instead.";
@@ -3128,7 +3641,7 @@ WYMeditor.editor.prototype.setCaretIn = function (element) {
     range.selectNodeContents(element);
 
     // Rangy issue #209.
-    if (this.isInlineNode(element)) {
+    if (wym.isInlineNode(element)) {
 
         // Don't collapse the range. As long as
         // this occurs only in tests it is probably OK. Warn.
@@ -3467,7 +3980,8 @@ WYMeditor.editor.prototype._outdentSingleItem = function (listItem) {
  */
 WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alreadyCorrected) {
     // Travel up the dom until we're at the root ol/ul/li
-    var currentNode = listItem,
+    var wym = this,
+        currentNode = listItem,
         parentNode,
         tagName;
     if (typeof alreadyCorrected === 'undefined') {
@@ -3498,14 +4012,14 @@ WYMeditor.editor.prototype.correctInvalidListNesting = function (listItem, alrea
         WYMeditor.console.log(
             "Correcting orphaned root li before correcting invalid list nesting."
         );
-        this._correctOrphanedListItem(currentNode);
-        return this.correctInvalidListNesting(currentNode, true);
+        wym._correctOrphanedListItem(currentNode);
+        return wym.correctInvalidListNesting(currentNode, true);
     }
     if (!jQuery(currentNode).is('ol,ul')) {
         WYMeditor.console.error("Can't correct invalid list nesting. No root list found");
         return alreadyCorrected;
     }
-    return this._correctInvalidListNesting(currentNode, alreadyCorrected);
+    return wym._correctInvalidListNesting(currentNode, alreadyCorrected);
 };
 
 /**
@@ -3568,14 +4082,15 @@ WYMeditor.editor.prototype._isPOrDivAfterEnterInEmptynestedLi = function
 
 WYMeditor.editor.prototype._isSpilledListAfterEnterInEmptyLi = function
     (container) {
+    var wym = this;
     if (
         container.tagName.toLowerCase() === 'li' &&
         container.previousSibling &&
-        this.isListNode(container.previousSibling) &&
+        wym.isListNode(container.previousSibling) &&
         container.previousSibling.previousSibling &&
         container.previousSibling.previousSibling.tagName
             .toLowerCase() === 'li' &&
-        this.isListNode(container.parentNode)
+        wym.isListNode(container.parentNode)
     ) {
         return true;
     }
@@ -3612,11 +4127,13 @@ WYMeditor.editor.prototype.handlePotentialEnterInEmptyNestedLi = function (
         return null;
     }
 
-    if (this._isPOrDivAfterEnterInEmptynestedLi(container)) {
-        this._replaceNodeWithBrAndSetCaret(container);
-    } else if (this._isSpilledListAfterEnterInEmptyLi(container)) {
-        this._appendSiblingsUntilNextLiToPreviousLi(container);
-        this._replaceNodeWithBrAndSetCaret(container);
+    var wym = this;
+
+    if (wym._isPOrDivAfterEnterInEmptynestedLi(container)) {
+        wym._replaceNodeWithBrAndSetCaret(container);
+    } else if (wym._isSpilledListAfterEnterInEmptyLi(container)) {
+        wym._appendSiblingsUntilNextLiToPreviousLi(container);
+        wym._replaceNodeWithBrAndSetCaret(container);
     }
 };
 
@@ -3632,19 +4149,20 @@ WYMeditor.editor.prototype.handlePotentialEnterInEmptyNestedLi = function (
     @param node This is the node to be replaced.
 */
 WYMeditor.editor.prototype._replaceNodeWithBrAndSetCaret = function (node) {
-    var $node = jQuery(node);
+    var wym = this,
+        $node = jQuery(node);
 
     if (
         node.previousSibling &&
         !node.previousSibling.tagName ||
         node.previousSibling.tagName.toLowerCase() !== 'br' &&
-        this.isInlineNode(node.previousSibling)
+        wym.isInlineNode(node.previousSibling)
     ) {
         $node.before('<br />');
     }
 
     $node.before('<br />');
-    this.setCaretBefore(node.previousSibling);
+    wym.setCaretBefore(node.previousSibling);
     $node.remove();
 };
 
@@ -4022,7 +4540,7 @@ WYMeditor.editor.prototype._getSelectedListItems = function (selection) {
                list.
 */
 WYMeditor.editor.prototype._selectionOnlyInList = function (sel) {
-    var wym = this._wym,
+    var wym = this,
         selStartNode,
         selEndNode,
         i;
@@ -4056,8 +4574,8 @@ WYMeditor.editor.prototype._selectionOnlyInList = function (sel) {
     Only list items that have a common list will be indented.
  */
 WYMeditor.editor.prototype.indent = function () {
-    var wym = this._wym,
-        sel = rangy.getIframeSelection(this._iframe),
+    var wym = this,
+        sel = wym.selection(),
         listItems,
         manipulationFunc,
         i;
@@ -4080,7 +4598,7 @@ WYMeditor.editor.prototype.indent = function () {
 
     // We just changed and restored the selection when possibly correcting the
     // lists
-    sel = rangy.getIframeSelection(this._iframe);
+    sel = wym.selection();
 
     // If all of the selected nodes are not contained within one list, don't
     // perform the action.
@@ -4116,8 +4634,8 @@ WYMeditor.editor.prototype.indent = function () {
     behavior and valid HTML.
 */
 WYMeditor.editor.prototype.outdent = function () {
-    var wym = this._wym,
-        sel = rangy.getIframeSelection(this._iframe),
+    var wym = this,
+        sel = wym.selection(),
         listItems,
         manipulationFunc,
         i;
@@ -4140,7 +4658,7 @@ WYMeditor.editor.prototype.outdent = function () {
 
     // We just changed and restored the selection when possibly correcting the
     // lists
-    sel = rangy.getIframeSelection(this._iframe);
+    sel = wym.selection();
 
     // If all of the selected nodes are not contained within one list, don't
     // perform the action.
@@ -4183,7 +4701,10 @@ WYMeditor.editor.prototype.outdent = function () {
     potentially destroyed the selection.
 */
 WYMeditor.editor.prototype.restoreSelectionAfterManipulation = function (manipulationFunc) {
-    var savedSelection = rangy.saveSelection(rangy.dom.getIframeWindow(this._iframe)),
+    var wym = this,
+        savedSelection = rangy.saveSelection(
+            rangy.dom.getIframeWindow(wym._iframe)
+        ),
         changesMade = true;
 
     // If something goes wrong, we don't want to leave selection markers
@@ -4314,8 +4835,8 @@ WYMeditor.editor.prototype.insertUnorderedlist = function () {
                     or 'ol'.
  */
 WYMeditor.editor.prototype._insertList = function (listType) {
-    var wym = this._wym,
-        sel = rangy.getIframeSelection(wym._iframe),
+    var wym = this,
+        sel = wym.selection(),
         listItems,
         $listItems,
         $parentListsOfDifferentType,
@@ -4372,14 +4893,15 @@ WYMeditor.editor.prototype._changeListType = function (list, listType) {
 };
 
 WYMeditor.editor.prototype._convertToList = function (blockElement, listType) {
-    var $blockElement = jQuery(blockElement),
+    var wym = this,
+        $blockElement = jQuery(blockElement),
         newListHtml,
         $newList;
 
     // ie6 doesn't support calling wrapInner with a dom node. Build html
     newListHtml = '<' + listType + '><li></li></' + listType + '>';
 
-    if (this.findUp(blockElement, WYMeditor.MAIN_CONTAINERS) === blockElement) {
+    if (wym.findUp(blockElement, WYMeditor.MAIN_CONTAINERS) === blockElement) {
         // TODO: Handle ol/ul elements, since these are now in the `root`
         // containers list
 
@@ -4536,7 +5058,7 @@ WYMeditor.editor.prototype._removeItemsFromList = function ($listItems) {
         }
         // `br`s may have been transferred to the root container. They don't
         // belong there.
-        jQuery(wym._doc).find('body.wym_iframe').children('br').remove();
+        wym.$body().children('br').remove();
 
         if ($listItem[0].tagName.toLowerCase() === 'span') {
             // Get rid of empty `span`s and ones that contain only `br`s.
@@ -4610,7 +5132,8 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
         return;
     }
 
-    var table = this._doc.createElement(WYMeditor.TABLE),
+    var wym = this,
+        table = wym._doc.createElement(WYMeditor.TABLE),
         newRow = null,
         newCaption,
 
@@ -4638,18 +5161,18 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
 
     // Find the currently-selected container
     container = jQuery(
-        this.findUp(this.mainContainer(), WYMeditor.POTENTIAL_TABLE_INSERT_ELEMENTS)
+        wym.findUp(wym.selectedContainer(), WYMeditor.POTENTIAL_TABLE_INSERT_ELEMENTS)
     ).get(0);
 
     if (!container || !container.parentNode) {
         // No valid selected container. Put the table at the end.
-        jQuery(this._doc.body).append(table);
+        wym.$body().append(table);
 
     } else if (jQuery.inArray(container.nodeName.toLowerCase(),
                        WYMeditor.INLINE_TABLE_INSERTION_ELEMENTS) > -1) {
         // Insert table after selection if container is allowed to have tables
         // inserted inline.
-        selectedNode = this.selection().focusNode;
+        selectedNode = wym.selection().focusNode;
 
         // If the selection is within a table, move the selection to the parent
         // table to avoid nesting the tables.
@@ -4680,8 +5203,8 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
     }
 
     // Handle any browser-specific cleanup
-    this.afterInsertTable(table);
-    this.fixBodyHtml();
+    wym.afterInsertTable(table);
+    wym.fixBodyHtml();
 
     return table;
 };
@@ -4702,7 +5225,7 @@ WYMeditor.editor.prototype.listen = function () {
     // Don't use jQuery.find() on the iframe body
     // because of MSIE + jQuery + expando issue (#JQ1143)
 
-    jQuery(wym._doc.body).bind("mousedown", function (e) {
+    wym.$body().bind("mousedown", function (e) {
         wym.mousedown(e);
     });
 
@@ -4729,10 +5252,11 @@ WYMeditor.editor.prototype.handlePasteEvent = function () {
 };
 
 WYMeditor.editor.prototype.mousedown = function (evt) {
+    var wym = this;
     // Store the selected image if we clicked an <img> tag
-    this._selectedImage = null;
+    wym._selectedImage = null;
     if (evt.target.tagName.toLowerCase() === WYMeditor.IMG) {
-        this._selectedImage = evt.target;
+        wym._selectedImage = evt.target;
     }
 };
 
@@ -4744,19 +5268,60 @@ WYMeditor.editor.prototype.mousedown = function (evt) {
     skin's javascript `init` method.
 */
 WYMeditor.editor.prototype.initSkin = function () {
+    var wym = this;
     // Put the classname (ex. wym_skin_default) on wym_box
-    jQuery(this._box).addClass("wym_skin_" + this._options.skin);
+    jQuery(wym._box).addClass("wym_skin_" + wym._options.skin);
 
     // Init the skin, if needed
-    if (typeof WYMeditor.SKINS[this._options.skin] !== "undefined") {
-        if (typeof WYMeditor.SKINS[this._options.skin].init === "function") {
-            WYMeditor.SKINS[this._options.skin].init(this);
+    if (typeof WYMeditor.SKINS[wym._options.skin] !== "undefined") {
+        if (typeof WYMeditor.SKINS[wym._options.skin].init === "function") {
+            WYMeditor.SKINS[wym._options.skin].init(wym);
         }
     } else {
         WYMeditor.console.warn(
-            "Chosen skin _" + this.options.skin + "_ not found."
+            "Chosen skin _" + wym.options.skin + "_ not found."
         );
     }
+};
+
+/**
+    WYMeditor.editor.body
+    =====================
+
+    Returns the document's body element.
+*/
+WYMeditor.editor.prototype.body = function () {
+    var wym = this,
+        body;
+
+    if (!wym._doc.body) {
+        throw "The document seems to have no body element.";
+    }
+
+    body = wym._doc.body;
+
+    if (
+        !body.tagName ||
+        body.tagName.toLowerCase() !== 'body'
+    ) {
+        throw "The document's body doesn't seem to be a `body` element.";
+    }
+
+    return body;
+};
+
+/**
+    WYMEditor.editor.$body
+    ======================
+
+    Returns a jQuery object of the document's body element.
+*/
+WYMeditor.editor.prototype.$body = function () {
+    var wym = this,
+        body;
+
+    body = wym.body();
+    return jQuery(body);
 };
 
 /*jslint maxlen: 90 */
@@ -4781,9 +5346,10 @@ WYMeditor.editor.prototype.initSkin = function () {
  *
  */
 WYMeditor.DocumentStructureManager = function (wym, defaultRootContainer) {
-    this._wym = wym;
-    this.structureRules = WYMeditor.DocumentStructureManager.DEFAULTS;
-    this.setDefaultRootContainer(defaultRootContainer);
+    var dsm = this;
+    dsm._wym = wym;
+    dsm.structureRules = WYMeditor.DocumentStructureManager.DEFAULTS;
+    dsm.setDefaultRootContainer(defaultRootContainer);
 };
 
 jQuery.extend(WYMeditor.DocumentStructureManager, {
@@ -4890,11 +5456,12 @@ WYMeditor.DocumentStructureManager.prototype.setDefaultRootContainer = function
 (
     defaultRootContainer
 ) {
-    var validContainers,
+    var dsm = this,
+        validContainers,
         index,
         DSManager;
 
-    if (this.structureRules.defaultRootContainer === defaultRootContainer) {
+    if (dsm.structureRules.defaultRootContainer === defaultRootContainer) {
         // This is already our current configuration. No need to do the
         // work again.
         return;
@@ -4912,15 +5479,15 @@ WYMeditor.DocumentStructureManager.prototype.setDefaultRootContainer = function
         );
     }
 
-    this.structureRules.defaultRootContainer = defaultRootContainer;
+    dsm.structureRules.defaultRootContainer = defaultRootContainer;
 
     // No other possible option for default root containers is valid expect for
     // the one choosen default root container
-    this.structureRules.notValidRootContainers =
+    dsm.structureRules.notValidRootContainers =
         WYMeditor.DocumentStructureManager.VALID_DEFAULT_ROOT_CONTAINERS;
-    this.structureRules.notValidRootContainers.splice(index, 1);
+    dsm.structureRules.notValidRootContainers.splice(index, 1);
 
-    this.adjustDefaultRootContainerUI();
+    dsm.adjustDefaultRootContainerUI();
 
     // TODO: Actually do all of the switching required to move from p to div or
     // from div to p for the topLevelContainer
@@ -4936,8 +5503,9 @@ WYMeditor.DocumentStructureManager.prototype.setDefaultRootContainer = function
     default root container.
 */
 WYMeditor.DocumentStructureManager.prototype.adjustDefaultRootContainerUI = function () {
-    var wym = this._wym,
-        defaultRootContainer = this.structureRules.defaultRootContainer,
+    var dsm = this,
+        wym = dsm._wym,
+        defaultRootContainer = dsm.structureRules.defaultRootContainer,
         $containerItems,
         $containerLink,
         $newContainerItem,
@@ -4958,7 +5526,7 @@ WYMeditor.DocumentStructureManager.prototype.adjustDefaultRootContainerUI = func
         $containerLink = $containerItems.eq(i).find('a');
         containerName = $containerLink.attr('name').toLowerCase();
         if (jQuery.inArray(containerName,
-                           this.structureRules.notValidRootContainers) > -1) {
+                           dsm.structureRules.notValidRootContainers) > -1) {
             $containerItems.eq(i).remove();
         }
         if (containerName === defaultRootContainer) {
@@ -4993,7 +5561,8 @@ WYMeditor.DocumentStructureManager.prototype.adjustDefaultRootContainerUI = func
 
         // Bind click event for the new link
         $newContainerItem.find('a').click(function () {
-            wym.mainContainer(jQuery(this).attr(WYMeditor.NAME));
+            var button = this;
+            wym.mainContainer(jQuery(button).attr(WYMeditor.NAME));
             return false;
         });
     }
@@ -5005,8 +5574,9 @@ WYMeditor.DocumentStructureManager.prototype.adjustDefaultRootContainerUI = func
 "use strict";
 
 WYMeditor.WymClassGecko = function (wym) {
-    this._wym = wym;
-    this._class = "class";
+    var wymClassGecko = this;
+    wymClassGecko._wym = wym;
+    wymClassGecko._class = "class";
 };
 
 // Placeholder cell to allow content in TD cells for FF 3.5+
@@ -5018,94 +5588,63 @@ WYMeditor.WymClassGecko.NEEDS_CELL_FIX = parseInt(
     jQuery.browser.version >= '1.9.1' &&
     jQuery.browser.version < '2.0';
 
-WYMeditor.WymClassGecko.prototype.initIframe = function (iframe) {
+WYMeditor.WymClassGecko.prototype._docEventQuirks = function () {
     var wym = this;
 
-    this._iframe = iframe;
-    this._doc = iframe.contentDocument;
-
-    this._doc.title = this._wym._index;
-
-    // Set the text direction
-    jQuery('html', this._doc).attr('dir', this._options.direction);
-
-    // Init html value
-    if (this._wym._options.html) {
-        this._html(this._wym._options.html);
-    } else {
-        this._html(this._element[0].value);
-    }
-
-    this.enableDesignMode();
-
-    if (jQuery.isFunction(this._options.preBind)) {
-        this._options.preBind(this);
-    }
-
-    // Bind external events
-    this._wym.bindEvents();
-
-    jQuery(this._doc).bind("keydown", this.keydown);
-    jQuery(this._doc).bind("keyup", this.keyup);
-    jQuery(this._doc).bind("click", this.click);
+    jQuery(wym._doc).bind("keydown", wym.keydown);
+    jQuery(wym._doc).bind("keyup", wym.keyup);
+    jQuery(wym._doc).bind("click", wym.click);
     // Bind editor focus events (used to reset designmode - Gecko bug)
-    jQuery(this._doc).bind("focus", function () {
+    jQuery(wym._doc).bind("focus", function () {
         // Fix scope
-        wym.enableDesignMode.call(wym);
+        wym._enableDesignModeOnIframe.call(wym);
     });
-
-    wym.iframeInitialized = true;
-
-    wym.postIframeInit();
 };
 
 /** @name html
  * @description Get/Set the html value
  */
 WYMeditor.WymClassGecko.prototype._html = function (html) {
+    var wym = this;
+
     if (typeof html === 'string') {
         //disable designMode
         try {
-            this._doc.designMode = "off";
+            wym._doc.designMode = "off";
         } catch (e) {
             //do nothing
         }
 
-        //replace em by i and strong by bold
-        //(designMode issue)
-        html = html.replace(/<em(\b[^>]*)>/gi, "<i$1>");
-        html = html.replace(/<\/em>/gi, "</i>");
-        html = html.replace(/<strong(\b[^>]*)>/gi, "<b$1>");
-        html = html.replace(/<\/strong>/gi, "</b>");
-
         //update the html body
-        jQuery(this._doc.body).html(html);
-        this._wym.fixBodyHtml();
+        jQuery(wym._doc.body).html(html);
+        wym._wym.fixBodyHtml();
 
         //re-init designMode
-        this.enableDesignMode();
+        wym._enableDesignModeOnIframe();
     } else {
-        return jQuery(this._doc.body).html();
+        return jQuery(wym._doc.body).html();
     }
     return false;
 };
 
 WYMeditor.WymClassGecko.prototype._exec = function (cmd, param) {
-    if (!this.selectedContainer()) {
+    var wym = this,
+        container;
+    if (!wym.selectedContainer()) {
         return false;
     }
 
     if (param) {
-        this._doc.execCommand(cmd, '', param);
+        wym._doc.execCommand(cmd, '', param);
     } else {
-        this._doc.execCommand(cmd, '', null);
+        wym._doc.execCommand(cmd, '', null);
     }
 
     //set to P if parent = BODY
-    var container = this.selectedContainer();
+    container = wym.selectedContainer();
     if (container && container.tagName.toLowerCase() === WYMeditor.BODY) {
-        this._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
-        this.fixBodyHtml();
+        wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
+        wym.fixBodyHtml();
     }
 
     return true;
@@ -5113,8 +5652,8 @@ WYMeditor.WymClassGecko.prototype._exec = function (cmd, param) {
 
 //keydown handler, mainly used for keyboard shortcuts
 WYMeditor.WymClassGecko.prototype.keydown = function (evt) {
-    //'this' is the doc
-    var wym = WYMeditor.INSTANCES[this.title];
+    var doc = this,
+        wym = WYMeditor.INSTANCES[doc.title];
 
     if (evt.ctrlKey) {
         if (evt.which === 66) {
@@ -5134,8 +5673,8 @@ WYMeditor.WymClassGecko.prototype.keydown = function (evt) {
 
 // Keyup handler, mainly used for cleanups
 WYMeditor.WymClassGecko.prototype.keyup = function (evt) {
-    // 'this' is the doc
-    var wym = WYMeditor.INSTANCES[this.title],
+    var doc = this,
+        wym = WYMeditor.INSTANCES[doc.title],
         container,
         defaultRootContainer,
         notValidRootContainers,
@@ -5204,7 +5743,8 @@ WYMeditor.WymClassGecko.prototype.keyup = function (evt) {
 };
 
 WYMeditor.WymClassGecko.prototype.click = function () {
-    var wym = WYMeditor.INSTANCES[this.title],
+    var doc = this,
+        wym = WYMeditor.INSTANCES[doc.title],
         container = wym.selectedContainer(),
         sel;
 
@@ -5228,7 +5768,7 @@ WYMeditor.WymClassGecko.prototype.click = function () {
     if (container && container.tagName.toLowerCase() === WYMeditor.BODY) {
         // A click in the body means there is no content at all, so we
         // should automatically create a starter paragraph
-        sel = wym._iframe.contentWindow.getSelection();
+        sel = wym.selection();
         if (sel.isCollapsed === true) {
             // If the selection isn't collapsed, we might have a selection that
             // drags over the body, but we shouldn't turn everything in to a
@@ -5239,12 +5779,13 @@ WYMeditor.WymClassGecko.prototype.click = function () {
     }
 };
 
-WYMeditor.WymClassGecko.prototype.enableDesignMode = function () {
-    if (this._doc.designMode === "off") {
+WYMeditor.WymClassGecko.prototype._enableDesignModeOnIframe = function () {
+    var wym = this;
+    if (wym._doc.designMode === "off") {
         try {
-            this._doc.designMode = "on";
-            this._doc.execCommand("styleWithCSS", '', false);
-            this._doc.execCommand("enableObjectResizing", false, true);
+            wym._doc.designMode = "on";
+            wym._doc.execCommand("styleWithCSS", '', false);
+            wym._doc.execCommand("enableObjectResizing", false, true);
         } catch (e) {}
     }
 };
@@ -5265,128 +5806,417 @@ WYMeditor.WymClassGecko.prototype.afterInsertTable = function (table) {
 };
 
 /*jslint evil: true */
+/* global -$ */
+"use strict";
+
+WYMeditor.WymClassWebKit = function (wym) {
+    var wymClassWebKit = this;
+    wymClassWebKit._wym = wym;
+    wymClassWebKit._class = "class";
+};
+
+WYMeditor.WymClassWebKit.prototype._docEventQuirks = function () {
+    var wym = this;
+
+    jQuery(wym._doc).bind("keydown", wym.keydown);
+    jQuery(wym._doc).bind("keyup", wym.keyup);
+};
+
+WYMeditor.WymClassWebKit.prototype._exec = function (cmd, param) {
+    var wym = this,
+        container,
+        $container,
+        tagName,
+        structureRules,
+        noClassOrAppleSpan;
+
+    if (!wym.selectedContainer()) {
+        return false;
+    }
+
+    if (param) {
+        wym._doc.execCommand(cmd, '', param);
+    } else {
+        wym._doc.execCommand(cmd, '', null);
+    }
+
+    container = wym.selectedContainer();
+    if (container) {
+        $container = jQuery(container);
+        tagName = container.tagName.toLowerCase();
+
+        // Wrap this content in the default root container if we're in the body
+        if (tagName === WYMeditor.BODY) {
+            structureRules = wym.documentStructureManager.structureRules;
+            wym._exec(
+                WYMeditor.FORMAT_BLOCK,
+                structureRules.defaultRootContainer
+            );
+            wym.fixBodyHtml();
+        }
+
+        // If the cmd was FORMAT_BLOCK, check if the block was moved outside
+        // the body after running the command. If it was moved outside, move it
+        // back inside the body. This was added because running FORMAT_BLOCK on
+        // an image inserted outside of a container was causing it to be moved
+        // outside the body (See issue #400).
+        if (cmd === WYMeditor.FORMAT_BLOCK &&
+            $container.siblings('body.wym_iframe').length) {
+
+            $container.siblings('body.wym_iframe').append(container);
+        }
+
+        // If the container is a span, strip it out if it doesn't have a class
+        // but has an inline style of 'font-weight: normal;'.
+        if (tagName === 'span') {
+            noClassOrAppleSpan = !$container.attr('class') ||
+                $container.attr('class').toLowerCase() === 'apple-style-span';
+            if (noClassOrAppleSpan &&
+                $container.attr('style') === 'font-weight: normal;') {
+
+                $container.contents().unwrap();
+            }
+        }
+    }
+
+    return true;
+};
+
+//keydown handler, mainly used for keyboard shortcuts
+WYMeditor.WymClassWebKit.prototype.keydown = function (e) {
+    var doc = this,
+        wym = WYMeditor.INSTANCES[doc.title];
+
+    if (e.ctrlKey) {
+        if (e.which === WYMeditor.KEY.B) {
+            //CTRL+b => STRONG
+            wym._exec(WYMeditor.BOLD);
+            e.preventDefault();
+        }
+        if (e.which === WYMeditor.KEY.I) {
+            //CTRL+i => EMPHASIS
+            wym._exec(WYMeditor.ITALIC);
+            e.preventDefault();
+        }
+    } else if (e.shiftKey && e.which === WYMeditor.KEY.ENTER) {
+        // Safari 4 and earlier would show a proper linebreak in the editor and
+        // then strip it upon save with the default action in the case of
+        // inserting a new line after bold text
+        wym._exec('InsertLineBreak');
+        e.preventDefault();
+    }
+};
+
+// A `div` can be created by breaking out of a list in some cases. Issue #549.
+WYMeditor.WymClassWebKit.prototype._inListBreakoutDiv = function (evtWhich) {
+    var wym = this,
+        $mainContainer = jQuery(wym.mainContainer());
+
+    if (
+        evtWhich === WYMeditor.KEY.ENTER &&
+        $mainContainer.is('div') &&
+        wym.documentStructureManager.defaultRootContainer !== 'div' &&
+        $mainContainer.prev('ol, ul').length === 1
+    ) {
+        return true;
+    }
+    return false;
+};
+
+// Checks whether this is issue #542.
+WYMeditor.WymClassWebKit.prototype._isLiInLiAfterEnter = function (evtWhich) {
+    var wym = this,
+        nodeAfterSel = wym.nodeAfterSel(),
+        parentNode,
+        previousSibling,
+        previousSiblingChild,
+        previousPreviousSibling;
+
+    if (evtWhich !== WYMeditor.KEY.ENTER) {
+        return false;
+    }
+
+    if (!nodeAfterSel) {
+        return false;
+    }
+
+    parentNode = nodeAfterSel.parentNode;
+    if (!parentNode) {
+        return false;
+    }
+    if (typeof parentNode.tagName !== 'string') {
+        return false;
+    }
+    if (parentNode.tagName.toLowerCase() !== 'li') {
+        return false;
+    }
+
+    previousSibling = nodeAfterSel.previousSibling;
+    if (!previousSibling) {
+        return false;
+    }
+    if (typeof previousSibling.tagName !== 'string') {
+        return false;
+    }
+    if (previousSibling.tagName.toLowerCase() !== 'li') {
+        return false;
+    }
+
+    if (previousSibling.childNodes.length !== 1) {
+        return false;
+    }
+    previousSiblingChild = previousSibling.childNodes[0];
+    if (!previousSiblingChild) {
+        return false;
+    }
+    if (typeof previousSiblingChild.tagName !== 'string') {
+        return false;
+    }
+    if (previousSiblingChild.tagName.toLowerCase() !== 'br') {
+        return false;
+    }
+
+    previousPreviousSibling = previousSibling.previousSibling;
+    if (!previousPreviousSibling) {
+        return false;
+    }
+    if (typeof previousPreviousSibling.tagName !== 'string') {
+        return false;
+    }
+    if (
+        jQuery.inArray(
+        previousPreviousSibling.tagName.toLowerCase(),
+        ['ol', 'ul']
+        ) === -1
+    ) {
+        return false;
+    }
+
+    return true;
+};
+
+// Fixes issue #542.
+WYMeditor.WymClassWebKit.prototype
+    ._fixLiInLiAfterEnter = function () {
+    var wym = this,
+        nodeAfterSel = wym.nodeAfterSel(),
+        $errorLi = jQuery(nodeAfterSel.previousSibling),
+        $parentLi = $errorLi.parent('li'),
+        errorLiIndex = $parentLi.contents().index($errorLi),
+        $contentsAfterErrorLi = $parentLi.contents().slice(errorLiIndex + 1);
+
+    $errorLi.remove();
+    $parentLi.after('<li><br /></li>');
+    $parentLi.next().append($contentsAfterErrorLi);
+    wym.setCaretBefore($parentLi.next('li').children().first('br')[0]);
+};
+
+// Keyup handler, mainly used for cleanups
+WYMeditor.WymClassWebKit.prototype.keyup = function (evt) {
+    var doc = this,
+        wym = WYMeditor.INSTANCES[doc.title],
+        container,
+        defaultRootContainer,
+        notValidRootContainers,
+        name,
+        parentName,
+        mainContainer;
+
+    notValidRootContainers =
+        wym.documentStructureManager.structureRules.notValidRootContainers;
+    defaultRootContainer =
+        wym.documentStructureManager.structureRules.defaultRootContainer;
+    wym._selectedImage = null;
+
+    // Fix to allow shift + return to insert a line break in older safari
+    if (jQuery.browser.version < 534.1) {
+        // Not needed in AT MAX chrome 6.0. Probably safe earlier
+        if (evt.which === WYMeditor.KEY.ENTER && evt.shiftKey) {
+            wym._exec('InsertLineBreak');
+        }
+    }
+
+    // If the inputted key cannont create a block element and is not a command,
+    // check to make sure the selection is properly wrapped in a container
+    if (!wym.keyCanCreateBlockElement(evt.which) &&
+            evt.which !== WYMeditor.KEY.CTRL &&
+            evt.which !== WYMeditor.KEY.COMMAND &&
+            !evt.metaKey &&
+            !evt.ctrlKey) {
+
+        container = wym.selectedContainer();
+        name = container.tagName.toLowerCase();
+        if (container.parentNode) {
+            parentName = container.parentNode.tagName.toLowerCase();
+        }
+
+        // Fix forbidden main containers
+        if (wym.isForbiddenMainContainer(name)) {
+            name = parentName;
+        }
+
+        // Replace text nodes with default root tags and make sure the
+        // container is valid if it is a root container
+        if (name === WYMeditor.BODY ||
+                (jQuery.inArray(name, notValidRootContainers) > -1 &&
+                parentName === WYMeditor.BODY)) {
+
+            wym._exec(WYMeditor.FORMAT_BLOCK, defaultRootContainer);
+            wym.fixBodyHtml();
+        }
+    }
+
+    // If we potentially created a new block level element or moved to a new
+    // one, then we should ensure the container is valid and the formatting is
+    // proper.
+    if (wym.keyCanCreateBlockElement(evt.which)) {
+        // If the selected container is a root container, make sure it is not a
+        // different possible default root container than the chosen one.
+        container = wym.selectedContainer();
+        name = container.tagName.toLowerCase();
+        if (container.parentNode) {
+            parentName = container.parentNode.tagName.toLowerCase();
+        }
+        if (jQuery.inArray(name, notValidRootContainers) > -1 &&
+                parentName === WYMeditor.BODY) {
+            wym._exec(WYMeditor.FORMAT_BLOCK, defaultRootContainer);
+        }
+
+        // Issue #542
+        if (wym._isLiInLiAfterEnter(evt.which, container)) {
+            wym._fixLiInLiAfterEnter();
+            return;
+        }
+
+        // Call for the check for--and possible correction of--issue #430.
+        wym.handlePotentialEnterInEmptyNestedLi(evt.which, container);
+
+        // Issue #549.
+        if (wym._inListBreakoutDiv(evt.which)) {
+            mainContainer = wym.switchTo(
+                wym.mainContainer(),
+                defaultRootContainer
+            );
+            wym.setCaretIn(mainContainer);
+        }
+
+        // Fix formatting if necessary
+        wym.fixBodyHtml();
+    }
+};
+
+/*jslint evil: true */
 /* global rangy, -$ */
 "use strict";
 
-WYMeditor.WymClassTrident = function (wym) {
-    this._wym = wym;
-    this._class = "className";
+WYMeditor.WymClassTridentPre7 = function (wym) {
+    var wymClassTridentPre7 = this;
+    wymClassTridentPre7._wym = wym;
+    wymClassTridentPre7._class = "className";
 };
 
-WYMeditor.WymClassTrident.prototype.initIframe = function (iframe) {
-    this._iframe = iframe;
-    this._doc = iframe.contentWindow.document;
+WYMeditor.WymClassTridentPre7.prototype._onEditorIframeLoad = function (wym) {
+    wym._assignWymDoc();
 
-    if (this._doc.designMode !== "On") {
-        this._doc.designMode = "On";
-        // Initializing designMode triggers the load event again, thus
-        // triggering this method again. We can short-circuit this run and do
-        // all of the work in the next trigger
-        return false;
-    }
-    this._doc.title = this._wym._index;
-
-    // Set the text direction
-    jQuery('html', this._doc).attr('dir', this._options.direction);
-
-    // Init html value
-    if (this._wym._options.html) {
-        this._html(this._wym._options.html);
+    if (wym._isDesignModeOn() === false) {
+        wym._doc.designMode = "On";
     } else {
-        this._html(this._element[0].value);
+        // Pre-7 Trident Internet Explorer versions reload the Iframe when its
+        // designMode property is set to "on". So this will run on the second
+        // time this handler is called.
+        wym._afterDesignModeOn();
     }
+};
 
-    // Handle events
+WYMeditor.WymClassTridentPre7.prototype._assignWymDoc = function () {
     var wym = this;
 
-    this._doc.body.onfocus = function () {
-        wym._doc.designMode = "on";
-        wym._doc = iframe.contentWindow.document;
-    };
-    this._doc.onbeforedeactivate = function () {
+    wym._doc = wym._iframe.contentWindow.document;
+};
+
+WYMeditor.WymClassTridentPre7.prototype._docEventQuirks = function () {
+    var wym = this;
+
+    wym._doc.onbeforedeactivate = function () {
         wym.saveCaret();
     };
-    jQuery(this._doc).bind('keyup', wym.keyup);
-    this._doc.onkeyup = function () {
+    jQuery(wym._doc).bind('keyup', wym.keyup);
+    wym._doc.onkeyup = function () {
         wym.saveCaret();
     };
-    this._doc.onclick = function () {
+    wym._doc.onclick = function () {
         wym.saveCaret();
     };
 
-    this._doc.body.onbeforepaste = function () {
+    wym._doc.body.onbeforepaste = function () {
         wym._iframe.contentWindow.event.returnValue = false;
     };
 
-    this._doc.body.onpaste = function () {
+    wym._doc.body.onpaste = function () {
         wym._iframe.contentWindow.event.returnValue = false;
         wym.paste(window.clipboardData.getData("Text"));
     };
-
-    if (jQuery.isFunction(this._options.preBind)) {
-        this._options.preBind(this);
-    }
-
-    this._wym.bindEvents();
-
-    wym.iframeInitialized = true;
-
-    wym.postIframeInit();
 };
 
-(function (editorInitSkin) {
-    WYMeditor.WymClassTrident.prototype.initSkin = function () {
-        // Mark container items as unselectable (#203)
-        // Fix for issue explained:
-        // http://stackoverflow.com/questions/
-        // 1470932/ie8-iframe-designmode-loses-selection
-        jQuery(this._box).find(
-            this._options.containerSelector
-        ).attr('unselectable', 'on');
+WYMeditor.WymClassTridentPre7.prototype._setButtonsUnselectable = function () {
+    // Mark UI buttons as unselectable (#203)
+    // Issue explained here:
+    // http://stackoverflow.com/questions/1470932
+    var wym = this,
+        $buttons = wym.getButtons();
 
-        editorInitSkin.call(this);
-    };
-}(WYMeditor.editor.prototype.initSkin));
+    $buttons.attr('unselectable', 'on');
+};
 
-WYMeditor.WymClassTrident.prototype._exec = function (cmd, param) {
+WYMeditor.WymClassTridentPre7.prototype._UiQuirks = function () {
+    var wym = this;
+    if (jQuery.browser.versionNumber === 8) {
+        wym._setButtonsUnselectable();
+    }
+};
+
+WYMeditor.WymClassTridentPre7.prototype._exec = function (cmd, param) {
+    var wym = this;
     if (param) {
-        this._doc.execCommand(cmd, false, param);
+        wym._doc.execCommand(cmd, false, param);
     } else {
-        this._doc.execCommand(cmd);
+        wym._doc.execCommand(cmd);
     }
 };
 
-WYMeditor.WymClassTrident.prototype.saveCaret = function () {
-    this._doc.caretPos = this._doc.selection.createRange();
+WYMeditor.WymClassTridentPre7.prototype.saveCaret = function () {
+    var wym = this;
+    wym._doc.caretPos = wym._doc.selection.createRange();
 };
 
-WYMeditor.WymClassTrident.prototype.insert = function (html) {
-
-    // Get the current selection
-    var range = this._doc.selection.createRange(),
+WYMeditor.WymClassTridentPre7.prototype.insert = function (html) {
+    var wym = this,
+        // Get the current selection
+        range = wym._doc.selection.createRange(),
         $selectionParents;
 
     // Check if the current selection is inside the editor
     $selectionParents = jQuery(range.parentElement()).parents();
-    if ($selectionParents.is(this._options.iframeBodySelector)) {
+    if ($selectionParents.is(wym._options.iframeBodySelector)) {
         try {
             // Overwrite selection with provided html
             range.pasteHTML(html);
         } catch (e) {}
     } else {
         // Fall back to the internal paste function if there's no selection
-        this.paste(html);
+        wym.paste(html);
     }
 };
 
-WYMeditor.WymClassTrident.prototype.wrap = function (left, right) {
-    // Get the current selection
-    var range = this._doc.selection.createRange(),
+WYMeditor.WymClassTridentPre7.prototype.wrap = function (left, right) {
+    var wym = this,
+        // Get the current selection
+        range = wym._doc.selection.createRange(),
         $selectionParents;
 
     // Check if the current selection is inside the editor
     $selectionParents = jQuery(range.parentElement()).parents();
-    if ($selectionParents.is(this._options.iframeBodySelector)) {
+    if ($selectionParents.is(wym._options.iframeBodySelector)) {
         try {
             // Overwrite selection with provided html
             range.pasteHTML(left + range.text + right);
@@ -5405,43 +6235,44 @@ WYMeditor.WymClassTrident.prototype.wrap = function (left, right) {
     @param containerType A string of an HTML tag that specifies the container
                          type to use for wrapping the node.
 */
-WYMeditor.WymClassTrident.prototype.wrapWithContainer = function (
+WYMeditor.WymClassTridentPre7.prototype.wrapWithContainer = function (
     node, containerType
 ) {
-    var wym = this._wym,
+    var wym = this,
         $wrappedNode,
         selection,
         range;
 
     $wrappedNode = jQuery(node).wrap('<' + containerType + ' />');
-    selection = rangy.getIframeSelection(wym._iframe);
+    selection = wym.selection();
     range = rangy.createRange(wym._doc);
     range.selectNodeContents($wrappedNode[0]);
     range.collapse();
     selection.setSingleRange(range);
 };
 
-WYMeditor.WymClassTrident.prototype.unwrap = function () {
-    // Get the current selection
-    var range = this._doc.selection.createRange(),
+WYMeditor.WymClassTridentPre7.prototype.unwrap = function () {
+    var wym = this,
+        // Get the current selection
+        range = wym._doc.selection.createRange(),
         $selectionParents,
         text;
 
     // Check if the current selection is inside the editor
     $selectionParents = jQuery(range.parentElement()).parents();
-    if ($selectionParents.is(this._options.iframeBodySelector)) {
+    if ($selectionParents.is(wym._options.iframeBodySelector)) {
         try {
             // Unwrap selection
             text = range.text;
-            this._exec('Cut');
+            wym._exec('Cut');
             range.pasteHTML(text);
         } catch (e) {}
     }
 };
 
-WYMeditor.WymClassTrident.prototype.keyup = function (evt) {
-    //'this' is the doc
-    var wym = WYMeditor.INSTANCES[this.title],
+WYMeditor.WymClassTridentPre7.prototype.keyup = function (evt) {
+    var doc = this,
+        wym = WYMeditor.INSTANCES[doc.title],
         container,
         defaultRootContainer,
         notValidRootContainers,
@@ -5454,7 +6285,7 @@ WYMeditor.WymClassTrident.prototype.keyup = function (evt) {
         wym.documentStructureManager.structureRules.notValidRootContainers;
     defaultRootContainer =
         wym.documentStructureManager.structureRules.defaultRootContainer;
-    this._selectedImage = null;
+    doc._selectedImage = null;
 
     // If the pressed key can't create a block element and is not a command,
     // check to make sure the selection is properly wrapped in a container
@@ -5519,11 +6350,15 @@ WYMeditor.WymClassTrident.prototype.keyup = function (evt) {
         wym.handlePotentialEnterInEmptyNestedLi(evt.which, container);
 
         // IE8 bug https://github.com/wymeditor/wymeditor/issues/446
-        if (jQuery.browser.msie && jQuery.browser.version === "8.0" &&
-           container.parentNode) {
-            if (parentName === 'ul' || parentName === 'ol') {
-                wym.correctInvalidListNesting(container);
-            }
+        if (
+            evt.which === WYMeditor.KEY.BACKSPACE &&
+            jQuery.browser.versionNumber === 8 &&
+            container.parentNode && (
+                parentName === 'ul' ||
+                parentName === 'ol'
+            )
+        ) {
+            wym.correctInvalidListNesting(container);
         }
 
         // Fix formatting if necessary
@@ -5531,212 +6366,34 @@ WYMeditor.WymClassTrident.prototype.keyup = function (evt) {
     }
 };
 
-/*jslint evil: true */
+/* jshint evil: true */
 /* global -$ */
 "use strict";
 
-WYMeditor.WymClassWebKit = function (wym) {
-    this._wym = wym;
-    this._class = "class";
+/* This file is the custom code for Trident 7 and newer. At the time of writing
+ * this, it is only IE11.
+ */
+
+WYMeditor.WymClassTrident7 = function (wym) {
+    var wymClassTrident7 =  this;
+    wymClassTrident7._wym = wym;
+    wymClassTrident7._class = "class";
 };
 
-WYMeditor.WymClassWebKit.prototype.initIframe = function (iframe) {
-    var wym = this;
+jQuery.extend(
+    WYMeditor.WymClassTrident7.prototype,
+    WYMeditor.WymClassGecko.prototype
+);
 
-    wym._iframe = iframe;
-    wym._doc = iframe.contentDocument;
-
-    wym._doc.title = wym._wym._index;
-
-    // Set the text direction
-    jQuery('html', wym._doc).attr('dir', wym._options.direction);
-
-    // Init designMode
-    wym._doc.designMode = "on";
-
-    // Init html value
-    if (wym._wym._options.html) {
-        wym._html(wym._wym._options.html);
-    } else {
-        wym._html(wym._element[0].value);
-    }
-
-    if (jQuery.isFunction(wym._options.preBind)) {
-        wym._options.preBind(wym);
-    }
-
-    // Bind external events
-    wym._wym.bindEvents();
-
-    jQuery(wym._doc).bind("keydown", wym.keydown);
-    jQuery(wym._doc).bind("keyup", wym.keyup);
-
-    wym.iframeInitialized = true;
-
-    wym.postIframeInit();
-};
-
-WYMeditor.WymClassWebKit.prototype._exec = function (cmd, param) {
-    if (!this.selectedContainer()) {
-        return false;
-    }
-
-    var container,
-        $container,
-        tagName,
-        structureRules,
-        noClassOrAppleSpan;
-
-    if (param) {
-        this._doc.execCommand(cmd, '', param);
-    } else {
-        this._doc.execCommand(cmd, '', null);
-    }
-
-    container = this.selectedContainer();
-    if (container) {
-        $container = jQuery(container);
-        tagName = container.tagName.toLowerCase();
-
-        // Wrap this content in the default root container if we're in the body
-        if (tagName === WYMeditor.BODY) {
-            structureRules = this.documentStructureManager.structureRules;
-            this._exec(
-                WYMeditor.FORMAT_BLOCK,
-                structureRules.defaultRootContainer
-            );
-            this.fixBodyHtml();
-        }
-
-        // If the cmd was FORMAT_BLOCK, check if the block was moved outside
-        // the body after running the command. If it was moved outside, move it
-        // back inside the body. This was added because running FORMAT_BLOCK on
-        // an image inserted outside of a container was causing it to be moved
-        // outside the body (See issue #400).
-        if (cmd === WYMeditor.FORMAT_BLOCK &&
-            $container.siblings('body.wym_iframe').length) {
-
-            $container.siblings('body.wym_iframe').append(container);
-        }
-
-        // If the container is a span, strip it out if it doesn't have a class
-        // but has an inline style of 'font-weight: normal;'.
-        if (tagName === 'span') {
-            noClassOrAppleSpan = !$container.attr('class') ||
-                $container.attr('class').toLowerCase() === 'apple-style-span';
-            if (noClassOrAppleSpan &&
-                $container.attr('style') === 'font-weight: normal;') {
-
-                $container.contents().unwrap();
-            }
-        }
-    }
-
-    return true;
-};
-
-//keydown handler, mainly used for keyboard shortcuts
-WYMeditor.WymClassWebKit.prototype.keydown = function (e) {
-    //'this' is the doc
-    var wym = WYMeditor.INSTANCES[this.title];
-
-    if (e.ctrlKey) {
-        if (e.which === WYMeditor.KEY.B) {
-            //CTRL+b => STRONG
-            wym._exec(WYMeditor.BOLD);
-            e.preventDefault();
-        }
-        if (e.which === WYMeditor.KEY.I) {
-            //CTRL+i => EMPHASIS
-            wym._exec(WYMeditor.ITALIC);
-            e.preventDefault();
-        }
-    } else if (e.shiftKey && e.which === WYMeditor.KEY.ENTER) {
-        // Safari 4 and earlier would show a proper linebreak in the editor and
-        // then strip it upon save with the default action in the case of
-        // inserting a new line after bold text
-        wym._exec('InsertLineBreak');
-        e.preventDefault();
-    }
-};
-
-// Keyup handler, mainly used for cleanups
-WYMeditor.WymClassWebKit.prototype.keyup = function (evt) {
-    //'this' is the doc
-    var wym = WYMeditor.INSTANCES[this.title],
-        container,
-        defaultRootContainer,
-        notValidRootContainers,
-        name,
-        parentName;
-
-    notValidRootContainers =
-        wym.documentStructureManager.structureRules.notValidRootContainers;
-    defaultRootContainer =
-        wym.documentStructureManager.structureRules.defaultRootContainer;
-    wym._selectedImage = null;
-
-    // Fix to allow shift + return to insert a line break in older safari
-    if (jQuery.browser.version < 534.1) {
-        // Not needed in AT MAX chrome 6.0. Probably safe earlier
-        if (evt.which === WYMeditor.KEY.ENTER && evt.shiftKey) {
-            wym._exec('InsertLineBreak');
-        }
-    }
-
-    // If the inputted key cannont create a block element and is not a command,
-    // check to make sure the selection is properly wrapped in a container
-    if (!wym.keyCanCreateBlockElement(evt.which) &&
-            evt.which !== WYMeditor.KEY.CTRL &&
-            evt.which !== WYMeditor.KEY.COMMAND &&
-            !evt.metaKey &&
-            !evt.ctrlKey) {
-
-        container = wym.selectedContainer();
-        name = container.tagName.toLowerCase();
-        if (container.parentNode) {
-            parentName = container.parentNode.tagName.toLowerCase();
-        }
-
-        // Fix forbidden main containers
-        if (wym.isForbiddenMainContainer(name)) {
-            name = parentName;
-        }
-
-        // Replace text nodes with default root tags and make sure the
-        // container is valid if it is a root container
-        if (name === WYMeditor.BODY ||
-                (jQuery.inArray(name, notValidRootContainers) > -1 &&
-                parentName === WYMeditor.BODY)) {
-
-            wym._exec(WYMeditor.FORMAT_BLOCK, defaultRootContainer);
-            wym.fixBodyHtml();
-        }
-    }
-
-    // If we potentially created a new block level element or moved to a new
-    // one, then we should ensure the container is valid and the formatting is
-    // proper.
-    if (wym.keyCanCreateBlockElement(evt.which)) {
-        // If the selected container is a root container, make sure it is not a
-        // different possible default root container than the chosen one.
-        container = wym.selectedContainer();
-        name = container.tagName.toLowerCase();
-        if (container.parentNode) {
-            parentName = container.parentNode.tagName.toLowerCase();
-        }
-        if (jQuery.inArray(name, notValidRootContainers) > -1 &&
-                parentName === WYMeditor.BODY) {
-            wym._exec(WYMeditor.FORMAT_BLOCK, defaultRootContainer);
-        }
-
-        // Call for the check for--and possible correction of--issue #430.
-        wym.handlePotentialEnterInEmptyNestedLi(evt.which, container);
-
-        // Fix formatting if necessary
-        wym.fixBodyHtml();
-    }
-};
+jQuery.copyPropsFromObjectToObject(
+    WYMeditor.WymClassTridentPre7.prototype,
+    WYMeditor.WymClassTrident7.prototype,
+    [
+        '_exec',
+        'keyup',
+        'wrapWithContainer'
+    ]
+);
 
 // GLOBALS
 WYMeditor.LEXER_ENTER = 1;
@@ -6563,6 +7220,7 @@ WYMeditor.XhtmlSaxListener = function() {
     this._insert_before_closing = [];
     this._insert_after_closing = [];
     this._last_node_was_text = false;
+    this._consecutive_brs = 0;
 
     // A string of the tag name of the last open tag added to the output.
     this._lastAddedOpenTag = '';
@@ -6921,7 +7579,8 @@ WYMeditor.XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes) {
         this._addSpacerBeforeElementInLI = false;
     }
 
-    this.output += this.helper.tag(tag, attributes, true);
+    this._lastAddedOpeningTagString = this.helper.tag(tag, attributes, true);
+    this.output += this._lastAddedOpeningTagString
     this._lastAddedOpenTag = tag;
     this._lastTagRemoved = false;
 };
@@ -6965,7 +7624,17 @@ WYMeditor.XhtmlSaxListener.prototype.closeBlockTag = function(tag) {
         this._insideLI = false;
     }
 
-    this.output = this.output.replace(/<br \/>$/, '') +
+    // If a `br` is the only tag within the element that is being closed,
+    // remove that `br` tag.
+    this.output = this.output.replace(
+        new RegExp(
+            this._lastAddedOpeningTagString + '<br />$',
+            ''
+        ),
+        this._lastAddedOpeningTagString
+    );
+
+    this.output = this.output +
         this._getClosingTagContent('before', tag) +
         "</"+tag+">" +
         this._getClosingTagContent('after', tag);
@@ -7154,6 +7823,9 @@ WYMeditor.XhtmlSaxListener.prototype._shouldRemoveTag = function(tag, attributes
     if (this._isRootInlineTagToRemove(tag, attributes, this._tag_stack)) {
         return true;
     }
+    if (this._isThirdConsecutiveBrWithNoAttributes(tag, attributes)) {
+        return true;
+    }
 
     return false;
 };
@@ -7196,6 +7868,36 @@ WYMeditor.XhtmlSaxListener.prototype._isRootInlineTagToRemove = function(
     }
 
     if (WYMeditor.Helper.contains(this._rootInlineTagsToRemove, tag)) {
+        return true;
+    }
+    return false;
+};
+
+/*
+    Is this tag a third consecutive `br` element that has no attributes.
+*/
+WYMeditor.XhtmlSaxListener.prototype
+    ._isThirdConsecutiveBrWithNoAttributes = function (tag, attributes) {
+    var key;
+    if (tag !== 'br') {
+        this._consecutive_brs = 0;
+        return false;
+    }
+    if (
+        this._consecutive_brs !== 0 &&
+        this._last_node_was_text
+    ) {
+        this._consecutive_brs = 0;
+        return false;
+    }
+    for (key in attributes) {
+        if (attributes.hasOwnProperty(key)) {
+            this._consecutive_brs = 0;
+            return false;
+        }
+    }
+    this._consecutive_brs ++;
+    if (this._consecutive_brs > 2) {
         return true;
     }
     return false;
@@ -12914,7 +13616,7 @@ WYMeditor.SKINS.compact = {
                 postInit.call(wym, wym);
             }
 
-            jQuery(wym._doc.body).css('background-color', '#f0f0f0');
+            wym.$body().css('background-color', '#f0f0f0');
         };
     }
 };
@@ -13008,16 +13710,20 @@ WYMeditor.SKINS.legacy = {
 };
 
 jQuery.fn.selectify = function() {
-    return this.each(function() {
-        jQuery(this).hover(
+    var $elements = this;
+    return $elements.each(function() {
+        var element = this;
+        jQuery(element).hover(
             function() {
-                jQuery("h2", this).css("background-position", "0px -18px");
-                jQuery("ul", this).fadeIn("fast");
+                var element = this;
+                jQuery("h2", element).css("background-position", "0px -18px");
+                jQuery("ul", element).fadeIn("fast");
             },
-		    function() {
-		        jQuery("h2", this).css("background-position", "");
-		        jQuery("ul", this).fadeOut("fast");
-		    }
+            function() {
+                var element = this;
+                jQuery("h2", element).css("background-position", "");
+                jQuery("ul", element).fadeOut("fast");
+            }
         );
     });
 };
@@ -13122,15 +13828,17 @@ WYMeditor.SKINS.minimal = {
   * ======================= */
 
     $.fn.wymAffix = function (option) {
-        return this.each(function () {
-            var $this = $(this)
-                , data = $this.data('affix')
+        var $elements = this;
+        return $elements.each(function () {
+            var element = this,
+                $element = $(element)
+                , data = $element.data('affix')
                 , options = typeof option === 'object' && option;
 
             if (!data) {
-                $this.data(
+                $element.data(
                     'affix',
-                    (data = new Affix(this, options))
+                    (data = new Affix(element, options))
                 );
             }
             if (typeof option === 'string') {
@@ -13237,7 +13945,8 @@ WYMeditor.SKINS.seamless = {
         // Make dropdowns also work on click, for mobile devices
         jQuery(".wym_dropdown", wym._box).click(
             function () {
-                jQuery(this).toggleClass("hover");
+                var dropDown = this;
+                jQuery(dropDown).toggleClass("hover");
             }
         );
 
@@ -13357,7 +14066,7 @@ WYMeditor.SKINS.seamless = {
             skinOpts.resizeAfterImagesLoadTimer = null;
         }
 
-        images = jQuery(wym._doc).find('img');
+        images = wym.$body().find('img');
         imagesLength = images.length;
 
         if (imagesLength === 0) {
@@ -13541,16 +14250,20 @@ WYMeditor.SKINS.seamless = {
 /* This file is part of the Silver skin for WYMeditor by Scott Edwin Lewis */
 
 jQuery.fn.selectify = function() {
-    return this.each(function() {
-        jQuery(this).hover(
+    var $elements = this;
+    return $elements.each(function() {
+        var element = this;
+        jQuery(element).hover(
             function() {
-                jQuery("h2", this).css("background-position", "0px -18px");
-                jQuery("ul", this).fadeIn("fast");
+                var element = this;
+                jQuery("h2", element).css("background-position", "0px -18px");
+                jQuery("ul", element).fadeIn("fast");
             },
-		    function() {
-		        jQuery("h2", this).css("background-position", "");
-		        jQuery("ul", this).fadeOut("fast");
-		    }
+            function() {
+                var element = this;
+                jQuery("h2", element).css("background-position", "");
+                jQuery("ul", element).fadeOut("fast");
+            }
         );
     });
 };
@@ -13593,9 +14306,11 @@ WYMeditor.SKINS.silver = {
 
         //make hover work under IE < 7
         jQuery(wym._box).find(".wym_section").hover(function(){
-          jQuery(this).addClass("hover");
+          var section = this;
+          jQuery(section).addClass("hover");
         },function(){
-          jQuery(this).removeClass("hover");
+          var section = this;
+          jQuery(section).removeClass("hover");
         });
     }
 };
