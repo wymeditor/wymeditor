@@ -1451,16 +1451,6 @@ jQuery.fn.parentsOrSelf = function (jqexpr) {
     }
 };
 
-WYMeditor.on = function(sel, e, cb) {
-    if( typeof jQuery.prototype.on === "function") {
-        return jQuery(sel).on(e, cb);
-    }
-    else {
-        return jQuery(sel).bind(e, cb);
-    }
-
-};
-
 /*
     WYMeditor.changeNodeType
     ========================

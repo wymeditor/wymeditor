@@ -453,7 +453,9 @@ WYMeditor.editor.prototype._bindUIEvents = function () {
     });
 
     // Handle click events on classes buttons
-    jQuery(wym._box).find(wym._options.classSelector).click(function () {
+    jQuery(wym._box).find(wym._options.classSelector).click(function (e) {
+        e.preventDefault();
+
         var classButton = this,
             aClasses = eval(wym._options.classesItems),
             sName = jQuery(classButton).attr(WYMeditor.NAME),
@@ -465,19 +467,16 @@ WYMeditor.editor.prototype._bindUIEvents = function () {
             jqexpr = oClass.expr;
             wym.toggleClass(sName, jqexpr);
         }
-        return false;
     });
 
     if(wym._options.autoUpdate) {
-        // If a document is structured properly, there should be no need to
-        // traverse further up the chain than the nearest parent 'form'
         var sel = jQuery(wym._doc).parents('form');
-        WYMeditor.on(sel, wym._options.autoUpdateEvent, function() {
+        jQuery(sel).bind(wym._options.autoUpdateEvent, function() {
             wym.update();
         });
     } else {
         // Handle update event on update element
-        WYMeditor.on(wym._options.updateSelector, wym._options.updateEvent, function() {
+        jQuery(wym._options.updateSelector).bind(wym._options.updateEvent, function() {
             wym.update();
         });
     }
