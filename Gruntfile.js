@@ -269,16 +269,6 @@ module.exports = function (grunt) {
                             "examples/{,*/}*.{html,js,css,png,jpg,jpeg,gif}"
                         ]
                     },
-                    // Bower components for the examples
-                    {
-                        expand: true,
-                        dot: true,
-                        cwd: '<%= yeoman.app %>/bower_components',
-                        dest: '<%= yeoman.dist %>/examples/vendor',
-                        src: [
-                            "{,*/}*.js"
-                        ]
-                    },
                     // Plugins
                     {
                         expand: true,
@@ -380,6 +370,24 @@ module.exports = function (grunt) {
                     root: "<%= yeoman.app %>/lib",
                     vendor: false
                 }
+            },
+            'dist-examples': {
+                options: {
+                    copy: true,
+                    cwd: "<%= yeoman.app %>",
+                    force: false,
+                    map: {
+                        'jquery.js': '/jquery/',
+                        'jquery.browser.js': '/',
+                        'require.js': '/redundant/',
+                        'beautify-html.js': '/redundant/',
+                        'beautify.js': '/redundant/',
+                        'beautify-css.js': '/redundant/'
+                    },
+                    offline: true,
+                    root: "<%= yeoman.dist %>/examples/vendor",
+                    vendor: false
+                }
             }
         }
     });
@@ -412,7 +420,8 @@ module.exports = function (grunt) {
     grunt.registerTask('build', [
         'clean:dist',
         'useminPrepare',
-        'bower',
+        'bower-install-simple',
+        'bower-linker:dist-examples',
         'concat',
         'uglify',
         'copy:dist',
