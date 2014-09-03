@@ -5,7 +5,7 @@ WYMeditor.
 
 ## 1.0.0-beta.8
 
-*release-date* TBD
+*release-date* September 3, 2014
 
 ### Enhancements
 
@@ -18,7 +18,8 @@ WYMeditor.
 
 ### Bug Fixes
 
-* Some fixes in Internet Explorer 11’s initialization, bug fixes and tests.
+* [#515](https://github.com/wymeditor/wymeditor/pull/515)-Some fixes in
+  Internet Explorer 11’s initialization, bug fixes and tests.
 * [#563](https://github.com/wymeditor/wymeditor/pull/563)-clicking on some UI
   Elements, including anything that was added by plugins, caused loss of focus
   and selection in IE8.
@@ -29,16 +30,27 @@ WYMeditor.
   created in Blink in some cases.
 * [#570](https://github.com/wymeditor/wymeditor/pull/570)-Parser to strip more
   than two consecutive line-breaks.
+* [#564](https://github.com/wymeditor/wymeditor/pull/564)-Fixed a bug with
+  toggling CSS classes.
+* [#549](https://github.com/wymeditor/wymeditor/pull/549)-Fixed issue with
+  lists and inline tags in WebKit.
+* [#502](https://github.com/wymeditor/wymeditor/pull/502)-Clarified
+  documentation regarding required libraries.
+* [#589](https://github.com/wymeditor/wymeditor/pull/589)-Fixed a minor IE7
+  issue.
 
 ### Backwards-Incompatible Changes
 
-* Version number scheme changed to adhere to Semantic Versioning 2.x.
+* [#588](https://github.com/wymeditor/wymeditor/pull/588)-Bower packaging was
+  fixed and documented. Might be backwards-incompatible. Just in case.
+* [#572](https://github.com/wymeditor/wymeditor/pull/572)-Version number scheme
+  changed to adhere to Semantic Versioning 2.x.
 * The jQuery.browser plugin, a new dependency, is included in the distribution.
   It is required for all jQuery versions; even the older ones, which still had
   a `jQuery.browser` object included. It matters
   because the ``jQuery.browser`` that is in old jQuery versions thinks that
   IE11 is Mozilla (can’t blame it, really).
-* jQuery-migrate is no longer required at all.
+* jQuery-migrate is no longer required or included.
 * [#546](https://github.com/wymeditor/wymeditor/pull/546)-Buttons that cause
   dialog windows to open should now be marked with the class
   ``wym_opens_dialog``. Without this class they will pop up in the

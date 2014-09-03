@@ -36,7 +36,7 @@ exclude: [
 ]
 
 # Custom vars
-current_version:  1.0.0-beta.8+dev
+current_version:  1.0.0-beta.8
 repo:             https://github.com/wymeditor/wymeditor/
 
 download_source:  https://github.com/wymeditor/wymeditor/archive/v1.0.0-beta.8.zip

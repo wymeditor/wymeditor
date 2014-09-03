@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>WYMeditor | Custom Styles Example</title>
+        <link rel="stylesheet" href="../wymeditor/skins/default/skin.css">
+    </head>
+    <body>
+        <h1>WYMeditor Custom Styles Example</h1>
+        <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
+        <p>In this example, a couple of styles have been configured. They show up in the "Style" box.</p>
+        <form method="post" action="">
+            <textarea class="wymeditor">&lt;p&gt;Hello, World!&lt;/p&gt;</textarea>
+            <input type="submit" class="wymupdate" />
+        </form>
+
+        <script src="vendor/jquery/jquery.js"></script>
+        <script src="../wymeditor/jquery.wymeditor.js"></script>
+        <script type="text/javascript">
+            $(function() {
+                $('.wymeditor').wymeditor({
+                    postInit: function (wym) {
+                        jQuery(wym._doc).find('head').append(
+                            '<link rel="stylesheet" type="text/css" href="../../../examples/22-custom-styles.css" />'
+                        );
+                    },
+                    classesItems: [
+                        {
+                            'name': 'underline',
+                            'title': 'Underline',
+                            'expr': '*'
+                        },
+                        {
+                            'name': 'highlight',
+                            'title': 'Highlight',
+                            'expr': '*'
+                        },
+                        {
+                            'name': 'center',
+                            'title': 'Center',
+                            'expr': '*'
+                        },
+                        {
+                            'name': 'fixed',
+                            'title': 'Evenly-Spaced Table',
+                            'expr': 'table'
+                        },
+                        {
+                            'name': 'list-upper-alpha',
+                            'title': 'List: A. B. C.',
+                            'expr': 'ol'
+                        },
+                        {
+                            'name': 'list-decimal',
+                            'title': 'List: 1. 2. 3.',
+                            'expr': 'ol'
+                        },
+                        {
+                            'name': 'list-lower-alpha',
+                            'title': 'List: a. b. c.',
+                            'expr': 'ol'
+                        },
+                        {
+                            'name': 'list-lower-roman',
+                            'title': 'List: i. ii. iii.',
+                            'expr': 'ol'
+                        },
+                        {
+                            'name': 'list-upper-roman',
+                            'title': 'List: I. II. III.',
+                            'expr': 'ol'
+                        }
+                    ]
+                });
+            });
+        </script>
+    </body>
+</html>

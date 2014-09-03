@@ -11,6 +11,7 @@ dist/MIT-license.txt
 dist/package.json
 dist/README.md
 dist/*.gz
+dist/examples/vendor/redundant/*
 _gh_pages
 docs/.build/*
 src/lib/*

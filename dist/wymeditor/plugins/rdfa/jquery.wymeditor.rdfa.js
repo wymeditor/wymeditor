@@ -17,49 +17,55 @@
 
 //Extend WYMeditor
 WYMeditor.editor.prototype.rdfa = function (options) {
-    var rdfa = new WYMeditor.RDFa(options, this);
+    var wym = this,
+        rdfa = new WYMeditor.RDFa(options, wym);
     return rdfa;
 };
 
 //RDFa constructor
 WYMeditor.RDFa = function (options, wym) {
+    var rdfa = this;
     options = jQuery.extend({
         setStdNameSpaces: true,
         extendXHTMLParser: true,
         buttons: {}
     }, options);
 
-    this._options = options;
-    this._wym = wym;
-    this.init();
+    rdfa._options = options;
+    rdfa._wym = wym;
+    rdfa.init();
 };
 
 //RDFa plugin init
 WYMeditor.RDFa.prototype.init = function () {
-    if (this._options.setStdNameSpaces) {
-        this.setStdNameSpaces();
+    var rdfa = this;
+    if (rdfa._options.setStdNameSpaces) {
+        rdfa.setStdNameSpaces();
     }
-    if (this._options.extendXHTMLParser) {
-        this.extendXHTMLParser();
+    if (rdfa._options.extendXHTMLParser) {
+        rdfa.extendXHTMLParser();
     }
-    this.setButtons();
+    rdfa.setButtons();
 };
 
 //Adding the namespaces to the document
 WYMeditor.RDFa.prototype.setStdNameSpaces = function () {
-    this.addNameSpace('xmlns', 'http://www.w3.org/1999/xhtml');
-    this.addNameSpace('version', 'XHTML+RDFa 1.0');
+    var rdfa = this;
+    rdfa.addNameSpace('xmlns', 'http://www.w3.org/1999/xhtml');
+    rdfa.addNameSpace('version', 'XHTML+RDFa 1.0');
 };
 
 WYMeditor.RDFa.prototype.addNameSpace = function (attr, value) {
-    jQuery('html', this._wym._doc)
+    var rdfa = this;
+    jQuery('html', rdfa._wym._doc)
         .attr(attr, value);
 };
 
 WYMeditor.RDFa.prototype.extendXHTMLParser = function () {
-    this.extendAttributes();
-    this.setStdVocabularies();
-    this.extendLinkAttributes();
+    var rdfa = this;
+    rdfa.extendAttributes();
+    rdfa.setStdVocabularies();
+    rdfa.extendLinkAttributes();
 };
 
 WYMeditor.RDFa.prototype.extendAttributes = function () {
@@ -79,7 +85,7 @@ WYMeditor.RDFa.prototype.extendAttributes = function () {
 };
 
 WYMeditor.RDFa.prototype.setStdVocabularies = function () {
-    var _this = this;
+    var rdfa = this;
     //Add the 'standard' vocabularies
     vocabularies = [
         'xmlns:biblio',
@@ -96,7 +102,7 @@ WYMeditor.RDFa.prototype.setStdVocabularies = function () {
         'xmlns:xsd'
     ];
     jQuery.each(vocabularies, function (index, vocabulary) {
-        _this.addVocabulary(vocabulary);
+        rdfa.addVocabulary(vocabulary);
     });
 };
 
@@ -122,9 +128,9 @@ WYMeditor.RDFa.prototype.extendLinkAttributes = function () {
 };
 
 WYMeditor.RDFa.prototype.setButtons = function () {
-    var _this = this,
-        list = jQuery(this._wym._box).find('div.wym_classes ul');
-    jQuery.each(this._options.buttons, function (index, button) {
+    var rdfa = this,
+        list = jQuery(rdfa._wym._box).find('div.wym_classes ul');
+    jQuery.each(rdfa._options.buttons, function (index, button) {
         list
             .append('<li></li>')
             .children(':last')
@@ -134,13 +140,13 @@ WYMeditor.RDFa.prototype.setButtons = function () {
             .text(button.title)
             .bind('click',
                 {
-                    instance: _this._wym,
+                    instance: rdfa._wym,
                     button: button,
                     ns: button.ns,
                     attr: button.attr,
                     value: button.value
                 },
-                _this.clickButtonHandler);
+                rdfa.clickButtonHandler);
     });
 };
 
