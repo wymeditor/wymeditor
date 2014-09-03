@@ -916,14 +916,17 @@ WYMeditor.editor.prototype.unwrapIfMeaninglessSpan = function (element) {
             'dataFormatAs',
             'dataSrc',
             'tabIndex',
-            'value'
+            'value',
+            'hideFocus',
+            'disabled'
         ],
         // Any attribute with these values isn't interesting
         falsyAttrValues = [
             '',
             undefined,
             false,
-            null
+            null,
+            'null'
         ];
 
     if (!element || typeof (element.tagName) === 'undefined' ||
