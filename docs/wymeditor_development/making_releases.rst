@@ -7,10 +7,10 @@ releases.
 
 In order to ensure its consistency, the release procedure is described here.
 
-Pre-requesites for a release
-============================
+Prerequesites for a release
+===========================
 
-Subjects under this are pre–requesites for making a release.
+Subjects under this are prerequesites for making a release.
 
 No Regression Bugs
 ------------------
@@ -48,7 +48,7 @@ Documentation is up–to–date
 It's important that users can be confident that the documentation distributed
 with WYMeditor is up to date so that it can be trusted.
 
-Please be aware that this pre–requesite is not completely met, currently.
+Please be aware that this prerequesite is not completely met, currently.
 
 Change–log is up–to–date
 ------------------------
@@ -91,7 +91,7 @@ website, as well.
 Making the release
 ==================
 
-After the above pre–requesites are met, the following actions are in order.
+After the above prerequesites are met, the following actions are in order.
 
 Update version strings
 ----------------------
