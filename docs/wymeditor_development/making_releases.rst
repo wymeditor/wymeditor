@@ -1,5 +1,6 @@
+*************************
 Making WYMeditor Releases
-=========================
+*************************
 
 WYMeditor's release procedure aims to produce high–quality and easy–to–use
 releases.
@@ -7,12 +8,12 @@ releases.
 In order to ensure its consistency, the release procedure is described here.
 
 Pre-requesites for a release
-----------------------------
+============================
 
 Subjects under this are pre–requesites for making a release.
 
 No Regression Bugs
-^^^^^^^^^^^^^^^^^^
+------------------
 
 We shouldn't break things that used to work between releases. That undermines
 user confidence and makes it hard to build momentum of positive improvement
@@ -33,7 +34,7 @@ but should be given high priority otherwise.
 .. _This report: https://github.com/wymeditor/wymeditor/labels/type.bug.regression
 
 Passing Tests
-^^^^^^^^^^^^^
+-------------
 
 All releases should have 100% passing unit tests in 100% of supported
 browsers for all of the supported versions of jQuery.
@@ -42,7 +43,7 @@ The person doing the release is responsible for running the unit tests in all
 supported browsers.
 
 Documentation is up–to–date
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---------------------------
 
 It's important that users can be confident that the documentation distributed
 with WYMeditor is up to date so that it can be trusted.
@@ -50,7 +51,7 @@ with WYMeditor is up to date so that it can be trusted.
 Please be aware that this pre–requesite is not completely met, currently.
 
 Change–log is up–to–date
-^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------
 
 Change–log entries for changes should be merged in with the changes themselves
 or immediately following them.
@@ -73,7 +74,7 @@ The change log is intended for users of WYMeditor.
 Any change that may affect them should be included.
 
 Read–me is up–to–date
-^^^^^^^^^^^^^^^^^^^^^
+---------------------
 
 Similar to the change–log, the contents of the ``README.md`` are supposed to be
 up–to–date already.
@@ -82,18 +83,18 @@ A good review of it, especially after reviewing the change–log, may inspire
 some updates.
 
 Website is up–to–date
-^^^^^^^^^^^^^^^^^^^^^
+---------------------
 
 What is written regarding the read–me above is applicable regarding the
 website, as well.
 
 Making the release
-------------------
+==================
 
 After the above pre–requesites are met, the following actions are in order.
 
 Update version strings
-^^^^^^^^^^^^^^^^^^^^^^
+----------------------
 
 WYMeditor uses `Semantic Versioning`_ ``2.0``.
 
@@ -118,7 +119,7 @@ While you're doing that, make sure that the version strings are otherwise correc
 They should be already the version that you mean to release.
 
 Update the changelog
-^^^^^^^^^^^^^^^^^^^^
+--------------------
 
 #. If this release makes a transition from alpha to beta or from beta to stable,
    consolidate alpha/beta change–log entries in to a unified section
@@ -129,14 +130,14 @@ Update the changelog
 #. Set the date for the release.
 
 Update the web–site
-^^^^^^^^^^^^^^^^^^^
+-------------------
 
 Instructions for updating the web–site are in the
 :doc:`web–site documentation page<wymeditor_website>`.
 
 
 Build WYMeditor
-^^^^^^^^^^^^^^^
+---------------
 
 .. note::
 
@@ -156,7 +157,7 @@ Build WYMeditor
 #. Commit the changes in ``dist/``.
 
 Ship it!
-^^^^^^^^
+--------
 
 #. Look joyously at the `current releases`.
 
@@ -172,7 +173,7 @@ Ship it!
 #. `Tweet`_.
 
 Prepare for the next release
-----------------------------
+============================
 
 #. Create a new version entry in the change–log.
 #. Bump the version string and add the build metadata string, ``dev``, at the
