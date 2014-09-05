@@ -53,7 +53,7 @@
         jQuery('.wymeditor').wymeditor({
             stylesheet: 'wym_stylesheet.css',
             postInit: function(wym){
-                wym._html('<p><r:test>This text is inside a radius tag</r:test></p>'
+                wym.html('<p><r:test>This text is inside a radius tag</r:test></p>'
                         + '<p align="right" name="test">Right aligned</p>');
             }
         });

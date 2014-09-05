@@ -35,10 +35,10 @@
             postInit: function(wym){
 
                 //Set the editor's content
-                wym._html("<p>This is some text with which to test.</p>");
+                wym.html("<p>This is some text with which to test.</p>");
 
                 //Set the 'Clear' button
-                jQuery('.wymclear').click( function() { wym._html(''); } );
+                jQuery('.wymclear').click( function() { wym.html(''); } );
 
                 //Set the 'Toggle' select
                 jQuery('.wymtoggle').change( function() {

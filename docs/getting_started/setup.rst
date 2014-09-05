@@ -6,6 +6,8 @@ Setting up WYMeditor
 Quick Start Instructions
 ************************
 
+.. _Include jQuery:
+
 Include jQuery
 ==============
 
@@ -15,7 +17,7 @@ Make sure that your page includes it.
 
 .. note::
 
-    With jQUery 2.x and newer, there is no support for IE8 and older.
+    With jQuery 2.x and newer, there is no support for IE8 and older.
 
 Download a Pre-built Release of WYMeditor
 =========================================
@@ -28,6 +30,31 @@ in to a folder in your project
 
 
 .. _`WYMeditor Releases Github Page`: https://github.com/wymeditor/wymeditor/releases
+
+Or install via Bower
+====================
+
+WYMeditor is available via `Bower`_.
+
+jQuery 2.x does not support IE8 and older.
+
+WYMeditor does support IE7 and IE8.
+
+WYMeditor's Bower manifest defines a range of jQuery versions as a
+dependency.
+
+The latest jQuery version in this range is the newest jQuery version that
+still supports these browsers.
+
+WYMeditor does support jQuery 2.x, with the acknowledgement that it will not
+function in IE7 and IE8.
+
+If you decide to use jQuery 2.x, please feel free to override the top limit,
+while making sure you supply a jQuery version that WYMeditor supports.
+
+See :ref:`Include jQuery` for WYMeditor's range of supported jQuery versions.
+
+.. _`Bower`: http://bower.io/
 
 Source the WYMeditor Javascript
 ===============================
@@ -60,7 +87,7 @@ The ``textarea`` provides a few things:
 * Its text is used
   as the initial HTML
   inside the editor.
-* Whenever ``xhtml()`` is called on the editor,
+* Whenever ``html()`` is called on the editor,
   the resulting parsed html
   is placed inside the
   (hidden) ``textarea``.
@@ -96,7 +123,7 @@ Let's also start with some existing content.
     automatically receives the updated  HTML
     on form submit.
     Otherwise,
-    you'll need to call ``xhtml()`` yourself.
+    you'll need to call ``html()`` yourself.
 
 
 Use ``wymeditor()`` to Create an Editor

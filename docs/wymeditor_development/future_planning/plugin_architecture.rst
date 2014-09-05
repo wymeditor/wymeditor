@@ -107,7 +107,6 @@ WYMeditor.removeDomCleanup(<cleanupName>);
     WYMeditor.editor.container();
     WYMeditor.editor.update();
     WYMeditor.editor.html();
-    WYMeditor.editor.xhtml();
     WYMeditor.editor.switchTo();
     WYMeditor.editor.wrap();
     WYMeditor.editor.unwrap();

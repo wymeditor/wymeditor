@@ -24,7 +24,7 @@ function testTable(
         $body,
         actionElmnt;
 
-    wymeditor._html(initialHtml);
+    wymeditor.rawHtml(initialHtml);
 
     $body = wymeditor.$body();
     indexInSelector = indexInSelector || 0;
@@ -53,7 +53,7 @@ function testTableTab(initialHtml, startSelector, endSelector) {
         startElmnt,
         actualSelection,
         expectedSelection;
-    wymeditor._html(initialHtml);
+    wymeditor.rawHtml(initialHtml);
 
     $body = wymeditor.$body();
     startElmnt = $body.find(startSelector)[0];
@@ -105,7 +105,7 @@ function testRowMerge(
         actualSelection,
         expectedSelection;
 
-    wymeditor._html(initialHtml);
+    wymeditor.rawHtml(initialHtml);
 
     // Verify that the proposed selection range exists, and then make that
     // selection
@@ -149,7 +149,7 @@ function testGetCellXIndex(initialHtml, cellSelector, expectedIndex) {
         $body,
         cell,
         actual;
-    wymeditor._html(initialHtml);
+    wymeditor.rawHtml(initialHtml);
 
     $body = wymeditor.$body();
     cell = $body.find(cellSelector)[0];

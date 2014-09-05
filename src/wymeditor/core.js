@@ -1266,7 +1266,7 @@ WYMeditor.INIT_DIALOG = function (index) {
     });
 
     jQuery(wym._options.dialogPreviewSelector + " " +
-        wym._options.previewSelector).html(wym.xhtml());
+        wym._options.previewSelector).html(wym.html());
 
     //cancel button
     jQuery(wym._options.cancelSelector).mousedown(function () {

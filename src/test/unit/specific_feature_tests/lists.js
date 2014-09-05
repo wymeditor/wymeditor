@@ -157,9 +157,8 @@ function testGetSelectedListItems(
         );
     }
 
-    wymeditor._html(getSelectedListItemsHtml);
+    wymeditor.rawHtml(getSelectedListItemsHtml);
     $body = wymeditor.$body();
-
     expect(1);
 
     startElement = $body.find('#' + startElementId)[0];
@@ -546,7 +545,7 @@ function testList(elmntId, action, startHtml, expectedHtml, isText, doSelection)
     }
 
     if (doSelection) {
-        wymeditor._html(startHtml);
+        wymeditor.rawHtml(startHtml);
         $body = wymeditor.$body();
         actionLi = $body.find('#' + elmntId)[0];
 
@@ -660,7 +659,7 @@ function testListMulti(
         endLi,
         buttonSelector,
         actionButton;
-    wymeditor._html(startHtml);
+    wymeditor.rawHtml(startHtml);
 
     $body = wymeditor.$body();
     startLi = $body.find('#' + startElmntId)[0];
@@ -1649,7 +1648,7 @@ test("Invalid nesting correction no spacer", function () {
         startHtml = invalidNestingHtml,
         expectedHtml = invalidNestingCorrectedHtml;
 
-    wymeditor._html(startHtml);
+    wymeditor.rawHtml(startHtml);
     $body = wymeditor.$body();
     actionLi = $body.find('#li_4')[0];
 
@@ -1665,7 +1664,7 @@ test("Invalid nesting correction requiring spacer", function () {
         startHtml = invalidNestingNoPreviousHtml,
         expectedHtml = invalidNestingNoPreviousCorrectedHtml;
 
-    wymeditor._html(startHtml);
+    wymeditor.rawHtml(startHtml);
     $body = wymeditor.$body();
     actionLi = $body.find('#li_2_2')[0];
 
@@ -2670,12 +2669,12 @@ test("Should correct invalid list nesting", function () {
     // FF
         invalid_ff_html = "<ul><li>a<\/li><ul><li>a.1<\/li><\/ul><li>b<br /><\/li><\/ul>",
         invalid_ie_html = "<UL><LI>a<\/LI><UL><LI>a.1<\/LI><\/UL><LI>b<\/LI><\/UL>";
-    wymeditor._html(invalid_ff_html);
+    wymeditor.rawHtml(invalid_ff_html);
     wymEqual(wymeditor, expected);
     // IE
     // IE has invalid sublist nesting
     expected = "<ul><li>a<ul><li>a.1<\/li><\/ul><\/li><li>b<\/li><\/ul>";
-    wymeditor._html(invalid_ie_html);
+    wymeditor.rawHtml(invalid_ie_html);
     wymEqual(wymeditor, expected);
 });
 
@@ -2757,7 +2756,7 @@ test("Double indent correction", function () {
                 '</li>' +
             '</ol>';
 
-    wymeditor._html(brokenHtml);
+    wymeditor.rawHtml(brokenHtml);
     wymEqual(wymeditor, repairedHtml);
 });
 
@@ -2773,7 +2772,7 @@ test("Tab key indents", function () {
         actionElement,
 
         wymeditor = jQuery.wymeditors(0);
-    wymeditor._html(initHtml);
+    wymeditor.rawHtml(initHtml);
 
     $body = wymeditor.$body();
     actionElement = $body.find('#' + elmntId)[0];
@@ -2807,7 +2806,7 @@ test("Shift+Tab outdents", function () {
         actionElement,
 
         wymeditor = jQuery.wymeditors(0);
-    wymeditor._html(initHtml);
+    wymeditor.rawHtml(initHtml);
 
     $body = wymeditor.$body();
     actionElement = $body.find('#' + elmntId)[0];
@@ -2828,7 +2827,7 @@ test("Tab has no effect outside lists", function () {
         actionElement,
 
         wymeditor = jQuery.wymeditors(0);
-    wymeditor._html(initHtml);
+    wymeditor.rawHtml(initHtml);
 
     $body = wymeditor.$body();
     actionElement = $body.find('#' + elmntId)[0];
@@ -2863,7 +2862,7 @@ test("Shouldn't eat newline text spacing in li", function () {
             '</ul>',
         wymeditor = jQuery.wymeditors(0);
 
-    wymeditor._html(initHtml);
+    wymeditor.rawHtml(initHtml);
     wymeditor.update();
     wymEqual(wymeditor, expectedHtml);
 });
@@ -2883,7 +2882,7 @@ test("Shouldn't eat newline text spacing in li", function () {
 function changeIndent(wymeditor, html, selStart, selEnd, inOrOut) {
     var $body;
 
-    wymeditor._html(html);
+    wymeditor.rawHtml(html);
     $body = wymeditor.$body();
     makeTextSelection(wymeditor, $body.find(selStart)[0],
                       $body.find(selEnd)[0], 0, 1);
@@ -3285,7 +3284,7 @@ function enterInEmptyLiTest(testNameSuff, expectedHtml, brokenHtmls) {
             assertStr = 'Broken HTML variation ' + (i + 1) + ' of ' +
                 brokenHtmls.length;
 
-            wymeditor._html(brokenHtmls[i]);
+            wymeditor.rawHtml(brokenHtmls[i]);
             wymeditor._replaceNodeWithBrAndSetCaret(
                 $body.find('p, div')[0]
             );
@@ -3297,7 +3296,7 @@ function enterInEmptyLiTest(testNameSuff, expectedHtml, brokenHtmls) {
                 }
             );
 
-            wymeditor._html(brokenHtmls[i]);
+            wymeditor.rawHtml(brokenHtmls[i]);
             wymeditor.setCaretIn($body.find('p, div')[0]);
             simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
 
@@ -3530,7 +3529,7 @@ test("Invalid list nesting", function () {
         assertCountStr = 'Variation ' + (i + 1) + ' of ' +
             (invalidNestingAfterEnterInEmptyLi.length) + '; ';
 
-        wymeditor._html(invalidNestingAfterEnterInEmptyLi[i].broken);
+        wymeditor.rawHtml(invalidNestingAfterEnterInEmptyLi[i].broken);
         newLi = wymeditor.$body().find('#new')[0];
         wymeditor.setCaretIn(newLi);
         simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
@@ -3755,7 +3754,7 @@ function testLiInLiAfterEnter(htmls) {
     // `broken` is the HTML that we want to start with. When we tried inserting
     // that into the editor, the resulting DOM wasn't as expected.
     // Thus we get to our desired DOM in two steps. This is the first step.
-    wymeditor._html(startHtml);
+    wymeditor.rawHtml(startHtml);
     // This is the second step. It gets us the DOM we want, that is identical
     // to `broken`.
     liInLiAfterEnterHtmls.makeDomLikeWeActuallyRequire($body);
