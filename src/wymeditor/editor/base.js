@@ -523,10 +523,10 @@ WYMeditor.editor.prototype.vanish = function () {
 WYMeditor.editor.prototype.rawHtml = function (html) {
     var wym = this;
     if (typeof html === 'string') {
-        jQuery(wym._doc.body).html(html);
+        wym.$body().html(html);
         wym.update();
     } else {
-        return jQuery(wym._doc.body).html();
+        return wym.$body().html();
     }
 };
 
