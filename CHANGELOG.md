@@ -7,6 +7,23 @@ WYMeditor.
 
 *release-date* TBD
 
+### Backwards-Incompatible Changes
+
+* [#576](https://github.com/wymeditor/wymeditor/pull/576)
+  `editor._html`, the document content setter, was completely removed.
+
+  `editor.xhtml`, the document content getter, was also completely removed.
+
+  `editor.html`, which was deprecated, is now the official document content
+  getter, as well as setter.
+* [#576](https://github.com/wymeditor/wymeditor/pull/576)
+  `editor.rawHtml` is a new document content setter and getter, which allows
+  getting or setting the content of the document.
+
+  With `editor.rawHtml`, contrary to `editor.html`, the contents are not passed through the parser
+  for cleanups and corrections. Instead, they are set or got, exactly as
+  they are.
+
 ## 1.0.0-beta.8
 
 *release-date* September 3, 2014
