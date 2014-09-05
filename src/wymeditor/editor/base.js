@@ -395,10 +395,10 @@ WYMeditor.editor.prototype._initializeDocumentContent = function () {
 
     if (wym._options.html) {
         // Populate from the configuration option
-        wym._html(wym._options.html);
+        wym.html(wym._options.html);
     } else {
         // Populate from the textarea element
-        wym._html(wym._element[0].value);
+        wym.html(wym._element[0].value);
     }
 };
 
@@ -489,25 +489,6 @@ WYMeditor.editor.prototype.box = function () {
 };
 
 /**
-    WYMeditor.editor._html
-    ======================
-
-    Get or set the wymbox html value. If you want to get the wymbox html, you
-    should use WYMeditor.editor.xhtml() instead of this so that the html is
-    parsed and receives cross-browser cleanup. Only use this if you have a
-    specific reason not to use WYMeditor.editor.xhtml().
-*/
-WYMeditor.editor.prototype._html = function (html) {
-    var wym = this;
-    if (typeof html === 'string') {
-        wym.$body().html(html);
-        wym.update();
-    } else {
-        return wym.$body().html();
-    }
-};
-
-/**
     WYMeditor.editor.vanish
     =========================
 
@@ -533,34 +514,36 @@ WYMeditor.editor.prototype.vanish = function () {
 };
 
 /**
-    WYMeditor.editor.html
+    WYMeditor.editor.rawHtml
     =====================
 
-    Deprecated. Use WYMeditor.editor.xhtml or WYMeditor.editor._html instead.
-    Calling this function will give a console warning.
+    Get or set the wymbox html value. HTML is NOT parsed when either set/get.
+    Use html() if you are unsure what this function does.
 */
-WYMeditor.editor.prototype.html = function (html) {
+WYMeditor.editor.prototype.rawHtml = function (html) {
     var wym = this;
-    WYMeditor.console.warn("The function WYMeditor.editor.html() is deprecated. " +
-                           "Use either WYMeditor.editor.xhtml() or " +
-                           "WYMeditor.editor._html() instead.");
     if (typeof html === 'string') {
-        wym._html(html);
+        wym.$body().html(html);
+        wym.update();
     } else {
-        return wym._html();
+        return wym.$body().html();
     }
 };
 
 /**
-    WYMeditor.editor.xhtml
-    ======================
+    WYMeditor.editor.html
+    =====================
 
-    Take the current editor's DOM and apply strict xhtml nesting rules to
-    enforce a valid, well-formed, semantic xhtml result.
+    Get or set the wymbox html value. HTML is parsed before it is inserted and
+    parsed before it is return. Use rawHtml() if parsing is not wanted/needed.
 */
-WYMeditor.editor.prototype.xhtml = function () {
+WYMeditor.editor.prototype.html = function (html) {
     var wym = this;
-    return wym.parser.parse(wym._html());
+    if (typeof html === 'string') {
+        wym.rawHtml(wym.parser.parse(html));
+    } else {
+        return wym.parser.parse(wym.rawHtml());
+    }
 };
 
 /**
@@ -1302,7 +1285,7 @@ WYMeditor.editor.prototype.update = function () {
     var wym = this,
         html;
 
-    html = wym.xhtml();
+    html = wym.html();
     jQuery(wym._element).val(html);
     jQuery(wym._box).find(wym._options.htmlValSelector).not('.hasfocus').val(html); //#147
     wym.fixBodyHtml();

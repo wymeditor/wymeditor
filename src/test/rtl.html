@@ -36,12 +36,12 @@
             postInit: function(wym){
 
                 //Set the editor's content
-                wym._html('<p>This is some text with which to test.<\/p>'
+                wym.html('<p>This is some text with which to test.<\/p>'
                          +'<p><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=148869&type=1" '
                          +'alt="SourceForge logo" title="SourceForge" /><\/p>');
 
                 //Set the 'Clear' button
-                jQuery('.wymclear').click( function() { wym._html(''); } );
+                jQuery('.wymclear').click( function() { wym.html(''); } );
             }
         });
     });

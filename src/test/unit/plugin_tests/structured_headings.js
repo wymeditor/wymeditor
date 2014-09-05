@@ -213,7 +213,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
             i;
 
         for (i = 1; i < 7; ++i) {
-            wymeditor._html(htmlForHeadingInsertion);
+            wymeditor.rawHtml(htmlForHeadingInsertion);
             paragraph = $body.find('#to_be_h' + i)[0];
             makeTextSelection(wymeditor, paragraph, paragraph);
             $headingContainerLink.click();
@@ -365,7 +365,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
             i;
 
         for (i = 1; i < 6; ++i) {
-            wymeditor._html(htmlForHeadingIndention);
+            wymeditor.rawHtml(htmlForHeadingIndention);
             heading = $body.find('#h' + i + '_for_indent')[0];
             makeTextSelection(wymeditor, heading, heading,
                               selectionStart, selectionEnd);
@@ -401,7 +401,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
             heading;
 
         // Default highest heading level
-        wymeditor._html(htmlForHeadingIndention);
+        wymeditor.rawHtml(htmlForHeadingIndention);
         if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
             wymeditor.structuredHeadingsManager.numberHeadingsIE7();
         }
@@ -414,7 +414,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
 
         // Customized highest heading level
         wymeditor.structuredHeadingsManager._options.lowestAllowableHeadingLevel = 4;
-        wymeditor._html(htmlForHeadingIndention);
+        wymeditor.rawHtml(htmlForHeadingIndention);
         if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
             wymeditor.structuredHeadingsManager.numberHeadingsIE7();
         }
@@ -441,7 +441,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
             i;
 
         for (i = 2; i < 6; ++i) {
-            wymeditor._html(htmlForHeadingIndention);
+            wymeditor.rawHtml(htmlForHeadingIndention);
             if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
                 wymeditor.structuredHeadingsManager.numberHeadingsIE7();
             }
@@ -481,7 +481,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
             i;
 
         for (i = 2; i < 7; ++i) {
-            wymeditor._html(htmlForHeadingOutdention);
+            wymeditor.rawHtml(htmlForHeadingOutdention);
             heading = $body.find('#h' + i + '_for_outdent')[0];
             makeTextSelection(wymeditor, heading, heading,
                               selectionStart, selectionEnd);
@@ -517,7 +517,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
             heading;
 
         // Default highest heading level
-        wymeditor._html(htmlForHeadingOutdention);
+        wymeditor.rawHtml(htmlForHeadingOutdention);
         if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
             wymeditor.structuredHeadingsManager.numberHeadingsIE7();
         }
@@ -531,7 +531,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
 
         // Customized highest heading level
         wymeditor.structuredHeadingsManager._options.highestAllowableHeadingLevel = 3;
-        wymeditor._html(htmlForHeadingOutdention);
+        wymeditor.rawHtml(htmlForHeadingOutdention);
         if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
             wymeditor.structuredHeadingsManager.numberHeadingsIE7();
         }
@@ -558,7 +558,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
             i;
 
         for (i = 2; i < 6; ++i) {
-            wymeditor._html(htmlForHeadingOutdention);
+            wymeditor.rawHtml(htmlForHeadingOutdention);
             if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
                 wymeditor.structuredHeadingsManager.numberHeadingsIE7();
             }
@@ -616,7 +616,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
                 wymeditor.structuredHeadingsManager._options.headingOutdentToolSelector);
         }
 
-        wymeditor._html(startHtml);
+        wymeditor.rawHtml(startHtml);
         startElement = $body.find('#start_selection')[0];
         endElement = $body.find('#end_selection')[0];
         makeTextSelection(wymeditor, startElement, endElement,
@@ -1464,7 +1464,7 @@ if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
         expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
-        wymeditor._html(startHeadings);
+        wymeditor.rawHtml(startHeadings);
         deepEqual(getHtmlAfterKeyup(wymeditor), expectedHeadings,
                   "Heading numbering properly added on keyup");
     });
@@ -1474,25 +1474,25 @@ if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
         var wymeditor = jQuery.wymeditors(0);
 
         // Add correct headings to editor first
-        wymeditor._html(expectedHeadings);
+        wymeditor.rawHtml(expectedHeadings);
         deepEqual(getHtmlAfterKeyup(wymeditor), expectedHeadings,
                   "Heading numbering unchanged on keyup if already correct");
 
         // Break a correct top level heading by replacing it with a heading
         // with edited numbering
-        wymeditor._html(editedNumberingTopLevel);
+        wymeditor.rawHtml(editedNumberingTopLevel);
         deepEqual(getHtmlAfterKeyup(wymeditor), expectedHeadings,
                   "Top level heading numbering fixed on keyup");
 
         // Break a correct sublevel heading by replacing it with a heading with
         // edited numbering
-        wymeditor._html(editedNumberingSubLevel);
+        wymeditor.rawHtml(editedNumberingSubLevel);
         deepEqual(getHtmlAfterKeyup(wymeditor), expectedHeadings,
                   "Sublevel heading numbering fixed on keyup");
 
         // Break a correct subsublevel heading by replacing it with a heading
         // with edited numbering
-        wymeditor._html(editedNumberingSubSubLevel);
+        wymeditor.rawHtml(editedNumberingSubSubLevel);
         deepEqual(getHtmlAfterKeyup(wymeditor), expectedHeadings,
                   "Subsublevel heading numbering fixed on keyup");
     });
@@ -1501,7 +1501,7 @@ if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
         expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
-        wymeditor._html(expectedHeadings);
+        wymeditor.rawHtml(expectedHeadings);
         wymEqual(wymeditor, expectedParsedHeadings, {
                 assertionString: "Heading numbering stripped by parser"
             });

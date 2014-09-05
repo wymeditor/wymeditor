@@ -218,7 +218,7 @@ function wymEqual(wymeditor, expected, options) {
     if (options.skipParser) {
         tmpNodes = wymeditor.$body().contents();
     } else {
-        tmpNodes = jQuery(wymeditor.xhtml());
+        tmpNodes = jQuery(wymeditor.html());
     }
 
     for (i = 0; i < tmpNodes.length; i++) {
@@ -467,7 +467,7 @@ function testNoChangeInHtmlArray(htmlArray) {
     for (i = 0; i < htmlArray.length; i++) {
         html = htmlArray[i];
 
-        wymeditor._html(html);
+        wymeditor.rawHtml(html);
         wymEqual(
             wymeditor,
             html, {

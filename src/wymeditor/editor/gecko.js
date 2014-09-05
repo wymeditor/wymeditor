@@ -33,7 +33,7 @@ WYMeditor.WymClassGecko.prototype._docEventQuirks = function () {
 /** @name html
  * @description Get/Set the html value
  */
-WYMeditor.WymClassGecko.prototype._html = function (html) {
+WYMeditor.WymClassGecko.prototype.rawHtml = function (html) {
     var wym = this;
 
     if (typeof html === 'string') {

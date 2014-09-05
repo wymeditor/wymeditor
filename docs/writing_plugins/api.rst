@@ -2,7 +2,7 @@
 API
 ###
 
-.. note:: 
+.. note::
     In the code examples below, ``wym`` is a variable which refers to the
     WYMeditor instance, and which must be initialized.
 
@@ -10,10 +10,10 @@ API
 Core
 ****
 
-``html(sHtml)``
-===============
+``html(html)``
+==============
 
-Get or set the editor's HTML value.
+Get or set the editor's HTML value. HTML is parsed before setting and before returning
 
 Example:
 
@@ -21,10 +21,13 @@ Example:
 
   wym.html("<p>Hello, World.</p>");
 
-``xhtml()``
-===========
+  wym.html();// "<p>Hello, World.</p>"
 
-Get the cleaned up editor's HTML value.
+``rawHtml(html)``
+=================
+
+Get or set raw HTML value. Value is not parsed. If you are not sure which one to
+use, html() will most likely be the answer.
 
 ``update()``
 ============
@@ -65,7 +68,7 @@ initialized for the textarea, returns false.
   myWym = jQuery.getWymeditorByTextarea(jQuery('textarea#myDocument'));
 
   if (myWym) {
-    myDocument = myWym.xhtml();
+    myDocument = myWym.html();
   }
 
 ``body()``
@@ -168,7 +171,7 @@ Returns true if yes and false if no.
 
 This sets a collapsed selection before the specified node.
 
-.. note:: 
+.. note::
   Due to browser and/or Rangy bugs it has been decided that ``node`` could be
   either a text node or a ``br`` element and if it is a ``br`` element it must
   either have no ``previousSibling`` or its ``previousSibling`` must be a text
