@@ -389,6 +389,20 @@ module.exports = function (grunt) {
                     vendor: false
                 }
             }
+        },
+        shell: {
+            docHtml: {
+                options: {
+                    stdout: true,
+                    stderr: true,
+                    stdin: false,
+                    failOnError: true,
+                    execOptions: {
+                        cwd: 'docs'
+                    }
+                },
+                command: 'make html'
+            }
         }
     });
 
@@ -443,6 +457,8 @@ module.exports = function (grunt) {
         'bower-linker:dev',
     ]);
 
+    grunt.registerTask('doc', ['shell:docHtml']);
+
     grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks("grunt-contrib-concat");
@@ -457,4 +473,5 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-usemin");
     grunt.loadNpmTasks("grunt-bower-install-simple");
     grunt.loadNpmTasks('grunt-bower-linker');
+    grunt.loadNpmTasks("grunt-shell");
 };
