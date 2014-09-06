@@ -426,7 +426,7 @@ WYMeditor.editor.prototype._bindUIEvents = function () {
     var wym = this,
         $html_val;
 
-    jQuery(wym._doc).bind(WYMeditor.EVENTS.update, function() {
+    jQuery(wym._doc).bind(WYMeditor.EVENTS.update, function () {
         var html = wym.html();
         jQuery(wym._element).val(html);
         jQuery(wym._box).find(wym._options.htmlValSelector).not('.hasfocus').val(html); //#147
@@ -483,12 +483,12 @@ WYMeditor.editor.prototype._bindUIEvents = function () {
     if(wym._options.autoUpdate) {
         // automagically update wym on form submit by default
         var sel = jQuery(wym._doc).parents('form');
-        jQuery(sel).bind(wym._options.autoUpdateEvent, function() {
+        jQuery(sel).bind(wym._options.autoUpdateEvent, function () {
             wym.update();
         });
     } else {
         // allow user to manually trigger update funciton
-        jQuery(wym._options.updateSelector).bind(wym._options.updateEvent, function() {
+        jQuery(wym._options.updateSelector).bind(wym._options.updateEvent, function () {
             wym.update();
         });
     }
@@ -1532,7 +1532,7 @@ WYMeditor.editor.prototype.dialog = function (dialogType, dialogFeatures, bodyHt
 
 
     if (wDialog) {
-        jQuery(wym._doc).bind(WYMeditor.EVENTS.openDialog, function() {
+        jQuery(wym._doc).bind(WYMeditor.EVENTS.openDialog, function () {
             sBodyHtml = "";
 
             switch (dialogType) {
@@ -3625,7 +3625,7 @@ WYMeditor.editor.prototype.initSkin = function () {
     var wym = this,
         $box = jQuery(wym._box);
 
-    $box.bind(WYMeditor.EVENTS.initSkin, function() {
+    $box.bind(WYMeditor.EVENTS.initSkin, function () {
         // Put the classname (ex. wym_skin_default) on wym_box
         $box.addClass("wym_skin_" + wym._options.skin);
 
