@@ -427,7 +427,6 @@ WYMeditor.editor.prototype._bindUIEvents = function () {
         $html_val;
 
     jQuery(wym._doc).bind(WYMeditor.EVENTS.update, function() {
-        console.log('update Internal');
         var html = wym.html();
         jQuery(wym._element).val(html);
         jQuery(wym._box).find(wym._options.htmlValSelector).not('.hasfocus').val(html); //#147
