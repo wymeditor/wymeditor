@@ -10,6 +10,8 @@
     current browser and enabling the browser-specific subclass.
 */
 WYMeditor.editor.prototype._init = function () {
+    jQuery(wym._doc).trigger(WYMeditor.EVENTS.preInit);
+
     // Load the browser-specific subclass
     // If this browser isn't supported, do nothing
     var wym = this,
@@ -214,6 +216,8 @@ WYMeditor.editor.prototype._init = function () {
     wym._element.attr('data-wym-initialized', 'yes');
 
     wym.initSkin();
+
+    jQuery(wym._doc).trigger(WYMeditor.EVENTS.postInit);
 };
 
 /**
@@ -470,12 +474,13 @@ WYMeditor.editor.prototype._bindUIEvents = function () {
     });
 
     if(wym._options.autoUpdate) {
+        // automagically update wym on form submit by default
         var sel = jQuery(wym._doc).parents('form');
         jQuery(sel).bind(wym._options.autoUpdateEvent, function() {
             wym.update();
         });
     } else {
-        // Handle update event on update element
+        // allow user to manually trigger update funciton
         jQuery(wym._options.updateSelector).bind(wym._options.updateEvent, function() {
             wym.update();
         });
@@ -1284,13 +1289,21 @@ WYMeditor.editor.prototype.status = function (sMessage) {
     Update the element and textarea values.
 */
 WYMeditor.editor.prototype.update = function () {
+
     var wym = this,
         html;
 
-    html = wym.html();
-    jQuery(wym._element).val(html);
-    jQuery(wym._box).find(wym._options.htmlValSelector).not('.hasfocus').val(html); //#147
-    wym.fixBodyHtml();
+        console.log(jQuery().trigger);
+
+    jQuery.bind(WYMeditor.EVENTS.update, function() {
+        console.log('Internal');
+        html = wym.html();
+        jQuery(wym._element).val(html);
+        jQuery(wym._box).find(wym._options.htmlValSelector).not('.hasfocus').val(html); //#147
+        wym.fixBodyHtml();
+    });
+
+    jQuery(wym._doc).trigger(WYMeditor.EVENTS.update);
 };
 
 /**
@@ -1522,74 +1535,79 @@ WYMeditor.editor.prototype.dialog = function (dialogType, dialogFeatures, bodyHt
         dialogHtml,
         doc;
 
+
     if (wDialog) {
-        sBodyHtml = "";
+        jQuery.bind(WYMeditor.EVENTS.openDialog, function() {
+            sBodyHtml = "";
 
-        switch (dialogType) {
+            switch (dialogType) {
 
-        case (WYMeditor.DIALOG_LINK):
-            sBodyHtml = wym._options.dialogLinkHtml;
-            break;
-        case (WYMeditor.DIALOG_IMAGE):
-            sBodyHtml = wym._options.dialogImageHtml;
-            break;
-        case (WYMeditor.DIALOG_TABLE):
-            sBodyHtml = wym._options.dialogTableHtml;
-            break;
-        case (WYMeditor.DIALOG_PASTE):
-            sBodyHtml = wym._options.dialogPasteHtml;
-            break;
-        case (WYMeditor.PREVIEW):
-            sBodyHtml = wym._options.dialogPreviewHtml;
-            break;
-        default:
-            sBodyHtml = bodyHtml;
-            break;
-        }
+            case (WYMeditor.DIALOG_LINK):
+                sBodyHtml = wym._options.dialogLinkHtml;
+                break;
+            case (WYMeditor.DIALOG_IMAGE):
+                sBodyHtml = wym._options.dialogImageHtml;
+                break;
+            case (WYMeditor.DIALOG_TABLE):
+                sBodyHtml = wym._options.dialogTableHtml;
+                break;
+            case (WYMeditor.DIALOG_PASTE):
+                sBodyHtml = wym._options.dialogPasteHtml;
+                break;
+            case (WYMeditor.PREVIEW):
+                sBodyHtml = wym._options.dialogPreviewHtml;
+                break;
+            default:
+                sBodyHtml = bodyHtml;
+                break;
+            }
 
-        // Construct the dialog
-        dialogHtml = wym._options.dialogHtml;
-        dialogHtml = h.replaceAll(
-            dialogHtml,
-            WYMeditor.BASE_PATH,
-            wym._options.basePath
-        );
-        dialogHtml = h.replaceAll(
-            dialogHtml,
-            WYMeditor.DIRECTION,
-            wym._options.direction
-        );
-        dialogHtml = h.replaceAll(
-            dialogHtml,
-            WYMeditor.WYM_PATH,
-            wym._options.wymPath
-        );
-        dialogHtml = h.replaceAll(
-            dialogHtml,
-            WYMeditor.JQUERY_PATH,
-            wym._options.jQueryPath
-        );
-        dialogHtml = h.replaceAll(
-            dialogHtml,
-            WYMeditor.DIALOG_TITLE,
-            wym.encloseString(dialogType)
-        );
-        dialogHtml = h.replaceAll(
-            dialogHtml,
-            WYMeditor.DIALOG_BODY,
-            sBodyHtml
-        );
-        dialogHtml = h.replaceAll(
-            dialogHtml,
-            WYMeditor.INDEX,
-            wym._index
-        );
+            // Construct the dialog
+            dialogHtml = wym._options.dialogHtml;
+            dialogHtml = h.replaceAll(
+                dialogHtml,
+                WYMeditor.BASE_PATH,
+                wym._options.basePath
+            );
+            dialogHtml = h.replaceAll(
+                dialogHtml,
+                WYMeditor.DIRECTION,
+                wym._options.direction
+            );
+            dialogHtml = h.replaceAll(
+                dialogHtml,
+                WYMeditor.WYM_PATH,
+                wym._options.wymPath
+            );
+            dialogHtml = h.replaceAll(
+                dialogHtml,
+                WYMeditor.JQUERY_PATH,
+                wym._options.jQueryPath
+            );
+            dialogHtml = h.replaceAll(
+                dialogHtml,
+                WYMeditor.DIALOG_TITLE,
+                wym.encloseString(dialogType)
+            );
+            dialogHtml = h.replaceAll(
+                dialogHtml,
+                WYMeditor.DIALOG_BODY,
+                sBodyHtml
+            );
+            dialogHtml = h.replaceAll(
+                dialogHtml,
+                WYMeditor.INDEX,
+                wym._index
+            );
 
-        dialogHtml = wym.replaceStrings(dialogHtml);
+            dialogHtml = wym.replaceStrings(dialogHtml);
 
-        doc = wDialog.document;
-        doc.write(dialogHtml);
-        doc.close();
+            doc = wDialog.document;
+            doc.write(dialogHtml);
+            doc.close();
+        });
+
+        jQuery(wym._doc).trigger(WYMeditor.EVENTS.openDialog);
     }
 };
 
@@ -1816,6 +1834,8 @@ WYMeditor.editor.prototype.paste = function (str) {
             }
         }
     }
+
+    jQuery(wym._doc).trigger(WYMeditor.EVENTS.paste);
 };
 
 WYMeditor.editor.prototype.insert = function (html) {
@@ -3543,6 +3563,8 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
     wym.afterInsertTable(table);
     wym.fixBodyHtml();
 
+    jQuery(wym._doc).trigger(WYMeditor.EVENTS.insertTable);
+
     return table;
 };
 
@@ -3606,19 +3628,24 @@ WYMeditor.editor.prototype.mousedown = function (evt) {
 */
 WYMeditor.editor.prototype.initSkin = function () {
     var wym = this;
-    // Put the classname (ex. wym_skin_default) on wym_box
-    jQuery(wym._box).addClass("wym_skin_" + wym._options.skin);
 
-    // Init the skin, if needed
-    if (typeof WYMeditor.SKINS[wym._options.skin] !== "undefined") {
-        if (typeof WYMeditor.SKINS[wym._options.skin].init === "function") {
-            WYMeditor.SKINS[wym._options.skin].init(wym);
+    jQuery.bind(WYMeditor, function() {
+        // Put the classname (ex. wym_skin_default) on wym_box
+        jQuery(wym._box).addClass("wym_skin_" + wym._options.skin);
+
+        // Init the skin, if needed
+        if (typeof WYMeditor.SKINS[wym._options.skin] !== "undefined") {
+            if (typeof WYMeditor.SKINS[wym._options.skin].init === "function") {
+                WYMeditor.SKINS[wym._options.skin].init(wym);
+            }
+        } else {
+            WYMeditor.console.warn(
+                "Chosen skin _" + wym.options.skin + "_ not found."
+            );
         }
-    } else {
-        WYMeditor.console.warn(
-            "Chosen skin _" + wym.options.skin + "_ not found."
-        );
-    }
+    });
+
+    jQuery(wym._doc).trigger(WYMeditor.EVENTS.initSkin);
 };
 
 /**
