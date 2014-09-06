@@ -487,7 +487,8 @@ jQuery.extend(WYMeditor, {
         'postInit': 'wym-postInit',
         'openDialog': 'wym-openDialog',
         'paste': 'wym-paste',
-        'insertTable': 'wym-insertTable'
+        'insertTable': 'wym-insertTable',
+        'initSkin': 'wym-initSkin'
     },
 
     // domNode.nodeType constants

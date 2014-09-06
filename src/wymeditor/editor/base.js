@@ -10,8 +10,6 @@
     current browser and enabling the browser-specific subclass.
 */
 WYMeditor.editor.prototype._init = function () {
-    jQuery(wym._doc).trigger(WYMeditor.EVENTS.preInit);
-
     // Load the browser-specific subclass
     // If this browser isn't supported, do nothing
     var wym = this,
@@ -34,6 +32,8 @@ WYMeditor.editor.prototype._init = function () {
         sContainers,
         sContainer,
         oContainer;
+
+    jQuery(wym._doc).trigger(WYMeditor.EVENTS.preInit);
 
     if (WYMeditor.isInternetExplorerPre11()) {
         WymClass = new WYMeditor.WymClassTridentPre7(wym);
@@ -425,6 +425,14 @@ WYMeditor.editor.prototype._docEventQuirks = function () {
 WYMeditor.editor.prototype._bindUIEvents = function () {
     var wym = this,
         $html_val;
+
+    jQuery(wym._doc).bind(WYMeditor.EVENTS.update, function() {
+        console.log('update Internal');
+        var html = wym.html();
+        jQuery(wym._element).val(html);
+        jQuery(wym._box).find(wym._options.htmlValSelector).not('.hasfocus').val(html); //#147
+        wym.fixBodyHtml();
+    });
 
     // Tools buttons
     jQuery(wym._box).find(wym._options.toolSelector).click(function () {
@@ -1289,19 +1297,7 @@ WYMeditor.editor.prototype.status = function (sMessage) {
     Update the element and textarea values.
 */
 WYMeditor.editor.prototype.update = function () {
-
-    var wym = this,
-        html;
-
-        console.log(jQuery().trigger);
-
-    jQuery.bind(WYMeditor.EVENTS.update, function() {
-        console.log('Internal');
-        html = wym.html();
-        jQuery(wym._element).val(html);
-        jQuery(wym._box).find(wym._options.htmlValSelector).not('.hasfocus').val(html); //#147
-        wym.fixBodyHtml();
-    });
+    var wym = this;
 
     jQuery(wym._doc).trigger(WYMeditor.EVENTS.update);
 };
@@ -1537,7 +1533,7 @@ WYMeditor.editor.prototype.dialog = function (dialogType, dialogFeatures, bodyHt
 
 
     if (wDialog) {
-        jQuery.bind(WYMeditor.EVENTS.openDialog, function() {
+        jQuery(wym._doc).bind(WYMeditor.EVENTS.openDialog, function() {
             sBodyHtml = "";
 
             switch (dialogType) {
@@ -3627,11 +3623,12 @@ WYMeditor.editor.prototype.mousedown = function (evt) {
     skin's javascript `init` method.
 */
 WYMeditor.editor.prototype.initSkin = function () {
-    var wym = this;
+    var wym = this,
+        $box = jQuery(wym._box);
 
-    jQuery.bind(WYMeditor, function() {
+    $box.bind(WYMeditor.EVENTS.initSkin, function() {
         // Put the classname (ex. wym_skin_default) on wym_box
-        jQuery(wym._box).addClass("wym_skin_" + wym._options.skin);
+        $box.addClass("wym_skin_" + wym._options.skin);
 
         // Init the skin, if needed
         if (typeof WYMeditor.SKINS[wym._options.skin] !== "undefined") {
@@ -3645,7 +3642,7 @@ WYMeditor.editor.prototype.initSkin = function () {
         }
     });
 
-    jQuery(wym._doc).trigger(WYMeditor.EVENTS.initSkin);
+    $box.trigger(WYMeditor.EVENTS.initSkin);
 };
 
 /**
