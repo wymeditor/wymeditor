@@ -391,7 +391,7 @@ module.exports = function (grunt) {
             }
         },
         shell: {
-            docHtml: {
+            docMakeHtml: {
                 options: {
                     stdout: true,
                     stderr: true,
@@ -402,6 +402,15 @@ module.exports = function (grunt) {
                     }
                 },
                 command: 'make html'
+            },
+            docOpenHtml: {
+                options: {
+                    stdout: true,
+                    stderr: true,
+                    stdin: false,
+                    failOnError: true
+                },
+                command: 'xdg-open docs/.build/html/index.html'
             }
         }
     });
@@ -457,7 +466,12 @@ module.exports = function (grunt) {
         'bower-linker:dev',
     ]);
 
-    grunt.registerTask('doc', ['shell:docHtml']);
+    grunt.registerTask('docMake', ['shell:docMakeHtml']);
+    grunt.registerTask('docOpen', ['shell:docOpenHtml']);
+    grunt.registerTask('doc', [
+        'docMake',
+        'docOpen'
+    ]);
 
     grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-contrib-copy");
