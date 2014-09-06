@@ -424,32 +424,34 @@ WYMeditor.editor.prototype._docEventQuirks = function () {
 */
 WYMeditor.editor.prototype._bindUIEvents = function () {
     var wym = this,
-        $html_val;
+        $html_val,
+        $box = jQuery(wym._box),
+        $doc = jQuery(wym._doc);
 
-    jQuery(wym._doc).bind(WYMeditor.EVENTS.update, function () {
+    $doc.bind(WYMeditor.EVENTS.update, function () {
         var html = wym.html();
         jQuery(wym._element).val(html);
-        jQuery(wym._box).find(wym._options.htmlValSelector).not('.hasfocus').val(html); //#147
+        $box.find(wym._options.htmlValSelector).not('.hasfocus').val(html); //#147
         wym.fixBodyHtml();
     });
 
     // Tools buttons
-    jQuery(wym._box).find(wym._options.toolSelector).click(function () {
+    $box.find(wym._options.toolSelector).click(function (e) {
+        e.preventDefault();
         var button = this;
         wym.exec(jQuery(button).attr(WYMeditor.NAME));
-        return false;
     });
 
     // Containers buttons
-    jQuery(wym._box).find(wym._options.containerSelector).click(function () {
+    $box.find(wym._options.containerSelector).click(function (e) {
+        e.preventDefault();
         var containerButton = this;
         wym.mainContainer(jQuery(containerButton).attr(WYMeditor.NAME));
-        return false;
     });
 
     // Handle keyup event on the HTML value textarea: set the editor value
     // Handle focus/blur events to check if the element has focus, see #147
-    $html_val = jQuery(wym._box).find(wym._options.htmlValSelector);
+    $html_val = $box.find(wym._options.htmlValSelector);
     $html_val.keyup(function () {
         var valTextarea = this;
         wym.$body().html(jQuery(valTextarea).val());
@@ -464,7 +466,7 @@ WYMeditor.editor.prototype._bindUIEvents = function () {
     });
 
     // Handle click events on classes buttons
-    jQuery(wym._box).find(wym._options.classSelector).click(function (e) {
+    $box.find(wym._options.classSelector).click(function (e) {
         e.preventDefault();
 
         var classButton = this,
@@ -480,10 +482,9 @@ WYMeditor.editor.prototype._bindUIEvents = function () {
         }
     });
 
-    if(wym._options.autoUpdate) {
+    if (wym._options.autoUpdate) {
         // automagically update wym on form submit by default
-        var sel = jQuery(wym._doc).parents('form');
-        jQuery(sel).bind(wym._options.autoUpdateEvent, function () {
+        $doc.parents('form').bind(wym._options.autoUpdateEvent, function () {
             wym.update();
         });
     } else {
