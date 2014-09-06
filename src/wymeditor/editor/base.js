@@ -484,7 +484,7 @@ WYMeditor.editor.prototype._bindUIEvents = function () {
 
     if (wym._options.autoUpdate) {
         // automagically update wym on form submit by default
-        $doc.parents('form').bind(wym._options.autoUpdateEvent, function () {
+        $box.parents('form').bind(wym._options.autoUpdateEvent, function () {
             wym.update();
         });
     } else {
