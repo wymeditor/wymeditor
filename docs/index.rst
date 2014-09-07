@@ -1,10 +1,6 @@
-#####################################
-Welcome to WYMeditor's documentation!
-#####################################
-
-********
-Contents
-********
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  WYMeditor Documentation contents
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 .. toctree::
     :maxdepth: 2
