@@ -391,7 +391,7 @@ module.exports = function (grunt) {
             }
         },
         shell: {
-            docMakeHtml: {
+            docsMakeHtml: {
                 options: {
                     stdout: true,
                     stderr: true,
@@ -403,7 +403,7 @@ module.exports = function (grunt) {
                 },
                 command: 'make html'
             },
-            docOpenHtml: {
+            docsOpenHtml: {
                 options: {
                     stdout: true,
                     stderr: true,
@@ -466,11 +466,13 @@ module.exports = function (grunt) {
         'bower-linker:dev',
     ]);
 
-    grunt.registerTask('docMake', ['shell:docMakeHtml']);
-    grunt.registerTask('docOpen', ['shell:docOpenHtml']);
-    grunt.registerTask('doc', [
-        'docMake',
-        'docOpen'
+    grunt.registerTask('docsMakeHtml', ['shell:docsMakeHtml']);
+    grunt.registerTask('docsMake', ['docsMakeHtml']);
+    grunt.registerTask('docsOpenHtml', ['shell:docsOpenHtml']);
+    grunt.registerTask('docsOpen', ['docsOpenHtml']);
+    grunt.registerTask('docs', [
+        'docsMake',
+        'docsOpen'
     ]);
 
     grunt.loadNpmTasks("grunt-contrib-uglify");
