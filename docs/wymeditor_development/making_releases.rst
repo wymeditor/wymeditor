@@ -168,6 +168,8 @@ Ship it!
      file) as the description
    * The WYMeditor build, ``wymeditor-<version>.tag.gz``, as an attached binary
 
+#. `Activate the new version in Read the Docs`_.
+
 #. Drench yourself in a feeling of attainment.
 
 #. `Tweet`_.
@@ -182,4 +184,6 @@ Prepare for the next release
 
 .. _Semantic Versioning: http://semver.org/
 .. _current releases: https://github.com/wymeditor/wymeditor/releases
+.. _Activate the new version in Read the Docs: https://readthedocs.org/
+   dashboard/wymeditor/versions/
 .. _Tweet: https://twitter.com/wymeditor
