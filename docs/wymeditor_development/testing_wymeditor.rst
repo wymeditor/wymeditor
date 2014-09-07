@@ -13,7 +13,7 @@ Some functionality can't be tested by QUnit, and thus is tested using Selenium.
 
 |QUnit is preffered over Selenium|
 
-All tests should passing in all
+All tests should pass in all
 :ref:`supported browsers <browser-compatibility>`.
 
 If ever any tests fail, please :ref:`file a bug <resources>`.
