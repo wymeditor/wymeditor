@@ -180,6 +180,6 @@ Prepare for the next release
    metadata string, ``dev``, at the
    end (with a ``+`` between the PATCH version and it).
 
-.. _`Semantic Versioning`: http://semver.org/
-.. _`current releases`: https://github.com/wymeditor/wymeditor/releases
-.. _`Tweet`: https://twitter.com/wymeditor
+.. _Semantic Versioning: http://semver.org/
+.. _current releases: https://github.com/wymeditor/wymeditor/releases
+.. _Tweet: https://twitter.com/wymeditor
