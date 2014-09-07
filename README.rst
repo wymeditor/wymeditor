@@ -17,6 +17,8 @@ document.
 
 It also adheres to web standards.
 
+.. _resources:
+
 *********
 Resources
 *********
@@ -26,7 +28,7 @@ Resources
 * `WYMeditor GitHub organization`_
 * `WYMeditor documentation`_ |documentation badge|
 * `WYMeditor questions in Stack Overflow`_
-* `WYMeditor issue tracking`_
+* `WYMeditor issue tracker`_
 * `WYMeditor online examples`_
 * `WYMeditor Travis-CI report`_ |Travis-CI badge|
 * `Bower manifest`_ |Bower logo|
@@ -55,6 +57,8 @@ Try WYMeditor
 *************
 
 Want to see what WYMeditor can do? Try `the examples`_ online, right now.
+
+.. _browser-compatibility:
 
 *********************
 Browser Compatibility
@@ -97,48 +101,57 @@ Copyright (c) 2005 - 2013 Jean-Francois Hovinne,
 Dual licensed under the MIT (``MIT-license.txt``)
 and GPL (``GPL-license.txt``) licenses.
 
-.. _`TinyMCE`: http://www.tinymce.com/
-.. _`CKEditor`: http://ckeditor.com/
+.. _TinyMCE: http://www.tinymce.com/
+.. _CKEditor: http://ckeditor.com/
 
-.. _`WYMeditor website`: https://wymeditor.github.io/wymeditor/
+.. _WYMeditor website: https://wymeditor.github.io/wymeditor/
 
-.. _`WYMeditor GitHub repository`: https://github.com/wymeditor/wymeditor
+.. _WYMeditor GitHub repository: https://github.com/wymeditor/wymeditor
 
-.. _`WYMeditor GitHub organization`: https://github.com/wymeditor
+.. _WYMeditor GitHub organization: https://github.com/wymeditor
 
-.. _`WYMeditor documentation`: https://wymeditor.readthedocs.org/
+.. _WYMeditor documentation: https://wymeditor.readthedocs.org/
 .. |documentation badge| image:: https://readthedocs.org/projects/pip/badge/
    :target: https://wymeditor.readthedocs.org/en/latest/
 
-.. _`WYMeditor issue tracking`: https://github.com/wymeditor/wymeditor/issues
+.. _WYMeditor issue tracker: https://github.com/wymeditor/wymeditor/issues
 
-.. _`WYMeditor questions in Stack Overflow`: https://stackoverflow.com/questions/tagged/wymeditor
+.. _WYMeditor questions in Stack Overflow: https://stackoverflow.com/
+   questions/tagged/wymeditor
 
-.. _`WYMeditor online examples`: https://wymeditor.github.io/wymeditor/dist/examples/
+.. _WYMeditor online examples: https://wymeditor.github.io/wymeditor/dist/
+   examples/
 
-.. _`WYMeditor Travis-CI report`: https://travis-ci.org/wymeditor/wymeditor
-.. |Travis-CI badge| image:: https://travis-ci.org/wymeditor/wymeditor.svg?branch=README_rst
+.. _WYMeditor Travis-CI report: https://travis-ci.org/wymeditor/wymeditor
+.. |Travis-CI badge| image:: https://travis-ci.org/wymeditor/wymeditor.svg
+   ?branch=README_rst
    :target: https://travis-ci.org/wymeditor/wymeditor
    :alt: Travis CI badge
 
-.. _`Bower manifest`: https://github.com/wymeditor/wymeditor/blob/master/bower.json
+.. _Bower manifest: https://github.com/wymeditor/wymeditor/blob/master/
+   bower.json
 .. |Bower logo| image:: http://bower.io/img/bower-logo.svg
    :height: 21px
    :alt: Bower logo
 
-.. _`the examples`: `WYMeditor online examples`_
+.. _the examples: WYMeditor online examples_
 
-.. |IE logo| image:: https://github.com/alrra/browser-logos/raw/master/internet-explorer/internet-explorer_24x24.png
+.. |IE logo| image:: https://github.com/alrra/browser-logos/raw/master/
+   internet-explorer/internet-explorer_24x24.png
    :alt: Internet Explorer logo
-.. |Firefox logo| image:: https://github.com/alrra/browser-logos/raw/master/firefox/firefox_24x24.png
+.. |Firefox logo| image:: https://github.com/alrra/browser-logos/raw/master/
+   firefox/firefox_24x24.png
    :alt: Firefox logo
-.. |Opera logo| image:: https://github.com/alrra/browser-logos/raw/master/opera/opera_24x24.png
+.. |Opera logo| image:: https://github.com/alrra/browser-logos/raw/master/
+   opera/opera_24x24.png
    :alt: Opera logo
-.. |Safari logo| image:: https://github.com/alrra/browser-logos/raw/master/safari_8/safari_8_24x24.png
+.. |Safari logo| image:: https://github.com/alrra/browser-logos/raw/master/
+   safari_8/safari_8_24x24.png
    :alt: Safari logo
-.. |Chrome logo| image:: https://github.com/alrra/browser-logos/raw/master/chrome/chrome_24x24.png
+.. |Chrome logo| image:: https://github.com/alrra/browser-logos/raw/master/
+   chrome/chrome_24x24.png
    :alt: Chrome logo
 
-.. _`jquery.browser`: https://github.com/gabceb/jquery-browser-plugin
-.. _`Rangy`: https://github.com/timdown/rangy/
-.. _`rangy-selectionsaverestore`: `Rangy`_
+.. _jquery.browser: https://github.com/gabceb/jquery-browser-plugin
+.. _Rangy: https://github.com/timdown/rangy/
+.. _rangy-selectionsaverestore: Rangy_
