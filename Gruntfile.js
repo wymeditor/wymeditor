@@ -456,5 +456,5 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-contrib-htmlmin");
     grunt.loadNpmTasks("grunt-usemin");
     grunt.loadNpmTasks("grunt-bower-install-simple");
-    grunt.loadNpmTasks('grunt-bower-linker');
+    grunt.loadNpmTasks("grunt-bower-linker");
 };
