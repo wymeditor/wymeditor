@@ -12,6 +12,6 @@ dist/package.json
 dist/README.md
 dist/*.gz
 dist/examples/vendor/redundant/*
-_gh_pages
+src/jekyll/_serve/**
 docs/.build/*
 src/lib/*
