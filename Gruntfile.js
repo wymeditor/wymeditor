@@ -479,8 +479,7 @@ module.exports = function (grunt) {
             'bower',
             'clean:server',
             'htmlmin',
-            'shell:convertReadmeToHomePage',
-            'jekyll:dev',
+            'jekyllDev',
             'connect:dev',
             'concurrent:watchDev'
         ]);
@@ -504,8 +503,7 @@ module.exports = function (grunt) {
         'usemin',
         'replace',
         'compress',
-        'shell:convertReadmeToHomePage',
-        'jekyll:dist'
+        'jekyllDist'
     ]);
 
     grunt.registerTask('default', [
@@ -519,6 +517,16 @@ module.exports = function (grunt) {
     grunt.registerTask('bower', [
         'bower-install-simple',
         'bower-linker:dev',
+    ]);
+
+    grunt.registerTask('jekyllDev', [
+        'shell:convertReadmeToHomePage',
+        'jekyll:dev'
+    ]);
+
+    grunt.registerTask('jekyllDist', [
+        'shell:convertReadmeToHomePage',
+        'jekyll:dist'
     ]);
 
     grunt.loadNpmTasks("grunt-contrib-uglify");
