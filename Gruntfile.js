@@ -14,7 +14,14 @@ module.exports = function (grunt) {
             app: 'src',
             dist: 'dist'
         },
-        unitTestPort = 9001;
+        unitTestPort = 9001,
+        editorFiles = ['{.tmp,<%= yeoman.app %>}/wymeditor/{,*/}*.js'],
+        stylesFiles = ['.tmp/styles/{,*/}*.css'],
+        examplesFiles = ['{.tmp,<%= yeoman.app %>}/examples/{,*/}*.{js,html}'],
+        jekyllDir = '<%= yeoman.app %>/jekyll',
+        jekyllFiles = [jekyllDir + '/**'],
+        jekyllDevServeDir = jekyllDir + '/_dev-serve',
+        jekyllDevServeFiles = [jekyllDevServeDir + '/*'];
 
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
@@ -28,37 +35,55 @@ module.exports = function (grunt) {
                 "Licensed <%= _.pluck(pkg.licenses, 'type').join(', ') %>\n" +
                 "*/\n\n"
         },
+        // Some targets run concurrently because watch is blocking and we
+        // have different watches.
         watch: {
             options: {
                 // Don't spawn a child process. Virtualbox's NFS share is
                 // slow enough already.
-                spawn: false,
-                livereload: true
+                spawn: false
             },
-            default: {
-                files: [
-                    '<%= yeoman.app %>/*.html',
-                    '.tmp/styles/{,*/}*.css',
-                    '{.tmp,<%= yeoman.app %>}/examples/{,*/}*.{js,html}',
-                    '{.tmp,<%= yeoman.app %>}/test/{,*/}*.{js,html}',
-                    '{.tmp,<%= yeoman.app %>}/test/unit/{,*/}*.{js,html}',
-                    '{.tmp,<%= yeoman.app %>}/wymeditor/{,*/}*.js',
-                    '{.tmp,<%= yeoman.app %>}/wymeditor/plugins/{,*/}*.js',
-                    '{.tmp,<%= yeoman.app %>}/wymeditor/skins/{,*/}*.js',
-                    '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
-                ]
+            // Rebuilds the website on changes
+            jekyll: {
+                files: jekyllFiles,
+                tasks: ['jekyll:dev']
+            },
+            // Convenience. LiveReload must be only in one concurrent
+            // watch because you can't have more than one at the same time,
+            // running.
+            livereload: {
+                options: {
+                    livereload: true
+                },
+                files: [].concat(
+                    editorFiles,
+                    stylesFiles,
+                    examplesFiles,
+                    jekyllDevServeFiles
+                )
             },
             dist: {
-                files: [
-                    '<%= yeoman.app %>/*.html',
-                    '.tmp/styles/{,*/}*.css',
-                    '{.tmp,<%= yeoman.app %>}/examples/{,*/}*.{js,html}',
-                    '{.tmp,<%= yeoman.app %>}/wymeditor/{,*/}*.js',
-                    '{.tmp,<%= yeoman.app %>}/wymeditor/plugins/{,*/}*.js',
-                    '{.tmp,<%= yeoman.app %>}/wymeditor/skins/{,*/}*.js',
-                    '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
-                ],
+                files: [].concat(
+                    stylesFiles,
+                    examplesFiles,
+                    editorFiles,
+                    jekyllFiles
+                ),
                 tasks: ['build']
+            }
+        },
+        // This runs the watches concurrently.
+        concurrent: {
+            watchDev: {
+                tasks: [
+                    'watch:jekyll',
+                    'watch:livereload'
+                ],
+                options: {
+                    // Limit by default is set according to CPU specs.
+                    limit: 2,
+                    logConcurrentOutput: true
+                }
             }
         },
         connect: {
@@ -110,7 +135,8 @@ module.exports = function (grunt) {
                     ]
                 }]
             },
-            server: '.tmp'
+            server: '.tmp',
+            jekyll: jekyllDevServeFiles
         },
         jshint: {
             options: {
@@ -333,6 +359,21 @@ module.exports = function (grunt) {
                 src: ["./**"]
             }
         },
+        jekyll: {
+            options: {
+                src: jekyllDir
+            },
+            dev: {
+                options: {
+                    dest: jekyllDevServeDir
+                }
+            },
+            dist: {
+                options: {
+                    dest: '<%= yeoman.dist %>/jekyll'
+                }
+            }
+        },
         // This task installs the Bower components, as configured in
         // `bower.json`.
         'bower-install-simple': {
@@ -405,8 +446,9 @@ module.exports = function (grunt) {
             'bower',
             'clean:server',
             'htmlmin',
+            'jekyll:dev',
             'connect:dev',
-            'watch:default'
+            'concurrent:watchDev'
         ]);
     });
 
@@ -427,7 +469,8 @@ module.exports = function (grunt) {
         'copy:dist',
         'usemin',
         'replace',
-        'compress'
+        'compress',
+        'jekyll:dist'
     ]);
 
     grunt.registerTask('default', [
@@ -457,4 +500,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-usemin");
     grunt.loadNpmTasks("grunt-bower-install-simple");
     grunt.loadNpmTasks("grunt-bower-linker");
+    grunt.loadNpmTasks("grunt-jekyll");
+    grunt.loadNpmTasks("grunt-concurrent");
 };
