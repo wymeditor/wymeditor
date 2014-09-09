@@ -27,7 +27,7 @@ module.exports = function (grunt) {
         readmePath = 'README.rst',
         jekyllDir = '<%= yeoman.app %>/jekyll',
         jekyllFiles = [jekyllDir + '/**'],
-        jekyllDevServeDir = '<% yeoman.app %>/website',
+        jekyllDevServeDir = '<%= yeoman.app %>/website',
         jekyllDevServeFiles = [jekyllDevServeDir + '/*'];
 
     grunt.initConfig({
