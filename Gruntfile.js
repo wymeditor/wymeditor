@@ -389,6 +389,29 @@ module.exports = function (grunt) {
                     vendor: false
                 }
             }
+        },
+        shell: {
+            docsMakeHtml: {
+                options: {
+                    stdout: true,
+                    stderr: true,
+                    stdin: false,
+                    failOnError: true,
+                    execOptions: {
+                        cwd: 'docs'
+                    }
+                },
+                command: 'make html'
+            },
+            docsOpenHtml: {
+                options: {
+                    stdout: true,
+                    stderr: true,
+                    stdin: false,
+                    failOnError: true
+                },
+                command: 'xdg-open docs/.build/html/index.html'
+            }
         }
     });
 
@@ -443,6 +466,15 @@ module.exports = function (grunt) {
         'bower-linker:dev',
     ]);
 
+    grunt.registerTask('docsMakeHtml', ['shell:docsMakeHtml']);
+    grunt.registerTask('docsMake', ['docsMakeHtml']);
+    grunt.registerTask('docsOpenHtml', ['shell:docsOpenHtml']);
+    grunt.registerTask('docsOpen', ['docsOpenHtml']);
+    grunt.registerTask('docs', [
+        'docsMake',
+        'docsOpen'
+    ]);
+
     grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks("grunt-contrib-concat");
@@ -456,5 +488,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-contrib-htmlmin");
     grunt.loadNpmTasks("grunt-usemin");
     grunt.loadNpmTasks("grunt-bower-install-simple");
-    grunt.loadNpmTasks("grunt-bower-linker");
+    grunt.loadNpmTasks('grunt-bower-linker');
+    grunt.loadNpmTasks("grunt-shell");
 };
