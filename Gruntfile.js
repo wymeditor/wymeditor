@@ -474,6 +474,7 @@ module.exports = function (grunt) {
             'bower',
             'clean:server',
             'htmlmin',
+            'shell:convertReadmeToHomePage',
             'jekyll:dev',
             'connect:dev',
             'concurrent:watchDev'
