@@ -63,6 +63,7 @@
     "grunt-jekyll": "^0.4.2",
     "grunt-replace": "~0.4.4",
     "grunt-rev": "~0.1.0",
+    "grunt-shell": "^1.1.1",
     "grunt-usemin": "~0.1.10",
     "time-grunt": "~0.1.1"
   },

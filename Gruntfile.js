@@ -9,7 +9,13 @@ module.exports = function (grunt) {
     require('time-grunt')(grunt);
 
     // Oldest supported version of jQuery is used by default
-    var jqueryVersion = grunt.option("jquery") || "1.4.4",
+    var humanName = 'WYMeditor',
+        projectPage = "https://github.com/wymeditor/wymeditor/",
+        releaseArchive = projectPage +
+            'releases/download/v<%= pkg.version %>/<%= pkg.name %>' +
+            '-<%= pkg.version %>' + '.tag.gz',
+        sourceArchive = projectPage + 'archive/v<%= pkg.version %>.zip',
+        jqueryVersion = grunt.option("jquery") || "1.4.4",
         yeomanConfig = {
             app: 'src',
             dist: 'dist'
@@ -18,9 +24,10 @@ module.exports = function (grunt) {
         editorFiles = ['{.tmp,<%= yeoman.app %>}/wymeditor/{,*/}*.js'],
         stylesFiles = ['.tmp/styles/{,*/}*.css'],
         examplesFiles = ['{.tmp,<%= yeoman.app %>}/examples/{,*/}*.{js,html}'],
+        readmePath = 'README.rst',
         jekyllDir = '<%= yeoman.app %>/jekyll',
         jekyllFiles = [jekyllDir + '/**'],
-        jekyllDevServeDir = jekyllDir + '/_dev-serve',
+        jekyllDevServeDir = '<% yeoman.app %>/website',
         jekyllDevServeFiles = [jekyllDevServeDir + '/*'];
 
     grunt.initConfig({
@@ -45,8 +52,14 @@ module.exports = function (grunt) {
             },
             // Rebuilds the website on changes
             jekyll: {
-                files: jekyllFiles,
-                tasks: ['jekyll:dev']
+                files: [].concat(
+                    jekyllFiles,
+                    [readmePath]
+                ),
+                tasks: [
+                    'shell:convertReadmeToHomePage',
+                    'jekyll:dev'
+                ]
             },
             // Convenience. LiveReload must be only in one concurrent
             // watch because you can't have more than one at the same time,
@@ -63,11 +76,15 @@ module.exports = function (grunt) {
                 )
             },
             dist: {
+                options: {
+                    livereload: true
+                },
                 files: [].concat(
                     stylesFiles,
                     examplesFiles,
                     editorFiles,
-                    jekyllFiles
+                    jekyllFiles,
+                    [readmePath]
                 ),
                 tasks: ['build']
             }
@@ -149,6 +166,13 @@ module.exports = function (grunt) {
                 '<%= yeoman.app %>/wymeditor/skins/{,*/}*.js',
                 '<%= yeoman.app %>/test/unit/{,*/}*.js'
             ]
+        },
+        shell: {
+            convertReadmeToHomePage: {
+                command: 'rst2html --template ' + jekyllDir +
+                    '/_index.template ' + readmePath + ' ' + jekyllDir +
+                    '/index.html'
+            }
         },
         qunit: {
             all: {
@@ -361,7 +385,11 @@ module.exports = function (grunt) {
         },
         jekyll: {
             options: {
-                src: jekyllDir
+                src: jekyllDir,
+                raw: 'name: ' + humanName + '\n' +
+                    'projectPage: ' + projectPage + '\n' +
+                    'releaseArchive: ' + releaseArchive + '\n' +
+                    'sourceArchive: ' + sourceArchive + '\n'
             },
             dev: {
                 options: {
@@ -370,7 +398,7 @@ module.exports = function (grunt) {
             },
             dist: {
                 options: {
-                    dest: '<%= yeoman.dist %>/jekyll'
+                    dest: '<%= yeoman.dist %>/website'
                 }
             }
         },
@@ -470,6 +498,7 @@ module.exports = function (grunt) {
         'usemin',
         'replace',
         'compress',
+        'shell:convertReadmeToHomePage',
         'jekyll:dist'
     ]);
 
@@ -502,4 +531,5 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-bower-linker");
     grunt.loadNpmTasks("grunt-jekyll");
     grunt.loadNpmTasks("grunt-concurrent");
+    grunt.loadNpmTasks("grunt-shell");
 };
