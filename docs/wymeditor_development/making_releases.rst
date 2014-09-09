@@ -168,7 +168,8 @@ Ship it!
      file) as the description
    * The WYMeditor build, ``wymeditor-<version>.tag.gz``, as an attached binary
 
-#. `Activate the new version in Read the Docs`_.
+#. `Activate the new version in Read the Docs`_
+   and set it as the default version.
 
 #. Drench yourself in a feeling of attainment.
 
