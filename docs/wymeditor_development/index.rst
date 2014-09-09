@@ -6,6 +6,7 @@ WYMeditor Development
     :maxdepth: 2
 
     contributing
+    contributing_documentation
     building_wymeditor
     testing_wymeditor
     coding_standard
