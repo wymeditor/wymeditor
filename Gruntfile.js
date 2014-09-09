@@ -170,9 +170,13 @@ module.exports = function (grunt) {
         },
         shell: {
             convertReadmeToHomePage: {
-                command: 'rst2html --template ' + jekyllDir +
-                    '/_index.template ' + readmePath + ' ' + jekyllDir +
-                    '/index.html'
+                command: [
+                    'rst2html',
+                    '--template ' + jekyllDir + '/_index.template',
+                    '--no-doc-title',
+                    readmePath,
+                    jekyllDir + '/index.html'
+                ].join(' ')
             }
         },
         qunit: {
