@@ -105,7 +105,6 @@ different files:
 * ``package.json``
 * ``bower.json``
 * ``docs/conf.py`` in two lines
-* ``_config.yml`` in three different lines near the end
 
 Throughout these instructions, when asked to modify the version string, it is
 meant that the version strings be modified in all of these files.
