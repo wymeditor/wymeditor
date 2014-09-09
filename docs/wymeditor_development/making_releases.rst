@@ -104,7 +104,7 @@ different files:
 
 * ``package.json``
 * ``bower.json``
-* ``docs/conf.py`` in two lines.
+* ``docs/conf.py`` in two lines
 * ``_config.yml`` in three different lines near the end
 * ``README.md`` at the second step in "Quick Start"
 
