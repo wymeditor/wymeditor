@@ -104,7 +104,7 @@ different files:
 
 * ``package.json``
 * ``bower.json``
-* ``docs/conf.py`` in two lines.
+* ``docs/conf.py`` in two lines
 * ``_config.yml`` in three different lines near the end
 
 Throughout these instructions, when asked to modify the version string, it is
@@ -167,6 +167,9 @@ Ship it!
      file) as the description
    * The WYMeditor build, ``wymeditor-<version>.tag.gz``, as an attached binary
 
+#. `Activate the new version in Read the Docs`_
+   and set it as the default version.
+
 #. Drench yourself in a feeling of attainment.
 
 #. `Tweet`_.
@@ -179,6 +182,8 @@ Prepare for the next release
    metadata string, ``dev``, at the
    end (with a ``+`` between the PATCH version and it).
 
-.. _`Semantic Versioning`: http://semver.org/
-.. _`current releases`: https://github.com/wymeditor/wymeditor/releases
-.. _`Tweet`: https://twitter.com/wymeditor
+.. _Semantic Versioning: http://semver.org/
+.. _current releases: https://github.com/wymeditor/wymeditor/releases
+.. _Activate the new version in Read the Docs: https://readthedocs.org/
+   dashboard/wymeditor/versions/
+.. _Tweet: https://twitter.com/wymeditor
