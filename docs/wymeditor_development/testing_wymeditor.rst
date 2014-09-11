@@ -2,7 +2,7 @@
 Testing WYMeditor
 *****************
 
-Unit Tests vs. Selenium Tests
+Unit tests vs. Selenium tests
 =============================
 
 For testing, two different systems are used; `Selenium`_ and `QUnit`_.
@@ -11,7 +11,7 @@ The vast majority of code is covered by the QUnit unit test suite.
 
 Some functionality can't be tested by QUnit, and thus is tested using Selenium.
 
-|QUnit is preffered over Selenium|
+|QUnit is preferred over Selenium|
 
 All tests should pass in all
 :ref:`supported browsers <browser-compatibility>`.
@@ -25,7 +25,7 @@ you've completed the process of
 QUnit test suite
 ================
 
-Running in Real Browsers
+Running in real browsers
 ------------------------
 
 Start a server using
@@ -50,7 +50,7 @@ so point a browser at
   If testing in a virtual machine, for better performance, disabling virtual
   memory may help.
 
-Running in a Headless Browser
+Running in a headless browser
 -----------------------------
 
 In addition to running the QUnit test suite in real browsers,
@@ -65,7 +65,7 @@ This is how the ``travis-ci`` test suite runs.
 
 If tests fail, an error will be output.
 
-Running with Various Versions of jQuery
+Running with various versions of jQuery
 ---------------------------------------
 
 The QUnit test suite can be run with various versions of jQuery.
@@ -77,7 +77,7 @@ The default version of jQuery that is used is the lowest supported version.
 Testing with jQuery versions other than the default involves the automatic
 fetching of the desired jQuery version from Google's CDN.
 
-In Real Browsers
+In real browsers
 ^^^^^^^^^^^^^^^^
 
 To do this when running tests in a browser,
@@ -88,7 +88,7 @@ For example,
 for jQuery version ``1.7.0`` use
 ``http://localhost:9000/test/unit/?jquery=1.7.0``.
 
-In a Headless Browser
+In a headless browser
 ---------------------
 
 To do this when running tests
@@ -111,11 +111,11 @@ WYMeditor is set up on `Travis CI`_.
 
 The QUnit test suite is run automatically using the ``test`` Grunt task with
 several different versions of jQuery whenever commits are submitted to the Git
-repositiory for the project.
+repository for the project.
 
 Any submitted pull requests should pass these tests.
 
-Selenium Tests
+Selenium tests
 ==============
 
 QUnit operates within the confines of JavaScript.
@@ -128,12 +128,12 @@ It also includes the ``execCommand`` funcionality.
 For testing these areas, we rely on `Selenium`_.
 It controls real browsers in ways that JavaScript can't.
 
-|QUnit is preffered over Selenium|
+|QUnit is preferred over Selenium|
 
 WYMeditor's Selenium test suite is written in Python,
 using `Python bindings for Selenium`_.
 
-Running Selenium Tests
+Running Selenium tests
 ----------------------
 
 #. Install the `Selenium 2 Python bindings <Selenium with Python_>`_,
@@ -184,8 +184,8 @@ Running Selenium Tests
 .. _Python bindings for Selenium: https://pypi.python.org/pypi/selenium
 .. _Travis CI: https://travis-ci.org/
 
-.. |QUnit is preffered over Selenium| replace:: Since QUnit is faster
-   than Selenium, it is the preffered test platform.
+.. |QUnit is preferred over Selenium| replace:: Since QUnit is faster
+   than Selenium, it is the preferred test platform.
    In absence of compelling reason otherwise,
    new tests should be written in QUnit.
 
