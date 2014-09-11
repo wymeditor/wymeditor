@@ -4,9 +4,9 @@ About WYMeditor
 
 .. _description:
 
-*********************
-WYMeditor Description
-*********************
+***********
+Description
+***********
 
 WYMeditor is an open source web-based WYSIWYM editor with semantics and
 standards in mind.
@@ -28,9 +28,9 @@ It also adheres to web standards.
 
 .. _resources:
 
-*******************
-WYMeditor Resources
-*******************
+*********
+Resources
+*********
 
 +------------------------------------------+-----------------------+
 | `WYMeditor website`_                     |                       |
@@ -96,9 +96,9 @@ should give WYMeditor a try.
 
 May also be of interest, is that WYMeditor fully supports Internet Explorer 7.
 
-*************
-Try WYMeditor
-*************
+******
+Try It
+******
 
 Want to see what WYMeditor can do? Try `the examples`_ online, right now.
 
