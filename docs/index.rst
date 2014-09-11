@@ -2,7 +2,11 @@
   WYMeditor Documentation
 ###########################
 
+Welcome to WYMeditor's documentation.
 
+.. include:: ../README.rst
+   :start-after: .. _description:
+   :end-before: .. _why-wymeditor:
 
 **********************
 Full Table of Contents
