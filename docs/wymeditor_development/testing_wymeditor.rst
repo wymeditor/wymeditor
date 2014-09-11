@@ -89,7 +89,7 @@ for jQuery version ``1.7.0`` use
 ``http://localhost:9000/test/unit/?jquery=1.7.0``.
 
 In a headless browser
----------------------
+^^^^^^^^^^^^^^^^^^^^^
 
 To do this when running tests
 from the command line,
