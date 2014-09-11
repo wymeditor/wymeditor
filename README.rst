@@ -2,6 +2,12 @@
 About WYMeditor
 ###############
 
+.. _description:
+
+*********************
+WYMeditor Description
+*********************
+
 WYMeditor is an open source web-based WYSIWYM editor with semantics and
 standards in mind.
 
@@ -17,21 +23,59 @@ document.
 
 It also adheres to web standards.
 
+.. _TinyMCE: http://www.tinymce.com/
+.. _CKEditor: http://ckeditor.com/
+
 .. _resources:
 
-*********
-Resources
-*********
+*******************
+WYMeditor Resources
+*******************
 
-* `WYMeditor website`_
-* `WYMeditor GitHub repository`_
-* `WYMeditor GitHub organization`_
-* `WYMeditor documentation`_ |documentation badge|
-* `WYMeditor questions in Stack Overflow`_
-* `WYMeditor issue tracker`_
-* `WYMeditor online examples`_
-* `WYMeditor Travis-CI report`_ |Travis-CI badge|
-* `Bower manifest`_ |Bower logo|
++------------------------------------------+-----------------------+
+| `WYMeditor website`_                     |                       |
++------------------------------------------+-----------------------+
+| `WYMeditor GitHub repository`_           | |GitHub Mark|         |
++------------------------------------------+-----------------------+
+| `WYMeditor documentation`_               | |documentation badge| |
++------------------------------------------+-----------------------+
+| `WYMeditor questions in Stack Overflow`_ |                       |
++------------------------------------------+-----------------------+
+| `WYMeditor issue tracker`_               |                       |
++------------------------------------------+-----------------------+
+| `WYMeditor online examples`_             |                       |
++------------------------------------------+-----------------------+
+| `WYMeditor Travis-CI report`_            | |Travis-CI badge|     |
++------------------------------------------+-----------------------+
+| `Bower manifest`_                        | |Bower logo|          |
++------------------------------------------+-----------------------+
+
+.. _WYMeditor website: https://wymeditor.github.io/wymeditor/
+.. _WYMeditor GitHub repository: https://github.com/wymeditor/wymeditor
+.. |GitHub Mark| image:: https://upload.wikimedia.org/wikipedia/commons/9/91/
+   Octicons-mark-github.svg
+   :height: 21px
+.. _WYMeditor GitHub organization: https://github.com/wymeditor
+.. _WYMeditor documentation: https://wymeditor.readthedocs.org/
+.. |documentation badge| image:: https://readthedocs.org/projects/pip/badge/
+   :target: https://wymeditor.readthedocs.org/en/latest/
+.. _WYMeditor issue tracker: https://github.com/wymeditor/wymeditor/issues
+.. _WYMeditor questions in Stack Overflow: https://stackoverflow.com/
+   questions/tagged/wymeditor
+.. _WYMeditor online examples: https://wymeditor.github.io/wymeditor/dist/
+   examples/
+.. _WYMeditor Travis-CI report: https://travis-ci.org/wymeditor/wymeditor
+.. |Travis-CI badge| image:: https://travis-ci.org/wymeditor/wymeditor.svg
+   ?branch=README_rst
+   :target: https://travis-ci.org/wymeditor/wymeditor
+   :alt: Travis CI badge
+.. _Bower manifest: https://github.com/wymeditor/wymeditor/blob/master/
+   bower.json
+.. |Bower logo| image:: http://bower.io/img/bower-logo.svg
+   :height: 21px
+   :alt: Bower logo
+
+.. _why-wymeditor:
 
 **************
 Why WYMeditor?
@@ -101,40 +145,7 @@ Copyright (c) 2005 - 2013 Jean-Francois Hovinne,
 Dual licensed under the MIT (``MIT-license.txt``)
 and GPL (``GPL-license.txt``) licenses.
 
-.. _TinyMCE: http://www.tinymce.com/
-.. _CKEditor: http://ckeditor.com/
-
-.. _WYMeditor website: https://wymeditor.github.io/wymeditor/
-
-.. _WYMeditor GitHub repository: https://github.com/wymeditor/wymeditor
-
-.. _WYMeditor GitHub organization: https://github.com/wymeditor
-
-.. _WYMeditor documentation: https://wymeditor.readthedocs.org/
-.. |documentation badge| image:: https://readthedocs.org/projects/pip/badge/
-   :target: https://wymeditor.readthedocs.org/en/latest/
-
-.. _WYMeditor issue tracker: https://github.com/wymeditor/wymeditor/issues
-
-.. _WYMeditor questions in Stack Overflow: https://stackoverflow.com/
-   questions/tagged/wymeditor
-
-.. _WYMeditor online examples: https://wymeditor.github.io/wymeditor/dist/
-   examples/
-
-.. _WYMeditor Travis-CI report: https://travis-ci.org/wymeditor/wymeditor
-.. |Travis-CI badge| image:: https://travis-ci.org/wymeditor/wymeditor.svg
-   ?branch=README_rst
-   :target: https://travis-ci.org/wymeditor/wymeditor
-   :alt: Travis CI badge
-
-.. _Bower manifest: https://github.com/wymeditor/wymeditor/blob/master/
-   bower.json
-.. |Bower logo| image:: http://bower.io/img/bower-logo.svg
-   :height: 21px
-   :alt: Bower logo
-
-.. _the examples: WYMeditor online examples_
+.. _the examples: _WYMeditor online examples
 
 .. |IE logo| image:: https://github.com/alrra/browser-logos/raw/master/
    internet-explorer/internet-explorer_24x24.png

@@ -25,8 +25,8 @@ you've completed the process of
 QUnit test suite
 ================
 
-Running in Reals Browsers
--------------------------
+Running in Real Browsers
+------------------------
 
 Start a server using
 
@@ -35,7 +35,7 @@ Start a server using
   $ grunt server
 
 After the server is running, by default,
-the it serves on port ``9000``
+it serves on port ``9000``
 so point a browser at
 `http://localhost:9000/test/unit/ <QUnit test suite URI_>`_.
 
@@ -63,7 +63,7 @@ This is how the ``travis-ci`` test suite runs.
 
     $ grunt test
 
-If tests fail an error will be output.
+If tests fail, an error will be output.
 
 Running with Various Versions of jQuery
 ---------------------------------------

@@ -168,17 +168,6 @@ module.exports = function (grunt) {
                 '<%= yeoman.app %>/jekyll/media/javascripts/main.js'
             ]
         },
-        shell: {
-            convertReadmeToHomePage: {
-                command: [
-                    'rst2html',
-                    '--template ' + jekyllDir + '/_index.template',
-                    '--no-doc-title',
-                    readmePath,
-                    jekyllDir + '/index.html'
-                ].join(' ')
-            }
-        },
         qunit: {
             all: {
                 options: {
@@ -463,6 +452,38 @@ module.exports = function (grunt) {
                     vendor: false
                 }
             }
+        },
+        shell: {
+            convertReadmeToHomePage: {
+                command: [
+                    'rst2html',
+                    '--template ' + jekyllDir + '/_index.template',
+                    '--no-doc-title',
+                    readmePath,
+                    jekyllDir + '/index.html'
+                ].join(' ')
+            },
+            docsMakeHtml: {
+                options: {
+                    stdout: true,
+                    stderr: true,
+                    stdin: false,
+                    failOnError: true,
+                    execOptions: {
+                        cwd: 'docs'
+                    }
+                },
+                command: 'make html'
+            },
+            docsOpenHtml: {
+                options: {
+                    stdout: true,
+                    stderr: true,
+                    stdin: false,
+                    failOnError: true
+                },
+                command: 'xdg-open docs/.build/html/index.html'
+            }
         }
     });
 
@@ -527,6 +548,15 @@ module.exports = function (grunt) {
     grunt.registerTask('jekyllDist', [
         'shell:convertReadmeToHomePage',
         'jekyll:dist'
+    ]);
+
+    grunt.registerTask('docsMakeHtml', ['shell:docsMakeHtml']);
+    grunt.registerTask('docsMake', ['docsMakeHtml']);
+    grunt.registerTask('docsOpenHtml', ['shell:docsOpenHtml']);
+    grunt.registerTask('docsOpen', ['docsOpenHtml']);
+    grunt.registerTask('docs', [
+        'docsMake',
+        'docsOpen'
     ]);
 
     grunt.loadNpmTasks("grunt-contrib-uglify");
