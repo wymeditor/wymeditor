@@ -52,7 +52,7 @@ WYMeditor Resources
 
 .. _WYMeditor website: https://wymeditor.github.io/wymeditor/
 .. _WYMeditor GitHub repository: https://github.com/wymeditor/wymeditor
-.. |GitHub Mark| image:: https://upload.wikimedia.org/wikipedia/commons/9/91/
+.. |GitHub Mark| image:: http://upload.wikimedia.org/wikipedia/commons/9/91/
    Octicons-mark-github.svg
    :height: 21px
 .. _WYMeditor GitHub organization: https://github.com/wymeditor
