@@ -55,6 +55,8 @@ Resources
 .. |GitHub Mark| image:: http://upload.wikimedia.org/wikipedia/commons/9/91/
    Octicons-mark-github.svg
    :height: 21px
+   :width: 21px
+   :alt: GitHub Mark
 .. _WYMeditor GitHub organization: https://github.com/wymeditor
 .. _WYMeditor documentation: https://wymeditor.readthedocs.org/
 .. |documentation badge| image:: https://readthedocs.org/projects/pip/badge/
@@ -73,6 +75,7 @@ Resources
    bower.json
 .. |Bower logo| image:: http://bower.io/img/bower-logo.svg
    :height: 21px
+   :width: 21px
    :alt: Bower logo
 
 .. _why-wymeditor:
