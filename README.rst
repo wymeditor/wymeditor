@@ -52,7 +52,7 @@ Resources
 
 .. _WYMeditor website: https://wymeditor.github.io/wymeditor/
 .. _WYMeditor GitHub repository: https://github.com/wymeditor/wymeditor
-.. |GitHub Mark| image:: http://upload.wikimedia.org/wikipedia/commons/9/91/
+.. |GitHub Mark| image:: //upload.wikimedia.org/wikipedia/commons/9/91/
    Octicons-mark-github.svg
    :height: 21px
    :width: 21px
@@ -75,7 +75,7 @@ Resources
    :alt: Travis CI badge
 .. _Bower manifest: https://github.com/wymeditor/wymeditor/blob/master/
    bower.json
-.. |Bower logo| image:: http://bower.io/img/bower-logo.svg
+.. |Bower logo| image:: //bower.io/img/bower-logo.svg
    :height: 21px
    :width: 21px
    :alt: Bower logo
