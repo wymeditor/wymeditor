@@ -102,7 +102,7 @@ for jQuery ``1.6.0`` use
 
 .. code-block:: shell-session
 
-  $ grunt test --jquery=1.8.0
+  $ grunt test --jquery=1.6.0
 
 Travis CI
 ---------
