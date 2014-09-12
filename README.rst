@@ -39,7 +39,7 @@ Resources
 +------------------------------------------+-----------------------+
 | `WYMeditor documentation`_               | |documentation badge| |
 +------------------------------------------+-----------------------+
-| `WYMeditor questions in Stack Overflow`_ |                       |
+| `WYMeditor questions in Stack Overflow`_ | |Stack Overflow icon| |
 +------------------------------------------+-----------------------+
 | `WYMeditor issue tracker`_               |                       |
 +------------------------------------------+-----------------------+
@@ -64,6 +64,8 @@ Resources
 .. _WYMeditor issue tracker: https://github.com/wymeditor/wymeditor/issues
 .. _WYMeditor questions in Stack Overflow: https://stackoverflow.com/
    questions/tagged/wymeditor
+.. |Stack Overflow icon| image:: https://cdn.sstatic.net/stackoverflow/img/favicon.ico
+   :alt: Stack Overflow icon
 .. _WYMeditor online examples: https://wymeditor.github.io/wymeditor/dist/
    examples/
 .. _WYMeditor Travis-CI report: https://travis-ci.org/wymeditor/wymeditor
