@@ -148,7 +148,7 @@ Copyright (c) 2005 - 2013 Jean-Francois Hovinne,
 Dual licensed under the MIT (``MIT-license.txt``)
 and GPL (``GPL-license.txt``) licenses.
 
-.. _the examples: _WYMeditor online examples
+.. _the examples: `WYMeditor online examples`_
 
 .. |IE logo| image:: https://github.com/alrra/browser-logos/raw/master/
    internet-explorer/internet-explorer_24x24.png
