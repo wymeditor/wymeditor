@@ -39,7 +39,7 @@ Resources
 +------------------------------------------+-----------------------+
 | `WYMeditor documentation`_               | |documentation badge| |
 +------------------------------------------+-----------------------+
-| `WYMeditor questions in Stack Overflow`_ |                       |
+| `WYMeditor questions in Stack Overflow`_ | |Stack Overflow icon| |
 +------------------------------------------+-----------------------+
 | `WYMeditor issue tracker`_               |                       |
 +------------------------------------------+-----------------------+
@@ -64,6 +64,8 @@ Resources
 .. _WYMeditor issue tracker: https://github.com/wymeditor/wymeditor/issues
 .. _WYMeditor questions in Stack Overflow: https://stackoverflow.com/
    questions/tagged/wymeditor
+.. |Stack Overflow icon| image:: https://cdn.sstatic.net/stackoverflow/img/favicon.ico
+   :alt: Stack Overflow icon
 .. _WYMeditor online examples: https://wymeditor.github.io/wymeditor/dist/
    examples/
 .. _WYMeditor Travis-CI report: https://travis-ci.org/wymeditor/wymeditor
@@ -148,7 +150,7 @@ Copyright (c) 2005 - 2013 Jean-Francois Hovinne,
 Dual licensed under the MIT (``MIT-license.txt``)
 and GPL (``GPL-license.txt``) licenses.
 
-.. _the examples: _WYMeditor online examples
+.. _the examples: `WYMeditor online examples`_
 
 .. |IE logo| image:: https://github.com/alrra/browser-logos/raw/master/
    internet-explorer/internet-explorer_24x24.png
