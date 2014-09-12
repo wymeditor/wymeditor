@@ -165,7 +165,7 @@ module.exports = function (grunt) {
                 '<%= yeoman.app %>/wymeditor/plugins/{,*/}*.js',
                 '<%= yeoman.app %>/wymeditor/skins/{,*/}*.js',
                 '<%= yeoman.app %>/test/unit/{,*/}*.js',
-                '<%= yeoman.app %>/jekyll/media/javascripts/main.js'
+                '<%= yeoman.app %>/jekyll/website-media/javascripts/main.js'
             ]
         },
         qunit: {
