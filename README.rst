@@ -52,30 +52,30 @@ Resources
 
 .. _WYMeditor website: https://wymeditor.github.io/wymeditor/
 .. _WYMeditor GitHub repository: https://github.com/wymeditor/wymeditor
-.. |GitHub Mark| image:: //upload.wikimedia.org/wikipedia/commons/9/91/
+.. |GitHub Mark| image:: http://upload.wikimedia.org/wikipedia/commons/9/91/
    Octicons-mark-github.svg
    :height: 21px
    :width: 21px
    :alt: GitHub Mark
 .. _WYMeditor GitHub organization: https://github.com/wymeditor
 .. _WYMeditor documentation: https://wymeditor.readthedocs.org/
-.. |documentation badge| image:: //readthedocs.org/projects/pip/badge/
+.. |documentation badge| image:: http://readthedocs.org/projects/pip/badge/
    :target: https://wymeditor.readthedocs.org/en/latest/
 .. _WYMeditor issue tracker: https://github.com/wymeditor/wymeditor/issues
 .. _WYMeditor questions in Stack Overflow: https://stackoverflow.com/
    questions/tagged/wymeditor
-.. |Stack Overflow icon| image:: //cdn.sstatic.net/stackoverflow/img/favicon.ico
+.. |Stack Overflow icon| image:: http://cdn.sstatic.net/stackoverflow/img/favicon.ico
    :alt: Stack Overflow icon
 .. _WYMeditor online examples: https://wymeditor.github.io/wymeditor/dist/
    examples/
 .. _WYMeditor Travis-CI report: https://travis-ci.org/wymeditor/wymeditor
-.. |Travis-CI badge| image:: //travis-ci.org/wymeditor/wymeditor.svg
+.. |Travis-CI badge| image:: http://travis-ci.org/wymeditor/wymeditor.svg
    ?branch=README_rst
    :target: https://travis-ci.org/wymeditor/wymeditor
    :alt: Travis CI badge
 .. _Bower manifest: https://github.com/wymeditor/wymeditor/blob/master/
    bower.json
-.. |Bower logo| image:: //bower.io/img/bower-logo.svg
+.. |Bower logo| image:: http://bower.io/img/bower-logo.svg
    :height: 21px
    :width: 21px
    :alt: Bower logo
@@ -152,19 +152,19 @@ and GPL (``GPL-license.txt``) licenses.
 
 .. _the examples: `WYMeditor online examples`_
 
-.. |IE logo| image:: //github.com/alrra/browser-logos/raw/master/
+.. |IE logo| image:: http://github.com/alrra/browser-logos/raw/master/
    internet-explorer/internet-explorer_24x24.png
    :alt: Internet Explorer logo
-.. |Firefox logo| image:: //github.com/alrra/browser-logos/raw/master/
+.. |Firefox logo| image:: http://github.com/alrra/browser-logos/raw/master/
    firefox/firefox_24x24.png
    :alt: Firefox logo
-.. |Opera logo| image:: //github.com/alrra/browser-logos/raw/master/
+.. |Opera logo| image:: http://github.com/alrra/browser-logos/raw/master/
    opera/opera_24x24.png
    :alt: Opera logo
-.. |Safari logo| image:: //github.com/alrra/browser-logos/raw/master/
+.. |Safari logo| image:: http://github.com/alrra/browser-logos/raw/master/
    safari_8/safari_8_24x24.png
    :alt: Safari logo
-.. |Chrome logo| image:: //github.com/alrra/browser-logos/raw/master/
+.. |Chrome logo| image:: http://github.com/alrra/browser-logos/raw/master/
    chrome/chrome_24x24.png
    :alt: Chrome logo
 
