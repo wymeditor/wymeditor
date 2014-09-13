@@ -9,8 +9,10 @@ is served via `GitHub Pages`_.
 
 In GitHub Pages, websites for projects are stored in a separate,
 ``gh-pages`` branch.
-Unlike so,
-WYMeditor's website is stored in the ``master`` branch.
+
+WYMeditor's website is developed in the ``master`` branch
+and is built and published to the ``gh-pages`` branch
+as part of each :doc:`release <making_releases>`.
 
 This promotes consistency.
 It also allows us to serve the demos/examples
@@ -61,8 +63,8 @@ changes to any of the contents of the website's directory
 result in automatic rebuilding of the website.
 `LiveReload`_ is implemented.
 
-Publishing of the Website
-=========================
+Building the website
+====================
 
 The website is built as part of the entire project build:
 
@@ -76,6 +78,21 @@ Or, exclusively:
 
     $ grunt jekyllDist
 
+It gets built to ``dist/website``.
+
+.. _publish-website:
+
+Publishing the website
+======================
+
+Publishing the website is a matter of pushing to the ``gh-pages`` branch:
+
+.. code-block:: shell-session
+
+    $ push origin master:gh-pages
+
+This should be done during the process of making a release.
+Doing it between releases will result in broken download links in the website.
 
 .. _GitHub Pages: https://pages.github.com/
 .. _Jekyll: http://jekyllrb.com/

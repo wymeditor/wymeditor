@@ -169,6 +169,8 @@ Ship it!
 #. `Activate the new version in Read the Docs`_
    and set it as the default version.
 
+#. :ref:`Publish the website <publish-website>`.
+
 #. Drench yourself in a feeling of attainment.
 
 #. `Tweet`_.
