@@ -16,7 +16,7 @@ This promotes consistency.
 It also allows us to serve the demos/examples
 via GitHub Pages.
 
-Website Files
+Website files
 =============
 
 The website's only page is the ``README.rst`` file, converted to HTML.
@@ -28,7 +28,7 @@ The Jekyll layout is at ``src/jekyll/_layouts/home.html``.
 
 Its media and styles are located in ``src/jekyll/media``.
 
-Environment for development of the Website
+Environment for development of the website
 ==========================================
 
 There is no Jekyll configuration file, ``_config.yml``.
@@ -45,7 +45,7 @@ In this example, `RVM`_ is used.
 
 Docutils is also required.
 
-Previewing the Website Locally
+Previewing the website locally
 ==============================
 
 The website is served as part of the whole development serve.
@@ -70,7 +70,7 @@ The website is built as part of the entire project build:
 
     $ grunt build
 
-Or, by itself:
+Or, exclusively:
 
 .. code-block:: shell-session
 
