@@ -7,7 +7,7 @@ is served via `GitHub Pages`_.
 
 `Jekyll`_ is used for building it.
 
-By convention, in GitHub Pages, websites for projects are stored in a separate,
+In GitHub Pages, websites for projects are stored in a separate,
 ``gh-pages`` branch.
 Unlike so,
 WYMeditor's website is stored in the ``master`` branch.
