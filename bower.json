@@ -2,14 +2,14 @@
   "name": "wymeditor",
   "version": "1.0.0-rc.1+dev",
   "keywords": [
-      "semantic",
-      "wysiwym",
-      "web",
-      "html",
-      "editor"
+    "semantic",
+    "wysiwym",
+    "web",
+    "html",
+    "editor"
   ],
   "dependencies": {
-      "jquery": "1.4.4 - ~1.11.1"
+    "jquery": "1.4.4 - ~1.11.1"
   },
   "devDependencies": {
     "requirejs": "~2.1",
