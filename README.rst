@@ -41,6 +41,8 @@ Resources
 +------------------------------------------+-----------------------+
 | `WYMeditor questions in Stack Overflow`_ | |Stack Overflow icon| |
 +------------------------------------------+-----------------------+
+| `WYMeditor IRC channel`_                 | |Freenode icon|       |
++------------------------------------------+-----------------------+
 | `WYMeditor issue tracker`_               |                       |
 +------------------------------------------+-----------------------+
 | `WYMeditor online examples`_             |                       |
@@ -66,6 +68,11 @@ Resources
    questions/tagged/wymeditor
 .. |Stack Overflow icon| image:: https://cdn.sstatic.net/stackoverflow/img/favicon.ico
    :alt: Stack Overflow icon
+.. _WYMeditor IRC channel: irc://freenode.net/wymeditor
+.. |Freenode icon| image:: http://freenode.net/favicon.ico
+   :height: 21px
+   :width: 21px
+   :alt: Freenode icon
 .. _WYMeditor online examples: https://wymeditor.github.io/wymeditor/dist/
    examples/
 .. _WYMeditor Travis-CI report: https://travis-ci.org/wymeditor/wymeditor
