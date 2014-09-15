@@ -162,28 +162,6 @@ module.exports = function (grunt) {
                 '<%= yeoman.dist %>/wymeditor/skins/{,*/}*.css'
             ]
         },
-        htmlmin: {
-            dist: {
-                options: {
-                    /*removeCommentsFromCDATA: true,
-                    // https://github.com/yeoman/grunt-usemin/issues/44
-                    //collapseWhitespace: true,
-                    collapseBooleanAttributes: true,
-                    removeAttributeQuotes: true,
-                    removeRedundantAttributes: true,
-                    useShortDoctype: true,
-                    removeEmptyAttributes: true,
-                    removeOptionalTags: true*/
-                    keepClosingSlash: true
-                },
-                files: [{
-                    expand: true,
-                    cwd: '<%= yeoman.app %>',
-                    src: 'wymeditor/iframe/{,*/}*.html',
-                    dest: '<%= yeoman.dist %>'
-                }]
-            }
-        },
         replace: {
             dist: {
                 options: {
@@ -427,7 +405,6 @@ module.exports = function (grunt) {
         grunt.task.run([
             'bower',
             'clean:server',
-            'htmlmin',
             'connect:dev',
             'watch:default'
         ]);
@@ -485,7 +462,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-contrib-clean");
     grunt.loadNpmTasks("grunt-contrib-qunit");
     grunt.loadNpmTasks("grunt-replace");
-    grunt.loadNpmTasks("grunt-contrib-htmlmin");
     grunt.loadNpmTasks("grunt-usemin");
     grunt.loadNpmTasks("grunt-bower-install-simple");
     grunt.loadNpmTasks('grunt-bower-linker');
