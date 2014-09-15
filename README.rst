@@ -49,7 +49,7 @@ Resources
 +------------------------------------------+----------------------------------+
 | `WYMeditor Travis-CI report`_            | |Travis-CI badge|                |
 +------------------------------------------+----------------------------------+
-| `Bower manifest`_                        | |Bower logo| ``                  |
+| `Bower manifest`_                        | |Bower logo|                     |
 +------------------------------------------+----------------------------------+
 
 .. _WYMeditor website: https://wymeditor.github.io/wymeditor/
