@@ -273,11 +273,14 @@ WYMeditor.WymClassWebKit.prototype.keyup = function (evt) {
         if (jQuery.inArray(name, notValidRootContainers) > -1 &&
                 parentName === WYMeditor.BODY) {
             wym._exec(WYMeditor.FORMAT_BLOCK, defaultRootContainer);
+            container = wym.selectedContainer();
         }
 
         // Issue #542
         if (wym._isLiInLiAfterEnter(evt.which, container)) {
             wym._fixLiInLiAfterEnter();
+            // Container may have changed.
+            container = wym.selectedContainer();
             return;
         }
 
