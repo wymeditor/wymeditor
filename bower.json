@@ -9,7 +9,7 @@
     "editor"
   ],
   "dependencies": {
-    "jquery": "1.4.4 - ~1.11.1"
+    "jquery": "1.4.4 - 1.11"
   },
   "devDependencies": {
     "requirejs": "~2.1",
