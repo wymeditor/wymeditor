@@ -3,9 +3,19 @@
 This document tracks the enhancements and bug fixes between releases of
 WYMeditor.
 
-## 1.0.0-rc.1
+## 1.0.0-beta.9
 
-*release-date* TBD
+*release-date* October 6, 2014
+
+### Enhancements
+
+* [#604](https://github.com/wymeditor/wymeditor/pull/604)
+  Website is now up–to–date.
+
+### Bug Fixes
+
+* [#608](https://github.com/wymeditor/wymeditor/pull/608)
+  Bower jQuery dependency was invalid.
 
 ### Backwards-Incompatible Changes
 
