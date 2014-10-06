@@ -113,12 +113,12 @@
 /* jshint strict: false, maxlen: 90, evil: true */
 /* global -$, WYMeditor: true, console */
 
-/*@version 1.0.0-beta.8 */
+/*@version 1.0.0-beta.9 */
 /**
     WYMeditor
     =========
 
-    version 1.0.0-beta.8
+    version 1.0.0-beta.9
 
     WYMeditor : what you see is What You Mean web-based editor
 
@@ -332,7 +332,7 @@ jQuery.extend(WYMeditor, {
     TR                  : "tr",
     UL                  : "ul",
     UNLINK              : "Unlink",
-    VERSION             : "1.0.0-beta.8",
+    VERSION             : "1.0.0-beta.9",
     WYM_INDEX           : "wym_index",
     WYM_PATH            : "{Wym_Wym_Path}",
 
@@ -1378,7 +1378,7 @@ WYMeditor.INIT_DIALOG = function (index) {
     });
 
     jQuery(wym._options.dialogPreviewSelector + " " +
-        wym._options.previewSelector).html(wym.xhtml());
+        wym._options.previewSelector).html(wym.html());
 
     //cancel button
     jQuery(wym._options.cancelSelector).mousedown(function () {
@@ -2043,10 +2043,10 @@ WYMeditor.editor.prototype._initializeDocumentContent = function () {
 
     if (wym._options.html) {
         // Populate from the configuration option
-        wym._html(wym._options.html);
+        wym.html(wym._options.html);
     } else {
         // Populate from the textarea element
-        wym._html(wym._element[0].value);
+        wym.html(wym._element[0].value);
     }
 };
 
@@ -2137,25 +2137,6 @@ WYMeditor.editor.prototype.box = function () {
 };
 
 /**
-    WYMeditor.editor._html
-    ======================
-
-    Get or set the wymbox html value. If you want to get the wymbox html, you
-    should use WYMeditor.editor.xhtml() instead of this so that the html is
-    parsed and receives cross-browser cleanup. Only use this if you have a
-    specific reason not to use WYMeditor.editor.xhtml().
-*/
-WYMeditor.editor.prototype._html = function (html) {
-    var wym = this;
-    if (typeof html === 'string') {
-        wym.$body().html(html);
-        wym.update();
-    } else {
-        return wym.$body().html();
-    }
-};
-
-/**
     WYMeditor.editor.vanish
     =========================
 
@@ -2181,34 +2162,36 @@ WYMeditor.editor.prototype.vanish = function () {
 };
 
 /**
-    WYMeditor.editor.html
+    WYMeditor.editor.rawHtml
     =====================
 
-    Deprecated. Use WYMeditor.editor.xhtml or WYMeditor.editor._html instead.
-    Calling this function will give a console warning.
+    Get or set the wymbox html value. HTML is NOT parsed when either set/get.
+    Use html() if you are unsure what this function does.
 */
-WYMeditor.editor.prototype.html = function (html) {
+WYMeditor.editor.prototype.rawHtml = function (html) {
     var wym = this;
-    WYMeditor.console.warn("The function WYMeditor.editor.html() is deprecated. " +
-                           "Use either WYMeditor.editor.xhtml() or " +
-                           "WYMeditor.editor._html() instead.");
     if (typeof html === 'string') {
-        wym._html(html);
+        wym.$body().html(html);
+        wym.update();
     } else {
-        return wym._html();
+        return wym.$body().html();
     }
 };
 
 /**
-    WYMeditor.editor.xhtml
-    ======================
+    WYMeditor.editor.html
+    =====================
 
-    Take the current editor's DOM and apply strict xhtml nesting rules to
-    enforce a valid, well-formed, semantic xhtml result.
+    Get or set the wymbox html value. HTML is parsed before it is inserted and
+    parsed before it is return. Use rawHtml() if parsing is not wanted/needed.
 */
-WYMeditor.editor.prototype.xhtml = function () {
+WYMeditor.editor.prototype.html = function (html) {
     var wym = this;
-    return wym.parser.parse(wym._html());
+    if (typeof html === 'string') {
+        wym.rawHtml(wym.parser.parse(html));
+    } else {
+        return wym.parser.parse(wym.rawHtml());
+    }
 };
 
 /**
@@ -2950,7 +2933,7 @@ WYMeditor.editor.prototype.update = function () {
     var wym = this,
         html;
 
-    html = wym.xhtml();
+    html = wym.html();
     jQuery(wym._element).val(html);
     jQuery(wym._box).find(wym._options.htmlValSelector).not('.hasfocus').val(html); //#147
     wym.fixBodyHtml();
@@ -5604,7 +5587,7 @@ WYMeditor.WymClassGecko.prototype._docEventQuirks = function () {
 /** @name html
  * @description Get/Set the html value
  */
-WYMeditor.WymClassGecko.prototype._html = function (html) {
+WYMeditor.WymClassGecko.prototype.rawHtml = function (html) {
     var wym = this;
 
     if (typeof html === 'string') {
@@ -6080,11 +6063,14 @@ WYMeditor.WymClassWebKit.prototype.keyup = function (evt) {
         if (jQuery.inArray(name, notValidRootContainers) > -1 &&
                 parentName === WYMeditor.BODY) {
             wym._exec(WYMeditor.FORMAT_BLOCK, defaultRootContainer);
+            container = wym.selectedContainer();
         }
 
         // Issue #542
         if (wym._isLiInLiAfterEnter(evt.which, container)) {
             wym._fixLiInLiAfterEnter();
+            // Container may have changed.
+            container = wym.selectedContainer();
             return;
         }
 
