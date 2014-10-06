@@ -32,23 +32,25 @@ It also adheres to web standards.
 Resources
 *********
 
-+------------------------------------------+-----------------------+
-| `WYMeditor website`_                     |                       |
-+------------------------------------------+-----------------------+
-| `WYMeditor GitHub repository`_           | |GitHub Mark|         |
-+------------------------------------------+-----------------------+
-| `WYMeditor documentation`_               | |documentation badge| |
-+------------------------------------------+-----------------------+
-| `WYMeditor questions in Stack Overflow`_ | |Stack Overflow icon| |
-+------------------------------------------+-----------------------+
-| `WYMeditor issue tracker`_               |                       |
-+------------------------------------------+-----------------------+
-| `WYMeditor online examples`_             |                       |
-+------------------------------------------+-----------------------+
-| `WYMeditor Travis-CI report`_            | |Travis-CI badge|     |
-+------------------------------------------+-----------------------+
-| `Bower manifest`_                        | |Bower logo|          |
-+------------------------------------------+-----------------------+
++-----------------+------------------------------------------+------------------------------------------+
+| Website         | `WYMeditor website`_                     | ``http://wymeditor.github.io/wymeditor`` |
++-----------------+------------------------------------------+------------------------------------------+
+| Code repository | `WYMeditor GitHub repository`_           | |GitHub Mark|                            |
++-----------------+------------------------------------------+------------------------------------------+
+| Documentation   | `WYMeditor documentation`_               | |documentation badge|                    |
++-----------------+------------------------------------------+------------------------------------------+
+| Support         | `WYMeditor questions in Stack Overflow`_ | |Stack Overflow icon|                    |
++-----------------+------------------------------------------+------------------------------------------+
+| Chat            | `WYMeditor IRC channel`_                 | ``irc//irc.freenode.net/wymeditor``      |
++-----------------+------------------------------------------+------------------------------------------+
+| Issues          | `WYMeditor issue tracker`_               |                                          |
++-----------------+------------------------------------------+------------------------------------------+
+| Examples        | `WYMeditor online examples`_             |                                          |
++-----------------+------------------------------------------+------------------------------------------+
+| CI testing      | `WYMeditor Travis-CI report`_            | |Travis-CI badge|                        |
++-----------------+------------------------------------------+------------------------------------------+
+| Bower           | `Bower manifest`_                        | |Bower logo|                             |
++-----------------+------------------------------------------+------------------------------------------+
 
 .. _WYMeditor website: https://wymeditor.github.io/wymeditor/
 .. _WYMeditor GitHub repository: https://github.com/wymeditor/wymeditor
@@ -66,6 +68,7 @@ Resources
    questions/tagged/wymeditor
 .. |Stack Overflow icon| image:: http://cdn.sstatic.net/stackoverflow/img/favicon.ico
    :alt: Stack Overflow icon
+.. _WYMeditor IRC channel: irc://irc.freenode.net/wymeditor
 .. _WYMeditor online examples: https://wymeditor.github.io/wymeditor/dist/
    examples/
 .. _WYMeditor Travis-CI report: https://travis-ci.org/wymeditor/wymeditor
