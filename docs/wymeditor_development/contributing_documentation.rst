@@ -33,6 +33,12 @@ Documentation Source Files
 
 The source files of the documentation are at ``docs``.
 
+The only exception is
+the readme file, ``README.rst``,
+which is at the root of the repository.
+It is included in the build
+and serves as :doc:`about_wymeditor`.
+
 The Sphinx configuration file, ``conf.py``,
 and the ``Makefile`` are there, as well.
 

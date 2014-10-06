@@ -2,68 +2,104 @@
 WYMeditor Website
 *****************
 
-The website at http://wymeditor.github.io/wymeditor/
-is served via Github pages
-and uses `Jekyll <http://jekyllrb.com/>`_.
-Instead of dealing with different content
-between a ``gh-pages`` and master branch,
-``master`` also contains the jekyll content.
-This also allows us to server the demos/examples
-via github pages,
-while also adding custom content.
+The website at ``http://wymeditor.github.io/wymeditor/``
+is served via `GitHub Pages`_.
 
-Website vs README vs Docs
-=========================
+`Jekyll`_ is used for building it. GitHub has an integrated Jekyll feature.
+That is not used. Jekyll is used in the development environment and the built
+website is checked in to the repository.
 
-Currently,
-there's a lot of overlap between the docs,
-the website
-and the README.
+In GitHub Pages, websites for projects are stored in a separate
+``gh-pages`` branch.
 
-The focus of these should be:
+WYMeditor's website is developed in the ``master`` branch
+and is built and published to the ``gh-pages`` branch
+as part of each :doc:`release <making_releases>`.
 
-* Website = Marketing/Examples/Getting-started
-* README = Funnels to Website but contains project-wide info
-* docs = detailed user and development documentation
+This promotes consistency.
+It also allows us to serve the demos/examples
+via GitHub Pages.
 
-Website Files
+Website files
 =============
 
-Currently,
-we have a single-page website
-controlled by an ``index.html`` file,
-which uses a layout defined in ``_layouts/home.html``.
-This file uses several custom variables
-defined inside ``_config.yml``.
+The website's only page is the ``README.rst`` file, converted to HTML.
+This occurs automatically in builds.
 
-Website Theme
--------------
+The theme is a ported version of a GitHub Pages layout.
 
-Our theme is a ported version of a github pages layout.
-Its media and styles are located in ``website-media/``.
+The Jekyll layout is at ``src/jekyll/_layouts/home.html``.
 
-Configuring Jekyll
-==================
+Its media and styles are located in ``src/jekyll/website-media``.
+
+Environment for development of the website
+==========================================
+
+There is no Jekyll configuration file, ``_config.yml``.
+Instead, Grunt orchestrates building and serving.
+Configuration is within the ``Gruntfile.js``.
+
+The following will install Jekyll.
+In this example, `RVM`_ is used.
 
 .. code-block:: shell-session
 
     $ rvm use 1.9.3
     $ bundle install
 
-Previewing the Website Locally
+`Docutils`_ is also required. Docutils is probably available in your Linux
+distribution as ``python3-docutils`` or ``python-docutils``. In particular, it
+is required that ``rst2html`` be globally available.
+
+Previewing the website locally
 ==============================
 
-.. code-block:: shell-session
-
-    $ jekyll build
-    $ jekyll serve
-    $ google-chrome "http://localhost:4000"
-
-Updating the Hosted Version
-===========================
+The website is served as part of the whole development serve.
 
 .. code-block:: shell-session
 
-    $ git checkout gh-pages
-    $ git merge origin/master
-    $ git push origin gh-pages
+    $ grunt server
+
+It is then available at ``http://localhost:9000/website/``.
+
+While this is running,
+changes to any of the contents of the website's directory
+result in automatic rebuilding of the website.
+`LiveReload`_ is implemented.
+
+Building the website
+====================
+
+The website is built as part of the entire project build:
+
+.. code-block:: shell-session
+
+    $ grunt build
+
+Or, exclusively:
+
+.. code-block:: shell-session
+
+    $ grunt jekyllDist
+
+It gets built to ``dist/website``, which should then be committed.
+
+.. _publish-website:
+
+Publishing the website
+======================
+
+Publishing the website is a matter of pushing to the ``gh-pages`` branch:
+
+.. code-block:: shell-session
+
+    $ push origin master:gh-pages
+
+This should be done during the process of making a release.
+Doing it between releases will result in broken download links in the website.
+
+.. _GitHub Pages: https://pages.github.com/
+.. _Jekyll: http://jekyllrb.com/
+.. _RVM: http://rvm.io/
+.. _LiveReload: http://livereload.com/
+.. _Docutils: http://docutils.sourceforge.net/

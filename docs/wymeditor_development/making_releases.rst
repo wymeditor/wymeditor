@@ -105,7 +105,6 @@ different files:
 * ``package.json``
 * ``bower.json``
 * ``docs/conf.py`` in two lines
-* ``_config.yml`` in three different lines near the end
 
 Throughout these instructions, when asked to modify the version string, it is
 meant that the version strings be modified in all of these files.
@@ -169,6 +168,8 @@ Ship it!
 
 #. `Activate the new version in Read the Docs`_
    and set it as the default version.
+
+#. :ref:`Publish the website <publish-website>`.
 
 #. Drench yourself in a feeling of attainment.
 

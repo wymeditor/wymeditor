@@ -61,18 +61,18 @@ Resources
    :alt: GitHub Mark
 .. _WYMeditor GitHub organization: https://github.com/wymeditor
 .. _WYMeditor documentation: https://wymeditor.readthedocs.org/
-.. |documentation badge| image:: https://readthedocs.org/projects/pip/badge/
+.. |documentation badge| image:: http://readthedocs.org/projects/pip/badge/
    :target: https://wymeditor.readthedocs.org/en/latest/
 .. _WYMeditor issue tracker: https://github.com/wymeditor/wymeditor/issues
 .. _WYMeditor questions in Stack Overflow: https://stackoverflow.com/
    questions/tagged/wymeditor
-.. |Stack Overflow icon| image:: https://cdn.sstatic.net/stackoverflow/img/favicon.ico
+.. |Stack Overflow icon| image:: http://cdn.sstatic.net/stackoverflow/img/favicon.ico
    :alt: Stack Overflow icon
 .. _WYMeditor IRC channel: irc://irc.freenode.net/wymeditor
 .. _WYMeditor online examples: https://wymeditor.github.io/wymeditor/dist/
    examples/
 .. _WYMeditor Travis-CI report: https://travis-ci.org/wymeditor/wymeditor
-.. |Travis-CI badge| image:: https://travis-ci.org/wymeditor/wymeditor.svg
+.. |Travis-CI badge| image:: http://travis-ci.org/wymeditor/wymeditor.svg
    ?branch=README_rst
    :target: https://travis-ci.org/wymeditor/wymeditor
    :alt: Travis CI badge
@@ -155,19 +155,19 @@ and GPL (``GPL-license.txt``) licenses.
 
 .. _the examples: `WYMeditor online examples`_
 
-.. |IE logo| image:: https://github.com/alrra/browser-logos/raw/master/
+.. |IE logo| image:: http://github.com/alrra/browser-logos/raw/master/
    internet-explorer/internet-explorer_24x24.png
    :alt: Internet Explorer logo
-.. |Firefox logo| image:: https://github.com/alrra/browser-logos/raw/master/
+.. |Firefox logo| image:: http://github.com/alrra/browser-logos/raw/master/
    firefox/firefox_24x24.png
    :alt: Firefox logo
-.. |Opera logo| image:: https://github.com/alrra/browser-logos/raw/master/
+.. |Opera logo| image:: http://github.com/alrra/browser-logos/raw/master/
    opera/opera_24x24.png
    :alt: Opera logo
-.. |Safari logo| image:: https://github.com/alrra/browser-logos/raw/master/
+.. |Safari logo| image:: http://github.com/alrra/browser-logos/raw/master/
    safari_8/safari_8_24x24.png
    :alt: Safari logo
-.. |Chrome logo| image:: https://github.com/alrra/browser-logos/raw/master/
+.. |Chrome logo| image:: http://github.com/alrra/browser-logos/raw/master/
    chrome/chrome_24x24.png
    :alt: Chrome logo
 

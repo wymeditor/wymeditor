@@ -12,6 +12,7 @@ dist/package.json
 dist/README.md
 dist/*.gz
 dist/examples/vendor/redundant/*
-_gh_pages
+src/website/**
+src/jekyll/index.html
 docs/.build/*
 src/lib/*
