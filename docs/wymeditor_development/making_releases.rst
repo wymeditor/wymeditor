@@ -76,7 +76,7 @@ Any change that may affect them should be included.
 Read–me is up–to–date
 ---------------------
 
-Similar to the change–log, the contents of the ``README.md`` are supposed to be
+Similar to the change–log, the contents of the ``README.rst`` are supposed to be
 up–to–date already.
 
 A good review of it, especially after reviewing the change–log, may inspire
@@ -179,7 +179,7 @@ Prepare for the next release
 ============================
 
 #. Create a new version entry in the change–log.
-#. Bump the version string—excluding the one in ``README.md``—and add the build
+#. Bump the version string and add the build
    metadata string, ``dev``, at the
    end (with a ``+`` between the PATCH version and it).
 
