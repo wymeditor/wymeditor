@@ -5,9 +5,11 @@ WYMeditor Website
 The website at ``http://wymeditor.github.io/wymeditor/``
 is served via `GitHub Pages`_.
 
-`Jekyll`_ is used for building it.
+`Jekyll`_ is used for building it. GitHub has an integrated Jekyll feature.
+That is not used. Jekyll is used in the development environment and the built
+website is checked in to the repository.
 
-In GitHub Pages, websites for projects are stored in a separate,
+In GitHub Pages, websites for projects are stored in a separate
 ``gh-pages`` branch.
 
 WYMeditor's website is developed in the ``master`` branch
@@ -28,7 +30,7 @@ The theme is a ported version of a GitHub Pages layout.
 
 The Jekyll layout is at ``src/jekyll/_layouts/home.html``.
 
-Its media and styles are located in ``src/jekyll/media``.
+Its media and styles are located in ``src/jekyll/website-media``.
 
 Environment for development of the website
 ==========================================
@@ -45,7 +47,9 @@ In this example, `RVM`_ is used.
     $ rvm use 1.9.3
     $ bundle install
 
-Docutils is also required.
+`Docutils`_ is also required. Docutils is probably available in your Linux
+distribution as ``python3-docutils`` or ``python-docutils``. In particular, it
+is required that ``rst2html`` be globally available.
 
 Previewing the website locally
 ==============================
@@ -78,7 +82,7 @@ Or, exclusively:
 
     $ grunt jekyllDist
 
-It gets built to ``dist/website``.
+It gets built to ``dist/website``, which should then be committed.
 
 .. _publish-website:
 
@@ -98,3 +102,4 @@ Doing it between releases will result in broken download links in the website.
 .. _Jekyll: http://jekyllrb.com/
 .. _RVM: http://rvm.io/
 .. _LiveReload: http://livereload.com/
+.. _Docutils: http://docutils.sourceforge.net/
