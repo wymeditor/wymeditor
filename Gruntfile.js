@@ -8,13 +8,13 @@ module.exports = function (grunt) {
     // show elapsed time at the end
     require('time-grunt')(grunt);
 
-    // Oldest supported version of jQuery is used by default
     var humanName = 'WYMeditor',
         projectPage = "https://github.com/wymeditor/wymeditor/",
         releaseArchive = projectPage +
             'releases/download/v<%= pkg.version %>/<%= pkg.name %>' +
             '-<%= pkg.version %>' + '.tag.gz',
         sourceArchive = projectPage + 'archive/v<%= pkg.version %>.zip',
+        // Oldest supported version of jQuery is used by default
         jqueryVersion = grunt.option("jquery") || "1.4.4",
         yeomanConfig = {
             app: 'src',
