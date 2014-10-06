@@ -162,28 +162,6 @@ module.exports = function (grunt) {
                 '<%= yeoman.dist %>/wymeditor/skins/{,*/}*.css'
             ]
         },
-        htmlmin: {
-            dist: {
-                options: {
-                    /*removeCommentsFromCDATA: true,
-                    // https://github.com/yeoman/grunt-usemin/issues/44
-                    //collapseWhitespace: true,
-                    collapseBooleanAttributes: true,
-                    removeAttributeQuotes: true,
-                    removeRedundantAttributes: true,
-                    useShortDoctype: true,
-                    removeEmptyAttributes: true,
-                    removeOptionalTags: true*/
-                    keepClosingSlash: true
-                },
-                files: [{
-                    expand: true,
-                    cwd: '<%= yeoman.app %>',
-                    src: 'wymeditor/iframe/{,*/}*.html',
-                    dest: '<%= yeoman.dist %>'
-                }]
-            }
-        },
         replace: {
             dist: {
                 options: {
@@ -389,6 +367,29 @@ module.exports = function (grunt) {
                     vendor: false
                 }
             }
+        },
+        shell: {
+            docsMakeHtml: {
+                options: {
+                    stdout: true,
+                    stderr: true,
+                    stdin: false,
+                    failOnError: true,
+                    execOptions: {
+                        cwd: 'docs'
+                    }
+                },
+                command: 'make html'
+            },
+            docsOpenHtml: {
+                options: {
+                    stdout: true,
+                    stderr: true,
+                    stdin: false,
+                    failOnError: true
+                },
+                command: 'xdg-open docs/.build/html/index.html'
+            }
         }
     });
 
@@ -404,7 +405,6 @@ module.exports = function (grunt) {
         grunt.task.run([
             'bower',
             'clean:server',
-            'htmlmin',
             'connect:dev',
             'watch:default'
         ]);
@@ -443,6 +443,15 @@ module.exports = function (grunt) {
         'bower-linker:dev',
     ]);
 
+    grunt.registerTask('docsMakeHtml', ['shell:docsMakeHtml']);
+    grunt.registerTask('docsMake', ['docsMakeHtml']);
+    grunt.registerTask('docsOpenHtml', ['shell:docsOpenHtml']);
+    grunt.registerTask('docsOpen', ['docsOpenHtml']);
+    grunt.registerTask('docs', [
+        'docsMake',
+        'docsOpen'
+    ]);
+
     grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks("grunt-contrib-concat");
@@ -453,8 +462,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-contrib-clean");
     grunt.loadNpmTasks("grunt-contrib-qunit");
     grunt.loadNpmTasks("grunt-replace");
-    grunt.loadNpmTasks("grunt-contrib-htmlmin");
     grunt.loadNpmTasks("grunt-usemin");
     grunt.loadNpmTasks("grunt-bower-install-simple");
     grunt.loadNpmTasks('grunt-bower-linker');
+    grunt.loadNpmTasks("grunt-shell");
 };
