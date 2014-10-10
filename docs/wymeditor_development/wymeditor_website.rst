@@ -54,7 +54,7 @@ is required that ``rst2html`` be globally available.
 Previewing the website locally
 ==============================
 
-The website is served as part of the whole development serve.
+The website is served in development by running:
 
 .. code-block:: shell-session
 
