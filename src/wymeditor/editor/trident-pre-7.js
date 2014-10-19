@@ -31,14 +31,14 @@ WYMeditor.WymClassTridentPre7.prototype._docEventQuirks = function () {
     var wym = this;
 
     wym._doc.onbeforedeactivate = function () {
-        wym.saveCaret();
+        wym._saveCaret();
     };
-    jQuery(wym._doc).bind('keyup', wym.keyup);
+    jQuery(wym._doc).bind('keyup', wym._keyup);
     wym._doc.onkeyup = function () {
-        wym.saveCaret();
+        wym._saveCaret();
     };
     wym._doc.onclick = function () {
-        wym.saveCaret();
+        wym._saveCaret();
     };
 
     wym._doc.body.onbeforepaste = function () {
@@ -56,12 +56,12 @@ WYMeditor.WymClassTridentPre7.prototype._setButtonsUnselectable = function () {
     // Issue explained here:
     // http://stackoverflow.com/questions/1470932
     var wym = this,
-        $buttons = wym.getButtons();
+        $buttons = wym.get$Buttons();
 
     $buttons.attr('unselectable', 'on');
 };
 
-WYMeditor.WymClassTridentPre7.prototype._UiQuirks = function () {
+WYMeditor.WymClassTridentPre7.prototype._uiQuirks = function () {
     var wym = this;
     if (jQuery.browser.versionNumber === 8) {
         wym._setButtonsUnselectable();
@@ -77,7 +77,7 @@ WYMeditor.WymClassTridentPre7.prototype._exec = function (cmd, param) {
     }
 };
 
-WYMeditor.WymClassTridentPre7.prototype.saveCaret = function () {
+WYMeditor.WymClassTridentPre7.prototype._saveCaret = function () {
     var wym = this;
     wym._doc.caretPos = wym._doc.selection.createRange();
 };
@@ -118,8 +118,8 @@ WYMeditor.WymClassTridentPre7.prototype.wrap = function (left, right) {
 };
 
 /**
-    wrapWithContainer
-    =================
+    _wrapWithContainer
+    ==================
 
     Wraps the passed node in a container of the passed type. Also, restores the
     selection to being after the node within its new container.
@@ -128,7 +128,7 @@ WYMeditor.WymClassTridentPre7.prototype.wrap = function (left, right) {
     @param containerType A string of an HTML tag that specifies the container
                          type to use for wrapping the node.
 */
-WYMeditor.WymClassTridentPre7.prototype.wrapWithContainer = function (
+WYMeditor.WymClassTridentPre7.prototype._wrapWithContainer = function (
     node, containerType
 ) {
     var wym = this,
@@ -163,7 +163,7 @@ WYMeditor.WymClassTridentPre7.prototype.unwrap = function () {
     }
 };
 
-WYMeditor.WymClassTridentPre7.prototype.keyup = function (evt) {
+WYMeditor.WymClassTridentPre7.prototype._keyup = function (evt) {
     var doc = this,
         wym = WYMeditor.INSTANCES[doc.title],
         container,
@@ -183,8 +183,8 @@ WYMeditor.WymClassTridentPre7.prototype.keyup = function (evt) {
     // If the pressed key can't create a block element and is not a command,
     // check to make sure the selection is properly wrapped in a container
     if (!wym.keyCanCreateBlockElement(evt.which) &&
-            evt.which !== WYMeditor.KEY.CTRL &&
-            evt.which !== WYMeditor.KEY.COMMAND &&
+            evt.which !== WYMeditor.KEY_CODE.CTRL &&
+            evt.which !== WYMeditor.KEY_CODE.COMMAND &&
             !evt.metaKey &&
             !evt.ctrlKey) {
 
@@ -198,7 +198,7 @@ WYMeditor.WymClassTridentPre7.prototype.keyup = function (evt) {
         }
 
         // Fix forbidden main containers
-        if (wym.isForbiddenMainContainer(name)) {
+        if (wym.isForbiddenRootContainer(name)) {
             name = parentName;
             forbiddenMainContainer = true;
         }
@@ -212,14 +212,14 @@ WYMeditor.WymClassTridentPre7.prototype.keyup = function (evt) {
             if (forbiddenMainContainer) {
                 selectedNode = selectedNode.parentNode;
             }
-            wym.wrapWithContainer(selectedNode, defaultRootContainer);
-            wym.fixBodyHtml();
+            wym._wrapWithContainer(selectedNode, defaultRootContainer);
+            wym.prepareDocForEditing();
         }
 
         if (jQuery.inArray(name, notValidRootContainers) > -1 &&
                 parentName === WYMeditor.BODY) {
             wym.switchTo(container, defaultRootContainer);
-            wym.fixBodyHtml();
+            wym.prepareDocForEditing();
         }
     }
 
@@ -240,21 +240,21 @@ WYMeditor.WymClassTridentPre7.prototype.keyup = function (evt) {
         }
 
         // Call for the check for--and possible correction of--issue #430.
-        wym.handlePotentialEnterInEmptyNestedLi(evt.which, container);
+        wym._handlePotentialEnterInEmptyNestedLi(evt.which, container);
 
         // IE8 bug https://github.com/wymeditor/wymeditor/issues/446
         if (
-            evt.which === WYMeditor.KEY.BACKSPACE &&
+            evt.which === WYMeditor.KEY_CODE.BACKSPACE &&
             jQuery.browser.versionNumber === 8 &&
             container.parentNode && (
                 parentName === 'ul' ||
                 parentName === 'ol'
             )
         ) {
-            wym.correctInvalidListNesting(container);
+            wym._fixInvalidListNesting(container);
         }
 
         // Fix formatting if necessary
-        wym.fixBodyHtml();
+        wym.prepareDocForEditing();
     }
 };

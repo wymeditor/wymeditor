@@ -293,7 +293,7 @@ function makeSelection(
 
     // Old IE selection hack
     if (WYMeditor.isInternetExplorerPre11()) {
-        wymeditor.saveCaret();
+        wymeditor._saveCaret();
     }
 }
 
@@ -314,7 +314,7 @@ function makeTextSelection(
         $startElementContents = jQuery(startElement).contents();
         if ($startElementContents.length > 0) {
             nodeType = $startElementContents.get(0).nodeType;
-            isTextNode = nodeType === WYMeditor.NODE.TEXT;
+            isTextNode = nodeType === WYMeditor.NODE_TYPE.TEXT;
             if (isTextNode) {
                 startElement = $startElementContents.get(0);
             }
@@ -325,7 +325,7 @@ function makeTextSelection(
         // that as the startElement for the makeSelection() call
         $endElementContents = jQuery(endElement).contents();
         if ($endElementContents.length > 0 &&
-                $endElementContents.get(0).nodeType === WYMeditor.NODE.TEXT) {
+                $endElementContents.get(0).nodeType === WYMeditor.NODE_TYPE.TEXT) {
             endElement = $endElementContents.get(0);
         }
     }

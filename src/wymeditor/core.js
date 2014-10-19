@@ -226,7 +226,7 @@ jQuery.extend(WYMeditor, {
 
     // Containers that we allow at the root of the document (as a direct child
     // of the body tag)
-    MAIN_CONTAINERS : [
+    ROOT_CONTAINERS : [
         "blockquote",
         "div",
         "h1",
@@ -241,7 +241,7 @@ jQuery.extend(WYMeditor, {
 
     // Containers that we explicitly do not allow at the root of the document.
     // These containers must be wrapped in a valid main container.
-    FORBIDDEN_MAIN_CONTAINERS : [
+    FORBIDDEN_ROOT_CONTAINERS : [
         "a",
         "b",
         "em",
@@ -284,7 +284,7 @@ jQuery.extend(WYMeditor, {
         "ul"
     ],
 
-    // The subset of the `MAIN_CONTAINERS` that prevent the user from using
+    // The subset of the `ROOT_CONTAINERS` that prevent the user from using
     // up/down/enter/backspace from moving above or below them. They
     // effectively block the creation of new blocks.
     BLOCKING_ELEMENTS : [
@@ -355,7 +355,7 @@ jQuery.extend(WYMeditor, {
         "var"
     ],
 
-    // The remaining `MAIN_CONTAINERS` that are not considered
+    // The remaining `ROOT_CONTAINERS` that are not considered
     // `BLOCKING_ELEMENTS`
     NON_BLOCKING_ELEMENTS : [
         "div",
@@ -385,7 +385,7 @@ jQuery.extend(WYMeditor, {
     ],
 
     // The elements that are allowed to be turned in to lists. If an item in
-    // this array isn't in the MAIN_CONTAINERS array, then its contents will be
+    // this array isn't in the ROOT_CONTAINERS array, then its contents will be
     // turned in to a list instead.
     POTENTIAL_LIST_ELEMENTS : [
         "blockquote",
@@ -448,7 +448,7 @@ jQuery.extend(WYMeditor, {
 
     // Keyboard mappings so that we don't have to remember that 38 means up
     // when reading keyboard handlers
-    KEY : {
+    KEY_CODE : {
         B: 66,
         BACKSPACE: 8,
         COMMAND: 224,
@@ -485,7 +485,7 @@ jQuery.extend(WYMeditor, {
     },
 
     // domNode.nodeType constants
-    NODE : {
+    NODE_TYPE : {
         ELEMENT: 1,
         ATTRIBUTE: 2,
         TEXT: 3
@@ -529,13 +529,13 @@ jQuery.extend(WYMeditor, {
         wym._options = options;
         // Path to the WYMeditor core
         wym._options.wymPath = wym._options.wymPath ||
-            WYMeditor.computeWymPath();
+            WYMeditor._computeWymPath();
         // Path to the main JS files
         wym._options.basePath = wym._options.basePath ||
-            WYMeditor.computeBasePath(wym._options.wymPath);
+            WYMeditor._computeBasePath(wym._options.wymPath);
         // Path to jQuery (for loading in pop-up dialogs)
         wym._options.jQueryPath = wym._options.jQueryPath ||
-            WYMeditor.computeJqueryPath();
+            WYMeditor._computeJqueryPath();
         // The designmode iframe's base path
         wym._options.iframeBasePath = wym._options.iframeBasePath ||
             wym._options.basePath + WYMeditor.IFRAME_DEFAULT;
@@ -832,7 +832,7 @@ jQuery.fn.wymeditor = function (options) {
 
         dialogLinkHtml: String() +
             '<body class="wym_dialog wym_dialog_link" ' +
-                    ' onload="WYMeditor.INIT_DIALOG(' + WYMeditor.INDEX + ')">' +
+                    ' onload="WYMeditor._initDialog(' + WYMeditor.INDEX + ')">' +
                 '<form>' +
                     '<fieldset>' +
                         '<input type="hidden" class="wym_dialog_type" ' +
@@ -865,7 +865,7 @@ jQuery.fn.wymeditor = function (options) {
 
         dialogImageHtml: String() +
             '<body class="wym_dialog wym_dialog_image" ' +
-                    'onload="WYMeditor.INIT_DIALOG(' + WYMeditor.INDEX + ')">' +
+                    'onload="WYMeditor._initDialog(' + WYMeditor.INDEX + ')">' +
                 '<form>' +
                     '<fieldset>' +
                         '<input type="hidden" class="wym_dialog_type" ' +
@@ -896,7 +896,7 @@ jQuery.fn.wymeditor = function (options) {
 
         dialogTableHtml: String() +
             '<body class="wym_dialog wym_dialog_table" ' +
-                    'onload="WYMeditor.INIT_DIALOG(' + WYMeditor.INDEX + ')">' +
+                    'onload="WYMeditor._initDialog(' + WYMeditor.INDEX + ')">' +
                 '<form>' +
                     '<fieldset>' +
                         '<input type="hidden" class="wym_dialog_type" ' +
@@ -932,7 +932,7 @@ jQuery.fn.wymeditor = function (options) {
 
         dialogPasteHtml: String() +
             '<body class="wym_dialog wym_dialog_paste" ' +
-                    'onload="WYMeditor.INIT_DIALOG(' + WYMeditor.INDEX + ')">' +
+                    'onload="WYMeditor._initDialog(' + WYMeditor.INDEX + ')">' +
                 '<form>' +
                     '<input type="hidden" class="wym_dialog_type" ' +
                         'value="' + WYMeditor.DIALOG_PASTE + '" />' +
@@ -954,7 +954,7 @@ jQuery.fn.wymeditor = function (options) {
 
         dialogPreviewHtml: String() +
             '<body class="wym_dialog wym_dialog_preview" ' +
-                'onload="WYMeditor.INIT_DIALOG(' + WYMeditor.INDEX + ')"></body>',
+                'onload="WYMeditor._initDialog(' + WYMeditor.INDEX + ')"></body>',
 
         stringDelimiterLeft:  "{",
         stringDelimiterRight: "}",
@@ -1068,8 +1068,8 @@ WYMeditor.isInternetExplorer11OrNewer = function () {
 };
 
 /**
-    WYMeditor.computeWymPath
-    ========================
+    WYMeditor._computeWymPath
+    =========================
 
     Get the relative path to the WYMeditor core js file for usage as
     a src attribute for script inclusion.
@@ -1082,7 +1082,7 @@ WYMeditor.isInternetExplorer11OrNewer = function () {
     * jquery.wymeditor.js
     * /core.js
 */
-WYMeditor.computeWymPath = function () {
+WYMeditor._computeWymPath = function () {
     var script = jQuery(
         jQuery.grep(
             jQuery('script'),
@@ -1117,8 +1117,8 @@ WYMeditor.computeWymPath = function () {
 };
 
 /**
-    WYMeditor.computeBasePath
-    =========================
+    WYMeditor._computeBasePath
+    ==========================
 
     Get the relative path to the WYMeditor directory root based on the path to
     the wymeditor base file. This path is used as the basis for loading:
@@ -1126,15 +1126,15 @@ WYMeditor.computeWymPath = function () {
     * Skins
     *
 */
-WYMeditor.computeBasePath = function (wymPath) {
+WYMeditor._computeBasePath = function (wymPath) {
     // Strip everything after the last slash to get the base path
     var lastSlashIndex = wymPath.lastIndexOf('/');
     return wymPath.substr(0, lastSlashIndex + 1);
 };
 
 /**
-    WYMeditor.computeJqueryPath
-    ===========================
+    WYMeditor._computeJqueryPath
+    ============================
 
     Get the relative path to the currently-included jquery javascript file.
 
@@ -1146,7 +1146,7 @@ WYMeditor.computeBasePath = function (wymPath) {
     * jquery.packed.js
     * Plus the jquery-<version> variants
 */
-WYMeditor.computeJqueryPath = function () {
+WYMeditor._computeJqueryPath = function () {
     return jQuery(
         jQuery.grep(
             jQuery('script'),
@@ -1164,7 +1164,7 @@ WYMeditor.computeJqueryPath = function () {
 
 /********** DIALOGS **********/
 
-WYMeditor.INIT_DIALOG = function (index) {
+WYMeditor._initDialog = function (index) {
     var wym = window.opener.WYMeditor.INSTANCES[index],
         selected = wym.selectedContainer(),
         dialogType = jQuery(wym._options.dialogTypeSelector).val(),
@@ -1253,7 +1253,7 @@ WYMeditor.INIT_DIALOG = function (index) {
         window.close();
     });
 
-    tableOnClick = WYMeditor.MAKE_TABLE_ONCLICK(wym);
+    tableOnClick = WYMeditor._makeTableOnclick(wym);
     jQuery(wym._options.dialogTableSelector + " " + wym._options.submitSelector)
         .submit(tableOnClick);
 
@@ -1282,7 +1282,7 @@ WYMeditor.INIT_DIALOG = function (index) {
 
 /********** TABLE DIALOG ONCLICK **********/
 
-WYMeditor.MAKE_TABLE_ONCLICK = function (wym) {
+WYMeditor._makeTableOnclick = function (wym) {
     var tableOnClick = function () {
         var numRows = jQuery(wym._options.rowsSelector).val(),
             numColumns = jQuery(wym._options.colsSelector).val(),
@@ -1303,7 +1303,7 @@ WYMeditor.MAKE_TABLE_ONCLICK = function (wym) {
 // Returns true if it is a text node with whitespaces only
 jQuery.fn.isPhantomNode = function () {
     var $nodes = this;
-    if ($nodes[0].nodeType === WYMeditor.NODE.TEXT) {
+    if ($nodes[0].nodeType === WYMeditor.NODE_TYPE.TEXT) {
         return !(/[^\t\n\r ]/.test($nodes[0].data));
     }
 
@@ -1416,7 +1416,7 @@ jQuery.fn.prevAllContents = function () {
 };
 
 WYMeditor.isPhantomNode = function (n) {
-    if (n.nodeType === WYMeditor.NODE.TEXT) {
+    if (n.nodeType === WYMeditor.NODE_TYPE.TEXT) {
         return !(/[^\t\n\r ]/.test(n.data));
     }
 
@@ -1447,43 +1447,12 @@ jQuery.fn.parentsOrSelf = function (jqexpr) {
     }
 };
 
-/*
-    WYMeditor.changeNodeType
-    ========================
-
-    Change the type (tagName) of the given node, while retaining all content,
-    properties and attributes.
-*/
-WYMeditor.changeNodeType = function (node, newTag) {
-    var newNode,
-        i,
-        attributes = node.attributes;
-
-    // In ie6, have to create the node as part of wrapInner before we can copy
-    // over attributes
-    jQuery(node).wrapInner('<' + newTag + '>');
-    newNode = jQuery(node).children().get(0);
-
-    // Copy attributes
-    for (i = 0; i < attributes.length; i++) {
-        if (attributes[i].specified) {
-            // We only care about specified attributes
-            newNode.setAttribute(attributes[i].nodeName, attributes[i].nodeValue);
-        }
-    }
-
-    // Not copying inline CSS or properties/events
-
-    jQuery(node).contents().unwrap();
-    return newNode;
-};
-
 // String & array helpers
 
 WYMeditor.Helper = {
 
     //replace all instances of 'old' by 'rep' in 'str' string
-    replaceAll: function (str, old, rep) {
+    replaceAllInStr: function (str, old, rep) {
         var rExp = new RegExp(old, "g");
         return str.replace(rExp, rep);
     },
@@ -1499,7 +1468,7 @@ WYMeditor.Helper = {
     },
 
     //return true if 'arr' array contains 'elem', or false
-    contains: function (arr, elem) {
+    arrayContains: function (arr, elem) {
         var i;
         for (i = 0; i < arr.length; i += 1) {
             if (arr[i] === elem) {
@@ -1522,7 +1491,7 @@ WYMeditor.Helper = {
     },
 
     //return 'item' object in 'arr' array, checking its 'name' property, or null
-    findByName: function (arr, name) {
+    getFromArrayByName: function (arr, name) {
         var i, item;
         for (i = 0; i < arr.length; i += 1) {
             item = arr[i];

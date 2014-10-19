@@ -22,7 +22,7 @@ jQuery.copyPropsFromObjectToObject(
     WYMeditor.WymClassTrident7.prototype,
     [
         '_exec',
-        'keyup',
-        'wrapWithContainer'
+        '_keyup',
+        '_wrapWithContainer'
     ]
 );

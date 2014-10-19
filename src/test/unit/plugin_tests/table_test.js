@@ -60,7 +60,7 @@ function testTableTab(initialHtml, startSelector, endSelector) {
     ok(startElmnt !== null, "Selection start element exists");
     moveSelector(wymeditor, startElmnt);
 
-    simulateKey(WYMeditor.KEY.TAB, startElmnt);
+    simulateKey(WYMeditor.KEY_CODE.TAB, startElmnt);
 
     actualSelection = wymeditor.selectedContainer();
     // In some browsers the selection will be in a child span. That seems ok.

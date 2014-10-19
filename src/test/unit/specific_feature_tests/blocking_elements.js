@@ -425,14 +425,14 @@ test("br spacers aren't deleted when arrowing through them", function () {
         }
 
         moveSelector(wymeditor, element);
-        simulateKey(WYMeditor.KEY.DOWN, wymeditor._doc); // Send DOWN
+        simulateKey(WYMeditor.KEY_CODE.DOWN, wymeditor._doc); // Send DOWN
 
         checkLayout($body);
     });
 
     // Reset the HTML
     wymeditor.rawHtml(pTablePHtml);
-    wymeditor.fixBodyHtml();
+    wymeditor.prepareDocForEditing();
 
     // Go through each top-level element and hit the UP key
     $body.children().each(function (index, element) {
@@ -448,7 +448,7 @@ test("br spacers aren't deleted when arrowing through them", function () {
 
         moveSelector(wymeditor, element);
 
-        simulateKey(WYMeditor.KEY.UP, wymeditor._doc);
+        simulateKey(WYMeditor.KEY_CODE.UP, wymeditor._doc);
 
         checkLayout($body);
     });
@@ -465,7 +465,7 @@ test("br spacers don't cause lots of blank p's when arrowing down", function () 
     // Move the selector to the br before the table
     makeSelection(wymeditor, $body[0], $body[0], 1, 1);
 
-    simulateKey(WYMeditor.KEY.UP, wymeditor._doc);
+    simulateKey(WYMeditor.KEY_CODE.UP, wymeditor._doc);
 
     children = $body.children();
 
@@ -502,7 +502,7 @@ test("br spacers don't cause lots of blank p's when arrowing up", function () {
     // Move the selector to the br after the table
     makeSelection(wymeditor, $body[0], $body[0], 3, 3);
 
-    simulateKey(WYMeditor.KEY.DOWN, wymeditor._doc);
+    simulateKey(WYMeditor.KEY_CODE.DOWN, wymeditor._doc);
 
     children = $body.children();
 
@@ -535,7 +535,7 @@ test("br spacers stay in place when content is inserted- post-br", function () {
     $body.children('table').after('<p>yo</p>');
 
     // Simulate and send the keystroke event to trigger fixing the dom
-    simulateKey(WYMeditor.KEY.DOWN, wymeditor._doc);
+    simulateKey(WYMeditor.KEY_CODE.DOWN, wymeditor._doc);
 
     children = $body.children();
 
@@ -566,7 +566,7 @@ if (!no_keypress_textnode_wrap_browser) {
         moveSelector(wymeditor, $body[0]);
 
         // Simulate and send the keyup event
-        simulateKey(WYMeditor.KEY.B, wymeditor._doc);
+        simulateKey(WYMeditor.KEY_CODE.B, wymeditor._doc);
 
         children = $body.children();
 

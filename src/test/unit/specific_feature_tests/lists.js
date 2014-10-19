@@ -1652,7 +1652,7 @@ test("Invalid nesting correction no spacer", function () {
     $body = wymeditor.$body();
     actionLi = $body.find('#li_4')[0];
 
-    wymeditor.correctInvalidListNesting(actionLi);
+    wymeditor._fixInvalidListNesting(actionLi);
     wymEqual(wymeditor, expectedHtml);
 });
 test("Invalid nesting correction requiring spacer", function () {
@@ -1668,7 +1668,7 @@ test("Invalid nesting correction requiring spacer", function () {
     $body = wymeditor.$body();
     actionLi = $body.find('#li_2_2')[0];
 
-    wymeditor.correctInvalidListNesting(actionLi);
+    wymeditor._fixInvalidListNesting(actionLi);
     wymEqual(wymeditor, expectedHtml);
 });
 test("Invalid nesting outdent", function () {
@@ -2691,7 +2691,7 @@ var listWithOrphanedTextAfterLastLi = [""
     ].join("");
 
 test("Orphaned text at end of list should be inserted into the last li\
-        by correctInvalidListNesting", function () {
+        by _fixInvalidListNesting", function () {
     expect(1);
 
     var wymeditor = jQuery.wymeditors(0),
@@ -2704,7 +2704,7 @@ test("Orphaned text at end of list should be inserted into the last li\
     $body = wymeditor.$body();
     caretLocation = $body.find('ul')[0];
     makeTextSelection(wymeditor, caretLocation, caretLocation, 1, 1);
-    wymeditor.correctInvalidListNesting($body.find('li')[0]);
+    wymeditor._fixInvalidListNesting($body.find('li')[0]);
     wymEqual(wymeditor, expected);
 });
 
@@ -2724,7 +2724,7 @@ if (jQuery.browser.msie && jQuery.browser.version === "8.0") {
         $body = wymeditor.$body();
         caretLocation = $body.find('ul')[0];
         makeTextSelection(wymeditor, caretLocation, caretLocation, 1, 1);
-        simulateKey(WYMeditor.KEY.BACKSPACE, wymeditor._doc);
+        simulateKey(WYMeditor.KEY_CODE.BACKSPACE, wymeditor._doc);
         wymEqual(wymeditor, expected);
     });
 }
@@ -2779,7 +2779,7 @@ test("Tab key indents", function () {
 
     moveSelector(wymeditor, actionElement);
 
-    simulateKey(WYMeditor.KEY.TAB, actionElement);
+    simulateKey(WYMeditor.KEY_CODE.TAB, actionElement);
     wymEqual(wymeditor, expectedHtml);
 });
 
@@ -2813,7 +2813,7 @@ test("Shift+Tab outdents", function () {
 
     moveSelector(wymeditor, actionElement);
 
-    simulateKey(WYMeditor.KEY.TAB, actionElement, {'shiftKey': true});
+    simulateKey(WYMeditor.KEY_CODE.TAB, actionElement, {'shiftKey': true});
     wymEqual(wymeditor, expectedHtml);
 });
 
@@ -2834,7 +2834,7 @@ test("Tab has no effect outside lists", function () {
 
     moveSelector(wymeditor, actionElement);
 
-    simulateKey(WYMeditor.KEY.TAB, actionElement);
+    simulateKey(WYMeditor.KEY_CODE.TAB, actionElement);
     wymEqual(wymeditor, expectedHtml);
 });
 
@@ -3298,7 +3298,7 @@ function enterInEmptyLiTest(testNameSuff, expectedHtml, brokenHtmls) {
 
             wymeditor.rawHtml(brokenHtmls[i]);
             wymeditor.setCaretIn($body.find('p, div')[0]);
-            simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
+            simulateKey(WYMeditor.KEY_CODE.ENTER, wymeditor._doc);
 
             wymEqual(
                 wymeditor,
@@ -3532,7 +3532,7 @@ test("Invalid list nesting", function () {
         wymeditor.rawHtml(invalidNestingAfterEnterInEmptyLi[i].broken);
         newLi = wymeditor.$body().find('#new')[0];
         wymeditor.setCaretIn(newLi);
-        simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
+        simulateKey(WYMeditor.KEY_CODE.ENTER, wymeditor._doc);
 
         wymEqual(
             wymeditor,
@@ -3772,7 +3772,7 @@ function testLiInLiAfterEnter(htmls) {
     originLi = $body.find('#0-0')[0];
     errorLi = $body.find('#new-0-0')[0];
     wymeditor.setCaretBefore(errorLi.nextSibling);
-    simulateKey(WYMeditor.KEY.ENTER, wymeditor._doc);
+    simulateKey(WYMeditor.KEY_CODE.ENTER, wymeditor._doc);
 
     wymEqual(
         wymeditor,

@@ -7,6 +7,13 @@ WYMeditor.
 
 *releae-date* TBD
 
+### Backwards-Incompatible Changes
+
+* [#605] Removed deprecated ``WYMeditor.editor.container``.
+* [#605] ``WYMeditor.editor.mainContainer`` was split into
+  ``WYMeditor.editor.getRootContainer`` and
+  ``WYMeditor.editor.setRootContainer``.
+
 ## 1.0.0-beta.9
 
 *release-date* October 6, 2014

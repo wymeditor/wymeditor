@@ -603,8 +603,8 @@ WYMeditor.XhtmlValidator = {
             var value = attributes[attribute];
             attribute = attribute.toLowerCase(); // ie8 uses colSpan
             var h = WYMeditor.Helper;
-            if(!h.contains(this.skiped_attributes, attribute) && !h.contains(this.skiped_attribute_values, value)){
-                if (typeof value != 'function' && h.contains(possible_attributes, attribute)) {
+            if(!h.arrayContains(this.skiped_attributes, attribute) && !h.arrayContains(this.skiped_attribute_values, value)){
+                if (typeof value != 'function' && h.arrayContains(possible_attributes, attribute)) {
                     if (this.doesAttributeNeedsValidation(tag, attribute)) {
                         if(this.validateAttribute(tag, attribute, value)){
                             valid_attributes[attribute] = value;
@@ -670,7 +670,7 @@ getDefaultAttributesAndEventsForTag : function(tag)
         var defaults = default_attributes_and_events[key];
         if(typeof defaults == 'object'){
             var h = WYMeditor.Helper;
-            if ((defaults['except'] && h.contains(defaults['except'], tag)) || (defaults['only'] && !h.contains(defaults['only'], tag))) {
+            if ((defaults['except'] && h.arrayContains(defaults['except'], tag)) || (defaults['only'] && !h.arrayContains(defaults['only'], tag))) {
                 continue;
             }
 
@@ -686,13 +686,13 @@ return default_attributes;
 doesAttributeNeedsValidation: function(tag, attribute)
 {
     return this._tags[tag] && ((this._tags[tag]['attributes'] && this._tags[tag]['attributes'][attribute]) || (this._tags[tag]['required'] &&
-        WYMeditor.Helper.contains(this._tags[tag]['required'], attribute)));
+        WYMeditor.Helper.arrayContains(this._tags[tag]['required'], attribute)));
 },
 validateAttribute : function(tag, attribute, value)
 {
     if ( this._tags[tag] &&
         (this._tags[tag]['attributes'] && this._tags[tag]['attributes'][attribute] && value.length > 0 && !value.match(this._tags[tag]['attributes'][attribute])) || // invalid format
-        (this._tags[tag] && this._tags[tag]['required'] && WYMeditor.Helper.contains(this._tags[tag]['required'], attribute) && value.length === 0)) // required attribute
+        (this._tags[tag] && this._tags[tag]['required'] && WYMeditor.Helper.arrayContains(this._tags[tag]['required'], attribute) && value.length === 0)) // required attribute
     {
         return false;
     }

@@ -11,8 +11,8 @@ WYMeditor.WymClassWebKit = function (wym) {
 WYMeditor.WymClassWebKit.prototype._docEventQuirks = function () {
     var wym = this;
 
-    jQuery(wym._doc).bind("keydown", wym.keydown);
-    jQuery(wym._doc).bind("keyup", wym.keyup);
+    jQuery(wym._doc).bind("keydown", wym._keydown);
+    jQuery(wym._doc).bind("keyup", wym._keyup);
 };
 
 WYMeditor.WymClassWebKit.prototype._exec = function (cmd, param) {
@@ -45,7 +45,7 @@ WYMeditor.WymClassWebKit.prototype._exec = function (cmd, param) {
                 WYMeditor.FORMAT_BLOCK,
                 structureRules.defaultRootContainer
             );
-            wym.fixBodyHtml();
+            wym.prepareDocForEditing();
         }
 
         // If the cmd was FORMAT_BLOCK, check if the block was moved outside
@@ -76,22 +76,22 @@ WYMeditor.WymClassWebKit.prototype._exec = function (cmd, param) {
 };
 
 //keydown handler, mainly used for keyboard shortcuts
-WYMeditor.WymClassWebKit.prototype.keydown = function (e) {
+WYMeditor.WymClassWebKit.prototype._keydown = function (e) {
     var doc = this,
         wym = WYMeditor.INSTANCES[doc.title];
 
     if (e.ctrlKey) {
-        if (e.which === WYMeditor.KEY.B) {
+        if (e.which === WYMeditor.KEY_CODE.B) {
             //CTRL+b => STRONG
             wym._exec(WYMeditor.BOLD);
             e.preventDefault();
         }
-        if (e.which === WYMeditor.KEY.I) {
+        if (e.which === WYMeditor.KEY_CODE.I) {
             //CTRL+i => EMPHASIS
             wym._exec(WYMeditor.ITALIC);
             e.preventDefault();
         }
-    } else if (e.shiftKey && e.which === WYMeditor.KEY.ENTER) {
+    } else if (e.shiftKey && e.which === WYMeditor.KEY_CODE.ENTER) {
         // Safari 4 and earlier would show a proper linebreak in the editor and
         // then strip it upon save with the default action in the case of
         // inserting a new line after bold text
@@ -103,13 +103,13 @@ WYMeditor.WymClassWebKit.prototype.keydown = function (e) {
 // A `div` can be created by breaking out of a list in some cases. Issue #549.
 WYMeditor.WymClassWebKit.prototype._inListBreakoutDiv = function (evtWhich) {
     var wym = this,
-        $mainContainer = jQuery(wym.mainContainer());
+        $rootContainer = jQuery(wym.getRootContainer());
 
     if (
-        evtWhich === WYMeditor.KEY.ENTER &&
-        $mainContainer.is('div') &&
+        evtWhich === WYMeditor.KEY_CODE.ENTER &&
+        $rootContainer.is('div') &&
         wym.documentStructureManager.defaultRootContainer !== 'div' &&
-        $mainContainer.prev('ol, ul').length === 1
+        $rootContainer.prev('ol, ul').length === 1
     ) {
         return true;
     }
@@ -125,7 +125,7 @@ WYMeditor.WymClassWebKit.prototype._isLiInLiAfterEnter = function (evtWhich) {
         previousSiblingChild,
         previousPreviousSibling;
 
-    if (evtWhich !== WYMeditor.KEY.ENTER) {
+    if (evtWhich !== WYMeditor.KEY_CODE.ENTER) {
         return false;
     }
 
@@ -205,7 +205,7 @@ WYMeditor.WymClassWebKit.prototype
 };
 
 // Keyup handler, mainly used for cleanups
-WYMeditor.WymClassWebKit.prototype.keyup = function (evt) {
+WYMeditor.WymClassWebKit.prototype._keyup = function (evt) {
     var doc = this,
         wym = WYMeditor.INSTANCES[doc.title],
         container,
@@ -213,7 +213,7 @@ WYMeditor.WymClassWebKit.prototype.keyup = function (evt) {
         notValidRootContainers,
         name,
         parentName,
-        mainContainer;
+        rootContainer;
 
     notValidRootContainers =
         wym.documentStructureManager.structureRules.notValidRootContainers;
@@ -224,7 +224,7 @@ WYMeditor.WymClassWebKit.prototype.keyup = function (evt) {
     // Fix to allow shift + return to insert a line break in older safari
     if (jQuery.browser.version < 534.1) {
         // Not needed in AT MAX chrome 6.0. Probably safe earlier
-        if (evt.which === WYMeditor.KEY.ENTER && evt.shiftKey) {
+        if (evt.which === WYMeditor.KEY_CODE.ENTER && evt.shiftKey) {
             wym._exec('InsertLineBreak');
         }
     }
@@ -232,8 +232,8 @@ WYMeditor.WymClassWebKit.prototype.keyup = function (evt) {
     // If the inputted key cannont create a block element and is not a command,
     // check to make sure the selection is properly wrapped in a container
     if (!wym.keyCanCreateBlockElement(evt.which) &&
-            evt.which !== WYMeditor.KEY.CTRL &&
-            evt.which !== WYMeditor.KEY.COMMAND &&
+            evt.which !== WYMeditor.KEY_CODE.CTRL &&
+            evt.which !== WYMeditor.KEY_CODE.COMMAND &&
             !evt.metaKey &&
             !evt.ctrlKey) {
 
@@ -244,7 +244,7 @@ WYMeditor.WymClassWebKit.prototype.keyup = function (evt) {
         }
 
         // Fix forbidden main containers
-        if (wym.isForbiddenMainContainer(name)) {
+        if (wym.isForbiddenRootContainer(name)) {
             name = parentName;
         }
 
@@ -255,7 +255,7 @@ WYMeditor.WymClassWebKit.prototype.keyup = function (evt) {
                 parentName === WYMeditor.BODY)) {
 
             wym._exec(WYMeditor.FORMAT_BLOCK, defaultRootContainer);
-            wym.fixBodyHtml();
+            wym.prepareDocForEditing();
         }
     }
 
@@ -285,18 +285,18 @@ WYMeditor.WymClassWebKit.prototype.keyup = function (evt) {
         }
 
         // Call for the check for--and possible correction of--issue #430.
-        wym.handlePotentialEnterInEmptyNestedLi(evt.which, container);
+        wym._handlePotentialEnterInEmptyNestedLi(evt.which, container);
 
         // Issue #549.
         if (wym._inListBreakoutDiv(evt.which)) {
-            mainContainer = wym.switchTo(
-                wym.mainContainer(),
+            rootContainer = wym.switchTo(
+                wym.getRootContainer(),
                 defaultRootContainer
             );
-            wym.setCaretIn(mainContainer);
+            wym.setCaretIn(rootContainer);
         }
 
         // Fix formatting if necessary
-        wym.fixBodyHtml();
+        wym.prepareDocForEditing();
     }
 };
