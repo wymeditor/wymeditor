@@ -324,8 +324,10 @@ function makeTextSelection(
         // Look for a first-child text node and use
         // that as the startElement for the makeSelection() call
         $endElementContents = jQuery(endElement).contents();
-        if ($endElementContents.length > 0 &&
-                $endElementContents.get(0).nodeType === WYMeditor.NODE_TYPE.TEXT) {
+        if (
+            $endElementContents.length > 0 &&
+            $endElementContents.get(0).nodeType === WYMeditor.NODE_TYPE.TEXT
+        ) {
             endElement = $endElementContents.get(0);
         }
     }
