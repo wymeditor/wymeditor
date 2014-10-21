@@ -481,7 +481,14 @@ jQuery.extend(WYMeditor, {
 
     EVENTS : {
         'postBlockMaybeCreated': 'wym-postBlockMaybeCreated',
-        'postIframeInitialization': 'wym-postIframeInitialization'
+        'postIframeInitialization': 'wym-postIframeInitialization',
+        'update': 'wym-update',
+        'preInit': 'wym-preInit',
+        'postInit': 'wym-postInit',
+        'openDialog': 'wym-openDialog',
+        'paste': 'wym-paste',
+        'insertTable': 'wym-insertTable',
+        'initSkin': 'wym-initSkin'
     },
 
     // domNode.nodeType constants
@@ -574,6 +581,7 @@ jQuery.fn.wymeditor = function (options) {
         lang:       "en",
         direction:  "ltr",
         customCommands: [],
+        autoUpdate: true,
 
         // These values will override the default for their respective
         // `DocumentStructureManager.structureRules`
@@ -808,8 +816,11 @@ jQuery.fn.wymeditor = function (options) {
         dialogPasteSelector:   ".wym_dialog_paste",
         dialogPreviewSelector: ".wym_dialog_preview",
 
-        updateSelector:    ".wymupdate",
+        updateSelector:    "[data-wym-update]",
         updateEvent:       "click",
+
+        // there is no autoUpdateSelector since it just looks for the parent form
+        autoUpdateEvent:       "submit",
 
         dialogFeatures:    "menubar=no,titlebar=no,toolbar=no,resizable=no" +
             ",width=560,height=300,top=0,left=0",
