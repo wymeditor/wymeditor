@@ -3478,7 +3478,7 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
 
 /**
     editor._afterInsertTable
-    =======================
+    ========================
 
     Handle cleanup/normalization after inserting a table. Different browsers
     need slightly different tweaks.
@@ -3529,7 +3529,7 @@ WYMeditor.editor.prototype._mousedown = function (evt) {
 
 /**
     WYMeditor.editor._initSkin
-    =========================
+    ==========================
 
     Apply the appropriate CSS class to "activate" that skin's CSS and call the
     skin's javascript `init` method.
