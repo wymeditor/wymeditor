@@ -1233,21 +1233,21 @@ WYMeditor.editor.prototype.update = function () {
 WYMeditor.editor.prototype.prepareDocForEditing = function () {
     var wym = this;
 
-    wym.spaceBlockingElements();
+    wym._spaceBlockingElements();
     wym._fixDoubleBr();
 
     jQuery(wym.element).trigger(WYMeditor.EVENTS.postBlockMaybeCreated, wym);
 };
 
 /**
-    editor.spaceBlockingElements
-    ============================
+    editor._spaceBlockingElements
+    =============================
 
     Insert <br> elements between adjacent blocking elements and
     p elements, between block elements or blocking elements and the
     start/end of the document.
 */
-WYMeditor.editor.prototype.spaceBlockingElements = function () {
+WYMeditor.editor.prototype._spaceBlockingElements = function () {
     var wym = this,
         blockingSelector =
             WYMeditor.DocumentStructureManager.CONTAINERS_BLOCKING_NAVIGATION.join(', '),
