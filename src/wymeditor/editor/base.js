@@ -81,7 +81,7 @@ WYMeditor.editor.prototype._init = function () {
     }
 
     // Load wymbox
-    wym._box = jQuery(wym._element).hide().after(
+    wym._box = jQuery(wym.element).hide().after(
         wym._options.boxHtml
     ).next().addClass(
         'wym_box_' + wym._index
@@ -91,7 +91,7 @@ WYMeditor.editor.prototype._init = function () {
     // but keep it compatible with jQuery < 1.2.3, see #122
     if (jQuery.isFunction(jQuery.fn.data)) {
         jQuery.data(wym._box.get(0), WYMeditor.WYM_INDEX, wym._index);
-        jQuery.data(wym._element.get(0), WYMeditor.WYM_INDEX, wym._index);
+        jQuery.data(wym.element.get(0), WYMeditor.WYM_INDEX, wym._index);
     }
 
     h = WYMeditor.Helper;
@@ -211,7 +211,7 @@ WYMeditor.editor.prototype._init = function () {
         wym._onEditorIframeLoad(wym);
     });
 
-    wym._element.attr('data-wym-initialized', 'yes');
+    wym.element.attr('data-wym-initialized', 'yes');
 
     wym._initSkin();
 };
@@ -377,7 +377,7 @@ WYMeditor.editor.prototype._afterDesignModeOn = function () {
     // Add event listeners to doc elements, e.g. images
     wym._listen();
 
-    jQuery(wym._element).trigger(
+    jQuery(wym.element).trigger(
         WYMeditor.EVENTS.postIframeInitialization,
         wym
     );
@@ -398,7 +398,7 @@ WYMeditor.editor.prototype._initializeDocumentContent = function () {
         wym.html(wym._options.html);
     } else {
         // Populate from the textarea element
-        wym.html(wym._element[0].value);
+        wym.html(wym.element[0].value);
     }
 };
 
@@ -501,7 +501,7 @@ WYMeditor.editor.prototype.vanish = function () {
         i;
 
     wym._box.remove();
-    wym._element
+    wym.element
         .removeAttr('data-wym-initialized')
         .attr('data-wym-vanished', '')
         .show();
@@ -1217,7 +1217,7 @@ WYMeditor.editor.prototype.update = function () {
         html;
 
     html = wym.html();
-    jQuery(wym._element).val(html);
+    jQuery(wym.element).val(html);
     jQuery(wym._box).find(wym._options.htmlValSelector).not('.hasfocus').val(html); //#147
     wym.prepareDocForEditing();
 };
@@ -1236,7 +1236,7 @@ WYMeditor.editor.prototype.prepareDocForEditing = function () {
     wym.spaceBlockingElements();
     wym._fixDoubleBr();
 
-    jQuery(wym._element).trigger(WYMeditor.EVENTS.postBlockMaybeCreated, wym);
+    jQuery(wym.element).trigger(WYMeditor.EVENTS.postBlockMaybeCreated, wym);
 };
 
 /**
@@ -3509,7 +3509,7 @@ WYMeditor.editor.prototype._handlePasteEvent = function () {
     // actually been added.
     window.setTimeout(
         function () {
-            jQuery(wym._element).trigger(
+            jQuery(wym.element).trigger(
                 WYMeditor.EVENTS.postBlockMaybeCreated,
                 wym
             );

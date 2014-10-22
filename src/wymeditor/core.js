@@ -525,7 +525,7 @@ jQuery.extend(WYMeditor, {
         // Store the instance in the INSTANCES array and store the index
         wym._index = WYMeditor.INSTANCES.push(wym) - 1;
         // The element replaced by the editor
-        wym._element = elem;
+        wym.element = elem;
         wym._options = options;
         // Path to the WYMeditor core
         wym._options.wymPath = wym._options.wymPath ||
@@ -997,7 +997,7 @@ jQuery.extend({
             throw "jQuery.getWymeditorByTextarea requires a textarea element.";
         }
         for (i = 0; i < WYMeditor.INSTANCES.length; i++) {
-            if (textarea === WYMeditor.INSTANCES[i]._element[0]) {
+            if (textarea === WYMeditor.INSTANCES[i].element[0]) {
                 return WYMeditor.INSTANCES[i];
             }
         }
