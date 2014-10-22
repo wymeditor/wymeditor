@@ -20,9 +20,9 @@ WYMeditor.WymClassGecko.NEEDS_CELL_FIX = parseInt(
 WYMeditor.WymClassGecko.prototype._docEventQuirks = function () {
     var wym = this;
 
-    jQuery(wym._doc).bind("keydown", wym.keydown);
-    jQuery(wym._doc).bind("keyup", wym.keyup);
-    jQuery(wym._doc).bind("click", wym.click);
+    jQuery(wym._doc).bind("keydown", wym._keydown);
+    jQuery(wym._doc).bind("keyup", wym._keyup);
+    jQuery(wym._doc).bind("click", wym._click);
     // Bind editor focus events (used to reset designmode - Gecko bug)
     jQuery(wym._doc).bind("focus", function () {
         // Fix scope
@@ -46,7 +46,7 @@ WYMeditor.WymClassGecko.prototype.rawHtml = function (html) {
 
         //update the html body
         jQuery(wym._doc.body).html(html);
-        wym._wym.fixBodyHtml();
+        wym._wym.prepareDocForEditing();
 
         //re-init designMode
         wym._enableDesignModeOnIframe();
@@ -73,14 +73,14 @@ WYMeditor.WymClassGecko.prototype._exec = function (cmd, param) {
     container = wym.selectedContainer();
     if (container && container.tagName.toLowerCase() === WYMeditor.BODY) {
         wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
-        wym.fixBodyHtml();
+        wym.prepareDocForEditing();
     }
 
     return true;
 };
 
 //keydown handler, mainly used for keyboard shortcuts
-WYMeditor.WymClassGecko.prototype.keydown = function (evt) {
+WYMeditor.WymClassGecko.prototype._keydown = function (evt) {
     var doc = this,
         wym = WYMeditor.INSTANCES[doc.title];
 
@@ -101,7 +101,7 @@ WYMeditor.WymClassGecko.prototype.keydown = function (evt) {
 };
 
 // Keyup handler, mainly used for cleanups
-WYMeditor.WymClassGecko.prototype.keyup = function (evt) {
+WYMeditor.WymClassGecko.prototype._keyup = function (evt) {
     var doc = this,
         wym = WYMeditor.INSTANCES[doc.title],
         container,
@@ -120,8 +120,8 @@ WYMeditor.WymClassGecko.prototype.keyup = function (evt) {
     // If the inputted key cannont create a block element and is not a command,
     // check to make sure the selection is properly wrapped in a container
     if (!wym.keyCanCreateBlockElement(evt.which) &&
-            evt.which !== WYMeditor.KEY.CTRL &&
-            evt.which !== WYMeditor.KEY.COMMAND &&
+            evt.which !== WYMeditor.KEY_CODE.CTRL &&
+            evt.which !== WYMeditor.KEY_CODE.COMMAND &&
             !evt.metaKey &&
             !evt.ctrlKey) {
 
@@ -131,8 +131,8 @@ WYMeditor.WymClassGecko.prototype.keyup = function (evt) {
             parentName = container.parentNode.tagName.toLowerCase();
         }
 
-        // Fix forbidden main containers
-        if (wym.isForbiddenMainContainer(name)) {
+        // Fix forbidden root containers
+        if (wym.isForbiddenRootContainer(name)) {
             name = parentName;
         }
 
@@ -143,7 +143,7 @@ WYMeditor.WymClassGecko.prototype.keyup = function (evt) {
                 parentName === WYMeditor.BODY)) {
 
             wym._exec(WYMeditor.FORMAT_BLOCK, defaultRootContainer);
-            wym.fixBodyHtml();
+            wym.prepareDocForEditing();
         }
     }
 
@@ -164,14 +164,14 @@ WYMeditor.WymClassGecko.prototype.keyup = function (evt) {
         }
 
         // Call for the check for--and possible correction of--issue #430.
-        wym.handlePotentialEnterInEmptyNestedLi(evt.which, container);
+        wym._handlePotentialEnterInEmptyNestedLi(evt.which, container);
 
         // Fix formatting if necessary
-        wym.fixBodyHtml();
+        wym.prepareDocForEditing();
     }
 };
 
-WYMeditor.WymClassGecko.prototype.click = function () {
+WYMeditor.WymClassGecko.prototype._click = function () {
     var doc = this,
         wym = WYMeditor.INSTANCES[doc.title],
         container = wym.selectedContainer(),
@@ -190,7 +190,7 @@ WYMeditor.WymClassGecko.prototype.click = function () {
             // TODO: Use rangy or some other selection library to consistently
             // put the users selection out of and then back in this cell
             // so that it appears to be instantly editable
-            // Once accomplished, can remove the afterInsertTable handling
+            // Once accomplished, can remove the _afterInsertTable handling
         }
     }
 
@@ -223,11 +223,11 @@ WYMeditor.WymClassGecko.prototype._enableDesignModeOnIframe = function () {
  * Fix new cell contents and ability to insert content at the front and end of
  * the contents.
  */
-WYMeditor.WymClassGecko.prototype.afterInsertTable = function (table) {
+WYMeditor.WymClassGecko.prototype._afterInsertTable = function (table) {
     if (WYMeditor.WymClassGecko.NEEDS_CELL_FIX === true) {
         // In certain FF versions, inserted tables need some content in their
         // cells before they're editable, otherwise the user has to move focus
-        // in and then out of a cell first, even with our click() hack
+        // in and then out of a cell first, even with our _click() hack
         jQuery(table).find('td').each(function (index, element) {
             jQuery(element).append(WYMeditor.WymClassGecko.CELL_PLACEHOLDER);
         });

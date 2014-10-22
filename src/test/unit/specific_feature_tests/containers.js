@@ -147,7 +147,7 @@ test("Text node in the document root is wrapped in default container", function 
 
     // Set up keyup event with a letter key to trigger wrapping of the element
     keyup_event = jQuery.Event('keyup');
-    keyup_event.which = WYMeditor.KEY.R;
+    keyup_event.which = WYMeditor.KEY_CODE.R;
 
     wymeditor.rawHtml(startRootTextNodeHtml);
     textNode = $body.contents()[1];
@@ -171,7 +171,7 @@ test(
 
         // Set up keyup event with a letter key to trigger wrapping of the element
         keyup_event = jQuery.Event('keyup');
-        keyup_event.which = WYMeditor.KEY.R;
+        keyup_event.which = WYMeditor.KEY_CODE.R;
 
         for (i = 0; i < inlineElementsToTest.length; ++i) {
             wymeditor.rawHtml(startRootInlineElementHtml[i]);

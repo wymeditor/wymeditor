@@ -161,22 +161,22 @@ WYMeditor.DocumentStructureManager.prototype.setDefaultRootContainer = function
         WYMeditor.DocumentStructureManager.VALID_DEFAULT_ROOT_CONTAINERS;
     dsm.structureRules.notValidRootContainers.splice(index, 1);
 
-    dsm.adjustDefaultRootContainerUI();
+    dsm._adjustDefaultRootContainerUI();
 
     // TODO: Actually do all of the switching required to move from p to div or
     // from div to p for the topLevelContainer
 };
 
 /**
-    adjustDefaultRootContainerUI
-    ============================
+    _adjustDefaultRootContainerUI
+    =============================
 
     Adds a new link for the default root container to the containers panel in
     the editor if needed, and removes any other links for valid default root
     containers form the containers panel besides the link for the chosen
     default root container.
 */
-WYMeditor.DocumentStructureManager.prototype.adjustDefaultRootContainerUI = function () {
+WYMeditor.DocumentStructureManager.prototype._adjustDefaultRootContainerUI = function () {
     var dsm = this,
         wym = dsm._wym,
         defaultRootContainer = dsm.structureRules.defaultRootContainer,
@@ -212,18 +212,18 @@ WYMeditor.DocumentStructureManager.prototype.adjustDefaultRootContainerUI = func
     // needed
     if (newContainerLinkNeeded) {
         newContainerLinkHtml = wym._options.containersItemHtml;
-        newContainerLinkHtml = WYMeditor.Helper.replaceAll(
+        newContainerLinkHtml = WYMeditor.Helper.replaceAllInStr(
             newContainerLinkHtml,
             WYMeditor.CONTAINER_NAME,
             defaultRootContainer.toUpperCase()
         );
         DSManager = WYMeditor.DocumentStructureManager;
-        newContainerLinkHtml = WYMeditor.Helper.replaceAll(
+        newContainerLinkHtml = WYMeditor.Helper.replaceAllInStr(
             newContainerLinkHtml,
             WYMeditor.CONTAINER_TITLE,
             DSManager.DEFAULT_ROOT_CONTAINER_TITLES[defaultRootContainer]
         );
-        newContainerLinkHtml = WYMeditor.Helper.replaceAll(
+        newContainerLinkHtml = WYMeditor.Helper.replaceAllInStr(
             newContainerLinkHtml,
             WYMeditor.CONTAINER_CLASS,
             "wym_containers_" + defaultRootContainer
@@ -236,7 +236,7 @@ WYMeditor.DocumentStructureManager.prototype.adjustDefaultRootContainerUI = func
         // Bind click event for the new link
         $newContainerItem.find('a').click(function () {
             var button = this;
-            wym.mainContainer(jQuery(button).attr(WYMeditor.NAME));
+            wym.setRootContainer(jQuery(button).attr(WYMeditor.NAME));
             return false;
         });
     }

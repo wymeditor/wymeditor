@@ -1238,7 +1238,7 @@ test("Double soft returns are allowed", function () {
         wymeditor = jQuery.wymeditors(0);
     wymeditor.rawHtml(initHtml);
 
-    wymeditor.fixBodyHtml();
+    wymeditor.prepareDocForEditing();
 
     expect(1);
     wymEqual(wymeditor, initHtml);

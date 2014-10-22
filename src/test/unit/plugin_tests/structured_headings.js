@@ -26,7 +26,7 @@ function getHtmlAfterKeyup(wymeditor) {
 
     // Set up shift key keyup event
     keyupEvent = jQuery.Event('keyup');
-    keyupEvent.which = WYMeditor.KEY.ENTER;
+    keyupEvent.which = WYMeditor.KEY_CODE.ENTER;
 
     $body.trigger(keyupEvent);
 
