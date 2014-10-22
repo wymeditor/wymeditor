@@ -558,6 +558,13 @@ Returns a jQuery of all UI buttons.
 Helpers
 *******
 
+``WYMeditor.console``
+=====================
+
+A wrapper for the various browser consoles. Use it instead of
+``window.console``, ``console``, etc.. Handles the situation where in some IEs
+the console doesn't always exist.
+
 ``wym.uniqueStamp()``
 =====================
 
