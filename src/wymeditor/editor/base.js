@@ -361,7 +361,7 @@ WYMeditor.editor.prototype._afterDesignModeOn = function () {
         wym._options.preBind(wym);
     }
 
-    wym._bindUiEvents();
+    wym._bindUIEvents();
 
     wym.iframeInitialized = true;
 
@@ -413,12 +413,12 @@ WYMeditor.editor.prototype._docEventQuirks = function () {
 };
 
 /**
-    WYMeditor.editor._bindUiEvents
+    WYMeditor.editor._bindUIEvents
     ==============================
 
     Binds event handlers for the UI elements.
 */
-WYMeditor.editor.prototype._bindUiEvents = function () {
+WYMeditor.editor.prototype._bindUIEvents = function () {
     var wym = this,
         $html_val;
 
