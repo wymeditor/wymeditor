@@ -29,7 +29,7 @@ WYMeditor.editor.prototype.hovertools = function() {
             var button = this,
                 aClasses = eval(wym._options.classesItems),
                 sName = jQuery(button).attr(WYMeditor.NAME),
-                oClass = WYMeditor.Helper.getFromArrayByName(aClasses, sName);
+                oClass = WYMeditor.Helper._getFromArrayByName(aClasses, sName);
 
             if (oClass){
                 jqexpr = oClass.expr;

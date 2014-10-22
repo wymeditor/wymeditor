@@ -1491,7 +1491,7 @@ WYMeditor.Helper = {
     },
 
     //return 'item' object in 'arr' array, checking its 'name' property, or null
-    getFromArrayByName: function (arr, name) {
+    _getFromArrayByName: function (arr, name) {
         var i, item;
         for (i = 0; i < arr.length; i += 1) {
             item = arr[i];
