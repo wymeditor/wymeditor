@@ -243,7 +243,7 @@ WYMeditor.WymClassWebKit.prototype._keyup = function (evt) {
             parentName = container.parentNode.tagName.toLowerCase();
         }
 
-        // Fix forbidden main containers
+        // Fix forbidden root containers
         if (wym.isForbiddenRootContainer(name)) {
             name = parentName;
         }

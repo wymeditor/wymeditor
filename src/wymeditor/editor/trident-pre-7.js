@@ -197,17 +197,17 @@ WYMeditor.WymClassTridentPre7.prototype._keyup = function (evt) {
             parentName = container.parentNode.tagName.toLowerCase();
         }
 
-        // Fix forbidden main containers
+        // Fix forbidden root containers
         if (wym.isForbiddenRootContainer(name)) {
             name = parentName;
             forbiddenMainContainer = true;
         }
 
-        // Wrap text nodes and forbidden main containers with default root node
+        // Wrap text nodes and forbidden root containers with default root node
         // tags
         if (name === WYMeditor.BODY && selectedNode.nodeName === "#text") {
-            // If we're in a forbidden main container, switch the selected node
-            // to its parent node so that we wrap the forbidden main container
+            // If we're in a forbidden root container, switch the selected node
+            // to its parent node so that we wrap the forbidden root container
             // itself and not its inner text content
             if (forbiddenMainContainer) {
                 selectedNode = selectedNode.parentNode;
