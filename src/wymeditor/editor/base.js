@@ -689,7 +689,7 @@ WYMeditor.editor.prototype.nodeAfterSel = function () {
 
     Returns the selection's container.
 
-    Not to be confused with `.getRootContainer`, which sets and gets the
+    Not to be confused with `.getRootContainer`, which gets the
     selection's root container.
 */
 WYMeditor.editor.prototype.selectedContainer = function () {
@@ -889,7 +889,7 @@ WYMeditor.editor.prototype.unwrapIfMeaninglessSpan = function (element) {
     WYMeditor.editor.getRootContainer
     =================================
 
-    Set the selected root container.
+    Get the selected root container.
 */
 WYMeditor.editor.prototype.getRootContainer = function () {
     var wym = this;
@@ -1010,12 +1010,12 @@ WYMeditor.editor.prototype.setRootContainer = function (sType) {
     =========================================
 
     Determines whether a container with the passed tagName is allowed to be a
-    main container (i.e. if it is allowed to be a container in the root of the
+    root container (i.e. if it is allowed to be a container in the root of the
     document). Returns true if a container with the passed tagName is *not* an
-    allowable main container, and returns false if otherwise.
+    allowable root container, and returns false if otherwise.
 
     @param tagName A string of the tag name to be determined if it can be a
-                   main container or not
+                   root container or not
 */
 WYMeditor.editor.prototype.isForbiddenRootContainer = function (tagName) {
     return jQuery.inArray(tagName.toLowerCase(),
@@ -3172,7 +3172,7 @@ WYMeditor.editor.prototype.convertToList = function (blockElement, listType) {
         // TODO: Handle ol/ul elements, since these are now in the `root`
         // containers list
 
-        // This is a main container block, so we can just replace it with the
+        // This is a root container block, so we can just replace it with the
         // list structure
         $blockElement.wrapInner(newListHtml);
         $newList = $blockElement.children();
@@ -3180,7 +3180,7 @@ WYMeditor.editor.prototype.convertToList = function (blockElement, listType) {
 
         return $newList.get(0);
     }
-    // We're converting a block that's not a main container, so we need to nest
+    // We're converting a block that's not a root container, so we need to nest
     // this list around its contents and NOT remove the container (eg. a td
     // node).
     $blockElement.wrapInner(newListHtml);

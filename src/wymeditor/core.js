@@ -240,7 +240,7 @@ jQuery.extend(WYMeditor, {
     ],
 
     // Containers that we explicitly do not allow at the root of the document.
-    // These containers must be wrapped in a valid main container.
+    // These containers must be wrapped in a valid root container.
     FORBIDDEN_ROOT_CONTAINERS : [
         "a",
         "b",
