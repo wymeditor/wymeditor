@@ -19,9 +19,9 @@ Example:
 
 .. code-block:: javascript
 
-  wym.html("<p>Hello, World.</p>");
+    wym.html("<p>Hello, World.</p>");
 
-  wym.html();// "<p>Hello, World.</p>"
+    wym.html();// "<p>Hello, World.</p>"
 
 ``rawHtml(html)``
 =================
@@ -63,7 +63,7 @@ Removes the WYMeditor instance from existence and replaces the
 
 .. code-block:: javascript
 
-  wym.vanish();
+    wym.vanish();
 
 ``jQuery.getWymeditorByTextarea()``
 ===================================
@@ -73,14 +73,14 @@ initialized for the textarea, returns false.
 
 .. code-block:: javascript
 
-  var myWym,
-      myDocument;
+    var myWym,
+        myDocument;
 
-  myWym = jQuery.getWymeditorByTextarea(jQuery('textarea#myDocument'));
+    myWym = jQuery.getWymeditorByTextarea(jQuery('textarea#myDocument'));
 
-  if (myWym) {
-    myDocument = myWym.html();
-  }
+    if (myWym) {
+        myDocument = myWym.html();
+    }
 
 ``element``
 ===========
@@ -124,29 +124,29 @@ Selection Setting and Getting
 *****************************
 
 .. note::
-  For selection setting and selection getting, WYMeditor uses the Rangy library
-  internally.
+    For selection setting and selection getting, WYMeditor uses the Rangy library
+    internally.
 
-  The Rangy library doesn't seem to provide a consistent interface for
-  selection getting. Instead, the selection could be in many cases described
-  differently in different browsers.
+    The Rangy library doesn't seem to provide a consistent interface for
+    selection getting. Instead, the selection could be in many cases described
+    differently in different browsers.
 
-  Additionally, erroneous selections are performed by some browsers under
-  certain conditions.
+    Additionally, erroneous selections are performed by some browsers under
+    certain conditions.
 
-  In light of this, an effort has been made to provide reliable methods in
-  WYMeditor for selection setting an getting.
+    In light of this, an effort has been made to provide reliable methods in
+    WYMeditor for selection setting an getting.
 
-  Core contributors, as well as plugin authors, are encouraged to use these
-  methods and to avoid using the Rangy API directly.
+    Core contributors, as well as plugin authors, are encouraged to use these
+    methods and to avoid using the Rangy API directly.
 
-  If you find these methods lack a feature that you require, then please file an
-  issue_ describing your requirement so that we could look into answering it in
-  a consistent and reliable way.
+    If you find these methods lack a feature that you require, then please file an
+    issue_ describing your requirement so that we could look into answering it in
+    a consistent and reliable way.
 
-  Pull requests regarding this or any other issue are warmly welcomed. For
-  detailed pull request recommendations, please see our documentation on
-  :doc:`../wymeditor_development/contributing`.
+    Pull requests regarding this or any other issue are warmly welcomed. For
+    detailed pull request recommendations, please see our documentation on
+    :doc:`../wymeditor_development/contributing`.
 
 ``nodeAfterSel()``
 ==================
@@ -188,10 +188,10 @@ Returns true if yes and false if no.
 This sets a collapsed selection before the specified node.
 
 .. note::
-  Due to browser and/or Rangy bugs it has been decided that ``node`` could be
-  either a text node or a ``br`` element and if it is a ``br`` element it must
-  either have no ``previousSibling`` or its ``previousSibling`` must be a text
-  node, a ``br`` element or any block element.
+    Due to browser and/or Rangy bugs it has been decided that ``node`` could be
+    either a text node or a ``br`` element and if it is a ``br`` element it must
+    either have no ``previousSibling`` or its ``previousSibling`` must be a text
+    node, a ``br`` element or any block element.
 
 It checks whether this is possible, before doing so, using
 ``canSetCaretBefore``.
@@ -208,12 +208,12 @@ a provided node. This is useful for the same reason as ``canSetCaretBefore``.
 Sets a collapsed selection at the start inside a provided element.
 
 .. note::
-  Due to what seems like browser bugs, setting the caret inside an inline element
-  results in a selection across the contents of that element.
+    Due to what seems like browser bugs, setting the caret inside an inline element
+    results in a selection across the contents of that element.
 
-  For this reason it might not be useful for implementation of features.
+    For this reason it might not be useful for implementation of features.
 
-  It can, however, be useful in tests.
+    It can, however, be useful in tests.
 
 It checks whether this is possible, before doing so, using
 ``canSetCaretIn``.
@@ -248,7 +248,7 @@ Example; get the root-level nodes in the document:
 
 .. code-block:: javascript
 
-  var rootNodes = wym.body().childNodes;
+    var rootNodes = wym.body().childNodes;
 
 ``$body()``
 ===========
@@ -259,7 +259,7 @@ Example; find first paragraph in the document:
 
 .. code-block:: javascript
 
-  var $firstP = wym.$body().children('p').first();
+    var $firstP = wym.$body().children('p').first();
 
 ``exec(cmd)``
 =============
@@ -344,7 +344,7 @@ Example: switch the root container to Heading 1.
 
 *Description*
 
-    Wrap the inline selection with XHTML.
+Wrap the inline selection with XHTML.
 
 Example:
 
