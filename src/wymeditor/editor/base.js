@@ -1202,7 +1202,7 @@ WYMeditor.editor.prototype._encloseString = function (sVal) {
 
     The state includes:
 
-    * `rawHtml`: The return value of `editor.rawHtml()`
+    * `rawHtml`: The return value of `editor.rawHtml()`.
     * `selectionRange`: The Rangy selection range, if anything is selected.
 
     It may include more things in the future.
