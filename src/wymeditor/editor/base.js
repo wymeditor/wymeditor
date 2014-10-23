@@ -1195,6 +1195,48 @@ WYMeditor.editor.prototype._encloseString = function (sVal) {
 };
 
 /**
+    editor.getCurrentState
+    ======================
+
+    Returns an object with the current state of the editor.
+
+    The state includes:
+
+    * `rawHtml`: The return value of `editor.rawHtml()`
+    * `selection`: The Rangy selection.
+
+    It may include more things in the future.
+*/
+WYMeditor.editor.prototype.getCurrentState = function () {
+    var wym = this,
+        state;
+
+    state = {
+        rawHtml: wym.rawHtml(),
+        selection: wym.selection()
+    };
+
+    return state;
+};
+
+/**
+    editor.setSingleSelectionRange
+    ==============================
+
+    Sets the selection to the single provided Rangy range.
+
+    @param range A Rangy range.
+*/
+WYMeditor.editor.prototype.setSingleSelectionRange = function (range) {
+    var wym = this,
+        selection;
+
+    selection = wym.selection();
+
+    selection.setSingleRange(range);
+};
+
+/**
     editor.status
     =============
 

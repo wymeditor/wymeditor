@@ -35,6 +35,18 @@ use, html() will most likely be the answer.
 Update the value of the element replaced by WYMeditor and the value of
 the HTML source textarea.
 
+``getCurrentState()``
+=====================
+
+Returns an object with the current state of the editor.
+
+The state includes:
+
+* ``rawHtml``: The return value of ``editor.rawHtml()``.
+* ``selection``: The Rangy selection.
+
+It may include more things in the future.
+
 ``iframeInitialized``
 =====================
 
@@ -121,6 +133,11 @@ Selection Setting and Getting
   Pull requests regarding this or any other issue are warmly welcomed. For
   detailed pull request recommendations, please see our documentation on
   :doc:`../wymeditor_development/contributing`.
+
+``setSingleSelectionRange(range)``
+==================================
+
+Sets the selection to the single provided Rangy ``range``.
 
 ``nodeAfterSel()``
 ==================
