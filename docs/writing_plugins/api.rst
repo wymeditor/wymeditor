@@ -43,7 +43,7 @@ Returns an object with the current state of the editor.
 The state includes:
 
 * ``rawHtml``: The return value of ``editor.rawHtml()``.
-* ``selection``: The Rangy selection.
+* ``selectionRange``: The Rangy selection range, if anything is selected.
 
 It may include more things in the future.
 
