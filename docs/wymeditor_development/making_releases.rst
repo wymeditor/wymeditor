@@ -116,6 +116,7 @@ Also, remove the ``+`` because there is no more build metadata.
 
 While you're doing that, make sure that the version strings are otherwise correct.
 
+If instructions here were followed,
 They should be already the version that you mean to release.
 
 Update the changelog
