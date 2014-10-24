@@ -105,12 +105,14 @@ The editor's textarea element.
 An object, containing event names, which are triggered by the editor in various
 circumstances. jQuery can be used to add handlers to these events.
 
-Current events include:
+Available events:
 
-* ``postBlockMaybeCreated``: Triggered after a block type element may have been
-  created.
-* ``postIframeInitialization``: Triggered after the editor's Iframe has been
-  initialized.
+``postBlockMaybeCreated``
+    Triggered after a block type element may have been
+    created.
+``postIframeInitialization``
+    Triggered after the editor's Iframe has been
+    initialized.
 
 Example of adding a handler to one of the events:
 
