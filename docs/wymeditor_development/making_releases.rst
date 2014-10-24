@@ -88,6 +88,8 @@ Website is up–to–date
 What is written regarding the read–me above is applicable regarding the
 website, as well.
 
+Currently, the website's content is generated from the ``README.rst``, mostly.
+
 Making the release
 ==================
 
