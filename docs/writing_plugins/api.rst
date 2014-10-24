@@ -222,9 +222,9 @@ It checks whether this is possible, before doing so, using
 =======================================================
 
 A helper function to ensure that the selection is restored to the same
-location after a potentially-complicated dom manipulation is performed. This
-also handles the case where the dom manipulation throws an error by cleaning
-up any selection markers that were added to the dom.
+location after a potentially complicated DOM manipulation is performed. This
+also handles the case where the DOM manipulation throws an error by cleaning
+up any selection markers that were added to the DOM.
 
 ``manipulationFunc`` is a function that takes no arguments and performs the
 manipulation. It should return true if changes were made that could have
@@ -267,28 +267,39 @@ Example; find first paragraph in the document:
 Execute a command.
 
 *Supported command identifiers*
-
-*   Bold: set/unset ``strong`` on the selection
-*   Italic: set/unset ``em`` on the selection
-*   Superscript: set/unset ``sup`` on the selection
-*   Subscript: set/unset ``sub`` on the selection
-*   InsertOrderedList: create/remove an ordered list, based on the
-    selection
-*   InsertUnorderedList: create/remove an unordered list, based on the
-    selection
-*   Indent: `indent` the list element
-*   Outdent: `outdent` the list element
-*   Undo: undo an action
-*   Redo: redo an action
-*   CreateLink: open the link dialog and create/update a link on the
-    selection
-*   Unlink: remove a link, based on the selection
-*   InsertImage: open the image dialog and insert/update an image
-*   InsertTable: open the table dialog and insert a table
-*   Paste: opens the paste dialog and paste raw paragraphs from an
-    external application, e.g. Word
-*   ToggleHtml: show/hide the HTML value
-*   Preview: open the preview dialog
+Italic
+    set/unset ``em`` on the selection.
+Superscript
+    set/unset ``sup`` on the selection.
+Subscript
+    set/unset ``sub`` on the selection.
+InsertOrderedList
+    create/remove an ordered list, based on the selection.
+InsertUnorderedList
+    create/remove an unordered list, based on the selection.
+Indent
+    `indent` the list element.
+Outdent
+    `outdent` the list element.
+Undo
+    undo an action.
+Redo
+    redo an action.
+CreateLink
+    open the link dialog and create/update a link on the selection.
+Unlink
+    remove a link, based on the selection.
+InsertImage
+    open the image dialog and insert/update an image.
+InsertTable
+    open the table dialog and insert a table.
+Paste
+    opens the paste dialog and paste raw paragraphs from an external
+    application, e.g. Word.
+ToggleHtml
+    show/hide the HTML value.
+Preview
+    open the preview dialog.
 
 ``paste(data)``
 ===============
@@ -388,29 +399,28 @@ Returns true if the provided node is a block type element.
 ``isForbiddenRootContainer(tagName)``
 =====================================
 
-Determines whether a container with the passed ``tagName`` is allowed to be a
-main container (i.e. if it is allowed to be a container in the root of the
-document). Returns true if a container with the passed tagName is *not* an
-allowable main container, and returns false if otherwise.
+Returns true if provided ``tagName`` is disallowed as a root container.
+Returns false if it is allowed.
 
 ``isInlineNode(node)``
 ======================
 
-Returns true if the provided ``node`` is an in-line type node. Otherwise
+Returns true if the provided ``node`` is an inline type node. Otherwise
 returns false.
 
 ``keyCanCreateBlockElement(keyCode)``
 =====================================
 
 Determines whether the key represented by the passed ``keyCode`` can create a
-block element within the editor when inputted. Returns true if the key can
-create a block element when inputted, and returns false if otherwise.
+block element within the editor when pressed. Returns true if the key can
+create a block element when pressed, and returns false if otherwise.
 
 ``prepareDocForEditing()``
 ==========================
 
-Makes some safe modifications to the body of the document, which are necessary
+Makes some editor-only modifications to the body of the document, which are necessary
 for the user interface. For example, inserts ``br`` elements in certain places.
+These modifications will not show up in the HTML output.
 
 ``findUp(node, filter)``
 ========================
@@ -462,10 +472,10 @@ selection and their context.
 
 This can result in one of:
 
- 1. Changing the type of lists.
- 2. Removing items from list.
- 3. Creating a list.
- 4. Nothing.
+1. Changing the type of lists.
+2. Removing items from list.
+3. Creating a list.
+4. Nothing.
 
 If existing list items are selected this means either changing list type
 or de-listing. Changing list type occurs when selected list items all share
@@ -538,8 +548,8 @@ For example, you may want to bind it as a handler for a dialog's window
         wym.focusOnDocument();
     });
 
-``getButtons()``
-================
+``get$Buttons()``
+=================
 
 Returns a jQuery object, containing all the UI buttons.
 
@@ -547,12 +557,7 @@ Example:
 
 .. code-block:: javascript
 
-    var $buttons = wym.getButtons();
-
-``get$Buttons()``
-=================
-
-Returns a jQuery of all UI buttons.
+    var $buttons = wym.get$Buttons();
 
 *******
 Helpers
@@ -607,7 +612,8 @@ Returns true if the provided string consists only of whitespaces.
 ``WYMeditor.arrayContains(array, thing)``
 =========================================
 
-Returns true if ``array`` contains ``thing``. Uses ``===``.
+Returns true if ``array`` contains ``thing``. Uses ``===`` for comparison of
+provided ``thing`` with contents of provided ``array``.
 
 ``WYMeditor.replaceAllInStr(str, old, new)``
 ============================================
@@ -622,28 +628,31 @@ Constants
 Elements
 ========
 
-* ``BLOCKING_ELEMENT_SPACER_CLASS``:
-  Class for marking br elements used to space apart blocking elements in
-  the editor.
-* ``BLOCKING_ELEMENTS``:
-  The subset of the ``ROOT_CONTAINERS`` that prevent the user from using
-  up/down/enter/backspace from moving above or below them. They
-  effectively block the creation of new blocks.
-* ``BLOCKS``:
-  All blocks (as opposed to inline) tags.
-* ``EDITOR_ONLY_CLASS``:
-  Class used to flag an element for removal by the xhtml parser so that
-  the element is removed from the output and only shows up internally
-  within the editor.
-* ``FORBIDDEN_ROOT_CONTAINERS``:
-  Containers that we explicitly do not allow at the root of the document.
-  These containers must be wrapped in a valid main container.
-* ``HEADING_ELEMENTS``: ``h1`` through ``h6``.
-* ``INLINE_ELEMENTS``: Inline elements.
-* ``LIST_TYPE_ELEMENTS``: ``ol`` and ``ul``.
-* ``ROOT_CONTAINERS``:
-  Containers that we allow at the root of the document (as direct children
-  of the body tag).
+``BLOCKING_ELEMENT_SPACER_CLASS``
+    Class for marking ``br`` elements used to space apart blocking elements in
+    the editor.
+``BLOCKING_ELEMENTS``
+    The subset of the ``ROOT_CONTAINERS`` that prevent the user from using
+    up/down/enter/backspace from moving above or below them. They
+    effectively block the creation of new blocks.
+``BLOCKS``
+    All blocks (as opposed to inline) tags.
+``EDITOR_ONLY_CLASS``
+    Class used to flag an element for removal by the xhtml parser so that
+    the element is removed from the output and only shows up internally
+    within the editor.
+``FORBIDDEN_ROOT_CONTAINERS``
+    Containers that we explicitly do not allow at the root of the document.
+    These containers must be wrapped in a valid root container.
+``HEADING_ELEMENTS``
+    ``h1`` through ``h6``.
+``INLINE_ELEMENTS``
+    Inline elements.
+``LIST_TYPE_ELEMENTS``
+    ``ol`` and ``ul``.
+``ROOT_CONTAINERS``
+    Containers that we allow at the root of the document (as direct children
+    of the body tag).
 
 Key codes
 =========

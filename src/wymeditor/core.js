@@ -1467,7 +1467,8 @@ WYMeditor.Helper = {
         return str.replace(/^(\s*)|(\s*)$/gm, '');
     },
 
-    //return true if 'arr' array contains 'elem', or false
+    //Returns true if `array`` contains `thing`. Uses `===` for comparison of
+    //provided `thing` with contents of provided `array`.
     arrayContains: function (arr, elem) {
         var i;
         for (i = 0; i < arr.length; i += 1) {
