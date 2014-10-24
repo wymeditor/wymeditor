@@ -500,6 +500,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('test', [
         'bower',
+        'browserify:objectHistory',
         'clean:server',
         'connect:test',
         'qunit'
