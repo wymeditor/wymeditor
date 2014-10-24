@@ -186,8 +186,7 @@ Prepare for the next release
 
 #. Create a new version entry in the change–log.
 #. Bump the version string and add the build
-   metadata string, ``dev``, at the
-   end (with a ``+`` between the PATCH version and it).
+   metadata string, ``+dev``, at the end.
 
 .. _Semantic Versioning: http://semver.org/
 .. _current releases: https://github.com/wymeditor/wymeditor/releases
