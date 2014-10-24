@@ -301,7 +301,7 @@ WYMeditor.editor.prototype.focusOnDocument = function () {
 
 /**
     WYMeditor.editor._bindFocusOnDocumentToButtons
-    =================================================
+    ==============================================
 
     Binds a handler to clicks on the UI buttons, that sets focus back to the
     document.
