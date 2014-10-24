@@ -130,10 +130,10 @@ Update the changelog
 
 #. Set the date for the release.
 
-Update the web–site
--------------------
+Build the web–site
+------------------
 
-Instructions for updating the web–site are in the
+Instructions for building the web–site are in the
 :doc:`web–site documentation page<wymeditor_website>`.
 
 
