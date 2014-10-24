@@ -162,7 +162,7 @@ Build WYMeditor
 Ship it!
 --------
 
-#. Look joyously at the `current releases`.
+#. Look joyously at the `current releases`_.
 
 #. Publish a new release from the master branch with:
 
