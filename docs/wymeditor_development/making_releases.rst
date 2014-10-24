@@ -166,7 +166,8 @@ Ship it!
 
 #. Publish a new release from the master branch with:
 
-   * The version string as the tag that will be created
+   * The version string, with ``v`` prepended, as the tag that will be created
+     and the title.
    * The change–log for this release (not the entire contents of the change–log
      file) as the description
    * The WYMeditor build, ``wymeditor-<version>.tag.gz``, as an attached binary
