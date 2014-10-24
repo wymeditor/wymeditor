@@ -264,9 +264,8 @@ Example; find first paragraph in the document:
 ``exec(cmd)``
 =============
 
-Execute a command.
+Execute a command. Supported ``cmd`` values:
 
-*Supported command identifiers*
 Italic
     set/unset ``em`` on the selection.
 Superscript
