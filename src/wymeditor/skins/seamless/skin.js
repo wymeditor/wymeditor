@@ -149,14 +149,14 @@ WYMeditor.SKINS.seamless = {
                 initialIframeResizeTimer: null,
                 resizeAfterImagesLoadTimer: null,
                 _imagesLoadedCheckStartedTime: 0,
-                minimumHeight: jQuery(wym._element).height()
+                minimumHeight: jQuery(wym.element).height()
             }
         );
         This.initUIChrome(wym);
 
         // The Iframe isn't initialized at this point, so we'll need to wait
         // until it is before attempting to use it.
-        jQuery(wym._element).bind(
+        jQuery(wym.element).bind(
             WYMeditor.EVENTS.postIframeInitialization,
             This.postIframeInit
         );
@@ -169,7 +169,7 @@ WYMeditor.SKINS.seamless = {
 
         // Detect possible Block creation so that we can always keep the iframe
         // properly resized and the current container in view
-        jQuery(wym._element).bind(
+        jQuery(wym.element).bind(
             WYMeditor.EVENTS.postBlockMaybeCreated,
             function () {
                 This.resizeAndScrollIfNeeded(wym);
