@@ -157,6 +157,8 @@ Build WYMeditor
 
 #. Commit the changes in ``dist/``.
 
+#. Push to branch ``master``.
+
 Ship it!
 --------
 
