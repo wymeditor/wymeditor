@@ -14,6 +14,11 @@ WYMeditor.
   ``WYMeditor.editor.getRootContainer`` and
   ``WYMeditor.editor.setRootContainer``.
 
+### Documentation
+
+* [#606](https://github.com/wymeditor/wymeditor/pull/606)
+  Documented practically all undocumented public API.
+
 ## 1.0.0-beta.9
 
 *release-date* October 6, 2014
