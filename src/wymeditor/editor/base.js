@@ -660,6 +660,18 @@ WYMeditor.editor.prototype.exec = function (cmd) {
 };
 
 /**
+    WYMeditor.editor._removeSelectionBoundaries
+    ===========================================
+
+    Removes Rangy selection boundary `span`s from the document.
+*/
+WYMeditor.editor.prototype._removeSelectionBoundaries = function () {
+    var wym = this;
+
+    wym.$body().find('span.rangySelectionBoundary').remove();
+};
+
+/**
     WYMeditor.editor.selection
     ==========================
 
@@ -1249,6 +1261,10 @@ WYMeditor.editor.prototype.getCurrentState = function () {
     }
 
     state.html = wym.rawHtml();
+
+    if (state.savedSelection) {
+        wym._removeSelectionBoundaries();
+    }
 
     return state;
 };
