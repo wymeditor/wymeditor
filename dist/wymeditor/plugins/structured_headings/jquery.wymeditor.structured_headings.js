@@ -8,7 +8,7 @@ if (typeof (WYMeditor) === 'undefined') {
     WYMeditor = {};
     /* jshint +W020 */
     WYMeditor.HEADING_ELEMENTS = ["h1", "h2", "h3", "h4", "h5", "h6"];
-    WYMeditor.KEY = {
+    WYMeditor.KEY_CODE = {
         BACKSPACE: 8,
         ENTER: 13,
         DELETE: 46
@@ -35,7 +35,7 @@ WYMeditor.STRUCTURED_HEADINGS_NUMBERING_SPAN_CLASS = 'wym-structured-heading-num
 // Key codes for the keyup events that the heading numberings should be
 // recalculated on
 WYMeditor.STRUCTURED_HEADINGS_POTENTIAL_HEADING_MODIFICATION_KEYS =
-    [WYMeditor.KEY.BACKSPACE, WYMeditor.KEY.DELETE, WYMeditor.KEY.ENTER];
+    [WYMeditor.KEY_CODE.BACKSPACE, WYMeditor.KEY_CODE.DELETE, WYMeditor.KEY_CODE.ENTER];
 
 /*
     getHeadingLevel
@@ -191,7 +191,7 @@ StructuredHeadingsManager.prototype.bindEvents = function () {
 
     // Bind click event to the new single heading link
     $box.find(shm._options.headingContainerPanelSelector).click(function () {
-        shm.switchToHeading(wym.mainContainer());
+        shm.switchToHeading(wym.getRootContainer());
     });
 };
 

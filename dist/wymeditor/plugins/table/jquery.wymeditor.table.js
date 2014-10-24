@@ -646,7 +646,7 @@ TableEditor.prototype.keyDown = function (evt) {
         wym = WYMeditor.INSTANCES[doc.title],
         tableEditor = wym.tableEditor;
 
-    if (evt.which === WYMeditor.KEY.TAB) {
+    if (evt.which === WYMeditor.KEY_CODE.TAB) {
         return tableEditor.selectNextCell(wym.selectedContainer());
     }
 
@@ -710,7 +710,7 @@ TableEditor.prototype.selectElement = function (elmnt) {
     }
     // Old IE selection hack
     if (WYMeditor.isInternetExplorerPre11()) {
-        wym.saveCaret();
+        wym._saveCaret();
     }
 };
 
