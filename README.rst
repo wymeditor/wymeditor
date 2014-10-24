@@ -141,8 +141,8 @@ Included requirements
 These requirements are included inside the distributed WYMeditor JavaScript
 file.
 
-* `jquery.browser`_; defines/overrides ``jQuery.browser``
-* `Rangy`_; defines/overrides global ``Rangy``
+* `jquery.browser`_; defines/overrides ``jQuery.browser``.
+* `Rangy`_; defines/overrides global ``rangy``.
 * `rangy-selectionsaverestore`_; a Rangy module.
 
 *********

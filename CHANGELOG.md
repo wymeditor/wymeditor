@@ -3,9 +3,13 @@
 This document tracks the enhancements and bug fixes between releases of
 WYMeditor.
 
+## 1.0.0-rc.2
+
+*release-date* TBD
+
 ## 1.0.0-rc.1
 
-*releae-date* TBD
+*release-date* October 24, 2014
 
 ### Backwards-Incompatible Changes
 
@@ -13,6 +17,11 @@ WYMeditor.
 * [#605] ``WYMeditor.editor.mainContainer`` was split into
   ``WYMeditor.editor.getRootContainer`` and
   ``WYMeditor.editor.setRootContainer``.
+
+### Documentation
+
+* [#606](https://github.com/wymeditor/wymeditor/pull/606)
+  Documented practically all undocumented public API.
 
 ## 1.0.0-beta.9
 

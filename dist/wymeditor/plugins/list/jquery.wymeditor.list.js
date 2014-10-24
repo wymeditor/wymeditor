@@ -47,7 +47,7 @@ ListPlugin.prototype.handleKeyDown = function(evt) {
     }
 
     // Handle tab presses
-    if (evt.which == WYMeditor.KEY.TAB) {
+    if (evt.which == WYMeditor.KEY_CODE.TAB) {
         if (evt.shiftKey) {
             wym.exec(WYMeditor.OUTDENT);
             return false; // Short-circuit normal tab behavior

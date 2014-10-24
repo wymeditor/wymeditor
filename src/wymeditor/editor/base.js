@@ -81,7 +81,7 @@ WYMeditor.editor.prototype._init = function () {
     }
 
     // Load wymbox
-    wym._box = jQuery(wym._element).hide().after(
+    wym._box = jQuery(wym.element).hide().after(
         wym._options.boxHtml
     ).next().addClass(
         'wym_box_' + wym._index
@@ -91,7 +91,7 @@ WYMeditor.editor.prototype._init = function () {
     // but keep it compatible with jQuery < 1.2.3, see #122
     if (jQuery.isFunction(jQuery.fn.data)) {
         jQuery.data(wym._box.get(0), WYMeditor.WYM_INDEX, wym._index);
-        jQuery.data(wym._element.get(0), WYMeditor.WYM_INDEX, wym._index);
+        jQuery.data(wym.element.get(0), WYMeditor.WYM_INDEX, wym._index);
     }
 
     h = WYMeditor.Helper;
@@ -211,7 +211,7 @@ WYMeditor.editor.prototype._init = function () {
         wym._onEditorIframeLoad(wym);
     });
 
-    wym._element.attr('data-wym-initialized', 'yes');
+    wym.element.attr('data-wym-initialized', 'yes');
 
     wym._initSkin();
 };
@@ -269,7 +269,7 @@ WYMeditor.editor.prototype._onEditorIframeLoad = function (wym) {
     WYMeditor.editor.get$Buttons
     ============================
 
-    Returns a jQuery of all UI buttons.
+    Returns a jQuery object, containing all the UI buttons.
 */
 WYMeditor.editor.prototype.get$Buttons = function () {
     var wym = this,
@@ -377,7 +377,7 @@ WYMeditor.editor.prototype._afterDesignModeOn = function () {
     // Add event listeners to doc elements, e.g. images
     wym._listen();
 
-    jQuery(wym._element).trigger(
+    jQuery(wym.element).trigger(
         WYMeditor.EVENTS.postIframeInitialization,
         wym
     );
@@ -398,7 +398,7 @@ WYMeditor.editor.prototype._initializeDocumentContent = function () {
         wym.html(wym._options.html);
     } else {
         // Populate from the textarea element
-        wym.html(wym._element[0].value);
+        wym.html(wym.element[0].value);
     }
 };
 
@@ -458,7 +458,7 @@ WYMeditor.editor.prototype._bindUIEvents = function () {
             aClasses = eval(wym._options.classesItems),
             sName = jQuery(classButton).attr(WYMeditor.NAME),
 
-            oClass = WYMeditor.Helper.getFromArrayByName(aClasses, sName),
+            oClass = WYMeditor.Helper._getFromArrayByName(aClasses, sName),
             jqexpr;
 
         if (oClass) {
@@ -501,7 +501,7 @@ WYMeditor.editor.prototype.vanish = function () {
         i;
 
     wym._box.remove();
-    wym._element
+    wym.element
         .removeAttr('data-wym-initialized')
         .attr('data-wym-vanished', '')
         .show();
@@ -753,7 +753,7 @@ WYMeditor.editor.prototype.isBlockNode = function (node) {
     WYMeditor.editor.isInlineNode
     =============================
 
-    Returns true if the provided node is an in-line type node. Otherwise
+    Returns true if the provided node is an inline type node. Otherwise
     returns false.
 
     @param node The node to check.
@@ -1009,13 +1009,10 @@ WYMeditor.editor.prototype.setRootContainer = function (sType) {
     WYMeditor.editor.isForbiddenRootContainer
     =========================================
 
-    Determines whether a container with the passed tagName is allowed to be a
-    root container (i.e. if it is allowed to be a container in the root of the
-    document). Returns true if a container with the passed tagName is *not* an
-    allowable root container, and returns false if otherwise.
+    Returns true if provided `tagName` is disallowed as a root container.
+    Returns false if it is allowed.
 
-    @param tagName A string of the tag name to be determined if it can be a
-                   root container or not
+    @param tagName A string of the tag name.
 */
 WYMeditor.editor.prototype.isForbiddenRootContainer = function (tagName) {
     return jQuery.inArray(tagName.toLowerCase(),
@@ -1027,8 +1024,8 @@ WYMeditor.editor.prototype.isForbiddenRootContainer = function (tagName) {
     =========================================
 
     Determines whether the key represented by the passed keyCode can create a
-    block element within the editor when inputted. Returns true if the key can
-    create a block element when inputted, and returns false if otherwise.
+    block element within the editor when pressed. Returns true if the key can
+    create a block element when pressed, and returns false if otherwise.
 
     @param keyCode A numberic key code representing a key
 */
@@ -1265,7 +1262,7 @@ WYMeditor.editor.prototype.update = function () {
         html;
 
     html = wym.html();
-    jQuery(wym._element).val(html);
+    jQuery(wym.element).val(html);
     jQuery(wym._box).find(wym._options.htmlValSelector).not('.hasfocus').val(html); //#147
     wym.prepareDocForEditing();
 };
@@ -1274,28 +1271,29 @@ WYMeditor.editor.prototype.update = function () {
     editor.prepareDocForEditing
     ===========================
 
-    Adjust the editor body html to account for editing changes where
-    perfect HTML is not optimal. For instance, <br> elements are useful between
-    certain block elements.
+    Makes some editor-only modifications to the body of the document, which are necessary
+    for the user interface. For example, inserts `br` elements in certain places.
+    These modifications will not show up in the HTML output.
+
 */
 WYMeditor.editor.prototype.prepareDocForEditing = function () {
     var wym = this;
 
-    wym.spaceBlockingElements();
+    wym._spaceBlockingElements();
     wym._fixDoubleBr();
 
-    jQuery(wym._element).trigger(WYMeditor.EVENTS.postBlockMaybeCreated, wym);
+    jQuery(wym.element).trigger(WYMeditor.EVENTS.postBlockMaybeCreated, wym);
 };
 
 /**
-    editor.spaceBlockingElements
-    ============================
+    editor._spaceBlockingElements
+    =============================
 
     Insert <br> elements between adjacent blocking elements and
     p elements, between block elements or blocking elements and the
     start/end of the document.
 */
-WYMeditor.editor.prototype.spaceBlockingElements = function () {
+WYMeditor.editor.prototype._spaceBlockingElements = function () {
     var wym = this,
         blockingSelector =
             WYMeditor.DocumentStructureManager.CONTAINERS_BLOCKING_NAVIGATION.join(', '),
@@ -3006,9 +3004,9 @@ WYMeditor.editor.prototype.outdent = function () {
     ========================================
 
     A helper function to ensure that the selection is restored to the same
-    location after a potentially-complicated dom manipulation is performed. This
-    also handles the case where the dom manipulation throws an error by cleaning
-    up any selection markers that were added to the dom.
+    location after a potentially complicated DOM manipulation is performed. This
+    also handles the case where the DOM manipulation throws an error by cleaning
+    up any selection markers that were added to the DOM.
 
     `manipulationFunc` is a function that takes no arguments and performs the
     manipulation. It should return `true` if changes were made that could have
@@ -3391,7 +3389,7 @@ WYMeditor.editor.prototype._removeItemsFromList = function ($listItems) {
 
                 // Add `br` elements that may be necessary because by turning
                 // a `li` element into a `span` element we turn a block
-                // type element into an in-line type element.
+                // type element into an inline type element.
                 if (
                     $listItem[0].previousSibling &&
                     $listItem[0].previousSibling.nodeType === WYMeditor
@@ -3557,7 +3555,7 @@ WYMeditor.editor.prototype._handlePasteEvent = function () {
     // actually been added.
     window.setTimeout(
         function () {
-            jQuery(wym._element).trigger(
+            jQuery(wym.element).trigger(
                 WYMeditor.EVENTS.postBlockMaybeCreated,
                 wym
             );

@@ -525,7 +525,7 @@ jQuery.extend(WYMeditor, {
         // Store the instance in the INSTANCES array and store the index
         wym._index = WYMeditor.INSTANCES.push(wym) - 1;
         // The element replaced by the editor
-        wym._element = elem;
+        wym.element = elem;
         wym._options = options;
         // Path to the WYMeditor core
         wym._options.wymPath = wym._options.wymPath ||
@@ -997,7 +997,7 @@ jQuery.extend({
             throw "jQuery.getWymeditorByTextarea requires a textarea element.";
         }
         for (i = 0; i < WYMeditor.INSTANCES.length; i++) {
-            if (textarea === WYMeditor.INSTANCES[i]._element[0]) {
+            if (textarea === WYMeditor.INSTANCES[i].element[0]) {
                 return WYMeditor.INSTANCES[i];
             }
         }
@@ -1467,7 +1467,8 @@ WYMeditor.Helper = {
         return str.replace(/^(\s*)|(\s*)$/gm, '');
     },
 
-    //return true if 'arr' array contains 'elem', or false
+    //Returns true if `array`` contains `thing`. Uses `===` for comparison of
+    //provided `thing` with contents of provided `array`.
     arrayContains: function (arr, elem) {
         var i;
         for (i = 0; i < arr.length; i += 1) {
@@ -1491,7 +1492,7 @@ WYMeditor.Helper = {
     },
 
     //return 'item' object in 'arr' array, checking its 'name' property, or null
-    getFromArrayByName: function (arr, name) {
+    _getFromArrayByName: function (arr, name) {
         var i, item;
         for (i = 0; i < arr.length; i += 1) {
             item = arr[i];

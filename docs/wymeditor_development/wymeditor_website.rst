@@ -93,7 +93,7 @@ Publishing the website is a matter of pushing to the ``gh-pages`` branch:
 
 .. code-block:: shell-session
 
-    $ push origin master:gh-pages
+    $ git push origin master:gh-pages
 
 This should be done during the process of making a release.
 Doing it between releases will result in broken download links in the website.

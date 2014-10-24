@@ -88,6 +88,8 @@ Website is up–to–date
 What is written regarding the read–me above is applicable regarding the
 website, as well.
 
+Currently, the website's content is generated from the ``README.rst``, mostly.
+
 Making the release
 ==================
 
@@ -114,6 +116,7 @@ Also, remove the ``+`` because there is no more build metadata.
 
 While you're doing that, make sure that the version strings are otherwise correct.
 
+If instructions here were followed,
 They should be already the version that you mean to release.
 
 Update the changelog
@@ -127,10 +130,10 @@ Update the changelog
 
 #. Set the date for the release.
 
-Update the web–site
--------------------
+Build the web–site
+------------------
 
-Instructions for updating the web–site are in the
+Instructions for building the web–site are in the
 :doc:`web–site documentation page<wymeditor_website>`.
 
 
@@ -154,14 +157,17 @@ Build WYMeditor
 
 #. Commit the changes in ``dist/``.
 
+#. Push to branch ``master``.
+
 Ship it!
 --------
 
-#. Look joyously at the `current releases`.
+#. Look joyously at the `current releases`_.
 
 #. Publish a new release from the master branch with:
 
-   * The version string as the tag that will be created
+   * The version string, with ``v`` prepended, as the tag that will be created
+     and the title.
    * The change–log for this release (not the entire contents of the change–log
      file) as the description
    * The WYMeditor build, ``wymeditor-<version>.tag.gz``, as an attached binary
@@ -180,8 +186,7 @@ Prepare for the next release
 
 #. Create a new version entry in the change–log.
 #. Bump the version string and add the build
-   metadata string, ``dev``, at the
-   end (with a ``+`` between the PATCH version and it).
+   metadata string, ``+dev``, at the end.
 
 .. _Semantic Versioning: http://semver.org/
 .. _current releases: https://github.com/wymeditor/wymeditor/releases
