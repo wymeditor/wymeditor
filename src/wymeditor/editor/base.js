@@ -300,6 +300,23 @@ WYMeditor.editor.prototype.focusOnDocument = function () {
 };
 
 /**
+    WYMeditor.editor.registerChange
+    ===============================
+
+    Registers a change in the document. This should be called after changes
+    are made in the document.
+
+    Triggers the `postAnyChange` event afterwards.
+*/
+WYMeditor.editor.prototype.registerChange = function () {
+    var wym = this;
+
+    wym.undoRedo._add();
+
+    jQuery(wym.element).trigger(WYMeditor.EVENTS.postAnyChange);
+};
+
+/**
     WYMeditor.editor._bindFocusOnDocumentToButtons
     ==============================================
 
@@ -376,6 +393,8 @@ WYMeditor.editor.prototype._afterDesignModeOn = function () {
 
     // Add event listeners to doc elements, e.g. images
     wym._listen();
+
+    wym.undoRedo = new WYMeditor.UndoRedo(wym);
 
     jQuery(wym.element).trigger(
         WYMeditor.EVENTS.postIframeInitialization,
@@ -594,18 +613,30 @@ WYMeditor.editor.prototype.exec = function (cmd) {
 
     case WYMeditor.INSERT_ORDEREDLIST:
         wym._insertOrderedList();
+        wym.registerChange();
         break;
 
     case WYMeditor.INSERT_UNORDEREDLIST:
         wym._insertUnorderedList();
+        wym.registerChange();
         break;
 
     case WYMeditor.INDENT:
         wym.indent();
+        wym.registerChange();
         break;
 
     case WYMeditor.OUTDENT:
         wym.outdent();
+        wym.registerChange();
+        break;
+
+    case WYMeditor.UNDO:
+        wym.undoRedo.undo();
+        break;
+
+    case WYMeditor.REDO:
+        wym.undoRedo.redo();
         break;
 
 
@@ -621,9 +652,11 @@ WYMeditor.editor.prototype.exec = function (cmd) {
         });
         if (!custom_run) {
             wym._exec(cmd);
+            wym.registerChange();
         }
         break;
     }
+
 };
 
 /**
@@ -1199,25 +1232,23 @@ WYMeditor.editor.prototype._encloseString = function (sVal) {
 
     The state includes:
 
-    * `rawHtml`: The return value of `editor.rawHtml()`.
-    * `selectionRange`: The Rangy selection range, if anything is selected.
+    * `html`: The return value of `editor.rawHtml()`.
+    * `savedSelection`: A Rangy saved selection, if anything is selected.
 
     It may include more things in the future.
 */
 WYMeditor.editor.prototype.getCurrentState = function () {
     var wym = this,
-        state,
+        state = {},
         selection;
-
-    state = {
-        rawHtml: wym.rawHtml()
-    };
 
     selection = wym.selection();
 
     if (selection.rangeCount > 0) {
-        state.selectionRange = selection.getRangeAt(0);
+        state.savedSelection = rangy.saveSelection(wym._iframe.contentWindow);
     }
+
+    state.html = wym.rawHtml();
 
     return state;
 };

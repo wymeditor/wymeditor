@@ -137,6 +137,8 @@ jQuery.extend(WYMeditor, {
     UNLINK              - Command: unset a link.
     INSERT_UNORDEREDLIST- Command: insert an unordered list.
     INSERT_ORDEREDLIST  - Command: insert an ordered list.
+    UNDO                - Command: Undo last change.
+    REDO                - Command: Redo last undone change.
     KEY                 - Standard key codes.
     NODE                - Node types.
 
@@ -201,6 +203,7 @@ jQuery.extend(WYMeditor, {
     PASTE               : "Paste",
     PRE                 : "pre",
     PREVIEW             : "Preview",
+    REDO                : "Redo",
     REL                 : "rel",
     SKINS               : [],
     SRC                 : "src",
@@ -219,6 +222,7 @@ jQuery.extend(WYMeditor, {
     TOOL_TITLE          : "{Wym_Tool_Title}",
     TR                  : "tr",
     UL                  : "ul",
+    UNDO                : "Undo",
     UNLINK              : "Unlink",
     VERSION             : "@@VERSION",
     WYM_INDEX           : "wym_index",
@@ -481,7 +485,10 @@ jQuery.extend(WYMeditor, {
 
     EVENTS : {
         'postBlockMaybeCreated': 'wym-postBlockMaybeCreated',
-        'postIframeInitialization': 'wym-postIframeInitialization'
+        'postIframeInitialization': 'wym-postIframeInitialization',
+        'postAnyChange': 'wym-postAnyChange',
+        'postUndo': 'wym-postUndo',
+        'postRedo': 'wym-postRedo'
     },
 
     // domNode.nodeType constants

@@ -42,8 +42,10 @@ Returns an object with the current state of the editor.
 
 The state includes:
 
-* ``rawHtml``: The return value of ``editor.rawHtml()``.
-* ``selectionRange``: The Rangy selection range, if anything is selected.
+``html``
+    The return value of ``editor.rawHtml()``.
+``savedSelection``
+    A Rangy saved selection, if anything is selected.
 
 It may include more things in the future.
 
@@ -113,6 +115,12 @@ Available events:
 ``postIframeInitialization``
     Triggered after the editor's Iframe has been
     initialized.
+``postAnyChange``
+    Triggered after a change was registered with ``registerChange()``.
+``postUndo``
+    Triggered after undo.
+``postRedo``
+    Triggered after redo.
 
 Example of adding a handler to one of the events:
 
@@ -387,6 +395,14 @@ Example:
 Unwrap the selection, by removing inline elements but keeping the selected
 text.
 
+``registerChange()``
+====================
+
+Registers a change in the document. This should be called after changes
+are made in the document.
+
+Triggers the ``postAnyChange`` event afterwards.
+
 ``switchTo(node, sType, stripAttrs)``
 =====================================
 
@@ -458,6 +474,28 @@ the content will stay together without grouping. This method detects that
 specific situation and then unwraps the content if the span is in fact not
 necessary. It handles the fact that IE7 throws attributes on spans, even if
 they're completely empty.
+
+*********
+Undo/Redo
+*********
+
+``undoRedo.undo()``
+===================
+
+Undoes the last change.
+
+Triggers the ``postUndo`` event afterwards.
+
+example: ``wym.undoRedo.undo();``
+
+``undoRedo.redo()``
+===================
+
+Redoes the last undone change.
+
+Triggers the ``postRedo`` event afterwards.
+
+example: ``wym.undoRedo.redo();``
 
 *****************
 List manipulation

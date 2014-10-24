@@ -22,6 +22,8 @@ function loadWymSrc(srcPath, extraRequirements, jqueryVersion) {
             srcPath + 'wymeditor/editor/trident-pre-7.js',
             srcPath + 'wymeditor/editor/trident-7.js',
             srcPath + 'wymeditor/editor/webkit.js',
+            srcPath + 'lib/object-history.js',
+            srcPath + 'wymeditor/editor/undo-redo.js',
             srcPath + 'wymeditor/parser/xml-helper.js',
             srcPath + 'wymeditor/parser/xhtml-validator.js',
             srcPath + 'wymeditor/parser/parallel-regex.js',

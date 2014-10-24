@@ -144,6 +144,8 @@ file.
 * `jquery.browser`_; defines/overrides ``jQuery.browser``.
 * `Rangy`_; defines/overrides global ``rangy``.
 * `rangy-selectionsaverestore`_; a Rangy module.
+* `object-history`_; helps with undo/redo; defines/overrides global
+  ``ObjectHistory``.
 
 *********
 Copyright
@@ -174,3 +176,4 @@ and GPL (``GPL-license.txt``) licenses.
 .. _jquery.browser: https://github.com/gabceb/jquery-browser-plugin
 .. _Rangy: https://github.com/timdown/rangy/
 .. _rangy-selectionsaverestore: Rangy_
+.. _object-history: https://github.com/mightyiam/object-history

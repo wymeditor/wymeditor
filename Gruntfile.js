@@ -184,6 +184,18 @@ module.exports = function (grunt) {
                 }
             }
         },
+        browserify: {
+            // This task Browserifies an NPM CommonJS module that will be
+            // bundled in the build.
+            objectHistory: {
+                // This file is the entry point for the browserification of
+                // this module. It assigns the module's CommonJS export to a
+                // browser window global.
+                src: ['<%= yeoman.app %>/wymeditor/editor/' +
+                    'object-history-globalifier.js'],
+                dest: '<%= yeoman.app %>/lib/object-history.js'
+            }
+        },
         useminPrepare: {
             options: {
                 dest: '<%= yeoman.dist %>'
@@ -237,6 +249,8 @@ module.exports = function (grunt) {
                     "<%= yeoman.app %>/wymeditor/editor/webkit.js",
                     "<%= yeoman.app %>/wymeditor/editor/trident-pre-7.js",
                     "<%= yeoman.app %>/wymeditor/editor/trident-7.js",
+                    "<%= yeoman.app %>/lib/object-history.js",
+                    "<%= yeoman.app %>/wymeditor/editor/undo-redo.js",
                     "<%= yeoman.app %>/wymeditor/parser/*.js",
                     // TODO: For custom builds, will need to change this.
                     "<%= yeoman.app %>/wymeditor/lang/*.js",
@@ -476,6 +490,7 @@ module.exports = function (grunt) {
 
         grunt.task.run([
             'bower',
+            'browserify:objectHistory',
             'clean:server',
             'jekyllDev',
             'connect:dev',
@@ -495,6 +510,7 @@ module.exports = function (grunt) {
         'useminPrepare',
         'bower-install-simple',
         'bower-linker:dist-examples',
+        'browserify:objectHistory',
         'concat',
         'uglify',
         'copy:dist',
@@ -552,4 +568,5 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-jekyll");
     grunt.loadNpmTasks("grunt-concurrent");
     grunt.loadNpmTasks("grunt-shell");
+    grunt.loadNpmTasks("grunt-browserify");
 };
