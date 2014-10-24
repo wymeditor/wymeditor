@@ -86,7 +86,7 @@ WYMeditor.UndoRedo.prototype._do = function (what) {
     wym.rawHtml(state.html);
 
     if (state.savedSelection) {
-        // These two were deleted in `UndoRedo.add`.
+        // These two were deleted in `UndoRedo._add`.
         state.savedSelection.win = wym._iframe.contentWindow;
         state.savedSelection.doc = wym._doc;
         rangy.restoreSelection(state.savedSelection);
