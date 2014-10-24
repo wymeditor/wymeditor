@@ -153,7 +153,8 @@ module.exports = function (grunt) {
                 }]
             },
             server: '.tmp',
-            jekyll: jekyllDevServeFiles
+            jekyll: jekyllDevServeFiles,
+            lib: '<%= yeoman.app %>/lib/**/*'
         },
         jshint: {
             options: {
