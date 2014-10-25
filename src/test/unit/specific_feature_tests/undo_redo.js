@@ -4,7 +4,8 @@
     wymEqual,
     prepareUnitTestModule,
     makeTextSelection,
-    ok
+    expect,
+    equal
 */
 "use strict";
 
