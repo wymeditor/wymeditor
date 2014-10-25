@@ -13,12 +13,20 @@ module("undo_redo", {setup: prepareUnitTestModule});
 
 test("Can undo and redo all the things", function () {
     // This tests:
+    //
     // #. Insertion of ordered list.
     // #. Insertion of unordered list.
     // #. Indenting.
     // #. Outdenting.
     // #. Native `execCommand` commands.
     // #. That selection is restored.
+    //
+    // This does not test dialog window actions:
+    //
+    // #. Link
+    // #. Image
+    // #. Table
+    // #. Paste
     expect(17);
     var wymeditor = jQuery.wymeditors(0),
         $body = wymeditor.$body(),

@@ -1240,6 +1240,7 @@ WYMeditor._initDialog = function (index) {
             link.attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val());
             link.attr(WYMeditor.REL, jQuery(wym._options.relSelector).val());
         }
+        // This call is not covered by tests.
         wym.registerChange();
         window.close();
     });
@@ -1258,6 +1259,7 @@ WYMeditor._initDialog = function (index) {
             $img.attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val());
             $img.attr(WYMeditor.ALT, jQuery(wym._options.altSelector).val());
         }
+        // This call is not covered by tests.
         wym.registerChange();
         window.close();
     });
@@ -1271,6 +1273,7 @@ WYMeditor._initDialog = function (index) {
 
         var sText = jQuery(wym._options.textSelector).val();
         wym.paste(sText);
+        // This call is not covered by tests.
         wym.registerChange();
         window.close();
     });
@@ -1301,6 +1304,7 @@ WYMeditor._makeTableOnclick = function (wym) {
 
         wym.insertTable(numRows, numColumns, caption, summary);
 
+        // This call is not covered by tests.
         wym.registerChange();
         window.close();
     };
