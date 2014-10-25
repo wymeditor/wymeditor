@@ -16,6 +16,7 @@ test("Can undo and redo all the things", function () {
     // #. Insertion of unordered list.
     // #. Indenting.
     // #. Outdenting.
+    // #. Native `execCommand` commands.
     // #. That selection is restored.
     var wymeditor = jQuery.wymeditors(0),
         $body = wymeditor.$body(),
@@ -109,6 +110,18 @@ test("Can undo and redo all the things", function () {
         1
     );
     wymeditor.exec('OutDent');
+    undo();
+    wymEqual(
+        wymeditor,
+        "<ul><li class=\"spacer_li\"><ul><li>Foo</li></ul></li></ul>"
+    );
+    // This is passed through to native `execCommand` so it should cover
+    // `Subscript`, `Superscript` and `Unlink`, as well.
+    wymeditor.exec("Italic");
+    wymEqual(
+        wymeditor,
+        "<ul><li class=\"spacer_li\"><ul><li><em>Foo</em></li></ul></li></ul>"
+    );
     undo();
     wymEqual(
         wymeditor,

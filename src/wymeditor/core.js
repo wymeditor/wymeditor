@@ -1240,6 +1240,7 @@ WYMeditor._initDialog = function (index) {
             link.attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val());
             link.attr(WYMeditor.REL, jQuery(wym._options.relSelector).val());
         }
+        wym.registerChange();
         window.close();
     });
 
@@ -1257,6 +1258,7 @@ WYMeditor._initDialog = function (index) {
             $img.attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val());
             $img.attr(WYMeditor.ALT, jQuery(wym._options.altSelector).val());
         }
+        wym.registerChange();
         window.close();
     });
 
@@ -1269,6 +1271,7 @@ WYMeditor._initDialog = function (index) {
 
         var sText = jQuery(wym._options.textSelector).val();
         wym.paste(sText);
+        wym.registerChange();
         window.close();
     });
 
@@ -1298,6 +1301,7 @@ WYMeditor._makeTableOnclick = function (wym) {
 
         wym.insertTable(numRows, numColumns, caption, summary);
 
+        wym.registerChange();
         window.close();
     };
 
