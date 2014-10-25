@@ -27,7 +27,7 @@ test("Can undo and redo all the things", function () {
     // #. Image
     // #. Table
     // #. Paste
-    expect(17);
+    expect(16);
     var wymeditor = jQuery.wymeditors(0),
         $body = wymeditor.$body(),
         $buttons = wymeditor.get$Buttons(),
@@ -38,7 +38,7 @@ test("Can undo and redo all the things", function () {
         selection;
 
     wymeditor.html("<p>Foo</p>");
-    wymeditor.undoRedo._add();
+    wymeditor.undoRedo.reset();
     wymeditor.setCaretIn($body.children('p')[0]);
     wymeditor.exec('InsertOrderedList');
     wymEqual(
@@ -65,14 +65,9 @@ test("Can undo and redo all the things", function () {
     undo();
     wymEqual(
         wymeditor,
-        ""
-    );
-    $redoButton.click();
-    wymEqual(
-        wymeditor,
         "<p>Foo</p>"
     );
-    redo();
+    $redoButton.click();
     wymEqual(
         wymeditor,
         "<ol><li>Foo</li></ol>"
