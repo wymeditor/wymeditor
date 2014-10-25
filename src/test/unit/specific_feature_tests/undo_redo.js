@@ -19,6 +19,7 @@ test("Can undo and redo all the things", function () {
     // #. Outdenting.
     // #. Native `execCommand` commands.
     // #. That selection is restored.
+    expect(17);
     var wymeditor = jQuery.wymeditors(0),
         $body = wymeditor.$body(),
         $buttons = wymeditor.get$Buttons(),
