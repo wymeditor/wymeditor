@@ -27,7 +27,7 @@ test("Can undo and redo all the things", function () {
     // #. Image
     // #. Table
     // #. Paste
-    expect(16);
+    expect(13);
     var wymeditor = jQuery.wymeditors(0),
         $body = wymeditor.$body(),
         $buttons = wymeditor.get$Buttons(),
@@ -99,20 +99,8 @@ test("Can undo and redo all the things", function () {
     );
     selection = wymeditor.selection();
     equal(
-        selection.anchorNode,
-        $body.find('li li')[0]
-    );
-    equal(
-        selection.focusNode,
-        $body.find('li li')[0]
-    );
-    equal(
-        wymeditor.selection().anchorOffset,
-        0
-    );
-    equal(
-        wymeditor.selection().focusOffset,
-        1
+        selection.toString(),
+        "Foo"
     );
     wymeditor.exec('OutDent');
     undo();
