@@ -497,6 +497,13 @@ Triggers the ``postRedo`` event afterwards.
 
 example: ``wym.undoRedo.redo();``
 
+``undoRedo.reset()``
+====================
+
+Forgets all changes.
+
+example: ``wym.undoRedo.reset();``
+
 *****************
 List manipulation
 *****************

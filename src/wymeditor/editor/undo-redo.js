@@ -115,3 +115,15 @@ WYMeditor.UndoRedo.prototype.undo = function () {
     undoRedo._do('un');
 };
 
+/**
+    WYMeditor.UndoRedo.reset
+    ========================
+
+    Forgets all changes.
+*/
+WYMeditor.UndoRedo.prototype.reset = function () {
+    var undoRedo = this,
+        wym = undoRedo.wym;
+
+    wym.undoRedo = new WYMeditor.UndoRedo(wym);
+};
