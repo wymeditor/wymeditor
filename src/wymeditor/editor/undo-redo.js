@@ -32,20 +32,9 @@ WYMeditor.UndoRedo = function (wym) {
 
 WYMeditor.UndoRedo.prototype._add = function () {
     var undoRedo = this,
-        wym = undoRedo.wym,
-        currentState;
+        wym = undoRedo.wym;
 
-    currentState = wym.getCurrentState();
-
-    if (currentState.savedSelection) {
-        // These refer to the window and the document and can't be processed by
-        // the ObjectHistory module. Since they won't be changing, we cant just
-        // add them back.
-        delete currentState.savedSelection.win;
-        delete currentState.savedSelection.doc;
-    }
-
-    undoRedo.history.add(currentState);
+    undoRedo.history.add(wym.getCurrentState());
 };
 
 /**
@@ -86,7 +75,7 @@ WYMeditor.UndoRedo.prototype._do = function (what) {
     wym.rawHtml(state.html);
 
     if (state.savedSelection) {
-        // These two were deleted in `UndoRedo._add`.
+        // These two are deleted. See `editor.getCurrentState` documentation.
         state.savedSelection.win = wym._iframe.contentWindow;
         state.savedSelection.doc = wym._doc;
         rangy.restoreSelection(state.savedSelection);

@@ -1244,20 +1244,33 @@ WYMeditor.editor.prototype._encloseString = function (sVal) {
 
     The state includes:
 
-    * `html`: The return value of `editor.rawHtml()`.
-    * `savedSelection`: A Rangy saved selection, if anything is selected.
+    ``html``
+        The return value of ``editor.rawHtml()``.
+    ``savedSelection``
+        A Rangy saved selection, if anything is selected.
+        The ``win`` and the ``doc``  properties are deleted,
+        instead of referencing the window object and the document object,
+        respectively.
+        In order to provide this as an argument to Rangy's ``restoreSelection``,
+        these must be reassigned.
 
     It may include more things in the future.
 */
 WYMeditor.editor.prototype.getCurrentState = function () {
     var wym = this,
         state = {},
-        selection;
+        selection,
+        savedSelection;
 
     selection = wym.selection();
 
     if (selection.rangeCount > 0) {
-        state.savedSelection = rangy.saveSelection(wym._iframe.contentWindow);
+        savedSelection = rangy.saveSelection(wym._iframe.contentWindow);
+        // These refer to the window and the document and can't be processed by
+        // the `object-history` module that is used by the `UndoRedo` module.
+        delete savedSelection.win;
+        delete savedSelection.doc;
+        state.savedSelection = savedSelection;
     }
 
     state.html = wym.rawHtml();

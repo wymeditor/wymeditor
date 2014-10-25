@@ -46,6 +46,11 @@ The state includes:
     The return value of ``editor.rawHtml()``.
 ``savedSelection``
     A Rangy saved selection, if anything is selected.
+    The ``win`` and the ``doc``  properties are deleted,
+    instead of referencing the window object and the document object,
+    respectively.
+    In order to provide this as an argument to Rangy's ``restoreSelection``,
+    these must be reassigned.
 
 It may include more things in the future.
 
