@@ -13,6 +13,8 @@ function loadWymSrc(srcPath, extraRequirements, jqueryVersion) {
     // Oldest supported version of jQuery is used by default
     var localJqueryVersion = "1.4.4",
         baseRequirements = [
+            srcPath + '../../lib/es5-shim.js',
+            srcPath + '../../lib/es5-sham.js',
             srcPath + 'wymeditor/rangy/rangy-core.js',
             srcPath + 'wymeditor/rangy/rangy-selectionsaverestore.js',
             srcPath + 'wymeditor/core.js',

@@ -420,6 +420,7 @@ module.exports = function (grunt) {
                         'require.js': '/',
                         'jquery.js': '/',
                         'jquery.browser.js': '/',
+                        'es5-shim.js': '/',
                         // Originates from js-beautify
                         'beautify-html.js': '/',
                         // following two also originate from js-beautify and we
@@ -481,6 +482,18 @@ module.exports = function (grunt) {
                     failOnError: true
                 },
                 command: 'xdg-open docs/.build/html/index.html'
+            },
+            // This one is not copied by default because it is not in the `main`
+            // of the Bower package. So we copy it manually, with `shell`.
+            linkES5Sham: {
+                options: {
+                    stdout: true,
+                    stderr: true,
+                    stdin: false,
+                    failOnError: true
+                },
+                command: 'ln -sf ../bower_components/es5-shim/es5-sham.js ' +
+                    'src/lib/es5-sham.js'
             }
         }
     });
@@ -538,6 +551,7 @@ module.exports = function (grunt) {
     grunt.registerTask('bower', [
         'bower-install-simple',
         'bower-linker:dev',
+        'shell:linkES5Sham'
     ]);
 
     grunt.registerTask('jekyllDev', [
