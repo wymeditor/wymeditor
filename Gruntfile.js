@@ -188,6 +188,11 @@ module.exports = function (grunt) {
         browserify: {
             // This task Browserifies an NPM CommonJS module that will be
             // bundled in the build.
+            options: {
+                browserifyOptions: {
+                    debug: true
+                }
+            },
             objectHistory: {
                 // This file is the entry point for the browserification of
                 // this module. It assigns the module's CommonJS export to a
