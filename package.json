@@ -65,7 +65,7 @@
     "grunt-rev": "~0.1.0",
     "grunt-shell": "^1.1.1",
     "grunt-usemin": "~0.1.10",
-    "object-history": "^1.0.0",
+    "object-history": "^2.0.0",
     "time-grunt": "~0.1.1"
   },
   "engines": {
