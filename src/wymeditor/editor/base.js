@@ -1279,6 +1279,11 @@ WYMeditor.editor.prototype.getCurrentState = function () {
     state.html = wym.rawHtml();
 
     if (state.savedSelection) {
+        // Selection was saved. This means that in the document, DOM elements,
+        // which are markers for the selection, were placed, and that references
+        // to these markers were saved in `state.savedselection`. The markers
+        // were saved in `state.html`, along with the whole document, as HTML.
+        // Remove them from the document, for there is no use for them in it.
         wym._removeSelectionBoundaries();
     }
 
