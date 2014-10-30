@@ -85,12 +85,12 @@ WYMeditor.WymClassGecko.prototype._keydown = function (evt) {
         wym = WYMeditor.INSTANCES[doc.title];
 
     if (evt.ctrlKey) {
-        if (evt.which === 66) {
+        if (evt.which === WYMeditor.KEY_CODE.B) {
             //CTRL+b => STRONG
             wym._exec(WYMeditor.BOLD);
             return false;
         }
-        if (evt.which === 73) {
+        if (evt.which === WYMeditor.KEY_CODE.I) {
             //CTRL+i => EMPHASIS
             wym._exec(WYMeditor.ITALIC);
             return false;
