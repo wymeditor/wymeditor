@@ -75,7 +75,11 @@ WYMeditor.UndoRedo.prototype._do = function (what) {
     wym.rawHtml(state.html);
 
     if (state.savedSelection) {
-        // These two are deleted. See `editor.getCurrentState` documentation.
+        // The `contentWindow` and `document` (`win` and `doc` properties) were
+        // deleted before the state was saved. See `editor.getCurrentState`
+        // code comments to understand why.
+        //
+        // Restore them now.
         state.savedSelection.win = wym._iframe.contentWindow;
         state.savedSelection.doc = wym._doc;
         rangy.restoreSelection(state.savedSelection);
