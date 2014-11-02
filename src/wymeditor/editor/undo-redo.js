@@ -50,27 +50,24 @@ WYMeditor.UndoRedo.prototype._do = function (what) {
         wym = undoRedo.wym,
         history = undoRedo.history,
         state,
-        historyChangesetsName,
-        historyFunctionName,
         postEventName;
 
     if (what === 'un') {
-        historyChangesetsName = 'changesetsBack';
-        historyFunctionName = 'backward';
+        if (history.changesetsBack.length === 0) {
+            return;
+        }
+        history.backward();
         postEventName = 'postUndo';
     } else if (what === 're') {
-        historyChangesetsName = 'changesetsFore';
-        historyFunctionName = 'forward';
+        if (history.changesetsFore.length === 0) {
+            return;
+        }
+        history.forward();
         postEventName = 'postRedo';
     } else {
         throw "Single parameter must be either `'un'` or `'re'`.";
     }
 
-    if (history[historyChangesetsName].length === 0) {
-        return;
-    }
-
-    history[historyFunctionName]();
     state = history.get();
     wym.rawHtml(state.html);
 
