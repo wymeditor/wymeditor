@@ -43,7 +43,9 @@ WYMeditor.UndoRedo.prototype._add = function () {
 
     Performs either undo or redo.
 
-    @param what A string, either 'un' or 're'.
+    @param what One of two possible constants:
+        * `WYMeditor.UndoRedo.UN`
+        * `WYMeditor.UndoRedo.RE`
 */
 WYMeditor.UndoRedo.prototype._do = function (what) {
     var undoRedo = this,
@@ -84,6 +86,8 @@ WYMeditor.UndoRedo.prototype._do = function (what) {
 
     jQuery(wym.element).trigger(WYMeditor.EVENTS[postEventName]);
 };
+WYMeditor.UndoRedo.UN = 'un';
+WYMeditor.UndoRedo.RE = 're';
 
 /**
     WYMeditor.UndoRedo.redo
@@ -92,7 +96,7 @@ WYMeditor.UndoRedo.prototype._do = function (what) {
 WYMeditor.UndoRedo.prototype.redo = function () {
     var undoRedo = this;
 
-    undoRedo._do('re');
+    undoRedo._do(WYMeditor.UndoRedo.RE);
 };
 
 /**
@@ -102,7 +106,7 @@ WYMeditor.UndoRedo.prototype.redo = function () {
 WYMeditor.UndoRedo.prototype.undo = function () {
     var undoRedo = this;
 
-    undoRedo._do('un');
+    undoRedo._do(WYMeditor.UndoRedo.UN);
 };
 
 /**
