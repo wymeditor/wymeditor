@@ -20,7 +20,7 @@
  *         A name for the test.
  *     `startHtml`
  *         HTML to start the test with. Required if `expectedStartHtml` is not
- *         used;
+ *         used.
  *     `setCaretInSelector`
  *         Optional; jQuery selector for an element to set the caret in at the
  *         start of the test.
