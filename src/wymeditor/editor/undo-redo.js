@@ -54,20 +54,21 @@ WYMeditor.UndoRedo.prototype._do = function (what) {
         state,
         postEventName;
 
-    if (what === 'un') {
+    if (what === WYMeditor.UndoRedo.UN) {
         if (history.changesetsBack.length === 0) {
             return;
         }
         history.backward();
         postEventName = 'postUndo';
-    } else if (what === 're') {
+    } else if (what === WYMeditor.UndoRedo.RE) {
         if (history.changesetsFore.length === 0) {
             return;
         }
         history.forward();
         postEventName = 'postRedo';
     } else {
-        throw "Single parameter must be either `'un'` or `'re'`.";
+        throw "Single parameter must be either `'un'` or `'re'` " +
+            "(there are constants for those).";
     }
 
     state = history.get();
