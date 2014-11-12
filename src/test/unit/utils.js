@@ -90,6 +90,9 @@ function normalizeHtml(node) {
 
     switch (node.nodeType) {
     case 1:  // an element
+        if (node.tagName === '') {
+            throw "Node has an empty `tagName`.";
+        }
         name = node.tagName.toLowerCase();
 
         html += '<' + name;
