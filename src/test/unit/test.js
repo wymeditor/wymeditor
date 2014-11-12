@@ -151,6 +151,14 @@ test("Instantiate", function () {
               "Type of first WYMeditor instance, using jQuery.wymeditors(0)");
 });
 
+testWym({
+    testName: "Empty document is a single `br`.",
+    startHtml: "",
+    expectedStartHtml: "<br />",
+    expectedResultHtml: "<br />",
+    skipParser: true
+});
+
 module("API", {setup: prepareUnitTestModule});
 
 test("Commands", function () {
