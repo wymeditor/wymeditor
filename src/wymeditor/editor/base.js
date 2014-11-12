@@ -685,7 +685,7 @@ WYMeditor.editor.prototype.nodeAfterSel = function () {
 
 /**
     WYMeditor.editor.selectedContainer
-    =============================
+    ==================================
 
     Returns the selection's container.
 
