@@ -583,55 +583,58 @@ WYMeditor.editor.prototype.exec = function (cmd) {
         custom_run;
     switch (cmd) {
 
-    case WYMeditor.CREATE_LINK:
+    case WYMeditor.EXEC_COMMANDS.CREATE_LINK:
         container = wym.getRootContainer();
         if (container || wym._selectedImage) {
             wym.dialog(WYMeditor.DIALOG_LINK);
         }
         break;
 
-    case WYMeditor.INSERT_IMAGE:
+    case WYMeditor.EXEC_COMMANDS.INSERT_IMAGE:
         wym.dialog(WYMeditor.DIALOG_IMAGE);
         break;
 
-    case WYMeditor.INSERT_TABLE:
+    case WYMeditor.EXEC_COMMANDS.INSERT_TABLE:
         wym.dialog(WYMeditor.DIALOG_TABLE);
         break;
 
-    case WYMeditor.PASTE:
+    case WYMeditor.EXEC_COMMANDS.PASTE:
         wym.dialog(WYMeditor.DIALOG_PASTE);
         break;
 
-    case WYMeditor.TOGGLE_HTML:
+    case WYMeditor.EXEC_COMMANDS.TOGGLE_HTML:
         wym.update();
         wym.toggleHtml();
         break;
 
-    case WYMeditor.PREVIEW:
-        wym.dialog(WYMeditor.PREVIEW, wym._options.dialogFeaturesPreview);
+    case WYMeditor.EXEC_COMMANDS.PREVIEW:
+        wym.dialog(
+            WYMeditor.EXEC_COMMANDS.PREVIEW,
+            wym._options.dialogFeaturesPreview
+        );
         break;
 
-    case WYMeditor.INSERT_ORDEREDLIST:
+    case WYMeditor.EXEC_COMMANDS.INSERT_ORDEREDLIST:
         wym._insertOrderedList();
         break;
 
-    case WYMeditor.INSERT_UNORDEREDLIST:
+    case WYMeditor.EXEC_COMMANDS.INSERT_UNORDEREDLIST:
         wym._insertUnorderedList();
         break;
 
-    case WYMeditor.INDENT:
+    case WYMeditor.EXEC_COMMANDS.INDENT:
         wym.indent();
         break;
 
-    case WYMeditor.OUTDENT:
+    case WYMeditor.EXEC_COMMANDS.OUTDENT:
         wym.outdent();
         break;
 
-    case WYMeditor.UNDO:
+    case WYMeditor.EXEC_COMMANDS.UNDO:
         wym.undoRedo.undo();
         break;
 
-    case WYMeditor.REDO:
+    case WYMeditor.EXEC_COMMANDS.REDO:
         wym.undoRedo.redo();
         break;
 
@@ -1582,7 +1585,7 @@ WYMeditor.editor.prototype.dialog = function (dialogType, dialogFeatures, bodyHt
         case (WYMeditor.DIALOG_PASTE):
             sBodyHtml = wym._options.dialogPasteHtml;
             break;
-        case (WYMeditor.PREVIEW):
+        case (WYMeditor.EXEC_COMMANDS.PREVIEW):
             sBodyHtml = wym._options.dialogPreviewHtml;
             break;
         default:
