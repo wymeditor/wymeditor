@@ -45,7 +45,11 @@ WYMeditor.WymClassGecko.prototype._exec = function (cmd, param) {
 
     //set to P if parent = BODY
     container = wym.selectedContainer();
-    if (container && container.tagName.toLowerCase() === WYMeditor.BODY) {
+    if (
+        // Images are allowed in the body.
+        cmd !== WYMeditor.EXEC_COMMANDS.INSERT_IMAGE &&
+        container === wym.body()
+    ) {
         wym._exec(WYMeditor.EXEC_COMMANDS.FORMAT_BLOCK, WYMeditor.P);
         wym.prepareDocForEditing();
     }

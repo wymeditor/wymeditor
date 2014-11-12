@@ -39,7 +39,11 @@ WYMeditor.WymClassWebKit.prototype._exec = function (cmd, param) {
         tagName = container.tagName.toLowerCase();
 
         // Wrap this content in the default root container if we're in the body
-        if (tagName === WYMeditor.BODY) {
+        if (
+            // Images are allowed in the body.
+            cmd !== WYMeditor.EXEC_COMMANDS.INSERT_IMAGE &&
+            tagName === WYMeditor.BODY
+        ) {
             structureRules = wym.documentStructureManager.structureRules;
             wym._exec(
                 WYMeditor.EXEC_COMMANDS.FORMAT_BLOCK,
