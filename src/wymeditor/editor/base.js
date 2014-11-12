@@ -1640,6 +1640,97 @@ WYMeditor.editor.prototype.dialog = function (dialogType, dialogFeatures, bodyHt
 };
 
 /**
+    WYMeditor.editor.link
+    ======================
+
+    Creates a link, or changes attributes of an `a`, at selection.
+
+    @param attrs Object with key-value pairs of attributes for the `a`.
+*/
+WYMeditor.editor.prototype.link = function (attrs) {
+    var wym = this,
+        $selected,
+        uniqueStamp,
+        $a;
+
+    if (jQuery.isPlainObject(attrs) !== true) {
+        throw "Expected a pain object.";
+    }
+
+    if (
+        attrs.hasOwnProperty('href') !== true ||
+        typeof attrs.href !== 'string' ||
+        attrs.href.length === 0
+    ) {
+        // Would probably be best to throw here, but...
+        // This is used by a dialog that doesn't check input.
+        // The dialog is created by `WYMeditor.INIT_DIALOG`.
+        return;
+    }
+
+    $selected = jQuery(wym.selectedContainer());
+    if ($selected.is('a')) {
+        $a = $selected;
+    } else {
+        uniqueStamp = wym.uniqueStamp();
+        wym._exec(WYMeditor.EXEC_COMMANDS.CREATE_LINK, uniqueStamp);
+        $a = jQuery("a[href=" + uniqueStamp + "]", wym.body());
+    }
+
+    if ($a.length === 0) {
+        // This occurs when a link wasn't created, because, for example
+        // the selection didn't allow it.
+        return;
+    }
+    $a.attr(attrs);
+
+    wym.registerChange();
+};
+
+/**
+    WYMeditor.editor.insertImage
+    ============================
+
+    Inserts an image at selection.
+
+    @param attrs Object with key-value pairs of attributes for the `img`.
+*/
+WYMeditor.editor.prototype.insertImage = function (attrs) {
+    var wym = this,
+        uniqueStamp,
+        $img;
+
+    if (jQuery.isPlainObject(attrs) !== true) {
+        throw "Expected a plain object.";
+    }
+
+    if (
+        attrs.hasOwnProperty('src') !== true ||
+        typeof attrs.src !== 'string' ||
+        attrs.src.length === 0
+    ) {
+        // Would probably be best to throw here, but...
+        // This is used by a dialog that doesn't check input.
+        // The dialog is created by `WYMeditor.INIT_DIALOG`.
+        return;
+    }
+
+    uniqueStamp = wym.uniqueStamp();
+    wym._exec(WYMeditor.EXEC_COMMANDS.INSERT_IMAGE, uniqueStamp);
+    // 'Attribute ends with' dollar sign is a work around for IE7.
+    $img = jQuery("img[src$=" + uniqueStamp + "]", wym.body());
+
+    if ($img.length === 0) {
+        // This occurs when a link wasn't created, because, for example
+        // the selection didn't allow it.
+        return;
+    }
+    $img.attr(attrs);
+
+    wym.registerChange();
+};
+
+/**
     editor.toggleHtml
     =================
 
