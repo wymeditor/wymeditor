@@ -1166,7 +1166,6 @@ WYMeditor._initDialog = function (index) {
     var wym = window.opener.WYMeditor.INSTANCES[index],
         selected = wym.selectedContainer(),
         dialogType = jQuery(wym._options.dialogTypeSelector).val(),
-        sStamp = wym.uniqueStamp(),
         tableOnClick;
 
     jQuery(window).bind('beforeunload', function () {
@@ -1213,47 +1212,27 @@ WYMeditor._initDialog = function (index) {
         ).val(jQuery(wym._selectedImage).attr(WYMeditor.ALT));
     }
 
-    jQuery(wym._options.dialogLinkSelector + " " +
-            wym._options.submitSelector).submit(function () {
-
-        var sUrl = jQuery(wym._options.hrefSelector).val(),
-            link;
-        if (sUrl.length > 0) {
-
-            if (selected[0] && selected[0].tagName.toLowerCase() === WYMeditor.A) {
-                link = selected;
-            } else {
-                wym._exec(WYMeditor.CREATE_LINK, sStamp);
-                link = jQuery("a[href=" + sStamp + "]", wym._doc.body);
-            }
-
-            link.attr(WYMeditor.HREF, sUrl);
-            link.attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val());
-            link.attr(WYMeditor.REL, jQuery(wym._options.relSelector).val());
+    jQuery(wym._options.dialogLinkSelector + " " + wym._options.submitSelector)
+        .submit(function () {
+            wym.link({
+                href: jQuery(wym._options.hrefSelector).val(),
+                title: jQuery(wym._options.titleSelector).val(),
+                rel: jQuery(wym._options.relSelector).val()
+            });
+            window.close();
         }
-        // This call is not covered by tests.
-        wym.registerChange();
-        window.close();
-    });
+    );
 
-    jQuery(wym._options.dialogImageSelector + " " +
-            wym._options.submitSelector).submit(function () {
-
-        var sUrl = jQuery(wym._options.srcSelector).val(),
-            $img;
-        if (sUrl.length > 0) {
-
-            wym._exec(WYMeditor.INSERT_IMAGE, sStamp);
-
-            $img = jQuery("img[src$=" + sStamp + "]", wym._doc.body);
-            $img.attr(WYMeditor.SRC, sUrl);
-            $img.attr(WYMeditor.TITLE, jQuery(wym._options.titleSelector).val());
-            $img.attr(WYMeditor.ALT, jQuery(wym._options.altSelector).val());
+    jQuery(wym._options.dialogImageSelector + " " + wym._options.submitSelector)
+        .submit(function () {
+            wym.insertImage({
+                src: jQuery(wym._options.srcSelector).val(),
+                title: jQuery(wym._options.titleSelector).val(),
+                alt: jQuery(wym._options.altSelector).val()
+            });
+            window.close();
         }
-        // This call is not covered by tests.
-        wym.registerChange();
-        window.close();
-    });
+    );
 
     tableOnClick = WYMeditor._makeTableOnclick(wym);
     jQuery(wym._options.dialogTableSelector + " " + wym._options.submitSelector)
