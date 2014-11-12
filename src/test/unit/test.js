@@ -1,13 +1,26 @@
 /* jshint camelcase: false, maxlen: 100 */
 /* global -$,
-ok, start, stop, test, expect, equal, deepEqual, sinon, strictEqual,
-wymEqual, moveSelector, makeTextSelection, isContentEditable, normalizeHtml,
-inPhantomjs, ListPlugin, asyncTest */
+    ok,
+    start,
+    stop,
+    test,
+    expect,
+    deepEqual,
+    sinon,
+    strictEqual,
+    wymEqual,
+    moveSelector,
+    makeTextSelection,
+    isContentEditable,
+    normalizeHtml,
+    ListPlugin,
+    asyncTest,
+    testWym
+*/
 /* exported
 setupWym,
 setupMultipleTextareas,
 no_br_selection_browser,
-is_double_br_browser
 */
 "use strict";
 
@@ -25,17 +38,7 @@ jQuery.noConflict();
 var SKIP_KNOWN_FAILING_TESTS = true,
     // Can't move the selection to a <br /> element
     no_br_selection_browser = jQuery.browser.webkit ||
-        WYMeditor.isInternetExplorerPre11(),
-    // Double-br browsers need placeholders both before and after blocking
-    // elements. Others just need placeholders before
-    is_double_br_browser = (jQuery.browser.mozilla ||
-        jQuery.browser.webkit ||
-        jQuery.browser.safari ||
-        (
-            jQuery.browser.msie &&
-            jQuery.browser.versionNumber <= 9
-        )
-    );
+        WYMeditor.isInternetExplorerPre11();
 
 // Returns true if all WYMeditor Iframes are initialized.
 function allWymIframesInitialized() {

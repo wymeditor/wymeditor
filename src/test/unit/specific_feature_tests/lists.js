@@ -1,6 +1,6 @@
 /* jshint camelcase: false, maxlen: 105 */
 /* global
-SKIP_KNOWN_FAILING_TESTS, is_double_br_browser, prepareUnitTestModule,
+SKIP_KNOWN_FAILING_TESTS, prepareUnitTestModule,
 wymEqual, makeTextSelection, moveSelector, simulateKey, strictEqual,
 makeSelection,
 ok, test, expect, deepEqual */
@@ -4690,26 +4690,14 @@ test("De-listing keeps spacer brs for blocking_elements", function () {
     $body = wymeditor.$body();
     children = $body.children();
 
-    if (is_double_br_browser) {
-        expect(9);
-        deepEqual(children.length, 6);
-        if (children.length === 6) {
-            deepEqual(children[0].tagName.toLowerCase(), 'p');
-            deepEqual(children[1].tagName.toLowerCase(), 'br');
-            deepEqual(children[2].tagName.toLowerCase(), 'table');
-            deepEqual(children[3].tagName.toLowerCase(), 'br');
-            deepEqual(children[4].tagName.toLowerCase(), 'table');
-            deepEqual(children[5].tagName.toLowerCase(), 'br');
-        }
-    } else {
-        expect(8);
-        deepEqual(children.length, 5);
-        if (children.length === 5) {
-            deepEqual(children[0].tagName.toLowerCase(), 'p');
-            deepEqual(children[1].tagName.toLowerCase(), 'br');
-            deepEqual(children[2].tagName.toLowerCase(), 'table');
-            deepEqual(children[3].tagName.toLowerCase(), 'br');
-            deepEqual(children[4].tagName.toLowerCase(), 'table');
-        }
+    expect(9);
+    deepEqual(children.length, 6);
+    if (children.length === 6) {
+        deepEqual(children[0].tagName.toLowerCase(), 'p');
+        deepEqual(children[1].tagName.toLowerCase(), 'br');
+        deepEqual(children[2].tagName.toLowerCase(), 'table');
+        deepEqual(children[3].tagName.toLowerCase(), 'br');
+        deepEqual(children[4].tagName.toLowerCase(), 'table');
+        deepEqual(children[5].tagName.toLowerCase(), 'br');
     }
 });
