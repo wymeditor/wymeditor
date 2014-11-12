@@ -1336,9 +1336,7 @@ WYMeditor.editor.prototype._spaceBlockingElements = function () {
             $firstChild.before(placeholderNode);
         }
 
-        if ($lastChild.is(blockingSelector) &&
-            !(jQuery.browser.msie && jQuery.browser.version < "7.0")) {
-
+        if ($lastChild.is(blockingSelector)) {
             $lastChild.after(placeholderNode);
         }
     }
