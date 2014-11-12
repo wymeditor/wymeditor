@@ -3687,6 +3687,7 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
     wym._afterInsertTable(table);
     wym.prepareDocForEditing();
 
+    wym.registerChange();
     return table;
 };
 

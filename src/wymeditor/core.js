@@ -1274,8 +1274,6 @@ WYMeditor._makeTableOnclick = function (wym) {
 
         wym.insertTable(numRows, numColumns, caption, summary);
 
-        // This call is not covered by tests.
-        wym.registerChange();
         window.close();
     };
 

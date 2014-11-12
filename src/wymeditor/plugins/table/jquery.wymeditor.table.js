@@ -509,6 +509,7 @@ TableEditor.prototype.mergeRow = function (sel) {
 
     tableEditor.selectElement(mergeCell);
 
+    wym.registerChange();
     return true;
 };
 
@@ -519,6 +520,7 @@ TableEditor.prototype.mergeRow = function (sel) {
  */
 TableEditor.prototype.addRow = function (elmnt) {
     var tableEditor = this,
+        wym = tableEditor._wym,
         tr = tableEditor._wym.findUp(elmnt, 'tr'),
         numColumns,
         tdHtml,
@@ -536,6 +538,7 @@ TableEditor.prototype.addRow = function (elmnt) {
     }
     jQuery(tr).after('<tr>' + tdHtml + '</tr>');
 
+    wym.registerChange();
     return false;
 };
 
@@ -567,9 +570,14 @@ TableEditor.prototype.removeRow = function (elmnt) {
         return false;
     }
     table = wym.findUp(elmnt, 'table');
+    if (wym.findUp(wym.selectedContainer(), "tr") === tr) {
+        // Selection is in the row that we are about to remove.
+        wym.selection().removeAllRanges();
+    }
     jQuery(tr).remove();
     tableEditor.removeEmptyTable(table);
 
+    wym.registerChange();
     return false;
 };
 
@@ -606,6 +614,7 @@ TableEditor.prototype.addColumn = function (elmnt) {
         jQuery(element).find('td,th').eq(tdIndex).after(insertionElement);
     });
 
+    wym.registerChange();
     return false;
 };
 
@@ -629,12 +638,17 @@ TableEditor.prototype.removeColumn = function (elmnt) {
     tdIndex = prevTds.length;
 
     tr = wym.findUp(td, 'tr');
-    jQuery(tr).siblings('tr').each(function (index, element) {
-        jQuery(element).find('td,th').eq(tdIndex).remove();
+    jQuery(tr).siblings('tr').addBack().each(function (index, element) {
+        var $cell = jQuery(element).find("td, th").eq(tdIndex);
+        if ($cell[0] === wym.selectedContainer()) {
+            // Selection is in the element that we're about to remove.
+            wym.selection().removeAllRanges();
+        }
+        $cell.remove();
     });
-    jQuery(td).remove();
     tableEditor.removeEmptyTable(table);
 
+    wym.registerChange();
     return false;
 };
 
