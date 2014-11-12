@@ -1,6 +1,21 @@
-/* exported isContentEditable, simulateKey, wymEqual, testNoChangeInHtmlArray,
- makeTextSelection, moveSelector */
-/* global rangy, deepEqual, html_beautify, expect, QUnit, strictEqual */
+/* exported
+    isContentEditable,
+    simulateKey,
+    wymEqual,
+    testNoChangeInHtmlArray,
+    makeTextSelection,
+    moveSelector,
+    testWym
+*/
+/* global
+    rangy,
+    deepEqual,
+    html_beautify,
+    expect,
+    QUnit,
+    strictEqual,
+    test
+*/
 "use strict";
 
 // Regex expression shortcuts
@@ -478,4 +493,86 @@ function testNoChangeInHtmlArray(htmlArray) {
             }
         );
     }
+}
+
+/**
+ * testWym
+ * =======
+ *
+ * Test WYMeditor.
+ *
+ * @param a An object, containing:
+ *     `testName`
+ *         A name for the test.
+ *     `startHtml`
+ *         HTML to start the test with. Required if `expectedStartHtml` is not
+ *         used.
+ *     `setCaretInSelector`
+ *         Optional; jQuery selector for an element to set the caret in at the
+ *         start of the test.
+ *     `prepareFunc`
+ *         Optional; A function to prepare the test. Receives one argument, the
+ *         WYMeditor instance.
+ *     `expectedStartHtml`
+ *         The HTML that is expected to be the state of the document after the
+ *         `prepareFunc` ran. If this is not provided, the value of `startHtml`
+ *         will be used.
+ *     `manipulationFunc`
+ *         Optional; The manipulation function to be tested. Receives one
+ *         argument, the WYMeditor instance.
+ *     `expectedResultHtml`
+ *         The HTML that is expected to be the state of the document after the
+ *         `manipulationFunc` ran.
+ *     `additionalAssertionsFunc`
+ *         Optional; Additional assertions for after the `manipulationFunc`.
+ *     `skipParser`
+ *         Optional; Passed on to `wymEqual` as `options.skipParser`. Defaults
+ *         to `true`.
+ */
+function testWym(a) {
+    test(a.testName, function () {
+        var wymeditor = jQuery.wymeditors(0);
+        if (typeof a.startHtml === 'string') {
+            wymeditor.html(a.startHtml);
+        }
+        if (typeof a.setCaretInSelector === 'string') {
+            wymeditor.setCaretIn(
+                wymeditor.$body().find(a.setCaretInSelector)[0]
+            );
+        }
+        if (typeof a.prepareFunc === 'function') {
+            a.prepareFunc(wymeditor);
+        }
+        expect(1);
+        wymEqual(
+            wymeditor,
+            a.expectedStartHtml || a.startHtml,
+            {
+                assertionString: "Start HTML.",
+                skipParser: typeof a.skipParser === 'undefined' ? true :
+                    a.skipParser
+            }
+        );
+
+        if (typeof a.manipulationFunc === 'function') {
+            a.manipulationFunc(wymeditor);
+        }
+
+        if (typeof a.expectedResultHtml === 'string') {
+            expect(expect() + 1);
+            wymEqual(
+                wymeditor,
+                a.expectedResultHtml,
+                {
+                    assertionString: "Manipulation result HTML.",
+                    skipParser: typeof a.skipParser === 'undefined' ? true :
+                        a.skipParser
+                }
+            );
+        }
+
+        if (typeof a.additionalAssertionsFunc === 'function') {
+            a.additionalAssertionsFunc(wymeditor);
+        }
+    });
 }
