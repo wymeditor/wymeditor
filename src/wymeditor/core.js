@@ -123,20 +123,6 @@ jQuery.extend(WYMeditor, {
     DIALOG_IMAGE        - An image dialog type.
     DIALOG_TABLE        - A table dialog type.
     DIALOG_PASTE        - A 'Paste from Word' dialog type.
-    BOLD                - Command: (un)set selection to <strong>.
-    ITALIC              - Command: (un)set selection to <em>.
-    CREATE_LINK         - Command: open the link dialog or (un)set link.
-    INSERT_IMAGE        - Command: open the image dialog or insert an image.
-    INSERT_TABLE        - Command: open the table dialog.
-    PASTE               - Command: open the paste dialog.
-    INDENT              - Command: nest a list item.
-    OUTDENT             - Command: unnest a list item.
-    TOGGLE_HTML         - Command: display/hide the HTML view.
-    FORMAT_BLOCK        - Command: set a block element to another type.
-    PREVIEW             - Command: open the preview dialog.
-    UNLINK              - Command: unset a link.
-    INSERT_UNORDEREDLIST- Command: insert an unordered list.
-    INSERT_ORDEREDLIST  - Command: insert an ordered list.
     KEY                 - Standard key codes.
     NODE                - Node types.
 
@@ -147,7 +133,6 @@ jQuery.extend(WYMeditor, {
     BASE_PATH           : "{Wym_Base_Path}",
     BLOCKQUOTE          : "blockquote",
     BODY                : "body",
-    BOLD                : "Bold",
     CLASS               : "class",
     CLASSES             : "{Wym_Classes}",
     CLASSES_ITEMS       : "{Wym_Classes_Items}",
@@ -158,7 +143,6 @@ jQuery.extend(WYMeditor, {
     CONTAINER_CLASS     : "{Wym_Container_Class}",
     CONTAINER_NAME      : "{Wym_Container_Name}",
     CONTAINER_TITLE     : "{Wym_Containers_Title}",
-    CREATE_LINK         : "CreateLink",
     DIALOG_BODY         : "{Wym_Dialog_Body}",
     DIALOG_IMAGE        : "Image",
     DIALOG_LINK         : "Link",
@@ -167,7 +151,6 @@ jQuery.extend(WYMeditor, {
     DIALOG_TITLE        : "{Wym_Dialog_Title}",
     DIRECTION           : "{Wym_Direction}",
     DIV                 : "div",
-    FORMAT_BLOCK        : "FormatBlock",
     H1                  : "h1",
     H2                  : "h2",
     H3                  : "h3",
@@ -180,15 +163,9 @@ jQuery.extend(WYMeditor, {
     IFRAME_BASE_PATH    : "{Wym_Iframe_Base_Path}",
     IFRAME_DEFAULT      : "iframe/default/",
     IMG                 : "img",
-    INDENT              : "Indent",
     INDEX               : "{Wym_Index}",
     INSERT_HTML         : "InsertHTML",
-    INSERT_IMAGE        : "InsertImage",
-    INSERT_ORDEREDLIST  : "InsertOrderedList",
-    INSERT_TABLE        : "InsertTable",
-    INSERT_UNORDEREDLIST: "InsertUnorderedList",
     INSTANCES           : [],
-    ITALIC              : "Italic",
     JQUERY_PATH         : "{Wym_Jquery_Path}",
     LI                  : "li",
     LOGO                : "{Wym_Logo}",
@@ -196,11 +173,8 @@ jQuery.extend(WYMeditor, {
     NBSP                : '\xA0',
     NEWLINE             : "\n",
     OL                  : "ol",
-    OUTDENT             : "Outdent",
     P                   : "p",
-    PASTE               : "Paste",
     PRE                 : "pre",
-    PREVIEW             : "Preview",
     REL                 : "rel",
     SKINS               : [],
     SRC                 : "src",
@@ -211,7 +185,6 @@ jQuery.extend(WYMeditor, {
     TD                  : "td",
     TH                  : "th",
     TITLE               : "title",
-    TOGGLE_HTML         : "ToggleHtml",
     TOOLS               : "{Wym_Tools}",
     TOOLS_ITEMS         : "{Wym_Tools_Items}",
     TOOL_CLASS          : "{Wym_Tool_Class}",
@@ -219,10 +192,30 @@ jQuery.extend(WYMeditor, {
     TOOL_TITLE          : "{Wym_Tool_Title}",
     TR                  : "tr",
     UL                  : "ul",
-    UNLINK              : "Unlink",
     VERSION             : "@@VERSION",
     WYM_INDEX           : "wym_index",
     WYM_PATH            : "{Wym_Wym_Path}",
+
+    // Commands for the `editor.exec` method
+    EXEC_COMMANDS: {
+        // Wrap text in element
+        BOLD                : "Bold",
+        ITALIC              : "Italic",
+        CREATE_LINK         : "CreateLink",
+        // Other manipulations
+        FORMAT_BLOCK        : "FormatBlock",
+        INSERT_IMAGE        : "InsertImage",
+        INSERT_TABLE        : "InsertTable",
+        PASTE               : "Paste",
+        // Lists
+        INSERT_ORDEREDLIST  : "InsertOrderedList",
+        INSERT_UNORDEREDLIST: "InsertUnorderedList",
+        INDENT              : "Indent",
+        OUTDENT             : "Outdent",
+        // UI
+        TOGGLE_HTML         : "ToggleHtml",
+        PREVIEW             : "Preview"
+    },
 
     // Containers that we allow at the root of the document (as a direct child
     // of the body tag)

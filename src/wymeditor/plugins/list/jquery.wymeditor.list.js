@@ -49,10 +49,10 @@ ListPlugin.prototype.handleKeyDown = function(evt) {
     // Handle tab presses
     if (evt.which == WYMeditor.KEY_CODE.TAB) {
         if (evt.shiftKey) {
-            wym.exec(WYMeditor.OUTDENT);
+            wym.exec(WYMeditor.EXEC_COMMANDS.OUTDENT);
             return false; // Short-circuit normal tab behavior
         } else {
-            wym.exec(WYMeditor.INDENT);
+            wym.exec(WYMeditor.EXEC_COMMANDS.INDENT);
             return false;
         }
     }
