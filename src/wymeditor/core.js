@@ -1243,8 +1243,6 @@ WYMeditor._initDialog = function (index) {
 
         var sText = jQuery(wym._options.textSelector).val();
         wym.paste(sText);
-        // This call is not covered by tests.
-        wym.registerChange();
         window.close();
     });
 

@@ -1951,6 +1951,7 @@ WYMeditor.editor.prototype.paste = function (str) {
             }
         }
     }
+    wym.registerChange();
 };
 
 WYMeditor.editor.prototype.insert = function (html) {
