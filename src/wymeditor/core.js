@@ -1442,23 +1442,17 @@ WYMeditor.isPhantomString = function (str) {
     return !(/[^\t\n\r ]/.test(str));
 };
 
+jQuery.fn.addBack = jQuery.fn.addBack ? jQuery.fn.addBack : jQuery.fn.andSelf;
+
 // Returns the Parents or the node itself
 // jqexpr = a jQuery expression
 jQuery.fn.parentsOrSelf = function (jqexpr) {
-    var $n = this,
-        addBackName;
-
-    if (jQuery.fn.addBack) {
-        addBackName = 'addBack';
-    } else {
-        // `andSelf` is deprecated.
-        addBackName = 'andSelf';
-    }
+    var $n = this;
 
     if (jqexpr) {
-        return $n.parents()[addBackName](jqexpr);
+        return $n.parents().addBack(jqexpr);
     } else {
-        return $n.parents()[addBackName]();
+        return $n.parents().addBack();
     }
 };
 
