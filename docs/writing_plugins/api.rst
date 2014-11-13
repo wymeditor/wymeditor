@@ -639,6 +639,11 @@ provided ``thing`` with contents of provided ``array``.
 Returns a string based on ``str``, where all instances of ``old`` were replaced
 by ``new``.
 
+``WYMeditor.editor.get$CommonParent(one, two)``
+===============================================
+
+Returns a jQuery of the common parent of two document elements.
+
 *********
 Constants
 *********

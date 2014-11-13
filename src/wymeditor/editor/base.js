@@ -684,6 +684,26 @@ WYMeditor.editor.prototype.nodeAfterSel = function () {
 };
 
 /**
+    WYMeditor.editor.get$CommonParent
+    =================================
+
+    Returns a jQuery of the common parent of two nodes.
+*/
+WYMeditor.editor.prototype.get$CommonParent = function (one, two) {
+    var $one = jQuery(one),
+        $two = jQuery(two),
+        $commonParent;
+
+    $commonParent = $one.parents().has($two).first();
+
+    if ($commonParent.length === 0) {
+        throw "Couldn't find common parent. This shouldn't happen.";
+    }
+
+    return $commonParent;
+};
+
+/**
     WYMeditor.editor.selectedContainer
     ==================================
 
