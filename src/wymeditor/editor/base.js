@@ -1317,13 +1317,7 @@ WYMeditor.editor.prototype.getCurrentState = function () {
 
     selection = wym.selection();
 
-    if (
-        // `isSelectionValid` is undocumented in current Rangy (`1.2.2`).
-        // It seems to be required because the `rangeCount` in `IE <= 8` seems
-        // to be misleading.
-        rangy.isSelectionValid(wymIframeWindow) &&
-        selection.rangeCount > 0
-    ) {
+    if (wym.hasSelection() === true) {
         savedSelection = rangy.saveSelection(wymIframeWindow);
         // These refer to the window and the document and can't be processed by
         // the `object-history` module that is used by the `UndoRedo` module.

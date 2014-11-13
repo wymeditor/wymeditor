@@ -570,7 +570,10 @@ TableEditor.prototype.removeRow = function (elmnt) {
         return false;
     }
     table = wym.findUp(elmnt, 'table');
-    if (wym.findUp(wym.selectedContainer(), "tr") === tr) {
+    if (
+        wym.hasSelection() === true &&
+        wym.findUp(wym.selectedContainer(), "tr") === tr
+    ) {
         // Selection is in the row that we are about to remove.
         wym.selection().removeAllRanges();
     }
@@ -640,7 +643,10 @@ TableEditor.prototype.removeColumn = function (elmnt) {
     tr = wym.findUp(td, 'tr');
     jQuery(tr).siblings('tr').addBack().each(function (index, element) {
         var $cell = jQuery(element).find("td, th").eq(tdIndex);
-        if ($cell[0] === wym.selectedContainer()) {
+        if (
+            wym.hasSelection() === true &&
+            $cell[0] === wym.selectedContainer()
+        ) {
             // Selection is in the element that we're about to remove.
             wym.selection().removeAllRanges();
         }
