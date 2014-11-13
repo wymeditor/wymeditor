@@ -1328,6 +1328,7 @@ testWym({
     startHtml: "<br />",
     prepareFunc: function (wymeditor) {
         wymeditor.selection().removeAllRanges();
+        wymeditor.body().blur();
     },
     additionalAssertionsFunc: function (wymeditor) {
         expect(expect() + 1);
