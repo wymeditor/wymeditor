@@ -835,7 +835,10 @@ WYMeditor.editor.prototype.unwrapIfMeaninglessSpan = function (element) {
             'tabIndex',
             'value',
             'hideFocus',
-            'disabled'
+            'disabled',
+            'cite',
+            'dateTime',
+            'nofocusrect'
         ],
         // Any attribute with these values isn't interesting
         falsyAttrValues = [
