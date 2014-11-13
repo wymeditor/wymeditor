@@ -80,27 +80,27 @@ WYMeditor.WymClassWebKit.prototype._exec = function (cmd, param) {
 };
 
 //keydown handler, mainly used for keyboard shortcuts
-WYMeditor.WymClassWebKit.prototype._keydown = function (e) {
+WYMeditor.WymClassWebKit.prototype._keydown = function (evt) {
     var doc = this,
         wym = WYMeditor.INSTANCES[doc.title];
 
-    if (e.ctrlKey) {
-        if (e.which === WYMeditor.KEY_CODE.B) {
+    if (evt.ctrlKey) {
+        if (evt.which === WYMeditor.KEY_CODE.B) {
             //CTRL+b => STRONG
             wym._exec(WYMeditor.EXEC_COMMANDS.BOLD);
-            e.preventDefault();
+            evt.preventDefault();
         }
-        if (e.which === WYMeditor.KEY_CODE.I) {
+        if (evt.which === WYMeditor.KEY_CODE.I) {
             //CTRL+i => EMPHASIS
             wym._exec(WYMeditor.EXEC_COMMANDS.ITALIC);
-            e.preventDefault();
+            evt.preventDefault();
         }
-    } else if (e.shiftKey && e.which === WYMeditor.KEY_CODE.ENTER) {
+    } else if (evt.shiftKey && evt.which === WYMeditor.KEY_CODE.ENTER) {
         // Safari 4 and earlier would show a proper linebreak in the editor and
         // then strip it upon save with the default action in the case of
         // inserting a new line after bold text
         wym._exec('InsertLineBreak');
-        e.preventDefault();
+        evt.preventDefault();
     }
 };
 

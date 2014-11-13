@@ -407,8 +407,8 @@ module.exports = function (grunt) {
             }
         },
         'bower-linker': {
-            // This task copies the libraries that are required by WYMeditor
-            // for use in the development environment. It copies the specific
+            // This task links the libraries that are required by WYMeditor
+            // for use in the development environment. It links the specific
             // files that are required, from the Bower installation directory,
             // into the development environment.
             dev: {
