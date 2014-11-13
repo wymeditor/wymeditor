@@ -707,31 +707,40 @@ WYMeditor.editor.prototype.get$CommonParent = function (one, two) {
     WYMeditor.editor.selectedContainer
     ==================================
 
-    Returns the selection's container.
+    Returns the selection's container or false.
 
     Not to be confused with `.getRootContainer`, which gets the
     selection's root container.
 */
 WYMeditor.editor.prototype.selectedContainer = function () {
     var wym = this,
-        focusNode = wym.selection().focusNode;
+        selection = wym.selection(),
+        $selectedContainer;
 
-    if (
-        focusNode.nodeType === WYMeditor.NODE_TYPE.TEXT || (
-
-            focusNode.tagName &&
-
-            jQuery.inArray(
-                focusNode.tagName.toLowerCase(),
-                WYMeditor.NON_CONTAINING_ELEMENTS
-            ) > -1
-        )
-    ) {
-        return focusNode.parentNode;
-    } else {
-        return focusNode;
+    if (selection.focusNode === null || selection.anchorNode === null) {
+        return false;
     }
 
+    if (
+        selection.anchorNode === selection.focusNode &&
+        selection.anchorNode.nodeType === WYMeditor.NODE_TYPE.ELEMENT
+    ) {
+        $selectedContainer = jQuery(selection.anchorNode);
+    } else {
+        $selectedContainer = wym.get$CommonParent(
+            selection.anchorNode,
+            selection.focusNode
+        );
+    }
+
+    $selectedContainer = $selectedContainer.parents().addBack()
+        .not(WYMeditor.NON_CONTAINING_ELEMENTS.join(',')).last();
+
+    if ($selectedContainer.length === 0) {
+        throw "Expected to find the selected container. This should not occur.";
+    }
+
+    return $selectedContainer[0];
 };
 
 // Deprecated in favor of `WYMeditor.editor.selectedContainer`.
