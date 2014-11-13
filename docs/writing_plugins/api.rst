@@ -190,6 +190,7 @@ or not.
 =======================
 
 Get the selected container.
+Returns ``false`` if no obvious selected container.
 
 This is currently supposed to be used with a collapsed selection only.
 
@@ -724,6 +725,11 @@ provided ``thing`` with contents of provided ``array``.
 
 Returns a string based on ``str``, where all instances of ``old`` were replaced
 by ``new``.
+
+``WYMeditor.editor.get$CommonParent(one, two)``
+===============================================
+
+Returns a jQuery of the common parent of two document elements.
 
 *********
 Constants

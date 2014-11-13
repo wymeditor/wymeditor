@@ -729,34 +729,86 @@ WYMeditor.editor.prototype.nodeAfterSel = function () {
 };
 
 /**
+    WYMeditor.editor.get$CommonParent
+    =================================
+
+    Returns a jQuery of the common parent of two nodes.
+*/
+WYMeditor.editor.prototype.get$CommonParent = function (one, two) {
+    if (
+        typeof one !== 'object' ||
+        typeof one.nodeType !== 'number' ||
+        typeof two !== 'object' ||
+        typeof two.nodeType !== 'number'
+    ) {
+        throw "`one` and `two` must be DOM nodes.";
+    }
+
+    if (one.nodeType === WYMeditor.NODE_TYPE.TEXT) {
+        // These checks seem to be required for our tests to pass in PhantomJS.
+        one = one.parentNode;
+    }
+    if (two.nodeType === WYMeditor.NODE_TYPE.TEXT) {
+        // These checks seem to be required for our tests to pass in PhantomJS.
+        two = two.parentNode;
+    }
+
+    if (one === two) {
+        // This is just an optimisation.
+        return jQuery(one);
+    }
+
+    var $one = jQuery(one),
+        $two = jQuery(two),
+        $commonParent;
+
+    $commonParent = $one.parents().has($two).first();
+
+    if ($commonParent.length === 0) {
+        throw "Couldn't find common parent. This shouldn't happen.";
+    }
+
+    return $commonParent;
+};
+
+/**
     WYMeditor.editor.selectedContainer
     ==================================
 
-    Returns the selection's container.
+    Returns the selection's container or false.
 
     Not to be confused with `.getRootContainer`, which gets the
     selection's root container.
 */
 WYMeditor.editor.prototype.selectedContainer = function () {
     var wym = this,
-        focusNode = wym.selection().focusNode;
+        selection = wym.selection(),
+        $selectedContainer;
 
-    if (
-        focusNode.nodeType === WYMeditor.NODE_TYPE.TEXT || (
-
-            focusNode.tagName &&
-
-            jQuery.inArray(
-                focusNode.tagName.toLowerCase(),
-                WYMeditor.NON_CONTAINING_ELEMENTS
-            ) > -1
-        )
-    ) {
-        return focusNode.parentNode;
-    } else {
-        return focusNode;
+    if (selection.focusNode === null || selection.anchorNode === null) {
+        return false;
     }
 
+    if (
+        selection.anchorNode === selection.focusNode &&
+        selection.anchorNode.nodeType === WYMeditor.NODE_TYPE.ELEMENT
+    ) {
+        $selectedContainer = jQuery(selection.anchorNode);
+    } else {
+        $selectedContainer = wym.get$CommonParent(
+            selection.anchorNode,
+            selection.focusNode
+        );
+    }
+
+    $selectedContainer = $selectedContainer.parents().addBack()
+        .not(WYMeditor.NON_CONTAINING_ELEMENTS.join(',')).last();
+
+    if ($selectedContainer.length === 0) {
+        throw "Expected to find the selected container. This should not occur.";
+    }
+
+    return $selectedContainer[0];
 };
 
 // Deprecated in favor of `WYMeditor.editor.selectedContainer`.
@@ -3228,11 +3280,13 @@ WYMeditor.editor.prototype._insertOrderedList = function () {
 
     // First, make sure this list is properly structured
     manipulationFunc = function () {
-        var selectedBlock = wym.selectedContainer(),
-            potentialListBlock = wym.findUp(
-                selectedBlock,
-                ['ol', 'ul', 'li']
-            );
+        // There is a design flaw here. Especially in the case where we may
+        // have multiple root-level lists or even `li` items (which shouldn't
+        // happen) selected. This code seems to make our tests pass but this
+        // should be considered broken.
+        var potentialListBlock = jQuery(wym.selection().getRangeAt(0).getNodes())
+                .parents().addBack().filter('ol, ul, li').last()[0];
+        potentialListBlock = potentialListBlock || wym.selectedContainer();
         return wym._fixInvalidListNesting(potentialListBlock);
     };
     if (wym.restoreSelectionAfterManipulation(manipulationFunc)) {
@@ -3269,11 +3323,13 @@ WYMeditor.editor.prototype._insertUnorderedList = function () {
 
     // First, make sure this list is properly structured
     manipulationFunc = function () {
-        var selectedBlock = wym.selectedContainer(),
-            potentialListBlock = wym.findUp(
-                selectedBlock,
-                ['ol', 'ul', 'li']
-            );
+        // There is a design flaw here. Especially in the case where we may
+        // have multiple root-level lists or even `li` items (which shouldn't
+        // happen) selected. This code seems to make our tests pass but this
+        // should be considered broken.
+        var potentialListBlock = jQuery(wym.selection().getRangeAt(0).getNodes())
+                .parents().addBack().filter('ol, ul, li').last()[0];
+        potentialListBlock = potentialListBlock || wym.selectedContainer();
         return wym._fixInvalidListNesting(potentialListBlock);
     };
     if (wym.restoreSelectionAfterManipulation(manipulationFunc)) {
