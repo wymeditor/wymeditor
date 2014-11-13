@@ -690,6 +690,29 @@ WYMeditor.editor.prototype.nodeAfterSel = function () {
     Returns a jQuery of the common parent of two nodes.
 */
 WYMeditor.editor.prototype.get$CommonParent = function (one, two) {
+    if (
+        typeof one !== 'object' ||
+        typeof one.nodeType !== 'number' ||
+        typeof two !== 'object' ||
+        typeof two.nodeType !== 'number'
+    ) {
+        throw "`one` and `two` must be DOM nodes.";
+    }
+
+    if (one.nodeType === WYMeditor.NODE_TYPE.TEXT) {
+        // These checks seem to be required for our tests to pass in PhantomJS.
+        one = one.parentNode;
+    }
+    if (two.nodeType === WYMeditor.NODE_TYPE.TEXT) {
+        // These checks seem to be required for our tests to pass in PhantomJS.
+        two = two.parentNode;
+    }
+
+    if (one === two) {
+        // This is just an optimisation.
+        return jQuery(one);
+    }
+
     var $one = jQuery(one),
         $two = jQuery(two),
         $commonParent;
