@@ -1395,6 +1395,36 @@ test("Can set and get html with the html() function", function () {
 
 module("selection", {setup: prepareUnitTestModule});
 
+testWym({
+    testName: "There is no selection.",
+    startHtml: "<br />",
+    prepareFunc: function (wymeditor) {
+        wymeditor.selection().removeAllRanges();
+    },
+    additionalAssertionsFunc: function (wymeditor) {
+        expect(expect() + 1);
+        deepEqual(
+            wymeditor.hasSelection(),
+            false
+        );
+    }
+});
+
+testWym({
+    testName: "There is a selection.",
+    startHtml: "<br />",
+    prepareFunc: function (wymeditor) {
+        wymeditor.setCaretIn(wymeditor.body());
+    },
+    additionalAssertionsFunc: function (wymeditor) {
+        expect(expect() + 1);
+        deepEqual(
+            wymeditor.hasSelection(),
+            true
+        );
+    }
+});
+
 var selTest = {};
 
 // HTML for the following test.
