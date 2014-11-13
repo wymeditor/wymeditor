@@ -717,7 +717,7 @@ WYMeditor.editor.prototype.get$CommonParent = function (one, two) {
         $two = jQuery(two),
         $commonParent;
 
-    $commonParent = $one.parents().has($two).first();
+    $commonParent = $one.parents().addBack().has($two).last();
 
     if ($commonParent.length === 0) {
         throw "Couldn't find common parent. This shouldn't happen.";
