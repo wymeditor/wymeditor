@@ -3108,11 +3108,13 @@ WYMeditor.editor.prototype._insertOrderedList = function () {
 
     // First, make sure this list is properly structured
     manipulationFunc = function () {
-        var selectedBlock = wym.selectedContainer(),
-            potentialListBlock = wym.findUp(
-                selectedBlock,
-                ['ol', 'ul', 'li']
-            );
+        // There is a design flaw here. Especially in the case where we may
+        // have multiple root-level lists or even `li` items (which shouldn't
+        // happen) selected. This code seems to make our tests pass but this
+        // should be considered broken.
+        var potentialListBlock = jQuery(wym.selection().getRangeAt(0).getNodes())
+                .parents().addBack().filter('ol, ul, li').last()[0];
+        potentialListBlock = potentialListBlock || wym.selectedContainer();
         return wym._fixInvalidListNesting(potentialListBlock);
     };
     if (wym.restoreSelectionAfterManipulation(manipulationFunc)) {
@@ -3147,11 +3149,13 @@ WYMeditor.editor.prototype._insertUnorderedList = function () {
 
     // First, make sure this list is properly structured
     manipulationFunc = function () {
-        var selectedBlock = wym.selectedContainer(),
-            potentialListBlock = wym.findUp(
-                selectedBlock,
-                ['ol', 'ul', 'li']
-            );
+        // There is a design flaw here. Especially in the case where we may
+        // have multiple root-level lists or even `li` items (which shouldn't
+        // happen) selected. This code seems to make our tests pass but this
+        // should be considered broken.
+        var potentialListBlock = jQuery(wym.selection().getRangeAt(0).getNodes())
+                .parents().addBack().filter('ol, ul, li').last()[0];
+        potentialListBlock = potentialListBlock || wym.selectedContainer();
         return wym._fixInvalidListNesting(potentialListBlock);
     };
     if (wym.restoreSelectionAfterManipulation(manipulationFunc)) {
