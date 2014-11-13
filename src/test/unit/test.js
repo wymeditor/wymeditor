@@ -1287,8 +1287,8 @@ test("_selected image is saved on mousedown", function () {
     // because wymeditor._selectedImage intermittently changes between being
     // undefined and null, but either value should be acceptable for this test.
     equal(
-        typeof wymeditor._selectedImage,
-        'undefined'
+        wymeditor._selectedImage,
+        null
     );
 
     // Clicking on a non-image doesn't change that
