@@ -1347,6 +1347,31 @@ WYMeditor.editor.prototype.getCurrentState = function () {
 };
 
 /**
+    editor.hasSelection
+    ===================
+
+    Returns true if there is a selection. Returns false otherwise.
+*/
+WYMeditor.editor.prototype.hasSelection = function () {
+    var wym = this;
+
+    if (
+        // `isSelectionValid` is undocumented in current Rangy (`1.2.2`).
+        // It seems to be required because the `rangeCount` in `IE <= 8` seems
+        // to be misleading.
+        rangy.isSelectionValid(wym._iframe.contentWindow) !== true
+    ) {
+        return false;
+    }
+
+    if (wym.selection().rangeCount === 0) {
+        return false;
+    }
+
+    return true;
+};
+
+/**
     editor.setSingleSelectionRange
     ==============================
 

@@ -175,6 +175,12 @@ Selection Setting and Getting
     detailed pull request recommendations, please see our documentation on
     :doc:`../wymeditor_development/contributing`.
 
+``hasSelection()``
+==================
+
+Returns ``true`` if there is any selection in the document.
+Returns ``false`` otherwise.
+
 ``setSingleSelectionRange(range)``
 ==================================
 
