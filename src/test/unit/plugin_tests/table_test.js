@@ -778,7 +778,7 @@ test("Deleting all rows removes table", function () {
 
     testTable('#td_3_1', 'remove', 'row', basicTableHtml, removedRow3Html);
     testTable('#td_2_1', 'remove', 'row', removedRow3Html, removedRow2And3Html);
-    testTable('#td_1_1', 'remove', 'row', removedRow2And3Html, '');
+    testTable('#td_1_1', 'remove', 'row', removedRow2And3Html, '<br />');
 });
 
 test("Deleting all columns removes table", function () {
@@ -786,7 +786,7 @@ test("Deleting all columns removes table", function () {
 
     testTable('#td_3_3', 'remove', 'column', basicTableHtml, removedColumn3Html);
     testTable('#td_2_2', 'remove', 'column', removedColumn3Html, removedColumn3And2Html);
-    testTable('#span_2_1', 'remove', 'column', removedColumn3And2Html, '');
+    testTable('#span_2_1', 'remove', 'column', removedColumn3And2Html, '<br />');
 });
 
 module("table- colspan/rowspan add/remove", {setup: prepareUnitTestModule});
