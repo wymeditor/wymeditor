@@ -545,9 +545,16 @@ TableEditor.prototype.addRow = function (elmnt) {
  * @param table The table to delete if it is empty.
  */
 TableEditor.prototype.removeEmptyTable = function (table) {
-    var cells = jQuery(table).find('td,th');
+    var tableEditor = this,
+        wym = tableEditor._wym,
+        cells = jQuery(table).find('td,th'),
+        $table;
     if (cells.length === 0) {
-        jQuery(table).remove();
+        $table = jQuery(table);
+        $table.prev('br.' + WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS).remove();
+        $table.next('br.' + WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS).remove();
+        $table.remove();
+        wym.prepareDocForEditing();
     }
 };
 

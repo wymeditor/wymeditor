@@ -206,7 +206,7 @@ function wymEqual(wymeditor, expected, options) {
             // breaks and list type elements should be removed in old versions
             // of Internet Explorer (i.e. IE7,8).
             fixListSpacing: false,
-            skipParser: false
+            parseHtml: false
         },
         normedActual = '',
         listTypeOptions,
@@ -215,10 +215,10 @@ function wymEqual(wymeditor, expected, options) {
 
     options = jQuery.extend({}, defaults, options);
 
-    if (options.skipParser) {
-        tmpNodes = wymeditor.$body().contents();
-    } else {
+    if (options.parseHtml === true) {
         tmpNodes = jQuery(wymeditor.html());
+    } else {
+        tmpNodes = wymeditor.$body().contents();
     }
 
     for (i = 0; i < tmpNodes.length; i++) {
@@ -459,7 +459,7 @@ function isContentEditable(element) {
     Given an array of HTML strings, for each string, load it into a
     the WYMeditor and assert that the output is exactly the same.
 */
-function testNoChangeInHtmlArray(htmlArray) {
+function testNoChangeInHtmlArray(htmlArray, parseHtml) {
     var wymeditor = jQuery.wymeditors(0),
         i,
         html;
@@ -472,9 +472,11 @@ function testNoChangeInHtmlArray(htmlArray) {
         wymeditor.rawHtml(html);
         wymEqual(
             wymeditor,
-            html, {
+            html,
+            {
                 assertionString: 'Variation ' + (i + 1) + ' of ' +
-                    htmlArray.length
+                    htmlArray.length,
+                parseHtml: parseHtml
             }
         );
     }
