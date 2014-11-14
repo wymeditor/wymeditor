@@ -274,7 +274,8 @@ var body_complexInsertionHtml = String() +
         '</p>' +
         '<p>' +
             'gap2' +
-        '</p>';
+        '</p>' +
+        '<br />';
 
 var h2_1_complexInsertionHtml = String() +
         '<h2 id="h2_1">' +
