@@ -1894,22 +1894,6 @@ orphanedLiHtml.ordered.li_new = String() +
         'text' +
         '<li id="li_text_sep">li_text_sep</li>';
 
-// Internet Explorer likes to randomly add whitespace around textNodes that
-// don't have parent elements when you manipulate the DOM near them. Change our
-// test data to expect this so that we pass in IE
-// TODO: Maybe use some kind of modernizr-style test and correct this with the
-// parser?
-if (jQuery.browser.msie && parseInt(jQuery.browser.version, 10) < 9.0) {
-    orphanedLiHtml.ordered.li_new = orphanedLiHtml.ordered.li_new.replace(
-        /text<li id=\"li_text_sep/g,
-        'text <li id="li_text_sep'
-    );
-    orphanedLiHtml.unordered.li_new = orphanedLiHtml.unordered.li_new.replace(
-        /text<li id=\"li_text_sep/g,
-        'text <li id="li_text_sep'
-    );
-}
-
 test("Correction breaks on paragraphs", function () {
     expect(7);
     var testData = orphanedLiHtml,
