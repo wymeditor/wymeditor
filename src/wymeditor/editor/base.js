@@ -525,6 +525,7 @@ WYMeditor.editor.prototype.rawHtml = function (html) {
     if (typeof html === 'string') {
         wym.$body().html(html);
         wym.update();
+        wym.prepareDocForEditing();
     } else {
         return wym.$body().html();
     }
@@ -1268,7 +1269,6 @@ WYMeditor.editor.prototype.update = function () {
     html = wym.html();
     jQuery(wym.element).val(html);
     jQuery(wym._box).find(wym._options.htmlValSelector).not('.hasfocus').val(html); //#147
-    wym.prepareDocForEditing();
 };
 
 /**
