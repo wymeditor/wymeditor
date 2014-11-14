@@ -1323,7 +1323,7 @@ if (!inPhantomjs || !SKIP_KNOWN_FAILING_TESTS) {
                 '<p>' +
                     '<img src="' + imageURL + '" />' +
                 '</p>',
-            expectedHtmlIE = expectedHtml.replace(/<\/?p>/g, '');
+            expectedHtmlIE = expectedHtml.replace(/<\/?p>/g, '') + '<br />';
 
         // Mimic the way images are inserted by the insert image tool by first
         // inserting the image with its src set to a unique stamp for
@@ -1339,7 +1339,7 @@ if (!inPhantomjs || !SKIP_KNOWN_FAILING_TESTS) {
 
         $body.find(imageSelector).attr(WYMeditor.SRC, imageURL);
         if (jQuery.browser.msie) {
-            // IE doesn't wrap the image in a paragraph
+            // IE doesn't wrap the image in a paragraph and adds a `br`.
             wymEqual(wymeditor, expectedHtmlIE);
         } else {
             wymEqual(wymeditor, expectedHtml);
