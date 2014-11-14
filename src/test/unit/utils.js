@@ -24,31 +24,14 @@ var preLt = /</g;
 var preGt = />/g;
 var preQuot = /\"/g;
 
-// Attributes that should be ignored when normalizing HTML for comparison
-// across browsers. The variable is an array of arrays where each array should
-// have the name of the attribute to be ignored as the first element. The
-// second element in each array should be an array of values that specifies
-// that the attribute will only be ignored if it is one of those values. If
-// this second element is not provided, it will always ignore the attribute no
-// matter what the attribute's value is.
-var ignoreAttributes = [
-    ['_moz_editor_bogus_node'],
-    ['_moz_dirty'],
-    ['_wym_visited'],
-    ['sizset'],
-    ['tabindex'],
-    ['rowspan', ['1']],
-    // The following 10 mouse and keyboard events were found on IE7.
-    ['onclick'],
-    ['ondblclick'],
-    ['onkeydown'],
-    ['onkeypress'],
-    ['onkeyup'],
-    ['onmousedown'],
-    ['onmousemove'],
-    ['onmouseout'],
-    ['onmouseover'],
-    ['onmouseup']
+var keepAttributes = [
+    'id',
+    'class',
+    'colspan',
+    'rowspan',
+    'src',
+    'alt',
+    'href'
 ];
 
 /**
@@ -89,7 +72,6 @@ function normalizeHtml(node) {
         attrValue,
         keepAttr,
         i,
-        j,
         $captions;
 
     if (jQuery.browser.msie) {
@@ -118,36 +100,37 @@ function normalizeHtml(node) {
                 attr = attrs[i];
                 attrName = attr.nodeName.toLowerCase();
                 attrValue = attr.value;
-                keepAttr = true;
+                keepAttr = false;
 
                 // We only care about specified attributes
                 if (!attr.specified) {
                     keepAttr = false;
                 }
 
-                // Ignore attributes that are only used in specific browsers.
-                for (j = 0; j < ignoreAttributes.length; ++j) {
-                    if (attrName === ignoreAttributes[j][0]) {
-                        if (!ignoreAttributes[j][1] ||
-                            jQuery.inArray(
-                                attrValue,
-                                ignoreAttributes[j][1]
-                            ) > -1) {
+                // The above check for `specified` should be enough but IE7
+                // adds various attributes sporadically. Use a white list.
+                if (
+                    jQuery.inArray(
+                        attrName,
+                        keepAttributes
+                    ) > -1
+                ) {
+                    keepAttr = true;
+                }
 
-                            keepAttr = false;
-                            break;
-                        }
-                    }
+                // This is for IE7, as well.
+                if (
+                    attrValue === ''
+                ) {
+                    keepAttr = false;
+                }
 
-                    // With some versions of jQuery on IE, sometimes attributes
-                    // named `sizcache` or `sizzle-` followed by a differing
-                    // string of numbers are added to elements, so regex must
-                    // be used to check for them.
-                    if (/sizcache\d*/.test(attrName) ||
-                        /sizzle-\d*/.test(attrName)) {
-                        keepAttr = false;
-                        break;
-                    }
+                // For convenience.
+                if (
+                    (attrName === 'rowspan' || attrName === 'colspan') &&
+                    attrValue === '1'
+                ) {
+                    keepAttr = false;
                 }
 
                 if (keepAttr) {
