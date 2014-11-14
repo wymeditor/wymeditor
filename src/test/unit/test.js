@@ -6,6 +6,8 @@
     test,
     expect,
     deepEqual,
+    equal,
+    inPhantomjs,
     sinon,
     strictEqual,
     wymEqual,
