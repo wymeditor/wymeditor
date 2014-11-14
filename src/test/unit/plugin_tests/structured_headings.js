@@ -1510,8 +1510,13 @@ if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
         var wymeditor = jQuery.wymeditors(0);
 
         wymeditor.rawHtml(expectedHeadings);
-        wymEqual(wymeditor, expectedParsedHeadings, {
-                assertionString: "Heading numbering stripped by parser"
-            });
+        wymEqual(
+            wymeditor,
+            expectedParsedHeadings,
+            {
+                assertionString: "Heading numbering stripped by parser",
+                parseHtml: true
+            }
+        );
     });
 }
