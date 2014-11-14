@@ -457,7 +457,7 @@ TableEditor.prototype.mergeRow = function (sel) {
             for (i = insertionCells.length - 1; i >= 0; i--) {
                 xIndex = tableEditor.getCellXIndex(insertionCells[i]);
                 if (xIndex <= insertionIndex) {
-                    jQuery(insertionCells[i]).append(newTd);
+                    jQuery(insertionCells[i]).after(newTd);
                     cellInserted = true;
                     break;
                 }
