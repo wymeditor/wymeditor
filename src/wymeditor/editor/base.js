@@ -541,7 +541,6 @@ WYMeditor.editor.prototype.html = function (html) {
     var wym = this;
     if (typeof html === 'string') {
         wym.rawHtml(wym.parser.parse(html));
-        wym.prepareDocForEditing();
     } else {
         return wym.parser.parse(wym.rawHtml());
     }
@@ -1281,16 +1280,10 @@ WYMeditor.editor.prototype.update = function () {
 
 */
 WYMeditor.editor.prototype.prepareDocForEditing = function () {
-    var wym = this,
-        $body;
+    var wym = this;
 
     wym._spaceBlockingElements();
     wym._fixDoubleBr();
-
-    $body = wym.$body();
-    if ($body.children().length === 0) {
-        wym.$body().append('<br />');
-    }
 
     jQuery(wym.element).trigger(WYMeditor.EVENTS.postBlockMaybeCreated, wym);
 };
