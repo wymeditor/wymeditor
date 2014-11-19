@@ -364,6 +364,7 @@ WYMeditor.editor.prototype._afterDesignModeOn = function () {
     }
 
     wym._assignWymDoc();
+    wym.$body().addClass("wym_iframe");
 
     wym._doc.title = wym._index;
 
