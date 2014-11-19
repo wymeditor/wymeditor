@@ -253,7 +253,7 @@ WYMeditor.editor.prototype._isDesignModeOn = function () {
     The initialization procedure of an editor turns asynchronous because part of
     it must occur after the loading of the editor's Iframe.
 
-    This function is suppposed to be the event handler of the loading of the
+    This function is supposed to be the event handler of the loading of the
     editor's Iframe. Therefore, it is the first step since the initialization
     procedure gets asynchronous.
 
