@@ -146,6 +146,8 @@ file.
 * `rangy-selectionsaverestore`_; a Rangy module.
 * `object-history`_; helps with undo/redo; defines/overrides global
   ``ObjectHistory``.
+* `Combokeys`_; keyboard shortcuts library; defines/overrides global
+  ``Combokeys``.
 
 *********
 Copyright
@@ -177,3 +179,4 @@ and GPL (``GPL-license.txt``) licenses.
 .. _Rangy: https://github.com/timdown/rangy/
 .. _rangy-selectionsaverestore: Rangy_
 .. _object-history: https://github.com/mightyiam/object-history
+.. _Combokeys: https://github.com/mightyiam/combokeys

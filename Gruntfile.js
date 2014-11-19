@@ -193,13 +193,14 @@ module.exports = function (grunt) {
                     debug: true
                 }
             },
-            objectHistory: {
+            libs: {
                 // This file is the entry point for the browserification of
-                // this module. It assigns the module's CommonJS export to a
-                // browser window global.
+                // two external dependencies.
+                // It assigns their CommonJS `module.exports` to
+                // browser `window` globals.
                 src: ['<%= yeoman.app %>/wymeditor/editor/' +
-                    'object-history-globalifier.js'],
-                dest: '<%= yeoman.app %>/lib/object-history.js'
+                    'browserified-libs-globalifier.js'],
+                dest: '<%= yeoman.app %>/lib/browserified-libs-globalifier.js'
             }
         },
         useminPrepare: {
@@ -255,7 +256,7 @@ module.exports = function (grunt) {
                     "<%= yeoman.app %>/wymeditor/editor/webkit.js",
                     "<%= yeoman.app %>/wymeditor/editor/trident-pre-7.js",
                     "<%= yeoman.app %>/wymeditor/editor/trident-7.js",
-                    "<%= yeoman.app %>/lib/object-history.js",
+                    "<%= yeoman.app %>/lib/browserified-libs-globalifier.js",
                     "<%= yeoman.app %>/wymeditor/editor/undo-redo.js",
                     "<%= yeoman.app %>/wymeditor/parser/*.js",
                     // TODO: For custom builds, will need to change this.
@@ -509,7 +510,7 @@ module.exports = function (grunt) {
 
         grunt.task.run([
             'bower',
-            'browserify:objectHistory',
+            'browserify:libs',
             'clean:server',
             'jekyllDev',
             'connect:dev',
@@ -519,7 +520,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('test', [
         'bower',
-        'browserify:objectHistory',
+        'browserify:libs',
         'clean:server',
         'connect:test',
         'qunit'
@@ -530,7 +531,7 @@ module.exports = function (grunt) {
         'useminPrepare',
         'bower-install-simple',
         'bower-linker:dist-examples',
-        'browserify:objectHistory',
+        'browserify:libs',
         'concat',
         'uglify',
         'copy:dist',
