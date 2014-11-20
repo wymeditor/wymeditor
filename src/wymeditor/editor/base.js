@@ -2843,6 +2843,29 @@ WYMeditor.editor.prototype._getCommonParentList = function (listItems, getCloses
 };
 
 /**
+    editor.getSelectedNodes
+    ========================
+
+    Returns an array of the selected and partially selected nodes.
+
+    Returns false if there is not selection.
+
+Returns false if there is no selection.
+*/
+WYMeditor.editor.prototype.getSelectedNodes = function () {
+    var wym = this,
+        selection = wym.selection(),
+        selectedNodes;
+
+    if (wym.hasSelection() !== true) {
+        return false;
+    }
+
+    selectedNodes = selection.getRangeAt(0).getNodes();
+    return selectedNodes;
+};
+
+/**
     editor._getSelectedListItems
     ============================
 
