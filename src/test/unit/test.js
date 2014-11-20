@@ -1,8 +1,24 @@
 /* jshint camelcase: false, maxlen: 100 */
-/* global -$,
-ok, start, stop, test, expect, equal, deepEqual, sinon, strictEqual,
-wymEqual, moveSelector, makeTextSelection, isContentEditable, normalizeHtml,
-inPhantomjs, ListPlugin, asyncTest */
+/* global
+ok,
+start,
+stop,
+test,
+expect,
+equal,
+deepEqual,
+sinon,
+strictEqual,
+wymEqual,
+moveSelector,
+makeTextSelection,
+isContentEditable,
+normalizeHtml,
+inPhantomjs,
+ListPlugin,
+asyncTest,
+testWym
+*/
 /* exported
 setupWym,
 setupMultipleTextareas,
