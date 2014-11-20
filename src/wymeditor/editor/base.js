@@ -2897,7 +2897,7 @@ WYMeditor.editor.prototype._getSelectedListItems = function (selection) {
     }
 
     // All the selected nodes in the selection's first range.
-    $selectedNodes = jQuery(selection.getRangeAt(0).getNodes());
+    $selectedNodes = jQuery(wym.getSelectedNodes());
 
     if ($selectedNodes.closest('li, table').filter('li').length === 0) {
         // Selection is in a table before it is in a list. This prevents
@@ -3160,7 +3160,7 @@ WYMeditor.editor.prototype._insertOrderedList = function () {
         // have multiple root-level lists or even `li` items (which shouldn't
         // happen) selected. This code seems to make our tests pass but this
         // should be considered broken.
-        var potentialListBlock = jQuery(wym.selection().getRangeAt(0).getNodes())
+        var potentialListBlock = jQuery(wym.getSelectedNodes())
                 .parents().addBack().filter('ol, ul, li').last()[0];
         potentialListBlock = potentialListBlock || wym.selectedContainer();
         return wym._fixInvalidListNesting(potentialListBlock);
@@ -3201,7 +3201,7 @@ WYMeditor.editor.prototype._insertUnorderedList = function () {
         // have multiple root-level lists or even `li` items (which shouldn't
         // happen) selected. This code seems to make our tests pass but this
         // should be considered broken.
-        var potentialListBlock = jQuery(wym.selection().getRangeAt(0).getNodes())
+        var potentialListBlock = jQuery(wym.getSelectedNodes())
                 .parents().addBack().filter('ol, ul, li').last()[0];
         potentialListBlock = potentialListBlock || wym.selectedContainer();
         return wym._fixInvalidListNesting(potentialListBlock);
