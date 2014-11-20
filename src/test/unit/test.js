@@ -1413,7 +1413,7 @@ module("selection", {setup: prepareUnitTestModule});
 
 testWym({
     testName: "There is no selection.",
-    startHtml: "<br />",
+    startHtml: "<p>foo</p>",
     prepareFunc: function (wymeditor) {
         wymeditor.selection().removeAllRanges();
     },
@@ -1428,9 +1428,9 @@ testWym({
 
 testWym({
     testName: "There is a selection.",
-    startHtml: "<br />",
+    startHtml: "<p>foo</p>",
     prepareFunc: function (wymeditor) {
-        wymeditor.setCaretIn(wymeditor.body());
+        wymeditor.setCaretIn(wymeditor.body().childNodes[0]);
     },
     additionalAssertionsFunc: function (wymeditor) {
         expect(expect() + 1);
