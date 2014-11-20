@@ -177,7 +177,7 @@ or not.
 =======================
 
 Get the selected container.
-Returns ``false`` if no obvious selected container.
+Returns ``false`` if no selection.
 
 This is currently supposed to be used with a collapsed selection only.
 

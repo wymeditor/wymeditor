@@ -730,7 +730,7 @@ WYMeditor.editor.prototype.get$CommonParent = function (one, two) {
     WYMeditor.editor.selectedContainer
     ==================================
 
-    Returns the selection's container or false.
+    Returns the selection's container or false if there is no selection.
 
     Not to be confused with `.getRootContainer`, which gets the
     selection's root container.
