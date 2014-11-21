@@ -173,11 +173,6 @@ Returns ``false`` otherwise.
 
 Removes selection.
 
-``setSingleSelectionRange(range)``
-==================================
-
-Sets the selection to the single provided Rangy ``range``.
-
 ``nodeAfterSel()``
 ==================
 

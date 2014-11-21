@@ -1305,14 +1305,14 @@ WYMeditor.editor.prototype.hasSelection = function () {
 };
 
 /**
-    editor.setSingleSelectionRange
-    ==============================
+    editor._setSingleSelectionRange
+    ===============================
 
     Sets the selection to the single provided Rangy range.
 
     @param range A Rangy range.
 */
-WYMeditor.editor.prototype.setSingleSelectionRange = function (range) {
+WYMeditor.editor.prototype._setSingleSelectionRange = function (range) {
     var wym = this,
         selection;
 
