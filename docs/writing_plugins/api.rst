@@ -168,6 +168,11 @@ Selection Setting and Getting
 Returns ``true`` if there is any selection in the document.
 Returns ``false`` otherwise.
 
+``deselect()``
+==============
+
+Removes selection.
+
 ``setSingleSelectionRange(range)``
 ==================================
 

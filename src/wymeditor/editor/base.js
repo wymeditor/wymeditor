@@ -2851,6 +2851,20 @@ WYMeditor.editor.prototype._getCommonParentList = function (listItems, getCloses
 };
 
 /**
+    editor.deselect
+    ===============
+
+    Removes seletion.
+*/
+WYMeditor.editor.prototype.deselect = function () {
+    var wym = this;
+
+    wym.selection().removeAllRanges();
+    // Blur seems to be required for IE8.
+    wym.body().blur();
+};
+
+/**
     editor.getSelectedNodes
     ========================
 
