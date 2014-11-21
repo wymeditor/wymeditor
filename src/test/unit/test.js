@@ -1404,10 +1404,11 @@ test("Can set and get html with the html() function", function () {
 module("selection", {setup: prepareUnitTestModule});
 
 testWymManipulation({
-    testName: "There is no selection.",
+    testName: "There is no selection (`editor.deselect()`).",
     startHtml: "<p>foo</p>",
     prepareFunc: function (wymeditor) {
-        wymeditor.selection().removeAllRanges();
+        wymeditor.setCaretIn(wymeditor.body().childNodes[0]);
+        wymeditor.deselect();
     },
     additionalAssertionsFunc: function (wymeditor) {
         expect(expect() + 1);
