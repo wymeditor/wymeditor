@@ -161,6 +161,7 @@ function testGetCellXIndex(initialHtml, cellSelector, expectedIndex) {
 module("Table Modification", {setup: prepareUnitTestModule});
 
 var basicTableHtml = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -179,10 +180,12 @@ var basicTableHtml = String() +
                     '<td id="td_3_3">3_3</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 // Table with colspan and rowspan
 var fancyTableHtml = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -199,10 +202,12 @@ var fancyTableHtml = String() +
                     '<td id="td_3_2">3_2</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 // Table with th elements
 var thTableHtml = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -221,11 +226,13 @@ var thTableHtml = String() +
                     '<td id="td_3_3">3_3</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var basicWithPHtml = '<p id="p1">1</p>' + basicTableHtml;
 
 var addRowTd32Html = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -249,9 +256,11 @@ var addRowTd32Html = String() +
                     '<td>' + WYMeditor.NBSP + '</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var addColumnTd32Html = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -273,9 +282,11 @@ var addColumnTd32Html = String() +
                     '<td id="td_3_3">3_3</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var addRowSpan21Html = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -299,9 +310,11 @@ var addRowSpan21Html = String() +
                     '<td id="td_3_3">3_3</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var addColumnSpan21Html = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -323,9 +336,11 @@ var addColumnSpan21Html = String() +
                     '<td id="td_3_3">3_3</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var addRowFancyTd12 = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -347,9 +362,11 @@ var addRowFancyTd12 = String() +
                     '<td id="td_3_2">3_2</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var addRowFancyTd22 = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -370,9 +387,11 @@ var addRowFancyTd22 = String() +
                     '<td id="td_3_2">3_2</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var addRowFancyTd32 = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -394,9 +413,11 @@ var addRowFancyTd32 = String() +
                     '<td>' + WYMeditor.NBSP + '</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var addColumnFancyTd12 = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -416,9 +437,11 @@ var addColumnFancyTd12 = String() +
                     '<td>' + WYMeditor.NBSP + '</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var addColumnFancyTd23 = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -438,9 +461,11 @@ var addColumnFancyTd23 = String() +
                     '<td>' + WYMeditor.NBSP + '</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var addColumnFancyTd32 = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -460,9 +485,11 @@ var addColumnFancyTd32 = String() +
                     '<td>' + WYMeditor.NBSP + '</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var addColumnFancyTd11 = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -482,9 +509,11 @@ var addColumnFancyTd11 = String() +
                     '<td id="td_3_2">3_2</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var addColumnFancyTd21 = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -504,9 +533,11 @@ var addColumnFancyTd21 = String() +
                     '<td id="td_3_2">3_2</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var addColumnFancyTd22 = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -525,9 +556,11 @@ var addColumnFancyTd22 = String() +
                     '<td>' + WYMeditor.NBSP + '</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var addRowThTh13Html = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -551,9 +584,11 @@ var addRowThTh13Html = String() +
                     '<td id="td_3_3">3_3</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var addRowThTd32Html = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -577,9 +612,11 @@ var addRowThTd32Html = String() +
                     '<td>' + WYMeditor.NBSP + '</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var addColumnThTh13Html = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -601,9 +638,11 @@ var addColumnThTh13Html = String() +
                     '<td>' + WYMeditor.NBSP + '</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var addColumnThTd32Html = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -625,9 +664,11 @@ var addColumnThTd32Html = String() +
                     '<td id="td_3_3">3_3</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var removedRow3Html = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -641,9 +682,11 @@ var removedRow3Html = String() +
                     '<td id="td_2_3">2_3</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var removedRow2And3Html = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -652,9 +695,11 @@ var removedRow2And3Html = String() +
                     '<td id="td_1_3">1_3</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var removedColumn3Html = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -670,9 +715,11 @@ var removedColumn3Html = String() +
                     '<td id="td_3_2">3_2</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var removedColumn3And2Html = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -685,7 +732,8 @@ var removedColumn3And2Html = String() +
                     '<td id="td_3_1">3_1</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 module("table- add/remove", {setup: prepareUnitTestModule});
 test("no-op on non-table elements", function () {
@@ -730,7 +778,7 @@ test("Deleting all rows removes table", function () {
 
     testTable('#td_3_1', 'remove', 'row', basicTableHtml, removedRow3Html);
     testTable('#td_2_1', 'remove', 'row', removedRow3Html, removedRow2And3Html);
-    testTable('#td_1_1', 'remove', 'row', removedRow2And3Html, '');
+    testTable('#td_1_1', 'remove', 'row', removedRow2And3Html, '<br />');
 });
 
 test("Deleting all columns removes table", function () {
@@ -738,7 +786,7 @@ test("Deleting all columns removes table", function () {
 
     testTable('#td_3_3', 'remove', 'column', basicTableHtml, removedColumn3Html);
     testTable('#td_2_2', 'remove', 'column', removedColumn3Html, removedColumn3And2Html);
-    testTable('#span_2_1', 'remove', 'column', removedColumn3And2Html, '');
+    testTable('#span_2_1', 'remove', 'column', removedColumn3And2Html, '<br />');
 });
 
 module("table- colspan/rowspan add/remove", {setup: prepareUnitTestModule});
@@ -888,6 +936,7 @@ test("Tab outside of table", function () {
 module("table-row_merge", {setup: prepareUnitTestModule});
 
 var mergeTableHtml = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -913,7 +962,8 @@ var mergeTableHtml = String() +
                     '<td id="td_4_4">4_4</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var mergeTableLongRowspanHtml = String() +
         '<table>' +
@@ -943,6 +993,7 @@ var mergeTableLongRowspanHtml = String() +
         '</table>';
 
 var mergeTd41Html = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -967,9 +1018,11 @@ var mergeTd41Html = String() +
                     '<td id="td_4_4">4_4</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var mergeTd41To44Html = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -992,9 +1045,11 @@ var mergeTd41To44Html = String() +
                     '<td colspan="4" id="td_4_1">4_14_24_34_4</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var mergeTh12Html = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -1019,9 +1074,11 @@ var mergeTh12Html = String() +
                     '<td id="td_4_4">4_4</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var mergeTh11To12Html = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -1046,9 +1103,11 @@ var mergeTh11To12Html = String() +
                     '<td id="td_4_4">4_4</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var mergeTh11To14Html = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -1072,9 +1131,11 @@ var mergeTh11To14Html = String() +
                     '<td id="td_4_4">4_4</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var mergeSpan21Html = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -1099,10 +1160,12 @@ var mergeSpan21Html = String() +
                     '<td id="td_4_4">4_4</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 // Rowspan merges
 var mergeTd23Html = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -1128,9 +1191,11 @@ var mergeTd23Html = String() +
                     '<td id="td_4_4">4_4</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var mergeTd22Html = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -1156,9 +1221,11 @@ var mergeTd22Html = String() +
                     '<td id="td_4_4">4_4</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var mergeTd31Html = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -1183,9 +1250,11 @@ var mergeTd31Html = String() +
                     '<td id="td_4_4">4_4</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var mergeTd31Td23Html = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -1210,9 +1279,11 @@ var mergeTd31Td23Html = String() +
                     '<td id="td_4_4">4_4</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var mergeTd23Td34Html = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -1238,9 +1309,11 @@ var mergeTd23Td34Html = String() +
                     '<td id="td_4_4">4_4</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var mergeTd42Td23LongRowspanHtml = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -1265,9 +1338,11 @@ var mergeTd42Td23LongRowspanHtml = String() +
                     '<td id="td_4_4">4_4</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var mergeTd23Td44LongRowspanHtml = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -1292,9 +1367,11 @@ var mergeTd23Td44LongRowspanHtml = String() +
                     '<td colspan="2">4_4</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var mergeTd32Td23LongRowspanHtml = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -1319,7 +1396,8 @@ var mergeTd32Td23LongRowspanHtml = String() +
                     '<td id="td_4_4">4_4</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 test("Merge simple first cell", function () {
     expect(5);
@@ -1457,7 +1535,11 @@ test("getCellXIndex test", function () {
 
 module("utils", {setup: prepareUnitTestModule});
 function testNormalize(testHtml) {
-    var normed = normalizeHtml(jQuery(testHtml)[0]);
+    var $nodes = jQuery(testHtml),
+        normed = '';
+    $nodes.each(function (i, node) {
+        normed += normalizeHtml(node);
+    });
     deepEqual(normed, testHtml);
 }
 

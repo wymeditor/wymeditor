@@ -253,7 +253,7 @@ WYMeditor.editor.prototype._isDesignModeOn = function () {
     The initialization procedure of an editor turns asynchronous because part of
     it must occur after the loading of the editor's Iframe.
 
-    This function is suppposed to be the event handler of the loading of the
+    This function is supposed to be the event handler of the loading of the
     editor's Iframe. Therefore, it is the first step since the initialization
     procedure gets asynchronous.
 
@@ -525,6 +525,7 @@ WYMeditor.editor.prototype.rawHtml = function (html) {
     if (typeof html === 'string') {
         wym.$body().html(html);
         wym.update();
+        wym.prepareDocForEditing();
     } else {
         return wym.$body().html();
     }
@@ -541,6 +542,7 @@ WYMeditor.editor.prototype.html = function (html) {
     var wym = this;
     if (typeof html === 'string') {
         wym.rawHtml(wym.parser.parse(html));
+        wym.prepareDocForEditing();
     } else {
         return wym.parser.parse(wym.rawHtml());
     }
@@ -887,7 +889,10 @@ WYMeditor.editor.prototype.unwrapIfMeaninglessSpan = function (element) {
             'tabIndex',
             'value',
             'hideFocus',
-            'disabled'
+            'disabled',
+            'cite',
+            'dateTime',
+            'nofocusrect'
         ],
         // Any attribute with these values isn't interesting
         falsyAttrValues = [
@@ -1341,7 +1346,6 @@ WYMeditor.editor.prototype.update = function () {
     html = wym.html();
     jQuery(wym.element).val(html);
     jQuery(wym._box).find(wym._options.htmlValSelector).not('.hasfocus').val(html); //#147
-    wym.prepareDocForEditing();
 };
 
 /**
@@ -1354,10 +1358,16 @@ WYMeditor.editor.prototype.update = function () {
 
 */
 WYMeditor.editor.prototype.prepareDocForEditing = function () {
-    var wym = this;
+    var wym = this,
+        $body;
 
     wym._spaceBlockingElements();
     wym._fixDoubleBr();
+
+    $body = wym.$body();
+    if ($body.children().length === 0) {
+        wym.$body().append('<br />');
+    }
 
     jQuery(wym.element).trigger(WYMeditor.EVENTS.postBlockMaybeCreated, wym);
 };
@@ -1410,9 +1420,7 @@ WYMeditor.editor.prototype._spaceBlockingElements = function () {
             $firstChild.before(placeholderNode);
         }
 
-        if ($lastChild.is(blockingSelector) &&
-            !(jQuery.browser.msie && jQuery.browser.version < "7.0")) {
-
+        if ($lastChild.is(blockingSelector)) {
             $lastChild.after(placeholderNode);
         }
     }

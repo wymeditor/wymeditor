@@ -738,8 +738,9 @@ Localize the strings included in ``sVal``.
 
 Enclose a string in string delimiters.
 
+*********
 Utilities
----------
+*********
 
 ``box``
 =======
