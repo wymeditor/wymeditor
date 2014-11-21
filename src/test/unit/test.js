@@ -1653,6 +1653,165 @@ test("Set and get collapsed selection", function () {
     }
 });
 
+module("selection-getSelectedNodes", {setup: prepareUnitTestModule});
+
+testWymManipulation({
+    testName: "No selection",
+    startHtml: "<p>Foo</p>",
+    prepareFunc: function (wymeditor) {
+        wymeditor.deselect();
+    },
+    additionalAssertionsFunc: function (wymeditor) {
+        expect(expect() + 1);
+        deepEqual(
+            wymeditor.getSelectedNodes(),
+            false
+        );
+    }
+});
+
+testWymManipulation({
+    testName: "Collapsed selection",
+    startHtml: "<p>Foo</p>",
+    prepareFunc: function (wymeditor) {
+        wymeditor.setCaretIn(wymeditor.body().childNodes[0]);
+    },
+    additionalAssertionsFunc: function (wymeditor) {
+        expect(expect() + 1);
+        deepEqual(
+            wymeditor.getSelectedNodes(),
+            []
+        );
+    }
+});
+
+testWymManipulation({
+    testName: "Single text node",
+    startHtml: "<p>Foo</p>",
+    prepareFunc: function (wymeditor) {
+        var range = rangy.createRange(wymeditor._doc),
+            foo = wymeditor.body().childNodes[0].childNodes[0];
+
+        range.selectNode(foo);
+        wymeditor.selection().setSingleRange(range);
+    },
+    additionalAssertionsFunc: function (wymeditor) {
+        expect(expect() + 1);
+        deepEqual(
+            wymeditor.selection().getRangeAt(0).getNodes(),
+            [wymeditor.body().childNodes[0].childNodes[0]]
+        );
+    }
+});
+
+testWymManipulation({
+    testName: "Partially selected text node",
+    startHtml: "<p>Foo</p>",
+    prepareFunc: function (wymeditor) {
+        var range = rangy.createRange(wymeditor._doc),
+            foo = wymeditor.body().childNodes[0].childNodes[0];
+
+        range.setStart(foo, 0);
+        range.setEnd(foo, 1);
+        wymeditor.selection().setSingleRange(range);
+    },
+    additionalAssertionsFunc: function (wymeditor) {
+        expect(expect() + 1);
+        deepEqual(
+            wymeditor.selection().getRangeAt(0).getNodes(),
+            [wymeditor.body().childNodes[0].childNodes[0]]
+        );
+    }
+});
+
+testWymManipulation({
+    testName: "Wholly selected element",
+    startHtml: "<p>Foo</p>",
+    prepareFunc: function (wymeditor) {
+        var p = wymeditor.body().childNodes[0],
+            range = rangy.createRange(wymeditor._doc);
+
+        range.selectNode(p);
+        wymeditor.selection().setSingleRange(range);
+    },
+    additionalAssertionsFunc: function (wymeditor) {
+        expect(expect() + 3);
+        var body = wymeditor.body(),
+            selectedNodes = wymeditor.getSelectedNodes();
+        deepEqual(
+            selectedNodes.length,
+            2
+        );
+        deepEqual(
+            selectedNodes[0].tagName.toLowerCase(),
+            "p"
+        );
+        deepEqual(
+            selectedNodes[1].data,
+            "Foo"
+        );
+    }
+});
+
+testWymManipulation({
+    testName: "Partially selected element",
+    startHtml: "<p>Foo</p>",
+    prepareFunc: function (wymeditor) {
+        var body = wymeditor.body(),
+            range = rangy.createRange(wymeditor._doc);
+
+        range.setStart(body, 0);
+        range.setEnd(body.childNodes[0], 0);
+        wymeditor.selection().setSingleRange(range);
+    },
+    additionalAssertionsFunc: function (wymeditor) {
+        expect(expect() + 1);
+        deepEqual(
+            wymeditor.getSelectedNodes(),
+            [wymeditor.body().childNodes[0]]
+        );
+    }
+});
+
+testWymManipulation({
+    testName: "Two wholly selected text nodes",
+    startHtml: "<p>Foo</p><p>Bar</p>",
+    prepareFunc: function (wymeditor) {
+        var body = wymeditor.body(),
+            range = rangy.createRange(wymeditor._doc),
+            foo = body.childNodes[0].childNodes[0],
+            bar = body.childNodes[1].childNodes[0];
+
+        range.setStart(foo, 0);
+        range.setEnd(bar, 3);
+        wymeditor.selection().setSingleRange(range);
+    },
+    additionalAssertionsFunc: function (wymeditor) {
+        expect(expect() + 5);
+        var selectedNodes = wymeditor.getSelectedNodes();
+        deepEqual(
+            selectedNodes.length,
+            4
+        );
+        deepEqual(
+            selectedNodes[0].tagName.toLowerCase(),
+            "p"
+        );
+        deepEqual(
+            selectedNodes[1].data,
+            "Foo"
+        );
+        deepEqual(
+            selectedNodes[2].tagName.toLowerCase(),
+            "p"
+        );
+        deepEqual(
+            selectedNodes[3].data,
+            "Bar"
+        );
+    }
+});
+
 module("switchTo", {setup: prepareUnitTestModule});
 
 test("Refuses 'img' elements.", function () {
