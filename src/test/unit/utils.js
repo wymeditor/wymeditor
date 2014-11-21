@@ -1,6 +1,21 @@
-/* exported isContentEditable, simulateKey, wymEqual, testNoChangeInHtmlArray,
- makeTextSelection, moveSelector */
-/* global rangy, deepEqual, html_beautify, expect, QUnit, strictEqual */
+/* exported
+    isContentEditable,
+    simulateKey,
+    wymEqual,
+    testNoChangeInHtmlArray,
+    makeTextSelection,
+    moveSelector,
+    testWymManipulation
+*/
+/* global
+    rangy,
+    deepEqual,
+    html_beautify,
+    expect,
+    QUnit,
+    strictEqual,
+    test
+*/
 "use strict";
 
 // Regex expression shortcuts
@@ -9,31 +24,14 @@ var preLt = /</g;
 var preGt = />/g;
 var preQuot = /\"/g;
 
-// Attributes that should be ignored when normalizing HTML for comparison
-// across browsers. The variable is an array of arrays where each array should
-// have the name of the attribute to be ignored as the first element. The
-// second element in each array should be an array of values that specifies
-// that the attribute will only be ignored if it is one of those values. If
-// this second element is not provided, it will always ignore the attribute no
-// matter what the attribute's value is.
-var ignoreAttributes = [
-    ['_moz_editor_bogus_node'],
-    ['_moz_dirty'],
-    ['_wym_visited'],
-    ['sizset'],
-    ['tabindex'],
-    ['rowspan', ['1']],
-    // The following 10 mouse and keyboard events were found on IE7.
-    ['onclick'],
-    ['ondblclick'],
-    ['onkeydown'],
-    ['onkeypress'],
-    ['onkeyup'],
-    ['onmousedown'],
-    ['onmousemove'],
-    ['onmouseout'],
-    ['onmouseover'],
-    ['onmouseup']
+var keepAttributes = [
+    'id',
+    'class',
+    'colspan',
+    'rowspan',
+    'src',
+    'alt',
+    'href'
 ];
 
 /**
@@ -74,7 +72,6 @@ function normalizeHtml(node) {
         attrValue,
         keepAttr,
         i,
-        j,
         $captions;
 
     if (jQuery.browser.msie) {
@@ -103,36 +100,37 @@ function normalizeHtml(node) {
                 attr = attrs[i];
                 attrName = attr.nodeName.toLowerCase();
                 attrValue = attr.value;
-                keepAttr = true;
+                keepAttr = false;
 
                 // We only care about specified attributes
                 if (!attr.specified) {
                     keepAttr = false;
                 }
 
-                // Ignore attributes that are only used in specific browsers.
-                for (j = 0; j < ignoreAttributes.length; ++j) {
-                    if (attrName === ignoreAttributes[j][0]) {
-                        if (!ignoreAttributes[j][1] ||
-                            jQuery.inArray(
-                                attrValue,
-                                ignoreAttributes[j][1]
-                            ) > -1) {
+                // The above check for `specified` should be enough but IE7
+                // adds various attributes sporadically. Use a white list.
+                if (
+                    jQuery.inArray(
+                        attrName,
+                        keepAttributes
+                    ) > -1
+                ) {
+                    keepAttr = true;
+                }
 
-                            keepAttr = false;
-                            break;
-                        }
-                    }
+                // This is for IE7, as well.
+                if (
+                    attrValue === ''
+                ) {
+                    keepAttr = false;
+                }
 
-                    // With some versions of jQuery on IE, sometimes attributes
-                    // named `sizcache` or `sizzle-` followed by a differing
-                    // string of numbers are added to elements, so regex must
-                    // be used to check for them.
-                    if (/sizcache\d*/.test(attrName) ||
-                        /sizzle-\d*/.test(attrName)) {
-                        keepAttr = false;
-                        break;
-                    }
+                // For convenience.
+                if (
+                    (attrName === 'rowspan' || attrName === 'colspan') &&
+                    attrValue === '1'
+                ) {
+                    keepAttr = false;
                 }
 
                 if (keepAttr) {
@@ -206,7 +204,7 @@ function wymEqual(wymeditor, expected, options) {
             // breaks and list type elements should be removed in old versions
             // of Internet Explorer (i.e. IE7,8).
             fixListSpacing: false,
-            skipParser: false
+            parseHtml: false
         },
         normedActual = '',
         listTypeOptions,
@@ -215,10 +213,10 @@ function wymEqual(wymeditor, expected, options) {
 
     options = jQuery.extend({}, defaults, options);
 
-    if (options.skipParser) {
-        tmpNodes = wymeditor.$body().contents();
-    } else {
+    if (options.parseHtml === true) {
         tmpNodes = jQuery(wymeditor.html());
+    } else {
+        tmpNodes = wymeditor.$body().contents();
     }
 
     for (i = 0; i < tmpNodes.length; i++) {
@@ -459,7 +457,7 @@ function isContentEditable(element) {
     Given an array of HTML strings, for each string, load it into a
     the WYMeditor and assert that the output is exactly the same.
 */
-function testNoChangeInHtmlArray(htmlArray) {
+function testNoChangeInHtmlArray(htmlArray, parseHtml) {
     var wymeditor = jQuery.wymeditors(0),
         i,
         html;
@@ -472,10 +470,94 @@ function testNoChangeInHtmlArray(htmlArray) {
         wymeditor.rawHtml(html);
         wymEqual(
             wymeditor,
-            html, {
+            html,
+            {
                 assertionString: 'Variation ' + (i + 1) + ' of ' +
-                    htmlArray.length
+                    htmlArray.length,
+                parseHtml: parseHtml
             }
         );
     }
+}
+
+/**
+ * testWymManipulation
+ * ===================
+ *
+ * Test WYMeditor.
+ *
+ * @param a An object, containing:
+ *     `testName`
+ *         A name for the test.
+ *     `startHtml`
+ *         HTML to start the test with. Required if `expectedStartHtml` is not
+ *         used.
+ *     `setCaretInSelector`
+ *         Optional; jQuery selector for an element to set the caret in at the
+ *         start of the test.
+ *     `prepareFunc`
+ *         Optional; A function to prepare the test. Receives one argument, the
+ *         WYMeditor instance.
+ *     `expectedStartHtml`
+ *         The HTML that is expected to be the state of the document after the
+ *         `prepareFunc` ran. If this is not provided, the value of `startHtml`
+ *         will be used.
+ *     `manipulationFunc`
+ *         Optional; The manipulation function to be tested. Receives one
+ *         argument, the WYMeditor instance.
+ *     `expectedResultHtml`
+ *         The HTML that is expected to be the state of the document after the
+ *         `manipulationFunc` ran.
+ *     `additionalAssertionsFunc`
+ *         Optional; Additional assertions for after the `manipulationFunc`.
+ *     `parseHtml`
+ *         Optional; Passed on to `wymEqual` as `options.parseHtml`. Defaults
+ *         to `false`.
+ */
+function testWymManipulation(a) {
+    test(a.testName, function () {
+        var wymeditor = jQuery.wymeditors(0);
+        if (typeof a.startHtml === 'string') {
+            wymeditor.html(a.startHtml);
+        }
+        if (typeof a.setCaretInSelector === 'string') {
+            wymeditor.setCaretIn(
+                wymeditor.$body().find(a.setCaretInSelector)[0]
+            );
+        }
+        if (typeof a.prepareFunc === 'function') {
+            a.prepareFunc(wymeditor);
+        }
+        expect(1);
+        wymEqual(
+            wymeditor,
+            a.expectedStartHtml || a.startHtml,
+            {
+                assertionString: "Start HTML.",
+                parseHtml: typeof a.parseHtml === 'undefined' ? false :
+                    a.parseHtml
+            }
+        );
+
+        if (typeof a.manipulationFunc === 'function') {
+            a.manipulationFunc(wymeditor);
+        }
+
+        if (typeof a.expectedResultHtml === 'string') {
+            expect(expect() + 1);
+            wymEqual(
+                wymeditor,
+                a.expectedResultHtml,
+                {
+                    assertionString: "Manipulation result HTML.",
+                    parseHtml: typeof a.parseHtml === 'undefined' ? false :
+                        a.parseHtml
+                }
+            );
+        }
+
+        if (typeof a.additionalAssertionsFunc === 'function') {
+            a.additionalAssertionsFunc(wymeditor);
+        }
+    });
 }
