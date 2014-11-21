@@ -5,7 +5,7 @@
     testNoChangeInHtmlArray,
     makeTextSelection,
     moveSelector,
-    testWym
+    testWymManipulation
 */
 /* global
     rangy,
@@ -481,8 +481,8 @@ function testNoChangeInHtmlArray(htmlArray, parseHtml) {
 }
 
 /**
- * testWym
- * =======
+ * testWymManipulation
+ * ===================
  *
  * Test WYMeditor.
  *
@@ -514,7 +514,7 @@ function testNoChangeInHtmlArray(htmlArray, parseHtml) {
  *         Optional; Passed on to `wymEqual` as `options.parseHtml`. Defaults
  *         to `false`.
  */
-function testWym(a) {
+function testWymManipulation(a) {
     test(a.testName, function () {
         var wymeditor = jQuery.wymeditors(0);
         if (typeof a.startHtml === 'string') {

@@ -17,7 +17,7 @@
     normalizeHtml,
     ListPlugin,
     asyncTest,
-    testWym
+    testWymManipulation
 */
 /* exported
 setupWym,
@@ -156,7 +156,7 @@ test("Instantiate", function () {
               "Type of first WYMeditor instance, using jQuery.wymeditors(0)");
 });
 
-testWym({
+testWymManipulation({
     testName: "Empty document is a single `br`.",
     startHtml: "",
     expectedStartHtml: "<br />",
