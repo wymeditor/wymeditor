@@ -31,7 +31,10 @@ var keepAttributes = [
     'rowspan',
     'src',
     'alt',
-    'href'
+    'href',
+    'summary',
+    'title',
+    'target'
 ];
 
 /**
