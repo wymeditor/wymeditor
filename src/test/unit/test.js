@@ -160,8 +160,7 @@ testWym({
     testName: "Empty document is a single `br`.",
     startHtml: "",
     expectedStartHtml: "<br />",
-    expectedResultHtml: "<br />",
-    skipParser: true
+    expectedResultHtml: "<br />"
 });
 
 module("API", {setup: prepareUnitTestModule});
@@ -1009,8 +1008,7 @@ if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
         setupTable(wymeditor, listForTableInsertion, '#li_2', 'text',
                    1, 1, 'test_1');
         wymEqual(wymeditor, expectedMiddleOutFull, {
-            assertionString: "Table insertion in the middle of a list with text selection",
-            skipParser: true
+            assertionString: "Table insertion in the middle of a list with text selection"
         });
     });
 
@@ -1021,8 +1019,7 @@ if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
         setupTable(
             wymeditor, listForTableInsertion, '#li_3', 'text', 1, 1, 'test_1');
         wymEqual(wymeditor, expectedEndOut, {
-                assertionString: "Table insertion at the end of a list with text selection",
-                skipParser: true
+                assertionString: "Table insertion at the end of a list with text selection"
             });
     });
 
@@ -1033,8 +1030,7 @@ if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
         setupTable(wymeditor, listForTableInsertion, '#li_2', 'collapsed',
                    1, 1, 'test_1');
         wymEqual(wymeditor, expectedMiddleOutFull, {
-            assertionString: "Table insertion in the middle of a list with collapsed selection",
-            skipParser: true
+            assertionString: "Table insertion in the middle of a list with collapsed selection"
         });
     });
 
@@ -1045,8 +1041,7 @@ if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
         setupTable(wymeditor, listForTableInsertion, '#li_3', 'collapsed',
                    1, 1, 'test_1');
         wymEqual(wymeditor, expectedEndOut, {
-            assertionString: "Table insertion at the end of a list with collapsed selection",
-            skipParser: true
+            assertionString: "Table insertion at the end of a list with collapsed selection"
         });
     });
 
@@ -1060,16 +1055,14 @@ if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
         setupTable(wymeditor, expectedListOneTable, '#t1_1_1', 'collapsed',
                    1, 1, 'test_2');
         wymEqual(wymeditor, expectedListTwoTables, {
-            assertionString: "Table insertion with selection inside a td element in a list",
-            skipParser: true
+            assertionString: "Table insertion with selection inside a td element in a list"
         });
 
         // Try insert in th element
         setupTable(wymeditor, expectedListOneTable, '#t1_h_1', 'collapsed',
                    1, 1, 'test_2');
         wymEqual(wymeditor, expectedListTwoTables, {
-            assertionString: "Table insertion with selection inside a th element in a list",
-            skipParser: true
+            assertionString: "Table insertion with selection inside a th element in a list"
         });
 
         // Try insert in caption element
@@ -1077,8 +1070,7 @@ if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
                    1, 1, 'test_2');
         wymEqual(wymeditor, expectedListTwoTables, {
             assertionString: "Table insertion with selection inside a caption element " +
-               "in a list",
-            skipParser: true
+               "in a list"
         });
     });
 
@@ -1089,8 +1081,7 @@ if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
         setupTable(wymeditor, expectedListOneTable, '#li_3', 'node',
                    1, 1, 'test_2');
         wymEqual(wymeditor, expectedListTwoTables, {
-            assertionString: "Table insertion with direct selection of list item node",
-            skipParser: true
+            assertionString: "Table insertion with direct selection of list item node"
         });
     });
 }
@@ -1104,8 +1095,7 @@ test("Single table insertion into a sublist", function () {
     setupTable(wymeditor, sublistForTableInsertion, '#li_2', 'text',
                1, 1, 'test_1');
     wymEqual(wymeditor, expectedSublistOneTable, {
-        assertionString: "Single table insertion within a sublist",
-        skipParser: true
+        assertionString: "Single table insertion within a sublist"
     });
 });
 
@@ -1116,8 +1106,7 @@ test("Double table insertion into a sublist", function () {
     setupTable(wymeditor, expectedSublistOneTable, '#li_2', 'text',
                2, 1, 'test_2');
     wymEqual(wymeditor, expectedSublistTwoTables, {
-        assertionString: "Double table insertion within a sublist",
-        skipParser: true
+        assertionString: "Double table insertion within a sublist"
     });
 });
 
@@ -1128,8 +1117,7 @@ test("Triple table insertion into a sublist", function () {
     setupTable(wymeditor, expectedSublistTwoTables, '#li_2', 'text',
                3, 1, 'test_3');
     wymEqual(wymeditor, expectedSublistThreeTables, {
-        assertionString: "Triple table insertion within a sublist",
-        skipParser: true
+        assertionString: "Triple table insertion within a sublist"
     });
 });
 

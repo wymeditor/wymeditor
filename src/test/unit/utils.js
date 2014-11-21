@@ -510,9 +510,9 @@ function testNoChangeInHtmlArray(htmlArray, parseHtml) {
  *         `manipulationFunc` ran.
  *     `additionalAssertionsFunc`
  *         Optional; Additional assertions for after the `manipulationFunc`.
- *     `skipParser`
- *         Optional; Passed on to `wymEqual` as `options.skipParser`. Defaults
- *         to `true`.
+ *     `parseHtml`
+ *         Optional; Passed on to `wymEqual` as `options.parseHtml`. Defaults
+ *         to `false`.
  */
 function testWym(a) {
     test(a.testName, function () {
@@ -534,8 +534,8 @@ function testWym(a) {
             a.expectedStartHtml || a.startHtml,
             {
                 assertionString: "Start HTML.",
-                skipParser: typeof a.skipParser === 'undefined' ? true :
-                    a.skipParser
+                parseHtml: typeof a.parseHtml === 'undefined' ? false :
+                    a.parseHtml
             }
         );
 
@@ -550,8 +550,8 @@ function testWym(a) {
                 a.expectedResultHtml,
                 {
                     assertionString: "Manipulation result HTML.",
-                    skipParser: typeof a.skipParser === 'undefined' ? true :
-                        a.skipParser
+                    parseHtml: typeof a.parseHtml === 'undefined' ? false :
+                        a.parseHtml
                 }
             );
         }
