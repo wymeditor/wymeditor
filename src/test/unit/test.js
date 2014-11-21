@@ -6,6 +6,8 @@
     test,
     expect,
     deepEqual,
+    equal,
+    inPhantomjs,
     sinon,
     strictEqual,
     wymEqual,
@@ -15,7 +17,7 @@
     normalizeHtml,
     ListPlugin,
     asyncTest,
-    testWym
+    testWymManipulation
 */
 /* exported
 setupWym,
@@ -154,12 +156,11 @@ test("Instantiate", function () {
               "Type of first WYMeditor instance, using jQuery.wymeditors(0)");
 });
 
-testWym({
+testWymManipulation({
     testName: "Empty document is a single `br`.",
     startHtml: "",
     expectedStartHtml: "<br />",
-    expectedResultHtml: "<br />",
-    skipParser: true
+    expectedResultHtml: "<br />"
 });
 
 module("API", {setup: prepareUnitTestModule});
@@ -222,6 +223,7 @@ var nestedListHtml = String() +
         '</ol>';
 
 var basicTableHtml = String() +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<table>' +
             '<tbody>' +
                 '<tr id="tr_1">' +
@@ -240,7 +242,8 @@ var basicTableHtml = String() +
                     '<td id="td_3_3">3_3</td>' +
                 '</tr>' +
             '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var complexCopyText = String() +
         'sentence\r\n' +
@@ -270,7 +273,8 @@ var body_complexInsertionHtml = String() +
         '</p>' +
         '<p>' +
             'gap2' +
-        '</p>';
+        '</p>' +
+        '<br />';
 
 var h2_1_complexInsertionHtml = String() +
         '<h2 id="h2_1">' +
@@ -1004,8 +1008,7 @@ if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
         setupTable(wymeditor, listForTableInsertion, '#li_2', 'text',
                    1, 1, 'test_1');
         wymEqual(wymeditor, expectedMiddleOutFull, {
-            assertionString: "Table insertion in the middle of a list with text selection",
-            skipParser: true
+            assertionString: "Table insertion in the middle of a list with text selection"
         });
     });
 
@@ -1016,8 +1019,7 @@ if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
         setupTable(
             wymeditor, listForTableInsertion, '#li_3', 'text', 1, 1, 'test_1');
         wymEqual(wymeditor, expectedEndOut, {
-                assertionString: "Table insertion at the end of a list with text selection",
-                skipParser: true
+                assertionString: "Table insertion at the end of a list with text selection"
             });
     });
 
@@ -1028,8 +1030,7 @@ if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
         setupTable(wymeditor, listForTableInsertion, '#li_2', 'collapsed',
                    1, 1, 'test_1');
         wymEqual(wymeditor, expectedMiddleOutFull, {
-            assertionString: "Table insertion in the middle of a list with collapsed selection",
-            skipParser: true
+            assertionString: "Table insertion in the middle of a list with collapsed selection"
         });
     });
 
@@ -1040,8 +1041,7 @@ if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
         setupTable(wymeditor, listForTableInsertion, '#li_3', 'collapsed',
                    1, 1, 'test_1');
         wymEqual(wymeditor, expectedEndOut, {
-            assertionString: "Table insertion at the end of a list with collapsed selection",
-            skipParser: true
+            assertionString: "Table insertion at the end of a list with collapsed selection"
         });
     });
 
@@ -1055,16 +1055,14 @@ if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
         setupTable(wymeditor, expectedListOneTable, '#t1_1_1', 'collapsed',
                    1, 1, 'test_2');
         wymEqual(wymeditor, expectedListTwoTables, {
-            assertionString: "Table insertion with selection inside a td element in a list",
-            skipParser: true
+            assertionString: "Table insertion with selection inside a td element in a list"
         });
 
         // Try insert in th element
         setupTable(wymeditor, expectedListOneTable, '#t1_h_1', 'collapsed',
                    1, 1, 'test_2');
         wymEqual(wymeditor, expectedListTwoTables, {
-            assertionString: "Table insertion with selection inside a th element in a list",
-            skipParser: true
+            assertionString: "Table insertion with selection inside a th element in a list"
         });
 
         // Try insert in caption element
@@ -1072,8 +1070,7 @@ if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
                    1, 1, 'test_2');
         wymEqual(wymeditor, expectedListTwoTables, {
             assertionString: "Table insertion with selection inside a caption element " +
-               "in a list",
-            skipParser: true
+               "in a list"
         });
     });
 
@@ -1084,8 +1081,7 @@ if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
         setupTable(wymeditor, expectedListOneTable, '#li_3', 'node',
                    1, 1, 'test_2');
         wymEqual(wymeditor, expectedListTwoTables, {
-            assertionString: "Table insertion with direct selection of list item node",
-            skipParser: true
+            assertionString: "Table insertion with direct selection of list item node"
         });
     });
 }
@@ -1099,8 +1095,7 @@ test("Single table insertion into a sublist", function () {
     setupTable(wymeditor, sublistForTableInsertion, '#li_2', 'text',
                1, 1, 'test_1');
     wymEqual(wymeditor, expectedSublistOneTable, {
-        assertionString: "Single table insertion within a sublist",
-        skipParser: true
+        assertionString: "Single table insertion within a sublist"
     });
 });
 
@@ -1111,8 +1106,7 @@ test("Double table insertion into a sublist", function () {
     setupTable(wymeditor, expectedSublistOneTable, '#li_2', 'text',
                2, 1, 'test_2');
     wymEqual(wymeditor, expectedSublistTwoTables, {
-        assertionString: "Double table insertion within a sublist",
-        skipParser: true
+        assertionString: "Double table insertion within a sublist"
     });
 });
 
@@ -1123,8 +1117,7 @@ test("Triple table insertion into a sublist", function () {
     setupTable(wymeditor, expectedSublistTwoTables, '#li_2', 'text',
                3, 1, 'test_3');
     wymEqual(wymeditor, expectedSublistThreeTables, {
-        assertionString: "Triple table insertion within a sublist",
-        skipParser: true
+        assertionString: "Triple table insertion within a sublist"
     });
 });
 
@@ -1137,26 +1130,27 @@ test("Parse list with a table at the end", function () {
     var wymeditor = jQuery.wymeditors(0);
 
     wymeditor.rawHtml(expectedEndOut);
-    wymEqual(wymeditor, startEndOutNoBR);
+    wymEqual(wymeditor, startEndOutNoBR, {parseHtml: true});
 });
 
 test("Parse list with a table at the end in a sublist", function () {
     var wymeditor = jQuery.wymeditors(0);
 
     wymeditor.rawHtml(expectedEndIn);
-    wymEqual(wymeditor, startEndInNoBR);
+    wymEqual(wymeditor, startEndInNoBR, {parseHtml: true});
 });
 
 test("Parse list with multiple tables in a sublist", function () {
     var wymeditor = jQuery.wymeditors(0);
 
     wymeditor.rawHtml(expectedSublistThreeTables);
-    wymEqual(wymeditor, sublistThreeTablesNoBR);
+    wymEqual(wymeditor, sublistThreeTablesNoBR, {parseHtml: true});
 });
 
 module("table-td_th_switching", {setup: prepareUnitTestModule});
 
 var tableWithColspanTD = String() +
+    '<br class="wym-blocking-element-spacer wym-editor-only" />' +
     '<table>' +
         '<caption>test_1</caption>' +
         '<tbody>' +
@@ -1168,9 +1162,11 @@ var tableWithColspanTD = String() +
                 '<td>2_2</td>' +
             '</tr>' +
         '</tbody>' +
-    '</table>';
+    '</table>' +
+    '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 var tableWithColspanTH = String() +
+    '<br class="wym-blocking-element-spacer wym-editor-only" />' +
     '<table>' +
         '<caption>test_1</caption>' +
         '<tbody>' +
@@ -1182,7 +1178,8 @@ var tableWithColspanTH = String() +
                 '<td>2_2</td>' +
             '</tr>' +
         '</tbody>' +
-    '</table>';
+    '</table>' +
+    '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 test("Colspan preserved when switching from td to th", function () {
     expect(1);
@@ -1255,6 +1252,7 @@ test("Double soft returns are allowed", function () {
     wymEqual(wymeditor, initHtml);
 });
 
+
 module("header-no_span", {setup: prepareUnitTestModule});
 
 /**
@@ -1323,7 +1321,7 @@ test("Can set and get html with the html() function", function () {
 
 module("selection", {setup: prepareUnitTestModule});
 
-testWym({
+testWymManipulation({
     testName: "There is no selection.",
     startHtml: "<br />",
     prepareFunc: function (wymeditor) {
@@ -1339,7 +1337,7 @@ testWym({
     }
 });
 
-testWym({
+testWymManipulation({
     testName: "There is a selection.",
     startHtml: "<br />",
     prepareFunc: function (wymeditor) {

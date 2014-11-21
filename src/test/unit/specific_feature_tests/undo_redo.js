@@ -7,7 +7,7 @@
     expect,
     equal,
     ok,
-    testWym
+    testWymManipulation
 */
 "use strict";
 
@@ -41,11 +41,11 @@
  *         `manipulationFunc` ran.
  *     `additionalAssertionsFunc`
  *         Optional; Additional assertions for after the `manipulationFunc`.
- *     `skipParser`
- *         Optional; Passed on to `testWym`. Defaults to `true`.
+ *     `parseHtml`
+ *         Optional; Passed on to `testWymManipulation`. Defaults to `false`.
  */
 function testUndoRedo(a) {
-    testWym({
+    testWymManipulation({
         testName: a.testName,
         startHtml: a.startHtml,
         setCaretInSelector: a.setCaretInSelector,
@@ -62,8 +62,8 @@ function testUndoRedo(a) {
                     a.expectedResultHtml,
                     {
                         assertionString: "Manipulation result HTML.",
-                        skipParser: typeof a.skipParser === 'undefined' ?
-                            true : a.skipParser
+                        parseHtml: typeof a.parseHtml === 'undefined' ?
+                            false : a.parseHtml
                     }
                 );
             }
@@ -78,8 +78,8 @@ function testUndoRedo(a) {
                 a.expectedStartHtml || a.startHtml,
                 {
                     assertionString: "After undo HTML.",
-                    skipParser: typeof a.skipParser === 'undefined' ?
-                        true : a.skipParser
+                    parseHtml: typeof a.parseHtml === 'undefined' ?
+                        false : a.parseHtml
                 }
             );
 
@@ -88,7 +88,7 @@ function testUndoRedo(a) {
         },
         expectedResultHtml: a.expectedResultHtml,
         additionalAssertionsFunc: a.additionalAssertionsFunc,
-        skipParser: a.skipParser
+        parseHtml: a.parseHtml
     });
 }
 
@@ -111,7 +111,7 @@ testUndoRedo({
         wymeditor.exec("Bold");
     },
     expectedResultHtml: "<p><strong>Foo</strong></p>",
-    skipParser: false
+    parseHtml: true
 });
 
 testUndoRedo({
@@ -198,8 +198,7 @@ testUndoRedo({
     manipulationFunc: function (wymeditor) {
         wymeditor.exec("InsertOrderedList");
     },
-    expectedResultHtml: "<ol><li>Foo</li></ol>",
-    skipParser: false
+    expectedResultHtml: "<ol><li>Foo</li></ol>"
 });
 
 testUndoRedo({
@@ -209,8 +208,7 @@ testUndoRedo({
     manipulationFunc: function (wymeditor) {
         wymeditor.exec("InsertUnorderedList");
     },
-    expectedResultHtml: "<ul><li>Foo</li></ul>",
-    skipParser: false
+    expectedResultHtml: "<ul><li>Foo</li></ul>"
 });
 
 testUndoRedo({
@@ -286,16 +284,25 @@ testUndoRedo({
 
 testUndoRedo({
     testName: "Insert table",
-    startHtml: "",
+    startHtml: "<br />",
     prepareFunc: function (wymeditor) {
         wymeditor.setCaretIn(wymeditor.body());
     },
     manipulationFunc: function (wymeditor) {
         wymeditor.insertTable(1, 1, "foo", "bar");
     },
-    expectedResultHtml: "<table summary=\"bar\"><caption>foo</caption>" +
-        "<tbody><tr><td></td></tr></tbody></table>",
-    skipParser: false
+    expectedResultHtml: [""
+        , "<br />"
+        , "<table summary=\"bar\">"
+            , "<caption>foo</caption>"
+            , "<tbody>"
+                , "<tr>"
+                    , "<td></td>"
+                , "</tr>"
+            , "</tbody>"
+        , "</table>"
+        , "<br class=\"wym-blocking-element-spacer wym-editor-only\" />"
+    ].join("")
 });
 
 testUndoRedo({
@@ -346,7 +353,7 @@ testUndoRedo({
     expectedResultHtml: "<p>Foo</p><p>Bar</p>"
 });
 
-testWym({
+testWymManipulation({
     testName: "Redo when everything has been redone",
     startHtml: "<p>Foo</p>",
     prepareFunc: function (wymeditor) {
@@ -360,8 +367,7 @@ testWym({
             wymeditor,
             "<p>Foo</p><p>Bar</p>",
             {
-                assertionString: "Performed and registered a change.",
-                skipParser: true
+                assertionString: "Performed and registered a change."
             }
         );
 
@@ -370,8 +376,7 @@ testWym({
             wymeditor,
             "<p>Foo</p>",
             {
-                assertionString: "Undid change.",
-                skipParser: true
+                assertionString: "Undid change."
             }
         );
 
@@ -380,8 +385,7 @@ testWym({
             wymeditor,
             "<p>Foo</p><p>Bar</p>",
             {
-                assertionString: "Redid change.",
-                skipParser: true
+                assertionString: "Redid change."
             }
         );
 
@@ -391,7 +395,7 @@ testWym({
     expectedResultHtml: "<p>Foo</p><p>Bar</p>"
 });
 
-testWym({
+testWymManipulation({
     testName: "Toolbar buttons",
     startHtml: "<p>Foo</p>",
     prepareFunc: function (wymeditor) {
@@ -409,8 +413,7 @@ testWym({
             wymeditor,
             "<p>Foo</p><p>Bar</p>",
             {
-                assertionString: "Made change and registered it.",
-                skipParser: true
+                assertionString: "Made change and registered it."
             }
         );
 
@@ -419,8 +422,7 @@ testWym({
             wymeditor,
             "<p>Foo</p>",
             {
-                assertionString: "Undo by button click.",
-                skipParser: true
+                assertionString: "Undo by button click."
             }
         );
 
@@ -429,14 +431,13 @@ testWym({
             wymeditor,
             "<p>Foo</p><p>Bar</p>",
             {
-                assertionString: "Redo by button click.",
-                skipParser: true
+                assertionString: "Redo by button click."
             }
         );
     }
 });
 
-testWym({
+testWymManipulation({
     testName: "Nothing to redo after change",
     startHtml: "<p>Foo</p>",
     prepareFunc: function (wymeditor) {
@@ -451,8 +452,7 @@ testWym({
             wymeditor,
             "<p>Foo</p><p>Bar</p>",
             {
-                assertionString: "Made change and registered it.",
-                skipParser: true
+                assertionString: "Made change and registered it."
             }
         );
 
@@ -461,8 +461,7 @@ testWym({
             wymeditor,
             "<p>Foo</p>",
             {
-                assertionString: "Undid.",
-                skipParser: true
+                assertionString: "Undid."
             }
         );
 
