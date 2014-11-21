@@ -367,7 +367,7 @@ StructuredHeadingsManager.prototype.changeSelectedHeadingsLevel = function (
                                  WYMeditor.HEADING_ELEMENTS);
             shm.changeHeadingLevel(heading, upOrDown);
         } else {
-            $selectedNodes = jQuery(wym.getSelectedNodes());
+            $selectedNodes = jQuery(wym._getSelectedNodes());
             $headingList = $selectedNodes.filter(shm._fullHeadingSel);
             if (!$headingList.length && $selectedNodes.length) {
                 // If there are some nodes in the range, but none of the are

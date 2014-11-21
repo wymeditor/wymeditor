@@ -2865,7 +2865,7 @@ WYMeditor.editor.prototype.deselect = function () {
 };
 
 /**
-    editor.getSelectedNodes
+    editor._getSelectedNodes
     ========================
 
     Returns an array of the selected and partially selected nodes.
@@ -2874,7 +2874,7 @@ WYMeditor.editor.prototype.deselect = function () {
 
 Returns false if there is no selection.
 */
-WYMeditor.editor.prototype.getSelectedNodes = function () {
+WYMeditor.editor.prototype._getSelectedNodes = function () {
     var wym = this,
         selection = wym.selection(),
         selectedNodes;
@@ -2919,7 +2919,7 @@ WYMeditor.editor.prototype._getSelectedListItems = function (selection) {
     }
 
     // All the selected nodes in the selection's first range.
-    $selectedNodes = jQuery(wym.getSelectedNodes());
+    $selectedNodes = jQuery(wym._getSelectedNodes());
 
     if ($selectedNodes.closest('li, table').filter('li').length === 0) {
         // Selection is in a table before it is in a list. This prevents
@@ -3182,7 +3182,7 @@ WYMeditor.editor.prototype._insertOrderedList = function () {
         // have multiple root-level lists or even `li` items (which shouldn't
         // happen) selected. This code seems to make our tests pass but this
         // should be considered broken.
-        var potentialListBlock = jQuery(wym.getSelectedNodes())
+        var potentialListBlock = jQuery(wym._getSelectedNodes())
                 .parents().addBack().filter('ol, ul, li').last()[0];
         potentialListBlock = potentialListBlock || wym.selectedContainer();
         return wym._fixInvalidListNesting(potentialListBlock);
@@ -3223,7 +3223,7 @@ WYMeditor.editor.prototype._insertUnorderedList = function () {
         // have multiple root-level lists or even `li` items (which shouldn't
         // happen) selected. This code seems to make our tests pass but this
         // should be considered broken.
-        var potentialListBlock = jQuery(wym.getSelectedNodes())
+        var potentialListBlock = jQuery(wym._getSelectedNodes())
                 .parents().addBack().filter('ol, ul, li').last()[0];
         potentialListBlock = potentialListBlock || wym.selectedContainer();
         return wym._fixInvalidListNesting(potentialListBlock);

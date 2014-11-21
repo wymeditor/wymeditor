@@ -187,13 +187,6 @@ Returns ``false`` if no selection.
 
 This is currently supposed to be used with a collapsed selection only.
 
-``getSelectedNodes()``
-======================
-
-Returns an array of the selected and partially selected nodes.
-
-Returns false if there is no selection.
-
 ``getRootContainer()``
 ======================
 

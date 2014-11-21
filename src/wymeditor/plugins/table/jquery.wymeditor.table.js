@@ -391,7 +391,7 @@ TableEditor.prototype.mergeRow = function () {
         newContent,
         combinedColspan;
 
-    nodes = wym.getSelectedNodes();
+    nodes = wym._getSelectedNodes();
 
     // Clear the ranges in selection so that it can be moved later
     rangy.getIframeSelection(wym._iframe).removeAllRanges();

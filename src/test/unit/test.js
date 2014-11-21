@@ -1653,7 +1653,7 @@ test("Set and get collapsed selection", function () {
     }
 });
 
-module("selection-getSelectedNodes", {setup: prepareUnitTestModule});
+module("selection-_getSelectedNodes", {setup: prepareUnitTestModule});
 
 testWymManipulation({
     testName: "No selection",
@@ -1664,7 +1664,7 @@ testWymManipulation({
     additionalAssertionsFunc: function (wymeditor) {
         expect(expect() + 1);
         deepEqual(
-            wymeditor.getSelectedNodes(),
+            wymeditor._getSelectedNodes(),
             false
         );
     }
@@ -1679,7 +1679,7 @@ testWymManipulation({
     additionalAssertionsFunc: function (wymeditor) {
         expect(expect() + 1);
         deepEqual(
-            wymeditor.getSelectedNodes(),
+            wymeditor._getSelectedNodes(),
             []
         );
     }
@@ -1737,7 +1737,7 @@ testWymManipulation({
     additionalAssertionsFunc: function (wymeditor) {
         expect(expect() + 3);
         var body = wymeditor.body(),
-            selectedNodes = wymeditor.getSelectedNodes();
+            selectedNodes = wymeditor._getSelectedNodes();
         deepEqual(
             selectedNodes.length,
             2
@@ -1767,7 +1767,7 @@ testWymManipulation({
     additionalAssertionsFunc: function (wymeditor) {
         expect(expect() + 1);
         deepEqual(
-            wymeditor.getSelectedNodes(),
+            wymeditor._getSelectedNodes(),
             [wymeditor.body().childNodes[0]]
         );
     }
@@ -1788,7 +1788,7 @@ testWymManipulation({
     },
     additionalAssertionsFunc: function (wymeditor) {
         expect(expect() + 5);
-        var selectedNodes = wymeditor.getSelectedNodes();
+        var selectedNodes = wymeditor._getSelectedNodes();
         deepEqual(
             selectedNodes.length,
             4
