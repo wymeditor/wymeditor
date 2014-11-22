@@ -484,9 +484,9 @@ test("Body- Direct Paste", function () {
     expect(2);
     testPaste(
         '', // No selector. Just the body
-        '', // No HTML to start
+        '<br />', // An empty document to start
         complexCopyText,
-        '.*', // Replace everything with our expected HTML
+        '<br />', // Replace everything with our expected HTML
         body_complexInsertionHtml
     );
 });
