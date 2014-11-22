@@ -158,7 +158,9 @@ test("Instantiate", function () {
 
 testWymManipulation({
     testName: "Empty document is a single `br`.",
-    startHtml: "",
+    prepareFunc: function (wymeditor) {
+        wymeditor.emptyDocument();
+    },
     expectedStartHtml: "<br />",
     expectedResultHtml: "<br />"
 });
