@@ -28,7 +28,7 @@ jQuery.copyPropsFromObjectToObject(
 );
 
 // Some tests fail in what seems to be an edge case of selection corruption.
-// This method makes those tests pass. ]
+// This method makes those tests pass.
 // It seems to be an issue with Rangy and IE11.
 WYMeditor.WymClassTrident7.prototype.rawHtml = function (html) {
     var wym = this;
