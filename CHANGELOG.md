@@ -10,7 +10,7 @@ WYMeditor.
 ### Backwards-Incompatible Changes
 
 * [#613](https://github.com/wymeditor/wymeditor/pull/613)
-  ``editor.setSingleSelectionRange`` is not longer public API.
+  ``editor.setSingleSelectionRange`` is no longer public API.
 
 ## 1.0.0-rc.1
 
