@@ -544,7 +544,6 @@ WYMeditor.editor.prototype.rawHtml = function (html) {
     if (typeof html === 'string') {
         wym.$body().html(html);
         wym.update();
-        wym.prepareDocForEditing();
     } else {
         return wym.$body().html();
     }
