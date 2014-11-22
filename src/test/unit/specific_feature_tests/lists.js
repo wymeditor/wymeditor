@@ -1671,6 +1671,7 @@ test("Invalid nesting correction requiring spacer", function () {
         expectedHtml = invalidNestingNoPreviousCorrectedHtml;
 
     wymeditor.rawHtml(startHtml);
+    wymeditor.prepareDocForEditing();
     $body = wymeditor.$body();
     actionLi = $body.find('#li_2_2')[0];
 
@@ -2600,6 +2601,7 @@ var listWithTableHtml = [""
                     , '</tr>'
                 , '</tbody>'
             , '</table>'
+            , '<br class="wym-blocking-element-spacer wym-editor-only" />'
         , '</li>'
     , '</ul>'
 ].join('');
@@ -2995,8 +2997,6 @@ if (!(// Browser is IE and
                 '</li>' +
             '</ol>';
 
-    var startEndOutNoBR = expectedEndOut.replace(TEST_LINEBREAK_SPACER, '');
-
     test("Indent with table in the middle of a list", function () {
         expect(1);
         var wymeditor = jQuery.wymeditors(0);
@@ -3020,7 +3020,7 @@ if (!(// Browser is IE and
             {assertionString: "Table indented at the end of a list"}
         );
 
-        changeIndent(wymeditor, startEndOutNoBR, '#li_3', '#li_3', 'indent');
+        changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'indent');
         wymEqual(
             wymeditor,
             expectedEndIn,
