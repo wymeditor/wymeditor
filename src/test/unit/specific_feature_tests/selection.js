@@ -257,6 +257,9 @@ test("Set and get collapsed selection", function () {
 });
 
 module("selection-_getSelectedNodes", {setup: prepareUnitTestModule});
+// `_getSelectedNodes` should be tested much more comprehensively than these 6
+// texts.
+// See https://github.com/wymeditor/wymeditor/issues/618.
 
 testWymManipulation({
     testName: "No selection",
@@ -325,54 +328,6 @@ testWymManipulation({
 });
 
 testWymManipulation({
-    testName: "Wholly selected element",
-    startHtml: "<p>Foo</p>",
-    prepareFunc: function (wymeditor) {
-        var p = wymeditor.body().childNodes[0],
-            range = rangy.createRange(wymeditor._doc);
-
-        range.selectNode(p);
-        wymeditor.selection().setSingleRange(range);
-    },
-    additionalAssertionsFunc: function (wymeditor) {
-        expect(expect() + 3);
-        var selectedNodes = wymeditor._getSelectedNodes();
-        strictEqual(
-            selectedNodes.length,
-            2
-        );
-        strictEqual(
-            selectedNodes[0].tagName.toLowerCase(),
-            "p"
-        );
-        strictEqual(
-            selectedNodes[1].data,
-            "Foo"
-        );
-    }
-});
-
-testWymManipulation({
-    testName: "Partially selected element",
-    startHtml: "<p>Foo</p>",
-    prepareFunc: function (wymeditor) {
-        var body = wymeditor.body(),
-            range = rangy.createRange(wymeditor._doc);
-
-        range.setStart(body, 0);
-        range.setEnd(body.childNodes[0], 0);
-        wymeditor.selection().setSingleRange(range);
-    },
-    additionalAssertionsFunc: function (wymeditor) {
-        expect(expect() + 1);
-        deepEqual(
-            wymeditor._getSelectedNodes(),
-            [wymeditor.body().childNodes[0]]
-        );
-    }
-});
-
-testWymManipulation({
     testName: "Two wholly selected text nodes",
     startHtml: "<p>Foo</p><p>Bar</p>",
     prepareFunc: function (wymeditor) {
@@ -411,3 +366,39 @@ testWymManipulation({
     }
 });
 
+testWymManipulation({
+    testName: "Two partially selected text nodes",
+    startHtml: "<p>Foo</p><p>Bar</p>",
+    prepareFunc: function (wymeditor) {
+        var body = wymeditor.body(),
+            range = rangy.createRange(wymeditor._doc);
+
+        range.setStart(body.childNodes[0].childNodes[0], 1);
+        range.setEnd(body.childNodes[1].childNodes[0], 1);
+        wymeditor.selection().setSingleRange(range);
+    },
+    additionalAssertionsFunc: function (wymeditor) {
+        expect(expect() + 5);
+        var selectedNodes = wymeditor._getSelectedNodes();
+        strictEqual(
+            selectedNodes.length,
+            4
+        );
+        strictEqual(
+            selectedNodes[0].tagName.toLowerCase(),
+            "p"
+        );
+        strictEqual(
+            selectedNodes[1].data,
+            "Foo"
+        );
+        strictEqual(
+            selectedNodes[2].tagName.toLowerCase(),
+            "p"
+        );
+        strictEqual(
+            selectedNodes[3].data,
+            "Bar"
+        );
+    }
+});
