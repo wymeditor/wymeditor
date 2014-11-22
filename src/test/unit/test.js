@@ -598,7 +598,7 @@ test("Table is editable after insertion", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         dm;
-    wymeditor.rawHtml('');
+    wymeditor.emptyDocument();
 
     $body = wymeditor.$body();
     wymeditor.setCaretIn($body[0]);
@@ -634,7 +634,7 @@ if (jQuery.browser.mozilla) {
 
         var wymeditor = jQuery.wymeditors(0),
             $body;
-        wymeditor.rawHtml('');
+        wymeditor.emptyDocument();
 
         $body = wymeditor.$body();
         wymeditor.insertTable(3, 2, '', '');
@@ -657,7 +657,7 @@ if (jQuery.browser.mozilla) {
         var wymeditor = jQuery.wymeditors(0),
             $body = wymeditor.$body();
 
-        wymeditor.rawHtml('');
+        wymeditor.emptyDocument();
         wymeditor.rawHtml(table_3_2_html);
         $body.find('td').each(function (index, td) {
             // Both FF 3.6 and 4.0 add spacer brs with design mode
