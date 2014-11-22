@@ -672,7 +672,9 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
             '<p>Content</p>' +
             '<h2 id="start_selection"><a href="http://google.com">Test</a></h2>' +
             '<p>Content</p>' +
+            '<br class="wym-blocking-element-spacer wym-editor-only" />' +
             '<pre>Preformatted Content</pre>' +
+            '<br class="wym-blocking-element-spacer wym-editor-only" />' +
                 '<h3>T<em>es</em>t</h3>' +
                 '<p>Content</p>' +
                 '<h3 id="end_selection">Te<span>st</span></h3>' +
@@ -902,7 +904,9 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
                             '<li>Test</li>' +
                         '</ul>' +
                         '<h5><span>Test</span></h5>' +
+                        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
                         '<pre>Preformatted Content</pre>' +
+                        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
                             '<h6>Test</h6>' +
                             '<p>Content</p>' +
                             '<h6>Test</h6>' +
@@ -1043,7 +1047,9 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
             '<p>Content</p>' +
             '<h2 id="start_selection"><a href="http://google.com">Test</a></h2>' +
             '<p>Content</p>' +
+            '<br class="wym-blocking-element-spacer wym-editor-only" />' +
             '<pre>Preformatted Content</pre>' +
+            '<br class="wym-blocking-element-spacer wym-editor-only" />' +
                 '<h3>T<em>es</em>t</h3>' +
                 '<p>Content</p>' +
                 '<h3 id="end_selection">Te<span>st</span></h3>' +
@@ -1277,7 +1283,9 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
             '<h2>Test</h2>' +
             '<p><em>Content</em></p>' +
             '<h2>Test</h2>' +
+            '<br class="wym-blocking-element-spacer wym-editor-only" />' +
             '<pre>Preformatted content</pre>' +
+            '<br class="wym-blocking-element-spacer wym-editor-only" />' +
                 '<h3>Test</h3>' +
                 '<p>Content</p>' +
                 '<h3>Te<sub>st</sub></h3>' +
