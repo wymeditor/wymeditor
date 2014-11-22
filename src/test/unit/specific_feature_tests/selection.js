@@ -5,6 +5,7 @@
     expect,
     deepEqual,
     strictEqual,
+    ok,
     prepareUnitTestModule,
     rangy
 */
@@ -20,10 +21,7 @@ testWymManipulation({
     },
     additionalAssertionsFunc: function (wymeditor) {
         expect(expect() + 1);
-        deepEqual(
-            wymeditor.hasSelection(),
-            false
-        );
+        ok(wymeditor.hasSelection() === false);
     }
 });
 
@@ -35,10 +33,7 @@ testWymManipulation({
     },
     additionalAssertionsFunc: function (wymeditor) {
         expect(expect() + 1);
-        deepEqual(
-            wymeditor.hasSelection(),
-            true
-        );
+        ok(wymeditor.hasSelection() === true);
     }
 });
 
@@ -271,10 +266,7 @@ testWymManipulation({
     },
     additionalAssertionsFunc: function (wymeditor) {
         expect(expect() + 1);
-        deepEqual(
-            wymeditor._getSelectedNodes(),
-            false
-        );
+        ok(wymeditor._getSelectedNodes() === false);
     }
 });
 
@@ -345,15 +337,15 @@ testWymManipulation({
     additionalAssertionsFunc: function (wymeditor) {
         expect(expect() + 3);
         var selectedNodes = wymeditor._getSelectedNodes();
-        deepEqual(
+        strictEqual(
             selectedNodes.length,
             2
         );
-        deepEqual(
+        strictEqual(
             selectedNodes[0].tagName.toLowerCase(),
             "p"
         );
-        deepEqual(
+        strictEqual(
             selectedNodes[1].data,
             "Foo"
         );
@@ -396,23 +388,23 @@ testWymManipulation({
     additionalAssertionsFunc: function (wymeditor) {
         expect(expect() + 5);
         var selectedNodes = wymeditor._getSelectedNodes();
-        deepEqual(
+        strictEqual(
             selectedNodes.length,
             4
         );
-        deepEqual(
+        strictEqual(
             selectedNodes[0].tagName.toLowerCase(),
             "p"
         );
-        deepEqual(
+        strictEqual(
             selectedNodes[1].data,
             "Foo"
         );
-        deepEqual(
+        strictEqual(
             selectedNodes[2].tagName.toLowerCase(),
             "p"
         );
-        deepEqual(
+        strictEqual(
             selectedNodes[3].data,
             "Bar"
         );
