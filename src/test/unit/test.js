@@ -163,6 +163,15 @@ testWymManipulation({
     expectedResultHtml: "<br />"
 });
 
+testWymManipulation({
+    testName: "`editor.emptyDocument`",
+    startHtml: "<p>Foo</p>",
+    manipulationFunc: function (wymeditor) {
+        wymeditor.emptyDocument();
+    },
+    expectedResultHtml: "<br />"
+});
+
 module("API", {setup: prepareUnitTestModule});
 
 test("Commands", function () {
