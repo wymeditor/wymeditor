@@ -1316,7 +1316,7 @@ if (!inPhantomjs || !SKIP_KNOWN_FAILING_TESTS) {
         // Mimic the way images are inserted by the insert image tool by first
         // inserting the image with its src set to a unique stamp for
         // identification rather than its actual src.
-        wymeditor.rawHtml('');
+        wymeditor.rawHtml('<br />');
         wymeditor.setCaretIn($body[0]);
         wymeditor._exec(WYMeditor.INSERT_IMAGE, imageStamp);
 
