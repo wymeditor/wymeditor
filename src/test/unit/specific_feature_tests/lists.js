@@ -3010,7 +3010,7 @@ if (!(// Browser is IE and
     });
 
     test("Indent with table at the end of a list", function () {
-        expect(2);
+        expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
         changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'indent');
@@ -3018,14 +3018,6 @@ if (!(// Browser is IE and
             wymeditor,
             expectedEndIn,
             {assertionString: "Table indented at the end of a list"}
-        );
-
-        changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'indent');
-        wymEqual(
-            wymeditor,
-            expectedEndIn,
-            {assertionString: "Table indented at the end of a list with no " +
-                "line break"}
         );
     });
 
