@@ -263,7 +263,8 @@ test("p + table + p has br spacers via table insertion", function () {
     wymEqual(wymeditor, pTablePHtml, {parseHtml: true});
 });
 
-test("p + table + table + p has br spacers via .prepareDocForEditing()", function () {
+test("p + table + table + p has br spacers via " +
+    ".prepareDocForEditing()", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
@@ -321,7 +322,8 @@ test("p + table + table + p has br spacers via table insertion", function () {
     wymEqual(wymeditor, pTableTablePHtml, {parseHtml: true});
 });
 
-test("h1 + blockquote + pre has br spacers via .prepareDocForEditing()", function () {
+test("h1 + blockquote + pre has br spacers via " +
+    ".prepareDocForEditing()", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
