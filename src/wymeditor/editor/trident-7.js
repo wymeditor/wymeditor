@@ -26,3 +26,19 @@ jQuery.copyPropsFromObjectToObject(
         '_wrapWithContainer'
     ]
 );
+
+// Some tests fail in what seems to be an edge case of selection corruption.
+// This method makes those tests pass. ]
+// It seems to be an issue with Rangy and IE11.
+WYMeditor.WymClassTrident7.prototype.rawHtml = function (html) {
+    var wym = this;
+
+    if (typeof html === "string") {
+        wym._doc.designMode = "off";
+        wym.$body().html(html);
+        wym._enableDesignModeOnIframe();
+    } else {
+        return wym.$body().html();
+    }
+    return false;
+};
