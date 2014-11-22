@@ -548,6 +548,20 @@ WYMeditor.editor.prototype.html = function (html) {
 };
 
 /**
+    WYMeditor.editor.emptyDocument
+    ==============================
+
+    Replaces the document with an empty HTML string
+    and prepares the document for editing.
+*/
+WYMeditor.editor.prototype.emptyDocument = function () {
+    var wym = this;
+
+    wym.rawHtml("");
+    wym.prepareDocForEditing();
+};
+
+/**
     WYMeditor.editor.exec
     =====================
 
