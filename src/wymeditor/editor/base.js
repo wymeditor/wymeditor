@@ -525,7 +525,6 @@ WYMeditor.editor.prototype.rawHtml = function (html) {
     if (typeof html === 'string') {
         wym.$body().html(html);
         wym.update();
-        wym.prepareDocForEditing();
     } else {
         return wym.$body().html();
     }
@@ -546,6 +545,20 @@ WYMeditor.editor.prototype.html = function (html) {
     } else {
         return wym.parser.parse(wym.rawHtml());
     }
+};
+
+/**
+    WYMeditor.editor.emptyDocument
+    ==============================
+
+    Replaces the document with an empty HTML string
+    and prepares the document for editing.
+*/
+WYMeditor.editor.prototype.emptyDocument = function () {
+    var wym = this;
+
+    wym.rawHtml("");
+    wym.prepareDocForEditing();
 };
 
 /**

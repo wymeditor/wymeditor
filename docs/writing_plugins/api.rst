@@ -34,8 +34,17 @@ Example:
 ``rawHtml(html)``
 =================
 
-Get or set raw HTML value. Value is not parsed. If you are not sure which one to
-use, html() will most likely be the answer.
+Get or set raw HTML value.
+Value is not parsed.
+After HTML insertion, document is not prepared for editing
+(``prepareDocForEditing()`` is not called).
+
+If you are not sure which one to use, ``html()`` will most likely be the answer.
+
+``emptyDocument()``
+===================
+
+Loads a new empty document into the editor, ready for editing.
 
 ``update()``
 ============

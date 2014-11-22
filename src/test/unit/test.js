@@ -158,8 +158,20 @@ test("Instantiate", function () {
 
 testWymManipulation({
     testName: "Empty document is a single `br`.",
-    startHtml: "",
+    // `startHtml` uses `editor.rawHtml()` We need `editor.html()`.
+    prepareFunc: function (wymeditor) {
+        wymeditor.html("");
+    },
     expectedStartHtml: "<br />",
+    expectedResultHtml: "<br />"
+});
+
+testWymManipulation({
+    testName: "`editor.emptyDocument`",
+    startHtml: "<p>Foo</p>",
+    manipulationFunc: function (wymeditor) {
+        wymeditor.emptyDocument();
+    },
     expectedResultHtml: "<br />"
 });
 
@@ -484,9 +496,9 @@ test("Body- Direct Paste", function () {
     expect(2);
     testPaste(
         '', // No selector. Just the body
-        '', // No HTML to start
+        '<br />', // An empty document to start
         complexCopyText,
-        '.*', // Replace everything with our expected HTML
+        '<br />', // Replace everything with our expected HTML
         body_complexInsertionHtml
     );
 });
@@ -589,7 +601,7 @@ test("Table is editable after insertion", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         dm;
-    wymeditor.rawHtml('');
+    wymeditor.emptyDocument();
 
     $body = wymeditor.$body();
     wymeditor.setCaretIn($body[0]);
@@ -625,7 +637,7 @@ if (jQuery.browser.mozilla) {
 
         var wymeditor = jQuery.wymeditors(0),
             $body;
-        wymeditor.rawHtml('');
+        wymeditor.emptyDocument();
 
         $body = wymeditor.$body();
         wymeditor.insertTable(3, 2, '', '');
@@ -648,7 +660,7 @@ if (jQuery.browser.mozilla) {
         var wymeditor = jQuery.wymeditors(0),
             $body = wymeditor.$body();
 
-        wymeditor.rawHtml('');
+        wymeditor.emptyDocument();
         wymeditor.rawHtml(table_3_2_html);
         $body.find('td').each(function (index, td) {
             // Both FF 3.6 and 4.0 add spacer brs with design mode
@@ -1316,7 +1328,7 @@ if (!inPhantomjs || !SKIP_KNOWN_FAILING_TESTS) {
         // Mimic the way images are inserted by the insert image tool by first
         // inserting the image with its src set to a unique stamp for
         // identification rather than its actual src.
-        wymeditor.rawHtml('');
+        wymeditor.emptyDocument();
         wymeditor.setCaretIn($body[0]);
         wymeditor._exec(WYMeditor.INSERT_IMAGE, imageStamp);
 

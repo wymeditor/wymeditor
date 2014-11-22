@@ -11,10 +11,10 @@ test("Empty is empty", function () {
     var wymeditor = jQuery.wymeditors(0);
     expect(2);
 
-    wymeditor.rawHtml('');
+    wymeditor.emptyDocument();
     wymEqual(wymeditor, '', {parseHtml: true});
 
-    wymeditor.rawHtml('');
+    wymeditor.emptyDocument();
     // Placing the caret inside shouldn't create any content.
     wymeditor.setCaretIn(wymeditor.body());
     wymEqual(wymeditor, '', {parseHtml: true});
