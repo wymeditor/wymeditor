@@ -78,8 +78,13 @@ WYMeditor.WymClassTridentPre7.prototype._exec = function (cmd, param) {
 };
 
 WYMeditor.WymClassTridentPre7.prototype._saveCaret = function () {
-    var wym = this;
-    wym._doc.caretPos = wym._doc.selection.createRange();
+    var wym = this,
+        nativeSelection = wym._doc.selection;
+
+    if (nativeSelection.type === "None") {
+        return;
+    }
+    wym._doc.caretPos = nativeSelection.createRange();
 };
 
 WYMeditor.WymClassTridentPre7.prototype.insert = function (html) {

@@ -181,10 +181,10 @@ Selection Setting and Getting
 Returns ``true`` if there is any selection in the document.
 Returns ``false`` otherwise.
 
-``setSingleSelectionRange(range)``
-==================================
+``deselect()``
+==============
 
-Sets the selection to the single provided Rangy ``range``.
+Removes selection.
 
 ``nodeAfterSel()``
 ==================
@@ -196,7 +196,7 @@ or not.
 =======================
 
 Get the selected container.
-Returns ``false`` if no obvious selected container.
+Returns ``false`` if no selection.
 
 This is currently supposed to be used with a collapsed selection only.
 

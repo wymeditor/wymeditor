@@ -348,15 +348,11 @@ StructuredHeadingsManager.prototype.changeSelectedHeadingsLevel = function (
         iterChange = (shouldRaise ? -1 : 1),
         range,
         heading,
-        headingList,
+        $headingList,
         j,
         jStart,
         jLimit,
-        headingNodeFilter;
-
-    headingNodeFilter = function (testNode) {
-        return jQuery(testNode).is(shm._fullHeadingSel);
-    };
+        $selectedNodes;
 
     // Iterate through the headings in the selection from bottom to top if the
     // level of the headings should be raised or top to bottom if the level of
@@ -367,26 +363,26 @@ StructuredHeadingsManager.prototype.changeSelectedHeadingsLevel = function (
     for (i = iStart; i !== iLimit; i += iterChange) {
         range = selection.getRangeAt(i);
         if (range.collapsed) {
-            // Collapsed ranges don't return their node with getNodes(), so
-            // use findUp to get the containing heading.
             heading = wym.findUp(range.startContainer,
                                  WYMeditor.HEADING_ELEMENTS);
             shm.changeHeadingLevel(heading, upOrDown);
         } else {
-            // Use getNodes to get the selected headings
-            headingList = range.getNodes(false, headingNodeFilter);
-            if (!headingList.length && range.getNodes().length) {
+            $selectedNodes = jQuery(wym._getSelectedNodes());
+            $headingList = $selectedNodes.filter(shm._fullHeadingSel);
+            if (!$headingList.length && $selectedNodes.length) {
                 // If there are some nodes in the range, but none of the are
                 // headings, it's possible that all of the nodes are contained
                 // within a heading.
-                headingList = [wym.findUp(range.getNodes()[0],
-                                          WYMeditor.HEADING_ELEMENTS)];
+                $headingList = [wym.findUp(
+                    $selectedNodes[0],
+                    WYMeditor.HEADING_ELEMENTS
+                )];
             }
 
-            jStart = (shouldRaise ? headingList.length - 1 : 0);
-            jLimit = (shouldRaise ? -1 : headingList.length);
+            jStart = (shouldRaise ? $headingList.length - 1 : 0);
+            jLimit = (shouldRaise ? -1 : $headingList.length);
             for (j = jStart; j !== jLimit; j += iterChange) {
-                shm.changeHeadingLevel(headingList[j], upOrDown);
+                shm.changeHeadingLevel($headingList[j], upOrDown);
             }
         }
     }
