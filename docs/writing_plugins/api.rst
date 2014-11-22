@@ -42,6 +42,11 @@ After HTML insertion, document is not prepared for editing
 
 If you are not sure which one to use, ``html()`` will most likely be the answer.
 
+``emptyDocument()``
+===================
+
+Loads a new empty document into the editor, ready for editing.
+
 ``update()``
 ============
 
