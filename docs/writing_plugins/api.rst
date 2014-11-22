@@ -162,10 +162,16 @@ Selection Setting and Getting
     detailed pull request recommendations, please see our documentation on
     :doc:`../wymeditor_development/contributing`.
 
-``setSingleSelectionRange(range)``
-==================================
+``hasSelection()``
+==================
 
-Sets the selection to the single provided Rangy ``range``.
+Returns ``true`` if there is any selection in the document.
+Returns ``false`` otherwise.
+
+``deselect()``
+==============
+
+Removes selection.
 
 ``nodeAfterSel()``
 ==================
@@ -177,6 +183,7 @@ or not.
 =======================
 
 Get the selected container.
+Returns ``false`` if no selection.
 
 This is currently supposed to be used with a collapsed selection only.
 
@@ -638,6 +645,11 @@ provided ``thing`` with contents of provided ``array``.
 
 Returns a string based on ``str``, where all instances of ``old`` were replaced
 by ``new``.
+
+``WYMeditor.editor.get$CommonParent(one, two)``
+===============================================
+
+Returns a jQuery of the common parent of two document elements.
 
 *********
 Constants

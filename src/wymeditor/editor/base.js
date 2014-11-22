@@ -686,34 +686,86 @@ WYMeditor.editor.prototype.nodeAfterSel = function () {
 };
 
 /**
+    WYMeditor.editor.get$CommonParent
+    =================================
+
+    Returns a jQuery of the common parent of two nodes.
+*/
+WYMeditor.editor.prototype.get$CommonParent = function (one, two) {
+    if (
+        typeof one !== 'object' ||
+        typeof one.nodeType !== 'number' ||
+        typeof two !== 'object' ||
+        typeof two.nodeType !== 'number'
+    ) {
+        throw "`one` and `two` must be DOM nodes.";
+    }
+
+    if (one.nodeType === WYMeditor.NODE_TYPE.TEXT) {
+        // These checks seem to be required for our tests to pass in PhantomJS.
+        one = one.parentNode;
+    }
+    if (two.nodeType === WYMeditor.NODE_TYPE.TEXT) {
+        // These checks seem to be required for our tests to pass in PhantomJS.
+        two = two.parentNode;
+    }
+
+    if (one === two) {
+        // This is just an optimisation.
+        return jQuery(one);
+    }
+
+    var $one = jQuery(one),
+        $two = jQuery(two),
+        $commonParent;
+
+    $commonParent = $one.parents().addBack().has($two).last();
+
+    if ($commonParent.length === 0) {
+        throw "Couldn't find common parent. This shouldn't happen.";
+    }
+
+    return $commonParent;
+};
+
+/**
     WYMeditor.editor.selectedContainer
     ==================================
 
-    Returns the selection's container.
+    Returns the selection's container or false if there is no selection.
 
     Not to be confused with `.getRootContainer`, which gets the
     selection's root container.
 */
 WYMeditor.editor.prototype.selectedContainer = function () {
     var wym = this,
-        focusNode = wym.selection().focusNode;
+        selection = wym.selection(),
+        $selectedContainer;
 
-    if (
-        focusNode.nodeType === WYMeditor.NODE_TYPE.TEXT || (
-
-            focusNode.tagName &&
-
-            jQuery.inArray(
-                focusNode.tagName.toLowerCase(),
-                WYMeditor.NON_CONTAINING_ELEMENTS
-            ) > -1
-        )
-    ) {
-        return focusNode.parentNode;
-    } else {
-        return focusNode;
+    if (selection.focusNode === null || selection.anchorNode === null) {
+        return false;
     }
 
+    if (
+        selection.anchorNode === selection.focusNode &&
+        selection.anchorNode.nodeType === WYMeditor.NODE_TYPE.ELEMENT
+    ) {
+        $selectedContainer = jQuery(selection.anchorNode);
+    } else {
+        $selectedContainer = wym.get$CommonParent(
+            selection.anchorNode,
+            selection.focusNode
+        );
+    }
+
+    $selectedContainer = $selectedContainer.parents().addBack()
+        .not(WYMeditor.NON_CONTAINING_ELEMENTS.join(',')).last();
+
+    if ($selectedContainer.length === 0) {
+        throw "Expected to find the selected container. This should not occur.";
+    }
+
+    return $selectedContainer[0];
 };
 
 // Deprecated in favor of `WYMeditor.editor.selectedContainer`.
@@ -1228,14 +1280,39 @@ WYMeditor.editor.prototype.getCurrentState = function () {
 };
 
 /**
-    editor.setSingleSelectionRange
-    ==============================
+    editor.hasSelection
+    ===================
+
+    Returns true if there is a selection. Returns false otherwise.
+*/
+WYMeditor.editor.prototype.hasSelection = function () {
+    var wym = this;
+
+    if (
+        // `isSelectionValid` is undocumented in current Rangy (`1.2.2`).
+        // It seems to be required because the `rangeCount` in `IE <= 8` seems
+        // to be misleading.
+        rangy.isSelectionValid(wym._iframe.contentWindow) !== true
+    ) {
+        return false;
+    }
+
+    if (wym.selection().rangeCount === 0) {
+        return false;
+    }
+
+    return true;
+};
+
+/**
+    editor._setSingleSelectionRange
+    ===============================
 
     Sets the selection to the single provided Rangy range.
 
     @param range A Rangy range.
 */
-WYMeditor.editor.prototype.setSingleSelectionRange = function (range) {
+WYMeditor.editor.prototype._setSingleSelectionRange = function (range) {
     var wym = this,
         selection;
 
@@ -2774,6 +2851,43 @@ WYMeditor.editor.prototype._getCommonParentList = function (listItems, getCloses
 };
 
 /**
+    editor.deselect
+    ===============
+
+    Removes seletion.
+*/
+WYMeditor.editor.prototype.deselect = function () {
+    var wym = this;
+
+    wym.selection().removeAllRanges();
+    // Blur seems to be required for IE8.
+    wym.body().blur();
+};
+
+/**
+    editor._getSelectedNodes
+    ========================
+
+    Returns an array of the selected and partially selected nodes.
+
+    Returns false if there is not selection.
+
+Returns false if there is no selection.
+*/
+WYMeditor.editor.prototype._getSelectedNodes = function () {
+    var wym = this,
+        selection = wym.selection(),
+        selectedNodes;
+
+    if (wym.hasSelection() !== true) {
+        return false;
+    }
+
+    selectedNodes = selection.getRangeAt(0).getNodes();
+    return selectedNodes;
+};
+
+/**
     editor._getSelectedListItems
     ============================
 
@@ -2805,7 +2919,7 @@ WYMeditor.editor.prototype._getSelectedListItems = function (selection) {
     }
 
     // All the selected nodes in the selection's first range.
-    $selectedNodes = jQuery(selection.getRangeAt(0).getNodes());
+    $selectedNodes = jQuery(wym._getSelectedNodes());
 
     if ($selectedNodes.closest('li, table').filter('li').length === 0) {
         // Selection is in a table before it is in a list. This prevents
@@ -3064,11 +3178,13 @@ WYMeditor.editor.prototype._insertOrderedList = function () {
 
     // First, make sure this list is properly structured
     manipulationFunc = function () {
-        var selectedBlock = wym.selectedContainer(),
-            potentialListBlock = wym.findUp(
-                selectedBlock,
-                ['ol', 'ul', 'li']
-            );
+        // There is a design flaw here. Especially in the case where we may
+        // have multiple root-level lists or even `li` items (which shouldn't
+        // happen) selected. This code seems to make our tests pass but this
+        // should be considered broken.
+        var potentialListBlock = jQuery(wym._getSelectedNodes())
+                .parents().addBack().filter('ol, ul, li').last()[0];
+        potentialListBlock = potentialListBlock || wym.selectedContainer();
         return wym._fixInvalidListNesting(potentialListBlock);
     };
     if (wym.restoreSelectionAfterManipulation(manipulationFunc)) {
@@ -3103,11 +3219,13 @@ WYMeditor.editor.prototype._insertUnorderedList = function () {
 
     // First, make sure this list is properly structured
     manipulationFunc = function () {
-        var selectedBlock = wym.selectedContainer(),
-            potentialListBlock = wym.findUp(
-                selectedBlock,
-                ['ol', 'ul', 'li']
-            );
+        // There is a design flaw here. Especially in the case where we may
+        // have multiple root-level lists or even `li` items (which shouldn't
+        // happen) selected. This code seems to make our tests pass but this
+        // should be considered broken.
+        var potentialListBlock = jQuery(wym._getSelectedNodes())
+                .parents().addBack().filter('ol, ul, li').last()[0];
+        potentialListBlock = potentialListBlock || wym.selectedContainer();
         return wym._fixInvalidListNesting(potentialListBlock);
     };
     if (wym.restoreSelectionAfterManipulation(manipulationFunc)) {
