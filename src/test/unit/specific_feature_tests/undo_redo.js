@@ -11,91 +11,11 @@
 */
 "use strict";
 
-/**
- * testUndoRedo
- * ============
- *
- * Tests Undo/Redo functionality.
- *
- * @param a An object, containing:
- *     `testName`
- *         A name for the test.
- *     `startHtml`
- *         HTML to start the test with. Required if `expectedStartHtml` is not
- *         used.
- *     `setCaretInSelector`
- *         Optional; jQuery selector for an element to set the caret in at the
- *         start of the test.
- *     `prepareFunc`
- *         Optional; A function to prepare the test. Receives one argument, the
- *         WYMeditor instance.
- *     `expectedStartHtml`
- *         The HTML that is expected to be the state of the document after the
- *         `prepareFunc` ran. If this is not provided, the value of `startHtml`
- *         will be used.
- *     `manipulationFunc`
- *         The manipulation function to be tested. Receives one argument, the
- *         WYMeditor instance.
- *     `expectedResultHtml`
- *         The HTML that is expected to be the state of the document after the
- *         `manipulationFunc` ran.
- *     `additionalAssertionsFunc`
- *         Optional; Additional assertions for after the `manipulationFunc`.
- *     `parseHtml`
- *         Optional; Passed on to `testWymManipulation`. Defaults to `false`.
- */
-function testUndoRedo(a) {
-    testWymManipulation({
-        testName: a.testName,
-        startHtml: a.startHtml,
-        setCaretInSelector: a.setCaretInSelector,
-        prepareFunc: a.prepareFunc,
-        expectedStartHtml: a.expectedStartHtml,
-        manipulationFunc: function (wymeditor) {
-            wymeditor.undoRedo.reset();
-
-            a.manipulationFunc(wymeditor);
-            if (typeof a.expectedResultHtml === 'string') {
-                expect(expect() + 1);
-                wymEqual(
-                    wymeditor,
-                    a.expectedResultHtml,
-                    {
-                        assertionString: "Manipulation result HTML.",
-                        parseHtml: typeof a.parseHtml === 'undefined' ?
-                            false : a.parseHtml
-                    }
-                );
-            }
-            if (typeof a.additionalAssertionsFunc === 'function') {
-                a.additionalAssertionsFunc(wymeditor);
-            }
-
-            wymeditor.undoRedo.undo();
-            expect(expect() + 1);
-            wymEqual(
-                wymeditor,
-                a.expectedStartHtml || a.startHtml,
-                {
-                    assertionString: "After undo HTML.",
-                    parseHtml: typeof a.parseHtml === 'undefined' ?
-                        false : a.parseHtml
-                }
-            );
-
-            wymeditor.undoRedo.redo();
-
-        },
-        expectedResultHtml: a.expectedResultHtml,
-        additionalAssertionsFunc: a.additionalAssertionsFunc,
-        parseHtml: a.parseHtml
-    });
-}
-
 module("undo_redo", {setup: prepareUnitTestModule});
 
-testUndoRedo({
+testWymManipulation({
     testName: "Bold",
+    testUndoRedo: true,
     startHtml: "<p>Foo</p>",
     prepareFunc: function (wymeditor) {
         var p = wymeditor.$body().children("p")[0];
@@ -114,8 +34,9 @@ testUndoRedo({
     parseHtml: true
 });
 
-testUndoRedo({
+testWymManipulation({
     testName: "Italic",
+    testUndoRedo: true,
     startHtml: "<p>Foo</p>",
     prepareFunc: function (wymeditor) {
         var p = wymeditor.$body().children("p")[0];
@@ -153,8 +74,9 @@ testUndoRedo({
     }
 });
 
-testUndoRedo({
+testWymManipulation({
     testName: "Superscript",
+    testUndoRedo: true,
     startHtml: "<p>Foo</p>",
     prepareFunc: function (wymeditor) {
         var p = wymeditor.$body().children("p")[0];
@@ -172,8 +94,9 @@ testUndoRedo({
     expectedResultHtml: "<p><sup>Foo</sup></p>"
 });
 
-testUndoRedo({
+testWymManipulation({
     testName: "Subscript",
+    testUndoRedo: true,
     startHtml: "<p>Foo</p>",
     prepareFunc: function (wymeditor) {
         var p = wymeditor.$body().children("p")[0];
@@ -191,8 +114,9 @@ testUndoRedo({
     expectedResultHtml: "<p><sub>Foo</sub></p>"
 });
 
-testUndoRedo({
+testWymManipulation({
     testName: "Insert ordered list",
+    testUndoRedo: true,
     startHtml: "<p>Foo</p>",
     setCaretInSelector: "p",
     manipulationFunc: function (wymeditor) {
@@ -201,8 +125,9 @@ testUndoRedo({
     expectedResultHtml: "<ol><li>Foo</li></ol>"
 });
 
-testUndoRedo({
+testWymManipulation({
     testName: "Insert unordered list",
+    testUndoRedo: true,
     startHtml: "<p>Foo</p>",
     setCaretInSelector: "p",
     manipulationFunc: function (wymeditor) {
@@ -211,8 +136,9 @@ testUndoRedo({
     expectedResultHtml: "<ul><li>Foo</li></ul>"
 });
 
-testUndoRedo({
+testWymManipulation({
     testName: "List; indent",
+    testUndoRedo: true,
     startHtml: "<ol><li>Foo</li></ol>",
     setCaretInSelector: "li",
     manipulationFunc: function (wymeditor) {
@@ -222,8 +148,9 @@ testUndoRedo({
         "<ol><li class=\"spacer_li\"><ol><li>Foo</li></ol></li></ol>"
 });
 
-testUndoRedo({
+testWymManipulation({
     testName: "List; outdent",
+    testUndoRedo: true,
     startHtml: "<ol><li class=\"spacer_li\"><ol><li>Foo</li></ol></li></ol>",
     setCaretInSelector: "li li",
     manipulationFunc: function (wymeditor) {
@@ -233,8 +160,9 @@ testUndoRedo({
         "<ol><li>Foo</li></ol>"
 });
 
-testUndoRedo({
+testWymManipulation({
     testName: "Link",
+    testUndoRedo: true,
     startHtml: "<p>Foobar</p>",
     prepareFunc: function (wymeditor) {
         var p = wymeditor.$body().children('p')[0];
@@ -252,8 +180,9 @@ testUndoRedo({
     expectedResultHtml: "<p>Foo<a href=\"http://example.com/\">bar</a></p>"
 });
 
-testUndoRedo({
+testWymManipulation({
     testName: "Unlink",
+    testUndoRedo: true,
     startHtml: "<p><a href=\"http://example.com/\">Foo</a></p>",
     prepareFunc: function (wymeditor) {
         var a = wymeditor.$body().find("a")[0];
@@ -271,8 +200,9 @@ testUndoRedo({
     expectedResultHtml: "<p>Foo</p>"
 });
 
-testUndoRedo({
+testWymManipulation({
     testName: "Image",
+    testUndoRedo: true,
     startHtml: "<p>Foo</p>",
     setCaretInSelector: "p",
     manipulationFunc: function (wymeditor) {
@@ -282,8 +212,9 @@ testUndoRedo({
         "/>Foo</p>"
 });
 
-testUndoRedo({
+testWymManipulation({
     testName: "Insert table",
+    testUndoRedo: true,
     startHtml: "<br />",
     prepareFunc: function (wymeditor) {
         wymeditor.setCaretIn(wymeditor.body());
@@ -305,8 +236,9 @@ testUndoRedo({
     ].join("")
 });
 
-testUndoRedo({
+testWymManipulation({
     testName: "`editor.paste`",
+    testUndoRedo: true,
     startHtml: "<br />",
     prepareFunc: function (wymeditor) {
         wymeditor.setCaretIn(wymeditor.body());
@@ -319,8 +251,9 @@ testUndoRedo({
 
 var DAWN_OF_HISTORY = "<h1>Dawn of History</h1>";
 
-testUndoRedo({
+testWymManipulation({
     testName: "No going back before dawn of history",
+    testUndoRedo: true,
     startHtml: DAWN_OF_HISTORY,
     manipulationFunc: function () {},
     additionalAssertionsFunc: function (wymeditor) {
@@ -330,8 +263,9 @@ testUndoRedo({
     expectedResultHtml: DAWN_OF_HISTORY
 });
 
-testUndoRedo({
+testWymManipulation({
     testName: "Restores selection",
+    testUndoRedo: true,
     startHtml: "<p>Foo</p><p>Bar</p>",
     prepareFunc: function (wymeditor) {
         makeTextSelection(
@@ -355,6 +289,7 @@ testUndoRedo({
 
 testWymManipulation({
     testName: "Redo when everything has been redone",
+    testUndoRedo: true,
     startHtml: "<p>Foo</p>",
     prepareFunc: function (wymeditor) {
         wymeditor.undoRedo.reset();
@@ -397,6 +332,7 @@ testWymManipulation({
 
 testWymManipulation({
     testName: "Toolbar buttons",
+    testUndoRedo: true,
     startHtml: "<p>Foo</p>",
     prepareFunc: function (wymeditor) {
         wymeditor.undoRedo.reset();
@@ -439,6 +375,7 @@ testWymManipulation({
 
 testWymManipulation({
     testName: "Nothing to redo after change",
+    testUndoRedo: true,
     startHtml: "<p>Foo</p>",
     prepareFunc: function (wymeditor) {
         wymeditor.undoRedo.reset();
@@ -473,8 +410,9 @@ testWymManipulation({
     expectedResultHtml: "<p>Foo</p><p>Zad</p>"
 });
 
-testUndoRedo({
+testWymManipulation({
     testName: "Table; merge cells",
+    testUndoRedo: true,
     startHtml: [""
         , "<br class=\"wym-blocking-element-spacer wym-editor-only\" />"
         , "<table>"
@@ -506,8 +444,9 @@ testUndoRedo({
     ].join('')
 });
 
-testUndoRedo({
+testWymManipulation({
     testName: "Table; add row",
+    testUndoRedo: true,
     startHtml: [""
         , "<br class=\"wym-blocking-element-spacer wym-editor-only\" />"
         , "<table>"
@@ -540,8 +479,9 @@ testUndoRedo({
     ].join('')
 });
 
-testUndoRedo({
+testWymManipulation({
     testName: "Table; remove row",
+    testUndoRedo: true,
     startHtml: [""
         , "<br class=\"wym-blocking-element-spacer wym-editor-only\" />"
         , "<table>"
@@ -574,8 +514,9 @@ testUndoRedo({
     ].join('')
 });
 
-testUndoRedo({
+testWymManipulation({
     testName: "Table; add column",
+    testUndoRedo: true,
     startHtml: [""
         , "<br class=\"wym-blocking-element-spacer wym-editor-only\" />"
         , "<table>"
@@ -607,8 +548,9 @@ testUndoRedo({
     ].join('')
 });
 
-testUndoRedo({
+testWymManipulation({
     testName: "Table; remove column",
+    testUndoRedo: true,
     startHtml: [""
         , "<br class=\"wym-blocking-element-spacer wym-editor-only\" />"
         , "<table>"
