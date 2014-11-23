@@ -15,7 +15,8 @@
     QUnit,
     strictEqual,
     test,
-    Keysim
+    Keysim,
+    noObjectDefinePropertyBrowser
 */
 "use strict";
 

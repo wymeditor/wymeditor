@@ -7,7 +7,8 @@
     expect,
     equal,
     ok,
-    testWymManipulation
+    testWymManipulation,
+    simulateKeyCombo
 */
 "use strict";
 
