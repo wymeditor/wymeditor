@@ -524,7 +524,7 @@ function testWymManipulation(a) {
     test(a.testName, function () {
         var wymeditor = jQuery.wymeditors(0);
         if (typeof a.startHtml === 'string') {
-            wymeditor.html(a.startHtml);
+            wymeditor.rawHtml(a.startHtml);
         }
         if (typeof a.setCaretInSelector === 'string') {
             wymeditor.setCaretIn(
