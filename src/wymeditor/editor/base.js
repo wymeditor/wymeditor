@@ -364,12 +364,15 @@ WYMeditor.editor.prototype._afterDesignModeOn = function () {
     }
 
     wym._assignWymDoc();
-    wym.$body().addClass("wym_iframe");
+    wym.$body().addClass("wym_iframe combokeys");
 
     wym._doc.title = wym._index;
 
     // Set the text direction.
     jQuery('html', wym._doc).attr('dir', wym._options.direction);
+
+    wym.keyboard = new WYMeditor.Keyboard(wym);
+    wym.keyboard._attachDefaultKeyboardShortcuts();
 
     wym._docEventQuirks();
 

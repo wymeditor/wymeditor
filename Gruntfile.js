@@ -258,6 +258,7 @@ module.exports = function (grunt) {
                     "<%= yeoman.app %>/wymeditor/editor/trident-7.js",
                     "<%= yeoman.app %>/lib/browserified-libs-globalifier.js",
                     "<%= yeoman.app %>/wymeditor/editor/undo-redo.js",
+                    "<%= yeoman.app %>/wymeditor/editor/keyboard.js",
                     "<%= yeoman.app %>/wymeditor/parser/*.js",
                     // TODO: For custom builds, will need to change this.
                     "<%= yeoman.app %>/wymeditor/lang/*.js",

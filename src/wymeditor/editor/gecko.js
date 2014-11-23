@@ -20,7 +20,6 @@ WYMeditor.WymClassGecko.NEEDS_CELL_FIX = parseInt(
 WYMeditor.WymClassGecko.prototype._docEventQuirks = function () {
     var wym = this;
 
-    jQuery(wym._doc).bind("keydown", wym._keydown);
     jQuery(wym._doc).bind("keyup", wym._keyup);
     jQuery(wym._doc).bind("click", wym._click);
     // Bind editor focus events (used to reset designmode - Gecko bug)
@@ -52,27 +51,6 @@ WYMeditor.WymClassGecko.prototype._exec = function (cmd, param) {
     ) {
         wym._exec(WYMeditor.EXEC_COMMANDS.FORMAT_BLOCK, WYMeditor.P);
         wym.prepareDocForEditing();
-    }
-
-    return true;
-};
-
-//keydown handler, mainly used for keyboard shortcuts
-WYMeditor.WymClassGecko.prototype._keydown = function (evt) {
-    var doc = this,
-        wym = WYMeditor.INSTANCES[doc.title];
-
-    if (evt.ctrlKey) {
-        if (evt.which === WYMeditor.KEY_CODE.B) {
-            //CTRL+b => STRONG
-            wym._exec(WYMeditor.EXEC_COMMANDS.BOLD);
-            return false;
-        }
-        if (evt.which === WYMeditor.KEY_CODE.I) {
-            //CTRL+i => EMPHASIS
-            wym._exec(WYMeditor.EXEC_COMMANDS.ITALIC);
-            return false;
-        }
     }
 
     return true;
