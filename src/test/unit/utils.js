@@ -633,7 +633,10 @@ function testWymManipulation(a) {
 
         performTest(false);
 
-        if (typeof a.manipulationKeyCombo !== "string") {
+        if (
+            noObjectDefinePropertyBrowser === true ||
+            typeof a.manipulationKeyCombo !== "string"
+        ) {
             return;
         }
 
