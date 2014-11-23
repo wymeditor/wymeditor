@@ -14,16 +14,23 @@ WYMeditor.Keyboard = function (wym) {
 
 WYMeditor.Keyboard.DEFAULT_KEYBOARD_SHORTCUTS = [
     {
-        combo: "ctrl+b",
+        combo: "mod+b",
         cb: function () {
             this._exec(WYMeditor.EXEC_COMMANDS.BOLD);
             return false;
         }
     },
     {
-        combo: "ctrl+i",
+        combo: "mod+i",
         cb: function () {
             this._exec(WYMeditor.EXEC_COMMANDS.ITALIC);
+            return false;
+        }
+    },
+    {
+        combo: "mod+k",
+        cb: function () {
+            this.exec(WYMeditor.EXEC_COMMANDS.CREATE_LINK);
             return false;
         }
     }
