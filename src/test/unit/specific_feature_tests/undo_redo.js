@@ -583,3 +583,34 @@ testWymManipulation({
         , "<br class=\"wym-blocking-element-spacer wym-editor-only\" />"
     ].join('')
 });
+
+testWymManipulation({
+    testName: "Undo keyboard shortcut",
+    startHtml: "<p>Foo</p>",
+    setCaretInSelector: "p",
+    prepareFunc: function (wymeditor) {
+        wymeditor.undoRedo.reset();
+        wymeditor.exec(WYMeditor.EXEC_COMMANDS.INSERT_ORDEREDLIST);
+    },
+    expectedStartHtml: "<ol><li>Foo</li></ol>",
+    manipulationFunc: function (wymeditor) {
+        simulateKeyCombo(wymeditor, "ctrl+z");
+    },
+    expectedResultHtml: "<p>Foo</p>"
+});
+
+testWymManipulation({
+    testName: "Redo keyboard shortcut",
+    startHtml: "<p>Foo</p>",
+    setCaretInSelector: "p",
+    prepareFunc: function (wymeditor) {
+        wymeditor.undoRedo.reset();
+        wymeditor.exec(WYMeditor.EXEC_COMMANDS.INSERT_ORDEREDLIST);
+        wymeditor.undoRedo.undo();
+    },
+    expectedStartHtml: "<p>Foo</p>",
+    manipulationFunc: function (wymeditor) {
+        simulateKeyCombo(wymeditor, "ctrl+y");
+    },
+    expectedResultHtml: "<ol><li>Foo</li></ol>"
+});
