@@ -201,6 +201,12 @@ module.exports = function (grunt) {
                 src: ['<%= yeoman.app %>/wymeditor/editor/' +
                     'browserified-libs-globalifier.js'],
                 dest: '<%= yeoman.app %>/lib/browserified-libs-globalifier.js'
+            },
+            keysim: {
+                // This is used in tests. It is a globalifier, just like the
+                // above `libs` task.
+                src: ['<%= yeoman.app %>/test/unit/keysim-globalifier.js'],
+                dest: '<%= yeoman.app %>/lib/keysim-globalifier.js'
             }
         },
         useminPrepare: {
@@ -512,6 +518,7 @@ module.exports = function (grunt) {
         grunt.task.run([
             'bower',
             'browserify:libs',
+            'browserify:keysim',
             'clean:server',
             'jekyllDev',
             'connect:dev',
@@ -522,6 +529,7 @@ module.exports = function (grunt) {
     grunt.registerTask('test', [
         'bower',
         'browserify:libs',
+        'browserify:keysim',
         'clean:server',
         'connect:test',
         'qunit'
