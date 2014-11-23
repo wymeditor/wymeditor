@@ -16,14 +16,14 @@ WYMeditor.Keyboard.DEFAULT_KEYBOARD_SHORTCUTS = [
     {
         combo: "mod+b",
         cb: function () {
-            this._exec(WYMeditor.EXEC_COMMANDS.BOLD);
+            this.exec(WYMeditor.EXEC_COMMANDS.BOLD);
             return false;
         }
     },
     {
         combo: "mod+i",
         cb: function () {
-            this._exec(WYMeditor.EXEC_COMMANDS.ITALIC);
+            this.exec(WYMeditor.EXEC_COMMANDS.ITALIC);
             return false;
         }
     },
