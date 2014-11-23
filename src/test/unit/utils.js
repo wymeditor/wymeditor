@@ -602,5 +602,9 @@ function testWymManipulation(a) {
                 }
             );
         }
+
+        if (typeof a.additionalAssertionsFunc === 'function') {
+            a.additionalAssertionsFunc(wymeditor);
+        }
     });
 }
