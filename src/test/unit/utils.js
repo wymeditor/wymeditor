@@ -595,8 +595,8 @@ function testWymManipulation(a) {
                 wymeditor,
                 a.expectedResultHtml,
                 {
-                    assertionString: "Back to manipulation result HTML after " +
-                        "redo.",
+                    assertionString: "Back to manipulation result HTML " +
+                        "after redo.",
                     parseHtml: typeof a.parseHtml === 'undefined' ? false :
                         a.parseHtml
                 }
