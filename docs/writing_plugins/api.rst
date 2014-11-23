@@ -13,7 +13,16 @@ Core
 ``html(html)``
 ==============
 
-Get or set the editor's HTML value. HTML is parsed before setting and before returning
+Get or set the editor's HTML value.
+
+When the `html` argument is provided,
+that HTML will be parsed and loaded into the editor.
+It also calls ``prepareDocForEditing``,
+so that the document will be ready for editing.
+
+When called without an argument,
+it will provide an HTML representation of the document
+that is in the editor.
 
 Example:
 
@@ -26,8 +35,12 @@ Example:
 ``rawHtml(html)``
 =================
 
-Get or set raw HTML value. Value is not parsed. If you are not sure which one to
-use, html() will most likely be the answer.
+Get or set raw HTML value.
+Value is not parsed.
+After HTML insertion, document is not prepared for editing
+(``prepareDocForEditing()`` is not called).
+
+If you are not sure which one to use, ``html()`` will most likely be the answer.
 
 ``update()``
 ============
@@ -181,10 +194,10 @@ Selection Setting and Getting
 Returns ``true`` if there is any selection in the document.
 Returns ``false`` otherwise.
 
-``setSingleSelectionRange(range)``
-==================================
+``deselect()``
+==============
 
-Sets the selection to the single provided Rangy ``range``.
+Removes selection.
 
 ``nodeAfterSel()``
 ==================
@@ -196,7 +209,7 @@ or not.
 =======================
 
 Get the selected container.
-Returns ``false`` if no obvious selected container.
+Returns ``false`` if no selection.
 
 This is currently supposed to be used with a collapsed selection only.
 
@@ -817,8 +830,9 @@ Localize the strings included in ``sVal``.
 
 Enclose a string in string delimiters.
 
+*********
 Utilities
----------
+*********
 
 ``box``
 =======

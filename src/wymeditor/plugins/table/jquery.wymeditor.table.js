@@ -132,8 +132,7 @@ TableEditor.prototype.bindEvents = function () {
     jQuery(wym._box).find(
         tableEditor._options.sMergeRowButtonSelector
     ).click(function () {
-        var sel = wym.selection();
-        tableEditor.mergeRow(sel);
+        tableEditor.mergeRow();
         return false;
     });
     jQuery(wym._box).find(
@@ -379,13 +378,11 @@ TableEditor.prototype.getTotalColumns = function (cells) {
  *
  * @return {Boolean} true if changes are made, false otherwise
  */
-TableEditor.prototype.mergeRow = function (sel) {
+TableEditor.prototype.mergeRow = function () {
     var tableEditor = this,
         wym = tableEditor._wym,
-        i,
         // Get all of the affected nodes in the range
         nodes = [],
-        range = null,
         cells,
         rootTr,
         mergeCell,
@@ -394,10 +391,7 @@ TableEditor.prototype.mergeRow = function (sel) {
         newContent,
         combinedColspan;
 
-    for (i = 0; i < sel.rangeCount; i++) {
-        range = sel.getRangeAt(i);
-        nodes = nodes.concat(range.getNodes(false));
-    }
+    nodes = wym._getSelectedNodes();
 
     // Clear the ranges in selection so that it can be moved later
     rangy.getIframeSelection(wym._iframe).removeAllRanges();
@@ -457,7 +451,7 @@ TableEditor.prototype.mergeRow = function (sel) {
             for (i = insertionCells.length - 1; i >= 0; i--) {
                 xIndex = tableEditor.getCellXIndex(insertionCells[i]);
                 if (xIndex <= insertionIndex) {
-                    jQuery(insertionCells[i]).append(newTd);
+                    jQuery(insertionCells[i]).after(newTd);
                     cellInserted = true;
                     break;
                 }
@@ -548,9 +542,16 @@ TableEditor.prototype.addRow = function (elmnt) {
  * @param table The table to delete if it is empty.
  */
 TableEditor.prototype.removeEmptyTable = function (table) {
-    var cells = jQuery(table).find('td,th');
+    var tableEditor = this,
+        wym = tableEditor._wym,
+        cells = jQuery(table).find('td,th'),
+        $table;
     if (cells.length === 0) {
-        jQuery(table).remove();
+        $table = jQuery(table);
+        $table.prev('br.' + WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS).remove();
+        $table.next('br.' + WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS).remove();
+        $table.remove();
+        wym.prepareDocForEditing();
     }
 };
 

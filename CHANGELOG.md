@@ -7,6 +7,13 @@ WYMeditor.
 
 *release-date* TBD
 
+### Backwards-Incompatible Changes
+
+* [#613](https://github.com/wymeditor/wymeditor/pull/613)
+  ``editor.setSingleSelectionRange`` is no longer public API.
+* [#620](https://github.com/wymeditor/wymeditor/pull/620)
+  `editor.rawHtml` no longer calls `editor.prepareDocForEditing`.
+
 ## 1.0.0-rc.1
 
 *release-date* October 24, 2014

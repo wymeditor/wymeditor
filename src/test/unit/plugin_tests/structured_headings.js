@@ -672,7 +672,9 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
             '<p>Content</p>' +
             '<h2 id="start_selection"><a href="http://google.com">Test</a></h2>' +
             '<p>Content</p>' +
+            '<br class="wym-blocking-element-spacer wym-editor-only" />' +
             '<pre>Preformatted Content</pre>' +
+            '<br class="wym-blocking-element-spacer wym-editor-only" />' +
                 '<h3>T<em>es</em>t</h3>' +
                 '<p>Content</p>' +
                 '<h3 id="end_selection">Te<span>st</span></h3>' +
@@ -683,7 +685,9 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
             '<p>Content</p>' +
                 '<h3 id="start_selection"><a href="http://google.com">Test</a></h3>' +
                 '<p>Content</p>' +
+                '<br class="wym-blocking-element-spacer wym-editor-only" />' +
                 '<pre>Preformatted Content</pre>' +
+                '<br class="wym-blocking-element-spacer wym-editor-only" />' +
                     '<h4>T<em>es</em>t</h4>' +
                     '<p>Content</p>' +
                     '<h4 id="end_selection">Te<span>st</span></h4>' +
@@ -900,7 +904,9 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
                             '<li>Test</li>' +
                         '</ul>' +
                         '<h5><span>Test</span></h5>' +
+                        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
                         '<pre>Preformatted Content</pre>' +
+                        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
                             '<h6>Test</h6>' +
                             '<p>Content</p>' +
                             '<h6>Test</h6>' +
@@ -951,7 +957,9 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
                                 '<li>Test</li>' +
                             '</ul>' +
                             '<h6><span>Test</span></h6>' +
+                            '<br class="wym-blocking-element-spacer wym-editor-only" />' +
                             '<pre>Preformatted Content</pre>' +
+                            '<br class="wym-blocking-element-spacer wym-editor-only" />' +
                             '<h6>Test</h6>' +
                             '<p>Content</p>' +
                             '<h6>Test</h6>' +
@@ -1039,7 +1047,9 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
             '<p>Content</p>' +
             '<h2 id="start_selection"><a href="http://google.com">Test</a></h2>' +
             '<p>Content</p>' +
+            '<br class="wym-blocking-element-spacer wym-editor-only" />' +
             '<pre>Preformatted Content</pre>' +
+            '<br class="wym-blocking-element-spacer wym-editor-only" />' +
                 '<h3>T<em>es</em>t</h3>' +
                 '<p>Content</p>' +
                 '<h3 id="end_selection">Te<span>st</span></h3>' +
@@ -1050,7 +1060,9 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
             '<p>Content</p>' +
         '<h1 id="start_selection"><a href="http://google.com">Test</a></h1>' +
         '<p>Content</p>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<pre>Preformatted Content</pre>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
             '<h2>T<em>es</em>t</h2>' +
             '<p>Content</p>' +
             '<h2 id="end_selection">Te<span>st</span></h2>' +
@@ -1271,7 +1283,9 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
             '<h2>Test</h2>' +
             '<p><em>Content</em></p>' +
             '<h2>Test</h2>' +
+            '<br class="wym-blocking-element-spacer wym-editor-only" />' +
             '<pre>Preformatted content</pre>' +
+            '<br class="wym-blocking-element-spacer wym-editor-only" />' +
                 '<h3>Test</h3>' +
                 '<p>Content</p>' +
                 '<h3>Te<sub>st</sub></h3>' +
@@ -1322,7 +1336,9 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
         '<h1>Test</h1>' +
         '<p><em>Content</em></p>' +
         '<h1>Test</h1>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
         '<pre>Preformatted content</pre>' +
+        '<br class="wym-blocking-element-spacer wym-editor-only" />' +
             '<h2>Test</h2>' +
             '<p>Content</p>' +
             '<h2>Te<sub>st</sub></h2>' +
@@ -1502,8 +1518,13 @@ if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
         var wymeditor = jQuery.wymeditors(0);
 
         wymeditor.rawHtml(expectedHeadings);
-        wymEqual(wymeditor, expectedParsedHeadings, {
-                assertionString: "Heading numbering stripped by parser"
-            });
+        wymEqual(
+            wymeditor,
+            expectedParsedHeadings,
+            {
+                assertionString: "Heading numbering stripped by parser",
+                parseHtml: true
+            }
+        );
     });
 }

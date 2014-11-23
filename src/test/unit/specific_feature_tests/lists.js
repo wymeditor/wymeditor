@@ -1315,7 +1315,9 @@ var nodeContentAfterSublistHtml = String() +
                     '<li id="li_1_1">1_1</li>' +
                     '<li id="li_1_2">1_2</li>' +
                 '</ul>' +
+                '<br class="wym-blocking-element-spacer wym-editor-only" />' +
                 '<table><tbody><tr><td>td_1_3</td></tr></tbody></table>' +
+                '<br class="wym-blocking-element-spacer wym-editor-only" />' +
             '</li>' +
             '<li id="li_2">2</li>' +
         '</ol>';
@@ -1327,7 +1329,9 @@ var li_1_2_outdentedNodeContentAfterSublistHtml = String() +
                 '</ul>' +
             '</li>' +
             '<li id="li_1_2">1_2' +
+                '<br class="wym-blocking-element-spacer wym-editor-only" />' +
                 '<table><tbody><tr><td>td_1_3</td></tr></tbody></table>' +
+                '<br class="wym-blocking-element-spacer wym-editor-only" />' +
             '</li>' +
             '<li id="li_2">2</li>' +
         '</ol>';
@@ -1544,6 +1548,7 @@ var invalidNestingNoPreviousCorrectedHtml = String() +
         '<ol>' +
             '<li class="spacer_li">' +
                 '<table id="table_1"><tbody><tr><td>td_1_1</td></tr></tbody></table>' +
+                '<br class="wym-blocking-element-spacer wym-editor-only" />' +
                 '<ul>' +
                     '<li id="li_2_1">2_1' +
                         '<ul>' +
@@ -1562,6 +1567,7 @@ var invalidNestingNoPreviousCorrectedHtml = String() +
             '</li>' +
             '<li id="li_6">6' +
                 '<table id="table_7"><tbody><tr><td>td_7_1</td></tr></tbody></table>' +
+                '<br class="wym-blocking-element-spacer wym-editor-only" />' +
                 '<ol>' +
                     '<li id="li_8">8</li>' +
                 '</ol>' +
@@ -1665,6 +1671,7 @@ test("Invalid nesting correction requiring spacer", function () {
         expectedHtml = invalidNestingNoPreviousCorrectedHtml;
 
     wymeditor.rawHtml(startHtml);
+    wymeditor.prepareDocForEditing();
     $body = wymeditor.$body();
     actionLi = $body.find('#li_2_2')[0];
 
@@ -1887,22 +1894,6 @@ orphanedLiHtml.ordered.li_new = String() +
         '</ol>' +
         'text' +
         '<li id="li_text_sep">li_text_sep</li>';
-
-// Internet Explorer likes to randomly add whitespace around textNodes that
-// don't have parent elements when you manipulate the DOM near them. Change our
-// test data to expect this so that we pass in IE
-// TODO: Maybe use some kind of modernizr-style test and correct this with the
-// parser?
-if (jQuery.browser.msie && parseInt(jQuery.browser.version, 10) < 9.0) {
-    orphanedLiHtml.ordered.li_new = orphanedLiHtml.ordered.li_new.replace(
-        /text<li id=\"li_text_sep/g,
-        'text <li id="li_text_sep'
-    );
-    orphanedLiHtml.unordered.li_new = orphanedLiHtml.unordered.li_new.replace(
-        /text<li id=\"li_text_sep/g,
-        'text <li id="li_text_sep'
-    );
-}
 
 test("Correction breaks on paragraphs", function () {
     expect(7);
@@ -2610,6 +2601,7 @@ var listWithTableHtml = [""
                     , '</tr>'
                 , '</tbody>'
             , '</table>'
+            , '<br class="wym-blocking-element-spacer wym-editor-only" />'
         , '</li>'
     , '</ul>'
 ].join('');
@@ -2637,6 +2629,7 @@ var listWithTableHtml_make_list_inside = [""
                     , '</tr>'
                 , '</tbody>'
             , '</table>'
+            , '<br class="wym-blocking-element-spacer wym-editor-only" />'
         , '</li>'
     , '</ul>'
 ].join('');
@@ -2670,12 +2663,12 @@ test("Should correct invalid list nesting", function () {
         invalid_ff_html = "<ul><li>a<\/li><ul><li>a.1<\/li><\/ul><li>b<br /><\/li><\/ul>",
         invalid_ie_html = "<UL><LI>a<\/LI><UL><LI>a.1<\/LI><\/UL><LI>b<\/LI><\/UL>";
     wymeditor.rawHtml(invalid_ff_html);
-    wymEqual(wymeditor, expected);
+    wymEqual(wymeditor, expected, {parseHtml: true});
     // IE
     // IE has invalid sublist nesting
     expected = "<ul><li>a<ul><li>a.1<\/li><\/ul><\/li><li>b<\/li><\/ul>";
     wymeditor.rawHtml(invalid_ie_html);
-    wymEqual(wymeditor, expected);
+    wymEqual(wymeditor, expected, {parseHtml: true});
 });
 
 var listWithOrphanedTextAfterLastLi = [""
@@ -2757,7 +2750,7 @@ test("Double indent correction", function () {
             '</ol>';
 
     wymeditor.rawHtml(brokenHtml);
-    wymEqual(wymeditor, repairedHtml);
+    wymEqual(wymeditor, repairedHtml, {parseHtml: true});
 });
 
 module("list-tabbing", {setup: prepareUnitTestModule});
@@ -2864,7 +2857,7 @@ test("Shouldn't eat newline text spacing in li", function () {
 
     wymeditor.rawHtml(initHtml);
     wymeditor.update();
-    wymEqual(wymeditor, expectedHtml);
+    wymEqual(wymeditor, expectedHtml, {parseHtml: true});
 });
 
 /**
@@ -3004,34 +2997,28 @@ if (!(// Browser is IE and
                 '</li>' +
             '</ol>';
 
-    var startEndOutNoBR = expectedEndOut.replace(TEST_LINEBREAK_SPACER, '');
-
     test("Indent with table in the middle of a list", function () {
         expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
         changeIndent(wymeditor, expectedMiddleOutFull, '#li_2', '#li_3', 'indent');
-        wymEqual(wymeditor, expectedMiddleIn, {
-            assertionString: "Table indented in the middle of a list",
-            skipParser: true
-        });
+        wymEqual(
+            wymeditor,
+            expectedMiddleIn,
+            {assertionString: "Table indented in the middle of a list"}
+        );
     });
 
     test("Indent with table at the end of a list", function () {
-        expect(2);
+        expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
         changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'indent');
-        wymEqual(wymeditor, expectedEndIn, {
-            assertionString: "Table indented at the end of a list",
-            skipParser: true
-        });
-
-        changeIndent(wymeditor, startEndOutNoBR, '#li_3', '#li_3', 'indent');
-        wymEqual(wymeditor, expectedEndIn, {
-            assertionString: "Table indented at the end of a list with no line break",
-            skipParser: true
-        });
+        wymEqual(
+            wymeditor,
+            expectedEndIn,
+            {assertionString: "Table indented at the end of a list"}
+        );
     });
 
     test("Outdent with table in the middle of a list", function () {
@@ -3039,10 +3026,11 @@ if (!(// Browser is IE and
         var wymeditor = jQuery.wymeditors(0);
 
         changeIndent(wymeditor, expectedMiddleIn, '#li_2', '#li_2', 'outdent');
-        wymEqual(wymeditor, expectedMiddleOutPartial, {
-            assertionString: "Table outdented in the middle of a list",
-            skipParser: true
-        });
+        wymEqual(
+            wymeditor,
+            expectedMiddleOutPartial,
+            {assertionString: "Table outdented in the middle of a list"}
+        );
     });
 
     test("Outdent with table at the end of a list", function () {
@@ -3050,16 +3038,19 @@ if (!(// Browser is IE and
         var wymeditor = jQuery.wymeditors(0);
 
         changeIndent(wymeditor, expectedEndIn, '#li_3', '#li_3', 'outdent');
-        wymEqual(wymeditor, expectedEndOut, {
-            assertionString: "Table outdented at the end of a list",
-            skipParser: true
-        });
+        wymEqual(
+            wymeditor,
+            expectedEndOut,
+            {assertionString: "Table outdented at the end of a list"}
+        );
 
         changeIndent(wymeditor, expectedEndOut, '#li_3', '#li_3', 'outdent');
-        wymEqual(wymeditor, expectedEndOut, {
-            assertionString: "Table outdented at the end of a list with no line break",
-            skipParser: true
-        });
+        wymEqual(
+            wymeditor,
+            expectedEndOut,
+            {assertionString: "Table outdented at the end of a list with no" +
+                " line break"}
+        );
     });
 }
 
@@ -3290,10 +3281,8 @@ function enterInEmptyLiTest(testNameSuff, expectedHtml, brokenHtmls) {
             );
             wymEqual(
                 wymeditor,
-                expectedHtml, {
-                    skipParser: true,
-                    assertionString: assertStr + assertStrCallAppend
-                }
+                expectedHtml,
+                {assertionString: assertStr + assertStrCallAppend}
             );
 
             wymeditor.rawHtml(brokenHtmls[i]);
@@ -3302,10 +3291,8 @@ function enterInEmptyLiTest(testNameSuff, expectedHtml, brokenHtmls) {
 
             wymEqual(
                 wymeditor,
-                expectedHtml, {
-                    skipParser: true,
-                    assertionString: assertStr + assertStrKeyAppend
-                }
+                expectedHtml,
+                {assertionString: assertStr + assertStrKeyAppend}
             );
             ok(
                 wymeditor.selection().isCollapsed,
@@ -3536,10 +3523,8 @@ test("Invalid list nesting", function () {
 
         wymEqual(
             wymeditor,
-            invalidNestingAfterEnterInEmptyLi[i].fixed, {
-                skipParser: true,
-                assertionString: assertCountStr + 'HTML'
-            }
+            invalidNestingAfterEnterInEmptyLi[i].fixed,
+            {assertionString: assertCountStr + 'HTML'}
         );
         strictEqual(
             wymeditor.nodeAfterSel().tagName.toLowerCase(),
@@ -3763,10 +3748,7 @@ function testLiInLiAfterEnter(htmls) {
     wymEqual(
         wymeditor,
         broken,
-        {
-            skipParser: true,
-            assertionString: "We achieved our desired broken DOM."
-        }
+        {assertionString: "We achieved our desired broken DOM."}
     );
 
     originLi = $body.find('#0-0')[0];
@@ -3777,10 +3759,7 @@ function testLiInLiAfterEnter(htmls) {
     wymEqual(
         wymeditor,
         fixed,
-        {
-            skipParser: true,
-            assertionString: 'HTML'
-        }
+        {assertionString: 'HTML'}
     );
 
     splitLi = $body.find('li:not([id])')[0];
@@ -4557,6 +4536,7 @@ delistHtml.withTable_deListedInside = [""
                     , '</tr>'
                 , '</tbody>'
             , '</table>'
+            , '<br class="wym-blocking-element-spacer wym-editor-only" />'
         , '</li>'
     , '</ul>'
 ].join('');
@@ -4586,6 +4566,7 @@ delistHtml.withTable_parentDeListed = [""
     , '<p id="0_0">'
         , '0_0_0'
     , '</p>'
+    , '<br class="wym-blocking-element-spacer wym-editor-only" />'
     , '<table id="0_0_1">'
         , '<tbody id="0_0_1_0">'
             , '<tr id="0_0_1_0_0">'
@@ -4602,6 +4583,7 @@ delistHtml.withTable_parentDeListed = [""
             , '</tr>'
         , '</tbody>'
     , '</table>'
+    , '<br class="wym-blocking-element-spacer wym-editor-only" />'
 ].join('');
 test("De-list parent of table.", function () {
     expect(2);
@@ -4654,6 +4636,7 @@ consecutiveTablesDelist.base = [""
 ].join('');
 consecutiveTablesDelist.li_0 = [""
     , '<p id="li_0">0</p>'
+    , '<br class="wym-blocking-element-spacer wym-editor-only" />'
     , '<table id="t_0">'
         , '<tbody id="tbody_0">'
             , '<tr id="tr_0_0">'
@@ -4663,6 +4646,7 @@ consecutiveTablesDelist.li_0 = [""
             , '</tr>'
         , '</tbody>'
     , '</table>'
+    , '<br class="wym-blocking-element-spacer wym-editor-only" />'
     , '<table id="t_1">'
         , '<tbody id="tbody_1">'
             , '<tr id="tr_1_0">'
@@ -4672,6 +4656,7 @@ consecutiveTablesDelist.li_0 = [""
             , '</tr>'
         , '</tbody>'
     , '</table>'
+    , '<br class="wym-blocking-element-spacer wym-editor-only" />'
 ].join('');
 test("De-listing keeps spacer brs for blocking_elements", function () {
     expect(2);

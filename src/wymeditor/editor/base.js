@@ -253,7 +253,7 @@ WYMeditor.editor.prototype._isDesignModeOn = function () {
     The initialization procedure of an editor turns asynchronous because part of
     it must occur after the loading of the editor's Iframe.
 
-    This function is suppposed to be the event handler of the loading of the
+    This function is supposed to be the event handler of the loading of the
     editor's Iframe. Therefore, it is the first step since the initialization
     procedure gets asynchronous.
 
@@ -776,7 +776,7 @@ WYMeditor.editor.prototype.get$CommonParent = function (one, two) {
     WYMeditor.editor.selectedContainer
     ==================================
 
-    Returns the selection's container or false.
+    Returns the selection's container or false if there is no selection.
 
     Not to be confused with `.getRootContainer`, which gets the
     selection's root container.
@@ -1370,14 +1370,14 @@ WYMeditor.editor.prototype.hasSelection = function () {
 };
 
 /**
-    editor.setSingleSelectionRange
-    ==============================
+    editor._setSingleSelectionRange
+    ===============================
 
     Sets the selection to the single provided Rangy range.
 
     @param range A Rangy range.
 */
-WYMeditor.editor.prototype.setSingleSelectionRange = function (range) {
+WYMeditor.editor.prototype._setSingleSelectionRange = function (range) {
     var wym = this,
         selection;
 
@@ -1411,7 +1411,6 @@ WYMeditor.editor.prototype.update = function () {
     html = wym.html();
     jQuery(wym.element).val(html);
     jQuery(wym._box).find(wym._options.htmlValSelector).not('.hasfocus').val(html); //#147
-    wym.prepareDocForEditing();
 };
 
 /**
@@ -3012,6 +3011,43 @@ WYMeditor.editor.prototype._getCommonParentList = function (listItems, getCloses
 };
 
 /**
+    editor.deselect
+    ===============
+
+    Removes seletion.
+*/
+WYMeditor.editor.prototype.deselect = function () {
+    var wym = this;
+
+    wym.selection().removeAllRanges();
+    // Blur seems to be required for IE8.
+    wym.body().blur();
+};
+
+/**
+    editor._getSelectedNodes
+    ========================
+
+    Returns an array of the selected and partially selected nodes.
+
+    Returns false if there is not selection.
+
+Returns false if there is no selection.
+*/
+WYMeditor.editor.prototype._getSelectedNodes = function () {
+    var wym = this,
+        selection = wym.selection(),
+        selectedNodes;
+
+    if (wym.hasSelection() !== true) {
+        return false;
+    }
+
+    selectedNodes = selection.getRangeAt(0).getNodes();
+    return selectedNodes;
+};
+
+/**
     editor._getSelectedListItems
     ============================
 
@@ -3043,7 +3079,7 @@ WYMeditor.editor.prototype._getSelectedListItems = function (selection) {
     }
 
     // All the selected nodes in the selection's first range.
-    $selectedNodes = jQuery(selection.getRangeAt(0).getNodes());
+    $selectedNodes = jQuery(wym._getSelectedNodes());
 
     if ($selectedNodes.closest('li, table').filter('li').length === 0) {
         // Selection is in a table before it is in a list. This prevents
@@ -3310,7 +3346,7 @@ WYMeditor.editor.prototype._insertOrderedList = function () {
         // have multiple root-level lists or even `li` items (which shouldn't
         // happen) selected. This code seems to make our tests pass but this
         // should be considered broken.
-        var potentialListBlock = jQuery(wym.selection().getRangeAt(0).getNodes())
+        var potentialListBlock = jQuery(wym._getSelectedNodes())
                 .parents().addBack().filter('ol, ul, li').last()[0];
         potentialListBlock = potentialListBlock || wym.selectedContainer();
         return wym._fixInvalidListNesting(potentialListBlock);
@@ -3353,7 +3389,7 @@ WYMeditor.editor.prototype._insertUnorderedList = function () {
         // have multiple root-level lists or even `li` items (which shouldn't
         // happen) selected. This code seems to make our tests pass but this
         // should be considered broken.
-        var potentialListBlock = jQuery(wym.selection().getRangeAt(0).getNodes())
+        var potentialListBlock = jQuery(wym._getSelectedNodes())
                 .parents().addBack().filter('ol, ul, li').last()[0];
         potentialListBlock = potentialListBlock || wym.selectedContainer();
         return wym._fixInvalidListNesting(potentialListBlock);
