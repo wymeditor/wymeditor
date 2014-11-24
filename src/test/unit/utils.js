@@ -20,6 +20,15 @@
 */
 "use strict";
 
+if (
+    jQuery.browser.name === "msie" &&
+    jQuery.browser.versionNumber <= 8
+   ) {
+    // This browser does not properly implement
+    // `Object.prototype.defineProperty`.
+    window.noObjectDefinePropertyBrowser = true;
+}
+
 // Regex expression shortcuts
 var preAmp = /&/g;
 var preLt = /</g;
