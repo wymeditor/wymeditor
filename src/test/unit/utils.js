@@ -27,6 +27,8 @@ if (
     // This browser does not properly implement
     // `Object.prototype.defineProperty`.
     window.noObjectDefinePropertyBrowser = true;
+} else {
+    window.noObjectDefinePropertyBrowser = null;
 }
 
 // Regex expression shortcuts
