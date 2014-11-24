@@ -5,7 +5,8 @@
     testNoChangeInHtmlArray,
     makeTextSelection,
     moveSelector,
-    testWymManipulation
+    testWymManipulation,
+    skipKeyboardShortcutTests
 */
 /* global
     rangy,
@@ -16,7 +17,8 @@
     strictEqual,
     test,
     Keysim,
-    noObjectDefinePropertyBrowser
+    noObjectDefinePropertyBrowser,
+    inPhantomjs
 */
 "use strict";
 
@@ -29,6 +31,18 @@ if (
     window.noObjectDefinePropertyBrowser = true;
 } else {
     window.noObjectDefinePropertyBrowser = null;
+}
+
+if (
+    // The external keyboard event simulation module, `keysim` requires
+    // `Object.defineProperty`
+    noObjectDefinePropertyBrowser === true ||
+    // PhantomJS fails on these tests.
+    inPhantomjs === true
+) {
+    var skipKeyboardShortcutTests = true;
+} else {
+    var skipKeyboardShortcutTests = false;
 }
 
 // Regex expression shortcuts

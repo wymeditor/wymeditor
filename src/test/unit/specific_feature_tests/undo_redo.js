@@ -9,7 +9,7 @@
     ok,
     testWymManipulation,
     simulateKeyCombo,
-    noObjectDefinePropertyBrowser
+    skipKeyboardShortcutTests
 */
 "use strict";
 
@@ -600,9 +600,7 @@ testWymManipulation({
     },
     expectedResultHtml: "<p>Foo</p>",
     skipFunc: function () {
-        // The external keyboard event simulation module, `keysim` requires
-        // `Object.defineProperty`
-        if (noObjectDefinePropertyBrowser === true) {
+        if (skipKeyboardShortcutTests === true) {
             return "skip";
         }
     }
@@ -623,9 +621,7 @@ testWymManipulation({
     },
     expectedResultHtml: "<ol><li>Foo</li></ol>",
     skipFunc: function () {
-        // The external keyboard event simulation module, `keysim` requires
-        // `Object.defineProperty`
-        if (noObjectDefinePropertyBrowser === true) {
+        if (skipKeyboardShortcutTests === true) {
             return "skip";
         }
     }
