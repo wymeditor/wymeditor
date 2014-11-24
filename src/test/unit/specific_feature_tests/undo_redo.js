@@ -8,7 +8,8 @@
     equal,
     ok,
     testWymManipulation,
-    simulateKeyCombo
+    simulateKeyCombo,
+    noObjectDefinePropertyBrowser
 */
 "use strict";
 
@@ -597,7 +598,14 @@ testWymManipulation({
     manipulationFunc: function (wymeditor) {
         simulateKeyCombo(wymeditor, "ctrl+z");
     },
-    expectedResultHtml: "<p>Foo</p>"
+    expectedResultHtml: "<p>Foo</p>",
+    skipFunc: function () {
+        // The external keyboard event simulation module, `keysim` requires
+        // `Object.defineProperty`
+        if (noObjectDefinePropertyBrowser === true) {
+            return "skip";
+        }
+    }
 });
 
 testWymManipulation({
@@ -613,5 +621,12 @@ testWymManipulation({
     manipulationFunc: function (wymeditor) {
         simulateKeyCombo(wymeditor, "ctrl+y");
     },
-    expectedResultHtml: "<ol><li>Foo</li></ol>"
+    expectedResultHtml: "<ol><li>Foo</li></ol>",
+    skipFunc: function () {
+        // The external keyboard event simulation module, `keysim` requires
+        // `Object.defineProperty`
+        if (noObjectDefinePropertyBrowser === true) {
+            return "skip";
+        }
+    }
 });
