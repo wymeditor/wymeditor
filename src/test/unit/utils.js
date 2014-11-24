@@ -540,7 +540,8 @@ function simulateKeyCombo(wymeditor, keyCombo) {
  *         to `false`.
  *     `skipFunc`
  *         Optional; A function that will be called before the test, whose
- *         return value, if it is `"skip"`, means the test will be skipped.
+ *         return value, if it is `"skip"`, means the test will be skipped
+ *         and a warning will be printed at the console.
  *         For example:
  *         ```
  *         function(wymeditor) {
