@@ -683,9 +683,7 @@ function testWymManipulation(a) {
         performTest(false);
 
         if (
-            // The external keyboard event simulation module, `keysim` requires
-            // `Object.defineProperty`
-            noObjectDefinePropertyBrowser === true ||
+            skipKeyboardShortcutTests === true ||
             typeof a.manipulationKeyCombo !== "string"
         ) {
             return;
