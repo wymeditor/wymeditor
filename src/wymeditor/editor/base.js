@@ -1699,8 +1699,6 @@ WYMeditor.editor.prototype.link = function (attrs) {
         return;
     }
     $a.attr(attrs);
-
-    wym.registerChange();
 };
 
 /**
@@ -1742,8 +1740,6 @@ WYMeditor.editor.prototype.insertImage = function (attrs) {
         return;
     }
     $img.attr(attrs);
-
-    wym.registerChange();
 };
 
 /**
