@@ -26,7 +26,8 @@ testWymManipulation({
         wymeditor.link({href: 'http://example.com', title: 'Example'});
     },
     expectedResultHtml: "<p>Foo<a href=\"http://example.com\" " +
-        "title=\"Example\">bar</a></p>"
+        "title=\"Example\">bar</a></p>",
+    testUndoRedo: true
 });
 
 testWymManipulation({
@@ -37,5 +38,6 @@ testWymManipulation({
         wymeditor.link({href: "http://example.com/baz", target: "_blank"});
     },
     expectedResultHtml: "<p><a href=\"http://example.com/baz\"" +
-        " target=\"_blank\">Bar</a></p>"
+        " target=\"_blank\">Bar</a></p>",
+    testUndoRedo: true
 });

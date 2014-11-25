@@ -161,26 +161,6 @@ testWymManipulation({
 });
 
 testWymManipulation({
-    testName: "Link",
-    testUndoRedo: true,
-    startHtml: "<p>Foobar</p>",
-    prepareFunc: function (wymeditor) {
-        var p = wymeditor.$body().children('p')[0];
-        makeTextSelection(
-            wymeditor,
-            p,
-            p,
-            3,
-            6
-        );
-    },
-    manipulationFunc: function (wymeditor) {
-        wymeditor.link({href: "http://example.com/"});
-    },
-    expectedResultHtml: "<p>Foo<a href=\"http://example.com/\">bar</a></p>"
-});
-
-testWymManipulation({
     testName: "Unlink",
     testUndoRedo: true,
     startHtml: "<p><a href=\"http://example.com/\">Foo</a></p>",
