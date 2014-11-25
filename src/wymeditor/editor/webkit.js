@@ -255,7 +255,7 @@ WYMeditor.WymClassWebKit.prototype._keyup = function (evt) {
                 parentName === WYMeditor.BODY) {
             wym._exec(
                 WYMeditor.EXEC_COMMANDS.FORMAT_BLOCK,
-            defaultRootContainer
+                defaultRootContainer
             );
             container = wym.selectedContainer();
         }

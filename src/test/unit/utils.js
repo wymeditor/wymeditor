@@ -5,8 +5,8 @@
     testNoChangeInHtmlArray,
     makeTextSelection,
     moveSelector,
-    testWymManipulation,
-    skipKeyboardShortcutTests
+    skipKeyboardShortcutTests,
+    manipulationTestHelper
 */
 /* global
     rangy,
@@ -15,7 +15,6 @@
     expect,
     QUnit,
     strictEqual,
-    test,
     Keysim,
     noObjectDefinePropertyBrowser,
     inPhantomjs
@@ -525,14 +524,12 @@ function simulateKeyCombo(wymeditor, keyCombo) {
 }
 
 /**
- * testWymManipulation
- * ===================
+ * manipulationTestHelper
+ * ======================
  *
- * Test WYMeditor.
+ * Helper for testing editor manipulations. Don't leave home without it.
  *
  * @param a An object, containing:
- *     `testName`
- *         A name for the test.
  *     `startHtml`
  *         HTML to start the test with. Required if `expectedStartHtml` is not
  *         used.
@@ -581,115 +578,117 @@ function simulateKeyCombo(wymeditor, keyCombo) {
  *         This example uses the `jquery.browser` plugin
  *         https://github.com/gabceb/jquery-browser-plugin
  */
-function testWymManipulation(a) {
+function manipulationTestHelper(a) {
     if (typeof a.skipFunc === 'function') {
         if (a.skipFunc() === "skip") {
-            WYMeditor.console.warn("Test \"" + a.testName + "\" skipped.");
+            WYMeditor.console.warn(
+                "Test \"" + QUnit.config.current.testName +
+                "\" from module \"" + QUnit.config.currentModule +
+                "\" skipped."
+            );
             return;
         }
     }
-    test(a.testName, function () {
-        var wymeditor = jQuery.wymeditors(0);
-        function performTest(useKeyCombo) {
-            var useKeyComboAssertStrAppend = useKeyCombo === true ?
-                "; using keyboard shortcut" : "";
-            if (typeof a.startHtml === 'string') {
-                wymeditor.rawHtml(a.startHtml);
-            }
-            if (typeof a.setCaretInSelector === 'string') {
-                wymeditor.setCaretIn(
-                    wymeditor.$body().find(a.setCaretInSelector)[0]
-                );
-            }
-            if (typeof a.prepareFunc === 'function') {
-                a.prepareFunc(wymeditor);
-            }
-            expect(expect() === null ? 1 : expect() + 1);
-            wymEqual(
-                wymeditor,
-                a.expectedStartHtml || a.startHtml,
-                {
-                    assertionString: "Start HTML",
-                    parseHtml: typeof a.parseHtml === 'undefined' ? false :
-                        a.parseHtml
-                }
+    var wymeditor = jQuery.wymeditors(0);
+    function performTest(useKeyCombo) {
+        var useKeyComboAssertStrAppend = useKeyCombo === true ?
+            "; using keyboard shortcut" : "";
+        if (typeof a.startHtml === 'string') {
+            wymeditor.rawHtml(a.startHtml);
+        }
+        if (typeof a.setCaretInSelector === 'string') {
+            wymeditor.setCaretIn(
+                wymeditor.$body().find(a.setCaretInSelector)[0]
             );
-
-            if (a.testUndoRedo === true) {
-                wymeditor.undoRedo.reset();
+        }
+        if (typeof a.prepareFunc === 'function') {
+            a.prepareFunc(wymeditor);
+        }
+        expect(expect() === null ? 1 : expect() + 1);
+        wymEqual(
+            wymeditor,
+            a.expectedStartHtml || a.startHtml,
+            {
+                assertionString: "Start HTML",
+                parseHtml: typeof a.parseHtml === 'undefined' ? false :
+                    a.parseHtml
             }
+        );
 
-            if (useKeyCombo === true) {
-                simulateKeyCombo(wymeditor, a.manipulationKeyCombo);
-            } else if (typeof a.manipulationFunc === 'function') {
-                a.manipulationFunc(wymeditor);
-            }
+        if (a.testUndoRedo === true) {
+            wymeditor.undoRedo.reset();
+        }
 
-            if (typeof a.expectedResultHtml === 'string') {
-                expect(expect() + 1);
-                wymEqual(
-                    wymeditor,
-                    a.expectedResultHtml,
-                    {
-                        assertionString: "Manipulation result HTML" +
-                            useKeyComboAssertStrAppend,
-                        parseHtml: typeof a.parseHtml === 'undefined' ? false :
-                            a.parseHtml
-                    }
-                );
-            }
+        if (useKeyCombo === true) {
+            simulateKeyCombo(wymeditor, a.manipulationKeyCombo);
+        } else if (typeof a.manipulationFunc === 'function') {
+            a.manipulationFunc(wymeditor);
+        }
 
-            if (typeof a.additionalAssertionsFunc === 'function') {
-                a.additionalAssertionsFunc(wymeditor);
-            }
-
-            if (a.testUndoRedo !== true) {
-                return;
-            }
-
-            wymeditor.undoRedo.undo();
+        if (typeof a.expectedResultHtml === 'string') {
             expect(expect() + 1);
             wymEqual(
                 wymeditor,
-                a.expectedStartHtml || a.startHtml,
+                a.expectedResultHtml,
                 {
-                    assertionString: "Back to start HTML after undo" +
+                    assertionString: "Manipulation result HTML" +
                         useKeyComboAssertStrAppend,
                     parseHtml: typeof a.parseHtml === 'undefined' ? false :
                         a.parseHtml
                 }
             );
-
-            wymeditor.undoRedo.redo();
-            if (typeof a.expectedResultHtml === 'string') {
-                expect(expect() + 1);
-                wymEqual(
-                    wymeditor,
-                    a.expectedResultHtml,
-                    {
-                        assertionString: "Back to manipulation result HTML " +
-                            "after redo" + useKeyComboAssertStrAppend,
-                        parseHtml: typeof a.parseHtml === 'undefined' ? false :
-                            a.parseHtml
-                    }
-                );
-            }
-
-            if (typeof a.additionalAssertionsFunc === 'function') {
-                a.additionalAssertionsFunc(wymeditor);
-            }
         }
 
-        performTest(false);
+        if (typeof a.additionalAssertionsFunc === 'function') {
+            a.additionalAssertionsFunc(wymeditor);
+        }
 
-        if (
-            skipKeyboardShortcutTests === true ||
-            typeof a.manipulationKeyCombo !== "string"
-        ) {
+        if (a.testUndoRedo !== true) {
             return;
         }
 
-        a.testName += "; using keyboard shortcut";
-        performTest(true);
-    });
+        wymeditor.undoRedo.undo();
+        expect(expect() + 1);
+        wymEqual(
+            wymeditor,
+            a.expectedStartHtml || a.startHtml,
+            {
+                assertionString: "Back to start HTML after undo" +
+                    useKeyComboAssertStrAppend,
+                parseHtml: typeof a.parseHtml === 'undefined' ? false :
+                    a.parseHtml
+            }
+        );
+
+        wymeditor.undoRedo.redo();
+        if (typeof a.expectedResultHtml === 'string') {
+            expect(expect() + 1);
+            wymEqual(
+                wymeditor,
+                a.expectedResultHtml,
+                {
+                    assertionString: "Back to manipulation result HTML " +
+                        "after redo" + useKeyComboAssertStrAppend,
+                    parseHtml: typeof a.parseHtml === 'undefined' ? false :
+                        a.parseHtml
+                }
+            );
+        }
+
+        if (typeof a.additionalAssertionsFunc === 'function') {
+            a.additionalAssertionsFunc(wymeditor);
+        }
+    }
+
+    performTest(false);
+
+    if (
+        skipKeyboardShortcutTests === true ||
+        typeof a.manipulationKeyCombo !== "string"
+    ) {
+        return;
+    }
+
+    a.testName += "; using keyboard shortcut";
+    performTest(true);
 }
