@@ -1740,6 +1740,9 @@ WYMeditor.editor.prototype.insertImage = function (attrs) {
         return;
     }
     $img.attr(attrs);
+
+    // PhantomJS seems to add strange spans around images.
+    wym.$body().find('.Apple-style-span').children().unwrap();
 };
 
 /**
