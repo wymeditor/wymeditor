@@ -17,7 +17,7 @@
     normalizeHtml,
     ListPlugin,
     asyncTest,
-    testWymManipulation
+    manipulationTestHelper
 */
 /* exported
 setupWym,
@@ -156,14 +156,15 @@ test("Instantiate", function () {
               "Type of first WYMeditor instance, using jQuery.wymeditors(0)");
 });
 
-testWymManipulation({
-    testName: "Empty document is a single `br`.",
-    startHtml: "",
-    prepareFunc: function (wymeditor) {
-        wymeditor.prepareDocForEditing();
-    },
-    expectedStartHtml: "<br />",
-    expectedResultHtml: "<br />"
+test("Empty document is a single `br`.", function () {
+    manipulationTestHelper({
+        startHtml: "",
+        prepareFunc: function (wymeditor) {
+            wymeditor.prepareDocForEditing();
+        },
+        expectedStartHtml: "<br />",
+        expectedResultHtml: "<br />"
+    });
 });
 
 module("API", {setup: prepareUnitTestModule});
