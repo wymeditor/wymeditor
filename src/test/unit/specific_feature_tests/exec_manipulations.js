@@ -26,6 +26,7 @@ test("Bold", function () {
         manipulationFunc: function (wymeditor) {
             wymeditor.exec("Bold");
         },
+        manipulationKeyCombo: "ctrl+b",
         expectedResultHtml: "<p><strong>Foo</strong></p>",
         parseHtml: true,
         testUndoRedo: true
@@ -48,6 +49,7 @@ test("Italic", function () {
         manipulationFunc: function (wymeditor) {
             wymeditor.exec("Italic");
         },
+        manipulationKeyCombo: "ctrl+i",
         additionalAssertionsFunc: function (
             // `wymeditor` seems to be unused because of the ignore, below.
             /* jshint ignore:start */
