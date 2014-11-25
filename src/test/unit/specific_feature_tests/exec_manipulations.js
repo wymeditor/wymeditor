@@ -26,7 +26,8 @@ testWymManipulation({
         wymeditor.exec("Bold");
     },
     expectedResultHtml: "<p><strong>Foo</strong></p>",
-    parseHtml: true
+    parseHtml: true,
+    testUndoRedo: true
 });
 
 testWymManipulation({
@@ -65,7 +66,8 @@ testWymManipulation({
             ) > -1,
             "Either `i` or `em`."
         );
-    }
+    },
+    testUndoRedo: true
 });
 
 testWymManipulation({
@@ -84,7 +86,8 @@ testWymManipulation({
     manipulationFunc: function (wymeditor) {
         wymeditor.exec("Superscript");
     },
-    expectedResultHtml: "<p><sup>Foo</sup></p>"
+    expectedResultHtml: "<p><sup>Foo</sup></p>",
+    testUndoRedo: true
 });
 
 testWymManipulation({
@@ -103,5 +106,6 @@ testWymManipulation({
     manipulationFunc: function (wymeditor) {
         wymeditor.exec("Subscript");
     },
-    expectedResultHtml: "<p><sub>Foo</sub></p>"
+    expectedResultHtml: "<p><sub>Foo</sub></p>",
+    testUndoRedo: true
 });
