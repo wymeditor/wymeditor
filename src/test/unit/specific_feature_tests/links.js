@@ -1,43 +1,45 @@
 /* jshint evil: true */
 /* global
-    testWymManipulation,
+    manipulationTestHelper,
     prepareUnitTestModule,
-    makeTextSelection
+    makeTextSelection,
+    test
 */
 "use strict";
 
 module("links", {setup: prepareUnitTestModule});
 
-testWymManipulation({
-    testName: "Insert link with some attributes.",
-    startHtml: "<p>Foobar</p>",
-    prepareFunc: function (wymeditor) {
-        var p = wymeditor.$body().children('p');
-        // Select "bar".
-        makeTextSelection(
-            wymeditor,
-            p,
-            p,
-            3,
-            6
-        );
-    },
-    manipulationFunc: function (wymeditor) {
-        wymeditor.link({href: 'http://example.com/', title: 'Example'});
-    },
-    expectedResultHtml: "<p>Foo<a href=\"http://example.com/\" " +
-        "title=\"Example\">bar</a></p>",
-    testUndoRedo: true
+test("Insert link with some attributes.", function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foobar</p>",
+        prepareFunc: function (wymeditor) {
+            var p = wymeditor.$body().children('p');
+            // Select "bar".
+            makeTextSelection(
+                wymeditor,
+                p,
+                p,
+                3,
+                6
+            );
+        },
+        manipulationFunc: function (wymeditor) {
+            wymeditor.link({href: 'http://example.com/', title: 'Example'});
+        },
+        expectedResultHtml: "<p>Foo<a href=\"http://example.com/\" " +
+            "title=\"Example\">bar</a></p>",
+        testUndoRedo: true
+    });
 });
-
-testWymManipulation({
-    testName: "Modify link attributes",
-    startHtml: "<p><a href=\"http://example.com/foo\">Bar</a></p>",
-    setCaretInSelector: 'a',
-    manipulationFunc: function (wymeditor) {
-        wymeditor.link({href: "http://example.com/baz", target: "_blank"});
-    },
-    expectedResultHtml: "<p><a href=\"http://example.com/baz\"" +
-        " target=\"_blank\">Bar</a></p>",
-    testUndoRedo: true
+test("Modify link attributes", function () {
+    manipulationTestHelper({
+        startHtml: "<p><a href=\"http://example.com/foo\">Bar</a></p>",
+        setCaretInSelector: 'a',
+        manipulationFunc: function (wymeditor) {
+            wymeditor.link({href: "http://example.com/baz", target: "_blank"});
+        },
+        expectedResultHtml: "<p><a href=\"http://example.com/baz\"" +
+            " target=\"_blank\">Bar</a></p>",
+        testUndoRedo: true
+    });
 });

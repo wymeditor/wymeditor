@@ -1,5 +1,5 @@
 /* global
-    testWymManipulation,
+    manipulationTestHelper,
     test,
     module,
     expect,
@@ -12,29 +12,31 @@
 "use strict";
 module("selection", {setup: prepareUnitTestModule});
 
-testWymManipulation({
-    testName: "There is no selection (`editor.deselect()`).",
-    startHtml: "<p>foo</p>",
-    prepareFunc: function (wymeditor) {
-        wymeditor.setCaretIn(wymeditor.body().childNodes[0]);
-        wymeditor.deselect();
-    },
-    additionalAssertionsFunc: function (wymeditor) {
-        expect(expect() + 1);
-        ok(wymeditor.hasSelection() === false);
-    }
+test("There is no selection (`editor.deselect()`).", function () {
+    manipulationTestHelper({
+        startHtml: "<p>foo</p>",
+        prepareFunc: function (wymeditor) {
+            wymeditor.setCaretIn(wymeditor.body().childNodes[0]);
+            wymeditor.deselect();
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 1);
+            ok(wymeditor.hasSelection() === false);
+        }
+    });
 });
 
-testWymManipulation({
-    testName: "There is a selection.",
-    startHtml: "<p>foo</p>",
-    prepareFunc: function (wymeditor) {
-        wymeditor.setCaretIn(wymeditor.body().childNodes[0]);
-    },
-    additionalAssertionsFunc: function (wymeditor) {
-        expect(expect() + 1);
-        ok(wymeditor.hasSelection() === true);
-    }
+test("There is a selection.", function () {
+    manipulationTestHelper({
+        startHtml: "<p>foo</p>",
+        prepareFunc: function (wymeditor) {
+            wymeditor.setCaretIn(wymeditor.body().childNodes[0]);
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 1);
+            ok(wymeditor.hasSelection() === true);
+        }
+    });
 });
 
 var selTest = {};
@@ -261,144 +263,150 @@ module("selection-_getSelectedNodes", {setup: prepareUnitTestModule});
 // texts.
 // See https://github.com/wymeditor/wymeditor/issues/618.
 
-testWymManipulation({
-    testName: "No selection",
-    startHtml: "<p>Foo</p>",
-    prepareFunc: function (wymeditor) {
-        wymeditor.deselect();
-    },
-    additionalAssertionsFunc: function (wymeditor) {
-        expect(expect() + 1);
-        ok(wymeditor._getSelectedNodes() === false);
-    }
+test("No selection", function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p>",
+        prepareFunc: function (wymeditor) {
+            wymeditor.deselect();
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 1);
+            ok(wymeditor._getSelectedNodes() === false);
+        }
+    });
 });
 
-testWymManipulation({
-    testName: "Collapsed selection",
-    startHtml: "<p>Foo</p>",
-    prepareFunc: function (wymeditor) {
-        wymeditor.setCaretIn(wymeditor.body().childNodes[0]);
-    },
-    additionalAssertionsFunc: function (wymeditor) {
-        expect(expect() + 1);
-        deepEqual(
-            wymeditor._getSelectedNodes(),
-            []
-        );
-    }
+test("Collapsed selection", function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p>",
+        prepareFunc: function (wymeditor) {
+            wymeditor.setCaretIn(wymeditor.body().childNodes[0]);
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 1);
+            deepEqual(
+                wymeditor._getSelectedNodes(),
+                []
+            );
+        }
+    });
 });
 
-testWymManipulation({
-    testName: "Single text node",
-    startHtml: "<p>Foo</p>",
-    prepareFunc: function (wymeditor) {
-        var range = rangy.createRange(wymeditor._doc),
-            foo = wymeditor.body().childNodes[0].childNodes[0];
+test("Single text node", function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p>",
+        prepareFunc: function (wymeditor) {
+            var range = rangy.createRange(wymeditor._doc),
+                foo = wymeditor.body().childNodes[0].childNodes[0];
 
-        range.selectNode(foo);
-        wymeditor.selection().setSingleRange(range);
-    },
-    additionalAssertionsFunc: function (wymeditor) {
-        expect(expect() + 1);
-        deepEqual(
-            wymeditor.selection().getRangeAt(0).getNodes(),
-            [wymeditor.body().childNodes[0].childNodes[0]]
-        );
-    }
+            range.selectNode(foo);
+            wymeditor.selection().setSingleRange(range);
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 1);
+            deepEqual(
+                wymeditor.selection().getRangeAt(0).getNodes(),
+                [wymeditor.body().childNodes[0].childNodes[0]]
+            );
+        }
+    });
 });
 
-testWymManipulation({
-    testName: "Partially selected text node",
-    startHtml: "<p>Foo</p>",
-    prepareFunc: function (wymeditor) {
-        var range = rangy.createRange(wymeditor._doc),
-            foo = wymeditor.body().childNodes[0].childNodes[0];
+test("Partially selected text node", function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p>",
+        prepareFunc: function (wymeditor) {
+            var range = rangy.createRange(wymeditor._doc),
+                foo = wymeditor.body().childNodes[0].childNodes[0];
 
-        range.setStart(foo, 0);
-        range.setEnd(foo, 1);
-        wymeditor.selection().setSingleRange(range);
-    },
-    additionalAssertionsFunc: function (wymeditor) {
-        expect(expect() + 1);
-        deepEqual(
-            wymeditor.selection().getRangeAt(0).getNodes(),
-            [wymeditor.body().childNodes[0].childNodes[0]]
-        );
-    }
+            range.setStart(foo, 0);
+            range.setEnd(foo, 1);
+            wymeditor.selection().setSingleRange(range);
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 1);
+            deepEqual(
+                wymeditor.selection().getRangeAt(0).getNodes(),
+                [wymeditor.body().childNodes[0].childNodes[0]]
+            );
+        }
+    });
 });
 
-testWymManipulation({
-    testName: "Two wholly selected text nodes",
-    startHtml: "<p>Foo</p><p>Bar</p>",
-    prepareFunc: function (wymeditor) {
-        var body = wymeditor.body(),
-            range = rangy.createRange(wymeditor._doc),
-            foo = body.childNodes[0].childNodes[0],
-            bar = body.childNodes[1].childNodes[0];
+test("Two wholly selected text nodes", function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p><p>Bar</p>",
+        prepareFunc: function (wymeditor) {
+            var body = wymeditor.body(),
+                range = rangy.createRange(wymeditor._doc),
+                foo = body.childNodes[0].childNodes[0],
+                bar = body.childNodes[1].childNodes[0];
 
-        range.setStart(foo, 0);
-        range.setEnd(bar, 3);
-        wymeditor.selection().setSingleRange(range);
-    },
-    additionalAssertionsFunc: function (wymeditor) {
-        expect(expect() + 5);
-        var selectedNodes = wymeditor._getSelectedNodes();
-        strictEqual(
-            selectedNodes.length,
-            4
-        );
-        strictEqual(
-            selectedNodes[0].tagName.toLowerCase(),
-            "p"
-        );
-        strictEqual(
-            selectedNodes[1].data,
-            "Foo"
-        );
-        strictEqual(
-            selectedNodes[2].tagName.toLowerCase(),
-            "p"
-        );
-        strictEqual(
-            selectedNodes[3].data,
-            "Bar"
-        );
-    }
+            range.setStart(foo, 0);
+            range.setEnd(bar, 3);
+            wymeditor.selection().setSingleRange(range);
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 5);
+            var selectedNodes = wymeditor._getSelectedNodes();
+            strictEqual(
+                selectedNodes.length,
+                4
+            );
+            strictEqual(
+                selectedNodes[0].tagName.toLowerCase(),
+                "p"
+            );
+            strictEqual(
+                selectedNodes[1].data,
+                "Foo"
+            );
+            strictEqual(
+                selectedNodes[2].tagName.toLowerCase(),
+                "p"
+            );
+            strictEqual(
+                selectedNodes[3].data,
+                "Bar"
+            );
+        }
+    });
 });
 
-testWymManipulation({
-    testName: "Two partially selected text nodes",
-    startHtml: "<p>Foo</p><p>Bar</p>",
-    prepareFunc: function (wymeditor) {
-        var body = wymeditor.body(),
-            range = rangy.createRange(wymeditor._doc);
+test("Two partially selected text nodes", function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p><p>Bar</p>",
+        prepareFunc: function (wymeditor) {
+            var body = wymeditor.body(),
+                range = rangy.createRange(wymeditor._doc);
 
-        range.setStart(body.childNodes[0].childNodes[0], 1);
-        range.setEnd(body.childNodes[1].childNodes[0], 1);
-        wymeditor.selection().setSingleRange(range);
-    },
-    additionalAssertionsFunc: function (wymeditor) {
-        expect(expect() + 5);
-        var selectedNodes = wymeditor._getSelectedNodes();
-        strictEqual(
-            selectedNodes.length,
-            4
-        );
-        strictEqual(
-            selectedNodes[0].tagName.toLowerCase(),
-            "p"
-        );
-        strictEqual(
-            selectedNodes[1].data,
-            "Foo"
-        );
-        strictEqual(
-            selectedNodes[2].tagName.toLowerCase(),
-            "p"
-        );
-        strictEqual(
-            selectedNodes[3].data,
-            "Bar"
-        );
-    }
+            range.setStart(body.childNodes[0].childNodes[0], 1);
+            range.setEnd(body.childNodes[1].childNodes[0], 1);
+            wymeditor.selection().setSingleRange(range);
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 5);
+            var selectedNodes = wymeditor._getSelectedNodes();
+            strictEqual(
+                selectedNodes.length,
+                4
+            );
+            strictEqual(
+                selectedNodes[0].tagName.toLowerCase(),
+                "p"
+            );
+            strictEqual(
+                selectedNodes[1].data,
+                "Foo"
+            );
+            strictEqual(
+                selectedNodes[2].tagName.toLowerCase(),
+                "p"
+            );
+            strictEqual(
+                selectedNodes[3].data,
+                "Bar"
+            );
+        }
+    });
 });
