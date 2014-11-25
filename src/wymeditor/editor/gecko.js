@@ -46,7 +46,6 @@ WYMeditor.WymClassGecko.prototype.rawHtml = function (html) {
 
         //update the html body
         jQuery(wym._doc.body).html(html);
-        wym._wym.prepareDocForEditing();
 
         //re-init designMode
         wym._enableDesignModeOnIframe();

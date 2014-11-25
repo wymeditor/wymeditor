@@ -115,11 +115,12 @@ if (jQuery.browser.webkit || jQuery.browser.safari) {
 
 // If there is no element in front of a table in FF or ie, it's not possible
 // to put content in front of that table.
-test("table has br spacers via .rawHtml()", function () {
+test("table has br spacers via .prepareDocForEditing()", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
     wymeditor.rawHtml(tableHtml);
+    wymeditor.prepareDocForEditing();
 
     $body = wymeditor.$body();
     children = $body.children();
@@ -158,11 +159,12 @@ test("table has br spacers via table insertion", function () {
     wymEqual(wymeditor, tableHtml, {parseHtml: true});
 });
 
-test("p + table has br spacers via .rawHtml()", function () {
+test("p + table has br spacers via .prepareDocForEditing()", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
     wymeditor.rawHtml(pTableHtml);
+    wymeditor.prepareDocForEditing();
 
     $body = wymeditor.$body();
     children = $body.children();
@@ -208,11 +210,12 @@ test("p + table has br spacers via table insertion", function () {
     wymEqual(wymeditor, pTableHtml, {parseHtml: true});
 });
 
-test("p + table + p has br spacers via .rawHtml()", function () {
+test("p + table + p has br spacers via .prepareDocForEditing()", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
     wymeditor.rawHtml(pTablePHtml);
+    wymeditor.prepareDocForEditing();
 
     $body = wymeditor.$body();
     children = $body.children();
@@ -260,11 +263,13 @@ test("p + table + p has br spacers via table insertion", function () {
     wymEqual(wymeditor, pTablePHtml, {parseHtml: true});
 });
 
-test("p + table + table + p has br spacers via .rawHtml()", function () {
+test("p + table + table + p has br spacers via " +
+    ".prepareDocForEditing()", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
     wymeditor.rawHtml(pTableTablePHtml);
+    wymeditor.prepareDocForEditing();
 
     $body = wymeditor.$body();
     children = $body.children();
@@ -317,11 +322,13 @@ test("p + table + table + p has br spacers via table insertion", function () {
     wymEqual(wymeditor, pTableTablePHtml, {parseHtml: true});
 });
 
-test("h1 + blockquote + pre has br spacers via .rawHtml()", function () {
+test("h1 + blockquote + pre has br spacers via " +
+    ".prepareDocForEditing()", function () {
     var wymeditor = jQuery.wymeditors(0),
         $body,
         children;
     wymeditor.rawHtml(h1BlockquotePreHtml);
+    wymeditor.prepareDocForEditing();
 
     $body = wymeditor.$body();
     children = $body.children();
@@ -465,6 +472,7 @@ test("br spacers stay in place when content is inserted- post-br", function () {
         $body,
         children;
     wymeditor.rawHtml(tableHtml);
+    wymeditor.prepareDocForEditing();
 
     $body = wymeditor.$body();
 
@@ -499,6 +507,7 @@ if (!no_keypress_textnode_wrap_browser) {
             $body,
             children;
         wymeditor.rawHtml(tableHtml);
+        wymeditor.prepareDocForEditing();
 
         $body = wymeditor.$body();
 
