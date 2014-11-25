@@ -58,7 +58,7 @@ test("._selectedImage is saved on mousedown", function () {
     wymeditor.rawHtml(initHtml);
     $body = wymeditor.$body();
 
-    // Editor starts with no selected image. Use equal instead of deepEqual
+    // Editor starts with no selected image. Use equal instead of strictEqual
     // because wymeditor._selectedImage intermittently changes between being
     // undefined and null, but either value should be acceptable for this test.
     equal(
