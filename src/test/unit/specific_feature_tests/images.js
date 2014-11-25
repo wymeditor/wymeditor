@@ -41,7 +41,7 @@ testWymManipulation({
         "src=\"http://example.com/example.jpg\" /><br />"
 });
 
-test("_selected image is saved on mousedown", function () {
+test("._selectedImage is saved on mousedown", function () {
     var initHtml = [""
         , '<p id="noimage">Images? We dont need no silly images</p>'
         , '<p>'
