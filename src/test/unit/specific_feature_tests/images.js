@@ -1,6 +1,6 @@
 /* jshint evil: true */
 /* global
-    testWym,
+    testWymManipulation,
     prepareUnitTestModule,
     test,
     expect,
@@ -11,7 +11,7 @@
 
 module("images", {setup: prepareUnitTestModule});
 
-testWym({
+testWymManipulation({
     testName: "Image insertion in a paragraph",
     startHtml: "<p>Foo</p>",
     setCaretInSelector: 'p',
@@ -25,7 +25,7 @@ testWym({
         "src=\"http://example.com/example.jpg\" />Foo</p>"
 });
 
-testWym({
+testWymManipulation({
     testName: "Image insertion in the body.",
     startHtml: "<br />",
     prepareFunc: function (wymeditor) {

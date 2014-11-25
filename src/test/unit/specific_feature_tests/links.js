@@ -1,6 +1,6 @@
 /* jshint evil: true */
 /* global
-    testWym,
+    testWymManipulation,
     prepareUnitTestModule,
     makeTextSelection
 */
@@ -8,7 +8,7 @@
 
 module("links", {setup: prepareUnitTestModule});
 
-testWym({
+testWymManipulation({
     testName: "Insert link with some attributes.",
     startHtml: "<p>Foobar</p>",
     prepareFunc: function (wymeditor) {
@@ -29,7 +29,7 @@ testWym({
         "title=\"Example\">bar</a></p>"
 });
 
-testWym({
+testWymManipulation({
     testName: "Modify link attributes",
     startHtml: "<p><a href=\"http://example.com/foo\">Bar</a></p>",
     setCaretInSelector: 'a',
