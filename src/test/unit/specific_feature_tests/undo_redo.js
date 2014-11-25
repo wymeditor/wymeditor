@@ -201,18 +201,6 @@ testWymManipulation({
 });
 
 testWymManipulation({
-    testName: "Image",
-    testUndoRedo: true,
-    startHtml: "<p>Foo</p>",
-    setCaretInSelector: "p",
-    manipulationFunc: function (wymeditor) {
-        wymeditor.insertImage({src: "http://example.com/example.jpg"});
-    },
-    expectedResultHtml: "<p><img src=\"http://example.com/example.jpg\" " +
-        "/>Foo</p>"
-});
-
-testWymManipulation({
     testName: "Insert table",
     testUndoRedo: true,
     startHtml: "<br />",

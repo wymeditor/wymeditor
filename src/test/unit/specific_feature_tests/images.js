@@ -22,7 +22,8 @@ testWymManipulation({
         });
     },
     expectedResultHtml: "<p><img alt=\"Example\" " +
-        "src=\"http://example.com/example.jpg\" />Foo</p>"
+        "src=\"http://example.com/example.jpg\" />Foo</p>",
+    testUndoRedo: true
 });
 
 testWymManipulation({
@@ -38,7 +39,8 @@ testWymManipulation({
         });
     },
     expectedResultHtml: "<img alt=\"Example\" " +
-        "src=\"http://example.com/example.jpg\" /><br />"
+        "src=\"http://example.com/example.jpg\" /><br />",
+    testUndoRedo: true
 });
 
 test("._selectedImage is saved on mousedown", function () {
