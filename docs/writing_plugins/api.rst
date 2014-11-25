@@ -17,8 +17,7 @@ Get or set the editor's HTML value.
 
 When the `html` argument is provided,
 that HTML will be parsed and loaded into the editor.
-It also calls ``prepareDocForEditing``,
-so that the document will be ready for editing.
+The document will be ready for editing.
 
 When called without an argument,
 it will provide an HTML representation of the document

@@ -1246,7 +1246,6 @@ test("Double soft returns are allowed", function () {
     wymEqual(wymeditor, initHtml);
 });
 
-
 module("header-no_span", {setup: prepareUnitTestModule});
 
 /**
