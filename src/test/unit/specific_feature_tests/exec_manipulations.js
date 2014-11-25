@@ -131,6 +131,7 @@ test("Unlink", function () {
         manipulationFunc: function (wymeditor) {
             wymeditor.exec("Unlink");
         },
-        expectedResultHtml: "<p>Foo</p>"
+        expectedResultHtml: "<p>Foo</p>",
+        testUndoRedo: true
     });
 });
