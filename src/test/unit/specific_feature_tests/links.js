@@ -23,9 +23,9 @@ testWymManipulation({
         );
     },
     manipulationFunc: function (wymeditor) {
-        wymeditor.link({href: 'http://example.com', title: 'Example'});
+        wymeditor.link({href: 'http://example.com/', title: 'Example'});
     },
-    expectedResultHtml: "<p>Foo<a href=\"http://example.com\" " +
+    expectedResultHtml: "<p>Foo<a href=\"http://example.com/\" " +
         "title=\"Example\">bar</a></p>"
 });
 
