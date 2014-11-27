@@ -510,8 +510,30 @@ function testNoChangeInHtmlArray(htmlArray, parseHtml) {
  *     `parseHtml`
  *         Optional; Passed on to `wymEqual` as `options.parseHtml`. Defaults
  *         to `false`.
+ *     `skipFunc`
+ *         Optional; A function that will be called before the test, whose
+ *         return value, if it is `"skip"`, means the test will be skipped.
+ *         For example:
+ *         ```
+ *         function(wymeditor) {
+ *             if (
+ *                 jQuery.browser.name === "msie" &&
+ *                 jQuery.browser.versionNumber === 7
+ *             ) {
+ *                 return "skip";
+ *             }
+ *         }
+ *         ```
+ *         This example uses the `jquery.browser` plugin
+ *         https://github.com/gabceb/jquery-browser-plugin
  */
 function manipulationTestHelper(a) {
+    if (typeof a.skipFunc === 'function') {
+        if (a.skipFunc() === "skip") {
+            WYMeditor.console.warn("Test \"" + a.testName + "\" skipped.");
+            return;
+        }
+    }
     var wymeditor = jQuery.wymeditors(0);
     if (typeof a.startHtml === 'string') {
         wymeditor.rawHtml(a.startHtml);
