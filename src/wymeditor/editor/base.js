@@ -1670,7 +1670,7 @@ WYMeditor.editor.prototype.link = function (attrs) {
         $a;
 
     if (jQuery.isPlainObject(attrs) !== true) {
-        throw "Expected a pain object.";
+        throw "Expected a plain object.";
     }
 
     if (
