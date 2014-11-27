@@ -546,7 +546,7 @@ function manipulationTestHelper(a) {
     if (typeof a.prepareFunc === 'function') {
         a.prepareFunc(wymeditor);
     }
-    expect(1);
+    expect(expect() + 1);
     wymEqual(
         wymeditor,
         a.expectedStartHtml || a.startHtml,
