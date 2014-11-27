@@ -531,6 +531,9 @@ function testNoChangeInHtmlArray(htmlArray, parseHtml) {
 function manipulationTestHelper(a) {
     if (typeof a.skipFunc === 'function') {
         if (a.skipFunc() === "skip") {
+            if (expect() === null) {
+                expect(0);
+            }
             WYMeditor.console.warn(
                 "Assertions skipped in test \"" +
                 QUnit.config.current.testName + "\" from module \"" +
