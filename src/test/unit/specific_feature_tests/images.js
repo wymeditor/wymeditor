@@ -11,7 +11,7 @@
 
 module("images", {setup: prepareUnitTestModule});
 
-test("Image insertion in a paragraph", function () {
+test("Inserts image into a paragraph", function () {
     manipulationTestHelper({
         startHtml: "<p>Foo</p>",
         setCaretInSelector: 'p',
@@ -26,7 +26,7 @@ test("Image insertion in a paragraph", function () {
     });
 });
 
-test("Image insertion in the body.", function () {
+test("Inserts image into the body", function () {
     manipulationTestHelper({
         startHtml: "<br />",
         prepareFunc: function (wymeditor) {

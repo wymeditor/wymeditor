@@ -9,7 +9,7 @@
 
 module("links", {setup: prepareUnitTestModule});
 
-test("Insert link with some attributes.", function () {
+test("Inserts link with attributes", function () {
     manipulationTestHelper({
         startHtml: "<p>Foobar</p>",
         prepareFunc: function (wymeditor) {
@@ -30,7 +30,7 @@ test("Insert link with some attributes.", function () {
             "title=\"Example\">bar</a></p>"
     });
 });
-test("Modify link attributes", function () {
+test("Modifies link attributes", function () {
     manipulationTestHelper({
         startHtml: "<p><a href=\"http://example.com/foo\">Bar</a></p>",
         setCaretInSelector: 'a',
