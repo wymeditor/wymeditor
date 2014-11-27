@@ -511,9 +511,9 @@ function testNoChangeInHtmlArray(htmlArray, parseHtml) {
  *         Optional; Passed on to `wymEqual` as `options.parseHtml`. Defaults
  *         to `false`.
  *     `skipFunc`
- *         Optional; A function that will be called before the test, whose
- *         return value, if it is `"skip"`, means the test will be skipped
- *         and a warning will be printed at the console.
+ *         Optional; A function that will be called before anything else, whose
+ *         return value, if it is `"skip"`, means this helper will immediately
+ *         return and a warning will be printed at the console.
  *         For example:
  *         ```
  *         function(wymeditor) {
