@@ -167,6 +167,29 @@ test("Empty document is a single `br`.", function () {
     });
 });
 
+test("Focusing on document triggers designMode if it is off", function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p>",
+        prepareFunc: function (wymeditor) {
+            wymeditor._doc.designMode = "Off";
+        },
+        manipulationFunc: function (wymeditor) {
+            wymeditor.$body().focus();
+        },
+        expectedResultHtml: "<p>Foo</p>",
+        skipFunc: function () {
+            if (
+                // In IE <= 10 after turning off `designMode` the document has no
+                // `body`.
+                jQuery.browser.msie &&
+                jQuery.browser.versionNumber <= 10
+            ) {
+                return "skip";
+            }
+        }
+    });
+});
+
 module("API", {setup: prepareUnitTestModule});
 
 test("Commands", function () {
