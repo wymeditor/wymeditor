@@ -238,7 +238,10 @@ WYMeditor.editor.prototype._assignWymDoc = function () {
 WYMeditor.editor.prototype._isDesignModeOn = function () {
     var wym = this;
 
-    if (wym._doc.designMode === "On") {
+    if (
+        typeof wym._doc.designMode === "string" &&
+        wym._doc.designMode.toLowerCase() === "on"
+    ) {
         return true;
     }
     return false;
