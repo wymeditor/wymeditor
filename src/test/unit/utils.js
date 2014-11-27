@@ -532,8 +532,9 @@ function manipulationTestHelper(a) {
     if (typeof a.skipFunc === 'function') {
         if (a.skipFunc() === "skip") {
             WYMeditor.console.warn(
-                "Assertions skipped in test \"" + a.testName + "\" " +
-                "from module \"" + QUnit.config.currentModule + "\""
+                "Assertions skipped in test \"" +
+                QUnit.config.current.testName + "\" "from module \"" +
+                QUnit.config.currentModule + "\"."
             );
             return;
         }
