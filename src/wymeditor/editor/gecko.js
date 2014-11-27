@@ -23,11 +23,6 @@ WYMeditor.WymClassGecko.prototype._docEventQuirks = function () {
     jQuery(wym._doc).bind("keydown", wym._keydown);
     jQuery(wym._doc).bind("keyup", wym._keyup);
     jQuery(wym._doc).bind("click", wym._click);
-    // Bind editor focus events (used to reset designmode - Gecko bug)
-    jQuery(wym._doc).bind("focus", function () {
-        // Fix scope
-        wym._enableDesignModeOnIframe.call(wym);
-    });
 };
 
 WYMeditor.WymClassGecko.prototype._exec = function (cmd, param) {
