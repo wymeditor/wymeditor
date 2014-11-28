@@ -502,7 +502,6 @@ WYMeditor.editor.prototype._enableDesignmodeOnDocument = function () {
 
     try {
         wym._doc.designMode = "On";
-
     } catch (e) {
         // Bail out gracefully if this went wrong.
     }
