@@ -338,6 +338,42 @@ ToggleHtml
 Preview
     open the preview dialog.
 
+``link(attrs)``
+===============
+
+Turns the selected text into an ``a`` element with the provided attributes.
+
+If an ``a`` element is already selected, modifies its attributes.
+
+Attributes are provided as key-value pairs, in ``attrs``.
+
+Example:
+
+.. code-block:: javascript
+
+    // Perform some selection and then:
+    wym.link({
+        href: "http://example.com",
+        title: "Example"
+    });
+
+``insertImage(attrs)``
+===============
+
+Inserts an ``img`` element with the provided attributes.
+
+Attributes are provided as key-value pairs, in ``attrs``.
+
+Example:
+
+.. code-block:: javascript
+
+    // Perform some selection and then:
+    wym.insertImage({
+        src: "example.jpg",
+        alt: "Example"
+    });
+
 ``paste(data)``
 ===============
 

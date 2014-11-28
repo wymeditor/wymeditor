@@ -6,8 +6,6 @@
     test,
     expect,
     deepEqual,
-    equal,
-    inPhantomjs,
     sinon,
     strictEqual,
     wymEqual,
@@ -1251,89 +1249,6 @@ test("Double soft returns are allowed", function () {
     expect(1);
     wymEqual(wymeditor, initHtml);
 });
-
-module("image-styling", {setup: prepareUnitTestModule});
-
-test("_selected image is saved on mousedown", function () {
-    var initHtml = [""
-        , '<p id="noimage">Images? We dont need no stinkin images</p>'
-        , '<p>'
-            , '<img id="google" src="http://www.google.com/intl/en_com/images/srpr/logo3w.png" />'
-        , '</p>'
-        ].join(''),
-        wymeditor = jQuery.wymeditors(0),
-        $body,
-        $noimage,
-        $google;
-
-    expect(3);
-
-    wymeditor.rawHtml(initHtml);
-    $body = wymeditor.$body();
-
-    // Editor starts with no selected image. Use equal instead of deepEqual
-    // because wymeditor._selectedImage intermittently changes between being
-    // undefined and null, but either value should be acceptable for this test.
-    equal(
-        wymeditor._selectedImage,
-        null
-    );
-
-    // Clicking on a non-image doesn't change that
-    $noimage = $body.find('#noimage');
-    $noimage.mousedown();
-    deepEqual(wymeditor._selectedImage, null);
-
-
-    // Clicking an image does update the selected image
-    $google = $body.find('#google');
-    $google.mousedown();
-    deepEqual(wymeditor._selectedImage, $google[0]);
-});
-
-// The following test doesn't work in Phantom.js because the `InsertImage`
-// command for the browser execCommand function would not insert an image into
-// the editor in Phantom.js. This test still works fine in all other supported
-// browsers.
-if (!inPhantomjs || !SKIP_KNOWN_FAILING_TESTS) {
-    module("image-insertion", {setup: prepareUnitTestModule});
-
-    test("Image insertion outside of a container", function () {
-        expect(3);
-        var wymeditor = jQuery.wymeditors(0),
-            $body = wymeditor.$body(),
-
-            imageURL = 'http://www.google.com/intl/en_com/images/srpr/logo3w.png',
-            imageStamp = wymeditor.uniqueStamp(),
-            imageSelector = 'img[src$="' + imageStamp + '"]',
-
-            expectedHtml = String() +
-                '<p>' +
-                    '<img src="' + imageURL + '" />' +
-                '</p>',
-            expectedHtmlIE = expectedHtml.replace(/<\/?p>/g, '') + '<br />';
-
-        // Mimic the way images are inserted by the insert image tool by first
-        // inserting the image with its src set to a unique stamp for
-        // identification rather than its actual src.
-        wymeditor.rawHtml('<br />');
-        wymeditor.setCaretIn($body[0]);
-        wymeditor._exec(WYMeditor.INSERT_IMAGE, imageStamp);
-
-        ok(!$body.siblings(imageSelector).length,
-           "Image is not a sibling of the wymeditor body");
-        ok(!$body.siblings().children(imageSelector).length,
-           "Image is not a child of a sibling of the wymeditor body");
-
-        $body.find(imageSelector).attr(WYMeditor.SRC, imageURL);
-        if (jQuery.browser.msie) {
-            // IE doesn't wrap the image in a paragraph and adds a `br`.
-            wymEqual(wymeditor, expectedHtmlIE);
-        } else {
-            wymEqual(wymeditor, expectedHtml);
-        }
-    });
-}
 
 module("header-no_span", {setup: prepareUnitTestModule});
 

@@ -39,10 +39,14 @@ WYMeditor.WymClassWebKit.prototype._exec = function (cmd, param) {
         tagName = container.tagName.toLowerCase();
 
         // Wrap this content in the default root container if we're in the body
-        if (tagName === WYMeditor.BODY) {
+        if (
+            // Images are allowed in the body.
+            cmd !== WYMeditor.EXEC_COMMANDS.INSERT_IMAGE &&
+            tagName === WYMeditor.BODY
+        ) {
             structureRules = wym.documentStructureManager.structureRules;
             wym._exec(
-                WYMeditor.FORMAT_BLOCK,
+                WYMeditor.EXEC_COMMANDS.FORMAT_BLOCK,
                 structureRules.defaultRootContainer
             );
             wym.prepareDocForEditing();
@@ -53,7 +57,7 @@ WYMeditor.WymClassWebKit.prototype._exec = function (cmd, param) {
         // back inside the body. This was added because running FORMAT_BLOCK on
         // an image inserted outside of a container was causing it to be moved
         // outside the body (See issue #400).
-        if (cmd === WYMeditor.FORMAT_BLOCK &&
+        if (cmd === WYMeditor.EXEC_COMMANDS.FORMAT_BLOCK &&
             $container.siblings('body.wym_iframe').length) {
 
             $container.siblings('body.wym_iframe').append(container);
@@ -83,12 +87,12 @@ WYMeditor.WymClassWebKit.prototype._keydown = function (evt) {
     if (evt.ctrlKey) {
         if (evt.which === WYMeditor.KEY_CODE.B) {
             //CTRL+b => STRONG
-            wym._exec(WYMeditor.BOLD);
+            wym._exec(WYMeditor.EXEC_COMMANDS.BOLD);
             evt.preventDefault();
         }
         if (evt.which === WYMeditor.KEY_CODE.I) {
             //CTRL+i => EMPHASIS
-            wym._exec(WYMeditor.ITALIC);
+            wym._exec(WYMeditor.EXEC_COMMANDS.ITALIC);
             evt.preventDefault();
         }
     } else if (evt.shiftKey && evt.which === WYMeditor.KEY_CODE.ENTER) {
@@ -254,7 +258,10 @@ WYMeditor.WymClassWebKit.prototype._keyup = function (evt) {
                 (jQuery.inArray(name, notValidRootContainers) > -1 &&
                 parentName === WYMeditor.BODY)) {
 
-            wym._exec(WYMeditor.FORMAT_BLOCK, defaultRootContainer);
+            wym._exec(
+                WYMeditor.EXEC_COMMANDS.FORMAT_BLOCK,
+                defaultRootContainer
+            );
             wym.prepareDocForEditing();
         }
     }
@@ -272,7 +279,10 @@ WYMeditor.WymClassWebKit.prototype._keyup = function (evt) {
         }
         if (jQuery.inArray(name, notValidRootContainers) > -1 &&
                 parentName === WYMeditor.BODY) {
-            wym._exec(WYMeditor.FORMAT_BLOCK, defaultRootContainer);
+            wym._exec(
+                WYMeditor.EXEC_COMMANDS.FORMAT_BLOCK,
+                defaultRootContainer
+            );
             container = wym.selectedContainer();
         }
 
