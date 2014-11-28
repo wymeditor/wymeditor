@@ -229,13 +229,13 @@ WYMeditor.editor.prototype._assignWymDoc = function () {
 };
 
 /**
-    WYMeditor.editor._isDesignModeOn
+    WYMeditor.editor._isDesignmodeOn
     ================================
 
     Returns true if the designMode property of the editor's document is "On".
     Returns false, otherwise.
 */
-WYMeditor.editor.prototype._isDesignModeOn = function () {
+WYMeditor.editor.prototype._isDesignmodeOn = function () {
     var wym = this;
 
     if (wym._doc.designMode === "On") {
@@ -262,7 +262,7 @@ WYMeditor.editor.prototype._isDesignModeOn = function () {
 WYMeditor.editor.prototype._onEditorIframeLoad = function (wym) {
     wym._assignWymDoc();
     wym._doc.designMode = "On";
-    wym._afterDesignModeOn();
+    wym._afterDesignmodeOn();
 };
 
 /**
@@ -333,13 +333,13 @@ WYMeditor.editor.prototype._uiQuirks = function () {
 
 
 /**
-    WYMeditor.editor._afterDesignModeOn
+    WYMeditor.editor._afterDesignmodeOn
     ===================================
 
     This is part of the initialization of an editor, designed to be called
     after the editor's document is in designMode.
 */
-WYMeditor.editor.prototype._afterDesignModeOn = function () {
+WYMeditor.editor.prototype._afterDesignmodeOn = function () {
     var wym = this;
 
     if (wym.iframeInitialized === true) {
