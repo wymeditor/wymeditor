@@ -513,6 +513,22 @@ WYMeditor.editor.prototype.vanish = function () {
     }
 };
 
+WYMeditor.editor.prototype._exec = function (cmd, param) {
+    var wym = this;
+
+    if (!wym.selectedContainer()) {
+        return false;
+    }
+
+    if (param) {
+        wym._doc.execCommand(cmd, '', param);
+    } else {
+        wym._doc.execCommand(cmd, '', null);
+    }
+
+    return true;
+};
+
 /**
     WYMeditor.editor.rawHtml
     =====================
