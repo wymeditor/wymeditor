@@ -15,7 +15,8 @@
     normalizeHtml,
     ListPlugin,
     asyncTest,
-    manipulationTestHelper
+    manipulationTestHelper,
+   inPhantomjs
 */
 /* exported
 setupWym,
