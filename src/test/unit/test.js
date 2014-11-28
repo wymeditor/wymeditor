@@ -635,8 +635,8 @@ if (jQuery.browser.mozilla) {
         wymeditor.insertTable(3, 2, '', '');
 
         $body.find('td').each(function (index, td) {
-            deepEqual(td.childNodes.length, 0);
-            deepEqual(isContentEditable(td), true);
+            strictEqual(td.childNodes.length, 0);
+            strictEqual(isContentEditable(td), true);
         });
 
     });
@@ -650,7 +650,7 @@ if (jQuery.browser.mozilla) {
         wymeditor.rawHtml('');
         wymeditor.rawHtml(table_3_2_html);
         $body.find('td').each(function (index, td) {
-            deepEqual(isContentEditable(td), true);
+            strictEqual(isContentEditable(td), true);
         });
     });
 }
