@@ -507,7 +507,7 @@ WYMeditor.editor.prototype._enableDesignModeOnDocument = function () {
             wym._designModeQuirks();
         }
     } catch (e) {
-        // Bail out gracefully if this went wrong error.
+        // Bail out gracefully if this went wrong.
     }
 };
 
