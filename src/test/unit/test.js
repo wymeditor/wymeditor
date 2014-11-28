@@ -611,23 +611,41 @@ test("List- 2nd level li li_2_2", function () {
 module("table-insertion", {setup: prepareUnitTestModule});
 
 test("Table is editable after insertion", function () {
-    expect(7);
-
-    var wymeditor = jQuery.wymeditors(0),
-        $body,
-        dm;
-    wymeditor.rawHtml('');
-
-    $body = wymeditor.$body();
-    wymeditor.setCaretIn($body[0]);
-    wymeditor.insertTable(3, 2, '', '');
-
-    $body.find('td').each(function (index, td) {
-        deepEqual(isContentEditable(td), true);
+    manipulationTestHelper({
+        startHtml: "<br />",
+        prepareFunc: function (wymeditor) {
+            wymeditor.setCaretIn(wymeditor.body());
+        },
+        manipulationFunc: function (wymeditor) {
+            wymeditor.insertTable(3, 2, "", "");
+        },
+        expectedResultHtml: [""
+            , "<br />"
+            , "<table>"
+                , "<caption></caption>"
+                , "<tbody>"
+                    , "<tr><td></td><td></td></tr>"
+                    , "<tr><td></td><td></td></tr>"
+                    , "<tr><td></td><td></td></tr>"
+                , "</tbody>"
+            , "</table>"
+            , "<br class=\"wym-blocking-element-spacer wym-editor-only\" />"
+        ].join(""),
+        additionalAssertionsFunc: function (wymeditor) {
+            var $tds = wymeditor.$body().find("td");
+            expect(expect() + $tds.length + 1);
+            $tds.each(function (index, td) {
+                strictEqual(isContentEditable(td), true);
+            });
+            strictEqual(wymeditor._isDesignmodeOn(), true);
+        },
+        skipFunc: function () {
+            // This fails in PhantomJS and we don't care.
+            if (inPhantomjs) {
+                return "skip";
+            }
+        }
     });
-
-    dm = wymeditor._doc.designMode;
-    ok(dm === 'on' || dm === 'On');
 });
 
 // Only FF >= 3.5 seems to require content in <td> for them to be editable
