@@ -177,7 +177,7 @@ WYMeditor.WymClassGecko.prototype._click = function () {
     }
 };
 
-WYMeditor.WymClassGecko.prototype._designModeQuirks = function () {
+WYMeditor.WymClassGecko.prototype._designmodeQuirks = function () {
     var wym = this;
     wym._doc.execCommand("styleWithCSS", '', false);
     wym._doc.execCommand("enableObjectResizing", false, true);

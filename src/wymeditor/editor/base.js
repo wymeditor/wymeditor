@@ -229,13 +229,13 @@ WYMeditor.editor.prototype._assignWymDoc = function () {
 };
 
 /**
-    WYMeditor.editor._isDesignModeOn
+    WYMeditor.editor._isDesignmodeOn
     ================================
 
     Returns true if the designMode property of the editor's document is "On".
     Returns false, otherwise.
 */
-WYMeditor.editor.prototype._isDesignModeOn = function () {
+WYMeditor.editor.prototype._isDesignmodeOn = function () {
     var wym = this;
 
     if (
@@ -264,8 +264,8 @@ WYMeditor.editor.prototype._isDesignModeOn = function () {
 */
 WYMeditor.editor.prototype._onEditorIframeLoad = function (wym) {
     wym._assignWymDoc();
-    wym._enableDesignModeOnDocument();
-    wym._afterDesignModeOn();
+    wym._enableDesignmodeOnDocument();
+    wym._afterDesignmodeOn();
 };
 
 /**
@@ -336,13 +336,13 @@ WYMeditor.editor.prototype._uiQuirks = function () {
 
 
 /**
-    WYMeditor.editor._afterDesignModeOn
+    WYMeditor.editor._afterDesignmodeOn
     ===================================
 
     This is part of the initialization of an editor, designed to be called
     after the editor's document is in designMode.
 */
-WYMeditor.editor.prototype._afterDesignModeOn = function () {
+WYMeditor.editor.prototype._afterDesignmodeOn = function () {
     var wym = this;
 
     if (wym.iframeInitialized === true) {
@@ -481,22 +481,22 @@ WYMeditor.editor.prototype._bindUIEvents = function () {
 
     // This may recover an unexpected shut down of `designMode`.
     wym.$body().bind("focus", function () {
-        if (wym._isDesignModeOn() !== true) {
-            wym._enableDesignModeOnDocument();
+        if (wym._isDesignmodeOn() !== true) {
+            wym._enableDesignmodeOnDocument();
         }
     });
 };
 
 /**
-    WYMeditor.editor._enableDesignModeOnDocument
+    WYMeditor.editor._enableDesignmodeOnDocument
     ============================================
 
     Enables `designMode` on the document, if it is not already enabled.
 */
-WYMeditor.editor.prototype._enableDesignModeOnDocument = function () {
+WYMeditor.editor.prototype._enableDesignmodeOnDocument = function () {
     var wym = this;
 
-    if (wym._isDesignModeOn()) {
+    if (wym._isDesignmodeOn()) {
         throw "Expected `designMode` to be off.";
     }
 
@@ -506,8 +506,8 @@ WYMeditor.editor.prototype._enableDesignModeOnDocument = function () {
     } catch (e) {
         // Bail out gracefully if this went wrong.
     }
-    if (typeof wym._designModeQuirks === "function") {
-        wym._designModeQuirks();
+    if (typeof wym._designmodeQuirks === "function") {
+        wym._designmodeQuirks();
     }
 };
 
