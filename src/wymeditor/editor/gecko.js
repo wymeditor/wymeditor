@@ -177,15 +177,10 @@ WYMeditor.WymClassGecko.prototype._click = function () {
     }
 };
 
-WYMeditor.WymClassGecko.prototype._enableDesignModeOnIframe = function () {
+WYMeditor.WymClassGecko.prototype._designModeQuirks = function () {
     var wym = this;
-    if (wym._doc.designMode === "off") {
-        try {
-            wym._doc.designMode = "on";
-            wym._doc.execCommand("styleWithCSS", '', false);
-            wym._doc.execCommand("enableObjectResizing", false, true);
-        } catch (e) {}
-    }
+    wym._doc.execCommand("styleWithCSS", '', false);
+    wym._doc.execCommand("enableObjectResizing", false, true);
 };
 
 /*
