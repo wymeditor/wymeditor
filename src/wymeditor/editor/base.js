@@ -526,6 +526,10 @@ WYMeditor.editor.prototype._exec = function (cmd, param) {
         wym._doc.execCommand(cmd, '', null);
     }
 
+    // Webkit and Blink may add a span wrapper in some cases. Remove it.
+    jQuery(wym.selectedContainer()).filter("[style=font-weight: normal;]")
+        .contents().unwrap();
+
     return true;
 };
 
