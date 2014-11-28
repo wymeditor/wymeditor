@@ -479,6 +479,14 @@ WYMeditor.editor.prototype._bindUIEvents = function () {
         }
     );
 
+    // This may recover an unexpected shut down of `designMode`.
+    wym.$body().bind("focus", function () {
+        if (wym._isDesignModeOn() !== true) {
+            wym._enableDesignModeOnDocument();
+        }
+    });
+};
+
 /**
     WYMeditor.editor._enableDesignModeOnDocument
     ============================================
