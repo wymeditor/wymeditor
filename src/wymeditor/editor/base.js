@@ -478,6 +478,29 @@ WYMeditor.editor.prototype._bindUIEvents = function () {
             wym.update();
         }
     );
+
+/**
+    WYMeditor.editor._enableDesignModeOnDocument
+    ============================================
+
+    Enables `designMode` on the document, if it is not already enabled.
+*/
+WYMeditor.editor.prototype._enableDesignModeOnDocument = function () {
+    var wym = this;
+
+    if (wym._isDesignModeOn()) {
+        throw "Expected `designMode` to be off.";
+    }
+
+    try {
+        wym._doc.designMode = "On";
+
+        if (typeof wym._designModeQuirks === "function") {
+            wym._designModeQuirks();
+        }
+    } catch (e) {
+        // Bail out gracefully if this went wrong error.
+    }
 };
 
 /**
