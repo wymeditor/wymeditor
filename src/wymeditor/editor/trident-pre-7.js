@@ -11,13 +11,13 @@ WYMeditor.WymClassTridentPre7 = function (wym) {
 WYMeditor.WymClassTridentPre7.prototype._onEditorIframeLoad = function (wym) {
     wym._assignWymDoc();
 
-    if (wym._isDesignModeOn() === false) {
+    if (wym._isDesignmodeOn() === false) {
         wym._doc.designMode = "On";
     } else {
         // Pre-7 Trident Internet Explorer versions reload the Iframe when its
         // designMode property is set to "on". So this will run on the second
         // time this handler is called.
-        wym._afterDesignModeOn();
+        wym._afterDesignmodeOn();
     }
 };
 
