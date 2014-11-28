@@ -264,7 +264,7 @@ WYMeditor.editor.prototype._isDesignModeOn = function () {
 */
 WYMeditor.editor.prototype._onEditorIframeLoad = function (wym) {
     wym._assignWymDoc();
-    wym._doc.designMode = "On";
+    wym._enableDesignModeOnDocument();
     wym._afterDesignModeOn();
 };
 
