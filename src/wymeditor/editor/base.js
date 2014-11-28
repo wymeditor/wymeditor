@@ -516,7 +516,11 @@ WYMeditor.editor.prototype.vanish = function () {
 WYMeditor.editor.prototype._exec = function (cmd, param) {
     var wym = this;
 
-    if (!wym.selectedContainer()) {
+    if (wym.selectedContainer() === false) {
+        return false;
+    }
+
+    if (wym.selectedContainer() === wym.body()) {
         return false;
     }
 
