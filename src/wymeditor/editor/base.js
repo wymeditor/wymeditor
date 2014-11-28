@@ -503,11 +503,11 @@ WYMeditor.editor.prototype._enableDesignModeOnDocument = function () {
     try {
         wym._doc.designMode = "On";
 
-        if (typeof wym._designModeQuirks === "function") {
-            wym._designModeQuirks();
-        }
     } catch (e) {
         // Bail out gracefully if this went wrong.
+    }
+    if (typeof wym._designModeQuirks === "function") {
+        wym._designModeQuirks();
     }
 };
 
