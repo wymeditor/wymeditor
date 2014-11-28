@@ -608,7 +608,10 @@ test("Table is editable after insertion", function () {
 });
 
 // Only FF >= 3.5 seems to require content in <td> for them to be editable
-if (jQuery.browser.mozilla) {
+if (
+    jQuery.browser.mozilla &&
+    inPhantomjs !== true
+) {
     var table_3_2_html = String() +
             "<table><tbody>" +
                 "<tr>" +
