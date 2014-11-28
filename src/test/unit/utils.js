@@ -513,8 +513,38 @@ function testNoChangeInHtmlArray(htmlArray, parseHtml) {
  *     `parseHtml`
  *         Optional; Passed on to `wymEqual` as `options.parseHtml`. Defaults
  *         to `false`.
+ *     `skipFunc`
+ *         Optional; A function that will be called before anything else, whose
+ *         return value, if it is `"skip"`, means this helper will immediately
+ *         return and a warning will be printed at the console.
+ *         For example:
+ *         ```
+ *         function(wymeditor) {
+ *             if (
+ *                 jQuery.browser.name === "msie" &&
+ *                 jQuery.browser.versionNumber === 7
+ *             ) {
+ *                 return "skip";
+ *             }
+ *         }
+ *         ```
+ *         This example uses the `jquery.browser` plugin
+ *         https://github.com/gabceb/jquery-browser-plugin
  */
 function manipulationTestHelper(a) {
+    if (typeof a.skipFunc === 'function') {
+        if (a.skipFunc() === "skip") {
+            if (expect() === null) {
+                expect(0);
+            }
+            WYMeditor.console.warn(
+                "Assertions skipped in test \"" +
+                QUnit.config.current.testName + "\" from module \"" +
+                QUnit.config.currentModule + "\"."
+            );
+            return;
+        }
+    }
     var wymeditor = jQuery.wymeditors(0);
     if (typeof a.startHtml === 'string') {
         wymeditor.rawHtml(a.startHtml);
@@ -527,7 +557,7 @@ function manipulationTestHelper(a) {
     if (typeof a.prepareFunc === 'function') {
         a.prepareFunc(wymeditor);
     }
-    expect(1);
+    expect(expect() + 1);
     wymEqual(
         wymeditor,
         a.expectedStartHtml || a.startHtml,
