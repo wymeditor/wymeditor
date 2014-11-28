@@ -26,7 +26,7 @@ WYMeditor.WymClassGecko.prototype._docEventQuirks = function () {
     // Bind editor focus events (used to reset designmode - Gecko bug)
     jQuery(wym._doc).bind("focus", function () {
         // Fix scope
-        wym._enableDesignModeOnIframe.call(wym);
+        wym._enableDesignmodeOnIframe.call(wym);
     });
 };
 
@@ -192,7 +192,7 @@ WYMeditor.WymClassGecko.prototype._click = function () {
     }
 };
 
-WYMeditor.WymClassGecko.prototype._enableDesignModeOnIframe = function () {
+WYMeditor.WymClassGecko.prototype._enableDesignmodeOnIframe = function () {
     var wym = this;
     if (wym._doc.designMode === "off") {
         try {
