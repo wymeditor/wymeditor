@@ -263,6 +263,22 @@ test(".setCaretIn and .selectedContainer (collapsed selection)", function () {
 
 module("selection-noncollapsed", {setup: prepareUnitTestModule});
 
+test("No selection returns false", function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p>",
+        prepareFunc: function (wymeditor) {
+            wymeditor.deselect();
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 1);
+            strictEqual(
+                wymeditor.selectedContainer(),
+                false
+            );
+        }
+    });
+});
+
 test("Within one element returns the element", function () {
     manipulationTestHelper({
         startHtml: "<p>Foo</p>",
@@ -504,6 +520,185 @@ test(
             additionalAssertionsFunc: function (wymeditor) {
                 expect(expect() + 1);
                 strictEqual(wymeditor.selectedContainer(), false);
+            }
+        });
+    }
+);
+
+test(
+    "Inside ``li`` returns that ``li``",
+    function () {
+        manipulationTestHelper({
+            startHtml: "<ol><li>Foo</li></ol>",
+            prepareFunc: function (wymeditor) {
+                var li = wymeditor.body().childNodes[0].childNodes[0];
+                makeTextSelection(
+                    wymeditor,
+                    li,
+                    li,
+                    0,
+                    3
+                );
+            },
+            additionalAssertionsFunc: function (wymeditor) {
+                expect(expect() + 1);
+                strictEqual(
+                    wymeditor.selectedContainer().tagName.toLowerCase(),
+                    "li"
+                );
+            }
+        });
+    }
+);
+
+test(
+    "From ``li`` to descendant table cell returns the ``li``",
+    function () {
+        manipulationTestHelper({
+            startHtml: [""
+                , "<ol><li>"
+                    , "Foo and the following:"
+                    , "<table><tbody><tr><td>Bar</td></tr></tbody></table>"
+                , "</li></ol>"
+            ].join(""),
+            prepareFunc: function (wymeditor) {
+                var $li = wymeditor.$body().find("li"),
+                    $td = $li.find("td");
+                makeTextSelection(
+                    wymeditor,
+                    $li[0],
+                    $td[0],
+                    0,
+                    3
+                );
+            },
+            additionalAssertionsFunc: function (wymeditor) {
+                expect(expect() + 1);
+                strictEqual(
+                    wymeditor.selectedContainer().tagName.toLowerCase(),
+                    "li"
+                );
+            }
+        });
+    }
+);
+
+test(
+    "From ``li`` to descendant ``li`` returns the ancestor ``li``",
+    function () {
+        manipulationTestHelper({
+            startHtml: [""
+                , "<ol><li>"
+                    , "Foo and the following:"
+                    , "<ol><li>Bar</li></ol>"
+                , "</li></ol>"
+            ].join(""),
+            prepareFunc: function (wymeditor) {
+                var li = wymeditor.body().childNodes[0].childNodes[0],
+                    nestedLi = li.childNodes[1].childNodes[0];
+                makeTextSelection(
+                    wymeditor,
+                    li,
+                    nestedLi,
+                    0,
+                    3
+                );
+            },
+            additionalAssertionsFunc: function (wymeditor) {
+                expect(expect() + 2);
+                strictEqual(
+                    wymeditor.selectedContainer().tagName.toLowerCase(),
+                    "li"
+                );
+                strictEqual(
+                    wymeditor.selectedContainer().childNodes[1].childNodes[0]
+                        .tagName.toLowerCase(),
+                    "li"
+                );
+            }
+        });
+    }
+);
+
+test(
+    "Inside ``td`` that is within a list returns that ``td``",
+    function () {
+        manipulationTestHelper({
+            startHtml: [""
+                , "<ol><li>"
+                    , "<table><tbody><tr><td>Bar</td></tr></tbody></table>"
+                , "</li></ol>"
+            ].join(""),
+            prepareFunc: function (wymeditor) {
+                var td = wymeditor.$body().find("td")[0];
+                makeTextSelection(
+                    wymeditor,
+                    td,
+                    td,
+                    0,
+                    3
+                );
+            },
+            additionalAssertionsFunc: function (wymeditor) {
+                expect(expect() + 1);
+                strictEqual(
+                    wymeditor.selectedContainer().tagName.toLowerCase(),
+                    "td"
+                );
+            }
+        });
+    }
+);
+
+test(
+    "Inside ``td``returns that ``td``",
+    function () {
+        manipulationTestHelper({
+            startHtml: "<table><tbody><tr><td>Bar</td></tr></tbody></table>",
+            prepareFunc: function (wymeditor) {
+                var td = wymeditor.$body().find("td")[0];
+                makeTextSelection(
+                    wymeditor,
+                    td,
+                    td,
+                    0,
+                    3
+                );
+            },
+            additionalAssertionsFunc: function (wymeditor) {
+                expect(expect() + 1);
+                strictEqual(
+                    wymeditor.selectedContainer().tagName.toLowerCase(),
+                    "td"
+                );
+            }
+        });
+    }
+);
+
+test(
+    "Within an element, partially in its child element; twice nested;" +
+    "returns the element",
+    function () {
+        manipulationTestHelper({
+            startHtml: "<p><i><sup>Foo</sup></i> bar</p>",
+            prepareFunc: function (wymeditor) {
+                var p = wymeditor.body().childNodes[0],
+                    sup = p.childNodes[0].childNodes[0];
+                makeTextSelection(
+                    wymeditor,
+                    sup,
+                    p,
+                    1,
+                    2
+                );
+            },
+            additionalAssertionsFunc: function (wymeditor) {
+                expect(expect() + 1);
+                strictEqual(
+                    wymeditor.selectedContainer().tagName.toLowerCase(),
+                    "p"
+                );
             }
         });
     }
