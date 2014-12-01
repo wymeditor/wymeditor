@@ -734,38 +734,52 @@ WYMeditor.editor.prototype.get$CommonParent = function (one, two) {
     WYMeditor.editor.selectedContainer
     ==================================
 
-    Returns the selection's container or false if there is no selection.
+    Returns the selection's container.
+
+    Returns false if there is no selection or if there is no obvious, single,
+    selected container.
 
     Not to be confused with `.getRootContainer`, which gets the
     selection's root container.
 */
 WYMeditor.editor.prototype.selectedContainer = function () {
     var wym = this,
-        selection = wym.selection(),
+        selection,
+        $anchor,
+        $focus,
         $selectedContainer;
 
-    if (selection.focusNode === null || selection.anchorNode === null) {
+    if (wym.hasSelection() !== true) {
         return false;
     }
 
-    if (
-        selection.anchorNode === selection.focusNode &&
-        selection.anchorNode.nodeType === WYMeditor.NODE_TYPE.ELEMENT
-    ) {
-        $selectedContainer = jQuery(selection.anchorNode);
-    } else {
-        $selectedContainer = wym.get$CommonParent(
-            selection.anchorNode,
-            selection.focusNode
-        );
+    selection = wym.selection();
+    $anchor = jQuery(selection.anchorNode);
+    $focus = jQuery(selection.focusNode);
+
+    if ($anchor[0].nodeType === WYMeditor.NODE_TYPE.TEXT) {
+        $anchor = $anchor.parent();
     }
 
-    $selectedContainer = $selectedContainer.parents().addBack()
-        .not(WYMeditor.NON_CONTAINING_ELEMENTS.join(',')).last();
+    if ($focus[0].nodeType === WYMeditor.NODE_TYPE.TEXT) {
+        $focus = $focus.parent();
+    }
+
+    if ($anchor[0] === $focus[0]) {
+        return $anchor[0];
+    }
+
+    $selectedContainer = $anchor.has($focus);
+    if ($selectedContainer.length === 0) {
+        $selectedContainer = $focus.has($anchor);
+    }
 
     if ($selectedContainer.length === 0) {
-        throw "Expected to find the selected container. This should not occur.";
+        return false;
     }
+
+    //$selectedContainer = $selectedContainer.parents().addBack()
+        //.not(WYMeditor.NON_CONTAINING_ELEMENTS.join(',')).last();
 
     return $selectedContainer[0];
 };

@@ -195,9 +195,9 @@ or not.
 =======================
 
 Get the selected container.
-Returns ``false`` if no selection.
 
-This is currently supposed to be used with a collapsed selection only.
+Returns ``false`` if no selection
+or if a single container cannot be obviously distinguished.
 
 ``getRootContainer()``
 ======================
