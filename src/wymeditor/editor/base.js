@@ -3122,7 +3122,11 @@ WYMeditor.editor.prototype.indent = function () {
 
     // First, make sure this list is properly structured
     manipulationFunc = function () {
-        var selectedBlock = wym.selectedContainer(),
+        var selection = wym.selection(),
+            selectedBlock = wym.get$CommonParent(
+                selection.anchorNode,
+                selection.focusNode
+            )[0],
             potentialListBlock = wym.findUp(
                 selectedBlock,
                 ['ol', 'ul', 'li']
@@ -3182,7 +3186,11 @@ WYMeditor.editor.prototype.outdent = function () {
 
     // First, make sure this list is properly structured
     manipulationFunc = function () {
-        var selectedBlock = wym.selectedContainer(),
+        var selection = wym.selection(),
+            selectedBlock = wym.get$CommonParent(
+                selection.anchorNode,
+                selection.focusNode
+            )[0],
             potentialListBlock = wym.findUp(
                 selectedBlock,
                 ['ol', 'ul', 'li']
