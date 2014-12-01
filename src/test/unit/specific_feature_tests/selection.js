@@ -433,7 +433,7 @@ test(
     }
 );
 
-test("Across root containers returns false", function () {
+test("From one root container to another returns false", function () {
     manipulationTestHelper({
         startHtml: "<p>Foo</p><p>Bar</p>",
         prepareFunc: function (wymeditor) {
