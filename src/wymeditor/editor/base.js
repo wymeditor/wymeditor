@@ -778,9 +778,6 @@ WYMeditor.editor.prototype.selectedContainer = function () {
         return false;
     }
 
-    //$selectedContainer = $selectedContainer.parents().addBack()
-        //.not(WYMeditor.NON_CONTAINING_ELEMENTS.join(',')).last();
-
     return $selectedContainer[0];
 };
 
