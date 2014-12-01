@@ -14,6 +14,11 @@ WYMeditor.
 * [#620](https://github.com/wymeditor/wymeditor/pull/620)
   `editor.rawHtml` no longer calls `editor.prepareDocForEditing`.
 
+### Enhancements
+
+* [#625](https://github.com/wymeditor/wymeditor/pull/625)
+  New `editor.insertImage` and `editor.link` methods.
+
 ## 1.0.0-rc.1
 
 *release-date* October 24, 2014

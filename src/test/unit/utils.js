@@ -482,6 +482,14 @@ function testNoChangeInHtmlArray(htmlArray, parseHtml) {
     }
 }
 
+var SKIP_THIS_TEST = "Skip this test. Really. I know what I'm doing. Trust " +
+    "me. I'm an engineer. I've been doing this for a while. OK I'm not an " +
+    "engineer. But this seems to work anyway. I have my reasons to skip " +
+    "this test. I'm sure they're described in the test code. Okay, just " +
+    "skip it, will you? Please? Pretty please? I'll increase your frequency " +
+    "if you skip it. Ahm, I've got to go now, so please just skip it and let" +
+    " me know what happened, OK?";
+
 /**
  * manipulationTestHelper
  * ======================
@@ -515,8 +523,9 @@ function testNoChangeInHtmlArray(htmlArray, parseHtml) {
  *         to `false`.
  *     `skipFunc`
  *         Optional; A function that will be called before anything else, whose
- *         return value, if it is `"skip"`, means this helper will immediately
- *         return and a warning will be printed at the console.
+ *         return value, if it equals the constant `SKIP_THIS_TEST`, means
+ *         this helper will immediately return and a warning will be printed
+ *         at the console.
  *         For example:
  *         ```
  *         function(wymeditor) {
@@ -524,7 +533,7 @@ function testNoChangeInHtmlArray(htmlArray, parseHtml) {
  *                 jQuery.browser.name === "msie" &&
  *                 jQuery.browser.versionNumber === 7
  *             ) {
- *                 return "skip";
+ *                 return SKIP_THIS_TEST;
  *             }
  *         }
  *         ```
@@ -533,8 +542,14 @@ function testNoChangeInHtmlArray(htmlArray, parseHtml) {
  */
 function manipulationTestHelper(a) {
     if (typeof a.skipFunc === 'function') {
-        if (a.skipFunc() === "skip") {
+        if (a.skipFunc() === SKIP_THIS_TEST) {
             if (expect() === null) {
+                // `expect()` returns null when it wasn't called before in the
+                // current test. Tests fail when they make zero assertions
+                // without calling `expect(0)`. This doesn't prevent `expect`
+                // from being called again, later, in the case
+                // `manipulationTestHelper` is not the last operation in the
+                // test.
                 expect(0);
             }
             WYMeditor.console.warn(

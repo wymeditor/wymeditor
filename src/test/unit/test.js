@@ -16,7 +16,7 @@
     ListPlugin,
     asyncTest,
     manipulationTestHelper,
-   inPhantomjs
+    inPhantomjs
 */
 /* exported
 setupWym,
