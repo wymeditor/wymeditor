@@ -36,7 +36,7 @@ WYMeditor.WymClassTrident7.prototype.rawHtml = function (html) {
     if (typeof html === "string") {
         wym._doc.designMode = "off";
         wym.$body().html(html);
-        wym._enableDesignModeOnIframe();
+        wym._enableDesignmodeOnIframe();
     } else {
         return wym.$body().html();
     }

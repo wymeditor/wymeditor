@@ -15,7 +15,8 @@
     normalizeHtml,
     ListPlugin,
     asyncTest,
-    manipulationTestHelper
+    manipulationTestHelper,
+    inPhantomjs
 */
 /* exported
 setupWym,
@@ -606,7 +607,10 @@ test("Table is editable after insertion", function () {
 });
 
 // Only FF >= 3.5 seems to require content in <td> for them to be editable
-if (jQuery.browser.mozilla) {
+if (
+    jQuery.browser.mozilla &&
+    inPhantomjs !== true
+) {
     var table_3_2_html = String() +
             "<table><tbody>" +
                 "<tr>" +
@@ -633,8 +637,8 @@ if (jQuery.browser.mozilla) {
         wymeditor.insertTable(3, 2, '', '');
 
         $body.find('td').each(function (index, td) {
-            deepEqual(td.childNodes.length, 0);
-            deepEqual(isContentEditable(td), true);
+            strictEqual(td.childNodes.length, 0);
+            strictEqual(isContentEditable(td), true);
         });
 
     });
@@ -648,7 +652,7 @@ if (jQuery.browser.mozilla) {
         wymeditor.rawHtml('');
         wymeditor.rawHtml(table_3_2_html);
         $body.find('td').each(function (index, td) {
-            deepEqual(isContentEditable(td), true);
+            strictEqual(isContentEditable(td), true);
         });
     });
 }
