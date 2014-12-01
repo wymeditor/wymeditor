@@ -199,6 +199,24 @@ Get the selected container.
 Returns ``false`` if no selection
 or if a single container cannot be obviously distinguished.
 
+* If no selection, returns ``false``.
+* If selection starts and ends in the same element, returns that element.
+* If an element that contains one end of the selection is ancestor to the
+  element that contains the other end, return that ancestor element.
+
+For example (``|`` marks selection ends):
+.. code-block:: html
+
+    <p>|Foo <i>bar|</i></p>
+
+The ``p`` is returned.
+
+.. code-block:: html
+
+    <p>Foo <i>|bar|</i></p>
+
+The ``i`` is returned.
+
 ``getRootContainer()``
 ======================
 
