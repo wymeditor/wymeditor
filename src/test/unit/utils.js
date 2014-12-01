@@ -541,6 +541,12 @@ function manipulationTestHelper(a) {
     if (typeof a.skipFunc === 'function') {
         if (a.skipFunc() === SKIP_THIS_TEST) {
             if (expect() === null) {
+                // `expect()` returns null when it wasn't called before in the
+                // current test. Tests fail when they make zero assertions
+                // without calling `expect(0)`. This doesn't prevent `expect`
+                // from being called again, later, in the case that
+                // `manipulationTestHelper` is not the last operation in the
+                // test.
                 expect(0);
             }
             WYMeditor.console.warn(
