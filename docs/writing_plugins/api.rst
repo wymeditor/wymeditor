@@ -196,13 +196,11 @@ or not.
 
 Get the selected container.
 
-Returns ``false`` if no selection
-or if a single container cannot be obviously distinguished.
-
 * If no selection, returns ``false``.
 * If selection starts and ends in the same element, returns that element.
 * If an element that contains one end of the selection is ancestor to the
   element that contains the other end, return that ancestor element.
+* Otherwise, returns ``false``.
 
 For example (``|`` marks selection ends):
 .. code-block:: html
