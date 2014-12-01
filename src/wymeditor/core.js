@@ -201,8 +201,11 @@ jQuery.extend(WYMeditor, {
         // Wrapping element toggles
         BOLD                : "Bold",
         ITALIC              : "Italic",
+        SUPERSCRIPT         : "Superscript",
+        SUBSCRIPT           : "Subscript",
         // Other manipulations
         CREATE_LINK         : "CreateLink",
+        UNLINK              : "Unlink",
         FORMAT_BLOCK        : "FormatBlock",
         INSERT_IMAGE        : "InsertImage",
         INSERT_TABLE        : "InsertTable",
