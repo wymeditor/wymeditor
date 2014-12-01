@@ -166,7 +166,7 @@ test("Empty document is a single `br`.", function () {
     });
 });
 
-test("Focusing on document triggers designMode if it is off", function () {
+test("Focusing on document that has designMode off, turns it on", function () {
     manipulationTestHelper({
         startHtml: "<p>Foo</p>",
         prepareFunc: function (wymeditor) {
