@@ -479,13 +479,13 @@ function testNoChangeInHtmlArray(htmlArray, parseHtml) {
     }
 }
 
-var SKIP_THIS_TEST = "Skip this test. Really. I know what I'm doing. Trust me." +
-    "I'm an engineer. I've been doing this for a while. OK I'm not an " +
+var SKIP_THIS_TEST = "Skip this test. Really. I know what I'm doing. Trust " +
+    "me. I'm an engineer. I've been doing this for a while. OK I'm not an " +
     "engineer. But this seems to work anyway. I have my reasons to skip " +
     "this test. I'm sure they're described in the test code. Okay, just " +
     "skip it, will you? Please? Pretty please? I'll increase your frequency " +
-    "if you skip it. Ahm, I've got to go now, so please just skip it and let " +
-    "me know what happened, OK?";
+    "if you skip it. Ahm, I've got to go now, so please just skip it and let" +
+    " me know what happened, OK?";
 
 /**
  * manipulationTestHelper
