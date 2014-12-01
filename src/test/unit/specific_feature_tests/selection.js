@@ -178,7 +178,11 @@ selTest.setCollapsedHtml = [""
 
 // This is a data-driven test for setting and getting collapsed selections.
 // Collapsed selections are practically the caret position.
-test(".setCaretIn and .selectedContainer (collapsed selection)", function () {
+// It sets caret in different possible positions in the DOM structure using
+// `.setCaretIn` and gets the container using `.selectedContainer`.
+test(
+    "DDT for setting collapsed selection using `.setCaretIn` and getting " +
+    "it using .selectedContainer", function () {
     var
         wymeditor = jQuery.wymeditors(0),
         $allNodes,
