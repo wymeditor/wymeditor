@@ -479,7 +479,7 @@ function testNoChangeInHtmlArray(htmlArray, parseHtml) {
     }
 }
 
-SKIP_THIS_TEST = "Skip this test. Really. I know what I'm doing. Trust me." +
+var SKIP_THIS_TEST = "Skip this test. Really. I know what I'm doing. Trust me." +
     "I'm an engineer. I've been doing this for a while. OK I'm not an " +
     "engineer. But this seems to work anyway. I have my reasons to skip " +
     "this test. I'm sure they're described in the test code. Okay, just " +
@@ -544,7 +544,7 @@ function manipulationTestHelper(a) {
                 // `expect()` returns null when it wasn't called before in the
                 // current test. Tests fail when they make zero assertions
                 // without calling `expect(0)`. This doesn't prevent `expect`
-                // from being called again, later, in the case that
+                // from being called again, later, in the case
                 // `manipulationTestHelper` is not the last operation in the
                 // test.
                 expect(0);
