@@ -734,37 +734,58 @@ WYMeditor.editor.prototype.get$CommonParent = function (one, two) {
     WYMeditor.editor.selectedContainer
     ==================================
 
-    Returns the selection's container or false if there is no selection.
+    Get the selected container.
 
-    Not to be confused with `.getRootContainer`, which gets the
-    selection's root container.
+    * If no selection, returns `false`.
+    * If selection starts and ends in the same element, returns that element.
+    * If an element that contains one end of the selection is ancestor to the
+      element that contains the other end, return that ancestor element.
+    * Otherwise, returns `false`.
+
+    For example (``|`` marks selection ends):
+
+        <p>|Foo <i>bar|</i></p>
+
+    The ``p`` is returned.
+
+        <p>Foo <i>|bar|</i></p>
+
+    The ``i`` is returned.
 */
 WYMeditor.editor.prototype.selectedContainer = function () {
     var wym = this,
-        selection = wym.selection(),
+        selection,
+        $anchor,
+        $focus,
         $selectedContainer;
 
-    if (selection.focusNode === null || selection.anchorNode === null) {
+    if (wym.hasSelection() !== true) {
         return false;
     }
 
-    if (
-        selection.anchorNode === selection.focusNode &&
-        selection.anchorNode.nodeType === WYMeditor.NODE_TYPE.ELEMENT
-    ) {
-        $selectedContainer = jQuery(selection.anchorNode);
-    } else {
-        $selectedContainer = wym.get$CommonParent(
-            selection.anchorNode,
-            selection.focusNode
-        );
+    selection = wym.selection();
+    $anchor = jQuery(selection.anchorNode);
+    $focus = jQuery(selection.focusNode);
+
+    if ($anchor[0].nodeType === WYMeditor.NODE_TYPE.TEXT) {
+        $anchor = $anchor.parent();
     }
 
-    $selectedContainer = $selectedContainer.parents().addBack()
-        .not(WYMeditor.NON_CONTAINING_ELEMENTS.join(',')).last();
+    if ($focus[0].nodeType === WYMeditor.NODE_TYPE.TEXT) {
+        $focus = $focus.parent();
+    }
+
+    if ($anchor[0] === $focus[0]) {
+        return $anchor[0];
+    }
+
+    $selectedContainer = $anchor.has($focus);
+    if ($selectedContainer.length === 0) {
+        $selectedContainer = $focus.has($anchor);
+    }
 
     if ($selectedContainer.length === 0) {
-        throw "Expected to find the selected container. This should not occur.";
+        return false;
     }
 
     return $selectedContainer[0];
@@ -3108,7 +3129,11 @@ WYMeditor.editor.prototype.indent = function () {
 
     // First, make sure this list is properly structured
     manipulationFunc = function () {
-        var selectedBlock = wym.selectedContainer(),
+        var selection = wym.selection(),
+            selectedBlock = wym.get$CommonParent(
+                selection.anchorNode,
+                selection.focusNode
+            )[0],
             potentialListBlock = wym.findUp(
                 selectedBlock,
                 ['ol', 'ul', 'li']
@@ -3168,7 +3193,11 @@ WYMeditor.editor.prototype.outdent = function () {
 
     // First, make sure this list is properly structured
     manipulationFunc = function () {
-        var selectedBlock = wym.selectedContainer(),
+        var selection = wym.selection(),
+            selectedBlock = wym.get$CommonParent(
+                selection.anchorNode,
+                selection.focusNode
+            )[0],
             potentialListBlock = wym.findUp(
                 selectedBlock,
                 ['ol', 'ul', 'li']
