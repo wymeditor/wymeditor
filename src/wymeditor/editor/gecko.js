@@ -40,8 +40,12 @@ WYMeditor.WymClassGecko.prototype._exec = function (cmd, param) {
 
     //set to P if parent = BODY
     container = wym.selectedContainer();
-    if (container && container.tagName.toLowerCase() === WYMeditor.BODY) {
-        wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
+    if (
+        // Images are allowed in the body.
+        cmd !== WYMeditor.EXEC_COMMANDS.INSERT_IMAGE &&
+        container === wym.body()
+    ) {
+        wym._exec(WYMeditor.EXEC_COMMANDS.FORMAT_BLOCK, WYMeditor.P);
         wym.prepareDocForEditing();
     }
 
@@ -56,12 +60,12 @@ WYMeditor.WymClassGecko.prototype._keydown = function (evt) {
     if (evt.ctrlKey) {
         if (evt.which === WYMeditor.KEY_CODE.B) {
             //CTRL+b => STRONG
-            wym._exec(WYMeditor.BOLD);
+            wym._exec(WYMeditor.EXEC_COMMANDS.BOLD);
             return false;
         }
         if (evt.which === WYMeditor.KEY_CODE.I) {
             //CTRL+i => EMPHASIS
-            wym._exec(WYMeditor.ITALIC);
+            wym._exec(WYMeditor.EXEC_COMMANDS.ITALIC);
             return false;
         }
     }
@@ -111,7 +115,10 @@ WYMeditor.WymClassGecko.prototype._keyup = function (evt) {
                 (jQuery.inArray(name, notValidRootContainers) > -1 &&
                 parentName === WYMeditor.BODY)) {
 
-            wym._exec(WYMeditor.FORMAT_BLOCK, defaultRootContainer);
+            wym._exec(
+                WYMeditor.EXEC_COMMANDS.FORMAT_BLOCK,
+                defaultRootContainer
+            );
             wym.prepareDocForEditing();
         }
     }
@@ -129,7 +136,10 @@ WYMeditor.WymClassGecko.prototype._keyup = function (evt) {
         }
         if (jQuery.inArray(name, notValidRootContainers) > -1 &&
                 parentName === WYMeditor.BODY) {
-            wym._exec(WYMeditor.FORMAT_BLOCK, defaultRootContainer);
+            wym._exec(
+                WYMeditor.EXEC_COMMANDS.FORMAT_BLOCK,
+                defaultRootContainer
+            );
         }
 
         // Call for the check for--and possible correction of--issue #430.
@@ -172,7 +182,7 @@ WYMeditor.WymClassGecko.prototype._click = function () {
             // drags over the body, but we shouldn't turn everything in to a
             // paragraph tag. Otherwise, double-clicking in the space to the
             // right of an h2 tag would turn it in to a paragraph
-            wym._exec(WYMeditor.FORMAT_BLOCK, WYMeditor.P);
+            wym._exec(WYMeditor.EXEC_COMMANDS.FORMAT_BLOCK, WYMeditor.P);
         }
     }
 };
