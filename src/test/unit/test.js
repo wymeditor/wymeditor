@@ -183,7 +183,7 @@ test("Focusing on document triggers designMode if it is off", function () {
                 jQuery.browser.msie &&
                 jQuery.browser.versionNumber <= 10
             ) {
-                return "skip";
+                return SKIP_THIS_TEST;
             }
         }
     });
@@ -641,7 +641,7 @@ test("Table is editable after insertion", function () {
         skipFunc: function () {
             // This fails in PhantomJS and we don't care.
             if (inPhantomjs) {
-                return "skip";
+                return SKIP_THIS_TEST;
             }
         }
     });
