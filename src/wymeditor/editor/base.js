@@ -741,6 +741,16 @@ WYMeditor.editor.prototype.get$CommonParent = function (one, two) {
     * If an element that contains one end of the selection is ancestor to the
       element that contains the other end, return that ancestor element.
     * Otherwise, returns `false`.
+
+    For example (``|`` marks selection ends):
+
+        <p>|Foo <i>bar|</i></p>
+
+    The ``p`` is returned.
+
+        <p>Foo <i>|bar|</i></p>
+
+    The ``i`` is returned.
 */
 WYMeditor.editor.prototype.selectedContainer = function () {
     var wym = this,
