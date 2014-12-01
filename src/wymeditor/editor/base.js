@@ -734,13 +734,13 @@ WYMeditor.editor.prototype.get$CommonParent = function (one, two) {
     WYMeditor.editor.selectedContainer
     ==================================
 
-    Returns the selection's container.
+    Get the selected container.
 
-    Returns false if there is no selection or if there is no obvious, single,
-    selected container.
-
-    Not to be confused with `.getRootContainer`, which gets the
-    selection's root container.
+    * If no selection, returns `false`.
+    * If selection starts and ends in the same element, returns that element.
+    * If an element that contains one end of the selection is ancestor to the
+      element that contains the other end, return that ancestor element.
+    * Otherwise, returns `false`.
 */
 WYMeditor.editor.prototype.selectedContainer = function () {
     var wym = this,
