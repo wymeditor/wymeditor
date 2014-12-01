@@ -15,6 +15,7 @@
     normalizeHtml,
     ListPlugin,
     asyncTest,
+    SKIP_THIS_TEST,
     manipulationTestHelper,
    inPhantomjs
 */
