@@ -198,7 +198,7 @@ jQuery.extend(WYMeditor, {
 
     // Commands for the `editor.exec` method
     EXEC_COMMANDS: {
-        // Wrapping element toggles
+        // Inline wrapping element toggles
         BOLD                : "Bold",
         ITALIC              : "Italic",
         SUPERSCRIPT         : "Superscript",
