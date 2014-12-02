@@ -373,25 +373,3 @@ test("Doesn't unwrap superscript across root containers", function () {
 test("Doesn't unwrap subscript across root containers", function () {
     doesntUnwrapAcrossRootContainers(WYMeditor.EXEC_COMMANDS.SUPERSCRIPT);
 });
-
-module("exec_manipulations", {setup: prepareUnitTestModule});
-
-test("Unlink", function () {
-    manipulationTestHelper({
-        startHtml: "<p><a href=\"http://example.com/\">Foo</a></p>",
-        prepareFunc: function (wymeditor) {
-            var a = wymeditor.$body().find("a")[0];
-            makeTextSelection(
-                wymeditor,
-                a,
-                a,
-                0,
-                3
-            );
-        },
-        manipulationFunc: function (wymeditor) {
-            wymeditor.exec(WYMeditor.EXEC_COMMANDS.UNLINK);
-        },
-        expectedResultHtml: "<p>Foo</p>"
-    });
-});
