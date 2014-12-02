@@ -1359,7 +1359,6 @@ test("Can set and get html with the html() function", function () {
               "Set and get with html() function");
 });
 
-
 module("switchTo", {setup: prepareUnitTestModule});
 
 test("Refuses 'img' elements.", function () {
