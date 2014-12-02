@@ -191,7 +191,8 @@ test("Non-IE browsers wrap partially bold selection with bold", function () {
     );
 });
 
-test("Non-IE browsers wrap partially italic selection with italic", function () {
+test("Non-IE browsers wrap partially italic selection with " +
+     "italic", function () {
     wrapPartiallyWrappedSelection(
         WYMeditor.EXEC_COMMANDS.ITALIC,
         function () {
