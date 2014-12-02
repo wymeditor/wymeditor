@@ -136,3 +136,55 @@ test("Doesn't unlink across root containers", function () {
         expectedResultHtml: noChangeHtml
     });
 });
+
+test("Non-IE browsers don't unlink when collapsed selection " +
+     "inside link", function () {
+    var noChangeHtml = "<p><a href=\"http://example.com/\">Foo</a></p>";
+    manipulationTestHelper({
+        startHtml: noChangeHtml,
+        prepareFunc: function (wymeditor) {
+            var a = wymeditor.body().childNodes[0].childNodes[0];
+            makeTextSelection(
+                wymeditor,
+                a,
+                a,
+                1,
+                1
+            );
+        },
+        manipulationFunc: function (wymeditor) {
+            wymeditor.exec(WYMeditor.EXEC_COMMANDS.UNLINK);
+        },
+        expectedResultHtml: noChangeHtml,
+        skipFunc: function () {
+            if (jQuery.browser.name === "msie") {
+                return SKIP_THIS_TEST;
+            }
+        }
+    });
+});
+
+test("IE unlinks when collapsed selection inside link", function () {
+    manipulationTestHelper({
+        startHtml: "<p><a href=\"http://example.com/\">Foo</a></p>",
+        prepareFunc: function (wymeditor) {
+            var a = wymeditor.body().childNodes[0].childNodes[0];
+            makeTextSelection(
+                wymeditor,
+                a,
+                a,
+                1,
+                1
+            );
+        },
+        manipulationFunc: function (wymeditor) {
+            wymeditor.exec(WYMeditor.EXEC_COMMANDS.UNLINK);
+        },
+        expectedResultHtml: "<p>Foo</p>",
+        skipFunc: function () {
+            if (jQuery.browser.name !== "msie") {
+                return SKIP_THIS_TEST;
+            }
+        }
+    });
+});
