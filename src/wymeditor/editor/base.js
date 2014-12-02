@@ -723,8 +723,12 @@ WYMeditor.editor.prototype.exec = function (cmd) {
             }
         });
         if (!custom_run) {
-            wym._exec(cmd);
-            wym.registerChange();
+            if (
+                // Deligate all other commands to `_exec`
+                wym._exec(cmd) === true
+            ) {
+                wym.registerChange();
+            };
         }
         break;
     }
