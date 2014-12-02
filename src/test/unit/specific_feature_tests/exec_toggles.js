@@ -7,7 +7,7 @@
     SKIP_THIS_TEST
 */
 "use strict";
-module("exec_manipulations-toggles", {setup: prepareUnitTestModule});
+module("exec-toggles", {setup: prepareUnitTestModule});
 
 // Different browsers create wrappers with different tagNames for the same
 // execCommand commands.
