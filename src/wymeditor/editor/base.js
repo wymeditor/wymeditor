@@ -565,6 +565,35 @@ WYMeditor.editor.prototype.vanish = function () {
     }
 };
 
+WYMeditor.editor.prototype._exec = function (cmd, param) {
+    var wym = this;
+
+    if (wym.selectedContainer() === false) {
+        return false;
+    }
+
+    if (
+        wym.selectedContainer() === wym.body() &&
+        // These are the two commands that are allowed directly in the body.
+        cmd !== WYMeditor.EXEC_COMMANDS.INSERT_IMAGE &&
+        cmd !== WYMeditor.EXEC_COMMANDS.FORMAT_BLOCK
+    ) {
+        return false;
+    }
+
+    if (param) {
+        wym._doc.execCommand(cmd, '', param);
+    } else {
+        wym._doc.execCommand(cmd, '', null);
+    }
+
+    // Webkit and Blink may add a span wrapper in some cases. Remove it.
+    jQuery(wym.selectedContainer()).filter("[style=font-weight: normal;]")
+        .contents().unwrap();
+
+    return true;
+};
+
 /**
     WYMeditor.editor.rawHtml
     =====================
