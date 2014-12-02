@@ -637,7 +637,7 @@ test("Table is editable after insertion", function () {
             $tds.each(function (index, td) {
                 strictEqual(isContentEditable(td), true);
             });
-            strictEqual(wymeditor._isDesignmodeOn(), true);
+            strictEqual(wymeditor._isDesignModeOn(), true);
         },
         skipFunc: function () {
             // This fails in PhantomJS and we don't care.
