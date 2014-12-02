@@ -590,6 +590,7 @@ WYMeditor.editor.prototype._exec = function (cmd, param) {
 
     $span = jQuery(wym.selectedContainer()).filter("span").not("[id]");
     if ($span.length === 0) {
+        wym.registerChange();
         return true;
     }
     if (
@@ -601,6 +602,7 @@ WYMeditor.editor.prototype._exec = function (cmd, param) {
         $span.contents().unwrap();
     }
 
+    wym.registerChange();
     return true;
 };
 
@@ -724,7 +726,6 @@ WYMeditor.editor.prototype.exec = function (cmd) {
         });
         if (!custom_run) {
             wym._exec(cmd);
-            wym.registerChange();
         }
         break;
     }
