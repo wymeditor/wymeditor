@@ -83,6 +83,7 @@ test("Non-IE browsers partially unlink according to selection", function () {
             wymeditor.exec(WYMeditor.EXEC_COMMANDS.UNLINK);
         },
         expectedResultHtml: "<p><a href=\"http://example.com/\">Fo</a>o</p>",
+        testUndoRedo: true,
         skipFunc: function () {
             if (jQuery.browser.name === "msie") {
                 return SKIP_THIS_TEST;
@@ -108,6 +109,7 @@ test("IE entirely unlinks regardless of selection", function () {
             wymeditor.exec(WYMeditor.EXEC_COMMANDS.UNLINK);
         },
         expectedResultHtml: "<p>Foo</p>",
+        testUndoRedo: true,
         skipFunc: function () {
             if (jQuery.browser.name !== "msie") {
                 return SKIP_THIS_TEST;
@@ -136,7 +138,8 @@ test("Doesn't unlink across root containers", function () {
         manipulationFunc: function (wymeditor) {
             wymeditor.exec(WYMeditor.EXEC_COMMANDS.UNLINK);
         },
-        expectedResultHtml: noChangeHtml
+        expectedResultHtml: noChangeHtml,
+        testUndoRedo: true,
     });
 });
 
@@ -159,6 +162,7 @@ test("Non-IE browsers don't unlink when collapsed selection " +
             wymeditor.exec(WYMeditor.EXEC_COMMANDS.UNLINK);
         },
         expectedResultHtml: noChangeHtml,
+        testUndoRedo: true,
         skipFunc: function () {
             if (jQuery.browser.name === "msie") {
                 return SKIP_THIS_TEST;
@@ -184,6 +188,7 @@ test("IE unlinks when collapsed selection inside link", function () {
             wymeditor.exec(WYMeditor.EXEC_COMMANDS.UNLINK);
         },
         expectedResultHtml: "<p>Foo</p>",
+        testUndoRedo: true,
         skipFunc: function () {
             if (jQuery.browser.name !== "msie") {
                 return SKIP_THIS_TEST;
