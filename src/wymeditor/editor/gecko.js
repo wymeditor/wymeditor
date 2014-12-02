@@ -20,13 +20,14 @@ WYMeditor.WymClassGecko.NEEDS_CELL_FIX = parseInt(
 WYMeditor.WymClassGecko.prototype._docEventQuirks = function () {
     var wym = this;
 
-    jQuery(wym._doc).bind("keydown", wym._keydown);
-    jQuery(wym._doc).bind("keyup", wym._keyup);
-    jQuery(wym._doc).bind("click", wym._click);
-    // Bind editor focus events (used to reset designmode - Gecko bug)
-    jQuery(wym._doc).bind("focus", function () {
-        // Fix scope
-        wym._enableDesignModeOnIframe.call(wym);
+    jQuery(wym._doc).bind("keydown", function (evt) {
+        wym._keydown(evt);
+    });
+    jQuery(wym._doc).bind("keyup", function (evt) {
+        wym._keyup(evt);
+    });
+    jQuery(wym._doc).bind("click", function (evt) {
+        wym._click(evt);
     });
 };
 
@@ -59,8 +60,7 @@ WYMeditor.WymClassGecko.prototype._exec = function (cmd, param) {
 
 //keydown handler, mainly used for keyboard shortcuts
 WYMeditor.WymClassGecko.prototype._keydown = function (evt) {
-    var doc = this,
-        wym = WYMeditor.INSTANCES[doc.title];
+    var wym = this;
 
     if (evt.ctrlKey) {
         if (evt.which === WYMeditor.KEY_CODE.B) {
@@ -80,8 +80,7 @@ WYMeditor.WymClassGecko.prototype._keydown = function (evt) {
 
 // Keyup handler, mainly used for cleanups
 WYMeditor.WymClassGecko.prototype._keyup = function (evt) {
-    var doc = this,
-        wym = WYMeditor.INSTANCES[doc.title],
+    var wym = this,
         container,
         defaultRootContainer,
         notValidRootContainers,
@@ -156,8 +155,7 @@ WYMeditor.WymClassGecko.prototype._keyup = function (evt) {
 };
 
 WYMeditor.WymClassGecko.prototype._click = function () {
-    var doc = this,
-        wym = WYMeditor.INSTANCES[doc.title],
+    var wym = this,
         container = wym.selectedContainer(),
         sel;
 
@@ -192,15 +190,13 @@ WYMeditor.WymClassGecko.prototype._click = function () {
     }
 };
 
-WYMeditor.WymClassGecko.prototype._enableDesignModeOnIframe = function () {
+WYMeditor.WymClassGecko.prototype._designModeQuirks = function () {
     var wym = this;
-    if (wym._doc.designMode === "off") {
-        try {
-            wym._doc.designMode = "on";
-            wym._doc.execCommand("styleWithCSS", '', false);
-            wym._doc.execCommand("enableObjectResizing", false, true);
-        } catch (e) {}
-    }
+    // Handle any errors that might occur.
+    try {
+        wym._doc.execCommand("styleWithCSS", '', false);
+        wym._doc.execCommand("enableObjectResizing", false, true);
+    } catch (e) {}
 };
 
 /*
