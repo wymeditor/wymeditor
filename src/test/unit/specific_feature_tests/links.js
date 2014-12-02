@@ -60,6 +60,7 @@ test("Unlink", function () {
         manipulationFunc: function (wymeditor) {
             wymeditor.exec(WYMeditor.EXEC_COMMANDS.UNLINK);
         },
-        expectedResultHtml: "<p>Foo</p>"
+        expectedResultHtml: "<p>Foo</p>",
+        testUndoRedo: true
     });
 });
