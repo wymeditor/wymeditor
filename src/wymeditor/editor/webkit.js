@@ -11,14 +11,17 @@ WYMeditor.WymClassWebKit = function (wym) {
 WYMeditor.WymClassWebKit.prototype._docEventQuirks = function () {
     var wym = this;
 
-    jQuery(wym._doc).bind("keydown", wym._keydown);
-    jQuery(wym._doc).bind("keyup", wym._keyup);
+    jQuery(wym._doc).bind("keydown", function (evt) {
+        wym._keydown(evt);
+    });
+    jQuery(wym._doc).bind("keyup", function (evt) {
+        wym._keyup(evt);
+    });
 };
 
 //keydown handler, mainly used for keyboard shortcuts
 WYMeditor.WymClassWebKit.prototype._keydown = function (evt) {
-    var doc = this,
-        wym = WYMeditor.INSTANCES[doc.title];
+    var wym = this;
 
     if (evt.ctrlKey) {
         if (evt.which === WYMeditor.KEY_CODE.B) {
@@ -146,8 +149,7 @@ WYMeditor.WymClassWebKit.prototype
 
 // Keyup handler, mainly used for cleanups
 WYMeditor.WymClassWebKit.prototype._keyup = function (evt) {
-    var doc = this,
-        wym = WYMeditor.INSTANCES[doc.title],
+    var wym = this,
         container,
         defaultRootContainer,
         notValidRootContainers,

@@ -11,13 +11,13 @@ WYMeditor.WymClassTridentPre7 = function (wym) {
 WYMeditor.WymClassTridentPre7.prototype._onEditorIframeLoad = function (wym) {
     wym._assignWymDoc();
 
-    if (wym._isDesignmodeOn() === false) {
+    if (wym._isDesignModeOn() === false) {
         wym._doc.designMode = "On";
     } else {
         // Pre-7 Trident Internet Explorer versions reload the Iframe when its
         // designMode property is set to "on". So this will run on the second
         // time this handler is called.
-        wym._afterDesignmodeOn();
+        wym._afterDesignModeOn();
     }
 };
 
@@ -33,7 +33,9 @@ WYMeditor.WymClassTridentPre7.prototype._docEventQuirks = function () {
     wym._doc.onbeforedeactivate = function () {
         wym._saveCaret();
     };
-    jQuery(wym._doc).bind('keyup', wym._keyup);
+    jQuery(wym._doc).bind('keyup', function (evt) {
+        wym._keyup(evt);
+    });
     wym._doc.onkeyup = function () {
         wym._saveCaret();
     };
@@ -160,8 +162,8 @@ WYMeditor.WymClassTridentPre7.prototype.unwrap = function () {
 };
 
 WYMeditor.WymClassTridentPre7.prototype._keyup = function (evt) {
-    var doc = this,
-        wym = WYMeditor.INSTANCES[doc.title],
+    var wym = this,
+        doc = wym._doc,
         container,
         defaultRootContainer,
         notValidRootContainers,
