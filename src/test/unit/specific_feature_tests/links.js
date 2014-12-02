@@ -139,7 +139,7 @@ test("Doesn't unlink across root containers", function () {
             wymeditor.exec(WYMeditor.EXEC_COMMANDS.UNLINK);
         },
         expectedResultHtml: noChangeHtml,
-        testUndoRedo: true,
+        testUndoRedo: true
     });
 });
 
