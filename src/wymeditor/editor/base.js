@@ -555,8 +555,9 @@ WYMeditor.editor.prototype._exec = function (cmd, param) {
 
     if (
         wym.selectedContainer() === wym.body() &&
-        // Image insertion is the only command we allow in the body.
-        cmd !== WYMeditor.EXEC_COMMANDS.INSERT_IMAGE
+        // These are the two commands that are allowed directly in the body.
+        cmd !== WYMeditor.EXEC_COMMANDS.INSERT_IMAGE &&
+        cmd !== WYMeditor.EXEC_COMMANDS.FORMAT_BLOCK
     ) {
         return false;
     }
