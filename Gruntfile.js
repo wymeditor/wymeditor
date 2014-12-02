@@ -483,8 +483,10 @@ module.exports = function (grunt) {
                 },
                 command: 'xdg-open docs/.build/html/index.html'
             },
-            // This one is not copied by default because it is not in the `main`
-            // of the Bower package. So we copy it manually, with `shell`.
+            // Unlike the ES5 shims, the shams file is not linked by default,
+            // by the bower-linker task, because it is not in the `main`
+            // of its Bower package. So we link it manually, with this `shell`
+            // task.
             linkES5Sham: {
                 options: {
                     stdout: true,
