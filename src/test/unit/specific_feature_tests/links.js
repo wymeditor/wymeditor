@@ -115,7 +115,7 @@ test("IE entirely unlinks regardless of selection", function () {
 
 test("Doesn't unlink across root containers", function () {
     var noChangeHtml = "<p><a href=\"http://example.com/\">Foo</a></p>" +
-        "<p><a href=\"http://example.com/\">Bar</a></p>"
+        "<p><a href=\"http://example.com/\">Bar</a></p>";
     manipulationTestHelper({
         startHtml: noChangeHtml,
         prepareFunc: function (wymeditor) {
