@@ -63,7 +63,8 @@ function wrapNonWrappedSelection(command) {
         manipulationFunc: function (wymeditor) {
             wymeditor.exec(command);
         },
-        expectedResultHtml: "<p><" + tagName + ">Foo</" + tagName + "></p>"
+        expectedResultHtml: "<p><" + tagName + ">Foo</" + tagName + "></p>",
+        testUndoRedo: true
     });
 }
 
@@ -100,7 +101,8 @@ function unwrapWrappedSelection(command) {
         manipulationFunc: function (wymeditor) {
             wymeditor.exec(command);
         },
-        expectedResultHtml: "<p>Foo</p>"
+        expectedResultHtml: "<p>Foo</p>",
+        testUndoRedo: true
     });
 }
 
@@ -137,7 +139,8 @@ function unwrapWrappedSelectionPartially(command) {
         manipulationFunc: function (wymeditor) {
             wymeditor.exec(command);
         },
-        expectedResultHtml: "<p><" + tagName + ">Fo</" + tagName + ">o</p>"
+        expectedResultHtml: "<p><" + tagName + ">Fo</" + tagName + ">o</p>",
+        testUndoRedo: true
     });
 }
 
@@ -176,7 +179,8 @@ function wrapPartiallyWrappedSelection(command, skipFunc) {
             wymeditor.exec(command);
         },
         expectedResultHtml: "<p><" + tagName + ">Foo</" + tagName + "></p>",
-        skipFunc: skipFunc
+        testUndoRedo: true,
+        skipFunc: skipFunc,
     });
 }
 
@@ -245,6 +249,7 @@ function unwrapPartiallyWrappedSelection(command, skipFunc) {
             wymeditor.exec(command);
         },
         expectedResultHtml: "<p>Foo</p>",
+        testUndoRedo: true,
         skipFunc: skipFunc
     });
 }
@@ -313,7 +318,8 @@ function doesntWrapAcrossRootContainers(command) {
         manipulationFunc: function (wymeditor) {
             wymeditor.exec(command);
         },
-        expectedResultHtml: noChangeHtml
+        expectedResultHtml: noChangeHtml,
+        testUndoRedo: true
     });
 }
 
@@ -354,7 +360,8 @@ function doesntUnwrapAcrossRootContainers(command) {
         manipulationFunc: function (wymeditor) {
             wymeditor.exec(command);
         },
-        expectedResultHtml: noChangeHtml
+        expectedResultHtml: noChangeHtml,
+        testUndoRedo: true
     });
 }
 
