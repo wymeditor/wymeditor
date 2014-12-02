@@ -546,6 +546,45 @@ WYMeditor.editor.prototype.vanish = function () {
     }
 };
 
+WYMeditor.editor.prototype._exec = function (cmd, param) {
+    var wym = this,
+        $span;
+
+    if (wym.selectedContainer() === false) {
+        return false;
+    }
+
+    if (
+        wym.selectedContainer() === wym.body() &&
+        // These are the two commands that are allowed directly in the body.
+        cmd !== WYMeditor.EXEC_COMMANDS.INSERT_IMAGE &&
+        cmd !== WYMeditor.EXEC_COMMANDS.FORMAT_BLOCK
+    ) {
+        return false;
+    }
+
+    if (param) {
+        wym._doc.execCommand(cmd, '', param);
+    } else {
+        wym._doc.execCommand(cmd, '', null);
+    }
+
+    $span = jQuery(wym.selectedContainer()).filter("span").not("[id]");
+    if ($span.length === 0) {
+        return true;
+    }
+    if (
+        $span.attr("class") === "" &&
+        $span.attr("style") === "font-weight: normal;" ||
+        $span.attr("class").toLowerCase() === "apple-style-span"
+    ) {
+        // An undesireable `span` was created. WebKit & Blink do this.
+        $span.contents().unwrap();
+    }
+
+    return true;
+};
+
 /**
     WYMeditor.editor.rawHtml
     =====================

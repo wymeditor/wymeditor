@@ -70,15 +70,6 @@ WYMeditor.WymClassTridentPre7.prototype._uiQuirks = function () {
     }
 };
 
-WYMeditor.WymClassTridentPre7.prototype._exec = function (cmd, param) {
-    var wym = this;
-    if (param) {
-        wym._doc.execCommand(cmd, false, param);
-    } else {
-        wym._doc.execCommand(cmd);
-    }
-};
-
 WYMeditor.WymClassTridentPre7.prototype._saveCaret = function () {
     var wym = this,
         nativeSelection = wym._doc.selection;

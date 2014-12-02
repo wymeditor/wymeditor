@@ -31,33 +31,6 @@ WYMeditor.WymClassGecko.prototype._docEventQuirks = function () {
     });
 };
 
-WYMeditor.WymClassGecko.prototype._exec = function (cmd, param) {
-    var wym = this,
-        container;
-    if (!wym.selectedContainer()) {
-        return false;
-    }
-
-    if (param) {
-        wym._doc.execCommand(cmd, '', param);
-    } else {
-        wym._doc.execCommand(cmd, '', null);
-    }
-
-    //set to P if parent = BODY
-    container = wym.selectedContainer();
-    if (
-        // Images are allowed in the body.
-        cmd !== WYMeditor.EXEC_COMMANDS.INSERT_IMAGE &&
-        container === wym.body()
-    ) {
-        wym._exec(WYMeditor.EXEC_COMMANDS.FORMAT_BLOCK, WYMeditor.P);
-        wym.prepareDocForEditing();
-    }
-
-    return true;
-};
-
 //keydown handler, mainly used for keyboard shortcuts
 WYMeditor.WymClassGecko.prototype._keydown = function (evt) {
     var wym = this;
