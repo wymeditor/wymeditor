@@ -195,9 +195,25 @@ or not.
 =======================
 
 Get the selected container.
-Returns ``false`` if no selection.
 
-This is currently supposed to be used with a collapsed selection only.
+* If no selection, returns ``false``.
+* If selection starts and ends in the same element, returns that element.
+* If an element that contains one end of the selection is ancestor to the
+  element that contains the other end, return that ancestor element.
+* Otherwise, returns ``false``.
+
+For example (``|`` marks selection ends):
+.. code-block:: html
+
+    <p>|Foo <i>bar|</i></p>
+
+The ``p`` is returned.
+
+.. code-block:: html
+
+    <p>Foo <i>|bar|</i></p>
+
+The ``i`` is returned.
 
 ``getRootContainer()``
 ======================
@@ -337,6 +353,42 @@ ToggleHtml
     show/hide the HTML value.
 Preview
     open the preview dialog.
+
+``link(attrs)``
+===============
+
+Turns the selected text into an ``a`` element with the provided attributes.
+
+If an ``a`` element is already selected, modifies its attributes.
+
+Attributes are provided as key-value pairs, in ``attrs``.
+
+Example:
+
+.. code-block:: javascript
+
+    // Perform some selection and then:
+    wym.link({
+        href: "http://example.com",
+        title: "Example"
+    });
+
+``insertImage(attrs)``
+===============
+
+Inserts an ``img`` element with the provided attributes.
+
+Attributes are provided as key-value pairs, in ``attrs``.
+
+Example:
+
+.. code-block:: javascript
+
+    // Perform some selection and then:
+    wym.insertImage({
+        src: "example.jpg",
+        alt: "Example"
+    });
 
 ``paste(data)``
 ===============
