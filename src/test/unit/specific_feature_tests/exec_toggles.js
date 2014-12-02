@@ -184,7 +184,7 @@ function wrapPartiallyWrappedSelection(command, skipFunc) {
     });
 }
 
-test("Most browsers wrap partially bold selection with bold", function () {
+test("Non-IE browsers wrap partially bold selection with bold", function () {
     wrapPartiallyWrappedSelection(
         WYMeditor.EXEC_COMMANDS.BOLD,
         function () {
@@ -195,7 +195,8 @@ test("Most browsers wrap partially bold selection with bold", function () {
     );
 });
 
-test("Most browsers wrap partially italic selection with italic", function () {
+test("Non-IE browsers wrap partially italic selection with " +
+     "italic", function () {
     wrapPartiallyWrappedSelection(
         WYMeditor.EXEC_COMMANDS.ITALIC,
         function () {
@@ -206,7 +207,7 @@ test("Most browsers wrap partially italic selection with italic", function () {
     );
 });
 
-test("Most browsers wrap partially superscript selection with " +
+test("Non-IE browsers wrap partially superscript selection with " +
      "superscript", function () {
     wrapPartiallyWrappedSelection(
         WYMeditor.EXEC_COMMANDS.SUPERSCRIPT,
@@ -218,7 +219,7 @@ test("Most browsers wrap partially superscript selection with " +
     );
 });
 
-test("Most browsers wrap partially subscript selection with " +
+test("Non-IE browsers wrap partially subscript selection with " +
      "subscript", function () {
     wrapPartiallyWrappedSelection(
         WYMeditor.EXEC_COMMANDS.SUBSCRIPT,

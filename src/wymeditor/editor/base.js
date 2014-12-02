@@ -566,7 +566,8 @@ WYMeditor.editor.prototype.vanish = function () {
 };
 
 WYMeditor.editor.prototype._exec = function (cmd, param) {
-    var wym = this;
+    var wym = this,
+        $span;
 
     if (wym.selectedContainer() === false) {
         return false;
@@ -587,9 +588,18 @@ WYMeditor.editor.prototype._exec = function (cmd, param) {
         wym._doc.execCommand(cmd, '', null);
     }
 
-    // Webkit and Blink may add a span wrapper in some cases. Remove it.
-    jQuery(wym.selectedContainer()).filter("[style=font-weight: normal;]")
-        .contents().unwrap();
+    $span = jQuery(wym.selectedContainer()).filter("span").not("[id]");
+    if ($span.length === 0) {
+        return true;
+    }
+    if (
+        $span.attr("class") === "" &&
+        $span.attr("style") === "font-weight: normal;" ||
+        $span.attr("class").toLowerCase() === "apple-style-span"
+    ) {
+        // An undesireable `span` was created. WebKit & Blink do this.
+        $span.contents().unwrap();
+    }
 
     return true;
 };
