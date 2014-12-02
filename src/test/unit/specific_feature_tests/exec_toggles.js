@@ -180,7 +180,7 @@ function wrapPartiallyWrappedSelection(command, skipFunc) {
         },
         expectedResultHtml: "<p><" + tagName + ">Foo</" + tagName + "></p>",
         testUndoRedo: true,
-        skipFunc: skipFunc,
+        skipFunc: skipFunc
     });
 }
 
