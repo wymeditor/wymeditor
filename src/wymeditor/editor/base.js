@@ -520,7 +520,11 @@ WYMeditor.editor.prototype._exec = function (cmd, param) {
         return false;
     }
 
-    if (wym.selectedContainer() === wym.body()) {
+    if (
+        wym.selectedContainer() === wym.body() &&
+        // Image insertion is the only command we allow in the body.
+        cmd !== WYMeditor.EXEC_COMMANDS.INSERT_IMAGE
+    ) {
         return false;
     }
 
