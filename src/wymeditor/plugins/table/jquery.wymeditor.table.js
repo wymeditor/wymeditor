@@ -138,22 +138,30 @@ TableEditor.prototype.bindEvents = function () {
     jQuery(wym._box).find(
         tableEditor._options.sAddRowButtonSelector
     ).click(function () {
-        return tableEditor.addRow(wym.selectedContainer());
+        if (wym.selection().isCollapsed === true) {
+            return tableEditor.addRow(wym.selectedContainer());
+        }
     });
     jQuery(wym._box).find(
         tableEditor._options.sRemoveRowButtonSelector
     ).click(function () {
-        return tableEditor.removeRow(wym.selectedContainer());
+        if (wym.selection().isCollapsed === true) {
+            return tableEditor.removeRow(wym.selectedContainer());
+        }
     });
     jQuery(wym._box).find(
         tableEditor._options.sAddColumnButtonSelector
     ).click(function () {
-        return tableEditor.addColumn(wym.selectedContainer());
+        if (wym.selection().isCollapsed === true) {
+            return tableEditor.addColumn(wym.selectedContainer());
+        }
     });
     jQuery(wym._box).find(
         tableEditor._options.sRemoveColumnButtonSelector
     ).click(function () {
-        return tableEditor.removeColumn(wym.selectedContainer());
+        if (wym.selection().isCollapsed === true) {
+            return tableEditor.removeColumn(wym.selectedContainer());
+        }
     });
 
     // Handle tab clicks
