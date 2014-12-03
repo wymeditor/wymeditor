@@ -388,7 +388,7 @@ TableEditor.prototype.mergeRow = function () {
     var tableEditor = this,
         wym = tableEditor._wym,
         // Get all of the affected nodes in the range
-        nodes = [],
+        nodes = wym._getSelectedNodes(),
         cells,
         rootTr,
         mergeCell,
@@ -396,8 +396,6 @@ TableEditor.prototype.mergeRow = function () {
         rowspanProp,
         newContent,
         combinedColspan;
-
-    nodes = wym._getSelectedNodes();
 
     // Clear the ranges in selection so that it can be moved later
     rangy.getIframeSelection(wym._iframe).removeAllRanges();
