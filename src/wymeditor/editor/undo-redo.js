@@ -12,7 +12,7 @@
     WYMeditor.UndoRedo
     ==================
 
-    Returns an undoRedo mechanism for a provided editor.
+    Constructs an undoRedo mechanism for a provided editor.
 
     @param wym An editor instance.
 */
