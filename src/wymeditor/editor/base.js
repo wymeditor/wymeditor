@@ -1415,8 +1415,14 @@ WYMeditor.editor.prototype.getCurrentState = function () {
         // which are markers for the selection, were placed, and that references
         // to these markers were saved in `state.savedselection`. The markers
         // were saved in `state.html`, along with the whole document, as HTML.
-        // Remove them from the document, for there is no use for them in it.
-        rangy.removeMarkers(state.savedSelection);
+        // Restoring the selection removes the markers and restores the
+        // selection to almost exactly as it was before it was saved.
+        rangy.restoreSelection(state.savedSelection);
+        // This is for time-travel, so selection is considered not to be
+        // restored. The markers may be created again from the saved HTML. In
+        // that case, leaving this value at `true` would mean that
+        // `rangy.restoreSelection` will refuse to restore this selection.
+        state.savedSelection.restored = false;
         // These refer to the window and the document and can't be processed by
         // the `object-history` module that is used by the `UndoRedo` module.
         delete state.savedSelection.win;
