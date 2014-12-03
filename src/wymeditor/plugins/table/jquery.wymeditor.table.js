@@ -397,8 +397,7 @@ TableEditor.prototype.mergeRow = function () {
         newContent,
         combinedColspan;
 
-    // Clear the ranges in selection so that it can be moved later
-    rangy.getIframeSelection(wym._iframe).removeAllRanges();
+    wym.deselect();
 
     // Just use the td and th nodes
     cells = jQuery(nodes).filter('td,th');
@@ -577,7 +576,7 @@ TableEditor.prototype.removeRow = function (elmnt) {
         wym.findUp(wym.selectedContainer(), "tr") === tr
     ) {
         // Selection is in the row that we are about to remove.
-        wym.selection().removeAllRanges();
+        wym.deselect();
     }
     jQuery(tr).remove();
     tableEditor.removeEmptyTable(table);
@@ -648,7 +647,7 @@ TableEditor.prototype.removeColumn = function (elmnt) {
             $cell[0] === wym.selectedContainer()
         ) {
             // Selection is in the element that we're about to remove.
-            wym.selection().removeAllRanges();
+            wym.deselect();
         }
         $cell.remove();
     });
