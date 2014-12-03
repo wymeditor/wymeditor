@@ -728,7 +728,7 @@ WYMeditor.editor.prototype.exec = function (cmd) {
                 wym._exec(cmd) === true
             ) {
                 wym.registerChange();
-            };
+            }
         }
         break;
     }
