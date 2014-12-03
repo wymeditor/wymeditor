@@ -382,8 +382,6 @@ TableEditor.prototype.getTotalColumns = function (cells) {
 /**
  * Merge the table cells in the given selection using a colspan.
  *
- * @param sel A rangy selection object across which to row merge.
- *
  * @return {Boolean} true if changes are made, false otherwise
  */
 TableEditor.prototype.mergeRow = function () {
