@@ -156,7 +156,7 @@ test("Unwrap superscript partially", function () {
     unwrapWrappedSelectionPartially(WYMeditor.EXEC_COMMANDS.SUPERSCRIPT);
 });
 
-test("Unwrap italic partially", function () {
+test("Unwrap subscript partially", function () {
     unwrapWrappedSelectionPartially(WYMeditor.EXEC_COMMANDS.SUBSCRIPT);
 });
 
