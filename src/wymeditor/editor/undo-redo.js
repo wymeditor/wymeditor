@@ -1,5 +1,7 @@
-/* jshint evil: true, maxlen: 100 */
-/* global ObjectHistory, rangy */
+/* global
+    ObjectHistory,
+    rangy
+*/
 "use strict";
 
 /*
