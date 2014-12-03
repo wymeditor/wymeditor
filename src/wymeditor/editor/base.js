@@ -736,18 +736,6 @@ WYMeditor.editor.prototype.exec = function (cmd) {
 };
 
 /**
-    WYMeditor.editor._removeSelectionBoundaries
-    ===========================================
-
-    Removes Rangy selection boundary `span`s from the document.
-*/
-WYMeditor.editor.prototype._removeSelectionBoundaries = function () {
-    var wym = this;
-
-    wym.$body().find('span.rangySelectionBoundary').remove();
-};
-
-/**
     WYMeditor.editor.selection
     ==========================
 
@@ -1412,18 +1400,12 @@ WYMeditor.editor.prototype.getCurrentState = function () {
     var wym = this,
         state = {},
         selection,
-        savedSelection,
         wymIframeWindow = wym._iframe.contentWindow;
 
     selection = wym.selection();
 
     if (wym.hasSelection() === true) {
-        savedSelection = rangy.saveSelection(wymIframeWindow);
-        // These refer to the window and the document and can't be processed by
-        // the `object-history` module that is used by the `UndoRedo` module.
-        delete savedSelection.win;
-        delete savedSelection.doc;
-        state.savedSelection = savedSelection;
+        state.savedSelection = rangy.saveSelection(wymIframeWindow);
     }
 
     state.html = wym.rawHtml();
@@ -1434,7 +1416,11 @@ WYMeditor.editor.prototype.getCurrentState = function () {
         // to these markers were saved in `state.savedselection`. The markers
         // were saved in `state.html`, along with the whole document, as HTML.
         // Remove them from the document, for there is no use for them in it.
-        wym._removeSelectionBoundaries();
+        rangy.removeMarkers(state.savedSelection);
+        // These refer to the window and the document and can't be processed by
+        // the `object-history` module that is used by the `UndoRedo` module.
+        delete state.savedSelection.win;
+        delete state.savedSelection.doc;
     }
 
     return state;
