@@ -11,40 +11,38 @@
     test,
     expect,
     deepEqual,
-    manipulationTestHelper
+    manipulationTestHelper,
+    strictEqual
 */
 "use strict";
 
-function testTableTab(initialHtml, startSelector, endSelector) {
-    var wymeditor = jQuery.wymeditors(0),
-        $body,
-        startElmnt,
-        actualSelection,
-        expectedSelection;
-    wymeditor.rawHtml(initialHtml);
-
-    $body = wymeditor.$body();
-    startElmnt = $body.find(startSelector)[0];
-    ok(startElmnt !== null, "Selection start element exists");
-    moveSelector(wymeditor, startElmnt);
-
-    simulateKey(WYMeditor.KEY_CODE.TAB, startElmnt);
-
-    actualSelection = wymeditor.selectedContainer();
-    // In some browsers the selection will be in a child span. That seems ok.
-    if (actualSelection.tagName.toLowerCase() === 'span') {
-        actualSelection = actualSelection.parentNode;
-    }
-    if (endSelector === null) {
-        deepEqual(actualSelection, null);
-    } else {
-        expectedSelection = $body.find(endSelector);
-        if (expectedSelection.length !== 0) {
-            expectedSelection = expectedSelection[0];
+function testTableTab(startHtml, startSelector, endSelector) {
+    manipulationTestHelper({
+        startHtml: startHtml,
+        manipulationFunc: function (wymeditor) {
+            var startElement = wymeditor.$body().find(startSelector)[0];
+            expect(expect() + 1);
+            ok(startElement !== null, "Selection start element exists");
+            moveSelector(wymeditor, startElement);
+            simulateKey(WYMeditor.KEY_CODE.TAB, startElement);
+        },
+        expectedResultHtml: startHtml,
+        additionalAssertionsFunc: function (wymeditor) {
+            var actualSelectedContainer = wymeditor.selectedContainer(),
+                expectedSelectedContainer;
+            expect(expect() + 1);
+            if (endSelector === null) {
+                strictEqual(actualSelectedContainer, null);
+                return;
+            }
+            // In some browsers the selection will be in a child span. That seems ok.
+            if (actualSelectedContainer.tagName.toLowerCase() === "span") {
+                actualSelectedContainer = actualSelectedContainer.parentNode;
+            }
+            expectedSelectedContainer = wymeditor.$body().find(endSelector)[0];
+            strictEqual(actualSelectedContainer, expectedSelectedContainer);
         }
-
-        deepEqual(actualSelection, expectedSelection);
-    }
+    });
 }
 
 /**
@@ -1173,23 +1171,19 @@ test("Row with TH first th row", function () {
 
 module("table- tab movement", {setup: prepareUnitTestModule});
 test("Tab to cell right", function () {
-    expect(2);
     testTableTab(basicTableHtml, '#td_1_1', '#td_1_2');
 });
 
 test("Tab from th to cell right", function () {
-    expect(2);
     testTableTab(thTableHtml, '#th_1_1', '#th_1_2');
 });
 
 test("Tab to next row", function () {
-    expect(2);
     var expectedSelector = '#td_2_1';
     testTableTab(basicTableHtml, '#td_1_3', expectedSelector);
 });
 
 test("Tab from th to next row", function () {
-    expect(2);
     var expectedSelector = '#td_2_1';
     testTableTab(thTableHtml, '#th_1_3', expectedSelector);
 });
@@ -1197,19 +1191,16 @@ test("Tab from th to next row", function () {
 test("Tab end of table", function () {
     // The real tab action doesn't trigger. Just make sure we're not moving
     // around
-    expect(2);
     testTableTab(basicTableHtml, '#td_3_3', '#td_3_3');
 });
 
 test("Tab nested inside table", function () {
-    expect(2);
     testTableTab(basicTableHtml, '#span_2_1', '#td_2_2');
 });
 
 test("Tab outside of table", function () {
     // The real tab action doesn't trigger. Just make sure we're not moving
     // around
-    expect(2);
     testTableTab(basicTableHtml + '<p id="p_1">p1</p>', '#p_1', '#p_1');
 });
 
