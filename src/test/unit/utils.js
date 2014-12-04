@@ -349,12 +349,6 @@ function makeTextSelection(
 * Set a collapsed selection at and, if possible, before `selecteNode`
 */
 function moveSelector(wymeditor, selectedNode) {
-    // This function was rewritten. Some of the existing callers were expecting
-    // assertions and others were not. Next line handles this gracefully.
-    if (expect()) {
-        expect(expect() - 1);
-    }
-
     if (
         wymeditor.canSetCaretIn(selectedNode)
     ) {
