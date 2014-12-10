@@ -3980,7 +3980,7 @@ WYMeditor.editor.prototype.doesElementContainSelection = function (element) {
         if (element === selectedContainer) {
             return true;
         }
-        if ($element.has(wym.selectedContainer()).length > 0) {
+        if ($element.has(selectedContainer).length > 0) {
             return true;
         }
     }
