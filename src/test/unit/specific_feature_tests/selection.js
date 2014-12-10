@@ -860,3 +860,158 @@ test("Two partially selected text nodes", function () {
         }
     });
 });
+
+module(
+    "selection-doesElementContainSelection",
+    {setup: prepareUnitTestModule}
+);
+
+test("Returns false when no selection", function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p>",
+        prepareFunc: function (wymeditor) {
+            wymeditor.deselect();
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            var p = wymeditor.body().childNodes[0];
+            expect(expect() + 1);
+            strictEqual(
+                wymeditor.doesElementContainSelection(p),
+                false
+            );
+        }
+    });
+});
+
+test("Returns true when non-collapsed selection is wholly in element",
+     function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p>",
+        prepareFunc: function (wymeditor) {
+            var p = wymeditor.body().childNodes[0];
+            makeTextSelection(
+                wymeditor,
+                p,
+                p,
+                0,
+                3
+            );
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            var p = wymeditor.body().childNodes[0];
+            expect(expect() + 1);
+            strictEqual(
+                wymeditor.doesElementContainSelection(p),
+                true
+            );
+        }
+    });
+});
+
+test("Returns true when non-collapsed selection is partly in element",
+     function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p><p>Bar</p>",
+        prepareFunc: function (wymeditor) {
+            var firstP = wymeditor.body().childNodes[0],
+                secondP = firstP.nextSibling;
+            makeTextSelection(
+                wymeditor,
+                firstP,
+                secondP,
+                0,
+                3
+            );
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            var firstP = wymeditor.body().childNodes[0];
+            expect(expect() + 1);
+            strictEqual(
+                wymeditor.doesElementContainSelection(firstP),
+                true
+            );
+        }
+    });
+});
+
+test("Returns false when non-collapsed selection is not in element",
+     function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p><p>Bar</p>",
+        prepareFunc: function (wymeditor) {
+            var secondP = wymeditor.body().childNodes[1];
+            makeTextSelection(
+                wymeditor,
+                secondP,
+                secondP,
+                0,
+                3
+            );
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            var firstP = wymeditor.body().childNodes[0];
+            expect(expect() + 1);
+            strictEqual(
+                wymeditor.doesElementContainSelection(firstP),
+                false
+            );
+        }
+    });
+});
+
+test("Returns true when collapsed selection is in element",
+     function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p>",
+        prepareFunc: function (wymeditor) {
+            var p = wymeditor.body().childNodes[0];
+            wymeditor.setCaretIn(p);
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            var p = wymeditor.body().childNodes[0];
+            expect(expect() + 1);
+            strictEqual(
+                wymeditor.doesElementContainSelection(p),
+                true
+            );
+        }
+    });
+});
+
+test("Returns false when collapsed selection is not in element",
+     function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p><p>Bar</p>",
+        prepareFunc: function (wymeditor) {
+            var secondP = wymeditor.body().childNodes[1];
+            wymeditor.setCaretIn(secondP);
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            var firstP = wymeditor.body().childNodes[0];
+            expect(expect() + 1);
+            strictEqual(
+                wymeditor.doesElementContainSelection(firstP),
+                false
+            );
+        }
+    });
+});
+
+test("Returns true when collapsed selection is nested in element",
+     function () {
+    manipulationTestHelper({
+        startHtml: "<ul><li>Foo</li></ul>",
+        prepareFunc: function (wymeditor) {
+            var li = wymeditor.body().childNodes[0].childNodes[0];
+            wymeditor.setCaretIn(li);
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            var p = wymeditor.body().childNodes[0];
+            expect(expect() + 1);
+            strictEqual(
+                wymeditor.doesElementContainSelection(p),
+                true
+            );
+        }
+    });
+});

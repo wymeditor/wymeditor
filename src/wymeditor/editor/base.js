@@ -3955,3 +3955,39 @@ WYMeditor.editor.prototype.$body = function () {
     body = wym.body();
     return jQuery(body);
 };
+
+/**
+    WYMeditor.editor.doesElementContainSelection
+    ============================================
+
+    Returns ``true`` if the supplied element contains at least part of the
+    selection.
+    Otherwise returns ``false``.
+*/
+WYMeditor.editor.prototype.doesElementContainSelection = function (element) {
+    var wym = this,
+        $element,
+        selectedContainer;
+
+    if (wym.hasSelection() !== true) {
+        return false;
+    }
+    $element = jQuery(element);
+
+    if (wym.selection().isCollapsed === true) {
+        selectedContainer = wym.selectedContainer();
+
+        if (element === selectedContainer) {
+            return true;
+        }
+        if ($element.has(wym.selectedContainer()).length > 0) {
+            return true;
+        }
+    }
+
+    if ($element.has(wym._getSelectedNodes()).length > 0) {
+        return true;
+    }
+
+    return false;
+};
