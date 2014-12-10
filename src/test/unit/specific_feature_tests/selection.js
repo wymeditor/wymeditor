@@ -963,10 +963,7 @@ test("Returns true when collapsed selection is in element",
      function () {
     manipulationTestHelper({
         startHtml: "<p>Foo</p>",
-        prepareFunc: function (wymeditor) {
-            var p = wymeditor.body().childNodes[0];
-            wymeditor.setCaretIn(p);
-        },
+        setCaretInSelector: "p",
         additionalAssertionsFunc: function (wymeditor) {
             var p = wymeditor.body().childNodes[0];
             expect(expect() + 1);
@@ -982,10 +979,7 @@ test("Returns false when collapsed selection is not in element",
      function () {
     manipulationTestHelper({
         startHtml: "<p>Foo</p><p>Bar</p>",
-        prepareFunc: function (wymeditor) {
-            var secondP = wymeditor.body().childNodes[1];
-            wymeditor.setCaretIn(secondP);
-        },
+        setCaretInSelector: "p:nth-child(2)",
         additionalAssertionsFunc: function (wymeditor) {
             var firstP = wymeditor.body().childNodes[0];
             expect(expect() + 1);
@@ -1001,10 +995,7 @@ test("Returns true when collapsed selection is nested in element",
      function () {
     manipulationTestHelper({
         startHtml: "<ul><li>Foo</li></ul>",
-        prepareFunc: function (wymeditor) {
-            var li = wymeditor.body().childNodes[0].childNodes[0];
-            wymeditor.setCaretIn(li);
-        },
+        setCaretInSelector: "li",
         additionalAssertionsFunc: function (wymeditor) {
             var p = wymeditor.body().childNodes[0];
             expect(expect() + 1);
