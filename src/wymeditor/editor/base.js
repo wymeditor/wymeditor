@@ -3955,3 +3955,55 @@ WYMeditor.editor.prototype.$body = function () {
     body = wym.body();
     return jQuery(body);
 };
+
+/**
+    WYMeditor.editor.doesElementContainSelection
+    ============================================
+
+    Returns ``true`` if the supplied element contains at least part of the
+    selection.
+    Otherwise returns ``false``.
+*/
+WYMeditor.editor.prototype.doesElementContainSelection = function (element) {
+    var wym = this,
+        $element,
+        selectedContainer,
+        $selectedNodes,
+        i,
+        $selectedNodeAncestors,
+        j;
+
+    if (wym.hasSelection() !== true) {
+        return false;
+    }
+    $element = jQuery(element);
+
+    if (wym.selection().isCollapsed === true) {
+        selectedContainer = wym.selectedContainer();
+
+        if (element === selectedContainer) {
+            return true;
+        }
+        if ($element.has(selectedContainer).length > 0) {
+            return true;
+        }
+    }
+
+    // For non-collapsed selections.
+    // We could have used the following, but it
+    // doesn't work in IE7 & IE8.
+    // if ($element.has(wym._getSelectedNodes()).length > 0) {
+    //     return true;
+    // }
+    $selectedNodes = jQuery(wym._getSelectedNodes());
+    for (i = 0; i < $selectedNodes.length; i++) {
+        $selectedNodeAncestors = $selectedNodes.eq(i).parents();
+        for (j = 0; j < $selectedNodeAncestors.length; j++) {
+            if ($selectedNodeAncestors[j] === element) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+};
