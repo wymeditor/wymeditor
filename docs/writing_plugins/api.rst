@@ -194,7 +194,7 @@ or not.
 ``doesElementContainSelection(element)``
 ========================================
 
-Returns ``true`` if the supplied element contains at least part of the
+Returns ``true`` if the provided element contains at least part of the
 selection.
 Otherwise returns ``false``.
 
