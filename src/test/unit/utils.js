@@ -22,26 +22,10 @@
 "use strict";
 
 if (
-    jQuery.browser.name === "msie" &&
-    jQuery.browser.versionNumber <= 8
-   ) {
-    // This browser does not properly implement
-    // `Object.prototype.defineProperty`.
-    window.noObjectDefinePropertyBrowser = true;
-} else {
-    window.noObjectDefinePropertyBrowser = null;
-}
-
-if (
-    // The external keyboard event simulation module, `keysim` requires
-    // `Object.defineProperty`
-    noObjectDefinePropertyBrowser === true ||
-    // PhantomJS fails on these tests.
     inPhantomjs === true
 ) {
-    var skipKeyboardShortcutTests = true;
-} else {
-    var skipKeyboardShortcutTests = false;
+    // PhantomJS fails on keyboard shortcut tests.
+    skipKeyboardShortcutTests = true;
 }
 
 // Regex expression shortcuts
