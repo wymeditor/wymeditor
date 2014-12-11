@@ -374,15 +374,13 @@ TableEditor.prototype.getTotalColumns = function (cells) {
 /**
  * Merge the table cells in the given selection using a colspan.
  *
- * @param sel A rangy selection object across which to row merge.
- *
  * @return {Boolean} true if changes are made, false otherwise
  */
 TableEditor.prototype.mergeRow = function () {
     var tableEditor = this,
         wym = tableEditor._wym,
         // Get all of the affected nodes in the range
-        nodes = [],
+        nodes = wym._getSelectedNodes(),
         cells,
         rootTr,
         mergeCell,
@@ -391,10 +389,7 @@ TableEditor.prototype.mergeRow = function () {
         newContent,
         combinedColspan;
 
-    nodes = wym._getSelectedNodes();
-
-    // Clear the ranges in selection so that it can be moved later
-    rangy.getIframeSelection(wym._iframe).removeAllRanges();
+    wym.deselect();
 
     // Just use the td and th nodes
     cells = jQuery(nodes).filter('td,th');
@@ -573,10 +568,9 @@ TableEditor.prototype.removeRow = function (elmnt) {
     table = wym.findUp(elmnt, 'table');
     if (
         wym.hasSelection() === true &&
-        wym.findUp(wym.selectedContainer(), "tr") === tr
+        wym.doesElementContainSelection(elmnt) === true
     ) {
-        // Selection is in the row that we are about to remove.
-        wym.selection().removeAllRanges();
+        wym.deselect();
     }
     jQuery(tr).remove();
     tableEditor.removeEmptyTable(table);
@@ -646,10 +640,9 @@ TableEditor.prototype.removeColumn = function (elmnt) {
         var $cell = jQuery(element).find("td, th").eq(tdIndex);
         if (
             wym.hasSelection() === true &&
-            $cell[0] === wym.selectedContainer()
+            wym.doesElementContainSelection($cell[0]) === true
         ) {
-            // Selection is in the element that we're about to remove.
-            wym.selection().removeAllRanges();
+            wym.deselect();
         }
         $cell.remove();
     });

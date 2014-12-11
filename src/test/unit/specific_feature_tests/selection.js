@@ -7,10 +7,11 @@
     strictEqual,
     ok,
     prepareUnitTestModule,
-    rangy
+    rangy,
+    makeTextSelection
 */
 "use strict";
-module("selection", {setup: prepareUnitTestModule});
+module("selection-hasSelection", {setup: prepareUnitTestModule});
 
 test("There is no selection (`editor.deselect()`).", function () {
     manipulationTestHelper({
@@ -38,6 +39,8 @@ test("There is a selection.", function () {
         }
     });
 });
+
+module("selection-collapsed", {setup: prepareUnitTestModule});
 
 var selTest = {};
 
@@ -175,7 +178,11 @@ selTest.setCollapsedHtml = [""
 
 // This is a data-driven test for setting and getting collapsed selections.
 // Collapsed selections are practically the caret position.
-test("Set and get collapsed selection", function () {
+// It sets caret in different possible positions in the DOM structure using
+// `.setCaretIn` and gets the container using `.selectedContainer`.
+test(
+    "DDT for setting collapsed selection using `.setCaretIn` and getting " +
+    "it using .selectedContainer", function () {
     var
         wymeditor = jQuery.wymeditors(0),
         $allNodes,
@@ -257,6 +264,449 @@ test("Set and get collapsed selection", function () {
         }
     }
 });
+
+module("selection-noncollapsed", {setup: prepareUnitTestModule});
+
+test("No selection returns false", function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p>",
+        prepareFunc: function (wymeditor) {
+            wymeditor.deselect();
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 1);
+            strictEqual(
+                wymeditor.selectedContainer(),
+                false
+            );
+        }
+    });
+});
+
+test("Within one element returns the element", function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p>",
+        prepareFunc: function (wymeditor) {
+            var p = wymeditor.body().childNodes[0];
+            makeTextSelection(
+                wymeditor,
+                p,
+                p,
+                0,
+                3
+            );
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 1);
+            strictEqual(
+                wymeditor.selectedContainer().childNodes[0].data,
+                "Foo"
+            );
+        }
+    });
+});
+
+test("Within one element returns the element; partial selection", function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p>",
+        prepareFunc: function (wymeditor) {
+            var p = wymeditor.body().childNodes[0];
+            makeTextSelection(
+                wymeditor,
+                p,
+                p,
+                1,
+                3
+            );
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 1);
+            strictEqual(
+                wymeditor.selectedContainer().childNodes[0].data,
+                "Foo"
+            );
+        }
+    });
+});
+
+test("Within a nested element returns the nested element", function () {
+    manipulationTestHelper({
+        startHtml: "<p><i>Foo</i> bar</p>",
+        prepareFunc: function (wymeditor) {
+            var i = wymeditor.body().childNodes[0].childNodes[0];
+            makeTextSelection(
+                wymeditor,
+                i,
+                i,
+                0,
+                3
+            );
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 1);
+            strictEqual(
+                wymeditor.selectedContainer().childNodes[0].data,
+                "Foo"
+            );
+        }
+    });
+});
+
+test(
+    "Within a nested element returns the nested element; partial selection",
+    function () {
+        manipulationTestHelper({
+            startHtml: "<p><i>Foo</i> bar</p>",
+            prepareFunc: function (wymeditor) {
+                var i = wymeditor.body().childNodes[0].childNodes[0];
+                makeTextSelection(
+                    wymeditor,
+                    i,
+                    i,
+                    1,
+                    3
+                );
+            },
+            additionalAssertionsFunc: function (wymeditor) {
+                expect(expect() + 1);
+                strictEqual(
+                    wymeditor.selectedContainer().childNodes[0].data,
+                    "Foo"
+                );
+            }
+        });
+    }
+);
+
+test(
+    "Within an element, partially in its child element returns the element",
+    function () {
+        manipulationTestHelper({
+            startHtml: "<ul><li><i>Foo</i> bar</li></ul>",
+            prepareFunc: function (wymeditor) {
+                var li = wymeditor.body().childNodes[0].childNodes[0],
+                    i = li.childNodes[0];
+                makeTextSelection(
+                    wymeditor,
+                    i,
+                    li,
+                    0,
+                    2
+                );
+            },
+            additionalAssertionsFunc: function (wymeditor) {
+                expect(expect() + 1);
+                strictEqual(
+                    wymeditor.selectedContainer().tagName.toLowerCase(),
+                    "li"
+                );
+            }
+        });
+    }
+);
+
+test(
+    "Within an element, partially in its child element returns the element" +
+        "; partial selection",
+    function () {
+        manipulationTestHelper({
+            startHtml: "<p><i>Foo</i> bar</p>",
+            prepareFunc: function (wymeditor) {
+                var p = wymeditor.body().childNodes[0],
+                    i = p.childNodes[0];
+                makeTextSelection(
+                    wymeditor,
+                    i,
+                    p,
+                    1,
+                    2
+                );
+            },
+            additionalAssertionsFunc: function (wymeditor) {
+                expect(expect() + 1);
+                strictEqual(
+                    wymeditor.selectedContainer().tagName.toLowerCase(),
+                    "p"
+                );
+            }
+        });
+    }
+);
+
+test("From one root container to another returns false", function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p><p>Bar</p>",
+        prepareFunc: function (wymeditor) {
+            var body = wymeditor.body(),
+                firstP = body.childNodes[0],
+                secondP = body.childNodes[1];
+            makeTextSelection(
+                wymeditor,
+                firstP,
+                secondP,
+                0,
+                3
+            );
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 1);
+            strictEqual(wymeditor.selectedContainer(), false);
+        }
+    });
+});
+
+test("Across root containers returns false; partial selection", function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p><p>Bar</p>",
+        prepareFunc: function (wymeditor) {
+            var body = wymeditor.body(),
+                firstP = body.childNodes[0],
+                secondP = body.childNodes[1];
+            makeTextSelection(
+                wymeditor,
+                firstP,
+                secondP,
+                1,
+                2
+            );
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 1);
+            strictEqual(wymeditor.selectedContainer(), false);
+        }
+    });
+});
+
+test(
+    "In a root container, from one inline element to another, across text " +
+        "between them, returns false",
+    function () {
+        manipulationTestHelper({
+            startHtml: "<p><i>Foo</i> and <i>Bar</i></p>",
+            prepareFunc: function (wymeditor) {
+                var p = wymeditor.body().childNodes[0],
+                    firstI = p.childNodes[0],
+                    secondI = p.childNodes[2];
+                makeTextSelection(
+                    wymeditor,
+                    firstI,
+                    secondI,
+                    0,
+                    3
+                );
+            },
+            additionalAssertionsFunc: function (wymeditor) {
+                expect(expect() + 1);
+                strictEqual(wymeditor.selectedContainer(), false);
+            }
+        });
+    }
+);
+
+test(
+    "In a root container, from one inline element to the next " +
+        "returns false",
+    function () {
+        manipulationTestHelper({
+            startHtml: "<p><i>Foo</i><sup>Bar</sup></p>",
+            prepareFunc: function (wymeditor) {
+                var p = wymeditor.body().childNodes[0],
+                    i = p.childNodes[0],
+                    superscript = p.childNodes[1];
+                makeTextSelection(
+                    wymeditor,
+                    i,
+                    superscript,
+                    0,
+                    3
+                );
+            },
+            additionalAssertionsFunc: function (wymeditor) {
+                expect(expect() + 1);
+                strictEqual(wymeditor.selectedContainer(), false);
+            }
+        });
+    }
+);
+
+test(
+    "Inside ``li`` returns that ``li``",
+    function () {
+        manipulationTestHelper({
+            startHtml: "<ol><li>Foo</li></ol>",
+            prepareFunc: function (wymeditor) {
+                var li = wymeditor.body().childNodes[0].childNodes[0];
+                makeTextSelection(
+                    wymeditor,
+                    li,
+                    li,
+                    0,
+                    3
+                );
+            },
+            additionalAssertionsFunc: function (wymeditor) {
+                expect(expect() + 1);
+                strictEqual(
+                    wymeditor.selectedContainer().tagName.toLowerCase(),
+                    "li"
+                );
+            }
+        });
+    }
+);
+
+test(
+    "From ``li`` to descendant table cell returns the ``li``",
+    function () {
+        manipulationTestHelper({
+            startHtml: [""
+                , "<ol><li>"
+                    , "Foo and the following:"
+                    , "<table><tbody><tr><td>Bar</td></tr></tbody></table>"
+                , "</li></ol>"
+            ].join(""),
+            prepareFunc: function (wymeditor) {
+                var $li = wymeditor.$body().find("li"),
+                    $td = $li.find("td");
+                makeTextSelection(
+                    wymeditor,
+                    $li[0],
+                    $td[0],
+                    0,
+                    3
+                );
+            },
+            additionalAssertionsFunc: function (wymeditor) {
+                expect(expect() + 1);
+                strictEqual(
+                    wymeditor.selectedContainer().tagName.toLowerCase(),
+                    "li"
+                );
+            }
+        });
+    }
+);
+
+test(
+    "From ``li`` to descendant ``li`` returns the ancestor ``li``",
+    function () {
+        manipulationTestHelper({
+            startHtml: [""
+                , "<ol><li>"
+                    , "Foo and the following:"
+                    , "<ol><li>Bar</li></ol>"
+                , "</li></ol>"
+            ].join(""),
+            prepareFunc: function (wymeditor) {
+                var li = wymeditor.body().childNodes[0].childNodes[0],
+                    nestedLi = li.childNodes[1].childNodes[0];
+                makeTextSelection(
+                    wymeditor,
+                    li,
+                    nestedLi,
+                    0,
+                    3
+                );
+            },
+            additionalAssertionsFunc: function (wymeditor) {
+                expect(expect() + 2);
+                strictEqual(
+                    wymeditor.selectedContainer().tagName.toLowerCase(),
+                    "li"
+                );
+                strictEqual(
+                    wymeditor.selectedContainer().childNodes[1].childNodes[0]
+                        .tagName.toLowerCase(),
+                    "li"
+                );
+            }
+        });
+    }
+);
+
+test(
+    "Inside ``td`` that is within a list returns that ``td``",
+    function () {
+        manipulationTestHelper({
+            startHtml: [""
+                , "<ol><li>"
+                    , "<table><tbody><tr><td>Bar</td></tr></tbody></table>"
+                , "</li></ol>"
+            ].join(""),
+            prepareFunc: function (wymeditor) {
+                var td = wymeditor.$body().find("td")[0];
+                makeTextSelection(
+                    wymeditor,
+                    td,
+                    td,
+                    0,
+                    3
+                );
+            },
+            additionalAssertionsFunc: function (wymeditor) {
+                expect(expect() + 1);
+                strictEqual(
+                    wymeditor.selectedContainer().tagName.toLowerCase(),
+                    "td"
+                );
+            }
+        });
+    }
+);
+
+test(
+    "Inside ``td``returns that ``td``",
+    function () {
+        manipulationTestHelper({
+            startHtml: "<table><tbody><tr><td>Bar</td></tr></tbody></table>",
+            prepareFunc: function (wymeditor) {
+                var td = wymeditor.$body().find("td")[0];
+                makeTextSelection(
+                    wymeditor,
+                    td,
+                    td,
+                    0,
+                    3
+                );
+            },
+            additionalAssertionsFunc: function (wymeditor) {
+                expect(expect() + 1);
+                strictEqual(
+                    wymeditor.selectedContainer().tagName.toLowerCase(),
+                    "td"
+                );
+            }
+        });
+    }
+);
+
+test(
+    "Within an element, partially in its child element; twice nested;" +
+    "returns the element",
+    function () {
+        manipulationTestHelper({
+            startHtml: "<p><i><sup>Foo</sup></i> bar</p>",
+            prepareFunc: function (wymeditor) {
+                var p = wymeditor.body().childNodes[0],
+                    sup = p.childNodes[0].childNodes[0];
+                makeTextSelection(
+                    wymeditor,
+                    sup,
+                    p,
+                    1,
+                    2
+                );
+            },
+            additionalAssertionsFunc: function (wymeditor) {
+                expect(expect() + 1);
+                strictEqual(
+                    wymeditor.selectedContainer().tagName.toLowerCase(),
+                    "p"
+                );
+            }
+        });
+    }
+);
 
 module("selection-_getSelectedNodes", {setup: prepareUnitTestModule});
 // `_getSelectedNodes` should be tested much more comprehensively than these 6
@@ -406,6 +856,152 @@ test("Two partially selected text nodes", function () {
             strictEqual(
                 selectedNodes[3].data,
                 "Bar"
+            );
+        }
+    });
+});
+
+module(
+    "selection-doesElementContainSelection",
+    {setup: prepareUnitTestModule}
+);
+
+test("Returns false when no selection", function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p>",
+        prepareFunc: function (wymeditor) {
+            wymeditor.deselect();
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            var p = wymeditor.body().childNodes[0];
+            expect(expect() + 1);
+            strictEqual(
+                wymeditor.doesElementContainSelection(p),
+                false
+            );
+        }
+    });
+});
+
+test("Returns true when non-collapsed selection is wholly in element",
+     function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p>",
+        prepareFunc: function (wymeditor) {
+            var p = wymeditor.body().childNodes[0];
+            makeTextSelection(
+                wymeditor,
+                p,
+                p,
+                0,
+                3
+            );
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            var p = wymeditor.body().childNodes[0];
+            expect(expect() + 1);
+            strictEqual(
+                wymeditor.doesElementContainSelection(p),
+                true
+            );
+        }
+    });
+});
+
+test("Returns true when non-collapsed selection is partly in element",
+     function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p><p>Bar</p>",
+        prepareFunc: function (wymeditor) {
+            var firstP = wymeditor.body().childNodes[0],
+                secondP = firstP.nextSibling;
+            makeTextSelection(
+                wymeditor,
+                firstP,
+                secondP,
+                0,
+                3
+            );
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            var firstP = wymeditor.body().childNodes[0];
+            expect(expect() + 1);
+            strictEqual(
+                wymeditor.doesElementContainSelection(firstP),
+                true
+            );
+        }
+    });
+});
+
+test("Returns false when non-collapsed selection is not in element",
+     function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p><p>Bar</p>",
+        prepareFunc: function (wymeditor) {
+            var secondP = wymeditor.body().childNodes[1];
+            makeTextSelection(
+                wymeditor,
+                secondP,
+                secondP,
+                0,
+                3
+            );
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            var firstP = wymeditor.body().childNodes[0];
+            expect(expect() + 1);
+            strictEqual(
+                wymeditor.doesElementContainSelection(firstP),
+                false
+            );
+        }
+    });
+});
+
+test("Returns true when collapsed selection is in element",
+     function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p>",
+        setCaretInSelector: "p",
+        additionalAssertionsFunc: function (wymeditor) {
+            var p = wymeditor.body().childNodes[0];
+            expect(expect() + 1);
+            strictEqual(
+                wymeditor.doesElementContainSelection(p),
+                true
+            );
+        }
+    });
+});
+
+test("Returns false when collapsed selection is not in element",
+     function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p><p>Bar</p>",
+        setCaretInSelector: "p:nth-child(2)",
+        additionalAssertionsFunc: function (wymeditor) {
+            var firstP = wymeditor.body().childNodes[0];
+            expect(expect() + 1);
+            strictEqual(
+                wymeditor.doesElementContainSelection(firstP),
+                false
+            );
+        }
+    });
+});
+
+test("Returns true when collapsed selection is nested in element",
+     function () {
+    manipulationTestHelper({
+        startHtml: "<ul><li>Foo</li></ul>",
+        setCaretInSelector: "li",
+        additionalAssertionsFunc: function (wymeditor) {
+            var p = wymeditor.body().childNodes[0];
+            expect(expect() + 1);
+            strictEqual(
+                wymeditor.doesElementContainSelection(p),
+                true
             );
         }
     });

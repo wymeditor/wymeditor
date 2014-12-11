@@ -238,7 +238,10 @@ WYMeditor.editor.prototype._assignWymDoc = function () {
 WYMeditor.editor.prototype._isDesignModeOn = function () {
     var wym = this;
 
-    if (wym._doc.designMode === "On") {
+    if (
+        typeof wym._doc.designMode === "string" &&
+        wym._doc.designMode.toLowerCase() === "on"
+    ) {
         return true;
     }
     return false;
@@ -261,7 +264,7 @@ WYMeditor.editor.prototype._isDesignModeOn = function () {
 */
 WYMeditor.editor.prototype._onEditorIframeLoad = function (wym) {
     wym._assignWymDoc();
-    wym._doc.designMode = "On";
+    wym._enableDesignModeOnDocument();
     wym._afterDesignModeOn();
 };
 
@@ -498,6 +501,36 @@ WYMeditor.editor.prototype._bindUIEvents = function () {
             wym.update();
         }
     );
+
+    // This may recover an unexpected shut down of `designMode`.
+    wym.$body().bind("focus", function () {
+        if (wym._isDesignModeOn() !== true) {
+            wym._enableDesignModeOnDocument();
+        }
+    });
+};
+
+/**
+    WYMeditor.editor._enableDesignModeOnDocument
+    ============================================
+
+    Enables `designMode` on the document, if it is not already enabled.
+*/
+WYMeditor.editor.prototype._enableDesignModeOnDocument = function () {
+    var wym = this;
+
+    if (wym._isDesignModeOn()) {
+        throw "Expected `designMode` to be off.";
+    }
+
+    try {
+        wym._doc.designMode = "On";
+    } catch (e) {
+        // Bail out gracefully if this went wrong.
+    }
+    if (typeof wym._designModeQuirks === "function") {
+        wym._designModeQuirks();
+    }
 };
 
 /**
@@ -534,6 +567,45 @@ WYMeditor.editor.prototype.vanish = function () {
     for (i = 0; i < instances.length; i++) {
         instances[i]._index = i;
     }
+};
+
+WYMeditor.editor.prototype._exec = function (cmd, param) {
+    var wym = this,
+        $span;
+
+    if (wym.selectedContainer() === false) {
+        return false;
+    }
+
+    if (
+        wym.selectedContainer() === wym.body() &&
+        // These are the two commands that are allowed directly in the body.
+        cmd !== WYMeditor.EXEC_COMMANDS.INSERT_IMAGE &&
+        cmd !== WYMeditor.EXEC_COMMANDS.FORMAT_BLOCK
+    ) {
+        return false;
+    }
+
+    if (param) {
+        wym._doc.execCommand(cmd, '', param);
+    } else {
+        wym._doc.execCommand(cmd, '', null);
+    }
+
+    $span = jQuery(wym.selectedContainer()).filter("span").not("[id]");
+    if ($span.length === 0) {
+        return true;
+    }
+    if (
+        $span.attr("class") === "" &&
+        $span.attr("style") === "font-weight: normal;" ||
+        $span.attr("class").toLowerCase() === "apple-style-span"
+    ) {
+        // An undesireable `span` was created. WebKit & Blink do this.
+        $span.contents().unwrap();
+    }
+
+    return true;
 };
 
 /**
@@ -655,24 +727,16 @@ WYMeditor.editor.prototype.exec = function (cmd) {
             }
         });
         if (!custom_run) {
-            wym._exec(cmd);
-            wym.registerChange();
+            if (
+                // Deligate all other commands to `_exec`
+                wym._exec(cmd) === true
+            ) {
+                wym.registerChange();
+            }
         }
         break;
     }
 
-};
-
-/**
-    WYMeditor.editor._removeSelectionBoundaries
-    ===========================================
-
-    Removes Rangy selection boundary `span`s from the document.
-*/
-WYMeditor.editor.prototype._removeSelectionBoundaries = function () {
-    var wym = this;
-
-    wym.$body().find('span.rangySelectionBoundary').remove();
 };
 
 /**
@@ -779,37 +843,58 @@ WYMeditor.editor.prototype.get$CommonParent = function (one, two) {
     WYMeditor.editor.selectedContainer
     ==================================
 
-    Returns the selection's container or false if there is no selection.
+    Get the selected container.
 
-    Not to be confused with `.getRootContainer`, which gets the
-    selection's root container.
+    * If no selection, returns `false`.
+    * If selection starts and ends in the same element, returns that element.
+    * If an element that contains one end of the selection is ancestor to the
+      element that contains the other end, return that ancestor element.
+    * Otherwise, returns `false`.
+
+    For example (``|`` marks selection ends):
+
+        <p>|Foo <i>bar|</i></p>
+
+    The ``p`` is returned.
+
+        <p>Foo <i>|bar|</i></p>
+
+    The ``i`` is returned.
 */
 WYMeditor.editor.prototype.selectedContainer = function () {
     var wym = this,
-        selection = wym.selection(),
+        selection,
+        $anchor,
+        $focus,
         $selectedContainer;
 
-    if (selection.focusNode === null || selection.anchorNode === null) {
+    if (wym.hasSelection() !== true) {
         return false;
     }
 
-    if (
-        selection.anchorNode === selection.focusNode &&
-        selection.anchorNode.nodeType === WYMeditor.NODE_TYPE.ELEMENT
-    ) {
-        $selectedContainer = jQuery(selection.anchorNode);
-    } else {
-        $selectedContainer = wym.get$CommonParent(
-            selection.anchorNode,
-            selection.focusNode
-        );
+    selection = wym.selection();
+    $anchor = jQuery(selection.anchorNode);
+    $focus = jQuery(selection.focusNode);
+
+    if ($anchor[0].nodeType === WYMeditor.NODE_TYPE.TEXT) {
+        $anchor = $anchor.parent();
     }
 
-    $selectedContainer = $selectedContainer.parents().addBack()
-        .not(WYMeditor.NON_CONTAINING_ELEMENTS.join(',')).last();
+    if ($focus[0].nodeType === WYMeditor.NODE_TYPE.TEXT) {
+        $focus = $focus.parent();
+    }
+
+    if ($anchor[0] === $focus[0]) {
+        return $anchor[0];
+    }
+
+    $selectedContainer = $anchor.has($focus);
+    if ($selectedContainer.length === 0) {
+        $selectedContainer = $focus.has($anchor);
+    }
 
     if ($selectedContainer.length === 0) {
-        throw "Expected to find the selected container. This should not occur.";
+        return false;
     }
 
     return $selectedContainer[0];
@@ -1319,18 +1404,12 @@ WYMeditor.editor.prototype.getCurrentState = function () {
     var wym = this,
         state = {},
         selection,
-        savedSelection,
         wymIframeWindow = wym._iframe.contentWindow;
 
     selection = wym.selection();
 
     if (wym.hasSelection() === true) {
-        savedSelection = rangy.saveSelection(wymIframeWindow);
-        // These refer to the window and the document and can't be processed by
-        // the `object-history` module that is used by the `UndoRedo` module.
-        delete savedSelection.win;
-        delete savedSelection.doc;
-        state.savedSelection = savedSelection;
+        state.savedSelection = rangy.saveSelection(wymIframeWindow);
     }
 
     state.html = wym.rawHtml();
@@ -1340,8 +1419,18 @@ WYMeditor.editor.prototype.getCurrentState = function () {
         // which are markers for the selection, were placed, and that references
         // to these markers were saved in `state.savedselection`. The markers
         // were saved in `state.html`, along with the whole document, as HTML.
-        // Remove them from the document, for there is no use for them in it.
-        wym._removeSelectionBoundaries();
+        // Restoring the selection removes the markers and restores the
+        // selection to almost exactly as it was before it was saved.
+        rangy.restoreSelection(state.savedSelection);
+        // This is for time-travel, so selection is considered not to be
+        // restored. The markers may be created again from the saved HTML. In
+        // that case, leaving this value at `true` would mean that
+        // `rangy.restoreSelection` will refuse to restore this selection.
+        state.savedSelection.restored = false;
+        // These refer to the window and the document and can't be processed by
+        // the `object-history` module that is used by the `UndoRedo` module.
+        delete state.savedSelection.win;
+        delete state.savedSelection.doc;
     }
 
     return state;
@@ -1736,7 +1825,7 @@ WYMeditor.editor.prototype.link = function (attrs) {
         $a;
 
     if (jQuery.isPlainObject(attrs) !== true) {
-        throw "Expected a pain object.";
+        throw "Expected a plain object.";
     }
 
     if (
@@ -3179,7 +3268,11 @@ WYMeditor.editor.prototype.indent = function () {
 
     // First, make sure this list is properly structured
     manipulationFunc = function () {
-        var selectedBlock = wym.selectedContainer(),
+        var selection = wym.selection(),
+            selectedBlock = wym.get$CommonParent(
+                selection.anchorNode,
+                selection.focusNode
+            )[0],
             potentialListBlock = wym.findUp(
                 selectedBlock,
                 ['ol', 'ul', 'li']
@@ -3241,7 +3334,11 @@ WYMeditor.editor.prototype.outdent = function () {
 
     // First, make sure this list is properly structured
     manipulationFunc = function () {
-        var selectedBlock = wym.selectedContainer(),
+        var selection = wym.selection(),
+            selectedBlock = wym.get$CommonParent(
+                selection.anchorNode,
+                selection.focusNode
+            )[0],
             potentialListBlock = wym.findUp(
                 selectedBlock,
                 ['ol', 'ul', 'li']
@@ -3933,4 +4030,56 @@ WYMeditor.editor.prototype.$body = function () {
 
     body = wym.body();
     return jQuery(body);
+};
+
+/**
+    WYMeditor.editor.doesElementContainSelection
+    ============================================
+
+    Returns ``true`` if the supplied element contains at least part of the
+    selection.
+    Otherwise returns ``false``.
+*/
+WYMeditor.editor.prototype.doesElementContainSelection = function (element) {
+    var wym = this,
+        $element,
+        selectedContainer,
+        $selectedNodes,
+        i,
+        $selectedNodeAncestors,
+        j;
+
+    if (wym.hasSelection() !== true) {
+        return false;
+    }
+    $element = jQuery(element);
+
+    if (wym.selection().isCollapsed === true) {
+        selectedContainer = wym.selectedContainer();
+
+        if (element === selectedContainer) {
+            return true;
+        }
+        if ($element.has(selectedContainer).length > 0) {
+            return true;
+        }
+    }
+
+    // For non-collapsed selections.
+    // We could have used the following, but it
+    // doesn't work in IE7 & IE8.
+    // if ($element.has(wym._getSelectedNodes()).length > 0) {
+    //     return true;
+    // }
+    $selectedNodes = jQuery(wym._getSelectedNodes());
+    for (i = 0; i < $selectedNodes.length; i++) {
+        $selectedNodeAncestors = $selectedNodes.eq(i).parents();
+        for (j = 0; j < $selectedNodeAncestors.length; j++) {
+            if ($selectedNodeAncestors[j] === element) {
+                return true;
+            }
+        }
+    }
+
+    return false;
 };

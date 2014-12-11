@@ -33,7 +33,9 @@ WYMeditor.WymClassTridentPre7.prototype._docEventQuirks = function () {
     wym._doc.onbeforedeactivate = function () {
         wym._saveCaret();
     };
-    jQuery(wym._doc).bind('keyup', wym._keyup);
+    jQuery(wym._doc).bind('keyup', function (evt) {
+        wym._keyup(evt);
+    });
     wym._doc.onkeyup = function () {
         wym._saveCaret();
     };
@@ -65,15 +67,6 @@ WYMeditor.WymClassTridentPre7.prototype._uiQuirks = function () {
     var wym = this;
     if (jQuery.browser.versionNumber === 8) {
         wym._setButtonsUnselectable();
-    }
-};
-
-WYMeditor.WymClassTridentPre7.prototype._exec = function (cmd, param) {
-    var wym = this;
-    if (param) {
-        wym._doc.execCommand(cmd, false, param);
-    } else {
-        wym._doc.execCommand(cmd);
     }
 };
 
@@ -169,8 +162,8 @@ WYMeditor.WymClassTridentPre7.prototype.unwrap = function () {
 };
 
 WYMeditor.WymClassTridentPre7.prototype._keyup = function (evt) {
-    var doc = this,
-        wym = WYMeditor.INSTANCES[doc.title],
+    var wym = this,
+        doc = wym._doc,
         container,
         defaultRootContainer,
         notValidRootContainers,

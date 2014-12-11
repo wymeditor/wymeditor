@@ -198,11 +198,14 @@ jQuery.extend(WYMeditor, {
 
     // Commands for the `editor.exec` method
     EXEC_COMMANDS: {
-        // Wrap text in element
+        // Inline wrapping element toggles
         BOLD                : "Bold",
         ITALIC              : "Italic",
-        CREATE_LINK         : "CreateLink",
+        SUPERSCRIPT         : "Superscript",
+        SUBSCRIPT           : "Subscript",
         // Other manipulations
+        CREATE_LINK         : "CreateLink",
+        UNLINK              : "Unlink",
         FORMAT_BLOCK        : "FormatBlock",
         INSERT_IMAGE        : "InsertImage",
         INSERT_TABLE        : "InsertTable",

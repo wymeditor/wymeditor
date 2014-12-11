@@ -11,71 +11,9 @@ WYMeditor.WymClassWebKit = function (wym) {
 WYMeditor.WymClassWebKit.prototype._docEventQuirks = function () {
     var wym = this;
 
-    jQuery(wym._doc).bind("keyup", wym._keyup);
-};
-
-WYMeditor.WymClassWebKit.prototype._exec = function (cmd, param) {
-    var wym = this,
-        container,
-        $container,
-        tagName,
-        structureRules,
-        noClassOrAppleSpan;
-
-    if (!wym.selectedContainer()) {
-        return false;
-    }
-
-    if (param) {
-        wym._doc.execCommand(cmd, '', param);
-    } else {
-        wym._doc.execCommand(cmd, '', null);
-    }
-
-    container = wym.selectedContainer();
-    if (container) {
-        $container = jQuery(container);
-        tagName = container.tagName.toLowerCase();
-
-        // Wrap this content in the default root container if we're in the body
-        if (
-            // Images are allowed in the body.
-            cmd !== WYMeditor.EXEC_COMMANDS.INSERT_IMAGE &&
-            tagName === WYMeditor.BODY
-        ) {
-            structureRules = wym.documentStructureManager.structureRules;
-            wym._exec(
-                WYMeditor.EXEC_COMMANDS.FORMAT_BLOCK,
-                structureRules.defaultRootContainer
-            );
-            wym.prepareDocForEditing();
-        }
-
-        // If the cmd was FORMAT_BLOCK, check if the block was moved outside
-        // the body after running the command. If it was moved outside, move it
-        // back inside the body. This was added because running FORMAT_BLOCK on
-        // an image inserted outside of a container was causing it to be moved
-        // outside the body (See issue #400).
-        if (cmd === WYMeditor.EXEC_COMMANDS.FORMAT_BLOCK &&
-            $container.siblings('body.wym_iframe').length) {
-
-            $container.siblings('body.wym_iframe').append(container);
-        }
-
-        // If the container is a span, strip it out if it doesn't have a class
-        // but has an inline style of 'font-weight: normal;'.
-        if (tagName === 'span') {
-            noClassOrAppleSpan = !$container.attr('class') ||
-                $container.attr('class').toLowerCase() === 'apple-style-span';
-            if (noClassOrAppleSpan &&
-                $container.attr('style') === 'font-weight: normal;') {
-
-                $container.contents().unwrap();
-            }
-        }
-    }
-
-    return true;
+    jQuery(wym._doc).bind("keyup", function (evt) {
+        wym._keyup(evt);
+    });
 };
 
 // A `div` can be created by breaking out of a list in some cases. Issue #549.
@@ -184,8 +122,7 @@ WYMeditor.WymClassWebKit.prototype
 
 // Keyup handler, mainly used for cleanups
 WYMeditor.WymClassWebKit.prototype._keyup = function (evt) {
-    var doc = this,
-        wym = WYMeditor.INSTANCES[doc.title],
+    var wym = this,
         container,
         defaultRootContainer,
         notValidRootContainers,

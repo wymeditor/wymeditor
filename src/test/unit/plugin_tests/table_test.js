@@ -1,82 +1,49 @@
 /* jshint maxlen: 90 */
 /* global
-SKIP_KNOWN_FAILING_TESTS, prepareUnitTestModule,
-wymEqual, moveSelector, simulateKey, makeSelection, normalizeHtml,
-ok, test, expect, deepEqual */
+    SKIP_KNOWN_FAILING_TESTS,
+    prepareUnitTestModule,
+    wymEqual,
+    moveSelector,
+    simulateKey,
+    makeSelection,
+    makeTextSelection,
+    normalizeHtml,
+    ok,
+    test,
+    expect,
+    deepEqual,
+    manipulationTestHelper,
+    strictEqual
+*/
 "use strict";
 
-/**
- * Run a table modification and verify the results.
- *
- * @param selector jQuery selector for the element to modify (the first match
- *                 is used by default)
- * @param action A string with either 'add' or 'remove'
- * @param type A string with either 'row' or 'column'
- * @param initialHtml The starting HTML
- * @param expectedHtml The expected HTML result
- * @param indexInSelector The eq index of the desired match to use within the
- *                        passed selector (0 by default)
- */
-function testTable(
-    selector, action, type, initialHtml, expectedHtml, indexInSelector
-) {
-    var wymeditor = jQuery.wymeditors(0),
-        $body,
-        actionElmnt;
-
-    wymeditor.rawHtml(initialHtml);
-
-    $body = wymeditor.$body();
-    indexInSelector = indexInSelector || 0;
-    actionElmnt = $body.find(selector)[indexInSelector];
-
-    if (action === 'add') {
-        if (type === 'row') {
-            wymeditor.tableEditor.addRow(actionElmnt);
-        } else {
-            wymeditor.tableEditor.addColumn(actionElmnt);
+function testTableTab(startHtml, startSelector, endSelector) {
+    manipulationTestHelper({
+        startHtml: startHtml,
+        manipulationFunc: function (wymeditor) {
+            var startElement = wymeditor.$body().find(startSelector)[0];
+            expect(expect() + 1);
+            ok(startElement !== null, "Selection start element exists");
+            moveSelector(wymeditor, startElement);
+            simulateKey(WYMeditor.KEY_CODE.TAB, startElement);
+        },
+        expectedResultHtml: startHtml,
+        additionalAssertionsFunc: function (wymeditor) {
+            var actualSelectedContainer = wymeditor.selectedContainer(),
+                expectedSelectedContainer;
+            expect(expect() + 1);
+            if (endSelector === null) {
+                strictEqual(actualSelectedContainer, null);
+                return;
+            }
+            // In some browsers the selection will be in a child span. That seems ok.
+            if (actualSelectedContainer.tagName.toLowerCase() === "span") {
+                actualSelectedContainer = actualSelectedContainer.parentNode;
+            }
+            expectedSelectedContainer = wymeditor.$body().find(endSelector)[0];
+            strictEqual(actualSelectedContainer, expectedSelectedContainer);
         }
-    } else if (action === 'remove') {
-        if (type === 'row') {
-            wymeditor.tableEditor.removeRow(actionElmnt);
-        } else {
-            wymeditor.tableEditor.removeColumn(actionElmnt);
-        }
-    }
-
-    wymEqual(wymeditor, expectedHtml);
-}
-
-function testTableTab(initialHtml, startSelector, endSelector) {
-    var wymeditor = jQuery.wymeditors(0),
-        $body,
-        startElmnt,
-        actualSelection,
-        expectedSelection;
-    wymeditor.rawHtml(initialHtml);
-
-    $body = wymeditor.$body();
-    startElmnt = $body.find(startSelector)[0];
-    ok(startElmnt !== null, "Selection start element exists");
-    moveSelector(wymeditor, startElmnt);
-
-    simulateKey(WYMeditor.KEY_CODE.TAB, startElmnt);
-
-    actualSelection = wymeditor.selectedContainer();
-    // In some browsers the selection will be in a child span. That seems ok.
-    if (actualSelection.tagName.toLowerCase() === 'span') {
-        actualSelection = actualSelection.parentNode;
-    }
-    if (endSelector === null) {
-        deepEqual(actualSelection, null);
-    } else {
-        expectedSelection = $body.find(endSelector);
-        if (expectedSelection.length !== 0) {
-            expectedSelection = expectedSelection[0];
-        }
-
-        deepEqual(actualSelection, expectedSelection);
-    }
+    });
 }
 
 /**
@@ -737,179 +704,708 @@ var removedColumn3And2Html = String() +
 
 module("table- add/remove", {setup: prepareUnitTestModule});
 test("no-op on non-table elements", function () {
-    expect(4);
 
-    testTable('#p_1', 'add', 'column', basicWithPHtml, basicWithPHtml);
-    testTable('#p_1', 'remove', 'column', basicWithPHtml, basicWithPHtml);
-    testTable('#p_1', 'add', 'row', basicWithPHtml, basicWithPHtml);
-    testTable('#p_1', 'remove', 'row', basicWithPHtml, basicWithPHtml);
+    manipulationTestHelper({
+        startHtml: basicWithPHtml,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#p_1')[0];
+            wymeditor.tableEditor.addColumn(actionElement);
+        },
+        expectedResultHtml: basicWithPHtml,
+        testUndoRedo: true
+    });
+
+    manipulationTestHelper({
+        startHtml: basicWithPHtml,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#p_1')[0];
+            wymeditor.tableEditor.removeColumn(actionElement);
+        },
+        expectedResultHtml: basicWithPHtml,
+        testUndoRedo: true
+    });
+
+    manipulationTestHelper({
+        startHtml: basicWithPHtml,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#p_1')[0];
+            wymeditor.tableEditor.addRow(actionElement);
+        },
+        expectedResultHtml: basicWithPHtml,
+        testUndoRedo: true
+    });
+
+    manipulationTestHelper({
+        startHtml: basicWithPHtml,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#p_1')[0];
+            wymeditor.tableEditor.removeRow(actionElement);
+        },
+        expectedResultHtml: basicWithPHtml,
+        testUndoRedo: true
+    });
 });
 
 test("Column mid column", function () {
-    expect(2);
 
-    testTable('#td_3_2', 'add', 'column', basicTableHtml, addColumnTd32Html);
-    testTable('#td_3_2 + td', 'remove', 'column', addColumnTd32Html, basicTableHtml);
+    manipulationTestHelper({
+        startHtml: basicTableHtml,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#td_3_2')[0];
+            wymeditor.tableEditor.addColumn(actionElement);
+        },
+        expectedResultHtml: addColumnTd32Html,
+        testUndoRedo: true
+    });
+
+    manipulationTestHelper({
+        startHtml: addColumnTd32Html,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#td_3_2 + td')[0];
+            wymeditor.tableEditor.removeColumn(actionElement);
+        },
+        expectedResultHtml: basicTableHtml,
+        testUndoRedo: true
+    });
 });
 
 test("Column from span", function () {
-    expect(2);
 
-    testTable('#span_2_1', 'add', 'column', basicTableHtml, addColumnSpan21Html);
-    testTable('#td_2_1 + td', 'remove', 'column', addColumnSpan21Html, basicTableHtml);
+    manipulationTestHelper({
+        startHtml: basicTableHtml,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#span_2_1')[0];
+            wymeditor.tableEditor.addColumn(actionElement);
+        },
+        expectedResultHtml: addColumnSpan21Html,
+        testUndoRedo: true
+    });
+
+    manipulationTestHelper({
+        startHtml: addColumnSpan21Html,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#td_2_1 + td')[0];
+            wymeditor.tableEditor.removeColumn(actionElement);
+        },
+        expectedResultHtml: basicTableHtml,
+        testUndoRedo: true
+    });
 });
 
 test("Row end row", function () {
-    expect(2);
 
-    testTable('#td_3_2', 'add', 'row', basicTableHtml, addRowTd32Html);
-    testTable('#tr_3 + tr td', 'remove', 'row', addRowTd32Html, basicTableHtml, 1);
+    manipulationTestHelper({
+        startHtml: basicTableHtml,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#td_3_2')[0];
+            wymeditor.tableEditor.addRow(actionElement);
+        },
+        expectedResultHtml: addRowTd32Html,
+        testUndoRedo: true
+    });
+
+    manipulationTestHelper({
+        startHtml: addRowTd32Html,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#tr_3 + tr td').eq(1)[0];
+            wymeditor.tableEditor.removeRow(actionElement);
+        },
+        expectedResultHtml: basicTableHtml,
+        testUndoRedo: true
+    });
 });
 
 test("Row from span", function () {
-    expect(2);
 
-    testTable('#span_2_1', 'add', 'row', basicTableHtml, addRowSpan21Html);
-    testTable('#tr_2 + tr td', 'remove', 'row', addRowSpan21Html, basicTableHtml);
+    manipulationTestHelper({
+        startHtml: basicTableHtml,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#span_2_1')[0];
+            wymeditor.tableEditor.addRow(actionElement);
+        },
+        expectedResultHtml: addRowSpan21Html,
+        testUndoRedo: true
+    });
+
+    manipulationTestHelper({
+        startHtml: addRowSpan21Html,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#tr_2 + tr td')[0];
+            wymeditor.tableEditor.removeRow(actionElement);
+        },
+        expectedResultHtml: basicTableHtml,
+        testUndoRedo: true
+    });
 });
 
 test("Deleting all rows removes table", function () {
-    expect(3);
 
-    testTable('#td_3_1', 'remove', 'row', basicTableHtml, removedRow3Html);
-    testTable('#td_2_1', 'remove', 'row', removedRow3Html, removedRow2And3Html);
-    testTable('#td_1_1', 'remove', 'row', removedRow2And3Html, '<br />');
+    manipulationTestHelper({
+        startHtml: basicTableHtml,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#td_3_1')[0];
+            wymeditor.tableEditor.removeRow(actionElement);
+        },
+        expectedResultHtml: removedRow3Html,
+        testUndoRedo: true
+    });
+
+    manipulationTestHelper({
+        startHtml: removedRow3Html,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#td_2_1')[0];
+            wymeditor.tableEditor.removeRow(actionElement);
+        },
+        expectedResultHtml: removedRow2And3Html,
+        testUndoRedo: true
+    });
+
+    manipulationTestHelper({
+        startHtml: removedRow2And3Html,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#td_1_1')[0];
+            wymeditor.tableEditor.removeRow(actionElement);
+        },
+        expectedResultHtml: '<br />',
+        testUndoRedo: true
+    });
 });
 
 test("Deleting all columns removes table", function () {
-    expect(3);
 
-    testTable('#td_3_3', 'remove', 'column', basicTableHtml, removedColumn3Html);
-    testTable('#td_2_2', 'remove', 'column', removedColumn3Html, removedColumn3And2Html);
-    testTable('#span_2_1', 'remove', 'column', removedColumn3And2Html, '<br />');
+    manipulationTestHelper({
+        startHtml: basicTableHtml,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#td_3_3')[0];
+            wymeditor.tableEditor.removeColumn(actionElement);
+        },
+        expectedResultHtml: removedColumn3Html,
+        testUndoRedo: true
+    });
+
+    manipulationTestHelper({
+        startHtml: removedColumn3Html,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#td_2_2')[0];
+            wymeditor.tableEditor.removeColumn(actionElement);
+        },
+        expectedResultHtml: removedColumn3And2Html,
+        testUndoRedo: true
+    });
+
+    manipulationTestHelper({
+        startHtml: removedColumn3And2Html,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#span_2_1')[0];
+            wymeditor.tableEditor.removeColumn(actionElement);
+        },
+        expectedResultHtml: '<br />',
+        testUndoRedo: true
+    });
+});
+
+test("Deselects before removing row that contains collapsed selection",
+     function () {
+    manipulationTestHelper({
+        startHtml: basicTableHtml,
+        setCaretInSelector: "#td_3_1",
+        manipulationFunc: function (wymeditor) {
+            var tr = wymeditor.$body().find("#tr_3")[0];
+            wymeditor.tableEditor.removeRow(tr);
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 1);
+            // This doesn't really test that .deselect() was called. We'd need
+            // a spy for that. Good enough.
+            strictEqual(
+                wymeditor.hasSelection(),
+                false,
+                "No selection"
+            );
+        },
+        expectedResultHtml: removedRow3Html
+    });
+});
+
+test("Deselects before removing row that fully contains non-collapsed " +
+     "selection", function () {
+    manipulationTestHelper({
+        startHtml: basicTableHtml,
+        prepareFunc: function (wymeditor) {
+            var td32 = wymeditor.$body().find("#td_3_2")[0],
+                td33 = wymeditor.$body().find("#td_3_3")[0];
+            makeTextSelection(
+                wymeditor,
+                td32,
+                td33,
+                0,
+                3
+            );
+        },
+        manipulationFunc: function (wymeditor) {
+            var tr = wymeditor.$body().find("#tr_3")[0];
+            wymeditor.tableEditor.removeRow(tr);
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 1);
+            // This doesn't really test that .deselect() was called. We'd need
+            // a spy for that. Good enough.
+            strictEqual(
+                wymeditor.hasSelection(),
+                false,
+                "No selection"
+            );
+        },
+        expectedResultHtml: removedRow3Html
+    });
+});
+
+test("Deselects before removing row that partially contains non-collapsed " +
+     "selection", function () {
+    manipulationTestHelper({
+        startHtml: basicTableHtml,
+        prepareFunc: function (wymeditor) {
+            var td22 = wymeditor.$body().find("#td_2_2")[0],
+                td33 = wymeditor.$body().find("#td_3_3")[0];
+            makeTextSelection(
+                wymeditor,
+                td22,
+                td33,
+                0,
+                3
+            );
+        },
+        manipulationFunc: function (wymeditor) {
+            var tr = wymeditor.$body().find("#tr_3")[0];
+            wymeditor.tableEditor.removeRow(tr);
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 1);
+            // This doesn't really test that .deselect() was called. We'd need
+            // a spy for that. Good enough.
+            strictEqual(
+                wymeditor.hasSelection(),
+                false,
+                "No selection"
+            );
+        },
+        expectedResultHtml: removedRow3Html
+    });
+});
+
+test("Deselects before removing column that contains collapsed selection",
+     function () {
+    manipulationTestHelper({
+        startHtml: basicTableHtml,
+        setCaretInSelector: "#td_3_3",
+        manipulationFunc: function (wymeditor) {
+            var td13 = wymeditor.$body().find("#td_1_3")[0];
+            wymeditor.tableEditor.removeColumn(td13);
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 1);
+            // This doesn't really test that .deselect() was called. We'd need
+            // a spy for that. Good enough.
+            strictEqual(
+                wymeditor.hasSelection(),
+                false,
+                "No selection"
+            );
+        },
+        expectedResultHtml: removedColumn3Html
+    });
+});
+
+test("Deselects before removing column that fully contains non-collapsed " +
+     "selection", function () {
+    manipulationTestHelper({
+        startHtml: basicTableHtml,
+        prepareFunc: function (wymeditor) {
+            var td33 = wymeditor.$body().find("#td_3_3")[0];
+            makeTextSelection(
+                wymeditor,
+                td33,
+                td33,
+                0,
+                3
+            );
+        },
+        manipulationFunc: function (wymeditor) {
+            var td13 = wymeditor.$body().find("#td_1_3")[0];
+            wymeditor.tableEditor.removeColumn(td13);
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 1);
+            // This doesn't really test that .deselect() was called. We'd need
+            // a spy for that. Good enough.
+            strictEqual(
+                wymeditor.hasSelection(),
+                false,
+                "No selection"
+            );
+        },
+        expectedResultHtml: removedColumn3Html
+    });
+});
+
+test("Deselects before removing column that partially contains non-collapsed " +
+     "selection", function () {
+    manipulationTestHelper({
+        startHtml: basicTableHtml,
+        prepareFunc: function (wymeditor) {
+            var td13 = wymeditor.$body().find("#td_1_3")[0],
+                td33 = wymeditor.$body().find("#td_3_3")[0];
+            makeTextSelection(
+                wymeditor,
+                td13,
+                td33,
+                0,
+                3
+            );
+        },
+        manipulationFunc: function (wymeditor) {
+            var td13 = wymeditor.$body().find("#td_1_3")[0];
+            wymeditor.tableEditor.removeColumn(td13);
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 1);
+            // This doesn't really test that .deselect() was called. We'd need
+            // a spy for that. Good enough.
+            strictEqual(
+                wymeditor.hasSelection(),
+                false,
+                "No selection"
+            );
+        },
+        expectedResultHtml: removedColumn3Html
+    });
 });
 
 module("table- colspan/rowspan add/remove", {setup: prepareUnitTestModule});
 test("Row", function () {
-    expect(2);
 
-    testTable('#td_3_2', 'add', 'row', fancyTableHtml, addRowFancyTd32);
-    testTable('#tr_3 + tr td', 'remove', 'row', addRowFancyTd32, fancyTableHtml);
+    manipulationTestHelper({
+        startHtml: fancyTableHtml,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#td_3_2')[0];
+            wymeditor.tableEditor.addRow(actionElement);
+        },
+        expectedResultHtml: addRowFancyTd32,
+        testUndoRedo: true
+    });
+
+    manipulationTestHelper({
+        startHtml: addRowFancyTd32,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#tr_3 + tr td')[0];
+            wymeditor.tableEditor.removeRow(actionElement);
+        },
+        expectedResultHtml: fancyTableHtml,
+        testUndoRedo: true
+    });
 });
 
 test("Row in colspan", function () {
-    expect(2);
 
-    testTable('#td_1_2', 'add', 'row', fancyTableHtml, addRowFancyTd12);
-    testTable('#tr_1 + tr td', 'remove', 'row', addRowFancyTd12, fancyTableHtml);
+    manipulationTestHelper({
+        startHtml: fancyTableHtml,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#td_1_2')[0];
+            wymeditor.tableEditor.addRow(actionElement);
+        },
+        expectedResultHtml: addRowFancyTd12,
+        testUndoRedo: true
+    });
+
+    manipulationTestHelper({
+        startHtml: addRowFancyTd12,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#tr_1 + tr td')[0];
+            wymeditor.tableEditor.removeRow(actionElement);
+        },
+        expectedResultHtml: fancyTableHtml,
+        testUndoRedo: true
+    });
 });
 
 if (!SKIP_KNOWN_FAILING_TESTS) {
     test("Row in rowspan", function () {
-        expect(2);
 
-        testTable('#td_2_2', 'add', 'row', fancyTableHtml, addRowFancyTd22);
-        testTable('#tr_2 + tr td', 'remove', 'row', addRowFancyTd22, fancyTableHtml);
+        manipulationTestHelper({
+            startHtml: fancyTableHtml,
+            manipulationFunc: function (wymeditor) {
+                var actionElement = wymeditor.$body().find('#td_2_2')[0];
+                wymeditor.tableEditor.addRow(actionElement);
+            },
+            expectedResultHtml: addRowFancyTd22,
+            testUndoRedo: true
+        });
+
+        manipulationTestHelper({
+            startHtml: addRowFancyTd22,
+            manipulationFunc: function (wymeditor) {
+                var actionElement = wymeditor.$body().find('#tr_2 + tr td')[0];
+                wymeditor.tableEditor.removeRow(actionElement);
+            },
+            expectedResultHtml: fancyTableHtml,
+            testUndoRedo: true
+        });
     });
 }
 
 if (!SKIP_KNOWN_FAILING_TESTS) {
     test("Column in colspan", function () {
-        expect(2);
 
-        testTable('#td_1_2', 'add', 'column', fancyTableHtml, addColumnFancyTd12);
-        testTable('#td_1_2 + td', 'remove', 'column', addColumnFancyTd12, fancyTableHtml);
+        manipulationTestHelper({
+            startHtml: fancyTableHtml,
+            manipulationFunc: function (wymeditor) {
+                var actionElement = wymeditor.$body().find('#td_1_2')[0];
+                wymeditor.tableEditor.addColumn(actionElement);
+            },
+            expectedResultHtml: addColumnFancyTd12,
+            testUndoRedo: true
+        });
+
+        manipulationTestHelper({
+            startHtml: addColumnFancyTd12,
+            manipulationFunc: function (wymeditor) {
+                var actionElement = wymeditor.$body().find('#td_1_2 + td')[0];
+                wymeditor.tableEditor.removeColumn(actionElement);
+            },
+            expectedResultHtml: fancyTableHtml,
+            testUndoRedo: true
+        });
     });
 }
 
 if (!SKIP_KNOWN_FAILING_TESTS) {
     test("Column in rowspan", function () {
-        expect(2);
 
-        testTable('#td_2_3', 'add', 'column', fancyTableHtml, addColumnFancyTd23);
-        testTable('#td_2_3 + td', 'remove', 'column', addColumnFancyTd23, fancyTableHtml);
+        manipulationTestHelper({
+            startHtml: fancyTableHtml,
+            manipulationFunc: function (wymeditor) {
+                var actionElement = wymeditor.$body().find('#td_2_3')[0];
+                wymeditor.tableEditor.addColumn(actionElement);
+            },
+            expectedResultHtml: addColumnFancyTd23,
+            testUndoRedo: true
+        });
+
+        manipulationTestHelper({
+            startHtml: addColumnFancyTd23,
+            manipulationFunc: function (wymeditor) {
+                var actionElement = wymeditor.$body().find('#td_2_3 + td')[0];
+                wymeditor.tableEditor.removeColumn(actionElement);
+            },
+            expectedResultHtml: fancyTableHtml,
+            testUndoRedo: true
+        });
     });
 }
 
 if (!SKIP_KNOWN_FAILING_TESTS) {
     test("Column before rowspan", function () {
-        expect(2);
 
-        testTable('#td_3_2', 'add', 'column', fancyTableHtml, addColumnFancyTd32);
-        testTable('#td_3_2 + td', 'remove', 'column', addColumnFancyTd32, fancyTableHtml);
+        manipulationTestHelper({
+            startHtml: fancyTableHtml,
+            manipulationFunc: function (wymeditor) {
+                var actionElement = wymeditor.$body().find('#td_3_2')[0];
+                wymeditor.tableEditor.addColumn(actionElement);
+            },
+            expectedResultHtml: addColumnFancyTd32,
+            testUndoRedo: true
+        });
+
+        manipulationTestHelper({
+            startHtml: addColumnFancyTd32,
+            manipulationFunc: function (wymeditor) {
+                var actionElement = wymeditor.$body().find('#td_3_2 + td')[0];
+                wymeditor.tableEditor.removeColumn(actionElement);
+            },
+            expectedResultHtml: fancyTableHtml,
+            testUndoRedo: true
+        });
     });
 }
 
 test("Column before colspan", function () {
-    expect(2);
 
-    testTable('#td_1_1', 'add', 'column', fancyTableHtml, addColumnFancyTd11);
-    testTable('#td_1_1 + td', 'remove', 'column', addColumnFancyTd11, fancyTableHtml);
+    manipulationTestHelper({
+        startHtml: fancyTableHtml,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#td_1_1')[0];
+            wymeditor.tableEditor.addColumn(actionElement);
+        },
+        expectedResultHtml: addColumnFancyTd11,
+        testUndoRedo: true
+    });
+
+    manipulationTestHelper({
+        startHtml: addColumnFancyTd11,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#td_1_1 + td')[0];
+            wymeditor.tableEditor.removeColumn(actionElement);
+        },
+        expectedResultHtml: fancyTableHtml,
+        testUndoRedo: true
+    });
 });
 
 test("Column in span", function () {
-    expect(2);
 
-    testTable('#span_2_1', 'add', 'column', fancyTableHtml, addColumnFancyTd21);
-    testTable('#td_2_1 + td', 'remove', 'column', addColumnFancyTd21, fancyTableHtml);
+    manipulationTestHelper({
+        startHtml: fancyTableHtml,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#span_2_1')[0];
+            wymeditor.tableEditor.addColumn(actionElement);
+        },
+        expectedResultHtml: addColumnFancyTd21,
+        testUndoRedo: true
+    });
+
+    manipulationTestHelper({
+        startHtml: addColumnFancyTd21,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#td_2_1 + td')[0];
+            wymeditor.tableEditor.removeColumn(actionElement);
+        },
+        expectedResultHtml: fancyTableHtml,
+        testUndoRedo: true
+    });
 });
 
 if (!SKIP_KNOWN_FAILING_TESTS) {
     test("Column affecting colspan", function () {
-        expect(2);
 
-        testTable('#td_2_2', 'add', 'column', fancyTableHtml, addColumnFancyTd22);
-        testTable('#td_2_2 + td', 'remove', 'column', addColumnFancyTd22, fancyTableHtml);
+        manipulationTestHelper({
+            startHtml: fancyTableHtml,
+            manipulationFunc: function (wymeditor) {
+                var actionElement = wymeditor.$body().find('#td_2_2')[0];
+                wymeditor.tableEditor.addColumn(actionElement);
+            },
+            expectedResultHtml: addColumnFancyTd22,
+            testUndoRedo: true
+        });
+
+        manipulationTestHelper({
+            startHtml: addColumnFancyTd22,
+            manipulationFunc: function (wymeditor) {
+                var actionElement = wymeditor.$body().find('#td_2_2 + td')[0];
+                wymeditor.tableEditor.removeColumn(actionElement);
+            },
+            expectedResultHtml: fancyTableHtml,
+            testUndoRedo: true
+        });
     });
 }
 
 test("Column with TH mid column", function () {
-    expect(2);
 
-    testTable('#td_3_2', 'add', 'column', thTableHtml, addColumnThTd32Html);
-    testTable('#td_3_2 + td', 'remove', 'column', addColumnThTd32Html, thTableHtml);
+    manipulationTestHelper({
+        startHtml: thTableHtml,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#td_3_2')[0];
+            wymeditor.tableEditor.addColumn(actionElement);
+        },
+        expectedResultHtml: addColumnThTd32Html,
+        testUndoRedo: true
+    });
+
+    manipulationTestHelper({
+        startHtml: addColumnThTd32Html,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#td_3_2 + td')[0];
+            wymeditor.tableEditor.removeColumn(actionElement);
+        },
+        expectedResultHtml: thTableHtml,
+        testUndoRedo: true
+    });
 });
 
 test("Column with TH in th", function () {
-    expect(2);
 
-    testTable('#th_1_3', 'add', 'column', thTableHtml, addColumnThTh13Html);
-    testTable('#th_1_3 + th', 'remove', 'column', addColumnThTh13Html, thTableHtml);
+    manipulationTestHelper({
+        startHtml: thTableHtml,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#th_1_3')[0];
+            wymeditor.tableEditor.addColumn(actionElement);
+        },
+        expectedResultHtml: addColumnThTh13Html,
+        testUndoRedo: true
+    });
+
+    manipulationTestHelper({
+        startHtml: addColumnThTh13Html,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#th_1_3 + th')[0];
+            wymeditor.tableEditor.removeColumn(actionElement);
+        },
+        expectedResultHtml: thTableHtml,
+        testUndoRedo: true
+    });
 });
 
 test("Row with TH end row", function () {
-    expect(2);
 
-    testTable('#td_3_2', 'add', 'row', thTableHtml, addRowThTd32Html);
-    testTable('#tr_3 + tr td', 'remove', 'row', addRowThTd32Html, thTableHtml, 1);
+    manipulationTestHelper({
+        startHtml: thTableHtml,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#td_3_2')[0];
+            wymeditor.tableEditor.addRow(actionElement);
+        },
+        expectedResultHtml: addRowThTd32Html,
+        testUndoRedo: true
+    });
+
+    manipulationTestHelper({
+        startHtml: addRowThTd32Html,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#tr_3 + tr td').eq(1)[0];
+            wymeditor.tableEditor.removeRow(actionElement);
+        },
+        expectedResultHtml: thTableHtml,
+        testUndoRedo: true
+    });
 });
 
 test("Row with TH first th row", function () {
-    expect(2);
 
-    testTable('#th_1_3', 'add', 'row', thTableHtml, addRowThTh13Html);
-    testTable('#tr_1 + tr td', 'remove', 'row', addRowThTh13Html, thTableHtml, 2);
+    manipulationTestHelper({
+        startHtml: thTableHtml,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#th_1_3')[0];
+            wymeditor.tableEditor.addRow(actionElement);
+        },
+        expectedResultHtml: addRowThTh13Html,
+        testUndoRedo: true
+    });
+
+    manipulationTestHelper({
+        startHtml: addRowThTh13Html,
+        manipulationFunc: function (wymeditor) {
+            var actionElement = wymeditor.$body().find('#tr_1 + tr td').eq(2)[0];
+            wymeditor.tableEditor.removeRow(actionElement);
+        },
+        expectedResultHtml: thTableHtml,
+        testUndoRedo: true
+    });
 });
 
 module("table- tab movement", {setup: prepareUnitTestModule});
 test("Tab to cell right", function () {
-    expect(3);
     testTableTab(basicTableHtml, '#td_1_1', '#td_1_2');
 });
 
 test("Tab from th to cell right", function () {
-    expect(3);
     testTableTab(thTableHtml, '#th_1_1', '#th_1_2');
 });
 
 test("Tab to next row", function () {
-    expect(3);
     var expectedSelector = '#td_2_1';
     testTableTab(basicTableHtml, '#td_1_3', expectedSelector);
 });
 
 test("Tab from th to next row", function () {
-    expect(3);
     var expectedSelector = '#td_2_1';
     testTableTab(thTableHtml, '#th_1_3', expectedSelector);
 });
@@ -917,19 +1413,16 @@ test("Tab from th to next row", function () {
 test("Tab end of table", function () {
     // The real tab action doesn't trigger. Just make sure we're not moving
     // around
-    expect(3);
     testTableTab(basicTableHtml, '#td_3_3', '#td_3_3');
 });
 
 test("Tab nested inside table", function () {
-    expect(3);
     testTableTab(basicTableHtml, '#span_2_1', '#td_2_2');
 });
 
 test("Tab outside of table", function () {
     // The real tab action doesn't trigger. Just make sure we're not moving
     // around
-    expect(3);
     testTableTab(basicTableHtml + '<p id="p_1">p1</p>', '#p_1', '#p_1');
 });
 

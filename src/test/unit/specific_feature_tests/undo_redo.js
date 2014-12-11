@@ -73,27 +73,6 @@ test("List; outdent", function () {
     });
 });
 
-test("Unlink", function () {
-    manipulationTestHelper({
-        testUndoRedo: true,
-        startHtml: "<p><a href=\"http://example.com/\">Foo</a></p>",
-        prepareFunc: function (wymeditor) {
-            var a = wymeditor.$body().find("a")[0];
-            makeTextSelection(
-                wymeditor,
-                a,
-                a,
-                0,
-                3
-            );
-        },
-        manipulationFunc: function (wymeditor) {
-            wymeditor.exec("Unlink");
-        },
-        expectedResultHtml: "<p>Foo</p>"
-    });
-});
-
 test("Insert table", function () {
     manipulationTestHelper({
         testUndoRedo: true,

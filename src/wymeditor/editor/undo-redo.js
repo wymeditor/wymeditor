@@ -1,5 +1,7 @@
-/* jshint evil: true, maxlen: 100 */
-/* global ObjectHistory, rangy */
+/* global
+    ObjectHistory,
+    rangy
+*/
 "use strict";
 
 /*
@@ -10,7 +12,7 @@
     WYMeditor.UndoRedo
     ==================
 
-    Returns an undoRedo mechanism for a provided editor.
+    Constructs an undoRedo mechanism for a provided editor.
 
     Also sets keyboard shortcuts for undo and redo.
 
