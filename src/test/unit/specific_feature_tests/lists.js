@@ -1057,7 +1057,7 @@ var li_7_indentedHtml = String() +
 
 
 test("No change outside list", function () {
-    expect(6);
+    expect(4);
     var notList = '<p id="p_1">1</p>';
 
     testList('p_1', 'indent', notList, notList);
@@ -1069,7 +1069,7 @@ test("No change outside list", function () {
 });
 
 test("First-level w/sublist", function () {
-    expect(10);
+    expect(8);
 
     testListRoundTrip('li_2', 'indent', nestedListHtml, li_2_indentedHtml);
     testListRoundTrip('li_2', 'outdent', li_2_indentedHtml, nestedListHtml);
@@ -1079,7 +1079,7 @@ test("First-level w/sublist", function () {
 });
 
 test("First-level previous sublist joins lists", function () {
-    expect(10);
+    expect(8);
 
     testListRoundTrip('li_3', 'indent', nestedListHtml, li_3_indentedHtml);
     testListRoundTrip('li_3', 'outdent', li_3_indentedHtml, nestedListHtml);
@@ -1089,7 +1089,7 @@ test("First-level previous sublist joins lists", function () {
 });
 
 test("Outdent joining list with longer content", function () {
-    expect(3);
+    expect(2);
 
     testList('li_5_3_1', 'outdent', nestedListHtml, li_5_3_1_outdentedHtml);
     // Can't go the other way because we've turned a ul to an ol
@@ -1099,7 +1099,7 @@ test("Outdent joining list with longer content", function () {
 });
 
 test("Outdent w/sublist", function () {
-    expect(10);
+    expect(8);
 
     testListRoundTrip('li_5_3', 'outdent', nestedListHtml, li_5_3_outdentedHtml);
     testListRoundTrip('li_5_3', 'indent', li_5_3_outdentedHtml, nestedListHtml);
@@ -1110,7 +1110,7 @@ test("Outdent w/sublist", function () {
 });
 
 test("Outdent last element in list", function () {
-    expect(10);
+    expect(8);
 
     testListRoundTrip('li_3_1', 'outdent', nestedListHtml, li_3_1_outdentedHtml);
     testListRoundTrip('li_3_1', 'indent', li_3_1_outdentedHtml, nestedListHtml);
@@ -1121,7 +1121,7 @@ test("Outdent last element in list", function () {
 });
 
 test("Second-level w/sublist", function () {
-    expect(10);
+    expect(8);
 
     testListRoundTrip('li_5_3', 'indent', nestedListHtml, li_5_3_indentedHtml);
     testListRoundTrip('li_5_3', 'outdent', li_5_3_indentedHtml, nestedListHtml);
@@ -1132,7 +1132,7 @@ test("Second-level w/sublist", function () {
 });
 
 test("First-level no-sublist", function () {
-    expect(10);
+    expect(8);
 
     testListRoundTrip('li_7', 'indent', nestedListHtml, li_7_indentedHtml);
     testListRoundTrip('li_7', 'outdent', li_7_indentedHtml, nestedListHtml);
@@ -1143,7 +1143,7 @@ test("First-level no-sublist", function () {
 });
 
 test("Second-level no-sublist", function () {
-    expect(10);
+    expect(8);
 
     testListRoundTrip('li_2_2', 'indent', nestedListHtml, li_2_2_indentedHtml);
     testListRoundTrip('li_2_2', 'outdent', li_2_2_indentedHtml, nestedListHtml);
@@ -1154,7 +1154,7 @@ test("Second-level no-sublist", function () {
 });
 
 test("First-level no-sublist first-item", function () {
-    expect(10);
+    expect(8);
 
     testListRoundTrip('li_1', 'indent', nestedListHtml, li_1_indentedHtml);
     testListRoundTrip('li_1', 'outdent', li_1_indentedHtml, nestedListHtml);
@@ -1165,7 +1165,7 @@ test("First-level no-sublist first-item", function () {
 });
 
 test("First-level no-sublist previous-sublist", function () {
-    expect(10);
+    expect(8);
 
     testListRoundTrip('li_4', 'indent', nestedListHtml, li_4_indentedHtml);
     testListRoundTrip('li_4', 'outdent', li_4_indentedHtml, nestedListHtml);
@@ -1176,7 +1176,7 @@ test("First-level no-sublist previous-sublist", function () {
 });
 
 test("Can't dedent first-level", function () {
-    expect(15);
+    expect(10);
 
     testList('li_1', 'outdent', nestedListHtml, nestedListHtml);
     testList('li_2', 'outdent', nestedListHtml, nestedListHtml);
@@ -1217,7 +1217,7 @@ var li_1_indentedNestedFirstItemHtml = String() +
         '</ol>';
 
 test("Nested first item", function () {
-    expect(10);
+    expect(8);
 
     testListRoundTrip('li_1', 'indent', nestedFirstItemHtml, li_1_indentedNestedFirstItemHtml);
     testListRoundTrip('li_1', 'outdent', li_1_indentedNestedFirstItemHtml, nestedFirstItemHtml);
@@ -1255,7 +1255,7 @@ var li_3_overhungHtml = String() +
         '</ol>';
 
 test("Double overhang with different list type indent/outdent", function () {
-    expect(10);
+    expect(8);
 
     testListRoundTrip('li_3', 'indent', overhungListHtml, li_3_overhungHtml);
     testListRoundTrip('li_3', 'outdent', li_3_overhungHtml, overhungListHtml);
@@ -1289,7 +1289,7 @@ var li_1_2_outdentedTextContentAfterSublistHtml = String() +
             '<li id="li_2">2</li>' +
         '</ol>';
 test("Content after sublist text indent/outdent", function () {
-    expect(3);
+    expect(2);
 
     // Not round-trippable
     testList(
@@ -1341,7 +1341,7 @@ var li_1_2_outdentedNodeContentAfterSublistHtml = String() +
 // tested still works in those older IE versions.
 if (!WYMeditor.isInternetExplorerPre11() || !SKIP_KNOWN_FAILING_TESTS) {
     test("Content after sublist node indent/outdent", function () {
-        expect(3);
+        expect(2);
 
         // Not round-trippable
         testList(
@@ -1400,7 +1400,7 @@ var span_3_2_indentedSpanInSublistHtml = String() +
             '</li>' +
         '</ol>';
 test("Span in sublist indent/outdent", function () {
-    expect(10);
+    expect(8);
 
     testListRoundTrip(
         'span_3_2',
@@ -1499,7 +1499,7 @@ var li_1_6_doubleSublistOutdentedHtml = String() +
 
 test("Two same-level sublist middle outdent", function () {
     // Shouldn't re-order content when outdent with two sublists
-    expect(10);
+    expect(8);
 
     testListRoundTrip('li_1_5', 'outdent', doubleSublistHtml, li_1_5_doubleSublistOutdentedHtml);
     testListRoundTrip('li_1_5', 'indent', li_1_5_doubleSublistOutdentedHtml, doubleSublistHtml);
@@ -1510,7 +1510,7 @@ test("Two same-level sublist middle outdent", function () {
 });
 
 test("Two same-level sublist last outdent", function () {
-    expect(10);
+    expect(8);
 
     testListRoundTrip('li_1_6', 'outdent', doubleSublistHtml, li_1_6_doubleSublistOutdentedHtml);
     testListRoundTrip('li_1_6', 'indent', li_1_6_doubleSublistOutdentedHtml, doubleSublistHtml);
@@ -1679,7 +1679,7 @@ test("Invalid nesting correction requiring spacer", function () {
     wymEqual(wymeditor, expectedHtml);
 });
 test("Invalid nesting outdent", function () {
-    expect(5);
+    expect(4);
 
     // First outdent just corrects things and the second actually makes the change
     testList('li_2_2', 'outdent', invalidNestingHtml, invalidNestingCorrectedHtml);
@@ -1705,7 +1705,7 @@ test("Invalid nesting outdent", function () {
     );
 });
 test("Invalid unwrapped text indent", function () {
-    expect(7);
+    expect(6);
 
     // First outdent just corrects things and the second actually makes the change
     testList('span_5_2', 'indent', invalidNestingHtml, invalidNestingCorrectedHtml);
@@ -1802,7 +1802,7 @@ orphanedLiHtml.unordered.li_2_1 = orphanedLiHtml.unordered.li_2;
 orphanedLiHtml.unordered.li_2_1_1 = orphanedLiHtml.unordered.li_2;
 orphanedLiHtml.unordered.li_3 = orphanedLiHtml.unordered.li_2;
 test("Unordered corrects orphans", function () {
-    expect(12);
+    expect(8);
     var testData = orphanedLiHtml,
         testItems = ['li_2', 'li_2_1', 'li_2_1_1', 'li_3'],
         i,
@@ -1896,7 +1896,7 @@ orphanedLiHtml.ordered.li_new = String() +
         '<li id="li_text_sep">li_text_sep</li>';
 
 test("Correction breaks on paragraphs", function () {
-    expect(7);
+    expect(6);
     var testData = orphanedLiHtml,
         testItem = 'li_new';
 
@@ -1959,7 +1959,7 @@ orphanedLiHtml.ordered.li_text_sep = String() +
             '<li id="li_text_sep">li_text_sep</li>' +
         '</ol>';
 test("Correction breaks on text", function () {
-    expect(7);
+    expect(6);
     var testData = orphanedLiHtml,
         testItem = 'li_text_sep';
 
@@ -2326,7 +2326,7 @@ var diThirdOutdentHtml = String() +
         '</ol>';
 
 test("Triple outdent doesn't break HTML", function () {
-    expect(9);
+    expect(6);
 
     testListRoundTrip('li_1_1_1_4', 'outdent', doubleIndentHtml, diFirstOutdentHtml);
     testListRoundTrip(
@@ -2415,7 +2415,7 @@ var li_1_1_1_1_unorderedHtml = String() +
         '</ol>';
 
 test("Ordered to unordered second item", function () {
-    expect(10);
+    expect(8);
 
     // Round trip tests (for selection restoration)
     testListRoundTrip('li_2', 'unordered', orderedHtml, li_2_unorderedHtml);
@@ -2426,7 +2426,7 @@ test("Ordered to unordered second item", function () {
 });
 
 test("Ordered to unordered nested", function () {
-    expect(10);
+    expect(8);
 
     testListRoundTrip('li_1_1_1', 'unordered', orderedHtml, li_1_1_1_unorderedHtml);
     testListRoundTrip('li_1_1_1', 'ordered', li_1_1_1_unorderedHtml, orderedHtml);
@@ -2436,7 +2436,7 @@ test("Ordered to unordered nested", function () {
     testListRoundTrip('li_1_1_1', 'ordered', li_1_1_1_unorderedHtml, orderedHtml, true);
 });
 test("Ordered to unordered one item", function () {
-    expect(10);
+    expect(8);
 
     testListRoundTrip('li_1_1_1_1', 'unordered', orderedHtml, li_1_1_1_1_unorderedHtml);
     testListRoundTrip('li_1_1_1_1', 'ordered', li_1_1_1_1_unorderedHtml, orderedHtml);
@@ -2529,7 +2529,7 @@ var p_1_unordered_p_2_ordered_pHtml = String() +
         '<h1 id="h1_3">content 3</h1>';
 
 test("Paragraph", function () {
-    expect(6);
+    expect(4);
 
     testList('p_1', 'ordered', pHtml, p_1_orderedHtml);
     testList('p_1', 'unordered', pHtml, p_1_unorderedHtml);
@@ -2539,7 +2539,7 @@ test("Paragraph", function () {
     testList('p_1', 'ordered', pHtml, p_1_orderedHtml, true);
 });
 test("Paragraph with inline tags", function () {
-    expect(6);
+    expect(4);
 
     testList('strong_2', 'ordered', pHtml, p_2_orderedHtml);
     testList('strong_2', 'unordered', pHtml, p_2_unorderedHtml);
@@ -2549,7 +2549,7 @@ test("Paragraph with inline tags", function () {
     testList('p_2', 'unordered', pHtml, p_2_unorderedHtml, true);
 });
 test("h1", function () {
-    expect(6);
+    expect(4);
 
     testList('h1_3', 'ordered', pHtml, h1_3_orderedHtml);
     testList('h1_3', 'unordered', pHtml, h1_3_unorderedHtml);
@@ -2559,7 +2559,7 @@ test("h1", function () {
     testList('h1_3', 'unordered', pHtml, h1_3_unorderedHtml, true);
 });
 test("Paragraph shouldn't join", function () {
-    expect(6);
+    expect(4);
 
     testList('strong_2', 'ordered', p_1_orderedHtml, p_1_ordered_p_2_ordered_pHtml);
     testList('p_1', 'ordered', p_2_orderedHtml, p_1_ordered_p_2_ordered_pHtml);
@@ -2569,7 +2569,7 @@ test("Paragraph shouldn't join", function () {
     testList('p_1', 'ordered', p_2_orderedHtml, p_1_ordered_p_2_ordered_pHtml, true);
 });
 test("Not joining different types", function () {
-    expect(6);
+    expect(4);
 
     testList('strong_2', 'unordered', p_1_orderedHtml, p_1_ordered_p_2_unordered_pHtml);
     testList('p_1', 'unordered', p_2_orderedHtml, p_1_unordered_p_2_ordered_pHtml);
@@ -2634,7 +2634,7 @@ var listWithTableHtml_make_list_inside = [""
     , '</ul>'
 ].join('');
 test("Make list inside table that is inside list.", function () {
-    expect(3);
+    expect(2);
     testList(
         '0_0_1_0_0_0',
         'unordered',
@@ -2756,7 +2756,7 @@ test("Double indent correction", function () {
 module("list-tabbing", {setup: prepareUnitTestModule});
 
 test("Tab key indents", function () {
-    expect(2);
+    expect(1);
 
     var initHtml = nestedListHtml,
         expectedHtml = li_7_indentedHtml,
@@ -2777,7 +2777,7 @@ test("Tab key indents", function () {
 });
 
 test("Shift+Tab outdents", function () {
-    expect(2);
+    expect(1);
 
     var initHtml = String() +
             '<ol>' +
@@ -2811,7 +2811,7 @@ test("Shift+Tab outdents", function () {
 });
 
 test("Tab has no effect outside lists", function () {
-    expect(2);
+    expect(1);
 
     var initHtml = '<p id="p_1">test</p>',
         expectedHtml = initHtml,
