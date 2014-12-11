@@ -13,6 +13,8 @@ WYMeditor.
   ``editor.setSingleSelectionRange`` is no longer public API.
 * [#620](https://github.com/wymeditor/wymeditor/pull/620)
   `editor.rawHtml` no longer calls `editor.prepareDocForEditing`.
+* [#512](https://github.com/wymeditor/wymeditor/pull/512)
+  `editor.registerChange()` is expected to be called after DOM manipulations.
 
 ### Enhancements
 
@@ -20,6 +22,17 @@ WYMeditor.
   New `editor.insertImage` and `editor.link` methods.
 * [#637](https://github.com/wymeditor/wymeditor/pull/637)
   New `editor.doesElementContainSelection` method.
+* [#512](https://github.com/wymeditor/wymeditor/pull/512)
+  New undo/redo methods in the API.
+
+### Bug Fixes
+
+* [#512](https://github.com/wymeditor/wymeditor/pull/512)
+  Undo/redo is working for all toolbar actions.
+  It only works from the toolbar undo/redo buttons--not keyboard shortcuts.
+  Undo/redo for containers, classes and text manipulations is a WIP.
+  Undo/redo, even if unused, may eat a lot of RAM, depending on the document
+  size and the browser. To be optimized.
 
 ## 1.0.0-rc.1
 
