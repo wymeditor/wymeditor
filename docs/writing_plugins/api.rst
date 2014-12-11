@@ -191,6 +191,13 @@ Removes selection.
 Get the node that is immediately after the selection, whether it is collapsed
 or not.
 
+``doesElementContainSelection(element)``
+========================================
+
+Returns ``true`` if the provided element contains at least part of the
+selection.
+Otherwise returns ``false``.
+
 ``selectedContainer()``
 =======================
 
