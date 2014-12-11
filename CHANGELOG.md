@@ -18,6 +18,8 @@ WYMeditor.
 
 * [#625](https://github.com/wymeditor/wymeditor/pull/625)
   New `editor.insertImage` and `editor.link` methods.
+* [#637](https://github.com/wymeditor/wymeditor/pull/637)
+  New `editor.doesElementContainSelection` method.
 
 ## 1.0.0-rc.1
 
