@@ -908,6 +908,31 @@ test("Returns true when non-collapsed selection is wholly in element",
     });
 });
 
+test("Returns true when non-collapsed selection is wholly in element" +
+     ", nested twice", function () {
+    manipulationTestHelper({
+        startHtml: "<ol><li><ul><li>Foo</li></ul></li></ol>",
+        prepareFunc: function (wymeditor) {
+            var nestedLi = wymeditor.$body().find("ul > li");
+            makeTextSelection(
+                wymeditor,
+                nestedLi,
+                nestedLi,
+                1,
+                2
+            );
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            var ol = wymeditor.body().childNodes[0];
+            expect(expect() + 1);
+            strictEqual(
+                wymeditor.doesElementContainSelection(ol),
+                true
+            );
+        }
+    });
+});
+
 test("Returns true when non-collapsed selection is partly in element",
      function () {
     manipulationTestHelper({
