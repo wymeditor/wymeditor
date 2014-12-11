@@ -9,7 +9,8 @@
     simulateKeyCombo,
     skipKeyboardShortcutTests,
     manipulationTestHelper,
-    test
+    test,
+   SKIP_THIS_TEST
 */
 "use strict";
 

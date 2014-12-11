@@ -5,7 +5,6 @@
     testNoChangeInHtmlArray,
     makeTextSelection,
     moveSelector,
-    skipKeyboardShortcutTests,
     manipulationTestHelper
 */
 /* global
@@ -16,8 +15,8 @@
     QUnit,
     strictEqual,
     Keysim,
-    noObjectDefinePropertyBrowser,
-    inPhantomjs
+    inPhantomjs,
+    skipKeyboardShortcutTests:true
 */
 "use strict";
 
