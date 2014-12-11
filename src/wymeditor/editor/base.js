@@ -3987,6 +3987,7 @@ WYMeditor.editor.prototype.doesElementContainSelection = function (element) {
         if ($element.has(selectedContainer).length > 0) {
             return true;
         }
+        return false;
     }
 
     // For non-collapsed selections.
