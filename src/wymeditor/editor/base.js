@@ -732,7 +732,6 @@ WYMeditor.editor.prototype.exec = function (cmd) {
         }
         break;
     }
-
 };
 
 /**
