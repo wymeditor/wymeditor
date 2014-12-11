@@ -470,7 +470,7 @@ test("Undo keyboard shortcut", function () {
         expectedResultHtml: "<p>Foo</p>",
         skipFunc: function () {
             if (skipKeyboardShortcutTests === true) {
-                return "skip";
+                return SKIP_THIS_TEST;
             }
         }
     });
@@ -492,7 +492,7 @@ test("Redo keyboard shortcut", function () {
         expectedResultHtml: "<ol><li>Foo</li></ol>",
         skipFunc: function () {
             if (skipKeyboardShortcutTests === true) {
-                return "skip";
+                return SKIP_THIS_TEST;
             }
         }
     });
