@@ -508,7 +508,7 @@ function testPaste(
 }
 
 test("Body- Direct Paste", function () {
-    expect(2);
+    expect(1);
     testPaste(
         '', // No selector. Just the body
         '<br />', // An empty document to start
