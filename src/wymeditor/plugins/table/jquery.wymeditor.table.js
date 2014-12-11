@@ -565,9 +565,8 @@ TableEditor.prototype.removeRow = function (elmnt) {
     table = wym.findUp(elmnt, 'table');
     if (
         wym.hasSelection() === true &&
-        wym.findUp(wym.selectedContainer(), "tr") === tr
+        wym.doesElementContainSelection(elmnt) === true
     ) {
-        // Selection is in the row that we are about to remove.
         wym.deselect();
     }
     jQuery(tr).remove();
@@ -636,9 +635,8 @@ TableEditor.prototype.removeColumn = function (elmnt) {
         var $cell = jQuery(element).find("td, th").eq(tdIndex);
         if (
             wym.hasSelection() === true &&
-            $cell[0] === wym.selectedContainer()
+            wym.doesElementContainSelection($cell[0]) === true
         ) {
-            // Selection is in the element that we're about to remove.
             wym.deselect();
         }
         $cell.remove();

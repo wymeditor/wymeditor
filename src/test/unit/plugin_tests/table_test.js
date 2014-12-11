@@ -6,6 +6,7 @@
     moveSelector,
     simulateKey,
     makeSelection,
+    makeTextSelection,
     normalizeHtml,
     ok,
     test,
@@ -882,6 +883,183 @@ test("Deleting all columns removes table", function () {
             wymeditor.tableEditor.removeColumn(actionElement);
         },
         expectedResultHtml: '<br />'
+    });
+});
+
+test("Deselects before removing row that contains collapsed selection",
+     function () {
+    manipulationTestHelper({
+        startHtml: basicTableHtml,
+        setCaretInSelector: "#td_3_1",
+        manipulationFunc: function (wymeditor) {
+            var tr = wymeditor.$body().find("#tr_3")[0];
+            wymeditor.tableEditor.removeRow(tr);
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 1);
+            // This doesn't really test that .deselect() was called. We'd need
+            // a spy for that. Good enough.
+            strictEqual(
+                wymeditor.hasSelection(),
+                false,
+                "No selection"
+            );
+        },
+        expectedResultHtml: removedRow3Html
+    });
+});
+
+test("Deselects before removing row that fully contains non-collapsed " +
+     "selection", function () {
+    manipulationTestHelper({
+        startHtml: basicTableHtml,
+        prepareFunc: function (wymeditor) {
+            var td32 = wymeditor.$body().find("#td_3_2")[0],
+                td33 = wymeditor.$body().find("#td_3_3")[0];
+            makeTextSelection(
+                wymeditor,
+                td32,
+                td33,
+                0,
+                3
+            );
+        },
+        manipulationFunc: function (wymeditor) {
+            var tr = wymeditor.$body().find("#tr_3")[0];
+            wymeditor.tableEditor.removeRow(tr);
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 1);
+            // This doesn't really test that .deselect() was called. We'd need
+            // a spy for that. Good enough.
+            strictEqual(
+                wymeditor.hasSelection(),
+                false,
+                "No selection"
+            );
+        },
+        expectedResultHtml: removedRow3Html
+    });
+});
+
+test("Deselects before removing row that partially contains non-collapsed " +
+     "selection", function () {
+    manipulationTestHelper({
+        startHtml: basicTableHtml,
+        prepareFunc: function (wymeditor) {
+            var td22 = wymeditor.$body().find("#td_2_2")[0],
+                td33 = wymeditor.$body().find("#td_3_3")[0];
+            makeTextSelection(
+                wymeditor,
+                td22,
+                td33,
+                0,
+                3
+            );
+        },
+        manipulationFunc: function (wymeditor) {
+            var tr = wymeditor.$body().find("#tr_3")[0];
+            wymeditor.tableEditor.removeRow(tr);
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 1);
+            // This doesn't really test that .deselect() was called. We'd need
+            // a spy for that. Good enough.
+            strictEqual(
+                wymeditor.hasSelection(),
+                false,
+                "No selection"
+            );
+        },
+        expectedResultHtml: removedRow3Html
+    });
+});
+
+test("Deselects before removing column that contains collapsed selection",
+     function () {
+    manipulationTestHelper({
+        startHtml: basicTableHtml,
+        setCaretInSelector: "#td_3_3",
+        manipulationFunc: function (wymeditor) {
+            var td13 = wymeditor.$body().find("#td_1_3")[0];
+            wymeditor.tableEditor.removeColumn(td13);
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 1);
+            // This doesn't really test that .deselect() was called. We'd need
+            // a spy for that. Good enough.
+            strictEqual(
+                wymeditor.hasSelection(),
+                false,
+                "No selection"
+            );
+        },
+        expectedResultHtml: removedColumn3Html
+    });
+});
+
+test("Deselects before removing column that fully contains non-collapsed " +
+     "selection", function () {
+    manipulationTestHelper({
+        startHtml: basicTableHtml,
+        prepareFunc: function (wymeditor) {
+            var td33 = wymeditor.$body().find("#td_3_3")[0];
+            makeTextSelection(
+                wymeditor,
+                td33,
+                td33,
+                0,
+                3
+            );
+        },
+        manipulationFunc: function (wymeditor) {
+            var td13 = wymeditor.$body().find("#td_1_3")[0];
+            wymeditor.tableEditor.removeColumn(td13);
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 1);
+            // This doesn't really test that .deselect() was called. We'd need
+            // a spy for that. Good enough.
+            strictEqual(
+                wymeditor.hasSelection(),
+                false,
+                "No selection"
+            );
+        },
+        expectedResultHtml: removedColumn3Html
+    });
+});
+
+test("Deselects before removing column that partially contains non-collapsed " +
+     "selection", function () {
+    manipulationTestHelper({
+        startHtml: basicTableHtml,
+        prepareFunc: function (wymeditor) {
+            var td13 = wymeditor.$body().find("#td_1_3")[0],
+                td33 = wymeditor.$body().find("#td_3_3")[0];
+            makeTextSelection(
+                wymeditor,
+                td13,
+                td33,
+                0,
+                3
+            );
+        },
+        manipulationFunc: function (wymeditor) {
+            var td13 = wymeditor.$body().find("#td_1_3")[0];
+            wymeditor.tableEditor.removeColumn(td13);
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 1);
+            // This doesn't really test that .deselect() was called. We'd need
+            // a spy for that. Good enough.
+            strictEqual(
+                wymeditor.hasSelection(),
+                false,
+                "No selection"
+            );
+        },
+        expectedResultHtml: removedColumn3Html
     });
 });
 
