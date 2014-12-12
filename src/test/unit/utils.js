@@ -585,7 +585,7 @@ function manipulationTestHelper(a) {
         }
     }
     var wymeditor = jQuery.wymeditors(0);
-    function performTest(useKeyCombo) {
+    function execute(useKeyCombo) {
         var useKeyComboAssertStrAppend = useKeyCombo === true ?
             "; using keyboard shortcut" : "";
         if (typeof a.startHtml === 'string') {
@@ -674,12 +674,12 @@ function manipulationTestHelper(a) {
         }
     }
 
-    performTest(false);
+    execute(false);
 
     if (
         typeof a.manipulationKeyCombo === "string" &&
         skipKeyboardShortcutTests !== true
     ) {
-        performTest(true);
+        execute(true);
     }
 }
