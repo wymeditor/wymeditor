@@ -195,16 +195,13 @@ module.exports = function (grunt) {
             },
             libs: {
                 // This file is the entry point for the browserification of
-                // two external dependencies.
-                // It assigns their CommonJS `module.exports` to
-                // browser `window` globals.
+                // two external modules.
                 src: ['<%= yeoman.app %>/wymeditor/editor/' +
-                    'browserified-libs-globalifier.js'],
-                dest: '<%= yeoman.app %>/lib/browserified-libs-globalifier.js'
+                    'external-modules-browserify.js'],
+                dest: '<%= yeoman.app %>/lib/browserified-external-modules.js'
             },
             keysim: {
-                // This is used in tests. It is a globalifier, just like the
-                // above `libs` task.
+                // This is used in tests.
                 src: ['<%= yeoman.app %>/test/unit/keysim-globalifier.js'],
                 dest: '<%= yeoman.app %>/lib/keysim-globalifier.js'
             }
@@ -262,7 +259,7 @@ module.exports = function (grunt) {
                     "<%= yeoman.app %>/wymeditor/editor/webkit.js",
                     "<%= yeoman.app %>/wymeditor/editor/trident-pre-7.js",
                     "<%= yeoman.app %>/wymeditor/editor/trident-7.js",
-                    "<%= yeoman.app %>/lib/browserified-libs-globalifier.js",
+                    "<%= yeoman.app %>/lib/browserified-external-modules.js",
                     "<%= yeoman.app %>/wymeditor/editor/undo-redo.js",
                     "<%= yeoman.app %>/wymeditor/editor/keyboard.js",
                     "<%= yeoman.app %>/wymeditor/parser/*.js",
