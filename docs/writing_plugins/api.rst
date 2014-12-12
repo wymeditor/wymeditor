@@ -132,8 +132,8 @@ Available events:
 ``postIframeInitialization``
     Triggered after the editor's Iframe has been
     initialized.
-``postAnyChange``
-    Triggered after a change was registered with ``registerChange()``.
+``postModification``
+    Triggered after a change was registered with ``registerModification()``.
 ``postUndo``
     Triggered after undo.
 ``postRedo``
@@ -478,13 +478,13 @@ Example:
 Unwrap the selection, by removing inline elements but keeping the selected
 text.
 
-``registerChange()``
+``registerModification()``
 ====================
 
 Registers a change in the document. This should be called after changes
 are made in the document.
 
-Triggers the ``postAnyChange`` event afterwards.
+Triggers the ``postModification`` event afterwards.
 
 ``switchTo(node, sType, stripAttrs)``
 =====================================

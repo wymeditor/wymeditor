@@ -303,20 +303,20 @@ WYMeditor.editor.prototype.focusOnDocument = function () {
 };
 
 /**
-    WYMeditor.editor.registerChange
-    ===============================
+    WYMeditor.editor.registerModification
+    =====================================
 
     Registers a change in the document. This should be called after changes
     are made in the document.
 
-    Triggers the `postAnyChange` event afterwards.
+    Triggers the `postModification` event afterwards.
 */
-WYMeditor.editor.prototype.registerChange = function () {
+WYMeditor.editor.prototype.registerModification = function () {
     var wym = this;
 
     wym.undoRedo._add();
 
-    jQuery(wym.element).trigger(WYMeditor.EVENTS.postAnyChange);
+    jQuery(wym.element).trigger(WYMeditor.EVENTS.postModification);
 };
 
 /**
@@ -731,12 +731,11 @@ WYMeditor.editor.prototype.exec = function (cmd) {
                 // Deligate all other commands to `_exec`
                 wym._exec(cmd) === true
             ) {
-                wym.registerChange();
+                wym.registerModification();
             }
         }
         break;
     }
-
 };
 
 /**
@@ -1855,7 +1854,7 @@ WYMeditor.editor.prototype.link = function (attrs) {
     }
     $a.attr(attrs);
 
-    wym.registerChange();
+    wym.registerModification();
 };
 
 /**
@@ -1901,7 +1900,7 @@ WYMeditor.editor.prototype.insertImage = function (attrs) {
     // PhantomJS seems to add strange spans around images.
     wym.$body().find('.Apple-style-span').children().unwrap();
 
-    wym.registerChange();
+    wym.registerModification();
 };
 
 /**
@@ -2127,7 +2126,7 @@ WYMeditor.editor.prototype.paste = function (str) {
             }
         }
     }
-    wym.registerChange();
+    wym.registerModification();
 };
 
 WYMeditor.editor.prototype.insert = function (html) {
@@ -3283,7 +3282,7 @@ WYMeditor.editor.prototype.indent = function () {
         // We actually made some list correction
         // Don't actually perform the action if we've potentially just changed
         // the list, and maybe the list appearance as a result.
-        wym.registerChange();
+        wym.registerModification();
         return true;
     }
 
@@ -3315,7 +3314,7 @@ WYMeditor.editor.prototype.indent = function () {
         return domChanged;
     };
     return wym.restoreSelectionAfterManipulation(manipulationFunc) &&
-        wym.registerChange();
+        wym.registerModification();
 };
 
 /**
@@ -3349,7 +3348,7 @@ WYMeditor.editor.prototype.outdent = function () {
         // We actually made some list correction
         // Don't actually perform the action if we've potentially just changed
         // the list, and maybe the list appearance as a result.
-        wym.registerChange();
+        wym.registerModification();
         return true;
     }
 
@@ -3382,7 +3381,7 @@ WYMeditor.editor.prototype.outdent = function () {
         return domChanged;
     };
     return wym.restoreSelectionAfterManipulation(manipulationFunc) &&
-        wym.registerChange();
+        wym.registerModification();
 };
 
 /**
@@ -3455,7 +3454,7 @@ WYMeditor.editor.prototype._insertOrderedList = function () {
         // We actually made some list correction
         // Don't actually perform the action if we've potentially just changed
         // the list, and maybe the list appearance as a result.
-        wym.registerChange();
+        wym.registerModification();
         return true;
     }
 
@@ -3465,7 +3464,7 @@ WYMeditor.editor.prototype._insertOrderedList = function () {
     };
 
     return wym.restoreSelectionAfterManipulation(manipulationFunc) &&
-        wym.registerChange();
+        wym.registerModification();
 };
 
 /**
@@ -3498,7 +3497,7 @@ WYMeditor.editor.prototype._insertUnorderedList = function () {
         // We actually made some list correction
         // Don't actually perform the action if we've potentially just changed
         // the list, and maybe the list appearance as a result.
-        wym.registerChange();
+        wym.registerModification();
         return true;
     }
 
@@ -3508,7 +3507,7 @@ WYMeditor.editor.prototype._insertUnorderedList = function () {
     };
 
     return wym.restoreSelectionAfterManipulation(manipulationFunc) &&
-        wym.registerChange();
+        wym.registerModification();
 };
 
 /**
@@ -3913,7 +3912,7 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
     wym._afterInsertTable(table);
     wym.prepareDocForEditing();
 
-    wym.registerChange();
+    wym.registerModification();
     return table;
 };
 
@@ -4063,6 +4062,7 @@ WYMeditor.editor.prototype.doesElementContainSelection = function (element) {
         if ($element.has(selectedContainer).length > 0) {
             return true;
         }
+        return false;
     }
 
     // For non-collapsed selections.

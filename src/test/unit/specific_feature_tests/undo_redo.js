@@ -163,7 +163,7 @@ test("Redo when everything has been redone", function () {
         manipulationFunc: function (wymeditor) {
             expect(expect() + 3);
             wymeditor.$body().append("<p>Bar</p>");
-            wymeditor.registerChange();
+            wymeditor.registerModification();
             wymEqual(
                 wymeditor,
                 "<p>Foo</p><p>Bar</p>",
@@ -211,7 +211,7 @@ test("Toolbar buttons", function () {
                 $redoButton = $buttons.filter("[name=Redo]");
 
             wymeditor.$body().append("<p>Bar</p>");
-            wymeditor.registerChange();
+            wymeditor.registerModification();
             wymEqual(
                 wymeditor,
                 "<p>Foo</p><p>Bar</p>",
@@ -252,7 +252,7 @@ test("Nothing to redo after change", function () {
             expect(expect() + 2);
 
             wymeditor.$body().append("<p>Bar</p>");
-            wymeditor.registerChange();
+            wymeditor.registerModification();
             wymEqual(
                 wymeditor,
                 "<p>Foo</p><p>Bar</p>",
@@ -271,7 +271,7 @@ test("Nothing to redo after change", function () {
             );
 
             wymeditor.$body().append("<p>Zad</p>");
-            wymeditor.registerChange();
+            wymeditor.registerModification();
             wymeditor.undoRedo.redo();
         },
         // Nothing was redone.
@@ -307,148 +307,6 @@ test("Table; merge cells", function () {
             , "<table>"
                 , "<tbody>"
                     , "<tr><td colspan=\"2\">FooBar</td></tr>"
-                , "</tbody>"
-            , "</table>"
-            , "<br class=\"wym-blocking-element-spacer wym-editor-only\" />"
-        ].join('')
-    });
-});
-
-test("Table; add row", function () {
-    manipulationTestHelper({
-        testUndoRedo: true,
-        startHtml: [""
-            , "<br class=\"wym-blocking-element-spacer wym-editor-only\" />"
-            , "<table>"
-                , "<tbody>"
-                    , "<tr><td>Foo</td></tr>"
-                , "</tbody>"
-            , "</table>"
-            , "<br class=\"wym-blocking-element-spacer wym-editor-only\" />"
-        ].join(''),
-        prepareFunc: function (wymeditor) {
-            var cell = wymeditor.$body().find('td')[0];
-            makeSelection(
-                wymeditor,
-                cell,
-                cell
-            );
-        },
-        manipulationFunc: function (wymeditor) {
-            wymeditor.tableEditor.addRow(wymeditor.selectedContainer());
-        },
-        expectedResultHtml: [""
-            , "<br class=\"wym-blocking-element-spacer wym-editor-only\" />"
-            , "<table>"
-                , "<tbody>"
-                    , "<tr><td>Foo</td></tr>"
-                    , "<tr><td>\xA0</td></tr>"
-                , "</tbody>"
-            , "</table>"
-            , "<br class=\"wym-blocking-element-spacer wym-editor-only\" />"
-        ].join('')
-    });
-});
-
-test("Table; remove row", function () {
-    manipulationTestHelper({
-        testUndoRedo: true,
-        startHtml: [""
-            , "<br class=\"wym-blocking-element-spacer wym-editor-only\" />"
-            , "<table>"
-                , "<tbody>"
-                    , "<tr><td>Foo</td></tr>"
-                    , "<tr><td>Bar</td></tr>"
-                , "</tbody>"
-            , "</table>"
-            , "<br class=\"wym-blocking-element-spacer wym-editor-only\" />"
-        ].join(''),
-        prepareFunc: function (wymeditor) {
-            var cell = wymeditor.$body().find('td')[1];
-            makeSelection(
-                wymeditor,
-                cell,
-                cell
-            );
-        },
-        manipulationFunc: function (wymeditor) {
-            wymeditor.tableEditor.removeRow(wymeditor.selectedContainer());
-        },
-        expectedResultHtml: [""
-            , "<br class=\"wym-blocking-element-spacer wym-editor-only\" />"
-            , "<table>"
-                , "<tbody>"
-                    , "<tr><td>Foo</td></tr>"
-                , "</tbody>"
-            , "</table>"
-            , "<br class=\"wym-blocking-element-spacer wym-editor-only\" />"
-        ].join('')
-    });
-});
-
-test("Table; add column", function () {
-    manipulationTestHelper({
-        testUndoRedo: true,
-        startHtml: [""
-            , "<br class=\"wym-blocking-element-spacer wym-editor-only\" />"
-            , "<table>"
-                , "<tbody>"
-                    , "<tr><td>Foo</td></tr>"
-                , "</tbody>"
-            , "</table>"
-            , "<br class=\"wym-blocking-element-spacer wym-editor-only\" />"
-        ].join(''),
-        prepareFunc: function (wymeditor) {
-            var cell = wymeditor.$body().find('td')[0];
-            makeSelection(
-                wymeditor,
-                cell,
-                cell
-            );
-        },
-        manipulationFunc: function (wymeditor) {
-            wymeditor.tableEditor.addColumn(wymeditor.selectedContainer());
-        },
-        expectedResultHtml: [""
-            , "<br class=\"wym-blocking-element-spacer wym-editor-only\" />"
-            , "<table>"
-                , "<tbody>"
-                    , "<tr><td>Foo</td><td>\xA0</td></tr>"
-                , "</tbody>"
-            , "</table>"
-            , "<br class=\"wym-blocking-element-spacer wym-editor-only\" />"
-        ].join('')
-    });
-});
-
-test("Table; remove column", function () {
-    manipulationTestHelper({
-        testUndoRedo: true,
-        startHtml: [""
-            , "<br class=\"wym-blocking-element-spacer wym-editor-only\" />"
-            , "<table>"
-                , "<tbody>"
-                    , "<tr><td>Foo</td><td>Bar</td></tr>"
-                , "</tbody>"
-            , "</table>"
-            , "<br class=\"wym-blocking-element-spacer wym-editor-only\" />"
-        ].join(''),
-        prepareFunc: function (wymeditor) {
-            var cell = wymeditor.$body().find('td')[1];
-            makeSelection(
-                wymeditor,
-                cell,
-                cell
-            );
-        },
-        manipulationFunc: function (wymeditor) {
-            wymeditor.tableEditor.removeColumn(wymeditor.selectedContainer());
-        },
-        expectedResultHtml: [""
-            , "<br class=\"wym-blocking-element-spacer wym-editor-only\" />"
-            , "<table>"
-                , "<tbody>"
-                    , "<tr><td>Foo</td></tr>"
                 , "</tbody>"
             , "</table>"
             , "<br class=\"wym-blocking-element-spacer wym-editor-only\" />"
