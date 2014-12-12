@@ -683,6 +683,5 @@ function manipulationTestHelper(a) {
         return;
     }
 
-    a.testName += "; using keyboard shortcut";
     performTest(true);
 }
