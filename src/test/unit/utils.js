@@ -586,8 +586,6 @@ function manipulationTestHelper(a) {
     }
     var wymeditor = jQuery.wymeditors(0);
     function execute(useKeyCombo) {
-        var useKeyComboAssertStrAppend = useKeyCombo === true ?
-            "; using keyboard shortcut" : "";
         if (typeof a.startHtml === 'string') {
             wymeditor.rawHtml(a.startHtml);
         }
@@ -627,7 +625,7 @@ function manipulationTestHelper(a) {
                 a.expectedResultHtml,
                 {
                     assertionString: "Manipulation result HTML" +
-                        useKeyComboAssertStrAppend,
+                        (useKeyCombo ? "; using keyboard shortcut" : ""),
                     parseHtml: typeof a.parseHtml === 'undefined' ? false :
                         a.parseHtml
                 }
