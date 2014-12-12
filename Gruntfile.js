@@ -193,7 +193,7 @@ module.exports = function (grunt) {
                     debug: true
                 }
             },
-            libs: {
+            externalModules: {
                 // This file is the entry point for the browserification of
                 // external modules.
                 src: ['<%= yeoman.app %>/wymeditor/editor/' +
@@ -516,7 +516,7 @@ module.exports = function (grunt) {
 
         grunt.task.run([
             'bower',
-            'browserify:libs',
+            'browserify:externalModules',
             'browserify:keysim',
             'clean:server',
             'jekyllDev',
@@ -527,7 +527,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('test', [
         'bower',
-        'browserify:libs',
+        'browserify:externalModules',
         'browserify:keysim',
         'clean:server',
         'connect:test',
@@ -539,7 +539,7 @@ module.exports = function (grunt) {
         'useminPrepare',
         'bower-install-simple',
         'bower-linker:dist-examples',
-        'browserify:libs',
+        'browserify:externalModules',
         'concat',
         'uglify',
         'copy:dist',
