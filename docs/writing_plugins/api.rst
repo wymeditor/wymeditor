@@ -687,7 +687,7 @@ to the document and assigned as ``wym.keyboard.combokeys``.
 
 This Combokeys instance can be used to attach keyboard shortcuts.
 
-Please refer to `Combokeys`_'s documentation.
+Please refer to `Combokeys`_' documentation.
 
 .. _Combokeys: http://github.com/mightyiam/combokeys
 
