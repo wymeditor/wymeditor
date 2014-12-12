@@ -135,17 +135,12 @@ Requirements
 * jQuery: any version between 1.4.4 and 2.1.x.
   With jQuery 2.x and newer, there is no support for IE8 and older.
 
-Included requirements
-=====================
+Global Pollution
+================
 
-These requirements are included inside the distributed WYMeditor JavaScript
-file.
-
-* `jquery.browser`_; defines/overrides ``jQuery.browser``.
-* `Rangy`_; defines/overrides global ``rangy``.
-* `rangy-selectionsaverestore`_; a Rangy module.
-* `object-history`_; helps with undo/redo; defines/overrides global
-  ``ObjectHistory``.
+* ``window.jQuery.browser``: `jquery.browser`_ v``~0.0.6``
+* ``window.rangy``: `Rangy`_ v``1.2.2``
+  (includes the selection save and restore module)
 
 *********
 Copyright
@@ -175,5 +170,4 @@ and GPL (``GPL-license.txt``) licenses.
 
 .. _jquery.browser: https://github.com/gabceb/jquery-browser-plugin
 .. _Rangy: https://github.com/timdown/rangy/
-.. _rangy-selectionsaverestore: Rangy_
 .. _object-history: https://github.com/mightyiam/object-history

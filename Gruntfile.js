@@ -198,7 +198,7 @@ module.exports = function (grunt) {
                 // this module. It assigns the module's CommonJS export to a
                 // browser window global.
                 src: ['<%= yeoman.app %>/wymeditor/editor/' +
-                    'object-history-globalifier.js'],
+                    'object-history-browserify.js'],
                 dest: '<%= yeoman.app %>/lib/object-history.js'
             }
         },
