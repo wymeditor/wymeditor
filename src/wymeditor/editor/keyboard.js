@@ -33,7 +33,6 @@ WYMeditor.Keyboard.DEFAULT_KEYBOARD_SHORTCUTS = [
     }
 ];
 
-
 /**
     WYMeditor.keyboard._attachDefaultKeyboardShortcuts
     ================================================
