@@ -50,11 +50,11 @@ WYMeditor.Keyboard.prototype._attachDefaultKeyboardShortcuts = function () {
         shortcut = SHORTCUTS[i];
         keyboard.combokeys.bind(
             shortcut.combo,
-            function (shortcut) {
+            (function (shortcut) {
                 return function () {
                     shortcut.cb.call(wym);
                 };
-            }(shortcut)
+            }(shortcut))
         );
     }
 };
