@@ -1,7 +1,4 @@
 "use strict";
-/* global
-    Combokeys
-*/
 WYMeditor.Keyboard = function (wym) {
     var keyboard = this;
 
