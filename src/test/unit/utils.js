@@ -677,11 +677,9 @@ function manipulationTestHelper(a) {
     performTest(false);
 
     if (
-        skipKeyboardShortcutTests === true ||
-        typeof a.manipulationKeyCombo !== "string"
+        typeof a.manipulationKeyCombo === "string" &&
+        skipKeyboardShortcutTests !== true
     ) {
-        return;
+        performTest(true);
     }
-
-    performTest(true);
 }
