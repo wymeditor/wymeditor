@@ -160,7 +160,7 @@ test("Redo when everything has been redone", function () {
         manipulationFunc: function (wymeditor) {
             expect(expect() + 3);
             wymeditor.$body().append("<p>Bar</p>");
-            wymeditor.registerChange();
+            wymeditor.registerModification();
             wymEqual(
                 wymeditor,
                 "<p>Foo</p><p>Bar</p>",
@@ -208,7 +208,7 @@ test("Toolbar buttons", function () {
                 $redoButton = $buttons.filter("[name=Redo]");
 
             wymeditor.$body().append("<p>Bar</p>");
-            wymeditor.registerChange();
+            wymeditor.registerModification();
             wymEqual(
                 wymeditor,
                 "<p>Foo</p><p>Bar</p>",
@@ -249,7 +249,7 @@ test("Nothing to redo after change", function () {
             expect(expect() + 2);
 
             wymeditor.$body().append("<p>Bar</p>");
-            wymeditor.registerChange();
+            wymeditor.registerModification();
             wymEqual(
                 wymeditor,
                 "<p>Foo</p><p>Bar</p>",
@@ -268,7 +268,7 @@ test("Nothing to redo after change", function () {
             );
 
             wymeditor.$body().append("<p>Zad</p>");
-            wymeditor.registerChange();
+            wymeditor.registerModification();
             wymeditor.undoRedo.redo();
         },
         // Nothing was redone.

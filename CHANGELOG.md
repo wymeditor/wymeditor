@@ -14,7 +14,7 @@ WYMeditor.
 * [#620](https://github.com/wymeditor/wymeditor/pull/620)
   `editor.rawHtml` no longer calls `editor.prepareDocForEditing`.
 * [#512](https://github.com/wymeditor/wymeditor/pull/512)
-  `editor.registerChange()` is expected to be called after DOM manipulations.
+  `editor.registerModification()` is expected to be called after DOM manipulations.
 
 ### Enhancements
 

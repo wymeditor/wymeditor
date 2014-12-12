@@ -480,7 +480,7 @@ jQuery.extend(WYMeditor, {
     EVENTS : {
         'postBlockMaybeCreated': 'wym-postBlockMaybeCreated',
         'postIframeInitialization': 'wym-postIframeInitialization',
-        'postAnyChange': 'wym-postAnyChange',
+        'postModification': 'wym-postModification',
         'postUndo': 'wym-postUndo',
         'postRedo': 'wym-postRedo'
     },
