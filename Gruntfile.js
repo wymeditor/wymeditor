@@ -195,7 +195,7 @@ module.exports = function (grunt) {
             },
             libs: {
                 // This file is the entry point for the browserification of
-                // two external modules.
+                // external modules.
                 src: ['<%= yeoman.app %>/wymeditor/editor/' +
                     'external-modules-browserify.js'],
                 dest: '<%= yeoman.app %>/lib/browserified-external-modules.js'
