@@ -648,8 +648,7 @@ function manipulationTestHelper(a) {
             wymeditor,
             a.expectedStartHtml || a.startHtml,
             {
-                assertionString: "Back to start HTML after undo" +
-                    useKeyComboAssertStrAppend,
+                assertionString: "Back to start HTML after undo",
                 parseHtml: typeof a.parseHtml === 'undefined' ? false :
                     a.parseHtml
             }
@@ -663,7 +662,7 @@ function manipulationTestHelper(a) {
                 a.expectedResultHtml,
                 {
                     assertionString: "Back to manipulation result HTML " +
-                        "after redo" + useKeyComboAssertStrAppend,
+                        "after redo",
                     parseHtml: typeof a.parseHtml === 'undefined' ? false :
                         a.parseHtml
                 }
