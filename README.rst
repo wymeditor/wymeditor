@@ -171,4 +171,3 @@ and GPL (``GPL-license.txt``) licenses.
 .. _jquery.browser: https://github.com/gabceb/jquery-browser-plugin
 .. _Rangy: https://github.com/timdown/rangy/
 .. _object-history: https://github.com/mightyiam/object-history
-.. _Combokeys: https://github.com/mightyiam/combokeys
