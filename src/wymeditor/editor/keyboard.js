@@ -41,6 +41,7 @@ WYMeditor.Keyboard.DEFAULT_KEYBOARD_SHORTCUTS = [
 */
 WYMeditor.Keyboard.prototype._attachDefaultKeyboardShortcuts = function () {
     var keyboard = this,
+        wym = keyboard._wym,
         SHORTCUTS = keyboard.constructor.DEFAULT_KEYBOARD_SHORTCUTS,
         shortcut,
         i;
@@ -49,7 +50,7 @@ WYMeditor.Keyboard.prototype._attachDefaultKeyboardShortcuts = function () {
         shortcut = SHORTCUTS[i];
         keyboard.combokeys.bind(
             shortcut.combo,
-            shortcut.cb.bind(keyboard._wym)
+            shortcut.cb.bind(wym)
         );
     }
 };
