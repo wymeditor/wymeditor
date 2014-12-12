@@ -303,6 +303,23 @@ WYMeditor.editor.prototype.focusOnDocument = function () {
 };
 
 /**
+    WYMeditor.editor.registerModification
+    =====================================
+
+    Registers a change in the document. This should be called after changes
+    are made in the document.
+
+    Triggers the `postModification` event afterwards.
+*/
+WYMeditor.editor.prototype.registerModification = function () {
+    var wym = this;
+
+    wym.undoRedo._add();
+
+    jQuery(wym.element).trigger(WYMeditor.EVENTS.postModification);
+};
+
+/**
     WYMeditor.editor._bindFocusOnDocumentToButtons
     ==============================================
 
@@ -379,6 +396,8 @@ WYMeditor.editor.prototype._afterDesignModeOn = function () {
 
     // Add event listeners to doc elements, e.g. images
     wym._listen();
+
+    wym.undoRedo = new WYMeditor.UndoRedo(wym);
 
     jQuery(wym.element).trigger(
         WYMeditor.EVENTS.postIframeInitialization,
@@ -684,6 +703,14 @@ WYMeditor.editor.prototype.exec = function (cmd) {
         wym.outdent();
         break;
 
+    case WYMeditor.EXEC_COMMANDS.UNDO:
+        wym.undoRedo.undo();
+        break;
+
+    case WYMeditor.EXEC_COMMANDS.REDO:
+        wym.undoRedo.redo();
+        break;
+
 
     default:
         custom_run = false;
@@ -696,7 +723,12 @@ WYMeditor.editor.prototype.exec = function (cmd) {
             }
         });
         if (!custom_run) {
-            wym._exec(cmd);
+            if (
+                // Deligate all other commands to `_exec`
+                wym._exec(cmd) === true
+            ) {
+                wym.registerModification();
+            }
         }
         break;
     }
@@ -1351,24 +1383,49 @@ WYMeditor.editor.prototype._encloseString = function (sVal) {
 
     The state includes:
 
-    * `rawHtml`: The return value of `editor.rawHtml()`.
-    * `selectionRange`: The Rangy selection range, if anything is selected.
+    ``html``
+        The return value of ``editor.rawHtml()``.
+    ``savedSelection``
+        A Rangy saved selection, if anything is selected.
+        The ``win`` and the ``doc``  properties are deleted,
+        instead of referencing the window object and the document object,
+        respectively.
+        In order to provide this as an argument to Rangy's ``restoreSelection``,
+        these must be reassigned.
 
     It may include more things in the future.
 */
 WYMeditor.editor.prototype.getCurrentState = function () {
     var wym = this,
-        state,
-        selection;
-
-    state = {
-        rawHtml: wym.rawHtml()
-    };
+        state = {},
+        selection,
+        wymIframeWindow = wym._iframe.contentWindow;
 
     selection = wym.selection();
 
-    if (selection.rangeCount > 0) {
-        state.selectionRange = selection.getRangeAt(0);
+    if (wym.hasSelection() === true) {
+        state.savedSelection = rangy.saveSelection(wymIframeWindow);
+    }
+
+    state.html = wym.rawHtml();
+
+    if (state.savedSelection) {
+        // Selection was saved. This means that in the document, DOM elements,
+        // which are markers for the selection, were placed, and that references
+        // to these markers were saved in `state.savedselection`. The markers
+        // were saved in `state.html`, along with the whole document, as HTML.
+        // Restoring the selection removes the markers and restores the
+        // selection to almost exactly as it was before it was saved.
+        rangy.restoreSelection(state.savedSelection);
+        // This is for time-travel, so selection is considered not to be
+        // restored. The markers may be created again from the saved HTML. In
+        // that case, leaving this value at `true` would mean that
+        // `rangy.restoreSelection` will refuse to restore this selection.
+        state.savedSelection.restored = false;
+        // These refer to the window and the document and can't be processed by
+        // the `object-history` module that is used by the `UndoRedo` module.
+        delete state.savedSelection.win;
+        delete state.savedSelection.doc;
     }
 
     return state;
@@ -1792,6 +1849,8 @@ WYMeditor.editor.prototype.link = function (attrs) {
         return;
     }
     $a.attr(attrs);
+
+    wym.registerModification();
 };
 
 /**
@@ -1836,6 +1895,8 @@ WYMeditor.editor.prototype.insertImage = function (attrs) {
 
     // PhantomJS seems to add strange spans around images.
     wym.$body().find('.Apple-style-span').children().unwrap();
+
+    wym.registerModification();
 };
 
 /**
@@ -2061,6 +2122,7 @@ WYMeditor.editor.prototype.paste = function (str) {
             }
         }
     }
+    wym.registerModification();
 };
 
 WYMeditor.editor.prototype.insert = function (html) {
@@ -3216,6 +3278,7 @@ WYMeditor.editor.prototype.indent = function () {
         // We actually made some list correction
         // Don't actually perform the action if we've potentially just changed
         // the list, and maybe the list appearance as a result.
+        wym.registerModification();
         return true;
     }
 
@@ -3246,7 +3309,8 @@ WYMeditor.editor.prototype.indent = function () {
 
         return domChanged;
     };
-    return wym.restoreSelectionAfterManipulation(manipulationFunc);
+    return wym.restoreSelectionAfterManipulation(manipulationFunc) &&
+        wym.registerModification();
 };
 
 /**
@@ -3280,6 +3344,7 @@ WYMeditor.editor.prototype.outdent = function () {
         // We actually made some list correction
         // Don't actually perform the action if we've potentially just changed
         // the list, and maybe the list appearance as a result.
+        wym.registerModification();
         return true;
     }
 
@@ -3311,7 +3376,8 @@ WYMeditor.editor.prototype.outdent = function () {
 
         return domChanged;
     };
-    return wym.restoreSelectionAfterManipulation(manipulationFunc);
+    return wym.restoreSelectionAfterManipulation(manipulationFunc) &&
+        wym.registerModification();
 };
 
 /**
@@ -3384,6 +3450,7 @@ WYMeditor.editor.prototype._insertOrderedList = function () {
         // We actually made some list correction
         // Don't actually perform the action if we've potentially just changed
         // the list, and maybe the list appearance as a result.
+        wym.registerModification();
         return true;
     }
 
@@ -3392,7 +3459,8 @@ WYMeditor.editor.prototype._insertOrderedList = function () {
         return wym.insertList('ol');
     };
 
-    return wym.restoreSelectionAfterManipulation(manipulationFunc);
+    return wym.restoreSelectionAfterManipulation(manipulationFunc) &&
+        wym.registerModification();
 };
 
 /**
@@ -3425,6 +3493,7 @@ WYMeditor.editor.prototype._insertUnorderedList = function () {
         // We actually made some list correction
         // Don't actually perform the action if we've potentially just changed
         // the list, and maybe the list appearance as a result.
+        wym.registerModification();
         return true;
     }
 
@@ -3433,7 +3502,8 @@ WYMeditor.editor.prototype._insertUnorderedList = function () {
         return wym.insertList('ul');
     };
 
-    return wym.restoreSelectionAfterManipulation(manipulationFunc);
+    return wym.restoreSelectionAfterManipulation(manipulationFunc) &&
+        wym.registerModification();
 };
 
 /**
@@ -3838,6 +3908,7 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
     wym._afterInsertTable(table);
     wym.prepareDocForEditing();
 
+    wym.registerModification();
     return table;
 };
 

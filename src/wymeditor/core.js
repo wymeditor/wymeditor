@@ -210,6 +210,8 @@ jQuery.extend(WYMeditor, {
         INSERT_IMAGE        : "InsertImage",
         INSERT_TABLE        : "InsertTable",
         PASTE               : "Paste",
+        UNDO                : "Undo",
+        REDO                : "Redo",
         // Lists
         INSERT_ORDEREDLIST  : "InsertOrderedList",
         INSERT_UNORDEREDLIST: "InsertUnorderedList",
@@ -477,7 +479,10 @@ jQuery.extend(WYMeditor, {
 
     EVENTS : {
         'postBlockMaybeCreated': 'wym-postBlockMaybeCreated',
-        'postIframeInitialization': 'wym-postIframeInitialization'
+        'postIframeInitialization': 'wym-postIframeInitialization',
+        'postModification': 'wym-postModification',
+        'postUndo': 'wym-postUndo',
+        'postRedo': 'wym-postRedo'
     },
 
     // domNode.nodeType constants

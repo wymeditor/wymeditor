@@ -185,6 +185,23 @@ module.exports = function (grunt) {
                 }
             }
         },
+        browserify: {
+            // This task Browserifies an NPM CommonJS module that will be
+            // bundled in the build.
+            options: {
+                browserifyOptions: {
+                    debug: true
+                }
+            },
+            objectHistory: {
+                // This file is the entry point for the browserification of
+                // this module. It assigns the module's CommonJS export to a
+                // browser window global.
+                src: ['<%= yeoman.app %>/wymeditor/editor/' +
+                    'object-history-globalifier.js'],
+                dest: '<%= yeoman.app %>/lib/object-history.js'
+            }
+        },
         useminPrepare: {
             options: {
                 dest: '<%= yeoman.dist %>'
@@ -238,6 +255,8 @@ module.exports = function (grunt) {
                     "<%= yeoman.app %>/wymeditor/editor/webkit.js",
                     "<%= yeoman.app %>/wymeditor/editor/trident-pre-7.js",
                     "<%= yeoman.app %>/wymeditor/editor/trident-7.js",
+                    "<%= yeoman.app %>/lib/object-history.js",
+                    "<%= yeoman.app %>/wymeditor/editor/undo-redo.js",
                     "<%= yeoman.app %>/wymeditor/parser/*.js",
                     // TODO: For custom builds, will need to change this.
                     "<%= yeoman.app %>/wymeditor/lang/*.js",
@@ -401,6 +420,7 @@ module.exports = function (grunt) {
                         'require.js': '/',
                         'jquery.js': '/',
                         'jquery.browser.js': '/',
+                        'es5-shim.js': '/',
                         // Originates from js-beautify
                         'beautify-html.js': '/',
                         // following two also originate from js-beautify and we
@@ -462,6 +482,20 @@ module.exports = function (grunt) {
                     failOnError: true
                 },
                 command: 'xdg-open docs/.build/html/index.html'
+            },
+            // Unlike the ES5 shims, the shams file is not linked by default,
+            // by the bower-linker task, because it is not in the `main`
+            // of its Bower package. So we link it manually, with this `shell`
+            // task.
+            linkES5Sham: {
+                options: {
+                    stdout: true,
+                    stderr: true,
+                    stdin: false,
+                    failOnError: true
+                },
+                command: 'ln -sf ../bower_components/es5-shim/es5-sham.js ' +
+                    'src/lib/es5-sham.js'
             }
         }
     });
@@ -477,6 +511,7 @@ module.exports = function (grunt) {
 
         grunt.task.run([
             'bower',
+            'browserify:objectHistory',
             'clean:server',
             'jekyllDev',
             'connect:dev',
@@ -486,6 +521,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('test', [
         'bower',
+        'browserify:objectHistory',
         'clean:server',
         'connect:test',
         'qunit'
@@ -496,6 +532,7 @@ module.exports = function (grunt) {
         'useminPrepare',
         'bower-install-simple',
         'bower-linker:dist-examples',
+        'browserify:objectHistory',
         'concat',
         'uglify',
         'copy:dist',
@@ -516,6 +553,7 @@ module.exports = function (grunt) {
     grunt.registerTask('bower', [
         'bower-install-simple',
         'bower-linker:dev',
+        'shell:linkES5Sham'
     ]);
 
     grunt.registerTask('jekyllDev', [
@@ -553,4 +591,5 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-jekyll");
     grunt.loadNpmTasks("grunt-concurrent");
     grunt.loadNpmTasks("grunt-shell");
+    grunt.loadNpmTasks("grunt-browserify");
 };

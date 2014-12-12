@@ -510,6 +510,8 @@ var SKIP_THIS_TEST = "Skip this test. Really. I know what I'm doing. Trust " +
  *     `manipulationFunc`
  *         Optional; The manipulation function to be tested. Receives one
  *         argument, the WYMeditor instance.
+ *     `testUndoRedo`
+ *         Optional; Whether to test undo/redo on this manipulation.
  *     `expectedResultHtml`
  *         The HTML that is expected to be the state of the document after the
  *         `manipulationFunc` ran.
@@ -580,6 +582,10 @@ function manipulationTestHelper(a) {
         }
     );
 
+    if (a.testUndoRedo === true) {
+        wymeditor.undoRedo.reset();
+    }
+
     if (typeof a.manipulationFunc === 'function') {
         a.manipulationFunc(wymeditor);
     }
@@ -591,6 +597,41 @@ function manipulationTestHelper(a) {
             a.expectedResultHtml,
             {
                 assertionString: "Manipulation result HTML.",
+                parseHtml: typeof a.parseHtml === 'undefined' ? false :
+                    a.parseHtml
+            }
+        );
+    }
+
+    if (typeof a.additionalAssertionsFunc === 'function') {
+        a.additionalAssertionsFunc(wymeditor);
+    }
+
+    if (a.testUndoRedo !== true) {
+        return;
+    }
+
+    wymeditor.undoRedo.undo();
+    expect(expect() + 1);
+    wymEqual(
+        wymeditor,
+        a.expectedStartHtml || a.startHtml,
+        {
+            assertionString: "Back to start HTML after undo.",
+            parseHtml: typeof a.parseHtml === 'undefined' ? false :
+                a.parseHtml
+        }
+    );
+
+    wymeditor.undoRedo.redo();
+    if (typeof a.expectedResultHtml === 'string') {
+        expect(expect() + 1);
+        wymEqual(
+            wymeditor,
+            a.expectedResultHtml,
+            {
+                assertionString: "Back to manipulation result HTML " +
+                    "after redo.",
                 parseHtml: typeof a.parseHtml === 'undefined' ? false :
                     a.parseHtml
             }

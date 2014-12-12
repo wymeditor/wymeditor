@@ -498,6 +498,7 @@ TableEditor.prototype.mergeRow = function () {
 
     tableEditor.selectElement(mergeCell);
 
+    wym.registerModification();
     return true;
 };
 
@@ -508,6 +509,7 @@ TableEditor.prototype.mergeRow = function () {
  */
 TableEditor.prototype.addRow = function (elmnt) {
     var tableEditor = this,
+        wym = tableEditor._wym,
         tr = tableEditor._wym.findUp(elmnt, 'tr'),
         numColumns,
         tdHtml,
@@ -525,6 +527,7 @@ TableEditor.prototype.addRow = function (elmnt) {
     }
     jQuery(tr).after('<tr>' + tdHtml + '</tr>');
 
+    wym.registerModification();
     return false;
 };
 
@@ -572,6 +575,7 @@ TableEditor.prototype.removeRow = function (elmnt) {
     jQuery(tr).remove();
     tableEditor.removeEmptyTable(table);
 
+    wym.registerModification();
     return false;
 };
 
@@ -608,6 +612,7 @@ TableEditor.prototype.addColumn = function (elmnt) {
         jQuery(element).find('td,th').eq(tdIndex).after(insertionElement);
     });
 
+    wym.registerModification();
     return false;
 };
 
@@ -643,6 +648,7 @@ TableEditor.prototype.removeColumn = function (elmnt) {
     });
     tableEditor.removeEmptyTable(table);
 
+    wym.registerModification();
     return false;
 };
 

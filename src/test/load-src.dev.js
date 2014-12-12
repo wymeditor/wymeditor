@@ -13,6 +13,8 @@ function loadWymSrc(srcPath, extraRequirements, jqueryVersion) {
     // Oldest supported version of jQuery is used by default
     var localJqueryVersion = "1.4.4",
         baseRequirements = [
+            srcPath + '../../lib/es5-shim.js',
+            srcPath + '../../lib/es5-sham.js',
             srcPath + 'wymeditor/rangy/rangy-core.js',
             srcPath + 'wymeditor/rangy/rangy-selectionsaverestore.js',
             srcPath + 'wymeditor/core.js',
@@ -22,6 +24,8 @@ function loadWymSrc(srcPath, extraRequirements, jqueryVersion) {
             srcPath + 'wymeditor/editor/trident-pre-7.js',
             srcPath + 'wymeditor/editor/trident-7.js',
             srcPath + 'wymeditor/editor/webkit.js',
+            srcPath + 'lib/object-history.js',
+            srcPath + 'wymeditor/editor/undo-redo.js',
             srcPath + 'wymeditor/parser/xml-helper.js',
             srcPath + 'wymeditor/parser/xhtml-validator.js',
             srcPath + 'wymeditor/parser/parallel-regex.js',
