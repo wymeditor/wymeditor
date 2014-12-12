@@ -46,6 +46,18 @@ function getBrowserTagname(command) {
     return tagName;
 }
 
+function getExecKeyboardShortcut(command) {
+    var EXEC_KEYBOARD_SHORTCUTS = {};
+
+    EXEC_KEYBOARD_SHORTCUTS[WYMeditor.EXEC_COMMANDS.BOLD] = "ctrl+b";
+    EXEC_KEYBOARD_SHORTCUTS[WYMeditor.EXEC_COMMANDS.ITALIC] = "ctrl+i";
+
+    if (EXEC_KEYBOARD_SHORTCUTS.hasOwnProperty(command) === true) {
+        return EXEC_KEYBOARD_SHORTCUTS[command];
+    }
+}
+
+
 function wrapNonWrappedSelection(command) {
     var tagName = getBrowserTagname(command);
     manipulationTestHelper({
@@ -64,6 +76,7 @@ function wrapNonWrappedSelection(command) {
             wymeditor.exec(command);
         },
         expectedResultHtml: "<p><" + tagName + ">Foo</" + tagName + "></p>",
+        manipulationKeyCombo: getExecKeyboardShortcut(command),
         testUndoRedo: true
     });
 }
@@ -102,6 +115,7 @@ function unwrapWrappedSelection(command) {
             wymeditor.exec(command);
         },
         expectedResultHtml: "<p>Foo</p>",
+        manipulationKeyCombo: getExecKeyboardShortcut(command),
         testUndoRedo: true
     });
 }
@@ -140,6 +154,7 @@ function unwrapWrappedSelectionPartially(command) {
             wymeditor.exec(command);
         },
         expectedResultHtml: "<p><" + tagName + ">Fo</" + tagName + ">o</p>",
+        manipulationKeyCombo: getExecKeyboardShortcut(command),
         testUndoRedo: true
     });
 }
@@ -179,6 +194,7 @@ function wrapPartiallyWrappedSelection(command, skipFunc) {
             wymeditor.exec(command);
         },
         expectedResultHtml: "<p><" + tagName + ">Foo</" + tagName + "></p>",
+        manipulationKeyCombo: getExecKeyboardShortcut(command),
         testUndoRedo: true,
         skipFunc: skipFunc
     });
@@ -250,6 +266,7 @@ function unwrapPartiallyWrappedSelection(command, skipFunc) {
             wymeditor.exec(command);
         },
         expectedResultHtml: "<p>Foo</p>",
+        manipulationKeyCombo: getExecKeyboardShortcut(command),
         testUndoRedo: true,
         skipFunc: skipFunc
     });
@@ -320,6 +337,7 @@ function doesntWrapAcrossRootContainers(command) {
             wymeditor.exec(command);
         },
         expectedResultHtml: noChangeHtml,
+        manipulationKeyCombo: getExecKeyboardShortcut(command),
         testUndoRedo: true
     });
 }
@@ -362,6 +380,7 @@ function doesntUnwrapAcrossRootContainers(command) {
             wymeditor.exec(command);
         },
         expectedResultHtml: noChangeHtml,
+        manipulationKeyCombo: getExecKeyboardShortcut(command),
         testUndoRedo: true
     });
 }
