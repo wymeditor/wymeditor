@@ -51,6 +51,8 @@ WYMeditor.Keyboard.prototype._attachDefaultKeyboardShortcuts = function () {
         /* jshint loopfunc:true */
         keyboard.combokeys.bind(
             shortcut.combo,
+            // With `Function.prototype.bind` available, the expression below
+            // can be simply `shortcut.cb.bind(wym)`.
             (function (cb) {
                 return function () {
                     cb.call(wym);
