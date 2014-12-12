@@ -678,7 +678,7 @@ Example:
 Show/hide the HTML source.
 
 ``keyboard.combokeys``
-=============
+======================
 
 For keyboard shortcuts, the `Combokeys`_ library is used.
 
