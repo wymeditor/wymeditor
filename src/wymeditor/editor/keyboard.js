@@ -7,7 +7,7 @@ WYMeditor.Keyboard = function (wym) {
 
     keyboard._wym = wym;
 
-    keyboard.combokeys = new Combokeys(wym._doc);
+    keyboard.combokeys = new WYMeditor.EXTERNAL_MODULES.Combokeys(wym._doc);
 
     return keyboard;
 };

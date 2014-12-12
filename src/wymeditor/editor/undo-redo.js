@@ -1,5 +1,4 @@
 /* global
-    ObjectHistory,
     rangy
 */
 "use strict";
@@ -24,7 +23,8 @@ WYMeditor.UndoRedo = function (wym) {
     undoRedo.wym = wym;
 
     // https://github.com/mightyiam/object-history
-    undoRedo.history = new ObjectHistory(wym.getCurrentState());
+    undoRedo.history = new WYMeditor.EXTERNAL_MODULES
+        .ObjectHistory(wym.getCurrentState());
 
     wym.keyboard.combokeys.bind(["mod+z"], function () {
         wym.undoRedo.undo();
