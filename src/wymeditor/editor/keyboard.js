@@ -37,7 +37,7 @@ WYMeditor.Keyboard.DEFAULT_KEYBOARD_SHORTCUTS = [
     WYMeditor.keyboard._attachDefaultKeyboardShortcuts
     ================================================
 
-    Attaches the keyboard shortcuts handler to the document.
+    Binds the default keyboard shortcuts.
 */
 WYMeditor.Keyboard.prototype._attachDefaultKeyboardShortcuts = function () {
     var keyboard = this,
