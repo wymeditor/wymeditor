@@ -48,6 +48,7 @@ WYMeditor.Keyboard.prototype._attachDefaultKeyboardShortcuts = function () {
 
     for (i = 0; i < SHORTCUTS.length; i++) {
         shortcut = SHORTCUTS[i];
+        /* jshint loopfunc:true */
         keyboard.combokeys.bind(
             shortcut.combo,
             (function (shortcut) {
@@ -56,5 +57,6 @@ WYMeditor.Keyboard.prototype._attachDefaultKeyboardShortcuts = function () {
                 };
             }(shortcut))
         );
+        /* jshint loopfunc:false */
     }
 };
