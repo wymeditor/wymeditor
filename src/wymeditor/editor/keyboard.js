@@ -58,7 +58,10 @@ WYMeditor.Keyboard.prototype._attachDefaultKeyboardShortcuts = function () {
             /* jshint loopfunc:true */
             (function (cb) {
                 return function () {
-                    cb.call(wym);
+                    // This return statement is for Combokeys to receive the
+                    // `false` value of callbacks, for preventing default
+                    // actions.
+                    return cb.call(wym);
                 };
             }(shortcut.cb))
             /* jshint loopfunc:false */
