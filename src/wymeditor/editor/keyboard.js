@@ -14,6 +14,7 @@ WYMeditor.Keyboard.DEFAULT_KEYBOARD_SHORTCUTS = [
         combo: "mod+b",
         cb: function () {
             this.exec(WYMeditor.EXEC_COMMANDS.BOLD);
+            // Prevents native action. Caution: not covered by tests.
             return false;
         }
     },
@@ -21,6 +22,7 @@ WYMeditor.Keyboard.DEFAULT_KEYBOARD_SHORTCUTS = [
         combo: "mod+i",
         cb: function () {
             this.exec(WYMeditor.EXEC_COMMANDS.ITALIC);
+            // Prevents native action. Caution: not covered by tests.
             return false;
         }
     },
@@ -28,6 +30,7 @@ WYMeditor.Keyboard.DEFAULT_KEYBOARD_SHORTCUTS = [
         combo: "mod+k",
         cb: function () {
             this.exec(WYMeditor.EXEC_COMMANDS.CREATE_LINK);
+            // Prevents native action. Caution: not covered by tests.
             return false;
         }
     }

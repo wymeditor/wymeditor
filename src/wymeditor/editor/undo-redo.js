@@ -30,6 +30,7 @@ WYMeditor.UndoRedo = function (wym) {
         "mod+z",
         function () {
             wym.undoRedo.undo();
+            // Prevents native action. Caution: not covered by tests.
             return false;
         }
     );
@@ -37,6 +38,7 @@ WYMeditor.UndoRedo = function (wym) {
         jQuery.browser.mac ? "shift+meta+z" : "ctrl+y",
         function () {
             wym.undoRedo.redo();
+            // Prevents native action. Caution: not covered by tests.
             return false;
         }
     );
