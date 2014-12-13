@@ -47,10 +47,11 @@ function getBrowserTagname(command) {
 }
 
 function getExecKeyboardShortcut(command) {
-    var EXEC_KEYBOARD_SHORTCUTS = {};
+    var EXEC_KEYBOARD_SHORTCUTS = {},
+        mod = jQuery.browser.mac ? "meta+" : "ctrl+";
 
-    EXEC_KEYBOARD_SHORTCUTS[WYMeditor.EXEC_COMMANDS.BOLD] = "ctrl+b";
-    EXEC_KEYBOARD_SHORTCUTS[WYMeditor.EXEC_COMMANDS.ITALIC] = "ctrl+i";
+    EXEC_KEYBOARD_SHORTCUTS[WYMeditor.EXEC_COMMANDS.BOLD] = mod + "b";
+    EXEC_KEYBOARD_SHORTCUTS[WYMeditor.EXEC_COMMANDS.ITALIC] = mod + "i";
 
     if (EXEC_KEYBOARD_SHORTCUTS.hasOwnProperty(command) === true) {
         return EXEC_KEYBOARD_SHORTCUTS[command];
