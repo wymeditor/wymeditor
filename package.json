@@ -66,7 +66,7 @@
     "grunt-rev": "~0.1.0",
     "grunt-shell": "^1.1.1",
     "grunt-usemin": "~0.1.10",
-    "keysim": "https://github.com/mightyiam/keysim.js/archive/ie.tar.gz",
+    "keysim": "^1.1.0",
     "object-history": "^2.0.0",
     "time-grunt": "~0.1.1"
   },
