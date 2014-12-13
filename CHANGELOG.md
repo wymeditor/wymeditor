@@ -36,7 +36,7 @@ WYMeditor.
   Undo/redo, even if unused, may eat a lot of RAM, depending on the document
   size and the browser. To be optimized.
 * [#624](https://github.com/wymeditor/wymeditor/pull/624)
-  Keyboard shortcts are more consistent cross-platform.
+  Keyboard shortcuts are more consistent cross-platform.
 
 ## 1.0.0-rc.1
 
