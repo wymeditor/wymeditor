@@ -9,6 +9,7 @@
     simulateKeyCombo,
     skipKeyboardShortcutTests,
     manipulationTestHelper,
+    OS_MOD_KEY,
     test,
    SKIP_THIS_TEST
 */
@@ -324,35 +325,11 @@ test("Undo keyboard shortcut", function () {
         },
         expectedStartHtml: "<ol><li>Foo</li></ol>",
         manipulationFunc: function (wymeditor) {
-            simulateKeyCombo(wymeditor, "ctrl+z");
+            simulateKeyCombo(wymeditor, OS_MOD_KEY + "+z");
         },
         expectedResultHtml: "<p>Foo</p>",
         skipFunc: function () {
             if (skipKeyboardShortcutTests === true) {
-                return SKIP_THIS_TEST;
-            }
-        }
-    });
-});
-
-test("Undo keyboard shortcut on OS X", function () {
-    manipulationTestHelper({
-        startHtml: "<p>Foo</p>",
-        setCaretInSelector: "p",
-        prepareFunc: function (wymeditor) {
-            wymeditor.undoRedo.reset();
-            wymeditor.exec(WYMeditor.EXEC_COMMANDS.INSERT_ORDEREDLIST);
-        },
-        expectedStartHtml: "<ol><li>Foo</li></ol>",
-        manipulationFunc: function (wymeditor) {
-            simulateKeyCombo(wymeditor, "meta+z");
-        },
-        expectedResultHtml: "<p>Foo</p>",
-        skipFunc: function () {
-            if (skipKeyboardShortcutTests === true) {
-                return SKIP_THIS_TEST;
-            }
-            if (jQuery.browser.mac !== true) {
                 return SKIP_THIS_TEST;
             }
         }
@@ -370,36 +347,11 @@ test("Redo keyboard shortcut", function () {
         },
         expectedStartHtml: "<p>Foo</p>",
         manipulationFunc: function (wymeditor) {
-            simulateKeyCombo(wymeditor, "ctrl+y");
+            simulateKeyCombo(wymeditor, OS_MOD_KEY + "+y");
         },
         expectedResultHtml: "<ol><li>Foo</li></ol>",
         skipFunc: function () {
             if (skipKeyboardShortcutTests === true) {
-                return SKIP_THIS_TEST;
-            }
-        }
-    });
-});
-
-test("Redo keyboard shortcut on OS X", function () {
-    manipulationTestHelper({
-        startHtml: "<p>Foo</p>",
-        setCaretInSelector: "p",
-        prepareFunc: function (wymeditor) {
-            wymeditor.undoRedo.reset();
-            wymeditor.exec(WYMeditor.EXEC_COMMANDS.INSERT_ORDEREDLIST);
-            wymeditor.undoRedo.undo();
-        },
-        expectedStartHtml: "<p>Foo</p>",
-        manipulationFunc: function (wymeditor) {
-            simulateKeyCombo(wymeditor, "shift+meta+z");
-        },
-        expectedResultHtml: "<ol><li>Foo</li></ol>",
-        skipFunc: function () {
-            if (skipKeyboardShortcutTests === true) {
-                return SKIP_THIS_TEST;
-            }
-            if (jQuery.browser.mac !== true) {
                 return SKIP_THIS_TEST;
             }
         }
