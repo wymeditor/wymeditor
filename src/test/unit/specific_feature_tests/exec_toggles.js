@@ -47,8 +47,7 @@ function getBrowserTagname(command) {
     return tagName;
 }
 
-// This was getting repetitive so here's a function for it.
-// Provided an EXEC_COMMAND, returns the keboard shortcut combo for that
+// Provided an EXEC_COMMAND, returns the keyboard shortcut combo for that
 // command.
 function getExecKeyboardShortcut(command) {
     var EXEC_KEYBOARD_SHORTCUTS = {};
