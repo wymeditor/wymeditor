@@ -27,41 +27,16 @@ ListPlugin.prototype.bindEvents = function() {
     var listPlugin = this,
         wym = listPlugin._wym;
 
-    // Bind a key listener so we can handle tabs
-    // With jQuery 1.3, live() can be used to simplify handler logic
-    jQuery(wym._doc).bind('keydown', listPlugin.handleKeyDown);
-};
-
-/**
- * Handle any tab presses when inside list items and indent/outdent.
- */
-ListPlugin.prototype.handleKeyDown = function(evt) {
-    var doc = this,
-        wym = WYMeditor.INSTANCES[doc.title],
-        listPlugin = wym.listPlugin,
-        container = wym.selectedContainer(),
-        name;
-
-    if (container === false) {
-        return;
-    }
-
-    name = container.tagName.toLowerCase();
-    // We only care about tabs when we're inside a list
-    if (name != "li") {
-        return null;
-    }
-
-    // Handle tab presses
-    if (evt.which == WYMeditor.KEY_CODE.TAB) {
-        if (evt.shiftKey) {
-            wym.exec(WYMeditor.EXEC_COMMANDS.OUTDENT);
-            return false; // Short-circuit normal tab behavior
-        } else {
+    wym.keyboard.combokeys.bind(
+        "tab",
+        function () {
             wym.exec(WYMeditor.EXEC_COMMANDS.INDENT);
-            return false;
         }
-    }
-
-    return null;
+    );
+    wym.keyboard.combokeys.bind(
+        "shift+tab",
+        function () {
+            wym.exec(WYMeditor.EXEC_COMMANDS.OUTDENT);
+        }
+    );
 };
