@@ -2772,7 +2772,7 @@ test("Tab key indents", function () {
 
     moveSelector(wymeditor, actionElement);
 
-    simulateKey(WYMeditor.KEY_CODE.TAB, actionElement);
+    simulateKeyCombo(wymeditor, "tab");
     wymEqual(wymeditor, expectedHtml);
 });
 
@@ -2806,7 +2806,7 @@ test("Shift+Tab outdents", function () {
 
     moveSelector(wymeditor, actionElement);
 
-    simulateKey(WYMeditor.KEY_CODE.TAB, actionElement, {'shiftKey': true});
+    simulateKeyCombo(wymeditor, "shift+tab");
     wymEqual(wymeditor, expectedHtml);
 });
 
@@ -2827,7 +2827,7 @@ test("Tab has no effect outside lists", function () {
 
     moveSelector(wymeditor, actionElement);
 
-    simulateKey(WYMeditor.KEY_CODE.TAB, actionElement);
+    simulateKeyCombo(wymeditor, "tab");
     wymEqual(wymeditor, expectedHtml);
 });
 
