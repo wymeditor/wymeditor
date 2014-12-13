@@ -26,12 +26,18 @@ WYMeditor.UndoRedo = function (wym) {
     undoRedo.history = new WYMeditor.EXTERNAL_MODULES
         .ObjectHistory(wym.getCurrentState());
 
-    wym.keyboard.combokeys.bind(["mod+z"], function () {
-        wym.undoRedo.undo();
-    });
-    wym.keyboard.combokeys.bind(["ctrl+y", "shift+command+z"], function () {
-        wym.undoRedo.redo();
-    });
+    wym.keyboard.combokeys.bind(
+        "mod+z",
+        function () {
+            wym.undoRedo.undo();
+        }
+    );
+    wym.keyboard.combokeys.bind(
+        jQuery.browser.mac ? "shift+meta+z" : "ctrl+y",
+        function () {
+            wym.undoRedo.redo();
+        }
+    );
 };
 
 /**
