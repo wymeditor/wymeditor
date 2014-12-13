@@ -1802,6 +1802,7 @@ WYMeditor.editor.prototype.dialog = function (dialogType, dialogFeatures, bodyHt
         doc = wDialog.document;
         doc.write(dialogHtml);
         doc.close();
+        return wDialog;
     }
 };
 
