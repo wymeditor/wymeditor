@@ -12,6 +12,7 @@
     ok,
     test,
     expect,
+    manipulationTestHelper,
     deepEqual
 */
 "use strict";
@@ -2766,79 +2767,48 @@ test("Double indent correction", function () {
 module("list-tabbing", {setup: prepareUnitTestModule});
 
 test("Tab key indents", function () {
-    expect(1);
-
-    var initHtml = nestedListHtml,
-        expectedHtml = li_7_indentedHtml,
-        elmntId = "li_7",
-        $body,
-        actionElement,
-
-        wymeditor = jQuery.wymeditors(0);
-    wymeditor.rawHtml(initHtml);
-
-    $body = wymeditor.$body();
-    actionElement = $body.find('#' + elmntId)[0];
-
-    moveSelector(wymeditor, actionElement);
-
-    simulateKeyCombo(wymeditor, "tab");
-    wymEqual(wymeditor, expectedHtml);
+    manipulationTestHelper({
+        startHtml: nestedListHtml,
+        setCaretInSelector: "#li_7",
+        manipulationKeyCombo: "tab",
+        expectedResultHtml: li_7_indentedHtml,
+        testUndoRedo: true
+    });
 });
 
 test("Shift+Tab outdents", function () {
-    expect(1);
-
-    var initHtml = String() +
-            '<ol>' +
-                '<li>' +
-                    '<ol>' +
-                        '<li id="li_1_1">1_1</li>' +
-                    '</ol>' +
-                '</li>' +
-                '<li id="li_2">2</li>' +
-            '</ol>',
-        expectedHtml = String() +
-            '<ol>' +
-                '<li id="li_1_1">1_1</li>' +
-                '<li id="li_2">2</li>' +
-            '</ol>',
-
-        elmntId = "li_1_1",
-        $body,
-        actionElement,
-
-        wymeditor = jQuery.wymeditors(0);
-    wymeditor.rawHtml(initHtml);
-
-    $body = wymeditor.$body();
-    actionElement = $body.find('#' + elmntId)[0];
-
-    moveSelector(wymeditor, actionElement);
-
-    simulateKeyCombo(wymeditor, "shift+tab");
-    wymEqual(wymeditor, expectedHtml);
+    manipulationTestHelper({
+        startHtml: [""
+            , "<ol>"
+                , "<li>"
+                    , "<ol>"
+                        , "<li id=\"li_1_1\">1_1</li>"
+                    , "</ol>"
+                , "</li>"
+                , "<li id=\"li_2\">2</li>"
+            , "</ol>"
+        ].join(""),
+        setCaretInSelector: "#li_1_1",
+        manipulationKeyCombo: "shift+tab",
+        expectedResultHtml: [""
+            , "<ol>"
+                , "<li id=\"li_1_1\">1_1</li>"
+                , "<li id=\"li_2\">2</li>"
+            , "</ol>"
+        ].join(""),
+        testUndoRedo: true
+    });
 });
 
 test("Tab has no effect outside lists", function () {
-    expect(1);
-
-    var initHtml = '<p id="p_1">test</p>',
-        expectedHtml = initHtml,
-        elmntId = "p_1",
-        $body,
-        actionElement,
-
-        wymeditor = jQuery.wymeditors(0);
-    wymeditor.rawHtml(initHtml);
-
-    $body = wymeditor.$body();
-    actionElement = $body.find('#' + elmntId)[0];
-
-    moveSelector(wymeditor, actionElement);
-
-    simulateKeyCombo(wymeditor, "tab");
-    wymEqual(wymeditor, expectedHtml);
+    var noChangeHtml = "<p id=\"p_1\">test</p>";
+    manipulationTestHelper({
+        startHtml: noChangeHtml,
+        setCaretInSelector: "#p_1",
+        manipulationKeyCombo: "tab",
+        expectedResultHtml: noChangeHtml,
+        testUndoRedo: true
+    });
 });
 
 module("list-newline_normalization", {setup: prepareUnitTestModule});
