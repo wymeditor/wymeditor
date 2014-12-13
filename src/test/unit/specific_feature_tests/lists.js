@@ -1,9 +1,19 @@
 /* jshint camelcase: false, maxlen: 105 */
 /* global
-SKIP_KNOWN_FAILING_TESTS, prepareUnitTestModule,
-wymEqual, makeTextSelection, moveSelector, simulateKey, strictEqual,
-makeSelection,
-ok, test, expect, deepEqual */
+    SKIP_KNOWN_FAILING_TESTS,
+    prepareUnitTestModule,
+    simulateKeyCombo,
+    wymEqual,
+    makeTextSelection,
+    moveSelector,
+    simulateKey,
+    strictEqual,
+    makeSelection,
+    ok,
+    test,
+    expect,
+    deepEqual
+*/
 "use strict";
 
 module("list-_getSelectedListItems", {setup: prepareUnitTestModule});
