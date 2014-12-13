@@ -535,9 +535,8 @@ var SKIP_THIS_TEST = "Skip this test. Really. I know what I'm doing. Trust " +
  *         Optional; The manipulation function to be tested. Receives one
  *         argument, the WYMeditor instance.
  *     `manipulationKeyCombo`
- *         Optional; If a keyboard shortcut exists for the same manipulation as
- *         `manipulationfunc` above, enter the key combination here and it will
- *         be tested as well. For example, "ctrl+b".
+ *         Optional; A key combination that is expected to trigger the
+ *         manipulation. For example, "ctrl+b".
  *     `testUndoRedo`
  *         Optional; Whether to test undo/redo on this manipulation.
  *     `expectedResultHtml`
@@ -566,6 +565,9 @@ var SKIP_THIS_TEST = "Skip this test. Really. I know what I'm doing. Trust " +
  *         ```
  *         This example uses the `jquery.browser` plugin
  *         https://github.com/gabceb/jquery-browser-plugin
+ *
+ *     `manipulationFunc` and `manipulationKeyCombo` are not exclusive of each
+ *     other. The procedure will be performed once for each of them.
  */
 function manipulationTestHelper(a) {
     if (typeof a.skipFunc === 'function') {
@@ -588,7 +590,7 @@ function manipulationTestHelper(a) {
         }
     }
     var wymeditor = jQuery.wymeditors(0);
-    function execute(useKeyCombo) {
+    function execute(functionOrKeyCombo) {
         if (typeof a.startHtml === 'string') {
             wymeditor.rawHtml(a.startHtml);
         }
@@ -615,10 +617,12 @@ function manipulationTestHelper(a) {
             wymeditor.undoRedo.reset();
         }
 
-        if (useKeyCombo === true) {
-            simulateKeyCombo(wymeditor, a.manipulationKeyCombo);
-        } else if (typeof a.manipulationFunc === 'function') {
+        if (functionOrKeyCombo === "function") {
             a.manipulationFunc(wymeditor);
+        } else if (functionOrKeyCombo === "keyCombo") {
+            simulateKeyCombo(wymeditor, a.manipulationKeyCombo);
+        } else {
+            throw "Expected either a function or a key combo.";
         }
 
         if (typeof a.expectedResultHtml === 'string') {
@@ -628,7 +632,8 @@ function manipulationTestHelper(a) {
                 a.expectedResultHtml,
                 {
                     assertionString: "Manipulation result HTML" +
-                        (useKeyCombo ? "; using keyboard shortcut" : ""),
+                        (functionOrKeyCombo === "keyCombo" ?
+                         "; using keyboard shortcut" : ""),
                     parseHtml: typeof a.parseHtml === 'undefined' ? false :
                         a.parseHtml
                 }
@@ -675,12 +680,14 @@ function manipulationTestHelper(a) {
         }
     }
 
-    execute(false);
+    if (typeof a.manipulationFunc === "function") {
+        execute("function");
+    }
 
     if (
         typeof a.manipulationKeyCombo === "string" &&
         skipKeyboardShortcutTests !== true
     ) {
-        execute(true);
+        execute("keyCombo");
     }
 }
