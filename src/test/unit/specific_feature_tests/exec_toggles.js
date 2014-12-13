@@ -60,7 +60,6 @@ function getExecKeyboardShortcut(command) {
     }
 }
 
-
 function wrapNonWrappedSelection(command) {
     var tagName = getBrowserTagname(command);
     manipulationTestHelper({
