@@ -4,6 +4,7 @@
     test,
     prepareUnitTestModule,
     makeTextSelection,
+    OS_MOD_KEY,
     SKIP_THIS_TEST
 */
 "use strict";
@@ -47,11 +48,12 @@ function getBrowserTagname(command) {
 }
 
 function getExecKeyboardShortcut(command) {
-    var EXEC_KEYBOARD_SHORTCUTS = {},
-        mod = jQuery.browser.mac ? "meta+" : "ctrl+";
+    var EXEC_KEYBOARD_SHORTCUTS = {};
 
-    EXEC_KEYBOARD_SHORTCUTS[WYMeditor.EXEC_COMMANDS.BOLD] = mod + "b";
-    EXEC_KEYBOARD_SHORTCUTS[WYMeditor.EXEC_COMMANDS.ITALIC] = mod + "i";
+    EXEC_KEYBOARD_SHORTCUTS[WYMeditor.EXEC_COMMANDS.BOLD] = OS_MOD_KEY +
+        "+b";
+    EXEC_KEYBOARD_SHORTCUTS[WYMeditor.EXEC_COMMANDS.ITALIC] = OS_MOD_KEY +
+        "+i";
 
     if (EXEC_KEYBOARD_SHORTCUTS.hasOwnProperty(command) === true) {
         return EXEC_KEYBOARD_SHORTCUTS[command];

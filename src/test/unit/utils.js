@@ -5,6 +5,7 @@
     testNoChangeInHtmlArray,
     makeTextSelection,
     moveSelector,
+    OS_MOD_KEY,
     manipulationTestHelper
 */
 /* global
@@ -19,6 +20,8 @@
     skipKeyboardShortcutTests:true
 */
 "use strict";
+
+var OS_MOD_KEY = jQuery.browser.mac ? "meta" : "ctrl";
 
 if (
     inPhantomjs === true
