@@ -30,12 +30,14 @@ WYMeditor.UndoRedo = function (wym) {
         "mod+z",
         function () {
             wym.undoRedo.undo();
+            return false;
         }
     );
     wym.keyboard.combokeys.bind(
         jQuery.browser.mac ? "shift+meta+z" : "ctrl+y",
         function () {
             wym.undoRedo.redo();
+            return false;
         }
     );
 };
