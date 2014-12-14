@@ -45,6 +45,11 @@ module("dialogs-opening_or_not", {
  *     Whether the dialog is expected to open or not. Either "opened" or "not".
  */
 function dialogTestHelper(args) {
+    // Sinon doesn't allow wrapping of `window.open` with a spy because `open`
+    // doesn't look like a function in these browsers.
+    var sinonCantWrapWindowOpen = jQuery.browser.msie &&
+        jQuery.browser.versionNumber <= 8;
+
     manipulationTestHelper({
         startHtml: args.noChangeHtml,
         setCaretInSelector: args.setCaretInSelector,
@@ -52,8 +57,11 @@ function dialogTestHelper(args) {
             // Wrap the dialog function with a spy
             wymeditor.dialog = sinon.spy(wymeditor, "dialog");
             // Wrap the `window.open` native function with a spy
-            window.open = sinon.spy(window, "open");
-            sinonSpiesToRestore.push(wymeditor.dialog, window.open);
+            if (sinonCantWrapWindowOpen !== true) {
+                window.open = sinon.spy(window, "open");
+                sinonSpiesToRestore.push(window.open);
+            }
+            sinonSpiesToRestore.push(wymeditor.dialog);
 
             if (typeof args.prepareFunc === "function") {
                 // Call the provided `prepareFunc`
@@ -66,7 +74,7 @@ function dialogTestHelper(args) {
         expectedResultHtml: args.noChangeHtml,
         additionalAssertionsFunc: function (wymeditor) {
             var dialogWindowOrFalse;
-            expect(expect() + 3);
+            expect(expect() + 2);
 
             ok(
                 // The dialog function is called anyway. It has the code that
@@ -79,20 +87,26 @@ function dialogTestHelper(args) {
             dialogWindowOrFalse = wymeditor.dialog.returnValues[0];
 
             if (args.expectedOpenedOrNot === "opened") {
-                ok(
-                    window.open.calledOnce,
-                    "`window.open` was called"
-                );
+                if (sinonCantWrapWindowOpen !== true) {
+                    expect(expect() + 1);
+                    ok(
+                        window.open.calledOnce,
+                        "`window.open` was called"
+                    );
+                }
                 ok(
                     dialogWindowOrFalse.window === dialogWindowOrFalse,
                     "Dialog window seems to exist"
                 );
 
             } else if (args.expectedOpenedOrNot === "not") {
-                ok(
-                    window.open.callCount === 0,
-                    "`window.open` was not called"
-                );
+                if (sinonCantWrapWindowOpen !== true) {
+                    expect(expect() + 1);
+                    ok(
+                        window.open.callCount === 0,
+                        "`window.open` was not called"
+                    );
+                }
                 ok(
                     dialogWindowOrFalse === false,
                     "Dialog function returned `false`"
@@ -104,8 +118,11 @@ function dialogTestHelper(args) {
             // fails because the dialog opened when it wasn't supposed to, then
             // close it
             if (
-                dialogWindowOrFalse &&
-                typeof dialogWindowOrFalse.close === "function"
+                dialogWindowOrFalse && (
+                    typeof dialogWindowOrFalse.close === "function" ||
+                    // IE
+                    typeof dialogWindowOrFalse.close === "object"
+                )
             ) {
                 dialogWindowOrFalse.close();
             }
