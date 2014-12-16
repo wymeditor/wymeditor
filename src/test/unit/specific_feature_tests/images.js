@@ -4,8 +4,7 @@
     prepareUnitTestModule,
     test,
     expect,
-    equal,
-    deepEqual
+    strictEqual
 */
 "use strict";
 
@@ -42,5 +41,32 @@ test("Inserts image into the body", function () {
         expectedResultHtml: "<img alt=\"Example\" " +
             "src=\"http://example.com/example.jpg\" /><br />",
         testUndoRedo: true
+    });
+});
+
+module("images-selection", {setup: prepareUnitTestModule});
+
+test("Image is selected on mousedown", function () {
+    var noChangeHtml = [""
+            , "<p>"
+                , "A "
+                , "<img alt=\"Pen\" src=\"http://goo.gl/N9nqUc\" />"
+            , "</p>"
+        ].join("");
+
+    manipulationTestHelper({
+        startHtml: noChangeHtml,
+        prepareFunc: function (wymeditor) {
+            wymeditor.$body().find("img").mousedown();
+        },
+        expectedResultHtml: noChangeHtml,
+        additionalAssertionsFunc: function (wymeditor) {
+            expect(expect() + 1);
+            strictEqual(
+                wymeditor._getSelectedNodes()[0].tagName.toLowerCase(),
+                "img",
+                "Image is the only selected node"
+            );
+        }
     });
 });
