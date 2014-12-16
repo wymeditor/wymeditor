@@ -31,6 +31,7 @@ module("dialogs-opening_or_not", {
 
 /*
  * This is a helper for testing whether a dialog window was opened or not.
+ * It also tests whether the dialog has the correct title.
  *
  * Expects a single argument, an object, with the following properties:
  *
@@ -47,6 +48,8 @@ module("dialogs-opening_or_not", {
  *     this selector.
  * `expectedOpenedOrNot`
  *     Whether the dialog is expected to open or not. Either "opened" or "not".
+ * `expectedTitle`
+ *     The `document.title` that the dialog window is expected to have.
  */
 function dialogTestHelper(args) {
     // Sinon doesn't allow wrapping of `window.open` with a spy because `open`
