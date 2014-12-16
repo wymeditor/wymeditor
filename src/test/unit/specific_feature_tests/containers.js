@@ -3,8 +3,6 @@
 prepareUnitTestModule,
 wymEqual, makeTextSelection,
 ok, test, expect,
-start,
-ListPlugin,
 vanishAllWyms
 */
 "use strict";
