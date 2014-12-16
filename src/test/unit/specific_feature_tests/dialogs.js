@@ -20,7 +20,7 @@ var sinonSpiesToRestore = [];
 module("dialogs-opening_or_not", {
     setup: prepareUnitTestModule,
     teardown: function () {
-        // Sinon spies are wrapped around function during tests and added to
+        // Sinon spies are wrapped around functions during tests and added to
         // this array.
         // This unwraps the original functions from the spies after each test.
         while (sinonSpiesToRestore.length > 0) {
