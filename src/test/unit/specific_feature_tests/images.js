@@ -56,7 +56,7 @@ test("Image is selected on mousedown", function () {
 
     manipulationTestHelper({
         startHtml: noChangeHtml,
-        prepareFunc: function (wymeditor) {
+        manipulationFunc: function (wymeditor) {
             wymeditor.$body().find("img").mousedown();
         },
         expectedResultHtml: noChangeHtml,
