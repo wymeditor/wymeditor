@@ -243,3 +243,28 @@ test("Modifies linked image", function () {
         ].join("")
     });
 });
+
+test("Unlinks linked image", function () {
+    manipulationTestHelper({
+        startHtml: [""
+            , "<p>"
+                , "A "
+                , "<a href=\"http://example.com/\">"
+                    , "<img alt=\"pen\" src=\"http://goo.gl/N9nqUc\" />"
+                , "</a>"
+            , "</p>"
+        ].join(""),
+        prepareFunc: function (wymeditor) {
+            wymeditor.$body().find("img").mousedown();
+        },
+        manipulationFunc: function (wymeditor) {
+            wymeditor.exec(WYMeditor.EXEC_COMMANDS.UNLINK);
+        },
+        expectedResultHtml: [""
+            , "<p>"
+                , "A "
+                , "<img alt=\"pen\" src=\"http://goo.gl/N9nqUc\" />"
+            , "</p>"
+        ].join("")
+    });
+});
