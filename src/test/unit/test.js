@@ -61,7 +61,19 @@ function vanishAllWyms() {
     }
 }
 
-function prepareUnitTestModule(options) {
+/*
+ * A helper that sets up textareas and editors for unit tests.
+ *
+ * Expects a single arguments object with the following properties:
+ *
+ * `editorCount`
+ *     This many `textarea`s shall be made available.
+ * `initialized`
+ *     Whether editors will be initialized on these `textarea`s.
+ * `options`
+ *     An options object that will be passed on to the `jQuery.fn.wymeditor()` call.
+ */
+function prepareUnitTestModule(args) {
     var defaults,
         $textareas,
         i,
@@ -70,35 +82,42 @@ function prepareUnitTestModule(options) {
         newTextarea,
         $textareasToRemove,
         wymeditor,
-        $uninitializedTextareas;
+        $uninitializedTextareas,
+        providedPostInit;
 
     stop();
 
     defaults = {
-        // How many editor textareas shall be created for this module.
         editorCount: 1,
         // Whether to initialize these textareas with WYMeditors or not.
         initialized: true,
-        // A postInit (see customization documentation) function to be passed
-        // to the editors' initialization calls.
-        postInit: function (wym) {
-            // TODO: We should not load all these plugins by default.
-            wym.listPlugin = new ListPlugin({}, wym);
-            wym.tableEditor = wym.table();
-            wym.structuredHeadings();
-            if (allWymIframesInitialized()) {
-                start();
-            }
-        }
+        options: {}
     };
 
-    if (options.postInit) {
+    if (args.options) {
         vanishAllWyms();
     }
 
-    options = jQuery.extend(defaults, options);
+    args = jQuery.extend(defaults, args);
 
-    if (options.initialized === false) {
+    if (args.options.hasOwnProperty("postInit")) {
+        providedPostInit = args.options.postInit;
+    }
+
+    args.options.postInit = function (wym) {
+        // TODO: We should not load all these plugins by default.
+        wym.listPlugin = new ListPlugin({}, wym);
+        wym.tableEditor = wym.table();
+        wym.structuredHeadings();
+        if (providedPostInit) {
+            providedPostInit(wym);
+        }
+        if (allWymIframesInitialized()) {
+            start();
+        }
+    };
+
+    if (args.initialized === false) {
         vanishAllWyms();
     }
 
@@ -108,11 +127,11 @@ function prepareUnitTestModule(options) {
         throw "There are more editors than textareas.";
     }
 
-    textareasDifference = options.editorCount - $textareas.length;
+    textareasDifference = args.editorCount - $textareas.length;
 
     if (textareasDifference > 0) {
         // Add textareas
-        for (i = $textareas.length; i < options.editorCount; i++) {
+        for (i = $textareas.length; i < args.editorCount; i++) {
             newTextarea = '<textarea id="wym' + i + '" class="wym"></textarea>';
             if (i === 0) {
                 $wymForm.prepend(newTextarea);
@@ -136,12 +155,10 @@ function prepareUnitTestModule(options) {
     $uninitializedTextareas = $wymForm
         .find('textarea.wym:not([data-wym-initialized])');
     if (
-        options.initialized &&
+        args.initialized &&
         $uninitializedTextareas.length > 0
     ) {
-        $uninitializedTextareas.wymeditor({
-            postInit: options.postInit
-        });
+        $uninitializedTextareas.wymeditor(args.options);
     } else {
         start();
     }
