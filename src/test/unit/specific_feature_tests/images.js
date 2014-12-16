@@ -61,7 +61,12 @@ test("Image is selected on mousedown", function () {
         },
         expectedResultHtml: noChangeHtml,
         additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 1);
+            expect(expect() + 2);
+            strictEqual(
+                wymeditor._getSelectedNodes().length,
+                1,
+                "Only one node is selected"
+            );
             strictEqual(
                 wymeditor._getSelectedNodes()[0].tagName.toLowerCase(),
                 "img",
