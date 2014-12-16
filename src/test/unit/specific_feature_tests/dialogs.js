@@ -84,8 +84,8 @@ function dialogTestHelper(args) {
             expect(expect() + 1);
 
             ok(
-                // The dialog function is called anyway. It has the code that
-                // determines whether the dialog will be opened or not.
+                // The dialog function is called, whether the dialog is to be
+                // opened or not. It has the code that determines that.
                 wymeditor.dialog.calledOnce,
                 "Dialog function called once"
             );
