@@ -163,7 +163,6 @@ WYMeditor.WymClassTridentPre7.prototype.unwrap = function () {
 
 WYMeditor.WymClassTridentPre7.prototype._keyup = function (evt) {
     var wym = this,
-        doc = wym._doc,
         container,
         defaultRootContainer,
         notValidRootContainers,
