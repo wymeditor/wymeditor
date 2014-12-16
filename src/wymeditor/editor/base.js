@@ -658,7 +658,7 @@ WYMeditor.editor.prototype.exec = function (cmd) {
 
     case WYMeditor.EXEC_COMMANDS.CREATE_LINK:
         container = wym.getRootContainer();
-        if (container || wym._selectedImage) {
+        if (container) {
             wym.dialog(WYMeditor.DIALOG_LINK);
         }
         break;
@@ -1226,12 +1226,7 @@ WYMeditor.editor.prototype.keyCanCreateBlockElement = function (keyCode) {
 */
 WYMeditor.editor.prototype.toggleClass = function (sClass, jqexpr) {
     var wym = this,
-        $container;
-    if (wym._selectedImage) {
-        $container = jQuery(wym._selectedImage);
-    } else {
         $container = jQuery(wym.selectedContainer());
-    }
     $container = $container.parentsOrSelf(jqexpr);
     $container.toggleClass(sClass);
 
@@ -3955,11 +3950,15 @@ WYMeditor.editor.prototype._handlePasteEvent = function () {
 };
 
 WYMeditor.editor.prototype._mousedown = function (evt) {
-    var wym = this;
-    // Store the selected image if we clicked an <img> tag
-    wym._selectedImage = null;
+    var wym = this,
+        selection,
+        imageRange;
+
     if (evt.target.tagName.toLowerCase() === WYMeditor.IMG) {
-        wym._selectedImage = evt.target;
+        selection = wym.selection();
+        imageRange = rangy.createRangyRange();
+        imageRange.selectNode(evt.target);
+        selection.setSingleRange(imageRange);
     }
 };
 

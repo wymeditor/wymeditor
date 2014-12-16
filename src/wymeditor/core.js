@@ -1181,11 +1181,6 @@ WYMeditor._initDialog = function (index) {
                 selected.tagName.toLowerCase !== WYMeditor.A) {
             selected = jQuery(selected).parentsOrSelf(WYMeditor.A);
         }
-
-        // fix MSIE selection if link image has been clicked
-        if (!selected && wym._selectedImage) {
-            selected = jQuery(wym._selectedImage).parentsOrSelf(WYMeditor.A);
-        }
     }
 
     // pre-init functions
@@ -1200,19 +1195,6 @@ WYMeditor._initDialog = function (index) {
         jQuery(wym._options.titleSelector).val(jQuery(selected).attr(WYMeditor.TITLE));
         jQuery(wym._options.relSelector).val(jQuery(selected).attr(WYMeditor.REL));
         jQuery(wym._options.altSelector).val(jQuery(selected).attr(WYMeditor.ALT));
-    }
-
-    // auto populate image fields if selected image
-    if (wym._selectedImage) {
-        jQuery(
-            wym._options.dialogImageSelector + " " + wym._options.srcSelector
-        ).val(jQuery(wym._selectedImage).attr(WYMeditor.SRC));
-        jQuery(
-            wym._options.dialogImageSelector + " " + wym._options.titleSelector
-        ).val(jQuery(wym._selectedImage).attr(WYMeditor.TITLE));
-        jQuery(
-            wym._options.dialogImageSelector + " " + wym._options.altSelector
-        ).val(jQuery(wym._selectedImage).attr(WYMeditor.ALT));
     }
 
     jQuery(wym._options.dialogLinkSelector + " " + wym._options.submitSelector)
