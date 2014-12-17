@@ -549,7 +549,8 @@ var SKIP_THIS_TEST = "Skip this test. Really. I know what I'm doing. Trust " +
  */
 function manipulationTestHelper(a) {
     var executions = [],
-        wymeditor;
+        wymeditor,
+        EXECUTE;
 
     if (skipThisTest() === true) {
         return;
@@ -557,31 +558,37 @@ function manipulationTestHelper(a) {
 
     wymeditor = jQuery.wymeditors(0);
 
+    EXECUTE = {
+        FUNCTION: "function",
+        UI_CLICK: "UI click",
+        NO_MANIPULATION: "no manipulation"
+    };
+
     if (typeof a.manipulationFunc === "function") {
-        executions.push("function");
+        executions.push(EXECUTE.FUNCTION);
     }
 
     if (
         typeof a.manipulationClickSelector === "string"
     ) {
-        executions.push("UI click");
+        executions.push(EXECUTE.UI_CLICK);
     }
 
     if (executions.length === 0) {
-        execute("no manipulation");
+        manipulateAndAssert(EXECUTE.NO_MANIPULATION);
     }
 
     while (executions.length > 0) {
-        execute(executions.pop());
+        manipulateAndAssert(executions.pop());
     }
 
-    function execute(means) {
+    function manipulateAndAssert(manipulationCause) {
 
         initialize();
         assertStartHtml();
         resetHistory();
 
-        performManipulation(means);
+        performManipulation(manipulationCause);
         assertResultHtml();
         additionalAssertions();
 
@@ -629,20 +636,24 @@ function manipulationTestHelper(a) {
             }
         }
 
-        function performManipulation(means) {
+        function performManipulation(manipulationCause) {
             var $clickElement;
-            if (means === "function") {
-                a.manipulationFunc(wymeditor);
-            } else if (means === "UI click") {
-                $clickElement = jQuery(a.manipulationClickSelector);
-                if ($clickElement.length !== 1) {
-                    throw "Expected one element";
-                }
-                $clickElement.click();
-            } else if (means === "no manipulation") {
-                return;
-            } else {
-                throw "Expected a means of manipulation";
+
+            switch (manipulationCause) {
+                case EXECUTE.FUNCTION:
+                    a.manipulationFunc(wymeditor);
+                    break;
+                case EXECUTE.UI_CLICK:
+                    $clickElement = jQuery(a.manipulationClickSelector);
+                    if ($clickElement.length !== 1) {
+                        throw "Expected one element";
+                    }
+                    $clickElement.click();
+                    break;
+                case EXECUTE.NO_MANIPULATION:
+                    return;
+                default:
+                    throw "Expected a means of manipulation";
             }
         }
 
@@ -654,7 +665,7 @@ function manipulationTestHelper(a) {
                     a.expectedResultHtml,
                     {
                         assertionString: (assertionString ? assertionString :
-                            "Result HTML") + " via " + means,
+                            "Result HTML") + " via " + manipulationCause,
                         parseHtml: typeof a.parseHtml === 'undefined' ? false :
                             a.parseHtml
                     }
