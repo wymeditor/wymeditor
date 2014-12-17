@@ -68,6 +68,7 @@
  *     `manipulationFunc` and `manipulationClickSelector` are not exclusive
  *     of each other. The procedure will be performed once for each of them.
  */
+/* jshint latedef: nofunc */
 function manipulationTestHelper(a) {
     var executions = [],
         wymeditor,
@@ -223,3 +224,4 @@ function manipulationTestHelper(a) {
         }
     }
 }
+/* jshint latedef: true */
