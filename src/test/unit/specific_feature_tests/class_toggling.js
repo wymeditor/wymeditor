@@ -38,6 +38,21 @@ function toggleClassModuleSetup() {
 
 module("toggleClass", {setup: toggleClassModuleSetup});
 
+test("No change when no selection", function () {
+    var noChangeHtml = "<p>Foo</p>";
+    manipulationTestHelper({
+        startHtml: noChangeHtml,
+        prepareFunc: function (wymeditor) {
+            wymeditor.deselect();
+        },
+        manipulationFunc: function (wymeditor) {
+            wymeditor.toggleClass("foo", "p");
+        },
+        manipulationClickSelector: ".wym_classes_foo a",
+        expectedResultHtml: noChangeHtml
+    });
+});
+
 test("Adds className", function () {
     manipulationTestHelper({
         startHtml: "<p>Foo</p>",

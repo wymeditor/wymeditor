@@ -1227,6 +1227,8 @@ WYMeditor.editor.prototype.keyCanCreateBlockElement = function (keyCode) {
 WYMeditor.editor.prototype.toggleClass = function (sClass, jqexpr) {
     var wym = this,
         $container = jQuery(wym.selectedContainer());
+    // `.last()` is used here because the `.addBack()` from `.parentsOrSelf`
+    // reverses the array.
     $container = $container.parentsOrSelf(jqexpr).last();
     $container.toggleClass(sClass);
 
