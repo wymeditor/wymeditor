@@ -3,8 +3,6 @@
 prepareUnitTestModule,
 wymEqual, makeTextSelection,
 ok, test, expect,
-start,
-ListPlugin,
 vanishAllWyms
 */
 "use strict";
@@ -56,20 +54,12 @@ module(
     "structure-default_root_div",
     {
         setup: function () {
-            prepareUnitTestModule({
+            prepareUnitTestModule({options: {
                 postInit: function (wym) {
                     wym.documentStructureManager
                         .setDefaultRootContainer('div');
-                    // TODO: Don't load these three plugins by default. We do
-                    // this because we have no other coverage of how
-                    // plugins may affect tests.
-                    wym.listPlugin = new ListPlugin({}, wym);
-                    wym.tableEditor = wym.table();
-                    wym.structuredHeadings();
-
-                    start();
                 }
-            });
+            }});
         },
         teardown: vanishAllWyms
     }
