@@ -21,8 +21,7 @@
     allWymIframesInitialized
 */
 /* exported
-    no_br_selection_browser,
-    IMG_SRC
+    no_br_selection_browser
 */
 "use strict";
 
