@@ -16,9 +16,10 @@ WYMeditor.
 * [#512](https://github.com/wymeditor/wymeditor/pull/512)
   `editor.registerModification()` is expected to be called after DOM manipulations.
 * [#647](https://github.com/wymeditor/wymeditor/pull/647)
-  In Gecko (Firefox) it was possible to edit tables by dragging and dropping.
-  This was removed because it is a Gecko exclusive feature that was not
-  functioning well enough.
+  Gecko (Firefox) has a feature of editing tables by mouse dragging,
+  that is considered unhelpful.
+  It was previously disabled for a while and it was found to be enabled now.
+  So it is now disabled again.
 
 ### Enhancements
 
