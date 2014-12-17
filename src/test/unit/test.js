@@ -26,8 +26,6 @@
 */
 "use strict";
 
-var IMG_SRC = "http://bit.ly/139xJN2";
-
 // We need to be able to operate in a noConflict context. Doing this during our
 // tests ensures that remains the case.
 jQuery.noConflict();
