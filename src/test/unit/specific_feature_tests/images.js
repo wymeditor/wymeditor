@@ -5,6 +5,9 @@
     test,
     expect,
     strictEqual
+    equal,
+    IMG_SRC,
+    deepEqual
 */
 "use strict";
 
@@ -16,12 +19,12 @@ test("Inserts image into a paragraph", function () {
         setCaretInSelector: 'p',
         manipulationFunc: function (wymeditor) {
             wymeditor.insertImage({
-                src: "http://example.com/example.jpg",
+                src: IMG_SRC,
                 alt: "Example"
             });
         },
         expectedResultHtml: "<p><img alt=\"Example\" " +
-            "src=\"http://example.com/example.jpg\" />Foo</p>",
+            "src=\"" + IMG_SRC + "\" />Foo</p>",
         testUndoRedo: true
     });
 });
@@ -35,11 +38,11 @@ test("Inserts image into the body", function () {
         manipulationFunc: function (wymeditor) {
             wymeditor.insertImage({
                 alt: "Example",
-                src: "http://example.com/example.jpg"
+                src: IMG_SRC
             });
         },
         expectedResultHtml: "<img alt=\"Example\" " +
-            "src=\"http://example.com/example.jpg\" /><br />",
+            "src=\"" + IMG_SRC + "\" /><br />",
         testUndoRedo: true
     });
 });

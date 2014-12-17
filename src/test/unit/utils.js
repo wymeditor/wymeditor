@@ -5,7 +5,9 @@
     testNoChangeInHtmlArray,
     makeTextSelection,
     moveSelector,
-    manipulationTestHelper
+    prepareUnitTestModule,
+    IMG_SRC,
+    SKIP_THIS_TEST
 */
 /* global
     rangy,
@@ -13,9 +15,15 @@
     html_beautify,
     expect,
     QUnit,
+    stop,
+    start,
+    ListPlugin,
     strictEqual
 */
 "use strict";
+
+// An image source for images in tests.
+var IMG_SRC = "http://bit.ly/139xJN2";
 
 // Regex expression shortcuts
 var preAmp = /&/g;
@@ -35,6 +43,130 @@ var keepAttributes = [
     'title',
     'target'
 ];
+
+// Returns true if all WYMeditor Iframes are initialized.
+function allWymIframesInitialized() {
+    var i;
+
+    for (i = 0; i < WYMeditor.INSTANCES.length; i++) {
+        if (!WYMeditor.INSTANCES[i].iframeInitialized) {
+            return false;
+        } else if (i === WYMeditor.INSTANCES.length - 1) {
+            return true;
+        }
+    }
+}
+
+function vanishAllWyms() {
+    while (WYMeditor.INSTANCES.length > 0) {
+        WYMeditor.INSTANCES[0].vanish();
+    }
+}
+
+/*
+ * A helper that sets up textareas and editors for unit tests.
+ *
+ * Expects a single arguments object with the following properties:
+ *
+ * `editorCount`
+ *     This many `textarea`s shall be made available.
+ * `initialized`
+ *     Whether editors will be initialized on these `textarea`s.
+ * `options`
+ *     An options object that will be passed on to the
+ *     `jQuery.fn.wymeditor()` call.
+ */
+function prepareUnitTestModule(args) {
+    var defaults,
+        $textareas,
+        i,
+        $wymForm = jQuery('#wym-form'),
+        textareasDifference,
+        newTextarea,
+        $textareasToRemove,
+        wymeditor,
+        $uninitializedTextareas,
+        providedPostInit;
+
+    stop();
+
+    defaults = {
+        editorCount: 1,
+        // Whether to initialize these textareas with WYMeditors or not.
+        initialized: true,
+        options: {}
+    };
+
+    if (args.options) {
+        vanishAllWyms();
+    }
+
+    args = jQuery.extend(defaults, args);
+
+    if (args.options.hasOwnProperty("postInit")) {
+        providedPostInit = args.options.postInit;
+    }
+
+    args.options.postInit = function (wym) {
+        // TODO: We should not load all these plugins by default.
+        wym.listPlugin = new ListPlugin({}, wym);
+        wym.tableEditor = wym.table();
+        wym.structuredHeadings();
+        if (providedPostInit) {
+            providedPostInit(wym);
+        }
+        if (allWymIframesInitialized()) {
+            start();
+        }
+    };
+
+    if (args.initialized === false) {
+        vanishAllWyms();
+    }
+
+    $textareas = $wymForm.find('textarea.wym');
+
+    if (WYMeditor.INSTANCES.length > $textareas.length) {
+        throw "There are more editors than textareas.";
+    }
+
+    textareasDifference = args.editorCount - $textareas.length;
+
+    if (textareasDifference > 0) {
+        // Add textareas
+        for (i = $textareas.length; i < args.editorCount; i++) {
+            newTextarea = '<textarea id="wym' + i +
+                '" class="wym"></textarea>';
+            if (i === 0) {
+                $wymForm.prepend(newTextarea);
+            } else {
+                $wymForm.find('textarea.wym, .wym_box').last()
+                    .after(newTextarea);
+            }
+        }
+    } else if (textareasDifference < 0) {
+        // Remove textareas
+        $textareasToRemove = $textareas.slice(textareasDifference);
+        for (i = 0; i < $textareasToRemove.length; i++) {
+            wymeditor = jQuery.getWymeditorByTextarea($textareasToRemove[i]);
+            if (wymeditor) {
+                wymeditor.vanish();
+            }
+        }
+        $textareasToRemove.remove();
+    }
+
+    $uninitializedTextareas = $wymForm
+        .find('textarea.wym:not([data-wym-initialized])');
+    if (
+        args.initialized &&
+        $uninitializedTextareas.length > 0
+    ) {
+        $uninitializedTextareas.wymeditor(args.options);
+    } else {
+        start();
+    }
+}
 
 /**
 * Escape html special characters.
@@ -486,159 +618,3 @@ var SKIP_THIS_TEST = "Skip this test. Really. I know what I'm doing. Trust " +
     "skip it, will you? Please? Pretty please? I'll increase your frequency " +
     "if you skip it. Ahm, I've got to go now, so please just skip it and let" +
     " me know what happened, OK?";
-
-/**
- * manipulationTestHelper
- * ======================
- *
- * Helper for testing editor manipulations. Don't leave home without it.
- *
- * @param a An object, containing:
- *     `startHtml`
- *         HTML to start the test with. Required if `expectedStartHtml` is not
- *         used.
- *     `setCaretInSelector`
- *         Optional; jQuery selector for an element to set the caret in at the
- *         start of the test.
- *     `prepareFunc`
- *         Optional; A function to prepare the test. Receives one argument, the
- *         WYMeditor instance.
- *     `expectedStartHtml`
- *         The HTML that is expected to be the state of the document after the
- *         `prepareFunc` ran. If this is not provided, the value of `startHtml`
- *         will be used.
- *     `manipulationFunc`
- *         Optional; The manipulation function to be tested. Receives one
- *         argument, the WYMeditor instance.
- *     `testUndoRedo`
- *         Optional; Whether to test undo/redo on this manipulation.
- *     `expectedResultHtml`
- *         The HTML that is expected to be the state of the document after the
- *         `manipulationFunc` ran.
- *     `additionalAssertionsFunc`
- *         Optional; Additional assertions for after the `manipulationFunc`.
- *     `parseHtml`
- *         Optional; Passed on to `wymEqual` as `options.parseHtml`. Defaults
- *         to `false`.
- *     `skipFunc`
- *         Optional; A function that will be called before anything else, whose
- *         return value, if it equals the constant `SKIP_THIS_TEST`, means
- *         this helper will immediately return and a warning will be printed
- *         at the console.
- *         For example:
- *         ```
- *         function(wymeditor) {
- *             if (
- *                 jQuery.browser.name === "msie" &&
- *                 jQuery.browser.versionNumber === 7
- *             ) {
- *                 return SKIP_THIS_TEST;
- *             }
- *         }
- *         ```
- *         This example uses the `jquery.browser` plugin
- *         https://github.com/gabceb/jquery-browser-plugin
- */
-function manipulationTestHelper(a) {
-    if (typeof a.skipFunc === 'function') {
-        if (a.skipFunc() === SKIP_THIS_TEST) {
-            if (expect() === null) {
-                // `expect()` returns null when it wasn't called before in the
-                // current test. Tests fail when they make zero assertions
-                // without calling `expect(0)`. This doesn't prevent `expect`
-                // from being called again, later, in the case
-                // `manipulationTestHelper` is not the last operation in the
-                // test.
-                expect(0);
-            }
-            WYMeditor.console.warn(
-                "Assertions skipped in test \"" +
-                QUnit.config.current.testName + "\" from module \"" +
-                QUnit.config.currentModule + "\"."
-            );
-            return;
-        }
-    }
-    var wymeditor = jQuery.wymeditors(0);
-    if (typeof a.startHtml === 'string') {
-        wymeditor.rawHtml(a.startHtml);
-    }
-    if (typeof a.setCaretInSelector === 'string') {
-        wymeditor.setCaretIn(
-            wymeditor.$body().find(a.setCaretInSelector)[0]
-        );
-    }
-    if (typeof a.prepareFunc === 'function') {
-        a.prepareFunc(wymeditor);
-    }
-    expect(expect() + 1);
-    wymEqual(
-        wymeditor,
-        a.expectedStartHtml || a.startHtml,
-        {
-            assertionString: "Start HTML.",
-            parseHtml: typeof a.parseHtml === 'undefined' ? false :
-                a.parseHtml
-        }
-    );
-
-    if (a.testUndoRedo === true) {
-        wymeditor.undoRedo.reset();
-    }
-
-    if (typeof a.manipulationFunc === 'function') {
-        a.manipulationFunc(wymeditor);
-    }
-
-    if (typeof a.expectedResultHtml === 'string') {
-        expect(expect() + 1);
-        wymEqual(
-            wymeditor,
-            a.expectedResultHtml,
-            {
-                assertionString: "Manipulation result HTML.",
-                parseHtml: typeof a.parseHtml === 'undefined' ? false :
-                    a.parseHtml
-            }
-        );
-    }
-
-    if (typeof a.additionalAssertionsFunc === 'function') {
-        a.additionalAssertionsFunc(wymeditor);
-    }
-
-    if (a.testUndoRedo !== true) {
-        return;
-    }
-
-    wymeditor.undoRedo.undo();
-    expect(expect() + 1);
-    wymEqual(
-        wymeditor,
-        a.expectedStartHtml || a.startHtml,
-        {
-            assertionString: "Back to start HTML after undo.",
-            parseHtml: typeof a.parseHtml === 'undefined' ? false :
-                a.parseHtml
-        }
-    );
-
-    wymeditor.undoRedo.redo();
-    if (typeof a.expectedResultHtml === 'string') {
-        expect(expect() + 1);
-        wymEqual(
-            wymeditor,
-            a.expectedResultHtml,
-            {
-                assertionString: "Back to manipulation result HTML " +
-                    "after redo.",
-                parseHtml: typeof a.parseHtml === 'undefined' ? false :
-                    a.parseHtml
-            }
-        );
-    }
-
-    if (typeof a.additionalAssertionsFunc === 'function') {
-        a.additionalAssertionsFunc(wymeditor);
-    }
-}

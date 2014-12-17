@@ -1227,7 +1227,7 @@ WYMeditor.editor.prototype.keyCanCreateBlockElement = function (keyCode) {
 WYMeditor.editor.prototype.toggleClass = function (sClass, jqexpr) {
     var wym = this,
         $container = jQuery(wym.selectedContainer());
-    $container = $container.parentsOrSelf(jqexpr);
+    $container = $container.parentsOrSelf(jqexpr).last();
     $container.toggleClass(sClass);
 
     if (!$container.attr(WYMeditor.CLASS)) {

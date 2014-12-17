@@ -1396,12 +1396,12 @@ WYMeditor.isPhantomString = function (str) {
 jQuery.fn.addBack = jQuery.fn.addBack ? jQuery.fn.addBack : jQuery.fn.andSelf;
 
 // Returns the Parents or the node itself
-// jqexpr = a jQuery expression
-jQuery.fn.parentsOrSelf = function (jqexpr) {
+// `selector` = a jQuery selector
+jQuery.fn.parentsOrSelf = function (selector) {
     var $n = this;
 
-    if (jqexpr) {
-        return $n.parents().addBack(jqexpr);
+    if (selector) {
+        return $n.parents().addBack().filter(selector);
     } else {
         return $n.parents().addBack();
     }
