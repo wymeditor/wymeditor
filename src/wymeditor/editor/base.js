@@ -1232,7 +1232,9 @@ WYMeditor.editor.prototype.toggleClass = function (sClass, jqexpr) {
     } else {
         $container = jQuery(wym.selectedContainer());
     }
-    $container = $container.parentsOrSelf(jqexpr);
+    // `.last()` is used here because the `.addBack()` from `.parentsOrSelf`
+    // reverses the array.
+    $container = $container.parentsOrSelf(jqexpr).last();
     $container.toggleClass(sClass);
 
     if (!$container.attr(WYMeditor.CLASS)) {
