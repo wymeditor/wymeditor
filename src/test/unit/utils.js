@@ -548,27 +548,31 @@ var SKIP_THIS_TEST = "Skip this test. Really. I know what I'm doing. Trust " +
  *     of each other. The procedure will be performed once for each of them.
  */
 function manipulationTestHelper(a) {
-    var executionCount = 0;
+    var executions = [],
+        wymeditor;
+
     if (skipThisTest() === true) {
         return;
     }
 
-    var wymeditor = jQuery.wymeditors(0);
+    wymeditor = jQuery.wymeditors(0);
 
     if (typeof a.manipulationFunc === "function") {
-        execute("function");
-        executionCount ++;
+        executions.push("function");
     }
 
     if (
         typeof a.manipulationClickSelector === "string"
     ) {
-        execute("UI click");
-        executionCount ++;
+        executions.push("UI click");
     }
 
-    if (executionCount === 0) {
+    if (executions.length === 0) {
         execute("no manipulation");
+    }
+
+    while (executions.length > 0) {
+        execute(executions.pop());
     }
 
     function execute(means) {
