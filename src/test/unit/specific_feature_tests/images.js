@@ -4,10 +4,8 @@
     prepareUnitTestModule,
     test,
     expect,
-    strictEqual
-    equal,
-    IMG_SRC,
-    deepEqual
+    strictEqual,
+    IMG_SRC
 */
 "use strict";
 
