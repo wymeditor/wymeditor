@@ -548,6 +548,7 @@ var SKIP_THIS_TEST = "Skip this test. Really. I know what I'm doing. Trust " +
  *     of each other. The procedure will be performed once for each of them.
  */
 function manipulationTestHelper(a) {
+    var executionCount = 0;
     if (skipThisTest() === true) {
         return;
     }
@@ -556,12 +557,18 @@ function manipulationTestHelper(a) {
 
     if (typeof a.manipulationFunc === "function") {
         execute("function");
+        executionCount ++;
     }
 
     if (
         typeof a.manipulationClickSelector === "string"
     ) {
         execute("UI click");
+        executionCount ++;
+    }
+
+    if (executionCount === 0) {
+        execute("no manipulation");
     }
 
     function execute(means) {
@@ -628,6 +635,8 @@ function manipulationTestHelper(a) {
                     throw "Expected one element";
                 }
                 $clickElement.click();
+            } else if (means === "no manipulation") {
+                return;
             } else {
                 throw "Expected a means of manipulation";
             }
