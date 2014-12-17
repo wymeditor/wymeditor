@@ -21,12 +21,9 @@
     allWymIframesInitialized
 */
 /* exported
-    no_br_selection_browser,
-    IMG_SRC
+    no_br_selection_browser
 */
 "use strict";
-
-var IMG_SRC = "http://bit.ly/139xJN2";
 
 // We need to be able to operate in a noConflict context. Doing this during our
 // tests ensures that remains the case.
