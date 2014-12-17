@@ -1259,7 +1259,7 @@ test("Refuses 'img' elements.", function () {
     var
         wymeditor = jQuery.wymeditors(0),
 
-        html = '<p><img alt="" src="" /></p>';
+        html = '<p><img alt="" src="' + IMG_SRC + '" /></p>';
 
     wymeditor.rawHtml(html);
 

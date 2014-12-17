@@ -17,12 +17,12 @@ test("Inserts image into a paragraph", function () {
         setCaretInSelector: 'p',
         manipulationFunc: function (wymeditor) {
             wymeditor.insertImage({
-                src: "http://example.com/example.jpg",
+                src: IMG_SRC,
                 alt: "Example"
             });
         },
         expectedResultHtml: "<p><img alt=\"Example\" " +
-            "src=\"http://example.com/example.jpg\" />Foo</p>",
+            "src=\"" + IMG_SRC + "\" />Foo</p>",
         testUndoRedo: true
     });
 });
@@ -36,11 +36,11 @@ test("Inserts image into the body", function () {
         manipulationFunc: function (wymeditor) {
             wymeditor.insertImage({
                 alt: "Example",
-                src: "http://example.com/example.jpg"
+                src: IMG_SRC
             });
         },
         expectedResultHtml: "<img alt=\"Example\" " +
-            "src=\"http://example.com/example.jpg\" /><br />",
+            "src=\"" + IMG_SRC + "\" /><br />",
         testUndoRedo: true
     });
 });
@@ -49,7 +49,7 @@ test("._selectedImage is saved on mousedown", function () {
     var initHtml = [""
         , '<p id="noimage">Images? We dont need no silly images</p>'
         , '<p>'
-            , '<img id="google" src="http://example.com/example.jpg" />'
+            , '<img id="google" src="' + IMG_SRC + '" />'
         , '</p>'
         ].join(''),
         wymeditor = jQuery.wymeditors(0),
