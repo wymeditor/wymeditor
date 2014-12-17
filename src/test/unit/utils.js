@@ -6,6 +6,7 @@
     makeTextSelection,
     moveSelector,
     prepareUnitTestModule,
+    IMG_SRC,
     SKIP_THIS_TEST
 */
 /* global
@@ -20,6 +21,9 @@
     strictEqual
 */
 "use strict";
+
+// An image source for images in tests.
+var IMG_SRC = "http://bit.ly/139xJN2";
 
 // Regex expression shortcuts
 var preAmp = /&/g;
