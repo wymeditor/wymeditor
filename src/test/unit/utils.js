@@ -544,8 +544,8 @@ var SKIP_THIS_TEST = "Skip this test. Really. I know what I'm doing. Trust " +
  *         This example uses the `jquery.browser` plugin
  *         https://github.com/gabceb/jquery-browser-plugin
  *
- *     `manipulationFunc` and `manipulationClickSelector` are not exclusive of each
- *     other. The procedure will be performed once for each of them.
+ *     `manipulationFunc` and `manipulationClickSelector` are not exclusive
+ *     of each other. The procedure will be performed once for each of them.
  */
 function manipulationTestHelper(a) {
     if (skipThisTest() === true) {
