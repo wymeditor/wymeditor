@@ -5,6 +5,7 @@
     testNoChangeInHtmlArray,
     makeTextSelection,
     moveSelector,
+    prepareUnitTestModule,
     SKIP_THIS_TEST
 */
 /* global
