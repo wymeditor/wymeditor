@@ -15,6 +15,10 @@ WYMeditor.
   `editor.rawHtml` no longer calls `editor.prepareDocForEditing`.
 * [#512](https://github.com/wymeditor/wymeditor/pull/512)
   `editor.registerModification()` is expected to be called after DOM manipulations.
+* [#647](https://github.com/wymeditor/wymeditor/pull/647)
+  In Gecko (Firefox) it was possible to edit tables by dragging and dropping.
+  This was removed because it is a Gecko exclusive feature that was not
+  functioning well enough.
 
 ### Enhancements
 
