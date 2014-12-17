@@ -2,7 +2,6 @@
 /* global -$,
     ok,
     start,
-    stop,
     test,
     expect,
     deepEqual,
@@ -13,18 +12,21 @@
     makeTextSelection,
     isContentEditable,
     normalizeHtml,
-    ListPlugin,
     asyncTest,
     SKIP_THIS_TEST,
     manipulationTestHelper,
-    inPhantomjs
+    inPhantomjs,
+    prepareUnitTestModule,
+    vanishAllWyms,
+    allWymIframesInitialized
 */
 /* exported
-setupWym,
-setupMultipleTextareas,
-no_br_selection_browser,
+    no_br_selection_browser,
+    IMG_SRC
 */
 "use strict";
+
+var IMG_SRC = "http://bit.ly/139xJN2";
 
 // We need to be able to operate in a noConflict context. Doing this during our
 // tests ensures that remains the case.
@@ -41,128 +43,6 @@ var SKIP_KNOWN_FAILING_TESTS = true,
     // Can't move the selection to a <br /> element
     no_br_selection_browser = jQuery.browser.webkit ||
         WYMeditor.isInternetExplorerPre11();
-
-// Returns true if all WYMeditor Iframes are initialized.
-function allWymIframesInitialized() {
-    var i;
-
-    for (i = 0; i < WYMeditor.INSTANCES.length; i++) {
-        if (!WYMeditor.INSTANCES[i].iframeInitialized) {
-            return false;
-        } else if (i === WYMeditor.INSTANCES.length - 1) {
-            return true;
-        }
-    }
-}
-
-function vanishAllWyms() {
-    while (WYMeditor.INSTANCES.length > 0) {
-        WYMeditor.INSTANCES[0].vanish();
-    }
-}
-
-/*
- * A helper that sets up textareas and editors for unit tests.
- *
- * Expects a single arguments object with the following properties:
- *
- * `editorCount`
- *     This many `textarea`s shall be made available.
- * `initialized`
- *     Whether editors will be initialized on these `textarea`s.
- * `options`
- *     An options object that will be passed on to the `jQuery.fn.wymeditor()` call.
- */
-function prepareUnitTestModule(args) {
-    var defaults,
-        $textareas,
-        i,
-        $wymForm = jQuery('#wym-form'),
-        textareasDifference,
-        newTextarea,
-        $textareasToRemove,
-        wymeditor,
-        $uninitializedTextareas,
-        providedPostInit;
-
-    stop();
-
-    defaults = {
-        editorCount: 1,
-        // Whether to initialize these textareas with WYMeditors or not.
-        initialized: true,
-        options: {}
-    };
-
-    if (args.options) {
-        vanishAllWyms();
-    }
-
-    args = jQuery.extend(defaults, args);
-
-    if (args.options.hasOwnProperty("postInit")) {
-        providedPostInit = args.options.postInit;
-    }
-
-    args.options.postInit = function (wym) {
-        // TODO: We should not load all these plugins by default.
-        wym.listPlugin = new ListPlugin({}, wym);
-        wym.tableEditor = wym.table();
-        wym.structuredHeadings();
-        if (providedPostInit) {
-            providedPostInit(wym);
-        }
-        if (allWymIframesInitialized()) {
-            start();
-        }
-    };
-
-    if (args.initialized === false) {
-        vanishAllWyms();
-    }
-
-    $textareas = $wymForm.find('textarea.wym');
-
-    if (WYMeditor.INSTANCES.length > $textareas.length) {
-        throw "There are more editors than textareas.";
-    }
-
-    textareasDifference = args.editorCount - $textareas.length;
-
-    if (textareasDifference > 0) {
-        // Add textareas
-        for (i = $textareas.length; i < args.editorCount; i++) {
-            newTextarea = '<textarea id="wym' + i + '" class="wym"></textarea>';
-            if (i === 0) {
-                $wymForm.prepend(newTextarea);
-            } else {
-                $wymForm.find('textarea.wym, .wym_box').last()
-                    .after(newTextarea);
-            }
-        }
-    } else if (textareasDifference < 0) {
-        // Remove textareas
-        $textareasToRemove = $textareas.slice(textareasDifference);
-        for (i = 0; i < $textareasToRemove.length; i++) {
-            wymeditor = jQuery.getWymeditorByTextarea($textareasToRemove[i]);
-            if (wymeditor) {
-                wymeditor.vanish();
-            }
-        }
-        $textareasToRemove.remove();
-    }
-
-    $uninitializedTextareas = $wymForm
-        .find('textarea.wym:not([data-wym-initialized])');
-    if (
-        args.initialized &&
-        $uninitializedTextareas.length > 0
-    ) {
-        $uninitializedTextareas.wymeditor(args.options);
-    } else {
-        start();
-    }
-}
 
 module("Core", {setup: prepareUnitTestModule});
 
