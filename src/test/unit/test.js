@@ -18,6 +18,7 @@
     inPhantomjs,
     prepareUnitTestModule,
     vanishAllWyms,
+    IMG_SRC,
     allWymIframesInitialized
 */
 /* exported

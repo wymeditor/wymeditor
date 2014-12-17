@@ -5,6 +5,7 @@
     test,
     expect,
     equal,
+    IMG_SRC,
     deepEqual
 */
 "use strict";
