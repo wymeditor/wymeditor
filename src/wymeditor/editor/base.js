@@ -1226,15 +1226,21 @@ WYMeditor.editor.prototype.keyCanCreateBlockElement = function (keyCode) {
 */
 WYMeditor.editor.prototype.toggleClass = function (sClass, jqexpr) {
     var wym = this,
-        $container = jQuery(wym.selectedContainer());
-    // `.last()` is used here because the `.addBack()` from `.parentsOrSelf`
-    // reverses the array.
-    $container = $container.parentsOrSelf(jqexpr).last();
-    $container.toggleClass(sClass);
+        $element;
 
-    if (!$container.attr(WYMeditor.CLASS)) {
-        $container.removeAttr(wym._class);
+    $element = jQuery(wym.getSelectedImage());
+    if ($element.length !== 1) {
+        $element = jQuery(wym.selectedContainer())
+            // `.last()` is used here because the `.addBack()` from
+            // `.parentsOrSelf` reverses the array.
+            .parentsOrSelf(jqexpr).last();
     }
+    $element.toggleClass(sClass);
+
+    if (!$element.attr(WYMeditor.CLASS)) {
+        $element.removeAttr(wym._class);
+    }
+};
 
 /**
     WYMeditor.editor.getSelectedImage
