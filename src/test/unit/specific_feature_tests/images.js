@@ -52,7 +52,7 @@ test("Image is selected on mousedown", function () {
     var noChangeHtml = [""
             , "<p>"
                 , "A "
-                , "<img alt=\"Pen\" src=\"http://goo.gl/N9nqUc\" />"
+                , "<img alt=\"Pen\" src=\"" + IMG_SRC + "\" />"
             , "</p>"
         ].join("");
 
