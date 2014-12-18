@@ -20,6 +20,9 @@ WYMeditor.
   that is considered unhelpful.
   It was previously disabled for a while and it was found to be enabled now.
   So it is now disabled again.
+* [#648](https://github.com/wymeditor/wymeditor/pull/647)
+  Similar to the above table editing feature, this feature allows resizing
+  images and other objects. Similarly, now disabled.
 
 ### Enhancements
 
