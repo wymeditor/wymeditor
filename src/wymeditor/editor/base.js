@@ -1235,6 +1235,42 @@ WYMeditor.editor.prototype.toggleClass = function (sClass, jqexpr) {
     if (!$container.attr(WYMeditor.CLASS)) {
         $container.removeAttr(wym._class);
     }
+
+/**
+    WYMeditor.editor.getSelectedImage
+    =================================
+
+    If selection encompasses exactly a single image, returns that image.
+    Otherwise returns `false`.
+*/
+WYMeditor.editor.prototype.getSelectedImage = function () {
+    var wym = this,
+        selectedNodes,
+        selectedNode;
+
+    if (wym.hasSelection() !== true) {
+        return false;
+    }
+    if (wym.selection().isCollapsed !== false) {
+        return false;
+    }
+
+    selectedNodes = wym._getSelectedNodes();
+
+    if (selectedNodes.length !== 1) {
+        return false;
+    }
+
+    selectedNode = selectedNodes[0];
+
+    if (
+        !selectedNode.tagName ||
+        selectedNode.tagName.toLowerCase() !== "img"
+    ) {
+        return false;
+    }
+
+    return selectedNode;
 };
 
 /**

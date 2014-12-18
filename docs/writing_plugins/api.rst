@@ -246,6 +246,12 @@ Example: get the selected root container.
 
     wym.status(wym.mainContainer().tagName);
 
+``getSelectedImage()``
+======================
+
+If selection encompasses exactly a single image, returns that image.
+Otherwise returns ``false``.
+
 ``canSetCaretBefore(node)``
 ===========================
 
