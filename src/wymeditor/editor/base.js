@@ -3993,16 +3993,25 @@ WYMeditor.editor.prototype._handlePasteEvent = function () {
     );
 };
 
-WYMeditor.editor.prototype._mousedown = function (evt) {
+WYMeditor.editor.prototype._selectSingleNode = function (node) {
     var wym = this,
         selection,
-        imageRange;
+        nodeRange;
+
+    if (!node) {
+        return "Expected a node";
+    }
+    selection = wym.selection();
+    nodeRange = rangy.createRangyRange();
+    nodeRange.selectNode(node);
+    selection.setSingleRange(nodeRange);
+};
+
+WYMeditor.editor.prototype._mousedown = function (evt) {
+    var wym = this;
 
     if (evt.target.tagName.toLowerCase() === WYMeditor.IMG) {
-        selection = wym.selection();
-        imageRange = rangy.createRangyRange();
-        imageRange.selectNode(evt.target);
-        selection.setSingleRange(imageRange);
+        wym._selectSingleNode(evt.target);
     }
 };
 
