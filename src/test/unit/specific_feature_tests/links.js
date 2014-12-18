@@ -196,3 +196,75 @@ test("IE unlinks when collapsed selection inside link", function () {
         }
     });
 });
+
+test("Links selected unlinked image", function () {
+    manipulationTestHelper({
+        startHtml: "<p>A <img alt=\"pen\" src=\"http://goo.gl/N9nqUc\" /></p>",
+        prepareFunc: function (wymeditor) {
+            wymeditor.$body().find("img").mousedown();
+        },
+        manipulationFunc: function (wymeditor) {
+            wymeditor.link({href: "http://example.com/"});
+        },
+        expectedResultHtml: [""
+            , "<p>"
+                , "A "
+                , "<a href=\"http://example.com/\">"
+                    , "<img alt=\"pen\" src=\"http://goo.gl/N9nqUc\" />"
+                , "</a>"
+            , "</p>"
+        ].join("")
+    });
+});
+
+test("Modifies linked image", function () {
+    manipulationTestHelper({
+        startHtml: [""
+            , "<p>"
+                , "<a href=\"http://example.com/\">"
+                    , "A "
+                    , "<img alt=\"pen\" src=\"http://goo.gl/N9nqUc\" />"
+                , "</a>"
+            , "</p>"
+        ].join(""),
+        prepareFunc: function (wymeditor) {
+            wymeditor.$body().find("img").mousedown();
+        },
+        manipulationFunc: function (wymeditor) {
+            wymeditor.link({href: "http://example.com/foo"});
+        },
+        expectedResultHtml: [""
+            , "<p>"
+                , "<a href=\"http://example.com/foo\">"
+                , "A "
+                    , "<img alt=\"pen\" src=\"http://goo.gl/N9nqUc\" />"
+                , "</a>"
+            , "</p>"
+        ].join("")
+    });
+});
+
+test("Unlinks linked image", function () {
+    manipulationTestHelper({
+        startHtml: [""
+            , "<p>"
+                , "A "
+                , "<a href=\"http://example.com/\">"
+                    , "<img alt=\"pen\" src=\"http://goo.gl/N9nqUc\" />"
+                , "</a>"
+            , "</p>"
+        ].join(""),
+        prepareFunc: function (wymeditor) {
+            wymeditor.$body().find("img").mousedown();
+        },
+        manipulationFunc: function (wymeditor) {
+            wymeditor.exec(WYMeditor.EXEC_COMMANDS.UNLINK);
+        },
+        expectedResultHtml: [""
+            , "<p>"
+                , "A "
+                , "<img alt=\"pen\" src=\"http://goo.gl/N9nqUc\" />"
+            , "</p>"
+        ].join("")
+    });
+});

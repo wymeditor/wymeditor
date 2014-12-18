@@ -161,7 +161,6 @@ WYMeditor.WymClassWebKit.prototype._keyup = function (evt) {
         wym.documentStructureManager.structureRules.notValidRootContainers;
     defaultRootContainer =
         wym.documentStructureManager.structureRules.defaultRootContainer;
-    wym._selectedImage = null;
 
     // Fix to allow shift + return to insert a line break in older safari
     if (jQuery.browser.version < 534.1) {

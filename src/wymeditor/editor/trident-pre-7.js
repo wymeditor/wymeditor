@@ -163,7 +163,6 @@ WYMeditor.WymClassTridentPre7.prototype.unwrap = function () {
 
 WYMeditor.WymClassTridentPre7.prototype._keyup = function (evt) {
     var wym = this,
-        doc = wym._doc,
         container,
         defaultRootContainer,
         notValidRootContainers,
@@ -176,7 +175,6 @@ WYMeditor.WymClassTridentPre7.prototype._keyup = function (evt) {
         wym.documentStructureManager.structureRules.notValidRootContainers;
     defaultRootContainer =
         wym.documentStructureManager.structureRules.defaultRootContainer;
-    doc._selectedImage = null;
 
     // If the pressed key can't create a block element and is not a command,
     // check to make sure the selection is properly wrapped in a container
