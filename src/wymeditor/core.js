@@ -1228,11 +1228,13 @@ WYMeditor._initDialog = function (index) {
 
     jQuery(wym._options.dialogImageSelector + " " + wym._options.submitSelector)
         .submit(function () {
-            wym.insertImage({
+            var imgAttrs = {
                 src: jQuery(wym._options.srcSelector).val(),
                 title: jQuery(wym._options.titleSelector).val(),
                 alt: jQuery(wym._options.altSelector).val()
-            });
+            };
+            wym.focusOnDocument();
+            wym.insertImage(imgAttrs);
             window.close();
         }
     );
