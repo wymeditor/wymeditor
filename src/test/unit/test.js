@@ -19,6 +19,7 @@
     prepareUnitTestModule,
     vanishAllWyms,
     IMG_SRC,
+    QUnit,
     allWymIframesInitialized
 */
 /* exported
@@ -29,6 +30,9 @@
 // We need to be able to operate in a noConflict context. Doing this during our
 // tests ensures that remains the case.
 jQuery.noConflict();
+
+// Hide passed tests.
+QUnit.config.hidepassed = true;
 
 // Whether or not we want to skip the tests that are known to be failing.
 // Ideally, there would be no tests in this category, but right now there are

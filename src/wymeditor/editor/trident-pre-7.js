@@ -51,6 +51,26 @@ WYMeditor.WymClassTridentPre7.prototype._docEventQuirks = function () {
         wym._iframe.contentWindow.event.returnValue = false;
         wym.paste(window.clipboardData.getData("Text"));
     };
+
+    // https://github.com/wymeditor/wymeditor/pull/641
+    wym.$body().bind("dragend", function (evt) {
+        if (evt.target.tagName.toLowerCase() === WYMeditor.IMG) {
+            wym.deselect();
+        }
+    });
+};
+
+// https://github.com/wymeditor/wymeditor/pull/641
+WYMeditor.WymClassTridentPre7.prototype._mouseup = function (evt) {
+    var wym = this;
+
+    if (evt.target.tagName.toLowerCase() !== WYMeditor.IMG) {
+        return;
+    }
+
+    window.setTimeout(function () {
+        wym._selectSingleNode(evt.target);
+    }, 0);
 };
 
 WYMeditor.WymClassTridentPre7.prototype._setButtonsUnselectable = function () {

@@ -4,6 +4,8 @@
     prepareUnitTestModule,
     makeTextSelection,
     test,
+    IMG_SRC,
+    inPhantomjs,
     SKIP_THIS_TEST
 */
 "use strict";
@@ -199,7 +201,7 @@ test("IE unlinks when collapsed selection inside link", function () {
 
 test("Links selected unlinked image", function () {
     manipulationTestHelper({
-        startHtml: "<p>A <img alt=\"pen\" src=\"http://goo.gl/N9nqUc\" /></p>",
+        startHtml: "<p>A <img alt=\"pen\" src=\"" + IMG_SRC + "\" /></p>",
         prepareFunc: function (wymeditor) {
             wymeditor.$body().find("img").mousedown();
         },
@@ -210,10 +212,13 @@ test("Links selected unlinked image", function () {
             , "<p>"
                 , "A "
                 , "<a href=\"http://example.com/\">"
-                    , "<img alt=\"pen\" src=\"http://goo.gl/N9nqUc\" />"
+                    , "<img alt=\"pen\" src=\"" + IMG_SRC + "\" />"
                 , "</a>"
             , "</p>"
-        ].join("")
+        ].join(""),
+        skipFunc: function () {
+            return inPhantomjs ? SKIP_THIS_TEST : null;
+        }
     });
 });
 
@@ -223,7 +228,7 @@ test("Modifies linked image", function () {
             , "<p>"
                 , "<a href=\"http://example.com/\">"
                     , "A "
-                    , "<img alt=\"pen\" src=\"http://goo.gl/N9nqUc\" />"
+                    , "<img alt=\"pen\" src=\"" + IMG_SRC + "\" />"
                 , "</a>"
             , "</p>"
         ].join(""),
@@ -237,10 +242,13 @@ test("Modifies linked image", function () {
             , "<p>"
                 , "<a href=\"http://example.com/foo\">"
                 , "A "
-                    , "<img alt=\"pen\" src=\"http://goo.gl/N9nqUc\" />"
+                    , "<img alt=\"pen\" src=\"" + IMG_SRC + "\" />"
                 , "</a>"
             , "</p>"
-        ].join("")
+        ].join(""),
+        skipFunc: function () {
+            return inPhantomjs ? SKIP_THIS_TEST : null;
+        }
     });
 });
 
@@ -250,7 +258,7 @@ test("Unlinks linked image", function () {
             , "<p>"
                 , "A "
                 , "<a href=\"http://example.com/\">"
-                    , "<img alt=\"pen\" src=\"http://goo.gl/N9nqUc\" />"
+                    , "<img alt=\"pen\" src=\"" + IMG_SRC + "\" />"
                 , "</a>"
             , "</p>"
         ].join(""),
@@ -263,8 +271,11 @@ test("Unlinks linked image", function () {
         expectedResultHtml: [""
             , "<p>"
                 , "A "
-                , "<img alt=\"pen\" src=\"http://goo.gl/N9nqUc\" />"
+                , "<img alt=\"pen\" src=\"" + IMG_SRC + "\" />"
             , "</p>"
-        ].join("")
+        ].join(""),
+        skipFunc: function () {
+            return inPhantomjs ? SKIP_THIS_TEST : null;
+        }
     });
 });

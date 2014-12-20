@@ -6,6 +6,8 @@
     expect,
     strictEqual,
     makeSelection,
+    inPhantomjs,
+    SKIP_THIS_TEST,
     IMG_SRC
 */
 "use strict";
@@ -52,7 +54,7 @@ test("Image is selected on mousedown", function () {
     var noChangeHtml = [""
             , "<p>"
                 , "A "
-                , "<img alt=\"Pen\" src=\"http://goo.gl/N9nqUc\" />"
+                , "<img alt=\"Pen\" src=\"" + IMG_SRC + "\" />"
             , "</p>"
         ].join("");
 
@@ -74,6 +76,9 @@ test("Image is selected on mousedown", function () {
                 "img",
                 "Image is the only selected node"
             );
+        },
+        skipFunc: function () {
+            return inPhantomjs ? SKIP_THIS_TEST : null;
         }
     });
 });
@@ -226,6 +231,9 @@ test("Returns an image after it was `mousedown`ed", function () {
                 wymeditor.getSelectedImage(),
                 img
             );
+        },
+        skipFunc: function () {
+            return inPhantomjs ? SKIP_THIS_TEST : null;
         }
     });
 });
