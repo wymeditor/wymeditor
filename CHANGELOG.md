@@ -20,9 +20,9 @@ WYMeditor.
   that is considered unhelpful.
   It was previously disabled for a while and it was found to be enabled now.
   So it is now disabled again.
-* [#648](https://github.com/wymeditor/wymeditor/pull/647)
-  Similar to the above table editing feature, this feature allows resizing
-  images and other objects. Similarly, now disabled.
+* [#648](https://github.com/wymeditor/wymeditor/pull/647),
+  [#641](https://github.com/wymeditor/wymeditor/pull/641)
+  Object resizing (images, primarily) in Firefox and IE has been disabled.
 
 ### Enhancements
 
@@ -32,6 +32,8 @@ WYMeditor.
   New `editor.doesElementContainSelection` method.
 * [#512](https://github.com/wymeditor/wymeditor/pull/512)
   New undo/redo methods in the API.
+* [#641](https://github.com/wymeditor/wymeditor/pull/641)
+  New `editor.getSelectedImage()`
 
 ### Bug Fixes
 
