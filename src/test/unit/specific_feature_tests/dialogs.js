@@ -413,24 +413,3 @@ test("Preview dialog opens when selection is collapsed; by toolbar button",
         expectedTitle: getDialogDocumentTitle(command)
     });
 });
-
-test("Link dialog opens when selection is non-collapsed; by toolbar button",
-    function () {
-    var command = WYMeditor.EXEC_COMMANDS.PREVIEW;
-    dialogTestHelper({
-        noChangeHtml: "<p>Foo</p>",
-        prepareFunc: function (wymeditor) {
-            var p = wymeditor.body().childNodes[0];
-            makeTextSelection(
-                wymeditor,
-                p,
-                p,
-                0,
-                3
-            );
-        },
-        clickSelector: getDialogToolbarSelector(command),
-        expectedOpenedOrNot: "opened",
-        expectedTitle: getDialogDocumentTitle(command)
-    });
-});
