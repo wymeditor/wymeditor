@@ -52,7 +52,7 @@ WYMeditor.WymClassTridentPre7.prototype._docEventQuirks = function () {
         wym.paste(window.clipboardData.getData("Text"));
     };
 
-    // https://github.com/wymeditor/wymeditor/pull/641/files#r22141788
+    // https://github.com/wymeditor/wymeditor/pull/641
     wym.$body().bind("dragend", function (evt) {
         if (evt.target.tagName.toLowerCase() === WYMeditor.IMG) {
             wym.deselect();
@@ -60,7 +60,7 @@ WYMeditor.WymClassTridentPre7.prototype._docEventQuirks = function () {
     });
 };
 
-// https://github.com/wymeditor/wymeditor/pull/641/files#r22141820
+// https://github.com/wymeditor/wymeditor/pull/641
 WYMeditor.WymClassTridentPre7.prototype._mouseup = function (evt) {
     var wym = this;
 
