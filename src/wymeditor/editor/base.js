@@ -3993,6 +3993,14 @@ WYMeditor.editor.prototype._handlePasteEvent = function () {
     );
 };
 
+/**
+    WYMeditor.editor._selectSingleNode
+    ==================================
+
+    Sets selection to a single node, exclusively.
+    Not public API because not tested enough.
+    For example, what happens when selecting containing element, this way?
+*/
 WYMeditor.editor.prototype._selectSingleNode = function (node) {
     var wym = this,
         selection,
