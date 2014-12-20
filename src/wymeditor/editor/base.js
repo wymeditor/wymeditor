@@ -3999,7 +3999,7 @@ WYMeditor.editor.prototype._selectSingleNode = function (node) {
         nodeRange;
 
     if (!node) {
-        return "Expected a node";
+        throw "Expected a node";
     }
     selection = wym.selection();
     nodeRange = rangy.createRangyRange();
