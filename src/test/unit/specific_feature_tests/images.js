@@ -74,6 +74,9 @@ test("Image is selected on mousedown", function () {
                 "img",
                 "Image is the only selected node"
             );
+        },
+        skipFunc: function () {
+            return inPhantomjs ? SKIP_THIS_TEST : null;
         }
     });
 });
@@ -226,6 +229,9 @@ test("Returns an image after it was `mousedown`ed", function () {
                 wymeditor.getSelectedImage(),
                 img
             );
+        },
+        skipFunc: function () {
+            return inPhantomjs ? SKIP_THIS_TEST : null;
         }
     });
 });

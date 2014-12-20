@@ -214,7 +214,10 @@ test("Links selected unlinked image", function () {
                     , "<img alt=\"pen\" src=\"" + IMG_SRC + "\" />"
                 , "</a>"
             , "</p>"
-        ].join("")
+        ].join(""),
+        skipFunc: function () {
+            return inPhantomjs ? SKIP_THIS_TEST : null;
+        }
     });
 });
 
@@ -241,7 +244,10 @@ test("Modifies linked image", function () {
                     , "<img alt=\"pen\" src=\"" + IMG_SRC + "\" />"
                 , "</a>"
             , "</p>"
-        ].join("")
+        ].join(""),
+        skipFunc: function () {
+            return inPhantomjs ? SKIP_THIS_TEST : null;
+        }
     });
 });
 
@@ -266,6 +272,9 @@ test("Unlinks linked image", function () {
                 , "A "
                 , "<img alt=\"pen\" src=\"" + IMG_SRC + "\" />"
             , "</p>"
-        ].join("")
+        ].join(""),
+        skipFunc: function () {
+            return inPhantomjs ? SKIP_THIS_TEST : null;
+        }
     });
 });

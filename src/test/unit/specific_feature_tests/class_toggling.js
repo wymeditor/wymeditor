@@ -165,6 +165,9 @@ test("Adds className to image", function () {
                 , "Foo"
                 , "<img alt=\"foo\" class=\"fancy\" src=\"" + IMG_SRC + "\" />"
             , "</p>"
-        ].join("")
+        ].join(""),
+        skipFunc: function () {
+            return inPhantomjs ? SKIP_THIS_TEST : null;
+        }
     });
 });
