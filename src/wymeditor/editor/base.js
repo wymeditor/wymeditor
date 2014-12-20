@@ -582,11 +582,7 @@ WYMeditor.editor.prototype._exec = function (cmd, param) {
         return false;
     }
 
-    if (param) {
-        wym._doc.execCommand(cmd, '', param);
-    } else {
-        wym._doc.execCommand(cmd, '', null);
-    }
+    wym._doc.execCommand(cmd, false, param);
 
     $span = jQuery(wym.selectedContainer()).filter("span").not("[id]");
     if ($span.length === 0) {
