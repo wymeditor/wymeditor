@@ -48,6 +48,7 @@ WYMeditor.WymClassTrident7.prototype.rawHtml = function (html) {
 WYMeditor.WymClassTrident7.prototype._docEventQuirks = function () {
     var wym = this;
 
+    // https://github.com/wymeditor/wymeditor/pull/641/files#r22141783
     wym.$body().bind("dragend", function (evt) {
         if (evt.target.tagName.toLowerCase() === WYMeditor.IMG) {
             wym.deselect();
