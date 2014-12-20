@@ -44,3 +44,13 @@ WYMeditor.WymClassTrident7.prototype.rawHtml = function (html) {
     }
     return false;
 };
+
+WYMeditor.WymClassTrident7.prototype._docEventQuirks = function () {
+    var wym = this;
+
+    wym.$body().bind("dragend", function (evt) {
+        if (evt.target.tagName.toLowerCase() === WYMeditor.IMG) {
+            wym.deselect();
+        }
+    });
+};

@@ -3967,8 +3967,8 @@ WYMeditor.editor.prototype._listen = function () {
     // Don't use jQuery.find() on the iframe body
     // because of MSIE + jQuery + expando issue (#JQ1143)
 
-    wym.$body().bind("mousedown", function (e) {
-        wym._mousedown(e);
+    wym.$body().bind("mouseup", function (e) {
+        wym._mouseup(e);
     });
 
     jQuery(wym._doc).bind('paste', function () {
@@ -4007,9 +4007,8 @@ WYMeditor.editor.prototype._selectSingleNode = function (node) {
     selection.setSingleRange(nodeRange);
 };
 
-WYMeditor.editor.prototype._mousedown = function (evt) {
+WYMeditor.editor.prototype._mouseup = function (evt) {
     var wym = this;
-
     if (evt.target.tagName.toLowerCase() === WYMeditor.IMG) {
         wym._selectSingleNode(evt.target);
     }
