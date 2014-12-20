@@ -30,6 +30,9 @@
 // tests ensures that remains the case.
 jQuery.noConflict();
 
+// Hide passed tests.
+QUnit.config.hidepassed = true;
+
 // Whether or not we want to skip the tests that are known to be failing.
 // Ideally, there would be no tests in this category, but right now there are
 // a lot of table-related bugs that need to be fixed that aren't the number
