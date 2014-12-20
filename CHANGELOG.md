@@ -24,8 +24,8 @@ WYMeditor.
   Similar to the above table editing feature, this feature allows resizing
   images and other objects. Similarly, now disabled.
 * [#652](https://github.com/wymeditor/wymeditor/pull/652)
-  Changes via the HTML code view no longer update the document directly, but
-  are passed through the parser for corrections, beforehand.
+  Changes via the HTML code view no longer update the document directly. They
+  are passed through the parser for corrections, before that.
 
 ### Enhancements
 
