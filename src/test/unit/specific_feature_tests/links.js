@@ -5,6 +5,7 @@
     makeTextSelection,
     test,
     IMG_SRC,
+    inPhantomjs,
     SKIP_THIS_TEST
 */
 "use strict";

@@ -2,6 +2,8 @@
     prepareUnitTestModule,
     test,
     manipulationTestHelper,
+    inPhantomjs,
+    SKIP_THIS_TEST,
     IMG_SRC
 */
 "use strict";

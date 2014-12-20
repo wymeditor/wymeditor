@@ -6,6 +6,8 @@
     expect,
     strictEqual,
     makeSelection,
+    inPhantomjs,
+    SKIP_THIS_TEST,
     IMG_SRC
 */
 "use strict";
