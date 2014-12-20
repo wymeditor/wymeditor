@@ -569,6 +569,14 @@ WYMeditor.editor.prototype._exec = function (cmd, param) {
     var wym = this,
         $span;
 
+    if (typeof cmd !== "string") {
+        throw "Expected a string";
+    }
+
+    if (param && typeof param !== "string") {
+        throw "Expected a string";
+    }
+
     if (wym.selectedContainer() === false) {
         return false;
     }
