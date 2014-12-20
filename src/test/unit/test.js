@@ -19,6 +19,7 @@
     prepareUnitTestModule,
     vanishAllWyms,
     IMG_SRC,
+    QUnit,
     allWymIframesInitialized
 */
 /* exported
