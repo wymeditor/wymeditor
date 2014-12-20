@@ -68,7 +68,7 @@ function dialogTestHelper(args) {
         additionalAssertionsFunc: additionalAssertionsFunc
     });
 
-    function prepareFunc (wymeditor) {
+    function prepareFunc(wymeditor) {
         // Wrap the dialog function with a spy
         wymeditor.dialog = sinon.spy(wymeditor, "dialog");
         // Wrap the `window.open` native function with a spy
