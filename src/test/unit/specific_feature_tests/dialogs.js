@@ -46,7 +46,9 @@ module("dialogs-opening_or_not", {
  * `dialogButtonSelector`
  *     A jQuery selector of the dialog button. It will be `jQuery.click()`ed.
  * `expectedOpenedOrNot`
- *     Whether the dialog is expected to open or not. Either "opened" or "not".
+ *     Whether the dialog is expected to open or not. Either
+ *     `dialogTestHelper.EXPECT_OPENED` or `dialogTestHelper.EXPECT_NOT` (These
+ *     are constants).
  * `expectedTitle`
  *     The `document.title` that the dialog window is expected to have.
  */
@@ -95,9 +97,9 @@ function dialogTestHelper(args) {
         // Its return value it either the dialog window or `false`.
         dialogWindowOrFalse = wymeditor.dialog.returnValues[0];
 
-        if (args.expectedOpenedOrNot === "opened") {
+        if (args.expectedOpenedOrNot === dialogTestHelper.EXPECT_OPENED) {
             assertOpened(dialogWindowOrFalse);
-        } else if (args.expectedOpenedOrNot === "not") {
+        } else if (args.expectedOpenedOrNot === dialogTestHelper.EXPECT_NOT) {
             assertNotOpened(dialogWindowOrFalse);
         } else {
             throw "Expected either `opened` or `not`";
@@ -152,6 +154,10 @@ function dialogTestHelper(args) {
     }
 }
 
+dialogTestHelper.EXPECT_OPENED = "Expect this dialog to have been opened. " +
+    "Expect it with all of your heart.";
+dialogTestHelper.EXPECT_NOT = "Nope. The dialog should not have opened.";
+
 function getDialogToolbarSelector(dialogName) {
     if (typeof dialogName !== "string") {
         throw "Expected a string";
@@ -187,7 +193,7 @@ test("Link dialog doesn't open when no selection; by toolbar button click",
             wymeditor.deselect();
         },
         dialogButtonSelector: getDialogToolbarSelector(command),
-        expectedOpenedOrNot: "not",
+        expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT,
         expectedTitle: getDialogDocumentTitle(command)
     });
 });
@@ -209,7 +215,7 @@ test("Link dialog opens when selection is non-collapsed and " +
             );
         },
         dialogButtonSelector: getDialogToolbarSelector(command),
-        expectedOpenedOrNot: "opened",
+        expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED,
         expectedTitle: getDialogDocumentTitle(command)
     });
 });
@@ -222,7 +228,7 @@ test("Link dialog doesn't open when selection is collapsed and " +
         noChangeHtml: "<p>Foo</p>",
         setCaretInSelector: "p",
         dialogButtonSelector: getDialogToolbarSelector(command),
-        expectedOpenedOrNot: "not",
+        expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT,
         expectedTitle: getDialogDocumentTitle(command)
     });
 });
@@ -245,7 +251,7 @@ test("Link dialog doesn't open when selection is non-collapsed and " +
             );
         },
         dialogButtonSelector: getDialogToolbarSelector(command),
-        expectedOpenedOrNot: "not",
+        expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT,
         expectedTitle: getDialogDocumentTitle(command)
     });
 });
@@ -259,7 +265,7 @@ test("Image dialog doesn't open when no selection; by toolbar " +
             wymeditor.deselect();
         },
         dialogButtonSelector: getDialogToolbarSelector(command),
-        expectedOpenedOrNot: "not",
+        expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT,
         expectedTitle: getDialogDocumentTitle(command)
     });
 });
@@ -280,7 +286,7 @@ test("Image dialog doesn't open when selection is non-collapsed; by toolbar " +
             );
         },
         dialogButtonSelector: getDialogToolbarSelector(command),
-        expectedOpenedOrNot: "not",
+        expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT,
         expectedTitle: getDialogDocumentTitle(command)
     });
 });
@@ -292,7 +298,7 @@ test("Image dialog opens when selection is collapsed; by toolbar button",
         noChangeHtml: "<p>Foo</p>",
         setCaretInSelector: "p",
         dialogButtonSelector: getDialogToolbarSelector(command),
-        expectedOpenedOrNot: "opened",
+        expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED,
         expectedTitle: getDialogDocumentTitle(command)
     });
 });
@@ -306,7 +312,7 @@ test("Table dialog doesn't open when no selection; by toolbar button click",
             wymeditor.deselect();
         },
         dialogButtonSelector: getDialogToolbarSelector(command),
-        expectedOpenedOrNot: "not",
+        expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT,
         expectedTitle: getDialogDocumentTitle(command)
     });
 });
@@ -327,7 +333,7 @@ test("Table dialog doesn't open when selection is non-collapsed; by toolbar " +
             );
         },
         dialogButtonSelector: getDialogToolbarSelector(command),
-        expectedOpenedOrNot: "not",
+        expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT,
         expectedTitle: getDialogDocumentTitle(command)
     });
 });
@@ -340,7 +346,7 @@ test("Table dialog opens when selection is collapsed and " +
         noChangeHtml: "<p>Foo</p>",
         setCaretInSelector: "p",
         dialogButtonSelector: getDialogToolbarSelector(command),
-        expectedOpenedOrNot: "opened",
+        expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED,
         expectedTitle: getDialogDocumentTitle(command)
     });
 });
@@ -354,7 +360,7 @@ test("Paste dialog doesn't open when no selection; by toolbar button click",
             wymeditor.deselect();
         },
         dialogButtonSelector: getDialogToolbarSelector(command),
-        expectedOpenedOrNot: "not",
+        expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT,
         expectedTitle: getDialogDocumentTitle(command)
     });
 });
@@ -375,7 +381,7 @@ test("Paste dialog doesn't open when selection is non-collapsed; by toolbar " +
             );
         },
         dialogButtonSelector: getDialogToolbarSelector(command),
-        expectedOpenedOrNot: "not",
+        expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT,
         expectedTitle: getDialogDocumentTitle(command)
     });
 });
@@ -387,7 +393,7 @@ test("Paste dialog opens when selection is collapsed; by toolbar button",
         noChangeHtml: "<p>Foo</p>",
         setCaretInSelector: "p",
         dialogButtonSelector: getDialogToolbarSelector(command),
-        expectedOpenedOrNot: "opened",
+        expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED,
         expectedTitle: getDialogDocumentTitle(command)
     });
 });
@@ -397,7 +403,7 @@ test("Preview dialog opens when no selection; by toolbar button", function () {
     dialogTestHelper({
         noChangeHtml: "<p>Foo</p>",
         dialogButtonSelector: getDialogToolbarSelector(command),
-        expectedOpenedOrNot: "opened",
+        expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED,
         expectedTitle: getDialogDocumentTitle(command)
     });
 });
@@ -409,7 +415,7 @@ test("Preview dialog opens when selection is collapsed; by toolbar button",
         noChangeHtml: "<p>Foo</p>",
         setCaretInSelector: "p",
         dialogButtonSelector: getDialogToolbarSelector(command),
-        expectedOpenedOrNot: "opened",
+        expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED,
         expectedTitle: getDialogDocumentTitle(command)
     });
 });
