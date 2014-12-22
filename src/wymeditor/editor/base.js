@@ -570,11 +570,11 @@ WYMeditor.editor.prototype._exec = function (cmd, param) {
         $span;
 
     if (typeof cmd !== "string") {
-        throw "Expected a string";
+        throw "`_exec` expected a String `cmd`";
     }
 
     if (param && typeof param !== "string") {
-        throw "Expected a string";
+        throw "`_exec` expected a String `param`";
     }
 
     if (wym.selectedContainer() === false) {
