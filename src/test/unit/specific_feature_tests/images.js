@@ -217,11 +217,12 @@ test("Returns an image when it is exclusively selected", function () {
     });
 });
 
-test("Returns an image after it was `mousedown`ed", function () {
+test("Returns an image after it was `mouseup`ed", function () {
     manipulationTestHelper({
         startHtml: getSelectedImageHtml,
         prepareFunc: function (wymeditor) {
-            wymeditor.$body().find("img").mousedown();
+            stop();
+            wymeditor.$body().find("img").mouseup();
         },
         expectedResultHtml: getSelectedImageHtml,
         additionalAssertionsFunc: function (wymeditor) {
