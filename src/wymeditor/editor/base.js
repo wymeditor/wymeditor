@@ -463,7 +463,7 @@ WYMeditor.editor.prototype._bindUIEvents = function () {
     $html_val = jQuery(wym._box).find(wym._options.htmlValSelector);
     $html_val.keyup(function () {
         var valTextarea = this;
-        wym.$body().html(jQuery(valTextarea).val());
+        wym.html(jQuery(valTextarea).val());
     });
     $html_val.focus(function () {
         var valTextarea = this;
