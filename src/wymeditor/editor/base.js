@@ -569,6 +569,14 @@ WYMeditor.editor.prototype._exec = function (cmd, param) {
     var wym = this,
         $span;
 
+    if (typeof cmd !== "string") {
+        throw "`_exec` expected a String `cmd`";
+    }
+
+    if (param && typeof param !== "string") {
+        throw "`_exec` expected a String `param`";
+    }
+
     if (wym.selectedContainer() === false) {
         return false;
     }
@@ -582,11 +590,7 @@ WYMeditor.editor.prototype._exec = function (cmd, param) {
         return false;
     }
 
-    if (param) {
-        wym._doc.execCommand(cmd, '', param);
-    } else {
-        wym._doc.execCommand(cmd, '', null);
-    }
+    wym._doc.execCommand(cmd, false, param);
 
     $span = jQuery(wym.selectedContainer()).filter("span").not("[id]");
     if ($span.length === 0) {
