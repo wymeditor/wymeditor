@@ -8,6 +8,8 @@
     makeSelection,
     inPhantomjs,
     SKIP_THIS_TEST,
+    stop,
+    start,
     IMG_SRC
 */
 "use strict";
@@ -182,11 +184,13 @@ test("Returns an image when it is exclusively selected", function () {
     });
 });
 
-test("Returns an image after it was `mouseup`ed", function () {
+module("images-selection", {setup: prepareUnitTestModule});
+
+test("Image is selected via `mouseup` in non pre-7 Trident", function () {
     manipulationTestHelper({
+        async: true,
         startHtml: getSelectedImageHtml,
-        prepareFunc: function (wymeditor) {
-            stop();
+        manipulationFunc: function (wymeditor) {
             wymeditor.$body().find("img").mouseup();
         },
         expectedResultHtml: getSelectedImageHtml,
@@ -199,7 +203,54 @@ test("Returns an image after it was `mouseup`ed", function () {
             );
         },
         skipFunc: function () {
-            return inPhantomjs ? SKIP_THIS_TEST : null;
+            if (inPhantomjs) {
+                return SKIP_THIS_TEST;
+            }
+            if (jQuery.browser.msie && jQuery.browser.versionNumber <= 10) {
+                return SKIP_THIS_TEST;
+            }
+        }
+    });
+});
+
+test("Image is selected via `mouseup` in pre-7 trident", function () {
+    var wymeditor,
+        _selectSingleNode,
+        resume;
+
+    if (
+        jQuery.browser.msie !== true ||
+        jQuery.browser.versionNumber > 10
+    ) {
+        expect(0);
+        return;
+    }
+
+    wymeditor = jQuery.wymeditors(0);
+
+    stop();
+    _selectSingleNode = wymeditor._selectSingleNode;
+    wymeditor._selectSingleNode = function (node) {
+        _selectSingleNode.call(wymeditor, node);
+        wymeditor._selectSingleNode = _selectSingleNode;
+        resume();
+        start();
+    };
+
+    resume = manipulationTestHelper({
+        async: true,
+        startHtml: getSelectedImageHtml,
+        manipulationFunc: function (wymeditor) {
+            wymeditor.$body().find("img").mouseup();
+        },
+        expectedResultHtml: getSelectedImageHtml,
+        additionalAssertionsFunc: function (wymeditor) {
+            var img = wymeditor.$body().find("img")[0];
+            expect(expect() + 1);
+            strictEqual(
+                wymeditor.getSelectedImage(),
+                img
+            );
         }
     });
 });
