@@ -34,7 +34,7 @@ jQuery.noConflict();
 // Hide passed tests.
 QUnit.config.hidepassed = true;
 
-// `sinon-qunit` sets this to true. We required working with the real asynchronous things.
+// `sinon-qunit` sets this to true. We require the real `setTimeout`.
 sinon.config.useFakeTimers = false;
 
 // Whether or not we want to skip the tests that are known to be failing.
