@@ -48,41 +48,6 @@ test("Inserts image into the body", function () {
     });
 });
 
-module("images-selection", {setup: prepareUnitTestModule});
-
-test("Image is selected on mousedown", function () {
-    var noChangeHtml = [""
-            , "<p>"
-                , "A "
-                , "<img alt=\"Pen\" src=\"" + IMG_SRC + "\" />"
-            , "</p>"
-        ].join("");
-
-    manipulationTestHelper({
-        startHtml: noChangeHtml,
-        manipulationFunc: function (wymeditor) {
-            wymeditor.$body().find("img").mousedown();
-        },
-        expectedResultHtml: noChangeHtml,
-        additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 2);
-            strictEqual(
-                wymeditor._getSelectedNodes().length,
-                1,
-                "Only one node is selected"
-            );
-            strictEqual(
-                wymeditor._getSelectedNodes()[0].tagName.toLowerCase(),
-                "img",
-                "Image is the only selected node"
-            );
-        },
-        skipFunc: function () {
-            return inPhantomjs ? SKIP_THIS_TEST : null;
-        }
-    });
-});
-
 module("images-getSelectedImage", {setup: prepareUnitTestModule});
 
 var getSelectedImageHtml = [""
