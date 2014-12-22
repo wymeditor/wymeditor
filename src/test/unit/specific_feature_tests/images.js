@@ -228,12 +228,19 @@ test("Image is selected via `mouseup` in pre-7 trident", function () {
 
     wymeditor = jQuery.wymeditors(0);
 
+    // Stop QUnit from running the next test
     stop();
+    // Save the original
     _selectSingleNode = wymeditor._selectSingleNode;
+    // Replace it with a wrapper
     wymeditor._selectSingleNode = function (node) {
+        // Call the original
         _selectSingleNode.call(wymeditor, node);
+        // Unwrap
         wymeditor._selectSingleNode = _selectSingleNode;
+        // Resume `manipulationTestHelper`
         resume();
+        // Allow QUnit to run the next test
         start();
     };
 
