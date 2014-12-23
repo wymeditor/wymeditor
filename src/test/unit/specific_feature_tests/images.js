@@ -188,7 +188,6 @@ module("images-selection", {setup: prepareUnitTestModule});
 
 test("Image is selected via `mouseup` in non pre-7 Trident", function () {
     manipulationTestHelper({
-        async: true,
         startHtml: getSelectedImageHtml,
         prepareFunc: function (wymeditor) {
             wymeditor.deselect();
