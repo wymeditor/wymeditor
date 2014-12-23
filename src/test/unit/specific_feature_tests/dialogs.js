@@ -52,6 +52,7 @@ module("dialogs-opening_or_not", {
  * `expectedTitle`
  *     The `document.title` that the dialog window is expected to have.
  */
+/* jshint latedef: nofunc */
 function dialogTestHelper(args) {
     // Sinon doesn't allow wrapping of `window.open` with a spy because `open`
     // doesn't look like a function in these browsers.
@@ -153,6 +154,7 @@ function dialogTestHelper(args) {
         );
     }
 }
+/* jshint latedef: true */
 
 dialogTestHelper.EXPECT_OPENED = "Expect this dialog to have been opened. " +
     "Expect it with all of your heart.";
