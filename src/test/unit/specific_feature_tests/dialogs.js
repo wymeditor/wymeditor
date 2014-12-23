@@ -95,7 +95,7 @@ function dialogTestHelper(args) {
             "Dialog function called once"
         );
 
-        // Its return value it either the dialog window or `false`.
+        // Its return value is either the dialog window or `false`.
         dialogWindowOrFalse = wymeditor.dialog.returnValues[0];
 
         if (args.expectedOpenedOrNot === dialogTestHelper.EXPECT_OPENED) {
@@ -160,6 +160,7 @@ dialogTestHelper.EXPECT_OPENED = "Expect this dialog to have been opened. " +
     "Expect it with all of your heart.";
 dialogTestHelper.EXPECT_NOT = "Nope. The dialog should not have opened.";
 
+// Provided a dialog name, returns a jQuery selector for that dialog's button.
 function getDialogToolbarSelector(dialogName) {
     if (typeof dialogName !== "string") {
         throw "Expected a string";
