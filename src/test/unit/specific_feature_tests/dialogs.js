@@ -71,12 +71,12 @@ function dialogTestHelper(args) {
     function prepareFunc(wymeditor) {
         // Wrap the dialog function with a spy
         wymeditor.dialog = sinon.spy(wymeditor, "dialog");
-        // Wrap the `window.open` native function with a spy
+        sinonSpiesToRestore.push(wymeditor.dialog);
         if (sinonCantWrapWindowOpen !== true) {
+            // Wrap the `window.open` native function with a spy
             window.open = sinon.spy(window, "open");
             sinonSpiesToRestore.push(window.open);
         }
-        sinonSpiesToRestore.push(wymeditor.dialog);
 
         if (typeof args.prepareFunc === "function") {
             // Call the provided `prepareFunc`
