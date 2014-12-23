@@ -190,6 +190,9 @@ test("Image is selected via `mouseup` in non pre-7 Trident", function () {
     manipulationTestHelper({
         async: true,
         startHtml: getSelectedImageHtml,
+        prepareFunc: function (wymeditor) {
+            wymeditor.deselect();
+        },
         manipulationFunc: function (wymeditor) {
             wymeditor.$body().find("img").mouseup();
         },
@@ -247,6 +250,9 @@ test("Image is selected via `mouseup` in pre-7 trident", function () {
     resume = manipulationTestHelper({
         async: true,
         startHtml: getSelectedImageHtml,
+        prepareFunc: function (wymeditor) {
+            wymeditor.deselect();
+        },
         manipulationFunc: function (wymeditor) {
             wymeditor.$body().find("img").mouseup();
         },
