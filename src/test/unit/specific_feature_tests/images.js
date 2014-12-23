@@ -261,3 +261,19 @@ test("Image is selected via `mouseup` in pre-7 trident", function () {
         }
     });
 });
+
+test("Image is selected via `dragend` in IE", function () {
+    manipulationTestHelper({
+        startHtml: getSelectedImageHtml,
+        prepareFunc: function (wymeditor) {
+            wymeditor.deselect();
+        },
+        manipulationFunc: function (wymeditor) {
+            wymeditor.$body().find("img").trigger("dragend");
+        },
+        expectedResultHtml: getSelectedImageHtml,
+        skipFunc: function () {
+            return jQuery.browser.msie ? false : SKIP_THIS_TEST;
+        }
+    });
+});
