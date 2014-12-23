@@ -1840,6 +1840,7 @@ WYMeditor.editor.prototype.dialog = function (dialogType, dialogFeatures, bodyHt
         features = dialogFeatures || wym._options.dialogFeatures,
         wDialog,
         sBodyHtml,
+        strWindowName,
         h = WYMeditor.Helper,
         dialogHtml,
         doc;
@@ -1872,7 +1873,16 @@ WYMeditor.editor.prototype.dialog = function (dialogType, dialogFeatures, bodyHt
             break;
     }
 
-    wDialog = window.open('', 'dialog', features);
+    // `strWindowName` is unique in order to make testing dialogs in Trident 7
+    // simpler. This means that an infinite number of dialog windows may be
+    // opened concurrently. Ideally, `strWindowName` should be a constant string
+    // so that a single dialog window will be reused. This will make testing in
+    // Trident 7 slightly more complex, as it seems that `window.close()` is
+    // performed asynchronously.
+    // The output of `wym.uniqueStamp()` can't be used here, probably because
+    // it contains a hyphen.
+    strWindowName = new Date().getTime();
+    wDialog = window.open('', new Date().getTime(), features);
     if (
         typeof wDialog !== "object" ||
         wDialog.window !== wDialog
