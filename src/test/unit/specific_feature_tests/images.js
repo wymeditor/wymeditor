@@ -8,6 +8,8 @@
     makeSelection,
     inPhantomjs,
     SKIP_THIS_TEST,
+    stop,
+    start,
     IMG_SRC
 */
 "use strict";
@@ -45,41 +47,6 @@ test("Inserts image into the body", function () {
         expectedResultHtml: "<img alt=\"Example\" " +
             "src=\"" + IMG_SRC + "\" /><br />",
         testUndoRedo: true
-    });
-});
-
-module("images-selection", {setup: prepareUnitTestModule});
-
-test("Image is selected on mousedown", function () {
-    var noChangeHtml = [""
-            , "<p>"
-                , "A "
-                , "<img alt=\"Pen\" src=\"" + IMG_SRC + "\" />"
-            , "</p>"
-        ].join("");
-
-    manipulationTestHelper({
-        startHtml: noChangeHtml,
-        manipulationFunc: function (wymeditor) {
-            wymeditor.$body().find("img").mousedown();
-        },
-        expectedResultHtml: noChangeHtml,
-        additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 2);
-            strictEqual(
-                wymeditor._getSelectedNodes().length,
-                1,
-                "Only one node is selected"
-            );
-            strictEqual(
-                wymeditor._getSelectedNodes()[0].tagName.toLowerCase(),
-                "img",
-                "Image is the only selected node"
-            );
-        },
-        skipFunc: function () {
-            return inPhantomjs ? SKIP_THIS_TEST : null;
-        }
     });
 });
 
@@ -217,11 +184,17 @@ test("Returns an image when it is exclusively selected", function () {
     });
 });
 
-test("Returns an image after it was `mousedown`ed", function () {
+module("images-selection", {setup: prepareUnitTestModule});
+
+test("Image is selected via `mouseup` in non pre-7 Trident", function () {
     manipulationTestHelper({
+        async: true,
         startHtml: getSelectedImageHtml,
         prepareFunc: function (wymeditor) {
-            wymeditor.$body().find("img").mousedown();
+            wymeditor.deselect();
+        },
+        manipulationFunc: function (wymeditor) {
+            wymeditor.$body().find("img").mouseup();
         },
         expectedResultHtml: getSelectedImageHtml,
         additionalAssertionsFunc: function (wymeditor) {
@@ -233,7 +206,80 @@ test("Returns an image after it was `mousedown`ed", function () {
             );
         },
         skipFunc: function () {
-            return inPhantomjs ? SKIP_THIS_TEST : null;
+            if (inPhantomjs) {
+                return SKIP_THIS_TEST;
+            }
+            if (jQuery.browser.msie && jQuery.browser.versionNumber <= 10) {
+                return SKIP_THIS_TEST;
+            }
+        }
+    });
+});
+
+test("Image is selected via `mouseup` in pre-7 trident", function () {
+    var wymeditor,
+        _selectSingleNode,
+        resume;
+
+    if (
+        jQuery.browser.msie !== true ||
+        jQuery.browser.versionNumber > 10
+    ) {
+        expect(0);
+        return;
+    }
+
+    wymeditor = jQuery.wymeditors(0);
+
+    // Stop QUnit from running the next test
+    stop();
+    // Save the original
+    _selectSingleNode = wymeditor._selectSingleNode;
+    // Replace it with a wrapper
+    wymeditor._selectSingleNode = function (node) {
+        // Call the original
+        _selectSingleNode.call(wymeditor, node);
+        // Unwrap
+        wymeditor._selectSingleNode = _selectSingleNode;
+        // Resume `manipulationTestHelper`
+        resume();
+        // Allow QUnit to run the next test
+        start();
+    };
+
+    resume = manipulationTestHelper({
+        async: true,
+        startHtml: getSelectedImageHtml,
+        prepareFunc: function (wymeditor) {
+            wymeditor.deselect();
+        },
+        manipulationFunc: function (wymeditor) {
+            wymeditor.$body().find("img").mouseup();
+        },
+        expectedResultHtml: getSelectedImageHtml,
+        additionalAssertionsFunc: function (wymeditor) {
+            var img = wymeditor.$body().find("img")[0];
+            expect(expect() + 1);
+            strictEqual(
+                wymeditor.getSelectedImage(),
+                img
+            );
+        }
+    });
+});
+
+test("Image is selected via `dragend` in IE", function () {
+    manipulationTestHelper({
+        startHtml: getSelectedImageHtml,
+        prepareFunc: function (wymeditor) {
+            wymeditor.deselect();
+        },
+        manipulationFunc: function (wymeditor) {
+            wymeditor.$body().find("img").trigger("dragend");
+        },
+        expectedResultHtml: getSelectedImageHtml,
+        skipFunc: function () {
+            return jQuery.browser.msie ? false : SKIP_THIS_TEST;
         }
     });
 });

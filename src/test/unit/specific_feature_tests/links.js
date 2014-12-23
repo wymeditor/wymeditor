@@ -203,7 +203,8 @@ test("Links selected unlinked image", function () {
     manipulationTestHelper({
         startHtml: "<p>A <img alt=\"pen\" src=\"" + IMG_SRC + "\" /></p>",
         prepareFunc: function (wymeditor) {
-            wymeditor.$body().find("img").mousedown();
+            var img = wymeditor.$body().find("img")[0];
+            wymeditor._selectSingleNode(img);
         },
         manipulationFunc: function (wymeditor) {
             wymeditor.link({href: "http://example.com/"});
@@ -233,7 +234,8 @@ test("Modifies linked image", function () {
             , "</p>"
         ].join(""),
         prepareFunc: function (wymeditor) {
-            wymeditor.$body().find("img").mousedown();
+            var img = wymeditor.$body().find("img")[0];
+            wymeditor._selectSingleNode(img);
         },
         manipulationFunc: function (wymeditor) {
             wymeditor.link({href: "http://example.com/foo"});
@@ -263,7 +265,8 @@ test("Unlinks linked image", function () {
             , "</p>"
         ].join(""),
         prepareFunc: function (wymeditor) {
-            wymeditor.$body().find("img").mousedown();
+            var img = wymeditor.$body().find("img")[0];
+            wymeditor._selectSingleNode(img);
         },
         manipulationFunc: function (wymeditor) {
             wymeditor.exec(WYMeditor.EXEC_COMMANDS.UNLINK);

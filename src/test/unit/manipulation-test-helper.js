@@ -64,6 +64,32 @@
  *         ```
  *         This example uses the `jquery.browser` plugin
  *         https://github.com/gabceb/jquery-browser-plugin
+ *     `async`
+ *         Optional; If this is `true` then after the manipulation is performed
+ *         assertions regarding the results are not synchronously executed.
+ *         Instead, a function is returned. Calling this function resumes these
+ *         assertions. This can only be used when a single manipulation cause
+ *         is provided (for example, only `manipulationFunc`).
+ *         For example:
+ *         ```
+ *         test("Test something asynchronous", function () {
+ *             var wymeditor = jQuery.wymeditors(0),
+ *                 somethingAsync,
+ *                 resume;
+ *
+ *             somethingAsync = wymeditor.somethingAsync;
+ *             wymeditor.somethingAsync = function () {
+ *                 somethingAsync.call(wymeditor);
+ *                 resume();
+ *             };
+ *
+ *             resume = manipulationTestHelper({
+ *                 startHtml: "</p>Foo</p>",
+ *                 manipulationClickSelector: ".asyncActionButton",
+ *                 expectedResultHtml: "</p>Bar</p>"
+ *             });
+ *         });
+ *         ```
  *
  *     `manipulationFunc` and `manipulationClickSelector` are not exclusive
  *     of each other. The procedure will be performed once for each of them.
@@ -72,7 +98,8 @@
 function manipulationTestHelper(a) {
     var executions = [],
         wymeditor,
-        EXECUTE;
+        EXECUTE,
+        resume;
 
     if (skipThisTest() === true) {
         return;
@@ -100,9 +127,18 @@ function manipulationTestHelper(a) {
         manipulateAndAssert(EXECUTE.NO_MANIPULATION);
     }
 
+    if (
+        a.async === true &&
+        executions.length > 1
+    ) {
+        throw "The `async` option is only allowed with one manipulation cause";
+    }
+
     while (executions.length > 0) {
         manipulateAndAssert(executions.pop());
     }
+
+    return resume;
 
     function manipulateAndAssert(manipulationCause) {
 
@@ -111,18 +147,27 @@ function manipulationTestHelper(a) {
         resetHistory();
 
         performManipulation(manipulationCause);
-        assertResultHtml();
-        additionalAssertions();
-
-        if (a.testUndoRedo !== true) {
+        if (a.async === true) {
+            resume = assertResultUndoAndAdditional;
             return;
+        } else {
+            assertResultUndoAndAdditional();
         }
-        wymeditor.undoRedo.undo();
-        assertStartHtml("Back to start HTML after undo");
 
-        wymeditor.undoRedo.redo();
-        assertResultHtml("Back to result HTML after redo");
-        additionalAssertions();
+        function assertResultUndoAndAdditional() {
+            assertResultHtml();
+            additionalAssertions();
+
+            if (a.testUndoRedo !== true) {
+                return;
+            }
+            wymeditor.undoRedo.undo();
+            assertStartHtml("Back to start HTML after undo");
+
+            wymeditor.undoRedo.redo();
+            assertResultHtml("Back to result HTML after redo");
+            additionalAssertions();
+        }
 
         function initialize() {
             if (typeof a.startHtml === 'string') {

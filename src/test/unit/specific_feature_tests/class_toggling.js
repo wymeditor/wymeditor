@@ -156,7 +156,8 @@ test("Adds className to image", function () {
             , "</p>"
         ].join(""),
         prepareFunc: function (wymeditor) {
-            wymeditor.$body().find("img").mousedown();
+            var img = wymeditor.$body().find("img")[0];
+            wymeditor._selectSingleNode(img);
         },
         manipulationFunc: function (wymeditor) {
             wymeditor.toggleClass("fancy", "img");
