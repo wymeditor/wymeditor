@@ -51,6 +51,26 @@ WYMeditor.WymClassTridentPre7.prototype._docEventQuirks = function () {
         wym._iframe.contentWindow.event.returnValue = false;
         wym.paste(window.clipboardData.getData("Text"));
     };
+
+    // https://github.com/wymeditor/wymeditor/pull/641
+    wym.$body().bind("dragend", function (evt) {
+        if (evt.target.tagName.toLowerCase() === WYMeditor.IMG) {
+            wym.deselect();
+        }
+    });
+};
+
+// https://github.com/wymeditor/wymeditor/pull/641
+WYMeditor.WymClassTridentPre7.prototype._mouseup = function (evt) {
+    var wym = this;
+
+    if (evt.target.tagName.toLowerCase() !== WYMeditor.IMG) {
+        return;
+    }
+
+    window.setTimeout(function () {
+        wym._selectSingleNode(evt.target);
+    }, 0);
 };
 
 WYMeditor.WymClassTridentPre7.prototype._setButtonsUnselectable = function () {
@@ -163,7 +183,6 @@ WYMeditor.WymClassTridentPre7.prototype.unwrap = function () {
 
 WYMeditor.WymClassTridentPre7.prototype._keyup = function (evt) {
     var wym = this,
-        doc = wym._doc,
         container,
         defaultRootContainer,
         notValidRootContainers,
@@ -176,7 +195,6 @@ WYMeditor.WymClassTridentPre7.prototype._keyup = function (evt) {
         wym.documentStructureManager.structureRules.notValidRootContainers;
     defaultRootContainer =
         wym.documentStructureManager.structureRules.defaultRootContainer;
-    doc._selectedImage = null;
 
     // If the pressed key can't create a block element and is not a command,
     // check to make sure the selection is properly wrapped in a container

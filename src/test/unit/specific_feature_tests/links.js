@@ -4,6 +4,8 @@
     prepareUnitTestModule,
     makeTextSelection,
     test,
+    IMG_SRC,
+    inPhantomjs,
     SKIP_THIS_TEST
 */
 "use strict";
@@ -193,6 +195,90 @@ test("IE unlinks when collapsed selection inside link", function () {
             if (jQuery.browser.name !== "msie") {
                 return SKIP_THIS_TEST;
             }
+        }
+    });
+});
+
+test("Links selected unlinked image", function () {
+    manipulationTestHelper({
+        startHtml: "<p>A <img alt=\"pen\" src=\"" + IMG_SRC + "\" /></p>",
+        prepareFunc: function (wymeditor) {
+            var img = wymeditor.$body().find("img")[0];
+            wymeditor._selectSingleNode(img);
+        },
+        manipulationFunc: function (wymeditor) {
+            wymeditor.link({href: "http://example.com/"});
+        },
+        expectedResultHtml: [""
+            , "<p>"
+                , "A "
+                , "<a href=\"http://example.com/\">"
+                    , "<img alt=\"pen\" src=\"" + IMG_SRC + "\" />"
+                , "</a>"
+            , "</p>"
+        ].join(""),
+        skipFunc: function () {
+            return inPhantomjs ? SKIP_THIS_TEST : null;
+        }
+    });
+});
+
+test("Modifies linked image", function () {
+    manipulationTestHelper({
+        startHtml: [""
+            , "<p>"
+                , "<a href=\"http://example.com/\">"
+                    , "A "
+                    , "<img alt=\"pen\" src=\"" + IMG_SRC + "\" />"
+                , "</a>"
+            , "</p>"
+        ].join(""),
+        prepareFunc: function (wymeditor) {
+            var img = wymeditor.$body().find("img")[0];
+            wymeditor._selectSingleNode(img);
+        },
+        manipulationFunc: function (wymeditor) {
+            wymeditor.link({href: "http://example.com/foo"});
+        },
+        expectedResultHtml: [""
+            , "<p>"
+                , "<a href=\"http://example.com/foo\">"
+                , "A "
+                    , "<img alt=\"pen\" src=\"" + IMG_SRC + "\" />"
+                , "</a>"
+            , "</p>"
+        ].join(""),
+        skipFunc: function () {
+            return inPhantomjs ? SKIP_THIS_TEST : null;
+        }
+    });
+});
+
+test("Unlinks linked image", function () {
+    manipulationTestHelper({
+        startHtml: [""
+            , "<p>"
+                , "A "
+                , "<a href=\"http://example.com/\">"
+                    , "<img alt=\"pen\" src=\"" + IMG_SRC + "\" />"
+                , "</a>"
+            , "</p>"
+        ].join(""),
+        prepareFunc: function (wymeditor) {
+            var img = wymeditor.$body().find("img")[0];
+            wymeditor._selectSingleNode(img);
+        },
+        manipulationFunc: function (wymeditor) {
+            wymeditor.exec(WYMeditor.EXEC_COMMANDS.UNLINK);
+        },
+        expectedResultHtml: [""
+            , "<p>"
+                , "A "
+                , "<img alt=\"pen\" src=\"" + IMG_SRC + "\" />"
+            , "</p>"
+        ].join(""),
+        skipFunc: function () {
+            return inPhantomjs ? SKIP_THIS_TEST : null;
         }
     });
 });

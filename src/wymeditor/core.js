@@ -1181,11 +1181,6 @@ WYMeditor._initDialog = function (index) {
                 selected.tagName.toLowerCase !== WYMeditor.A) {
             selected = jQuery(selected).parentsOrSelf(WYMeditor.A);
         }
-
-        // fix MSIE selection if link image has been clicked
-        if (!selected && wym._selectedImage) {
-            selected = jQuery(wym._selectedImage).parentsOrSelf(WYMeditor.A);
-        }
     }
 
     // pre-init functions
@@ -1202,19 +1197,6 @@ WYMeditor._initDialog = function (index) {
         jQuery(wym._options.altSelector).val(jQuery(selected).attr(WYMeditor.ALT));
     }
 
-    // auto populate image fields if selected image
-    if (wym._selectedImage) {
-        jQuery(
-            wym._options.dialogImageSelector + " " + wym._options.srcSelector
-        ).val(jQuery(wym._selectedImage).attr(WYMeditor.SRC));
-        jQuery(
-            wym._options.dialogImageSelector + " " + wym._options.titleSelector
-        ).val(jQuery(wym._selectedImage).attr(WYMeditor.TITLE));
-        jQuery(
-            wym._options.dialogImageSelector + " " + wym._options.altSelector
-        ).val(jQuery(wym._selectedImage).attr(WYMeditor.ALT));
-    }
-
     jQuery(wym._options.dialogLinkSelector + " " + wym._options.submitSelector)
         .submit(function () {
             wym.link({
@@ -1228,11 +1210,13 @@ WYMeditor._initDialog = function (index) {
 
     jQuery(wym._options.dialogImageSelector + " " + wym._options.submitSelector)
         .submit(function () {
-            wym.insertImage({
+            var imgAttrs = {
                 src: jQuery(wym._options.srcSelector).val(),
                 title: jQuery(wym._options.titleSelector).val(),
                 alt: jQuery(wym._options.altSelector).val()
-            });
+            };
+            wym.focusOnDocument();
+            wym.insertImage(imgAttrs);
             window.close();
         }
     );
@@ -1414,12 +1398,12 @@ WYMeditor.isPhantomString = function (str) {
 jQuery.fn.addBack = jQuery.fn.addBack ? jQuery.fn.addBack : jQuery.fn.andSelf;
 
 // Returns the Parents or the node itself
-// jqexpr = a jQuery expression
-jQuery.fn.parentsOrSelf = function (jqexpr) {
+// `selector` = a jQuery selector
+jQuery.fn.parentsOrSelf = function (selector) {
     var $n = this;
 
-    if (jqexpr) {
-        return $n.parents().addBack(jqexpr);
+    if (selector) {
+        return $n.parents().addBack().filter(selector);
     } else {
         return $n.parents().addBack();
     }

@@ -15,6 +15,14 @@ WYMeditor.
   `editor.rawHtml` no longer calls `editor.prepareDocForEditing`.
 * [#512](https://github.com/wymeditor/wymeditor/pull/512)
   `editor.registerModification()` is expected to be called after DOM manipulations.
+* [#647](https://github.com/wymeditor/wymeditor/pull/647)
+  Gecko (Firefox) has a feature of editing tables by mouse dragging,
+  that is considered unhelpful.
+  It was previously disabled for a while and it was found to be enabled now.
+  So it is now disabled again.
+* [#648](https://github.com/wymeditor/wymeditor/pull/647),
+  [#641](https://github.com/wymeditor/wymeditor/pull/641)
+  Object resizing (images, primarily) in Firefox and IE has been disabled.
 
 ### Enhancements
 
@@ -26,13 +34,24 @@ WYMeditor.
   New undo/redo methods in the API.
 * [#624](https://github.com/wymeditor/wymeditor/pull/624)
   New `editor.keyboard.combokeys` for managing keyboard shortcuts.
+* [#641](https://github.com/wymeditor/wymeditor/pull/641)
+  New `editor.getSelectedImage()`
 
 ### Bug Fixes
 
 * [#512](https://github.com/wymeditor/wymeditor/pull/512)
   Undo/redo is working for all toolbar actions.
+
   It only works from the toolbar undo/redo buttons--not keyboard shortcuts.
   Undo/redo for containers, classes and text manipulations is a WIP.
+
+  Undo/redo depends on `object-history`, which, in turn, depends on some ES5
+  things, that IE8 and older don’t have. This is fixed by deploying `es5-shim`
+  (and its shams). Should WYMeditor include these shims and shams or should
+  documentation declare them as requirements? If the latter, then how to
+  degrade gracefully when they don’t exist? Perhaps simply disallow native
+  undo/redo?
+
   Undo/redo, even if unused, may eat a lot of RAM, depending on the document
   size and the browser. To be optimized.
 * [#624](https://github.com/wymeditor/wymeditor/pull/624)

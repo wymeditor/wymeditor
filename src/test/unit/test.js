@@ -2,7 +2,6 @@
 /* global -$,
     ok,
     start,
-    stop,
     test,
     expect,
     deepEqual,
@@ -13,22 +12,30 @@
     makeTextSelection,
     isContentEditable,
     normalizeHtml,
-    ListPlugin,
     asyncTest,
     SKIP_THIS_TEST,
     manipulationTestHelper,
-    inPhantomjs
+    inPhantomjs,
+    prepareUnitTestModule,
+    vanishAllWyms,
+    IMG_SRC,
+    QUnit,
+    allWymIframesInitialized
 */
 /* exported
-setupWym,
-setupMultipleTextareas,
-no_br_selection_browser,
+    no_br_selection_browser
 */
 "use strict";
 
 // We need to be able to operate in a noConflict context. Doing this during our
 // tests ensures that remains the case.
 jQuery.noConflict();
+
+// Hide passed tests.
+QUnit.config.hidepassed = true;
+
+// `sinon-qunit` sets this to true. We require the real `setTimeout`.
+sinon.config.useFakeTimers = false;
 
 // Whether or not we want to skip the tests that are known to be failing.
 // Ideally, there would be no tests in this category, but right now there are
@@ -41,111 +48,6 @@ var SKIP_KNOWN_FAILING_TESTS = true,
     // Can't move the selection to a <br /> element
     no_br_selection_browser = jQuery.browser.webkit ||
         WYMeditor.isInternetExplorerPre11();
-
-// Returns true if all WYMeditor Iframes are initialized.
-function allWymIframesInitialized() {
-    var i;
-
-    for (i = 0; i < WYMeditor.INSTANCES.length; i++) {
-        if (!WYMeditor.INSTANCES[i].iframeInitialized) {
-            return false;
-        } else if (i === WYMeditor.INSTANCES.length - 1) {
-            return true;
-        }
-    }
-}
-
-function vanishAllWyms() {
-    while (WYMeditor.INSTANCES.length > 0) {
-        WYMeditor.INSTANCES[0].vanish();
-    }
-}
-
-function prepareUnitTestModule(options) {
-    var defaults,
-        $textareas,
-        i,
-        $wymForm = jQuery('#wym-form'),
-        textareasDifference,
-        newTextarea,
-        $textareasToRemove,
-        wymeditor,
-        $uninitializedTextareas;
-
-    stop();
-
-    defaults = {
-        // How many editor textareas shall be created for this module.
-        editorCount: 1,
-        // Whether to initialize these textareas with WYMeditors or not.
-        initialized: true,
-        // A postInit (see customization documentation) function to be passed
-        // to the editors' initialization calls.
-        postInit: function (wym) {
-            // TODO: We should not load all these plugins by default.
-            wym.listPlugin = new ListPlugin({}, wym);
-            wym.tableEditor = wym.table();
-            wym.structuredHeadings();
-            if (allWymIframesInitialized()) {
-                start();
-            }
-        }
-    };
-
-    if (options.postInit) {
-        vanishAllWyms();
-    }
-
-    options = jQuery.extend(defaults, options);
-
-    if (options.initialized === false) {
-        vanishAllWyms();
-    }
-
-    $textareas = $wymForm.find('textarea.wym');
-
-    if (WYMeditor.INSTANCES.length > $textareas.length) {
-        throw "There are more editors than textareas.";
-    }
-
-    textareasDifference = options.editorCount - $textareas.length;
-
-    if (textareasDifference > 0) {
-        // Add textareas
-        for (i = $textareas.length; i < options.editorCount; i++) {
-            newTextarea = '<textarea id="wym' + i + '" class="wym"></textarea>';
-            if (i === 0) {
-                $wymForm.prepend(newTextarea);
-            } else {
-                $wymForm.find('textarea.wym, .wym_box').last()
-                    .after(newTextarea);
-            }
-        }
-    } else if (textareasDifference < 0) {
-        // Remove textareas
-        $textareasToRemove = $textareas.slice(textareasDifference);
-        for (i = 0; i < $textareasToRemove.length; i++) {
-            wymeditor = jQuery.getWymeditorByTextarea($textareasToRemove[i]);
-            if (wymeditor) {
-                wymeditor.vanish();
-            }
-        }
-        $textareasToRemove.remove();
-    }
-
-    $uninitializedTextareas = $wymForm
-        .find('textarea.wym:not([data-wym-initialized])');
-    if (
-        options.initialized &&
-        $uninitializedTextareas.length > 0
-    ) {
-        $uninitializedTextareas.wymeditor({
-            postInit: options.postInit
-        });
-    } else {
-        start();
-    }
-}
 
 module("Core", {setup: prepareUnitTestModule});
 
@@ -1365,7 +1267,7 @@ test("Refuses 'img' elements.", function () {
     var
         wymeditor = jQuery.wymeditors(0),
 
-        html = '<p><img alt="" src="" /></p>';
+        html = '<p><img alt="" src="' + IMG_SRC + '" /></p>';
 
     wymeditor.rawHtml(html);
 

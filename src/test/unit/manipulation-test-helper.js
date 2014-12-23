@@ -36,6 +36,11 @@
  *     `manipulationKeyCombo`
  *         Optional; A key combination that is expected to trigger the
  *         manipulation. For example, "ctrl+b".
+ *     `manipulationClickSelector`
+ *         Optional; A jQuery selector that will be used to select exactly
+ *         one element, that will be `jQuery.fn.click()`ed.
+ *         It is expected that this results in the manipulation, same as
+ *         `manipulationFunc`.
  *     `testUndoRedo`
  *         Optional; Whether to test undo/redo on this manipulation.
  *     `expectedResultHtml`
@@ -64,129 +69,221 @@
  *         ```
  *         This example uses the `jquery.browser` plugin
  *         https://github.com/gabceb/jquery-browser-plugin
+ *     `async`
+ *         Optional; If this is `true` then after the manipulation is performed
+ *         assertions regarding the results are not synchronously executed.
+ *         Instead, a function is returned. Calling this function resumes these
+ *         assertions. This can only be used when a single manipulation cause
+ *         is provided (for example, only `manipulationFunc`).
+ *         For example:
+ *         ```
+ *         test("Test something asynchronous", function () {
+ *             var wymeditor = jQuery.wymeditors(0),
+ *                 somethingAsync,
+ *                 resume;
  *
- *     `manipulationFunc` and `manipulationKeyCombo` are not exclusive of each
- *     other. The procedure will be performed once for each of them.
+ *             somethingAsync = wymeditor.somethingAsync;
+ *             wymeditor.somethingAsync = function () {
+ *                 somethingAsync.call(wymeditor);
+ *                 resume();
+ *             };
+ *
+ *             resume = manipulationTestHelper({
+ *                 startHtml: "</p>Foo</p>",
+ *                 manipulationClickSelector: ".asyncActionButton",
+ *                 expectedResultHtml: "</p>Bar</p>"
+ *             });
+ *         });
+ *         ```
+ *
+ *     `manipulationFunc`, `manipulationKeyCombo` and
+ *     `manipulationClickSelector` are not exclusive of each other. The
+ *     procedure will be performed once for each of them.
  */
+/* jshint latedef: nofunc */
 function manipulationTestHelper(a) {
-    if (typeof a.skipFunc === 'function') {
-        if (a.skipFunc() === SKIP_THIS_TEST) {
-            if (expect() === null) {
-                // `expect()` returns null when it wasn't called before in the
-                // current test. Tests fail when they make zero assertions
-                // without calling `expect(0)`. This doesn't prevent `expect`
-                // from being called again, later, in the case
-                // `manipulationTestHelper` is not the last operation in the
-                // test.
-                expect(0);
-            }
-            WYMeditor.console.warn(
-                "Assertions skipped in test \"" +
-                QUnit.config.current.testName + "\" from module \"" +
-                QUnit.config.currentModule + "\"."
-            );
-            return;
-        }
+    var executions = [],
+        wymeditor,
+        EXECUTE,
+        resume;
+
+    if (skipThisTest() === true) {
+        return;
     }
-    var wymeditor = jQuery.wymeditors(0);
-    function execute(functionOrKeyCombo) {
-        if (typeof a.startHtml === 'string') {
-            wymeditor.rawHtml(a.startHtml);
-        }
-        if (typeof a.setCaretInSelector === 'string') {
-            wymeditor.setCaretIn(
-                wymeditor.$body().find(a.setCaretInSelector)[0]
-            );
-        }
-        if (typeof a.prepareFunc === 'function') {
-            a.prepareFunc(wymeditor);
-        }
-        expect(expect() === null ? 1 : expect() + 1);
-        wymEqual(
-            wymeditor,
-            a.expectedStartHtml || a.startHtml,
-            {
-                assertionString: "Start HTML",
-                parseHtml: typeof a.parseHtml === 'undefined' ? false :
-                    a.parseHtml
-            }
-        );
 
-        if (a.testUndoRedo === true) {
-            wymeditor.undoRedo.reset();
-        }
+    wymeditor = jQuery.wymeditors(0);
 
-        if (functionOrKeyCombo === "function") {
-            a.manipulationFunc(wymeditor);
-        } else if (functionOrKeyCombo === "keyCombo") {
-            simulateKeyCombo(wymeditor, a.manipulationKeyCombo);
-        } else {
-            throw "Expected either a function or a key combo.";
-        }
-
-        if (typeof a.expectedResultHtml === 'string') {
-            expect(expect() + 1);
-            wymEqual(
-                wymeditor,
-                a.expectedResultHtml,
-                {
-                    assertionString: "Manipulation result HTML" +
-                        (functionOrKeyCombo === "keyCombo" ?
-                         "; using keyboard shortcut" : ""),
-                    parseHtml: typeof a.parseHtml === 'undefined' ? false :
-                        a.parseHtml
-                }
-            );
-        }
-
-        if (typeof a.additionalAssertionsFunc === 'function') {
-            a.additionalAssertionsFunc(wymeditor);
-        }
-
-        if (a.testUndoRedo !== true) {
-            return;
-        }
-
-        wymeditor.undoRedo.undo();
-        expect(expect() + 1);
-        wymEqual(
-            wymeditor,
-            a.expectedStartHtml || a.startHtml,
-            {
-                assertionString: "Back to start HTML after undo",
-                parseHtml: typeof a.parseHtml === 'undefined' ? false :
-                    a.parseHtml
-            }
-        );
-
-        wymeditor.undoRedo.redo();
-        if (typeof a.expectedResultHtml === 'string') {
-            expect(expect() + 1);
-            wymEqual(
-                wymeditor,
-                a.expectedResultHtml,
-                {
-                    assertionString: "Back to manipulation result HTML " +
-                        "after redo",
-                    parseHtml: typeof a.parseHtml === 'undefined' ? false :
-                        a.parseHtml
-                }
-            );
-        }
-
-        if (typeof a.additionalAssertionsFunc === 'function') {
-            a.additionalAssertionsFunc(wymeditor);
-        }
-    }
+    EXECUTE = {
+        FUNCTION: "function",
+        UI_CLICK: "UI click",
+        KEY_COMBO: "keyboard shortcut",
+        NO_MANIPULATION: "no manipulation"
+    };
 
     if (typeof a.manipulationFunc === "function") {
-        execute("function");
+        executions.push(EXECUTE.FUNCTION);
     }
 
     if (
-        typeof a.manipulationKeyCombo === "string" &&
-        skipKeyboardShortcutTests !== true
+        typeof a.manipulationClickSelector === "string"
     ) {
-        execute("keyCombo");
+        executions.push(EXECUTE.UI_CLICK);
+    }
+
+    if (
+        skipKeyboardShortcutTests !== true &&
+        typeof a.manipulationKeyCombo === "string"
+    ) {
+        executions.push(EXECUTE.KEY_COMBO);
+    }
+
+    if (executions.length === 0) {
+        manipulateAndAssert(EXECUTE.NO_MANIPULATION);
+    }
+
+    if (
+        a.async === true &&
+        executions.length > 1
+    ) {
+        throw "The `async` option is only allowed with one manipulation cause";
+    }
+
+    while (executions.length > 0) {
+        manipulateAndAssert(executions.pop());
+    }
+
+    return resume;
+
+    function manipulateAndAssert(manipulationCause) {
+
+        initialize();
+        assertStartHtml();
+        resetHistory();
+
+        performManipulation(manipulationCause);
+        if (a.async === true) {
+            resume = assertResultUndoAndAdditional;
+            return;
+        } else {
+            assertResultUndoAndAdditional();
+        }
+
+        function assertResultUndoAndAdditional() {
+            assertResultHtml();
+            additionalAssertions();
+
+            if (a.testUndoRedo !== true) {
+                return;
+            }
+            wymeditor.undoRedo.undo();
+            assertStartHtml("Back to start HTML after undo");
+
+            wymeditor.undoRedo.redo();
+            assertResultHtml("Back to result HTML after redo");
+            additionalAssertions();
+        }
+
+        function initialize() {
+            if (typeof a.startHtml === 'string') {
+                wymeditor.rawHtml(a.startHtml);
+            }
+            if (typeof a.setCaretInSelector === 'string') {
+                wymeditor.setCaretIn(
+                    wymeditor.$body().find(a.setCaretInSelector)[0]
+                );
+            }
+            if (typeof a.prepareFunc === 'function') {
+                a.prepareFunc(wymeditor);
+            }
+        }
+
+        function assertStartHtml(assertionString) {
+            expect(expect() === null ? 1 : expect() + 1);
+            wymEqual(
+                wymeditor,
+                a.expectedStartHtml || a.startHtml,
+                {
+                    assertionString: assertionString ? assertionString :
+                        "Start HTML",
+                    parseHtml: typeof a.parseHtml === 'undefined' ? false :
+                        a.parseHtml
+                }
+            );
+        }
+
+        function resetHistory() {
+            if (a.testUndoRedo === true) {
+                wymeditor.undoRedo.reset();
+            }
+        }
+
+        function performManipulation(manipulationCause) {
+            var $clickElement;
+
+            switch (manipulationCause) {
+                case EXECUTE.FUNCTION:
+                    a.manipulationFunc(wymeditor);
+                    break;
+                case EXECUTE.UI_CLICK:
+                    $clickElement = jQuery(a.manipulationClickSelector);
+                    if ($clickElement.length !== 1) {
+                        throw "Expected one element";
+                    }
+                    $clickElement.click();
+                    break;
+                case EXECUTE.KEY_COMBO:
+                    simulateKeyCombo(wymeditor, a.manipulationKeyCombo);
+                    break;
+                case EXECUTE.NO_MANIPULATION:
+                    return;
+                default:
+                    throw "Expected a means of manipulation";
+            }
+        }
+
+        function assertResultHtml(assertionString) {
+            if (typeof a.expectedResultHtml === 'string') {
+                expect(expect() + 1);
+                wymEqual(
+                    wymeditor,
+                    a.expectedResultHtml,
+                    {
+                        assertionString: (assertionString ? assertionString :
+                            "Result HTML") + " via " + manipulationCause,
+                        parseHtml: typeof a.parseHtml === 'undefined' ? false :
+                            a.parseHtml
+                    }
+                );
+            }
+        }
+
+        function additionalAssertions() {
+            if (typeof a.additionalAssertionsFunc === 'function') {
+                a.additionalAssertionsFunc(wymeditor);
+            }
+        }
+    }
+
+    function skipThisTest() {
+        if (typeof a.skipFunc === 'function') {
+            if (a.skipFunc() === SKIP_THIS_TEST) {
+                if (expect() === null) {
+                    // `expect()` returns null when it wasn't called before in
+                    // the current test. Tests fail when they make zero
+                    // assertions without calling `expect(0)`. This doesn't
+                    // prevent `expect` from being called again, later, in the
+                    // case `manipulationTestHelper` is not the last operation
+                    // in th test.
+                    expect(0);
+                }
+                WYMeditor.console.warn(
+                    "Assertions skipped in test \"" +
+                    QUnit.config.current.testName + "\" from module \"" +
+                    QUnit.config.currentModule + "\"."
+                );
+                return true;
+            }
+        }
     }
 }
+/* jshint latedef: true */

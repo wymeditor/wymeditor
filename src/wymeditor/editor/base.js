@@ -573,6 +573,14 @@ WYMeditor.editor.prototype._exec = function (cmd, param) {
     var wym = this,
         $span;
 
+    if (typeof cmd !== "string") {
+        throw "`_exec` expected a String `cmd`";
+    }
+
+    if (param && typeof param !== "string") {
+        throw "`_exec` expected a String `param`";
+    }
+
     if (wym.selectedContainer() === false) {
         return false;
     }
@@ -586,11 +594,7 @@ WYMeditor.editor.prototype._exec = function (cmd, param) {
         return false;
     }
 
-    if (param) {
-        wym._doc.execCommand(cmd, '', param);
-    } else {
-        wym._doc.execCommand(cmd, '', null);
-    }
+    wym._doc.execCommand(cmd, false, param);
 
     $span = jQuery(wym.selectedContainer()).filter("span").not("[id]");
     if ($span.length === 0) {
@@ -656,15 +660,11 @@ WYMeditor.editor.prototype.html = function (html) {
 */
 WYMeditor.editor.prototype.exec = function (cmd) {
     var wym = this,
-        container,
         custom_run;
     switch (cmd) {
 
     case WYMeditor.EXEC_COMMANDS.CREATE_LINK:
-        container = wym.getRootContainer();
-        if (container || wym._selectedImage) {
-            wym.dialog(WYMeditor.DIALOG_LINK);
-        }
+        wym.dialog(WYMeditor.DIALOG_LINK);
         break;
 
     case WYMeditor.EXEC_COMMANDS.INSERT_IMAGE:
@@ -1230,18 +1230,57 @@ WYMeditor.editor.prototype.keyCanCreateBlockElement = function (keyCode) {
 */
 WYMeditor.editor.prototype.toggleClass = function (sClass, jqexpr) {
     var wym = this,
-        $container;
-    if (wym._selectedImage) {
-        $container = jQuery(wym._selectedImage);
-    } else {
-        $container = jQuery(wym.selectedContainer());
-    }
-    $container = $container.parentsOrSelf(jqexpr);
-    $container.toggleClass(sClass);
+        $element;
 
-    if (!$container.attr(WYMeditor.CLASS)) {
-        $container.removeAttr(wym._class);
+    $element = jQuery(wym.getSelectedImage());
+    if ($element.length !== 1) {
+        $element = jQuery(wym.selectedContainer())
+            // `.last()` is used here because the `.addBack()` from
+            // `.parentsOrSelf` reverses the array.
+            .parentsOrSelf(jqexpr).last();
     }
+    $element.toggleClass(sClass);
+
+    if (!$element.attr(WYMeditor.CLASS)) {
+        $element.removeAttr(wym._class);
+    }
+};
+
+/**
+    WYMeditor.editor.getSelectedImage
+    =================================
+
+    If selection encompasses exactly a single image, returns that image.
+    Otherwise returns `false`.
+*/
+WYMeditor.editor.prototype.getSelectedImage = function () {
+    var wym = this,
+        selectedNodes,
+        selectedNode;
+
+    if (wym.hasSelection() !== true) {
+        return false;
+    }
+    if (wym.selection().isCollapsed !== false) {
+        return false;
+    }
+
+    selectedNodes = wym._getSelectedNodes();
+
+    if (selectedNodes.length !== 1) {
+        return false;
+    }
+
+    selectedNode = selectedNodes[0];
+
+    if (
+        !selectedNode.tagName ||
+        selectedNode.tagName.toLowerCase() !== "img"
+    ) {
+        return false;
+    }
+
+    return selectedNode;
 };
 
 /**
@@ -1724,6 +1763,77 @@ WYMeditor.editor.prototype._fixDoubleBr = function () {
 };
 
 /**
+    editor._shouldDialogOpen
+    ========================
+
+    Returns true if the provided dialog type should open.
+*/
+WYMeditor.editor.prototype._shouldDialogOpen = function (dialogType) {
+    var wym = this,
+        DIALOGS = {},
+        hasSelection,
+        selection,
+        selectedContainer;
+
+    if (typeof dialogType !== "string") {
+        throw "Expected a string";
+    }
+
+    DIALOGS[WYMeditor.DIALOG_LINK] = function () {
+        if (
+            hasSelection !== true ||
+            selection.isCollapsed === true ||
+            selectedContainer === false
+        ) {
+            return false;
+        }
+        return true;
+    };
+    DIALOGS[WYMeditor.DIALOG_IMAGE] = function () {
+        if (
+            hasSelection !== true ||
+            selection.isCollapsed !== true
+        ) {
+            return false;
+        }
+        return true;
+    };
+    DIALOGS[WYMeditor.DIALOG_TABLE] = function () {
+        if (
+            hasSelection !== true ||
+            selection.isCollapsed !== true
+        ) {
+            return false;
+        }
+        return true;
+    };
+    DIALOGS[WYMeditor.DIALOG_PASTE] = function () {
+        if (
+            hasSelection !== true ||
+            selection.isCollapsed !== true
+        ) {
+            return false;
+        }
+        return true;
+    };
+    DIALOGS[WYMeditor.EXEC_COMMANDS.PREVIEW] = function () {
+        return true;
+    };
+
+    if (DIALOGS.hasOwnProperty(dialogType) !== true) {
+        throw "No such dialog type";
+    }
+
+    hasSelection = wym.hasSelection();
+    if (hasSelection) {
+        selection = wym.selection();
+        selectedContainer = wym.selectedContainer();
+    }
+
+    return DIALOGS[dialogType]();
+};
+
+/**
     editor.dialog
     =============
 
@@ -1732,16 +1842,20 @@ WYMeditor.editor.prototype._fixDoubleBr = function () {
 WYMeditor.editor.prototype.dialog = function (dialogType, dialogFeatures, bodyHtml) {
     var wym = this,
         features = dialogFeatures || wym._options.dialogFeatures,
-        wDialog = window.open('', 'dialog', features),
+        wDialog,
         sBodyHtml,
+        strWindowName,
         h = WYMeditor.Helper,
         dialogHtml,
         doc;
 
-    if (wDialog) {
-        sBodyHtml = "";
+    if (wym._shouldDialogOpen(dialogType) !== true) {
+        return false;
+    }
 
-        switch (dialogType) {
+    sBodyHtml = "";
+
+    switch (dialogType) {
 
         case (WYMeditor.DIALOG_LINK):
             sBodyHtml = wym._options.dialogLinkHtml;
@@ -1761,52 +1875,70 @@ WYMeditor.editor.prototype.dialog = function (dialogType, dialogFeatures, bodyHt
         default:
             sBodyHtml = bodyHtml;
             break;
-        }
-
-        // Construct the dialog
-        dialogHtml = wym._options.dialogHtml;
-        dialogHtml = h.replaceAllInStr(
-            dialogHtml,
-            WYMeditor.BASE_PATH,
-            wym._options.basePath
-        );
-        dialogHtml = h.replaceAllInStr(
-            dialogHtml,
-            WYMeditor.DIRECTION,
-            wym._options.direction
-        );
-        dialogHtml = h.replaceAllInStr(
-            dialogHtml,
-            WYMeditor.WYM_PATH,
-            wym._options.wymPath
-        );
-        dialogHtml = h.replaceAllInStr(
-            dialogHtml,
-            WYMeditor.JQUERY_PATH,
-            wym._options.jQueryPath
-        );
-        dialogHtml = h.replaceAllInStr(
-            dialogHtml,
-            WYMeditor.DIALOG_TITLE,
-            wym._encloseString(dialogType)
-        );
-        dialogHtml = h.replaceAllInStr(
-            dialogHtml,
-            WYMeditor.DIALOG_BODY,
-            sBodyHtml
-        );
-        dialogHtml = h.replaceAllInStr(
-            dialogHtml,
-            WYMeditor.INDEX,
-            wym._index
-        );
-
-        dialogHtml = wym.replaceStrings(dialogHtml);
-
-        doc = wDialog.document;
-        doc.write(dialogHtml);
-        doc.close();
     }
+
+    // `strWindowName` is unique in order to make testing dialogs in Trident 7
+    // simpler. This means that an infinite number of dialog windows may be
+    // opened concurrently. Ideally, `strWindowName` should be a constant string
+    // so that a single dialog window will be reused. This will make testing in
+    // Trident 7 slightly more complex, as it seems that `window.close()` is
+    // performed asynchronously.
+    // The output of `wym.uniqueStamp()` can't be used here, probably because
+    // it contains a hyphen.
+    strWindowName = new Date().getTime();
+    wDialog = window.open('', new Date().getTime(), features);
+    if (
+        typeof wDialog !== "object" ||
+        wDialog.window !== wDialog
+    ) {
+        WYMeditor.console.warn("Could not create a dialog window");
+        return false;
+    }
+
+    // Construct the dialog
+    dialogHtml = wym._options.dialogHtml;
+    dialogHtml = h.replaceAllInStr(
+        dialogHtml,
+        WYMeditor.BASE_PATH,
+        wym._options.basePath
+    );
+    dialogHtml = h.replaceAllInStr(
+        dialogHtml,
+        WYMeditor.DIRECTION,
+        wym._options.direction
+    );
+    dialogHtml = h.replaceAllInStr(
+        dialogHtml,
+        WYMeditor.WYM_PATH,
+        wym._options.wymPath
+    );
+    dialogHtml = h.replaceAllInStr(
+        dialogHtml,
+        WYMeditor.JQUERY_PATH,
+        wym._options.jQueryPath
+    );
+    dialogHtml = h.replaceAllInStr(
+        dialogHtml,
+        WYMeditor.DIALOG_TITLE,
+        wym._encloseString(dialogType)
+    );
+    dialogHtml = h.replaceAllInStr(
+        dialogHtml,
+        WYMeditor.DIALOG_BODY,
+        sBodyHtml
+    );
+    dialogHtml = h.replaceAllInStr(
+        dialogHtml,
+        WYMeditor.INDEX,
+        wym._index
+    );
+
+    dialogHtml = wym.replaceStrings(dialogHtml);
+
+    doc = wDialog.document;
+    doc.write(dialogHtml);
+    doc.close();
+    return wDialog;
 };
 
 /**
@@ -3932,8 +4064,8 @@ WYMeditor.editor.prototype._listen = function () {
     // Don't use jQuery.find() on the iframe body
     // because of MSIE + jQuery + expando issue (#JQ1143)
 
-    wym.$body().bind("mousedown", function (e) {
-        wym._mousedown(e);
+    wym.$body().bind("mouseup", function (e) {
+        wym._mouseup(e);
     });
 
     jQuery(wym._doc).bind('paste', function () {
@@ -3958,12 +4090,32 @@ WYMeditor.editor.prototype._handlePasteEvent = function () {
     );
 };
 
-WYMeditor.editor.prototype._mousedown = function (evt) {
+/**
+    WYMeditor.editor._selectSingleNode
+    ==================================
+
+    Sets selection to a single node, exclusively.
+    Not public API because not tested enough.
+    For example, what happens when selecting containing element, this way?
+*/
+WYMeditor.editor.prototype._selectSingleNode = function (node) {
+    var wym = this,
+        selection,
+        nodeRange;
+
+    if (!node) {
+        throw "Expected a node";
+    }
+    selection = wym.selection();
+    nodeRange = rangy.createRangyRange();
+    nodeRange.selectNode(node);
+    selection.setSingleRange(nodeRange);
+};
+
+WYMeditor.editor.prototype._mouseup = function (evt) {
     var wym = this;
-    // Store the selected image if we clicked an <img> tag
-    wym._selectedImage = null;
     if (evt.target.tagName.toLowerCase() === WYMeditor.IMG) {
-        wym._selectedImage = evt.target;
+        wym._selectSingleNode(evt.target);
     }
 };
 

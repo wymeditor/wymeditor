@@ -41,7 +41,6 @@ WYMeditor.WymClassGecko.prototype._keyup = function (evt) {
         wym.documentStructureManager.structureRules.notValidRootContainers;
     defaultRootContainer =
         wym.documentStructureManager.structureRules.defaultRootContainer;
-    wym._selectedImage = null;
     container = null;
 
     // If the inputted key cannont create a block element and is not a command,
@@ -145,7 +144,8 @@ WYMeditor.WymClassGecko.prototype._designModeQuirks = function () {
     // Handle any errors that might occur.
     try {
         wym._doc.execCommand("styleWithCSS", '', false);
-        wym._doc.execCommand("enableObjectResizing", false, true);
+        wym._doc.execCommand("enableObjectResizing", false, false);
+        wym._doc.execCommand("enableInlineTableEditing", false, false);
     } catch (e) {}
 };
 
