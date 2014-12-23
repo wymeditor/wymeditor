@@ -2,7 +2,6 @@
 /* global
     SKIP_KNOWN_FAILING_TESTS,
     prepareUnitTestModule,
-    simulateKeyCombo,
     wymEqual,
     makeTextSelection,
     moveSelector,
