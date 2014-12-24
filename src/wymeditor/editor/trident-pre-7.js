@@ -60,7 +60,6 @@ WYMeditor.WymClassTridentPre7.prototype._docEventQuirks = function () {
     });
 };
 
-// https://github.com/wymeditor/wymeditor/pull/641
 WYMeditor.WymClassTridentPre7.prototype._mouseup = function (evt) {
     var wym = this;
 
@@ -68,6 +67,18 @@ WYMeditor.WymClassTridentPre7.prototype._mouseup = function (evt) {
         return;
     }
 
+    // In other browsers, where the object resize handles can be disabled,
+    // this doesn't have to be wrapped in `setTimeout`. In pre-7 Trident, the
+    // resize handles can't be disabled.
+    // The resize handles are called by the `controlselect` event, which is
+    // synchronously triggered after the `mouseup` event. Thus, whatever
+    // selection we make in `mouseup` will be overridden by `controlselect`'s
+    // undesired resize handles.
+    // Wrapping the selection call in an immediate `setTimeout` makes
+    // reasonably certain that the "control selection" will be very quickly
+    // replaced by our desired, regular selection.
+    // For more inforamtion, see:
+    // https://github.com/wymeditor/wymeditor/pull/641
     window.setTimeout(function () {
         wym._selectSingleNode(evt.target);
     }, 0);

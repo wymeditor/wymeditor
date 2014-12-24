@@ -188,7 +188,6 @@ module("images-selection", {setup: prepareUnitTestModule});
 
 test("Image is selected via `mouseup` in non pre-7 Trident", function () {
     manipulationTestHelper({
-        async: true,
         startHtml: getSelectedImageHtml,
         prepareFunc: function (wymeditor) {
             wymeditor.deselect();
@@ -219,7 +218,7 @@ test("Image is selected via `mouseup` in non pre-7 Trident", function () {
 test("Image is selected via `mouseup` in pre-7 trident", function () {
     var wymeditor,
         _selectSingleNode,
-        resume;
+        resumeManipulationTestHelper;
 
     if (
         jQuery.browser.msie !== true ||
@@ -242,12 +241,12 @@ test("Image is selected via `mouseup` in pre-7 trident", function () {
         // Unwrap
         wymeditor._selectSingleNode = _selectSingleNode;
         // Resume `manipulationTestHelper`
-        resume();
+        resumeManipulationTestHelper();
         // Allow QUnit to run the next test
         start();
     };
 
-    resume = manipulationTestHelper({
+    resumeManipulationTestHelper = manipulationTestHelper({
         async: true,
         startHtml: getSelectedImageHtml,
         prepareFunc: function (wymeditor) {
