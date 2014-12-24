@@ -60,7 +60,6 @@ WYMeditor.WymClassTridentPre7.prototype._docEventQuirks = function () {
     });
 };
 
-// https://github.com/wymeditor/wymeditor/pull/641
 WYMeditor.WymClassTridentPre7.prototype._mouseup = function (evt) {
     var wym = this;
 
@@ -78,6 +77,8 @@ WYMeditor.WymClassTridentPre7.prototype._mouseup = function (evt) {
     // Wrapping the selection call in an immediate `setTimeout` makes
     // reasonably certain that the "control selection" will be very quickly
     // replaced by our desired, regular selection.
+    // For more inforamtion, see:
+    // https://github.com/wymeditor/wymeditor/pull/641
     window.setTimeout(function () {
         wym._selectSingleNode(evt.target);
     }, 0);
