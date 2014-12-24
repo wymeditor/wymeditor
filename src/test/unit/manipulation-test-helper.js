@@ -100,7 +100,7 @@ function manipulationTestHelper(a) {
     var executions = [],
         wymeditor,
         EXECUTE,
-        resume;
+        asyncResumeFunc;
 
     if (skipThisTest() === true) {
         return;
@@ -136,10 +136,10 @@ function manipulationTestHelper(a) {
     }
 
     while (executions.length > 0) {
-        manipulateAndAssert(executions.pop());
+        asyncResumeFunc = manipulateAndAssert(executions.pop());
     }
 
-    return resume;
+    return asyncResumeFunc;
 
     function manipulateAndAssert(manipulationCause) {
 
@@ -149,8 +149,7 @@ function manipulationTestHelper(a) {
 
         performManipulation(manipulationCause);
         if (a.async === true) {
-            resume = assertResultUndoAndAdditional;
-            return;
+            return assertResultUndoAndAdditional;
         } else {
             assertResultUndoAndAdditional();
         }
