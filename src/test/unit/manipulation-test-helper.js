@@ -148,6 +148,9 @@ function manipulationTestHelper(a) {
         resetHistory();
 
         performManipulation(manipulationCause);
+        // Expectancy incremented here in order to fail tests that specify
+        // `async` but do not call the `asyncResumeFunc`.
+        expect(expect() + 1);
         if (a.async === true) {
             return assertResultUndoAndAdditional;
         } else {
@@ -155,6 +158,8 @@ function manipulationTestHelper(a) {
         }
 
         function assertResultUndoAndAdditional() {
+            // Return expectancy to real value.
+            expect(expect() - 1);
             assertResultHtml();
             additionalAssertions();
 
