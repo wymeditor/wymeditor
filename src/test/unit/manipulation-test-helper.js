@@ -85,6 +85,7 @@
  *
  *             resume = manipulationTestHelper({
  *                 startHtml: "</p>Foo</p>",
+ *                 async: true,
  *                 manipulationClickSelector: ".asyncActionButton",
  *                 expectedResultHtml: "</p>Bar</p>"
  *             });
