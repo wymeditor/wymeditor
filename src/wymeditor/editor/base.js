@@ -1879,10 +1879,8 @@ WYMeditor.editor.prototype.dialog = function (dialogType, dialogFeatures, bodyHt
     // so that a single dialog window will be reused. This will make testing in
     // Trident 7 slightly more complex, as it seems that `window.close()` is
     // performed asynchronously.
-    // The output of `wym.uniqueStamp()` can't be used here, probably because
-    // it contains a hyphen.
-    strWindowName = new Date().getTime();
-    wDialog = window.open('', new Date().getTime(), features);
+    strWindowName = wym.uniqueStamp();
+    wDialog = window.open('', strWindowName, features);
     if (
         typeof wDialog !== "object" ||
         wDialog.window !== wDialog
@@ -2044,7 +2042,7 @@ WYMeditor.editor.prototype.toggleHtml = function () {
 
 WYMeditor.editor.prototype.uniqueStamp = function () {
     var now = new Date();
-    return "wym-" + now.getTime();
+    return "wym" + now.getTime();
 };
 
 /**
