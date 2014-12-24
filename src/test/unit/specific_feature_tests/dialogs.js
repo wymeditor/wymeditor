@@ -15,19 +15,7 @@
  * This file contains tests for dialogs.
  */
 
-var sinonSpiesToRestore = [];
-
-module("dialogs-opening_or_not", {
-    setup: prepareUnitTestModule,
-    teardown: function () {
-        // Sinon spies are wrapped around functions during tests and added to
-        // this array.
-        // This unwraps the original functions from the spies after each test.
-        while (sinonSpiesToRestore.length > 0) {
-            sinonSpiesToRestore.pop().restore();
-        }
-    }
-});
+module("dialogs-opening_or_not", {setup: prepareUnitTestModule});
 
 /*
  * This is a helper for testing whether a dialog window was opened or not.
@@ -35,6 +23,8 @@ module("dialogs-opening_or_not", {
  *
  * Expects a single argument, an object, with the following properties:
  *
+ * `currentTest`
+ *     The current test
  * `noChangeHtml`
  *     The HTML to load at start and to expect at end.
  * `setCaretInSelector`
@@ -70,12 +60,10 @@ function dialogTestHelper(args) {
 
     function prepareFunc(wymeditor) {
         // Wrap the dialog function with a spy
-        wymeditor.dialog = sinon.spy(wymeditor, "dialog");
-        sinonSpiesToRestore.push(wymeditor.dialog);
+        args.currentTest.spy(wymeditor, "dialog");
         if (sinonCantWrapWindowOpen !== true) {
             // Wrap the `window.open` native function with a spy
-            window.open = sinon.spy(window, "open");
-            sinonSpiesToRestore.push(window.open);
+            args.currentTest.spy(window, "open");
         }
 
         if (typeof args.prepareFunc === "function") {
@@ -191,6 +179,7 @@ test("Link dialog doesn't open when no selection; by toolbar button click",
     function () {
     var command = WYMeditor.EXEC_COMMANDS.CREATE_LINK;
     dialogTestHelper({
+        currentTest: this,
         noChangeHtml: "<p>Foo</p>",
         prepareFunc: function (wymeditor) {
             wymeditor.deselect();
@@ -206,6 +195,7 @@ test("Link dialog opens when selection is non-collapsed and " +
     function () {
     var command = WYMeditor.EXEC_COMMANDS.CREATE_LINK;
     dialogTestHelper({
+        currentTest: this,
         noChangeHtml: "<p>Foo</p>",
         prepareFunc: function (wymeditor) {
             var p = wymeditor.body().childNodes[0];
@@ -228,6 +218,7 @@ test("Link dialog doesn't open when selection is collapsed and " +
     function () {
     var command = WYMeditor.EXEC_COMMANDS.CREATE_LINK;
     dialogTestHelper({
+        currentTest: this,
         noChangeHtml: "<p>Foo</p>",
         setCaretInSelector: "p",
         dialogButtonSelector: getDialogToolbarSelector(command),
@@ -241,6 +232,7 @@ test("Link dialog doesn't open when selection is non-collapsed and " +
     function () {
     var command = WYMeditor.EXEC_COMMANDS.CREATE_LINK;
     dialogTestHelper({
+        currentTest: this,
         noChangeHtml: "<p>Foo</p><p>Bar</p>",
         prepareFunc: function (wymeditor) {
             var firstP = wymeditor.body().childNodes[0],
@@ -263,6 +255,7 @@ test("Image dialog doesn't open when no selection; by toolbar " +
     "button click", function () {
     var command = WYMeditor.EXEC_COMMANDS.INSERT_IMAGE;
     dialogTestHelper({
+        currentTest: this,
         noChangeHtml: "<p>Foo</p>",
         prepareFunc: function (wymeditor) {
             wymeditor.deselect();
@@ -277,6 +270,7 @@ test("Image dialog doesn't open when selection is non-collapsed; by toolbar " +
     "button", function () {
     var command = WYMeditor.EXEC_COMMANDS.INSERT_IMAGE;
     dialogTestHelper({
+        currentTest: this,
         noChangeHtml: "<p>Foo</p>",
         prepareFunc: function (wymeditor) {
             var p = wymeditor.body().childNodes[0];
@@ -298,6 +292,7 @@ test("Image dialog opens when selection is collapsed; by toolbar button",
     function () {
     var command = WYMeditor.EXEC_COMMANDS.INSERT_IMAGE;
     dialogTestHelper({
+        currentTest: this,
         noChangeHtml: "<p>Foo</p>",
         setCaretInSelector: "p",
         dialogButtonSelector: getDialogToolbarSelector(command),
@@ -310,6 +305,7 @@ test("Table dialog doesn't open when no selection; by toolbar button click",
     function () {
     var command = WYMeditor.EXEC_COMMANDS.INSERT_TABLE;
     dialogTestHelper({
+        currentTest: this,
         noChangeHtml: "<p>Foo</p>",
         prepareFunc: function (wymeditor) {
             wymeditor.deselect();
@@ -324,6 +320,7 @@ test("Table dialog doesn't open when selection is non-collapsed; by toolbar " +
     "button", function () {
     var command = WYMeditor.EXEC_COMMANDS.INSERT_TABLE;
     dialogTestHelper({
+        currentTest: this,
         noChangeHtml: "<p>Foo</p>",
         prepareFunc: function (wymeditor) {
             var p = wymeditor.body().childNodes[0];
@@ -346,6 +343,7 @@ test("Table dialog opens when selection is collapsed and " +
     function () {
     var command = WYMeditor.EXEC_COMMANDS.INSERT_TABLE;
     dialogTestHelper({
+        currentTest: this,
         noChangeHtml: "<p>Foo</p>",
         setCaretInSelector: "p",
         dialogButtonSelector: getDialogToolbarSelector(command),
@@ -358,6 +356,7 @@ test("Paste dialog doesn't open when no selection; by toolbar button click",
     function () {
     var command = WYMeditor.EXEC_COMMANDS.PASTE;
     dialogTestHelper({
+        currentTest: this,
         noChangeHtml: "<p>Foo</p>",
         prepareFunc: function (wymeditor) {
             wymeditor.deselect();
@@ -372,6 +371,7 @@ test("Paste dialog doesn't open when selection is non-collapsed; by toolbar " +
     "button", function () {
     var command = WYMeditor.EXEC_COMMANDS.PASTE;
     dialogTestHelper({
+        currentTest: this,
         noChangeHtml: "<p>Foo</p>",
         prepareFunc: function (wymeditor) {
             var p = wymeditor.body().childNodes[0];
@@ -393,6 +393,7 @@ test("Paste dialog opens when selection is collapsed; by toolbar button",
     function () {
     var command = WYMeditor.EXEC_COMMANDS.PASTE;
     dialogTestHelper({
+        currentTest: this,
         noChangeHtml: "<p>Foo</p>",
         setCaretInSelector: "p",
         dialogButtonSelector: getDialogToolbarSelector(command),
@@ -404,6 +405,7 @@ test("Paste dialog opens when selection is collapsed; by toolbar button",
 test("Preview dialog opens when no selection; by toolbar button", function () {
     var command = WYMeditor.EXEC_COMMANDS.PREVIEW;
     dialogTestHelper({
+        currentTest: this,
         noChangeHtml: "<p>Foo</p>",
         dialogButtonSelector: getDialogToolbarSelector(command),
         expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED,
@@ -415,6 +417,7 @@ test("Preview dialog opens when selection is collapsed; by toolbar button",
     function () {
     var command = WYMeditor.EXEC_COMMANDS.PREVIEW;
     dialogTestHelper({
+        currentTest: this,
         noChangeHtml: "<p>Foo</p>",
         setCaretInSelector: "p",
         dialogButtonSelector: getDialogToolbarSelector(command),
