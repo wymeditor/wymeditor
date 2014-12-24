@@ -75,15 +75,15 @@
  *         test("Test something asynchronous", function () {
  *             var wymeditor = jQuery.wymeditors(0),
  *                 somethingAsync,
- *                 resume;
+ *                 resumeManipulationTestHelper;
  *
  *             somethingAsync = wymeditor.somethingAsync;
  *             wymeditor.somethingAsync = function () {
  *                 somethingAsync.call(wymeditor);
- *                 resume();
+ *                 resumeManipulationTestHelper();
  *             };
  *
- *             resume = manipulationTestHelper({
+ *             resumeManipulationTestHelper = manipulationTestHelper({
  *                 startHtml: "</p>Foo</p>",
  *                 async: true,
  *                 manipulationClickSelector: ".asyncActionButton",
