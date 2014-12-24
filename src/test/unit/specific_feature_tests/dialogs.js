@@ -3,7 +3,6 @@
     manipulationTestHelper,
     module,
     test,
-    sinon,
     expect,
     ok,
     strictEqual,
