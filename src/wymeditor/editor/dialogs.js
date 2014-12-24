@@ -6,7 +6,7 @@
     Open a dialog box
 */
 WYMeditor.editor.prototype.dialog = function (
-    dialogType,
+    dialogName,
     dialogFeatures,
     bodyHtml
 ) {
@@ -19,13 +19,13 @@ WYMeditor.editor.prototype.dialog = function (
         dialogHtml,
         doc;
 
-    if (wym._shouldDialogOpen(dialogType) !== true) {
+    if (WYMeditor.DIALOGS[dialogName].shouldOpen(wym) !== true) {
         return false;
     }
 
     sBodyHtml = "";
 
-    switch (dialogType) {
+    switch (dialogName) {
 
         case (WYMeditor.DIALOG_LINK):
             sBodyHtml = wym._options.dialogLinkHtml;
@@ -88,7 +88,7 @@ WYMeditor.editor.prototype.dialog = function (
     dialogHtml = h.replaceAllInStr(
         dialogHtml,
         WYMeditor.DIALOG_TITLE,
-        wym._encloseString(dialogType)
+        wym._encloseString(dialogName)
     );
     dialogHtml = h.replaceAllInStr(
         dialogHtml,
@@ -109,74 +109,59 @@ WYMeditor.editor.prototype.dialog = function (
     return wDialog;
 };
 
-
-/**
-    editor._shouldDialogOpen
-    ========================
-
-    Returns true if the provided dialog type should open.
-*/
-WYMeditor.editor.prototype._shouldDialogOpen = function (dialogType) {
-    var wym = this,
-        DIALOGS = {},
-        hasSelection,
-        selection,
-        selectedContainer;
-
-    if (typeof dialogType !== "string") {
-        throw "Expected a string";
+WYMeditor.DIALOGS = {};
+WYMeditor.DIALOGS.Link = {
+    shouldOpen: function (wym) {
+        if (
+            wym.hasSelection() !== true ||
+            wym.selection().isCollapsed === true ||
+            wym.selectedContainer() === false
+        ) {
+            return false;
+        }
+        return true;
     }
-
-    DIALOGS[WYMeditor.DIALOG_LINK] = function () {
-        if (
-            hasSelection !== true ||
-            selection.isCollapsed === true ||
-            selectedContainer === false
-        ) {
-            return false;
-        }
-        return true;
-    };
-    DIALOGS[WYMeditor.DIALOG_IMAGE] = function () {
-        if (
-            hasSelection !== true ||
-            selection.isCollapsed !== true
-        ) {
-            return false;
-        }
-        return true;
-    };
-    DIALOGS[WYMeditor.DIALOG_TABLE] = function () {
-        if (
-            hasSelection !== true ||
-            selection.isCollapsed !== true
-        ) {
-            return false;
-        }
-        return true;
-    };
-    DIALOGS[WYMeditor.DIALOG_PASTE] = function () {
-        if (
-            hasSelection !== true ||
-            selection.isCollapsed !== true
-        ) {
-            return false;
-        }
-        return true;
-    };
-    DIALOGS[WYMeditor.EXEC_COMMANDS.PREVIEW] = function () {
-        return true;
-    };
-
-    if (DIALOGS.hasOwnProperty(dialogType) !== true) {
-        throw "No such dialog type";
-    }
-
-    hasSelection = wym.hasSelection();
-    if (hasSelection) {
-        selection = wym.selection();
-        selectedContainer = wym.selectedContainer();
-    }
-
-    return DIALOGS[dialogType]();
 };
+WYMeditor.DIALOGS.Image = {
+    shouldOpen: function (wym) {
+        if (
+            wym.hasSelection() !== true ||
+            wym.selection().isCollapsed !== true
+        ) {
+            return false;
+        }
+        return true;
+    }
+};
+WYMeditor.DIALOGS.Table = {
+    shouldOpen: function (wym) {
+        if (
+            wym.hasSelection() !== true ||
+            wym.selection().isCollapsed !== true
+        ) {
+            return false;
+        }
+        return true;
+    }
+};
+/* jshint camelcase: false */
+WYMeditor.DIALOGS.Paste_From_Word = {
+/* jshint camelcase: true */
+    shouldOpen: function (wym) {
+        if (
+            wym.hasSelection() !== true ||
+            wym.selection().isCollapsed !== true
+        ) {
+            return false;
+        }
+        return true;
+    }
+};
+WYMeditor.DIALOGS.Preview = {
+    shouldOpen: function () {
+        return true;
+    }
+};
+
+WYMeditor.DIALOG_TITLE = "{Wym_Dialog_Title}";
+WYMeditor.DIALOG_BODY = "{Wym_Dialog_Body}";
