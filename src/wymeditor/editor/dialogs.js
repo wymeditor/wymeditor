@@ -35,7 +35,7 @@ WYMeditor.editor.prototype.dialog = function (
         return false;
     }
 
-    sBodyHtml = dialog ? dialog.getHtml.call(wym) : bodyHtml;
+    sBodyHtml = bodyHtml ? bodyHtml : dialog.getHtml.call(wym);
 
     // `strWindowName` is unique in order to make testing dialogs in Trident 7
     // simpler. This means that an infinite number of dialog windows may be
