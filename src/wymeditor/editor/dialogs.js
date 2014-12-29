@@ -27,6 +27,9 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
             throw "No such dialog";
         }
     }
+
+    // Return `false` early if this dialog should not open. Use the dialog's
+    // own function to check this.
     if (dialog.shouldOpen(wym) !== true) {
         return false;
     }
