@@ -7,14 +7,12 @@
 */
 WYMeditor.editor.prototype.dialog = function (
     dialogName,
-    dialogFeatures,
     bodyHtml
 ) {
     var wym = this,
         i,
         DIALOGS = WYMeditor.DIALOGS,
         dialog,
-        features = dialogFeatures || wym._options.dialogFeatures,
         wDialog,
         sBodyHtml,
         strWindowName,
@@ -46,7 +44,11 @@ WYMeditor.editor.prototype.dialog = function (
     // Trident 7 slightly more complex, as it seems that `window.close()` is
     // performed asynchronously.
     strWindowName = wym.uniqueStamp();
-    wDialog = window.open('', strWindowName, features);
+    wDialog = window.open(
+        '',
+        strWindowName,
+        dialog.features ? dialog.features : wym._options.dialogFeatures
+    );
     if (
         typeof wDialog !== "object" ||
         wDialog.window !== wDialog
