@@ -106,6 +106,20 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
     return wDialog;
 };
 
+/*
+ * An array of our default dialog objects.
+ * Each has the following properties:
+ * String `name`
+ *     A unique identifier
+ * String `title`
+ *     Dialog window title.
+ * Function `shouldOpen`
+ *     Its return value determines whether the dialog should be opened or not.
+ *     Is called with the editor as `this`.
+ * Function `getHtml`
+ *     Used to provide the dialog's body's HTML. Is called with the editor as
+ *     `this`.
+ */
 WYMeditor.DIALOGS = [
     {
         name: "CreateLink",
