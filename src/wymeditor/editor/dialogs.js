@@ -30,7 +30,7 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
 
     // Return `false` early if this dialog should not open. Use the dialog's
     // own function to check this.
-    if (dialog.shouldOpen(wym) !== true) {
+    if (dialog.shouldOpen.call(wym) !== true) {
         return false;
     }
 
@@ -104,7 +104,8 @@ WYMeditor.DIALOGS = [
     {
         name: "CreateLink",
         title: "Link",
-        shouldOpen: function (wym) {
+        shouldOpen: function () {
+            var wym = this;
             if (
                 wym.hasSelection() !== true ||
                 wym.selection().isCollapsed === true ||
@@ -122,7 +123,8 @@ WYMeditor.DIALOGS = [
     {
         name: "InsertImage",
         title: "Image",
-        shouldOpen: function (wym) {
+        shouldOpen: function () {
+            var wym = this;
             if (
                 wym.hasSelection() !== true ||
                 wym.selection().isCollapsed !== true
@@ -139,7 +141,8 @@ WYMeditor.DIALOGS = [
     {
         name: "InsertTable",
         title: "Table",
-        shouldOpen: function (wym) {
+        shouldOpen: function () {
+            var wym = this;
             if (
                 wym.hasSelection() !== true ||
                 wym.selection().isCollapsed !== true
@@ -156,7 +159,8 @@ WYMeditor.DIALOGS = [
     {
         name: "Paste",
         title: "Paste from Word",
-        shouldOpen: function (wym) {
+        shouldOpen: function () {
+            var wym = this;
             if (
                 wym.hasSelection() !== true ||
                 wym.selection().isCollapsed !== true
