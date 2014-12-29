@@ -12,7 +12,7 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
         dialog,
         wDialog,
         strWindowName,
-        h = WYMeditor.Helper,
+        htmlStrReplacements,
         dialogHtml,
         doc;
 
@@ -56,41 +56,46 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
 
     // Construct the dialog
     dialogHtml = wym._options.dialogHtml;
-    dialogHtml = h.replaceAllInStr(
-        dialogHtml,
-        WYMeditor.BASE_PATH,
-        wym._options.basePath
-    );
-    dialogHtml = h.replaceAllInStr(
-        dialogHtml,
-        WYMeditor.DIRECTION,
-        wym._options.direction
-    );
-    dialogHtml = h.replaceAllInStr(
-        dialogHtml,
-        WYMeditor.WYM_PATH,
-        wym._options.wymPath
-    );
-    dialogHtml = h.replaceAllInStr(
-        dialogHtml,
-        WYMeditor.JQUERY_PATH,
-        wym._options.jQueryPath
-    );
-    dialogHtml = h.replaceAllInStr(
-        dialogHtml,
-        WYMeditor.DIALOG_TITLE,
-        dialog.title
-    );
-    dialogHtml = h.replaceAllInStr(
-        dialogHtml,
-        WYMeditor.DIALOG_BODY,
-        dialog.getHtml.call(wym)
-    );
-    dialogHtml = h.replaceAllInStr(
-        dialogHtml,
-        WYMeditor.INDEX,
-        wym._index
-    );
+
+    // HTML string replacements
+    htmlStrReplacements = [
+        {
+            placeholder: WYMeditor.BASE_PATH,
+            replacement: wym._options.basePath
+        },
+        {
+            placeholder: WYMeditor.DIRECTION,
+            replacement: wym._options.direction
+        },
+        {
+            placeholder: WYMeditor.WYM_PATH,
+            replacement: wym._options.wymPath
+        },
+        {
+            placeholder: WYMeditor.JQUERY_PATH,
+            replacement: wym._options.jQueryPath
+        },
+        {
+            placeholder: WYMeditor.DIALOG_TITLE,
+            replacement: dialog.title
+        },
+        {
+            placeholder: WYMeditor.DIALOG_BODY,
+            replacement: dialog.getHtml.call(wym)
+        },
+        {
+            placeholder: WYMeditor.INDEX,
+            replacement: wym._index
+        }
+    ];
+
+    for (i = 0; i < htmlStrReplacements.length; i++) {
+        dialogHtml = WYMeditor.Helper.replaceAllInStr(
+            dialogHtml,
+            htmlStrReplacements[i].placeholder,
+            htmlStrReplacements[i].replacement
+        );
+    }
 
     dialogHtml = wym.replaceStrings(dialogHtml);
 
