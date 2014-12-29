@@ -77,7 +77,7 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
         },
         {
             placeholder: WYMeditor.DIALOG_TITLE,
-            replacement: dialog.title
+            replacement: wym._encloseString(dialog.title)
         },
         {
             placeholder: WYMeditor.DIALOG_BODY,
@@ -163,7 +163,7 @@ WYMeditor.DIALOGS = [
     },
     {
         name: "Paste",
-        title: "Paste from Word",
+        title: "Paste_From_Word",
         shouldOpen: function () {
             var wym = this;
             if (
