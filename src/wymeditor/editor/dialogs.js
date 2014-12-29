@@ -22,6 +22,8 @@ WYMeditor.editor.prototype.dialog = function (
         dialogHtml,
         doc;
 
+    // Loops through the available dialogs and assigns the desired dialog,
+    // according to the provided `dialogName` to `dialog`. Throws if not found.
     for (i = 0; i < DIALOGS.length; i++) {
         dialog = DIALOGS[i];
         if (dialog.name === dialogName) {
