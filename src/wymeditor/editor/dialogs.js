@@ -57,7 +57,7 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
     // Construct the dialog
     dialogHtml = wym._options.dialogHtml;
 
-    // HTML string replacements
+    // HTML template replacements
     htmlStrReplacements = [
         {
             placeholder: WYMeditor.BASE_PATH,
@@ -89,6 +89,7 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
         }
     ];
 
+    // Perform HTML template replacements
     for (i = 0; i < htmlStrReplacements.length; i++) {
         dialogHtml = WYMeditor.Helper.replaceAllInStr(
             dialogHtml,
