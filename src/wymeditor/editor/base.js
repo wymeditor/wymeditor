@@ -443,18 +443,19 @@ WYMeditor.editor.prototype._docEventQuirks = function () {
 WYMeditor.editor.prototype._bindUIEvents = function () {
     var wym = this,
         $toolbarButtons = jQuery(wym._box).find(wym._options.toolSelector),
+        dialogButtonSelector = wym._options.dialogButtonSelector ||
+            WYMeditor.DIALOG_BUTTON_SELECTOR,
         $html_val;
 
     // Action buttons
-    $toolbarButtons.not(wym._options.dialogButtonSelector).click(function () {
+    $toolbarButtons.not(dialogButtonSelector).click(function () {
         var button = this;
         wym.exec(jQuery(button).attr(WYMeditor.NAME));
         return false;
     });
 
     // Dialog buttons
-    $toolbarButtons.filter(wym._options.dialogButtonSelector)
-        .click(function () {
+    $toolbarButtons.filter(dialogButtonSelector).click(function () {
         var button = this;
         wym.dialog(jQuery(button).attr(WYMeditor.NAME));
     });

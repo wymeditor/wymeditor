@@ -338,3 +338,4 @@ WYMeditor.DIALOGS = [
 
 WYMeditor.DIALOG_TITLE = "{Wym_Dialog_Title}";
 WYMeditor.DIALOG_BODY = "{Wym_Dialog_Body}";
+WYMeditor.DIALOG_BUTTON_SELECTOR = ".wym_opens_dialog a";

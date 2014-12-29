@@ -770,7 +770,6 @@ jQuery.fn.wymeditor = function (options) {
         iframeBodySelector: ".wym_iframe",
         statusSelector:     ".wym_status",
         toolSelector:       ".wym_tools a",
-        dialogButtonSelector: ".wym_opens_dialog a",
         containerSelector:  ".wym_containers a",
         classSelector:      ".wym_classes a",
         htmlValSelector:    ".wym_html_val",
