@@ -5,16 +5,12 @@
 
     Open a dialog box
 */
-WYMeditor.editor.prototype.dialog = function (
-    dialogName,
-    bodyHtml
-) {
+WYMeditor.editor.prototype.dialog = function (dialogName) {
     var wym = this,
         i,
         DIALOGS = WYMeditor.DIALOGS,
         dialog,
         wDialog,
-        sBodyHtml,
         strWindowName,
         h = WYMeditor.Helper,
         dialogHtml,
@@ -34,8 +30,6 @@ WYMeditor.editor.prototype.dialog = function (
     if (dialog.shouldOpen(wym) !== true) {
         return false;
     }
-
-    sBodyHtml = bodyHtml ? bodyHtml : dialog.getHtml.call(wym);
 
     // `strWindowName` is unique in order to make testing dialogs in Trident 7
     // simpler. This means that an infinite number of dialog windows may be
@@ -87,7 +81,7 @@ WYMeditor.editor.prototype.dialog = function (
     dialogHtml = h.replaceAllInStr(
         dialogHtml,
         WYMeditor.DIALOG_BODY,
-        sBodyHtml
+        dialog.getHtml.call(wym)
     );
     dialogHtml = h.replaceAllInStr(
         dialogHtml,
