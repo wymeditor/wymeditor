@@ -107,8 +107,6 @@ jQuery.extend(WYMeditor, {
     HTML                - A string replaced by the HTML view panel's HTML.
     IFRAME              - A string replaced by the designmode iframe.
     STATUS              - A string replaced by the status panel's HTML.
-    DIALOG_TITLE        - A string replaced by a dialog's title.
-    DIALOG_BODY         - A string replaced by a dialog's HTML body.
     BODY                - The BODY element.
     STRING              - The "string" type.
     BODY,DIV,P,
@@ -119,10 +117,6 @@ jQuery.extend(WYMeditor, {
     UL,OL,LI            - HTML elements string representation.
     CLASS,HREF,SRC,
     TITLE,REL,ALT       - HTML attributes string representation.
-    DIALOG_LINK         - A link dialog type.
-    DIALOG_IMAGE        - An image dialog type.
-    DIALOG_TABLE        - A table dialog type.
-    DIALOG_PASTE        - A 'Paste from Word' dialog type.
     KEY                 - Standard key codes.
     NODE                - Node types.
 
@@ -143,12 +137,6 @@ jQuery.extend(WYMeditor, {
     CONTAINER_CLASS     : "{Wym_Container_Class}",
     CONTAINER_NAME      : "{Wym_Container_Name}",
     CONTAINER_TITLE     : "{Wym_Containers_Title}",
-    DIALOG_BODY         : "{Wym_Dialog_Body}",
-    DIALOG_IMAGE        : "Image",
-    DIALOG_LINK         : "Link",
-    DIALOG_PASTE        : "Paste_From_Word",
-    DIALOG_TABLE        : "Table",
-    DIALOG_TITLE        : "{Wym_Dialog_Title}",
     DIRECTION           : "{Wym_Direction}",
     DIV                 : "div",
     H1                  : "h1",
@@ -782,6 +770,7 @@ jQuery.fn.wymeditor = function (options) {
         iframeBodySelector: ".wym_iframe",
         statusSelector:     ".wym_status",
         toolSelector:       ".wym_tools a",
+        dialogButtonSelector: ".wym_opens_dialog a",
         containerSelector:  ".wym_containers a",
         classSelector:      ".wym_classes a",
         htmlValSelector:    ".wym_html_val",

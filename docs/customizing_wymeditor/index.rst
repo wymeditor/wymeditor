@@ -569,6 +569,7 @@ List of Selectors
 *   dialogTableSelector
 *   dialogPasteSelector
 *   dialogPreviewSelector
+*   dialogButtonSelector
 *   updateSelector
 
 Example Selector Customization

@@ -442,13 +442,21 @@ WYMeditor.editor.prototype._docEventQuirks = function () {
 */
 WYMeditor.editor.prototype._bindUIEvents = function () {
     var wym = this,
+        $toolbarButtons = jQuery(wym._box).find(wym._options.toolSelector),
         $html_val;
 
-    // Tools buttons
-    jQuery(wym._box).find(wym._options.toolSelector).click(function () {
+    // Action buttons
+    $toolbarButtons.not(wym._options.dialogButtonSelector).click(function () {
         var button = this;
         wym.exec(jQuery(button).attr(WYMeditor.NAME));
         return false;
+    });
+
+    // Dialog buttons
+    $toolbarButtons.filter(wym._options.dialogButtonSelector)
+        .click(function () {
+        var button = this;
+        wym.dialog(jQuery(button).attr(WYMeditor.NAME));
     });
 
     // Containers buttons
@@ -659,32 +667,9 @@ WYMeditor.editor.prototype.exec = function (cmd) {
         custom_run;
     switch (cmd) {
 
-    case WYMeditor.EXEC_COMMANDS.CREATE_LINK:
-        wym.dialog(WYMeditor.DIALOG_LINK);
-        break;
-
-    case WYMeditor.EXEC_COMMANDS.INSERT_IMAGE:
-        wym.dialog(WYMeditor.DIALOG_IMAGE);
-        break;
-
-    case WYMeditor.EXEC_COMMANDS.INSERT_TABLE:
-        wym.dialog(WYMeditor.DIALOG_TABLE);
-        break;
-
-    case WYMeditor.EXEC_COMMANDS.PASTE:
-        wym.dialog(WYMeditor.DIALOG_PASTE);
-        break;
-
     case WYMeditor.EXEC_COMMANDS.TOGGLE_HTML:
         wym.update();
         wym.toggleHtml();
-        break;
-
-    case WYMeditor.EXEC_COMMANDS.PREVIEW:
-        wym.dialog(
-            WYMeditor.EXEC_COMMANDS.PREVIEW,
-            wym._options.dialogFeaturesPreview
-        );
         break;
 
     case WYMeditor.EXEC_COMMANDS.INSERT_ORDEREDLIST:

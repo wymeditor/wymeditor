@@ -11,6 +11,9 @@ WYMeditor.editor.prototype.dialog = function (
     bodyHtml
 ) {
     var wym = this,
+        i,
+        DIALOGS = WYMeditor.DIALOGS,
+        dialog,
         features = dialogFeatures || wym._options.dialogFeatures,
         wDialog,
         sBodyHtml,
@@ -19,33 +22,20 @@ WYMeditor.editor.prototype.dialog = function (
         dialogHtml,
         doc;
 
-    if (WYMeditor.DIALOGS[dialogName].shouldOpen(wym) !== true) {
+    for (i = 0; i < DIALOGS.length; i++) {
+        dialog = DIALOGS[i];
+        if (dialog.name === dialogName) {
+            break;
+        }
+        if (i === DIALOGS.length) {
+            throw "No such dialog";
+        }
+    }
+    if (dialog.shouldOpen(wym) !== true) {
         return false;
     }
 
-    sBodyHtml = "";
-
-    switch (dialogName) {
-
-        case (WYMeditor.DIALOG_LINK):
-            sBodyHtml = wym._options.dialogLinkHtml;
-            break;
-        case (WYMeditor.DIALOG_IMAGE):
-            sBodyHtml = wym._options.dialogImageHtml;
-            break;
-        case (WYMeditor.DIALOG_TABLE):
-            sBodyHtml = wym._options.dialogTableHtml;
-            break;
-        case (WYMeditor.DIALOG_PASTE):
-            sBodyHtml = wym._options.dialogPasteHtml;
-            break;
-        case (WYMeditor.EXEC_COMMANDS.PREVIEW):
-            sBodyHtml = wym._options.dialogPreviewHtml;
-            break;
-        default:
-            sBodyHtml = bodyHtml;
-            break;
-    }
+    sBodyHtml = dialog ? dialog.getHtml.call(wym) : bodyHtml;
 
     // `strWindowName` is unique in order to make testing dialogs in Trident 7
     // simpler. This means that an infinite number of dialog windows may be
@@ -88,7 +78,7 @@ WYMeditor.editor.prototype.dialog = function (
     dialogHtml = h.replaceAllInStr(
         dialogHtml,
         WYMeditor.DIALOG_TITLE,
-        wym._encloseString(dialogName)
+        dialog.title
     );
     dialogHtml = h.replaceAllInStr(
         dialogHtml,
@@ -109,59 +99,88 @@ WYMeditor.editor.prototype.dialog = function (
     return wDialog;
 };
 
-WYMeditor.DIALOGS = {};
-WYMeditor.DIALOGS.Link = {
-    shouldOpen: function (wym) {
-        if (
-            wym.hasSelection() !== true ||
-            wym.selection().isCollapsed === true ||
-            wym.selectedContainer() === false
-        ) {
-            return false;
+WYMeditor.DIALOGS = [
+    {
+        name: "CreateLink",
+        title: "Link",
+        shouldOpen: function (wym) {
+            if (
+                wym.hasSelection() !== true ||
+                wym.selection().isCollapsed === true ||
+                wym.selectedContainer() === false
+            ) {
+                return false;
+            }
+            return true;
+        },
+        getHtml: function () {
+            var wym = this;
+            return wym._options.dialogLinkHtml;
         }
-        return true;
-    }
-};
-WYMeditor.DIALOGS.Image = {
-    shouldOpen: function (wym) {
-        if (
-            wym.hasSelection() !== true ||
-            wym.selection().isCollapsed !== true
-        ) {
-            return false;
+    },
+    {
+        name: "InsertImage",
+        title: "Image",
+        shouldOpen: function (wym) {
+            if (
+                wym.hasSelection() !== true ||
+                wym.selection().isCollapsed !== true
+            ) {
+                return false;
+            }
+            return true;
+        },
+        getHtml: function () {
+            var wym = this;
+            return wym._options.dialogImageHtml;
         }
-        return true;
-    }
-};
-WYMeditor.DIALOGS.Table = {
-    shouldOpen: function (wym) {
-        if (
-            wym.hasSelection() !== true ||
-            wym.selection().isCollapsed !== true
-        ) {
-            return false;
+    },
+    {
+        name: "InsertTable",
+        title: "Table",
+        shouldOpen: function (wym) {
+            if (
+                wym.hasSelection() !== true ||
+                wym.selection().isCollapsed !== true
+            ) {
+                return false;
+            }
+            return true;
+        },
+        getHtml: function () {
+            var wym = this;
+            return wym._options.dialogTableHtml;
         }
-        return true;
-    }
-};
-/* jshint camelcase: false */
-WYMeditor.DIALOGS.Paste_From_Word = {
-/* jshint camelcase: true */
-    shouldOpen: function (wym) {
-        if (
-            wym.hasSelection() !== true ||
-            wym.selection().isCollapsed !== true
-        ) {
-            return false;
+    },
+    {
+        name: "Paste",
+        title: "Paste from Word",
+        shouldOpen: function (wym) {
+            if (
+                wym.hasSelection() !== true ||
+                wym.selection().isCollapsed !== true
+            ) {
+                return false;
+            }
+            return true;
+        },
+        getHtml: function () {
+            var wym = this;
+            return wym._options.dialogPasteHtml;
         }
-        return true;
+    },
+    {
+        name: "Preview",
+        title: "Preview",
+        shouldOpen: function () {
+            return true;
+        },
+        getHtml: function () {
+            var wym = this;
+            return wym._options.dialogPreviewHtml;
+        }
     }
-};
-WYMeditor.DIALOGS.Preview = {
-    shouldOpen: function () {
-        return true;
-    }
-};
+];
 
 WYMeditor.DIALOG_TITLE = "{Wym_Dialog_Title}";
 WYMeditor.DIALOG_BODY = "{Wym_Dialog_Body}";
