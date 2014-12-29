@@ -23,7 +23,7 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
         if (dialog.name === dialogName) {
             break;
         }
-        if (i === DIALOGS.length) {
+        if (i + 1 === DIALOGS.length) {
             throw "No such dialog";
         }
     }
