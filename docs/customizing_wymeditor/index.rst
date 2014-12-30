@@ -542,7 +542,6 @@ List of Selectors
 *   containerSelector
 *   classSelector
 *   htmlValSelector
-*   dialogButtonSelector
 *   updateSelector
 
 Example Selector Customization
