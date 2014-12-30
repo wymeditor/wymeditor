@@ -443,8 +443,7 @@ WYMeditor.editor.prototype._docEventQuirks = function () {
 WYMeditor.editor.prototype._bindUIEvents = function () {
     var wym = this,
         $toolbarButtons = jQuery(wym._box).find(wym._options.toolSelector),
-        dialogButtonSelector = wym._options.dialogButtonSelector ||
-            WYMeditor.DIALOG_BUTTON_SELECTOR,
+        dialogButtonSelector = WYMeditor.DIALOG_BUTTON_SELECTOR,
         $html_val;
 
     // Action buttons
