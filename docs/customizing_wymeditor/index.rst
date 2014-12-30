@@ -394,9 +394,6 @@ or useful for deep customization.
 
 WYMeditor's relative/absolute base path
 (including the trailing slash).
-Until we remove our pop-up window dialogs,
-this is used to load necessary javascript
-in those dialog windows.
 
 This value is automatically guessed by ``computeWymPath``,
 which looks for the ``script`` element
@@ -431,9 +428,7 @@ based on the ``basePath`` value.
 
 This contains the full path or URL
 to a copy of the jQuery library.
-Like :ref:`options-basePath`,
-we only need to know this path
-in order to load it inside pop-up dialogs.
+Like :ref:`options-basePath`.
 
 Also like :ref:`option-basePath`,
 this value is automatically guessed,
@@ -547,17 +542,6 @@ List of Selectors
 *   containerSelector
 *   classSelector
 *   htmlValSelector
-*   hrefSelector
-*   srcSelector
-*   titleSelector
-*   altSelector
-*   textSelector
-*   rowsSelector
-*   colsSelector
-*   captionSelector
-*   submitSelector
-*   cancelSelector
-*   previewSelector
 *   dialogButtonSelector
 *   updateSelector
 
