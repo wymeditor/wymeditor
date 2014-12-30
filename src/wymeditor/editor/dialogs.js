@@ -46,6 +46,7 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
         strWindowName,
         dialog.features ? dialog.features : wym._options.dialogFeatures
     );
+
     if (
         typeof wDialog !== "object" ||
         wDialog.window !== wDialog
@@ -66,14 +67,6 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
         {
             placeholder: WYMeditor.DIRECTION,
             replacement: wym._options.direction
-        },
-        {
-            placeholder: WYMeditor.WYM_PATH,
-            replacement: wym._options.wymPath
-        },
-        {
-            placeholder: WYMeditor.JQUERY_PATH,
-            replacement: wym._options.jQueryPath
         },
         {
             placeholder: WYMeditor.DIALOG_TITLE,
@@ -103,6 +96,9 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
     doc = wDialog.document;
     doc.write(dialogHtml);
     doc.close();
+
+    wym._initDialog(wDialog);
+
     return wDialog;
 };
 
@@ -138,9 +134,7 @@ WYMeditor.DIALOGS = [
         getHtml: function () {
             var wym = this;
             return wym._options.dialogLinkHtml || String() +
-                '<body class="wym_dialog wym_dialog_link" ' +
-                    ' onload="WYMeditor._initDialog(' +
-                    WYMeditor.INDEX + ')">' +
+                '<body class="wym_dialog wym_dialog_link">' +
                     '<form>' +
                         '<fieldset>' +
                             '<input type="hidden" class="wym_dialog_type" ' +
@@ -189,9 +183,7 @@ WYMeditor.DIALOGS = [
         getHtml: function () {
             var wym = this;
             return wym._options.dialogImageHtml || String() +
-                '<body class="wym_dialog wym_dialog_image" ' +
-                    'onload="WYMeditor._initDialog(' + WYMeditor.INDEX +
-                    ')">' +
+                '<body class="wym_dialog wym_dialog_image">' +
                     '<form>' +
                         '<fieldset>' +
                             '<input type="hidden" class="wym_dialog_type" ' +
@@ -240,9 +232,7 @@ WYMeditor.DIALOGS = [
         getHtml: function () {
             var wym = this;
             return wym._options.dialogTableHtml || String() +
-                '<body class="wym_dialog wym_dialog_table" ' +
-                    'onload="WYMeditor._initDialog(' + WYMeditor.INDEX +
-                    ')">' +
+                '<body class="wym_dialog wym_dialog_table">' +
                     '<form>' +
                         '<fieldset>' +
                             '<input type="hidden" class="wym_dialog_type" ' +
@@ -295,9 +285,7 @@ WYMeditor.DIALOGS = [
         getHtml: function () {
             var wym = this;
             return wym._options.dialogPasteHtml || String() +
-                '<body class="wym_dialog wym_dialog_paste" ' +
-                    'onload="WYMeditor._initDialog(' + WYMeditor.INDEX +
-                    ')">' +
+                '<body class="wym_dialog wym_dialog_paste">' +
                     '<form>' +
                         '<input type="hidden" class="wym_dialog_type" ' +
                             'value="' + WYMeditor.DIALOG_PASTE + '" />' +
@@ -328,13 +316,120 @@ WYMeditor.DIALOGS = [
         getHtml: function () {
             var wym = this;
             return wym._options.dialogPreviewHtml || String() +
-                '<body class="wym_dialog wym_dialog_preview" ' +
-                    'onload="WYMeditor._initDialog(' + WYMeditor.INDEX +
-                    ')">' +
-                '</body>';
+                '<body class="wym_dialog wym_dialog_preview"></body>';
         }
     }
 ];
+
+WYMeditor.editor.prototype._initDialog = function (wDialog) {
+    var wym = this,
+        doc = wDialog.document,
+        selected = wym.selectedContainer(),
+        dialogType = jQuery(wym._options.dialogTypeSelector).val();
+
+    jQuery(wDialog).bind('beforeunload', function () {
+        wym.focusOnDocument();
+    });
+
+    if (dialogType === WYMeditor.DIALOG_LINK) {
+        // ensure that we select the link to populate the fields
+        if (selected && selected.tagName &&
+                selected.tagName.toLowerCase !== WYMeditor.A) {
+            selected = jQuery(selected).parentsOrSelf(WYMeditor.A);
+        }
+    }
+
+    // pre-init functions
+    if (jQuery.isFunction(wym._options.preInitDialog)) {
+        wym._options.preInitDialog(wym, wDialog);
+    }
+
+    // auto populate fields if selected container (e.g. A)
+    if (selected) {
+        jQuery(wym._options.hrefSelector, doc).val(jQuery(selected)
+            .attr(WYMeditor.HREF));
+        jQuery(wym._options.srcSelector, doc).val(jQuery(selected)
+            .attr(WYMeditor.SRC));
+        jQuery(wym._options.titleSelector, doc).val(jQuery(selected)
+            .attr(WYMeditor.TITLE));
+        jQuery(wym._options.relSelector, doc).val(jQuery(selected)
+            .attr(WYMeditor.REL));
+        jQuery(wym._options.altSelector, doc).val(jQuery(selected)
+            .attr(WYMeditor.ALT));
+    }
+
+    jQuery(
+        wym._options.dialogLinkSelector + " " + wym._options.submitSelector,
+        doc
+    ).submit(function () {
+        var href = jQuery(wym._options.hrefSelector, doc).val(),
+            title = jQuery(wym._options.titleSelector, doc).val(),
+            rel = jQuery(wym._options.relSelector, doc).val();
+
+        wym.link({
+            href: href,
+            title: title,
+            rel: rel
+        });
+        wDialog.close();
+    });
+
+    jQuery(
+        wym._options.dialogImageSelector + " " + wym._options.submitSelector,
+        doc
+    ).submit(function () {
+        var imgAttrs = {
+            src: jQuery(wym._options.srcSelector, doc).val(),
+            title: jQuery(wym._options.titleSelector, doc).val(),
+            alt: jQuery(wym._options.altSelector, doc).val()
+        };
+
+        wym.focusOnDocument();
+        wym.insertImage(imgAttrs);
+        wDialog.close();
+    });
+
+    jQuery(
+        wym._options.dialogTableSelector + " " + wym._options.submitSelector,
+        doc
+    ).submit(function () {
+        var numRows = jQuery(wym._options.rowsSelector, doc).val(),
+            numColumns = jQuery(wym._options.colsSelector, doc).val(),
+            caption = jQuery(wym._options.captionSelector, doc).val(),
+            summary = jQuery(wym._options.summarySelector, doc).val();
+
+        wym.insertTable(numRows, numColumns, caption, summary);
+        wDialog.close();
+    });
+
+    jQuery(
+        wym._options.dialogPasteSelector + " " + wym._options.submitSelector,
+        doc
+    ).submit(function () {
+        var sText = jQuery(wym._options.textSelector, doc).val();
+        wym.paste(sText);
+        wDialog.close();
+    });
+
+    jQuery(
+        wym._options.dialogPreviewSelector + " " +
+            wym._options.previewSelector,
+        doc
+    ).html(wym.html());
+
+    //cancel button
+    jQuery(
+        wym._options.cancelSelector,
+        doc
+    ).click(function () {
+        wDialog.close();
+    });
+
+    //pre-init functions
+    if (jQuery.isFunction(wym._options.postInitDialog)) {
+        wym._options.postInitDialog(wym, wDialog);
+    }
+};
 
 WYMeditor.DIALOG_TITLE = "{Wym_Dialog_Title}";
 WYMeditor.DIALOG_BODY = "{Wym_Dialog_Body}";

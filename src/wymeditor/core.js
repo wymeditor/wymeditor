@@ -534,7 +534,6 @@ jQuery.extend(WYMeditor, {
     }
 });
 
-
 /********** jQuery Plugin Definition **********/
 
 /**
@@ -811,10 +810,6 @@ jQuery.fn.wymeditor = function (options) {
             '<html dir="' + WYMeditor.DIRECTION + '">' +
                 '<head>' +
                     '<title>' + WYMeditor.DIALOG_TITLE + '</title>' +
-                    '<script type="text/javascript" ' +
-                        'src="' + WYMeditor.JQUERY_PATH + '"></script>' +
-                    '<script type="text/javascript" ' +
-                        'src="' + WYMeditor.WYM_PATH + '"></script>' +
                 '</head>' +
                 WYMeditor.DIALOG_BODY +
             '</html>',
@@ -1024,109 +1019,6 @@ WYMeditor._computeJqueryPath = function () {
         )
     ).attr('src');
 };
-
-/********** DIALOGS **********/
-
-WYMeditor._initDialog = function (index) {
-    var wym = window.opener.WYMeditor.INSTANCES[index],
-        selected = wym.selectedContainer(),
-        dialogType = jQuery(wym._options.dialogTypeSelector).val(),
-        tableOnClick;
-
-    jQuery(window).bind('beforeunload', function () {
-        wym.focusOnDocument();
-    });
-
-    if (dialogType === WYMeditor.DIALOG_LINK) {
-        // ensure that we select the link to populate the fields
-        if (selected && selected.tagName &&
-                selected.tagName.toLowerCase !== WYMeditor.A) {
-            selected = jQuery(selected).parentsOrSelf(WYMeditor.A);
-        }
-    }
-
-    // pre-init functions
-    if (jQuery.isFunction(wym._options.preInitDialog)) {
-        wym._options.preInitDialog(wym, window);
-    }
-
-    // auto populate fields if selected container (e.g. A)
-    if (selected) {
-        jQuery(wym._options.hrefSelector).val(jQuery(selected).attr(WYMeditor.HREF));
-        jQuery(wym._options.srcSelector).val(jQuery(selected).attr(WYMeditor.SRC));
-        jQuery(wym._options.titleSelector).val(jQuery(selected).attr(WYMeditor.TITLE));
-        jQuery(wym._options.relSelector).val(jQuery(selected).attr(WYMeditor.REL));
-        jQuery(wym._options.altSelector).val(jQuery(selected).attr(WYMeditor.ALT));
-    }
-
-    jQuery(wym._options.dialogLinkSelector + " " + wym._options.submitSelector)
-        .submit(function () {
-            wym.link({
-                href: jQuery(wym._options.hrefSelector).val(),
-                title: jQuery(wym._options.titleSelector).val(),
-                rel: jQuery(wym._options.relSelector).val()
-            });
-            window.close();
-        }
-    );
-
-    jQuery(wym._options.dialogImageSelector + " " + wym._options.submitSelector)
-        .submit(function () {
-            var imgAttrs = {
-                src: jQuery(wym._options.srcSelector).val(),
-                title: jQuery(wym._options.titleSelector).val(),
-                alt: jQuery(wym._options.altSelector).val()
-            };
-            wym.focusOnDocument();
-            wym.insertImage(imgAttrs);
-            window.close();
-        }
-    );
-
-    tableOnClick = WYMeditor._makeTableOnclick(wym);
-    jQuery(wym._options.dialogTableSelector + " " + wym._options.submitSelector)
-        .submit(tableOnClick);
-
-    jQuery(wym._options.dialogPasteSelector + " " +
-            wym._options.submitSelector).submit(function () {
-
-        var sText = jQuery(wym._options.textSelector).val();
-        wym.paste(sText);
-        window.close();
-    });
-
-    jQuery(wym._options.dialogPreviewSelector + " " +
-        wym._options.previewSelector).html(wym.html());
-
-    //cancel button
-    jQuery(wym._options.cancelSelector).mousedown(function () {
-        window.close();
-    });
-
-    //pre-init functions
-    if (jQuery.isFunction(wym._options.postInitDialog)) {
-        wym._options.postInitDialog(wym, window);
-    }
-
-};
-
-/********** TABLE DIALOG ONCLICK **********/
-
-WYMeditor._makeTableOnclick = function (wym) {
-    var tableOnClick = function () {
-        var numRows = jQuery(wym._options.rowsSelector).val(),
-            numColumns = jQuery(wym._options.colsSelector).val(),
-            caption = jQuery(wym._options.captionSelector).val(),
-            summary = jQuery(wym._options.summarySelector).val();
-
-        wym.insertTable(numRows, numColumns, caption, summary);
-
-        window.close();
-    };
-
-    return tableOnClick;
-};
-
 
 /********** HELPERS **********/
 
