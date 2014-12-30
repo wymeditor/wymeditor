@@ -327,9 +327,9 @@ WYMeditor.editor.prototype._initDialog = function (wDialog) {
         selected = wym.selectedContainer(),
         dialogType = jQuery(wym._options.dialogTypeSelector).val();
 
-    jQuery(wDialog).bind('beforeunload', function () {
+    wDialog.onbeforeunload = function () {
         wym.focusOnDocument();
-    });
+    };
 
     if (dialogType === WYMeditor.DIALOG_LINK) {
         // ensure that we select the link to populate the fields
