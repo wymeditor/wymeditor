@@ -1955,7 +1955,7 @@ WYMeditor.editor.prototype.toggleHtml = function () {
 
 WYMeditor.editor.prototype.uniqueStamp = function () {
     var now = new Date();
-    return "wym-" + now.getTime();
+    return "wym" + now.getTime();
 };
 
 /**
