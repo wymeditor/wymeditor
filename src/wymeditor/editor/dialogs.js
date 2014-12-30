@@ -15,19 +15,14 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
         strWindowName,
         htmlStrReplacements,
         dialogHtml,
-        doc;
+        doc,
+        selectedContainer;
 
-    // Loops through the available dialogs and assigns the desired dialog,
-    // according to the provided `dialogName` to `dialog`. Throws if not found.
-    for (i = 0; i < DIALOGS.length; i++) {
-        dialog = DIALOGS[i];
-        if (dialog.name === dialogName) {
-            break;
-        }
-        if (i + 1 === DIALOGS.length) {
-            throw "No such dialog";
-        }
+    if (DIALOGS.hasOwnProperty(dialogName) !== true) {
+        throw "No such dialog";
     }
+
+    dialog = DIALOGS[dialogName];
 
     // Return `false` early if this dialog should not open. Use the dialog's
     // own function to check this.
@@ -56,7 +51,8 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
     wDialog = window.open(
         '',
         strWindowName,
-        dialog.windowFeatures || dialogWindowFeatures
+        dialog.windowFeatures ?
+            dialog.windowFeatures.call(wym) : dialogWindowFeatures
     );
 
     if (
@@ -94,7 +90,7 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
         },
         {
             placeholder: WYMeditor.DIALOG_BODY,
-            replacement: dialog.getHtml.call(wym)
+            replacement: dialog.getBodyHtml.call(wym)
         },
         {
             placeholder: WYMeditor.INDEX,
@@ -115,30 +111,73 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
 
     doc = wDialog.document;
     doc.write(dialogHtml);
+    jQuery(doc.body).addClass(dialog.bodyClass);
     doc.close();
 
-    wym._initDialog(wDialog);
+    selectedContainer = wym.selectedContainer();
+
+    wDialog.onbeforeunload = function () {
+        wym.focusOnDocument();
+    };
+
+    // pre-init functions
+    if (jQuery.isFunction(wym._options.preInitDialog)) {
+        wym._options.preInitDialog(wym, wDialog);
+    }
+
+    // auto populate fields if selected container (e.g. A)
+    if (selectedContainer) {
+        jQuery(".wym_href", doc).val(jQuery(selectedContainer)
+            .attr(WYMeditor.HREF));
+        jQuery(".wym_src", doc).val(jQuery(selectedContainer)
+            .attr(WYMeditor.SRC));
+        jQuery(".wym_title", doc).val(jQuery(selectedContainer)
+            .attr(WYMeditor.TITLE));
+        jQuery(".wym_rel", doc).val(jQuery(selectedContainer)
+            .attr(WYMeditor.REL));
+        jQuery(".wym_alt", doc).val(jQuery(selectedContainer)
+            .attr(WYMeditor.ALT));
+    }
+
+    if (dialog.submitHandler) {
+        jQuery("form", doc).submit(function () {
+            dialog.submitHandler.call(wym, wDialog);
+        });
+    }
+
+    //cancel button
+    jQuery(".wym_cancel", doc).click(function () {
+        wDialog.close();
+    });
+
+    //pre-init functions
+    if (jQuery.isFunction(wym._options.postInitDialog)) {
+        wym._options.postInitDialog(wym, wDialog);
+    }
 
     return wDialog;
 };
 
 /*
- * An array of our default dialog objects.
+ * An object of default dialogs.
+ *
  * Each has the following properties:
- * String `name`
- *     A unique identifier
  * String `title`
  *     Dialog window title.
  * Function `shouldOpen`
  *     Its return value determines whether the dialog should be opened or not.
  *     Is called with the editor as `this`.
- * Function `getHtml`
+ * Function `getBodyHtml`
  *     Used to provide the dialog's body's HTML. Is called with the editor as
  *     `this`.
+ * String `bodyClass`
+ *     A class that will be added to the body of the dialog window's document.
+ * Function `getWindowFeatures`
+ *     Used to provide the dialog's window features, for passing to
+ *     `window.open`. Is called with the editor as `this`.
  */
-WYMeditor.DIALOGS = [
-    {
-        name: "CreateLink",
+WYMeditor.DIALOGS = {
+    link: {
         title: "Link",
         shouldOpen: function () {
             var wym = this;
@@ -151,44 +190,54 @@ WYMeditor.DIALOGS = [
             }
             return true;
         },
-        getHtml: function () {
-            var wym = this;
-            return wym._options.dialogLinkHtml || String() +
-                '<body class="wym_dialog wym_dialog_link">' +
-                    '<form>' +
-                        '<fieldset>' +
-                            '<input type="hidden" class="wym_dialog_type" ' +
-                                'value="' + WYMeditor.DIALOG_LINK + '" />' +
-                            '<legend>{Link}</legend>' +
-                            '<div class="row">' +
-                                '<label>{URL}</label>' +
-                                '<input type="text" class="wym_href" ' +
-                                    'value="" size="40" ' +
-                                    'autofocus="autofocus" />' +
-                            '</div>' +
-                            '<div class="row">' +
-                                '<label>{Title}</label>' +
-                                '<input type="text" class="wym_title" ' +
-                                    'value="" size="40" />' +
-                            '</div>' +
-                            '<div class="row">' +
-                                '<label>{Relationship}</label>' +
-                                '<input type="text" class="wym_rel" ' +
-                                    'value="" size="40" />' +
-                            '</div>' +
-                            '<div class="row row-indent">' +
-                                '<input class="wym_submit" type="submit" ' +
-                                    'value="{Submit}" />' +
-                                '<input class="wym_cancel" type="button" ' +
-                                    'value="{Cancel}" />' +
-                            '</div>' +
-                        '</fieldset>' +
-                    '</form>' +
-                '</body>';
+        getBodyHtml: function () {
+            return String() +
+                '<form>' +
+                    '<fieldset>' +
+                        '<input type="hidden" class="wym_dialog_type" ' +
+                            'value="' + WYMeditor.DIALOG_LINK + '" />' +
+                        '<legend>{Link}</legend>' +
+                        '<div class="row">' +
+                            '<label>{URL}</label>' +
+                            '<input type="text" class="wym_href" ' +
+                                'value="" size="40" ' +
+                                'autofocus="autofocus" />' +
+                        '</div>' +
+                        '<div class="row">' +
+                            '<label>{Title}</label>' +
+                            '<input type="text" class="wym_title" ' +
+                                'value="" size="40" />' +
+                        '</div>' +
+                        '<div class="row">' +
+                            '<label>{Relationship}</label>' +
+                            '<input type="text" class="wym_rel" ' +
+                                'value="" size="40" />' +
+                        '</div>' +
+                        '<div class="row row-indent">' +
+                            '<input class="wym_submit" type="submit" ' +
+                                'value="{Submit}" />' +
+                            '<input class="wym_cancel" type="button" ' +
+                                'value="{Cancel}" />' +
+                        '</div>' +
+                    '</fieldset>' +
+                '</form>';
+        },
+        bodyClass: "wym_dialog_link",
+        submitHandler: function (wDialog) {
+            var wym = this,
+                href = jQuery(".wym_href", wDialog.document).val(),
+                title = jQuery(".wym_title", wDialog.document).val(),
+                rel = jQuery(".wym_rel", wDialog.document).val();
+
+            wym.link({
+                href: href,
+                title: title,
+                rel: rel
+            });
+            wDialog.close();
         }
     },
-    {
-        name: "InsertImage",
+    image: {
         title: "Image",
         shouldOpen: function () {
             var wym = this;
@@ -200,44 +249,53 @@ WYMeditor.DIALOGS = [
             }
             return true;
         },
-        getHtml: function () {
-            var wym = this;
-            return wym._options.dialogImageHtml || String() +
-                '<body class="wym_dialog wym_dialog_image">' +
-                    '<form>' +
-                        '<fieldset>' +
-                            '<input type="hidden" class="wym_dialog_type" ' +
-                                'value="' + WYMeditor.DIALOG_IMAGE + '" />' +
-                            '<legend>{Image}</legend>' +
-                            '<div class="row">' +
-                                '<label>{URL}</label>' +
-                                '<input type="text" class="wym_src" ' +
-                                    'value="" size="40" ' +
-                                    'autofocus="autofocus" />' +
-                            '</div>' +
-                            '<div class="row">' +
-                                '<label>{Alternative_Text}</label>' +
-                                '<input type="text" class="wym_alt" ' +
-                                    'value="" size="40" />' +
-                            '</div>' +
-                            '<div class="row">' +
-                                '<label>{Title}</label>' +
-                                '<input type="text" class="wym_title" ' +
-                                    'value="" size="40" />' +
-                            '</div>' +
-                            '<div class="row row-indent">' +
-                                '<input class="wym_submit" type="submit" ' +
-                                    'value="{Submit}" />' +
-                                '<input class="wym_cancel" type="button" ' +
-                                    'value="{Cancel}" />' +
-                            '</div>' +
-                        '</fieldset>' +
-                    '</form>' +
-                '</body>';
+        getBodyHtml: function () {
+            return String() +
+                '<form>' +
+                    '<fieldset>' +
+                        '<input type="hidden" class="wym_dialog_type" ' +
+                            'value="' + WYMeditor.DIALOG_IMAGE + '" />' +
+                        '<legend>{Image}</legend>' +
+                        '<div class="row">' +
+                            '<label>{URL}</label>' +
+                            '<input type="text" class="wym_src" ' +
+                                'value="" size="40" ' +
+                                'autofocus="autofocus" />' +
+                        '</div>' +
+                        '<div class="row">' +
+                            '<label>{Alternative_Text}</label>' +
+                            '<input type="text" class="wym_alt" ' +
+                                'value="" size="40" />' +
+                        '</div>' +
+                        '<div class="row">' +
+                            '<label>{Title}</label>' +
+                            '<input type="text" class="wym_title" ' +
+                                'value="" size="40" />' +
+                        '</div>' +
+                        '<div class="row row-indent">' +
+                            '<input class="wym_submit" type="submit" ' +
+                                'value="{Submit}" />' +
+                            '<input class="wym_cancel" type="button" ' +
+                                'value="{Cancel}" />' +
+                        '</div>' +
+                    '</fieldset>' +
+                '</form>';
+        },
+        bodyClass: "wym_dialog_image",
+        submitHandler: function (wDialog) {
+            var wym = this,
+                imgAttrs = {
+                    src: jQuery(".wym_src", wDialog.document).val(),
+                    title: jQuery(".wym_title", wDialog.document).val(),
+                    alt: jQuery(".wym_alt", wDialog.document).val()
+                };
+
+            wym.focusOnDocument();
+            wym.insertImage(imgAttrs);
+            wDialog.close();
         }
     },
-    {
-        name: "InsertTable",
+    insertTable: {
         title: "Table",
         shouldOpen: function () {
             var wym = this;
@@ -249,48 +307,55 @@ WYMeditor.DIALOGS = [
             }
             return true;
         },
-        getHtml: function () {
-            var wym = this;
-            return wym._options.dialogTableHtml || String() +
-                '<body class="wym_dialog wym_dialog_table">' +
-                    '<form>' +
-                        '<fieldset>' +
-                            '<input type="hidden" class="wym_dialog_type" ' +
-                                'value="' + WYMeditor.DIALOG_TABLE + '" />' +
-                            '<legend>{Table}</legend>' +
-                            '<div class="row">' +
-                                '<label>{Caption}</label>' +
-                                '<input type="text" class="wym_caption" ' +
-                                    'value="" size="40" />' +
-                            '</div>' +
-                            '<div class="row">' +
-                                '<label>{Summary}</label>' +
-                                '<input type="text" class="wym_summary" ' +
-                                    'value="" size="40" />' +
-                            '</div>' +
-                            '<div class="row">' +
-                                '<label>{Number_Of_Rows}</label>' +
-                                '<input type="text" class="wym_rows" ' +
-                                    'value="3" size="3" />' +
-                            '</div>' +
-                            '<div class="row">' +
-                                '<label>{Number_Of_Cols}</label>' +
-                                '<input type="text" class="wym_cols" ' +
-                                    'value="2" size="3" />' +
-                            '</div>' +
-                            '<div class="row row-indent">' +
-                                '<input class="wym_submit" type="submit" ' +
-                                    'value="{Submit}" />' +
-                                '<input class="wym_cancel" type="button" ' +
-                                    'value="{Cancel}" />' +
-                            '</div>' +
-                        '</fieldset>' +
-                    '</form>' +
-                '</body>';
+        getBodyHtml: function () {
+            return String() +
+                '<form>' +
+                    '<fieldset>' +
+                        '<input type="hidden" class="wym_dialog_type" ' +
+                            'value="' + WYMeditor.DIALOG_TABLE + '" />' +
+                        '<legend>{Table}</legend>' +
+                        '<div class="row">' +
+                            '<label>{Caption}</label>' +
+                            '<input type="text" class="wym_caption" ' +
+                                'value="" size="40" />' +
+                        '</div>' +
+                        '<div class="row">' +
+                            '<label>{Summary}</label>' +
+                            '<input type="text" class="wym_summary" ' +
+                                'value="" size="40" />' +
+                        '</div>' +
+                        '<div class="row">' +
+                            '<label>{Number_Of_Rows}</label>' +
+                            '<input type="text" class="wym_rows" ' +
+                                'value="3" size="3" />' +
+                        '</div>' +
+                        '<div class="row">' +
+                            '<label>{Number_Of_Cols}</label>' +
+                            '<input type="text" class="wym_cols" ' +
+                                'value="2" size="3" />' +
+                        '</div>' +
+                        '<div class="row row-indent">' +
+                            '<input class="wym_submit" type="submit" ' +
+                                'value="{Submit}" />' +
+                            '<input class="wym_cancel" type="button" ' +
+                                'value="{Cancel}" />' +
+                        '</div>' +
+                    '</fieldset>' +
+                '</form>';
+        },
+        bodyClass: "wym_dialog_table",
+        submitHandler: function (wDialog) {
+            var wym = this,
+                numRows = jQuery(".wym_rows", wDialog.document).val(),
+                numColumns = jQuery(".wym_cols", wDialog.document).val(),
+                caption = jQuery(".wym_caption", wDialog.document).val(),
+                summary = jQuery(".wym_summary", wDialog.document).val();
+
+            wym.insertTable(numRows, numColumns, caption, summary);
+            wDialog.close();
         }
     },
-    {
-        name: "Paste",
+    paste: {
         title: "Paste_From_Word",
         shouldOpen: function () {
             var wym = this;
@@ -302,155 +367,58 @@ WYMeditor.DIALOGS = [
             }
             return true;
         },
-        getHtml: function () {
-            var wym = this;
-            return wym._options.dialogPasteHtml || String() +
-                '<body class="wym_dialog wym_dialog_paste">' +
-                    '<form>' +
-                        '<input type="hidden" class="wym_dialog_type" ' +
-                            'value="' + WYMeditor.DIALOG_PASTE + '" />' +
-                        '<fieldset>' +
-                            '<legend>{Paste_From_Word}</legend>' +
-                            '<div class="row">' +
-                                '<textarea class="wym_text" rows="10" ' +
-                                    'cols="50" autofocus="autofocus">' +
-                                '</textarea>' +
-                            '</div>' +
-                            '<div class="row">' +
-                                '<input class="wym_submit" type="submit" ' +
-                                    'value="{Submit}" />' +
-                                '<input class="wym_cancel" type="button" ' +
-                                    'value="{Cancel}" />' +
-                            '</div>' +
-                        '</fieldset>' +
-                    '</form>' +
-                '</body>';
+        getBodyHtml: function () {
+            return String() +
+                '<form>' +
+                    '<input type="hidden" class="wym_dialog_type" ' +
+                        'value="' + WYMeditor.DIALOG_PASTE + '" />' +
+                    '<fieldset>' +
+                        '<legend>{Paste_From_Word}</legend>' +
+                        '<div class="row">' +
+                            '<textarea class="wym_text" rows="10" ' +
+                                'cols="50" autofocus="autofocus">' +
+                            '</textarea>' +
+                        '</div>' +
+                        '<div class="row">' +
+                            '<input class="wym_submit" type="submit" ' +
+                                'value="{Submit}" />' +
+                            '<input class="wym_cancel" type="button" ' +
+                                'value="{Cancel}" />' +
+                        '</div>' +
+                    '</fieldset>' +
+                '</form>';
+        },
+        bodyClass: "wym_dialog_paste",
+        submitHandler: function (wDialog) {
+            var wym = this,
+                sText = jQuery(".wym_text", wDialog.document).val();
+            wym.paste(sText);
+            wDialog.close();
         }
     },
-    {
-        name: "Preview",
+    preview: {
         title: "Preview",
         shouldOpen: function () {
             return true;
         },
-        getHtml: function () {
+        getBodyHtml: function () {
             var wym = this;
-            return wym._options.dialogPreviewHtml || String() +
-                '<body class="wym_dialog wym_dialog_preview"></body>';
+            return wym.html();
         },
-        windowFeatures: wym._options.dialogFeaturesPreview || [
-            "menubar=no",
-            "titlebar=no",
-            "toolbar=no",
-            "resizable=no",
-            "width=560",
-            "height=300",
-            "top=0",
-            "left=0",
-            "scrollbars=yes"
-        ].join(",")
-    }
-];
-
-WYMeditor.editor.prototype._initDialog = function (wDialog) {
-    var wym = this,
-        doc = wDialog.document,
-        selected = wym.selectedContainer(),
-        dialogType = jQuery(wym._options.dialogTypeSelector).val();
-
-    wDialog.onbeforeunload = function () {
-        wym.focusOnDocument();
-    };
-
-    // pre-init functions
-    if (jQuery.isFunction(wym._options.preInitDialog)) {
-        wym._options.preInitDialog(wym, wDialog);
-    }
-
-    // auto populate fields if selected container (e.g. A)
-    if (selected) {
-        jQuery(wym._options.hrefSelector, doc).val(jQuery(selected)
-            .attr(WYMeditor.HREF));
-        jQuery(wym._options.srcSelector, doc).val(jQuery(selected)
-            .attr(WYMeditor.SRC));
-        jQuery(wym._options.titleSelector, doc).val(jQuery(selected)
-            .attr(WYMeditor.TITLE));
-        jQuery(wym._options.relSelector, doc).val(jQuery(selected)
-            .attr(WYMeditor.REL));
-        jQuery(wym._options.altSelector, doc).val(jQuery(selected)
-            .attr(WYMeditor.ALT));
-    }
-
-    jQuery(
-        wym._options.dialogLinkSelector + " " + wym._options.submitSelector,
-        doc
-    ).submit(function () {
-        var href = jQuery(wym._options.hrefSelector, doc).val(),
-            title = jQuery(wym._options.titleSelector, doc).val(),
-            rel = jQuery(wym._options.relSelector, doc).val();
-
-        wym.link({
-            href: href,
-            title: title,
-            rel: rel
-        });
-        wDialog.close();
-    });
-
-    jQuery(
-        wym._options.dialogImageSelector + " " + wym._options.submitSelector,
-        doc
-    ).submit(function () {
-        var imgAttrs = {
-            src: jQuery(wym._options.srcSelector, doc).val(),
-            title: jQuery(wym._options.titleSelector, doc).val(),
-            alt: jQuery(wym._options.altSelector, doc).val()
-        };
-
-        wym.focusOnDocument();
-        wym.insertImage(imgAttrs);
-        wDialog.close();
-    });
-
-    jQuery(
-        wym._options.dialogTableSelector + " " + wym._options.submitSelector,
-        doc
-    ).submit(function () {
-        var numRows = jQuery(wym._options.rowsSelector, doc).val(),
-            numColumns = jQuery(wym._options.colsSelector, doc).val(),
-            caption = jQuery(wym._options.captionSelector, doc).val(),
-            summary = jQuery(wym._options.summarySelector, doc).val();
-
-        wym.insertTable(numRows, numColumns, caption, summary);
-        wDialog.close();
-    });
-
-    jQuery(
-        wym._options.dialogPasteSelector + " " + wym._options.submitSelector,
-        doc
-    ).submit(function () {
-        var sText = jQuery(wym._options.textSelector, doc).val();
-        wym.paste(sText);
-        wDialog.close();
-    });
-
-    jQuery(
-        wym._options.dialogPreviewSelector + " " +
-            wym._options.previewSelector,
-        doc
-    ).html(wym.html());
-
-    //cancel button
-    jQuery(
-        wym._options.cancelSelector,
-        doc
-    ).click(function () {
-        wDialog.close();
-    });
-
-    //pre-init functions
-    if (jQuery.isFunction(wym._options.postInitDialog)) {
-        wym._options.postInitDialog(wym, wDialog);
+        windowFeatures: function () {
+            return [
+                "menubar=no",
+                "titlebar=no",
+                "toolbar=no",
+                "resizable=no",
+                "width=560",
+                "height=300",
+                "top=0",
+                "left=0",
+                "scrollbars=yes"
+            ].join(",");
+        },
+        bodyClass: "wym_dialog_preview"
     }
 };
 

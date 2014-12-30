@@ -514,18 +514,12 @@ List of HTML Template Options
 * statusHtml
 * htmlHtml
 * dialogHtml
-* dialogLinkHtml
 * dialogFeatures
-  The dialogs' features. e.g.
+  The dialogs' default features. e.g.
 
     .. code-block:: javascript
 
         dialogFeatures: "menubar=no,titlebar=no,toolbar=no,resizable=no,width=560,height=300,top=0,left=0"
-
-* dialogImageHtml
-* dialogTableHtml
-* dialogPasteHtml
-* dialogPreviewHtml
 
 .. _options-selectors-options:
 
@@ -564,11 +558,6 @@ List of Selectors
 *   submitSelector
 *   cancelSelector
 *   previewSelector
-*   dialogLinkSelector
-*   dialogImageSelector
-*   dialogTableSelector
-*   dialogPasteSelector
-*   dialogPreviewSelector
 *   dialogButtonSelector
 *   updateSelector
 

@@ -23,6 +23,9 @@ WYMeditor.
 * [#648](https://github.com/wymeditor/wymeditor/pull/647),
   [#641](https://github.com/wymeditor/wymeditor/pull/641)
   Object resizing (images, primarily) in Firefox and IE has been disabled.
+* [#639](https://github.com/wymeditor/wymeditor/pull/639)
+  Dialog window’s HTML can be specified via overwriting properties of dialog
+  objects in `WYMeditor.DIALOGS`.
 
 ### Enhancements
 

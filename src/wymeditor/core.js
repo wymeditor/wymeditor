@@ -196,8 +196,6 @@ jQuery.extend(WYMeditor, {
         UNLINK              : "Unlink",
         FORMAT_BLOCK        : "FormatBlock",
         INSERT_IMAGE        : "InsertImage",
-        INSERT_TABLE        : "InsertTable",
-        PASTE               : "Paste",
         UNDO                : "Undo",
         REDO                : "Redo",
         // Lists
@@ -206,8 +204,7 @@ jQuery.extend(WYMeditor, {
         INDENT              : "Indent",
         OUTDENT             : "Outdent",
         // UI
-        TOGGLE_HTML         : "ToggleHtml",
-        PREVIEW             : "Preview"
+        TOGGLE_HTML         : "ToggleHtml"
     },
 
     // Containers that we allow at the root of the document (as a direct child
@@ -667,7 +664,7 @@ jQuery.fn.wymeditor = function (options) {
                 'css': 'wym_tools_redo'
             },
             {
-                'name': 'CreateLink',
+                'name': 'link',
                 'title': 'Link',
                 'css': 'wym_tools_link wym_opens_dialog'
             },
@@ -677,17 +674,17 @@ jQuery.fn.wymeditor = function (options) {
                 'css': 'wym_tools_unlink'
             },
             {
-                'name': 'InsertImage',
+                'name': 'image',
                 'title': 'Image',
                 'css': 'wym_tools_image wym_opens_dialog'
             },
             {
-                'name': 'InsertTable',
+                'name': 'insertTable',
                 'title': 'Table',
                 'css': 'wym_tools_table wym_opens_dialog'
             },
             {
-                'name': 'Paste',
+                'name': 'paste',
                 'title': 'Paste_From_Word',
                 'css': 'wym_tools_paste wym_opens_dialog'
             },
@@ -697,7 +694,7 @@ jQuery.fn.wymeditor = function (options) {
                 'css': 'wym_tools_html'
             },
             {
-                'name': 'Preview',
+                'name': 'preview',
                 'title': 'Preview',
                 'css': 'wym_tools_preview wym_opens_dialog'
             }
@@ -773,29 +770,6 @@ jQuery.fn.wymeditor = function (options) {
         classSelector:      ".wym_classes a",
         htmlValSelector:    ".wym_html_val",
 
-        hrefSelector:       ".wym_href",
-        srcSelector:        ".wym_src",
-        titleSelector:      ".wym_title",
-        relSelector:        ".wym_rel",
-        altSelector:        ".wym_alt",
-        textSelector:       ".wym_text",
-
-        rowsSelector:       ".wym_rows",
-        colsSelector:       ".wym_cols",
-        captionSelector:    ".wym_caption",
-        summarySelector:    ".wym_summary",
-
-        submitSelector:     "form",
-        cancelSelector:     ".wym_cancel",
-        previewSelector:    "",
-
-        dialogTypeSelector:    ".wym_dialog_type",
-        dialogLinkSelector:    ".wym_dialog_link",
-        dialogImageSelector:   ".wym_dialog_image",
-        dialogTableSelector:   ".wym_dialog_table",
-        dialogPasteSelector:   ".wym_dialog_paste",
-        dialogPreviewSelector: ".wym_dialog_preview",
-
         updateSelector:    ".wymupdate",
         updateEvent:       "click",
 
@@ -804,7 +778,7 @@ jQuery.fn.wymeditor = function (options) {
 
         preInit: null,
         preBind: null,
-        postInit: null,
+        postInit: null
 
     }, options);
 
