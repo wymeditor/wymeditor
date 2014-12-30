@@ -232,7 +232,7 @@ test("Link dialog opens when selection is collapsed and " +
     var dialogName = "CreateLink";
     dialogTestHelper({
         currentTest: this,
-        noChangeHtml: "<p><a href=\"foo\">Foo</a></p>",
+        noChangeHtml: "<p><a href=\"http://example.com/\">Foo</a></p>",
         prepareFunc: function (wymeditor) {
             var a = wymeditor.$body().find("a")[0];
             makeTextSelection(
