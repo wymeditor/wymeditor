@@ -10,6 +10,7 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
         i,
         DIALOGS = WYMeditor.DIALOGS,
         dialog,
+        dialogWindowFeatures,
         wDialog,
         strWindowName,
         htmlStrReplacements,
@@ -34,6 +35,17 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
         return false;
     }
 
+    dialogWindowFeatures = wym._options.dialogFeatures || [
+        "menubar=no",
+        "titlebar=no",
+        "toolbar=no",
+        "resizable=no",
+        "width=560",
+        "height=300",
+        "top=0",
+        "left=0"
+    ].join(",");
+
     // `strWindowName` is unique in order to make testing dialogs in Trident 7
     // simpler. This means that an infinite number of dialog windows may be
     // opened concurrently. Ideally, `strWindowName` should be a constant
@@ -44,7 +56,7 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
     wDialog = window.open(
         '',
         strWindowName,
-        dialog.features ? dialog.features : wym._options.dialogFeatures
+        dialog.windowFeatures || dialogWindowFeatures
     );
 
     if (
@@ -56,7 +68,15 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
     }
 
     // Construct the dialog
-    dialogHtml = wym._options.dialogHtml;
+    dialogHtml = wym._options.dialogHtml || String() +
+        '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" ' +
+                '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">' +
+        '<html dir="' + WYMeditor.DIRECTION + '">' +
+            '<head>' +
+                '<title>' + WYMeditor.DIALOG_TITLE + '</title>' +
+            '</head>' +
+            WYMeditor.DIALOG_BODY +
+        '</html>';
 
     // HTML template replacements
     htmlStrReplacements = [
@@ -317,7 +337,18 @@ WYMeditor.DIALOGS = [
             var wym = this;
             return wym._options.dialogPreviewHtml || String() +
                 '<body class="wym_dialog wym_dialog_preview"></body>';
-        }
+        },
+        windowFeatures: wym._options.dialogFeaturesPreview || [
+            "menubar=no",
+            "titlebar=no",
+            "toolbar=no",
+            "resizable=no",
+            "width=560",
+            "height=300",
+            "top=0",
+            "left=0",
+            "scrollbars=yes"
+        ].join(",")
     }
 ];
 

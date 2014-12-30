@@ -522,7 +522,7 @@ jQuery.extend(WYMeditor, {
         // Path to the main JS files
         wym._options.basePath = wym._options.basePath ||
             WYMeditor._computeBasePath(wym._options.wymPath);
-        // Path to jQuery (for loading in pop-up dialogs)
+        // Path to jQuery
         wym._options.jQueryPath = wym._options.jQueryPath ||
             WYMeditor._computeJqueryPath();
         // The designmode iframe's base path
@@ -799,30 +799,12 @@ jQuery.fn.wymeditor = function (options) {
         updateSelector:    ".wymupdate",
         updateEvent:       "click",
 
-        dialogFeatures:    "menubar=no,titlebar=no,toolbar=no,resizable=no" +
-            ",width=560,height=300,top=0,left=0",
-        dialogFeaturesPreview: "menubar=no,titlebar=no,toolbar=no,resizable=no" +
-            ",scrollbars=yes,width=560,height=300,top=0,left=0",
-
-        dialogHtml: String() +
-            '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" ' +
-                    '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">' +
-            '<html dir="' + WYMeditor.DIRECTION + '">' +
-                '<head>' +
-                    '<title>' + WYMeditor.DIALOG_TITLE + '</title>' +
-                '</head>' +
-                WYMeditor.DIALOG_BODY +
-            '</html>',
-
         stringDelimiterLeft:  "{",
         stringDelimiterRight: "}",
 
         preInit: null,
         preBind: null,
         postInit: null,
-
-        preInitDialog: null,
-        postInitDialog: null
 
     }, options);
 
@@ -962,8 +944,8 @@ WYMeditor._computeWymPath = function () {
     if (script.length > 0) {
         return script.attr('src');
     }
-    // We couldn't locate the base path. This will break language loading,
-    // dialog boxes and other features.
+    // We couldn't locate the base path. This will break language loading
+    // and other features.
     WYMeditor.console.warn(
         "Error determining wymPath. No base WYMeditor file located."
     );
