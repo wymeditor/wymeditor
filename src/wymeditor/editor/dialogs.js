@@ -362,14 +362,6 @@ WYMeditor.editor.prototype._initDialog = function (wDialog) {
         wym.focusOnDocument();
     };
 
-    if (dialogType === WYMeditor.DIALOG_LINK) {
-        // ensure that we select the link to populate the fields
-        if (selected && selected.tagName &&
-                selected.tagName.toLowerCase !== WYMeditor.A) {
-            selected = jQuery(selected).parentsOrSelf(WYMeditor.A);
-        }
-    }
-
     // pre-init functions
     if (jQuery.isFunction(wym._options.preInitDialog)) {
         wym._options.preInitDialog(wym, wDialog);
