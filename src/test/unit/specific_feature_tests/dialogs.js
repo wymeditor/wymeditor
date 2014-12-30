@@ -226,6 +226,29 @@ test("Link dialog doesn't open when selection is collapsed and " +
     });
 });
 
+test("Link dialog opens when selection is collapsed and " +
+    "`selectedContainer` returns an `a` element; by toolbar button click",
+    function () {
+    var dialogName = "link";
+    dialogTestHelper({
+        currentTest: this,
+        noChangeHtml: "<p><a href=\"foo\">Foo</a></p>",
+        prepareFunc: function (wymeditor) {
+            var a = wymeditor.$body().find("a")[0];
+            makeTextSelection(
+                wymeditor,
+                a,
+                a,
+                1,
+                1
+            );
+        },
+        dialogButtonSelector: getDialogToolbarSelector(dialogName),
+        expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED,
+        expectedTitle: getDialogDocumentTitle(dialogName)
+    });
+});
+
 test("Link dialog doesn't open when selection is non-collapsed and " +
     "`selectedContainer` returns false; by toolbar button click",
     function () {

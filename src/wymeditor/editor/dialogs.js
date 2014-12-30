@@ -180,11 +180,18 @@ WYMeditor.DIALOGS = {
     link: {
         title: "Link",
         shouldOpen: function () {
-            var wym = this;
+            var wym = this,
+                selectedContainer;
+            if (wym.hasSelection() !== true) {
+                return false;
+            }
+            selectedContainer = wym.selectedContainer();
+            if (selectedContainer === false) {
+                return false;
+            }
             if (
-                wym.hasSelection() !== true ||
-                wym.selection().isCollapsed === true ||
-                wym.selectedContainer() === false
+                wym.selection().isCollapsed &&
+                selectedContainer.tagName.toLowerCase() !== "a"
             ) {
                 return false;
             }
