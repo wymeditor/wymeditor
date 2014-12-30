@@ -139,7 +139,9 @@ function manipulationTestHelper(a) {
         asyncResumeFunc = manipulateAndAssert(executions.pop());
     }
 
-    return asyncResumeFunc;
+    if (a.async === true) {
+        return asyncResumeFunc;
+    }
 
     function manipulateAndAssert(manipulationCause) {
 
