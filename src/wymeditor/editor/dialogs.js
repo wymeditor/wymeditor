@@ -177,7 +177,7 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
  *     `window.open`. Is called with the editor as `this`.
  */
 WYMeditor.DIALOGS = {
-    link: {
+    CreateLink: {
         title: "Link",
         shouldOpen: function () {
             var wym = this,
@@ -244,7 +244,7 @@ WYMeditor.DIALOGS = {
             wDialog.close();
         }
     },
-    image: {
+    InsertImage: {
         title: "Image",
         shouldOpen: function () {
             var wym = this;
@@ -302,7 +302,7 @@ WYMeditor.DIALOGS = {
             wDialog.close();
         }
     },
-    insertTable: {
+    InsertTable: {
         title: "Table",
         shouldOpen: function () {
             var wym = this;
@@ -362,7 +362,7 @@ WYMeditor.DIALOGS = {
             wDialog.close();
         }
     },
-    paste: {
+    Paste: {
         title: "Paste_From_Word",
         shouldOpen: function () {
             var wym = this;
@@ -403,7 +403,7 @@ WYMeditor.DIALOGS = {
             wDialog.close();
         }
     },
-    preview: {
+    Preview: {
         title: "Preview",
         shouldOpen: function () {
             return true;

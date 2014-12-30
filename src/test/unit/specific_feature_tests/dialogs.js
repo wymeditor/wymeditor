@@ -161,11 +161,11 @@ function getDialogDocumentTitle(dialogName) {
     }
 
     var TITLES = {
-        link: "Link",
-        image: "Image",
-        paste: "Paste from Word",
-        insertTable: "Table",
-        preview: "Preview"
+        CreateLink: "Link",
+        InsertImage: "Image",
+        Paste: "Paste from Word",
+        InsertTable: "Table",
+        Preview: "Preview"
     };
 
     if (TITLES.hasOwnProperty(dialogName) !== true) {
@@ -176,7 +176,7 @@ function getDialogDocumentTitle(dialogName) {
 
 test("Link dialog doesn't open when no selection; by toolbar button click",
     function () {
-    var dialogName = "link";
+    var dialogName = "CreateLink";
     dialogTestHelper({
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",
@@ -192,7 +192,7 @@ test("Link dialog doesn't open when no selection; by toolbar button click",
 test("Link dialog opens when selection is non-collapsed and " +
     "`selectedContainer` doesn't return false; by toolbar button click",
     function () {
-    var dialogName = "link";
+    var dialogName = "CreateLink";
     dialogTestHelper({
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",
@@ -215,7 +215,7 @@ test("Link dialog opens when selection is non-collapsed and " +
 test("Link dialog doesn't open when selection is collapsed and " +
     "`selectedContainer` doesn't return false; by toolbar button click",
     function () {
-    var dialogName = "link";
+    var dialogName = "CreateLink";
     dialogTestHelper({
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",
@@ -229,7 +229,7 @@ test("Link dialog doesn't open when selection is collapsed and " +
 test("Link dialog opens when selection is collapsed and " +
     "`selectedContainer` returns an `a` element; by toolbar button click",
     function () {
-    var dialogName = "link";
+    var dialogName = "CreateLink";
     dialogTestHelper({
         currentTest: this,
         noChangeHtml: "<p><a href=\"foo\">Foo</a></p>",
@@ -252,7 +252,7 @@ test("Link dialog opens when selection is collapsed and " +
 test("Link dialog doesn't open when selection is non-collapsed and " +
     "`selectedContainer` returns false; by toolbar button click",
     function () {
-    var dialogName = "link";
+    var dialogName = "CreateLink";
     dialogTestHelper({
         currentTest: this,
         noChangeHtml: "<p>Foo</p><p>Bar</p>",
@@ -275,7 +275,7 @@ test("Link dialog doesn't open when selection is non-collapsed and " +
 
 test("Image dialog doesn't open when no selection; by toolbar " +
     "button click", function () {
-    var dialogName = "image";
+    var dialogName = "InsertImage";
     dialogTestHelper({
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",
@@ -290,7 +290,7 @@ test("Image dialog doesn't open when no selection; by toolbar " +
 
 test("Image dialog doesn't open when selection is non-collapsed; by toolbar " +
     "button", function () {
-    var dialogName = "image";
+    var dialogName = "InsertImage";
     dialogTestHelper({
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",
@@ -312,7 +312,7 @@ test("Image dialog doesn't open when selection is non-collapsed; by toolbar " +
 
 test("Image dialog opens when selection is collapsed; by toolbar button",
     function () {
-    var dialogName = "image";
+    var dialogName = "InsertImage";
     dialogTestHelper({
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",
@@ -325,7 +325,7 @@ test("Image dialog opens when selection is collapsed; by toolbar button",
 
 test("Table dialog doesn't open when no selection; by toolbar button click",
     function () {
-    var dialogName = "insertTable";
+    var dialogName = "InsertTable";
     dialogTestHelper({
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",
@@ -340,7 +340,7 @@ test("Table dialog doesn't open when no selection; by toolbar button click",
 
 test("Table dialog doesn't open when selection is non-collapsed; by toolbar " +
     "button", function () {
-    var dialogName = "insertTable";
+    var dialogName = "InsertTable";
     dialogTestHelper({
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",
@@ -363,7 +363,7 @@ test("Table dialog doesn't open when selection is non-collapsed; by toolbar " +
 test("Table dialog opens when selection is collapsed and " +
     "`selectedContainer` doesn't return false; by toolbar button",
     function () {
-    var dialogName = "insertTable";
+    var dialogName = "InsertTable";
     dialogTestHelper({
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",
@@ -376,7 +376,7 @@ test("Table dialog opens when selection is collapsed and " +
 
 test("Paste dialog doesn't open when no selection; by toolbar button click",
     function () {
-    var dialogName = "paste";
+    var dialogName = "Paste";
     dialogTestHelper({
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",
@@ -391,7 +391,7 @@ test("Paste dialog doesn't open when no selection; by toolbar button click",
 
 test("Paste dialog doesn't open when selection is non-collapsed; by toolbar " +
     "button", function () {
-    var dialogName = "paste";
+    var dialogName = "Paste";
     dialogTestHelper({
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",
@@ -413,7 +413,7 @@ test("Paste dialog doesn't open when selection is non-collapsed; by toolbar " +
 
 test("Paste dialog opens when selection is collapsed; by toolbar button",
     function () {
-    var dialogName = "paste";
+    var dialogName = "Paste";
     dialogTestHelper({
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",
@@ -425,7 +425,7 @@ test("Paste dialog opens when selection is collapsed; by toolbar button",
 });
 
 test("Preview dialog opens when no selection; by toolbar button", function () {
-    var dialogName = "preview";
+    var dialogName = "Preview";
     dialogTestHelper({
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",
@@ -437,7 +437,7 @@ test("Preview dialog opens when no selection; by toolbar button", function () {
 
 test("Preview dialog opens when selection is collapsed; by toolbar button",
     function () {
-    var dialogName = "preview";
+    var dialogName = "Preview";
     dialogTestHelper({
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",

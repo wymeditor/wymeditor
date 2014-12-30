@@ -664,7 +664,7 @@ jQuery.fn.wymeditor = function (options) {
                 'css': 'wym_tools_redo'
             },
             {
-                'name': 'link',
+                'name': 'CreateLink',
                 'title': 'Link',
                 'css': 'wym_tools_link wym_opens_dialog'
             },
@@ -674,17 +674,17 @@ jQuery.fn.wymeditor = function (options) {
                 'css': 'wym_tools_unlink'
             },
             {
-                'name': 'image',
+                'name': 'InsertImage',
                 'title': 'Image',
                 'css': 'wym_tools_image wym_opens_dialog'
             },
             {
-                'name': 'insertTable',
+                'name': 'InsertTable',
                 'title': 'Table',
                 'css': 'wym_tools_table wym_opens_dialog'
             },
             {
-                'name': 'paste',
+                'name': 'Paste',
                 'title': 'Paste_From_Word',
                 'css': 'wym_tools_paste wym_opens_dialog'
             },
@@ -694,7 +694,7 @@ jQuery.fn.wymeditor = function (options) {
                 'css': 'wym_tools_html'
             },
             {
-                'name': 'preview',
+                'name': 'Preview',
                 'title': 'Preview',
                 'css': 'wym_tools_preview wym_opens_dialog'
             }
