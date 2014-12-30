@@ -51,6 +51,37 @@ WYMeditor.WymClassTridentPre7.prototype._docEventQuirks = function () {
         wym._iframe.contentWindow.event.returnValue = false;
         wym.paste(window.clipboardData.getData("Text"));
     };
+
+    // https://github.com/wymeditor/wymeditor/pull/641
+    wym.$body().bind("dragend", function (evt) {
+        if (evt.target.tagName.toLowerCase() === WYMeditor.IMG) {
+            wym.deselect();
+        }
+    });
+};
+
+WYMeditor.WymClassTridentPre7.prototype._mouseup = function (evt) {
+    var wym = this;
+
+    if (evt.target.tagName.toLowerCase() !== WYMeditor.IMG) {
+        return;
+    }
+
+    // In other browsers, where the object resize handles can be disabled,
+    // this doesn't have to be wrapped in `setTimeout`. In pre-7 Trident, the
+    // resize handles can't be disabled.
+    // The resize handles are called by the `controlselect` event, which is
+    // synchronously triggered after the `mouseup` event. Thus, whatever
+    // selection we make in `mouseup` will be overridden by `controlselect`'s
+    // undesired resize handles.
+    // Wrapping the selection call in an immediate `setTimeout` makes
+    // reasonably certain that the "control selection" will be very quickly
+    // replaced by our desired, regular selection.
+    // For more inforamtion, see:
+    // https://github.com/wymeditor/wymeditor/pull/641
+    window.setTimeout(function () {
+        wym._selectSingleNode(evt.target);
+    }, 0);
 };
 
 WYMeditor.WymClassTridentPre7.prototype._setButtonsUnselectable = function () {
@@ -163,7 +194,6 @@ WYMeditor.WymClassTridentPre7.prototype.unwrap = function () {
 
 WYMeditor.WymClassTridentPre7.prototype._keyup = function (evt) {
     var wym = this,
-        doc = wym._doc,
         container,
         defaultRootContainer,
         notValidRootContainers,
@@ -176,7 +206,6 @@ WYMeditor.WymClassTridentPre7.prototype._keyup = function (evt) {
         wym.documentStructureManager.structureRules.notValidRootContainers;
     defaultRootContainer =
         wym.documentStructureManager.structureRules.defaultRootContainer;
-    doc._selectedImage = null;
 
     // If the pressed key can't create a block element and is not a command,
     // check to make sure the selection is properly wrapped in a container

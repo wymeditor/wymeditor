@@ -2,6 +2,8 @@
     prepareUnitTestModule,
     test,
     manipulationTestHelper,
+    inPhantomjs,
+    SKIP_THIS_TEST,
     IMG_SRC
 */
 "use strict";
@@ -154,7 +156,8 @@ test("Adds className to image", function () {
             , "</p>"
         ].join(""),
         prepareFunc: function (wymeditor) {
-            wymeditor.$body().find("img").mousedown();
+            var img = wymeditor.$body().find("img")[0];
+            wymeditor._selectSingleNode(img);
         },
         manipulationFunc: function (wymeditor) {
             wymeditor.toggleClass("fancy", "img");
@@ -165,6 +168,9 @@ test("Adds className to image", function () {
                 , "Foo"
                 , "<img alt=\"foo\" class=\"fancy\" src=\"" + IMG_SRC + "\" />"
             , "</p>"
-        ].join("")
+        ].join(""),
+        skipFunc: function () {
+            return inPhantomjs ? SKIP_THIS_TEST : null;
+        }
     });
 });

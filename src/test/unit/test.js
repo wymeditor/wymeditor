@@ -34,6 +34,12 @@ jQuery.noConflict();
 // Hide passed tests.
 QUnit.config.hidepassed = true;
 
+// `sinon-qunit` sets this to true. We require the real `setTimeout` because
+// we test things that have to do with the browser's DOM API. Removing this
+// or setting it to `true` will almost certainly cause all tests of
+// asynchronous things to fail or the test runner to stop and not continue.
+sinon.config.useFakeTimers = false;
+
 // Whether or not we want to skip the tests that are known to be failing.
 // Ideally, there would be no tests in this category, but right now there are
 // a lot of table-related bugs that need to be fixed that aren't the number

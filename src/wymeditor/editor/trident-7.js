@@ -44,3 +44,24 @@ WYMeditor.WymClassTrident7.prototype.rawHtml = function (html) {
     }
     return false;
 };
+
+WYMeditor.WymClassTrident7.prototype._docEventQuirks = function () {
+    var wym = this;
+
+    jQuery(wym._doc).bind("keydown", function (evt) {
+        wym._keydown(evt);
+    });
+    jQuery(wym._doc).bind("keyup", function (evt) {
+        wym._keyup(evt);
+    });
+    jQuery(wym._doc).bind("click", function (evt) {
+        wym._click(evt);
+    });
+
+    // https://github.com/wymeditor/wymeditor/pull/641
+    wym.$body().bind("dragend", function (evt) {
+        if (evt.target.tagName.toLowerCase() === WYMeditor.IMG) {
+            wym.deselect();
+        }
+    });
+};

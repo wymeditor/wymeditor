@@ -64,7 +64,6 @@ WYMeditor.WymClassGecko.prototype._keyup = function (evt) {
         wym.documentStructureManager.structureRules.notValidRootContainers;
     defaultRootContainer =
         wym.documentStructureManager.structureRules.defaultRootContainer;
-    wym._selectedImage = null;
     container = null;
 
     // If the inputted key cannont create a block element and is not a command,
