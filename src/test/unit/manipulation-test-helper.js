@@ -65,12 +65,12 @@
  *         This example uses the `jquery.browser` plugin
  *         https://github.com/gabceb/jquery-browser-plugin
  *     `async`
- *         Optional; If this is `true` then after the manipulation is performed
- *         assertions regarding the results are not synchronously executed.
- *         Instead, a function is returned. Calling this function resumes these
- *         assertions. This can only be used when a single manipulation cause
- *         is provided (for example, only `manipulationFunc`).
- *         For example:
+ *         Optional; If this is `true` then after the manipulation is
+ *         performed, assertions regarding the results are not synchronously
+ *         executed. Instead, a function is returned. Calling this function
+ *         resumes these assertions. This can only be used when a single
+ *         manipulation cause is provided (for example, only
+ *         `manipulationFunc`). For example:
  *         ```
  *         test("Test something asynchronous", function () {
  *             var wymeditor = jQuery.wymeditors(0),
