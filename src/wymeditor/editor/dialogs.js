@@ -55,6 +55,11 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
         return false;
     }
 
+    // In the case where a dialog window already exists in the background, it
+    // will be reused. This means that it may remain in the background and the
+    // user may be confused. This brings the dialog to the foreground.
+    wDialog.focus();
+
     // Construct the dialog
     dialogHtml = wym._options.dialogHtml || String() +
         '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" ' +
