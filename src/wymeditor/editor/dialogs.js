@@ -12,7 +12,6 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
         dialog,
         dialogWindowFeatures,
         wDialog,
-        strWindowName,
         htmlStrReplacements,
         dialogHtml,
         doc,
@@ -41,16 +40,9 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
         "left=0"
     ].join(",");
 
-    // `strWindowName` is unique in order to make testing dialogs in Trident 7
-    // simpler. This means that an infinite number of dialog windows may be
-    // opened concurrently. Ideally, `strWindowName` should be a constant
-    // so that a single dialog window will be reused. This will make testing in
-    // Trident 7 slightly more complex, as it seems that `window.close()` is
-    // performed asynchronously.
-    strWindowName = wym.uniqueStamp();
     wDialog = window.open(
         '',
-        strWindowName,
+        "wymDialogWindow",
         dialog.windowFeatures ?
             dialog.windowFeatures.call(wym) : dialogWindowFeatures
     );
