@@ -172,8 +172,12 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
  * String `bodyClass`
  *     A class that will be added to the body of the dialog window's document.
  * Function `getWindowFeatures`
- *     Used to provide the dialog's window features, for passing to
+ *     Optional. Used to provide the dialog's window features, for passing to
  *     `window.open`. Is called with the editor as `this`.
+ * function `SubmitHandler`
+ *     Optional. Handles a submit button press in the dialog. Is called with
+ *     the editor instance as `this`. Receives a single argument-the dialog
+ *     window.
  */
 WYMeditor.DIALOGS = {
     CreateLink: {
