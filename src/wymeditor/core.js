@@ -81,9 +81,7 @@ jQuery.extend(WYMeditor, {
     STRINGS             - An array of loaded WYMeditor language pairs/values.
     SKINS               - An array of loaded WYMeditor skins.
     NAME                - The "name" attribute.
-    INDEX               - A string replaced by the instance index.
     WYM_INDEX           - A string used to get/set the instance index.
-    BASE_PATH           - A string replaced by WYMeditor's base path.
     WYM_PATH            - A string replaced by WYMeditor's main JS file path.
     IFRAME_BASE_PATH    - String replaced by the designmode iframe's base path.
     IFRAME_DEFAULT      - The iframe's default base path.
@@ -124,7 +122,6 @@ jQuery.extend(WYMeditor, {
 
     A                   : "a",
     ALT                 : "alt",
-    BASE_PATH           : "{Wym_Base_Path}",
     BLOCKQUOTE          : "blockquote",
     BODY                : "body",
     CLASS               : "class",
@@ -151,7 +148,6 @@ jQuery.extend(WYMeditor, {
     IFRAME_BASE_PATH    : "{Wym_Iframe_Base_Path}",
     IFRAME_DEFAULT      : "iframe/default/",
     IMG                 : "img",
-    INDEX               : "{Wym_Index}",
     INSERT_HTML         : "InsertHTML",
     INSTANCES           : [],
     JQUERY_PATH         : "{Wym_Jquery_Path}",

@@ -76,10 +76,6 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
     // HTML template replacements
     htmlStrReplacements = [
         {
-            placeholder: WYMeditor.BASE_PATH,
-            replacement: wym._options.basePath
-        },
-        {
             placeholder: WYMeditor.DIRECTION,
             replacement: wym._options.direction
         },
@@ -90,10 +86,6 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
         {
             placeholder: WYMeditor.DIALOG_BODY,
             replacement: dialog.getBodyHtml.call(wym)
-        },
-        {
-            placeholder: WYMeditor.INDEX,
-            replacement: wym._index
         }
     ];
 
