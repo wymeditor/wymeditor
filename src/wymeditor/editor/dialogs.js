@@ -55,9 +55,11 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
         return false;
     }
 
-    // In the case where a dialog window already exists in the background, it
-    // will be reused. This means that it may remain in the background and the
-    // user may be confused. This brings the dialog to the foreground.
+    // In the case where a dialog window already exists, it will be reused.
+    // If it is in the background, behind another window, without the following
+    // `focus` call, it will remain in the background and the user may not
+    // understand where it is. This `focus` call brings the dialog to the
+    // foreground, making reasonably sure the user notices it.
     wDialog.focus();
 
     // Construct the dialog
