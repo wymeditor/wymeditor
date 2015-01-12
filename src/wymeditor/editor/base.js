@@ -98,7 +98,6 @@ WYMeditor.editor.prototype._init = function () {
 
     // Construct the iframe
     iframeHtml = wym._options.iframeHtml;
-    iframeHtml = h.replaceAllInStr(iframeHtml, WYMeditor.INDEX, wym._index);
     iframeHtml = h.replaceAllInStr(
         iframeHtml,
         WYMeditor.IFRAME_BASE_PATH,
