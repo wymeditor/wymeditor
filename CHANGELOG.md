@@ -24,9 +24,7 @@ WYMeditor.
   [#641](https://github.com/wymeditor/wymeditor/pull/641)
   Object resizing (images, primarily) in Firefox and IE has been disabled.
 * [#639](https://github.com/wymeditor/wymeditor/pull/639)
-  Some configuration options, regarding dialog windows, were removed.
-  Although not yet official API, dialog windows can be configured by altering
-  the properties of the objects in `WYMeditor.DIALOGS`.
+  TODO: write entry
 
 ### Enhancements
 
