@@ -561,7 +561,7 @@ List of Selectors
 *   previewSelector
 *   dialogLinkSelector
 *   dialogImageSelector
-*   dialogtableSelector
+*   dialogTableSelector
 *   dialogPasteSelector
 *   dialogPreviewSelector
 *   updateSelector
