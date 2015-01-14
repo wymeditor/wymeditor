@@ -103,7 +103,7 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
 
     doc = wDialog.document;
     doc.write(dialogHtml);
-    jQuery(doc.body).addClass(dialog.bodyClass);
+    jQuery(doc.body).addClass(dialog.getBodyClass.call(wym));
     doc.close();
 
     selectedContainer = wym.selectedContainer();
@@ -162,8 +162,9 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
  * Function `getBodyHtml`
  *     Used to provide the dialog's body's HTML. Is called with the editor as
  *     `this`.
- * String `bodyClass`
- *     A class that will be added to the body of the dialog window's document.
+ * Function `getBodyClass`
+ *     Returns a class that will be added to the body of the dialog window's
+ *     document.
  * Function `getWindowFeatures`
  *     Optional. Used to provide the dialog's window features, for passing to
  *     `window.open`. Is called with the editor as `this`.
@@ -226,7 +227,10 @@ WYMeditor.DIALOGS = {
                     '</fieldset>' +
                 '</form>';
         },
-        bodyClass: "wym_dialog_link",
+        getBodyClass: function () {
+            var wym = this;
+            return wym._options.dialogSelectorLink || "wym_dialog_link";
+        },
         submitHandler: function (wDialog) {
             var wym = this,
                 options = wym._options,
@@ -287,7 +291,10 @@ WYMeditor.DIALOGS = {
                     '</fieldset>' +
                 '</form>';
         },
-        bodyClass: "wym_dialog_image",
+        getBodyClass: function () {
+            var wym = this;
+            return wym._options.dialogImageSelector || "wym_dialog_image";
+        },
         submitHandler: function (wDialog) {
             var wym = this,
                 options = wym._options,
@@ -353,7 +360,10 @@ WYMeditor.DIALOGS = {
                     '</fieldset>' +
                 '</form>';
         },
-        bodyClass: "wym_dialog_table",
+        getBodyClass: function () {
+            var wym = this;
+            return wym._options.dialogTableSelector || "wym_dialog_table";
+        },
         submitHandler: function (wDialog) {
             var wym = this,
                 options = wym._options,
@@ -401,7 +411,10 @@ WYMeditor.DIALOGS = {
                     '</fieldset>' +
                 '</form>';
         },
-        bodyClass: "wym_dialog_paste",
+        getBodyClass: function () {
+            var wym = this;
+            return wym._options.dialogPasteSelector || "wym_dialog_paste";
+        },
         submitHandler: function (wDialog) {
             var wym = this,
                 sText;
@@ -432,7 +445,10 @@ WYMeditor.DIALOGS = {
                 "scrollbars=yes"
             ].join(",");
         },
-        bodyClass: "wym_dialog_preview"
+        getBodyClass: function () {
+            var wym = this;
+            return wym._options.dialogPreviewSelector || "wym_dialog_preview";
+        }
     }
 };
 
