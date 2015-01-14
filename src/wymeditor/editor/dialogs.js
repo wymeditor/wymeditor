@@ -5,7 +5,11 @@
 
     Open a dialog box
 */
-WYMeditor.editor.prototype.dialog = function (dialogName) {
+WYMeditor.editor.prototype.dialog = function (
+    dialogName,
+    pDialogWindowFeatures,
+    pBodyHtml
+) {
     var wym = this,
         i,
         DIALOGS = WYMeditor.DIALOGS,
@@ -18,34 +22,51 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
         selectedContainer,
         options = wym._options;
 
-    if (DIALOGS.hasOwnProperty(dialogName) !== true) {
-        throw "No such dialog";
+    if (
+        DIALOGS.hasOwnProperty(dialogName) !== true &&
+        typeof pBodyHtml !== "string"
+    ) {
+        throw "No such dialog and no body HTML provided";
     }
 
     dialog = DIALOGS[dialogName];
 
     // Return `false` early if this dialog should not open. Use the dialog's
     // own function to check this.
-    if (dialog.shouldOpen.call(wym) !== true) {
+    if (
+        dialog &&
+        dialog.shouldOpen.call(wym) !== true
+    ) {
         return false;
     }
 
-    dialogWindowFeatures = options.dialogFeatures || [
-        "menubar=no",
-        "titlebar=no",
-        "toolbar=no",
-        "resizable=no",
-        "width=560",
-        "height=300",
-        "top=0",
-        "left=0"
-    ].join(",");
+    if (pDialogWindowFeatures) {
+        // Provided argument
+        dialogWindowFeatures = pDialogWindowFeatures;
+    } else if (dialog && dialog.getWindowFeatures) {
+        // Dialog's code
+        dialogWindowFeatures = dialog.windowFeatures.call(wym);
+    } else if (options.dialogFeatures) {
+        // Provided option
+        dialogWindowFeatures = options.dialogFeatures;
+    } else {
+        // Default
+        dialogWindowFeatures = [
+            "menubar=no",
+            "titlebar=no",
+            "toolbar=no",
+            "resizable=no",
+            "width=560",
+            "height=300",
+            "top=0",
+            "left=0"
+        ].join(",");
+    }
 
     wDialog = window.open(
         '',
         "wymDialogWindow",
-        dialog.windowFeatures ?
-            dialog.windowFeatures.call(wym) : dialogWindowFeatures
+        dialogWindowFeatures
     );
 
     if (
@@ -82,11 +103,11 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
         },
         {
             placeholder: WYMeditor.DIALOG_TITLE,
-            replacement: wym._encloseString(dialog.title)
+            replacement: dialog ? wym._encloseString(dialog.title) : "Dialog"
         },
         {
             placeholder: WYMeditor.DIALOG_BODY,
-            replacement: dialog.getBodyHtml.call(wym)
+            replacement: pBodyHtml || dialog.getBodyHtml.call(wym)
         }
     ];
 
@@ -103,7 +124,9 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
 
     doc = wDialog.document;
     doc.write(dialogHtml);
-    jQuery(doc.body).addClass(dialog.getBodyClass.call(wym));
+    if (dialog && dialog.getBodyClass) {
+        jQuery(doc.body).addClass(dialog.getBodyClass.call(wym));
+    }
     doc.close();
 
     selectedContainer = wym.selectedContainer();
@@ -131,7 +154,7 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
             .attr(WYMeditor.ALT));
     }
 
-    if (dialog.submitHandler) {
+    if (dialog && dialog.submitHandler) {
         jQuery("form", doc).submit(function () {
             dialog.submitHandler.call(wym, wDialog);
         });
@@ -163,8 +186,8 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
  *     Used to provide the dialog's body's HTML. Is called with the editor as
  *     `this`.
  * Function `getBodyClass`
- *     Returns a class that will be added to the body of the dialog window's
- *     document.
+ *     Optional. Returns a class that will be added to the body of the dialog
+ *     window's document.
  * Function `getWindowFeatures`
  *     Optional. Used to provide the dialog's window features, for passing to
  *     `window.open`. Is called with the editor as `this`.
@@ -432,7 +455,7 @@ WYMeditor.DIALOGS = {
             var wym = this;
             return wym._options.dialogPreviewHtml || wym.html();
         },
-        windowFeatures: function () {
+        getWindowFeatures: function () {
             return [
                 "menubar=no",
                 "titlebar=no",
