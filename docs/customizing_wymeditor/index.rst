@@ -548,6 +548,22 @@ List of Selectors
 *   containerSelector
 *   classSelector
 *   htmlValSelector
+*   hrefSelector
+*   srcSelector
+*   titleSelector
+*   altSelector
+*   textSelector
+*   rowsSelector
+*   colsSelector
+*   captionSelector
+*   submitSelector
+*   cancelSelector
+*   previewSelector
+*   dialogLinkSelector
+*   dialogImageSelector
+*   dialogtableSelector
+*   dialogPasteSelector
+*   dialogPreviewSelector
 *   updateSelector
 
 Example Selector Customization

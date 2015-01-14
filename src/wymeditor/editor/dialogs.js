@@ -15,7 +15,8 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
         htmlStrReplacements,
         dialogHtml,
         doc,
-        selectedContainer;
+        selectedContainer,
+        options = wym._options;
 
     if (DIALOGS.hasOwnProperty(dialogName) !== true) {
         throw "No such dialog";
@@ -29,7 +30,7 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
         return false;
     }
 
-    dialogWindowFeatures = wym._options.dialogFeatures || [
+    dialogWindowFeatures = options.dialogFeatures || [
         "menubar=no",
         "titlebar=no",
         "toolbar=no",
@@ -63,7 +64,7 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
     wDialog.focus();
 
     // Construct the dialog
-    dialogHtml = wym._options.dialogHtml || String() +
+    dialogHtml = options.dialogHtml || String() +
         '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" ' +
                 '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">' +
         '<html dir="' + WYMeditor.DIRECTION + '">' +
@@ -77,7 +78,7 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
     htmlStrReplacements = [
         {
             placeholder: WYMeditor.DIRECTION,
-            replacement: wym._options.direction
+            replacement: options.direction
         },
         {
             placeholder: WYMeditor.DIALOG_TITLE,
@@ -112,21 +113,21 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
     };
 
     // pre-init functions
-    if (jQuery.isFunction(wym._options.preInitDialog)) {
-        wym._options.preInitDialog(wym, wDialog);
+    if (jQuery.isFunction(options.preInitDialog)) {
+        options.preInitDialog(wym, wDialog);
     }
 
     // auto populate fields if selected container (e.g. A)
     if (selectedContainer) {
-        jQuery(".wym_href", doc).val(jQuery(selectedContainer)
+        jQuery(options.hrefSelector, doc).val(jQuery(selectedContainer)
             .attr(WYMeditor.HREF));
-        jQuery(".wym_src", doc).val(jQuery(selectedContainer)
+        jQuery(options.srcSelector, doc).val(jQuery(selectedContainer)
             .attr(WYMeditor.SRC));
-        jQuery(".wym_title", doc).val(jQuery(selectedContainer)
+        jQuery(options.titleSelector, doc).val(jQuery(selectedContainer)
             .attr(WYMeditor.TITLE));
-        jQuery(".wym_rel", doc).val(jQuery(selectedContainer)
+        jQuery(options.relSelector, doc).val(jQuery(selectedContainer)
             .attr(WYMeditor.REL));
-        jQuery(".wym_alt", doc).val(jQuery(selectedContainer)
+        jQuery(options.altSelector, doc).val(jQuery(selectedContainer)
             .attr(WYMeditor.ALT));
     }
 
@@ -137,13 +138,13 @@ WYMeditor.editor.prototype.dialog = function (dialogName) {
     }
 
     //cancel button
-    jQuery(".wym_cancel", doc).click(function () {
+    jQuery(options.cancelSelector, doc).click(function () {
         wDialog.close();
     });
 
     //pre-init functions
-    if (jQuery.isFunction(wym._options.postInitDialog)) {
-        wym._options.postInitDialog(wym, wDialog);
+    if (jQuery.isFunction(options.postInitDialog)) {
+        options.postInitDialog(wym, wDialog);
     }
 
     return wDialog;
@@ -228,9 +229,10 @@ WYMeditor.DIALOGS = {
         bodyClass: "wym_dialog_link",
         submitHandler: function (wDialog) {
             var wym = this,
-                href = jQuery(".wym_href", wDialog.document).val(),
-                title = jQuery(".wym_title", wDialog.document).val(),
-                rel = jQuery(".wym_rel", wDialog.document).val();
+                options = wym._options,
+                href = jQuery(options.hrefSelector, wDialog.document).val(),
+                title = jQuery(options.titleSelector, wDialog.document).val(),
+                rel = jQuery(options.relSelector, wDialog.document).val();
 
             wym.link({
                 href: href,
@@ -288,11 +290,14 @@ WYMeditor.DIALOGS = {
         bodyClass: "wym_dialog_image",
         submitHandler: function (wDialog) {
             var wym = this,
-                imgAttrs = {
-                    src: jQuery(".wym_src", wDialog.document).val(),
-                    title: jQuery(".wym_title", wDialog.document).val(),
-                    alt: jQuery(".wym_alt", wDialog.document).val()
-                };
+                options = wym._options,
+                imgAttrs;
+
+            imgAttrs = {
+                src: jQuery(options.srcSelector, wDialog.document).val(),
+                title: jQuery(options.titleSelector, wDialog.document).val(),
+                alt: jQuery(options.altSelector, wDialog.document).val()
+            };
 
             wym.focusOnDocument();
             wym.insertImage(imgAttrs);
@@ -351,10 +356,12 @@ WYMeditor.DIALOGS = {
         bodyClass: "wym_dialog_table",
         submitHandler: function (wDialog) {
             var wym = this,
-                numRows = jQuery(".wym_rows", wDialog.document).val(),
-                numColumns = jQuery(".wym_cols", wDialog.document).val(),
-                caption = jQuery(".wym_caption", wDialog.document).val(),
-                summary = jQuery(".wym_summary", wDialog.document).val();
+                options = wym._options,
+                doc = wDialog.document,
+                numRows = jQuery(options.rowsSelector, doc).val(),
+                numColumns = jQuery(options.colsSelector, doc).val(),
+                caption = jQuery(options.captionSelector, doc).val(),
+                summary = jQuery(options.summarySelector, doc).val();
 
             wym.insertTable(numRows, numColumns, caption, summary);
             wDialog.close();
@@ -397,7 +404,8 @@ WYMeditor.DIALOGS = {
         bodyClass: "wym_dialog_paste",
         submitHandler: function (wDialog) {
             var wym = this,
-                sText = jQuery(".wym_text", wDialog.document).val();
+                sText;
+            sText = jQuery(wym._options.textSelector, wDialog.document).val();
             wym.paste(sText);
             wDialog.close();
         }
@@ -431,3 +439,25 @@ WYMeditor.DIALOGS = {
 WYMeditor.DIALOG_TITLE = "{Wym_Dialog_Title}";
 WYMeditor.DIALOG_BODY = "{Wym_Dialog_Body}";
 WYMeditor.DIALOG_BUTTON_SELECTOR = ".wym_opens_dialog a";
+
+WYMeditor.DEFAULT_DIALOG_OPTIONS = {
+    hrefSelector: ".wym_href",
+    srcSelector: ".wym_src",
+    titleSelector: ".wym_title",
+    relSelector: ".wym_rel",
+    altSelector: ".wym_alt",
+    textSelector: ".wym_text",
+    rowsSelector: ".wym_rows",
+    colsSelector: ".wym_cols",
+    captionSelector: ".wym_caption",
+    summarySelector: ".wym_summary",
+    submitSelector: "form",
+    cancelSelector: ".wym_cancel",
+    previewSelector: "",
+    dialogTypeSelector: ".wym_dialog_type",
+    dialogLinkSelector: ".wym_dialog_link",
+    dialogImageSelector: ".wym_dialog_image",
+    dialogTableSelector: ".wym_dialog_table",
+    dialogPasteSelector: ".wym_dialog_paste",
+    dialogPreviewSelector: ".wym_dialog_preview"
+};

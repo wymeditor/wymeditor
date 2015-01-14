@@ -778,6 +778,8 @@ jQuery.fn.wymeditor = function (options) {
 
     }, options);
 
+    options = jQuery.extend(WYMeditor.DEFAULT_DIALOG_OPTIONS, options);
+
     return $textareas.each(function () {
         var textarea = this;
         // Assigning to _wym because the return value from new isn't
