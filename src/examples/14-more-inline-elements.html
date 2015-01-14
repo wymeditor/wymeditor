@@ -38,67 +38,14 @@
 
     <script type="text/javascript">
         jQuery(function() {
-            WYMeditor.DIALOGS.wrap = {
-                getBodyHtml: function () {
-                    return "" +
-                        "<form>" +
-                            "<fieldset>" +
-                                "<legend>Wrap</legend>" +
-                                "<div class='row'>" +
-                                    "<label>Type</label>" +
-                                    "<select class='wym_select_inline_element'>" +
-                                        "<option selected value='abbr'>Abbreviation</option>" +
-                                        "<option value='acronym'>Acronym</option>" +
-                                        "<option value='cite'>Citation, reference</option>" +
-                                        "<option value='code'>Code</option>" +
-                                        "<option value='del'>Deleted content</option>" +
-                                        "<option value='ins'>Inserted content</option>" +
-                                        "<option value='span'>Generic</option>" +
-                                    "</select>" +
-                                "</div>" +
-                                "<div class='row'>" +
-                                    "<label>Title</label>" +
-                                    "<input type='text' class='wym_title' value='' size='40' />" +
-                                "</div>" +
-                                "<div class='row row-indent'>" +
-                                    "<input class='wym_submit' type='submit'" +
-                                    " value='{Submit}' />" +
-                                    "<input class='wym_cancel' type='button'" +
-                                    "value='{Cancel}' />" +
-                                "</div>" +
-                            "</fieldset>" +
-                        "</form>"
-                },
-                bodyClass: "wym_dialog_wrap",
-                shouldOpen: function () {
-                    var wym = this;
-                    if (
-                        wym.hasSelection() !== true ||
-                        wym.selection().isCollapsed !== false
-                       ) {
-                        return false;
-                    }
-                    return true;
-                },
-                title: "{Wrap}",
-                submitHandler: function(wDialog) {
-                    var wym = this,
-                        doc = wDialog.document,
-                        tag = jQuery(doc).find('.wym_select_inline_element').val(),
-                        title = jQuery(doc).find('.wym_title').val();
-
-                    wym.wrap( '<' + tag + ' title="' + title + '">', '</' + tag + '>' );
-                    wDialog.close();
-                }
-            };
-
-            //add the 'Wrap' translation (used here for the dialog's title)
-            jQuery.extend(WYMeditor.STRINGS['en'], {
-                'Wrap': 'Wrap'
-            });
-
             jQuery('.wymeditor').wymeditor({
+                html: '<p>Hello, World!<\/p>', //set editor's value
                 postInit: function(wym) {
+                    //add the 'Wrap' translation (used here for the dialog's title)
+                    jQuery.extend(WYMeditor.STRINGS['en'], {
+                        'Wrap': 'Wrap'
+                    });
+
                     //set the editor's content
                     wym.html("<p>This is some text with which to test.</p>"
                             + "<p>Select 'some text' and click on the Wrap button.</p>"
@@ -134,10 +81,46 @@
                     .find(wym._options.toolsSelector + wym._options.toolsListSelector)
                     .append(html);
 
+                    //construct the dialog's html
+                    html = "<body class='wym_dialog wym_dialog_wrap'"
+                       + " onload='WYMeditor._initDialog(" + WYMeditor.INDEX + ")'"
+                       + ">"
+                       + "<form>"
+                       + "<fieldset>"
+                       + "<input type='hidden' class='wym_dialog_type' value='"
+                       + "Wrap"
+                       + "' />"
+                       + "<legend>Wrap</legend>"
+                       + "<div class='row'>"
+                       + "<label>Type</label>"
+                       + "<select class='wym_select_inline_element'>"
+                       + "<option selected value='abbr'>Abbreviation</option>"
+                       + "<option value='acronym'>Acronym</option>"
+                       + "<option value='cite'>Citation, reference</option>"
+                       + "<option value='code'>Code</option>"
+                       + "<option value='del'>Deleted content</option>"
+                       + "<option value='ins'>Inserted content</option>"
+                       + "<option value='span'>Generic</option>"
+                       + "</select>"
+                       + "</div>"
+                       + "<div class='row'>"
+                       + "<label>Title</label>"
+                       + "<input type='text' class='wym_title' value='' size='40' />"
+                       + "</div>"
+                       + "<div class='row row-indent'>"
+                       + "<input class='wym_submit wym_submit_wrap' type='button'"
+                       + " value='{Submit}' />"
+                       + "<input class='wym_cancel' type='button'"
+                       + "value='{Cancel}' />"
+                       + "</div>"
+                       + "</fieldset>"
+                       + "</form>"
+                       + "</body>";
+
                     //handle click event on wrap button
                     jQuery(wym._box)
                     .find('li.wym_tools_wrap a').click(function() {
-                        wym.dialog('wrap');
+                        wym.dialog( 'Wrap', null, html );
                         return(false);
                     });
 
@@ -148,6 +131,27 @@
                         return(false);
                     });
 
+                },
+
+                //handle click event on dialog's submit button
+                postInitDialog: function( wym, wdw ) {
+
+                    //wdw is the dialog's window
+                    //wym is the WYMeditor instance
+
+                    var body = wdw.document.body;
+
+                    jQuery( body )
+                        .find('input.wym_submit_wrap')
+                        .click(function() {
+
+                            var tag   = jQuery(body).find('.wym_select_inline_element').val();
+                            var title = jQuery(body).find('.wym_title').val();
+
+                            wym.wrap( '<' + tag + ' title="' + title + '">', '</' + tag + '>' );
+                            wdw.close();
+
+                        });
                 }
             });
         });
