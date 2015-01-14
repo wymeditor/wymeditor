@@ -2083,15 +2083,27 @@ WYMeditor.editor.prototype.insert = function (html) {
 WYMeditor.editor.prototype.wrap = function (left, right) {
     var wym = this;
 
-    wym.insert(
-        left + wym._iframe.contentWindow.getSelection().toString() + right
-    );
+    if (
+        wym.hasSelection() !== true ||
+        wym.selection().isCollapsed === true
+    ) {
+        return false;
+    }
+
+    wym.insert(left + wym.selection().toString() + right);
 };
 
 WYMeditor.editor.prototype.unwrap = function () {
     var wym = this;
 
-    wym.insert(wym._iframe.contentWindow.getSelection().toString());
+    if (
+        wym.hasSelection() !== true ||
+        wym.selection().isCollapsed === true
+    ) {
+        return false;
+    }
+
+    wym.insert(wym.selection().toString());
 };
 
 /**
