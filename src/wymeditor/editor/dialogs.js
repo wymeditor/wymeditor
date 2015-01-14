@@ -470,7 +470,6 @@ WYMeditor.DEFAULT_DIALOG_OPTIONS = {
     submitSelector: "form",
     cancelSelector: ".wym_cancel",
     previewSelector: "",
-    dialogTypeSelector: ".wym_dialog_type",
     dialogLinkSelector: ".wym_dialog_link",
     dialogImageSelector: ".wym_dialog_image",
     dialogTableSelector: ".wym_dialog_table",
