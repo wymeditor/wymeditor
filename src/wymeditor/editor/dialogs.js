@@ -193,7 +193,8 @@ WYMeditor.DIALOGS = {
             return true;
         },
         getBodyHtml: function () {
-            return String() +
+            var wym = this;
+            return wym._options.dialogLinkHtml || String() +
                 '<form>' +
                     '<fieldset>' +
                         '<input type="hidden" class="wym_dialog_type" ' +
@@ -252,7 +253,8 @@ WYMeditor.DIALOGS = {
             return true;
         },
         getBodyHtml: function () {
-            return String() +
+            var wym = this;
+            return wym._options.dialogImageHtml || String() +
                 '<form>' +
                     '<fieldset>' +
                         '<input type="hidden" class="wym_dialog_type" ' +
@@ -310,7 +312,8 @@ WYMeditor.DIALOGS = {
             return true;
         },
         getBodyHtml: function () {
-            return String() +
+            var wym = this;
+            return wym._options.dialogTableHtml || String() +
                 '<form>' +
                     '<fieldset>' +
                         '<input type="hidden" class="wym_dialog_type" ' +
@@ -370,7 +373,8 @@ WYMeditor.DIALOGS = {
             return true;
         },
         getBodyHtml: function () {
-            return String() +
+            var wym = this;
+            return wym._options.dialogPasteHtml || String() +
                 '<form>' +
                     '<input type="hidden" class="wym_dialog_type" ' +
                         'value="' + WYMeditor.DIALOG_PASTE + '" />' +
@@ -405,7 +409,7 @@ WYMeditor.DIALOGS = {
         },
         getBodyHtml: function () {
             var wym = this;
-            return wym.html();
+            return wym._options.dialogPreviewHtml || wym.html();
         },
         windowFeatures: function () {
             return [
