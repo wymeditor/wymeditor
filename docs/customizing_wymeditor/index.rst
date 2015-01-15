@@ -423,24 +423,6 @@ that will be initialized inside the editor body itself.
 This value is automatically guessed,
 based on the ``basePath`` value.
 
-``jQueryPath``
---------------
-
-This contains the full path or URL
-to a copy of the jQuery library.
-Like :ref:`options-basePath`.
-
-Also like :ref:`option-basePath`,
-this value is automatically guessed,
-but in this case by ``computeJqueryPath()``.
-
-Example
-~~~~~~~
-
-.. code-block:: javascript
-
-  jQueryPath: "/js/jquery.js"
-
 ``updateSelector`` and ``updateEvent``
 --------------------------------------
 

@@ -24,7 +24,7 @@ WYMeditor.
   [#641](https://github.com/wymeditor/wymeditor/pull/641)
   Object resizing (images, primarily) in Firefox and IE has been disabled.
 * [#639](https://github.com/wymeditor/wymeditor/pull/639)
-  TODO: write entry
+  The `jQueryPath` option was removed.
 
 ### Enhancements
 

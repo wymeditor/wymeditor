@@ -515,9 +515,6 @@ jQuery.extend(WYMeditor, {
         // Path to the main JS files
         wym._options.basePath = wym._options.basePath ||
             WYMeditor._computeBasePath(wym._options.wymPath);
-        // Path to jQuery
-        wym._options.jQueryPath = wym._options.jQueryPath ||
-            WYMeditor._computeJqueryPath();
         // The designmode iframe's base path
         wym._options.iframeBasePath = wym._options.iframeBasePath ||
             wym._options.basePath + WYMeditor.IFRAME_DEFAULT;
@@ -942,36 +939,6 @@ WYMeditor._computeBasePath = function (wymPath) {
     // Strip everything after the last slash to get the base path
     var lastSlashIndex = wymPath.lastIndexOf('/');
     return wymPath.substr(0, lastSlashIndex + 1);
-};
-
-/**
-    WYMeditor._computeJqueryPath
-    ============================
-
-    Get the relative path to the currently-included jquery javascript file.
-
-    Returns the first script src attribute that matches one of the following
-    patterns:
-
-    * jquery.pack.js
-    * jquery.min.js
-    * jquery.packed.js
-    * Plus the jquery-<version> variants
-*/
-WYMeditor._computeJqueryPath = function () {
-    return jQuery(
-        jQuery.grep(
-            jQuery('script'),
-            function (s) {
-                return (
-                    s.src &&
-                    s.src.match(
-                            /jquery(-(.*)){0,1}(\.pack|\.min|\.packed)?\.js(\?.*)?$/
-                        )
-                );
-            }
-        )
-    ).attr('src');
 };
 
 /********** HELPERS **********/
