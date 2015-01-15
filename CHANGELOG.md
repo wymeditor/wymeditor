@@ -27,6 +27,8 @@ WYMeditor.
   * The `jQueryPath` option was removed.
   * The `wym._index` editor instance property is removed.
   * Removed `wym.wrap` and `wym.unwrap` editor methods.
+  * Dialogs cannot be opened using the `exec` method. Use the `dialog` method,
+    instead.
 
 ### Enhancements
 

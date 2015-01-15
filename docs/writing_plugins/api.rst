@@ -364,21 +364,10 @@ Undo
     undo an action.
 Redo
     redo an action.
-CreateLink
-    open the link dialog and create/update a link on the selection.
 Unlink
     remove a link, based on the selection.
-InsertImage
-    open the image dialog and insert/update an image.
-InsertTable
-    open the table dialog and insert a table.
-Paste
-    opens the paste dialog and paste raw paragraphs from an external
-    application, e.g. Word.
 ToggleHtml
     show/hide the HTML value.
-Preview
-    open the preview dialog.
 
 ``link(attrs)``
 ===============
