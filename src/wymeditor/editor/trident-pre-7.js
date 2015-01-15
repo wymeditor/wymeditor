@@ -157,25 +157,6 @@ WYMeditor.WymClassTridentPre7.prototype._wrapWithContainer = function (
     selection.setSingleRange(range);
 };
 
-WYMeditor.WymClassTridentPre7.prototype.unwrap = function () {
-    var wym = this,
-        // Get the current selection
-        range = wym._doc.selection.createRange(),
-        $selectionParents,
-        text;
-
-    // Check if the current selection is inside the editor
-    $selectionParents = jQuery(range.parentElement()).parents();
-    if ($selectionParents.is(wym._options.iframeBodySelector)) {
-        try {
-            // Unwrap selection
-            text = range.text;
-            wym._exec('Cut');
-            range.pasteHTML(text);
-        } catch (e) {}
-    }
-};
-
 WYMeditor.WymClassTridentPre7.prototype._keyup = function (evt) {
     var wym = this,
         container,

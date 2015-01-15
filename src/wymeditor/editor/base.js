@@ -2080,19 +2080,6 @@ WYMeditor.editor.prototype.insert = function (html) {
     }
 };
 
-WYMeditor.editor.prototype.unwrap = function () {
-    var wym = this;
-
-    if (
-        wym.hasSelection() !== true ||
-        wym.selection().isCollapsed === true
-    ) {
-        return false;
-    }
-
-    wym.insert(wym.selection().toString());
-};
-
 /**
     editor.canSetCaretBefore
     ========================
