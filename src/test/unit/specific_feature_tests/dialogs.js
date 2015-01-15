@@ -191,7 +191,7 @@ test("Link dialog doesn't open when no selection; by toolbar button click",
 );
 
 test("Link dialog opens when selection is non-collapsed and " +
-    "`selectedContainer` doesn't return false; by toolbar button click",
+    "`selectedContainer` is a non-anchor element; by toolbar button click",
     function () {
         var dialogName = "CreateLink";
         dialogTestHelper({
