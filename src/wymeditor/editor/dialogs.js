@@ -140,18 +140,9 @@ WYMeditor.editor.prototype.dialog = function (
         options.preInitDialog(wym, wDialog);
     }
 
-    // auto populate fields if selected container (e.g. A)
-    if (selectedContainer) {
-        jQuery(options.hrefSelector, doc).val(jQuery(selectedContainer)
-            .attr(WYMeditor.HREF));
-        jQuery(options.srcSelector, doc).val(jQuery(selectedContainer)
-            .attr(WYMeditor.SRC));
-        jQuery(options.titleSelector, doc).val(jQuery(selectedContainer)
-            .attr(WYMeditor.TITLE));
-        jQuery(options.relSelector, doc).val(jQuery(selectedContainer)
-            .attr(WYMeditor.REL));
-        jQuery(options.altSelector, doc).val(jQuery(selectedContainer)
-            .attr(WYMeditor.ALT));
+    // Dialog-specific initialization
+    if (dialog && dialog.initialize) {
+        dialog.initialize.call(wym, wDialog);
     }
 
     if (dialog && dialog.submitHandler) {
@@ -191,6 +182,10 @@ WYMeditor.editor.prototype.dialog = function (
  * Function `getWindowFeatures`
  *     Optional. Used to provide the dialog's window features, for passing to
  *     `window.open`. Is called with the editor as `this`.
+ * function `initialize`
+ *     Optional. Can be used to initialize the dialog (e.g. prepopulate input
+ *     fields). Is called with the editor as `this` and receives a single
+ *     argument-the dialog window.
  * function `SubmitHandler`
  *     Optional. Handles a submit button press in the dialog. Is called with
  *     the editor instance as `this`. Receives a single argument-the dialog
@@ -254,6 +249,34 @@ WYMeditor.DIALOGS = {
             var wym = this;
             return wym._options.dialogSelectorLink || "wym_dialog_link";
         },
+        initialize: function (wDialog) {
+            var wym = this,
+                doc = wDialog.document,
+                options = wym._options,
+                selectedContainer = wym.selectedContainer(),
+                $hrefInput,
+                $titleInput,
+                $relInput,
+                currentHref,
+                currentTitle,
+                currentRel;
+
+            if (!selectedContainer) {
+                return;
+            }
+
+            $hrefInput = jQuery(options.hrefSelector, doc);
+            $titleInput = jQuery(options.titleSelector, doc);
+            $relInput = jQuery(options.relSelector, doc);
+
+            currentHref = jQuery(selectedContainer).attr(WYMeditor.HREF);
+            currentTitle = jQuery(selectedContainer).attr(WYMeditor.TITLE);
+            currentRel = jQuery(selectedContainer).attr(WYMeditor.REL);
+
+            $hrefInput.val(currentHref);
+            $titleInput.val(currentTitle);
+            $relInput.val(currentRel);
+        },
         submitHandler: function (wDialog) {
             var wym = this,
                 options = wym._options,
@@ -272,7 +295,15 @@ WYMeditor.DIALOGS = {
     InsertImage: {
         title: "Image",
         shouldOpen: function () {
-            var wym = this;
+            var wym = this,
+                selectedImage = wym.getSelectedImage();
+            if (
+                selectedImage &&
+                selectedImage.tagName &&
+                selectedImage.tagName.toLowerCase() === "img"
+            ) {
+                return true;
+            }
             if (
                 wym.hasSelection() !== true ||
                 wym.selection().isCollapsed !== true
@@ -318,10 +349,39 @@ WYMeditor.DIALOGS = {
             var wym = this;
             return wym._options.dialogImageSelector || "wym_dialog_image";
         },
+        initialize: function (wDialog) {
+            var wym = this,
+                doc = wDialog.document,
+                options = wym._options,
+                selectedImage = wym.getSelectedImage(),
+                $srcInput,
+                $titleInput,
+                $altInput,
+                currentSrc,
+                currentTitle,
+                currentAlt;
+
+            if (!selectedImage) {
+                return;
+            }
+
+            $srcInput = jQuery(options.srcSelector, doc);
+            $titleInput = jQuery(options.titleSelector, doc);
+            $altInput = jQuery(options.altSelector, doc);
+
+            currentSrc = jQuery(selectedImage).attr(WYMeditor.SRC);
+            currentTitle = jQuery(selectedImage).attr(WYMeditor.TITLE);
+            currentAlt = jQuery(selectedImage).attr(WYMeditor.ALT);
+
+            $srcInput.val(currentSrc);
+            $titleInput.val(currentTitle);
+            $altInput.val(currentAlt);
+        },
         submitHandler: function (wDialog) {
             var wym = this,
                 options = wym._options,
-                imgAttrs;
+                imgAttrs,
+                selectedImage = wym.getSelectedImage();
 
             imgAttrs = {
                 src: jQuery(options.srcSelector, wDialog.document).val(),
@@ -330,7 +390,12 @@ WYMeditor.DIALOGS = {
             };
 
             wym.focusOnDocument();
-            wym.insertImage(imgAttrs);
+
+            if (selectedImage) {
+                jQuery(selectedImage).attr(imgAttrs);
+            } else {
+                wym.insertImage(imgAttrs);
+            }
             wDialog.close();
         }
     },
