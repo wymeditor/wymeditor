@@ -26,6 +26,8 @@ WYMeditor.
 * [#639](https://github.com/wymeditor/wymeditor/pull/639)
   The `jQueryPath` option was removed.
 
+  The `wym._index` editor instance property is removed.
+
 ### Enhancements
 
 * [#625](https://github.com/wymeditor/wymeditor/pull/625)
