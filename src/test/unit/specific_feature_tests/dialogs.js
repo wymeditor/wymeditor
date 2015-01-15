@@ -176,253 +176,268 @@ function getDialogDocumentTitle(dialogName) {
 
 test("Link dialog doesn't open when no selection; by toolbar button click",
     function () {
-    var dialogName = "CreateLink";
-    dialogTestHelper({
-        currentTest: this,
-        noChangeHtml: "<p>Foo</p>",
-        prepareFunc: function (wymeditor) {
-            wymeditor.deselect();
-        },
-        dialogButtonSelector: getDialogToolbarSelector(dialogName),
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT,
-        expectedTitle: getDialogDocumentTitle(dialogName)
-    });
-});
+        var dialogName = "CreateLink";
+        dialogTestHelper({
+            currentTest: this,
+            noChangeHtml: "<p>Foo</p>",
+            prepareFunc: function (wymeditor) {
+                wymeditor.deselect();
+            },
+            dialogButtonSelector: getDialogToolbarSelector(dialogName),
+            expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT,
+            expectedTitle: getDialogDocumentTitle(dialogName)
+        });
+    }
+);
 
 test("Link dialog opens when selection is non-collapsed and " +
     "`selectedContainer` doesn't return false; by toolbar button click",
     function () {
-    var dialogName = "CreateLink";
-    dialogTestHelper({
-        currentTest: this,
-        noChangeHtml: "<p>Foo</p>",
-        prepareFunc: function (wymeditor) {
-            var p = wymeditor.body().childNodes[0];
-            makeTextSelection(
-                wymeditor,
-                p,
-                p,
-                0,
-                3
-            );
-        },
-        dialogButtonSelector: getDialogToolbarSelector(dialogName),
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED,
-        expectedTitle: getDialogDocumentTitle(dialogName)
-    });
-});
+        var dialogName = "CreateLink";
+        dialogTestHelper({
+            currentTest: this,
+            noChangeHtml: "<p>Foo</p>",
+            prepareFunc: function (wymeditor) {
+                var p = wymeditor.body().childNodes[0];
+                makeTextSelection(
+                    wymeditor,
+                    p,
+                    p,
+                    0,
+                    3
+                );
+            },
+            dialogButtonSelector: getDialogToolbarSelector(dialogName),
+            expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED,
+            expectedTitle: getDialogDocumentTitle(dialogName)
+        });
+    }
+);
 
-test("Link dialog doesn't open when selection is collapsed and " +
+test(
+    "Link dialog doesn't open when selection is collapsed and " +
     "`selectedContainer` doesn't return false; by toolbar button click",
     function () {
-    var dialogName = "CreateLink";
-    dialogTestHelper({
-        currentTest: this,
-        noChangeHtml: "<p>Foo</p>",
-        setCaretInSelector: "p",
-        dialogButtonSelector: getDialogToolbarSelector(dialogName),
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT,
-        expectedTitle: getDialogDocumentTitle(dialogName)
-    });
-});
+        var dialogName = "CreateLink";
+        dialogTestHelper({
+            currentTest: this,
+            noChangeHtml: "<p>Foo</p>",
+            setCaretInSelector: "p",
+            dialogButtonSelector: getDialogToolbarSelector(dialogName),
+            expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT,
+            expectedTitle: getDialogDocumentTitle(dialogName)
+        });
+    }
+);
 
 test("Link dialog opens when selection is collapsed and " +
     "`selectedContainer` returns an `a` element; by toolbar button click",
     function () {
-    var dialogName = "CreateLink";
-    dialogTestHelper({
-        currentTest: this,
-        noChangeHtml: "<p><a href=\"http://example.com/\">Foo</a></p>",
-        prepareFunc: function (wymeditor) {
-            var a = wymeditor.$body().find("a")[0];
-            makeTextSelection(
-                wymeditor,
-                a,
-                a,
-                1,
-                1
-            );
-        },
-        dialogButtonSelector: getDialogToolbarSelector(dialogName),
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED,
-        expectedTitle: getDialogDocumentTitle(dialogName)
-    });
-});
+        var dialogName = "CreateLink";
+        dialogTestHelper({
+            currentTest: this,
+            noChangeHtml: "<p><a href=\"http://example.com/\">Foo</a></p>",
+            prepareFunc: function (wymeditor) {
+                var a = wymeditor.$body().find("a")[0];
+                makeTextSelection(
+                    wymeditor,
+                    a,
+                    a,
+                    1,
+                    1
+                );
+            },
+            dialogButtonSelector: getDialogToolbarSelector(dialogName),
+            expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED,
+            expectedTitle: getDialogDocumentTitle(dialogName)
+        });
+    }
+);
 
 test("Link dialog doesn't open when selection is non-collapsed and " +
     "`selectedContainer` returns false; by toolbar button click",
     function () {
-    var dialogName = "CreateLink";
-    dialogTestHelper({
-        currentTest: this,
-        noChangeHtml: "<p>Foo</p><p>Bar</p>",
-        prepareFunc: function (wymeditor) {
-            var firstP = wymeditor.body().childNodes[0],
-                secondP = wymeditor.body().childNodes[1];
-            makeTextSelection(
-                wymeditor,
-                firstP,
-                secondP,
-                0,
-                3
-            );
-        },
-        dialogButtonSelector: getDialogToolbarSelector(dialogName),
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT,
-        expectedTitle: getDialogDocumentTitle(dialogName)
-    });
-});
+        var dialogName = "CreateLink";
+        dialogTestHelper({
+            currentTest: this,
+            noChangeHtml: "<p>Foo</p><p>Bar</p>",
+            prepareFunc: function (wymeditor) {
+                var firstP = wymeditor.body().childNodes[0],
+                    secondP = wymeditor.body().childNodes[1];
+                makeTextSelection(
+                    wymeditor,
+                    firstP,
+                    secondP,
+                    0,
+                    3
+                );
+            },
+            dialogButtonSelector: getDialogToolbarSelector(dialogName),
+            expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT,
+            expectedTitle: getDialogDocumentTitle(dialogName)
+        });
+    }
+);
 
 test("Image dialog doesn't open when no selection; by toolbar " +
     "button click", function () {
-    var dialogName = "InsertImage";
-    dialogTestHelper({
-        currentTest: this,
-        noChangeHtml: "<p>Foo</p>",
-        prepareFunc: function (wymeditor) {
-            wymeditor.deselect();
-        },
-        dialogButtonSelector: getDialogToolbarSelector(dialogName),
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT,
-        expectedTitle: getDialogDocumentTitle(dialogName)
-    });
-});
+        var dialogName = "InsertImage";
+        dialogTestHelper({
+            currentTest: this,
+            noChangeHtml: "<p>Foo</p>",
+            prepareFunc: function (wymeditor) {
+                wymeditor.deselect();
+            },
+            dialogButtonSelector: getDialogToolbarSelector(dialogName),
+            expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT,
+            expectedTitle: getDialogDocumentTitle(dialogName)
+        });
+    }
+);
 
 test("Image dialog doesn't open when selection is non-collapsed; by toolbar " +
     "button", function () {
-    var dialogName = "InsertImage";
-    dialogTestHelper({
-        currentTest: this,
-        noChangeHtml: "<p>Foo</p>",
-        prepareFunc: function (wymeditor) {
-            var p = wymeditor.body().childNodes[0];
-            makeTextSelection(
-                wymeditor,
-                p,
-                p,
-                0,
-                3
-            );
-        },
-        dialogButtonSelector: getDialogToolbarSelector(dialogName),
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT,
-        expectedTitle: getDialogDocumentTitle(dialogName)
-    });
-});
+        var dialogName = "InsertImage";
+        dialogTestHelper({
+            currentTest: this,
+            noChangeHtml: "<p>Foo</p>",
+            prepareFunc: function (wymeditor) {
+                var p = wymeditor.body().childNodes[0];
+                makeTextSelection(
+                    wymeditor,
+                    p,
+                    p,
+                    0,
+                    3
+                );
+            },
+            dialogButtonSelector: getDialogToolbarSelector(dialogName),
+            expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT,
+            expectedTitle: getDialogDocumentTitle(dialogName)
+        });
+    }
+);
 
 test("Image dialog opens when selection is collapsed; by toolbar button",
     function () {
-    var dialogName = "InsertImage";
-    dialogTestHelper({
-        currentTest: this,
-        noChangeHtml: "<p>Foo</p>",
-        setCaretInSelector: "p",
-        dialogButtonSelector: getDialogToolbarSelector(dialogName),
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED,
-        expectedTitle: getDialogDocumentTitle(dialogName)
-    });
-});
+        var dialogName = "InsertImage";
+        dialogTestHelper({
+            currentTest: this,
+            noChangeHtml: "<p>Foo</p>",
+            setCaretInSelector: "p",
+            dialogButtonSelector: getDialogToolbarSelector(dialogName),
+            expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED,
+            expectedTitle: getDialogDocumentTitle(dialogName)
+        });
+    }
+);
 
 test("Table dialog doesn't open when no selection; by toolbar button click",
     function () {
-    var dialogName = "InsertTable";
-    dialogTestHelper({
-        currentTest: this,
-        noChangeHtml: "<p>Foo</p>",
-        prepareFunc: function (wymeditor) {
-            wymeditor.deselect();
-        },
-        dialogButtonSelector: getDialogToolbarSelector(dialogName),
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT,
-        expectedTitle: getDialogDocumentTitle(dialogName)
-    });
-});
+        var dialogName = "InsertTable";
+        dialogTestHelper({
+            currentTest: this,
+            noChangeHtml: "<p>Foo</p>",
+            prepareFunc: function (wymeditor) {
+                wymeditor.deselect();
+            },
+            dialogButtonSelector: getDialogToolbarSelector(dialogName),
+            expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT,
+            expectedTitle: getDialogDocumentTitle(dialogName)
+        });
+    }
+);
 
 test("Table dialog doesn't open when selection is non-collapsed; by toolbar " +
     "button", function () {
-    var dialogName = "InsertTable";
-    dialogTestHelper({
-        currentTest: this,
-        noChangeHtml: "<p>Foo</p>",
-        prepareFunc: function (wymeditor) {
-            var p = wymeditor.body().childNodes[0];
-            makeTextSelection(
-                wymeditor,
-                p,
-                p,
-                0,
-                3
-            );
-        },
-        dialogButtonSelector: getDialogToolbarSelector(dialogName),
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT,
-        expectedTitle: getDialogDocumentTitle(dialogName)
-    });
-});
+        var dialogName = "InsertTable";
+        dialogTestHelper({
+            currentTest: this,
+            noChangeHtml: "<p>Foo</p>",
+            prepareFunc: function (wymeditor) {
+                var p = wymeditor.body().childNodes[0];
+                makeTextSelection(
+                    wymeditor,
+                    p,
+                    p,
+                    0,
+                    3
+                );
+            },
+            dialogButtonSelector: getDialogToolbarSelector(dialogName),
+            expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT,
+            expectedTitle: getDialogDocumentTitle(dialogName)
+        });
+    }
+);
 
 test("Table dialog opens when selection is collapsed and " +
     "`selectedContainer` doesn't return false; by toolbar button",
     function () {
-    var dialogName = "InsertTable";
-    dialogTestHelper({
-        currentTest: this,
-        noChangeHtml: "<p>Foo</p>",
-        setCaretInSelector: "p",
-        dialogButtonSelector: getDialogToolbarSelector(dialogName),
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED,
-        expectedTitle: getDialogDocumentTitle(dialogName)
-    });
-});
+        var dialogName = "InsertTable";
+        dialogTestHelper({
+            currentTest: this,
+            noChangeHtml: "<p>Foo</p>",
+            setCaretInSelector: "p",
+            dialogButtonSelector: getDialogToolbarSelector(dialogName),
+            expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED,
+            expectedTitle: getDialogDocumentTitle(dialogName)
+        });
+    }
+);
 
 test("Paste dialog doesn't open when no selection; by toolbar button click",
     function () {
-    var dialogName = "Paste";
-    dialogTestHelper({
-        currentTest: this,
-        noChangeHtml: "<p>Foo</p>",
-        prepareFunc: function (wymeditor) {
-            wymeditor.deselect();
-        },
-        dialogButtonSelector: getDialogToolbarSelector(dialogName),
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT,
-        expectedTitle: getDialogDocumentTitle(dialogName)
-    });
-});
+        var dialogName = "Paste";
+        dialogTestHelper({
+            currentTest: this,
+            noChangeHtml: "<p>Foo</p>",
+            prepareFunc: function (wymeditor) {
+                wymeditor.deselect();
+            },
+            dialogButtonSelector: getDialogToolbarSelector(dialogName),
+            expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT,
+            expectedTitle: getDialogDocumentTitle(dialogName)
+        });
+    }
+);
 
 test("Paste dialog doesn't open when selection is non-collapsed; by toolbar " +
     "button", function () {
-    var dialogName = "Paste";
-    dialogTestHelper({
-        currentTest: this,
-        noChangeHtml: "<p>Foo</p>",
-        prepareFunc: function (wymeditor) {
-            var p = wymeditor.body().childNodes[0];
-            makeTextSelection(
-                wymeditor,
-                p,
-                p,
-                0,
-                3
-            );
-        },
-        dialogButtonSelector: getDialogToolbarSelector(dialogName),
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT,
-        expectedTitle: getDialogDocumentTitle(dialogName)
-    });
-});
+        var dialogName = "Paste";
+        dialogTestHelper({
+            currentTest: this,
+            noChangeHtml: "<p>Foo</p>",
+            prepareFunc: function (wymeditor) {
+                var p = wymeditor.body().childNodes[0];
+                makeTextSelection(
+                    wymeditor,
+                    p,
+                    p,
+                    0,
+                    3
+                );
+            },
+            dialogButtonSelector: getDialogToolbarSelector(dialogName),
+            expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT,
+            expectedTitle: getDialogDocumentTitle(dialogName)
+        });
+    }
+);
 
 test("Paste dialog opens when selection is collapsed; by toolbar button",
     function () {
-    var dialogName = "Paste";
-    dialogTestHelper({
-        currentTest: this,
-        noChangeHtml: "<p>Foo</p>",
-        setCaretInSelector: "p",
-        dialogButtonSelector: getDialogToolbarSelector(dialogName),
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED,
-        expectedTitle: getDialogDocumentTitle(dialogName)
-    });
-});
+        var dialogName = "Paste";
+        dialogTestHelper({
+            currentTest: this,
+            noChangeHtml: "<p>Foo</p>",
+            setCaretInSelector: "p",
+            dialogButtonSelector: getDialogToolbarSelector(dialogName),
+            expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED,
+            expectedTitle: getDialogDocumentTitle(dialogName)
+        });
+    }
+);
 
 test("Preview dialog opens when no selection; by toolbar button", function () {
     var dialogName = "Preview";
@@ -437,13 +452,14 @@ test("Preview dialog opens when no selection; by toolbar button", function () {
 
 test("Preview dialog opens when selection is collapsed; by toolbar button",
     function () {
-    var dialogName = "Preview";
-    dialogTestHelper({
-        currentTest: this,
-        noChangeHtml: "<p>Foo</p>",
-        setCaretInSelector: "p",
-        dialogButtonSelector: getDialogToolbarSelector(dialogName),
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED,
-        expectedTitle: getDialogDocumentTitle(dialogName)
-    });
-});
+        var dialogName = "Preview";
+        dialogTestHelper({
+            currentTest: this,
+            noChangeHtml: "<p>Foo</p>",
+            setCaretInSelector: "p",
+            dialogButtonSelector: getDialogToolbarSelector(dialogName),
+            expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED,
+            expectedTitle: getDialogDocumentTitle(dialogName)
+        });
+    }
+);
