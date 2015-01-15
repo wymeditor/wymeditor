@@ -135,7 +135,7 @@ WYMeditor.editor.prototype.dialog = function (
         wym.focusOnDocument();
     };
 
-    // pre-init functions
+    // Pre-init function
     if (jQuery.isFunction(options.preInitDialog)) {
         options.preInitDialog(wym, wDialog);
     }
@@ -156,7 +156,7 @@ WYMeditor.editor.prototype.dialog = function (
         wDialog.close();
     });
 
-    //pre-init functions
+    // Post-init function
     if (jQuery.isFunction(options.postInitDialog)) {
         options.postInitDialog(wym, wDialog);
     }
