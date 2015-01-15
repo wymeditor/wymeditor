@@ -460,24 +460,6 @@ Example: switch the root container to Heading 1.
 
     wym.mainContainer('H1');
 
-``wrap(left, right)``
-=====================
-
-*Parameters*
-
-* left: XHTML string
-* right: XHTML string
-
-*Description*
-
-Wrap the inline selection with XHTML.
-
-Example:
-
-.. code-block:: javascript
-
-    wym.wrap('<span class="city">', '</span>');
-
 ``unwrap()``
 ============
 

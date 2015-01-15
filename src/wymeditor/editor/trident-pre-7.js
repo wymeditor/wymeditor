@@ -130,22 +130,6 @@ WYMeditor.WymClassTridentPre7.prototype.insert = function (html) {
     }
 };
 
-WYMeditor.WymClassTridentPre7.prototype.wrap = function (left, right) {
-    var wym = this,
-        // Get the current selection
-        range = wym._doc.selection.createRange(),
-        $selectionParents;
-
-    // Check if the current selection is inside the editor
-    $selectionParents = jQuery(range.parentElement()).parents();
-    if ($selectionParents.is(wym._options.iframeBodySelector)) {
-        try {
-            // Overwrite selection with provided html
-            range.pasteHTML(left + range.text + right);
-        } catch (e) {}
-    }
-};
-
 /**
     _wrapWithContainer
     ==================
