@@ -151,7 +151,7 @@ WYMeditor.editor.prototype.dialog = function (
         });
     }
 
-    //cancel button
+    // Cancel button
     jQuery(options.cancelSelector, doc).click(function () {
         wDialog.close();
     });
