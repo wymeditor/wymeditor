@@ -45,7 +45,7 @@ WYMeditor.editor.prototype.dialog = function (
         dialogWindowFeatures = pDialogWindowFeatures;
     } else if (dialog && dialog.getWindowFeatures) {
         // Dialog's code
-        dialogWindowFeatures = dialog.windowFeatures.call(wym);
+        dialogWindowFeatures = dialog.getWindowFeatures.call(wym);
     } else if (options.dialogFeatures) {
         // Provided option
         dialogWindowFeatures = options.dialogFeatures;
