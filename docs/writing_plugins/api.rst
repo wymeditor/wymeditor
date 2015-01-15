@@ -460,12 +460,6 @@ Example: switch the root container to Heading 1.
 
     wym.mainContainer('H1');
 
-``unwrap()``
-============
-
-Unwrap the selection, by removing inline elements but keeping the selected
-text.
-
 ``registerModification()``
 ====================
 
