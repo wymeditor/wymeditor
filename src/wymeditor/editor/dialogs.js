@@ -167,29 +167,7 @@ WYMeditor.editor.prototype.dialog = function (
 /*
  * An object of default dialogs.
  *
- * Each has the following properties:
- * String `title`
- *     Dialog window title.
- * Function `shouldOpen`
- *     Its return value determines whether the dialog should be opened or not.
- *     Is called with the editor as `this`.
- * Function `getBodyHtml`
- *     Used to provide the dialog's body's HTML. Is called with the editor as
- *     `this`.
- * Function `getBodyClass`
- *     Optional. Returns a class that will be added to the body of the dialog
- *     window's document.
- * Function `getWindowFeatures`
- *     Optional. Used to provide the dialog's window features, for passing to
- *     `window.open`. Is called with the editor as `this`.
- * function `initialize`
- *     Optional. Can be used to initialize the dialog (e.g. prepopulate input
- *     fields). Is called with the editor as `this` and receives a single
- *     argument-the dialog window.
- * function `SubmitHandler`
- *     Optional. Handles a submit button press in the dialog. Is called with
- *     the editor instance as `this`. Receives a single argument-the dialog
- *     window.
+ * See API documentation for the `dialog` method.
  */
 WYMeditor.DIALOGS = {
     CreateLink: {
