@@ -29,7 +29,7 @@ WYMeditor.Keyboard.DEFAULT_KEYBOARD_SHORTCUTS = [
     {
         combo: "mod+k",
         cb: function () {
-            this.dialog("CreateLink");
+            this.dialog(WYMeditor.DIALOGS.CreateLink);
             // Prevents native action. Caution: not covered by tests.
             return false;
         }
