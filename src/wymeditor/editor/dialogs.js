@@ -6,14 +6,14 @@
     Open a dialog box
 */
 WYMeditor.editor.prototype.dialog = function (
-    dialogName,
+    dialog,
     pDialogWindowFeatures,
     pBodyHtml
 ) {
     var wym = this,
         i,
         DIALOGS = WYMeditor.DIALOGS,
-        dialog,
+        dialogObject,
         dialogWindowFeatures,
         wDialog,
         htmlStrReplacements,
@@ -22,20 +22,43 @@ WYMeditor.editor.prototype.dialog = function (
         selectedContainer,
         options = wym._options;
 
-    if (
-        DIALOGS.hasOwnProperty(dialogName) !== true &&
-        typeof pBodyHtml !== "string"
+    if (jQuery.isPlainObject(dialog)) {
+        // Dialog object provided. This is the documented public API way.
+        dialogObject = dialog;
+    } else if (
+        // Dialog name string provided. This is undocumented.
+        typeof dialog === "string" &&
+        DIALOGS.hasOwnProperty(dialog)
     ) {
-        throw "No such dialog and no body HTML provided";
+        WYMeditor.console.warn("DEPRECATION WARNING: `dialog` method " +
+            "received a string dialog name. Please provide a dialog object " +
+            "instead.");
+        dialogObject = DIALOGS[dialog];
     }
 
-    dialog = DIALOGS[dialogName];
+    if (
+        jQuery.isPlainObject(dialogObject) !== true &&
+        typeof pBodyHtml !== "string"
+    ) {
+        throw "`dialog` method: No dialog provided";
+    }
+
+    if (dialogObject) {
+        if (
+            dialogObject.hasOwnProperty("title") !== true ||
+            dialogObject.hasOwnProperty("shouldOpen") !== true ||
+            dialogObject.hasOwnProperty("getBodyHtml") !== true
+        ) {
+            throw "Expected the dialog object to contain at least `title`, " +
+                "`shouldOpen` and `getbodyHtml`";
+        }
+    }
 
     // Return `false` early if this dialog should not open. Use the dialog's
     // own function to check this.
     if (
-        dialog &&
-        dialog.shouldOpen.call(wym) !== true
+        dialogObject &&
+        dialogObject.shouldOpen.call(wym) !== true
     ) {
         return false;
     }
@@ -43,9 +66,9 @@ WYMeditor.editor.prototype.dialog = function (
     if (pDialogWindowFeatures) {
         // Provided argument
         dialogWindowFeatures = pDialogWindowFeatures;
-    } else if (dialog && dialog.getWindowFeatures) {
+    } else if (dialogObject && dialogObject.getWindowFeatures) {
         // Dialog's code
-        dialogWindowFeatures = dialog.getWindowFeatures.call(wym);
+        dialogWindowFeatures = dialogObject.getWindowFeatures.call(wym);
     } else if (options.dialogFeatures) {
         // Provided option
         dialogWindowFeatures = options.dialogFeatures;
@@ -103,11 +126,12 @@ WYMeditor.editor.prototype.dialog = function (
         },
         {
             placeholder: WYMeditor.DIALOG_TITLE,
-            replacement: dialog ? wym._encloseString(dialog.title) : "Dialog"
+            replacement: dialogObject ?
+                wym._encloseString(dialogObject.title) : "Dialog"
         },
         {
             placeholder: WYMeditor.DIALOG_BODY,
-            replacement: pBodyHtml || dialog.getBodyHtml.call(wym)
+            replacement: pBodyHtml || dialogObject.getBodyHtml.call(wym)
         }
     ];
 
@@ -124,8 +148,8 @@ WYMeditor.editor.prototype.dialog = function (
 
     doc = wDialog.document;
     doc.write(dialogHtml);
-    if (dialog && dialog.getBodyClass) {
-        jQuery(doc.body).addClass(dialog.getBodyClass.call(wym));
+    if (dialogObject && dialogObject.getBodyClass) {
+        jQuery(doc.body).addClass(dialogObject.getBodyClass.call(wym));
     }
     doc.close();
 
@@ -141,13 +165,13 @@ WYMeditor.editor.prototype.dialog = function (
     }
 
     // Dialog-specific initialization
-    if (dialog && dialog.initialize) {
-        dialog.initialize.call(wym, wDialog);
+    if (dialogObject && dialogObject.initialize) {
+        dialogObject.initialize.call(wym, wDialog);
     }
 
-    if (dialog && dialog.submitHandler) {
+    if (dialogObject && dialogObject.submitHandler) {
         jQuery("form", doc).submit(function () {
-            dialog.submitHandler.call(wym, wDialog);
+            dialogObject.submitHandler.call(wym, wDialog);
         });
     }
 
