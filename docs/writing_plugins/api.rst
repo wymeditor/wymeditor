@@ -681,25 +681,34 @@ Example:
 Dialogs
 *******
 
-``dialog(name)``
+``dialog(dialogObject)``
 =================
 
-Opens a dialog of type ``name``.
+Opens a dialog.
 
-Supported values: Link, Image, Table, Paste_From_Word and your own custom
-dialogs (see below).
+``dialogObject`` is a plain object.
+
+The included dialogs are in the ``WYMeditor.DIALOGS`` object, under the
+property names:
+
+``CreateLink``
+    Link insertion and editing
+``InsertImage``
+    Image insertion and editing
+``InsertTable``
+    Table insertion
+``Paste``
+    Paste HTML. HTML will be cleaned up before insertion.
+``Preview``
+    Provides a preview of the document
 
 Example:
 
 .. code-block:: javascript
 
-    wym.dialog('Link');
+    wym.dialog(WYMeditor.DIALOGS.Link);
 
-Custom dialogs can be added. Just add another object to the
-``WYMeditor.DIALOGS`` object and call ``wym.dialog(name)``, where ``name`` is
-the property name on ``WYMeditor.DIALOGS``.
-
-The following properties are available:
+You can provide your own dialog object. It looks like this:
 
 String ``title```
     Dialog window title.

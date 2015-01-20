@@ -458,8 +458,13 @@ WYMeditor.editor.prototype._bindUIEvents = function () {
 
     // Dialog buttons
     $toolbarButtons.filter(dialogButtonSelector).click(function () {
-        var button = this;
-        wym.dialog(jQuery(button).attr(WYMeditor.NAME));
+        var button = this,
+            dialogName = jQuery(button).attr(WYMeditor.NAME),
+            dialog = WYMeditor.DIALOGS[dialogName];
+
+        // The following would also work, but is deprecated:
+        // wym.dialog(dialogName);
+        wym.dialog(dialog);
     });
 
     // Containers buttons
