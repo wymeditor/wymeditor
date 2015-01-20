@@ -98,7 +98,6 @@ WYMeditor.editor.prototype._init = function () {
 
     // Construct the iframe
     iframeHtml = wym._options.iframeHtml;
-    iframeHtml = h.replaceAllInStr(iframeHtml, WYMeditor.INDEX, wym._index);
     iframeHtml = h.replaceAllInStr(
         iframeHtml,
         WYMeditor.IFRAME_BASE_PATH,
@@ -446,13 +445,21 @@ WYMeditor.editor.prototype._docEventQuirks = function () {
 */
 WYMeditor.editor.prototype._bindUIEvents = function () {
     var wym = this,
+        $toolbarButtons = jQuery(wym._box).find(wym._options.toolSelector),
+        dialogButtonSelector = WYMeditor.DIALOG_BUTTON_SELECTOR,
         $html_val;
 
-    // Tools buttons
-    jQuery(wym._box).find(wym._options.toolSelector).click(function () {
+    // Action buttons
+    $toolbarButtons.not(dialogButtonSelector).click(function () {
         var button = this;
         wym.exec(jQuery(button).attr(WYMeditor.NAME));
         return false;
+    });
+
+    // Dialog buttons
+    $toolbarButtons.filter(dialogButtonSelector).click(function () {
+        var button = this;
+        wym.dialog(jQuery(button).attr(WYMeditor.NAME));
     });
 
     // Containers buttons
@@ -663,32 +670,9 @@ WYMeditor.editor.prototype.exec = function (cmd) {
         custom_run;
     switch (cmd) {
 
-    case WYMeditor.EXEC_COMMANDS.CREATE_LINK:
-        wym.dialog(WYMeditor.DIALOG_LINK);
-        break;
-
-    case WYMeditor.EXEC_COMMANDS.INSERT_IMAGE:
-        wym.dialog(WYMeditor.DIALOG_IMAGE);
-        break;
-
-    case WYMeditor.EXEC_COMMANDS.INSERT_TABLE:
-        wym.dialog(WYMeditor.DIALOG_TABLE);
-        break;
-
-    case WYMeditor.EXEC_COMMANDS.PASTE:
-        wym.dialog(WYMeditor.DIALOG_PASTE);
-        break;
-
     case WYMeditor.EXEC_COMMANDS.TOGGLE_HTML:
         wym.update();
         wym.toggleHtml();
-        break;
-
-    case WYMeditor.EXEC_COMMANDS.PREVIEW:
-        wym.dialog(
-            WYMeditor.EXEC_COMMANDS.PREVIEW,
-            wym._options.dialogFeaturesPreview
-        );
         break;
 
     case WYMeditor.EXEC_COMMANDS.INSERT_ORDEREDLIST:
@@ -1763,185 +1747,6 @@ WYMeditor.editor.prototype._fixDoubleBr = function () {
 };
 
 /**
-    editor._shouldDialogOpen
-    ========================
-
-    Returns true if the provided dialog type should open.
-*/
-WYMeditor.editor.prototype._shouldDialogOpen = function (dialogType) {
-    var wym = this,
-        DIALOGS = {},
-        hasSelection,
-        selection,
-        selectedContainer;
-
-    if (typeof dialogType !== "string") {
-        throw "Expected a string";
-    }
-
-    DIALOGS[WYMeditor.DIALOG_LINK] = function () {
-        if (
-            hasSelection !== true ||
-            selection.isCollapsed === true ||
-            selectedContainer === false
-        ) {
-            return false;
-        }
-        return true;
-    };
-    DIALOGS[WYMeditor.DIALOG_IMAGE] = function () {
-        if (
-            hasSelection !== true ||
-            selection.isCollapsed !== true
-        ) {
-            return false;
-        }
-        return true;
-    };
-    DIALOGS[WYMeditor.DIALOG_TABLE] = function () {
-        if (
-            hasSelection !== true ||
-            selection.isCollapsed !== true
-        ) {
-            return false;
-        }
-        return true;
-    };
-    DIALOGS[WYMeditor.DIALOG_PASTE] = function () {
-        if (
-            hasSelection !== true ||
-            selection.isCollapsed !== true
-        ) {
-            return false;
-        }
-        return true;
-    };
-    DIALOGS[WYMeditor.EXEC_COMMANDS.PREVIEW] = function () {
-        return true;
-    };
-
-    if (DIALOGS.hasOwnProperty(dialogType) !== true) {
-        throw "No such dialog type";
-    }
-
-    hasSelection = wym.hasSelection();
-    if (hasSelection) {
-        selection = wym.selection();
-        selectedContainer = wym.selectedContainer();
-    }
-
-    return DIALOGS[dialogType]();
-};
-
-/**
-    editor.dialog
-    =============
-
-    Open a dialog box
-*/
-WYMeditor.editor.prototype.dialog = function (dialogType, dialogFeatures, bodyHtml) {
-    var wym = this,
-        features = dialogFeatures || wym._options.dialogFeatures,
-        wDialog,
-        sBodyHtml,
-        strWindowName,
-        h = WYMeditor.Helper,
-        dialogHtml,
-        doc;
-
-    if (wym._shouldDialogOpen(dialogType) !== true) {
-        return false;
-    }
-
-    sBodyHtml = "";
-
-    switch (dialogType) {
-
-        case (WYMeditor.DIALOG_LINK):
-            sBodyHtml = wym._options.dialogLinkHtml;
-            break;
-        case (WYMeditor.DIALOG_IMAGE):
-            sBodyHtml = wym._options.dialogImageHtml;
-            break;
-        case (WYMeditor.DIALOG_TABLE):
-            sBodyHtml = wym._options.dialogTableHtml;
-            break;
-        case (WYMeditor.DIALOG_PASTE):
-            sBodyHtml = wym._options.dialogPasteHtml;
-            break;
-        case (WYMeditor.EXEC_COMMANDS.PREVIEW):
-            sBodyHtml = wym._options.dialogPreviewHtml;
-            break;
-        default:
-            sBodyHtml = bodyHtml;
-            break;
-    }
-
-    // `strWindowName` is unique in order to make testing dialogs in Trident 7
-    // simpler. This means that an infinite number of dialog windows may be
-    // opened concurrently. Ideally, `strWindowName` should be a constant string
-    // so that a single dialog window will be reused. This will make testing in
-    // Trident 7 slightly more complex, as it seems that `window.close()` is
-    // performed asynchronously.
-    // The output of `wym.uniqueStamp()` can't be used here, probably because
-    // it contains a hyphen.
-    strWindowName = new Date().getTime();
-    wDialog = window.open('', new Date().getTime(), features);
-    if (
-        typeof wDialog !== "object" ||
-        wDialog.window !== wDialog
-    ) {
-        WYMeditor.console.warn("Could not create a dialog window");
-        return false;
-    }
-
-    // Construct the dialog
-    dialogHtml = wym._options.dialogHtml;
-    dialogHtml = h.replaceAllInStr(
-        dialogHtml,
-        WYMeditor.BASE_PATH,
-        wym._options.basePath
-    );
-    dialogHtml = h.replaceAllInStr(
-        dialogHtml,
-        WYMeditor.DIRECTION,
-        wym._options.direction
-    );
-    dialogHtml = h.replaceAllInStr(
-        dialogHtml,
-        WYMeditor.WYM_PATH,
-        wym._options.wymPath
-    );
-    dialogHtml = h.replaceAllInStr(
-        dialogHtml,
-        WYMeditor.JQUERY_PATH,
-        wym._options.jQueryPath
-    );
-    dialogHtml = h.replaceAllInStr(
-        dialogHtml,
-        WYMeditor.DIALOG_TITLE,
-        wym._encloseString(dialogType)
-    );
-    dialogHtml = h.replaceAllInStr(
-        dialogHtml,
-        WYMeditor.DIALOG_BODY,
-        sBodyHtml
-    );
-    dialogHtml = h.replaceAllInStr(
-        dialogHtml,
-        WYMeditor.INDEX,
-        wym._index
-    );
-
-    dialogHtml = wym.replaceStrings(dialogHtml);
-
-    doc = wDialog.document;
-    doc.write(dialogHtml);
-    doc.close();
-    return wDialog;
-};
-
-/**
     WYMeditor.editor.link
     ======================
 
@@ -2048,7 +1853,7 @@ WYMeditor.editor.prototype.toggleHtml = function () {
 
 WYMeditor.editor.prototype.uniqueStamp = function () {
     var now = new Date();
-    return "wym-" + now.getTime();
+    return "wym" + now.getTime();
 };
 
 /**
@@ -2277,20 +2082,6 @@ WYMeditor.editor.prototype.insert = function (html) {
         // Fall back to the internal paste function if there's no selection
         wym.paste(html);
     }
-};
-
-WYMeditor.editor.prototype.wrap = function (left, right) {
-    var wym = this;
-
-    wym.insert(
-        left + wym._iframe.contentWindow.getSelection().toString() + right
-    );
-};
-
-WYMeditor.editor.prototype.unwrap = function () {
-    var wym = this;
-
-    wym.insert(wym._iframe.contentWindow.getSelection().toString());
 };
 
 /**

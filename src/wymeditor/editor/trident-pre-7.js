@@ -60,7 +60,6 @@ WYMeditor.WymClassTridentPre7.prototype._docEventQuirks = function () {
     });
 };
 
-// https://github.com/wymeditor/wymeditor/pull/641
 WYMeditor.WymClassTridentPre7.prototype._mouseup = function (evt) {
     var wym = this;
 
@@ -68,6 +67,18 @@ WYMeditor.WymClassTridentPre7.prototype._mouseup = function (evt) {
         return;
     }
 
+    // In other browsers, where the object resize handles can be disabled,
+    // this doesn't have to be wrapped in `setTimeout`. In pre-7 Trident, the
+    // resize handles can't be disabled.
+    // The resize handles are called by the `controlselect` event, which is
+    // synchronously triggered after the `mouseup` event. Thus, whatever
+    // selection we make in `mouseup` will be overridden by `controlselect`'s
+    // undesired resize handles.
+    // Wrapping the selection call in an immediate `setTimeout` makes
+    // reasonably certain that the "control selection" will be very quickly
+    // replaced by our desired, regular selection.
+    // For more inforamtion, see:
+    // https://github.com/wymeditor/wymeditor/pull/641
     window.setTimeout(function () {
         wym._selectSingleNode(evt.target);
     }, 0);
@@ -119,22 +130,6 @@ WYMeditor.WymClassTridentPre7.prototype.insert = function (html) {
     }
 };
 
-WYMeditor.WymClassTridentPre7.prototype.wrap = function (left, right) {
-    var wym = this,
-        // Get the current selection
-        range = wym._doc.selection.createRange(),
-        $selectionParents;
-
-    // Check if the current selection is inside the editor
-    $selectionParents = jQuery(range.parentElement()).parents();
-    if ($selectionParents.is(wym._options.iframeBodySelector)) {
-        try {
-            // Overwrite selection with provided html
-            range.pasteHTML(left + range.text + right);
-        } catch (e) {}
-    }
-};
-
 /**
     _wrapWithContainer
     ==================
@@ -160,25 +155,6 @@ WYMeditor.WymClassTridentPre7.prototype._wrapWithContainer = function (
     range.selectNodeContents($wrappedNode[0]);
     range.collapse();
     selection.setSingleRange(range);
-};
-
-WYMeditor.WymClassTridentPre7.prototype.unwrap = function () {
-    var wym = this,
-        // Get the current selection
-        range = wym._doc.selection.createRange(),
-        $selectionParents,
-        text;
-
-    // Check if the current selection is inside the editor
-    $selectionParents = jQuery(range.parentElement()).parents();
-    if ($selectionParents.is(wym._options.iframeBodySelector)) {
-        try {
-            // Unwrap selection
-            text = range.text;
-            wym._exec('Cut');
-            range.pasteHTML(text);
-        } catch (e) {}
-    }
 };
 
 WYMeditor.WymClassTridentPre7.prototype._keyup = function (evt) {

@@ -364,21 +364,10 @@ Undo
     undo an action.
 Redo
     redo an action.
-CreateLink
-    open the link dialog and create/update a link on the selection.
 Unlink
     remove a link, based on the selection.
-InsertImage
-    open the image dialog and insert/update an image.
-InsertTable
-    open the table dialog and insert a table.
-Paste
-    opens the paste dialog and paste raw paragraphs from an external
-    application, e.g. Word.
 ToggleHtml
     show/hide the HTML value.
-Preview
-    open the preview dialog.
 
 ``link(attrs)``
 ===============
@@ -459,30 +448,6 @@ Example: switch the root container to Heading 1.
 .. code-block:: javascript
 
     wym.mainContainer('H1');
-
-``wrap(left, right)``
-=====================
-
-*Parameters*
-
-* left: XHTML string
-* right: XHTML string
-
-*Description*
-
-Wrap the inline selection with XHTML.
-
-Example:
-
-.. code-block:: javascript
-
-    wym.wrap('<span class="city">', '</span>');
-
-``unwrap()``
-============
-
-Unwrap the selection, by removing inline elements but keeping the selected
-text.
 
 ``registerModification()``
 ====================
@@ -665,19 +630,6 @@ Example:
 
     wym.status("This is the status bar.");
 
-``dialog(sType)``
-=================
-
-Open a dialog of type ``sType``.
-
-Supported values: Link, Image, Table, Paste_From_Word.
-
-Example:
-
-.. code-block:: javascript
-
-    wym.dialog('Link');
-
 ``toggleHtml()``
 ================
 
@@ -724,6 +676,53 @@ Example:
 .. code-block:: javascript
 
     var $buttons = wym.get$Buttons();
+
+*******
+Dialogs
+*******
+
+``dialog(name)``
+=================
+
+Opens a dialog of type ``name``.
+
+Supported values: Link, Image, Table, Paste_From_Word and your own custom
+dialogs (see below).
+
+Example:
+
+.. code-block:: javascript
+
+    wym.dialog('Link');
+
+Custom dialogs can be added. Just add another object to the
+``WYMeditor.DIALOGS`` object and call ``wym.dialog(name)``, where ``name`` is
+the property name on ``WYMeditor.DIALOGS``.
+
+The following properties are available:
+
+String ``title```
+    Dialog window title.
+Function ``shouldOpen``
+    Its return value determines whether the dialog should be opened or not.
+    Is called with the editor as ``this``.
+Function ``getBodyHtml``
+    Used to provide the dialog's body's HTML. Is called with the editor as
+    ``this``.
+Function ``getBodyClass``
+    Optional. Returns a class that will be added to the body of the dialog
+    window's document.
+Function ``getWindowFeatures``
+    Optional. Used to provide the dialog's window features, for passing to
+    ``window.open``. Is called with the editor as ``this``.
+function ``initialize``
+    Optional. Can be used to initialize the dialog (e.g. prepopulate input
+    fields). Is called with the editor as ``this`` and receives a single
+    argument-the dialog window.
+function ``SubmitHandler``
+    Optional. Handles a submit button press in the dialog. Is called with
+    the editor instance as ``this``. Receives a single argument-the dialog
+    window.
 
 *******
 Helpers

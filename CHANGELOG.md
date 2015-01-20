@@ -23,6 +23,12 @@ WYMeditor.
 * [#648](https://github.com/wymeditor/wymeditor/pull/647),
   [#641](https://github.com/wymeditor/wymeditor/pull/641)
   Object resizing (images, primarily) in Firefox and IE has been disabled.
+* [#639](https://github.com/wymeditor/wymeditor/pull/639)
+  * The `jQueryPath` option was removed.
+  * The `wym._index` editor instance property is removed.
+  * Removed `wym.wrap` and `wym.unwrap` editor methods.
+  * Dialogs cannot be opened using the `exec` method. Use the `dialog` method,
+    instead.
 
 ### Enhancements
 

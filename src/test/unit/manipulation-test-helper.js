@@ -70,26 +70,27 @@
  *         This example uses the `jquery.browser` plugin
  *         https://github.com/gabceb/jquery-browser-plugin
  *     `async`
- *         Optional; If this is `true` then after the manipulation is performed
- *         assertions regarding the results are not synchronously executed.
- *         Instead, a function is returned. Calling this function resumes these
- *         assertions. This can only be used when a single manipulation cause
- *         is provided (for example, only `manipulationFunc`).
- *         For example:
+ *         Optional; If this is `true` then after the manipulation is
+ *         performed, assertions regarding the results are not synchronously
+ *         executed. Instead, a function is returned. Calling this function
+ *         resumes these assertions. This can only be used when a single
+ *         manipulation cause is provided (for example, only
+ *         `manipulationFunc`). For example:
  *         ```
  *         test("Test something asynchronous", function () {
  *             var wymeditor = jQuery.wymeditors(0),
  *                 somethingAsync,
- *                 resume;
+ *                 resumeManipulationTestHelper;
  *
  *             somethingAsync = wymeditor.somethingAsync;
  *             wymeditor.somethingAsync = function () {
  *                 somethingAsync.call(wymeditor);
- *                 resume();
+ *                 resumeManipulationTestHelper();
  *             };
  *
- *             resume = manipulationTestHelper({
+ *             resumeManipulationTestHelper = manipulationTestHelper({
  *                 startHtml: "</p>Foo</p>",
+ *                 async: true,
  *                 manipulationClickSelector: ".asyncActionButton",
  *                 expectedResultHtml: "</p>Bar</p>"
  *             });
@@ -105,7 +106,7 @@ function manipulationTestHelper(a) {
     var executions = [],
         wymeditor,
         EXECUTE,
-        resume;
+        asyncResumeFunc;
 
     if (skipThisTest() === true) {
         return;
@@ -149,10 +150,12 @@ function manipulationTestHelper(a) {
     }
 
     while (executions.length > 0) {
-        manipulateAndAssert(executions.pop());
+        asyncResumeFunc = manipulateAndAssert(executions.pop());
     }
 
-    return resume;
+    if (a.async === true) {
+        return asyncResumeFunc;
+    }
 
     function manipulateAndAssert(manipulationCause) {
 
@@ -161,14 +164,18 @@ function manipulationTestHelper(a) {
         resetHistory();
 
         performManipulation(manipulationCause);
+        // Expectancy incremented here in order to fail tests that specify
+        // `async` but do not call the `asyncResumeFunc`.
+        expect(expect() + 1);
         if (a.async === true) {
-            resume = assertResultUndoAndAdditional;
-            return;
+            return assertResultUndoAndAdditional;
         } else {
             assertResultUndoAndAdditional();
         }
 
         function assertResultUndoAndAdditional() {
+            // Return expectancy to real value.
+            expect(expect() - 1);
             assertResultHtml();
             additionalAssertions();
 
