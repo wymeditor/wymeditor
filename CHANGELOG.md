@@ -29,6 +29,10 @@ WYMeditor.
   * Removed `wym.wrap` and `wym.unwrap` editor methods.
   * Dialogs cannot be opened using the `exec` method. Use the `dialog` method,
     instead.
+  * Changes in `wym.dialog` method. Existing custom dialogs should still work,
+    but it is recommended that existing custom dialogs be rewritten using the
+    new `wym.dialog` API (see API documentation) or at least that they be
+    tested.
 
 ### Enhancements
 
@@ -42,6 +46,8 @@ WYMeditor.
   New `editor.keyboard.combokeys` for managing keyboard shortcuts.
 * [#641](https://github.com/wymeditor/wymeditor/pull/641)
   New `editor.getSelectedImage()`
+* [#639](https://github.com/wymeditor/wymeditor/pull/639)
+  New dialogs API. See API documentation for the `wym.dialog` method.
 
 ### Bug Fixes
 
