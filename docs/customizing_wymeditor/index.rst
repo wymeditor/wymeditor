@@ -394,9 +394,6 @@ or useful for deep customization.
 
 WYMeditor's relative/absolute base path
 (including the trailing slash).
-Until we remove our pop-up window dialogs,
-this is used to load necessary javascript
-in those dialog windows.
 
 This value is automatically guessed by ``computeWymPath``,
 which looks for the ``script`` element
@@ -425,26 +422,6 @@ that will be initialized inside the editor body itself.
 
 This value is automatically guessed,
 based on the ``basePath`` value.
-
-``jQueryPath``
---------------
-
-This contains the full path or URL
-to a copy of the jQuery library.
-Like :ref:`options-basePath`,
-we only need to know this path
-in order to load it inside pop-up dialogs.
-
-Also like :ref:`option-basePath`,
-this value is automatically guessed,
-but in this case by ``computeJqueryPath()``.
-
-Example
-~~~~~~~
-
-.. code-block:: javascript
-
-  jQueryPath: "/js/jquery.js"
 
 ``updateSelector`` and ``updateEvent``
 --------------------------------------
@@ -516,7 +493,7 @@ List of HTML Template Options
 * dialogHtml
 * dialogLinkHtml
 * dialogFeatures
-  The dialogs' features. e.g.
+  The dialogs' default features. e.g.
 
     .. code-block:: javascript
 

@@ -98,7 +98,6 @@ WYMeditor.editor.prototype._init = function () {
 
     // Construct the iframe
     iframeHtml = wym._options.iframeHtml;
-    iframeHtml = h.replaceAllInStr(iframeHtml, WYMeditor.INDEX, wym._index);
     iframeHtml = h.replaceAllInStr(
         iframeHtml,
         WYMeditor.IFRAME_BASE_PATH,
@@ -442,13 +441,26 @@ WYMeditor.editor.prototype._docEventQuirks = function () {
 */
 WYMeditor.editor.prototype._bindUIEvents = function () {
     var wym = this,
+        $toolbarButtons = jQuery(wym._box).find(wym._options.toolSelector),
+        dialogButtonSelector = WYMeditor.DIALOG_BUTTON_SELECTOR,
         $html_val;
 
-    // Tools buttons
-    jQuery(wym._box).find(wym._options.toolSelector).click(function () {
+    // Action buttons
+    $toolbarButtons.not(dialogButtonSelector).click(function () {
         var button = this;
         wym.exec(jQuery(button).attr(WYMeditor.NAME));
         return false;
+    });
+
+    // Dialog buttons
+    $toolbarButtons.filter(dialogButtonSelector).click(function () {
+        var button = this,
+            dialogName = jQuery(button).attr(WYMeditor.NAME),
+            dialog = WYMeditor.DIALOGS[dialogName];
+
+        // The following would also work, but is deprecated:
+        // wym.dialog(dialogName);
+        wym.dialog(dialog);
     });
 
     // Containers buttons
@@ -656,39 +668,12 @@ WYMeditor.editor.prototype.html = function (html) {
 */
 WYMeditor.editor.prototype.exec = function (cmd) {
     var wym = this,
-        container,
         custom_run;
     switch (cmd) {
-
-    case WYMeditor.EXEC_COMMANDS.CREATE_LINK:
-        container = wym.getRootContainer();
-        if (container) {
-            wym.dialog(WYMeditor.DIALOG_LINK);
-        }
-        break;
-
-    case WYMeditor.EXEC_COMMANDS.INSERT_IMAGE:
-        wym.dialog(WYMeditor.DIALOG_IMAGE);
-        break;
-
-    case WYMeditor.EXEC_COMMANDS.INSERT_TABLE:
-        wym.dialog(WYMeditor.DIALOG_TABLE);
-        break;
-
-    case WYMeditor.EXEC_COMMANDS.PASTE:
-        wym.dialog(WYMeditor.DIALOG_PASTE);
-        break;
 
     case WYMeditor.EXEC_COMMANDS.TOGGLE_HTML:
         wym.update();
         wym.toggleHtml();
-        break;
-
-    case WYMeditor.EXEC_COMMANDS.PREVIEW:
-        wym.dialog(
-            WYMeditor.EXEC_COMMANDS.PREVIEW,
-            wym._options.dialogFeaturesPreview
-        );
         break;
 
     case WYMeditor.EXEC_COMMANDS.INSERT_ORDEREDLIST:
@@ -1763,92 +1748,6 @@ WYMeditor.editor.prototype._fixDoubleBr = function () {
 };
 
 /**
-    editor.dialog
-    =============
-
-    Open a dialog box
-*/
-WYMeditor.editor.prototype.dialog = function (dialogType, dialogFeatures, bodyHtml) {
-    var wym = this,
-        features = dialogFeatures || wym._options.dialogFeatures,
-        wDialog = window.open('', 'dialog', features),
-        sBodyHtml,
-        h = WYMeditor.Helper,
-        dialogHtml,
-        doc;
-
-    if (wDialog) {
-        sBodyHtml = "";
-
-        switch (dialogType) {
-
-        case (WYMeditor.DIALOG_LINK):
-            sBodyHtml = wym._options.dialogLinkHtml;
-            break;
-        case (WYMeditor.DIALOG_IMAGE):
-            sBodyHtml = wym._options.dialogImageHtml;
-            break;
-        case (WYMeditor.DIALOG_TABLE):
-            sBodyHtml = wym._options.dialogTableHtml;
-            break;
-        case (WYMeditor.DIALOG_PASTE):
-            sBodyHtml = wym._options.dialogPasteHtml;
-            break;
-        case (WYMeditor.EXEC_COMMANDS.PREVIEW):
-            sBodyHtml = wym._options.dialogPreviewHtml;
-            break;
-        default:
-            sBodyHtml = bodyHtml;
-            break;
-        }
-
-        // Construct the dialog
-        dialogHtml = wym._options.dialogHtml;
-        dialogHtml = h.replaceAllInStr(
-            dialogHtml,
-            WYMeditor.BASE_PATH,
-            wym._options.basePath
-        );
-        dialogHtml = h.replaceAllInStr(
-            dialogHtml,
-            WYMeditor.DIRECTION,
-            wym._options.direction
-        );
-        dialogHtml = h.replaceAllInStr(
-            dialogHtml,
-            WYMeditor.WYM_PATH,
-            wym._options.wymPath
-        );
-        dialogHtml = h.replaceAllInStr(
-            dialogHtml,
-            WYMeditor.JQUERY_PATH,
-            wym._options.jQueryPath
-        );
-        dialogHtml = h.replaceAllInStr(
-            dialogHtml,
-            WYMeditor.DIALOG_TITLE,
-            wym._encloseString(dialogType)
-        );
-        dialogHtml = h.replaceAllInStr(
-            dialogHtml,
-            WYMeditor.DIALOG_BODY,
-            sBodyHtml
-        );
-        dialogHtml = h.replaceAllInStr(
-            dialogHtml,
-            WYMeditor.INDEX,
-            wym._index
-        );
-
-        dialogHtml = wym.replaceStrings(dialogHtml);
-
-        doc = wDialog.document;
-        doc.write(dialogHtml);
-        doc.close();
-    }
-};
-
-/**
     WYMeditor.editor.link
     ======================
 
@@ -2184,20 +2083,6 @@ WYMeditor.editor.prototype.insert = function (html) {
         // Fall back to the internal paste function if there's no selection
         wym.paste(html);
     }
-};
-
-WYMeditor.editor.prototype.wrap = function (left, right) {
-    var wym = this;
-
-    wym.insert(
-        left + wym._iframe.contentWindow.getSelection().toString() + right
-    );
-};
-
-WYMeditor.editor.prototype.unwrap = function () {
-    var wym = this;
-
-    wym.insert(wym._iframe.contentWindow.getSelection().toString());
 };
 
 /**
