@@ -161,7 +161,7 @@ function manipulationTestHelper(a) {
 
         function assertResultUndoAndAdditional() {
             // Return expectancy to real value.
-            expect(expectedCount() - 1);
+            QUnit.expect(expectedCount() - 1);
             assertResultHtml();
             additionalAssertions();
 
@@ -263,7 +263,7 @@ function manipulationTestHelper(a) {
                     // prevent `expect` from being called again, later, in the
                     // case `manipulationTestHelper` is not the last operation
                     // in th test.
-                    expect(0);
+                    QUnit.expect(0);
                 }
                 WYMeditor.console.warn(
                     "Assertions skipped in test \"" +

@@ -1893,37 +1893,37 @@ var mergeTd32Td23LongRowspanHtml = String() +
         '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 test("Merge simple first cell", function () {
-    expect(5);
+    QUnit.expect(5);
 
     testRowMerge(mergeTableHtml, mergeTd41Html, '#td_4_1', '#td_4_2', '#td_4_1');
 });
 
 test("Merge simple multiple cells", function () {
-    expect(5);
+    QUnit.expect(5);
 
     testRowMerge(mergeTableHtml, mergeTd41To44Html, '#td_4_1', '#td_4_4', '#td_4_1');
 });
 
 test("Expand existing colspan", function () {
-    expect(5);
+    QUnit.expect(5);
 
     testRowMerge(mergeTableHtml, mergeTh12Html, '#th_1_2', '#th_1_4', '#th_1_2');
 });
 
 test("Expand into existing colspan", function () {
-    expect(5);
+    QUnit.expect(5);
 
     testRowMerge(mergeTableHtml, mergeTh11To12Html, '#th_1_1', '#th_1_2', '#th_1_1');
 });
 
 test("Surround existing colspan", function () {
-    expect(5);
+    QUnit.expect(5);
 
     testRowMerge(mergeTableHtml, mergeTh11To14Html, '#th_1_1', '#th_1_4', '#th_1_1');
 });
 
 test("With span", function () {
-    expect(5);
+    QUnit.expect(5);
 
     var endSelection = '#td_2_1';
     testRowMerge(mergeTableHtml, mergeSpan21Html, '#span_2_1', '#td_2_2', endSelection);
@@ -1932,7 +1932,7 @@ test("With span", function () {
 module("table-row_merge_rowspan", {setup: prepareUnitTestModule});
 if (!WYMeditor.isInternetExplorerPre11() || !SKIP_KNOWN_FAILING_TESTS) {
     test("Across rowspan", function () {
-        expect(5);
+        QUnit.expect(5);
 
         testRowMerge(mergeTableHtml, mergeTd23Html, '#td_2_3', '#td_2_4', '#td_2_3');
     });
@@ -1940,21 +1940,21 @@ if (!WYMeditor.isInternetExplorerPre11() || !SKIP_KNOWN_FAILING_TESTS) {
 
 if (!WYMeditor.isInternetExplorerPre11() || !SKIP_KNOWN_FAILING_TESTS) {
     test("Into rowspan", function () {
-        expect(5);
+        QUnit.expect(5);
 
         testRowMerge(mergeTableHtml, mergeTd22Html, '#td_2_2', '#td_2_3', '#td_2_2');
     });
 }
 
 test("Below and beside rowspan", function () {
-    expect(5);
+    QUnit.expect(5);
 
     testRowMerge(mergeTableHtml, mergeTd31Html, '#td_3_1', '#td_3_2', '#td_3_1');
 });
 
 if (!SKIP_KNOWN_FAILING_TESTS) {
     test("Below and including rowspan", function () {
-        expect(5);
+        QUnit.expect(5);
 
         testRowMerge(mergeTableHtml, mergeTd31Td23Html, '#td_3_1', '#td_2_3', '#td_3_1');
     });
@@ -1962,7 +1962,7 @@ if (!SKIP_KNOWN_FAILING_TESTS) {
 
 if (!SKIP_KNOWN_FAILING_TESTS) {
     test("From rowspan to below", function () {
-        expect(5);
+        QUnit.expect(5);
 
         testRowMerge(
             mergeTableHtml,
@@ -1976,7 +1976,7 @@ if (!SKIP_KNOWN_FAILING_TESTS) {
 
 if (!SKIP_KNOWN_FAILING_TESTS) {
     test("Below and bottom of long rowspan", function () {
-        expect(5);
+        QUnit.expect(5);
 
         testRowMerge(
             mergeTableLongRowspanHtml,
@@ -1990,7 +1990,7 @@ if (!SKIP_KNOWN_FAILING_TESTS) {
 
 if (!SKIP_KNOWN_FAILING_TESTS) {
     test("Below and after bottom of long rowspan", function () {
-        expect(5);
+        QUnit.expect(5);
 
         testRowMerge(
             mergeTableLongRowspanHtml,
@@ -2004,7 +2004,7 @@ if (!SKIP_KNOWN_FAILING_TESTS) {
 
 if (!SKIP_KNOWN_FAILING_TESTS) {
     test("Middle of rowspan doesn't merge", function () {
-        expect(5);
+        QUnit.expect(5);
 
         testRowMerge(
             mergeTableLongRowspanHtml,
@@ -2017,7 +2017,7 @@ if (!SKIP_KNOWN_FAILING_TESTS) {
 }
 
 test("getCellXIndex test", function () {
-    expect(5);
+    QUnit.expect(5);
 
     testGetCellXIndex(mergeTableHtml, '#th_1_1', 0);
     testGetCellXIndex(mergeTableHtml, '#th_1_4', 3);
@@ -2037,7 +2037,7 @@ function testNormalize(testHtml) {
 }
 
 test("Test Normalize", function () {
-    expect(2);
+    QUnit.expect(2);
 
     testNormalize(mergeTableHtml);
     testNormalize(mergeTd41Html);

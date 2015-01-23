@@ -52,7 +52,7 @@ function expectMore(howMany) {
     if (typeof howMany !== "number") {
         throw "expectMore: requires a number";
     }
-    expect(expectedCount() + howMany);
+    QUnit.expect(expectedCount() + howMany);
 }
 
 function expectOneMore() {
@@ -610,7 +610,7 @@ function testNoChangeInHtmlArray(htmlArray, parseHtml) {
         i,
         html;
 
-    expect(htmlArray.length);
+    QUnit.expect(htmlArray.length);
 
     for (i = 0; i < htmlArray.length; i++) {
         html = htmlArray[i];

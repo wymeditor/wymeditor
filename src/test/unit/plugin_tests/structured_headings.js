@@ -38,7 +38,7 @@ function getHtmlAfterKeyup(wymeditor) {
 module("structured_headings-initialize_interface", {setup: prepareUnitTestModule});
 
 test("Single 'Heading' option in containers panel", function () {
-    expect(2);
+    QUnit.expect(2);
     var wymeditor = jQuery.wymeditors(0),
         $box = jQuery(wymeditor._box),
         $containersPanelItems = $box.find(
@@ -72,7 +72,7 @@ test("Single 'Heading' option in containers panel", function () {
 module("structured_headings-initialize_styles", {setup: prepareUnitTestModule});
 
 test("Stylesheet added to iframe", function () {
-    expect(2);
+    QUnit.expect(2);
     var wymeditor = jQuery.wymeditors(0),
         $iframeHeadLinks = jQuery(wymeditor._doc).find('head > link'),
 
@@ -114,7 +114,7 @@ test("Stylesheet added to iframe", function () {
 module("structured_headings-css_access", {setup: prepareUnitTestModule});
 
 test("CSS stored for user access through console", function () {
-    expect(1);
+    QUnit.expect(1);
     var cssRequest,
         stylesheetURL = '../../wymeditor/plugins/structured_headings/';
 
@@ -225,14 +225,14 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
     };
 
     test("Insert headings with default settings", function () {
-        expect(6);
+        QUnit.expect(6);
         var wymeditor = jQuery.wymeditors(0);
 
         testHeadingInsertion(wymeditor);
     });
 
     test("Insert headings with custom highest and lowest heading levels", function () {
-        expect(6);
+        QUnit.expect(6);
         var wymeditor = jQuery.wymeditors(0);
 
         wymeditor.structuredHeadingsManager._options.highestAllowableHeadingLevel = 2;
@@ -378,7 +378,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
 
     test("Headings indent when allowable by using indent tool with text " +
          "selection", function () {
-        expect(5);
+        QUnit.expect(5);
         var wymeditor = jQuery.wymeditors(0);
 
         testHeadingIndent(wymeditor, 'text');
@@ -386,14 +386,14 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
 
     test("Headings indent when allowable by using indent tool with collapsed " +
          "selection", function () {
-        expect(5);
+        QUnit.expect(5);
         var wymeditor = jQuery.wymeditors(0);
 
         testHeadingIndent(wymeditor, 'collapsed');
     });
 
     test("Lowest heading level does not indent", function () {
-        expect(2);
+        QUnit.expect(2);
         var wymeditor = jQuery.wymeditors(0),
             $body = wymeditor.$body(),
             $indentTool = jQuery(wymeditor._box).find(
@@ -432,7 +432,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
 
     test("Heading cannot be indented more than one level below directly " +
          "previous heading level", function () {
-        expect(4);
+        QUnit.expect(4);
         var wymeditor = jQuery.wymeditors(0),
             $body = wymeditor.$body(),
             $indentTool = jQuery(wymeditor._box).find(
@@ -494,7 +494,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
 
     test("Headings outdent when allowable by using outdent tool with text " +
          "selection", function () {
-        expect(5);
+        QUnit.expect(5);
         var wymeditor = jQuery.wymeditors(0);
 
         testHeadingOutdent(wymeditor, 'text');
@@ -502,14 +502,14 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
 
     test("Headings outdent when allowable by using outdent tool with collapsed " +
          "selection", function () {
-        expect(5);
+        QUnit.expect(5);
         var wymeditor = jQuery.wymeditors(0);
 
         testHeadingOutdent(wymeditor, 'collapsed');
     });
 
     test("Highest heading level does not outdent", function () {
-        expect(2);
+        QUnit.expect(2);
         var wymeditor = jQuery.wymeditors(0),
             $body = wymeditor.$body(),
             $outdentTool = jQuery(wymeditor._box).find(
@@ -549,7 +549,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
 
     test("Heading cannot be outdented more than one level above directly " +
          "following heading level", function () {
-        expect(4);
+        QUnit.expect(4);
         var wymeditor = jQuery.wymeditors(0),
             $body = wymeditor.$body(),
             $outdentTool = jQuery(wymeditor._box).find(
@@ -643,7 +643,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
                     '<h4 id="end_selection">Test</h4>';
 
     test("Basic multiple indent", function () {
-        expect(1);
+        QUnit.expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
         testMultiIndentOutdent(
@@ -655,7 +655,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
     });
 
     test("Partial text selection multiple indent", function () {
-        expect(1);
+        QUnit.expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
         testMultiIndentOutdent(
@@ -694,7 +694,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
                     '<p>Content</p>';
 
     test("Mulitple indent with content within and around the headings", function () {
-        expect(1);
+        QUnit.expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
         testMultiIndentOutdent(
@@ -739,7 +739,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
                     '<h4 id="end_selection">Test</h4>';
 
     test("Multiple indent with list content between headings", function () {
-        expect(1);
+        QUnit.expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
         testMultiIndentOutdent(
@@ -759,7 +759,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
                 '<h3>Test</h3>';
 
     test("Fully invalid multiple indent", function () {
-        expect(1);
+        QUnit.expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
         testMultiIndentOutdent(
@@ -808,7 +808,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
                 '<h3>Test</h3>';
 
     test("Partially invalid multiple indent", function () {
-        expect(2);
+        QUnit.expect(2);
         var wymeditor = jQuery.wymeditors(0);
 
         testMultiIndentOutdent(
@@ -868,7 +868,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
                 '<h3>Test</h3>';
 
     test("Multiple indent with lowest level heading", function () {
-        expect(1);
+        QUnit.expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
         testMultiIndentOutdent(
@@ -990,7 +990,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
     // tests to ensure that they still work when all happening at the same
     // time.
     test("Multiple indent large testing example", function () {
-        expect(1);
+        QUnit.expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
         testMultiIndentOutdent(
@@ -1018,7 +1018,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
             '<h2 id="end_selection">Test</h2>';
 
     test("Basic multiple outdent", function () {
-        expect(1);
+        QUnit.expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
         testMultiIndentOutdent(
@@ -1030,7 +1030,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
     });
 
     test("Partial text selection multiple outdent", function () {
-        expect(1);
+        QUnit.expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
         testMultiIndentOutdent(
@@ -1069,7 +1069,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
             '<p>Content</p>';
 
     test("Mulitple outdent with content within and around the headings", function () {
-        expect(1);
+        QUnit.expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
         testMultiIndentOutdent(
@@ -1114,7 +1114,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
             '<h2 id="end_selection">Test</h2>';
 
     test("Multiple outdent with list content between headings", function () {
-        expect(1);
+        QUnit.expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
         testMultiIndentOutdent(
@@ -1135,7 +1135,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
                 '<h3>Test</h3>';
 
     test("Fully invalid multiple outdent", function () {
-        expect(1);
+        QUnit.expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
         testMultiIndentOutdent(
@@ -1186,7 +1186,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
                 '<h3>Test</h3>';
 
     test("Partially invalid multiple outdent", function () {
-        expect(2);
+        QUnit.expect(2);
         var wymeditor = jQuery.wymeditors(0);
 
         testMultiIndentOutdent(
@@ -1246,7 +1246,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
                 '<h3>Test</h3>';
 
     test("Multiple outdent with highest level heading", function () {
-        expect(1);
+        QUnit.expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
         testMultiIndentOutdent(
@@ -1368,7 +1368,7 @@ if (!WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED ||
     // tests to ensure that they still work when all happening at the same
     // time.
     test("Multiple outdent large testing example", function () {
-        expect(1);
+        QUnit.expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
         testMultiIndentOutdent(
@@ -1477,7 +1477,7 @@ if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
     module("structured_headings-ie7_polyfill", {setup: prepareUnitTestModule});
 
     test("Heading numbering properly added on keyup", function () {
-        expect(1);
+        QUnit.expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
         wymeditor.rawHtml(startHeadings);
@@ -1486,7 +1486,7 @@ if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
     });
 
     test("Heading numbering fixed on keyup if edited", function () {
-        expect(4);
+        QUnit.expect(4);
         var wymeditor = jQuery.wymeditors(0);
 
         // Add correct headings to editor first
@@ -1514,7 +1514,7 @@ if (WYMeditor.STRUCTURED_HEADINGS_POLYFILL_REQUIRED) {
     });
 
     test("Heading numbering stripped on parsing", function () {
-        expect(1);
+        QUnit.expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
         wymeditor.rawHtml(expectedHeadings);

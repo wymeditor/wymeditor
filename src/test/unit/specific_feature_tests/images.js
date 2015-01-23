@@ -224,7 +224,7 @@ test("Image is selected via `mouseup` in pre-7 trident", function () {
         jQuery.browser.msie !== true ||
         jQuery.browser.versionNumber > 10
     ) {
-        expect(0);
+        QUnit.expect(0);
         return;
     }
 

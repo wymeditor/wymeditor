@@ -9,7 +9,7 @@ module("XmlParser", {setup: prepareUnitTestModule});
 
 test("Empty is empty", function () {
     var wymeditor = jQuery.wymeditors(0);
-    expect(2);
+    QUnit.expect(2);
 
     wymeditor.rawHtml('');
     wymEqual(wymeditor, '', {parseHtml: true});
@@ -21,7 +21,7 @@ test("Empty is empty", function () {
 });
 
 test("Should correct orphaned sublists", function () {
-    expect(2);
+    QUnit.expect(2);
     var expected = String() +
             '<ul>' +
                 '<li>a' +
@@ -72,7 +72,7 @@ test("Should correct orphaned sublists", function () {
 });
 
 test("Should correct under-closed lists", function () {
-    expect(1);
+    QUnit.expect(1);
     // Taken from a mistake made during development that uncovered a
     // parsing issue where if an LI tag was left unclosed, IE did lots of
     // over-closing to compensate which completey broke list structure
@@ -151,7 +151,7 @@ test("Should correct under-closed lists", function () {
 });
 
 test("Don't over-close lists", function () {
-    expect(6);
+    QUnit.expect(6);
     var orphanedLiHtml = String() +
         '<ol id="ol_1">' +
             '<li id="li_1">li_1' +
@@ -234,14 +234,14 @@ test("Don't over-close lists", function () {
 });
 
 test("Shouldn't remove empty td elements", function () {
-    expect(1);
+    QUnit.expect(1);
     var expected = '<table><tr><td>Cell1</td><td></td></tr></table>',
         empty_cell = '<table><tr><td>Cell1</td><td></td></tr></table>';
     deepEqual(jQuery.wymeditors(0).parser.parse(empty_cell), expected);
 });
 
 test("Should remove PRE line breaks (BR)", function () {
-    expect(1);
+    QUnit.expect(1);
     var original = String() +
             '<pre>One<br />Two<br />Three</pre>' +
             '<p>Test</p>' +
@@ -261,7 +261,7 @@ test("Shouldn't strip colSpan attributes", function () {
     // http://trac.wymeditor.org/trac/ticket/223
     // IE8 uses colSpan for the colspan attribute. WYMeditor shouldn't strip it
     // just because of the camelCase
-    expect(1);
+    QUnit.expect(1);
     var original = String() +
             '<table>' +
                 '<tr id="tr_1">' +
@@ -290,7 +290,7 @@ test("Shouldn't strip colSpan attributes", function () {
 });
 
 test("no-op on table with colgroup generates valid XHTML", function () {
-    expect(1);
+    QUnit.expect(1);
 
     var tableWithColXHtml = String() +
         '<table>' +
@@ -335,7 +335,7 @@ test("Allow line breaks inside em tags", function () {
 });
 
 test("Allow line breaks after strong in lists", function () {
-    expect(4);
+    QUnit.expect(4);
     var listHtml = String() +
         '<ol id="ol_1">' +
             '<li id="li_1">li_1' +
@@ -388,7 +388,7 @@ var editorOnlyInlineStartHtml = String() +
     '<p id="after-editor-only-element">Not editor-only</p>';
 
 test("Remove editor-only text container elements", function () {
-    expect(TEXT_CONTAINER_ELEMENTS.length);
+    QUnit.expect(TEXT_CONTAINER_ELEMENTS.length);
     var wymeditor = jQuery.wymeditors(0),
         $body = wymeditor.$body(),
         $element,
@@ -416,7 +416,7 @@ test("Remove editor-only text container elements", function () {
 });
 
 test("Remove editor-only text inline elements", function () {
-    expect(TEXT_INLINE_ELEMENTS.length);
+    QUnit.expect(TEXT_INLINE_ELEMENTS.length);
     var wymeditor = jQuery.wymeditors(0),
         $body = wymeditor.$body(),
         $element,
@@ -445,7 +445,7 @@ test("Remove editor-only text inline elements", function () {
 });
 
 test("Remove editor-only table", function () {
-    expect(1);
+    QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0),
         $body = wymeditor.$body(),
         table,
@@ -472,7 +472,7 @@ test("Remove editor-only table", function () {
 });
 
 test("Remove editor-only lists", function () {
-    expect(WYMeditor.LIST_TYPE_ELEMENTS.length);
+    QUnit.expect(WYMeditor.LIST_TYPE_ELEMENTS.length);
     var wymeditor = jQuery.wymeditors(0),
         $body = wymeditor.$body(),
         listType,
@@ -503,7 +503,7 @@ test("Remove editor-only lists", function () {
 });
 
 test("Remove editor-only self-closing elements", function () {
-    expect(SELF_CLOSING_ELEMENTS.length);
+    QUnit.expect(SELF_CLOSING_ELEMENTS.length);
     var wymeditor = jQuery.wymeditors(0),
         $body = wymeditor.$body(),
         $element,
@@ -530,7 +530,7 @@ test("Remove editor-only self-closing elements", function () {
 });
 
 test("Remove editor-only element with multiple classes", function () {
-    expect(1);
+    QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0),
         $body = wymeditor.$body(),
         $element;
@@ -556,7 +556,7 @@ test("Remove editor-only element with multiple classes", function () {
 });
 
 test("Remove nested editor-only elements", function () {
-    expect(1);
+    QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0),
         $body = wymeditor.$body(),
         $container,
@@ -662,7 +662,7 @@ var validLINesting = String() +
     '</ul>';
 
 test("Remove editor-only invalid UL with LI sibling before it", function () {
-    expect(1);
+    QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0),
         $body = wymeditor.$body(),
         expectedHtml;
@@ -683,7 +683,7 @@ test("Remove editor-only invalid UL with LI sibling before it", function () {
 });
 
 test("Remove editor-only invalid UL that's the first child of a UL", function () {
-    expect(1);
+    QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0),
         $body = wymeditor.$body(),
         expectedHtml;
@@ -704,7 +704,7 @@ test("Remove editor-only invalid UL that's the first child of a UL", function ()
 });
 
 test("Remove editor-only LI with invalid UL sibling after it", function () {
-    expect(1);
+    QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0),
         $body = wymeditor.$body(),
         expectedHtml;
@@ -726,7 +726,7 @@ test("Remove editor-only LI with invalid UL sibling after it", function () {
 });
 
 test("Remove editor-only LI with invalid UL sibling before it", function () {
-    expect(1);
+    QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0),
         $body = wymeditor.$body(),
         expectedHtml;
@@ -747,7 +747,7 @@ test("Remove editor-only LI with invalid UL sibling before it", function () {
 });
 
 test("Remove editor-only invalid LI nested within an LI", function () {
-    expect(1);
+    QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0),
         $body = wymeditor.$body(),
         expectedHtml;
@@ -768,7 +768,7 @@ test("Remove editor-only invalid LI nested within an LI", function () {
 });
 
 test("Remove editor-only LI with an invalid LI nested within it", function () {
-    expect(1);
+    QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0),
         $body = wymeditor.$body(),
         expectedHtml;
@@ -789,7 +789,7 @@ test("Remove editor-only LI with an invalid LI nested within it", function () {
 });
 
 test("Remove editor-only UL with invalid LI nesting within it", function () {
-    expect(1);
+    QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0),
         $body = wymeditor.$body(),
         expectedHtml;
@@ -833,29 +833,29 @@ function testStyleSpan(newTag, spanStyle, assertionString) {
 }
 
 test("Fix bold style span", function () {
-    expect(1);
+    QUnit.expect(1);
     testStyleSpan("strong", "font-weight:bold;", "Fix bold style span");
 });
 
 test("Fix italic style span", function () {
-    expect(1);
+    QUnit.expect(1);
     testStyleSpan("em", "font-style:italic;", "Fix italic style span");
 });
 
 test("Fix superscript style span", function () {
-    expect(1);
+    QUnit.expect(1);
     testStyleSpan("sup", "vertical-align:super;", "Fix superscript style span");
 });
 
 test("Fix subscript style span", function () {
-    expect(1);
+    QUnit.expect(1);
     testStyleSpan("sub", "vertical-align:sub;", "Fix subscript style span");
 });
 
 module("XmlParser-remove_unwanted_classes", {setup: prepareUnitTestModule});
 
 test("Remove 'apple-style-span' class", function () {
-    expect(2);
+    QUnit.expect(2);
     var wymeditor = jQuery.wymeditors(0),
 
         startHtmlSingleClass = String() +
@@ -899,7 +899,7 @@ test("Remove 'apple-style-span' class", function () {
 });
 
 test("Class removal is case insensitive", function () {
-    expect(1);
+    QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0),
         defaultClassesRemovedByParser = WYMeditor.CLASSES_REMOVED_BY_PARSER,
 
@@ -985,7 +985,7 @@ var unwrapSingleInListHtml = String() +
     '</ul>';
 
 test("Unwrap root container content in simple list", function () {
-    expect(tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapSingleContentInLI(
@@ -1009,7 +1009,7 @@ var unwrapSingleInSublistHtml = String() +
     '</ol>';
 
 test("Unwrap root container content in simple sublist", function () {
-    expect(tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapSingleContentInLI(
@@ -1039,7 +1039,7 @@ var unwrapSingleInNestedListHtml = String() +
     '</ol>';
 
 test("Unwrap root container content in nested lists", function () {
-    expect(tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapSingleContentInLI(
@@ -1189,7 +1189,7 @@ var unwrapMultiBothInListHtml = unwrapMultiInListHtml.replace(
 
 test("Unwrap root container content after block elements in simple list",
      function () {
-    expect(tagsToUnwrapInLists.length * tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length * tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1202,7 +1202,7 @@ test("Unwrap root container content after block elements in simple list",
 
 test("Unwrap root container content before block elements in simple list",
      function () {
-    expect(tagsToUnwrapInLists.length * tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length * tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1215,7 +1215,7 @@ test("Unwrap root container content before block elements in simple list",
 
 test("Unwrap root container content surrounded by block elements in simple " +
      "list", function () {
-    expect(tagsToUnwrapInLists.length * tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length * tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1228,7 +1228,7 @@ test("Unwrap root container content surrounded by block elements in simple " +
 
 test("Unwrap root container content after inline elements in simple list",
      function () {
-    expect(tagsToUnwrapInLists.length * inlineTagsToTestInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length * inlineTagsToTestInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1241,7 +1241,7 @@ test("Unwrap root container content after inline elements in simple list",
 
 test("Unwrap root container content before inline elements in simple list",
      function () {
-    expect(tagsToUnwrapInLists.length * inlineTagsToTestInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length * inlineTagsToTestInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1254,7 +1254,7 @@ test("Unwrap root container content before inline elements in simple list",
 
 test("Unwrap root container content surrounded by inline elements in simple " +
      "list", function () {
-    expect(tagsToUnwrapInLists.length * inlineTagsToTestInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length * inlineTagsToTestInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1267,7 +1267,7 @@ test("Unwrap root container content surrounded by inline elements in simple " +
 
 test("Unwrap root container content after text node in simple list",
      function () {
-    expect(tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1280,7 +1280,7 @@ test("Unwrap root container content after text node in simple list",
 
 test("Unwrap root container content before text node in simple list",
      function () {
-    expect(tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1293,7 +1293,7 @@ test("Unwrap root container content before text node in simple list",
 
 test("Unwrap root container content surrounded by text nodes in simple " +
      "list", function () {
-    expect(tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1306,7 +1306,7 @@ test("Unwrap root container content surrounded by text nodes in simple " +
 
 test("Unwrap root container content after table element in simple list",
      function () {
-    expect(tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1319,7 +1319,7 @@ test("Unwrap root container content after table element in simple list",
 
 test("Unwrap root container content before table element in simple list",
      function () {
-    expect(tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1332,7 +1332,7 @@ test("Unwrap root container content before table element in simple list",
 
 test("Unwrap root container content surrounded by table elements in simple " +
      "list", function () {
-    expect(tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1373,7 +1373,7 @@ var unwrapMultiBothInSublistHtml = unwrapMultiInSublistHtml.replace(
 
 test("Unwrap root container content after block elements in simple sublist",
      function () {
-    expect(tagsToUnwrapInLists.length * tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length * tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1386,7 +1386,7 @@ test("Unwrap root container content after block elements in simple sublist",
 
 test("Unwrap root container content before block elements in simple sublist",
      function () {
-    expect(tagsToUnwrapInLists.length * tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length * tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1399,7 +1399,7 @@ test("Unwrap root container content before block elements in simple sublist",
 
 test("Unwrap root container content surrounded by block elements in simple " +
      "sublist", function () {
-    expect(tagsToUnwrapInLists.length * tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length * tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1412,7 +1412,7 @@ test("Unwrap root container content surrounded by block elements in simple " +
 
 test("Unwrap root container content after inline elements in simple sublist",
      function () {
-    expect(tagsToUnwrapInLists.length * inlineTagsToTestInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length * inlineTagsToTestInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1425,7 +1425,7 @@ test("Unwrap root container content after inline elements in simple sublist",
 
 test("Unwrap root container content before inline elements in simple sublist",
      function () {
-    expect(tagsToUnwrapInLists.length * inlineTagsToTestInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length * inlineTagsToTestInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1439,7 +1439,7 @@ test("Unwrap root container content before inline elements in simple sublist",
 
 test("Unwrap root container content surrounded by inline elements in simple " +
      "sublist", function () {
-    expect(tagsToUnwrapInLists.length * inlineTagsToTestInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length * inlineTagsToTestInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1452,7 +1452,7 @@ test("Unwrap root container content surrounded by inline elements in simple " +
 
 test("Unwrap root container content after text node in simple sublist",
      function () {
-    expect(tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1465,7 +1465,7 @@ test("Unwrap root container content after text node in simple sublist",
 
 test("Unwrap root container content before text node in simple sublist",
      function () {
-    expect(tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1478,7 +1478,7 @@ test("Unwrap root container content before text node in simple sublist",
 
 test("Unwrap root container content surrounded by text nodes in simple " +
      "sublist", function () {
-    expect(tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1491,7 +1491,7 @@ test("Unwrap root container content surrounded by text nodes in simple " +
 
 test("Unwrap root container content after table element in simple sublist",
      function () {
-    expect(tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1504,7 +1504,7 @@ test("Unwrap root container content after table element in simple sublist",
 
 test("Unwrap root container content before table element in simple sublist",
      function () {
-    expect(tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1517,7 +1517,7 @@ test("Unwrap root container content before table element in simple sublist",
 
 test("Unwrap root container content surrounded by table elements in simple " +
      "sublist", function () {
-    expect(tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1563,7 +1563,7 @@ var unwrapMultiBothInNestedListHtml = unwrapMultiInNestedListHtml.replace(
 
 test("Unwrap root container content after block elements in nested lists",
      function () {
-    expect(tagsToUnwrapInLists.length * tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length * tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1576,7 +1576,7 @@ test("Unwrap root container content after block elements in nested lists",
 
 test("Unwrap root container content before block elements in nested lists",
      function () {
-    expect(tagsToUnwrapInLists.length * tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length * tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1589,7 +1589,7 @@ test("Unwrap root container content before block elements in nested lists",
 
 test("Unwrap root container content surrounded by block elements in nested " +
      "sublist", function () {
-    expect(tagsToUnwrapInLists.length * tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length * tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1602,7 +1602,7 @@ test("Unwrap root container content surrounded by block elements in nested " +
 
 test("Unwrap root container content after inline elements in nested lists",
      function () {
-    expect(tagsToUnwrapInLists.length * inlineTagsToTestInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length * inlineTagsToTestInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1615,7 +1615,7 @@ test("Unwrap root container content after inline elements in nested lists",
 
 test("Unwrap root container content before inline elements in nested lists",
      function () {
-    expect(tagsToUnwrapInLists.length * inlineTagsToTestInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length * inlineTagsToTestInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1628,7 +1628,7 @@ test("Unwrap root container content before inline elements in nested lists",
 
 test("Unwrap root container content surrounded by inline elements in nested " +
      "sublist", function () {
-    expect(tagsToUnwrapInLists.length * inlineTagsToTestInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length * inlineTagsToTestInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1641,7 +1641,7 @@ test("Unwrap root container content surrounded by inline elements in nested " +
 
 test("Unwrap root container content after text node in nested lists",
      function () {
-    expect(tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1654,7 +1654,7 @@ test("Unwrap root container content after text node in nested lists",
 
 test("Unwrap root container content before text node in nested lists",
      function () {
-    expect(tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1667,7 +1667,7 @@ test("Unwrap root container content before text node in nested lists",
 
 test("Unwrap root container content surrounded by text nodes in nested " +
      "sublist", function () {
-    expect(tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1680,7 +1680,7 @@ test("Unwrap root container content surrounded by text nodes in nested " +
 
 test("Unwrap root container content after table element in nested lists",
      function () {
-    expect(tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1693,7 +1693,7 @@ test("Unwrap root container content after table element in nested lists",
 
 test("Unwrap root container content before table element in nested lists",
      function () {
-    expect(tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1706,7 +1706,7 @@ test("Unwrap root container content before table element in nested lists",
 
 test("Unwrap root container content surrounded by table elements in nested " +
      "sublist", function () {
-    expect(tagsToUnwrapInLists.length);
+    QUnit.expect(tagsToUnwrapInLists.length);
     var wymeditor = jQuery.wymeditors(0);
 
     testUnwrapMultiContentInLI(wymeditor,
@@ -1771,7 +1771,7 @@ var unwrapNestedDivCorrectHtml = String() +
 
 
 test("Unwrap content of nested DIV elements in list item", function () {
-    expect(1);
+    QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0);
 
     wymeditor.rawHtml(unwrapNestedDivStartHtml);
@@ -1802,7 +1802,7 @@ blockElementsHtml.brInRoot = [""
 ].join('');
 
 test("BR isn't allowed at the root", function () {
-    expect(1);
+    QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0);
 
     wymeditor.rawHtml(blockElementsHtml.brInRoot);
@@ -2388,7 +2388,7 @@ test("Three `br` variations without `id`s", function () {
     var wymeditor = jQuery.wymeditors(0),
         i;
 
-    expect(threeBrVariationsNoId.length);
+    QUnit.expect(threeBrVariationsNoId.length);
 
     for (i = 0; i < threeBrVariationsNoId.length; i++) {
         wymeditor.rawHtml(threeBrVariationsNoId[i]);
