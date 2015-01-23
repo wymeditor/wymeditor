@@ -22,7 +22,7 @@ function testTableTab(startHtml, startSelector, endSelector) {
         startHtml: startHtml,
         manipulationFunc: function (wymeditor) {
             var startElement = wymeditor.$body().find(startSelector)[0];
-            expect(expect() + 1);
+            expectOneMore();
             ok(startElement !== null, "Selection start element exists");
             moveSelector(wymeditor, startElement);
             simulateKey(WYMeditor.KEY_CODE.TAB, startElement);
@@ -31,7 +31,7 @@ function testTableTab(startHtml, startSelector, endSelector) {
         additionalAssertionsFunc: function (wymeditor) {
             var actualSelectedContainer = wymeditor.selectedContainer(),
                 expectedSelectedContainer;
-            expect(expect() + 1);
+                expectOneMore();
             if (endSelector === null) {
                 strictEqual(actualSelectedContainer, null);
                 return;
@@ -914,7 +914,7 @@ test("Deselects before removing row that contains collapsed selection",
             wymeditor.tableEditor.removeRow(tr);
         },
         additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 1);
+            expectOneMore();
             // This doesn't really test that .deselect() was called. We'd need
             // a spy for that. Good enough.
             strictEqual(
@@ -947,7 +947,7 @@ test("Deselects before removing row that fully contains non-collapsed " +
             wymeditor.tableEditor.removeRow(tr);
         },
         additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 1);
+            expectOneMore();
             // This doesn't really test that .deselect() was called. We'd need
             // a spy for that. Good enough.
             strictEqual(
@@ -980,7 +980,7 @@ test("Deselects before removing row that partially contains non-collapsed " +
             wymeditor.tableEditor.removeRow(tr);
         },
         additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 1);
+            expectOneMore();
             // This doesn't really test that .deselect() was called. We'd need
             // a spy for that. Good enough.
             strictEqual(
@@ -1003,7 +1003,7 @@ test("Deselects before removing column that contains collapsed selection",
             wymeditor.tableEditor.removeColumn(td13);
         },
         additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 1);
+            expectOneMore();
             // This doesn't really test that .deselect() was called. We'd need
             // a spy for that. Good enough.
             strictEqual(
@@ -1035,7 +1035,7 @@ test("Deselects before removing column that fully contains non-collapsed " +
             wymeditor.tableEditor.removeColumn(td13);
         },
         additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 1);
+            expectOneMore();
             // This doesn't really test that .deselect() was called. We'd need
             // a spy for that. Good enough.
             strictEqual(
@@ -1068,7 +1068,7 @@ test("Deselects before removing column that partially contains non-collapsed " +
             wymeditor.tableEditor.removeColumn(td13);
         },
         additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 1);
+            expectOneMore();
             // This doesn't really test that .deselect() was called. We'd need
             // a spy for that. Good enough.
             strictEqual(

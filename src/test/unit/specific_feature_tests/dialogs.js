@@ -72,7 +72,7 @@ function dialogTestHelper(args) {
 
     function additionalAssertionsFunc(wymeditor) {
         var dialogWindowOrFalse;
-        expect(expect() + 1);
+        expectOneMore();
 
         ok(
             // The dialog function is called, whether the dialog is to be
@@ -106,9 +106,9 @@ function dialogTestHelper(args) {
     }
 
     function assertOpened(dialogWindow) {
-        expect(expect() + 2);
+        expectMore(2);
         if (sinonCantWrapWindowOpen !== true) {
-            expect(expect() + 1);
+            expectOneMore();
             ok(
                 window.open.calledOnce,
                 "`window.open` was called"
@@ -126,9 +126,9 @@ function dialogTestHelper(args) {
         );
     }
     function assertNotOpened(returnedFalse) {
-        expect(expect() + 1);
+        expectOneMore();
         if (sinonCantWrapWindowOpen !== true) {
-            expect(expect() + 1);
+            expectOneMore();
             ok(
                 window.open.callCount === 0,
                 "`window.open` was not called"

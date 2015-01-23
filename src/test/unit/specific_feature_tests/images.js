@@ -67,7 +67,7 @@ test("Returns false when no selection", function () {
         },
         expectedResultHtml: getSelectedImageHtml,
         additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 1);
+            expectOneMore();
             strictEqual(
                 wymeditor.getSelectedImage(),
                 false
@@ -82,7 +82,7 @@ test("Returns false when selection is collapsed", function () {
         setCaretInSelector: "p",
         expectedResultHtml: getSelectedImageHtml,
         additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 1);
+            expectOneMore();
             strictEqual(
                 wymeditor.getSelectedImage(),
                 false
@@ -104,7 +104,7 @@ test("Returns false when more than one node is selected, even if one of" +
                 0,
                 2
             );
-            expect(expect() + 1);
+            expectOneMore();
             strictEqual(
                 wymeditor._getSelectedNodes()[1].tagName.toLowerCase(),
                 "img"
@@ -112,7 +112,7 @@ test("Returns false when more than one node is selected, even if one of" +
         },
         expectedResultHtml: getSelectedImageHtml,
         additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 1);
+            expectOneMore();
             strictEqual(
                 wymeditor.getSelectedImage(),
                 false
@@ -133,7 +133,7 @@ test("Returns false when single text node is selected", function () {
                 0,
                 1
             );
-            expect(expect() + 2);
+            expectMore(2);
             strictEqual(
                 wymeditor._getSelectedNodes().length,
                 1
@@ -145,7 +145,7 @@ test("Returns false when single text node is selected", function () {
         },
         expectedResultHtml: getSelectedImageHtml,
         additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 1);
+            expectOneMore();
             strictEqual(
                 wymeditor.getSelectedImage(),
                 false
@@ -166,7 +166,7 @@ test("Returns an image when it is exclusively selected", function () {
                 1,
                 2
             );
-            expect(expect() + 1);
+            expectOneMore();
             strictEqual(
                 wymeditor._getSelectedNodes()[0].tagName.toLowerCase(),
                 "img"
@@ -175,7 +175,7 @@ test("Returns an image when it is exclusively selected", function () {
         expectedResultHtml: getSelectedImageHtml,
         additionalAssertionsFunc: function (wymeditor) {
             var img = wymeditor.$body().find("img")[0];
-            expect(expect() + 1);
+            expectOneMore();
             strictEqual(
                 wymeditor.getSelectedImage(),
                 img
@@ -198,7 +198,7 @@ test("Image is selected via `mouseup` in non pre-7 Trident", function () {
         expectedResultHtml: getSelectedImageHtml,
         additionalAssertionsFunc: function (wymeditor) {
             var img = wymeditor.$body().find("img")[0];
-            expect(expect() + 1);
+            expectOneMore();
             strictEqual(
                 wymeditor.getSelectedImage(),
                 img
@@ -258,7 +258,7 @@ test("Image is selected via `mouseup` in pre-7 trident", function () {
         expectedResultHtml: getSelectedImageHtml,
         additionalAssertionsFunc: function (wymeditor) {
             var img = wymeditor.$body().find("img")[0];
-            expect(expect() + 1);
+            expectOneMore();
             strictEqual(
                 wymeditor.getSelectedImage(),
                 img

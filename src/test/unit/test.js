@@ -538,7 +538,7 @@ test("Table is editable after insertion", function () {
         ].join(""),
         additionalAssertionsFunc: function (wymeditor) {
             var $tds = wymeditor.$body().find("td");
-            expect(expect() + $tds.length + 1);
+            expectMore($tds.length + 1);
             $tds.each(function (index, td) {
                 strictEqual(isContentEditable(td), true);
             });

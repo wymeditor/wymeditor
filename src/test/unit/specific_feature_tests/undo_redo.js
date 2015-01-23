@@ -118,7 +118,7 @@ test("No going back before dawn of history", function () {
         startHtml: DAWN_OF_HISTORY,
         manipulationFunc: function () {},
         additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 1);
+            expectOneMore();
             wymEqual(wymeditor, DAWN_OF_HISTORY);
         },
         expectedResultHtml: DAWN_OF_HISTORY
@@ -140,7 +140,7 @@ test("Restores selection", function () {
         },
         manipulationFunc: function () {},
         additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 1);
+            expectOneMore();
             equal(
                 wymeditor.selection().toString(),
                 "FooBar"
@@ -158,7 +158,7 @@ test("Redo when everything has been redone", function () {
             wymeditor.undoRedo.reset();
         },
         manipulationFunc: function (wymeditor) {
-            expect(expect() + 3);
+            expectMore(3);
             wymeditor.$body().append("<p>Bar</p>");
             wymeditor.registerModification();
             wymEqual(
@@ -202,7 +202,7 @@ test("Toolbar buttons", function () {
             wymeditor.undoRedo.reset();
         },
         manipulationFunc: function (wymeditor) {
-            expect(expect() + 3);
+            expectMore(3);
             var $buttons = wymeditor.get$Buttons(),
                 $undoButton = $buttons.filter("[name=Undo]"),
                 $redoButton = $buttons.filter("[name=Redo]");
@@ -246,7 +246,7 @@ test("Nothing to redo after change", function () {
             wymeditor.undoRedo.reset();
         },
         manipulationFunc: function (wymeditor) {
-            expect(expect() + 2);
+            expectMore(2);
 
             wymeditor.$body().append("<p>Bar</p>");
             wymeditor.registerModification();
