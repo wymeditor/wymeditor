@@ -32,9 +32,6 @@
 // tests ensures that remains the case.
 jQuery.noConflict();
 
-// Hide passed tests.
-QUnit.config.hidepassed = true;
-
 // `sinon-qunit` sets this to true. We require the real `setTimeout` because
 // we test things that have to do with the browser's DOM API. Removing this
 // or setting it to `true` will almost certainly cause all tests of
