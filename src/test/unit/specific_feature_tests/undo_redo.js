@@ -4,7 +4,8 @@
     prepareUnitTestModule,
     makeTextSelection,
     makeSelection,
-    expect,
+    expectOneMore,
+    expectMore,
     equal,
     manipulationTestHelper,
     test

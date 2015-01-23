@@ -1,7 +1,12 @@
 /* jshint camelcase: false, maxlen: 100 */
-/* global wymEqual, prepareUnitTestModule,
-testNoChangeInHtmlArray,
-test, expect, deepEqual */
+/* global
+    wymEqual,
+    prepareUnitTestModule,
+    testNoChangeInHtmlArray,
+    test,
+    QUnit,
+    deepEqual
+*/
 "use strict";
 // Tests for the XML parser
 

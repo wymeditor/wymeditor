@@ -1,9 +1,12 @@
 /* jshint camelcase: false, maxlen: 85 */
 /* global
-prepareUnitTestModule,
-wymEqual, makeTextSelection,
-ok, test, expect,
-vanishAllWyms
+    prepareUnitTestModule,
+    wymEqual,
+    makeTextSelection,
+    ok,
+    test,
+    QUnit,
+    vanishAllWyms
 */
 "use strict";
 

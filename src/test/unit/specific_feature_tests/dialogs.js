@@ -1,9 +1,10 @@
 /* global
+    expectOneMore,
+    expectMore,
     prepareUnitTestModule,
     manipulationTestHelper,
     module,
     test,
-    expect,
     ok,
     strictEqual,
     makeTextSelection

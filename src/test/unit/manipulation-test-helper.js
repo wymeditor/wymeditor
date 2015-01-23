@@ -2,9 +2,10 @@
     manipulationTestHelper
 */
 /* global
-    expect,
     wymEqual,
     QUnit,
+    expectOneMore,
+    expectedCount,
     SKIP_THIS_TEST
 */
 "use strict";

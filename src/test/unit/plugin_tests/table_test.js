@@ -1,5 +1,6 @@
 /* jshint maxlen: 90 */
 /* global
+    expectOneMore,
     SKIP_KNOWN_FAILING_TESTS,
     prepareUnitTestModule,
     wymEqual,
@@ -10,7 +11,7 @@
     normalizeHtml,
     ok,
     test,
-    expect,
+    QUnit,
     deepEqual,
     manipulationTestHelper,
     strictEqual
@@ -31,7 +32,7 @@ function testTableTab(startHtml, startSelector, endSelector) {
         additionalAssertionsFunc: function (wymeditor) {
             var actualSelectedContainer = wymeditor.selectedContainer(),
                 expectedSelectedContainer;
-                expectOneMore();
+            expectOneMore();
             if (endSelector === null) {
                 strictEqual(actualSelectedContainer, null);
                 return;

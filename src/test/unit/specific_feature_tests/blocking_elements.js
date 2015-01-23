@@ -1,9 +1,15 @@
 /* jshint camelcase: false, maxlen: 85 */
 /* global
-no_br_selection_browser, prepareUnitTestModule,
-wymEqual, moveSelector, simulateKey,
-makeSelection,
-test, expect, deepEqual */
+    no_br_selection_browser,
+    prepareUnitTestModule,
+    QUnit,
+    wymEqual,
+    moveSelector,
+    simulateKey,
+    makeSelection,
+    test,
+    deepEqual
+*/
 "use strict";
 
 /**

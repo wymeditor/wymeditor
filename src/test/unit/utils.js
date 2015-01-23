@@ -13,7 +13,7 @@
     rangy,
     deepEqual,
     html_beautify,
-    expect,
+    QUnit,
     QUnit,
     stop,
     start,

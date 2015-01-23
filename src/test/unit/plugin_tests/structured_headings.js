@@ -1,8 +1,15 @@
 /* jshint maxlen: 90 */
-/* global SKIP_KNOWN_FAILING_TESTS,
-prepareUnitTestModule,
-wymEqual, makeTextSelection, normalizeHtml,
-ok, test, expect, deepEqual */
+/* global
+    SKIP_KNOWN_FAILING_TESTS,
+    prepareUnitTestModule,
+    QUnit,
+    wymEqual,
+    makeTextSelection,
+    normalizeHtml,
+    ok,
+    test,
+    deepEqual
+*/
 "use strict";
 
 /*

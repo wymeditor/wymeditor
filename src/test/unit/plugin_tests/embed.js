@@ -1,7 +1,10 @@
 /* jshint maxlen: 79 */
 /* global
-prepareUnitTestModule,
-test, expect, deepEqual */
+    QUnit,
+    prepareUnitTestModule,
+    test,
+    deepEqual
+*/
 "use strict";
 
 module("EmbedPlugin", {setup: prepareUnitTestModule});
