@@ -131,10 +131,7 @@ function manipulationTestHelper(a) {
         executions.push(EXECUTE.UI_CLICK);
     }
 
-    if (
-        skipKeyboardShortcutTests !== true &&
-        typeof a.manipulationKeyCombo === "string"
-    ) {
+    if (typeof a.manipulationKeyCombo === "string") {
         executions.push(EXECUTE.KEY_COMBO);
     }
 
@@ -158,6 +155,16 @@ function manipulationTestHelper(a) {
     }
 
     function manipulateAndAssert(manipulationCause) {
+
+        if (
+            skipKeyboardShortcutTests &&
+            manipulationCause === EXECUTE.KEY_COMBO
+        ) {
+            if (expect() === null) {
+                expect(0);
+            }
+            return false;
+        }
 
         initialize();
         assertStartHtml();
