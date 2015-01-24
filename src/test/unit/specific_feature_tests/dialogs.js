@@ -41,8 +41,6 @@ module("dialogs-opening_or_not", {setup: prepareUnitTestModule});
  */
 /* jshint latedef: nofunc */
 function dialogTestHelper(args) {
-    // Sinon doesn't allow wrapping of `window.open` with a spy because `open`
-    // doesn't look like a function in these browsers.
     var wymeditor = jQuery.wymeditors(0);
 
     // Wrap the dialog function with a spy
