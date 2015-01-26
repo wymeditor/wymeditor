@@ -3,7 +3,8 @@
     ok,
     start,
     test,
-    expect,
+    QUnit,
+    expectMore,
     deepEqual,
     sinon,
     strictEqual,
@@ -31,9 +32,6 @@
 // tests ensures that remains the case.
 jQuery.noConflict();
 
-// Hide passed tests.
-QUnit.config.hidepassed = true;
-
 // `sinon-qunit` sets this to true. We require the real `setTimeout` because
 // we test things that have to do with the browser's DOM API. Removing this
 // or setting it to `true` will almost certainly cause all tests of
@@ -55,7 +53,7 @@ var SKIP_KNOWN_FAILING_TESTS = true,
 module("Core", {setup: prepareUnitTestModule});
 
 test("Instantiate", function () {
-    expect(2);
+    QUnit.expect(2);
     deepEqual(WYMeditor.INSTANCES.length, 1, "WYMeditor.INSTANCES length");
     deepEqual(typeof jQuery.wymeditors(0), 'object',
               "Type of first WYMeditor instance, using jQuery.wymeditors(0)");
@@ -98,7 +96,7 @@ test("Focusing on document that has designMode off, turns it on", function () {
 module("API", {setup: prepareUnitTestModule});
 
 test("Commands", function () {
-    expect(2);
+    QUnit.expect(2);
     var wymeditor = jQuery.wymeditors(0);
 
     wymeditor.toggleHtml();
@@ -110,7 +108,7 @@ test("Commands", function () {
 module("XmlHelper", {setup: prepareUnitTestModule});
 
 test("Should escape URL's only once #69.1", function () {
-    expect(2);
+    QUnit.expect(2);
     var original = "index.php?module=x&func=view&id=1",
         expected = "index.php?module=x&amp;func=view&amp;id=1";
     deepEqual(jQuery.wymeditors(0).helper.escapeOnce(original), expected,
@@ -122,7 +120,7 @@ test("Should escape URL's only once #69.1", function () {
 module("Post Init", {setup: prepareUnitTestModule});
 
 test("Sanity check: rawHtml()", function () {
-    expect(1);
+    QUnit.expect(1);
     var testText1 = '<p>This is some text with which to test.<\/p>',
         wymeditor = jQuery.wymeditors(0);
 
@@ -413,7 +411,7 @@ function testPaste(
 }
 
 test("Body- Direct Paste", function () {
-    expect(1);
+    QUnit.expect(1);
     testPaste(
         '', // No selector. Just the body
         '<br />', // An empty document to start
@@ -424,7 +422,7 @@ test("Body- Direct Paste", function () {
 });
 
 test("Paragraphs- Inside h2_1", function () {
-    expect(2);
+    QUnit.expect(2);
     testPaste(
         '#h2_1',
         basicParagraphsHtml,
@@ -435,7 +433,7 @@ test("Paragraphs- Inside h2_1", function () {
 });
 
 test("Paragraphs- Inside middle of h2_1", function () {
-    expect(2);
+    QUnit.expect(2);
     testPaste(
         '#h2_1',
         basicParagraphsHtml,
@@ -447,7 +445,7 @@ test("Paragraphs- Inside middle of h2_1", function () {
 });
 
 test("Paragraphs- End of h2_1", function () {
-    expect(2);
+    QUnit.expect(2);
     testPaste(
         '#h2_1',
         basicParagraphsHtml,
@@ -459,7 +457,7 @@ test("Paragraphs- End of h2_1", function () {
 });
 
 test("Paragraphs- Empty p_2", function () {
-    expect(2);
+    QUnit.expect(2);
     testPaste(
         '#p_2',
         basicParagraphsHtml,
@@ -470,7 +468,7 @@ test("Paragraphs- Empty p_2", function () {
 });
 
 test("Table- simple row td_1_1", function () {
-    expect(2);
+    QUnit.expect(2);
     testPaste(
         '#td_1_1',
         basicTableHtml,
@@ -481,7 +479,7 @@ test("Table- simple row td_1_1", function () {
 });
 
 test("Table- inside a span span_2_1", function () {
-    expect(2);
+    QUnit.expect(2);
     testPaste(
         '#span_2_1',
         basicTableHtml,
@@ -492,7 +490,7 @@ test("Table- inside a span span_2_1", function () {
 });
 
 test("List- top level li li_1", function () {
-    expect(2);
+    QUnit.expect(2);
     testPaste(
         '#li_1',
         nestedListHtml,
@@ -503,7 +501,7 @@ test("List- top level li li_1", function () {
 });
 
 test("List- 2nd level li li_2_2", function () {
-    expect(2);
+    QUnit.expect(2);
     testPaste(
         '#li_2_2',
         nestedListHtml,
@@ -538,7 +536,7 @@ test("Table is editable after insertion", function () {
         ].join(""),
         additionalAssertionsFunc: function (wymeditor) {
             var $tds = wymeditor.$body().find("td");
-            expect(expect() + $tds.length + 1);
+            expectMore($tds.length + 1);
             $tds.each(function (index, td) {
                 strictEqual(isContentEditable(td), true);
             });
@@ -574,7 +572,7 @@ if (
                 "</tr>" +
             "</tbody></table>";
     test("Table cells are editable in FF > 3.5: table insert", function () {
-        expect(12);
+        QUnit.expect(12);
 
         var wymeditor = jQuery.wymeditors(0),
             $body;
@@ -591,7 +589,7 @@ if (
     });
 
     test("Table cells are editable in FF > 3.5: rawHtml() insert", function () {
-        expect(6);
+        QUnit.expect(6);
 
         var wymeditor = jQuery.wymeditors(0),
             $body = wymeditor.$body();
@@ -948,7 +946,7 @@ module("table-insert_in_list", {setup: prepareUnitTestModule});
 if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
     !SKIP_KNOWN_FAILING_TESTS) {
     test("Table insertion in the middle of a list with text selection", function () {
-        expect(1);
+        QUnit.expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
         setupTable(wymeditor, listForTableInsertion, '#li_2', 'text',
@@ -959,7 +957,7 @@ if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
     });
 
     test("Table insertion at the end of a list with text selection", function () {
-        expect(1);
+        QUnit.expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
         setupTable(
@@ -970,7 +968,7 @@ if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
     });
 
     test("Table insertion in the middle of a list with collapsed selection", function () {
-        expect(1);
+        QUnit.expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
         setupTable(wymeditor, listForTableInsertion, '#li_2', 'collapsed',
@@ -981,7 +979,7 @@ if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
     });
 
     test("Table insertion at the end of a list with collapsed selection", function () {
-        expect(1);
+        QUnit.expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
         setupTable(wymeditor, listForTableInsertion, '#li_3', 'collapsed',
@@ -994,7 +992,7 @@ if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
     // This test mimics the behavior that caused issue #406 which would
     // unexpectedly nest an inserted table into another table within a list.
     test("Table insertion with selection inside another table in a list", function () {
-        expect(3);
+        QUnit.expect(3);
         var wymeditor = jQuery.wymeditors(0);
 
         // Try insert in td element
@@ -1021,7 +1019,7 @@ if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
     });
 
     test("Table insertion with direct selection of list item node", function () {
-        expect(1);
+        QUnit.expect(1);
         var wymeditor = jQuery.wymeditors(0);
 
         setupTable(wymeditor, expectedListOneTable, '#li_3', 'node',
@@ -1035,7 +1033,7 @@ if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
 module("table-insert_in_sublist", {setup: prepareUnitTestModule});
 
 test("Single table insertion into a sublist", function () {
-    expect(1);
+    QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0);
 
     setupTable(wymeditor, sublistForTableInsertion, '#li_2', 'text',
@@ -1046,7 +1044,7 @@ test("Single table insertion into a sublist", function () {
 });
 
 test("Double table insertion into a sublist", function () {
-    expect(1);
+    QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0);
 
     setupTable(wymeditor, expectedSublistOneTable, '#li_2', 'text',
@@ -1057,7 +1055,7 @@ test("Double table insertion into a sublist", function () {
 });
 
 test("Triple table insertion into a sublist", function () {
-    expect(1);
+    QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0);
 
     setupTable(wymeditor, expectedSublistTwoTables, '#li_2', 'text',
@@ -1128,7 +1126,7 @@ var tableWithColspanTH = String() +
     '<br class="wym-blocking-element-spacer wym-editor-only" />';
 
 test("Colspan preserved when switching from td to th", function () {
-    expect(1);
+    QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0),
         $thContainerLink = jQuery(wymeditor._box)
             .find(wymeditor._options.containersSelector + ' a[name="TH"]'),
@@ -1145,7 +1143,7 @@ test("Colspan preserved when switching from td to th", function () {
 });
 
 test("Colspan preserved when switching from th to td", function () {
-    expect(1);
+    QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0),
         $thContainerLink = jQuery(wymeditor._box)
             .find(wymeditor._options.containersSelector + ' a[name="TH"]'),
@@ -1178,7 +1176,7 @@ test("Preformatted text retains spacing", function () {
 
     wymeditor.rawHtml(preHtml);
 
-    expect(1);
+    QUnit.expect(1);
     deepEqual(wymeditor.html(), preHtml);
 });
 
@@ -1194,7 +1192,7 @@ test("Double soft returns are allowed", function () {
 
     wymeditor.prepareDocForEditing();
 
-    expect(1);
+    QUnit.expect(1);
     wymEqual(wymeditor, initHtml);
 });
 
@@ -1227,7 +1225,7 @@ function checkTagInContainer(wymeditor, containerType, tagName, command) {
 }
 
 test("No span added to header after bolding", function () {
-    expect(6);
+    QUnit.expect(6);
     var wymeditor = jQuery.wymeditors(0),
         header,
         i;
@@ -1305,7 +1303,7 @@ module(
 );
 
 test("We have multiple instances", function () {
-    expect(2);
+    QUnit.expect(2);
     jQuery('#wym-form > .wym').wymeditor();
     strictEqual(
         WYMeditor.INSTANCES.length,
@@ -1325,7 +1323,7 @@ asyncTest("Load textarea value by default", function () {
         assertAndStart,
         i;
 
-    expect($textareas.length);
+    QUnit.expect($textareas.length);
 
     // This function is here so as to not create functions within a loop.
     assertAndStart = function (wym) {
@@ -1353,7 +1351,7 @@ asyncTest("Prefer explicit initial html option over textarea value", function ()
         i,
         initHtml = '<p>foo</p>';
 
-    expect($textareas.length);
+    QUnit.expect($textareas.length);
 
     // This function is here so as to not create functions within a loop.
     assertAndStart = function (wym) {
@@ -1381,7 +1379,7 @@ asyncTest("Load textarea values by default in batch-initializations", function (
         assertAndStart,
         i;
 
-    expect($textareas.length);
+    QUnit.expect($textareas.length);
 
     // This function is here so as to not create functions within a loop.
     assertAndStart = function (wym) {

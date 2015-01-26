@@ -1,7 +1,10 @@
 /* jshint maxlen: 79 */
 /* global
-prepareUnitTestModule,
-test, expect, deepEqual */
+    QUnit,
+    prepareUnitTestModule,
+    test,
+    deepEqual
+*/
 "use strict";
 
 module("EmbedPlugin", {setup: prepareUnitTestModule});
@@ -11,7 +14,7 @@ var YOUTUBE_VIDEO_URL = [""
     , 'v/yJxbMUjLW1E?fs=1&amp;hl=en_US'
 ].join('');
 test("Shouldn't remove object elements", function () {
-    expect(1);
+    QUnit.expect(1);
     var objectEmbed = '' +
         '<object width="480" height="390">' +
             '<param name="movie" value="' + YOUTUBE_VIDEO_URL + '" />' +
@@ -46,7 +49,7 @@ test("Shouldn't remove object elements", function () {
 });
 
 test("Shouldn't remove iframe elements", function () {
-    expect(1);
+    QUnit.expect(1);
     var iframeEmbed = '<iframe width="480" height="390" ' +
             'src="' + YOUTUBE_VIDEO_URL + '" frameborder="0" />' +
             '</iframe>',

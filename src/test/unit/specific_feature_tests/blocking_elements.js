@@ -1,9 +1,15 @@
 /* jshint camelcase: false, maxlen: 85 */
 /* global
-no_br_selection_browser, prepareUnitTestModule,
-wymEqual, moveSelector, simulateKey,
-makeSelection,
-test, expect, deepEqual */
+    no_br_selection_browser,
+    prepareUnitTestModule,
+    QUnit,
+    wymEqual,
+    moveSelector,
+    simulateKey,
+    makeSelection,
+    test,
+    deepEqual
+*/
 "use strict";
 
 /**
@@ -125,7 +131,7 @@ test("table has br spacers via .prepareDocForEditing()", function () {
     $body = wymeditor.$body();
     children = $body.children();
 
-    expect(5);
+    QUnit.expect(5);
     deepEqual(children.length, 3);
     if (children.length === 3) {
         deepEqual(children[0].tagName.toLowerCase(), 'br');
@@ -148,7 +154,7 @@ test("table has br spacers via table insertion", function () {
 
     children = $body.children();
 
-    expect(5);
+    QUnit.expect(5);
     deepEqual(children.length, 3);
     if (children.length === 3) {
         deepEqual(children[0].tagName.toLowerCase(), 'br');
@@ -169,7 +175,7 @@ test("p + table has br spacers via .prepareDocForEditing()", function () {
     $body = wymeditor.$body();
     children = $body.children();
 
-    expect(6);
+    QUnit.expect(6);
     deepEqual(children.length, 4);
     if (children.length === 4) {
         deepEqual(children[0].tagName.toLowerCase(), 'p');
@@ -198,7 +204,7 @@ test("p + table has br spacers via table insertion", function () {
 
     children = $body.children();
 
-    expect(7);
+    QUnit.expect(7);
     deepEqual(children.length, 4);
     if (children.length === 4) {
         deepEqual(children[0].tagName.toLowerCase(), 'p');
@@ -220,7 +226,7 @@ test("p + table + p has br spacers via .prepareDocForEditing()", function () {
     $body = wymeditor.$body();
     children = $body.children();
 
-    expect(7);
+    QUnit.expect(7);
     deepEqual(children.length, 5);
     if (children.length === 5) {
         deepEqual(children[0].tagName.toLowerCase(), 'p');
@@ -250,7 +256,7 @@ test("p + table + p has br spacers via table insertion", function () {
 
     children = $body.children();
 
-    expect(8);
+    QUnit.expect(8);
     deepEqual(children.length, 5);
     if (children.length === 5) {
         deepEqual(children[0].tagName.toLowerCase(), 'p');
@@ -274,7 +280,7 @@ test("p + table + table + p has br spacers via " +
     $body = wymeditor.$body();
     children = $body.children();
 
-    expect(9);
+    QUnit.expect(9);
     deepEqual(children.length, 7);
     if (children.length === 7) {
         deepEqual(children[0].tagName.toLowerCase(), 'p');
@@ -307,7 +313,7 @@ test("p + table + table + p has br spacers via table insertion", function () {
 
     children = $body.children();
 
-    expect(10);
+    QUnit.expect(10);
     deepEqual(children.length, 7);
     if (children.length === 7) {
         deepEqual(children[0].tagName.toLowerCase(), 'p');
@@ -333,7 +339,7 @@ test("h1 + blockquote + pre has br spacers via " +
     $body = wymeditor.$body();
     children = $body.children();
 
-    expect(8);
+    QUnit.expect(8);
     deepEqual(children.length, 6);
     if (children.length === 6) {
         deepEqual(children[0].tagName.toLowerCase(), 'h1');
@@ -426,7 +432,7 @@ test("br spacers don't cause lots of blank p's when arrowing down", function () 
 
     children = $body.children();
 
-    expect(6);
+    QUnit.expect(6);
     deepEqual(children.length, 4, "Should have p, br, table, br");
     if (children.length === 4) {
         deepEqual(children[0].tagName.toLowerCase(), 'p');

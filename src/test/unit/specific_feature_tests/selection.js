@@ -2,7 +2,8 @@
     manipulationTestHelper,
     test,
     module,
-    expect,
+    expectOneMore,
+    expectMore,
     deepEqual,
     strictEqual,
     ok,
@@ -21,7 +22,7 @@ test("There is no selection (`editor.deselect()`).", function () {
             wymeditor.deselect();
         },
         additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 1);
+            expectOneMore();
             ok(wymeditor.hasSelection() === false);
         }
     });
@@ -34,7 +35,7 @@ test("There is a selection.", function () {
             wymeditor.setCaretIn(wymeditor.body().childNodes[0]);
         },
         additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 1);
+            expectOneMore();
             ok(wymeditor.hasSelection() === true);
         }
     });
@@ -219,7 +220,7 @@ test(
                 // Rangy issue #209
                 !wymeditor.isInlineNode(curNode)
             ) {
-                expect(expect() + 1);
+                expectOneMore();
 
                 strictEqual(
                     wymeditor.nodeAfterSel(),
@@ -228,7 +229,7 @@ test(
                         "first child is immediately after selection."
                 );
             }
-            expect(expect() + 1);
+            expectOneMore();
 
             strictEqual(
                 wymeditor.selectedContainer(),
@@ -244,7 +245,7 @@ test(
 
             wymeditor.setCaretBefore(curNode);
 
-            expect(expect() + 2);
+            expectMore(2);
 
             // Assert: Node is immediately after selection
             strictEqual(
@@ -274,7 +275,7 @@ test("No selection returns false", function () {
             wymeditor.deselect();
         },
         additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 1);
+            expectOneMore();
             strictEqual(
                 wymeditor.selectedContainer(),
                 false
@@ -297,7 +298,7 @@ test("Within one element returns the element", function () {
             );
         },
         additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 1);
+            expectOneMore();
             strictEqual(
                 wymeditor.selectedContainer().childNodes[0].data,
                 "Foo"
@@ -320,7 +321,7 @@ test("Within one element returns the element; partial selection", function () {
             );
         },
         additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 1);
+            expectOneMore();
             strictEqual(
                 wymeditor.selectedContainer().childNodes[0].data,
                 "Foo"
@@ -343,7 +344,7 @@ test("Within a nested element returns the nested element", function () {
             );
         },
         additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 1);
+            expectOneMore();
             strictEqual(
                 wymeditor.selectedContainer().childNodes[0].data,
                 "Foo"
@@ -368,7 +369,7 @@ test(
                 );
             },
             additionalAssertionsFunc: function (wymeditor) {
-                expect(expect() + 1);
+                expectOneMore();
                 strictEqual(
                     wymeditor.selectedContainer().childNodes[0].data,
                     "Foo"
@@ -395,7 +396,7 @@ test(
                 );
             },
             additionalAssertionsFunc: function (wymeditor) {
-                expect(expect() + 1);
+                expectOneMore();
                 strictEqual(
                     wymeditor.selectedContainer().tagName.toLowerCase(),
                     "li"
@@ -423,7 +424,7 @@ test(
                 );
             },
             additionalAssertionsFunc: function (wymeditor) {
-                expect(expect() + 1);
+                expectOneMore();
                 strictEqual(
                     wymeditor.selectedContainer().tagName.toLowerCase(),
                     "p"
@@ -449,7 +450,7 @@ test("From one root container to another returns false", function () {
             );
         },
         additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 1);
+            expectOneMore();
             strictEqual(wymeditor.selectedContainer(), false);
         }
     });
@@ -471,7 +472,7 @@ test("Across root containers returns false; partial selection", function () {
             );
         },
         additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 1);
+            expectOneMore();
             strictEqual(wymeditor.selectedContainer(), false);
         }
     });
@@ -496,7 +497,7 @@ test(
                 );
             },
             additionalAssertionsFunc: function (wymeditor) {
-                expect(expect() + 1);
+                expectOneMore();
                 strictEqual(wymeditor.selectedContainer(), false);
             }
         });
@@ -522,7 +523,7 @@ test(
                 );
             },
             additionalAssertionsFunc: function (wymeditor) {
-                expect(expect() + 1);
+                expectOneMore();
                 strictEqual(wymeditor.selectedContainer(), false);
             }
         });
@@ -545,7 +546,7 @@ test(
                 );
             },
             additionalAssertionsFunc: function (wymeditor) {
-                expect(expect() + 1);
+                expectOneMore();
                 strictEqual(
                     wymeditor.selectedContainer().tagName.toLowerCase(),
                     "li"
@@ -577,7 +578,7 @@ test(
                 );
             },
             additionalAssertionsFunc: function (wymeditor) {
-                expect(expect() + 1);
+                expectOneMore();
                 strictEqual(
                     wymeditor.selectedContainer().tagName.toLowerCase(),
                     "li"
@@ -609,7 +610,7 @@ test(
                 );
             },
             additionalAssertionsFunc: function (wymeditor) {
-                expect(expect() + 2);
+                expectMore(2);
                 strictEqual(
                     wymeditor.selectedContainer().tagName.toLowerCase(),
                     "li"
@@ -644,7 +645,7 @@ test(
                 );
             },
             additionalAssertionsFunc: function (wymeditor) {
-                expect(expect() + 1);
+                expectOneMore();
                 strictEqual(
                     wymeditor.selectedContainer().tagName.toLowerCase(),
                     "td"
@@ -670,7 +671,7 @@ test(
                 );
             },
             additionalAssertionsFunc: function (wymeditor) {
-                expect(expect() + 1);
+                expectOneMore();
                 strictEqual(
                     wymeditor.selectedContainer().tagName.toLowerCase(),
                     "td"
@@ -698,7 +699,7 @@ test(
                 );
             },
             additionalAssertionsFunc: function (wymeditor) {
-                expect(expect() + 1);
+                expectOneMore();
                 strictEqual(
                     wymeditor.selectedContainer().tagName.toLowerCase(),
                     "p"
@@ -720,7 +721,7 @@ test("No selection", function () {
             wymeditor.deselect();
         },
         additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 1);
+            expectOneMore();
             ok(wymeditor._getSelectedNodes() === false);
         }
     });
@@ -733,7 +734,7 @@ test("Collapsed selection", function () {
             wymeditor.setCaretIn(wymeditor.body().childNodes[0]);
         },
         additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 1);
+            expectOneMore();
             deepEqual(
                 wymeditor._getSelectedNodes(),
                 []
@@ -753,7 +754,7 @@ test("Single text node", function () {
             wymeditor.selection().setSingleRange(range);
         },
         additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 1);
+            expectOneMore();
             deepEqual(
                 wymeditor.selection().getRangeAt(0).getNodes(),
                 [wymeditor.body().childNodes[0].childNodes[0]]
@@ -774,7 +775,7 @@ test("Partially selected text node", function () {
             wymeditor.selection().setSingleRange(range);
         },
         additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 1);
+            expectOneMore();
             deepEqual(
                 wymeditor.selection().getRangeAt(0).getNodes(),
                 [wymeditor.body().childNodes[0].childNodes[0]]
@@ -797,7 +798,7 @@ test("Two wholly selected text nodes", function () {
             wymeditor.selection().setSingleRange(range);
         },
         additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 5);
+            expectMore(5);
             var selectedNodes = wymeditor._getSelectedNodes();
             strictEqual(
                 selectedNodes.length,
@@ -835,7 +836,7 @@ test("Two partially selected text nodes", function () {
             wymeditor.selection().setSingleRange(range);
         },
         additionalAssertionsFunc: function (wymeditor) {
-            expect(expect() + 5);
+            expectMore(5);
             var selectedNodes = wymeditor._getSelectedNodes();
             strictEqual(
                 selectedNodes.length,
@@ -874,7 +875,7 @@ test("Returns false when no selection", function () {
         },
         additionalAssertionsFunc: function (wymeditor) {
             var p = wymeditor.body().childNodes[0];
-            expect(expect() + 1);
+            expectOneMore();
             strictEqual(
                 wymeditor.doesElementContainSelection(p),
                 false
@@ -899,7 +900,7 @@ test("Returns true when non-collapsed selection is wholly in element",
         },
         additionalAssertionsFunc: function (wymeditor) {
             var p = wymeditor.body().childNodes[0];
-            expect(expect() + 1);
+            expectOneMore();
             strictEqual(
                 wymeditor.doesElementContainSelection(p),
                 true
@@ -924,7 +925,7 @@ test("Returns true when non-collapsed selection is wholly in element" +
         },
         additionalAssertionsFunc: function (wymeditor) {
             var ol = wymeditor.body().childNodes[0];
-            expect(expect() + 1);
+            expectOneMore();
             strictEqual(
                 wymeditor.doesElementContainSelection(ol),
                 true
@@ -950,7 +951,7 @@ test("Returns true when non-collapsed selection is partly in element",
         },
         additionalAssertionsFunc: function (wymeditor) {
             var firstP = wymeditor.body().childNodes[0];
-            expect(expect() + 1);
+            expectOneMore();
             strictEqual(
                 wymeditor.doesElementContainSelection(firstP),
                 true
@@ -975,7 +976,7 @@ test("Returns false when non-collapsed selection is not in element",
         },
         additionalAssertionsFunc: function (wymeditor) {
             var firstP = wymeditor.body().childNodes[0];
-            expect(expect() + 1);
+            expectOneMore();
             strictEqual(
                 wymeditor.doesElementContainSelection(firstP),
                 false
@@ -991,7 +992,7 @@ test("Returns true when collapsed selection is in element",
         setCaretInSelector: "p",
         additionalAssertionsFunc: function (wymeditor) {
             var p = wymeditor.body().childNodes[0];
-            expect(expect() + 1);
+            expectOneMore();
             strictEqual(
                 wymeditor.doesElementContainSelection(p),
                 true
@@ -1007,7 +1008,7 @@ test("Returns false when collapsed selection is not in element",
         setCaretInSelector: "p:nth-child(2)",
         additionalAssertionsFunc: function (wymeditor) {
             var firstP = wymeditor.body().childNodes[0];
-            expect(expect() + 1);
+            expectOneMore();
             strictEqual(
                 wymeditor.doesElementContainSelection(firstP),
                 false
@@ -1023,7 +1024,7 @@ test("Returns true when collapsed selection is nested in element",
         setCaretInSelector: "li",
         additionalAssertionsFunc: function (wymeditor) {
             var p = wymeditor.body().childNodes[0];
-            expect(expect() + 1);
+            expectOneMore();
             strictEqual(
                 wymeditor.doesElementContainSelection(p),
                 true
