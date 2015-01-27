@@ -38,9 +38,11 @@ WYMeditor.editor.prototype._init = function () {
     WymClass = WYMeditor._getWymClass();
 
     if (!WymClass) {
+        // We don't support this browser. Don't initialize.
         return;
     }
 
+    // Initialize the browser-specific instance
     browserInstance = new WymClass(wym);
 
     if (jQuery.isFunction(wym._options.preInit)) {
