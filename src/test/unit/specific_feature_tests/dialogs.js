@@ -21,6 +21,9 @@ module("dialogs-opening_or_not", {setup: prepareUnitTestModule});
  * This is a helper for testing whether a dialog window was opened or not.
  * It also tests whether the dialog has the correct title.
  *
+ * If the dialog window can be opened using a keyboard shortcut, add that to
+ * `getDialogKeyCombo` in this file, and that will be tested as well.
+ *
  * Expects a single argument, an object, with the following properties:
  *
  * `dialogName`
