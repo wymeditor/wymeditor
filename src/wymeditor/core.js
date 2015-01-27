@@ -194,6 +194,7 @@ jQuery.extend(WYMeditor, {
         INSERT_IMAGE        : "InsertImage",
         UNDO                : "Undo",
         REDO                : "Redo",
+        INSERT_LINEBREAK    : "InsertLineBreak",
         // Lists
         INSERT_ORDEREDLIST  : "InsertOrderedList",
         INSERT_UNORDEREDLIST: "InsertUnorderedList",

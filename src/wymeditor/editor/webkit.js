@@ -14,6 +14,15 @@ WYMeditor.WymClassWebKit.prototype._docEventQuirks = function () {
     jQuery(wym._doc).bind("keyup", function (evt) {
         wym._keyup(evt);
     });
+
+    wym.keyboard.combokeys.bind(
+        "shift+enter",
+        // WebKit's shift+enter seems to create a new paragraph so we fix it
+        function () {
+            wym._exec(WYMeditor.EXEC_COMMANDS.INSERT_LINEBREAK);
+            return false;
+        }
+    );
 };
 
 // A `div` can be created by breaking out of a list in some cases. Issue #549.
