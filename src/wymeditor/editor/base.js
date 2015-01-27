@@ -13,7 +13,8 @@ WYMeditor.editor.prototype._init = function () {
     // Load the browser-specific subclass
     // If this browser isn't supported, do nothing
     var wym = this,
-        WymClass = false,
+        WymClass,
+        wymClass,
         SaxListener,
         prop,
         h,
@@ -33,28 +34,14 @@ WYMeditor.editor.prototype._init = function () {
         sContainer,
         oContainer;
 
-    if (WYMeditor.isInternetExplorerPre11()) {
-        WymClass = new WYMeditor.WymClassTridentPre7(wym);
-    } else if (WYMeditor.isInternetExplorer11OrNewer()) {
-        WymClass = new WYMeditor.WymClassTrident7(wym);
-    } else if (jQuery.browser.mozilla) {
-        WymClass = new WYMeditor.WymClassGecko(wym);
-    } else if (jQuery.browser.safari || jQuery.browser.webkit ||
-               jQuery.browser.chrome) {
-        if (jQuery.browser.version === '537.36') {
-            // This seems to indicate Blink. See:
-            // https://stackoverflow.com/questions/20655470
-            //WymClass = new WYMeditor.WymClassBlink(wym);
-            // For now we use the WebKit editor class in Blink.
-            WymClass = new WYMeditor.WymClassWebKit(wym);
-        } else {
-            WymClass = new WYMeditor.WymClassWebKit(wym);
-        }
-    }
+    // Get the constructor for the browser-specific instance
+    WymClass = wym._getWymClass();
 
-    if (WymClass === false) {
+    if (!WymClass) {
         return;
     }
+
+    wymClass = new WymClass(wym);
 
     if (jQuery.isFunction(wym._options.preInit)) {
         wym._options.preInit(wym);
@@ -71,13 +58,13 @@ WYMeditor.editor.prototype._init = function () {
     // Extend the editor object with the browser-specific version.
     // We're not using jQuery.extend because we *want* to copy properties via
     // the prototype chain
-    for (prop in WymClass) {
+    for (prop in wymClass) {
         /*jshint forin: false*/
         // Explicitly not using hasOwnProperty for the inheritance here
         // because we want to go up the prototype chain to get all of the
         // browser-specific editor methods. This is kind of a code smell,
         // but works just fine.
-        wym[prop] = WymClass[prop];
+        wym[prop] = wymClass[prop];
     }
 
     // Load wymbox
@@ -213,6 +200,39 @@ WYMeditor.editor.prototype._init = function () {
     wym.element.attr('data-wym-initialized', 'yes');
 
     wym._initSkin();
+};
+
+/**
+    WYMeditor.editor._getWymClass
+    =============================
+
+    Returns the constructor for the browser-specific wymeditor instance.
+
+    If does not detect a supported browser, returns false;
+*/
+WYMeditor.editor.prototype._getWymClass = function () {
+    var wym = this;
+
+    // Using https://github.com/gabceb/jquery-browser-plugin
+    switch (jQuery.browser.name) {
+        case "msie":
+            if (WYMeditor.isInternetExplorerPre11()) {
+                return WYMeditor.WymClassTridentPre7;
+            } else if (WYMeditor.isInternetExplorer11OrNewer()) {
+                return WYMeditor.WymClassTrident7;
+            } else {
+                return false;
+            }
+            break;
+        case "mozilla":
+            return WYMeditor.WymClassGecko;
+        case "chrome":
+            return WYMeditor.WymClassBlink;
+        case "safari":
+            return WYMeditor.WymClassSafari;
+        default:
+            return false;
+    }
 };
 
 /**
