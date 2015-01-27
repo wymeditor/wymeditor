@@ -1142,14 +1142,14 @@ WYMeditor.Helper = {
 };
 
 /**
-    WYMeditor._getWymClass
-    ======================
+    WYMeditor._getWymClassForBrowser
+    ================================
 
     Returns the constructor for the browser-specific wymeditor instance.
 
     If does not detect a supported browser, returns false;
 */
-WYMeditor._getWymClass = function () {
+WYMeditor._getWymClassForBrowser = function () {
 
     // Using https://github.com/gabceb/jquery-browser-plugin
     switch (jQuery.browser.name) {

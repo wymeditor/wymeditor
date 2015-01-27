@@ -35,7 +35,7 @@ WYMeditor.editor.prototype._init = function () {
         oContainer;
 
     // Get the constructor for the browser-specific instance
-    WymClass = WYMeditor._getWymClass();
+    WymClass = WYMeditor._getWymClassForBrowser();
 
     if (!WymClass) {
         // We don't support this browser. Don't initialize.
