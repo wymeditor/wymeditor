@@ -258,6 +258,8 @@ module.exports = function (grunt) {
                         "document-structure-manager.js",
                     "<%= yeoman.app %>/wymeditor/editor/gecko.js",
                     "<%= yeoman.app %>/wymeditor/editor/webkit.js",
+                    "<%= yeoman.app %>/wymeditor/editor/blink.js",
+                    "<%= yeoman.app %>/wymeditor/editor/safari.js",
                     "<%= yeoman.app %>/wymeditor/editor/trident-pre-7.js",
                     "<%= yeoman.app %>/wymeditor/editor/trident-7.js",
                     "<%= yeoman.app %>/lib/browserified-external-modules.js",
