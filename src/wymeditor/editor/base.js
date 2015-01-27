@@ -14,7 +14,7 @@ WYMeditor.editor.prototype._init = function () {
     // If this browser isn't supported, do nothing
     var wym = this,
         WymClass,
-        wymClass,
+        browserInstance,
         SaxListener,
         prop,
         h,
@@ -41,7 +41,7 @@ WYMeditor.editor.prototype._init = function () {
         return;
     }
 
-    wymClass = new WymClass(wym);
+    browserInstance = new WymClass(wym);
 
     if (jQuery.isFunction(wym._options.preInit)) {
         wym._options.preInit(wym);
@@ -58,13 +58,13 @@ WYMeditor.editor.prototype._init = function () {
     // Extend the editor object with the browser-specific version.
     // We're not using jQuery.extend because we *want* to copy properties via
     // the prototype chain
-    for (prop in wymClass) {
+    for (prop in browserInstance) {
         /*jshint forin: false*/
         // Explicitly not using hasOwnProperty for the inheritance here
         // because we want to go up the prototype chain to get all of the
         // browser-specific editor methods. This is kind of a code smell,
         // but works just fine.
-        wym[prop] = wymClass[prop];
+        wym[prop] = browserInstance[prop];
     }
 
     // Load wymbox
