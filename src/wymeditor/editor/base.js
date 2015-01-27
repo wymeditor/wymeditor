@@ -211,7 +211,6 @@ WYMeditor.editor.prototype._init = function () {
     If does not detect a supported browser, returns false;
 */
 WYMeditor.editor.prototype._getWymClass = function () {
-    var wym = this;
 
     // Using https://github.com/gabceb/jquery-browser-plugin
     switch (jQuery.browser.name) {
