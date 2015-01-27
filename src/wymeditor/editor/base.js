@@ -230,9 +230,13 @@ WYMeditor.editor.prototype._getWymClass = function () {
             return WYMeditor.WymClassBlink;
         case "safari":
             return WYMeditor.WymClassSafari;
-        default:
-            return false;
     }
+
+    if (jQuery.browser.webkit) {
+        return WYMeditor.WymClassWebKit;
+    }
+
+    return false;
 };
 
 /**
