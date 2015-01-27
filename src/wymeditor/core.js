@@ -1174,5 +1174,7 @@ WYMeditor._getWymClassForBrowser = function () {
         return WYMeditor.WymClassWebKit;
     }
 
+    WYMeditor.console.warn("WYMeditor could not instantiate: this browser " +
+        "is not supported");
     return false;
 };
