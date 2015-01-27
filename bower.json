@@ -16,6 +16,7 @@
     "jquery": "~1.4.4",
     "jquery.browser": "~0.0.6",
     "js-beautify": "https://github.com/beautify-web/js-beautify.git#1.5",
+    "qunit": "~1.17.1",
     "es5-shim": "~4.0.3"
   },
   "resolutions": {

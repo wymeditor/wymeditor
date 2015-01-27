@@ -2,11 +2,13 @@
     manipulationTestHelper
 */
 /* global
-    expect,
     wymEqual,
     QUnit,
     simulateKeyCombo,
     skipKeyboardShortcutTests,
+    expectOneMore,
+    expectedCount,
+    expected,
     SKIP_THIS_TEST
 */
 "use strict";
@@ -160,8 +162,8 @@ function manipulationTestHelper(a) {
             skipKeyboardShortcutTests &&
             manipulationCause === EXECUTE.KEY_COMBO
         ) {
-            if (expect() === null) {
-                expect(0);
+            if (!expected()) {
+                QUnit.expect(0);
             }
             return false;
         }
@@ -173,7 +175,7 @@ function manipulationTestHelper(a) {
         performManipulation(manipulationCause);
         // Expectancy incremented here in order to fail tests that specify
         // `async` but do not call the `asyncResumeFunc`.
-        expect(expect() + 1);
+        expectOneMore();
         if (a.async === true) {
             return assertResultUndoAndAdditional;
         } else {
@@ -182,7 +184,7 @@ function manipulationTestHelper(a) {
 
         function assertResultUndoAndAdditional() {
             // Return expectancy to real value.
-            expect(expect() - 1);
+            QUnit.expect(expectedCount() - 1);
             assertResultHtml();
             additionalAssertions();
 
@@ -212,7 +214,7 @@ function manipulationTestHelper(a) {
         }
 
         function assertStartHtml(assertionString) {
-            expect(expect() === null ? 1 : expect() + 1);
+            expectOneMore();
             wymEqual(
                 wymeditor,
                 a.expectedStartHtml || a.startHtml,
@@ -257,7 +259,7 @@ function manipulationTestHelper(a) {
 
         function assertResultHtml(assertionString) {
             if (typeof a.expectedResultHtml === 'string') {
-                expect(expect() + 1);
+                expectOneMore();
                 wymEqual(
                     wymeditor,
                     a.expectedResultHtml,
@@ -281,14 +283,13 @@ function manipulationTestHelper(a) {
     function skipThisTest() {
         if (typeof a.skipFunc === 'function') {
             if (a.skipFunc() === SKIP_THIS_TEST) {
-                if (expect() === null) {
-                    // `expect()` returns null when it wasn't called before in
-                    // the current test. Tests fail when they make zero
+                if (expectedCount() === null) {
+                    // Tests fail when they make zero
                     // assertions without calling `expect(0)`. This doesn't
                     // prevent `expect` from being called again, later, in the
                     // case `manipulationTestHelper` is not the last operation
                     // in th test.
-                    expect(0);
+                    QUnit.expect(0);
                 }
                 WYMeditor.console.warn(
                     "Assertions skipped in test \"" +

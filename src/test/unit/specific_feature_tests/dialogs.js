@@ -1,9 +1,10 @@
 /* global
+    expectOneMore,
+    expectMore,
     prepareUnitTestModule,
     manipulationTestHelper,
     module,
     test,
-    expect,
     ok,
     strictEqual,
     makeTextSelection
@@ -85,7 +86,7 @@ function dialogTestHelper(args) {
     }
 
     function assertOpened(dialogWindow) {
-        expect(expect() + 2);
+        expectMore(2);
         ok(
             dialogWindow.window === dialogWindow,
             "Dialog window seems to exist"
@@ -98,7 +99,7 @@ function dialogTestHelper(args) {
         );
     }
     function assertNotOpened(returnedFalse) {
-        expect(expect() + 1);
+        expectOneMore();
         ok(
             returnedFalse === false,
             "Dialog function returned `false`"

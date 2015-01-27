@@ -1,9 +1,12 @@
 /* jshint camelcase: false, maxlen: 85 */
 /* global
-prepareUnitTestModule,
-wymEqual, makeTextSelection,
-ok, test, expect,
-vanishAllWyms
+    prepareUnitTestModule,
+    wymEqual,
+    makeTextSelection,
+    ok,
+    test,
+    QUnit,
+    vanishAllWyms
 */
 "use strict";
 
@@ -28,7 +31,7 @@ var rootDivCorrectHtml = String() +
 module("structure-default_root_p", {setup: prepareUnitTestModule});
 
 test("DIV element is correctly converted to P", function () {
-    expect(2);
+    QUnit.expect(2);
     var wymeditor = jQuery.wymeditors(0),
         $pContainerLink = jQuery(wymeditor._box).find(
             wymeditor._options.containerSelector + '[name="P"]'),
@@ -66,7 +69,7 @@ module(
 );
 
 test("P element is correctly converted to DIV", function () {
-    expect(2);
+    QUnit.expect(2);
     var wymeditor = jQuery.wymeditors(0),
         $divContainerLink = jQuery(wymeditor._box).find(
             wymeditor._options.containerSelector + '[name="DIV"]'),
@@ -129,7 +132,7 @@ for (i = 0; i < inlineElementsToTest.length; ++i) {
 }
 
 test("Text node in the document root is wrapped in default container", function () {
-    expect(1);
+    QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0),
         $body = wymeditor.$body(),
         keyup_event,
@@ -152,7 +155,7 @@ test("Text node in the document root is wrapped in default container", function 
 test(
     "Inline element in the document root is wrapped in default container",
     function () {
-        expect(inlineElementsToTest.length);
+        QUnit.expect(inlineElementsToTest.length);
         var wymeditor = jQuery.wymeditors(0),
             $body = wymeditor.$body(),
             keyup_event,

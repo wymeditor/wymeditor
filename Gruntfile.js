@@ -427,6 +427,9 @@ module.exports = function (grunt) {
                         'jquery.js': '/',
                         'jquery.browser.js': '/',
                         'es5-shim.js': '/',
+                        // QUnit
+                        'qunit.js': '/',
+                        'qunit.css': '/',
                         // Originates from js-beautify
                         'beautify-html.js': '/',
                         // following two also originate from js-beautify and we

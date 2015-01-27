@@ -37,7 +37,7 @@ Start a server using
 After the server is running, by default,
 it serves on port ``9000``
 so point a browser at
-`http://localhost:9000/test/unit/ <QUnit test suite URI_>`_.
+`http://localhost:9000/test/unit/index.html <QUnit test suite URI_>`_.
 
 .. note::
 
@@ -179,7 +179,7 @@ Running Selenium tests
 
 .. _QUnit: http://qunitjs.com/
 .. _Selenium: http://seleniumhq.org/
-.. _QUnit test suite URI: http://localhost:9000/test/unit/
+.. _QUnit test suite URI: http://localhost:9000/test/unit/index.html
 .. _PhantomJS: http://phantomjs.org/
 .. _Python bindings for Selenium: https://pypi.python.org/pypi/selenium
 .. _Travis CI: https://travis-ci.org/

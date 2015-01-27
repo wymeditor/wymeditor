@@ -15,7 +15,7 @@
     rangy,
     deepEqual,
     html_beautify,
-    expect,
+    QUnit,
     QUnit,
     strictEqual,
     Keysim,
@@ -58,6 +58,21 @@ var keepAttributes = [
     'title',
     'target'
 ];
+
+function expectedCount() {
+    return QUnit.config.current.expected;
+}
+
+function expectMore(howMany) {
+    if (typeof howMany !== "number") {
+        throw "expectMore: requires a number";
+    }
+    QUnit.expect(expectedCount() + howMany);
+}
+
+function expectOneMore() {
+    expectMore(1);
+}
 
 // Returns true if all WYMeditor Iframes are initialized.
 function allWymIframesInitialized() {
@@ -394,12 +409,14 @@ function wymEqual(wymeditor, expected, options) {
     if (QUnit.config.current
         .assertions[QUnit.config.current.assertions.length - 1]
         .result === false) {
-        // If assertions are expected:
-        if (expect()) {
+
+        if (expectedCount()) {
+            // Assertions are already expected.
             // Increment the number of expected assertions by one. This allows
             // tests to treat this wymEqual helper as if it was one assertion.
-            expect(expect() + 1);
+            expectOneMore();
         }
+
         // Assert also on beautified HTML.
         strictEqual(
             /* jshint camelcase: false */
@@ -501,8 +518,8 @@ function moveSelector(wymeditor, selectedNode) {
     ) {
         wymeditor.setCaretIn(selectedNode);
 
-        if (expect()) {
-            expect(expect() + 1);
+        if (expectedCount()) {
+            expectOneMore();
         }
 
         deepEqual(
@@ -516,8 +533,8 @@ function moveSelector(wymeditor, selectedNode) {
 
         wymeditor.setCaretBefore(selectedNode);
 
-        if (expect()) {
-            expect(expect() + 1);
+        if (expectedCount()) {
+            expectOneMore();
         }
 
         deepEqual(
@@ -608,7 +625,7 @@ function testNoChangeInHtmlArray(htmlArray, parseHtml) {
         i,
         html;
 
-    expect(htmlArray.length);
+    QUnit.expect(htmlArray.length);
 
     for (i = 0; i < htmlArray.length; i++) {
         html = htmlArray[i];

@@ -5,7 +5,7 @@
 <head>
 <meta content="charset=utf-8" />
 <title>WYMeditor Test Suite</title>
-<link rel="stylesheet" href="qunit/qunit-1.12.0.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="../../lib/qunit.css" type="text/css" media="screen" />
 <link rel="stylesheet" type="text/css" href="../../wymeditor/skins/default/skin.css" />
 
 <script type="text/javascript" src="../load-src.dev.js"></script>
@@ -30,7 +30,7 @@
     }
 
     // Set global variables for checking if phantomjs is being used
-    inPhantomjs = (urlParams["inPhantomjs"] === 'true') ? true : false;
+    var inPhantomjs = urlParams.inPhantomjs ? true : false;
 
     loadWymSrc(
         '../../',
@@ -41,7 +41,7 @@
             "../../wymeditor/plugins/table/jquery.wymeditor.table.js",
             "../../wymeditor/plugins/structured_headings/jquery.wymeditor.structured_headings.js",
 
-            "qunit/qunit-1.12.0.js",
+            "../../lib/qunit.js",
             "qunit/qunit-tap.js",
 
             // Sinon files
