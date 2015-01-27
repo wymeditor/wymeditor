@@ -1140,3 +1140,39 @@ WYMeditor.Helper = {
         return null;
     }
 };
+
+/**
+    WYMeditor._getWymClass
+    ======================
+
+    Returns the constructor for the browser-specific wymeditor instance.
+
+    If does not detect a supported browser, returns false;
+*/
+WYMeditor._getWymClass = function () {
+
+    // Using https://github.com/gabceb/jquery-browser-plugin
+    switch (jQuery.browser.name) {
+        case "msie":
+            if (WYMeditor.isInternetExplorerPre11()) {
+                return WYMeditor.WymClassTridentPre7;
+            } else if (WYMeditor.isInternetExplorer11OrNewer()) {
+                return WYMeditor.WymClassTrident7;
+            } else {
+                return false;
+            }
+            break;
+        case "mozilla":
+            return WYMeditor.WymClassGecko;
+        case "chrome":
+            return WYMeditor.WymClassBlink;
+        case "safari":
+            return WYMeditor.WymClassSafari;
+    }
+
+    if (jQuery.browser.webkit) {
+        return WYMeditor.WymClassWebKit;
+    }
+
+    return false;
+};

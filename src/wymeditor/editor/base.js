@@ -35,7 +35,7 @@ WYMeditor.editor.prototype._init = function () {
         oContainer;
 
     // Get the constructor for the browser-specific instance
-    WymClass = wym._getWymClass();
+    WymClass = WYMeditor._getWymClass();
 
     if (!WymClass) {
         return;
@@ -200,42 +200,6 @@ WYMeditor.editor.prototype._init = function () {
     wym.element.attr('data-wym-initialized', 'yes');
 
     wym._initSkin();
-};
-
-/**
-    WYMeditor.editor._getWymClass
-    =============================
-
-    Returns the constructor for the browser-specific wymeditor instance.
-
-    If does not detect a supported browser, returns false;
-*/
-WYMeditor.editor.prototype._getWymClass = function () {
-
-    // Using https://github.com/gabceb/jquery-browser-plugin
-    switch (jQuery.browser.name) {
-        case "msie":
-            if (WYMeditor.isInternetExplorerPre11()) {
-                return WYMeditor.WymClassTridentPre7;
-            } else if (WYMeditor.isInternetExplorer11OrNewer()) {
-                return WYMeditor.WymClassTrident7;
-            } else {
-                return false;
-            }
-            break;
-        case "mozilla":
-            return WYMeditor.WymClassGecko;
-        case "chrome":
-            return WYMeditor.WymClassBlink;
-        case "safari":
-            return WYMeditor.WymClassSafari;
-    }
-
-    if (jQuery.browser.webkit) {
-        return WYMeditor.WymClassWebKit;
-    }
-
-    return false;
 };
 
 /**
