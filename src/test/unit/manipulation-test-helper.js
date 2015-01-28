@@ -8,7 +8,6 @@
     skipKeyboardShortcutTests,
     expectOneMore,
     expectedCount,
-    expected,
     SKIP_THIS_TEST
 */
 "use strict";
@@ -162,7 +161,7 @@ function manipulationTestHelper(a) {
             skipKeyboardShortcutTests &&
             manipulationCause === EXECUTE.KEY_COMBO
         ) {
-            if (!expected()) {
+            if (!expectedCount()) {
                 QUnit.expect(0);
             }
             return false;
