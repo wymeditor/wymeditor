@@ -17,6 +17,10 @@
 
 module("dialogs-opening_or_not", {setup: prepareUnitTestModule});
 
+var DIALOG_EXPECT_OPENED = "Expect this dialog to have been opened. " +
+    "Expect it with all of your heart.";
+var DIALOG_EXPECT_NOT_OPENED = "Nope. The dialog should not have opened.";
+
 /*
  * This is a helper for testing whether a dialog window was opened or not.
  * It also tests whether the dialog has the correct title.
@@ -40,11 +44,12 @@ module("dialogs-opening_or_not", {setup: prepareUnitTestModule});
  *     WYMeditor instance.
  * `expectedOpenedOrNot`
  *     Whether the dialog is expected to open or not. Either
- *     `dialogTestHelper.EXPECT_OPENED` or `dialogTestHelper.EXPECT_NOT` (These
+ *     DIALOG_EXPECT_OPENED` or
+ *     DIALOG_EXPECT_NOT_OPENED` (These
  *     are constants).
  */
 /* jshint latedef: nofunc */
-function dialogTestHelper(args) {
+function tryDialogWithClickAndKeyboardThenAssert(args) {
     var wymeditor = jQuery.wymeditors(0);
 
     // Wrap the dialog function with a spy
@@ -67,9 +72,9 @@ function dialogTestHelper(args) {
         var dialogReturns = wymeditor.dialog.returnValues,
             dialogWindowOrFalse = dialogReturns[dialogReturns.length - 1];
 
-        if (args.expectedOpenedOrNot === dialogTestHelper.EXPECT_OPENED) {
+        if (args.expectedOpenedOrNot === DIALOG_EXPECT_OPENED) {
             assertOpened(dialogWindowOrFalse);
-        } else if (args.expectedOpenedOrNot === dialogTestHelper.EXPECT_NOT) {
+        } else if (args.expectedOpenedOrNot === DIALOG_EXPECT_NOT_OPENED) {
             assertNotOpened(dialogWindowOrFalse);
         } else {
             throw "Expected either `opened` or `not`";
@@ -111,10 +116,6 @@ function dialogTestHelper(args) {
 }
 /* jshint latedef: true */
 
-dialogTestHelper.EXPECT_OPENED = "Expect this dialog to have been opened. " +
-    "Expect it with all of your heart.";
-dialogTestHelper.EXPECT_NOT = "Nope. The dialog should not have opened.";
-
 // Provided a dialog name, returns a jQuery selector for that dialog's button.
 function getDialogToolbarSelector(dialogName) {
     if (typeof dialogName !== "string") {
@@ -149,20 +150,20 @@ function getDialogDocumentTitle(dialogName) {
 }
 
 test("Link dialog doesn't open when no selection", function () {
-    dialogTestHelper({
+    tryDialogWithClickAndKeyboardThenAssert({
         dialogName: "CreateLink",
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",
         prepareFunc: function (wymeditor) {
             wymeditor.deselect();
         },
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT
+        expectedOpenedOrNot: DIALOG_EXPECT_NOT_OPENED
     });
 });
 
 test("Link dialog opens when selection is non-collapsed and " +
     "`selectedContainer` is a non-anchor element", function () {
-    dialogTestHelper({
+    tryDialogWithClickAndKeyboardThenAssert({
         dialogName: "CreateLink",
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",
@@ -176,24 +177,24 @@ test("Link dialog opens when selection is non-collapsed and " +
                 3
             );
         },
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED
+        expectedOpenedOrNot: DIALOG_EXPECT_OPENED
     });
 });
 
 test("Link dialog doesn't open when selection is collapsed and " +
     "`selectedContainer` doesn't return false", function () {
-    dialogTestHelper({
+    tryDialogWithClickAndKeyboardThenAssert({
         dialogName: "CreateLink",
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",
         setCaretInSelector: "p",
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT
+        expectedOpenedOrNot: DIALOG_EXPECT_NOT_OPENED
     });
 });
 
 test("Link dialog opens when selection is collapsed and " +
     "`selectedContainer` returns an `a` element", function () {
-    dialogTestHelper({
+    tryDialogWithClickAndKeyboardThenAssert({
         dialogName: "CreateLink",
         currentTest: this,
         noChangeHtml: "<p><a href=\"http://example.com/\">Foo</a></p>",
@@ -207,13 +208,13 @@ test("Link dialog opens when selection is collapsed and " +
                 1
             );
         },
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED
+        expectedOpenedOrNot: DIALOG_EXPECT_OPENED
     });
 });
 
 test("Link dialog opens when selection is non-collapsed and " +
     "`selectedContainer` returns an `a` element", function () {
-    dialogTestHelper({
+    tryDialogWithClickAndKeyboardThenAssert({
         dialogName: "CreateLink",
         currentTest: this,
         noChangeHtml: "<p><a href=\"http://example.com/\">Foo</a></p>",
@@ -227,13 +228,13 @@ test("Link dialog opens when selection is non-collapsed and " +
                 2
             );
         },
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED
+        expectedOpenedOrNot: DIALOG_EXPECT_OPENED
     });
 });
 
 test("Link dialog doesn't open when selection is non-collapsed and " +
     "`selectedContainer` returns false", function () {
-    dialogTestHelper({
+    tryDialogWithClickAndKeyboardThenAssert({
         dialogName: "CreateLink",
         currentTest: this,
         noChangeHtml: "<p>Foo</p><p>Bar</p>",
@@ -248,24 +249,24 @@ test("Link dialog doesn't open when selection is non-collapsed and " +
                 3
             );
         },
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT
+        expectedOpenedOrNot: DIALOG_EXPECT_NOT_OPENED
     });
 });
 
 test("Image dialog doesn't open when no selection", function () {
-    dialogTestHelper({
+    tryDialogWithClickAndKeyboardThenAssert({
         dialogName: "InsertImage",
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",
         prepareFunc: function (wymeditor) {
             wymeditor.deselect();
         },
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT
+        expectedOpenedOrNot: DIALOG_EXPECT_NOT_OPENED
     });
 });
 
 test("Image dialog doesn't open when selection is non-collapsed", function () {
-    dialogTestHelper({
+    tryDialogWithClickAndKeyboardThenAssert({
         dialogName: "InsertImage",
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",
@@ -279,34 +280,34 @@ test("Image dialog doesn't open when selection is non-collapsed", function () {
                 3
             );
         },
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT
+        expectedOpenedOrNot: DIALOG_EXPECT_NOT_OPENED
     });
 });
 
 test("Image dialog opens when selection is collapsed", function () {
-    dialogTestHelper({
+    tryDialogWithClickAndKeyboardThenAssert({
         dialogName: "InsertImage",
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",
         setCaretInSelector: "p",
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED
+        expectedOpenedOrNot: DIALOG_EXPECT_OPENED
     });
 });
 
 test("Table dialog doesn't open when no selection", function () {
-    dialogTestHelper({
+    tryDialogWithClickAndKeyboardThenAssert({
         dialogName: "InsertTable",
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",
         prepareFunc: function (wymeditor) {
             wymeditor.deselect();
         },
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT
+        expectedOpenedOrNot: DIALOG_EXPECT_NOT_OPENED
     });
 });
 
 test("Table dialog doesn't open when selection is non-collapsed", function () {
-    dialogTestHelper({
+    tryDialogWithClickAndKeyboardThenAssert({
         dialogName: "InsertTable",
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",
@@ -320,35 +321,35 @@ test("Table dialog doesn't open when selection is non-collapsed", function () {
                 3
             );
         },
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT
+        expectedOpenedOrNot: DIALOG_EXPECT_NOT_OPENED
     });
 });
 
 test("Table dialog opens when selection is collapsed and " +
     "`selectedContainer` doesn't return false", function () {
-    dialogTestHelper({
+    tryDialogWithClickAndKeyboardThenAssert({
         dialogName: "InsertTable",
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",
         setCaretInSelector: "p",
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED
+        expectedOpenedOrNot: DIALOG_EXPECT_OPENED
     });
 });
 
 test("Paste dialog doesn't open when no selection", function () {
-    dialogTestHelper({
+    tryDialogWithClickAndKeyboardThenAssert({
         dialogName: "Paste",
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",
         prepareFunc: function (wymeditor) {
             wymeditor.deselect();
         },
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT
+        expectedOpenedOrNot: DIALOG_EXPECT_NOT_OPENED
     });
 });
 
 test("Paste dialog doesn't open when selection is non-collapsed", function () {
-    dialogTestHelper({
+    tryDialogWithClickAndKeyboardThenAssert({
         dialogName: "Paste",
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",
@@ -362,35 +363,35 @@ test("Paste dialog doesn't open when selection is non-collapsed", function () {
                 3
             );
         },
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_NOT
+        expectedOpenedOrNot: DIALOG_EXPECT_NOT_OPENED
     });
 });
 
 test("Paste dialog opens when selection is collapsed", function () {
-    dialogTestHelper({
+    tryDialogWithClickAndKeyboardThenAssert({
         dialogName: "Paste",
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",
         setCaretInSelector: "p",
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED
+        expectedOpenedOrNot: DIALOG_EXPECT_OPENED
     });
 });
 
 test("Preview dialog opens when no selection", function () {
-    dialogTestHelper({
+    tryDialogWithClickAndKeyboardThenAssert({
         dialogName: "Preview",
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED
+        expectedOpenedOrNot: DIALOG_EXPECT_OPENED
     });
 });
 
 test("Preview dialog opens when selection is collapsed", function () {
-    dialogTestHelper({
+    tryDialogWithClickAndKeyboardThenAssert({
         dialogName: "Preview",
         currentTest: this,
         noChangeHtml: "<p>Foo</p>",
         setCaretInSelector: "p",
-        expectedOpenedOrNot: dialogTestHelper.EXPECT_OPENED
+        expectedOpenedOrNot: DIALOG_EXPECT_OPENED
     });
 });
