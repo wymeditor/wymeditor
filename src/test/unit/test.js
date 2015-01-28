@@ -93,6 +93,54 @@ test("Focusing on document that has designMode off, turns it on", function () {
     });
 });
 
+test("WebKit's shift+enter inserts a line break and prevents default " +
+    "action", function () {
+    if (!jQuery.browser.webkit) {
+        QUnit.expect(0);
+        return;
+    }
+
+    var thisTest = this,
+        wymeditor = jQuery.wymeditors(0),
+        enterCallBacks = wymeditor.keyboard.combokeys.callbacks.enter,
+        spy;
+
+    // Wrap the shift+enter handler with a spy
+    enterCallBacks.forEach(function (cb) {
+        if (cb.combo === "shift+enter") {
+            spy = thisTest.spy(cb, "callback");
+        }
+    });
+
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p>",
+        prepareFunc: function (wymeditor) {
+            var p = wymeditor.body().childNodes[0];
+            makeTextSelection(
+                wymeditor,
+                p,
+                p,
+                2,
+                2
+            );
+        },
+        manipulationKeyCombo: "shift+enter",
+        expectedResultHtml: "<p>Fo<br />o</p>",
+        additionalAssertionsFunc: function () {
+            expectMore(2);
+            ok(
+                spy.calledOnce,
+                "Callback was called"
+            );
+            strictEqual(
+                spy.returned(),
+                false,
+                "Callback returned false, preventing default action"
+            );
+        }
+    });
+});
+
 module("API", {setup: prepareUnitTestModule});
 
 test("Commands", function () {
