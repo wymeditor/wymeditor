@@ -31,12 +31,14 @@ ListPlugin.prototype.bindEvents = function() {
         "tab",
         function () {
             wym.exec(WYMeditor.EXEC_COMMANDS.INDENT);
+            return false;
         }
     );
     wym.keyboard.combokeys.bind(
         "shift+tab",
         function () {
             wym.exec(WYMeditor.EXEC_COMMANDS.OUTDENT);
+            return false;
         }
     );
 };
