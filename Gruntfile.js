@@ -193,13 +193,17 @@ module.exports = function (grunt) {
                     debug: true
                 }
             },
-            objectHistory: {
+            externalModules: {
                 // This file is the entry point for the browserification of
-                // this module. It assigns the module's CommonJS export to a
-                // browser window global.
+                // external modules.
                 src: ['<%= yeoman.app %>/wymeditor/editor/' +
-                    'object-history-browserify.js'],
-                dest: '<%= yeoman.app %>/lib/object-history.js'
+                    'external-modules-browserify.js'],
+                dest: '<%= yeoman.app %>/lib/browserified-external-modules.js'
+            },
+            keysim: {
+                // This is used in tests.
+                src: ['<%= yeoman.app %>/test/unit/keysim-globalifier.js'],
+                dest: '<%= yeoman.app %>/lib/keysim-globalifier.js'
             }
         },
         useminPrepare: {
@@ -258,8 +262,9 @@ module.exports = function (grunt) {
                     "<%= yeoman.app %>/wymeditor/editor/safari.js",
                     "<%= yeoman.app %>/wymeditor/editor/trident-pre-7.js",
                     "<%= yeoman.app %>/wymeditor/editor/trident-7.js",
-                    "<%= yeoman.app %>/lib/object-history.js",
+                    "<%= yeoman.app %>/lib/browserified-external-modules.js",
                     "<%= yeoman.app %>/wymeditor/editor/undo-redo.js",
+                    "<%= yeoman.app %>/wymeditor/editor/keyboard.js",
                     "<%= yeoman.app %>/wymeditor/parser/*.js",
                     // TODO: For custom builds, will need to change this.
                     "<%= yeoman.app %>/wymeditor/lang/*.js",
@@ -517,7 +522,8 @@ module.exports = function (grunt) {
 
         grunt.task.run([
             'bower',
-            'browserify:objectHistory',
+            'browserify:externalModules',
+            'browserify:keysim',
             'clean:server',
             'jekyllDev',
             'connect:dev',
@@ -527,7 +533,8 @@ module.exports = function (grunt) {
 
     grunt.registerTask('test', [
         'bower',
-        'browserify:objectHistory',
+        'browserify:externalModules',
+        'browserify:keysim',
         'clean:server',
         'connect:test',
         'qunit'
@@ -538,7 +545,7 @@ module.exports = function (grunt) {
         'useminPrepare',
         'bower-install-simple',
         'bower-linker:dist-examples',
-        'browserify:objectHistory',
+        'browserify:externalModules',
         'concat',
         'uglify',
         'copy:dist',

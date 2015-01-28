@@ -20,35 +20,12 @@ WYMeditor.WymClassGecko.NEEDS_CELL_FIX = parseInt(
 WYMeditor.WymClassGecko.prototype._docEventQuirks = function () {
     var wym = this;
 
-    jQuery(wym._doc).bind("keydown", function (evt) {
-        wym._keydown(evt);
-    });
     jQuery(wym._doc).bind("keyup", function (evt) {
         wym._keyup(evt);
     });
     jQuery(wym._doc).bind("click", function (evt) {
         wym._click(evt);
     });
-};
-
-//keydown handler, mainly used for keyboard shortcuts
-WYMeditor.WymClassGecko.prototype._keydown = function (evt) {
-    var wym = this;
-
-    if (evt.ctrlKey) {
-        if (evt.which === WYMeditor.KEY_CODE.B) {
-            //CTRL+b => STRONG
-            wym._exec(WYMeditor.EXEC_COMMANDS.BOLD);
-            return false;
-        }
-        if (evt.which === WYMeditor.KEY_CODE.I) {
-            //CTRL+i => EMPHASIS
-            wym._exec(WYMeditor.EXEC_COMMANDS.ITALIC);
-            return false;
-        }
-    }
-
-    return true;
 };
 
 // Keyup handler, mainly used for cleanups

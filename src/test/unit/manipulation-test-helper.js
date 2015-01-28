@@ -4,6 +4,8 @@
 /* global
     wymEqual,
     QUnit,
+    simulateKeyCombo,
+    skipKeyboardShortcutTests,
     expectOneMore,
     expectedCount,
     SKIP_THIS_TEST
@@ -32,6 +34,9 @@
  *     `manipulationFunc`
  *         Optional; The manipulation function to be tested. Receives one
  *         argument, the WYMeditor instance.
+ *     `manipulationKeyCombo`
+ *         Optional; A key combination that is expected to trigger the
+ *         manipulation. For example, "ctrl+b".
  *     `manipulationClickSelector`
  *         Optional; A jQuery selector that will be used to select exactly
  *         one element, that will be `jQuery.fn.click()`ed.
@@ -93,8 +98,9 @@
  *         });
  *         ```
  *
- *     `manipulationFunc` and `manipulationClickSelector` are not exclusive
- *     of each other. The procedure will be performed once for each of them.
+ *     `manipulationFunc`, `manipulationKeyCombo` and
+ *     `manipulationClickSelector` are not exclusive of each other. The
+ *     procedure will be performed once for each of them.
  */
 /* jshint latedef: nofunc */
 function manipulationTestHelper(a) {
@@ -112,6 +118,7 @@ function manipulationTestHelper(a) {
     EXECUTE = {
         FUNCTION: "function",
         UI_CLICK: "UI click",
+        KEY_COMBO: "keyboard shortcut",
         NO_MANIPULATION: "no manipulation"
     };
 
@@ -123,6 +130,10 @@ function manipulationTestHelper(a) {
         typeof a.manipulationClickSelector === "string"
     ) {
         executions.push(EXECUTE.UI_CLICK);
+    }
+
+    if (typeof a.manipulationKeyCombo === "string") {
+        executions.push(EXECUTE.KEY_COMBO);
     }
 
     if (executions.length === 0) {
@@ -145,6 +156,16 @@ function manipulationTestHelper(a) {
     }
 
     function manipulateAndAssert(manipulationCause) {
+
+        if (
+            skipKeyboardShortcutTests &&
+            manipulationCause === EXECUTE.KEY_COMBO
+        ) {
+            if (!expectedCount()) {
+                QUnit.expect(0);
+            }
+            return false;
+        }
 
         initialize();
         assertStartHtml();
@@ -224,6 +245,9 @@ function manipulationTestHelper(a) {
                         throw "Expected one element";
                     }
                     $clickElement.click();
+                    break;
+                case EXECUTE.KEY_COMBO:
+                    simulateKeyCombo(wymeditor, a.manipulationKeyCombo);
                     break;
                 case EXECUTE.NO_MANIPULATION:
                     return;

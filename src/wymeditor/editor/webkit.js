@@ -11,36 +11,18 @@ WYMeditor.WymClassWebKit = function (wym) {
 WYMeditor.WymClassWebKit.prototype._docEventQuirks = function () {
     var wym = this;
 
-    jQuery(wym._doc).bind("keydown", function (evt) {
-        wym._keydown(evt);
-    });
     jQuery(wym._doc).bind("keyup", function (evt) {
         wym._keyup(evt);
     });
-};
 
-//keydown handler, mainly used for keyboard shortcuts
-WYMeditor.WymClassWebKit.prototype._keydown = function (evt) {
-    var wym = this;
-
-    if (evt.ctrlKey) {
-        if (evt.which === WYMeditor.KEY_CODE.B) {
-            //CTRL+b => STRONG
-            wym._exec(WYMeditor.EXEC_COMMANDS.BOLD);
-            evt.preventDefault();
+    wym.keyboard.combokeys.bind(
+        "shift+enter",
+        // WebKit's shift+enter seems to create a new paragraph so we fix it
+        function () {
+            wym._exec(WYMeditor.EXEC_COMMANDS.INSERT_LINEBREAK);
+            return false;
         }
-        if (evt.which === WYMeditor.KEY_CODE.I) {
-            //CTRL+i => EMPHASIS
-            wym._exec(WYMeditor.EXEC_COMMANDS.ITALIC);
-            evt.preventDefault();
-        }
-    } else if (evt.shiftKey && evt.which === WYMeditor.KEY_CODE.ENTER) {
-        // Safari 4 and earlier would show a proper linebreak in the editor and
-        // then strip it upon save with the default action in the case of
-        // inserting a new line after bold text
-        wym._exec('InsertLineBreak');
-        evt.preventDefault();
-    }
+    );
 };
 
 // A `div` can be created by breaking out of a list in some cases. Issue #549.

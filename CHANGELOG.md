@@ -42,6 +42,8 @@ WYMeditor.
   New `editor.doesElementContainSelection` method.
 * [#512](https://github.com/wymeditor/wymeditor/pull/512)
   New undo/redo methods in the API.
+* [#624](https://github.com/wymeditor/wymeditor/pull/624)
+  New `editor.keyboard.combokeys` for managing keyboard shortcuts.
 * [#641](https://github.com/wymeditor/wymeditor/pull/641)
   New `editor.getSelectedImage()`
 * [#639](https://github.com/wymeditor/wymeditor/pull/639)
@@ -64,6 +66,10 @@ WYMeditor.
 
   Undo/redo, even if unused, may eat a lot of RAM, depending on the document
   size and the browser. To be optimized.
+* [#624](https://github.com/wymeditor/wymeditor/pull/624)
+  * Keyboard shortcuts are more consistent cross-platform.
+  * Fix: pressing tab in WebKit and Blink creates span. caveat: now tab can’t
+    be used to focus on the next element (taking focus outside the document).
 
 ## 1.0.0-rc.1
 

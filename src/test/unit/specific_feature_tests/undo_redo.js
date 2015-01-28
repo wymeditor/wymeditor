@@ -7,8 +7,12 @@
     expectOneMore,
     expectMore,
     equal,
+    simulateKeyCombo,
+    skipKeyboardShortcutTests,
     manipulationTestHelper,
-    test
+    OS_MOD_KEY,
+    test,
+   SKIP_THIS_TEST
 */
 "use strict";
 
@@ -309,5 +313,48 @@ test("Table; merge cells", function () {
             , "</table>"
             , "<br class=\"wym-blocking-element-spacer wym-editor-only\" />"
         ].join('')
+    });
+});
+
+test("Undo keyboard shortcut", function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p>",
+        setCaretInSelector: "p",
+        prepareFunc: function (wymeditor) {
+            wymeditor.undoRedo.reset();
+            wymeditor.exec(WYMeditor.EXEC_COMMANDS.INSERT_ORDEREDLIST);
+        },
+        expectedStartHtml: "<ol><li>Foo</li></ol>",
+        manipulationFunc: function (wymeditor) {
+            simulateKeyCombo(wymeditor, OS_MOD_KEY + "+z");
+        },
+        expectedResultHtml: "<p>Foo</p>",
+        skipFunc: function () {
+            if (skipKeyboardShortcutTests === true) {
+                return SKIP_THIS_TEST;
+            }
+        }
+    });
+});
+
+test("Redo keyboard shortcut", function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p>",
+        setCaretInSelector: "p",
+        prepareFunc: function (wymeditor) {
+            wymeditor.undoRedo.reset();
+            wymeditor.exec(WYMeditor.EXEC_COMMANDS.INSERT_ORDEREDLIST);
+            wymeditor.undoRedo.undo();
+        },
+        expectedStartHtml: "<p>Foo</p>",
+        manipulationFunc: function (wymeditor) {
+            simulateKeyCombo(wymeditor, OS_MOD_KEY + "+y");
+        },
+        expectedResultHtml: "<ol><li>Foo</li></ol>",
+        skipFunc: function () {
+            if (skipKeyboardShortcutTests === true) {
+                return SKIP_THIS_TEST;
+            }
+        }
     });
 });

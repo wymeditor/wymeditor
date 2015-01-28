@@ -13,6 +13,8 @@
 
     Constructs an undoRedo mechanism for a provided editor.
 
+    Also sets keyboard shortcuts for undo and redo.
+
     @param wym An editor instance.
 */
 WYMeditor.UndoRedo = function (wym) {
@@ -23,6 +25,23 @@ WYMeditor.UndoRedo = function (wym) {
     // https://github.com/mightyiam/object-history
     undoRedo.history = new WYMeditor.EXTERNAL_MODULES
         .ObjectHistory(wym.getCurrentState());
+
+    wym.keyboard.combokeys.bind(
+        "mod+z",
+        function () {
+            wym.undoRedo.undo();
+            // Prevents native action. Caution: not covered by tests.
+            return false;
+        }
+    );
+    wym.keyboard.combokeys.bind(
+        ["shift+meta+z", "mod+y"],
+        function () {
+            wym.undoRedo.redo();
+            // Prevents native action. Caution: not covered by tests.
+            return false;
+        }
+    );
 };
 
 /**

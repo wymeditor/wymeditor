@@ -5,9 +5,11 @@
     testNoChangeInHtmlArray,
     makeTextSelection,
     moveSelector,
+    simulateKeyCombo,
+    SKIP_THIS_TEST,
+    OS_MOD_KEY,
     prepareUnitTestModule,
-    IMG_SRC,
-    SKIP_THIS_TEST
+    IMG_SRC
 */
 /* global
     rangy,
@@ -15,12 +17,25 @@
     html_beautify,
     QUnit,
     QUnit,
+    strictEqual,
+    Keysim,
+    inPhantomjs,
+    skipKeyboardShortcutTests:true,
     stop,
     start,
     ListPlugin,
     strictEqual
 */
 "use strict";
+
+var OS_MOD_KEY = jQuery.browser.mac ? "meta" : "ctrl";
+
+if (
+    inPhantomjs === true
+) {
+    // PhantomJS fails on keyboard shortcut tests.
+    skipKeyboardShortcutTests = true;
+}
 
 // An image source for images in tests.
 var IMG_SRC = "http://bit.ly/139xJN2";
@@ -626,6 +641,17 @@ function testNoChangeInHtmlArray(htmlArray, parseHtml) {
             }
         );
     }
+}
+
+function simulateKeyCombo(wymeditor, keyCombo) {
+    if (typeof keyCombo !== 'string') {
+        throw "Expected a string key combination.";
+    }
+
+    Keysim.Keyboard.US_ENGLISH.dispatchEventsForAction(
+        keyCombo,
+        wymeditor.body()
+    );
 }
 
 var SKIP_THIS_TEST = "Skip this test. Really. I know what I'm doing. Trust " +

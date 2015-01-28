@@ -635,6 +635,20 @@ Example:
 
 Show/hide the HTML source.
 
+``keyboard.combokeys``
+======================
+
+For keyboard shortcuts, the `Combokeys`_ library is used.
+
+For each instance of the editor, a Combokeys instance is instantiated, attached
+to the document and assigned as ``wym.keyboard.combokeys``.
+
+This Combokeys instance can be used to attach keyboard shortcuts.
+
+Please refer to `Combokeys`_' documentation.
+
+.. _Combokeys: http://github.com/mightyiam/combokeys
+
 ``focusOnDocument()``
 =====================
 
