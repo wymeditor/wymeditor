@@ -35,7 +35,7 @@ WYMeditor.UndoRedo = function (wym) {
         }
     );
     wym.keyboard.combokeys.bind(
-        ["shift+meta+z", "ctrl+y"],
+        ["shift+meta+z", "mod+y"],
         function () {
             wym.undoRedo.redo();
             // Prevents native action. Caution: not covered by tests.
