@@ -4,10 +4,9 @@ if (
     jQuery.browser.name === "msie" &&
     jQuery.browser.versionNumber <= 8
    ) {
-    // This browser does not properly implement
-    // `Object.prototype.defineProperty`.
-    // This is required by the external keyboard event simulation module,
-    // `keysim`.
+    // Keysim.js is our external keyboard event simulation module.
+    // Keysim.js doesn't support this browser, yet.
+    // https://github.com/wymeditor/wymeditor/issues/663
     window.skipKeyboardShortcutTests = true;
 } else {
     window.Keysim = require("keysim");
