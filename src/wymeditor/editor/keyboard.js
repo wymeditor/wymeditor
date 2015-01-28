@@ -36,6 +36,16 @@ WYMeditor.Keyboard.DEFAULT_KEYBOARD_SHORTCUTS = [
             // Prevents native action. Caution: not covered by tests.
             return false;
         }
+    },
+    {
+        combo: "tab",
+        cb: function () {
+            // Default action of WebKit and Blink is to create a span.
+            // See https://stackoverflow.com/q/22404724
+            // For consistency across browsers, prevent the default action in
+            // them all
+            return false;
+        }
     }
 ];
 
