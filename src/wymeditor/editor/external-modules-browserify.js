@@ -4,6 +4,6 @@
 // See the explanation in the `Gruntfile`, in the `browserify:externalModules`
 // task.
 WYMeditor.EXTERNAL_MODULES = {
-    ObjectHistory: require("object-history/history"),
+    ObjectHistory: require("object-history"),
     Combokeys: require("combokeys")
 };
