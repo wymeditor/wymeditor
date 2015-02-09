@@ -2,11 +2,14 @@ language: node_js
 node_js:
     - 0.10
 before_script: npm install -g grunt-cli
-script:
-    - grunt test --jquery=1.4.4
-    - grunt test --jquery=1.5.2
-    - grunt test --jquery=1.6.4
-    - grunt test --jquery=1.7.2
-    - grunt test --jquery=1.8.3
-    - grunt test --jquery=1.9.1
-    - grunt jshint
+env:
+    - GRUNT_TASK="test --jquery=1.4.4"
+    - GRUNT_TASK="test --jquery=1.5.2"
+    - GRUNT_TASK="test --jquery=1.6.4"
+    - GRUNT_TASK="test --jquery=1.7.2"
+    - GRUNT_TASK="test --jquery=1.8.3"
+    - GRUNT_TASK="test --jquery=1.9.1"
+    - GRUNT_TASK=jshint
+    - GRUNT_TASK=build
+
+script: grunt $GRUNT_TASK
