@@ -33,15 +33,13 @@ Resources
 *********
 
 +-----------------+------------------------------------------+------------------------------------------+
-| Website         | `WYMeditor website`_                     | ``http://wymeditor.github.io/wymeditor`` |
+| Documentation   | `WYMeditor documentation`_               | |documentation badge|                    |
 +-----------------+------------------------------------------+------------------------------------------+
 | Code repository | `WYMeditor GitHub repository`_           | |GitHub Mark|                            |
 +-----------------+------------------------------------------+------------------------------------------+
-| Documentation   | `WYMeditor documentation`_               | |documentation badge|                    |
+| Website         | `WYMeditor website`_                     | ``http://wymeditor.github.io/wymeditor`` |
 +-----------------+------------------------------------------+------------------------------------------+
 | Support         | `WYMeditor questions in Stack Overflow`_ | |Stack Overflow icon|                    |
-+-----------------+------------------------------------------+------------------------------------------+
-| Chat            | `WYMeditor IRC channel`_                 | ``irc://irc.freenode.net/wymeditor``     |
 +-----------------+------------------------------------------+------------------------------------------+
 | Issues          | `WYMeditor issue tracker`_               |                                          |
 +-----------------+------------------------------------------+------------------------------------------+
@@ -68,7 +66,6 @@ Resources
    questions/tagged/wymeditor
 .. |Stack Overflow icon| image:: http://cdn.sstatic.net/stackoverflow/img/favicon.ico
    :alt: Stack Overflow icon
-.. _WYMeditor IRC channel: irc://irc.freenode.net/wymeditor
 .. _WYMeditor online examples: https://wymeditor.github.io/wymeditor/dist/
    examples/
 .. _WYMeditor Travis-CI report: https://travis-ci.org/wymeditor/wymeditor
