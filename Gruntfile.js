@@ -465,6 +465,9 @@ module.exports = function (grunt) {
         },
         shell: {
             convertReadmeToHomePage: {
+                options: {
+                    failOnError: false
+                },
                 command: [
                     'rst2html',
                     '--template ' + jekyllDir + '/_index.template',
