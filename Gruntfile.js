@@ -465,6 +465,9 @@ module.exports = function (grunt) {
         },
         shell: {
             convertReadmeToHomePage: {
+                options: {
+                    failOnError: false
+                },
                 command: [
                     'rst2html',
                     '--template ' + jekyllDir + '/_index.template',
@@ -525,7 +528,7 @@ module.exports = function (grunt) {
             'browserify:externalModules',
             'browserify:keysim',
             'clean:server',
-            'jekyllDev',
+            'force:jekyllDev',
             'connect:dev',
             'concurrent:watchDev'
         ]);
@@ -552,7 +555,7 @@ module.exports = function (grunt) {
         'usemin',
         'replace',
         'compress',
-        'jekyllDist'
+        'force:jekyllDist'
     ]);
 
     grunt.registerTask('default', [
@@ -601,6 +604,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-usemin");
     grunt.loadNpmTasks("grunt-bower-install-simple");
     grunt.loadNpmTasks("grunt-bower-linker");
+    grunt.loadNpmTasks("grunt-force");
     grunt.loadNpmTasks("grunt-jekyll");
     grunt.loadNpmTasks("grunt-concurrent");
     grunt.loadNpmTasks("grunt-shell");

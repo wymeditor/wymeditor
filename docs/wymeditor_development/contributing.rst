@@ -90,13 +90,84 @@ Then you just need to
 
     $ npm install
 
-.. note::
+Example Installation
+====================
 
-    For the example setup of an Ubuntu Precise machine,
-    check out our
-    `vagrant_provision.sh <https://github.com/wymeditor/wymeditor/blob/master/vagrant_provision.sh>`_
-    script,
-    which we use for configuring the Vagrant machine.
+We think that `nvm <https://github.com/creationix/nvm>`_
+is a really cool way
+to do node.js things,
+so we'll use that for our example install.
+If you already know your way around node,
+feel free to use whatever you'd like.
+
+1. Install NVM
+--------------
+
+.. code-block:: shell-session
+
+    $ curl https://raw.githubusercontent.com/creationix/nvm/v0.23.3/install.sh | bash
+    $ source ~/.profile
+
+
+2. Install node and npm using nvm
+---------------------------------
+
+.. code-block:: shell-session
+
+    $ nvm install 0.10
+
+3. Install WYMeditor's dependencies
+-----------------------------------
+
+.. code-block:: shell-session
+
+    $ npm install
+
+4. Install Grunt
+----------------
+
+.. code-block:: shell-session
+
+    $ npm install -g grunt-cli
+
+4. Ensure everything works
+--------------------------
+
+.. code-block:: shell-session
+
+    $ grunt build
+    $ grunt test
+
+If ``grunt build`` succeeds,
+you're in good shape.
+If ``grunt test`` fails,
+it's probably because of a busted PhantomJS install.
+Refer to the :ref:`troubleshoot-phantoms` section
+for tips.
+
+
+Troubleshooting
+===============
+
+.. _troubleshoot-phantomjs:
+
+PhantomJS Isn't Working
+-----------------------
+
+You probably need to install
+the libraries required for building from source
+on your OS.
+In Debian/Ubuntu,
+that means::
+
+.. code-block:: shell-session
+
+    $ sudo apt-get install build-essential libfontconfig1 fontconfig libfontconfig1-dev libfreetype6-dev
+    $ npm install
+
+If you're not using Ubuntu,
+you should google around for a tutorial
+or check the `PhantomJS Build Page <http://phantomjs.org/build.html>`_.
 
 Front-end dependencies with Bower
 =================================
@@ -107,81 +178,6 @@ Grunt orchestrates this automatically so you don't have to think about it.
 
 If you changed ``bower.json`` and want those changes to take affect, just
 restart the server or run ``grunt bower``.
-
-.. _vagrant-environment-setup:
-
-Environment Setup with Vagrant
-==============================
-
-1. Install Virtualbox
----------------------
-
-First,
-you need a working installation of
-`VirtualBox <https://www.virtualbox.org/>`_.
-
-On Ubuntu,
-that's as easy as:
-
-.. code-block:: shell-session
-
-    $ sudo apt-get install virtualbox
-
-2. Install Vagrant
-------------------
-
-Vagrant builds and provisions our Virtualbox.
-See their documentation for
-`Vagrant Installation Instructions <http://docs.vagrantup.com/v2/installation/>`.
-
-
-3. Install Vagrant Plugins
----------------------------
-
-We use a couple of Vagrant plugins
-to make managing things easier.
-
-.. code-block:: shell-session
-
-    $ vagrant plugin install vagrant-omnibus
-    $ vagrant plugin install vagrant-librarian-chef
-
-4. Build Your Box
------------------
-
-.. code-block:: shell-session
-
-    $ vagrant up
-
-Vagrant Troubleshooting
------------------------
-
-Encrypted Home Directory: Problems with the NFS mount
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-If you use an FUSE-based encrypted home directory,
-as is the default for Ubuntu,
-you might see an error like:
-
-::
-
-    mount.nfs: access denied by server while mounting 10.10.10.1:/home/you/your-wym-repo
-
-Unfortunately,
-NFS can't share encrypted directories,
-which is how Virtualbox and Vagrant
-keep your files synchronized.
-To work around this
-we recommend putting your git clone
-in a directory like ``/opt``.
-
-.. code-block:: shell-session
-
-    $ mkdir -p /opt/wym
-    $ cd /opt/wym
-    $ git clone https://github.com/wymeditor/wymeditor.git
-    $ cd wymeditor
-    $ vagrant up
 
 Enabling Automatic Livereload for Development
 =============================================
@@ -194,9 +190,3 @@ in your browser.
 
 If this sounds nifty,
 simply `install the proper extension <http://feedback.livereload.com/knowledgebase/articles/86242-how-do-i-install-and-use-the-browser-extensions->`_.
-
-.. note::
-
-    If you're using the Vagrant development route,
-    the performance hit from using the NFS share
-    means that live reload won't be instantaneous.
