@@ -172,9 +172,22 @@ WYMeditor.XhtmlSaxListener = function() {
 };
 
 WYMeditor.XhtmlSaxListener.prototype.shouldCloseTagAutomatically = function(tag, now_on_tag, closing) {
-    closing = closing || false;
+    if (tag != 'td' && tag != 'option') {
+        return false;
+    }
+    var openCount = this._open_tags[tag];
+    if (openCount === 0) {
+        return false;
+    }
+    if (typeof openCount === 'undefined') {
+        return false;
+    }
     if (tag == 'td') {
-        if ((closing && now_on_tag == 'tr') || (!closing && now_on_tag == 'td')) {
+        var openTrCount = this._open_tags['tr'] || 0;
+        if (!closing && now_on_tag === 'td' && openCount >= openTrCount) {
+            return true;
+        }
+        if (closing && now_on_tag == 'tr' && openCount > openTrCount) {
             return true;
         }
     } else if (tag == 'option') {
