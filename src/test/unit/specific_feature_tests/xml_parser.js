@@ -2280,3 +2280,233 @@ test("Three `br` variations without `id`s", function () {
         );
     }
 });
+
+module("XmlParser-auto_close_tags", {setup: prepareUnitTestModule});
+
+var nestedTableHtml = String() +
+        '<table>' +
+            '<tbody>' +
+                '<tr>' +
+                    '<td>' +
+                        '<table>' +
+                            '<tbody>' +
+                                '<tr>' +
+                                    '<td>AAA</td>' +
+                                '</tr>' +
+                            '</tbody>' +
+                        '</table>' +
+                        '<strong>BBB</strong>' +
+                        '<ul>' +
+                            '<li>CCC</li>' +
+                        '</ul>' +
+                        'DDD' +
+                    '</td>' +
+                '</tr>' +
+            '</tbody>' +
+        '</table>',
+    unclosedOption = String() +
+        '<select>' +
+            '<option>AAA' +
+            '<option>BBB</option>' +
+        '</select>',
+    closedOption = String() +
+        '<select>' +
+            '<option>AAA</option>' +
+            '<option>BBB</option>' +
+        '</select>',
+    unclosedTable = String() +
+        '<table>' +
+            '<tbody>' +
+                '<tr>' +
+                    '<td>AAA' +
+                    '<td>BBB</td>' +
+                '</tr>' +
+            '</tbody>' +
+        '</table>',
+    closedTable = String() +
+        '<table>' +
+            '<tbody>' +
+                '<tr>' +
+                    '<td>AAA</td>' +
+                    '<td>BBB</td>' +
+                '</tr>' +
+            '</tbody>' +
+        '</table>',
+    unclosedTableLastInRow = String() +
+        '<table>' +
+            '<tbody>' +
+                '<tr>' +
+                    '<td>AAA</td>' +
+                    '<td>BBB' +
+                '</tr>' +
+            '</tbody>' +
+        '</table>',
+    closedNestedTableHtml = String() +
+        '<table>' +
+            '<tbody>' +
+                '<tr>' +
+                    '<td>' +
+                        '<table>' +
+                            '<tbody>' +
+                                '<tr>' +
+                                    '<td>AAA</td>' +
+                                    '<td>BBB</td>' +
+                                '</tr>' +
+                            '</tbody>' +
+                        '</table>' +
+                    '</td>' +
+                '</tr>' +
+            '</tbody>' +
+        '</table>',
+    unclosedNestedTableHtml = String() +
+        '<table>' +
+            '<tbody>' +
+                '<tr>' +
+                    '<td>' +
+                        '<table>' +
+                            '<tbody>' +
+                                '<tr>' +
+                                    '<td>AAA' +
+                                    '<td>BBB</td>' +
+                                '</tr>' +
+                            '</tbody>' +
+                        '</table>' +
+                    '</td>' +
+                '</tr>' +
+            '</tbody>' +
+        '</table>',
+    unclosedNestedTableLastInRowHtml = String() +
+        '<table>' +
+            '<tbody>' +
+                '<tr>' +
+                    '<td>' +
+                        '<table>' +
+                            '<tbody>' +
+                                '<tr>' +
+                                    '<td>AAA</td>' +
+                                    '<td>BBB' +
+                                '</tr>' +
+                            '</tbody>' +
+                        '</table>' +
+                    '</td>' +
+                '</tr>' +
+            '</tbody>' +
+        '</table>';
+
+test("Test nested table html not reordered when parser", function () {
+    QUnit.expect(1);
+    var wymeditor = jQuery.wymeditors(0);
+
+    deepEqual(wymeditor.parser.parse(nestedTableHtml), nestedTableHtml);
+});
+
+
+test("Test nested table html not reordered end to end", function () {
+    QUnit.expect(1);
+    var wymeditor = jQuery.wymeditors(0);
+
+    wymeditor.rawHtml(nestedTableHtml);
+    wymEqual(wymeditor, nestedTableHtml, {parseHtml: true});
+});
+
+
+test("Test unclosed option tag is closed when parsed", function () {
+    QUnit.expect(1);
+    var wymeditor = jQuery.wymeditors(0);
+
+    deepEqual(wymeditor.parser.parse(unclosedOption), closedOption);
+});
+
+
+test("Test unclosed option tag is closed end to end", function () {
+    QUnit.expect(1);
+    var wymeditor = jQuery.wymeditors(0);
+
+    wymeditor.rawHtml(unclosedOption);
+    wymEqual(wymeditor, closedOption, {parseHtml: true});
+});
+
+
+test("Test unclosed td tag is closed when parsed", function () {
+    QUnit.expect(1);
+    var wymeditor = jQuery.wymeditors(0);
+
+    deepEqual(wymeditor.parser.parse(unclosedTable), closedTable);
+});
+
+
+test("Test unclosed td tag is closed end to end", function () {
+    QUnit.expect(1);
+    var wymeditor = jQuery.wymeditors(0);
+
+    wymeditor.rawHtml(unclosedTable);
+    wymEqual(wymeditor, closedTable, {parseHtml: true});
+});
+
+
+test("Test unclosed last td tag is closed when parsed", function () {
+    QUnit.expect(1);
+    var wymeditor = jQuery.wymeditors(0);
+
+    deepEqual(wymeditor.parser.parse(unclosedTableLastInRow), closedTable);
+});
+
+
+test("Test unclosed last td tag is closed end to end", function () {
+    QUnit.expect(1);
+    var wymeditor = jQuery.wymeditors(0);
+
+    wymeditor.rawHtml(unclosedTableLastInRow);
+    wymEqual(wymeditor, closedTable, {parseHtml: true});
+});
+
+
+test("Test closed nested td tag is closed when parsed", function () {
+    QUnit.expect(1);
+    var wymeditor = jQuery.wymeditors(0);
+
+    deepEqual(wymeditor.parser.parse(closedNestedTableHtml), closedNestedTableHtml);
+});
+
+
+test("Test closed nested td tag is closed end to end", function () {
+    QUnit.expect(1);
+    var wymeditor = jQuery.wymeditors(0);
+
+    wymeditor.rawHtml(closedNestedTableHtml);
+    wymEqual(wymeditor, closedNestedTableHtml, {parseHtml: true});
+});
+
+
+test("Test unclosed nested td tag is closed when parsed", function () {
+    QUnit.expect(1);
+    var wymeditor = jQuery.wymeditors(0);
+
+    deepEqual(wymeditor.parser.parse(unclosedNestedTableHtml), closedNestedTableHtml);
+});
+
+
+test("Test unclosed nested td tag is closed end to end", function () {
+    QUnit.expect(1);
+    var wymeditor = jQuery.wymeditors(0);
+
+    wymeditor.rawHtml(unclosedNestedTableHtml);
+    wymEqual(wymeditor, closedNestedTableHtml, {parseHtml: true});
+});
+
+
+test("Test unclosed nested last in row td tag is closed when parsed", function () {
+    QUnit.expect(1);
+    var wymeditor = jQuery.wymeditors(0);
+
+    deepEqual(wymeditor.parser.parse(unclosedNestedTableLastInRowHtml), closedNestedTableHtml);
+});
+
+
+test("Test unclosed nested last in row td tag is closed end to end", function () {
+    QUnit.expect(1);
+    var wymeditor = jQuery.wymeditors(0);
+
+    wymeditor.rawHtml(unclosedNestedTableLastInRowHtml);
+    wymEqual(wymeditor, closedNestedTableHtml, {parseHtml: true});
+});
