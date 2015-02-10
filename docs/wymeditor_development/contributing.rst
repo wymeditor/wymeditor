@@ -109,7 +109,7 @@ feel free to use whatever you'd like.
     $ source ~/.profile
 
 
-2. Install node and rvm using nvm
+2. Install node and npm using nvm
 ---------------------------------
 
 .. code-block:: shell-session
@@ -128,7 +128,7 @@ feel free to use whatever you'd like.
 
 .. code-block:: shell-session
 
-    $ npm install -g grunt
+    $ npm install -g grunt-cli
 
 4. Ensure everything works
 --------------------------
