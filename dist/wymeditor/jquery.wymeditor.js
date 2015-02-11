@@ -172,12 +172,12 @@
 /* jshint strict: false, maxlen: 90, evil: true */
 /* global -$, WYMeditor: true, console */
 
-/*@version 1.0.0-rc.2 */
+/*@version 1.0.0-rc.1.patch2 */
 /**
     WYMeditor
     =========
 
-    version 1.0.0-rc.2
+    version 1.0.0-rc.1.patch2
 
     WYMeditor : what you see is What You Mean web-based editor
 
@@ -391,7 +391,7 @@ jQuery.extend(WYMeditor, {
     TR                  : "tr",
     UL                  : "ul",
     UNLINK              : "Unlink",
-    VERSION             : "1.0.0-rc.2",
+    VERSION             : "1.0.0-rc.1.patch2",
     WYM_INDEX           : "wym_index",
     WYM_PATH            : "{Wym_Wym_Path}",
 
@@ -1598,23 +1598,17 @@ WYMeditor.isPhantomString = function (str) {
     return !(/[^\t\n\r ]/.test(str));
 };
 
+jQuery.fn.addBack = jQuery.fn.addBack ? jQuery.fn.addBack : jQuery.fn.andSelf;
+
 // Returns the Parents or the node itself
-// jqexpr = a jQuery expression
-jQuery.fn.parentsOrSelf = function (jqexpr) {
-    var $n = this,
-        addBackName;
+// selector = a jQuery expression
+jQuery.fn.parentsOrSelf = function (selector) {
+    var $n = this;
 
-    if (jQuery.fn.addBack) {
-        addBackName = 'addBack';
+    if (selector) {
+        return $n.parents().addBack().filter(selector);
     } else {
-        // `andSelf` is deprecated.
-        addBackName = 'andSelf';
-    }
-
-    if (jqexpr) {
-        return $n.parents()[addBackName](jqexpr);
-    } else {
-        return $n.parents()[addBackName]();
+        return $n.parents().addBack();
     }
 };
 
@@ -2725,7 +2719,7 @@ WYMeditor.editor.prototype.toggleClass = function (sClass, jqexpr) {
     } else {
         $container = jQuery(wym.selectedContainer());
     }
-    $container = $container.parentsOrSelf(jqexpr);
+    $container = $container.parentsOrSelf(jqexpr).last();
     $container.toggleClass(sClass);
 
     if (!$container.attr(WYMeditor.CLASS)) {
