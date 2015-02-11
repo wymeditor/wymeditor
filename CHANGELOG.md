@@ -71,7 +71,8 @@ WYMeditor.
   * Fix: pressing tab in WebKit and Blink creates span. caveat: now tab can’t
     be used to focus on the next element (taking focus outside the document).
 * [#666](https://github.com/wymeditor/wymeditor/pull/666)
-  * Correctly handle nested tables
+  Stopped mangling HTML with the parser when tables are nested within
+  tables.
 
 ## 1.0.0-rc.1
 
