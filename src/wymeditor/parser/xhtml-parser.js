@@ -198,8 +198,7 @@ WYMeditor.XhtmlParser.prototype._autoCloseUnclosed = function(new_tag, closing) 
     closing = closing || false;
     if (this._Listener._open_tags) {
         for (var tag in this._Listener._open_tags) {
-            var counter = this._Listener._open_tags[tag];
-            if (counter > 0 && this._Listener.shouldCloseTagAutomatically(tag, new_tag, closing)) {
+            if (this._Listener.shouldCloseTagAutomatically(tag, new_tag, closing)) {
                 this._callCloseTagListener(tag, true);
             }
         }

@@ -172,9 +172,23 @@ WYMeditor.XhtmlSaxListener = function() {
 };
 
 WYMeditor.XhtmlSaxListener.prototype.shouldCloseTagAutomatically = function(tag, now_on_tag, closing) {
-    closing = closing || false;
+    if (tag != 'td' && tag != 'option') {
+        // We only attempt auto-closing for these tags
+        return false;
+    }
+    var openCount = this._open_tags[tag];
+    if (!openCount) {
+        /// If there are no open tags, it would be pretty silly to try and close the tag
+        return false;
+    }
+
     if (tag == 'td') {
-        if ((closing && now_on_tag == 'tr') || (!closing && now_on_tag == 'td')) {
+        var openTrCount = this._open_tags['tr'] || 0;
+        // We use count instead of existence to handle nested tables/rows
+        if (!closing && now_on_tag === 'td' && openCount >= openTrCount) {
+            return true;
+        }
+        if (closing && now_on_tag == 'tr' && openCount > openTrCount) {
             return true;
         }
     } else if (tag == 'option') {
