@@ -30,6 +30,7 @@ function loadWymSrc(srcPath, extraRequirements, jqueryVersion) {
             srcPath + 'lib/browserified-external-modules.js',
             srcPath + 'wymeditor/editor/undo-redo.js',
             srcPath + 'wymeditor/editor/keyboard.js',
+            srcPath + 'wymeditor/editor/native-edits.js',
             srcPath + 'wymeditor/parser/xml-helper.js',
             srcPath + 'wymeditor/parser/xhtml-validator.js',
             srcPath + 'wymeditor/parser/parallel-regex.js',
