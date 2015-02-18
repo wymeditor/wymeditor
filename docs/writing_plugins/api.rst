@@ -649,10 +649,10 @@ Please refer to `Combokeys`_' documentation.
 
 .. _Combokeys: http://github.com/mightyiam/combokeys
 
-``focusOnDocument()``
+``focusDocumentBody()``
 =====================
 
-Set the browser's focus on the document.
+Set the browser's focus to the document's body.
 
 This may be useful for returning focus to the document, for a smooth user
 experience, after some UI interaction.
@@ -663,7 +663,7 @@ For example, you may want to bind it as a handler for a dialog's window
 .. code-block:: javascript
 
     jQuery(window).bind('beforeunload', function () {
-        wym.focusOnDocument();
+        wym.focusDocumentBody();
     });
 
 ``get$Buttons()``
