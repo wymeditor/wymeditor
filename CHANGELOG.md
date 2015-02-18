@@ -33,6 +33,9 @@ WYMeditor.
     but it is recommended that existing custom dialogs be rewritten using the
     new `wym.dialog` API (see API documentation) or at least that they be
     tested.
+* [#669](https://github.com/wymeditor/wymeditor/issues/669)
+  `wym.focusOnDocument` was renamed to `wym.focusOnDocumentBody` and it
+  now calls `focus` on the `document.body`, instead of on the `document`.
 
 ### Enhancements
 

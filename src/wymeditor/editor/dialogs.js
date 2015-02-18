@@ -156,7 +156,7 @@ WYMeditor.editor.prototype.dialog = function (
     selectedContainer = wym.selectedContainer();
 
     wDialog.onbeforeunload = function () {
-        wym.focusOnDocument();
+        wym.focusOnDocumentBody();
     };
 
     // Pre-init function
@@ -391,7 +391,7 @@ WYMeditor.DIALOGS = {
                 alt: jQuery(options.altSelector, wDialog.document).val()
             };
 
-            wym.focusOnDocument();
+            wym.focusOnDocumentBody();
 
             if (selectedImage) {
                 jQuery(selectedImage).attr(imgAttrs);
