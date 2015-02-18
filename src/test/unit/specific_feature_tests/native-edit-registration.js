@@ -1,6 +1,7 @@
 /* global
     QUnit,
     prepareUnitTestModule,
+    skipKeyboardShortcutTests,
     simulateKeyCombo
 */
 
@@ -17,7 +18,7 @@ QUnit.test("edited is instantiated", function () {
     QUnit.expect(1);
 
     var wymeditor = jQuery.wymeditors(0),
-        edited = wymeditor.nativeEdits.edited,
+        edited = wymeditor.nativeEditRegistration.edited,
         Edited = WYMeditor.EXTERNAL_MODULES.Edited;
     QUnit.ok(edited instanceof Edited, "instanceof");
 });
