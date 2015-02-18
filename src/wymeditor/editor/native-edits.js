@@ -23,7 +23,7 @@ WYMeditor.NativeEdits = function (wym) {
             nativeEdits._onNativeEdit.call(nativeEdits);
         }
     );
-}
+};
 
 /**
     WYMeditor.NativeEdits._onNativeEdit
