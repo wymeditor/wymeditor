@@ -279,7 +279,7 @@ WYMeditor.editor.prototype.get$Buttons = function () {
 
 /**
     WYMeditor.editor.focusOnDocumentBody
-    ================================
+    ====================================
 
     Sets focus on the document.
 */
