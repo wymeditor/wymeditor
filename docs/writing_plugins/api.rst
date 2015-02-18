@@ -650,7 +650,7 @@ Please refer to `Combokeys`_' documentation.
 .. _Combokeys: http://github.com/mightyiam/combokeys
 
 ``focusDocumentBody()``
-=====================
+=======================
 
 Set the browser's focus to the document's body.
 
