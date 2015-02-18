@@ -7,10 +7,10 @@
 "use strict";
 
 /*
- * `wym.focusOnDocumentBody` method
+ * `wym.focusDocumentBody` method
  */
 
-QUnit.module("focusOnDocumentBody", {setup: function () {
+QUnit.module("focusDocumentBody", {setup: function () {
     // pass an empty object to setup brand newly initialized editor
     prepareUnitTestModule({});
 }});
@@ -24,7 +24,7 @@ QUnit.test("Sets the body as the `activeElement`", function () {
             var doc = wymeditor._doc,
                 body = wymeditor.body();
             // In some browsers the body will already be the `activeElement`
-            wymeditor.focusOnDocumentBody();
+            wymeditor.focusDocumentBody();
             QUnit.strictEqual(
                 doc.activeElement,
                 body,
