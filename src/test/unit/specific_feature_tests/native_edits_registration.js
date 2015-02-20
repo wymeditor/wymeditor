@@ -7,7 +7,7 @@
 
 "use strict";
 
-module("native-edits-registering", {setup: prepareUnitTestModule});
+module("native_edits_registeration", {setup: prepareUnitTestModule});
 
 // Registration of native edits is almost entirely external module code.
 // Specifically, the 'edited' module.
