@@ -23,33 +23,39 @@ QUnit.test("edited is instantiated", function () {
     QUnit.ok(edited instanceof Edited, "instanceof");
 });
 
-QUnit.test("'edited' seems to be working", function () {
-    if (skipKeyboardShortcutTests) {
-        QUnit.expect(0);
-        return;
+QUnit.test("'edited' modification callbacks are firing on" +
+    "keystrokes", function () {
+        if (skipKeyboardShortcutTests) {
+            QUnit.expect(0);
+            return;
+        }
+        QUnit.expect(1);
+
+        var wymeditor = jQuery.wymeditors(0),
+            thisTest = this,
+            callCount,
+            p;
+
+        thisTest.spy(wymeditor, 'registerModification');
+
+        // on some keyboard events the editor expects real selection
+        wymeditor.html("<p>foo</p>");
+        p = wymeditor.$body().find("p")[0];
+        wymeditor.setCaretIn(p);
+
+        simulateKeyCombo(wymeditor, 'a'); // 1st callback
+        simulateKeyCombo(wymeditor, '3'); // no callback
+        simulateKeyCombo(wymeditor, ' '); // 2nd callback
+        simulateKeyCombo(wymeditor, ' '); // no callback
+        simulateKeyCombo(wymeditor, '.'); // 3rd callback
+
+        callCount = wymeditor.registerModification.callCount;
+        QUnit.strictEqual(
+            callCount,
+            3,
+            "`registerModification` called 3 times"
+        );
+
+        wymeditor.registerModification.restore();
     }
-    QUnit.expect(1);
-
-    var wymeditor = jQuery.wymeditors(0),
-        thisTest = this,
-        callCount,
-        p;
-
-    thisTest.spy(wymeditor, 'registerModification');
-
-    // on some keyboard events the editor expects real selection
-    wymeditor.html("<p>foo</p>");
-    p = wymeditor.$body().find("p")[0];
-    wymeditor.setCaretIn(p);
-
-    simulateKeyCombo(wymeditor, 'a'); // 1st callback
-    simulateKeyCombo(wymeditor, '3'); // no callback
-    simulateKeyCombo(wymeditor, ' '); // 2nd callback
-    simulateKeyCombo(wymeditor, ' '); // no callback
-    simulateKeyCombo(wymeditor, '.'); // 3rd callback
-
-    callCount = wymeditor.registerModification.callCount;
-    QUnit.strictEqual(callCount, 3, "`registerModification` called 3 times");
-
-    wymeditor.registerModification.restore();
-});
+);
