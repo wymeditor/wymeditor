@@ -391,6 +391,8 @@ WYMeditor.editor.prototype._afterDesignModeOn = function () {
 
     wym.undoRedo = new WYMeditor.UndoRedo(wym);
 
+    wym.nativeEditRegistration = new WYMeditor.NativeEditRegistration(wym);
+
     jQuery(wym.element).trigger(
         WYMeditor.EVENTS.postIframeInitialization,
         wym

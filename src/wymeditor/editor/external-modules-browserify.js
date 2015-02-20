@@ -5,5 +5,6 @@
 // task.
 WYMeditor.EXTERNAL_MODULES = {
     ObjectHistory: require("object-history"),
-    Combokeys: require("combokeys")
+    Combokeys: require("combokeys"),
+    Edited: require("edited")
 };
