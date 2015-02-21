@@ -186,22 +186,30 @@ module.exports = function (grunt) {
             }
         },
         browserify: {
-            // This task Browserifies an NPM CommonJS module that will be
-            // bundled in the build.
+            // the resulting bundles are concatenated into the build
             options: {
                 browserifyOptions: {
                     debug: true
                 }
             },
-            externalModules: {
-                // This file is the entry point for the browserification of
-                // external modules.
-                src: ['<%= yeoman.app %>/wymeditor/editor/' +
-                    'external-modules-browserify.js'],
-                dest: '<%= yeoman.app %>/lib/browserified-external-modules.js'
+            ObjectHistory: {
+                src: ['<%= yeoman.app %>/wymeditor/external-modules/' +
+                    'object-history.js'],
+                dest: '<%= yeoman.app %>/lib/object-history.js'
+            },
+            Combokeys: {
+                src: ['<%= yeoman.app %>/wymeditor/external-modules/' +
+                    'combokeys.js'],
+                dest: '<%= yeoman.app %>/lib/combokeys.js'
+            },
+            Edited: {
+                src: ['<%= yeoman.app %>/wymeditor/external-modules/' +
+                    'edited.js'],
+                dest: '<%= yeoman.app %>/lib/edited.js'
             },
             keysim: {
-                // This is used in tests.
+                // this is not concatenated into the build.
+                // it used only in tests.
                 src: ['<%= yeoman.app %>/test/unit/keysim-globalifier.js'],
                 dest: '<%= yeoman.app %>/lib/keysim-globalifier.js'
             }
@@ -262,7 +270,9 @@ module.exports = function (grunt) {
                     "<%= yeoman.app %>/wymeditor/editor/safari.js",
                     "<%= yeoman.app %>/wymeditor/editor/trident-pre-7.js",
                     "<%= yeoman.app %>/wymeditor/editor/trident-7.js",
-                    "<%= yeoman.app %>/lib/browserified-external-modules.js",
+                    "<%= yeoman.app %>/lib/object-history.js",
+                    "<%= yeoman.app %>/lib/combokeys.js",
+                    "<%= yeoman.app %>/lib/edited.js",
                     "<%= yeoman.app %>/wymeditor/editor/undo-redo.js",
                     "<%= yeoman.app %>/wymeditor/editor/keyboard.js",
                     "<%= yeoman.app %>/wymeditor/editor/native-edit-registration.js",
@@ -534,6 +544,12 @@ module.exports = function (grunt) {
             'concurrent:watchDev'
         ]);
     });
+
+    grunt.registerTask('browserify:externalModules', [
+        'browserify:ObjectHistory',
+        'browserify:Combokeys',
+        'browserify:Edited'
+    ]);
 
     grunt.registerTask('test', [
         'bower',

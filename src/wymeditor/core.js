@@ -522,7 +522,9 @@ jQuery.extend(WYMeditor, {
 
         // Initialize the editor instance
         wym._init();
-    }
+    },
+
+    EXTERNAL_MODULES : {}
 });
 
 /********** jQuery Plugin Definition **********/
