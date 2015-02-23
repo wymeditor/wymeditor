@@ -34,5 +34,5 @@ WYMeditor.NativeEditRegistration = function (wym) {
 WYMeditor.NativeEditRegistration.prototype._onNativeEdit = function () {
     var nativeEditRegistration = this;
 
-    nativeEditRegistration.wym.registerModification();
+    nativeEditRegistration.wym.registerModification(true);
 };
