@@ -1442,9 +1442,6 @@ WYMeditor.editor.prototype.getCurrentState = function () {
         state.savedSelection = rangy.saveSelection(wymIframeWindow);
     }
 
-    selection = wym.selection();
-
-
     state.html = wym.rawHtml();
 
     if (state.savedSelection) {
