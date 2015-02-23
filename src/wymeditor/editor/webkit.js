@@ -23,6 +23,10 @@ WYMeditor.WymClassWebKit.prototype._docEventQuirks = function () {
             return false;
         }
     );
+
+    wym.$body().bind("focus", function () {
+        wym.undoRedo._onBodyFocus();
+    });
 };
 
 // A `div` can be created by breaking out of a list in some cases. Issue #549.

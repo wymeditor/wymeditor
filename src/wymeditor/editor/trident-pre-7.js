@@ -43,6 +43,10 @@ WYMeditor.WymClassTridentPre7.prototype._docEventQuirks = function () {
         wym._saveCaret();
     };
 
+    wym.$body().bind("focus", function () {
+        wym.undoRedo._onBodyFocus();
+    });
+
     wym._doc.body.onbeforepaste = function () {
         wym._iframe.contentWindow.event.returnValue = false;
     };

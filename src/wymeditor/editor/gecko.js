@@ -26,6 +26,9 @@ WYMeditor.WymClassGecko.prototype._docEventQuirks = function () {
     jQuery(wym._doc).bind("click", function (evt) {
         wym._click(evt);
     });
+    jQuery(wym._doc).bind("focus", function () {
+        wym.undoRedo._onBodyFocus();
+    });
 };
 
 // Keyup handler, mainly used for cleanups
