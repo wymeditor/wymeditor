@@ -299,10 +299,15 @@ WYMeditor.editor.prototype.focusOnDocument = function () {
 
     Triggers the `postModification` event afterwards.
 */
-WYMeditor.editor.prototype.registerModification = function () {
+WYMeditor.editor.prototype.registerModification = function (isNativeEdit) {
     var wym = this;
 
     wym.undoRedo._add();
+
+    if (!isNativeEdit) {
+        // A non-native-edit modification is registered. Reset Edited.
+        wym.nativeEditRegistration.edited.reset();
+    }
 
     jQuery(wym.element).trigger(WYMeditor.EVENTS.postModification);
 };
