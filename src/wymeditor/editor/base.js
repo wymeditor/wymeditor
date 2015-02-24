@@ -1424,9 +1424,21 @@ WYMeditor.editor.prototype.getCurrentState = function () {
         selection,
         wymIframeWindow = wym._iframe.contentWindow;
 
-    selection = wym.selection();
+    if (wym.hasSelection()) {
+        selection = wym.selection();
+    }
 
-    if (wym.hasSelection() === true) {
+    if (
+        selection &&
+        selection.anchorNode === wym.body() &&
+        selection.anchorOffset === 0 &&
+        selection.isCollapsed
+    ) {
+        // meaningless selection
+        selection = false;
+    }
+
+    if (selection) {
         state.savedSelection = rangy.saveSelection(wymIframeWindow);
     }
 
