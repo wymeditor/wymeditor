@@ -80,7 +80,7 @@ WYMeditor.UndoRedo.prototype._do = function (what) {
             return;
         }
         if (!history.changesetsFore.length) {
-            undoRedo._add()
+            undoRedo._add();
         }
         history.backward();
         postEventName = 'postUndo';
