@@ -45,6 +45,38 @@ WYMeditor.UndoRedo = function (wym) {
 };
 
 /**
+    WYMeditor.UndoRedo._onBodyFocus
+    ===============================
+
+    This method is called on focus of the document's body.
+
+    If the last saved history point does not include a saved selection
+    then the last saved history point is replaced with the current state,
+    which does include a selection.
+
+    When this method is called by the triggering of the focus event,
+    the selection is not yet made.
+
+    Hence the use of `setTimeout`--the function provided to `setTimeout`
+    will always be called after the event's native action. By that time
+    there should be a selection.
+*/
+WYMeditor.UndoRedo.prototype._onBodyFocus = function () {
+    var undoRedo = this,
+        wym = undoRedo.wym;
+
+    if (undoRedo.history.last.savedSelection) {
+        // last history point has selection
+        return;
+    }
+
+    setTimeout(function () {
+        // this will run after the native action of the triggering event.
+        undoRedo.history.last = wym.getCurrentState();
+    }, 0);
+};
+
+/**
     WYMeditor.UndoRedo._add
     =======================
 

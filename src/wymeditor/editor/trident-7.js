@@ -61,4 +61,8 @@ WYMeditor.WymClassTrident7.prototype._docEventQuirks = function () {
             wym.deselect();
         }
     });
+
+    wym.$body().bind("focus", function () {
+        wym.undoRedo._onBodyFocus();
+    });
 };

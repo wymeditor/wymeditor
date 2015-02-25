@@ -299,10 +299,15 @@ WYMeditor.editor.prototype.focusOnDocument = function () {
 
     Triggers the `postModification` event afterwards.
 */
-WYMeditor.editor.prototype.registerModification = function () {
+WYMeditor.editor.prototype.registerModification = function (isNativeEdit) {
     var wym = this;
 
     wym.undoRedo._add();
+
+    if (!isNativeEdit) {
+        // A non-native-edit modification is registered. Reset Edited.
+        wym.nativeEditRegistration.edited.reset();
+    }
 
     jQuery(wym.element).trigger(WYMeditor.EVENTS.postModification);
 };
@@ -1424,9 +1429,21 @@ WYMeditor.editor.prototype.getCurrentState = function () {
         selection,
         wymIframeWindow = wym._iframe.contentWindow;
 
-    selection = wym.selection();
+    if (wym.hasSelection()) {
+        selection = wym.selection();
+    }
 
-    if (wym.hasSelection() === true) {
+    if (
+        selection &&
+        selection.anchorNode === wym.body() &&
+        selection.anchorOffset === 0 &&
+        selection.isCollapsed
+    ) {
+        // meaningless selection
+        selection = false;
+    }
+
+    if (selection) {
         state.savedSelection = rangy.saveSelection(wymIframeWindow);
     }
 
