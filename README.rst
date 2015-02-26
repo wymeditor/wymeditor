@@ -1,3 +1,6 @@
+.. image:: https://badge.waffle.io/wymeditor/wymeditor.png?label=ready&title=Ready 
+ :target: https://waffle.io/wymeditor/wymeditor
+ :alt: 'Stories in Ready'
 ###############
 About WYMeditor
 ###############
