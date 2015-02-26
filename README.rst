@@ -1,6 +1,3 @@
-.. image:: https://badge.waffle.io/wymeditor/wymeditor.png?label=ready&title=Ready 
- :target: https://waffle.io/wymeditor/wymeditor
- :alt: 'Stories in Ready'
 ###############
 About WYMeditor
 ###############
@@ -42,6 +39,8 @@ Resources
 +-----------------+------------------------------------------+------------------------------------------+
 | Website         | `WYMeditor website`_                     | ``http://wymeditor.github.io/wymeditor`` |
 +-----------------+------------------------------------------+------------------------------------------+
+| Chat            | `Gitter.im room`_                        | |gitter badge|                           |
++-----------------+------------------------------------------+------------------------------------------+
 | Support         | `WYMeditor questions in Stack Overflow`_ | |Stack Overflow icon|                    |
 +-----------------+------------------------------------------+------------------------------------------+
 | Issues          | `WYMeditor issue tracker`_               |                                          |
@@ -51,6 +50,8 @@ Resources
 | CI testing      | `WYMeditor Travis-CI report`_            | |Travis-CI badge|                        |
 +-----------------+------------------------------------------+------------------------------------------+
 | Bower           | `Bower manifest`_                        | |Bower logo|                             |
++-----------------+------------------------------------------+------------------------------------------+
+| Project mgmt    | `Waffle.io board`_                       | |waffle badge|                           |
 +-----------------+------------------------------------------+------------------------------------------+
 
 .. _WYMeditor website: https://wymeditor.github.io/wymeditor/
@@ -82,7 +83,15 @@ Resources
    :height: 21px
    :width: 21px
    :alt: Bower logo
-
+.. _Gitter.im room: https://gitter.im/wymeditor/wymeditor
+.. |gitter badge| image:: https://badges.gitter.im/Join%20Chat.svg
+   :alt: Join the chat at https://gitter.im/wymeditor/wymeditor
+   :target: https://gitter.im/wymeditor/wymeditor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+.. _Waffle.io board: https://waffle.io/wymeditor/wymeditor
+.. |waffle badge| image:: https://badge.waffle.io/wymeditor/wymeditor.png?label=ready&title=Ready 
+   :target: https://waffle.io/wymeditor/wymeditor
+   :alt: 'Project Management'
+   
 .. _why-wymeditor:
 
 **************
