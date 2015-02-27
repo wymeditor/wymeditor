@@ -2409,6 +2409,15 @@ test("Three `br` variations without `id`s", function () {
     }
 });
 
+var attributeWithRegexCharHTML = String() + '<a href="http://www.example.com)">Foo</a>';
+
+test("Attributes with REGEX chars do not break parsing", function () {
+    QUnit.expect(1);
+    var wymeditor = jQuery.wymeditors(0);
+
+    deepEqual(wymeditor.parser.parse(attributeWithRegexCharHTML), attributeWithRegexCharHTML);
+});
+
 module("XmlParser-auto_close_tags", {setup: prepareUnitTestModule});
 
 var nestedTableHtml = String() +
