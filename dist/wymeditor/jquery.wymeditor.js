@@ -172,12 +172,12 @@
 /* jshint strict: false, maxlen: 90, evil: true */
 /* global -$, WYMeditor: true, console */
 
-/*@version 1.0.0-rc.1.patch2 */
+/*@version 1.0.0-rc.1.patch3 */
 /**
     WYMeditor
     =========
 
-    version 1.0.0-rc.1.patch2
+    version 1.0.0-rc.1.patch3
 
     WYMeditor : what you see is What You Mean web-based editor
 
@@ -391,7 +391,7 @@ jQuery.extend(WYMeditor, {
     TR                  : "tr",
     UL                  : "ul",
     UNLINK              : "Unlink",
-    VERSION             : "1.0.0-rc.1.patch2",
+    VERSION             : "1.0.0-rc.1.patch3",
     WYM_INDEX           : "wym_index",
     WYM_PATH            : "{Wym_Wym_Path}",
 
@@ -7530,8 +7530,7 @@ WYMeditor.XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes) {
         this._addSpacerBeforeElementInLI = false;
     }
 
-    this._lastAddedOpeningTagString = this.helper.tag(tag, attributes, true);
-    this.output += this._lastAddedOpeningTagString
+    this.output += this.helper.tag(tag, attributes, true);
     this._lastAddedOpenTag = tag;
     this._lastTagRemoved = false;
 };
@@ -7574,16 +7573,6 @@ WYMeditor.XhtmlSaxListener.prototype.closeBlockTag = function(tag) {
     if (jQuery.inArray(tag, WYMeditor.LIST_TYPE_ELEMENTS) > -1) {
         this._insideLI = false;
     }
-
-    // If a `br` is the only tag within the element that is being closed,
-    // remove that `br` tag.
-    this.output = this.output.replace(
-        new RegExp(
-            this._lastAddedOpeningTagString + '<br />$',
-            ''
-        ),
-        this._lastAddedOpeningTagString
-    );
 
     this.output = this.output +
         this._getClosingTagContent('before', tag) +

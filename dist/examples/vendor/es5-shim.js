@@ -53,18 +53,15 @@ var call = FunctionPrototype.call;
 // Having a toString local variable name breaks in Opera so use to_string.
 var to_string = ObjectPrototype.toString;
 
-var isFunction = function (val) {
-    return to_string.call(val) === '[object Function]';
-};
-var isRegex = function (val) {
-    return to_string.call(val) === '[object RegExp]';
-};
-var isArray = function isArray(obj) {
+var isArray = Array.isArray || function isArray(obj) {
     return to_string.call(obj) === '[object Array]';
 };
-var isString = function isString(obj) {
-    return to_string.call(obj) === '[object String]';
-};
+
+var hasToStringTag = typeof Symbol === 'function' && typeof Symbol.toStringTag === 'symbol';
+var isCallable; /* inlined from https://npmjs.com/is-callable */ var fnToStr = Function.prototype.toString, tryFunctionObject = function tryFunctionObject(value) { try { fnToStr.call(value); return true; } catch (e) { return false; } }, fnClass = '[object Function]', genClass = '[object GeneratorFunction]'; isCallable = function isCallable(value) { if (typeof value !== 'function') { return false; } if (hasToStringTag) { return tryFunctionObject(value); } var strClass = to_string.call(value); return strClass === fnClass || strClass === genClass; };
+var isRegex; /* inlined from https://npmjs.com/is-regex */ var regexExec = RegExp.prototype.exec, tryRegexExec = function tryRegexExec(value) { try { regexExec.call(value); return true; } catch (e) { return false; } }, regexClass = '[object RegExp]'; isRegex = function isRegex(value) { if (typeof value !== 'object') { return false; } return hasToStringTag ? tryRegexExec(value) : to_string.call(value) === regexClass; };
+var isString; /* inlined from https://npmjs.com/is-string */ var strValue = String.prototype.valueOf, tryStringObject = function tryStringObject(value) { try { strValue.call(value); return true; } catch (e) { return false; } }, stringClass = '[object String]'; isString = function isString(value) { if (typeof value === 'string') { return true; } if (typeof value !== 'object') { return false; } return hasToStringTag ? tryStringObject(value) : to_string.call(value) === stringClass; };
+
 var isArguments = function isArguments(value) {
     var str = to_string.call(value);
     var isArgs = str === '[object Arguments]';
@@ -74,7 +71,7 @@ var isArguments = function isArguments(value) {
           typeof value === 'object' &&
           typeof value.length === 'number' &&
           value.length >= 0 &&
-          isFunction(value.callee);
+          isCallable(value.callee);
     }
     return isArgs;
 };
@@ -123,20 +120,7 @@ var defineProperties = (function (has) {
 // ======
 //
 
-// ES5 9.4
-// http://es5.github.com/#x9.4
-// http://jsperf.com/to-integer
-
-function toInteger(num) {
-    var n = +num;
-    if (n !== n) { // isNaN
-        n = 0;
-    } else if (n !== 0 && n !== (1 / 0) && n !== -(1 / 0)) {
-        n = (n > 0 || -1) * Math.floor(Math.abs(n));
-    }
-    return n;
-}
-
+/* replaceable with https://npmjs.com/package/es-abstract /helpers/isPrimitive */
 function isPrimitive(input) {
     var type = typeof input;
     return input === null ||
@@ -146,31 +130,47 @@ function isPrimitive(input) {
         type === 'string';
 }
 
-function toPrimitive(input) {
-    var val, valueOf, toStr;
-    if (isPrimitive(input)) {
-        return input;
-    }
-    valueOf = input.valueOf;
-    if (isFunction(valueOf)) {
-        val = valueOf.call(input);
-        if (isPrimitive(val)) {
-            return val;
-        }
-    }
-    toStr = input.toString;
-    if (isFunction(toStr)) {
-        val = toStr.call(input);
-        if (isPrimitive(val)) {
-            return val;
-        }
-    }
-    throw new TypeError();
-}
-
 var ES = {
+    // ES5 9.4
+    // http://es5.github.com/#x9.4
+    // http://jsperf.com/to-integer
+    /* replaceable with https://npmjs.com/package/es-abstract ES5.ToInteger */
+    ToInteger: function ToInteger(num) {
+        var n = +num;
+        if (n !== n) { // isNaN
+            n = 0;
+        } else if (n !== 0 && n !== (1 / 0) && n !== -(1 / 0)) {
+            n = (n > 0 || -1) * Math.floor(Math.abs(n));
+        }
+        return n;
+    },
+
+    /* replaceable with https://npmjs.com/package/es-abstract ES5.ToPrimitive */
+    ToPrimitive: function ToPrimitive(input) {
+        var val, valueOf, toStr;
+        if (isPrimitive(input)) {
+            return input;
+        }
+        valueOf = input.valueOf;
+        if (isCallable(valueOf)) {
+            val = valueOf.call(input);
+            if (isPrimitive(val)) {
+                return val;
+            }
+        }
+        toStr = input.toString;
+        if (isCallable(toStr)) {
+            val = toStr.call(input);
+            if (isPrimitive(val)) {
+                return val;
+            }
+        }
+        throw new TypeError();
+    },
+
     // ES5 9.9
     // http://es5.github.com/#x9.9
+    /* replaceable with https://npmjs.com/package/es-abstract ES5.ToObject */
     ToObject: function (o) {
         /*jshint eqnull: true */
         if (o == null) { // this matches both null and undefined
@@ -178,6 +178,8 @@ var ES = {
         }
         return Object(o);
     },
+
+    /* replaceable with https://npmjs.com/package/es-abstract ES5.ToUint32 */
     ToUint32: function ToUint32(x) {
         return x >>> 0;
     }
@@ -198,7 +200,7 @@ defineProperties(FunctionPrototype, {
         // 1. Let Target be the this value.
         var target = this;
         // 2. If IsCallable(Target) is false, throw a TypeError exception.
-        if (!isFunction(target)) {
+        if (!isCallable(target)) {
             throw new TypeError('Function.prototype.bind called on incompatible ' + target);
         }
         // 3. Let A be a new (possibly empty) internal list of all of the
@@ -363,13 +365,13 @@ defineProperties(ArrayPrototype, {
     splice: function splice(start, deleteCount) {
         if (arguments.length === 0) { return []; }
         var args = arguments;
-        this.length = Math.max(toInteger(this.length), 0);
+        this.length = Math.max(ES.ToInteger(this.length), 0);
         if (arguments.length > 0 && typeof deleteCount !== 'number') {
             args = array_slice.call(arguments);
             if (args.length < 2) {
                 args.push(this.length - start);
             } else {
-                args[1] = toInteger(deleteCount);
+                args[1] = ES.ToInteger(deleteCount);
             }
         }
         return array_splice.apply(this, args);
@@ -441,7 +443,7 @@ defineProperties(ArrayPrototype, {
             length = self.length >>> 0;
 
         // If no callback function or if callback is not a callable function
-        if (!isFunction(fun)) {
+        if (!isCallable(fun)) {
             throw new TypeError(); // TODO message
         }
 
@@ -468,7 +470,7 @@ defineProperties(ArrayPrototype, {
             thisp = arguments[1];
 
         // If no callback function or if callback is not a callable function
-        if (!isFunction(fun)) {
+        if (!isCallable(fun)) {
             throw new TypeError(fun + ' is not a function');
         }
 
@@ -494,7 +496,7 @@ defineProperties(ArrayPrototype, {
             thisp = arguments[1];
 
         // If no callback function or if callback is not a callable function
-        if (!isFunction(fun)) {
+        if (!isCallable(fun)) {
             throw new TypeError(fun + ' is not a function');
         }
 
@@ -521,7 +523,7 @@ defineProperties(ArrayPrototype, {
             thisp = arguments[1];
 
         // If no callback function or if callback is not a callable function
-        if (!isFunction(fun)) {
+        if (!isCallable(fun)) {
             throw new TypeError(fun + ' is not a function');
         }
 
@@ -545,7 +547,7 @@ defineProperties(ArrayPrototype, {
             thisp = arguments[1];
 
         // If no callback function or if callback is not a callable function
-        if (!isFunction(fun)) {
+        if (!isCallable(fun)) {
             throw new TypeError(fun + ' is not a function');
         }
 
@@ -572,7 +574,7 @@ defineProperties(ArrayPrototype, {
             length = self.length >>> 0;
 
         // If no callback function or if callback is not a callable function
-        if (!isFunction(fun)) {
+        if (!isCallable(fun)) {
             throw new TypeError(fun + ' is not a function');
         }
 
@@ -623,7 +625,7 @@ defineProperties(ArrayPrototype, {
             length = self.length >>> 0;
 
         // If no callback function or if callback is not a callable function
-        if (!isFunction(fun)) {
+        if (!isCallable(fun)) {
             throw new TypeError(fun + ' is not a function');
         }
 
@@ -678,7 +680,7 @@ defineProperties(ArrayPrototype, {
 
         var i = 0;
         if (arguments.length > 1) {
-            i = toInteger(arguments[1]);
+            i = ES.ToInteger(arguments[1]);
         }
 
         // handle negative indices
@@ -706,7 +708,7 @@ defineProperties(ArrayPrototype, {
         }
         var i = length - 1;
         if (arguments.length > 1) {
-            i = Math.min(i, toInteger(arguments[1]));
+            i = Math.min(i, ES.ToInteger(arguments[1]));
         }
         // handle negative indices
         i = i >= 0 ? i : length - Math.abs(i);
@@ -744,7 +746,7 @@ var hasDontEnumBug = !({'toString': null}).propertyIsEnumerable('toString'),
 
 defineProperties(Object, {
     keys: function keys(object) {
-        var isFn = isFunction(object),
+        var isFn = isCallable(object),
             isArgs = isArguments(object),
             isObject = object !== null && typeof object === 'object',
             isStr = isObject && isString(object);
@@ -879,9 +881,9 @@ if (!dateToJSONIsSupported) {
 
         // 1.  Let O be the result of calling ToObject, giving it the this
         // value as its argument.
-        // 2. Let tv be toPrimitive(O, hint Number).
+        // 2. Let tv be ES.ToPrimitive(O, hint Number).
         var o = Object(this),
-            tv = toPrimitive(o),
+            tv = ES.ToPrimitive(o),
             toISO;
         // 3. If tv is a Number and is not finite, return null.
         if (typeof tv === 'number' && !isFinite(tv)) {
@@ -1264,7 +1266,7 @@ if (
             }
 
             // If `separator` is not a regex, use native split
-            if (to_string.call(separator) !== '[object RegExp]') {
+            if (!isRegex(separator)) {
                 return string_split.call(this, separator, limit);
             }
 
@@ -1360,7 +1362,7 @@ var replaceReportsGroupsCorrectly = (function () {
 
 if (!replaceReportsGroupsCorrectly) {
     StringPrototype.replace = function replace(searchValue, replaceValue) {
-        var isFn = isFunction(replaceValue);
+        var isFn = isCallable(replaceValue);
         var hasCapturingGroups = isRegex(searchValue) && (/\)[*?]/).test(searchValue.source);
         if (!isFn || !hasCapturingGroups) {
             return str_replace.call(this, searchValue, replaceValue);
