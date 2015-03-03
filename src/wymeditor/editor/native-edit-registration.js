@@ -52,6 +52,7 @@ WYMeditor.NativeEditRegistration.prototype._onAnyNativeEdit = function () {
 
     // remove redo points
     undoRedo.history.changesetsFore = [];
-    // declare that current state is unregistered
+    // If a user is in the middle of typing their first word, there are changes, 
+    // but they haven't yet been grouped into a "sensible edit". 
     undoRedo.hasUnregisteredEdits = true;
 };
