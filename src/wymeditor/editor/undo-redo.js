@@ -113,6 +113,7 @@ WYMeditor.UndoRedo.prototype._do = function (what) {
             return;
         }
         if (undoRedo.hasUnregisteredEdits) {
+            // in order to be able to 'redo' to this yet unregistered state
             undoRedo._add();
         }
         history.backward();

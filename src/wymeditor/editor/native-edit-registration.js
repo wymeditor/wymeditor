@@ -50,6 +50,8 @@ WYMeditor.NativeEditRegistration.prototype._onAnyNativeEdit = function () {
     var nativeEditRegistration = this,
         undoRedo = nativeEditRegistration.wym.undoRedo;
 
+    // remove redo points
     undoRedo.history.changesetsFore = [];
+    // declare that current state is unregistered
     undoRedo.hasUnregisteredEdits = true;
 };
