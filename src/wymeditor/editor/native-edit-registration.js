@@ -19,20 +19,36 @@ WYMeditor.NativeEditRegistration = function (wym) {
     // https:/github.com/mightyiam/edited
     nativeEditRegistration.edited = new WYMeditor.EXTERNAL_MODULES.Edited(
         wym._doc.body,
-        function () {
-            nativeEditRegistration._onNativeEdit.call(nativeEditRegistration);
-        }
+        nativeEditRegistration._onSensibleNativeEdit
+            .bind(nativeEditRegistration),
+        nativeEditRegistration._onAnyNativeEdit
+            .bind(nativeEditRegistration)
     );
 };
 
 /**
-    WYMeditor.NativeEditRegistration._onNativeEdit
+    WYMeditor.NativeEditRegistration._onSensibleNativeEdit
+    ======================================================
+
+    Handles native edits for the purpose of Undo/Redo.
+*/
+WYMeditor.NativeEditRegistration.prototype
+    ._onSensibleNativeEdit = function () {
+
+    var nativeEditRegistration = this;
+    nativeEditRegistration.wym.registerModification(true);
+};
+
+/**
+    WYMeditor.NativeEditRegistration._onAnyNativeEdit
     ==============================================
 
     Handles native edits for the purpose of Undo/Redo.
 */
-WYMeditor.NativeEditRegistration.prototype._onNativeEdit = function () {
-    var nativeEditRegistration = this;
+WYMeditor.NativeEditRegistration.prototype._onAnyNativeEdit = function () {
+    var nativeEditRegistration = this,
+        undoRedo = nativeEditRegistration.wym.undoRedo;
 
-    nativeEditRegistration.wym.registerModification(true);
+    undoRedo.history.changesetsFore = [];
+    undoRedo.hasUnregisteredEdits = true;
 };

@@ -88,6 +88,7 @@ WYMeditor.UndoRedo.prototype._add = function () {
         wym = undoRedo.wym;
 
     undoRedo.history.add(wym.getCurrentState());
+    undoRedo.hasUnregisteredEdits = false;
 };
 
 /**
@@ -111,7 +112,7 @@ WYMeditor.UndoRedo.prototype._do = function (what) {
         if (history.changesetsBack.length === 0) {
             return;
         }
-        if (!history.changesetsFore.length) {
+        if (undoRedo.hasUnregisteredEdits) {
             undoRedo._add();
         }
         history.backward();
