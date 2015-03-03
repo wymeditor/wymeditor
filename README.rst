@@ -131,6 +131,7 @@ Requirements
 
 * jQuery: any version between 1.4.4 and 2.1.x.
   With jQuery 2.x and newer, there is no support for IE8 and older.
+* For IE7 & IE8, ES5 shims are required. Tested with `es5-shim`_ and shams.
 
 Global Pollution
 ================
@@ -168,3 +169,4 @@ and GPL (``GPL-license.txt``) licenses.
 .. _jquery.browser: https://github.com/gabceb/jquery-browser-plugin
 .. _Rangy: https://github.com/timdown/rangy/
 .. _object-history: https://github.com/mightyiam/object-history
+.. _es5-shim: https://github.com/es-shims/es5-shim
