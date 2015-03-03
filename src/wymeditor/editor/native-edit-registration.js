@@ -30,7 +30,8 @@ WYMeditor.NativeEditRegistration = function (wym) {
     WYMeditor.NativeEditRegistration._onSensibleNativeEdit
     ======================================================
 
-    Handles native edits for the purpose of Undo/Redo.
+    Handles "sensible" native edits.
+    Sensible according to https://github.com/PolicyStat/edited
 */
 WYMeditor.NativeEditRegistration.prototype
     ._onSensibleNativeEdit = function () {
@@ -41,9 +42,9 @@ WYMeditor.NativeEditRegistration.prototype
 
 /**
     WYMeditor.NativeEditRegistration._onAnyNativeEdit
-    ==============================================
+    =================================================
 
-    Handles native edits for the purpose of Undo/Redo.
+    Handles all native edits.
 */
 WYMeditor.NativeEditRegistration.prototype._onAnyNativeEdit = function () {
     var nativeEditRegistration = this,
