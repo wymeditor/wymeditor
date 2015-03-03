@@ -33,6 +33,7 @@ WYMeditor.
     but it is recommended that existing custom dialogs be rewritten using the
     new `wym.dialog` API (see API documentation) or at least that they be
     tested.
+  * Support for IE7 dropped.
 
 ### Enhancements
 
