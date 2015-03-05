@@ -982,7 +982,6 @@ WYMeditor.editor.prototype.unwrapIfMeaninglessSpan = function (element) {
     var $element = jQuery(element),
         i = 0,
         attrName,
-        attrValue,
         meaninglessAttrNames = [
             '_wym_visited',
             'length',
