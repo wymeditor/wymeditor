@@ -59,9 +59,9 @@ See :ref:`Include jQuery` for WYMeditor's range of supported jQuery versions.
 Source the WYMeditor Javascript
 ===============================
 
-Include the ``wymeditor/jquery.wymeditor.min.js`` file
+Include the dependencies (e.g. jQuery, ES5 shim and ES5 Sham)
+and ``wymeditor/jquery.wymeditor.min.js`` file
 on your page.
-This file will pull in anything else that's required.
 
 .. code-block:: html
 
@@ -70,6 +70,11 @@ This file will pull in anything else that's required.
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
             <title>WYMeditor Quickstart</title>
             <script type="text/javascript" src="jquery/jquery.js"></script>
+            <!-- for IE8, ES5 shims are required-->
+            <!--[if IE 8]>
+            <script type="text/javascript" src="es5-shim.js"></script>
+            <script type="text/javascript" src="es5-sham.js"></script>
+            <![endif]-->
             <script type="text/javascript" src="wymeditor/jquery.wymeditor.min.js"></script>
         </head>
         <body>
@@ -106,6 +111,11 @@ Let's also start with some existing content.
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
             <title>WYMeditor Quickstart</title>
             <script type="text/javascript" src="jquery/jquery.js"></script>
+            <!-- for IE8, ES5 shims are required-->
+            <!--[if IE 8]>
+            <script type="text/javascript" src="es5-shim.js"></script>
+            <script type="text/javascript" src="es5-sham.js"></script>
+            <![endif]-->
             <script type="text/javascript" src="wymeditor/jquery.wymeditor.min.js"></script>
         </head>
         <body>
@@ -163,6 +173,11 @@ All Together Now
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
             <title>WYMeditor Quickstart</title>
             <script type="text/javascript" src="jquery/jquery.js"></script>
+            <!-- for IE8, ES5 shims are required-->
+            <!--[if IE 8]>
+            <script type="text/javascript" src="es5-shim.js"></script>
+            <script type="text/javascript" src="es5-sham.js"></script>
+            <![endif]-->
             <script type="text/javascript" src="wymeditor/jquery.wymeditor.min.js"></script>
         </head>
         <body>
@@ -226,6 +241,11 @@ Example
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
             <title>WYMeditor Quickstart</title>
             <script type="text/javascript" src="jquery/jquery.js"></script>
+            <!-- for IE8, ES5 shims are required-->
+            <!--[if IE 8]>
+            <script type="text/javascript" src="es5-shim.js"></script>
+            <script type="text/javascript" src="es5-sham.js"></script>
+            <![endif]-->
             <script type="text/javascript" src="wymeditor/jquery.wymeditor.min.js"></script>
         </head>
         <body>
