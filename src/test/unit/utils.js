@@ -46,17 +46,12 @@ var preLt = /</g;
 var preGt = />/g;
 var preQuot = /\"/g;
 
-var keepAttributes = [
-    'id',
-    'class',
-    'colspan',
-    'rowspan',
-    'src',
-    'alt',
-    'href',
-    'summary',
-    'title',
-    'target'
+var disposableAttributes = [
+    '_wym_visited',
+    // IE8
+    'nodeindex',
+    // IE8 uses this for img elements
+    'complete'
 ];
 
 function expectedCount() {
@@ -267,28 +262,25 @@ function normalizeHtml(node) {
                 attr = attrs[i];
                 attrName = attr.nodeName.toLowerCase();
                 attrValue = attr.value;
-                keepAttr = false;
+                keepAttr = true;
 
                 // We only care about specified attributes
                 if (!attr.specified) {
                     keepAttr = false;
                 }
 
-                // The above check for `specified` should be enough but IE7
-                // adds various attributes sporadically. Use a white list.
-                if (
-                    jQuery.inArray(
-                        attrName,
-                        keepAttributes
-                    ) > -1
-                ) {
-                    keepAttr = true;
+                // The above check for `specified` should be enough but IE8
+                // adds some attributes
+                if (jQuery.inArray(attrName, disposableAttributes) > -1) {
+                    keepAttr = false;
                 }
 
-                // This is for IE7, as well.
-                if (
-                    attrValue === ''
-                ) {
+                if (attrName.slice(0, 6) === 'jquery') {
+                    keepAttr = false;
+                }
+
+                // IE8 seems to keep attributes with empty string values
+                if (attrValue === '') {
                     keepAttr = false;
                 }
 
