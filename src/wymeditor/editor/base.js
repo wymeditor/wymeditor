@@ -4022,7 +4022,7 @@ WYMeditor.editor.prototype.doesElementContainSelection = function (element) {
 
     // For non-collapsed selections.
     // We could have used the following, but it
-    // doesn't work in IE7 & IE8.
+    // doesn't work in IE8.
     // if ($element.has(wym._getSelectedNodes()).length > 0) {
     //     return true;
     // }
