@@ -59,7 +59,7 @@ See :ref:`Include jQuery` for WYMeditor's range of supported jQuery versions.
 Source the WYMeditor Javascript
 ===============================
 
-Include the dependencies (e.g. ES5 shim and ES5 Sham)
+Include the dependencies (e.g. jQuery, ES5 shim and ES5 Sham)
 and ``wymeditor/jquery.wymeditor.min.js`` file
 on your page.
 
