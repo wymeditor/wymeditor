@@ -82,7 +82,6 @@ Frame centering problems in IE
 
 IE has some vertical centering issues:
 
-* IE7: Too much space at the top and not enough at the bottom
 * IE8: Too much space at the top and not enough at the bottom
 * IE9: Too much space at the bottom and not enough at the top
 

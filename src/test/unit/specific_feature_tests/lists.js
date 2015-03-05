@@ -2865,14 +2865,11 @@ function changeIndent(wymeditor, html, selStart, selEnd, inOrOut) {
     }
 }
 
-// These test fail in IE7 & IE8:
+// These test fail in IE8:
 // https://github.com/wymeditor/wymeditor/issues/498
 if (!(// Browser is IE and
       jQuery.browser.msie &&
-      // version 7.x until
-      parseInt(jQuery.browser.version, 10) >= 7 &&
-      // version 8.x
-      parseInt(jQuery.browser.version, 10) < 9
+      jQuery.browser.versionNumber === 8
      // or
      ) ||
     // we are executing known failing tests:

@@ -16,10 +16,6 @@ makes editing large documents painful.
 Users have to manage two different scrollbars
 and two different widths.
 
-Additionally,
-there are problems with IE7
-and horizontal width.
-
 Solution
 ========
 
@@ -116,12 +112,6 @@ Different Goals
 
 Useful Tools
 ============
-
-Removing the frame border
--------------------------
-
-`SO Answer <http://stackoverflow.com/questions/4455541/how-to-remove-iframe-border-in-ie7>`_.
-Use capital **B** in ``frameBorder``.
 
 Kill the scrollbar
 ------------------
