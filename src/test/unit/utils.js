@@ -46,17 +46,13 @@ var preLt = /</g;
 var preGt = />/g;
 var preQuot = /\"/g;
 
-var keepAttributes = [
-    'id',
-    'class',
-    'colspan',
-    'rowspan',
-    'src',
-    'alt',
-    'href',
-    'summary',
-    'title',
-    'target'
+var disposableAttributes = [
+    '_wym_visited',
+    // IE8
+    'nodeindex',
+    // IE8 uses this for img elements
+    'complete',
+    '_moz_editor_bogus_node'
 ];
 
 function expectedCount() {
@@ -205,7 +201,7 @@ function textToHtml(str) {
     return str.replace(preAmp, '&amp;')
         .replace(preLt, '&lt;')
         .replace(preGt, '&gt;')
-        // IE7 and IE8 produce carriage returns instead of newlines. Replace
+        // IE8 produces carriage returns instead of newlines. Replace
         // them with newlines.
         .replace(/\r/g, '\n');
 }
@@ -267,28 +263,23 @@ function normalizeHtml(node) {
                 attr = attrs[i];
                 attrName = attr.nodeName.toLowerCase();
                 attrValue = attr.value;
-                keepAttr = false;
+                keepAttr = true;
 
                 // We only care about specified attributes
                 if (!attr.specified) {
                     keepAttr = false;
                 }
 
-                // The above check for `specified` should be enough but IE7
-                // adds various attributes sporadically. Use a white list.
-                if (
-                    jQuery.inArray(
-                        attrName,
-                        keepAttributes
-                    ) > -1
-                ) {
-                    keepAttr = true;
+                if (jQuery.inArray(attrName, disposableAttributes) > -1) {
+                    keepAttr = false;
                 }
 
-                // This is for IE7, as well.
-                if (
-                    attrValue === ''
-                ) {
+                if (attrName.slice(0, 6) === 'jquery') {
+                    keepAttr = false;
+                }
+
+                // IE8 seems to keep attributes with empty string values
+                if (attrValue === '') {
                     keepAttr = false;
                 }
 
@@ -368,8 +359,7 @@ function wymEqual(wymeditor, expected, options) {
             // this matching.
             assertionString: null,
             // A boolean that specifies whether leading spaces before line
-            // breaks and list type elements should be removed in old versions
-            // of Internet Explorer (i.e. IE7,8).
+            // breaks and list type elements should be removed in IE8
             fixListSpacing: false,
             parseHtml: false
         },

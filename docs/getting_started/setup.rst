@@ -38,7 +38,7 @@ WYMeditor is available via `Bower`_.
 
 jQuery 2.x does not support IE8 and older.
 
-WYMeditor does support IE7 and IE8.
+WYMeditor does support IE8.
 
 WYMeditor's Bower manifest defines a range of jQuery versions as a
 dependency.
@@ -47,7 +47,7 @@ The latest jQuery version in this range is the newest jQuery version that
 still supports these browsers.
 
 WYMeditor does support jQuery 2.x, with the acknowledgement that it will not
-function in IE7 and IE8.
+function in IE8.
 
 If you decide to use jQuery 2.x, please feel free to override the top limit,
 while making sure you supply a jQuery version that WYMeditor supports.
@@ -70,8 +70,8 @@ on your page.
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
             <title>WYMeditor Quickstart</title>
             <script type="text/javascript" src="jquery/jquery.js"></script>
-            <!-- for IE7 & IE8, ES5 shims are required-->
-            <!-- [if lte IE 8]>
+            <!-- for IE8, ES5 shims are required-->
+            <!-- [if IE 8]>
             <script type="text/javascript" src="es5-shim.js"></script>
             <script type="text/javascript" src="es5-sham.js"></script>
             <![endif]-->

@@ -989,9 +989,9 @@ var startEndOutNoBR = expectedEndOut.replace(TEST_LINEBREAK_SPACER, '');
 
 module("table-insert_in_list", {setup: prepareUnitTestModule});
 
-// These test fail in IE7 & IE8:
+// These test fail in IE8:
 // TODO url
-if (jQuery.browser.msie && jQuery.browser.version in ['7.0, 8.0'] &&
+if (jQuery.browser.msie && jQuery.browser.versionNumber === 8 &&
     !SKIP_KNOWN_FAILING_TESTS) {
     test("Table insertion in the middle of a list with text selection", function () {
         QUnit.expect(1);

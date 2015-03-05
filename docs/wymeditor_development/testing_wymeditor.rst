@@ -41,12 +41,6 @@ so point a browser at
 
 .. note::
 
-  In Internet Explorer 7, after the first test run, it appears that subsequent
-  test run considerably slower. It is possible to work around this issue by
-  restarting the browser.
-
-.. note::
-
   If testing in a virtual machine, for better performance, disabling virtual
   memory may help.
 

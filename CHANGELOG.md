@@ -33,6 +33,8 @@ WYMeditor.
     but it is recommended that existing custom dialogs be rewritten using the
     new `wym.dialog` API (see API documentation) or at least that they be
     tested.
+* [#679](https://github.com/wymeditor/wymeditor/pull/679)
+  Support for IE7 dropped.
 * [#680](https://github.com/wymeditor/wymeditor/pull/680)
   For IE8 support, some shimmable ES5 features are now required.
   We test using [es5-shim](https://github.com/es-shims/es5-shim)

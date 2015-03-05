@@ -386,8 +386,7 @@ WYMeditor.XhtmlSaxListener.prototype.openBlockTag = function(tag, attributes) {
         this._addSpacerBeforeElementInLI = false;
     }
 
-    this._lastAddedOpeningTagString = this.helper.tag(tag, attributes, true);
-    this.output += this._lastAddedOpeningTagString
+    this.output += this.helper.tag(tag, attributes, true);
     this._lastAddedOpenTag = tag;
     this._lastTagRemoved = false;
 };
@@ -430,16 +429,6 @@ WYMeditor.XhtmlSaxListener.prototype.closeBlockTag = function(tag) {
     if (jQuery.inArray(tag, WYMeditor.LIST_TYPE_ELEMENTS) > -1) {
         this._insideLI = false;
     }
-
-    // If a `br` is the only tag within the element that is being closed,
-    // remove that `br` tag.
-    this.output = this.output.replace(
-        new RegExp(
-            this._lastAddedOpeningTagString + '<br />$',
-            ''
-        ),
-        this._lastAddedOpeningTagString
-    );
 
     this.output = this.output +
         this._getClosingTagContent('before', tag) +
