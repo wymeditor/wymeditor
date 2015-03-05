@@ -71,7 +71,7 @@ on your page.
             <title>WYMeditor Quickstart</title>
             <script type="text/javascript" src="jquery/jquery.js"></script>
             <!-- for IE8, ES5 shims are required-->
-            <!-- [if IE 8]>
+            <!--[if IE 8]>
             <script type="text/javascript" src="es5-shim.js"></script>
             <script type="text/javascript" src="es5-sham.js"></script>
             <![endif]-->
