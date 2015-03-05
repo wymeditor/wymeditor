@@ -1837,8 +1837,7 @@ WYMeditor.editor.prototype.insertImage = function (attrs) {
 
     uniqueStamp = wym.uniqueStamp();
     wym._exec(WYMeditor.EXEC_COMMANDS.INSERT_IMAGE, uniqueStamp);
-    // 'Attribute ends with' dollar sign is a work around for IE7.
-    $img = jQuery("img[src$=" + uniqueStamp + "]", wym.body());
+    $img = jQuery("img[src=" + uniqueStamp + "]", wym.body());
 
     if ($img.length === 0) {
         // This occurs when a link wasn't created, because, for example
