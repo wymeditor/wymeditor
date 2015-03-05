@@ -205,7 +205,7 @@ function textToHtml(str) {
     return str.replace(preAmp, '&amp;')
         .replace(preLt, '&lt;')
         .replace(preGt, '&gt;')
-        // IE7 and IE8 produce carriage returns instead of newlines. Replace
+        // IE8 produces carriage returns instead of newlines. Replace
         // them with newlines.
         .replace(/\r/g, '\n');
 }
