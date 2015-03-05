@@ -526,8 +526,7 @@ For certain editing actions (mostly list indent/outdent), it's necessary to
 wrap content in a span element to retain grouping because it's not obvious that
 the content will stay together without grouping. This method detects that
 specific situation and then unwraps the content if the span is in fact not
-necessary. It handles the fact that IE7 throws attributes on spans, even if
-they're completely empty.
+necessary.
 
 *********
 Undo/Redo

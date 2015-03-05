@@ -974,49 +974,19 @@ WYMeditor.editor.prototype.isListNode = function (node) {
    wrap content in a span element to retain grouping because it's not obvious that
    the content will stay together without grouping. This method detects that
    specific situation and then unwraps the content if the span is in fact not
-   necessary. It handles the fact that IE7 throws attributes on spans, even if
-   they're completely empty.
-
-   Unlike sane browsers, IE7 provides all possible attributes in a node's
-   `attributes`. Thus, a simple check like `attributes.length > 0` isn't
-   enough (as long as we support IE7). This function tries to determine
-   whether the element really does have meaningful attributes, considering
-   IE7's behavior. This turns out to be not so simple, as IE7 populates
-   some attributes with truth-y values. So the mechanism is a kind of
-   a blacklist filter of IE7's junk-attributes. If an attribute passes this
-   blacklist filter, then this function returns true.
+   necessary.
 
    @param element The element.
 */
 WYMeditor.editor.prototype.unwrapIfMeaninglessSpan = function (element) {
     var $element = jQuery(element),
-        attributes,
-        i,
+        i = 0,
         attrName,
         attrValue,
-        // We don't care about any of these attributes
         meaninglessAttrNames = [
             '_wym_visited',
-            'dataFld',
-            'onmouseup',
-            'contentEditable',
-            'dataFormatAs',
-            'dataSrc',
-            'tabIndex',
-            'value',
-            'hideFocus',
-            'disabled',
-            'cite',
-            'dateTime',
-            'nofocusrect'
-        ],
-        // Any attribute with these values isn't interesting
-        falsyAttrValues = [
-            '',
-            undefined,
-            false,
-            null,
-            'null'
+            'length',
+            'ie8_length'
         ];
 
     if (!element || typeof (element.tagName) === 'undefined' ||
@@ -1024,33 +994,12 @@ WYMeditor.editor.prototype.unwrapIfMeaninglessSpan = function (element) {
         return false;
     }
 
-    attributes = element.attributes;
-    if (attributes.length === 0) {
-        // Early return for spans with no attributes
-        $element.before($element.contents());
-        $element.remove();
-        return true;
-    }
-
-    // This loop is required for IE7 because it seems to populate
-    // the attributes property with all possible attributes. When
-    // support for IE7 is dropped the length check should be
-    // enough.
-    for (i = 0; i < attributes.length; i++) {
-        attrName = attributes[i].name;
-        // Getting the value through jQuery is rumored to normalizes it in some
-        // ways.
-        attrValue = $element.attr(attrName);
-        if (
-            jQuery.inArray(attrName, meaninglessAttrNames) === -1 &&
-            jQuery.inArray(
-                attrValue,
-                falsyAttrValues
-            ) === -1
-        ) {
-            // We hit an attribute making this non-meaningless
+    while (i < element.attributes.length) {
+        attrName = element.attributes[i].nodeName;
+        if (jQuery.inArray(attrName, meaninglessAttrNames) === -1) {
             return false;
         }
+        i++;
     }
 
     $element.before($element.contents());
