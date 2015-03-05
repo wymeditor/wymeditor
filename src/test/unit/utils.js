@@ -368,8 +368,7 @@ function wymEqual(wymeditor, expected, options) {
             // this matching.
             assertionString: null,
             // A boolean that specifies whether leading spaces before line
-            // breaks and list type elements should be removed in old versions
-            // of Internet Explorer (i.e. IE7,8).
+            // breaks and list type elements should be removed in IE8
             fixListSpacing: false,
             parseHtml: false
         },
