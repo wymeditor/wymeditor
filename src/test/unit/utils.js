@@ -51,7 +51,8 @@ var disposableAttributes = [
     // IE8
     'nodeindex',
     // IE8 uses this for img elements
-    'complete'
+    'complete',
+    '_moz_editor_bogus_node'
 ];
 
 function expectedCount() {
