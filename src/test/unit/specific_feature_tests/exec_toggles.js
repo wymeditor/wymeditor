@@ -16,7 +16,6 @@ function getBrowserTagname(command) {
     var TAGNAMES = {
             Bold: {
                 common: "b",
-                msie7: "strong",
                 msie8: "strong",
                 msie9: "strong",
                 msie10: "strong",
@@ -24,7 +23,6 @@ function getBrowserTagname(command) {
             },
             Italic: {
                 common: "i",
-                msie7: "em",
                 msie8: "em",
                 msie9: "em",
                 msie10: "em",
