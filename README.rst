@@ -99,7 +99,7 @@ required in your project, and you want to ensure that users are focused on the
 structure of their content instead of tweaking fonts and margins, perhaps you
 should give WYMeditor a try.
 
-May also be of interest, is that WYMeditor fully supports Internet Explorer 7.
+May also be of interest, is that WYMeditor fully supports Internet Explorer 8.
 
 ******
 Try It
