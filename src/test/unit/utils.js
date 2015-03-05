@@ -270,8 +270,6 @@ function normalizeHtml(node) {
                     keepAttr = false;
                 }
 
-                // The above check for `specified` should be enough but IE8
-                // adds some attributes
                 if (jQuery.inArray(attrName, disposableAttributes) > -1) {
                     keepAttr = false;
                 }
