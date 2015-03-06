@@ -2812,24 +2812,20 @@ test("Tab has no effect outside lists", function () {
 
 module("list-newline_normalization", {setup: prepareUnitTestModule});
 
-test("Shouldn't eat newline text spacing in li", function () {
+test("Should eat newline text spacing in li", function () {
     QUnit.expect(1);
 
     var initHtml = String() +
             '<ul>' +
                 '<li>' +
-                    'Lorem ipsum dolor' + "\n" +
-                    'sit amet, consectetur' + "\n\n" +
-                    'adipiscing elit. Integer' + "\n\n\n" +
-                    'sagittis porta dapibus.' +
+                    'Lorem ipsum dol\nor' +
                 '</li>' +
             '</ul>',
 
         expectedHtml = String() +
             '<ul>' +
                 '<li>' +
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' +
-                    ' Integer sagittis porta dapibus.' +
+                    'Lorem ipsum dolor' +
                 '</li>' +
             '</ul>',
         wymeditor = jQuery.wymeditors(0);

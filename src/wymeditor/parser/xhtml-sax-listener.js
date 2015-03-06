@@ -284,13 +284,10 @@ WYMeditor.XhtmlSaxListener.prototype.getTagForStyle = function (style) {
 };
 
 WYMeditor.XhtmlSaxListener.prototype.addContent = function(text) {
-    if (this.last_tag && this.last_tag == 'li') {
-        // We should strip trailing newlines from text inside li tags because
-        // IE adds random significant newlines inside nested lists
-        text = text.replace(/(\r|\n|\r\n)+$/g, '');
-
-        // Let's also normalize multiple newlines down to a single space
-        text = text.replace(/(\r|\n|\r\n)+/g, ' ');
+    if (!(this.last_tag && this.last_tag === 'pre')) {
+        // We respect newlines only when in 'pre'. Outside of 'pre',
+        // we remove all of them.
+        text = text.replace(/(\r|\n|\r\n)/g, '');
     }
     if (text.replace(/^\s+|\s+$/g, '').length > 0) {
         // Don't count it as text if it's empty
