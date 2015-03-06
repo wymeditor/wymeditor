@@ -59,20 +59,11 @@ WYMeditor.
 ### Bug Fixes
 
 * [#512](https://github.com/wymeditor/wymeditor/pull/512)
-  Undo/redo is working for all toolbar actions.
-
-  It only works from the toolbar undo/redo buttons--not keyboard shortcuts.
-  Undo/redo for containers, classes and text manipulations is a WIP.
-
-  Undo/redo depends on `object-history`, which, in turn, depends on some ES5
-  things, that IE8 and older don’t have. This is fixed by deploying `es5-shim`
-  (and its shams). Should WYMeditor include these shims and shams or should
-  documentation declare them as requirements? If the latter, then how to
-  degrade gracefully when they don’t exist? Perhaps simply disallow native
-  undo/redo?
-
-  Undo/redo, even if unused, may eat a lot of RAM, depending on the document
-  size and the browser. To be optimized.
+  Undo/redo is working for toolbar actions and text edits.
+  Undo/redo for containers and classes (styles) is a WIP.
+  The presence of the undo/redo feature may use a large amount of memory,
+  depending on the document size and the browser. This will be optimized in the
+  future.
 * [#624](https://github.com/wymeditor/wymeditor/pull/624)
   * Keyboard shortcuts are more consistent cross-platform.
   * Fix: pressing tab in WebKit and Blink creates span. caveat: now tab can’t
