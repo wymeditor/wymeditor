@@ -54,8 +54,11 @@ WYMeditor.NativeEditRegistration.prototype._onAnyNativeEdit = function () {
     undoRedo.history.changesetsFore = [];
 
     // Non-native modifications are registered when they are performed.
-    // Contrary to those, only a part of the native edits are
-    // registered when they are performed.
+    // Contrary to those, native edits (e.g. typing) aren't registered 
+    // until word boundaries are reached (space, enter) or edit actions 
+    // (backspace, delete, cut, paste, etc). 
+    // This handles an undo after e.g. only part of word is typed.
+    //
     // A state with unregistered modifications will be lost upon an undo
     // and redo because it was never registered.
     // The last registered state doesn't include it and that will be the result
