@@ -156,7 +156,7 @@ Global Pollution
 Copyright
 *********
 
-Copyright (c) 2005 - 2013 Jean-Francois Hovinne,
+Copyright (c) 2005 - 2015 Jean-Francois Hovinne,
 Dual licensed under the MIT (``MIT-license.txt``)
 and GPL (``GPL-license.txt``) licenses.
 
