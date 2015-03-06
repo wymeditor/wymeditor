@@ -1157,6 +1157,10 @@ WYMeditor._getWymClassForBrowser = function () {
     // Using https://github.com/gabceb/jquery-browser-plugin
     switch (jQuery.browser.name) {
         case "msie":
+            if (jQuery.browser.versionNumber < 8) {
+                // minimum supported IE is 8
+                return false;
+            }
             if (WYMeditor.isInternetExplorerPre11()) {
                 return WYMeditor.WymClassTridentPre7;
             } else if (WYMeditor.isInternetExplorer11OrNewer()) {
