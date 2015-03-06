@@ -88,6 +88,7 @@ WYMeditor.UndoRedo.prototype._add = function () {
         wym = undoRedo.wym;
 
     undoRedo.history.add(wym.getCurrentState());
+    undoRedo.hasUnregisteredModification = false;
 };
 
 /**
@@ -110,6 +111,10 @@ WYMeditor.UndoRedo.prototype._do = function (what) {
     if (what === WYMeditor.UndoRedo.UN) {
         if (history.changesetsBack.length === 0) {
             return;
+        }
+        if (undoRedo.hasUnregisteredModification) {
+            // in order to be able to 'redo' to this yet unregistered state
+            undoRedo._add();
         }
         history.backward();
         postEventName = 'postUndo';
