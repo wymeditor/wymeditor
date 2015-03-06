@@ -35,8 +35,8 @@ You can load your example via:
 
 .. code-block:: shell-session
 
-    vagrant$ grunt server
-   $ google-chrome http://localhost:9000/examples/
+    $ grunt server
+    $ google-chrome http://localhost:9000/examples/
 
 Serving Examples from ``dist/``
 -------------------------------
@@ -47,8 +47,8 @@ we can tell ``grunt`` to build first:
 
 .. code-block:: shell-session
 
-    vagrant$ grunt server:dist
-   $ google-chrome http://localhost:9000/examples/
+    $ grunt server:dist
+    $ google-chrome http://localhost:9000/examples/
 
 2. Create your plugin folder
 ============================

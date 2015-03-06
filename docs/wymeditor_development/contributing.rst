@@ -68,16 +68,7 @@ See the `GitHub help section <http://help.github.com/>`_ for further details.
 Configuring Your Development Environment
 ****************************************
 
-WYMeditor uses the standard modern javascript development toolchain,
-centered on ``Grunt`` as our build tool
-and ``node.js`` via ``NPM`` for installing requirements.
-If you don't have your machine configured for node.js development,
-we've provided a ``Vagrantfile``
-for easy setup using `Vagrant <http://www.vagrantup.com/>`_.
-
-If you want a custom,
-non-Vagrant environment,
-the basic requirements are:
+WYMeditor uses the standard modern javascript development toolchain:
 
 * ``git`` and whatever tools you need to build from source.
   eg. ``sudo apt-get install build-essential``
@@ -95,7 +86,7 @@ Example Installation
 
 We think that `nvm <https://github.com/creationix/nvm>`_
 is a really cool way
-to do node.js things,
+to manage multiple node.js versions (or even just one),
 so we'll use that for our example install.
 If you already know your way around node,
 feel free to use whatever you'd like.

@@ -25,7 +25,7 @@ you can perform this check via Grunt:
 
 .. code-block:: shell-session
 
-    vagrant@precise32:~/wym$ grunt jshint
+    $ grunt jshint
 
 Making Files Pass
 =================

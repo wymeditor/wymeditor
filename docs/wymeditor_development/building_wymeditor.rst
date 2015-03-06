@@ -8,15 +8,13 @@ it's pretty straight forward.
 
 .. code-block:: shell-session
 
-    $ vagrant ssh
-    vagrant:~$ cd wym
-    vagrant:~/wym$ grunt
+    $ grunt
 
 That command runs the tests before the build.
 For just a plain build:
 
 .. code-block:: shell-session
 
-    vagrant:~/wym$ grunt build
+    $ grunt build
 
 The resulting compressed distribution will appear in your ``dist`` directory.

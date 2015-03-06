@@ -19,7 +19,7 @@ then serving the examples is easy:
 
 .. code-block:: shell-session
 
-    vagrant:~/wym$ grunt server:dist
+    $ grunt server:dist
     $ google-chrome "http://localhost:9000/examples/"
 
 **************************
