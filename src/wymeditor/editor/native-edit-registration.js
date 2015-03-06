@@ -52,8 +52,16 @@ WYMeditor.NativeEditRegistration.prototype._onAnyNativeEdit = function () {
 
     // remove redo points
     undoRedo.history.changesetsFore = [];
-    // this is a flag for future actions. For example, on undo, when this flag
-    // is true, the state is saved as an undo point before undoing. Otherwise,
-    // this state would have been lost forever.
-    undoRedo.hasUnregisteredEdits = true;
+
+    // Non-native modifications are registered when they are performed.
+    // Contrary to those, only a part of the native edits are
+    // registered when they are performed.
+    // A state with unregistered modifications will be lost upon an undo
+    // and redo because it was never registered.
+    // The last registered state doesn't include it and that will be the result
+    // of the undo and redo operation.
+    // This flag lets the undo operation know that it should add the current
+    // state as a history point (register it) before undoing.
+    // Then the next redo will revert to this state.
+    undoRedo.hasUnregisteredModification = true;
 };
