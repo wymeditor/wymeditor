@@ -285,9 +285,12 @@ WYMeditor.XhtmlSaxListener.prototype.getTagForStyle = function (style) {
 
 WYMeditor.XhtmlSaxListener.prototype.addContent = function(text) {
     if (!(this.last_tag && this.last_tag === 'pre')) {
-        // We respect newlines only when in 'pre'. Outside of 'pre',
-        // we remove all of them.
-        text = text.replace(/(\r|\n|\r\n)/g, '');
+        // We respect newlines as they are, only when in 'pre'
+        // outside of 'pre',
+        // at end of elements they are removed
+        text = text.replace(/(\r|\n|\r\n)+$/g, '');
+        // the rest are replaced with spaces
+        text = text.replace(/(\r|\n|\r\n)/g, ' ');
     }
     if (text.replace(/^\s+|\s+$/g, '').length > 0) {
         // Don't count it as text if it's empty
