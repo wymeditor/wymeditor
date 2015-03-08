@@ -44,7 +44,7 @@ In this example, `RVM`_ is used.
 
 .. code-block:: shell-session
 
-    $ rvm use 1.9.3
+    $ rvm install 2.2
     $ bundle install
 
 `Docutils`_ is also required. Docutils is probably available in your Linux
