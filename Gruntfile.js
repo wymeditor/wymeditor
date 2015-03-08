@@ -540,6 +540,7 @@ module.exports = function (grunt) {
             'browserify:externalModules',
             'browserify:keysim',
             'clean:server',
+            // forgive when Jekyll is not installed
             'force:jekyllDev',
             'connect:dev',
             'concurrent:watchDev'
@@ -573,6 +574,7 @@ module.exports = function (grunt) {
         'usemin',
         'replace',
         'compress',
+        // forgive when Jekyll is not installed
         'force:jekyllDist'
     ]);
 
