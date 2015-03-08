@@ -62,7 +62,7 @@
     "grunt-contrib-stylus": "~0.5.0",
     "grunt-contrib-uglify": "~0.2.0",
     "grunt-contrib-watch": "~0.5.3",
-    "grunt-force": "~1.0.0",
+    "grunt-force-task": "^1.0.0",
     "grunt-jekyll": "^0.4.2",
     "grunt-replace": "~0.4.4",
     "grunt-rev": "~0.1.0",
