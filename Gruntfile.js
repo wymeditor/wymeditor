@@ -397,6 +397,7 @@ module.exports = function (grunt) {
         jekyll: {
             options: {
                 src: jekyllDir,
+                bundleExec: true,
                 raw: 'name: ' + humanName + '\n' +
                     'projectPage: ' + projectPage + '\n' +
                     'releaseArchive: ' + releaseArchive + '\n' +
