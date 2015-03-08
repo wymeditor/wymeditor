@@ -28,8 +28,8 @@
         <div class="downloads">
           <span>Downloads:</span>
           <ul>
-              <li><a href="https://github.com/wymeditor/wymeditor/releases/download/v1.0.0-rc.1/wymeditor-1.0.0-rc.1.tag.gz" class="button">Distribution</a></li>
-            <li><a href="https://github.com/wymeditor/wymeditor/archive/v1.0.0-rc.1.zip" class="button">Source</a></li>
+              <li><a href="https://github.com/wymeditor/wymeditor/releases/download/v1.0.0-rc.2/wymeditor-1.0.0-rc.2.tag.gz" class="button">Distribution</a></li>
+            <li><a href="https://github.com/wymeditor/wymeditor/archive/v1.0.0-rc.2.zip" class="button">Source</a></li>
           </ul>
         </div>
       </div><!-- end banner -->
@@ -63,25 +63,25 @@ document.</p>
 <col width="42%" />
 </colgroup>
 <tbody valign="top">
-<tr><td>Website</td>
-<td><a class="reference external" href="https://wymeditor.github.io/wymeditor/">WYMeditor website</a></td>
-<td><tt class="docutils literal"><span class="pre">http://wymeditor.github.io/wymeditor</span></tt></td>
+<tr><td>Documentation</td>
+<td><a class="reference external" href="https://wymeditor.readthedocs.org/">WYMeditor documentation</a></td>
+<td><a class="reference external" href="https://wymeditor.readthedocs.org/en/latest/"><img alt="documentation badge" src="http://readthedocs.org/projects/pip/badge/" /></a></td>
 </tr>
 <tr><td>Code repository</td>
 <td><a class="reference external" href="https://github.com/wymeditor/wymeditor">WYMeditor GitHub repository</a></td>
 <td><object data="http://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" style="width: 21px; height: 21px;" type="image/svg+xml">GitHub Mark</object></td>
 </tr>
-<tr><td>Documentation</td>
-<td><a class="reference external" href="https://wymeditor.readthedocs.org/">WYMeditor documentation</a></td>
-<td><a class="reference external" href="https://wymeditor.readthedocs.org/en/latest/"><img alt="documentation badge" src="http://readthedocs.org/projects/pip/badge/" /></a></td>
+<tr><td>Website</td>
+<td><a class="reference external" href="https://wymeditor.github.io/wymeditor/">WYMeditor website</a></td>
+<td><tt class="docutils literal"><span class="pre">http://wymeditor.github.io/wymeditor</span></tt></td>
+</tr>
+<tr><td>Chat</td>
+<td><a class="reference external" href="https://gitter.im/wymeditor/wymeditor">Gitter.im room</a></td>
+<td><a class="reference external" href="https://gitter.im/wymeditor/wymeditor?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><object data="https://badges.gitter.im/Join%20Chat.svg" type="image/svg+xml">Join the chat at https://gitter.im/wymeditor/wymeditor</object></a></td>
 </tr>
 <tr><td>Support</td>
 <td><a class="reference external" href="https://stackoverflow.com/questions/tagged/wymeditor">WYMeditor questions in Stack Overflow</a></td>
 <td><img alt="Stack Overflow icon" src="http://cdn.sstatic.net/stackoverflow/img/favicon.ico" /></td>
-</tr>
-<tr><td>Chat</td>
-<td><a class="reference external" href="irc://irc.freenode.net/wymeditor">WYMeditor IRC channel</a></td>
-<td><tt class="docutils literal"><span class="pre">irc//irc.freenode.net/wymeditor</span></tt></td>
 </tr>
 <tr><td>Issues</td>
 <td><a class="reference external" href="https://github.com/wymeditor/wymeditor/issues">WYMeditor issue tracker</a></td>
@@ -99,6 +99,10 @@ document.</p>
 <td><a class="reference external" href="https://github.com/wymeditor/wymeditor/blob/master/bower.json">Bower manifest</a></td>
 <td><object data="http://bower.io/img/bower-logo.svg" style="width: 21px; height: 21px;" type="image/svg+xml">Bower logo</object></td>
 </tr>
+<tr><td>Project mgmt</td>
+<td><a class="reference external" href="https://waffle.io/wymeditor/wymeditor">Waffle.io board</a></td>
+<td><a class="reference external" href="https://waffle.io/wymeditor/wymeditor"><img alt="'Project Management'" src="https://badge.waffle.io/wymeditor/wymeditor.png?label=ready&amp;title=Ready" /></a></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -114,7 +118,7 @@ editor that can be customized to provide the specific capabilities that are
 required in your project, and you want to ensure that users are focused on the
 structure of their content instead of tweaking fonts and margins, perhaps you
 should give WYMeditor a try.</p>
-<p>May also be of interest, is that WYMeditor fully supports Internet Explorer 7.</p>
+<p>WYMeditor also fully supports Internet Explorer 8.</p>
 </div>
 <div class="section" id="try-it">
 <h2>Try It</h2>
@@ -131,7 +135,7 @@ should give WYMeditor a try.</p>
 <tbody valign="top">
 <tr><td>Internet Explorer</td>
 <td><img alt="Internet Explorer logo" src="http://github.com/alrra/browser-logos/raw/master/internet-explorer/internet-explorer_24x24.png" /></td>
-<td>7 – 11</td>
+<td>8 – 11</td>
 </tr>
 <tr><td>Mozilla Firefox</td>
 <td><img alt="Firefox logo" src="http://github.com/alrra/browser-logos/raw/master/firefox/firefox_24x24.png" /></td>
@@ -157,21 +161,20 @@ should give WYMeditor a try.</p>
 <ul class="simple">
 <li>jQuery: any version between 1.4.4 and 2.1.x.
 With jQuery 2.x and newer, there is no support for IE8 and older.</li>
+<li>For IE8, ES5 shims are required. Tested with <a class="reference external" href="https://github.com/es-shims/es5-shim">es5-shim</a> and shams.</li>
 </ul>
-<div class="section" id="included-requirements">
-<h3>Included requirements</h3>
-<p>These requirements are included inside the distributed WYMeditor JavaScript
-file.</p>
+<div class="section" id="global-pollution">
+<h3>Global Pollution</h3>
 <ul class="simple">
-<li><a class="reference external" href="https://github.com/gabceb/jquery-browser-plugin">jquery.browser</a>; defines/overrides <tt class="docutils literal">jQuery.browser</tt>.</li>
-<li><a class="reference external" href="https://github.com/timdown/rangy/">Rangy</a>; defines/overrides global <tt class="docutils literal">rangy</tt>.</li>
-<li><a class="reference external" href="https://github.com/timdown/rangy/">rangy-selectionsaverestore</a>; a Rangy module.</li>
+<li><tt class="docutils literal">window.jQuery.browser</tt>: <a class="reference external" href="https://github.com/gabceb/jquery-browser-plugin">jquery.browser</a> v``~0.0.6``</li>
+<li><tt class="docutils literal">window.rangy</tt>: <a class="reference external" href="https://github.com/timdown/rangy/">Rangy</a> v``1.2.2``
+(includes the selection save and restore module)</li>
 </ul>
 </div>
 </div>
 <div class="section" id="copyright">
 <h2>Copyright</h2>
-<p>Copyright (c) 2005 - 2013 Jean-Francois Hovinne,
+<p>Copyright (c) 2005 - 2015 Jean-Francois Hovinne,
 Dual licensed under the MIT (<tt class="docutils literal"><span class="pre">MIT-license.txt</span></tt>)
 and GPL (<tt class="docutils literal"><span class="pre">GPL-license.txt</span></tt>) licenses.</p>
 </div>

@@ -132,8 +132,7 @@ TableEditor.prototype.bindEvents = function () {
     jQuery(wym._box).find(
         tableEditor._options.sMergeRowButtonSelector
     ).click(function () {
-        var sel = wym.selection();
-        tableEditor.mergeRow(sel);
+        tableEditor.mergeRow();
         return false;
     });
     jQuery(wym._box).find(
@@ -375,17 +374,13 @@ TableEditor.prototype.getTotalColumns = function (cells) {
 /**
  * Merge the table cells in the given selection using a colspan.
  *
- * @param sel A rangy selection object across which to row merge.
- *
  * @return {Boolean} true if changes are made, false otherwise
  */
-TableEditor.prototype.mergeRow = function (sel) {
+TableEditor.prototype.mergeRow = function () {
     var tableEditor = this,
         wym = tableEditor._wym,
-        i,
         // Get all of the affected nodes in the range
-        nodes = [],
-        range = null,
+        nodes = wym._getSelectedNodes(),
         cells,
         rootTr,
         mergeCell,
@@ -394,13 +389,7 @@ TableEditor.prototype.mergeRow = function (sel) {
         newContent,
         combinedColspan;
 
-    for (i = 0; i < sel.rangeCount; i++) {
-        range = sel.getRangeAt(i);
-        nodes = nodes.concat(range.getNodes(false));
-    }
-
-    // Clear the ranges in selection so that it can be moved later
-    rangy.getIframeSelection(wym._iframe).removeAllRanges();
+    wym.deselect();
 
     // Just use the td and th nodes
     cells = jQuery(nodes).filter('td,th');
@@ -457,7 +446,7 @@ TableEditor.prototype.mergeRow = function (sel) {
             for (i = insertionCells.length - 1; i >= 0; i--) {
                 xIndex = tableEditor.getCellXIndex(insertionCells[i]);
                 if (xIndex <= insertionIndex) {
-                    jQuery(insertionCells[i]).append(newTd);
+                    jQuery(insertionCells[i]).after(newTd);
                     cellInserted = true;
                     break;
                 }
@@ -509,6 +498,7 @@ TableEditor.prototype.mergeRow = function (sel) {
 
     tableEditor.selectElement(mergeCell);
 
+    wym.registerModification();
     return true;
 };
 
@@ -519,6 +509,7 @@ TableEditor.prototype.mergeRow = function (sel) {
  */
 TableEditor.prototype.addRow = function (elmnt) {
     var tableEditor = this,
+        wym = tableEditor._wym,
         tr = tableEditor._wym.findUp(elmnt, 'tr'),
         numColumns,
         tdHtml,
@@ -536,6 +527,7 @@ TableEditor.prototype.addRow = function (elmnt) {
     }
     jQuery(tr).after('<tr>' + tdHtml + '</tr>');
 
+    wym.registerModification();
     return false;
 };
 
@@ -545,9 +537,16 @@ TableEditor.prototype.addRow = function (elmnt) {
  * @param table The table to delete if it is empty.
  */
 TableEditor.prototype.removeEmptyTable = function (table) {
-    var cells = jQuery(table).find('td,th');
+    var tableEditor = this,
+        wym = tableEditor._wym,
+        cells = jQuery(table).find('td,th'),
+        $table;
     if (cells.length === 0) {
-        jQuery(table).remove();
+        $table = jQuery(table);
+        $table.prev('br.' + WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS).remove();
+        $table.next('br.' + WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS).remove();
+        $table.remove();
+        wym.prepareDocForEditing();
     }
 };
 
@@ -567,9 +566,16 @@ TableEditor.prototype.removeRow = function (elmnt) {
         return false;
     }
     table = wym.findUp(elmnt, 'table');
+    if (
+        wym.hasSelection() === true &&
+        wym.doesElementContainSelection(elmnt) === true
+    ) {
+        wym.deselect();
+    }
     jQuery(tr).remove();
     tableEditor.removeEmptyTable(table);
 
+    wym.registerModification();
     return false;
 };
 
@@ -606,6 +612,7 @@ TableEditor.prototype.addColumn = function (elmnt) {
         jQuery(element).find('td,th').eq(tdIndex).after(insertionElement);
     });
 
+    wym.registerModification();
     return false;
 };
 
@@ -629,12 +636,19 @@ TableEditor.prototype.removeColumn = function (elmnt) {
     tdIndex = prevTds.length;
 
     tr = wym.findUp(td, 'tr');
-    jQuery(tr).siblings('tr').each(function (index, element) {
-        jQuery(element).find('td,th').eq(tdIndex).remove();
+    jQuery(tr).siblings('tr').addBack().each(function (index, element) {
+        var $cell = jQuery(element).find("td, th").eq(tdIndex);
+        if (
+            wym.hasSelection() === true &&
+            wym.doesElementContainSelection($cell[0]) === true
+        ) {
+            wym.deselect();
+        }
+        $cell.remove();
     });
-    jQuery(td).remove();
     tableEditor.removeEmptyTable(table);
 
+    wym.registerModification();
     return false;
 };
 

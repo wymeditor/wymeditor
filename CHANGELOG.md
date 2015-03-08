@@ -5,7 +5,7 @@ WYMeditor.
 
 ## 1.0.0-rc.2
 
-*release-date* TBD
+*release-date* March 8, 2015
 
 ### Backwards-Incompatible Changes
 
