@@ -189,7 +189,10 @@ module.exports = function (grunt) {
             // the resulting bundles are concatenated into the build
             options: {
                 browserifyOptions: {
-                    debug: true
+                    debug: true,
+                    // without a UMD wrapper a require call fails when
+                    // served by `grunt server:dist`
+                    standalone: 'foo'
                 }
             },
             ObjectHistory: {
