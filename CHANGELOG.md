@@ -11,6 +11,11 @@ WYMeditor.
 
 *release-date* March 8, 2015
 
+### Bug Fixes
+
+* [#698](https://github.com/wymeditor/wymeditor/pull/698)
+  Class (style) toggling is registered (can be undone/redone)
+
 ### Backwards-Incompatible Changes
 
 * [#613](https://github.com/wymeditor/wymeditor/pull/613)
