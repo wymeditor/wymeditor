@@ -3,13 +3,18 @@
 This document tracks the enhancements and bug fixes between releases of
 WYMeditor.
 
-## 1.0.0-rc.3
+## 1.0.0
 
 *release-date TBD
 
 ## 1.0.0-rc.2
 
 *release-date* March 8, 2015
+
+### Bug Fixes
+
+* [#698](https://github.com/wymeditor/wymeditor/pull/698)
+  Class (style) toggling is registered (can be undone/redone)
 
 ### Backwards-Incompatible Changes
 

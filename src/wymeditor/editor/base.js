@@ -1179,6 +1179,7 @@ WYMeditor.editor.prototype.toggleClass = function (sClass, jqexpr) {
     if (!$element.attr(WYMeditor.CLASS)) {
         $element.removeAttr(wym._class);
     }
+    wym.registerModification();
 };
 
 /**
