@@ -113,7 +113,12 @@ test("wrap in blockquote", function () {
             wymeditor.setRootContainer('blockquote');
         },
         manipulationClickSelector: '.wym_containers_blockquote a',
-        expectedResultHtml: '<blockquote><p id="foo">Foo</p></blockquote><p>Bar</p>'
+        expectedResultHtml: ''.concat(
+            '<blockquote>',
+                '<p id="foo">Foo</p>',
+            '</blockquote>',
+            '<p>Bar</p>'
+        )
     });
 });
 
