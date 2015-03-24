@@ -102,7 +102,10 @@ function vanishAllWyms() {
  *     An options object that will be passed on to the
  *     `jQuery.fn.wymeditor()` call.
  * `loadDefaultPlugins`
- *     Whether to the plugins that are used in tests or not. Defaults to `true`
+ *     By default, all of the plugins that are tested throughout the suite
+ *     will be loaded.
+ *     If this interferes with a certain test, it can be disabled by providing
+ *     `false`.
  */
 function prepareUnitTestModule(args) {
     var defaults,
