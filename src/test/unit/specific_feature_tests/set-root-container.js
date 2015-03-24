@@ -5,13 +5,18 @@
 */
 "use strict";
 
-module("setRootContainer-p, headings and pre", {setup: function () {
-    prepareUnitTestModule({
-        // because the structured headings plugin takes away
-        // h1, h2, etc.
-        loadDefaultPlugins: false
-    });
-}});
+module("setRootContainer-p, headings and pre", {
+    setup: function () {
+      prepareUnitTestModule({
+          // because the structured headings plugin takes away
+          // h1, h2, etc.
+          loadDefaultPlugins: false
+      });
+    },
+    // So that the next test module will not use this editor instance. it
+    // will have a new one, with the plugins loaded.
+    teardown: vanishAllWyms
+});
 
 // We test that each tag (as in element) can be changed to each tag.
 // This creates an array of such pairs.
