@@ -101,6 +101,8 @@ function vanishAllWyms() {
  * `options`
  *     An options object that will be passed on to the
  *     `jQuery.fn.wymeditor()` call.
+ * `loadDefaultPlugins`
+ *     Whether to the plugins that are used in tests or not. Defaults to `true`
  */
 function prepareUnitTestModule(args) {
     var defaults,
@@ -120,7 +122,8 @@ function prepareUnitTestModule(args) {
         editorCount: 1,
         // Whether to initialize these textareas with WYMeditors or not.
         initialized: true,
-        options: {}
+        options: {},
+        loadDefaultPlugins: true
     };
 
     if (args.options) {
@@ -134,10 +137,12 @@ function prepareUnitTestModule(args) {
     }
 
     args.options.postInit = function (wym) {
-        // TODO: We should not load all these plugins by default.
-        wym.listPlugin = new ListPlugin({}, wym);
-        wym.tableEditor = wym.table();
-        wym.structuredHeadings();
+        if (args.loadDefaultPlugins) {
+            // TODO: We should not load all these plugins by default.
+            wym.listPlugin = new ListPlugin({}, wym);
+            wym.tableEditor = wym.table();
+            wym.structuredHeadings();
+        }
         if (providedPostInit) {
             providedPostInit(wym);
         }
