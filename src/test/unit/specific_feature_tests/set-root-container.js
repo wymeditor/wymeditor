@@ -14,7 +14,7 @@ module("setRootContainer-p, headings and pre", {setup: function () {
 }});
 
 // We test that each tag (as in element) can be changed to each tag.
-// This creates this array of tags.
+// This creates an array of such pairs.
 var pairs = [];
 // what about the div?
 ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'pre']
