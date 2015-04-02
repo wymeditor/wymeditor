@@ -7,6 +7,11 @@ WYMeditor.
 
 *release-date TBD
 
+### Bug Fixes
+
+* [#701](https://github.com/wymeditor/wymeditor/pull/701)
+  Container changes can now be undone/redone
+
 ## 1.0.0-rc.2
 
 *release-date* March 8, 2015
