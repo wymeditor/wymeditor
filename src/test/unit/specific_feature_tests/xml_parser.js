@@ -5,6 +5,7 @@
     testNoChangeInHtmlArray,
     test,
     QUnit,
+    strictEqual,
     deepEqual
 */
 "use strict";
