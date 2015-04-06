@@ -2534,47 +2534,47 @@ test("Test nested table html not reordered", function () {
     QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0);
 
-    deepEqual(wymeditor.parser.parse(nestedTableHtml), nestedTableHtml);
+    strictEqual(wymeditor.parser.parse(nestedTableHtml), nestedTableHtml);
 });
 
 test("Test unclosed option tag is closed", function () {
     QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0);
 
-    deepEqual(wymeditor.parser.parse(unclosedOption), closedOption);
+    strictEqual(wymeditor.parser.parse(unclosedOption), closedOption);
 });
 
 test("Test unclosed td tag is closed", function () {
     QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0);
 
-    deepEqual(wymeditor.parser.parse(unclosedTable), closedTable);
+    strictEqual(wymeditor.parser.parse(unclosedTable), closedTable);
 });
 
 test("Test unclosed last td tag is closed", function () {
     QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0);
 
-    deepEqual(wymeditor.parser.parse(unclosedTableLastInRow), closedTable);
+    strictEqual(wymeditor.parser.parse(unclosedTableLastInRow), closedTable);
 });
 
 test("Test closed nested td tag is closed", function () {
     QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0);
 
-    deepEqual(wymeditor.parser.parse(closedNestedTableHtml), closedNestedTableHtml);
+    strictEqual(wymeditor.parser.parse(closedNestedTableHtml), closedNestedTableHtml);
 });
 
 test("Test unclosed nested td tag is closed", function () {
     QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0);
 
-    deepEqual(wymeditor.parser.parse(unclosedNestedTableHtml), closedNestedTableHtml);
+    strictEqual(wymeditor.parser.parse(unclosedNestedTableHtml), closedNestedTableHtml);
 });
 
 test("Test unclosed nested last in row td tag is closed", function () {
     QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0);
 
-    deepEqual(wymeditor.parser.parse(unclosedNestedTableLastInRowHtml), closedNestedTableHtml);
+    strictEqual(wymeditor.parser.parse(unclosedNestedTableLastInRowHtml), closedNestedTableHtml);
 });
