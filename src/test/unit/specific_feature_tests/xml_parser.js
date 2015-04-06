@@ -2530,120 +2530,51 @@ var nestedTableHtml = String() +
             '</tbody>' +
         '</table>';
 
-test("Test nested table html not reordered when parser", function () {
+test("Test nested table html not reordered", function () {
     QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0);
 
     deepEqual(wymeditor.parser.parse(nestedTableHtml), nestedTableHtml);
 });
 
-
-test("Test nested table html not reordered end to end", function () {
-    QUnit.expect(1);
-    var wymeditor = jQuery.wymeditors(0);
-
-    wymeditor.rawHtml(nestedTableHtml);
-    wymEqual(wymeditor, nestedTableHtml, {parseHtml: true});
-});
-
-
-test("Test unclosed option tag is closed when parsed", function () {
+test("Test unclosed option tag is closed", function () {
     QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0);
 
     deepEqual(wymeditor.parser.parse(unclosedOption), closedOption);
 });
 
-
-test("Test unclosed option tag is closed end to end", function () {
-    QUnit.expect(1);
-    var wymeditor = jQuery.wymeditors(0);
-
-    wymeditor.rawHtml(unclosedOption);
-    wymEqual(wymeditor, closedOption, {parseHtml: true});
-});
-
-
-test("Test unclosed td tag is closed when parsed", function () {
+test("Test unclosed td tag is closed", function () {
     QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0);
 
     deepEqual(wymeditor.parser.parse(unclosedTable), closedTable);
 });
 
-
-test("Test unclosed td tag is closed end to end", function () {
-    QUnit.expect(1);
-    var wymeditor = jQuery.wymeditors(0);
-
-    wymeditor.rawHtml(unclosedTable);
-    wymEqual(wymeditor, closedTable, {parseHtml: true});
-});
-
-
-test("Test unclosed last td tag is closed when parsed", function () {
+test("Test unclosed last td tag is closed", function () {
     QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0);
 
     deepEqual(wymeditor.parser.parse(unclosedTableLastInRow), closedTable);
 });
 
-
-test("Test unclosed last td tag is closed end to end", function () {
-    QUnit.expect(1);
-    var wymeditor = jQuery.wymeditors(0);
-
-    wymeditor.rawHtml(unclosedTableLastInRow);
-    wymEqual(wymeditor, closedTable, {parseHtml: true});
-});
-
-
-test("Test closed nested td tag is closed when parsed", function () {
+test("Test closed nested td tag is closed", function () {
     QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0);
 
     deepEqual(wymeditor.parser.parse(closedNestedTableHtml), closedNestedTableHtml);
 });
 
-
-test("Test closed nested td tag is closed end to end", function () {
-    QUnit.expect(1);
-    var wymeditor = jQuery.wymeditors(0);
-
-    wymeditor.rawHtml(closedNestedTableHtml);
-    wymEqual(wymeditor, closedNestedTableHtml, {parseHtml: true});
-});
-
-
-test("Test unclosed nested td tag is closed when parsed", function () {
+test("Test unclosed nested td tag is closed", function () {
     QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0);
 
     deepEqual(wymeditor.parser.parse(unclosedNestedTableHtml), closedNestedTableHtml);
 });
 
-
-test("Test unclosed nested td tag is closed end to end", function () {
-    QUnit.expect(1);
-    var wymeditor = jQuery.wymeditors(0);
-
-    wymeditor.rawHtml(unclosedNestedTableHtml);
-    wymEqual(wymeditor, closedNestedTableHtml, {parseHtml: true});
-});
-
-
-test("Test unclosed nested last in row td tag is closed when parsed", function () {
+test("Test unclosed nested last in row td tag is closed", function () {
     QUnit.expect(1);
     var wymeditor = jQuery.wymeditors(0);
 
     deepEqual(wymeditor.parser.parse(unclosedNestedTableLastInRowHtml), closedNestedTableHtml);
-});
-
-
-test("Test unclosed nested last in row td tag is closed end to end", function () {
-    QUnit.expect(1);
-    var wymeditor = jQuery.wymeditors(0);
-
-    wymeditor.rawHtml(unclosedNestedTableLastInRowHtml);
-    wymEqual(wymeditor, closedNestedTableHtml, {parseHtml: true});
 });
