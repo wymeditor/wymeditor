@@ -35,12 +35,12 @@
     }
   ],
   "devDependencies": {
-    "combokeys": "^2.0.0",
+    "combokeys": "^2.4.3",
     "edited": "^1.1.1",
     "grunt": "~0.4.1",
     "grunt-bower-install-simple": "^0.9.3",
     "grunt-bower-linker": "^0.1.4",
-    "grunt-browserify": "^3.5.0",
+    "grunt-browserify": "^3.7.0",
     "grunt-concurrent": "^1.0.0",
     "grunt-contrib-clean": "~0.5.0",
     "grunt-contrib-coffee": "~0.7.0",
@@ -66,7 +66,7 @@
     "grunt-jekyll": "^0.4.2",
     "grunt-replace": "~0.4.4",
     "grunt-rev": "~0.1.0",
-    "grunt-shell": "^1.1.1",
+    "grunt-shell": "^1.1.2",
     "grunt-usemin": "~0.1.10",
     "keysim": "^1.1.0",
     "object-history": "^2.0.0",
