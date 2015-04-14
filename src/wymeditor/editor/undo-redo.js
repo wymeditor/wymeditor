@@ -65,14 +65,15 @@ WYMeditor.UndoRedo.prototype._onBodyFocus = function () {
     var undoRedo = this,
         wym = undoRedo.wym;
 
-    if (undoRedo.history.last.savedSelection) {
+    // TODO: the `current` property is private API.
+    if (undoRedo.history.current.savedSelection) {
         // last history point has selection
         return;
     }
 
     setTimeout(function () {
         // this will run after the native action of the triggering event.
-        undoRedo.history.last = wym.getCurrentState();
+        undoRedo.history.current = wym.getCurrentState();
     }, 0);
 };
 
@@ -109,7 +110,7 @@ WYMeditor.UndoRedo.prototype._do = function (what) {
         postEventName;
 
     if (what === WYMeditor.UndoRedo.UN) {
-        if (history.changesetsBack.length === 0) {
+        if (history.lengthBackward() === 0) {
             return;
         }
         if (undoRedo.hasUnregisteredModification) {
@@ -119,7 +120,7 @@ WYMeditor.UndoRedo.prototype._do = function (what) {
         history.backward();
         postEventName = 'postUndo';
     } else if (what === WYMeditor.UndoRedo.RE) {
-        if (history.changesetsFore.length === 0) {
+        if (history.lengthForward() === 0) {
             return;
         }
         history.forward();

@@ -69,7 +69,7 @@
     "grunt-shell": "^1.1.2",
     "grunt-usemin": "~0.1.10",
     "keysim": "^1.1.0",
-    "object-history": "^2.0.0",
+    "object-history": "^3.0.0",
     "time-grunt": "~0.1.1"
   },
   "engines": {
