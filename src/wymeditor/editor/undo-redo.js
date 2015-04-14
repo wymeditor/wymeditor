@@ -179,5 +179,6 @@ WYMeditor.UndoRedo.prototype.reset = function () {
     var undoRedo = this,
         wym = undoRedo.wym;
 
-    wym.undoRedo = new WYMeditor.UndoRedo(wym);
+    undoRedo.history = new WYMeditor.EXTERNAL_MODULES
+        .ObjectHistory(wym.getCurrentState());
 };
