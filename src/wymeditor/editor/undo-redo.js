@@ -181,4 +181,6 @@ WYMeditor.UndoRedo.prototype.reset = function () {
 
     undoRedo.history = new WYMeditor.EXTERNAL_MODULES
         .ObjectHistory(wym.getCurrentState());
+
+    undoRedo.hasUnregisteredModification = null;
 };
