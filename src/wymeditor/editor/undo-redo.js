@@ -48,11 +48,12 @@ WYMeditor.UndoRedo = function (wym) {
 
     It makes sure that the first undo point contains a selection.
 
-    The first selection is made along with the first focus.
+    After the editor's instantiation there is no selection. The first
+    selection is made along with the first focus.
 
     This method will run before the native action (in which the selection
     is made). Therefore the instantiation of object-history is called using
-    `setTimeout`.
+    `setTimeout`, which is after the selection happens.
 */
 WYMeditor.UndoRedo.prototype._onBodyFocus = function () {
     var undoRedo = this,
