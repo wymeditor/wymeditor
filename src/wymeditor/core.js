@@ -544,7 +544,7 @@ jQuery.extend(WYMeditor, {
 jQuery.fn.wymeditor = function (options) {
     var $textareas = this;
 
-    options = jQuery.extend({
+    defaultOptions = {
 
         html:       "",
         basePath:   false,
@@ -775,17 +775,30 @@ jQuery.fn.wymeditor = function (options) {
         preInit: null,
         preBind: null,
         postInit: null
+    }
 
-    }, options);
+    mergedOptions = jQuery.extend(defaultOptions, options);
 
-    options = jQuery.extend(WYMeditor.DEFAULT_DIALOG_OPTIONS, options);
+    // If an iframeHtml option wasn't included, default to using the iframeHtml
+    // defined by the skin.
+    if (typeof options.iframeHtml !== "undefined") {
+        // If the user passed an iframeHtml, use that
+        if (typeof WYMeditor.SKINS[mergedOptions.skin] !== "undefined") {
+            var skinIframeHtml = WYMeditor.SKINS[mergedOptions.skin].iframeHtml;
+            if (typeof skinIframeHtml !== "undefined") {
+                mergedOptions.iframeHtml = skinIframeHtml;
+            }
+        }
+    }
+
+    mergedOptions = jQuery.extend(WYMeditor.DEFAULT_DIALOG_OPTIONS, mergedOptions);
 
     return $textareas.each(function () {
         var textarea = this;
         // Assigning to _wym because the return value from new isn't
         // actually used, but we need to use new to properly change the
         // prototype
-        textarea._wym = new WYMeditor.editor(jQuery(textarea), options);
+        textarea._wym = new WYMeditor.editor(jQuery(textarea), mergedOptions);
     });
 };
 

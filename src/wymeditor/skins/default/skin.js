@@ -109,19 +109,19 @@
 }(jQuery));
 
 WYMeditor.SKINS.default = {
+    iframeHtml: [""
+    , '<div class="wym_iframe wym_section">'
+        , '<iframe src="' + WYMeditor.IFRAME_BASE_PATH + 'wymiframe.html" '
+            , 'frameborder="0" '
+            , 'border="0" '
+            , 'scrolling="no" '
+            , 'marginheight="0px" '
+            , 'marginwidth="0px" '
+            , '>'
+        , '</iframe>'
+    , '</div>'
+    ].join(""),
     OPTS: {
-        iframeHtml: [""
-        , '<div class="wym_iframe wym_section">'
-            , '<iframe src="' + WYMeditor.IFRAME_BASE_PATH + 'wymiframe.html" '
-                , 'frameborder="0" '
-                , 'border="0" '
-                , 'scrolling="no" '
-                , 'marginheight="0px" '
-                , 'marginwidth="0px" '
-                , '>'
-            , '</iframe>'
-        , '</div>'
-        ].join(""),
         // After Iframe initialization, check if we're ready to perform the
         // first resize every this many ms
         initIframeCheckFrequency: 50,
