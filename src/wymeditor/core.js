@@ -474,6 +474,63 @@ jQuery.extend(WYMeditor, {
         TEXT: 3
     },
 
+    // These UI components will preferentially use those defined in the chosen
+    // skin inside `UI_COMPONENTS` instead of the defaults.
+    UI_COMPONENTS : [
+        'boxHtml',
+        'logoHtml',
+        'iframeHtml',
+        'toolsHtml',
+        'containersHtml',
+        'containersItemHtml',
+        'classesHtml',
+        'classesItemHtml',
+        'statusHtml',
+        'htmlHtml',
+        'dialogHtml',
+        'dialogLinkHtml',
+        'dialogFeatures',
+        'dialogImageHtml',
+        'dialogTablehtml',
+        'dialogPastehtml',
+        'dialogPreviewHtml'
+    ],
+
+    // These UI component selectors will preferentially use those defined in
+    // the chosen skin inside `UI_COMPONENT_SELECTORS` instead of the defaults.
+    UI_COMPONENT_SELECTORS : [
+        'boxSelector',
+        'toolsSelector',
+        'toolsListSelector',
+        'containersSelector',
+        'classesSelector',
+        'htmlSelector',
+        'iframeSelector',
+        'statusSelector',
+        'toolSelector',
+        'containerSelector',
+        'classSelector',
+        'htmlValSelector',
+        'hrefSelector',
+        'srcSelector',
+        'titleSelector',
+        'altSelector',
+        'textSelector',
+        'rowsSelector',
+        'colsSelector',
+        'captionSelector',
+        'submitSelector',
+        'cancelSelector',
+        'previewSelector',
+        'dialogLinkSelector',
+        'dialogImageSelector',
+        'dialogTableSelector',
+        'dialogPasteSelector',
+        'dialogPreviewSelector',
+        'updateSelector'
+    ],
+
+
     /**
         WYMeditor.editor
         ================
@@ -542,7 +599,11 @@ jQuery.extend(WYMeditor, {
     `jQuery(".wymeditor").wymeditor({});`
 */
 jQuery.fn.wymeditor = function (providedOptions) {
-    var $textareas = this;
+    var $textareas = this,
+        defaultOptions,
+        mergedOptions,
+        skin,
+        optionsWithDefaults;
 
     defaultOptions = {
 
@@ -777,18 +838,22 @@ jQuery.fn.wymeditor = function (providedOptions) {
         postInit: null
     }
 
-    mergedOptions = jQuery.extend(defaultOptions, providedOptions);
+    optionsWithDefaults = jQuery.extend(defaultOptions, providedOptions);
 
-    // If an iframeHtml option wasn't included, default to using the iframeHtml
-    // defined by the skin.
-    if (providedOptions && providedOptions.iframeHtml) {
-        // If the user passed an iframeHtml, use that
-        var skin = WYMeditor.SKINS[mergedOptions.skin];
-        if (skin && skin.iframeHtml) {
-            mergedOptions.iframeHtml = skin.iframeHtml;
-        }
+    // Add in any UI defaults from the chosen skin
+    skin = WYMeditor.SKINS[optionsWithDefaults.skin];
+    if (!skin) {
+        WYMeditor.console.error(
+            "Error locating skin '" + optionsWithDefaults.skin + "'."
+        );
     }
+    optionsWithSkinOverrides = jQuery.extend(
+        providedOptions,
+        WYMeditor._getSkinUIOverrides(providedOptions, skin)
+    );
 
+
+    mergedOptions = jQuery.extend(optionsWithDefaults, optionsWithSkinOverrides);
     mergedOptions = jQuery.extend(WYMeditor.DEFAULT_DIALOG_OPTIONS, mergedOptions);
 
     return $textareas.each(function () {
@@ -953,6 +1018,45 @@ WYMeditor._computeBasePath = function (wymPath) {
     // Strip everything after the last slash to get the base path
     var lastSlashIndex = wymPath.lastIndexOf('/');
     return wymPath.substr(0, lastSlashIndex + 1);
+};
+
+WYMeditor._getSkinUIOverrides = function (providedOptions, skin) {
+    var uiOverrides = {},
+        i,
+        skinOverride;
+
+    if (!providedOptions) {
+        return uiOverrides;
+    }
+
+    if (skin.UI_COMPONENTS) {
+        jQuery.each(WYMeditor.UI_COMPONENTS, function(i, componentAttr) {
+            // If the user provided option, even if it's the empty string,
+            // we use that instead of the skin's default.
+            if (typeof providedOptions[componentAttr] === "undefined") {
+                skinOverride = skin.UI_COMPONENTS[componentAttr];
+                if (typeof skinOverride !== "undefined") {
+                    // Skins can use empty strings for overrides
+                    uiOverrides[componentAttr] = skinOverride;
+                }
+            }
+        });
+    }
+    if (skin.UI_COMPONENT_SELECTORS) {
+        jQuery.each(WYMeditor.UI_COMPONENT_SELECTORS, function(i, selectorAttr) {
+            // If the user provided an option, even if it's the empty string,
+            // we use that instead of the skin's default.
+            if (typeof providedOptions[selectorAttr] === "undefined") {
+                skinOverride = skin.UI_COMPONENT_SELECTORS[selectorAttr];
+                if (typeof skinOverride !== "undefined") {
+                    // Skins can use empty strings for overrides
+                    uiOverrides[selectorAttr] = skinOverride;
+                }
+            }
+        });
+    }
+
+    return uiOverrides;
 };
 
 /********** HELPERS **********/
