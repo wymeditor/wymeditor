@@ -1,9 +1,10 @@
 /* jshint maxlen: 100 */
 /* global -$,
-    equal,
-    test,
-    module,
     QUnit,
+    equal,
+    module,
+    notEqual,
+    test,
     prepareUnitTestModule
 */
 "use strict";
@@ -21,7 +22,15 @@ module(
 
 test("skin's iframeHtml is used preferentially", function () {
     var wym = jQuery.wymeditors(0);
-    QUnit.expect(1);
+    QUnit.expect(2);
 
+    // Ensure that the basic skin has a non-default iframeHtml, so that this
+    // test is meaningful
+    notEqual(
+        WYMeditor.DEFAULT_OPTIONS.iframeHtml,
+        WYMeditor.SKINS.basic.UI_COMPONENTS.iframeHtml
+    );
+
+    // Ensure that non-default attribute propagates
     equal(wym._options.iframeHtml, WYMeditor.SKINS.basic.UI_COMPONENTS.iframeHtml);
 });
