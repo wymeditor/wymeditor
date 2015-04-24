@@ -856,7 +856,7 @@ jQuery.fn.wymeditor = function (providedOptions) {
 
 
     mergedOptions = jQuery.extend(optionsWithDefaults, optionsWithSkinOverrides);
-    mergedOptions = jQuery.extend(WYMeditor.DEFAULT_DIALOG_OPTIONS, mergedOptions);
+    mergedOptions = jQuery.extend({}, WYMeditor.DEFAULT_DIALOG_OPTIONS, mergedOptions);
 
     return $textareas.each(function () {
         var textarea = this;

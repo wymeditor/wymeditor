@@ -6,6 +6,7 @@
     QUnit,
     expectMore,
     deepEqual,
+    notEqual,
     sinon,
     strictEqual,
     wymEqual,
@@ -57,6 +58,23 @@ test("Instantiate", function () {
     deepEqual(WYMeditor.INSTANCES.length, 1, "WYMeditor.INSTANCES length");
     deepEqual(typeof jQuery.wymeditors(0), 'object',
               "Type of first WYMeditor instance, using jQuery.wymeditors(0)");
+});
+
+asyncTest("Custom dialog options don't change future defaults", function () {
+    var startingDefault = WYMeditor.DEFAULT_DIALOG_OPTIONS.hrefSelector;
+    QUnit.expect(3);
+
+    notEqual(startingDefault, '.wym_customized_thing');
+
+    vanishAllWyms();
+    jQuery('.wym').wymeditor({
+        hrefSelector: '.wym_customized_thing',
+        postInit: function (wym) {
+            deepEqual(wym._options.hrefSelector, '.wym_customized_thing');
+            deepEqual(WYMeditor.DEFAULT_DIALOG_OPTIONS.hrefSelector, startingDefault);
+            start();
+        }
+    });
 });
 
 test("Empty document is a single `br`.", function () {
