@@ -551,7 +551,7 @@ jQuery.fn.wymeditor = function (providedOptions) {
         wymPath:    false,
         iframeBasePath: false,
         jQueryPath: false,
-        skin:       "default",
+        skin:       "basic",
         lang:       "en",
         direction:  "ltr",
         customCommands: [],

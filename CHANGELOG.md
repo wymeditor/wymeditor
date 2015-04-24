@@ -235,7 +235,7 @@ All of these changes are documented in detail in the
   you're using the default skin, you'll need to add a line like the
   following:
   `<link rel="stylesheet" type="text/css"
-    href="wymeditor/skins/default/skin.css" />`
+    href="wymeditor/skins/basic/skin.css" />`
 * We're no longer automatically doing an AJAX HTTP request to load various
   resources, including skin CSS/JS and language files. If you're using the
   default WYMeditor bundle, all you'll notice is that WYMeditor loads more

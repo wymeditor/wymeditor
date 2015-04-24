@@ -108,7 +108,7 @@
     };
 }(jQuery));
 
-WYMeditor.SKINS.default = {
+WYMeditor.SKINS.basic = {
     iframeHtml: [""
     , '<div class="wym_iframe wym_section">'
         , '<iframe src="' + WYMeditor.IFRAME_BASE_PATH + 'wymiframe.html" '
@@ -133,7 +133,7 @@ WYMeditor.SKINS.default = {
         imagesLoadedCheckTimeout: 5000
     },
     init: function (wym) {
-        var This = WYMeditor.SKINS.default;
+        var This = WYMeditor.SKINS.basic;
 
         // TODO: Find a unified strategy for dealing with loading polyfills
         // This is a polyfill for old IE
@@ -143,7 +143,7 @@ WYMeditor.SKINS.default = {
             };
         }
 
-        wym.defaultSkinOpts = jQuery.extend(
+        wym.basicSkinOpts = jQuery.extend(
             This.OPTS,
             {
                 initialIframeResizeTimer: null,
@@ -266,21 +266,21 @@ WYMeditor.SKINS.default = {
         var This = WYMeditor.SKINS.default,
             scrollHeightCalcFix;
 
-        if (wym.defaultSkinOpts.initialIframeResizeTimer) {
+        if (wym.basicSkinOpts.initialIframeResizeTimer) {
             // We're handling a timer, clear it
             window.clearTimeout(
-                wym.defaultSkinOpts.initialIframeResizeTimer
+                wym.basicSkinOpts.initialIframeResizeTimer
             );
-            wym.defaultSkinOpts.initialIframeResizeTimer = null;
+            wym.basicSkinOpts.initialIframeResizeTimer = null;
         }
 
         if (typeof wym._doc.body === "undefined" || wym._doc.body === null) {
             // Body isn't ready
-            wym.defaultSkinOpts.initialIframeResizeTimer = window.setTimeout(
+            wym.basicSkinOpts.initialIframeResizeTimer = window.setTimeout(
                 function () {
                     This.resizeIframeOnceBodyExists(wym);
                 },
-                wym.defaultSkinOpts.initIframeCheckFrequency
+                wym.basicSkinOpts.initIframeCheckFrequency
             );
             return;
         }
@@ -304,7 +304,7 @@ WYMeditor.SKINS.default = {
             imagesLength,
             i = 0,
             allImagesLoaded = true,
-            skinOpts = wym.defaultSkinOpts,
+            skinOpts = wym.basicSkinOpts,
             timeWaited;
 
         if (typeof skinOpts._imagesLoadedCheckStartedTime === "undefined" ||
@@ -449,8 +449,8 @@ WYMeditor.SKINS.default = {
         // Don't let the height drop below the WYMeditor textarea. This allows
         // folks to use their favorite height-setting method on the textarea,
         // without needing to pass options on to WYMeditor.
-        if (desiredHeight < wym.defaultSkinOpts.minimumHeight) {
-            desiredHeight = wym.defaultSkinOpts.minimumHeight;
+        if (desiredHeight < wym.basicSkinOpts.minimumHeight) {
+            desiredHeight = wym.basicSkinOpts.minimumHeight;
         }
 
         if (currentHeight !== desiredHeight) {
