@@ -22,10 +22,6 @@ WYMeditor.UndoRedo = function (wym) {
 
     undoRedo.wym = wym;
 
-    // https://github.com/mightyiam/object-history
-    undoRedo.history = new WYMeditor.EXTERNAL_MODULES
-        .ObjectHistory(wym.getCurrentState());
-
     wym.keyboard.combokeys.bind(
         "mod+z",
         function () {
@@ -48,32 +44,29 @@ WYMeditor.UndoRedo = function (wym) {
     WYMeditor.UndoRedo._onBodyFocus
     ===============================
 
-    This method is called on focus of the document's body.
+    This method should be called on focus of the document's body.
 
-    If the last saved history point does not include a saved selection
-    then the last saved history point is replaced with the current state,
-    which does include a selection.
+    It makes sure that the first undo point contains a selection.
 
-    When this method is called by the triggering of the focus event,
-    the selection is not yet made.
+    After the editor's instantiation there is no selection. The first
+    selection is made along with the first focus.
 
-    Hence the use of `setTimeout`--the function provided to `setTimeout`
-    will always be called after the event's native action. By that time
-    there should be a selection.
+    This method will run before the native action (in which the selection
+    is made). Therefore the instantiation of object-history is called using
+    `setTimeout`, which is after the selection happens.
 */
 WYMeditor.UndoRedo.prototype._onBodyFocus = function () {
     var undoRedo = this,
         wym = undoRedo.wym;
 
-    // TODO: the `current` property is private API.
-    if (undoRedo.history.current.savedSelection) {
-        // last history point has selection
+    if (undoRedo.history) {
         return;
     }
 
     setTimeout(function () {
-        // this will run after the native action of the triggering event.
-        undoRedo.history.current = wym.getCurrentState();
+        undoRedo.history = new WYMeditor.EXTERNAL_MODULES
+            // https://github.com/mightyiam/object-history
+            .ObjectHistory(wym.getCurrentState());
     }, 0);
 };
 
@@ -87,6 +80,11 @@ WYMeditor.UndoRedo.prototype._onBodyFocus = function () {
 WYMeditor.UndoRedo.prototype._add = function () {
     var undoRedo = this,
         wym = undoRedo.wym;
+
+    if (!undoRedo.history) {
+        // history was not instantiated yet
+        return;
+    }
 
     undoRedo.history.add(wym.getCurrentState());
     undoRedo.hasUnregisteredModification = false;
@@ -108,6 +106,11 @@ WYMeditor.UndoRedo.prototype._do = function (what) {
         history = undoRedo.history,
         state,
         postEventName;
+
+    if (!undoRedo.history) {
+        // history was not instantiated yet
+        return;
+    }
 
     if (what === WYMeditor.UndoRedo.UN) {
         if (history.lengthBackward() === 0) {
