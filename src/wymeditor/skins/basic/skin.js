@@ -162,7 +162,7 @@ WYMeditor.SKINS.basic = {
         );
     },
     postIframeInit: function (e, wym) {
-        var This = WYMeditor.SKINS.default;
+        var This = WYMeditor.SKINS.basic;
 
         // Perform an initial resize, if necessary
         This.resizeIframeOnceBodyExists(wym);
@@ -181,7 +181,7 @@ WYMeditor.SKINS.basic = {
 
         // The classes and containers sections are dropdowns to the right of
         // the toolbar at the top
-        var This = WYMeditor.SKINS.default,
+        var This = WYMeditor.SKINS.basic,
             $dropdowns = jQuery(
             [
                 wym._options.containersSelector
@@ -225,7 +225,7 @@ WYMeditor.SKINS.basic = {
 
         // Use a wrapper so we can keep the toolbar styling consistent
         $offsetWrapper = jQuery(
-            '<div class="wym_skin_default wym_area_top_wrapper">'
+            '<div class="wym_skin_basic wym_area_top_wrapper">'
         );
         $areaTop.wrap($offsetWrapper);
         $offsetWrapper = $areaTop.parent();
@@ -253,7 +253,7 @@ WYMeditor.SKINS.basic = {
                 },
                 bottom: function () {
                     return $placeholder.offset().top +
-                        wym.defaultSkinIframeHeight;
+                        wym.basicSkinIframeHeight;
                 }
             }
         });
@@ -263,7 +263,7 @@ WYMeditor.SKINS.basic = {
         // actually have a body. We need to wait until the body actually exists
         // before trying to set the initial hight of the iframe, so we hack
         // this together with setTimeout.
-        var This = WYMeditor.SKINS.default,
+        var This = WYMeditor.SKINS.basic,
             scrollHeightCalcFix;
 
         if (wym.basicSkinOpts.initialIframeResizeTimer) {
@@ -299,7 +299,7 @@ WYMeditor.SKINS.basic = {
         // that doesn't mean that images have yet been retrieved or that their
         // heights have been determined. If an image's height pops in after
         // we've calculated the iframe height, the iframe will be too short.
-        var This = WYMeditor.SKINS.default,
+        var This = WYMeditor.SKINS.basic,
             images,
             imagesLength,
             i = 0,
@@ -433,7 +433,7 @@ WYMeditor.SKINS.basic = {
         }
     },
     resizeIframe: function (wym) {
-        var This = WYMeditor.SKINS.default,
+        var This = WYMeditor.SKINS.basic,
             desiredHeight,
             $iframe = jQuery(wym._iframe),
             currentHeight = $iframe.height();
@@ -455,7 +455,7 @@ WYMeditor.SKINS.basic = {
 
         if (currentHeight !== desiredHeight) {
             $iframe.height(desiredHeight);
-            wym.defaultSkinIframeHeight = desiredHeight;
+            wym.basicSkinIframeHeight = desiredHeight;
 
             return true;
         }
@@ -492,7 +492,7 @@ WYMeditor.SKINS.basic = {
     resizeAndScrollIfNeeded: function (wym) {
         // Scroll the page so that our current selection
         // within the iframe is actually in view.
-        var This = WYMeditor.SKINS.default,
+        var This = WYMeditor.SKINS.basic,
             resizeOccurred = This.resizeIframe(wym);
         if (resizeOccurred !== true) {
             return;
