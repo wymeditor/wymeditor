@@ -602,8 +602,9 @@ jQuery.fn.wymeditor = function (providedOptions) {
     var $textareas = this,
         defaultOptions,
         mergedOptions,
-        skin,
-        optionsWithDefaults;
+        optionsWithDefaults,
+        optionsWithSkinOverrides,
+        skin;
 
     defaultOptions = {
 
@@ -836,7 +837,7 @@ jQuery.fn.wymeditor = function (providedOptions) {
         preInit: null,
         preBind: null,
         postInit: null
-    }
+    };
 
     optionsWithDefaults = jQuery.extend(defaultOptions, providedOptions);
 
@@ -1022,7 +1023,6 @@ WYMeditor._computeBasePath = function (wymPath) {
 
 WYMeditor._getSkinUIOverrides = function (providedOptions, skin) {
     var uiOverrides = {},
-        i,
         skinOverride;
 
     if (!providedOptions) {
@@ -1030,7 +1030,7 @@ WYMeditor._getSkinUIOverrides = function (providedOptions, skin) {
     }
 
     if (skin.UI_COMPONENTS) {
-        jQuery.each(WYMeditor.UI_COMPONENTS, function(i, componentAttr) {
+        jQuery.each(WYMeditor.UI_COMPONENTS, function (i, componentAttr) {
             // If the user provided option, even if it's the empty string,
             // we use that instead of the skin's default.
             if (typeof providedOptions[componentAttr] === "undefined") {
@@ -1043,7 +1043,7 @@ WYMeditor._getSkinUIOverrides = function (providedOptions, skin) {
         });
     }
     if (skin.UI_COMPONENT_SELECTORS) {
-        jQuery.each(WYMeditor.UI_COMPONENT_SELECTORS, function(i, selectorAttr) {
+        jQuery.each(WYMeditor.UI_COMPONENT_SELECTORS, function (i, selectorAttr) {
             // If the user provided an option, even if it's the empty string,
             // we use that instead of the skin's default.
             if (typeof providedOptions[selectorAttr] === "undefined") {
