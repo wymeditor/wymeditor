@@ -47,6 +47,9 @@ WYMeditor.
     but it is recommended that existing custom dialogs be rewritten using the
     new `wym.dialog` API (see API documentation) or at least that they be
     tested.
+  * All toolbar buttons that open a dialog must include the `wym_opens_dialog`
+    class or they'll be opened in the background by a new, more-consistent
+    method of returning focus to the editor after button clicks.
 * [#679](https://github.com/wymeditor/wymeditor/pull/679)
   Support for IE7 dropped.
 * [#680](https://github.com/wymeditor/wymeditor/pull/680)
