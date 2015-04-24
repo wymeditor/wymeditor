@@ -541,7 +541,7 @@ jQuery.extend(WYMeditor, {
 
     `jQuery(".wymeditor").wymeditor({});`
 */
-jQuery.fn.wymeditor = function (options) {
+jQuery.fn.wymeditor = function (providedOptions) {
     var $textareas = this;
 
     defaultOptions = {
@@ -777,17 +777,15 @@ jQuery.fn.wymeditor = function (options) {
         postInit: null
     }
 
-    mergedOptions = jQuery.extend(defaultOptions, options);
+    mergedOptions = jQuery.extend(defaultOptions, providedOptions);
 
     // If an iframeHtml option wasn't included, default to using the iframeHtml
     // defined by the skin.
-    if (typeof options.iframeHtml !== "undefined") {
+    if (providedOptions && providedOptions.iframeHtml) {
         // If the user passed an iframeHtml, use that
-        if (typeof WYMeditor.SKINS[mergedOptions.skin] !== "undefined") {
-            var skinIframeHtml = WYMeditor.SKINS[mergedOptions.skin].iframeHtml;
-            if (typeof skinIframeHtml !== "undefined") {
-                mergedOptions.iframeHtml = skinIframeHtml;
-            }
+        var skin = WYMeditor.SKINS[mergedOptions.skin];
+        if (skin && skin.iframeHtml) {
+            mergedOptions.iframeHtml = skin.iframeHtml;
         }
     }
 
