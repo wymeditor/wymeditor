@@ -43,17 +43,18 @@ QUnit.test("'edited' modification callbacks are firing on" +
         p = wymeditor.$body().find("p")[0];
         wymeditor.setCaretIn(p);
 
-        simulateKeyCombo(wymeditor, 'a'); // 1st callback
+        wymeditor.undoRedo.reset();
+        simulateKeyCombo(wymeditor, 'a'); // no callback
         simulateKeyCombo(wymeditor, '3'); // no callback
-        simulateKeyCombo(wymeditor, ' '); // 2nd callback
+        simulateKeyCombo(wymeditor, ' '); // 1st callback
         simulateKeyCombo(wymeditor, ' '); // no callback
-        simulateKeyCombo(wymeditor, '.'); // 3rd callback
+        simulateKeyCombo(wymeditor, '.'); // 2nd callback
 
         callCount = wymeditor.registerModification.callCount;
         QUnit.strictEqual(
             callCount,
-            3,
-            "`registerModification` called 3 times"
+            2,
+            "`registerModification` called twice"
         );
 
         wymeditor.registerModification.restore();
