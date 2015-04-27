@@ -51,7 +51,9 @@ WYMeditor.NativeEditRegistration.prototype._onAnyNativeEdit = function () {
         undoRedo = nativeEditRegistration.wym.undoRedo;
 
     // remove redo points
-    undoRedo.history.changesetsFore = [];
+    if (undoRedo.history) {
+        undoRedo.history.forgetAllForward();
+    }
 
     // Non-native modifications are registered when they are performed.
     // Contrary to those, native edits (e.g. typing) aren't registered 
