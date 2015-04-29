@@ -1,5 +1,6 @@
 /* jshint evil: true */
 /* global
+    callNTimes,
     wymEqual,
     prepareUnitTestModule,
     makeTextSelection,
@@ -356,5 +357,29 @@ test("Redo keyboard shortcut", function () {
                 return SKIP_THIS_TEST;
             }
         }
+    });
+});
+
+test("Undo limit is 100", function () {
+    manipulationTestHelper({
+        startHtml: "<p>0</p>",
+        prepareFunc: function (wymeditor) {
+            wymeditor.undoRedo.reset(); // does not create an undo point
+            // create 200 undo points
+            callNTimes(function (index) {
+                wymeditor.rawHtml("<p>" + (index + 1) + "</p>");
+                wymeditor.registerModification();
+            }, 200);
+        },
+        expectedStartHtml: "<p>200</p>",
+        manipulationFunc: function (wymeditor) {
+            // try going back 101 times
+            callNTimes(function () {
+                wymeditor.undoRedo.undo();
+            }, 101);
+        },
+        // if there was no limit or the limit was higher than 100, then
+        // it would have been `<p>99</p>`
+        expectedResultHtml: "<p>100</p>"
     });
 });

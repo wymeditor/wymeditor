@@ -210,6 +210,13 @@ module.exports = function (grunt) {
                     'edited.js'],
                 dest: '<%= yeoman.app %>/lib/edited.js'
             },
+            callNTimes: {
+                // this is not concatenated into the build.
+                // it is used only in tests.
+                src: ['<%= yeoman.app %>/wymeditor/external-modules/' +
+                    'call-n-times.js'],
+                dest: '<%= yeoman.app %>/lib/call-n-times.js'
+            },
             keysim: {
                 // this is not concatenated into the build.
                 // it used only in tests.
@@ -541,7 +548,7 @@ module.exports = function (grunt) {
         grunt.task.run([
             'bower',
             'browserify:externalModules',
-            'browserify:keysim',
+            'browserify:modulesForTests',
             'clean:server',
             // forgive when Jekyll is not installed
             'force:jekyllDev',
@@ -556,10 +563,15 @@ module.exports = function (grunt) {
         'browserify:Edited'
     ]);
 
+    grunt.registerTask('browserify:modulesForTests', [
+        'browserify:keysim',
+        'browserify:callNTimes'
+    ]);
+
     grunt.registerTask('test', [
         'bower',
         'browserify:externalModules',
-        'browserify:keysim',
+        'browserify:modulesForTests',
         'clean:server',
         'connect:test',
         'qunit'
