@@ -210,12 +210,12 @@ module.exports = function (grunt) {
                     'edited.js'],
                 dest: '<%= yeoman.app %>/lib/edited.js'
             },
-            callNTimes: {
+            'lodash.times': {
                 // this is not concatenated into the build.
                 // it is used only in tests.
                 src: ['<%= yeoman.app %>/wymeditor/external-modules/' +
-                    'call-n-times.js'],
-                dest: '<%= yeoman.app %>/lib/call-n-times.js'
+                    'lodash.times.js'],
+                dest: '<%= yeoman.app %>/lib/lodash.times.js'
             },
             keysim: {
                 // this is not concatenated into the build.
@@ -565,7 +565,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('browserify:modulesForTests', [
         'browserify:keysim',
-        'browserify:callNTimes'
+        'browserify:lodash.times'
     ]);
 
     grunt.registerTask('test', [

@@ -35,7 +35,7 @@
     }
   ],
   "devDependencies": {
-    "call-n-times": "^2.0.0",
+    "lodash.times": "^3.0.1",
     "combokeys": "^2.4.3",
     "edited": "^1.1.1",
     "grunt": "~0.4.1",
