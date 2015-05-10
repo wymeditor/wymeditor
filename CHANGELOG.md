@@ -11,6 +11,8 @@ WYMeditor.
 
 * [#701](https://github.com/wymeditor/wymeditor/pull/701)
   Container changes can now be undone/redone
+* [#699](https://github.com/wymeditor/wymeditor/issues/699)
+  Undo history limit hard coded to remember 100 history points
 
 ## 1.0.0-rc.2
 
