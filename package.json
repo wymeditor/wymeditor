@@ -35,6 +35,7 @@
     }
   ],
   "devDependencies": {
+    "lodash.times": "^3.0.1",
     "combokeys": "^2.4.3",
     "edited": "^1.1.1",
     "grunt": "~0.4.1",
@@ -69,7 +70,7 @@
     "grunt-shell": "^1.1.2",
     "grunt-usemin": "~0.1.10",
     "keysim": "^1.1.0",
-    "object-history": "^3.0.0",
+    "object-history": "^3.1.0",
     "time-grunt": "~0.1.1"
   },
   "engines": {

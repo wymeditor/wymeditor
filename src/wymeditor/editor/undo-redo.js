@@ -64,9 +64,7 @@ WYMeditor.UndoRedo.prototype._onBodyFocus = function () {
     }
 
     setTimeout(function () {
-        undoRedo.history = new WYMeditor.EXTERNAL_MODULES
-            // https://github.com/mightyiam/object-history
-            .ObjectHistory(wym.getCurrentState());
+        undoRedo._instantiateHistory(wym.getCurrentState());
     }, 0);
 };
 
@@ -182,8 +180,29 @@ WYMeditor.UndoRedo.prototype.reset = function () {
     var undoRedo = this,
         wym = undoRedo.wym;
 
-    undoRedo.history = new WYMeditor.EXTERNAL_MODULES
-        .ObjectHistory(wym.getCurrentState());
+    undoRedo._instantiateHistory(wym.getCurrentState());
 
     undoRedo.hasUnregisteredModification = null;
+};
+
+/**
+    WYMeditor.UndoRedo._instantiateHistory
+    ======================================
+
+    Instantiates object-history[1] to keep track of undo/redo
+    history.
+
+    @param WymState initialState Initial editor state.
+        Obtained with `wym.getCurrentState()`.
+
+    1. https://github.com/PolicyStat/object-history
+*/
+WYMeditor.UndoRedo.prototype._instantiateHistory = function (initialState) {
+    var undoRedo = this;
+
+    undoRedo.history = new WYMeditor.EXTERNAL_MODULES
+        .ObjectHistory(
+            initialState,
+            {limit: 100} // hard coded undo limit
+        );
 };
