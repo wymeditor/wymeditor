@@ -1,7 +1,7 @@
 /* jshint maxlen: 100 */
 /* global -$,
     QUnit,
-    equal,
+    strictEqual,
     module,
     notEqual,
     test,
@@ -32,5 +32,5 @@ test("skin's iframeHtml is used preferentially", function () {
     );
 
     // Ensure that non-default attribute propagates
-    equal(wym._options.iframeHtml, WYMeditor.SKINS.basic.UI_COMPONENTS.iframeHtml);
+    strictEqual(wym._options.iframeHtml, WYMeditor.SKINS.basic.UI_COMPONENTS.iframeHtml);
 });

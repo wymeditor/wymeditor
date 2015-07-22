@@ -70,8 +70,8 @@ asyncTest("Custom dialog options don't change future defaults", function () {
     jQuery('.wym').wymeditor({
         hrefSelector: '.wym_customized_thing',
         postInit: function (wym) {
-            deepEqual(wym._options.hrefSelector, '.wym_customized_thing');
-            deepEqual(WYMeditor.DEFAULT_DIALOG_OPTIONS.hrefSelector, startingDefault);
+            strictEqual(wym._options.hrefSelector, '.wym_customized_thing');
+            strictEqual(WYMeditor.DEFAULT_DIALOG_OPTIONS.hrefSelector, startingDefault);
             start();
         }
     });
