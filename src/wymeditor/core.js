@@ -1031,7 +1031,7 @@ WYMeditor._getSkinUIOverrides = function (providedOptions, skin) {
     }
 
     if (skin.UI_COMPONENTS) {
-        WYMeditor.UI_COMPONENTS.forEach(function (componentAttr, i) {
+        WYMeditor.UI_COMPONENTS.forEach(function (componentAttr) {
             // If the user provided option, even if it's the empty string,
             // we use that instead of the skin's default.
             if (typeof providedOptions[componentAttr] === "undefined") {
@@ -1044,7 +1044,7 @@ WYMeditor._getSkinUIOverrides = function (providedOptions, skin) {
         });
     }
     if (skin.UI_COMPONENT_SELECTORS) {
-        WYMeditor.UI_COMPONENT_SELECTORS.forEach(function (selectorAttr, i) {
+        WYMeditor.UI_COMPONENT_SELECTORS.forEach(function (selectorAttr) {
             // If the user provided an option, even if it's the empty string,
             // we use that instead of the skin's default.
             if (typeof providedOptions[selectorAttr] === "undefined") {
