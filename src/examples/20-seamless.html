@@ -43,7 +43,12 @@
     <script type="text/javascript">
         jQuery(function() {
             jQuery('.wymeditor').wymeditor({
-              html: '<p>Some initial content... Type in a few paragraphs and see the editor grow in height.</p>',
+              html: [
+                '<p>Some initial content...</p>',
+                '<p>And an image for asynchronously added size:</p>',
+                '<img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Flag_of_Indiana.svg" alt="Flag of Indiana">',
+                '<p>Type in a few paragraphs and see the editor grow in height.</p>'
+              ].join(''),
                 skin: 'seamless',
                 // We already included the seamless skin's javascript so that we could
                 // use this constant
