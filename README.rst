@@ -23,8 +23,11 @@ document.
 
 It also adheres to web standards.
 
+And its versioning adheres to `Semantic Versioning`_ 2.
+
 .. _TinyMCE: http://www.tinymce.com/
 .. _CKEditor: http://ckeditor.com/
+.. _Semantic Versioning: http://semver.org/
 
 .. _resources:
 

@@ -5,7 +5,12 @@ WYMeditor.
 
 ## 1.0.0
 
-*release-date TBD
+*release-date July 22, 2015
+
+### Semantic Versioning
+
+From this release onwards, versioning is according to
+[Semantic Versioning](http://semver.org/) 2.
 
 ### Bug Fixes
 
