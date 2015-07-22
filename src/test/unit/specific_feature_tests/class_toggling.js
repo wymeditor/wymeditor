@@ -113,10 +113,10 @@ test("Adds className, selector determines element", function () {
         startHtml: [""
             , "<ul>"
                 , "<li>"
-                    , "A"
+                    , "A " // space due to IE8 bug
                     , "<ul>"
                         , "<li id=\"bar\">"
-                            , "Bar"
+                            , "Bar " // space due to IE8 bug
                             , "<ul>"
                                 , "<li>"
                                     , "Foo"
@@ -136,10 +136,10 @@ test("Adds className, selector determines element", function () {
         expectedResultHtml: [""
             , "<ul>"
                 , "<li>"
-                    , "A"
+                    , "A " // space due to IE8 bug
                     , "<ul class=\"bar\">"
                         , "<li id=\"bar\">"
-                            , "Bar"
+                            , "Bar " // space due to IE8 bug
                             , "<ul>"
                                 , "<li>"
                                     , "Foo"
