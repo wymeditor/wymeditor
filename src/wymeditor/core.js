@@ -1044,7 +1044,7 @@ WYMeditor._getSkinUIOverrides = function (providedOptions, skin) {
         });
     }
     if (skin.UI_COMPONENT_SELECTORS) {
-        jQuery.each(WYMeditor.UI_COMPONENT_SELECTORS, function (i, selectorAttr) {
+        WYMeditor.UI_COMPONENT_SELECTORS.forEach(function (selectorAttr, i) {
             // If the user provided an option, even if it's the empty string,
             // we use that instead of the skin's default.
             if (typeof providedOptions[selectorAttr] === "undefined") {
