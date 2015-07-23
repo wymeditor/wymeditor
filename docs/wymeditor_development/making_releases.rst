@@ -118,10 +118,15 @@ different files:
 Throughout these instructions, when asked to modify the version string, it is
 meant that the version strings be modified in all of these files.
 
-While you're doing that, make sure that the version strings are otherwise correct.
+Come up with a version string for this release.
+Adhere to `SemVer`_.
 
-If instructions here were followed,
-They should be already the version that you mean to release.
+Bump the version string.
+This means replacing ``next``
+in the above files
+with the new version string.
+
+.. _SemVer: http://semver.org/
 
 Build the web–site
 ------------------
