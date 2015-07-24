@@ -54,6 +54,9 @@ From this release onwards, versioning is according to
     but it is recommended that existing custom dialogs be rewritten using the
     new `wym.dialog` API (see API documentation) or at least that they be
     tested.
+  * All toolbar buttons that open a dialog must include the `wym_opens_dialog`
+    class or they'll be opened in the background by a new, more-consistent
+    method of returning focus to the editor after button clicks.
 * [#679](https://github.com/wymeditor/wymeditor/pull/679)
   Support for IE7 dropped.
 * [#680](https://github.com/wymeditor/wymeditor/pull/680)
@@ -242,7 +245,7 @@ All of these changes are documented in detail in the
   you're using the default skin, you'll need to add a line like the
   following:
   `<link rel="stylesheet" type="text/css"
-    href="wymeditor/skins/default/skin.css" />`
+    href="wymeditor/skins/basic/skin.css" />`
 * We're no longer automatically doing an AJAX HTTP request to load various
   resources, including skin CSS/JS and language files. If you're using the
   default WYMeditor bundle, all you'll notice is that WYMeditor loads more

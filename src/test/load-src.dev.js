@@ -42,7 +42,7 @@ function loadWymSrc(srcPath, extraRequirements, jqueryVersion) {
             srcPath + 'wymeditor/parser/xhtml-parser.js',
             srcPath + 'wymeditor/parser/xhtml-sax-listener.js',
             srcPath + 'wymeditor/lang/en.js',
-            srcPath + 'wymeditor/skins/default/skin.js'
+            srcPath + 'wymeditor/skins/basic/skin.js'
         ],
         jqueryBrowserRequirement = [],
         jqueryRequirement = [],

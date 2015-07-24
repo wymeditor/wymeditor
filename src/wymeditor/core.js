@@ -474,6 +474,63 @@ jQuery.extend(WYMeditor, {
         TEXT: 3
     },
 
+    // These UI components will preferentially use those defined in the chosen
+    // skin inside `UI_COMPONENTS` instead of the defaults.
+    UI_COMPONENTS : [
+        'boxHtml',
+        'logoHtml',
+        'iframeHtml',
+        'toolsHtml',
+        'containersHtml',
+        'containersItemHtml',
+        'classesHtml',
+        'classesItemHtml',
+        'statusHtml',
+        'htmlHtml',
+        'dialogHtml',
+        'dialogLinkHtml',
+        'dialogFeatures',
+        'dialogImageHtml',
+        'dialogTablehtml',
+        'dialogPastehtml',
+        'dialogPreviewHtml'
+    ],
+
+    // These UI component selectors will preferentially use those defined in
+    // the chosen skin inside `UI_COMPONENT_SELECTORS` instead of the defaults.
+    UI_COMPONENT_SELECTORS : [
+        'boxSelector',
+        'toolsSelector',
+        'toolsListSelector',
+        'containersSelector',
+        'classesSelector',
+        'htmlSelector',
+        'iframeSelector',
+        'statusSelector',
+        'toolSelector',
+        'containerSelector',
+        'classSelector',
+        'htmlValSelector',
+        'hrefSelector',
+        'srcSelector',
+        'titleSelector',
+        'altSelector',
+        'textSelector',
+        'rowsSelector',
+        'colsSelector',
+        'captionSelector',
+        'submitSelector',
+        'cancelSelector',
+        'previewSelector',
+        'dialogLinkSelector',
+        'dialogImageSelector',
+        'dialogTableSelector',
+        'dialogPasteSelector',
+        'dialogPreviewSelector',
+        'updateSelector'
+    ],
+
+
     /**
         WYMeditor.editor
         ================
@@ -527,6 +584,239 @@ jQuery.extend(WYMeditor, {
     EXTERNAL_MODULES : {}
 });
 
+WYMeditor.DEFAULT_OPTIONS = {
+    html:       "",
+    basePath:   false,
+    wymPath:    false,
+    iframeBasePath: false,
+    jQueryPath: false,
+    skin:       "basic",
+    lang:       "en",
+    direction:  "ltr",
+    customCommands: [],
+
+    // These values will override the default for their respective
+    // `DocumentStructureManager.structureRules`
+    structureRules: {
+        defaultRootContainer:  'p'
+    },
+
+    boxHtml: String() +
+        "<div class='wym_box'>" +
+            "<div class='wym_area_top'>" +
+                WYMeditor.TOOLS +
+            "</div>" +
+            "<div class='wym_area_left'></div>" +
+            "<div class='wym_area_right'>" +
+                WYMeditor.CONTAINERS +
+                WYMeditor.CLASSES +
+            "</div>" +
+            "<div class='wym_area_main'>" +
+                WYMeditor.HTML +
+                WYMeditor.IFRAME +
+                WYMeditor.STATUS +
+            "</div>" +
+            "<div class='wym_area_bottom'>" +
+                WYMeditor.LOGO +
+            "</div>" +
+        "</div>",
+
+    logoHtml: String() +
+        '<a class="wym_wymeditor_link" ' +
+            'href="http://www.wymeditor.org/">WYMeditor</a>',
+
+    iframeHtml: String() +
+        '<div class="wym_iframe wym_section">' +
+            '<iframe src="' + WYMeditor.IFRAME_BASE_PATH + 'wymiframe.html">' +
+            '</iframe>' +
+        "</div>",
+
+    toolsHtml: String() +
+        '<div class="wym_tools wym_section">' +
+            '<h2>{Tools}</h2>' +
+            '<ul>' +
+                WYMeditor.TOOLS_ITEMS +
+            '</ul>' +
+        '</div>',
+
+    toolsItemHtml: String() +
+        '<li class="' + WYMeditor.TOOL_CLASS + '">' +
+            '<a href="#" name="' + WYMeditor.TOOL_NAME + '" ' +
+                    'title="' + WYMeditor.TOOL_TITLE + '">' +
+                WYMeditor.TOOL_TITLE +
+            '</a>' +
+        '</li>',
+
+    toolsItems: [
+        {
+            'name': 'Bold',
+            'title': 'Strong',
+            'css': 'wym_tools_strong'
+        },
+        {
+            'name': 'Italic',
+            'title': 'Emphasis',
+            'css': 'wym_tools_emphasis'
+        },
+        {
+            'name': 'Superscript',
+            'title': 'Superscript',
+            'css': 'wym_tools_superscript'
+        },
+        {
+            'name': 'Subscript',
+            'title': 'Subscript',
+            'css': 'wym_tools_subscript'
+        },
+        {
+            'name': 'InsertOrderedList',
+            'title': 'Ordered_List',
+            'css': 'wym_tools_ordered_list'
+        },
+        {
+            'name': 'InsertUnorderedList',
+            'title': 'Unordered_List',
+            'css': 'wym_tools_unordered_list'
+        },
+        {
+            'name': 'Indent',
+            'title': 'Indent',
+            'css': 'wym_tools_indent'
+        },
+        {
+            'name': 'Outdent',
+            'title': 'Outdent',
+            'css': 'wym_tools_outdent'
+        },
+        {
+            'name': 'Undo',
+            'title': 'Undo',
+            'css': 'wym_tools_undo'
+        },
+        {
+            'name': 'Redo',
+            'title': 'Redo',
+            'css': 'wym_tools_redo'
+        },
+        {
+            'name': 'CreateLink',
+            'title': 'Link',
+            'css': 'wym_tools_link wym_opens_dialog'
+        },
+        {
+            'name': 'Unlink',
+            'title': 'Unlink',
+            'css': 'wym_tools_unlink'
+        },
+        {
+            'name': 'InsertImage',
+            'title': 'Image',
+            'css': 'wym_tools_image wym_opens_dialog'
+        },
+        {
+            'name': 'InsertTable',
+            'title': 'Table',
+            'css': 'wym_tools_table wym_opens_dialog'
+        },
+        {
+            'name': 'Paste',
+            'title': 'Paste_From_Word',
+            'css': 'wym_tools_paste wym_opens_dialog'
+        },
+        {
+            'name': 'ToggleHtml',
+            'title': 'HTML',
+            'css': 'wym_tools_html'
+        },
+        {
+            'name': 'Preview',
+            'title': 'Preview',
+            'css': 'wym_tools_preview wym_opens_dialog'
+        }
+    ],
+
+    containersHtml: String() +
+        '<div class="wym_containers wym_section">' +
+            '<h2>{Containers}</h2>' +
+            '<ul>' +
+                WYMeditor.CONTAINERS_ITEMS +
+            '</ul>' +
+        '</div>',
+
+    containersItemHtml: String() +
+        '<li class="' + WYMeditor.CONTAINER_CLASS + '">' +
+            '<a href="#" name="' + WYMeditor.CONTAINER_NAME + '">' +
+                WYMeditor.CONTAINER_TITLE +
+            '</a>' +
+        '</li>',
+
+    containersItems: [
+        {'name': 'P', 'title': 'Paragraph', 'css': 'wym_containers_p'},
+        {'name': 'H1', 'title': 'Heading_1', 'css': 'wym_containers_h1'},
+        {'name': 'H2', 'title': 'Heading_2', 'css': 'wym_containers_h2'},
+        {'name': 'H3', 'title': 'Heading_3', 'css': 'wym_containers_h3'},
+        {'name': 'H4', 'title': 'Heading_4', 'css': 'wym_containers_h4'},
+        {'name': 'H5', 'title': 'Heading_5', 'css': 'wym_containers_h5'},
+        {'name': 'H6', 'title': 'Heading_6', 'css': 'wym_containers_h6'},
+        {'name': 'PRE', 'title': 'Preformatted', 'css': 'wym_containers_pre'},
+        {'name': 'BLOCKQUOTE', 'title': 'Blockquote',
+            'css': 'wym_containers_blockquote'},
+        {'name': 'TH', 'title': 'Table_Header', 'css': 'wym_containers_th'}
+    ],
+
+    classesHtml: String() +
+        '<div class="wym_classes wym_section">' +
+            '<h2>{Classes}</h2>' +
+            '<ul>' +
+                WYMeditor.CLASSES_ITEMS +
+            '</ul>' +
+        '</div>',
+
+    classesItemHtml: String() +
+        '<li class="wym_classes_' + WYMeditor.CLASS_NAME + '">' +
+            '<a href="#" name="' + WYMeditor.CLASS_NAME + '">' +
+                WYMeditor.CLASS_TITLE +
+            '</a>' +
+        '</li>',
+
+    classesItems:      [],
+    statusHtml: String() +
+        '<div class="wym_status wym_section">' +
+            '<h2>{Status}</h2>' +
+        '</div>',
+
+    htmlHtml: String() +
+        '<div class="wym_html wym_section">' +
+            '<h2>{Source_Code}</h2>' +
+            '<textarea class="wym_html_val"></textarea>' +
+        '</div>',
+
+    boxSelector:        ".wym_box",
+    toolsSelector:      ".wym_tools",
+    toolsListSelector:  " ul",
+    containersSelector: ".wym_containers",
+    classesSelector:    ".wym_classes",
+    htmlSelector:       ".wym_html",
+    iframeSelector:     ".wym_iframe iframe",
+    iframeBodySelector: ".wym_iframe",
+    statusSelector:     ".wym_status",
+    toolSelector:       ".wym_tools a",
+    containerSelector:  ".wym_containers a",
+    classSelector:      ".wym_classes a",
+    htmlValSelector:    ".wym_html_val",
+
+    updateSelector:    ".wymupdate",
+    updateEvent:       "click",
+
+    stringDelimiterLeft:  "{",
+    stringDelimiterRight: "}",
+
+    preInit: null,
+    preBind: null,
+    postInit: null
+};
+
+
 /********** jQuery Plugin Definition **********/
 
 /**
@@ -541,251 +831,39 @@ jQuery.extend(WYMeditor, {
 
     `jQuery(".wymeditor").wymeditor({});`
 */
-jQuery.fn.wymeditor = function (options) {
-    var $textareas = this;
+jQuery.fn.wymeditor = function (providedOptions) {
+    var $textareas = this,
+        mergedOptions,
+        optionsWithDefaults,
+        optionsWithSkinOverrides,
+        skin;
 
-    options = jQuery.extend({
 
-        html:       "",
-        basePath:   false,
-        wymPath:    false,
-        iframeBasePath: false,
-        jQueryPath: false,
-        skin:       "default",
-        lang:       "en",
-        direction:  "ltr",
-        customCommands: [],
+    optionsWithDefaults = jQuery.extend({}, WYMeditor.DEFAULT_OPTIONS, providedOptions);
 
-        // These values will override the default for their respective
-        // `DocumentStructureManager.structureRules`
-        structureRules: {
-            defaultRootContainer:  'p'
-        },
+    // Add in any UI defaults from the chosen skin
+    skin = WYMeditor.SKINS[optionsWithDefaults.skin];
+    if (!skin) {
+        WYMeditor.console.error(
+            "Error locating skin '" + optionsWithDefaults.skin + "'."
+        );
+    }
+    optionsWithSkinOverrides = jQuery.extend(
+        {},
+        providedOptions,
+        WYMeditor._getSkinUIOverrides(providedOptions, skin)
+    );
 
-        boxHtml: String() +
-            "<div class='wym_box'>" +
-                "<div class='wym_area_top'>" +
-                    WYMeditor.TOOLS +
-                "</div>" +
-                "<div class='wym_area_left'></div>" +
-                "<div class='wym_area_right'>" +
-                    WYMeditor.CONTAINERS +
-                    WYMeditor.CLASSES +
-                "</div>" +
-                "<div class='wym_area_main'>" +
-                    WYMeditor.HTML +
-                    WYMeditor.IFRAME +
-                    WYMeditor.STATUS +
-                "</div>" +
-                "<div class='wym_area_bottom'>" +
-                    WYMeditor.LOGO +
-                "</div>" +
-            "</div>",
 
-        logoHtml: String() +
-            '<a class="wym_wymeditor_link" ' +
-                'href="http://www.wymeditor.org/">WYMeditor</a>',
-
-        iframeHtml: String() +
-            '<div class="wym_iframe wym_section">' +
-                '<iframe src="' + WYMeditor.IFRAME_BASE_PATH + 'wymiframe.html">' +
-                '</iframe>' +
-            "</div>",
-
-        toolsHtml: String() +
-            '<div class="wym_tools wym_section">' +
-                '<h2>{Tools}</h2>' +
-                '<ul>' +
-                    WYMeditor.TOOLS_ITEMS +
-                '</ul>' +
-            '</div>',
-
-        toolsItemHtml: String() +
-            '<li class="' + WYMeditor.TOOL_CLASS + '">' +
-                '<a href="#" name="' + WYMeditor.TOOL_NAME + '" ' +
-                        'title="' + WYMeditor.TOOL_TITLE + '">' +
-                    WYMeditor.TOOL_TITLE +
-                '</a>' +
-            '</li>',
-
-        toolsItems: [
-            {
-                'name': 'Bold',
-                'title': 'Strong',
-                'css': 'wym_tools_strong'
-            },
-            {
-                'name': 'Italic',
-                'title': 'Emphasis',
-                'css': 'wym_tools_emphasis'
-            },
-            {
-                'name': 'Superscript',
-                'title': 'Superscript',
-                'css': 'wym_tools_superscript'
-            },
-            {
-                'name': 'Subscript',
-                'title': 'Subscript',
-                'css': 'wym_tools_subscript'
-            },
-            {
-                'name': 'InsertOrderedList',
-                'title': 'Ordered_List',
-                'css': 'wym_tools_ordered_list'
-            },
-            {
-                'name': 'InsertUnorderedList',
-                'title': 'Unordered_List',
-                'css': 'wym_tools_unordered_list'
-            },
-            {
-                'name': 'Indent',
-                'title': 'Indent',
-                'css': 'wym_tools_indent'
-            },
-            {
-                'name': 'Outdent',
-                'title': 'Outdent',
-                'css': 'wym_tools_outdent'
-            },
-            {
-                'name': 'Undo',
-                'title': 'Undo',
-                'css': 'wym_tools_undo'
-            },
-            {
-                'name': 'Redo',
-                'title': 'Redo',
-                'css': 'wym_tools_redo'
-            },
-            {
-                'name': 'CreateLink',
-                'title': 'Link',
-                'css': 'wym_tools_link wym_opens_dialog'
-            },
-            {
-                'name': 'Unlink',
-                'title': 'Unlink',
-                'css': 'wym_tools_unlink'
-            },
-            {
-                'name': 'InsertImage',
-                'title': 'Image',
-                'css': 'wym_tools_image wym_opens_dialog'
-            },
-            {
-                'name': 'InsertTable',
-                'title': 'Table',
-                'css': 'wym_tools_table wym_opens_dialog'
-            },
-            {
-                'name': 'Paste',
-                'title': 'Paste_From_Word',
-                'css': 'wym_tools_paste wym_opens_dialog'
-            },
-            {
-                'name': 'ToggleHtml',
-                'title': 'HTML',
-                'css': 'wym_tools_html'
-            },
-            {
-                'name': 'Preview',
-                'title': 'Preview',
-                'css': 'wym_tools_preview wym_opens_dialog'
-            }
-        ],
-
-        containersHtml: String() +
-            '<div class="wym_containers wym_section">' +
-                '<h2>{Containers}</h2>' +
-                '<ul>' +
-                    WYMeditor.CONTAINERS_ITEMS +
-                '</ul>' +
-            '</div>',
-
-        containersItemHtml: String() +
-            '<li class="' + WYMeditor.CONTAINER_CLASS + '">' +
-                '<a href="#" name="' + WYMeditor.CONTAINER_NAME + '">' +
-                    WYMeditor.CONTAINER_TITLE +
-                '</a>' +
-            '</li>',
-
-        containersItems: [
-            {'name': 'P', 'title': 'Paragraph', 'css': 'wym_containers_p'},
-            {'name': 'H1', 'title': 'Heading_1', 'css': 'wym_containers_h1'},
-            {'name': 'H2', 'title': 'Heading_2', 'css': 'wym_containers_h2'},
-            {'name': 'H3', 'title': 'Heading_3', 'css': 'wym_containers_h3'},
-            {'name': 'H4', 'title': 'Heading_4', 'css': 'wym_containers_h4'},
-            {'name': 'H5', 'title': 'Heading_5', 'css': 'wym_containers_h5'},
-            {'name': 'H6', 'title': 'Heading_6', 'css': 'wym_containers_h6'},
-            {'name': 'PRE', 'title': 'Preformatted', 'css': 'wym_containers_pre'},
-            {'name': 'BLOCKQUOTE', 'title': 'Blockquote',
-                'css': 'wym_containers_blockquote'},
-            {'name': 'TH', 'title': 'Table_Header', 'css': 'wym_containers_th'}
-        ],
-
-        classesHtml: String() +
-            '<div class="wym_classes wym_section">' +
-                '<h2>{Classes}</h2>' +
-                '<ul>' +
-                    WYMeditor.CLASSES_ITEMS +
-                '</ul>' +
-            '</div>',
-
-        classesItemHtml: String() +
-            '<li class="wym_classes_' + WYMeditor.CLASS_NAME + '">' +
-                '<a href="#" name="' + WYMeditor.CLASS_NAME + '">' +
-                    WYMeditor.CLASS_TITLE +
-                '</a>' +
-            '</li>',
-
-        classesItems:      [],
-        statusHtml: String() +
-            '<div class="wym_status wym_section">' +
-                '<h2>{Status}</h2>' +
-            '</div>',
-
-        htmlHtml: String() +
-            '<div class="wym_html wym_section">' +
-                '<h2>{Source_Code}</h2>' +
-                '<textarea class="wym_html_val"></textarea>' +
-            '</div>',
-
-        boxSelector:        ".wym_box",
-        toolsSelector:      ".wym_tools",
-        toolsListSelector:  " ul",
-        containersSelector: ".wym_containers",
-        classesSelector:    ".wym_classes",
-        htmlSelector:       ".wym_html",
-        iframeSelector:     ".wym_iframe iframe",
-        iframeBodySelector: ".wym_iframe",
-        statusSelector:     ".wym_status",
-        toolSelector:       ".wym_tools a",
-        containerSelector:  ".wym_containers a",
-        classSelector:      ".wym_classes a",
-        htmlValSelector:    ".wym_html_val",
-
-        updateSelector:    ".wymupdate",
-        updateEvent:       "click",
-
-        stringDelimiterLeft:  "{",
-        stringDelimiterRight: "}",
-
-        preInit: null,
-        preBind: null,
-        postInit: null
-
-    }, options);
-
-    options = jQuery.extend(WYMeditor.DEFAULT_DIALOG_OPTIONS, options);
+    mergedOptions = jQuery.extend(optionsWithDefaults, optionsWithSkinOverrides);
+    mergedOptions = jQuery.extend({}, WYMeditor.DEFAULT_DIALOG_OPTIONS, mergedOptions);
 
     return $textareas.each(function () {
         var textarea = this;
         // Assigning to _wym because the return value from new isn't
         // actually used, but we need to use new to properly change the
         // prototype
-        textarea._wym = new WYMeditor.editor(jQuery(textarea), options);
+        textarea._wym = new WYMeditor.editor(jQuery(textarea), mergedOptions);
     });
 };
 
@@ -942,6 +1020,44 @@ WYMeditor._computeBasePath = function (wymPath) {
     // Strip everything after the last slash to get the base path
     var lastSlashIndex = wymPath.lastIndexOf('/');
     return wymPath.substr(0, lastSlashIndex + 1);
+};
+
+WYMeditor._getSkinUIOverrides = function (providedOptions, skin) {
+    var uiOverrides = {},
+        skinOverride;
+
+    if (!providedOptions) {
+        return uiOverrides;
+    }
+
+    if (skin.UI_COMPONENTS) {
+        WYMeditor.UI_COMPONENTS.forEach(function (componentAttr) {
+            // If the user provided option, even if it's the empty string,
+            // we use that instead of the skin's default.
+            if (typeof providedOptions[componentAttr] === "undefined") {
+                skinOverride = skin.UI_COMPONENTS[componentAttr];
+                if (typeof skinOverride !== "undefined") {
+                    // Skins can use empty strings for overrides
+                    uiOverrides[componentAttr] = skinOverride;
+                }
+            }
+        });
+    }
+    if (skin.UI_COMPONENT_SELECTORS) {
+        WYMeditor.UI_COMPONENT_SELECTORS.forEach(function (selectorAttr) {
+            // If the user provided an option, even if it's the empty string,
+            // we use that instead of the skin's default.
+            if (typeof providedOptions[selectorAttr] === "undefined") {
+                skinOverride = skin.UI_COMPONENT_SELECTORS[selectorAttr];
+                if (typeof skinOverride !== "undefined") {
+                    // Skins can use empty strings for overrides
+                    uiOverrides[selectorAttr] = skinOverride;
+                }
+            }
+        });
+    }
+
+    return uiOverrides;
 };
 
 /********** HELPERS **********/

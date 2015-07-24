@@ -108,8 +108,8 @@
     };
 }(jQuery));
 
-WYMeditor.SKINS.seamless = {
-    OPTS: {
+WYMeditor.SKINS.basic = {
+    UI_COMPONENTS: {
         iframeHtml: [""
         , '<div class="wym_iframe wym_section">'
             , '<iframe src="' + WYMeditor.IFRAME_BASE_PATH + 'wymiframe.html" '
@@ -121,7 +121,9 @@ WYMeditor.SKINS.seamless = {
                 , '>'
             , '</iframe>'
         , '</div>'
-        ].join(""),
+        ].join("")
+    },
+    OPTS: {
         // After Iframe initialization, check if we're ready to perform the
         // first resize every this many ms
         initIframeCheckFrequency: 50,
@@ -133,7 +135,7 @@ WYMeditor.SKINS.seamless = {
         imagesLoadedCheckTimeout: 5000
     },
     init: function (wym) {
-        var This = WYMeditor.SKINS.seamless;
+        var This = WYMeditor.SKINS.basic;
 
         // TODO: Find a unified strategy for dealing with loading polyfills
         // This is a polyfill for old IE
@@ -143,7 +145,7 @@ WYMeditor.SKINS.seamless = {
             };
         }
 
-        wym.seamlessSkinOpts = jQuery.extend(
+        wym.basicSkinOpts = jQuery.extend(
             This.OPTS,
             {
                 initialIframeResizeTimer: null,
@@ -162,7 +164,7 @@ WYMeditor.SKINS.seamless = {
         );
     },
     postIframeInit: function (e, wym) {
-        var This = WYMeditor.SKINS.seamless;
+        var This = WYMeditor.SKINS.basic;
 
         // Perform an initial resize, if necessary
         This.resizeIframeOnceBodyExists(wym);
@@ -181,7 +183,7 @@ WYMeditor.SKINS.seamless = {
 
         // The classes and containers sections are dropdowns to the right of
         // the toolbar at the top
-        var This = WYMeditor.SKINS.seamless,
+        var This = WYMeditor.SKINS.basic,
             $dropdowns = jQuery(
             [
                 wym._options.containersSelector
@@ -225,7 +227,7 @@ WYMeditor.SKINS.seamless = {
 
         // Use a wrapper so we can keep the toolbar styling consistent
         $offsetWrapper = jQuery(
-            '<div class="wym_skin_seamless wym_area_top_wrapper">'
+            '<div class="wym_skin_basic wym_area_top_wrapper">'
         );
         $areaTop.wrap($offsetWrapper);
         $offsetWrapper = $areaTop.parent();
@@ -253,7 +255,7 @@ WYMeditor.SKINS.seamless = {
                 },
                 bottom: function () {
                     return $placeholder.offset().top +
-                        wym.seamlessSkinIframeHeight;
+                        wym.basicSkinIframeHeight;
                 }
             }
         });
@@ -263,24 +265,24 @@ WYMeditor.SKINS.seamless = {
         // actually have a body. We need to wait until the body actually exists
         // before trying to set the initial hight of the iframe, so we hack
         // this together with setTimeout.
-        var This = WYMeditor.SKINS.seamless,
+        var This = WYMeditor.SKINS.basic,
             scrollHeightCalcFix;
 
-        if (wym.seamlessSkinOpts.initialIframeResizeTimer) {
+        if (wym.basicSkinOpts.initialIframeResizeTimer) {
             // We're handling a timer, clear it
             window.clearTimeout(
-                wym.seamlessSkinOpts.initialIframeResizeTimer
+                wym.basicSkinOpts.initialIframeResizeTimer
             );
-            wym.seamlessSkinOpts.initialIframeResizeTimer = null;
+            wym.basicSkinOpts.initialIframeResizeTimer = null;
         }
 
         if (typeof wym._doc.body === "undefined" || wym._doc.body === null) {
             // Body isn't ready
-            wym.seamlessSkinOpts.initialIframeResizeTimer = window.setTimeout(
+            wym.basicSkinOpts.initialIframeResizeTimer = window.setTimeout(
                 function () {
                     This.resizeIframeOnceBodyExists(wym);
                 },
-                wym.seamlessSkinOpts.initIframeCheckFrequency
+                wym.basicSkinOpts.initIframeCheckFrequency
             );
             return;
         }
@@ -299,12 +301,12 @@ WYMeditor.SKINS.seamless = {
         // that doesn't mean that images have yet been retrieved or that their
         // heights have been determined. If an image's height pops in after
         // we've calculated the iframe height, the iframe will be too short.
-        var This = WYMeditor.SKINS.seamless,
+        var This = WYMeditor.SKINS.basic,
             images,
             imagesLength,
             i = 0,
             allImagesLoaded = true,
-            skinOpts = wym.seamlessSkinOpts,
+            skinOpts = wym.basicSkinOpts,
             timeWaited;
 
         if (typeof skinOpts._imagesLoadedCheckStartedTime === "undefined" ||
@@ -433,7 +435,7 @@ WYMeditor.SKINS.seamless = {
         }
     },
     resizeIframe: function (wym) {
-        var This = WYMeditor.SKINS.seamless,
+        var This = WYMeditor.SKINS.basic,
             desiredHeight,
             $iframe = jQuery(wym._iframe),
             currentHeight = $iframe.height();
@@ -449,13 +451,13 @@ WYMeditor.SKINS.seamless = {
         // Don't let the height drop below the WYMeditor textarea. This allows
         // folks to use their favorite height-setting method on the textarea,
         // without needing to pass options on to WYMeditor.
-        if (desiredHeight < wym.seamlessSkinOpts.minimumHeight) {
-            desiredHeight = wym.seamlessSkinOpts.minimumHeight;
+        if (desiredHeight < wym.basicSkinOpts.minimumHeight) {
+            desiredHeight = wym.basicSkinOpts.minimumHeight;
         }
 
         if (currentHeight !== desiredHeight) {
             $iframe.height(desiredHeight);
-            wym.seamlessSkinIframeHeight = desiredHeight;
+            wym.basicSkinIframeHeight = desiredHeight;
 
             return true;
         }
@@ -492,7 +494,7 @@ WYMeditor.SKINS.seamless = {
     resizeAndScrollIfNeeded: function (wym) {
         // Scroll the page so that our current selection
         // within the iframe is actually in view.
-        var This = WYMeditor.SKINS.seamless,
+        var This = WYMeditor.SKINS.basic,
             resizeOccurred = This.resizeIframe(wym);
         if (resizeOccurred !== true) {
             return;

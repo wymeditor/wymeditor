@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>WYMeditor</title>
-    <!-- build:css ../wymeditor/skins/default/skin.css -->
-    <link rel="stylesheet" type="text/css" href="../wymeditor/skins/default/skin.css" />
+    <!-- build:css ../wymeditor/skins/basic/skin.css -->
+    <link rel="stylesheet" type="text/css" href="../wymeditor/skins/basic/skin.css" />
     <!-- endbuild -->
 </head>
 
@@ -14,7 +14,11 @@
     <h1>WYMeditor integration example</h1>
     <p><a href="http://www.wymeditor.org/">WYMeditor</a> is a web-based XHTML WYSIWYM editor.</p>
     <form method="post" action="">
-        <textarea class="wymeditor">&lt;p&gt;Hello, World!&lt;/p&gt;</textarea>
+        <!--
+            The default skin uses the height of your textarea as the minimum
+            editor height.
+        -->
+        <textarea class="wymeditor" style="min-height: 600px">&lt;p&gt;Hello, World!&lt;/p&gt;</textarea>
         <input type="submit" class="wymupdate" />
     </form>
 
