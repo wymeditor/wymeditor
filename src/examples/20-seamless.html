@@ -18,10 +18,10 @@
             The seamless skin uses the height of your textarea as the minimum
             editor height.
         -->
-        <textarea class="wymeditor" style="min-height: 600px"></textarea>
+        <textarea class="wymeditor" style="min-height: 300px"></textarea>
         <input type="submit" class="wymupdate" />
     </form>
-    <div class="more-content">The toolbar will stop floating here.<div>
+    <p style="height: 5000px">The floating toolbar will stop here.</p>
 
     <!-- build:js vendor/jquery/jquery.js -->
     <!-- endbuild -->
@@ -42,34 +42,18 @@
 
     <script type="text/javascript">
         jQuery(function() {
-            var stringToRepeat = '<p>Hello, World!<\/p>',
-                html = '';
-
-            for (var i = 0; i < 2; i++) {
-                html += stringToRepeat;
-            }
-            for (var i = 0; i < 5; i++) {
-                // A working image, relative to the iframe, with no height
-                html += stringToRepeat;
-                html += [''
-                    , '<img '
-                    , 'src="../../skins/wymeditor_icon.png'
-                    , '?cache_break=' + i + '"'
-                    , ' />'
-                ].join('');
-            }
-            html += '<p>After the images</p>';
-
             jQuery('.wymeditor').wymeditor({
-                html: html,
+              html: [
+                '<p>Some initial content...</p>',
+                '<p>And an image for asynchronously added size:</p>',
+                '<img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Flag_of_Indiana.svg" alt="Flag of Indiana">',
+                '<p>Type in a few paragraphs and see the editor grow in height.</p>'
+              ].join(''),
                 skin: 'seamless',
                 // We already included the seamless skin's javascript so that we could
                 // use this constant
                 iframeHtml: WYMeditor.SKINS.seamless.OPTS.iframeHtml
             });
-
-            jQuery('.more-content').append(jQuery(html));
-            jQuery('.more-content').append(jQuery(html));
         });
     </script>
 </body>
