@@ -95,6 +95,13 @@ Making the release
 
 After the above prerequesites are met, the following actions are in order.
 
+Prepare
+-------
+
+#. Make sure your working directory is clean.
+#. Checkout ``master``.
+#. Pull from origin.
+
 Update version strings
 ----------------------
 
@@ -111,24 +118,15 @@ different files:
 Throughout these instructions, when asked to modify the version string, it is
 meant that the version strings be modified in all of these files.
 
-Remove the ``dev`` build metadata from the version string.
-Also, remove the ``+`` because there is no more build metadata.
+Come up with a version string for this release.
+Adhere to `SemVer`_.
 
-While you're doing that, make sure that the version strings are otherwise correct.
+Bump the version string.
+This means replacing ``next``
+in the above files
+with the new version string.
 
-If instructions here were followed,
-They should be already the version that you mean to release.
-
-Update the changelog
---------------------
-
-#. If this release makes a transition from alpha to beta or from beta to stable,
-   consolidate alpha/beta change–log entries in to a unified section
-   for this release.
-
-#. If this is a major release, highlight important changes.
-
-#. Set the date for the release.
+.. _SemVer: http://semver.org/
 
 Build the web–site
 ------------------
@@ -155,9 +153,14 @@ Build WYMeditor
 #. Check that examples work when served from ``dist/`` by using ``grunt
    server:dist``.
 
-#. Commit the changes in ``dist/``.
+Commit the changes
+------------------
 
-#. Push to branch ``master``.
+#. Set the date for the release.
+#. Commit all the changes you've made
+   ,plus the changes in ``dist/``
+   to branch ``master``
+   and push.
 
 Ship it!
 --------
@@ -166,10 +169,10 @@ Ship it!
 
 #. Publish a new release from the master branch with:
 
-   * The version string, with ``v`` prepended, as the tag that will be created
-     and the title.
-   * The change–log for this release (not the entire contents of the change–log
-     file) as the description
+   * The tag is the version string with ``v`` prefixed.
+   * The title is the version string as is.
+   * The description is the change–log section for this release
+     , excluding its title.
    * The WYMeditor build, ``wymeditor-<version>.tag.gz``, as an attached binary
 
 #. `Activate the new version in Read the Docs`_
@@ -184,9 +187,11 @@ Ship it!
 Prepare for the next release
 ============================
 
-#. Create a new version entry in the change–log.
-#. Bump the version string and add the build
-   metadata string, ``+dev``, at the end.
+Since you're not sure what the next version is going to be,
+we'll call it ``next``.
+
+#. Create a new version entry in the change–log for ``next``.
+#. Bump the version string to ``next``.
 
 .. _Semantic Versioning: http://semver.org/
 .. _current releases: https://github.com/wymeditor/wymeditor/releases
