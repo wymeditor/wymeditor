@@ -24,6 +24,7 @@ Chapters and Sections
    about
    getting_started/index
    using_wymeditor/index
+   upgrade_guides/index
    customizing_wymeditor/index
    wymeditor_plugins/index
    writing_plugins/index
