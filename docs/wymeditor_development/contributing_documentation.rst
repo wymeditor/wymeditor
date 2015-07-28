@@ -43,3 +43,27 @@ The Sphinx configuration file, ``conf.py``,
 and the ``Makefile`` are there, as well.
 
 .. _Sphinx: http://sphinx-doc.org/
+
+Version Agnostic Documentation
+==============================
+
+Version agnostic documentation
+are pages which do not correspond
+with any specific release.
+
+For example, API documentation are
+version *specific*.
+:ref:`Upgrading to v1`
+is version agnostic.
+
+Version agnostic documentation
+is most useful at its latest version.
+Therefore, such documentation pages
+should at least announce that fact.
+
+Include the following at the top of
+version agnostic documentation pages:
+
+.. code-block:: rst
+
+   .. include:: /attention_version_agnostic.txt

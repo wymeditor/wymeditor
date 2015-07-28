@@ -1,6 +1,10 @@
+.. _Upgrading to v1:
+
 ###############
 Upgrading to v1
 ###############
+
+.. include:: /attention_version_agnostic.txt
 
 This page describes the backwards incompatible changes in v1.
 
