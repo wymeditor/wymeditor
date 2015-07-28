@@ -1,0 +1,5 @@
+.. attention::
+   **This document is version–agnostic.
+   For the most accurate, up–to–date information,
+   make sure that you're reading
+   the latest development version of it.**

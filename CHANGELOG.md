@@ -7,6 +7,9 @@ WYMeditor.
 
 *release-date* TBD
 
+* [#727](https://github.com/wymeditor/wymeditor/issues/727)
+  Added an "Upgrading to v1" documentation page
+
 ## 1.0.0
 
 *release-date* July 22, 2015
