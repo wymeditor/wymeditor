@@ -2,7 +2,8 @@
 /* global
     prepareUnitTestModule,
     manipulationTestHelper,
-    test
+    test,
+    makeTextSelection
 */
 "use strict";
 
@@ -16,6 +17,26 @@ test("Text into paragraph using function", function () {
             wymeditor.insert('Bar, and ');
         },
         expectedResultHtml: "<p>Bar, and Foo</p>"
+    });
+});
+
+test("Text into paragraph replacing seletion", function () {
+    manipulationTestHelper({
+        startHtml: "<p>Foo</p>",
+        prepareFunc: function (wymeditor) {
+            var p = wymeditor.$body().find('p');
+            makeTextSelection(
+                wymeditor,
+                p,
+                p,
+                0,
+                1
+            );
+        },
+        manipulationFunc: function (wymeditor) {
+            wymeditor.insert('B');
+        },
+        expectedResultHtml: '<p>Boo</p>'
     });
 });
 
