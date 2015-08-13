@@ -2032,10 +2032,10 @@ WYMeditor.editor.prototype.paste = function (str) {
 WYMeditor.editor.prototype.insert = function (html) {
     // Do we have a selection?
     var wym = this,
-        selection = wym.selection(),
+        selection = wym.hasSelection() ? wym.selection() : false,
         range,
         node;
-    if (selection.focusNode !== null) {
+    if (selection) {
         // Overwrite selection with provided html
         range = selection.getRangeAt(0);
         node = range.createContextualFragment(html);
