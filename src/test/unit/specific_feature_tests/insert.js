@@ -9,7 +9,7 @@
 
 module("insert", {setup: prepareUnitTestModule});
 
-test("Text into paragraph using function", function () {
+test("Text into paragraph", function () {
     manipulationTestHelper({
         startHtml: "<p>Foo</p>",
         setCaretInSelector: 'p',
