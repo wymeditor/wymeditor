@@ -115,25 +115,6 @@ WYMeditor.WymClassTridentPre7.prototype._saveCaret = function () {
     wym._doc.caretPos = nativeSelection.createRange();
 };
 
-WYMeditor.WymClassTridentPre7.prototype.insert = function (html) {
-    var wym = this,
-        // Get the current selection
-        range = wym._doc.selection.createRange(),
-        $selectionParents;
-
-    // Check if the current selection is inside the editor
-    $selectionParents = jQuery(range.parentElement()).parents();
-    if ($selectionParents.is(wym._options.iframeBodySelector)) {
-        try {
-            // Overwrite selection with provided html
-            range.pasteHTML(html);
-        } catch (e) {}
-    } else {
-        // Fall back to the internal paste function if there's no selection
-        wym.paste(html);
-    }
-};
-
 /**
     _wrapWithContainer
     ==================
