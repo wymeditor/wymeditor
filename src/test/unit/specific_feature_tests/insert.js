@@ -20,7 +20,7 @@ test("Text into paragraph", function () {
     });
 });
 
-test("Text into paragraph replacing seletion", function () {
+test("Text into paragraph replacing selection", function () {
     manipulationTestHelper({
         startHtml: "<p>Foo</p>",
         prepareFunc: function (wymeditor) {
