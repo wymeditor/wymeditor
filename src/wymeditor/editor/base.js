@@ -2041,9 +2041,6 @@ WYMeditor.editor.prototype.insert = function (html) {
         node = range.createContextualFragment(html);
         range.deleteContents();
         range.insertNode(node);
-    } else {
-        // Fall back to the internal paste function if there's no selection
-        wym.paste(html);
     }
 };
 
