@@ -7,8 +7,16 @@ WYMeditor.
 
 *release-date* TBD
 
+### Documentation
+
 * [#727](https://github.com/wymeditor/wymeditor/issues/727)
   Added an "Upgrading to v1" documentation page
+
+### Bug Fixes
+
+* [#730](https://github.com/wymeditor/wymeditor/pull/730)
+  ``.insert()`` in IE8-10 when no selection would
+  paste at top of document
 
 ## 1.0.0
 
