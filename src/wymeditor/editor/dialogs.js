@@ -18,7 +18,7 @@ WYMeditor.editor.prototype._openPopupWindow = function (windowFeatures) {
     );
 
     return popup;
-}
+};
 
 /**
     editor.dialog
@@ -107,7 +107,7 @@ WYMeditor.editor.prototype.dialog = function (
         ].join(",");
     }
 
-    wDialog = wym._openPopupWindow(dialogWindowFeatures)
+    wDialog = wym._openPopupWindow(dialogWindowFeatures);
 
     if (
         typeof wDialog !== "object" ||
