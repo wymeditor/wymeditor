@@ -340,6 +340,13 @@ module.exports = function (grunt) {
                             "examples/{,*/}*.{html,js,css,png,jpg,jpeg,gif}"
                         ]
                     },
+                    // ES5-shams for examples
+                    // would have done this with bower-linker but only the
+                    // shims are "packaged"
+                    {
+                        dest: '<%= yeoman.dist %>/examples/vendor/es5-sham.js',
+                        src: '<%= yeoman.app %>/bower_components/es5-shim/es5-sham.js'
+                    },
                     // Plugins
                     {
                         expand: true,
@@ -478,6 +485,7 @@ module.exports = function (grunt) {
                     cwd: "<%= yeoman.app %>",
                     force: false,
                     map: {
+                        'es5-shim.js': '/',
                         'jquery.js': '/jquery/',
                         'jquery.browser.js': '/',
                         'require.js': '/redundant/',
