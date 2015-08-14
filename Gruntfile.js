@@ -363,9 +363,8 @@ module.exports = function (grunt) {
                     // Popup document
                     // https://github.com/wymeditor/wymeditor/issues/731
                     {
-                        cwd: '<%= yeoman.app %>/wymeditor',
-                        dest: '<%= yeoman.dist %>/wymeditor',
-                        src: "popup.html"
+                        dest: '<%= yeoman.dist %>/wymeditor/popup.html',
+                        src: '<%= yeoman.app %>/wymeditor/popup.html'
                     },
                     // Non-Javascript skin components
                     // The javascript is included in jquery.wymeditor.js
