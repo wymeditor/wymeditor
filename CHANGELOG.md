@@ -17,6 +17,9 @@ WYMeditor.
 * [#730](https://github.com/wymeditor/wymeditor/pull/730)
   ``.insert()`` in IE8-10 when no selection would
   paste at top of document
+* [#731](https://github.com/wymeditor/wymeditor/pull/731)
+  Depending on their security configuration,
+  IEs could make popups entirely useless.
 
 ## 1.0.0
 
