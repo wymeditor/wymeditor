@@ -936,7 +936,7 @@ WYMeditor._computeWymPath = function () {
     the wymeditor base file. This path is used as the basis for loading:
     * Language files
     * Skins
-    *
+    * The popup document https://github.com/wymeditor/wymeditor/issues/731
 */
 WYMeditor._computeBasePath = function (wymPath) {
     // Strip everything after the last slash to get the base path

@@ -1,5 +1,26 @@
 "use strict";
 /**
+    editor._openPopupWindow
+    =======================
+
+    Opens a popup window, provided the `windowFeatures`.
+*/
+WYMeditor.editor.prototype._openPopupWindow = function (windowFeatures) {
+    var wym = this,
+        popup,
+        basePath = wym._options.basePath;
+
+    popup = window.open(
+        // https://github.com/wymeditor/wymeditor/issues/731
+        jQuery.browser.msie ? basePath + 'popup.html' : '',
+        "wymPopupWindow",
+        windowFeatures
+    );
+
+    return popup;
+}
+
+/**
     editor.dialog
     =============
 
@@ -86,11 +107,7 @@ WYMeditor.editor.prototype.dialog = function (
         ].join(",");
     }
 
-    wDialog = window.open(
-        '',
-        "wymDialogWindow",
-        dialogWindowFeatures
-    );
+    wDialog = wym._openPopupWindow(dialogWindowFeatures)
 
     if (
         typeof wDialog !== "object" ||
