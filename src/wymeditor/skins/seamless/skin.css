@@ -144,7 +144,7 @@
     background: #ddd;
     border: solid gray;
     margin-right: 10px;
-    width: 120px;
+    width: 110px;
     float: left;
     border-width: 1px 1px 1px 1px;
 }
@@ -176,7 +176,7 @@
    (icons are only available for the wym_tools section for now)
  */
 .wym_skin_seamless .wym_buttons {
-    margin-right: 10px;
+    margin-right: 5px;
     float: left;
 }
 .wym_skin_seamless .wym_buttons li {
