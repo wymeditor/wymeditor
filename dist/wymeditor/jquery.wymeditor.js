@@ -172,12 +172,12 @@
 /* jshint strict: false, maxlen: 90, evil: true */
 /* global -$, WYMeditor: true, console */
 
-/*@version 1.0.0 */
+/*@version 1.0.1 */
 /**
     WYMeditor
     =========
 
-    version 1.0.0
+    version 1.0.1
 
     WYMeditor : what you see is What You Mean web-based editor
 
@@ -347,7 +347,7 @@ jQuery.extend(WYMeditor, {
     TOOL_TITLE          : "{Wym_Tool_Title}",
     TR                  : "tr",
     UL                  : "ul",
-    VERSION             : "1.0.0",
+    VERSION             : "1.0.1",
     WYM_INDEX           : "wym_index",
     WYM_PATH            : "{Wym_Wym_Path}",
 
@@ -1107,7 +1107,7 @@ WYMeditor._computeWymPath = function () {
     the wymeditor base file. This path is used as the basis for loading:
     * Language files
     * Skins
-    *
+    * The popup document https://github.com/wymeditor/wymeditor/issues/731
 */
 WYMeditor._computeBasePath = function (wymPath) {
     // Strip everything after the last slash to get the base path
@@ -1355,6 +1355,27 @@ WYMeditor._getWymClassForBrowser = function () {
 
 "use strict";
 /**
+    editor._openPopupWindow
+    =======================
+
+    Opens a popup window, provided the `windowFeatures`.
+*/
+WYMeditor.editor.prototype._openPopupWindow = function (windowFeatures) {
+    var wym = this,
+        popup,
+        basePath = wym._options.basePath;
+
+    popup = window.open(
+        // https://github.com/wymeditor/wymeditor/issues/731
+        jQuery.browser.msie ? basePath + 'popup.html' : '',
+        "wymPopupWindow",
+        windowFeatures
+    );
+
+    return popup;
+};
+
+/**
     editor.dialog
     =============
 
@@ -1441,11 +1462,7 @@ WYMeditor.editor.prototype.dialog = function (
         ].join(",");
     }
 
-    wDialog = window.open(
-        '',
-        "wymDialogWindow",
-        dialogWindowFeatures
-    );
+    wDialog = wym._openPopupWindow(dialogWindowFeatures);
 
     if (
         typeof wDialog !== "object" ||
@@ -3956,18 +3973,15 @@ WYMeditor.editor.prototype.paste = function (str) {
 WYMeditor.editor.prototype.insert = function (html) {
     // Do we have a selection?
     var wym = this,
-        selection = wym.selection(),
+        selection = wym.hasSelection() ? wym.selection() : false,
         range,
         node;
-    if (selection.focusNode !== null) {
+    if (selection) {
         // Overwrite selection with provided html
         range = selection.getRangeAt(0);
         node = range.createContextualFragment(html);
         range.deleteContents();
         range.insertNode(node);
-    } else {
-        // Fall back to the internal paste function if there's no selection
-        wym.paste(html);
     }
 };
 
@@ -6705,25 +6719,6 @@ WYMeditor.WymClassTridentPre7.prototype._saveCaret = function () {
         return;
     }
     wym._doc.caretPos = nativeSelection.createRange();
-};
-
-WYMeditor.WymClassTridentPre7.prototype.insert = function (html) {
-    var wym = this,
-        // Get the current selection
-        range = wym._doc.selection.createRange(),
-        $selectionParents;
-
-    // Check if the current selection is inside the editor
-    $selectionParents = jQuery(range.parentElement()).parents();
-    if ($selectionParents.is(wym._options.iframeBodySelector)) {
-        try {
-            // Overwrite selection with provided html
-            range.pasteHTML(html);
-        } catch (e) {}
-    } else {
-        // Fall back to the internal paste function if there's no selection
-        wym.paste(html);
-    }
 };
 
 /**
