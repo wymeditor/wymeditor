@@ -367,6 +367,12 @@ module.exports = function (grunt) {
                             "iframe/{,*/}*.{html,js,css,png,jpg,jpeg,gif,eot,ttf,woff}"
                         ]
                     },
+                    // Popup document
+                    // https://github.com/wymeditor/wymeditor/issues/731
+                    {
+                        dest: '<%= yeoman.dist %>/wymeditor/popup.html',
+                        src: '<%= yeoman.app %>/wymeditor/popup.html'
+                    },
                     // Non-Javascript skin components
                     // The javascript is included in jquery.wymeditor.js
                     {
