@@ -114,19 +114,11 @@ different files:
 * ``package.json``
 * ``bower.json``
 * ``docs/conf.py`` in two lines
+* ``CHANGELOG.md`` (the latest entry)
 
-Throughout these instructions, when asked to modify the version string, it is
-meant that the version strings be modified in all of these files.
-
-Come up with a version string for this release.
-Adhere to `SemVer`_.
-
-Bump the version string.
-This means replacing ``next``
-in the above files
-with the new version string.
-
-.. _SemVer: http://semver.org/
+According to `Semantic Versioning`_,
+come up with a version for this release
+and update the version strings.
 
 Build the web–site
 ------------------
@@ -187,11 +179,12 @@ Ship it!
 Prepare for the next release
 ============================
 
-Since you're not sure what the next version is going to be,
-we'll call it ``next``.
+You may be unsure what the next version is going to be,
+but you must change the version string.
+So bump the patch version by one.
 
-#. Create a new version entry in the change–log for ``next``.
-#. Bump the version string to ``next``.
+#. Bump the version.
+#. Create a new entry in the change–log.
 
 .. _Semantic Versioning: http://semver.org/
 .. _current releases: https://github.com/wymeditor/wymeditor/releases
