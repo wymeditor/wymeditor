@@ -395,7 +395,23 @@ WYMeditor.SKINS.seamless = {
         htmlElementHeight = $htmlElement.height();
         htmlElementScrollHeight = $htmlElement[0].scrollHeight;
 
-        if (htmlElementHeight >= bodyScrollHeight) {
+        if (WYMeditor.isInternetExplorerPre11()) {
+            // The htmlElementScrollHeight is fairly reliable,
+            // but doesn't shrink when content is removed.
+            heightStrategy = function (wym) {
+                var $htmlElement = jQuery(wym._doc).children().eq(0),
+                    htmlElementScrollHeight = $htmlElement[0].scrollHeight;
+
+                // Without the 10px reduction in height, every possible action
+                // adds 10 pixels of height.
+                // TODO: Figure out why this happens and if we can make the
+                // 10px number not magic (actually derived from a
+                // margin/padding etc).
+                return htmlElementScrollHeight - 10;
+            };
+
+            return heightStrategy;
+        } else if (htmlElementHeight >= bodyScrollHeight) {
             // Well-behaving browsers like FF and Chrome let us rely on the
             // HTML element's jQuery height() in every case. Hooray!
             heightStrategy = function (wym) {
@@ -415,21 +431,7 @@ WYMeditor.SKINS.seamless = {
 
             return heightStrategy;
         } else {
-            // This is probably IE8+, where the htmlElementScrollHeight is
-            // fairly reliable, but doesn't shrink when content is removed.
-            heightStrategy = function (wym) {
-                var $htmlElement = jQuery(wym._doc).children().eq(0),
-                    htmlElementScrollHeight = $htmlElement[0].scrollHeight;
-
-                // Without the 10px reduction in height, every possible action
-                // adds 10 pixels of height.
-                // TODO: Figure out why this happens and if we can make the
-                // 10px number not magic (actually derived from a
-                // margin/padding etc).
-                return htmlElementScrollHeight - 10;
-            };
-
-            return heightStrategy;
+            throw new Error('unsupported browser');
         }
     },
     resizeIframe: function (wym) {
