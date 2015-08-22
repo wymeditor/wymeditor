@@ -5,7 +5,7 @@ WYMeditor.
 
 ## 1.0.2
 
-*release-date* TBD
+*release-date* August 22 2015
 
 * [#735](https://github.com/wymeditor/wymeditor/issues/735)
   Seamless skin: iframe height might not be resized in IE<11
