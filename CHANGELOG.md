@@ -3,6 +3,10 @@
 This document tracks the enhancements and bug fixes between releases of
 WYMeditor.
 
+## 1.0.4
+
+*release-date* TBD
+
 ## 1.0.3
 
 *release-date* August 27 2015
