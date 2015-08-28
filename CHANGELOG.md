@@ -5,7 +5,7 @@ WYMeditor.
 
 ## 1.0.4
 
-*release-date* TBD
+*release-date* August 28 2015
 
 * [#738](https://github.com/wymeditor/wymeditor/pull/738)
   Does not scroll to top of page on dialog button clicks

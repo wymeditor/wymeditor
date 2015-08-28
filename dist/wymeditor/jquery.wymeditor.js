@@ -172,12 +172,12 @@
 /* jshint strict: false, maxlen: 90, evil: true */
 /* global -$, WYMeditor: true, console */
 
-/*@version 1.0.3 */
+/*@version 1.0.4 */
 /**
     WYMeditor
     =========
 
-    version 1.0.3
+    version 1.0.4
 
     WYMeditor : what you see is What You Mean web-based editor
 
@@ -347,7 +347,7 @@ jQuery.extend(WYMeditor, {
     TOOL_TITLE          : "{Wym_Tool_Title}",
     TR                  : "tr",
     UL                  : "ul",
-    VERSION             : "1.0.3",
+    VERSION             : "1.0.4",
     WYM_INDEX           : "wym_index",
     WYM_PATH            : "{Wym_Wym_Path}",
 
@@ -2402,6 +2402,7 @@ WYMeditor.editor.prototype._bindUIEvents = function () {
         // The following would also work, but is deprecated:
         // wym.dialog(dialogName);
         wym.dialog(dialog);
+        return false;
     });
 
     // Containers buttons
