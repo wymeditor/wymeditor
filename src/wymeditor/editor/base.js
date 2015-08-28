@@ -461,6 +461,7 @@ WYMeditor.editor.prototype._bindUIEvents = function () {
         // The following would also work, but is deprecated:
         // wym.dialog(dialogName);
         wym.dialog(dialog);
+        return false;
     });
 
     // Containers buttons
