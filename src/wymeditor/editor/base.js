@@ -3018,7 +3018,10 @@ WYMeditor.editor.prototype._getSelectedNodes = function () {
         return false;
     }
 
-    selectedNodes = selection.getRangeAt(0).getNodes();
+    selectedNodes = selection.getAllRanges()
+        .reduce(function(nodes, range) {
+            return nodes.concat(range.getNodes());
+        }, [])
     return selectedNodes;
 };
 
