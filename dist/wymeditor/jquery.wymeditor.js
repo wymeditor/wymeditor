@@ -172,12 +172,12 @@
 /* jshint strict: false, maxlen: 90, evil: true */
 /* global -$, WYMeditor: true, console */
 
-/*@version 1.0.4 */
+/*@version 1.0.5 */
 /**
     WYMeditor
     =========
 
-    version 1.0.4
+    version 1.0.5
 
     WYMeditor : what you see is What You Mean web-based editor
 
@@ -347,7 +347,7 @@ jQuery.extend(WYMeditor, {
     TOOL_TITLE          : "{Wym_Tool_Title}",
     TR                  : "tr",
     UL                  : "ul",
-    VERSION             : "1.0.4",
+    VERSION             : "1.0.5",
     WYM_INDEX           : "wym_index",
     WYM_PATH            : "{Wym_Wym_Path}",
 
@@ -4959,7 +4959,10 @@ WYMeditor.editor.prototype._getSelectedNodes = function () {
         return false;
     }
 
-    selectedNodes = selection.getRangeAt(0).getNodes();
+    selectedNodes = selection.getAllRanges()
+        .reduce(function (nodes, range) {
+            return nodes.concat(range.getNodes());
+        }, []);
     return selectedNodes;
 };
 

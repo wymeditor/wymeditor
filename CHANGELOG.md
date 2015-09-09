@@ -5,7 +5,7 @@ WYMeditor.
 
 ## 1.0.5
 
-*release-date* TBD
+*release-date* September 9 2015
 
 * [#739](https://github.com/wymeditor/wymeditor/issues/739)
   Fix selection across table cells in Firefox
