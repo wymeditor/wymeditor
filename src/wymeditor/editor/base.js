@@ -3019,9 +3019,9 @@ WYMeditor.editor.prototype._getSelectedNodes = function () {
     }
 
     selectedNodes = selection.getAllRanges()
-        .reduce(function(nodes, range) {
+        .reduce(function (nodes, range) {
             return nodes.concat(range.getNodes());
-        }, [])
+        }, []);
     return selectedNodes;
 };
 
