@@ -24,16 +24,7 @@
     "name": "Jean-Francois Hovinne",
     "email": "jf.hovinne@wymeditor.org"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "http://mit-license.org/"
-    },
-    {
-      "type": "GPLv2",
-      "url": "http://opensource.org/licenses/gpl-2.0.php"
-    }
-  ],
+  "license": "(MIT OR GPL-2.0)",
   "devDependencies": {
     "lodash.times": "^3.0.1",
     "combokeys": "^2.4.3",
