@@ -3,12 +3,10 @@
   "description": "Pure js cross-browser WYSIWYM editor with a focus on the clean separation of content and styling.",
   "version": "1.0.6",
   "homepage": "http://wymeditor.github.io/wymeditor/",
-  "repository": [
-    {
-      "type": "git",
-      "url": "https://github.com/wymeditor/wymeditor.git"
-    }
-  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wymeditor/wymeditor.git"
+  },
   "maintainers": [
     {
       "name": "Wes Winham",
