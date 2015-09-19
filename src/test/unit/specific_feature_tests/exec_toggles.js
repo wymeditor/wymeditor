@@ -318,11 +318,11 @@ test("IE unwraps partially subscript selection", function () {
     );
 });
 
-function doesntWrapAcrossRootContainers(command) {
-    var noChangeHtml = "<p>Foo</p><p>Bar</p>";
+function wrapsAcrossRootContainers(command) {
+    var tagName = getBrowserTagname(command);
     manipulationTestHelper({
-        startHtml: noChangeHtml,
-        prepareFunf: function (wymeditor) {
+        startHtml: "<p>Foo</p><p>Bar</p>",
+        prepareFunc: function (wymeditor) {
             var body = wymeditor.body(),
                 firstP = body.childNodes[0],
                 secondP = body.childNodes[1];
@@ -338,67 +338,71 @@ function doesntWrapAcrossRootContainers(command) {
         manipulationFunc: function (wymeditor) {
             wymeditor.exec(command);
         },
-        expectedResultHtml: noChangeHtml,
+        expectedResultHtml: [
+            "<p>F<" + tagName + ">oo</" + tagName + "></p>",
+            "<p><" + tagName + ">Ba</" + tagName + ">r</p>"
+        ].join(''),
         manipulationKeyCombo: getExecKeyboardShortcut(command),
         testUndoRedo: true
     });
 }
 
-test("Doesn't bold across root containers", function () {
-    doesntWrapAcrossRootContainers(WYMeditor.EXEC_COMMANDS.BOLD);
+test("Bolds across root containers", function () {
+    wrapsAcrossRootContainers(WYMeditor.EXEC_COMMANDS.BOLD);
 });
 
-test("Doesn't italic across root containers", function () {
-    doesntWrapAcrossRootContainers(WYMeditor.EXEC_COMMANDS.ITALIC);
+test("Italics across root containers", function () {
+    wrapsAcrossRootContainers(WYMeditor.EXEC_COMMANDS.ITALIC);
 });
 
-test("Doesn't superscript across root containers", function () {
-    doesntWrapAcrossRootContainers(WYMeditor.EXEC_COMMANDS.SUPERSCRIPT);
+test("Superscripts across root containers", function () {
+    wrapsAcrossRootContainers(WYMeditor.EXEC_COMMANDS.SUPERSCRIPT);
 });
 
-test("Doesn't suberscript across root containers", function () {
-    doesntWrapAcrossRootContainers(WYMeditor.EXEC_COMMANDS.SUBSCRIPT);
+test("Suberscripts across root containers", function () {
+    wrapsAcrossRootContainers(WYMeditor.EXEC_COMMANDS.SUBSCRIPT);
 });
 
-function doesntUnwrapAcrossRootContainers(command) {
-    var tagName = getBrowserTagname(command),
-        noChangeHtml = "<p><" + tagName + ">Foo</" + tagName + "></p>" +
-            "<p><" + tagName + ">Bar</" + tagName + "></p>";
+function unwrapsAcrossRootContainers(command) {
+    var tagName = getBrowserTagname(command);
     manipulationTestHelper({
-        startHtml: noChangeHtml,
+        startHtml: [
+            "<p>F<" + tagName + ">oo</" + tagName + "></p>",
+            "<p><" + tagName + ">Ba</" + tagName + ">r</p>"
+        ].join(''),
         prepareFunc: function (wymeditor) {
             var body = wymeditor.body(),
-                firstWrapper = body.childNodes[0].childNodes[0],
+                firstWrapper = body.childNodes[0].childNodes[1],
                 secondWrapper = body.childNodes[1].childNodes[0];
             makeTextSelection(
                 wymeditor,
                 firstWrapper,
                 secondWrapper,
                 0,
-                3
+                2
             );
         },
         manipulationFunc: function (wymeditor) {
             wymeditor.exec(command);
         },
-        expectedResultHtml: noChangeHtml,
+        expectedResultHtml: "<p>Foo</p><p>Bar</p>",
         manipulationKeyCombo: getExecKeyboardShortcut(command),
         testUndoRedo: true
     });
 }
 
-test("Doesn't unwrap bold across root containers", function () {
-    doesntUnwrapAcrossRootContainers(WYMeditor.EXEC_COMMANDS.BOLD);
+test("Unwraps bold across root containers", function () {
+    unwrapsAcrossRootContainers(WYMeditor.EXEC_COMMANDS.BOLD);
 });
 
-test("Doesn't unwrap italic across root containers", function () {
-    doesntUnwrapAcrossRootContainers(WYMeditor.EXEC_COMMANDS.ITALIC);
+test("Unwraps italic across root containers", function () {
+    unwrapsAcrossRootContainers(WYMeditor.EXEC_COMMANDS.ITALIC);
 });
 
-test("Doesn't unwrap superscript across root containers", function () {
-    doesntUnwrapAcrossRootContainers(WYMeditor.EXEC_COMMANDS.SUPERSCRIPT);
+test("Unwraps superscript across root containers", function () {
+    unwrapsAcrossRootContainers(WYMeditor.EXEC_COMMANDS.SUPERSCRIPT);
 });
 
-test("Doesn't unwrap subscript across root containers", function () {
-    doesntUnwrapAcrossRootContainers(WYMeditor.EXEC_COMMANDS.SUPERSCRIPT);
+test("Unwraps subscript across root containers", function () {
+    unwrapsAcrossRootContainers(WYMeditor.EXEC_COMMANDS.SUPERSCRIPT);
 });

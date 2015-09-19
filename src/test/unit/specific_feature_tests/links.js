@@ -120,11 +120,10 @@ test("IE entirely unlinks regardless of selection", function () {
     });
 });
 
-test("Doesn't unlink across root containers", function () {
-    var noChangeHtml = "<p><a href=\"http://example.com/\">Foo</a></p>" +
-        "<p><a href=\"http://example.com/\">Bar</a></p>";
+test("Unlinks across root containers", function () {
     manipulationTestHelper({
-        startHtml: noChangeHtml,
+        startHtml: "<p><a href=\"http://example.com/\">Foo</a></p>" +
+        "<p><a href=\"http://example.com/\">Bar</a></p>",
         prepareFunc: function (wymeditor) {
             var body = wymeditor.body(),
                 firstA = body.childNodes[0].childNodes[0],
@@ -140,7 +139,7 @@ test("Doesn't unlink across root containers", function () {
         manipulationFunc: function (wymeditor) {
             wymeditor.exec(WYMeditor.EXEC_COMMANDS.UNLINK);
         },
-        expectedResultHtml: noChangeHtml,
+        expectedResultHtml: "<p>Foo</p><p>Bar</p>",
         testUndoRedo: true
     });
 });
