@@ -5,7 +5,9 @@ WYMeditor.
 
 ## 1.0.7
 
-*release-date* TBD
+*release-date* September 22 2015
+
+* Fixed a build issue
 
 ## 1.0.6
 
