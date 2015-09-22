@@ -7,6 +7,9 @@ WYMeditor.
 
 *release-date* TBD
 
+* [#741](https://github.com/wymeditor/wymeditor/issues/741)
+  Allow wrap/unwrap edits (bold, italic, etc.) across elements
+
 ## 1.0.5
 
 *release-date* September 9 2015

@@ -590,10 +590,6 @@ WYMeditor.editor.prototype._exec = function (cmd, param) {
         throw "`_exec` expected a String `param`";
     }
 
-    if (wym.selectedContainer() === false) {
-        return false;
-    }
-
     if (
         wym.selectedContainer() === wym.body() &&
         // These are the two commands that are allowed directly in the body.

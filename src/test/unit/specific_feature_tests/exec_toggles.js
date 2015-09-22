@@ -1,4 +1,4 @@
-/* jshint evil: true */
+/* jshint evil: true, maxlen: 100 */
 /* global
     manipulationTestHelper,
     test,
@@ -318,11 +318,11 @@ test("IE unwraps partially subscript selection", function () {
     );
 });
 
-function doesntWrapAcrossRootContainers(command) {
-    var noChangeHtml = "<p>Foo</p><p>Bar</p>";
+function wrapsAcrossRootContainers(command) {
+    var tagName = getBrowserTagname(command);
     manipulationTestHelper({
-        startHtml: noChangeHtml,
-        prepareFunf: function (wymeditor) {
+        startHtml: "<p>Foo</p><p>Bar</p>",
+        prepareFunc: function (wymeditor) {
             var body = wymeditor.body(),
                 firstP = body.childNodes[0],
                 secondP = body.childNodes[1];
@@ -338,67 +338,187 @@ function doesntWrapAcrossRootContainers(command) {
         manipulationFunc: function (wymeditor) {
             wymeditor.exec(command);
         },
-        expectedResultHtml: noChangeHtml,
+        expectedResultHtml: [
+            "<p>F<" + tagName + ">oo</" + tagName + "></p>",
+            "<p><" + tagName + ">Ba</" + tagName + ">r</p>"
+        ].join(''),
         manipulationKeyCombo: getExecKeyboardShortcut(command),
         testUndoRedo: true
     });
 }
 
-test("Doesn't bold across root containers", function () {
-    doesntWrapAcrossRootContainers(WYMeditor.EXEC_COMMANDS.BOLD);
+test("Bolds across root containers", function () {
+    wrapsAcrossRootContainers(WYMeditor.EXEC_COMMANDS.BOLD);
 });
 
-test("Doesn't italic across root containers", function () {
-    doesntWrapAcrossRootContainers(WYMeditor.EXEC_COMMANDS.ITALIC);
+test("Italics across root containers", function () {
+    wrapsAcrossRootContainers(WYMeditor.EXEC_COMMANDS.ITALIC);
 });
 
-test("Doesn't superscript across root containers", function () {
-    doesntWrapAcrossRootContainers(WYMeditor.EXEC_COMMANDS.SUPERSCRIPT);
+test("Superscripts across root containers", function () {
+    wrapsAcrossRootContainers(WYMeditor.EXEC_COMMANDS.SUPERSCRIPT);
 });
 
-test("Doesn't suberscript across root containers", function () {
-    doesntWrapAcrossRootContainers(WYMeditor.EXEC_COMMANDS.SUBSCRIPT);
+test("Suberscripts across root containers", function () {
+    wrapsAcrossRootContainers(WYMeditor.EXEC_COMMANDS.SUBSCRIPT);
 });
 
-function doesntUnwrapAcrossRootContainers(command) {
-    var tagName = getBrowserTagname(command),
-        noChangeHtml = "<p><" + tagName + ">Foo</" + tagName + "></p>" +
-            "<p><" + tagName + ">Bar</" + tagName + "></p>";
+function unwrapsAcrossRootContainers(command) {
+    var tagName = getBrowserTagname(command);
     manipulationTestHelper({
-        startHtml: noChangeHtml,
+        startHtml: [
+            "<p>F<" + tagName + ">oo</" + tagName + "></p>",
+            "<p><" + tagName + ">Ba</" + tagName + ">r</p>"
+        ].join(''),
         prepareFunc: function (wymeditor) {
             var body = wymeditor.body(),
-                firstWrapper = body.childNodes[0].childNodes[0],
+                firstWrapper = body.childNodes[0].childNodes[1],
                 secondWrapper = body.childNodes[1].childNodes[0];
             makeTextSelection(
                 wymeditor,
                 firstWrapper,
                 secondWrapper,
                 0,
-                3
+                2
             );
         },
         manipulationFunc: function (wymeditor) {
             wymeditor.exec(command);
         },
-        expectedResultHtml: noChangeHtml,
+        expectedResultHtml: "<p>Foo</p><p>Bar</p>",
         manipulationKeyCombo: getExecKeyboardShortcut(command),
         testUndoRedo: true
     });
 }
 
-test("Doesn't unwrap bold across root containers", function () {
-    doesntUnwrapAcrossRootContainers(WYMeditor.EXEC_COMMANDS.BOLD);
+test("Unwraps bold across root containers", function () {
+    unwrapsAcrossRootContainers(WYMeditor.EXEC_COMMANDS.BOLD);
 });
 
-test("Doesn't unwrap italic across root containers", function () {
-    doesntUnwrapAcrossRootContainers(WYMeditor.EXEC_COMMANDS.ITALIC);
+test("Unwraps italic across root containers", function () {
+    unwrapsAcrossRootContainers(WYMeditor.EXEC_COMMANDS.ITALIC);
 });
 
-test("Doesn't unwrap superscript across root containers", function () {
-    doesntUnwrapAcrossRootContainers(WYMeditor.EXEC_COMMANDS.SUPERSCRIPT);
+test("Unwraps superscript across root containers", function () {
+    unwrapsAcrossRootContainers(WYMeditor.EXEC_COMMANDS.SUPERSCRIPT);
 });
 
-test("Doesn't unwrap subscript across root containers", function () {
-    doesntUnwrapAcrossRootContainers(WYMeditor.EXEC_COMMANDS.SUPERSCRIPT);
+test("Unwraps subscript across root containers", function () {
+    unwrapsAcrossRootContainers(WYMeditor.EXEC_COMMANDS.SUPERSCRIPT);
+});
+
+// this and the next function are for testing that wrapping occurs
+// when selection is from an element to some other element
+// that is in a different place in the hierarchy of the document,
+// not necessarily "from inside a li to a child of a sibling li".
+function wrapsFromInsideLiToChildOfSiblingLi(command) {
+    var tagName = getBrowserTagname(command),
+        openTag = "<" + tagName + ">",
+        closeTag = "</" + tagName + ">";
+    manipulationTestHelper({
+        startHtml: [""
+            , "<ul>"
+                , "<li>Foo</li>"
+                , "<li>Another sibling</li>"
+                , "<li>This:<br /><span id=\"span\">bar</span></li>"
+            , "</ul>"
+        ].join(''),
+        prepareFunc: function (wymeditor) {
+            var $body = wymeditor.$body(),
+                firstLi = $body.find('li').first()[0],
+                span = $body.find('span')[0];
+            makeTextSelection(
+                wymeditor,
+                firstLi,
+                span,
+                1,
+                2
+            );
+        },
+        manipulationFunc: function (wymeditor) {
+            wymeditor.exec(command);
+        },
+        expectedResultHtml: [""
+            , "<ul>"
+                , "<li>F" + openTag + "oo" + closeTag + "</li>"
+                , "<li>" + openTag + "Another sibling" + closeTag + "</li>"
+                , "<li>" + openTag + "This:<br />" +
+                    closeTag + "<span id=\"span\">" + openTag + "ba" + closeTag + "r</span></li>"
+            , "</ul>"
+        ].join(''),
+        manipulationKeyCombo: getExecKeyboardShortcut(command),
+        testUndoRedo: true
+    });
+}
+
+function unwrapsFromInsideLiToChildOfSiblingLi(command) {
+    var tagName = getBrowserTagname(command),
+        openTag = "<" + tagName + ">",
+        closeTag = "</" + tagName + ">";
+    manipulationTestHelper({
+        startHtml: [""
+            , "<ul>"
+                , "<li>F" + openTag + "oo" + closeTag + "</li>"
+                , "<li>" + openTag + "Another sibling" + closeTag + "</li>"
+                , "<li>" + openTag + "This:<br />" +
+                    closeTag + "<span>" + openTag + "ba" + closeTag + "r</span></li>"
+            , "</ul>"
+        ].join(''),
+        prepareFunc: function (wymeditor) {
+            var $body = wymeditor.$body(),
+                firstWrapper = $body.find(tagName).first()[0],
+                lastWrapper = $body.find(tagName).last()[0];
+            makeTextSelection(
+                wymeditor,
+                firstWrapper,
+                lastWrapper,
+                0,
+                2
+            );
+        },
+        manipulationFunc: function (wymeditor) {
+            wymeditor.exec(command);
+        },
+        expectedResultHtml: [""
+            , "<ul>"
+                , "<li>Foo</li>"
+                , "<li>Another sibling</li>"
+                , "<li>This:<br /><span>bar</span></li>"
+            , "</ul>"
+        ].join(''),
+        manipulationKeyCombo: getExecKeyboardShortcut(command),
+        testUndoRedo: true
+    });
+}
+
+test("Bolds from inside `li` to child of sibling `li`", function () {
+    wrapsFromInsideLiToChildOfSiblingLi(WYMeditor.EXEC_COMMANDS.BOLD);
+});
+
+test("Italics from inside `li` to child of sibling `li`", function () {
+    wrapsFromInsideLiToChildOfSiblingLi(WYMeditor.EXEC_COMMANDS.ITALIC);
+});
+
+test("Superscripts from inside `li` to child of sibling `li`", function () {
+    wrapsFromInsideLiToChildOfSiblingLi(WYMeditor.EXEC_COMMANDS.SUPERSCRIPT);
+});
+
+test("Subscripts from inside `li` to child of sibling `li`", function () {
+    wrapsFromInsideLiToChildOfSiblingLi(WYMeditor.EXEC_COMMANDS.SUBSCRIPT);
+});
+
+test("Unwraps bold from inside `li` to child of sibling `li`", function () {
+    unwrapsFromInsideLiToChildOfSiblingLi(WYMeditor.EXEC_COMMANDS.BOLD);
+});
+
+test("Unwraps italic from inside `li` to child of sibling `li`", function () {
+    unwrapsFromInsideLiToChildOfSiblingLi(WYMeditor.EXEC_COMMANDS.ITALIC);
+});
+
+test("Unwraps superscript from inside `li` to child of sibling `li`", function () {
+    unwrapsFromInsideLiToChildOfSiblingLi(WYMeditor.EXEC_COMMANDS.SUPERSCRIPT);
+});
+
+test("Unwraps subscript from inside `li` to child of sibling `li`", function () {
+    unwrapsFromInsideLiToChildOfSiblingLi(WYMeditor.EXEC_COMMANDS.SUBSCRIPT);
 });
