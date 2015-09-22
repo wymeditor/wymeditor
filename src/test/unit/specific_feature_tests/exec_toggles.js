@@ -507,18 +507,18 @@ test("Subscripts from inside `li` to child of sibling `li`", function () {
     wrapsFromInsideLiToChildOfSiblingLi(WYMeditor.EXEC_COMMANDS.SUBSCRIPT);
 });
 
-test("unwraps bold from inside `li` to child of sibling `li`", function () {
+test("Unwraps bold from inside `li` to child of sibling `li`", function () {
     unwrapsFromInsideLiToChildOfSiblingLi(WYMeditor.EXEC_COMMANDS.BOLD);
 });
 
-test("unwraps italic from inside `li` to child of sibling `li`", function () {
+test("Unwraps italic from inside `li` to child of sibling `li`", function () {
     unwrapsFromInsideLiToChildOfSiblingLi(WYMeditor.EXEC_COMMANDS.ITALIC);
 });
 
-test("unwraps superscript from inside `li` to child of sibling `li`", function () {
+test("Unwraps superscript from inside `li` to child of sibling `li`", function () {
     unwrapsFromInsideLiToChildOfSiblingLi(WYMeditor.EXEC_COMMANDS.SUPERSCRIPT);
 });
 
-test("unwraps subscript from inside `li` to child of sibling `li`", function () {
+test("Unwraps subscript from inside `li` to child of sibling `li`", function () {
     unwrapsFromInsideLiToChildOfSiblingLi(WYMeditor.EXEC_COMMANDS.SUBSCRIPT);
 });
