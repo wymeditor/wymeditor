@@ -416,12 +416,12 @@ function wrapsFromInsideLiToChildOfSiblingLi(command) {
         openTag = "<" + tagName + ">",
         closeTag = "</" + tagName + ">";
     manipulationTestHelper({
-        startHtml: [
-            "<ul>",
-                "<li>Foo</li>",
-                "<li>Another sibling</li>",
-                "<li>This:<br /><span id=\"span\">bar</span></li>",
-            "</ul>"
+        startHtml: [""
+            , "<ul>"
+                , "<li>Foo</li>"
+                , "<li>Another sibling</li>"
+                , "<li>This:<br /><span id=\"span\">bar</span></li>"
+            , "</ul>"
         ].join(''),
         prepareFunc: function (wymeditor) {
             var $body = wymeditor.$body(),
@@ -438,13 +438,13 @@ function wrapsFromInsideLiToChildOfSiblingLi(command) {
         manipulationFunc: function (wymeditor) {
             wymeditor.exec(command);
         },
-        expectedResultHtml: [
-            "<ul>",
-                "<li>F" + openTag + "oo" + closeTag + "</li>",
-                "<li>" + openTag + "Another sibling" + closeTag + "</li>",
-                "<li>" + openTag + "This:<br />" +
-                    closeTag + "<span id=\"span\">" + openTag + "ba" + closeTag + "r</span></li>",
-            "</ul>"
+        expectedResultHtml: [""
+            , "<ul>"
+                , "<li>F" + openTag + "oo" + closeTag + "</li>"
+                , "<li>" + openTag + "Another sibling" + closeTag + "</li>"
+                , "<li>" + openTag + "This:<br />" +
+                    closeTag + "<span id=\"span\">" + openTag + "ba" + closeTag + "r</span></li>"
+            , "</ul>"
         ].join(''),
         manipulationKeyCombo: getExecKeyboardShortcut(command),
         testUndoRedo: true
@@ -456,13 +456,13 @@ function unwrapsFromInsideLiToChildOfSiblingLi(command) {
         openTag = "<" + tagName + ">",
         closeTag = "</" + tagName + ">";
     manipulationTestHelper({
-        startHtml: [
-            "<ul>",
-                "<li>F" + openTag + "oo" + closeTag + "</li>",
-                "<li>" + openTag + "Another sibling" + closeTag + "</li>",
-                "<li>" + openTag + "This:<br />" +
-                    closeTag + "<span>" + openTag + "ba" + closeTag + "r</span></li>",
-            "</ul>"
+        startHtml: [""
+            , "<ul>"
+                , "<li>F" + openTag + "oo" + closeTag + "</li>"
+                , "<li>" + openTag + "Another sibling" + closeTag + "</li>"
+                , "<li>" + openTag + "This:<br />" +
+                    closeTag + "<span>" + openTag + "ba" + closeTag + "r</span></li>"
+            , "</ul>"
         ].join(''),
         prepareFunc: function (wymeditor) {
             var $body = wymeditor.$body(),
@@ -479,12 +479,12 @@ function unwrapsFromInsideLiToChildOfSiblingLi(command) {
         manipulationFunc: function (wymeditor) {
             wymeditor.exec(command);
         },
-        expectedResultHtml: [
-            "<ul>",
-                "<li>Foo</li>",
-                "<li>Another sibling</li>",
-                "<li>This:<br /><span>bar</span></li>",
-            "</ul>"
+        expectedResultHtml: [""
+            , "<ul>"
+                , "<li>Foo</li>"
+                , "<li>Another sibling</li>"
+                , "<li>This:<br /><span>bar</span></li>"
+            , "</ul>"
         ].join(''),
         manipulationKeyCombo: getExecKeyboardShortcut(command),
         testUndoRedo: true
