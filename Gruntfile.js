@@ -595,6 +595,7 @@ module.exports = function (grunt) {
         'clean:dist',
         'useminPrepare',
         'bower-install-simple',
+        'bower-linker:dev',
         'bower-linker:dist-examples',
         'browserify:externalModules',
         'concat',
