@@ -39,7 +39,7 @@ module.exports = function (grunt) {
                 "Home page: <%= pkg.homepage %>\n\n" +
                 "Copyright (c) <%= grunt.template.today('yyyy') %> " +
                 "<%= pkg.author.name %>;\n" +
-                "Licensed <%= _.pluck(pkg.licenses, 'type').join(', ') %>\n" +
+                "Licensed <%= pkg.license %>\n" +
                 "*/\n\n"
         },
         // Some targets run concurrently because watch is blocking and we
