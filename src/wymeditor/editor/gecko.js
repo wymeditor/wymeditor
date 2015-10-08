@@ -106,7 +106,7 @@ WYMeditor.WymClassGecko.prototype._keyup = function (evt) {
     }
 };
 
-WYMeditor.WymClassGecko.prototype._click = function () {
+WYMeditor.WymClassGecko.prototype._clickQuirks = function () {
     var wym = this,
         container = wym.selectedContainer(),
         sel;

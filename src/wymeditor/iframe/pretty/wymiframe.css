@@ -86,8 +86,7 @@
 
 /* specific HTML elements */
   caption   { text-align: left; }
-  img       { margin-right: 5px;
-              border-style: solid;
+  img       { border-style: solid;
               border-color: gray;
               border-width: 0; }
   a img     { border-width: 1px; border-color: blue; }

@@ -57,6 +57,8 @@ WYMeditor.editor.prototype._init = function () {
 
     wym.helper = new WYMeditor.XmlHelper();
 
+    wym.imageResizer = new WYMeditor.ImageResizer(wym);
+
     // Extend the editor object with the browser-specific version.
     // We're not using jQuery.extend because we *want* to copy properties via
     // the prototype chain
@@ -3819,6 +3821,10 @@ WYMeditor.editor.prototype._listen = function () {
         wym._mouseup(e);
     });
 
+    wym.$body().bind("click", function (e) {
+        wym._click(e);
+    });
+
     jQuery(wym._doc).bind('paste', function () {
         wym._handlePasteEvent();
     });
@@ -3867,6 +3873,16 @@ WYMeditor.editor.prototype._mouseup = function (evt) {
     var wym = this;
     if (evt.target.tagName.toLowerCase() === WYMeditor.IMG) {
         wym._selectSingleNode(evt.target);
+    }
+};
+
+WYMeditor.editor.prototype._click = function (evt) {
+    var wym = this;
+    if (evt.target.tagName.toLowerCase() === WYMeditor.IMG) {
+        wym.imageResizer._handleClickedImage(evt.target);
+    }
+    if (wym._clickQuirks) {
+        wym._clickQuirks(evt);
     }
 };
 
