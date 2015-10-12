@@ -4,12 +4,12 @@
 WYMeditor.ImageResizer = function (wym) {
     var ir = this;
     ir._wym = wym;
-    ir._onMousedown = ir._onMousedown.bind(ir);
-    ir._onMousemove = ir._onMousemove.bind(ir);
-    ir._onMouseup = ir._onMouseup.bind(ir);
+    ir._onHandleMousedown = ir._onHandleMousedown.bind(ir);
+    ir._onDocMousemove = ir._onDocMousemove.bind(ir);
+    ir._onDocMouseup = ir._onDocMouseup.bind(ir);
     ir._onDocSelectionChange = ir._onDocSelectionChange.bind(ir);
-    ir._onDragstart = ir._onDragstart.bind(ir);
-    ir._onCut = ir._onCut.bind(ir);
+    ir._onImgDragstart = ir._onImgDragstart.bind(ir);
+    ir._onDocCut = ir._onDocCut.bind(ir);
 
     return ir;
 };
@@ -110,12 +110,12 @@ WYMeditor.ImageResizer.prototype._onDocSelectionChange = function () {
     ir._deInstrumentImage();
 };
 
-WYMeditor.ImageResizer.prototype._onDragstart = function () {
+WYMeditor.ImageResizer.prototype._onImgDragstart = function () {
     // do not allow dragging images. It can be buggy.
     return false;
 };
 
-WYMeditor.ImageResizer.prototype._onCut = function (evt) {
+WYMeditor.ImageResizer.prototype._onDocCut = function (evt) {
     var ir = this;
     if (evt.target !== ir._$container[0]) {
       // something else was cut, not the image
@@ -130,20 +130,20 @@ WYMeditor.ImageResizer.prototype._onCut = function (evt) {
 WYMeditor.ImageResizer.prototype._listen = function () {
     var ir = this;
     var $doc = jQuery(ir._wym._doc);
-    ir._$handle.bind('mousedown', ir._onMousedown);
-    ir._$img.bind('dragstart', ir._onDragstart);
-    $doc.bind('cut', ir._onCut);
+    ir._$handle.bind('mousedown', ir._onHandleMousedown);
+    ir._$img.bind('dragstart', ir._onImgDragstart);
+    $doc.bind('cut', ir._onDocCut);
     jQuery(ir._wym._doc).bind('selectionchange', ir._onDocSelectionChange);
 };
 
 WYMeditor.ImageResizer.prototype._stopListening = function () {
     var ir = this;
-    ir._$handle.unbind('mousedown', ir._onMousedown);
-    ir._$img.unbind('cut dragstart', ir._onDragstart);
+    ir._$handle.unbind('mousedown', ir._onHandleMousedown);
+    ir._$img.unbind('cut dragstart', ir._onImgDragstart);
     jQuery(ir._wym._doc).unbind('selectionchange', ir._onDocSelectionChange);
 };
 
-WYMeditor.ImageResizer.prototype._onMousedown = function (evt) {
+WYMeditor.ImageResizer.prototype._onHandleMousedown = function (evt) {
     var ir = this;
     var $doc = jQuery(ir._wym._doc);
 
@@ -153,28 +153,28 @@ WYMeditor.ImageResizer.prototype._onMousedown = function (evt) {
     ir._startHeight = ir._$img.attr('height');
     ir._dimensionsRatio = ir._startWidth / ir._startHeight;
 
-    $doc.bind('mousemove', ir._onMousemove);
-    $doc.bind('mouseup', ir._onMouseup);
+    $doc.bind('mousemove', ir._onDocMousemove);
+    $doc.bind('mouseup', ir._onDocMouseup);
 
     return false;
 };
 
-WYMeditor.ImageResizer.prototype._onMousemove = function (evt) {
+WYMeditor.ImageResizer.prototype._onDocMousemove = function (evt) {
     var ir = this;
 
     ir._$img.attr('height', ir._startHeight - ir._startY + evt.clientY);
     ir._$img.attr('width', ir._$img.attr('height') * ir._dimensionsRatio);
-    ir._$handle.unbind('mousedown', ir._onMousedown);
+    ir._$handle.unbind('mousedown', ir._onHandleMousedown);
 
     return false;
 };
 
-WYMeditor.ImageResizer.prototype._onMouseup = function () {
+WYMeditor.ImageResizer.prototype._onDocMouseup = function () {
     var ir = this;
 
     jQuery(ir._wym._doc)
-        .unbind('mousemove', ir._onMousemove)
-        .unbind('mouseup', ir._onMouseup);
+        .unbind('mousemove', ir._onDocMousemove)
+        .unbind('mouseup', ir._onDocMouseup);
 
     ir._deInstrumentImage();
     return false;
