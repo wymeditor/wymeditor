@@ -133,7 +133,7 @@ WYMeditor.ImageResizer.prototype._listen = function () {
     ir._$handle.bind('mousedown', ir._onHandleMousedown);
     ir._$img.bind('dragstart', ir._onImgDragstart);
     $doc.bind('cut', ir._onDocCut);
-    jQuery(ir._wym._doc).bind('selectionchange', ir._onDocSelectionChange);
+    $doc.bind('selectionchange', ir._onDocSelectionChange);
 };
 
 WYMeditor.ImageResizer.prototype._stopListening = function () {
