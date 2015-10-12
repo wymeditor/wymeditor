@@ -139,12 +139,13 @@ WYMeditor.ImageResizer.prototype._onMouseup = function () {
         .unbind('mousemove', ir._onMousemove)
         .unbind('mouseup', ir._onMouseup);
 
-  return false;
+    ir._deInstrumentImage();
+    return false;
 };
 
-WYMeditor.ImageResizer.prototype._decontainImage = function (image) {
-    jQuery(image)
-        .next()
-        .unwrap()
-        .remove();
+WYMeditor.ImageResizer.prototype._deInstrumentImage = function () {
+    var ir = this;
+
+    ir._$handle.remove();
+    ir._$img.unwrap();
 };
