@@ -7,6 +7,9 @@ WYMeditor.ImageResizer = function (wym) {
     ir._onMousedown = ir._onMousedown.bind(ir);
     ir._onMousemove = ir._onMousemove.bind(ir);
     ir._onMouseup = ir._onMouseup.bind(ir);
+    ir._onDocSelectionChange = ir._onDocSelectionChange.bind(ir);
+    ir._onDragstart = ir._onDragstart.bind(ir);
+    ir._onCut = ir._onCut.bind(ir);
 
     return ir;
 };
@@ -98,16 +101,46 @@ WYMeditor.ImageResizer.prototype._instrumentImage = function (image) {
     ir._listen();
 };
 
+WYMeditor.ImageResizer.prototype._onDocSelectionChange = function () {
+    var ir = this;
+    var wym = ir._wym;
+    if (wym.getSelectedImage() === ir._$img[0]) {
+       return;
+    }
+    ir._deInstrumentImage();
+};
+
+WYMeditor.ImageResizer.prototype._onDragstart = function () {
+    // do not allow dragging images. It can be buggy.
+    return false;
+};
+
+WYMeditor.ImageResizer.prototype._onCut = function (evt) {
+    var ir = this;
+    if (evt.target !== ir._$container[0]) {
+      // something else was cut, not the image
+        return;
+    }
+    // the image was cut
+    setTimeout(function () {
+        ir._deInstrumentImage();
+    }, 0);
+};
+
 WYMeditor.ImageResizer.prototype._listen = function () {
     var ir = this;
-
+    var $doc = jQuery(ir._wym._doc);
     ir._$handle.bind('mousedown', ir._onMousedown);
-    ir._$img.bind('cut', function () {
-        console.log('test');
-    });
-    ir._$img.bind('dragstart', function () {
-        console.log('dragstart');
-    });
+    ir._$img.bind('dragstart', ir._onDragstart);
+    $doc.bind('cut', ir._onCut);
+    jQuery(ir._wym._doc).bind('selectionchange', ir._onDocSelectionChange);
+};
+
+WYMeditor.ImageResizer.prototype._stopListening = function () {
+    var ir = this;
+    ir._$handle.unbind('mousedown', ir._onMousedown);
+    ir._$img.unbind('cut dragstart', ir._onDragstart);
+    jQuery(ir._wym._doc).unbind('selectionchange', ir._onDocSelectionChange);
 };
 
 WYMeditor.ImageResizer.prototype._onMousedown = function (evt) {
@@ -152,4 +185,5 @@ WYMeditor.ImageResizer.prototype._deInstrumentImage = function () {
 
     ir._$handle.remove();
     ir._$img.unwrap();
+    ir._stopListening();
 };
