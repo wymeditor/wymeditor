@@ -20,28 +20,13 @@ WYMeditor.ImageResizer.prototype._handleClickedImage = function (image) {
         return;
     }
 
-    ir._addHandle(image);
+    ir._instrumentImage(image);
 
     wym._selectSingleNode(image);
 };
 
-WYMeditor.ImageResizer.prototype._addHandle = function (image) {
-    var ir = this;
-
-    var containerStyle = {
-        'background-image': 'none',
-        display: 'inline-block',
-        margin: '0',
-        padding: '0',
-        position: 'relative'
-    };
-    var $container = jQuery('<div></div>')
-      .addClass(WYMeditor.EDITOR_ONLY_CLASS)
-      .addClass(WYMeditor.IMAGE_CONTAINER_CLASS)
-      .css(containerStyle);
-
-    var resizeHandleStyle = {
-
+WYMeditor.ImageResizer.prototype._createHandle = function () {
+    var style = {
         cursor: 'row-resize',
 
         // text style
@@ -71,12 +56,44 @@ WYMeditor.ImageResizer.prototype._addHandle = function (image) {
 
     var $handle = jQuery('<div>drag to resize</div>')
         .addClass(WYMeditor.RESIZE_HANDLE_CLASS)
-        .css(resizeHandleStyle);
+        .css(style);
 
-    jQuery(image)
+    return $handle;
+};
+
+WYMeditor.ImageResizer.prototype._createContainer = function () {
+    var style = {
+        'background-image': 'none',
+        display: 'inline-block',
+        margin: '0',
+        padding: '0',
+        position: 'relative'
+    };
+    var $container = jQuery('<div></div>')
+      .addClass(WYMeditor.EDITOR_ONLY_CLASS)
+      .addClass(WYMeditor.IMAGE_CONTAINER_CLASS)
+      .css(style);
+
+    return $container;
+};
+
+WYMeditor.ImageResizer.prototype._instrumentImage = function (image) {
+    var ir = this;
+
+    var $container = ir._createContainer();
+    var $handle = ir._createHandle();
+
+    var $image = jQuery(image);
+    $image
         .replaceWith($container)
         .appendTo($container)
         .after($handle);
+
+        if (jQuery.browser.msie) {
+            $image.bind('controlselect', function () {
+                return false;
+            });
+        }
 
     ir._listen($handle);
 };
