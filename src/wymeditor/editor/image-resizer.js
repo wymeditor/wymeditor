@@ -10,6 +10,8 @@ WYMeditor.ImageResizer = function (wym) {
     ir._onDocSelectionChange = ir._onDocSelectionChange.bind(ir);
     ir._onImgDragstart = ir._onImgDragstart.bind(ir);
     ir._onDocCut = ir._onDocCut.bind(ir);
+    ir._onDocMousedown = ir._onDocMousedown.bind(ir);
+    ir._onDocKeydown = ir._onDocKeydown.bind(ir);
 
     return ir;
 };
@@ -127,6 +129,23 @@ WYMeditor.ImageResizer.prototype._onDocCut = function (evt) {
     }, 0);
 };
 
+WYMeditor.ImageResizer.prototype._onDocMousedown = function (evt) {
+    var ir = this;
+    if (
+      evt.target === ir._$img[0] ||
+      evt.target === ir._$handle[0]
+    ) {
+      return;
+    }
+    ir._deInstrumentImage();
+};
+
+WYMeditor.ImageResizer.prototype._onDocKeydown = function () {
+    var ir = this;
+    ir._deInstrumentImage();
+    ir._wym._selectSingleNode(ir._$img[0]);
+};
+
 WYMeditor.ImageResizer.prototype._listen = function () {
     var ir = this;
     var $doc = jQuery(ir._wym._doc);
@@ -134,13 +153,18 @@ WYMeditor.ImageResizer.prototype._listen = function () {
     ir._$img.bind('dragstart', ir._onImgDragstart);
     $doc.bind('cut', ir._onDocCut);
     $doc.bind('selectionchange', ir._onDocSelectionChange);
+    $doc.bind('mousedown', ir._onDocMousedown);
+    $doc.bind('keydown', ir._onDocKeydown);
 };
 
 WYMeditor.ImageResizer.prototype._stopListening = function () {
     var ir = this;
+    var $doc = jQuery(ir._wym._doc);
     ir._$handle.unbind('mousedown', ir._onHandleMousedown);
     ir._$img.unbind('cut dragstart', ir._onImgDragstart);
-    jQuery(ir._wym._doc).unbind('selectionchange', ir._onDocSelectionChange);
+    $doc.unbind('selectionchange', ir._onDocSelectionChange);
+    $doc.unbind('mousedown', ir._onDocMousedown);
+    $doc.unbind('keydown', ir._onDocKeydown);
 };
 
 WYMeditor.ImageResizer.prototype._onHandleMousedown = function (evt) {
