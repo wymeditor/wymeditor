@@ -110,12 +110,12 @@ WYMeditor.ImageResizer.prototype._listen = function () {
     });
 };
 
-WYMeditor.ImageResizer.prototype._onMousedown = function (e) {
+WYMeditor.ImageResizer.prototype._onMousedown = function (evt) {
     var ir = this;
     var $doc = jQuery(ir._wym._doc);
 
-    ir._startX = e.clientX;
-    ir._startY = e.clientY;
+    ir._startX = evt.clientX;
+    ir._startY = evt.clientY;
     ir._startWidth = ir._$img.attr('width');
     ir._startHeight = ir._$img.attr('height');
     ir._dimensionsRatio = ir._startWidth / ir._startHeight;
@@ -126,10 +126,10 @@ WYMeditor.ImageResizer.prototype._onMousedown = function (e) {
     return false;
 };
 
-WYMeditor.ImageResizer.prototype._onMousemove = function (e) {
+WYMeditor.ImageResizer.prototype._onMousemove = function (evt) {
     var ir = this;
 
-    ir._$img.attr('height', ir._startHeight - ir._startY + e.clientY);
+    ir._$img.attr('height', ir._startHeight - ir._startY + evt.clientY);
     ir._$img.attr('width', ir._$img.attr('height') * ir._dimensionsRatio);
     ir._$handle.unbind('mousedown', ir._onMousedown);
 
