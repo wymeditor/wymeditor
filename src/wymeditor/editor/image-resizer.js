@@ -83,14 +83,14 @@ WYMeditor.ImageResizer.prototype._instrumentImage = function (image) {
     ir._$container = ir._createContainer();
     ir._$handle = ir._createHandle();
 
-    ir._$image = jQuery(image);
-    ir._$image
+    ir._$img = jQuery(image);
+    ir._$img
         .replaceWith(ir._$container)
         .appendTo(ir._$container)
         .after(ir._$handle);
 
         if (jQuery.browser.msie) {
-            ir._$image.bind('controlselect', function () {
+            ir._$img.bind('controlselect', function () {
                 return false;
             });
         }
@@ -102,13 +102,18 @@ WYMeditor.ImageResizer.prototype._listen = function () {
     var ir = this;
 
     ir._$handle.bind('mousedown', ir._onMousedown);
+    ir._$img.bind('cut', function () {
+        console.log('test');
+    });
+    ir._$img.bind('dragstart', function () {
+        console.log('dragstart');
+    });
 };
 
 WYMeditor.ImageResizer.prototype._onMousedown = function (e) {
     var ir = this;
     var $doc = jQuery(ir._wym._doc);
 
-    ir._$img = jQuery(e.target).siblings('img');
     ir._startX = e.clientX;
     ir._startY = e.clientY;
     ir._startWidth = ir._$img.attr('width');
