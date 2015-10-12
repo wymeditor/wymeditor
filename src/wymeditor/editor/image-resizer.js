@@ -80,41 +80,40 @@ WYMeditor.ImageResizer.prototype._createContainer = function () {
 WYMeditor.ImageResizer.prototype._instrumentImage = function (image) {
     var ir = this;
 
-    var $container = ir._createContainer();
-    var $handle = ir._createHandle();
+    ir._$container = ir._createContainer();
+    ir._$handle = ir._createHandle();
 
-    var $image = jQuery(image);
-    $image
-        .replaceWith($container)
-        .appendTo($container)
-        .after($handle);
+    ir._$image = jQuery(image);
+    ir._$image
+        .replaceWith(ir._$container)
+        .appendTo(ir._$container)
+        .after(ir._$handle);
 
         if (jQuery.browser.msie) {
-            $image.bind('controlselect', function () {
+            ir._$image.bind('controlselect', function () {
                 return false;
             });
         }
 
-    ir._listen($handle);
+    ir._listen();
 };
 
-WYMeditor.ImageResizer.prototype._listen = function ($handle) {
+WYMeditor.ImageResizer.prototype._listen = function () {
     var ir = this;
 
-    $handle.bind('mousedown', ir._onMousedown);
+    ir._$handle.bind('mousedown', ir._onMousedown);
 };
 
 WYMeditor.ImageResizer.prototype._onMousedown = function (e) {
     var ir = this;
     var $doc = jQuery(ir._wym._doc);
 
-    ir.$img = jQuery(e.target).siblings('img');
-    ir.startX = e.clientX;
-    ir.startY = e.clientY;
-    ir.startWidth = ir.$img.attr('width');
-    ir.startHeight = ir.$img.attr('height');
-    ir.dimensionsRatio = ir.startWidth / ir.startHeight;
-    ir.$handle = ir.$img.siblings(WYMeditor.RESIZE_HANDLE_CLASS);
+    ir._$img = jQuery(e.target).siblings('img');
+    ir._startX = e.clientX;
+    ir._startY = e.clientY;
+    ir._startWidth = ir._$img.attr('width');
+    ir._startHeight = ir._$img.attr('height');
+    ir._dimensionsRatio = ir._startWidth / ir._startHeight;
 
     $doc.bind('mousemove', ir._onMousemove);
     $doc.bind('mouseup', ir._onMouseup);
@@ -125,9 +124,9 @@ WYMeditor.ImageResizer.prototype._onMousedown = function (e) {
 WYMeditor.ImageResizer.prototype._onMousemove = function (e) {
     var ir = this;
 
-    ir.$img.attr('height', ir.startHeight - ir.startY + e.clientY);
-    ir.$img.attr('width', ir.$img.attr('height') * ir.dimensionsRatio);
-    ir.$handle.unbind('mousedown', ir._onMousedown);
+    ir._$img.attr('height', ir._startHeight - ir._startY + e.clientY);
+    ir._$img.attr('width', ir._$img.attr('height') * ir._dimensionsRatio);
+    ir._$handle.unbind('mousedown', ir._onMousedown);
 
     return false;
 };
