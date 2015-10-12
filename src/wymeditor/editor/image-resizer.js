@@ -54,7 +54,7 @@ WYMeditor.ImageResizer.prototype._createHandle = function () {
         'white-space': 'nowrap'
     };
 
-    var $handle = jQuery('<div>drag to resize</div>')
+    var $handle = jQuery('<div>drag this to resize</div>')
         .addClass(WYMeditor.RESIZE_HANDLE_CLASS)
         .css(style);
 
