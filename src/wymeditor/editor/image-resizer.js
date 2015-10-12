@@ -21,7 +21,6 @@ WYMeditor.ImageResizer.prototype._handleClickedImage = function (image) {
     }
 
     ir._instrumentImage(image);
-
     wym._selectSingleNode(image);
     return false;
 };
