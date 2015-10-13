@@ -94,6 +94,11 @@ WYMeditor.ImageResizer.prototype._instrumentImage = function (image) {
         .appendTo(ir._$container)
         .after(ir._$handle);
 
+    if (jQuery.browser.mozilla) {
+        // initially, the handle has collapsed (not 100%) width. seamless workaround
+        ir._$handle.hide().delay(0).show(0);
+    }
+
         if (jQuery.browser.msie) {
             ir._$img.bind('controlselect', function () {
                 return false;
