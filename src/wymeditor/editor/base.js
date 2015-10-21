@@ -57,8 +57,6 @@ WYMeditor.editor.prototype._init = function () {
 
     wym.helper = new WYMeditor.XmlHelper();
 
-    wym.imageResizer = new WYMeditor.ImageResizer(wym);
-
     // Extend the editor object with the browser-specific version.
     // We're not using jQuery.extend because we *want* to copy properties via
     // the prototype chain
@@ -399,6 +397,8 @@ WYMeditor.editor.prototype._afterDesignModeOn = function () {
     wym.undoRedo = new WYMeditor.UndoRedo(wym);
 
     wym.nativeEditRegistration = new WYMeditor.NativeEditRegistration(wym);
+
+    wym.ih = new WYMeditor.ImageHandler(wym);
 
     jQuery(wym.element).trigger(
         WYMeditor.EVENTS.postIframeInitialization,
@@ -3814,10 +3814,6 @@ WYMeditor.editor.prototype._afterInsertTable = function () {
 WYMeditor.editor.prototype._listen = function () {
     var wym = this;
 
-    wym.$body().bind("mouseup", function (e) {
-        wym._mouseup(e);
-    });
-
     wym.$body().bind("click", function (e) {
         wym._click(e);
     });
@@ -3863,21 +3859,12 @@ WYMeditor.editor.prototype._selectSingleNode = function (node) {
     selection = wym.selection();
     nodeRange = rangy.createRangyRange();
     nodeRange.selectNode(node);
-    selection.setSingleRange(nodeRange);
-};
 
-WYMeditor.editor.prototype._mouseup = function (evt) {
-    var wym = this;
-    if (evt.target.tagName.toLowerCase() === WYMeditor.IMG) {
-        wym._selectSingleNode(evt.target);
-    }
+    selection.setSingleRange(nodeRange);
 };
 
 WYMeditor.editor.prototype._click = function (evt) {
     var wym = this;
-    if (evt.target.tagName.toLowerCase() === WYMeditor.IMG) {
-        wym.imageResizer._handleClickedImage(evt.target);
-    }
     if (wym._clickQuirks) {
         wym._clickQuirks(evt);
     }

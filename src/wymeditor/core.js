@@ -1093,7 +1093,7 @@ jQuery.fn.parentsOrSelf = function (selector) {
     }
 };
 
-// String & array helpers
+// Various helpers
 
 WYMeditor.Helper = {
 
@@ -1147,6 +1147,20 @@ WYMeditor.Helper = {
             }
         }
         return null;
+    },
+
+    // naively returns all event types
+    // of the provided an element
+    // according the its property keys that
+    // begin with 'on'
+    getAllEventTypes: function (elem) {
+        var result = [];
+        for (var key in elem) {
+          if (key.indexOf('on') === 0 && key !== 'onmousemove') {
+              result.push(key.slice(2));
+          }
+        }
+        return result.join(' ');
     }
 };
 

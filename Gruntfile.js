@@ -274,7 +274,7 @@ module.exports = function (grunt) {
                     "<%= yeoman.app %>/wymeditor/editor/base.js",
                     "<%= yeoman.app %>/wymeditor/editor/" +
                         "document-structure-manager.js",
-                    "<%= yeoman.app %>/wymeditor/editor/image-resizer.js",
+                    "<%= yeoman.app %>/wymeditor/editor/image-handler.js",
                     "<%= yeoman.app %>/wymeditor/editor/gecko.js",
                     "<%= yeoman.app %>/wymeditor/editor/webkit.js",
                     "<%= yeoman.app %>/wymeditor/editor/blink.js",
