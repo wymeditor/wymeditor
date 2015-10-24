@@ -934,6 +934,18 @@ test("Class removal is case insensitive", function () {
     WYMeditor.CLASSES_REMOVED_BY_PARSER = defaultClassesRemovedByParser;
 });
 
+module("XmlParser-remove_style_attribute", {setup: prepareUnitTestModule});
+
+test("Style attribute is removed from images", function () {
+    var expectedResultHtml = '<p><img src="' + IMG_SRC + '" /></p>';
+    manipulationTestHelper({
+        startHtml: '<p><img src="' + IMG_SRC + '" style="padding: 1em" /></p>',
+        expectedStartHtml: expectedResultHtml,
+        parseHtml: true,
+        expectedResultHtml: expectedResultHtml
+    });
+});
+
 module("XmlParser-unwrap_single_tag_in_list_item", {setup: prepareUnitTestModule});
 
 var tagsToUnwrapInLists =
