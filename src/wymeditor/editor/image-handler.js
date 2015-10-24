@@ -388,6 +388,12 @@ WYMeditor.ImageHandler.prototype._startResize = function (startMouseY) {
 WYMeditor.ImageHandler.prototype._onMousemove = function (evt) {
     var ih = this;
 
+    if (!evt.target.tagName) {
+        // IE8 may fire such an event.
+        // what element was it fired on?
+        return false;
+    }
+
     if (ih._resizingNow) {
         ih._resizeImage(evt.clientY);
         return false;
