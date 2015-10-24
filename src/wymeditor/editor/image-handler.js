@@ -173,6 +173,10 @@ WYMeditor.ImageHandler.prototype._addEventListeners = function () {
     var $doc = jQuery(ih._wym._doc);
 
     $doc.delegate(
+        'img', 'mouseover',
+        ih._onImgMouseover.bind(ih)
+    );
+    $doc.delegate(
         'img', 'click',
         ih._onImgClick.bind(ih)
     );
@@ -218,6 +222,46 @@ WYMeditor.ImageHandler.prototype._addEventListeners = function () {
     }
 };
 
+WYMeditor.ImageHandler.prototype._onImgMouseover = function (evt) {
+    var ih = this;
+    var $img = jQuery(evt.target);
+    if (
+        !$img.data('cE disabled') &&
+        jQuery.browser.msie
+    ) {
+        // in IE8-11 it seems that the default cursor for images
+        // (in `designMode`) is 'move' (4 directions arrow)
+        // and simply setting a different cursor
+        // does not change that default.
+        // this works around the issue.
+        // the result is still not just any cursor we'd like,
+        // but only the 'default' cursor,
+        // which is better than the default 'move' cursor.
+        // this workaround does not seem to have obvious side effects
+        $img.attr('contentEditable', 'false');
+        $img.data('cE disabled', true);
+    }
+    ih._setImgCursor($img);
+};
+
+WYMeditor.ImageHandler.prototype._setImgCursor = function ($img) {
+    var ih = this;
+    if (ih._wym.getSelectedImage() !== $img[0]) {
+        // hint that image get be selected by clicking on it
+        $img.css('cursor', 'pointer');
+        return;
+    }
+    // image is selected
+    if (ih._dragDropAllowed) {
+        // in IE8-11 this does not work
+        // and the cursor remains 'default'.
+        // see the `_onImgMouseover` handler
+        $img.css('cursor', 'move');
+    } else {
+        $img.css('cursor', 'default');
+    }
+};
+
 WYMeditor.ImageHandler.prototype._onImgClick = function (evt) {
     var ih = this;
 
@@ -255,6 +299,7 @@ WYMeditor.ImageHandler.prototype._selectCurrentImage = function () {
 
 WYMeditor.ImageHandler.prototype._selectImage = function (img) {
     var ih = this;
+    var $img = jQuery(img);
 
     if (jQuery.browser.msie && jQuery.browser.versionNumber === 8) {
         // in IE8 when the right side of an img is clicked
@@ -273,6 +318,8 @@ WYMeditor.ImageHandler.prototype._selectImage = function (img) {
         ih._wym._selectSingleNode(img);
          //ih._isAnImgSelected('`_selectImage` (after select)'); // for debugging
     }
+
+    ih._setImgCursor($img);
 };
 
 WYMeditor.ImageHandler.prototype._indicateOnResizeHandleThatImageIsSelected = function () {
