@@ -322,7 +322,11 @@ WYMeditor.ImageHandler.prototype._placeResizeHandleOnImg = function ($img) {
       'padding-top': IMAGE_PADDING,
       'padding-right': IMAGE_PADDING,
       'padding-bottom': '0',
-      'padding-left': IMAGE_PADDING
+      'padding-left': IMAGE_PADDING,
+      'margin-top': '-' + IMAGE_PADDING,
+      'margin-right': '-' + IMAGE_PADDING,
+      'margin-bottom': '0',
+      'margin-left': '-' + IMAGE_PADDING
     });
 
     // it is important that the resize handle's offset
@@ -350,15 +354,11 @@ WYMeditor.ImageHandler.prototype._correctResizeHandleOffsetAndWidth = function (
     // in other words, just below the image's margin (if it had a margin)
     var yAfterImg = offset.top + ih._$currentImg.outerHeight();
 
-    if (jQuery.browser.msie && jQuery.browser.versionNumber === 8) {
-        // in IE8, slowly moving the mouse from the image to the resize handle
-        // resulted in a detachment of the resize handle.
-        // subtracting one here means that
-        // the resize handle will be positioned one pixel higher
-        // and seems to workaround this issue
-        // while possibly covering one row of pixels
-        // from the bottom of the image
-        // (*sigh*, the sacrifices we make for you, IE8...)
+    if (jQuery.browser.msie) {
+        // in IE8-11 there is might be a visible 1 pixes gap
+        // between the image and the resize handle
+        // possibly this issue:
+        // https://github.com/jquery/jquery/issues/1724
         yAfterImg--;
     }
 
@@ -600,7 +600,7 @@ WYMeditor.ImageHandler.prototype._detachResizeHandle = function () {
         ih._$currentImg.attr('height') >= 16 &&
         ih._$currentImg.attr('width') >= 16
     ) {
-        ih._$currentImg.css({padding: 0});
+        ih._$currentImg.css({padding: 0, margin: 0});
     }
     ih._$currentImg = null;
 };
