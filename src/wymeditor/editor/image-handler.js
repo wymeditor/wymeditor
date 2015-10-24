@@ -571,7 +571,6 @@ WYMeditor.ImageHandler.prototype._handlePossibleModification = function () {
         return;
     }
 
-    var $handle = ih._$resizeHandle;
     if (!ih._isResizeHandleNextOfCurrentImg()) {
         ih._detachResizeHandle();
         return;
