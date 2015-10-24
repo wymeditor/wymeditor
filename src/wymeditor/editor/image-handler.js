@@ -520,7 +520,7 @@ WYMeditor.ImageHandler.prototype._onImgMousedown = function () {
         // being selected exactly as desired.
         // it also means that the visual indication
         // in `_selectImage` is not triggered.
-        // also, the other browsers, in Firefox,
+        // also, unlike in other browsers, in Firefox,
         // the text selection of images
         // does not result in any highlight of the image.
         // no highlight and no visual indication
@@ -534,7 +534,8 @@ WYMeditor.ImageHandler.prototype._onImgMousedown = function () {
         // there will be a visual indication
         // that it was indeed selected
         //
-        // preventing default here also means,
+        // an undesired side effect,
+        // preventing default here means
         // not allowing dragging and dropping
         // of images in Firefox.
         // if ever dragging is enabled in Firefox,
@@ -549,8 +550,10 @@ WYMeditor.ImageHandler.prototype._onImgMousedown = function () {
         // around the image.
         // preventing default here prevents it
         //
-        // this also prevents dragging and dropping
-        // of images.
+        // an undesired side effect,
+        // preventing default here means
+        // not allowing dragging and dropping
+        // of images in IE11.
         // if ever dragging is enabled in IE11,
         // modify the `_indicateOnResizeHandleThatImageIsSelected` method
         // accordingly
