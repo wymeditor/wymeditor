@@ -1,6 +1,8 @@
 /* jshint evil: true */
 /* global
     manipulationTestHelper,
+    stop,
+    start,
     prepareUnitTestModule,
     test,
     expectOneMore,
@@ -190,12 +192,24 @@ test("Image is selected via `click`", function () {
             wymeditor.$body().find("img").mouseover().click();
         },
         additionalAssertionsFunc: function (wymeditor) {
-            var img = wymeditor.$body().find("img")[0];
             expectOneMore();
-            strictEqual(
-                wymeditor.getSelectedImage(),
-                img
-            );
+            var img = wymeditor.$body().find("img")[0];
+            var assertImageIsSelected = function () {
+                strictEqual(
+                    wymeditor.getSelectedImage(),
+                    img
+                );
+            };
+            if (jQuery.browser.msie && jQuery.browser.versionNumber === 8) {
+                // image is selected async
+                stop();
+                setTimeout(function () {
+                    start();
+                    assertImageIsSelected();
+                });
+                return;
+            }
+            assertImageIsSelected();
         }
     });
 });
