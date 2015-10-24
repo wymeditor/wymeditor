@@ -77,9 +77,34 @@ WYMeditor.ImageHandler = function (wym) {
     // occurring at this moment
     ih._resizingNow = false;
 
+    ih._dragDropAllowed = WYMeditor.ImageHandler._isDragDropAllowed();
+
     ih._addEventListeners();
 
     return ih;
+};
+
+WYMeditor.ImageHandler._isDragDropAllowed = function () {
+    var browser = jQuery.browser;
+    if (browser.mozilla) {
+        // undesired side effect.
+        // see the `_onImgMousedown` handler
+        return false;
+    }
+    if (browser.msie) {
+        if (browser.versionNumber === 9) {
+            // dragging and dropping seems to not consistently work.
+            // the image would only some times get picked up by the mouse drag attempt.
+            // to prevent confusion
+            return false;
+        }
+        if (browser.versionNumber === 11) {
+            // undesired side effect.
+            // see the `_onImgMousedown` handler
+            return false;
+        }
+    }
+    return true;
 };
 
 WYMeditor.ImageHandler._RESIZE_HANDLE_INNER_HTML = [
@@ -251,12 +276,7 @@ WYMeditor.ImageHandler.prototype._indicateOnResizeHandleThatImageIsSelected = fu
     var ih = this;
 
     var indication = 'image is selected';
-
-    if (!(
-        // dragging and dropping of images is disabled in:
-        jQuery.browser.mozilla || // firefox
-        jQuery.browser.msie && jQuery.browser.versionNumber === 11 // IE11
-    )) {
+    if (ih._dragDropAllowed) {
         indication = indication + ',<br/>drag image to move it';
     }
 
@@ -485,6 +505,8 @@ WYMeditor.ImageHandler.prototype._stopResize = function () {
 };
 
 WYMeditor.ImageHandler.prototype._onImgMousedown = function () {
+    var ih = this;
+
     if (jQuery.browser.mozilla) {
         // firefox seems to natively select the image on mousedown
         // this means that by the time the `_onImgClick` handler
@@ -530,7 +552,8 @@ WYMeditor.ImageHandler.prototype._onImgMousedown = function () {
         return false;
     }
 
-    return; // returning false here would disable image dragging
+    // returning false here prevents drag of image
+    return ih._dragDropAllowed;
 };
 
 WYMeditor.ImageHandler.prototype._onAnyNativeEdit = function () {
