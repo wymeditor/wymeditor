@@ -157,6 +157,11 @@ WYMeditor.ImageHandler.prototype._addEventListeners = function () {
         'mousedown',
         ih._onImgMousedown.bind(ih)
     );
+    $doc.delegate(
+        'img',
+        'dragstart',
+        ih._onImgDragstart.bind(ih)
+    );
     $doc.bind(
         'mousemove',
         ih._onMousemove.bind(ih)
@@ -579,6 +584,12 @@ WYMeditor.ImageHandler.prototype._detachResizeHandle = function () {
         ih._$currentImg.css({padding: 0, margin: 0});
     }
     ih._$currentImg = null;
+};
+
+WYMeditor.ImageHandler.prototype._onImgDragstart = function () {
+    var ih = this;
+
+    ih._detachResizeHandle();
 };
 
 WYMeditor.ImageHandler.prototype._onResizeHandleClickDblclick = function () {
