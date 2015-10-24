@@ -149,10 +149,6 @@ WYMeditor.ImageHandler.prototype._addEventListeners = function () {
         ih._onImgClick.bind(ih)
     );
     $doc.delegate(
-        'img', 'mouseover',
-        ih._onImgMouseover.bind(ih)
-    );
-    $doc.delegate(
         '.' + WYMeditor.RESIZE_HANDLE_CLASS, 'mousedown',
         ih._onResizeHandleMousedown.bind(ih)
     );
@@ -270,36 +266,10 @@ WYMeditor.ImageHandler.prototype._indicateOnResizeHandleThatImageIsSelected = fu
     }, 1000);
 };
 
-WYMeditor.ImageHandler.prototype._onImgMouseover = function (evt) {
-    var ih = this;
-    if (ih._resizingNow) {
-        return false;
-    }
-
-    var $img = jQuery(evt.target);
-
-    if (ih._imgHasResizeHandle($img)) {
-        return false;
-    }
-    ih._placeResizeHandleOnImg($img);
-    return false;
-};
-
-WYMeditor.ImageHandler.prototype._imgHasResizeHandle = function ($img) {
-    var ih = this;
-
-    if (
-        ih._$currentImg &&
-        $img[0] === ih._$currentImg[0]
-    ) {
-        return true;
-    }
-    return false;
-};
-
-WYMeditor.ImageHandler.prototype._placeResizeHandleOnImg = function ($img) {
+WYMeditor.ImageHandler.prototype._placeResizeHandleOnImg = function (img) {
     var ih = this;
     var IMAGE_PADDING = '0.8em';
+    var $img = jQuery(img);
 
     ih._$currentImg = $img;
 
@@ -394,19 +364,17 @@ WYMeditor.ImageHandler.prototype._onMousemove = function (evt) {
         return false;
     }
 
-    // binding this handler using `jQuery.fn.delegate`
-    // in a way that does not trigger on `img` elements
-    // could have replaced the following conditional statement
-    // if it had only actually worked.
-    // the `:not()` selector seems to have no effect in `.delegate`
-    if (evt.target.tagName.toLowerCase() === 'img') {
-        return; // returning false here would disable image dragging
-    }
-
     if (ih._resizingNow) {
         // this is up high in this method for performance
         ih._resizeImage(evt.clientY);
         return false;
+    }
+
+    if (evt.target.tagName.toLowerCase() === 'img') {
+        if (!ih._isResizeHandleAttached()) {
+            ih._placeResizeHandleOnImg(evt.target);
+            return false;
+        }
     }
 
     if (!ih._isResizeHandleAttached()) {
@@ -416,7 +384,10 @@ WYMeditor.ImageHandler.prototype._onMousemove = function (evt) {
     // from this point on, this event handler is all about
     // checking whether the resize handle should be detached
 
-    if (!ih._isResizeHandle(evt.target)) {
+    if (
+        !ih._isResizeHandle(evt.target) &&
+        !ih._isCurrentImg(evt.target)
+    ) {
         // this must be after the above check for whether resizing now
         // because, while the resize operation does begin
         // with the mouse pointing on the resize handle,
@@ -431,7 +402,7 @@ WYMeditor.ImageHandler.prototype._onMousemove = function (evt) {
         return false;
     }
 
-    return false;
+    // returning false here would disable image dragging
 };
 
 WYMeditor.ImageHandler.prototype._isResizeHandleNextOfCurrentImg = function () {
@@ -458,6 +429,11 @@ WYMeditor.ImageHandler.prototype._isResizeHandleNextOfCurrentImg = function () {
 
 WYMeditor.ImageHandler.prototype._isResizeHandle = function (elem) {
     return jQuery(elem).hasClass(WYMeditor.RESIZE_HANDLE_CLASS);
+};
+
+WYMeditor.ImageHandler.prototype._isCurrentImg = function (img) {
+    var ih = this;
+    return img === ih._$currentImg[0];
 };
 
 WYMeditor.ImageHandler.prototype._resizeImage = function (currentMouseY) {
