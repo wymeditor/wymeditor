@@ -394,11 +394,6 @@ WYMeditor.ImageHandler.prototype._onMousemove = function (evt) {
         return false;
     }
 
-    if (ih._resizingNow) {
-        ih._resizeImage(evt.clientY);
-        return false;
-    }
-
     // binding this handler using `jQuery.fn.delegate`
     // in a way that does not trigger on `img` elements
     // could have replaced the following conditional statement
@@ -408,13 +403,56 @@ WYMeditor.ImageHandler.prototype._onMousemove = function (evt) {
         return; // returning false here would disable image dragging
     }
 
-    if (
-        ih._isResizeHandleAttached() &&
-        !ih._isResizeHandle(evt.target)
-    ) {
-        ih._detachResizeHandle();
+    if (ih._resizingNow) {
+        // this is up high in this method for performance
+        ih._resizeImage(evt.clientY);
+        return false;
     }
 
+    if (!ih._isResizeHandleAttached()) {
+        return false;
+    }
+
+    // from this point on, this event handler is all about
+    // checking whether the resize handle should be detached
+
+    if (!ih._isResizeHandle(evt.target)) {
+        // this must be after the above check for whether resizing now
+        // because, while the resize operation does begin
+        // with the mouse pointing on the resize handle,
+        // the mouse might leave the resize handle during the resize operation.
+        // in that case, we would like the operation to continue
+        ih._detachResizeHandle();
+        return false;
+    }
+
+    if (!ih._isResizeHandleNextOfCurrentImg()) {
+        ih._detachResizeHandle();
+        return false;
+    }
+
+    return false;
+};
+
+WYMeditor.ImageHandler.prototype._isResizeHandleNextOfCurrentImg = function () {
+    var ih = this;
+    var $handle = ih._$resizeHandle;
+    var $img = ih._$currentImg;
+    var $imgPrevToHandle = $handle.prev('img');
+    if (
+        $img.length &&
+        $imgPrevToHandle.length &&
+        $imgPrevToHandle[0] === $img[0]
+    ) {
+        return true;
+    }
+    // this happens when:
+    //
+    // * the image was selected and
+    //   * replaced by pasted content
+    //   * replace by character insertion from key presses
+    //   * removed with backspace/delete
+    // * the image was dragged and dropped somewhere
     return false;
 };
 
@@ -530,17 +568,7 @@ WYMeditor.ImageHandler.prototype._handlePossibleModification = function () {
     }
 
     var $handle = ih._$resizeHandle;
-    if (
-        !$handle.prev('img').length ||
-        $handle.prev()[0] !== ih._$currentImg
-    ) {
-        // this happens when:
-        //
-        // * the image was selected and
-        //   * replaced by pasted content
-        //   * replace by character insertion from key presses
-        //   * removed with backspace/delete
-        // * the image was dragged and dropped somewhere
+    if (!ih._isResizeHandleNextOfCurrentImg()) {
         ih._detachResizeHandle();
         return;
     }

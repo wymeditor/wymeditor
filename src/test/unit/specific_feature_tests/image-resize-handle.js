@@ -120,7 +120,7 @@ test("resize handle with no image removed on `mousemove`", function () {
             wymeditor.$body().find('img')
                 .mouseover()
                 .remove();
-            wymeditor.$body().find('p').mousemove();
+            wymeditor.$body().find('.wym-resize-handle').mousemove();
         },
         additionalAssertionsFunc: function (wymeditor) {
             expectOneMore();
