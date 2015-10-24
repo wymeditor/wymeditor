@@ -2,6 +2,8 @@
 /* global
     manipulationTestHelper,
     prepareUnitTestModule,
+    skipKeyboardShortcutTests,
+    SKIP_THIS_TEST,
     test,
     expectOneMore,
     simulateKeyCombo,
@@ -102,6 +104,11 @@ test("resize handle with no image is removed async after 'keypress'", function (
                 start();
                 strictEqual(wymeditor.$body().find('div').length, 0);
             }, 0);
+        },
+        skipFunc: function () {
+            if (skipKeyboardShortcutTests) {
+                return SKIP_THIS_TEST;
+            }
         }
     });
 });
