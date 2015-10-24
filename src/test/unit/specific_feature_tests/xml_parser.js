@@ -2,6 +2,8 @@
 /* global
     wymEqual,
     prepareUnitTestModule,
+    manipulationTestHelper,
+    IMG_SRC,
     testNoChangeInHtmlArray,
     test,
     QUnit,
