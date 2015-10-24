@@ -96,10 +96,10 @@ test("resize handle with no image is removed async after 'keypress'", function (
         manipulationFunc: function (wymeditor) {
             wymeditor.$body().find('img').mouseover().remove();
             simulateKeyCombo(wymeditor, 'a');
-            stop();
         },
         additionalAssertionsFunc: function (wymeditor) {
             expectOneMore();
+            stop();
             setTimeout(function () {
                 start();
                 strictEqual(wymeditor.$body().find('div').length, 0);
