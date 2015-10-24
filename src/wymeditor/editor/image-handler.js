@@ -147,8 +147,9 @@ WYMeditor.ImageHandler.prototype._createResizeHandle = function () {
         // to keep the resize handle exactly
         // below its current image
         position: 'absolute',
+
+        // same as the background-color of the img's padding
         'background-color': 'yellow',
-        width: '100%',
 
         // override default iframe stylesheet
         // so that a 'div' does not appear
@@ -159,7 +160,9 @@ WYMeditor.ImageHandler.prototype._createResizeHandle = function () {
         // in the theoretical future
         // the more appropriate value would be
         // `min-content`
-        'min-width': '10em'
+        'min-width': '10em',
+
+        width: '100%'
     });
 
     return $handle;
@@ -313,15 +316,17 @@ WYMeditor.ImageHandler.prototype._placeResizeHandleOnImg = function (img) {
     // to resize very small images
     // (see the `_detachResizeHandle` method)
     $img.css({
-      'background-color': 'yellow',
-      'padding-top': IMAGE_PADDING,
-      'padding-right': IMAGE_PADDING,
-      'padding-bottom': '0',
-      'padding-left': IMAGE_PADDING,
-      'margin-top': '-' + IMAGE_PADDING,
-      'margin-right': '-' + IMAGE_PADDING,
-      'margin-bottom': '0',
-      'margin-left': '-' + IMAGE_PADDING
+        // same as the resize handle's background-color
+        'background-color': 'yellow',
+
+        'padding-top': IMAGE_PADDING,
+        'padding-right': IMAGE_PADDING,
+        'padding-bottom': '0',
+        'padding-left': IMAGE_PADDING,
+        'margin-top': '-' + IMAGE_PADDING,
+        'margin-right': '-' + IMAGE_PADDING,
+        'margin-bottom': '0',
+        'margin-left': '-' + IMAGE_PADDING
     });
 
     // it is important that the resize handle's offset
