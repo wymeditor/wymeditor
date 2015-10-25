@@ -51,9 +51,6 @@ WYMeditor.WymClassTrident7.prototype._docEventQuirks = function () {
     jQuery(wym._doc).bind("keyup", function (evt) {
         wym._keyup(evt);
     });
-    jQuery(wym._doc).bind("click", function (evt) {
-        wym._click(evt);
-    });
 
     // https://github.com/wymeditor/wymeditor/pull/641
     wym.$body().bind("dragend", function (evt) {

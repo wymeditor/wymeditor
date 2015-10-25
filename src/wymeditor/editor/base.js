@@ -3814,9 +3814,9 @@ WYMeditor.editor.prototype._afterInsertTable = function () {
 WYMeditor.editor.prototype._listen = function () {
     var wym = this;
 
-    wym.$body().bind("click", function (e) {
-        wym._click(e);
-    });
+    if (wym._clickQuirks) {
+        jQuery(wym._doc).click(wym._clickQuirks.bind(wym));
+    }
 
     jQuery(wym._doc).bind('paste', function () {
         wym._handlePasteEvent();
@@ -3861,13 +3861,6 @@ WYMeditor.editor.prototype._selectSingleNode = function (node) {
     nodeRange.selectNode(node);
 
     selection.setSingleRange(nodeRange);
-};
-
-WYMeditor.editor.prototype._click = function (evt) {
-    var wym = this;
-    if (wym._clickQuirks) {
-        wym._clickQuirks(evt);
-    }
 };
 
 /**
