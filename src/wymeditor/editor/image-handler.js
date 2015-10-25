@@ -107,10 +107,15 @@ WYMeditor.ImageHandler._isImgDragDropAllowed = function () {
     return true;
 };
 
+WYMeditor.ImageHandler._RESIZE_HANDLE_HR_HTML = jQuery('<hr>')
+    .addClass(WYMeditor.EDITOR_ONLY_CLASS)
+    .css({margin:0, padding:0})
+    .attr('outerHTML');
+
 WYMeditor.ImageHandler._RESIZE_HANDLE_INNER_HTML = [
     'drag this to resize',
     'click on image to select'
-].join(',<br/>');
+].join(WYMeditor.ImageHandler._RESIZE_HANDLE_HR_HTML);
 
 WYMeditor.ImageHandler._IMAGE_HIGHLIGHT_COLOR = 'yellow';
 
@@ -323,7 +328,10 @@ WYMeditor.ImageHandler.prototype._indicateOnResizeHandleThatImageIsSelected = fu
 
     var indication = 'image is selected';
     if (ih._imgDragDropAllowed) {
-        indication = indication + ',<br/>drag image to move it';
+        indication = [
+            indication,
+            'drag image to move it'
+        ].join(WYMeditor.ImageHandler._RESIZE_HANDLE_HR_HTML);
     }
 
     ih._$resizeHandle
