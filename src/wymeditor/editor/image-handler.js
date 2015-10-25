@@ -69,9 +69,10 @@ WYMeditor.ImageHandler = function (wym) {
     var ih = this;
     ih._wym = wym;
 
-    // only this single image resize handle exists always.
-    // at this point it is still detached
     ih._$resizeHandle = ih._createResizeHandle();
+    ih._resizeHandleAttached = false;
+
+    ih._$currentImageMarker = null;
 
     // references the image that
     // has the resize handle placed on it
@@ -176,6 +177,25 @@ WYMeditor.ImageHandler.prototype._createResizeHandle = function () {
     });
 
     return $handle;
+};
+
+WYMeditor.ImageHandler.prototype._getCurrentImageMarker = function () {
+    var ih = this;
+    if (
+        // a marker was not yet created
+        !ih._$currentImageMarker ||
+        // a marker was destroyed via native edit
+        !ih._$currentImageMarker.length
+    ) {
+        ih._$currentImageMarker = ih._createCurrentImageMarker();
+    }
+    return ih._$currentImageMarker;
+};
+
+WYMeditor.ImageHandler.prototype._createCurrentImageMarker = function () {
+    return jQuery('<div/>')
+        .addClass(WYMeditor.EDITOR_ONLY_CLASS)
+        .hide();
 };
 
 WYMeditor.ImageHandler.prototype._addEventListeners = function () {
@@ -357,18 +377,7 @@ WYMeditor.ImageHandler.prototype._placeResizeHandleOnImg = function (img) {
 
     ih._$currentImg = $img;
 
-    // because the resize handle is absolutely positioned
-    // it does not necessarily have to be placed immediately after the image.
-    // the reason it is placed immediately after the image
-    // is to provide a marker for where the image was
-    // when the handle was placed on it.
-    // see `_isResizeHandleNextOfCurrentImg`
-    //
-    // keeping a reference to the resize handle means that
-    // if any modification removes it from the DOM
-    // (for example, `html` method call)
-    // it remains in memory, ready for re-insertion
-    ih._$resizeHandle.insertAfter(img);
+    ih._getCurrentImageMarker().insertAfter($img);
 
     // colored padding around the image and the handle.
     // used for marking the image
@@ -389,11 +398,20 @@ WYMeditor.ImageHandler.prototype._placeResizeHandleOnImg = function (img) {
         'margin-left': '-' + IMAGE_PADDING
     });
 
+    // the resize handle, prepended to the body in this way,
+    // can be removed from the body using DOM manipulation
+    // such as setting the content with the `html` method
+    ih._$resizeHandle.prependTo(ih._wym.$body());
+
     // it is important that the resize handle's offset
     // is updated after the above style modification
     // adds top padding to the image
     // because that alters the image's outside height
     ih._correctResizeHandleOffsetAndWidth();
+
+    ih._$resizeHandle.show();
+
+    ih._resizeHandleAttached = true;
 };
 
 WYMeditor.ImageHandler.prototype._correctResizeHandleOffsetAndWidth = function () {
@@ -482,7 +500,7 @@ WYMeditor.ImageHandler.prototype._onMousemove = function (evt) {
         return false;
     }
 
-    if (!ih._isResizeHandleNextOfCurrentImg()) {
+    if (!ih._isCurrentImgAtMarker()) {
         ih._detachResizeHandle();
         return false;
     }
@@ -490,15 +508,19 @@ WYMeditor.ImageHandler.prototype._onMousemove = function (evt) {
     // returning false here would disable image dragging
 };
 
-WYMeditor.ImageHandler.prototype._isResizeHandleNextOfCurrentImg = function () {
+WYMeditor.ImageHandler.prototype._isCurrentImgAtMarker = function () {
     var ih = this;
-    var $handle = ih._$resizeHandle;
+    var $marker = ih._$currentImageMarker;
+    if (!$marker.length) {
+        // the marker was removed by some DOM manipulation
+        return false;
+    }
     var $img = ih._$currentImg;
-    var $imgPrevToHandle = $handle.prev('img');
+    var $imgPrevToMarker = $marker.prev('img');
     if (
         $img.length &&
-        $imgPrevToHandle.length &&
-        $imgPrevToHandle[0] === $img[0]
+        $imgPrevToMarker.length &&
+        $imgPrevToMarker[0] === $img[0]
     ) {
         return true;
     }
@@ -635,7 +657,7 @@ WYMeditor.ImageHandler.prototype._handlePossibleModification = function () {
         return;
     }
 
-    if (!ih._isResizeHandleNextOfCurrentImg()) {
+    if (!ih._isCurrentImgAtMarker()) {
         ih._detachResizeHandle();
         return;
     }
@@ -649,13 +671,13 @@ WYMeditor.ImageHandler.prototype._handlePossibleModification = function () {
 
 WYMeditor.ImageHandler.prototype._isResizeHandleAttached = function () {
     var ih = this;
-    return jQuery.contains(ih._wym._doc.documentElement, ih._$resizeHandle[0]);
+    return ih._resizeHandleAttached;
 };
 
 WYMeditor.ImageHandler.prototype._detachResizeHandle = function () {
     var ih = this;
 
-    ih._$resizeHandle.detach();
+    ih._$currentImageMarker.detach();
     if (
         // the size of the image might be so small,
         // that it would be hard to mouse over it
@@ -670,6 +692,8 @@ WYMeditor.ImageHandler.prototype._detachResizeHandle = function () {
         ih._$currentImg.css({padding: 0, margin: 0});
     }
     ih._$currentImg = null;
+    ih._$resizeHandle.hide();
+    ih._resizeHandleAttached = false;
 };
 
 WYMeditor.ImageHandler.prototype._onImgDragstart = function () {
