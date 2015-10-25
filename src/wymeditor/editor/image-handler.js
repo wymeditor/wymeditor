@@ -112,6 +112,8 @@ WYMeditor.ImageHandler._RESIZE_HANDLE_INNER_HTML = [
     'click on image to select'
 ].join(',<br/>');
 
+WYMeditor.ImageHandler._IMAGE_HIGHLIGHT_COLOR = 'yellow';
+
 // creates and returns
 // a yet detached UI resize handle element
 // in a jQuery object
@@ -148,8 +150,7 @@ WYMeditor.ImageHandler.prototype._createResizeHandle = function () {
         // below its current image
         position: 'absolute',
 
-        // same as the background-color of the img's padding
-        'background-color': 'yellow',
+        'background-color': WYMeditor.ImageHandler._IMAGE_HIGHLIGHT_COLOR,
 
         // override default iframe stylesheet
         // so that a 'div' does not appear
@@ -358,8 +359,7 @@ WYMeditor.ImageHandler.prototype._placeResizeHandleOnImg = function (img) {
     // to resize very small images
     // (see the `_detachResizeHandle` method)
     $img.css({
-        // same as the resize handle's background-color
-        'background-color': 'yellow',
+        'background-color': WYMeditor.ImageHandler._IMAGE_HIGHLIGHT_COLOR,
 
         'padding-top': IMAGE_PADDING,
         'padding-right': IMAGE_PADDING,
