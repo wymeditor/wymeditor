@@ -420,9 +420,6 @@ jQuery.extend(WYMeditor, {
     // within the editor.
     EDITOR_ONLY_CLASS: "wym-editor-only",
 
-    // Class for image containers
-    IMAGE_CONTAINER_CLASS: "wym-image-container",
-
     // Class for resize handles
     RESIZE_HANDLE_CLASS: "wym-resize-handle",
 
