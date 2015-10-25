@@ -77,14 +77,14 @@ WYMeditor.ImageHandler = function (wym) {
     // occurring at this moment
     ih._resizingNow = false;
 
-    ih._dragDropAllowed = WYMeditor.ImageHandler._isDragDropAllowed();
+    ih._imgDragDropAllowed = WYMeditor.ImageHandler._isImgDragDropAllowed();
 
     ih._addEventListeners();
 
     return ih;
 };
 
-WYMeditor.ImageHandler._isDragDropAllowed = function () {
+WYMeditor.ImageHandler._isImgDragDropAllowed = function () {
     var browser = jQuery.browser;
     if (browser.mozilla) {
         // undesired side effect.
@@ -252,7 +252,7 @@ WYMeditor.ImageHandler.prototype._setImgCursor = function ($img) {
         return;
     }
     // image is selected
-    if (ih._dragDropAllowed) {
+    if (ih._imgDragDropAllowed) {
         // in IE8-11 this does not work
         // and the cursor remains 'default'.
         // see the `_onImgMouseover` handler
@@ -321,7 +321,7 @@ WYMeditor.ImageHandler.prototype._indicateOnResizeHandleThatImageIsSelected = fu
     var ih = this;
 
     var indication = 'image is selected';
-    if (ih._dragDropAllowed) {
+    if (ih._imgDragDropAllowed) {
         indication = indication + ',<br/>drag image to move it';
     }
 
@@ -603,7 +603,7 @@ WYMeditor.ImageHandler.prototype._onImgMousedown = function () {
     }
 
     // returning false here prevents drag of image
-    return ih._dragDropAllowed;
+    return ih._imgDragDropAllowed;
 };
 
 WYMeditor.ImageHandler.prototype._onAnyNativeEdit = function () {
