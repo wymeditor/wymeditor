@@ -190,10 +190,6 @@ test("Image is selected via `click`", function () {
         startHtml: getSelectedImageHtml,
         manipulationFunc: function (wymeditor) {
             wymeditor.$body().find("img")
-                .mouseover()
-                .mousemove()
-                .mousedown()
-                .mouseup()
                 .click();
         },
         additionalAssertionsFunc: function (wymeditor) {

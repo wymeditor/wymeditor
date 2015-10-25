@@ -288,13 +288,8 @@ WYMeditor.ImageHandler.prototype._onImgClick = function (evt) {
     if (ih._wym.getSelectedImage() === evt.target) {
         return false;
     }
-    ih._selectCurrentImage();
+    ih._selectImage(evt.target);
     return false;
-};
-
-WYMeditor.ImageHandler.prototype._selectCurrentImage = function () {
-    var ih = this;
-    ih._selectImage(ih._$currentImg[0]);
 };
 
 WYMeditor.ImageHandler.prototype._selectImage = function (img) {
