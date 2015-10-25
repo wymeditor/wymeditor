@@ -17,11 +17,11 @@
 
 module("images-resize_handle", {setup: prepareUnitTestModule});
 
-test("Resize handle is added on `mouseover` image", function () {
+test("Resize handle is added on image `mousemove`", function () {
     manipulationTestHelper({
         startHtml: '<p><img src="' + IMG_SRC +'" /></p>',
         manipulationFunc: function (wymeditor) {
-            wymeditor.$body().find('img').mouseover();
+            wymeditor.$body().find('img').mousemove();
         },
         additionalAssertionsFunc: function (wymeditor) {
             var $resizeHandle = wymeditor.$body().find('div');
@@ -35,7 +35,7 @@ test("resize handle is immediately after image", function () {
     manipulationTestHelper({
         startHtml: '<p><img src="' + IMG_SRC +'" /></p>',
         manipulationFunc: function (wymeditor) {
-            wymeditor.$body().find('img').mouseover();
+            wymeditor.$body().find('img').mousemove();
         },
         additionalAssertionsFunc: function (wymeditor) {
             var $resizeHandle = wymeditor.$body().find('div');
@@ -49,7 +49,7 @@ test("resize handle has editor-only class", function () {
     manipulationTestHelper({
         startHtml: '<p><img src="' + IMG_SRC +'" /></p>',
         manipulationFunc: function (wymeditor) {
-            wymeditor.$body().find('img').mouseover();
+            wymeditor.$body().find('img').mousemove();
         },
         additionalAssertionsFunc: function (wymeditor) {
             var $resizeHandle = wymeditor.$body().find('div');
@@ -64,7 +64,7 @@ test("resize handle removed on `mousemove` outside image and handle", function (
         startHtml: '<p><img src="' + IMG_SRC +'" /></p>',
         manipulationFunc: function (wymeditor) {
             wymeditor.$body().find('img')
-                .mouseover()
+                .mousemove()
                 .parent().mousemove();
         },
         additionalAssertionsFunc: function (wymeditor) {
@@ -79,7 +79,7 @@ test("resize handle not removed on `mousemove` over handle", function () {
         startHtml: '<p><img src="' + IMG_SRC +'" /></p>',
         manipulationFunc: function (wymeditor) {
             wymeditor.$body().find('img')
-                .mouseover()
+                .mousemove()
                 .next().mousemove();
         },
         additionalAssertionsFunc: function (wymeditor) {
@@ -94,7 +94,7 @@ test("resize handle with no image is removed async after 'keypress'", function (
         startHtml: '<p><img src="' + IMG_SRC +'" /></p>',
         setCaretInSelector: 'p',
         manipulationFunc: function (wymeditor) {
-            wymeditor.$body().find('img').mouseover().remove();
+            wymeditor.$body().find('img').mousemove().remove();
             simulateKeyCombo(wymeditor, 'a');
         },
         additionalAssertionsFunc: function (wymeditor) {
@@ -118,7 +118,7 @@ test("resize handle with no image removed on `mousemove`", function () {
         startHtml: '<p><img src="' + IMG_SRC +'" /></p>',
         manipulationFunc: function (wymeditor) {
             wymeditor.$body().find('img')
-                .mouseover()
+                .mousemove()
                 .remove();
             wymeditor.$body().find('.wym-resize-handle').mousemove();
         },
