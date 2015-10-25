@@ -12,6 +12,11 @@
  * When IE8 is not longer supported,
  * `rem` could be used for more accurate UI element dimensions
  *
+ * ## IE9 Shenanigans
+ *
+ * Dragging and dropping of images is disabled.
+ * See the `_isImgDragDropAllowed` function.
+ *
  * ## IE11 Shenanigans
  *
  * Mouse interaction with the resize handle
@@ -49,9 +54,8 @@
  * in all the supported browsers
  * by psychologically stable individuals.
  *
- * Dragging and dropping of images may or may not work.
- * It may work and then stop working.
- * It may produce undesired results on drop.
+ * Dragging and dropping of images
+ * might produce undesired results on drop.
  * Uncharted territory.
  *
  * In event handlers of events that
@@ -69,8 +73,8 @@ WYMeditor.ImageHandler = function (wym) {
     // at this point it is still detached
     ih._$resizeHandle = ih._createResizeHandle();
 
-    // references the image which
-    // currently has the resize handle placed on it
+    // references the image that
+    // has the resize handle placed on it
     ih._$currentImg = null;
 
     // flags whether a resize operation is
@@ -253,7 +257,7 @@ WYMeditor.ImageHandler.prototype._onImgMouseover = function (evt) {
 WYMeditor.ImageHandler.prototype._setImgCursor = function ($img) {
     var ih = this;
     if (ih._wym.getSelectedImage() !== $img[0]) {
-        // hint that image get be selected by clicking on it
+        // hint that image is selectable by click
         $img.css('cursor', 'pointer');
         return;
     }
@@ -278,7 +282,7 @@ WYMeditor.ImageHandler.prototype._onImgClick = function (evt) {
     // causes the deselection of the image
     // (see the `_selectImage` method).
     // one might think that
-    // this indication should be triggered
+    // the following indication should be triggered
     // only when the image is being selected
     // (as opposed to on every image click).
     // while that may or may not be
@@ -288,13 +292,14 @@ WYMeditor.ImageHandler.prototype._onImgClick = function (evt) {
     // the image is deselected and then reselected
     // on every image click,
     // so in IE8, this indication
-    // would always be triggered on image click
+    // would always be triggered on image click.
+    // for cross-browser consistency,
+    // indicate on every click
     ih._indicateOnResizeHandleThatImageIsSelected();
 
-    if (ih._wym.getSelectedImage() === evt.target) {
-        return false;
+    if (ih._wym.getSelectedImage() !== evt.target) {
+        ih._selectImage(evt.target);
     }
-    ih._selectImage(evt.target);
     return false;
 };
 
@@ -357,8 +362,13 @@ WYMeditor.ImageHandler.prototype._placeResizeHandleOnImg = function (img) {
     // the reason it is placed immediately after the image
     // is to provide a marker for where the image was
     // when the handle was placed on it.
-    // see `_handlePossibleModification`
-    ih._$resizeHandle.insertAfter($img);
+    // see `_isResizeHandleNextOfCurrentImg`
+    //
+    // keeping a reference to the resize handle means that
+    // if any modification removes it from the DOM
+    // (for example, `html` method call)
+    // it remains in memory, ready for re-insertion
+    ih._$resizeHandle.insertAfter(img);
 
     // colored padding around the image and the handle.
     // used for marking the image
@@ -381,7 +391,7 @@ WYMeditor.ImageHandler.prototype._placeResizeHandleOnImg = function (img) {
 
     // it is important that the resize handle's offset
     // is updated after the above style modification
-    // add top padding to the image
+    // adds top padding to the image
     // because that alters the image's outside height
     ih._correctResizeHandleOffsetAndWidth();
 };
@@ -391,11 +401,6 @@ WYMeditor.ImageHandler.prototype._correctResizeHandleOffsetAndWidth = function (
 
     ih._$resizeHandle.css('max-width', ih._$currentImg.outerWidth());
 
-    // for the following operations,
-    // keep in mind that the image
-    // is positioned absolutely
-
-    // refrain from calling `offset` twice
     var offset = ih._$currentImg.offset();
 
     ih._$resizeHandle.css('left', offset.left);
@@ -405,7 +410,7 @@ WYMeditor.ImageHandler.prototype._correctResizeHandleOffsetAndWidth = function (
     var yAfterImg = offset.top + ih._$currentImg.outerHeight();
 
     if (jQuery.browser.msie) {
-        // in IE8-11 there is might be a visible 1 pixes gap
+        // in IE8-11 there might be a visible 1 pixes gap
         // between the image and the resize handle
         // possibly this issue:
         // https://github.com/jquery/jquery/issues/1724
@@ -418,11 +423,10 @@ WYMeditor.ImageHandler.prototype._correctResizeHandleOffsetAndWidth = function (
 WYMeditor.ImageHandler.prototype._onResizeHandleMousedown = function (evt) {
     var ih = this;
 
-    if (ih._resizingNow) {
-        return false;
+    if (!ih._resizingNow) {
+        ih._startResize(evt.clientY);
     }
 
-    ih._startResize(evt.clientY);
     return false;
 
 };
@@ -450,11 +454,12 @@ WYMeditor.ImageHandler.prototype._onMousemove = function (evt) {
         return false;
     }
 
-    if (evt.target.tagName.toLowerCase() === 'img') {
-        if (!ih._isResizeHandleAttached()) {
-            ih._placeResizeHandleOnImg(evt.target);
-            return false;
-        }
+    if (
+        evt.target.tagName.toLowerCase() === 'img' &&
+        !ih._isResizeHandleAttached()
+    ) {
+        ih._placeResizeHandleOnImg(evt.target);
+        return false;
     }
 
     if (!ih._isResizeHandleAttached()) {
@@ -501,8 +506,9 @@ WYMeditor.ImageHandler.prototype._isResizeHandleNextOfCurrentImg = function () {
     //
     // * the image was selected and
     //   * replaced by pasted content
-    //   * replace by character insertion from key presses
+    //   * replaced by character insertion from key press
     //   * removed with backspace/delete
+    // * caret was before/after image and delete/backspace pressed
     // * the image was dragged and dropped somewhere
     return false;
 };
