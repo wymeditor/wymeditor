@@ -1156,9 +1156,9 @@ WYMeditor.Helper = {
     getAllEventTypes: function (elem) {
         var result = [];
         for (var key in elem) {
-          if (key.indexOf('on') === 0 && key !== 'onmousemove') {
-              result.push(key.slice(2));
-          }
+            if (key.indexOf('on') === 0 && key !== 'onmousemove') {
+                result.push(key.slice(2));
+            }
         }
         return result.join(' ');
     }

@@ -411,7 +411,7 @@ WYMeditor.ImageHandler.prototype._onResizeHandleMousedown = function (evt) {
     var ih = this;
 
     if (ih._resizingNow) {
-      return false;
+        return false;
     }
 
     ih._startResize(evt.clientY);
@@ -674,7 +674,7 @@ WYMeditor.ImageHandler.prototype._isAnImgSelected = function (message) {
     var ih = this;
     message = message.toUpperCase();
 
-    function check (prefix) {
+    function check(prefix) {
         var result = ih._wym.getSelectedImage() ? '***YES***' : '';
         prefix = prefix ? prefix + ' ' : '';
         WYMeditor.console.log(prefix + message + ' ' + result);
@@ -692,8 +692,8 @@ WYMeditor.ImageHandler._onAllEvents = function (evt) {
     var ih = this;
 
     ih._isAnImgSelected([
-      evt.type,
-      evt.target.tagName,
-      jQuery(evt.target).attr('className')
+        evt.type,
+        evt.target.tagName,
+        jQuery(evt.target).attr('className')
     ].join(' '));
 };
