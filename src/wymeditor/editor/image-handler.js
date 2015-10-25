@@ -465,7 +465,7 @@ WYMeditor.ImageHandler.prototype._onMousemove = function (evt) {
     // checking whether the resize handle should be detached
 
     if (
-        !ih._isResizeHandle(evt.target) &&
+        !jQuery(evt.target).hasClass(WYMeditor.EDITOR_ONLY_CLASS) &&
         !ih._isCurrentImg(evt.target)
     ) {
         // this must be after the above check for whether resizing now
