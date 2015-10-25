@@ -19,13 +19,14 @@ WYMeditor.WymClassGecko.NEEDS_CELL_FIX = parseInt(
 
 WYMeditor.WymClassGecko.prototype._docEventQuirks = function () {
     var wym = this;
+    var $doc = jQuery(wym._doc);
 
-    jQuery(wym._doc).bind("keyup", function (evt) {
-        wym._keyup(evt);
-    });
-    jQuery(wym._doc).bind("focus", function () {
+    $doc.keyup(wym._keyup.bind(wym));
+    $doc.focus(function () {
+        // not providing _onBodyFocus here because it doesn't exist yet
         wym.undoRedo._onBodyFocus();
     });
+    $doc.click(wym._click.bind(wym));
 };
 
 // Keyup handler, mainly used for cleanups
@@ -103,7 +104,7 @@ WYMeditor.WymClassGecko.prototype._keyup = function (evt) {
     }
 };
 
-WYMeditor.WymClassGecko.prototype._clickQuirks = function () {
+WYMeditor.WymClassGecko.prototype._click = function () {
     var wym = this,
         container = wym.selectedContainer(),
         sel;
@@ -157,7 +158,7 @@ WYMeditor.WymClassGecko.prototype._afterInsertTable = function (table) {
     if (WYMeditor.WymClassGecko.NEEDS_CELL_FIX === true) {
         // In certain FF versions, inserted tables need some content in their
         // cells before they're editable, otherwise the user has to move focus
-        // in and then out of a cell first, even with our `_clickQuirks` hack
+        // in and then out of a cell first, even with our _click() hack
         jQuery(table).find('td').each(function (index, element) {
             jQuery(element).append(WYMeditor.WymClassGecko.CELL_PLACEHOLDER);
         });

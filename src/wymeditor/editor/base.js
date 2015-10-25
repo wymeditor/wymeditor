@@ -3814,10 +3814,6 @@ WYMeditor.editor.prototype._afterInsertTable = function () {
 WYMeditor.editor.prototype._listen = function () {
     var wym = this;
 
-    if (wym._clickQuirks) {
-        jQuery(wym._doc).click(wym._clickQuirks.bind(wym));
-    }
-
     jQuery(wym._doc).bind('paste', function () {
         wym._handlePasteEvent();
     });
