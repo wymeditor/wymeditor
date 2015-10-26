@@ -81,7 +81,7 @@ WYMeditor.ImageHandler._isImgDragDropAllowed = function () {
 
 WYMeditor.ImageHandler._RESIZE_HANDLE_HR_HTML = jQuery('<hr>')
     .addClass(WYMeditor.EDITOR_ONLY_CLASS)
-    .css({margin:0, padding:0})
+    .css({margin: 0, padding: 0})
     .attr('outerHTML');
 
 WYMeditor.ImageHandler._RESIZE_HANDLE_INNER_HTML = [
