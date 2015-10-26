@@ -548,6 +548,7 @@ WYMeditor.ImageHandler.prototype._stopResize = function () {
 
     ih._resizingNow = false;
     ih._startMouseY = null;
+    ih._wym.registerModification();
 };
 
 WYMeditor.ImageHandler.prototype._onImgMousedown = function (evt) {
