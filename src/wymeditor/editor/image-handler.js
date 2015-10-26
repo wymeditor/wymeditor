@@ -17,21 +17,6 @@
  * Dragging and dropping of images is disabled.
  * See the `_isImgDragDropAllowed` function.
  *
- * ## IE11 Shenanigans
- *
- * Mouse interaction with the resize handle
- * results in the native resize handles on it
- * (eight small squares around it)
- * as if the user is invited to resize it.
- * Trying to resize the resize handle
- * using these native handles
- * fails quite gracefully,
- * as if they did not exist.
- * The reason that it fails is
- * most likely due to prevented native actions
- * in one of our event handlers
- * (`return false` or `evt.preventDefault()`).
- *
  * ## IE8-11 Shenanigans
  *
  * SVG images are not scaled.
@@ -643,6 +628,18 @@ WYMeditor.ImageHandler.prototype._onImgDragstart = function () {
 };
 
 WYMeditor.ImageHandler.prototype._onResizeHandleClickDblclick = function () {
+    var ih = this;
+
+    if (jQuery.browser.msie && jQuery.browser.versionNumber === 11) {
+        // in IE11 some mouse events on the resize handle
+        // result in native resize handles on it (eight small squares around it).
+        // trying to resize the resize handle using these native handles
+        // fails quite gracefully, as they seem to have no effect at all.
+        // it fails most likely due to prevented native actions
+        // in one of our event handlers.
+        // however, deselecting here completely prevents these handles
+        ih._wym.deselect();
+    }
     // prevents entering edit mode in the handle
     return false;
 };
