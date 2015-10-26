@@ -345,6 +345,11 @@ WYMeditor.ImageHandler.prototype._indicateOnResizeHandleThatImageIsSelected = fu
         .css('font-weight', 'bold')
         .html(indication);
 
+    // ideally, the above indication text would remain
+    // until the image is no longer selected.
+    // since it is not easy to detect when that happens,
+    // the indication text is replaced with the initial text
+    // after a short short.
     setTimeout(function () {
         ih._$resizeHandle
           .css('font-weight', 'normal')
@@ -361,11 +366,10 @@ WYMeditor.ImageHandler.prototype._placeResizeHandleOnImg = function (img) {
 
     ih._getCurrentImageMarker().insertAfter($img);
 
-    // colored padding around the image and the handle.
-    // used for marking the image
+    // colored padding around the image and the handle
+    // visually marks the image
     // that currently has the resize handle placed on it.
-    // also, makes it possible
-    // to resize very small images
+    // it also makes it possible to resize very small images
     // (see the `_detachResizeHandle` method)
     $img.css({
         'background-color': WYMeditor.ImageHandler._IMAGE_HIGHLIGHT_COLOR,
@@ -382,7 +386,10 @@ WYMeditor.ImageHandler.prototype._placeResizeHandleOnImg = function (img) {
 
     // the resize handle, prepended to the body in this way,
     // can be removed from the body using DOM manipulation
-    // such as setting the content with the `html` method
+    // such as setting the content with the `html` method.
+    // so we place it there in case that occurred.
+    // this could be done conditionally
+    // but there is practically no performance hit so keeping it simple
     ih._$resizeHandle.prependTo(ih._wym.$body());
 
     // it is important that the resize handle's offset
@@ -392,7 +399,6 @@ WYMeditor.ImageHandler.prototype._placeResizeHandleOnImg = function (img) {
     ih._correctResizeHandleOffsetAndWidth();
 
     ih._$resizeHandle.show();
-
     ih._resizeHandleAttached = true;
 };
 
@@ -426,9 +432,7 @@ WYMeditor.ImageHandler.prototype._onResizeHandleMousedown = function (evt) {
     if (!ih._resizingNow) {
         ih._startResize(evt.clientY);
     }
-
     return false;
-
 };
 
 WYMeditor.ImageHandler.prototype._startResize = function (startMouseY) {
@@ -574,12 +578,10 @@ WYMeditor.ImageHandler.prototype._onImgMousedown = function () {
 
     if (jQuery.browser.msie && jQuery.browser.versionNumber === 11) {
         // IE11 on image mousedown
-        // places native resize handles
-        // around the image.
-        // preventing default here prevents it
+        // places native resize handles around the image.
+        // preventing default here seems to be the only way to prevent that.
         //
-        // an undesired side effect,
-        // preventing default here means
+        // an undesired side effect, preventing default here means
         // not allowing dragging and dropping
         // of images in IE11.
         // if ever dragging is enabled in IE11,
