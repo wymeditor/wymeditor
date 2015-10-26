@@ -32,9 +32,6 @@
  * in one of our event handlers
  * (`return false` or `evt.preventDefault()`).
  *
- * Dragging and dropping of images is disabled.
- * See the `_onImgMousedown` method.
- *
  * ## IE8-11 Shenanigans
  *
  * SVG images are not scaled.
@@ -91,11 +88,6 @@ WYMeditor.ImageHandler._isImgDragDropAllowed = function () {
             // dragging and dropping seems to not consistently work.
             // the image would only some times get picked up by the mouse drag attempt.
             // to prevent confusion
-            return false;
-        }
-        if (browser.versionNumber === 11) {
-            // undesired side effect.
-            // see the `_onImgMousedown` handler
             return false;
         }
     }
@@ -573,21 +565,17 @@ WYMeditor.ImageHandler.prototype._stopResize = function () {
     ih._startMouseY = null;
 };
 
-WYMeditor.ImageHandler.prototype._onImgMousedown = function () {
+WYMeditor.ImageHandler.prototype._onImgMousedown = function (evt) {
     var ih = this;
 
     if (jQuery.browser.msie && jQuery.browser.versionNumber === 11) {
-        // IE11 on image mousedown
-        // places native resize handles around the image.
-        // preventing default here seems to be the only way to prevent that.
-        //
-        // an undesired side effect, preventing default here means
-        // not allowing dragging and dropping
-        // of images in IE11.
-        // if ever dragging is enabled in IE11,
-        // modify the `_indicateOnResizeHandleThatImageIsSelected` method
-        // accordingly
-        return false;
+        // IE11 on image mousedown places native resize handles around the image.
+        // selecting the image both here and on `click` refrains from those handles
+        // completely and seemingly without side effects.
+        ih._selectImage(evt.target);
+        // another way to refrain from the handles is preventing default.
+        // but that would have an undesired side effect
+        // of not allowing dragging and dropping of images.
     }
 
     // returning false here prevents drag of image
