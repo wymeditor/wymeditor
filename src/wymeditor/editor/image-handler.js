@@ -161,7 +161,7 @@ WYMeditor.ImageHandler.prototype._createResizeHandle = function () {
         // in the theoretical future
         // the more appropriate value would be
         // `min-content`
-        'min-width': '10em',
+        'min-width': '13em',
 
         width: '100%'
     });
