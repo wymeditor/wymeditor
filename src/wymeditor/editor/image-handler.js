@@ -47,7 +47,6 @@ WYMeditor.ImageHandler = function (wym) {
     ih._wym = wym;
 
     ih._$resizeHandle = ih._createResizeHandle();
-    ih._resizeHandleAttached = false;
 
     ih._$currentImageMarker = null;
 
@@ -159,9 +158,12 @@ WYMeditor.ImageHandler.prototype._getCurrentImageMarker = function () {
     return ih._$currentImageMarker;
 };
 
+WYMeditor.ImageHandler._IMAGE_MARKER_CLASS = 'wym-image-marker';
+
 WYMeditor.ImageHandler.prototype._createCurrentImageMarker = function () {
     return jQuery('<div/>')
         .addClass(WYMeditor.EDITOR_ONLY_CLASS)
+        .addClass(WYMeditor.ImageHandler._IMAGE_MARKER_CLASS)
         .hide();
 };
 
@@ -376,7 +378,6 @@ WYMeditor.ImageHandler.prototype._placeResizeHandleOnImg = function (img) {
     ih._correctResizeHandleOffsetAndWidth();
 
     ih._$resizeHandle.show();
-    ih._resizeHandleAttached = true;
 };
 
 WYMeditor.ImageHandler.prototype._correctResizeHandleOffsetAndWidth = function () {
@@ -597,7 +598,14 @@ WYMeditor.ImageHandler.prototype._handlePossibleModification = function () {
 
 WYMeditor.ImageHandler.prototype._isResizeHandleAttached = function () {
     var ih = this;
-    return ih._resizeHandleAttached;
+    var $handle = ih._getResizeHandle();
+    return $handle && $handle.css('display') !== 'none';
+};
+
+WYMeditor.ImageHandler.prototype._getResizeHandle = function () {
+    var ih = this;
+    var $handle = ih._wym.$body().find('.' + WYMeditor.RESIZE_HANDLE_CLASS);
+    return $handle.length ? $handle : false;
 };
 
 WYMeditor.ImageHandler.prototype._detachResizeHandle = function () {
@@ -619,7 +627,6 @@ WYMeditor.ImageHandler.prototype._detachResizeHandle = function () {
     }
     ih._$currentImg = null;
     ih._$resizeHandle.hide();
-    ih._resizeHandleAttached = false;
 };
 
 WYMeditor.ImageHandler.prototype._onImgDragstart = function () {
