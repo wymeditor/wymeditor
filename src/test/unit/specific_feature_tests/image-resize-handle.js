@@ -17,30 +17,30 @@
 
 module("images-resize_handle", {setup: prepareUnitTestModule});
 
-test("Resize handle is added on image `mousemove`", function () {
+test("Resize handle is prepended to body on image `mousemove`", function () {
     manipulationTestHelper({
         startHtml: '<p><img src="' + IMG_SRC + '" /></p>',
         manipulationFunc: function (wymeditor) {
             wymeditor.$body().find('img').mousemove();
         },
         additionalAssertionsFunc: function (wymeditor) {
-            var $resizeHandle = wymeditor.$body().find('div');
+            var $resizeHandle = wymeditor.$body().children().first();
             expectOneMore();
             ok($resizeHandle.hasClass('wym-resize-handle'));
         }
     });
 });
 
-test("resize handle is immediately after image", function () {
+test("image marker is immediately after image", function () {
     manipulationTestHelper({
         startHtml: '<p><img src="' + IMG_SRC + '" /></p>',
         manipulationFunc: function (wymeditor) {
             wymeditor.$body().find('img').mousemove();
         },
         additionalAssertionsFunc: function (wymeditor) {
-            var $resizeHandle = wymeditor.$body().find('div');
             expectOneMore();
-            ok($resizeHandle.prev('img').length);
+            var $imgMarker = wymeditor.$body().find('.wym-image-marker');
+            ok($imgMarker.prev('img').length);
         }
     });
 });
@@ -52,14 +52,14 @@ test("resize handle has editor-only class", function () {
             wymeditor.$body().find('img').mousemove();
         },
         additionalAssertionsFunc: function (wymeditor) {
-            var $resizeHandle = wymeditor.$body().find('div');
+            var $resizeHandle = wymeditor.$body().find('.wym-resize-handle');
             expectOneMore();
             ok($resizeHandle.hasClass('wym-editor-only'));
         }
     });
 });
 
-test("resize handle removed on `mousemove` outside image and handle", function () {
+test("resize handle hidden on `mousemove` outside image and handle", function () {
     manipulationTestHelper({
         startHtml: '<p><img src="' + IMG_SRC + '" /></p>',
         manipulationFunc: function (wymeditor) {
@@ -69,27 +69,26 @@ test("resize handle removed on `mousemove` outside image and handle", function (
         },
         additionalAssertionsFunc: function (wymeditor) {
             expectOneMore();
-            strictEqual(wymeditor.$body().find('div').length, 0);
+            strictEqual(wymeditor.$body().find('.wym-resize-handle').css('display'), 'none');
         }
     });
 });
 
-test("resize handle not removed on `mousemove` over handle", function () {
+test("resize handle not hidden on `mousemove` over handle", function () {
     manipulationTestHelper({
         startHtml: '<p><img src="' + IMG_SRC + '" /></p>',
         manipulationFunc: function (wymeditor) {
-            wymeditor.$body().find('img')
-                .mousemove()
-                .next().mousemove();
+            wymeditor.$body().find('img').mousemove();
+            wymeditor.$body().find('.wym-resize-handle').mousemove();
         },
         additionalAssertionsFunc: function (wymeditor) {
             expectOneMore();
-            strictEqual(wymeditor.$body().find('div').length, 1);
+            strictEqual(wymeditor.$body().find('.wym-resize-handle').css('display'), 'block');
         }
     });
 });
 
-test("resize handle with no image is removed async after 'keypress'", function () {
+test("resize handle with no image is hidden async after 'keypress'", function () {
     manipulationTestHelper({
         startHtml: '<p><img src="' + IMG_SRC + '" /></p>',
         setCaretInSelector: 'p',
@@ -102,7 +101,7 @@ test("resize handle with no image is removed async after 'keypress'", function (
             stop();
             setTimeout(function () {
                 start();
-                strictEqual(wymeditor.$body().find('div').length, 0);
+                strictEqual(wymeditor.$body().find('.wym-resize-handle').css('display'), 'none');
             }, 0);
         },
         skipFunc: function () {
@@ -113,7 +112,7 @@ test("resize handle with no image is removed async after 'keypress'", function (
     });
 });
 
-test("resize handle with no image removed on `mousemove`", function () {
+test("resize handle with no image is hidden on `mousemove`", function () {
     manipulationTestHelper({
         startHtml: '<p><img src="' + IMG_SRC + '" /></p>',
         manipulationFunc: function (wymeditor) {
@@ -124,7 +123,7 @@ test("resize handle with no image removed on `mousemove`", function () {
         },
         additionalAssertionsFunc: function (wymeditor) {
             expectOneMore();
-            strictEqual(wymeditor.$body().find('div').length, 0);
+            strictEqual(wymeditor.$body().find('.wym-resize-handle').css('display'), 'none');
         }
     });
 });
