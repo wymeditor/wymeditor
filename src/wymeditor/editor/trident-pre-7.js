@@ -64,7 +64,8 @@ WYMeditor.WymClassTridentPre7.prototype._docEventQuirks = function () {
     });
 
     wym._doc.oncontrolselect = function () {
-        // this prevents resize handles on various elements
+        // this prevents resize handles on various element
+        // such as images, at least in IE8
         return false;
     };
 };

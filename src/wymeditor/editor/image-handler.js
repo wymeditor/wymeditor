@@ -26,7 +26,7 @@
  *
  * ## General Shenanigans (http://i.imgur.com/wbQ6U5C.jpg)
  *
- * This whole module is not covered by any tests
+ * This module is covered by only a few basic tests
  * so any change must be meticulously manually tested
  * in all the supported browsers
  * by psychologically stable individuals.
@@ -624,7 +624,6 @@ WYMeditor.ImageHandler.prototype._detachResizeHandle = function () {
 
 WYMeditor.ImageHandler.prototype._onImgDragstart = function () {
     var ih = this;
-
     ih._detachResizeHandle();
 };
 
