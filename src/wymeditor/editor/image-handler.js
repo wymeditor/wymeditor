@@ -35,11 +35,6 @@
  * Dragging and dropping of images is disabled.
  * See the `_onImgMousedown` method.
  *
- * ## Firefox Shenanigans
- *
- * Dragging and dropping of images is disabled.
- * See the `_onImgMousedown` method.
- *
  * ## IE8-11 Shenanigans
  *
  * SVG images are not scaled.
@@ -91,11 +86,6 @@ WYMeditor.ImageHandler = function (wym) {
 
 WYMeditor.ImageHandler._isImgDragDropAllowed = function () {
     var browser = jQuery.browser;
-    if (browser.mozilla) {
-        // undesired side effect.
-        // see the `_onImgMousedown` handler
-        return false;
-    }
     if (browser.msie) {
         if (browser.versionNumber === 9) {
             // dragging and dropping seems to not consistently work.
@@ -295,31 +285,23 @@ WYMeditor.ImageHandler.prototype._setImgCursor = function ($img) {
 WYMeditor.ImageHandler.prototype._onImgClick = function (evt) {
     var ih = this;
 
+    // firefox seems to natively select the image on mousedown
+    // this means that by the time this handler executes,
+    // the image is already selected.
+    //
     // in IE8, by this point
     // the image is always deselected,
     // even if it was selected just before the click,
     // because the mouse event itself
     // causes the deselection of the image
     // (see the `_selectImage` method).
-    // one might think that
-    // the following indication should be triggered
-    // only when the image is being selected
-    // (as opposed to on every image click).
-    // while that may or may not be
-    // a more correct behavior,
-    // in IE8 it does not seem possible
-    // because, as was just explained,
-    // the image is deselected and then reselected
-    // on every image click,
-    // so in IE8, this indication
-    // would always be triggered on image click.
-    // for cross-browser consistency,
-    // indicate on every click
-    ih._indicateOnResizeHandleThatImageIsSelected();
+    //
+    // because of the above browser limitations,
+    // it is more simple to always select the image here,
+    // regardless of whether it is selected already or not
 
-    if (ih._wym.getSelectedImage() !== evt.target) {
-        ih._selectImage(evt.target);
-    }
+    ih._selectImage(evt.target);
+    ih._indicateOnResizeHandleThatImageIsSelected();
     return false;
 };
 
@@ -589,38 +571,6 @@ WYMeditor.ImageHandler.prototype._stopResize = function () {
 
 WYMeditor.ImageHandler.prototype._onImgMousedown = function () {
     var ih = this;
-
-    if (jQuery.browser.mozilla) {
-        // firefox seems to natively select the image on mousedown
-        // this means that by the time the `_onImgClick` handler
-        // executes, the image is already selected.
-        // this means that the image ends up
-        // being selected exactly as desired.
-        // it also means that the visual indication
-        // in `_selectImage` is not triggered.
-        // also, unlike in other browsers, in Firefox,
-        // the text selection of images
-        // does not result in any highlight of the image.
-        // no highlight and no visual indication
-        // means that the user might not understand
-        // that the image is selected after it was clicked.
-        // this works around the issue by
-        // preventing the native action of `mousedown`,
-        // which is selecting the image
-        // so the image will be selected by our code
-        // and while it will not be highlighted,
-        // there will be a visual indication
-        // that it was indeed selected
-        //
-        // an undesired side effect,
-        // preventing default here means
-        // not allowing dragging and dropping
-        // of images in Firefox.
-        // if ever dragging is enabled in Firefox,
-        // modify the `_indicateOnResizeHandleThatImageIsSelected` method
-        // accordingly
-        return false;
-    }
 
     if (jQuery.browser.msie && jQuery.browser.versionNumber === 11) {
         // IE11 on image mousedown
