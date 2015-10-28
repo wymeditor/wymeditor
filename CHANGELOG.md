@@ -7,6 +7,9 @@ WYMeditor.
 
 *release-date* TBD
 
+* [#754] (https://github.com/wymeditor/wymeditor/issues/754)
+  Allow insert image and paste dialogs to open
+  when selection is non-collapsed (not only when it is collapsed)
 * [#747](https://github.com/wymeditor/wymeditor/pull/747)
   New: Image resizing
 
