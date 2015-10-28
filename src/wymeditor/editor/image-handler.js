@@ -518,7 +518,7 @@ WYMeditor.ImageHandler.prototype._resizeImage = function (currentMouseY) {
         // in order to prevent dimensions ratio corruption
         var originalHeight = $img.attr('height');
         var originalWidth = $img.attr('width');
-        dimensionsRatio =  originalWidth / originalHeight;
+        dimensionsRatio = originalWidth / originalHeight;
         $img.data('DimensionsRatio', dimensionsRatio);
     }
 
