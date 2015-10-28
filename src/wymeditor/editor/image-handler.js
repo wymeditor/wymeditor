@@ -328,7 +328,7 @@ WYMeditor.ImageHandler.prototype._indicateOnResizeHandleThatImageIsSelected = fu
     // until the image is no longer selected.
     // since it is not easy to detect when that happens,
     // the indication text is replaced with the initial text
-    // after a short short.
+    // after a short moment.
     setTimeout(function () {
         ih._$resizeHandle
           .css('font-weight', 'normal')
