@@ -51,7 +51,7 @@
     "jquery"        : true,
 
     "nomen"         : false,
-    "onevar"        : true,
+    "onevar"        : false,
     "passfail"      : false,
     "white"         : true,
 

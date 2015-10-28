@@ -420,6 +420,9 @@ jQuery.extend(WYMeditor, {
     // within the editor.
     EDITOR_ONLY_CLASS: "wym-editor-only",
 
+    // Class for resize handles
+    RESIZE_HANDLE_CLASS: "wym-resize-handle",
+
     // Classes that will be removed from all tags' class attribute by the
     // parser.
     CLASSES_REMOVED_BY_PARSER: [
@@ -1087,7 +1090,7 @@ jQuery.fn.parentsOrSelf = function (selector) {
     }
 };
 
-// String & array helpers
+// Various helpers
 
 WYMeditor.Helper = {
 
@@ -1141,6 +1144,20 @@ WYMeditor.Helper = {
             }
         }
         return null;
+    },
+
+    // naively returns all event types
+    // of the provided an element
+    // according the its property keys that
+    // begin with 'on'
+    getAllEventTypes: function (elem) {
+        var result = [];
+        for (var key in elem) {
+            if (key.indexOf('on') === 0 && key !== 'onmousemove') {
+                result.push(key.slice(2));
+            }
+        }
+        return result.join(' ');
     }
 };
 

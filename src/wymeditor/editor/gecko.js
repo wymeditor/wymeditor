@@ -19,16 +19,14 @@ WYMeditor.WymClassGecko.NEEDS_CELL_FIX = parseInt(
 
 WYMeditor.WymClassGecko.prototype._docEventQuirks = function () {
     var wym = this;
+    var $doc = jQuery(wym._doc);
 
-    jQuery(wym._doc).bind("keyup", function (evt) {
-        wym._keyup(evt);
-    });
-    jQuery(wym._doc).bind("click", function (evt) {
-        wym._click(evt);
-    });
-    jQuery(wym._doc).bind("focus", function () {
+    $doc.keyup(wym._keyup.bind(wym));
+    $doc.focus(function () {
+        // not providing _onBodyFocus here because it doesn't exist yet
         wym.undoRedo._onBodyFocus();
     });
+    $doc.click(wym._click.bind(wym));
 };
 
 // Keyup handler, mainly used for cleanups

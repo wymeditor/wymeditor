@@ -1,17 +1,14 @@
 /* jshint evil: true */
 /* global
     manipulationTestHelper,
+    stop,
+    start,
     prepareUnitTestModule,
     test,
-    QUnit,
     expectOneMore,
     expectMore,
     strictEqual,
     makeSelection,
-    inPhantomjs,
-    SKIP_THIS_TEST,
-    stop,
-    start,
     IMG_SRC
 */
 "use strict";
@@ -188,99 +185,32 @@ test("Returns an image when it is exclusively selected", function () {
 
 module("images-selection", {setup: prepareUnitTestModule});
 
-test("Image is selected via `mouseup` in non pre-7 Trident", function () {
+test("Image is selected via `click`", function () {
     manipulationTestHelper({
         startHtml: getSelectedImageHtml,
-        prepareFunc: function (wymeditor) {
-            wymeditor.deselect();
-        },
         manipulationFunc: function (wymeditor) {
-            wymeditor.$body().find("img").mouseup();
+            wymeditor.$body().find("img")
+                .click();
         },
-        expectedResultHtml: getSelectedImageHtml,
         additionalAssertionsFunc: function (wymeditor) {
-            var img = wymeditor.$body().find("img")[0];
             expectOneMore();
-            strictEqual(
-                wymeditor.getSelectedImage(),
-                img
-            );
-        },
-        skipFunc: function () {
-            if (inPhantomjs) {
-                return SKIP_THIS_TEST;
-            }
-            if (jQuery.browser.msie && jQuery.browser.versionNumber <= 10) {
-                return SKIP_THIS_TEST;
-            }
-        }
-    });
-});
-
-test("Image is selected via `mouseup` in pre-7 trident", function () {
-    var wymeditor,
-        _selectSingleNode,
-        resumeManipulationTestHelper;
-
-    if (
-        jQuery.browser.msie !== true ||
-        jQuery.browser.versionNumber > 10
-    ) {
-        QUnit.expect(0);
-        return;
-    }
-
-    wymeditor = jQuery.wymeditors(0);
-
-    // Stop QUnit from running the next test
-    stop();
-    // Save the original
-    _selectSingleNode = wymeditor._selectSingleNode;
-    // Replace it with a wrapper
-    wymeditor._selectSingleNode = function (node) {
-        // Call the original
-        _selectSingleNode.call(wymeditor, node);
-        // Unwrap
-        wymeditor._selectSingleNode = _selectSingleNode;
-        // Resume `manipulationTestHelper`
-        resumeManipulationTestHelper();
-        // Allow QUnit to run the next test
-        start();
-    };
-
-    resumeManipulationTestHelper = manipulationTestHelper({
-        async: true,
-        startHtml: getSelectedImageHtml,
-        prepareFunc: function (wymeditor) {
-            wymeditor.deselect();
-        },
-        manipulationFunc: function (wymeditor) {
-            wymeditor.$body().find("img").mouseup();
-        },
-        expectedResultHtml: getSelectedImageHtml,
-        additionalAssertionsFunc: function (wymeditor) {
             var img = wymeditor.$body().find("img")[0];
-            expectOneMore();
-            strictEqual(
-                wymeditor.getSelectedImage(),
-                img
-            );
-        }
-    });
-});
-
-test("Image is selected via `dragend` in IE", function () {
-    manipulationTestHelper({
-        startHtml: getSelectedImageHtml,
-        prepareFunc: function (wymeditor) {
-            wymeditor.deselect();
-        },
-        manipulationFunc: function (wymeditor) {
-            wymeditor.$body().find("img").trigger("dragend");
-        },
-        expectedResultHtml: getSelectedImageHtml,
-        skipFunc: function () {
-            return jQuery.browser.msie ? false : SKIP_THIS_TEST;
+            var assertImageIsSelected = function () {
+                strictEqual(
+                    wymeditor.getSelectedImage(),
+                    img
+                );
+            };
+            if (jQuery.browser.msie && jQuery.browser.versionNumber === 8) {
+                // image is selected async
+                stop();
+                setTimeout(function () {
+                    start();
+                    assertImageIsSelected();
+                });
+                return;
+            }
+            assertImageIsSelected();
         }
     });
 });

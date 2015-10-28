@@ -21,11 +21,19 @@ WYMeditor.XhtmlValidator = {
             "attributes":[
             "class",
             "id",
-            "style",
             "title",
             "accesskey",
             "tabindex",
             "/^data-.*/"
+            ]
+        },
+        "styleAttr":
+        {
+            "except":[
+            "img"
+            ],
+            "attributes":[
+            "style"
             ]
         },
         "language":

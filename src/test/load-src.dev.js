@@ -21,6 +21,7 @@ function loadWymSrc(srcPath, extraRequirements, jqueryVersion) {
             srcPath + 'wymeditor/editor/dialogs.js',
             srcPath + 'wymeditor/editor/base.js',
             srcPath + 'wymeditor/editor/document-structure-manager.js',
+            srcPath + 'wymeditor/editor/image-handler.js',
             srcPath + 'wymeditor/editor/gecko.js',
             srcPath + 'wymeditor/editor/trident-pre-7.js',
             srcPath + 'wymeditor/editor/trident-7.js',

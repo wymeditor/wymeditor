@@ -7,6 +7,9 @@ WYMeditor.
 
 *release-date* TBD
 
+* [#747](https://github.com/wymeditor/wymeditor/pull/747)
+  New: Image resizing
+
 ## 1.0.7
 
 *release-date* September 22 2015

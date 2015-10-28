@@ -398,6 +398,8 @@ WYMeditor.editor.prototype._afterDesignModeOn = function () {
 
     wym.nativeEditRegistration = new WYMeditor.NativeEditRegistration(wym);
 
+    wym.ih = new WYMeditor.ImageHandler(wym);
+
     jQuery(wym.element).trigger(
         WYMeditor.EVENTS.postIframeInitialization,
         wym
@@ -3812,10 +3814,6 @@ WYMeditor.editor.prototype._afterInsertTable = function () {
 WYMeditor.editor.prototype._listen = function () {
     var wym = this;
 
-    wym.$body().bind("mouseup", function (e) {
-        wym._mouseup(e);
-    });
-
     jQuery(wym._doc).bind('paste', function () {
         wym._handlePasteEvent();
     });
@@ -3857,14 +3855,8 @@ WYMeditor.editor.prototype._selectSingleNode = function (node) {
     selection = wym.selection();
     nodeRange = rangy.createRangyRange();
     nodeRange.selectNode(node);
-    selection.setSingleRange(nodeRange);
-};
 
-WYMeditor.editor.prototype._mouseup = function (evt) {
-    var wym = this;
-    if (evt.target.tagName.toLowerCase() === WYMeditor.IMG) {
-        wym._selectSingleNode(evt.target);
-    }
+    selection.setSingleRange(nodeRange);
 };
 
 /**
