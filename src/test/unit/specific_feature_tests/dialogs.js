@@ -265,7 +265,7 @@ test("Image dialog doesn't open when no selection", function () {
     });
 });
 
-test("Image dialog doesn't open when selection is non-collapsed", function () {
+test("Image dialog opens when selection is non-collapsed", function () {
     tryDialogWithClickAndKeyboardThenAssert({
         dialogName: "InsertImage",
         currentTest: this,
@@ -280,7 +280,7 @@ test("Image dialog doesn't open when selection is non-collapsed", function () {
                 3
             );
         },
-        expectedOpenedOrNot: DIALOG_EXPECT_NOT_OPENED
+        expectedOpenedOrNot: DIALOG_EXPECT_OPENED
     });
 });
 
@@ -348,7 +348,7 @@ test("Paste dialog doesn't open when no selection", function () {
     });
 });
 
-test("Paste dialog doesn't open when selection is non-collapsed", function () {
+test("Paste dialog opens when selection is non-collapsed", function () {
     tryDialogWithClickAndKeyboardThenAssert({
         dialogName: "Paste",
         currentTest: this,
@@ -363,7 +363,7 @@ test("Paste dialog doesn't open when selection is non-collapsed", function () {
                 3
             );
         },
-        expectedOpenedOrNot: DIALOG_EXPECT_NOT_OPENED
+        expectedOpenedOrNot: DIALOG_EXPECT_OPENED
     });
 });
 

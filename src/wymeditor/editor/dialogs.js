@@ -323,13 +323,7 @@ WYMeditor.DIALOGS = {
             ) {
                 return true;
             }
-            if (
-                wym.hasSelection() !== true ||
-                wym.selection().isCollapsed !== true
-            ) {
-                return false;
-            }
-            return true;
+            return wym.hasSelection();
         },
         getBodyHtml: function () {
             var wym = this;
@@ -488,13 +482,7 @@ WYMeditor.DIALOGS = {
         title: "Paste_From_Word",
         shouldOpen: function () {
             var wym = this;
-            if (
-                wym.hasSelection() !== true ||
-                wym.selection().isCollapsed !== true
-            ) {
-                return false;
-            }
-            return true;
+            return wym.hasSelection();
         },
         getBodyHtml: function () {
             var wym = this;
