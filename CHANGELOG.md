@@ -5,7 +5,7 @@ WYMeditor.
 
 ## 1.1.0
 
-*release-date* TBD
+*release-date* October 29 2015
 
 * [#755](https://github.com/wymeditor/wymeditor/issues/755)
   Fix: Selection of text with `mousedown` and `mousemove` was disabled
