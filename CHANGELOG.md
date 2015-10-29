@@ -7,6 +7,8 @@ WYMeditor.
 
 *release-date* TBD
 
+* [#755](https://github.com/wymeditor/wymeditor/issues/755)
+  Fix: Selection of text with `mousedown` and `mousemove` was disabled
 * [#754] (https://github.com/wymeditor/wymeditor/issues/754)
   Allow insert image and paste dialogs to open
   when selection is non-collapsed (not only when it is collapsed)

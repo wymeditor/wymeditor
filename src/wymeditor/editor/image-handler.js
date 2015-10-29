@@ -424,10 +424,15 @@ WYMeditor.ImageHandler.prototype._startResize = function (startMouseY) {
 WYMeditor.ImageHandler.prototype._onMousemove = function (evt) {
     var ih = this;
 
+    // default action for this event may be a `mousedown` and `mousemove`
+    // with the intention to select text
+    // or to drag (for later dropping of) content
+    // so be careful about preventing default
+
     if (!evt.target.tagName) {
         // IE8 may fire such an event.
         // what element was it fired on?
-        return false;
+        return;
     }
 
     if (ih._resizingNow) {
@@ -445,7 +450,7 @@ WYMeditor.ImageHandler.prototype._onMousemove = function (evt) {
     }
 
     if (!ih._isResizeHandleAttached()) {
-        return false;
+        return;
     }
 
     // from this point on, this event handler is all about
@@ -461,15 +466,13 @@ WYMeditor.ImageHandler.prototype._onMousemove = function (evt) {
         // the mouse might leave the resize handle during the resize operation.
         // in that case, we would like the operation to continue
         ih._detachResizeHandle();
-        return false;
+        return;
     }
 
     if (!ih._isCurrentImgAtMarker()) {
         ih._detachResizeHandle();
-        return false;
+        return;
     }
-
-    // returning false here would disable image dragging
 };
 
 WYMeditor.ImageHandler.prototype._isCurrentImgAtMarker = function () {
