@@ -186,12 +186,12 @@
 /* jshint strict: false, maxlen: 90, evil: true */
 /* global -$, WYMeditor: true, console */
 
-/*@version 1.1.0 */
+/*@version 1.1.1 */
 /**
     WYMeditor
     =========
 
-    version 1.1.0
+    version 1.1.1
 
     WYMeditor : what you see is What You Mean web-based editor
 
@@ -361,7 +361,7 @@ jQuery.extend(WYMeditor, {
     TOOL_TITLE          : "{Wym_Tool_Title}",
     TR                  : "tr",
     UL                  : "ul",
-    VERSION             : "1.1.0",
+    VERSION             : "1.1.1",
     WYM_INDEX           : "wym_index",
     WYM_PATH            : "{Wym_Wym_Path}",
 
@@ -1791,7 +1791,8 @@ WYMeditor.DIALOGS = {
             wym.focusOnDocument();
 
             if (selectedImage) {
-                jQuery(selectedImage).attr(imgAttrs);
+                wym._updateImageAttrs(selectedImage, imgAttrs);
+                wym.registerModification();
             } else {
                 wym.insertImage(imgAttrs);
             }
@@ -3760,6 +3761,30 @@ WYMeditor.editor.prototype.insertImage = function (attrs) {
     wym.$body().find('.Apple-style-span').children().unwrap();
 
     wym.registerModification();
+};
+
+/**
+    editor._updateImageAttrs
+    ========================
+
+    Updates provided `img`'s attributes with provided `attrs`.
+*/
+WYMeditor.editor.prototype._updateImageAttrs = function (img, attrs) {
+    var $img = jQuery(img);
+    if (attrs.src !== $img.attr('src')) {
+        // this data is used in the ImageHandler.
+        // height/width ratio is now most likely invalid
+        $img.data('DimensionsRatio', null);
+
+        // since the height/width ration is most likely different
+        // these proportions are most likely wrong.
+        // easiest solution is to remove them
+        // and let the user deal with
+        // the real size of the source image
+        // and he'll be able to resize it
+        $img.removeAttr('height').removeAttr('width');
+    }
+    $img.attr(attrs);
 };
 
 /**
@@ -6195,6 +6220,10 @@ WYMeditor.DocumentStructureManager.prototype._adjustDefaultRootContainerUI = fun
  * When IE8 is not longer supported,
  * `rem` could be used for more accurate UI element dimensions
  *
+ * Dragging and dropping of images is not suggested in the UI.
+ * See the `_isImgDragDropAllowed` function
+ * and the `_onImgMousedown` function.
+ *
  * ## IE9 Shenanigans
  *
  * Dragging and dropping of images is disabled.
@@ -6251,7 +6280,7 @@ WYMeditor.ImageHandler = function (wym) {
 WYMeditor.ImageHandler._isImgDragDropAllowed = function () {
     var browser = jQuery.browser;
     if (browser.msie) {
-        if (browser.versionNumber === 9) {
+        if (browser.versionNumber <= 9) {
             // dragging and dropping seems to not consistently work.
             // the image would only some times get picked up by the mouse drag attempt.
             // to prevent confusion
@@ -6600,7 +6629,7 @@ WYMeditor.ImageHandler.prototype._startResize = function (startMouseY) {
     var ih = this;
 
     ih._startMouseY = startMouseY;
-    ih._$currentImg.data('StartHeight', ih._$currentImg.attr('height'));
+    ih._$currentImg.data('StartHeight', ih._$currentImg.height());
     ih._resizingNow = true;
 };
 
@@ -6702,8 +6731,8 @@ WYMeditor.ImageHandler.prototype._resizeImage = function (currentMouseY) {
 
     if (!dimensionsRatio) {
         // in order to prevent dimensions ratio corruption
-        var originalHeight = $img.attr('height');
-        var originalWidth = $img.attr('width');
+        var originalHeight = $img.height();
+        var originalWidth = $img.width();
         dimensionsRatio = originalWidth / originalHeight;
         $img.data('DimensionsRatio', dimensionsRatio);
     }
@@ -6722,12 +6751,18 @@ WYMeditor.ImageHandler.prototype._resizeImage = function (currentMouseY) {
 };
 
 WYMeditor.ImageHandler.prototype._onMouseup = function () {
+    // this could be a case where
+    // there was a `mousedown` on a selection
+    // and then a `mouseup` without having moved the mouse.
+    // the default action would be
+    // to collapse the selection to a caret where the pointer is.
+    // we'd not like to prevent that
+
     var ih = this;
 
     if (ih._resizingNow) {
         ih._stopResize();
     }
-    return false;
 };
 
 WYMeditor.ImageHandler.prototype._stopResize = function () {
@@ -6752,6 +6787,7 @@ WYMeditor.ImageHandler.prototype._onImgMousedown = function (evt) {
     }
 
     // returning false here prevents drag of image
+    // except for in IE8
     return ih._imgDragDropAllowed;
 };
 
@@ -6806,8 +6842,8 @@ WYMeditor.ImageHandler.prototype._detachResizeHandle = function () {
         // leave the padding on, as it will allow
         // easy mouse over the image,
         // even when the image is 0 in size
-        ih._$currentImg.attr('height') >= 16 &&
-        ih._$currentImg.attr('width') >= 16
+        ih._$currentImg.height() >= 16 &&
+        ih._$currentImg.width() >= 16
     ) {
         ih._$currentImg.css({padding: 0, margin: 0});
     }

@@ -5,7 +5,7 @@ WYMeditor.
 
 ## 1.1.1
 
-*release-date* TBD
+*release-date* October 30 2015
 
 * [#757](https://github.com/wymeditor/wymeditor/issues/757)
   Fix: Trying to resize image results in zero size image
