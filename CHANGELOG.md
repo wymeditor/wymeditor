@@ -9,6 +9,8 @@ WYMeditor.
 
 * [#757](https://github.com/wymeditor/wymeditor/issues/757)
   Fix: Trying to resize image results in zero size image
+* [#758](https://github.com/wymeditor/wymeditor/issues/758)
+  Fix: Changing `img` `src` attr causes wrong dimensions in image resize
 
 ## 1.1.0
 

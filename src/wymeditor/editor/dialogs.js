@@ -405,7 +405,8 @@ WYMeditor.DIALOGS = {
             wym.focusOnDocument();
 
             if (selectedImage) {
-                jQuery(selectedImage).attr(imgAttrs);
+                wym._updateImageAttrs(selectedImage, imgAttrs);
+                wym.registerModification();
             } else {
                 wym.insertImage(imgAttrs);
             }
