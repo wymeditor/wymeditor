@@ -12,6 +12,10 @@
  * When IE8 is not longer supported,
  * `rem` could be used for more accurate UI element dimensions
  *
+ * Dragging and dropping of images is not suggested in the UI.
+ * See the `_isImgDragDropAllowed` function
+ * and the `_onImgMousedown` function.
+ *
  * ## IE9 Shenanigans
  *
  * Dragging and dropping of images is disabled.
@@ -68,7 +72,7 @@ WYMeditor.ImageHandler = function (wym) {
 WYMeditor.ImageHandler._isImgDragDropAllowed = function () {
     var browser = jQuery.browser;
     if (browser.msie) {
-        if (browser.versionNumber === 9) {
+        if (browser.versionNumber <= 9) {
             // dragging and dropping seems to not consistently work.
             // the image would only some times get picked up by the mouse drag attempt.
             // to prevent confusion
@@ -575,6 +579,7 @@ WYMeditor.ImageHandler.prototype._onImgMousedown = function (evt) {
     }
 
     // returning false here prevents drag of image
+    // except for in IE8
     return ih._imgDragDropAllowed;
 };
 
