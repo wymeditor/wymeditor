@@ -13,6 +13,8 @@ WYMeditor.
   Fix: Changing `img` `src` attr causes wrong dimensions in image resize
 * [#759](https://github.com/wymeditor/wymeditor/issues/759)
   Fix: Click on selection does not collapse it into caret
+* [#760](https://github.com/wymeditor/wymeditor/issues/760)
+  Fix: Do not suggest drag and drop of images in IE8
 
 ## 1.1.0
 
