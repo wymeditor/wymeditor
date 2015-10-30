@@ -11,6 +11,8 @@ WYMeditor.
   Fix: Trying to resize image results in zero size image
 * [#758](https://github.com/wymeditor/wymeditor/issues/758)
   Fix: Changing `img` `src` attr causes wrong dimensions in image resize
+* [#759](https://github.com/wymeditor/wymeditor/issues/759)
+  Fix: Click on selection does not collapse it into caret
 
 ## 1.1.0
 
