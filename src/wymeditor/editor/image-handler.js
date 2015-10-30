@@ -539,12 +539,18 @@ WYMeditor.ImageHandler.prototype._resizeImage = function (currentMouseY) {
 };
 
 WYMeditor.ImageHandler.prototype._onMouseup = function () {
+    // this could be a case where
+    // there was a `mousedown` on a selection
+    // and then a `mouseup` without having moved the mouse.
+    // the default action would be
+    // to collapse the selection to a caret where the pointer is.
+    // we'd not like to prevent that
+
     var ih = this;
 
     if (ih._resizingNow) {
         ih._stopResize();
     }
-    return false;
 };
 
 WYMeditor.ImageHandler.prototype._stopResize = function () {
