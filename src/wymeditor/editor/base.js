@@ -1803,6 +1803,30 @@ WYMeditor.editor.prototype.insertImage = function (attrs) {
 };
 
 /**
+    editor._updateImageAttrs
+    ========================
+
+    Updates provided `img`'s attributes with provided `attrs`.
+*/
+WYMeditor.editor.prototype._updateImageAttrs = function (img, attrs) {
+    var $img = jQuery(img);
+    if (attrs.src !== $img.attr('src')) {
+        // this data is used in the ImageHandler.
+        // height/width ratio is now most likely invalid
+        $img.data('DimensionsRatio', null);
+
+        // since the height/width ration is most likely different
+        // these proportions are most likely wrong.
+        // easiest solution is to remove them
+        // and let the user deal with
+        // the real size of the source image
+        // and he'll be able to resize it
+        $img.removeAttr('height').removeAttr('width');
+    }
+    $img.attr(attrs);
+};
+
+/**
     editor.toggleHtml
     =================
 

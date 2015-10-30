@@ -49,6 +49,82 @@ test("Inserts image into the body", function () {
     });
 });
 
+module("images-_updateImageAttrs", {setup: prepareUnitTestModule});
+
+test("Updates image attributes", function () {
+    manipulationTestHelper({
+        startHtml: '<p><img alt="fooalt" src="foosrc" title="footitle" /></p>',
+        manipulationFunc: function (wymeditor) {
+            var img = wymeditor.body().childNodes[0].childNodes[0];
+            wymeditor._updateImageAttrs(img, {
+                src: 'barsrc',
+                alt: 'baralt',
+                title: 'bartitle'
+            });
+        },
+        expectedResultHtml: [''
+            , '<p>'
+                , '<img alt="baralt" src="barsrc" title="bartitle" />'
+            , '</p>'
+        ].join('')
+    });
+});
+
+test("on `src` attr change, remove `height` & `width` attrs", function () {
+    manipulationTestHelper({
+        startHtml: '<p><img height="10" src="foo" width="10" /></p>',
+        manipulationFunc: function (wymeditor) {
+            var img = wymeditor.body().childNodes[0].childNodes[0];
+            wymeditor._updateImageAttrs(img, {src: 'bar'});
+        },
+        expectedResultHtml: '<p><img src="bar" /></p>'
+    });
+});
+
+test("on `src` attr change, nullify `DimensionsRatio` data", function () {
+    var PHI = 0.618;
+    manipulationTestHelper({
+        startHtml: '<p><img src="foo" /></p>',
+        prepareFunc: function (wymeditor) {
+            expectOneMore();
+            var $img = wymeditor.$body().find('img');
+            $img.data('DimensionsRatio', PHI);
+            strictEqual($img.data('DimensionsRatio'), PHI);
+        },
+        manipulationFunc: function (wymeditor) {
+            var img = wymeditor.body().childNodes[0].childNodes[0];
+            wymeditor._updateImageAttrs(img, {src: 'bar'});
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expectOneMore();
+            var $img = wymeditor.$body().find('img');
+            strictEqual($img.data('DimensionsRatio'), null);
+        }
+    });
+});
+
+test("no `src` attr change, not changing `DimensionsRatio` data", function () {
+    var PHI = 0.618;
+    manipulationTestHelper({
+        startHtml: '<p><img src="foo" /></p>',
+        prepareFunc: function (wymeditor) {
+            expectOneMore();
+            var $img = wymeditor.$body().find('img');
+            $img.data('DimensionsRatio', PHI);
+            strictEqual($img.data('DimensionsRatio'), PHI);
+        },
+        manipulationFunc: function (wymeditor) {
+            var img = wymeditor.body().childNodes[0].childNodes[0];
+            wymeditor._updateImageAttrs(img, {src: 'foo'});
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expectOneMore();
+            var $img = wymeditor.$body().find('img');
+            strictEqual($img.data('DimensionsRatio'), PHI);
+        }
+    });
+});
+
 module("images-getSelectedImage", {setup: prepareUnitTestModule});
 
 var getSelectedImageHtml = [""
