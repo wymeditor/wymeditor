@@ -417,7 +417,7 @@ WYMeditor.ImageHandler.prototype._startResize = function (startMouseY) {
     var ih = this;
 
     ih._startMouseY = startMouseY;
-    ih._$currentImg.data('StartHeight', ih._$currentImg.attr('height'));
+    ih._$currentImg.data('StartHeight', ih._$currentImg.height());
     ih._resizingNow = true;
 };
 
@@ -519,8 +519,8 @@ WYMeditor.ImageHandler.prototype._resizeImage = function (currentMouseY) {
 
     if (!dimensionsRatio) {
         // in order to prevent dimensions ratio corruption
-        var originalHeight = $img.attr('height');
-        var originalWidth = $img.attr('width');
+        var originalHeight = $img.height();
+        var originalWidth = $img.width();
         dimensionsRatio = originalWidth / originalHeight;
         $img.data('DimensionsRatio', dimensionsRatio);
     }
@@ -623,8 +623,8 @@ WYMeditor.ImageHandler.prototype._detachResizeHandle = function () {
         // leave the padding on, as it will allow
         // easy mouse over the image,
         // even when the image is 0 in size
-        ih._$currentImg.attr('height') >= 16 &&
-        ih._$currentImg.attr('width') >= 16
+        ih._$currentImg.height() >= 16 &&
+        ih._$currentImg.width() >= 16
     ) {
         ih._$currentImg.css({padding: 0, margin: 0});
     }
