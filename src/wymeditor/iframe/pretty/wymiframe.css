@@ -28,7 +28,12 @@
 }
 
 /* basic */
-  body  { background: #e1e8f1;}
+  body  {
+  background: #e1e8f1;
+
+  /* padding for the image resize handle */
+  padding-bottom: 30px;
+}
 
 /* make HTML blocs visible */
   div,
