@@ -518,6 +518,7 @@ WYMeditor.ImageHandler.prototype._isCurrentImg = function (img) {
 WYMeditor.ImageHandler.prototype._resizeImage = function (currentMouseY) {
     var ih = this;
     var $img = ih._$currentImg;
+    var wym = ih._wym;
 
     var dimensionsRatio = $img.data('DimensionsRatio');
 
@@ -540,6 +541,10 @@ WYMeditor.ImageHandler.prototype._resizeImage = function (currentMouseY) {
     $img.attr('width', newWidth);
 
     ih._correctResizeHandleOffsetAndWidth();
+    jQuery(wym.element).trigger(
+        WYMeditor.EVENTS.postBlockMaybeCreated,
+        wym
+    );
 };
 
 WYMeditor.ImageHandler.prototype._onMouseup = function () {
