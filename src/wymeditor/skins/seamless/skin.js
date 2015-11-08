@@ -407,9 +407,7 @@ WYMeditor.SKINS.seamless = {
                 // TODO: Figure out why this happens and if we can make the
                 // 10px number not magic (actually derived from a
                 // margin/padding etc).
-                htmlElementScrollHeight -= 10;
-
-                return htmlElementScrollHeight;
+                return htmlElementScrollHeight - 10;
             };
 
             return heightStrategy;

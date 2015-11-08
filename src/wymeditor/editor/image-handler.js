@@ -356,7 +356,7 @@ WYMeditor.ImageHandler.prototype._placeResizeHandleOnImg = function (img) {
     // so we place it there in case that occurred.
     // this could be done conditionally
     // but there is practically no performance hit so keeping it simple
-    ih._$resizeHandle.prependTo(ih._wym.$body());
+    ih._$resizeHandle.prependTo(wym.$body());
 
     ih._$resizeHandle.show();
 
