@@ -409,9 +409,6 @@ WYMeditor.SKINS.seamless = {
                 // margin/padding etc).
                 htmlElementScrollHeight -= 10;
 
-                // the body's bottom padding
-                htmlElementScrollHeight -= 30;
-
                 return htmlElementScrollHeight;
             };
 
