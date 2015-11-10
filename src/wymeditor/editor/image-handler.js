@@ -342,12 +342,23 @@ WYMeditor.ImageHandler.prototype._indicateOnResizeHandleThatImageIsSelected = fu
 
 WYMeditor.ImageHandler.prototype._placeResizeHandleOnImg = function (img) {
     var ih = this;
+    var wym = ih._wym;
     var IMAGE_PADDING = '0.8em';
     var $img = jQuery(img);
 
     ih._$currentImg = $img;
 
     ih._getCurrentImageMarker().insertAfter($img);
+
+    // the resize handle, prepended to the body in this way,
+    // can be removed from the body using DOM manipulation
+    // such as setting the content with the `html` method.
+    // so we place it there in case that occurred.
+    // this could be done conditionally
+    // but there is practically no performance hit so keeping it simple
+    ih._$resizeHandle.prependTo(wym.$body());
+
+    ih._$resizeHandle.show();
 
     // colored padding around the image and the handle
     // visually marks the image
@@ -359,7 +370,18 @@ WYMeditor.ImageHandler.prototype._placeResizeHandleOnImg = function (img) {
 
         'padding-top': IMAGE_PADDING,
         'padding-right': IMAGE_PADDING,
-        'padding-bottom': '0',
+
+        // #761
+        // this makes sure that,
+        // at least with the seamless skin,
+        // the image resize handle
+        // does not descend below the end of the iframe.
+        //
+        // this must occur after
+        // the resize handle is already `.show`n,
+        // so that the resize handle will have height
+        'padding-bottom': ih._$resizeHandle.height(),
+
         'padding-left': IMAGE_PADDING,
         'margin-top': '-' + IMAGE_PADDING,
         'margin-right': '-' + IMAGE_PADDING,
@@ -367,21 +389,13 @@ WYMeditor.ImageHandler.prototype._placeResizeHandleOnImg = function (img) {
         'margin-left': '-' + IMAGE_PADDING
     });
 
-    // the resize handle, prepended to the body in this way,
-    // can be removed from the body using DOM manipulation
-    // such as setting the content with the `html` method.
-    // so we place it there in case that occurred.
-    // this could be done conditionally
-    // but there is practically no performance hit so keeping it simple
-    ih._$resizeHandle.prependTo(ih._wym.$body());
-
     // it is important that the resize handle's offset
     // is updated after the above style modification
     // adds top padding to the image
     // because that alters the image's outside height
     ih._correctResizeHandleOffsetAndWidth();
 
-    ih._$resizeHandle.show();
+    jQuery(wym.element).trigger(WYMeditor.EVENTS.postBlockMaybeCreated, wym);
 };
 
 WYMeditor.ImageHandler.prototype._correctResizeHandleOffsetAndWidth = function () {
@@ -405,7 +419,12 @@ WYMeditor.ImageHandler.prototype._correctResizeHandleOffsetAndWidth = function (
         yAfterImg--;
     }
 
-    ih._$resizeHandle.css('top', yAfterImg);
+    // #761
+    // the image has bottom-padding
+    // that is equal to the height of the resize handle
+    var resizeHandleTop = yAfterImg - ih._$resizeHandle.height();
+
+    ih._$resizeHandle.css('top', resizeHandleTop);
 };
 
 WYMeditor.ImageHandler.prototype._onResizeHandleMousedown = function (evt) {
@@ -518,6 +537,7 @@ WYMeditor.ImageHandler.prototype._isCurrentImg = function (img) {
 WYMeditor.ImageHandler.prototype._resizeImage = function (currentMouseY) {
     var ih = this;
     var $img = ih._$currentImg;
+    var wym = ih._wym;
 
     var dimensionsRatio = $img.data('DimensionsRatio');
 
@@ -540,6 +560,8 @@ WYMeditor.ImageHandler.prototype._resizeImage = function (currentMouseY) {
     $img.attr('width', newWidth);
 
     ih._correctResizeHandleOffsetAndWidth();
+
+    jQuery(wym.element).trigger(WYMeditor.EVENTS.postBlockMaybeCreated, wym);
 };
 
 WYMeditor.ImageHandler.prototype._onMouseup = function () {
@@ -624,6 +646,7 @@ WYMeditor.ImageHandler.prototype._getResizeHandle = function () {
 
 WYMeditor.ImageHandler.prototype._detachResizeHandle = function () {
     var ih = this;
+    var wym = ih._wym;
 
     ih._$currentImageMarker.detach();
     if (
@@ -641,6 +664,8 @@ WYMeditor.ImageHandler.prototype._detachResizeHandle = function () {
     }
     ih._$currentImg = null;
     ih._$resizeHandle.hide();
+
+    jQuery(wym.element).trigger(WYMeditor.EVENTS.postBlockMaybeCreated, wym);
 };
 
 WYMeditor.ImageHandler.prototype._onImgDragstart = function () {

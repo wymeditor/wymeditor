@@ -6,6 +6,9 @@ WYMeditor.
 
 *release-date* TBD
 
+* [#761](https://github.com/wymeditor/wymeditor/pull/761)
+  Fix: Image resize handle below end of iframe
+
 ## 1.1.1
 
 *release-date* October 30 2015
