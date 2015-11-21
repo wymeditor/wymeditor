@@ -410,13 +410,13 @@ TableEditor.prototype.mergeRow = function () {
     // Just use the td and th nodes
     cells = jQuery(nodes).filter('td,th');
     if (cells.length === 0) {
-        return false;
+        return;
     }
 
     // If the selection is across multiple tables, don't merge
     rootTr = tableEditor.getCommonParentTr(cells);
     if (rootTr === null) {
-        return false;
+        return;
     }
 
     mergeCell = cells[0];
@@ -532,7 +532,7 @@ TableEditor.prototype.addRow = function (elmnt) {
         i;
 
     if (tr === null) {
-        return false;
+        return;
     }
 
     numColumns = tableEditor.getNumColumns(tr);
@@ -544,7 +544,6 @@ TableEditor.prototype.addRow = function (elmnt) {
     jQuery(tr).after('<tr>' + tdHtml + '</tr>');
 
     wym.registerModification();
-    return false;
 };
 
 /**
@@ -611,7 +610,7 @@ TableEditor.prototype.addColumn = function (elmnt) {
         insertionElement;
 
     if (td === null) {
-        return false;
+        return;
     }
     prevTds = jQuery(td).prevAll();
     tdIndex = prevTds.length;
@@ -628,7 +627,6 @@ TableEditor.prototype.addColumn = function (elmnt) {
     });
 
     wym.registerModification();
-    return false;
 };
 
 /**
