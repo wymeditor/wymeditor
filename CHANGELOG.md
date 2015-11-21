@@ -8,6 +8,9 @@ WYMeditor.
 
 * [#761](https://github.com/wymeditor/wymeditor/pull/761)
   Fix: Image resize handle below end of iframe
+* [#764](https://github.com/wymeditor/wymeditor/pull/764)
+  TablePlugin row/column remove:
+  refrain from error when no selectedContainer
 
 ## 1.1.1
 
