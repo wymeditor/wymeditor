@@ -138,22 +138,38 @@ TableEditor.prototype.bindEvents = function () {
     jQuery(wym._box).find(
         tableEditor._options.sAddRowButtonSelector
     ).click(function () {
-        return tableEditor.addRow(wym.selectedContainer());
+        var cont = wym.selectedContainer();
+        if (cont) {
+            tableEditor.addRow(cont);
+        }
+        return false;
     });
     jQuery(wym._box).find(
         tableEditor._options.sRemoveRowButtonSelector
     ).click(function () {
-        return tableEditor.removeRow(wym.selectedContainer());
+        var cont = wym.selectedContainer();
+        if (cont) {
+            tableEditor.removeRow(cont);
+        }
+        return false;
     });
     jQuery(wym._box).find(
         tableEditor._options.sAddColumnButtonSelector
     ).click(function () {
-        return tableEditor.addColumn(wym.selectedContainer());
+        var cont = wym.selectedContainer();
+        if (cont) {
+            tableEditor.addColumn(cont);
+        }
+        return false;
     });
     jQuery(wym._box).find(
         tableEditor._options.sRemoveColumnButtonSelector
     ).click(function () {
-        return tableEditor.removeColumn(wym.selectedContainer());
+        var cont = wym.selectedContainer();
+        if (cont) {
+            tableEditor.removeColumn(cont);
+        }
+        return false;
     });
 
     // Handle tab clicks
@@ -563,7 +579,7 @@ TableEditor.prototype.removeRow = function (elmnt) {
         table;
 
     if (tr === null) {
-        return false;
+        return;
     }
     table = wym.findUp(elmnt, 'table');
     if (
@@ -576,7 +592,6 @@ TableEditor.prototype.removeRow = function (elmnt) {
     tableEditor.removeEmptyTable(table);
 
     wym.registerModification();
-    return false;
 };
 
 /**
@@ -629,7 +644,7 @@ TableEditor.prototype.removeColumn = function (elmnt) {
         tdIndex,
         tr;
     if (td === null) {
-        return false;
+        return;
     }
     table = wym.findUp(elmnt, 'table');
     prevTds = jQuery(td).prevAll();
@@ -649,7 +664,6 @@ TableEditor.prototype.removeColumn = function (elmnt) {
     tableEditor.removeEmptyTable(table);
 
     wym.registerModification();
-    return false;
 };
 
 /**
