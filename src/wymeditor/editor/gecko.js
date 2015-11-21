@@ -146,7 +146,8 @@ WYMeditor.WymClassGecko.prototype._designModeQuirks = function () {
     try {
         wym._doc.execCommand("styleWithCSS", '', false);
         wym._doc.execCommand("enableObjectResizing", false, false);
-        wym._doc.execCommand("enableInlineTableEditing", false, false);
+        // commented out in #763
+        //wym._doc.execCommand("enableInlineTableEditing", false, false);
     } catch (e) {}
 };
 

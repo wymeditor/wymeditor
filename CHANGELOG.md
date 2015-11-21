@@ -8,6 +8,8 @@ WYMeditor.
 
 * [#761](https://github.com/wymeditor/wymeditor/pull/761)
   Fix: Image resize handle below end of iframe
+* [#763](https://github.com/wymeditor/wymeditor/issues/763)
+  Enable Firefox's native table editing
 
 ## 1.1.1
 
