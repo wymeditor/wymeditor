@@ -1,5 +1,6 @@
 /* jshint maxlen: 90 */
 /* global
+    inPhantomjs,
     expectOneMore,
     SKIP_KNOWN_FAILING_TESTS,
     prepareUnitTestModule,
@@ -913,7 +914,10 @@ test("Removing tr, caret is set to first td of previous tr if no next tr", funct
         manipulationFunc: function (wymeditor) {
             var tr = wymeditor.$body().find("#tr_3")[0];
             prevTd = tr.previousSibling.childNodes[0];
-            if (jQuery.browser.msie && jQuery.browser.versionNumber === 8) {
+            if (
+                inPhantomjs ||
+                (jQuery.browser.msie && jQuery.browser.versionNumber === 8)
+            ) {
                 // the caret ends up inside #span_2_1,
                 // which is fine
                 prevTd = prevTd.childNodes[0];
