@@ -905,120 +905,85 @@ test("Deleting all columns removes table", function () {
     });
 });
 
-test("Deselects before removing row that contains collapsed selection",
-     function () {
+test("Removing tr, caret is set to first td of previous tr if no next tr", function () {
+    var prevTd;
     manipulationTestHelper({
         startHtml: basicTableHtml,
         setCaretInSelector: "#td_3_1",
         manipulationFunc: function (wymeditor) {
             var tr = wymeditor.$body().find("#tr_3")[0];
+            prevTd = tr.previousSibling.childNodes[0];
+            if (jQuery.browser.msie && jQuery.browser.versionNumber === 8) {
+                // the caret ends up inside #span_2_1,
+                // which is fine
+                prevTd = prevTd.childNodes[0];
+            }
             wymeditor.tableEditor.removeRow(tr);
         },
         additionalAssertionsFunc: function (wymeditor) {
             expectOneMore();
-            // This doesn't really test that .deselect() was called. We'd need
-            // a spy for that. Good enough.
             strictEqual(
-                wymeditor.hasSelection(),
-                false,
-                "No selection"
+                wymeditor.selectedContainer(),
+                prevTd,
+                "selected container"
             );
-        },
-        expectedResultHtml: removedRow3Html
+        }
     });
 });
 
-test("Deselects before removing row that fully contains non-collapsed " +
-     "selection", function () {
+test("Removing tr, caret is set to first td of next tr, if exists", function () {
+    var nextTd;
+    manipulationTestHelper({
+        startHtml: basicTableHtml,
+        setCaretInSelector: "#td_3_1",
+        manipulationFunc: function (wymeditor) {
+            var tr = wymeditor.$body().find("#tr_2")[0];
+            nextTd = tr.nextSibling.childNodes[0];
+            wymeditor.tableEditor.removeRow(tr);
+        },
+        additionalAssertionsFunc: function (wymeditor) {
+            expectOneMore();
+            strictEqual(
+                wymeditor.selectedContainer(),
+                nextTd,
+                "selected container"
+            );
+        }
+    });
+});
+
+test("Removing column, caret is set to next td, if exists", function () {
+    var nextTd;
     manipulationTestHelper({
         startHtml: basicTableHtml,
         prepareFunc: function (wymeditor) {
-            var td32 = wymeditor.$body().find("#td_3_2")[0],
-                td33 = wymeditor.$body().find("#td_3_3")[0];
+            var td32 = wymeditor.$body().find("#td_3_2")[0];
             makeTextSelection(
                 wymeditor,
                 td32,
-                td33,
+                td32,
                 0,
                 3
             );
+            nextTd = td32.nextSibling;
         },
         manipulationFunc: function (wymeditor) {
-            var tr = wymeditor.$body().find("#tr_3")[0];
-            wymeditor.tableEditor.removeRow(tr);
+            var td12 = wymeditor.$body().find("#td_1_2")[0];
+            wymeditor.tableEditor.removeColumn(td12);
         },
         additionalAssertionsFunc: function (wymeditor) {
             expectOneMore();
-            // This doesn't really test that .deselect() was called. We'd need
-            // a spy for that. Good enough.
             strictEqual(
-                wymeditor.hasSelection(),
-                false,
-                "No selection"
+                wymeditor.selectedContainer(),
+                nextTd,
+                "selected container"
             );
-        },
-        expectedResultHtml: removedRow3Html
+        }
     });
 });
 
-test("Deselects before removing row that partially contains non-collapsed " +
-     "selection", function () {
-    manipulationTestHelper({
-        startHtml: basicTableHtml,
-        prepareFunc: function (wymeditor) {
-            var td22 = wymeditor.$body().find("#td_2_2")[0],
-                td33 = wymeditor.$body().find("#td_3_3")[0];
-            makeTextSelection(
-                wymeditor,
-                td22,
-                td33,
-                0,
-                3
-            );
-        },
-        manipulationFunc: function (wymeditor) {
-            var tr = wymeditor.$body().find("#tr_3")[0];
-            wymeditor.tableEditor.removeRow(tr);
-        },
-        additionalAssertionsFunc: function (wymeditor) {
-            expectOneMore();
-            // This doesn't really test that .deselect() was called. We'd need
-            // a spy for that. Good enough.
-            strictEqual(
-                wymeditor.hasSelection(),
-                false,
-                "No selection"
-            );
-        },
-        expectedResultHtml: removedRow3Html
-    });
-});
-
-test("Deselects before removing column that contains collapsed selection",
-     function () {
-    manipulationTestHelper({
-        startHtml: basicTableHtml,
-        setCaretInSelector: "#td_3_3",
-        manipulationFunc: function (wymeditor) {
-            var td13 = wymeditor.$body().find("#td_1_3")[0];
-            wymeditor.tableEditor.removeColumn(td13);
-        },
-        additionalAssertionsFunc: function (wymeditor) {
-            expectOneMore();
-            // This doesn't really test that .deselect() was called. We'd need
-            // a spy for that. Good enough.
-            strictEqual(
-                wymeditor.hasSelection(),
-                false,
-                "No selection"
-            );
-        },
-        expectedResultHtml: removedColumn3Html
-    });
-});
-
-test("Deselects before removing column that fully contains non-collapsed " +
-     "selection", function () {
+test("Removing column, caret is set to previous td, if no next td", function () {
+    var prevTd;
     manipulationTestHelper({
         startHtml: basicTableHtml,
         prepareFunc: function (wymeditor) {
@@ -1030,6 +995,7 @@ test("Deselects before removing column that fully contains non-collapsed " +
                 0,
                 3
             );
+            prevTd = td33.previousSibling;
         },
         manipulationFunc: function (wymeditor) {
             var td13 = wymeditor.$body().find("#td_1_3")[0];
@@ -1037,48 +1003,12 @@ test("Deselects before removing column that fully contains non-collapsed " +
         },
         additionalAssertionsFunc: function (wymeditor) {
             expectOneMore();
-            // This doesn't really test that .deselect() was called. We'd need
-            // a spy for that. Good enough.
             strictEqual(
-                wymeditor.hasSelection(),
-                false,
-                "No selection"
+                wymeditor.selectedContainer(),
+                prevTd,
+                "selected container"
             );
-        },
-        expectedResultHtml: removedColumn3Html
-    });
-});
-
-test("Deselects before removing column that partially contains non-collapsed " +
-     "selection", function () {
-    manipulationTestHelper({
-        startHtml: basicTableHtml,
-        prepareFunc: function (wymeditor) {
-            var td13 = wymeditor.$body().find("#td_1_3")[0],
-                td33 = wymeditor.$body().find("#td_3_3")[0];
-            makeTextSelection(
-                wymeditor,
-                td13,
-                td33,
-                0,
-                3
-            );
-        },
-        manipulationFunc: function (wymeditor) {
-            var td13 = wymeditor.$body().find("#td_1_3")[0];
-            wymeditor.tableEditor.removeColumn(td13);
-        },
-        additionalAssertionsFunc: function (wymeditor) {
-            expectOneMore();
-            // This doesn't really test that .deselect() was called. We'd need
-            // a spy for that. Good enough.
-            strictEqual(
-                wymeditor.hasSelection(),
-                false,
-                "No selection"
-            );
-        },
-        expectedResultHtml: removedColumn3Html
+        }
     });
 });
 
