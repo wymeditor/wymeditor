@@ -566,11 +566,21 @@ TableEditor.prototype.removeRow = function (elmnt) {
         return false;
     }
     table = wym.findUp(elmnt, 'table');
+    var $tr = jQuery(tr);
     if (
         wym.hasSelection() === true &&
         wym.doesElementContainSelection(elmnt) === true
     ) {
-        wym.deselect();
+        // place the caret somewhere reasonable
+        // instead of allowing it to disappear
+        // along with the removed row
+        var $target = $tr.next('tr').children('td').first();
+        if (!$target.length) {
+            $target = $tr.prev('tr').children('td').first();
+        }
+        if ($target.length) {
+            wym.setCaretIn($target[0]);
+        }
     }
     jQuery(tr).remove();
     tableEditor.removeEmptyTable(table);
@@ -642,7 +652,16 @@ TableEditor.prototype.removeColumn = function (elmnt) {
             wym.hasSelection() === true &&
             wym.doesElementContainSelection($cell[0]) === true
         ) {
-            wym.deselect();
+            // place the caret somewhere reasonable
+            // instead of allowing it to disappear
+            // along with the removed column
+            var $target = $cell.next('td');
+            if (!$target.length) {
+                $target = $cell.prev('td');
+            }
+            if ($target.length) {
+                wym.setCaretIn($target[0]);
+            }
         }
         $cell.remove();
     });
