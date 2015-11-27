@@ -10,6 +10,8 @@ WYMeditor.
   Fix: Image resize handle below end of iframe
 * [#748](https://github.com/wymeditor/wymeditor/issues/748)
   Reposition caret when removing row/column that contains selection
+* [#763](https://github.com/wymeditor/wymeditor/issues/763)
+  Enable Firefox's native table editing
 
 ## 1.1.1
 
