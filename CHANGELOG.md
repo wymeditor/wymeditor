@@ -12,6 +12,9 @@ WYMeditor.
   Reposition caret when removing row/column that contains selection
 * [#763](https://github.com/wymeditor/wymeditor/issues/763)
   Enable Firefox's native table editing
+* [#764](https://github.com/wymeditor/wymeditor/pull/764)
+  TablePlugin row/column remove:
+  refrain from error when no selectedContainer
 
 ## 1.1.1
 
