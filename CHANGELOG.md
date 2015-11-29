@@ -15,6 +15,8 @@ WYMeditor.
 * [#764](https://github.com/wymeditor/wymeditor/pull/764)
   TablePlugin row/column remove:
   refrain from error when no selectedContainer
+* [#749](Register any modification after selection change)
+  Register any native modification after selection change
 
 ## 1.1.1
 
