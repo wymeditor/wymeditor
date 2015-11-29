@@ -26,7 +26,7 @@
   "devDependencies": {
     "lodash.times": "^3.0.1",
     "combokeys": "^2.4.3",
-    "edited": "^1.1.1",
+    "edited": "^1.1.2",
     "grunt": "~0.4.1",
     "grunt-bower-install-simple": "^0.9.3",
     "grunt-bower-linker": "^0.1.4",
