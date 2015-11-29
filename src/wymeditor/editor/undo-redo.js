@@ -38,6 +38,8 @@ WYMeditor.UndoRedo = function (wym) {
             return false;
         }
     );
+
+    undoRedo.hasUnregisteredModification = null;
 };
 
 /**
