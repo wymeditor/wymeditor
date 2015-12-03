@@ -15,6 +15,11 @@ WYMeditor.
 * [#764](https://github.com/wymeditor/wymeditor/pull/764)
   TablePlugin row/column remove:
   refrain from error when no selectedContainer
+* [#749](Register any modification after selection change)
+  Selection changes via clicks and arrow keys,
+  followed by native edits, now register undo points.
+  Previously, for example, typing some letters, clicking somewhere else
+  and then typing some letters again, would not produce an undo point.
 
 ## 1.1.1
 
