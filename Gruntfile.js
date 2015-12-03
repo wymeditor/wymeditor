@@ -12,7 +12,7 @@ module.exports = function (grunt) {
         projectPage = "https://github.com/wymeditor/wymeditor/",
         releaseArchive = projectPage +
             'releases/download/v<%= pkg.version %>/<%= pkg.name %>' +
-            '-<%= pkg.version %>' + '.tag.gz',
+            '-<%= pkg.version %>' + '.tar.gz',
         sourceArchive = projectPage + 'archive/v<%= pkg.version %>.zip',
         // Oldest supported version of jQuery is used by default
         jqueryVersion = grunt.option("jquery") || "1.4.4",
