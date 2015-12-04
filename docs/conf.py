@@ -52,9 +52,9 @@ copyright = u'2014, The WYMeditor Team'
 # built documents.
 #
 # The short X.Y version.
-version = '1.1'
+version = '1.2'
 # The full version, including alpha/beta/rc tags.
-release = '1.1.2'
+release = '1.2.0'
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:

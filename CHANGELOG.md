@@ -2,7 +2,7 @@
 
 This document tracks the enhancements and bug fixes between releases of
 WYMeditor.
-## 1.1.2
+## 1.2.0
 
 *release-date* TBD
 
