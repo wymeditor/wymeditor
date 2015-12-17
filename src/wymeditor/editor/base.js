@@ -1362,7 +1362,7 @@ WYMeditor.editor.prototype._encloseString = function (sVal) {
     The state includes:
 
     ``html``
-        The return value of ``editor.rawHtml()``.
+        The return value of ``editor.html()``.
     ``savedSelection``
         A Rangy saved selection, if anything is selected.
         The ``win`` and the ``doc``  properties are deleted,
@@ -1397,7 +1397,7 @@ WYMeditor.editor.prototype.getCurrentState = function () {
         state.savedSelection = rangy.saveSelection(wymIframeWindow);
     }
 
-    state.html = wym.rawHtml();
+    state.html = wym.html();
 
     if (state.savedSelection) {
         // Selection was saved. This means that in the document, DOM elements,

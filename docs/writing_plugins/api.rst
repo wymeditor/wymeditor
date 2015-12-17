@@ -55,7 +55,7 @@ Returns an object with the current state of the editor.
 The state includes:
 
 ``html``
-    The return value of ``editor.rawHtml()``.
+    The return value of ``editor.html()``.
 ``savedSelection``
     A Rangy saved selection, if anything is selected.
     The ``win`` and the ``doc``  properties are deleted,
