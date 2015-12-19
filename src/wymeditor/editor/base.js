@@ -1037,9 +1037,12 @@ WYMeditor.editor.prototype.setRootContainer = function (sType) {
         firstNode,
         x;
 
-    if (sType.toLowerCase() === WYMeditor.TH) {
-        container = wym.selectedContainer();
+    container = wym.selectedContainer();
+    if (!container) {
+        return false;
+    }
 
+    if (sType.toLowerCase() === WYMeditor.TH) {
         // Find the TD or TH container
         switch (container.tagName.toLowerCase()) {
 
@@ -1079,7 +1082,7 @@ WYMeditor.editor.prototype.setRootContainer = function (sType) {
             WYMeditor.PRE,
             WYMeditor.BLOCKQUOTE
         ];
-        container = wym.findUp(wym.selectedContainer(), aTypes);
+        container = wym.findUp(container, aTypes);
 
         if (container) {
             if (sType.toLowerCase() === WYMeditor.BLOCKQUOTE) {
