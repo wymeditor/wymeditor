@@ -86,6 +86,10 @@ WYMeditor.UndoRedo.prototype._add = function () {
         return;
     }
 
+    if (wym.ih._isResizeHandleAttached()) {
+        wym.ih._detachResizeHandle();
+    }
+
     undoRedo.history.add(wym.getCurrentState());
     undoRedo.hasUnregisteredModification = false;
 };
