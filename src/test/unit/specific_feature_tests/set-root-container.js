@@ -1,4 +1,5 @@
 /* global
+    makeTextSelection,
     prepareUnitTestModule,
     manipulationTestHelper,
     vanishAllWyms,
@@ -138,5 +139,30 @@ test("unwrap blockquote", function () {
         },
         manipulationClickSelector: '.wym_containers_blockquote a',
         expectedResultHtml: '<p>Foo</p><p id="bar">Bar</p>'
+    });
+});
+
+module("setRootContainer-noop", {setup: prepareUnitTestModule});
+
+test("noop when selection across multiple root containers", function () {
+    var pFooBarNoChangeHtml = '<p>foo</p><p>bar</p>';
+    manipulationTestHelper({
+        startHtml: pFooBarNoChangeHtml,
+        prepareFunc: function (wymeditor) {
+            var $body = wymeditor.$body();
+            var pFoo = $body.find('p').first()[0];
+            var pBar = $body.find('p').last()[0];
+            makeTextSelection(
+                wymeditor,
+                pFoo,
+                pBar,
+                0,
+                3
+            );
+        },
+        manipulationFunc: function (wymeditor) {
+            wymeditor.setRootContainer('h1');
+        },
+        expectedResultHtml: pFooBarNoChangeHtml
     });
 });
