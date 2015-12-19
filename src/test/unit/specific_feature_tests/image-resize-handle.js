@@ -1,5 +1,7 @@
 /* jshint maxlen: 100 */
 /* global
+    expect,
+    sinon,
     manipulationTestHelper,
     prepareUnitTestModule,
     skipKeyboardShortcutTests,
@@ -126,4 +128,18 @@ test("resize handle with no image is hidden on `mousemove`", function () {
             strictEqual(wymeditor.$body().find('.wym-resize-handle').css('display'), 'none');
         }
     });
+});
+
+test("resize handle detached before adding history", function () {
+    expect(1);
+    var wymeditor = jQuery.wymeditors(0);
+    var spy = sinon.spy(wymeditor.ih, '_detachResizeHandle');
+
+    wymeditor.undoRedo.reset();
+    wymeditor.html('<p><img src="' + IMG_SRC + '" /></p>');
+    wymeditor.$body().find('img')
+        .mousemove();
+    wymeditor.undoRedo._add();
+
+    strictEqual(spy.calledOnce, true);
 });
