@@ -621,7 +621,7 @@ WYMeditor.editor.prototype._exec = function (cmd, param) {
 
 /**
     WYMeditor.editor.rawHtml
-    =====================
+    ========================
 
     Get or set the wymbox html value. HTML is NOT parsed when either set/get.
     Use html() if you are unsure what this function does.
