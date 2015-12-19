@@ -25,6 +25,8 @@ WYMeditor.
   followed by native edits, now register undo points.
   Previously, for example, typing some letters, clicking somewhere else
   and then typing some letters again, would not produce an undo point.
+* [#765](https://github.com/wymeditor/wymeditor/pull/765)
+  Do not register image resize handle in undo history.
 
 ## 1.1.1
 
