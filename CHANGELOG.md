@@ -25,6 +25,9 @@ WYMeditor.
   followed by native edits, now register undo points.
   Previously, for example, typing some letters, clicking somewhere else
   and then typing some letters again, would not produce an undo point.
+* [#745](https://github.com/wymeditor/wymeditor/pull/745)
+  Do not throw when attempting to `setRootContainer`
+  of multiple root containers.
 
 ## 1.1.1
 
