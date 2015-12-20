@@ -58,7 +58,7 @@
     "grunt-rev": "~0.1.0",
     "grunt-shell": "^1.1.2",
     "grunt-usemin": "~0.1.10",
-    "keysim": "^1.1.0",
+    "keysim": "mightyiam/keysim.js#content-editable-support",
     "object-history": "^3.1.0",
     "time-grunt": "~0.1.1"
   },
