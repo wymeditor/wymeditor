@@ -1028,7 +1028,7 @@ WYMeditor.editor.prototype.getRootContainer = function () {
 */
 WYMeditor.editor.prototype.setRootContainer = function (sType) {
     var wym = this,
-        container = null,
+        selectedContainer = null,
         aTypes,
         newNode,
         blockquote,
@@ -1037,32 +1037,32 @@ WYMeditor.editor.prototype.setRootContainer = function (sType) {
         firstNode,
         x;
 
-    container = wym.selectedContainer();
-    if (!container) {
+    selectedContainer = wym.selectedContainer();
+    if (!selectedContainer) {
         return false;
     }
 
     if (sType.toLowerCase() === WYMeditor.TH) {
         // Find the TD or TH container
-        switch (container.tagName.toLowerCase()) {
+        switch (selectedContainer.tagName.toLowerCase()) {
 
         case WYMeditor.TD:
         case WYMeditor.TH:
             break;
         default:
             aTypes = [WYMeditor.TD, WYMeditor.TH];
-            container = wym.findUp(wym.selectedContainer(), aTypes);
+            selectedContainer = wym.findUp(wym.selectedContainer(), aTypes);
             break;
         }
 
         // If it exists, switch
-        if (container !== null) {
+        if (selectedContainer !== null) {
             sType = WYMeditor.TD;
-            if (container.tagName.toLowerCase() === WYMeditor.TD) {
+            if (selectedContainer.tagName.toLowerCase() === WYMeditor.TD) {
                 sType = WYMeditor.TH;
             }
             wym.restoreSelectionAfterManipulation(function () {
-                wym.switchTo(container, sType, false);
+                wym.switchTo(selectedContainer, sType, false);
                 return true;
             });
             wym.update();
@@ -1082,9 +1082,9 @@ WYMeditor.editor.prototype.setRootContainer = function (sType) {
             WYMeditor.PRE,
             WYMeditor.BLOCKQUOTE
         ];
-        container = wym.findUp(container, aTypes);
+        selectedContainer = wym.findUp(selectedContainer, aTypes);
 
-        if (container) {
+        if (selectedContainer) {
             if (sType.toLowerCase() === WYMeditor.BLOCKQUOTE) {
                 // Blockquotes must contain a block level element
                 blockquote = wym.findUp(
@@ -1093,8 +1093,8 @@ WYMeditor.editor.prototype.setRootContainer = function (sType) {
                 );
                 if (blockquote === null) {
                     newNode = wym._doc.createElement(sType);
-                    container.parentNode.insertBefore(newNode, container);
-                    newNode.appendChild(container);
+                    selectedContainer.parentNode.insertBefore(newNode, selectedContainer);
+                    newNode.appendChild(selectedContainer);
                     wym.setCaretIn(newNode.firstChild);
                 } else {
                     nodes = blockquote.childNodes;
@@ -1117,7 +1117,7 @@ WYMeditor.editor.prototype.setRootContainer = function (sType) {
             } else {
                 // Not a blockquote
                 wym.restoreSelectionAfterManipulation(function () {
-                    wym.switchTo(container, sType, false);
+                    wym.switchTo(selectedContainer, sType, false);
                     return true;
                 });
             }
