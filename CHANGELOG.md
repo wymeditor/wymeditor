@@ -28,6 +28,9 @@ WYMeditor.
   and then typing some letters again, would not produce an undo point.
 * [#765](https://github.com/wymeditor/wymeditor/pull/765)
   Do not register image resize handle in undo history.
+* [#745](https://github.com/wymeditor/wymeditor/pull/745)
+  Do not throw when attempting to `setRootContainer`
+  of multiple root containers.
 
 ## 1.1.1
 
