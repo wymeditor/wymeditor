@@ -20,11 +20,14 @@ WYMeditor.
 * [#764](https://github.com/wymeditor/wymeditor/pull/764)
   TablePlugin row/column remove:
   refrain from error when no selectedContainer
-* [#749](Register any modification after selection change)
+* [#749](https://github.com/wymeditor/wymeditor/pull/749)
+  Register any modification after selection change.
   Selection changes via clicks and arrow keys,
   followed by native edits, now register undo points.
   Previously, for example, typing some letters, clicking somewhere else
   and then typing some letters again, would not produce an undo point.
+* [#765](https://github.com/wymeditor/wymeditor/pull/765)
+  Do not register image resize handle in undo history.
 * [#745](https://github.com/wymeditor/wymeditor/pull/745)
   Do not throw when attempting to `setRootContainer`
   of multiple root containers.
