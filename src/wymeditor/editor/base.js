@@ -1061,7 +1061,6 @@ WYMeditor.editor.prototype.setRootContainer = function (sType) {
                 return true;
             });
             wym.update();
-            wym.registerModification();
         }
     } else {
         // Set the container type
@@ -1118,7 +1117,6 @@ WYMeditor.editor.prototype.setRootContainer = function (sType) {
             }
 
             wym.update();
-            wym.registerModification();
         }
     }
 
