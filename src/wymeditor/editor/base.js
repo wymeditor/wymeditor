@@ -3390,7 +3390,6 @@ WYMeditor.editor.prototype._insertUnorderedList = function () {
         // We actually made some list correction
         // Don't actually perform the action if we've potentially just changed
         // the list, and maybe the list appearance as a result.
-        wym.registerModification();
         return true;
     }
 
@@ -3399,8 +3398,7 @@ WYMeditor.editor.prototype._insertUnorderedList = function () {
         return wym.insertList('ul');
     };
 
-    return wym.restoreSelectionAfterManipulation(manipulationFunc) &&
-        wym.registerModification();
+    return wym.restoreSelectionAfterManipulation(manipulationFunc);
 };
 
 /**
