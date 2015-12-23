@@ -2040,7 +2040,6 @@ WYMeditor.editor.prototype.paste = function (str) {
             }
         }
     }
-    wym.registerModification();
 };
 
 WYMeditor.editor.prototype.insert = function (html) {
