@@ -1748,8 +1748,6 @@ WYMeditor.editor.prototype.link = function (attrs) {
         return;
     }
     $a.attr(attrs);
-
-    wym.registerModification();
 };
 
 /**
