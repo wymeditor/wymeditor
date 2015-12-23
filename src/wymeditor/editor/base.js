@@ -3349,7 +3349,6 @@ WYMeditor.editor.prototype._insertOrderedList = function () {
         // We actually made some list correction
         // Don't actually perform the action if we've potentially just changed
         // the list, and maybe the list appearance as a result.
-        wym.registerModification();
         return true;
     }
 
@@ -3358,8 +3357,7 @@ WYMeditor.editor.prototype._insertOrderedList = function () {
         return wym.insertList('ol');
     };
 
-    return wym.restoreSelectionAfterManipulation(manipulationFunc) &&
-        wym.registerModification();
+    return wym.restoreSelectionAfterManipulation(manipulationFunc);
 };
 
 /**
