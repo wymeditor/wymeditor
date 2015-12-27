@@ -78,8 +78,7 @@ function wrapNonWrappedSelection(command) {
             wymeditor.exec(command);
         },
         expectedResultHtml: "<p><" + tagName + ">Foo</" + tagName + "></p>",
-        manipulationKeyCombo: getExecKeyboardShortcut(command),
-        testUndoRedo: true
+        manipulationKeyCombo: getExecKeyboardShortcut(command)
     });
 }
 
@@ -117,8 +116,7 @@ function unwrapWrappedSelection(command) {
             wymeditor.exec(command);
         },
         expectedResultHtml: "<p>Foo</p>",
-        manipulationKeyCombo: getExecKeyboardShortcut(command),
-        testUndoRedo: true
+        manipulationKeyCombo: getExecKeyboardShortcut(command)
     });
 }
 
@@ -156,8 +154,7 @@ function unwrapWrappedSelectionPartially(command) {
             wymeditor.exec(command);
         },
         expectedResultHtml: "<p><" + tagName + ">Fo</" + tagName + ">o</p>",
-        manipulationKeyCombo: getExecKeyboardShortcut(command),
-        testUndoRedo: true
+        manipulationKeyCombo: getExecKeyboardShortcut(command)
     });
 }
 
@@ -197,7 +194,6 @@ function wrapPartiallyWrappedSelection(command, skipFunc) {
         },
         expectedResultHtml: "<p><" + tagName + ">Foo</" + tagName + "></p>",
         manipulationKeyCombo: getExecKeyboardShortcut(command),
-        testUndoRedo: true,
         skipFunc: skipFunc
     });
 }
@@ -269,7 +265,6 @@ function unwrapPartiallyWrappedSelection(command, skipFunc) {
         },
         expectedResultHtml: "<p>Foo</p>",
         manipulationKeyCombo: getExecKeyboardShortcut(command),
-        testUndoRedo: true,
         skipFunc: skipFunc
     });
 }
@@ -342,8 +337,7 @@ function wrapsAcrossRootContainers(command) {
             "<p>F<" + tagName + ">oo</" + tagName + "></p>",
             "<p><" + tagName + ">Ba</" + tagName + ">r</p>"
         ].join(''),
-        manipulationKeyCombo: getExecKeyboardShortcut(command),
-        testUndoRedo: true
+        manipulationKeyCombo: getExecKeyboardShortcut(command)
     });
 }
 
@@ -386,8 +380,7 @@ function unwrapsAcrossRootContainers(command) {
             wymeditor.exec(command);
         },
         expectedResultHtml: "<p>Foo</p><p>Bar</p>",
-        manipulationKeyCombo: getExecKeyboardShortcut(command),
-        testUndoRedo: true
+        manipulationKeyCombo: getExecKeyboardShortcut(command)
     });
 }
 
@@ -446,8 +439,7 @@ function wrapsFromInsideLiToChildOfSiblingLi(command) {
                     closeTag + "<span id=\"span\">" + openTag + "ba" + closeTag + "r</span></li>"
             , "</ul>"
         ].join(''),
-        manipulationKeyCombo: getExecKeyboardShortcut(command),
-        testUndoRedo: true
+        manipulationKeyCombo: getExecKeyboardShortcut(command)
     });
 }
 
@@ -486,8 +478,7 @@ function unwrapsFromInsideLiToChildOfSiblingLi(command) {
                 , "<li>This:<br /><span>bar</span></li>"
             , "</ul>"
         ].join(''),
-        manipulationKeyCombo: getExecKeyboardShortcut(command),
-        testUndoRedo: true
+        manipulationKeyCombo: getExecKeyboardShortcut(command)
     });
 }
 

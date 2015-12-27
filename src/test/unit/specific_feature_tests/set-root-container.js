@@ -37,7 +37,6 @@ pairs.forEach(function (pair) {
 
     test(former + ' to ' + latter, function () {
         manipulationTestHelper({
-            testUndoRedo: true,
             startHtml: '<' + former + '>Foo</' + former + '>',
             setCaretInSelector: former,
             manipulationFunc: function (wymeditor) {
@@ -53,7 +52,6 @@ module("setRootContainer-td/th toggling", {setup: prepareUnitTestModule});
 
 test("td to th", function () {
     manipulationTestHelper({
-        testUndoRedo: true,
         startHtml: ''.concat(
             '<table>',
                 '<tbody>',
@@ -82,7 +80,6 @@ test("td to th", function () {
 
 test("th to td", function () {
     manipulationTestHelper({
-        testUndoRedo: true,
         startHtml: ''.concat(
             '<table>',
                 '<tbody>',
@@ -113,7 +110,6 @@ module("setRootContainer-blockquote toggling", {setup: prepareUnitTestModule});
 
 test("wrap in blockquote", function () {
     manipulationTestHelper({
-        testUndoRedo: true,
         startHtml: '<p id="foo">Foo</p><p>Bar</p>',
         setCaretInSelector: '#foo',
         manipulationFunc: function (wymeditor) {
@@ -131,7 +127,6 @@ test("wrap in blockquote", function () {
 
 test("unwrap blockquote", function () {
     manipulationTestHelper({
-        testUndoRedo: true,
         startHtml: '<blockquote><p>Foo</p><p id="bar">Bar</p></blockquote>',
         setCaretInSelector: '#bar',
         manipulationFunc: function (wymeditor) {
