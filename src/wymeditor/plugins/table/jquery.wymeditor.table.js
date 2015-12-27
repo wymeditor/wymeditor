@@ -426,7 +426,7 @@ TableEditor.prototype.mergeRow = function () {
         rowspanProp = TableEditor.GET_ROWSPAN_PROP(elmnt);
         if (rowspanProp <= 1) {
             // We don't care about cells without a rowspan
-            return false;
+            return;
         }
 
         // This cell has an actual rowspan, we need to account for it
