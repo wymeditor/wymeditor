@@ -560,7 +560,7 @@ TableEditor.prototype.removeEmptyTable = function (table) {
         wym.prepareDocForEditing();
         return true;
     }
-    return false
+    return false;
 };
 
 /**
