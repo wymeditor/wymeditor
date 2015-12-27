@@ -410,13 +410,13 @@ TableEditor.prototype.mergeRow = function () {
     // Just use the td and th nodes
     cells = jQuery(nodes).filter('td,th');
     if (cells.length === 0) {
-        return;
+        return false;
     }
 
     // If the selection is across multiple tables, don't merge
     rootTr = tableEditor.getCommonParentTr(cells);
     if (rootTr === null) {
-        return;
+        return false;
     }
 
     mergeCell = cells[0];
@@ -426,7 +426,7 @@ TableEditor.prototype.mergeRow = function () {
         rowspanProp = TableEditor.GET_ROWSPAN_PROP(elmnt);
         if (rowspanProp <= 1) {
             // We don't care about cells without a rowspan
-            return;
+            return false;
         }
 
         // This cell has an actual rowspan, we need to account for it
@@ -529,7 +529,7 @@ TableEditor.prototype.addRow = function (elmnt) {
         i;
 
     if (tr === null) {
-        return;
+        return false;
     }
 
     numColumns = tableEditor.getNumColumns(tr);
@@ -539,6 +539,7 @@ TableEditor.prototype.addRow = function (elmnt) {
         tdHtml += '<td>&nbsp;</td>';
     }
     jQuery(tr).after('<tr>' + tdHtml + '</tr>');
+    return true;
 };
 
 /**
@@ -557,7 +558,9 @@ TableEditor.prototype.removeEmptyTable = function (table) {
         $table.next('br.' + WYMeditor.BLOCKING_ELEMENT_SPACER_CLASS).remove();
         $table.remove();
         wym.prepareDocForEditing();
+        return true;
     }
+    return false
 };
 
 /**
@@ -573,7 +576,7 @@ TableEditor.prototype.removeRow = function (elmnt) {
         table;
 
     if (tr === null) {
-        return;
+        return false;
     }
     table = wym.findUp(elmnt, 'table');
     var $tr = jQuery(tr);
@@ -594,6 +597,7 @@ TableEditor.prototype.removeRow = function (elmnt) {
     }
     jQuery(tr).remove();
     tableEditor.removeEmptyTable(table);
+    return true;
 };
 
 /**
@@ -613,7 +617,7 @@ TableEditor.prototype.addColumn = function (elmnt) {
         insertionElement;
 
     if (td === null) {
-        return;
+        return false;
     }
     prevTds = jQuery(td).prevAll();
     tdIndex = prevTds.length;
@@ -628,6 +632,7 @@ TableEditor.prototype.addColumn = function (elmnt) {
 
         jQuery(element).find('td,th').eq(tdIndex).after(insertionElement);
     });
+    return true;
 };
 
 /**
@@ -643,7 +648,7 @@ TableEditor.prototype.removeColumn = function (elmnt) {
         tdIndex,
         tr;
     if (td === null) {
-        return;
+        return false;
     }
     table = wym.findUp(elmnt, 'table');
     prevTds = jQuery(td).prevAll();
@@ -670,6 +675,7 @@ TableEditor.prototype.removeColumn = function (elmnt) {
         $cell.remove();
     });
     tableEditor.removeEmptyTable(table);
+    return true;
 };
 
 /**
