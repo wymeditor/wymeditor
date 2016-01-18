@@ -3905,7 +3905,7 @@ WYMeditor.editor.prototype._initSkin = function () {
         }
     } else {
         WYMeditor.console.warn(
-            "Chosen skin _" + wym.options.skin + "_ not found."
+            "Chosen skin _" + wym._options.skin + "_ not found."
         );
     }
 };
