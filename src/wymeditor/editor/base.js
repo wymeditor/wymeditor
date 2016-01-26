@@ -610,6 +610,7 @@ WYMeditor.editor.prototype._exec = function (cmd, param) {
     if (
         $span.attr("class") === "" &&
         $span.attr("style") === "font-weight: normal;" ||
+        $span.attr("class") &&
         $span.attr("class").toLowerCase() === "apple-style-span"
     ) {
         // An undesireable `span` was created. WebKit & Blink do this.
