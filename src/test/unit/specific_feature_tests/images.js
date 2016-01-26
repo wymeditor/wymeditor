@@ -31,6 +31,22 @@ test("Inserts image into a paragraph", function () {
     });
 });
 
+test("Inserts image into a classless span", function () {
+    manipulationTestHelper({
+        startHtml: "<span>Foo</span>",
+        setCaretInSelector: 'span',
+        manipulationFunc: function (wymeditor) {
+            wymeditor.insertImage({
+                src: IMG_SRC,
+                alt: "Example"
+            });
+        },
+        expectedResultHtml: "<span><img alt=\"Example\" " +
+        "src=\"" + IMG_SRC + "\" />Foo</span>",
+        testUndoRedo: true
+    });
+});
+
 test("Inserts image into the body", function () {
     manipulationTestHelper({
         startHtml: "<br />",
