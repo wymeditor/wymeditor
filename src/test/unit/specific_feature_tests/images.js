@@ -33,7 +33,7 @@ test("Inserts image into a paragraph", function () {
 
 test("Inserts image into a span inside a list", function () {
     manipulationTestHelper({
-        startHtml: "<ol><li><span>Foo bar</span></li></ol>",
+        startHtml: "<ol><li><span>Foobar</span></li></ol>",
         prepareFunc: function(wymeditor) {
             var $span = wymeditor.$body().find('span')[0];
 
@@ -46,7 +46,7 @@ test("Inserts image into a span inside a list", function () {
             });
         },
         expectedResultHtml: "<ol><li><span>Foo<img alt=\"Example\" " +
-        "src=\"" + IMG_SRC + "\" /> bar</span></li></ol>",
+        "src=\"" + IMG_SRC + "\" />bar</span></li></ol>",
         testUndoRedo: true
     });
 });
