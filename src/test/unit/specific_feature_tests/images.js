@@ -31,21 +31,26 @@ test("Inserts image into a paragraph", function () {
     });
 });
 
-test("Inserts image into a classless span", function () {
+test("Inserts image into a span inside a list", function () {
     manipulationTestHelper({
-        startHtml: "<span>Foo</span>",
-        setCaretInSelector: 'span',
+        startHtml: "<ol><li><span>Foo bar</span></li></ol>",
+        prepareFunc: function(wymeditor) {
+            var $span = wymeditor.$body().find('span')[0];
+
+            makeTextSelection(wymeditor, $span, $span, 3, 3);
+        },
         manipulationFunc: function (wymeditor) {
             wymeditor.insertImage({
                 src: IMG_SRC,
                 alt: "Example"
             });
         },
-        expectedResultHtml: "<span><img alt=\"Example\" " +
-        "src=\"" + IMG_SRC + "\" />Foo</span>",
+        expectedResultHtml: "<ol><li><span>Foo<img alt=\"Example\" " +
+        "src=\"" + IMG_SRC + "\" /> bar</span></li></ol>",
         testUndoRedo: true
     });
 });
+
 
 test("Inserts image into the body", function () {
     manipulationTestHelper({
