@@ -9,6 +9,7 @@
     expectMore,
     strictEqual,
     makeSelection,
+    makeTextSelection,
     IMG_SRC
 */
 "use strict";
@@ -30,6 +31,27 @@ test("Inserts image into a paragraph", function () {
         testUndoRedo: true
     });
 });
+
+test("Inserts image into a span inside a list", function () {
+    manipulationTestHelper({
+        startHtml: "<ol><li><span>Foobar</span></li></ol>",
+        prepareFunc: function (wymeditor) {
+            var $span = wymeditor.$body().find('span')[0];
+
+            makeTextSelection(wymeditor, $span, $span, 3, 3);
+        },
+        manipulationFunc: function (wymeditor) {
+            wymeditor.insertImage({
+                src: IMG_SRC,
+                alt: "Example"
+            });
+        },
+        expectedResultHtml: "<ol><li><span>Foo<img alt=\"Example\" " +
+        "src=\"" + IMG_SRC + "\" />bar</span></li></ol>",
+        testUndoRedo: true
+    });
+});
+
 
 test("Inserts image into the body", function () {
     manipulationTestHelper({
