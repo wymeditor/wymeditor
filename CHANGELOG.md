@@ -13,6 +13,8 @@ WYMeditor.
 
 ### Bug Fixes
 
+* [#777](https://github.com/wymeditor/wymeditor/pull/777)
+  Fixed error when inserting into span nested inside list.
 * [#761](https://github.com/wymeditor/wymeditor/pull/761)
   Image resize handle below end of iframe
 * [#748](https://github.com/wymeditor/wymeditor/issues/748)
