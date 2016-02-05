@@ -97,17 +97,17 @@ Guidelines
         You can enter the Title text in the image/link dialog, appearing when
         adding or editing an element.
 
-**3. Write understandable**
+**3. Write understandable text**
 
-Writing understandable is among one of the most important checkpoints in
-creating accessible content. Unfortunately computers can't do anything about
-this, yet. But with WYMeditor you have got the tools to make it down the right
+Writing understandably is among one of the most important checkpoints in
+creating accessible content. Unfortunately, computers can't yet do anything about
+this. But with WYMeditor you have got the tools to make it down the right
 way.
 
     *3.1. Descriptive headings*
 
         A heading element shall briefly describe the topic of the section it
-        introduces making it easier to overlook both for all users. This will also
+        introduces, making skimming the document easier for all users. This will also
         improve the SEO aspects of your content.
 
     *3.2. Descriptive link texts*
