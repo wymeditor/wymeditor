@@ -2763,6 +2763,57 @@ test("Double indent correction", function () {
     wymEqual(wymeditor, repairedHtml, {parseHtml: true});
 });
 
+test("Parser: Text directly inside lists should be put inside list items",
+    function () {
+    expect(3);
+
+    var wymeditor = jQuery.wymeditors(0),
+        brokenHtml = [""
+            , '<ol>'
+                , 'a'
+            , '</ol>'
+        ].join(""),
+        repairedHtml = [""
+            , '<ol>'
+                , '<li>a</li>'
+            , '</ol>'
+        ].join("");
+
+    wymeditor._html(brokenHtml);
+    wymEqual(wymeditor, repairedHtml);
+
+    brokenHtml = [""
+        , '<ol>'
+            , '<li>a</li>'
+            , 'b'
+        , '</ol>'
+    ].join(""),
+    repairedHtml = [""
+        , '<ol>'
+            , '<li>a<br />b</li>'
+        , '</ol>'
+    ].join("");
+
+    wymeditor._html(brokenHtml);
+    wymEqual(wymeditor, repairedHtml);
+
+    brokenHtml = [""
+        , '<ol>'
+            , 'a'
+            , '<li>b</li>'
+            , 'c'
+        , '</ol>'
+    ].join(""),
+    repairedHtml = [""
+        , '<ol>'
+            , '<li>a<br />b<br />c</li>'
+        , '</ol>'
+    ].join("");
+
+    wymeditor._html(brokenHtml);
+    wymEqual(wymeditor, repairedHtml);
+});
+
 module("list-tabbing", {setup: prepareUnitTestModule});
 
 test("Tab key indents", function () {
