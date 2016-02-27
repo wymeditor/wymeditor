@@ -2770,8 +2770,7 @@ test("Tab key indents", function () {
         startHtml: nestedListHtml,
         setCaretInSelector: "#li_7",
         manipulationKeyCombo: "tab",
-        expectedResultHtml: li_7_indentedHtml,
-        testUndoRedo: true
+        expectedResultHtml: li_7_indentedHtml
     });
 });
 
@@ -2794,8 +2793,7 @@ test("Shift+Tab outdents", function () {
                 , "<li id=\"li_1_1\">1_1</li>"
                 , "<li id=\"li_2\">2</li>"
             , "</ol>"
-        ].join(""),
-        testUndoRedo: true
+        ].join("")
     });
 });
 
@@ -2805,8 +2803,7 @@ test("Tab has no effect outside lists", function () {
         startHtml: noChangeHtml,
         setCaretInSelector: "#p_1",
         manipulationKeyCombo: "tab",
-        expectedResultHtml: noChangeHtml,
-        testUndoRedo: true
+        expectedResultHtml: noChangeHtml
     });
 });
 

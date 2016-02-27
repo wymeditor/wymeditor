@@ -50,7 +50,6 @@ test("No change when no selection", function () {
         manipulationFunc: function (wymeditor) {
             wymeditor.toggleClass("foo", "p");
         },
-        testUndoRedo: true,
         manipulationClickSelector: ".wym_classes_foo a",
         expectedResultHtml: noChangeHtml
     });
@@ -63,7 +62,6 @@ test("Adds className", function () {
         manipulationFunc: function (wymeditor) {
             wymeditor.toggleClass("foo", "p");
         },
-        testUndoRedo: true,
         manipulationClickSelector: ".wym_classes_foo a",
         expectedResultHtml: "<p class=\"foo\">Foo</p>"
     });
@@ -76,7 +74,6 @@ test("Removes className", function () {
         manipulationFunc: function (wymeditor) {
             wymeditor.toggleClass("foo", "p");
         },
-        testUndoRedo: true,
         manipulationClickSelector: ".wym_classes_foo a",
         expectedResultHtml: "<p>Foo</p>"
     });
@@ -89,7 +86,6 @@ test("Adds className, keeping existing ones", function () {
         manipulationFunc: function (wymeditor) {
             wymeditor.toggleClass("foo", "p");
         },
-        testUndoRedo: true,
         manipulationClickSelector: ".wym_classes_foo a",
         expectedResultHtml: "<p class=\"bar foo\">Foo</p>"
     });
@@ -102,7 +98,6 @@ test("Removes className, keeping all others", function () {
         manipulationFunc: function (wymeditor) {
             wymeditor.toggleClass("foo", "p");
         },
-        testUndoRedo: true,
         manipulationClickSelector: ".wym_classes_foo a",
         expectedResultHtml: "<p class=\"bar baz\">Foo</p>"
     });
@@ -131,7 +126,6 @@ test("Adds className, selector determines element", function () {
         manipulationFunc: function (wymeditor) {
             wymeditor.toggleClass("bar", "ul");
         },
-        testUndoRedo: true,
         manipulationClickSelector: ".wym_classes_bar a",
         expectedResultHtml: [""
             , "<ul>"
@@ -168,7 +162,6 @@ test("Adds className to image", function () {
         manipulationFunc: function (wymeditor) {
             wymeditor.toggleClass("fancy", "img");
         },
-        testUndoRedo: true,
         manipulationClickSelector: ".wym_classes_fancy a",
         expectedResultHtml: [""
             , "<p>"

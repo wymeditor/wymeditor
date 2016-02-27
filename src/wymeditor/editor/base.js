@@ -712,12 +712,7 @@ WYMeditor.editor.prototype.exec = function (cmd) {
             }
         });
         if (!custom_run) {
-            if (
-                // Deligate all other commands to `_exec`
-                wym._exec(cmd) === true
-            ) {
-                wym.registerModification();
-            }
+            return wym._exec(cmd);
         }
         break;
     }
@@ -1067,7 +1062,6 @@ WYMeditor.editor.prototype.setRootContainer = function (sType) {
                 return true;
             });
             wym.update();
-            wym.registerModification();
         }
     } else {
         // Set the container type
@@ -1124,7 +1118,6 @@ WYMeditor.editor.prototype.setRootContainer = function (sType) {
             }
 
             wym.update();
-            wym.registerModification();
         }
     }
 
@@ -1182,7 +1175,6 @@ WYMeditor.editor.prototype.toggleClass = function (sClass, jqexpr) {
     if (!$element.attr(WYMeditor.CLASS)) {
         $element.removeAttr(wym._class);
     }
-    wym.registerModification();
 };
 
 /**
@@ -1757,8 +1749,6 @@ WYMeditor.editor.prototype.link = function (attrs) {
         return;
     }
     $a.attr(attrs);
-
-    wym.registerModification();
 };
 
 /**
@@ -1802,8 +1792,6 @@ WYMeditor.editor.prototype.insertImage = function (attrs) {
 
     // PhantomJS seems to add strange spans around images.
     wym.$body().find('.Apple-style-span').children().unwrap();
-
-    wym.registerModification();
 };
 
 /**
@@ -2053,7 +2041,6 @@ WYMeditor.editor.prototype.paste = function (str) {
             }
         }
     }
-    wym.registerModification();
 };
 
 WYMeditor.editor.prototype.insert = function (html) {
@@ -3195,7 +3182,6 @@ WYMeditor.editor.prototype.indent = function () {
         // We actually made some list correction
         // Don't actually perform the action if we've potentially just changed
         // the list, and maybe the list appearance as a result.
-        wym.registerModification();
         return true;
     }
 
@@ -3226,8 +3212,7 @@ WYMeditor.editor.prototype.indent = function () {
 
         return domChanged;
     };
-    return wym.restoreSelectionAfterManipulation(manipulationFunc) &&
-        wym.registerModification();
+    return wym.restoreSelectionAfterManipulation(manipulationFunc);
 };
 
 /**
@@ -3261,7 +3246,6 @@ WYMeditor.editor.prototype.outdent = function () {
         // We actually made some list correction
         // Don't actually perform the action if we've potentially just changed
         // the list, and maybe the list appearance as a result.
-        wym.registerModification();
         return true;
     }
 
@@ -3293,8 +3277,7 @@ WYMeditor.editor.prototype.outdent = function () {
 
         return domChanged;
     };
-    return wym.restoreSelectionAfterManipulation(manipulationFunc) &&
-        wym.registerModification();
+    return wym.restoreSelectionAfterManipulation(manipulationFunc);
 };
 
 /**
@@ -3367,7 +3350,6 @@ WYMeditor.editor.prototype._insertOrderedList = function () {
         // We actually made some list correction
         // Don't actually perform the action if we've potentially just changed
         // the list, and maybe the list appearance as a result.
-        wym.registerModification();
         return true;
     }
 
@@ -3376,8 +3358,7 @@ WYMeditor.editor.prototype._insertOrderedList = function () {
         return wym.insertList('ol');
     };
 
-    return wym.restoreSelectionAfterManipulation(manipulationFunc) &&
-        wym.registerModification();
+    return wym.restoreSelectionAfterManipulation(manipulationFunc);
 };
 
 /**
@@ -3410,7 +3391,6 @@ WYMeditor.editor.prototype._insertUnorderedList = function () {
         // We actually made some list correction
         // Don't actually perform the action if we've potentially just changed
         // the list, and maybe the list appearance as a result.
-        wym.registerModification();
         return true;
     }
 
@@ -3419,8 +3399,7 @@ WYMeditor.editor.prototype._insertUnorderedList = function () {
         return wym.insertList('ul');
     };
 
-    return wym.restoreSelectionAfterManipulation(manipulationFunc) &&
-        wym.registerModification();
+    return wym.restoreSelectionAfterManipulation(manipulationFunc);
 };
 
 /**
@@ -3825,7 +3804,6 @@ WYMeditor.editor.prototype.insertTable = function (rows, columns, caption, summa
     wym._afterInsertTable(table);
     wym.prepareDocForEditing();
 
-    wym.registerModification();
     return table;
 };
 

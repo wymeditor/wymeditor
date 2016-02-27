@@ -27,8 +27,7 @@ test("Inserts image into a paragraph", function () {
             });
         },
         expectedResultHtml: "<p><img alt=\"Example\" " +
-            "src=\"" + IMG_SRC + "\" />Foo</p>",
-        testUndoRedo: true
+            "src=\"" + IMG_SRC + "\" />Foo</p>"
     });
 });
 
@@ -66,8 +65,7 @@ test("Inserts image into the body", function () {
             });
         },
         expectedResultHtml: "<img alt=\"Example\" " +
-            "src=\"" + IMG_SRC + "\" /><br />",
-        testUndoRedo: true
+            "src=\"" + IMG_SRC + "\" /><br />"
     });
 });
 

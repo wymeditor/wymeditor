@@ -713,8 +713,7 @@ test("no-op on non-table elements", function () {
             var actionElement = wymeditor.$body().find('#p_1')[0];
             wymeditor.tableEditor.addColumn(actionElement);
         },
-        expectedResultHtml: basicWithPHtml,
-        testUndoRedo: true
+        expectedResultHtml: basicWithPHtml
     });
 
     manipulationTestHelper({
@@ -723,8 +722,7 @@ test("no-op on non-table elements", function () {
             var actionElement = wymeditor.$body().find('#p_1')[0];
             wymeditor.tableEditor.removeColumn(actionElement);
         },
-        expectedResultHtml: basicWithPHtml,
-        testUndoRedo: true
+        expectedResultHtml: basicWithPHtml
     });
 
     manipulationTestHelper({
@@ -733,8 +731,7 @@ test("no-op on non-table elements", function () {
             var actionElement = wymeditor.$body().find('#p_1')[0];
             wymeditor.tableEditor.addRow(actionElement);
         },
-        expectedResultHtml: basicWithPHtml,
-        testUndoRedo: true
+        expectedResultHtml: basicWithPHtml
     });
 
     manipulationTestHelper({
@@ -743,8 +740,7 @@ test("no-op on non-table elements", function () {
             var actionElement = wymeditor.$body().find('#p_1')[0];
             wymeditor.tableEditor.removeRow(actionElement);
         },
-        expectedResultHtml: basicWithPHtml,
-        testUndoRedo: true
+        expectedResultHtml: basicWithPHtml
     });
 });
 
@@ -756,8 +752,7 @@ test("Column mid column", function () {
             var actionElement = wymeditor.$body().find('#td_3_2')[0];
             wymeditor.tableEditor.addColumn(actionElement);
         },
-        expectedResultHtml: addColumnTd32Html,
-        testUndoRedo: true
+        expectedResultHtml: addColumnTd32Html
     });
 
     manipulationTestHelper({
@@ -766,8 +761,7 @@ test("Column mid column", function () {
             var actionElement = wymeditor.$body().find('#td_3_2 + td')[0];
             wymeditor.tableEditor.removeColumn(actionElement);
         },
-        expectedResultHtml: basicTableHtml,
-        testUndoRedo: true
+        expectedResultHtml: basicTableHtml
     });
 });
 
@@ -779,8 +773,7 @@ test("Column from span", function () {
             var actionElement = wymeditor.$body().find('#span_2_1')[0];
             wymeditor.tableEditor.addColumn(actionElement);
         },
-        expectedResultHtml: addColumnSpan21Html,
-        testUndoRedo: true
+        expectedResultHtml: addColumnSpan21Html
     });
 
     manipulationTestHelper({
@@ -789,8 +782,7 @@ test("Column from span", function () {
             var actionElement = wymeditor.$body().find('#td_2_1 + td')[0];
             wymeditor.tableEditor.removeColumn(actionElement);
         },
-        expectedResultHtml: basicTableHtml,
-        testUndoRedo: true
+        expectedResultHtml: basicTableHtml
     });
 });
 
@@ -802,8 +794,7 @@ test("Row end row", function () {
             var actionElement = wymeditor.$body().find('#td_3_2')[0];
             wymeditor.tableEditor.addRow(actionElement);
         },
-        expectedResultHtml: addRowTd32Html,
-        testUndoRedo: true
+        expectedResultHtml: addRowTd32Html
     });
 
     manipulationTestHelper({
@@ -812,8 +803,7 @@ test("Row end row", function () {
             var actionElement = wymeditor.$body().find('#tr_3 + tr td').eq(1)[0];
             wymeditor.tableEditor.removeRow(actionElement);
         },
-        expectedResultHtml: basicTableHtml,
-        testUndoRedo: true
+        expectedResultHtml: basicTableHtml
     });
 });
 
@@ -825,8 +815,7 @@ test("Row from span", function () {
             var actionElement = wymeditor.$body().find('#span_2_1')[0];
             wymeditor.tableEditor.addRow(actionElement);
         },
-        expectedResultHtml: addRowSpan21Html,
-        testUndoRedo: true
+        expectedResultHtml: addRowSpan21Html
     });
 
     manipulationTestHelper({
@@ -835,8 +824,7 @@ test("Row from span", function () {
             var actionElement = wymeditor.$body().find('#tr_2 + tr td')[0];
             wymeditor.tableEditor.removeRow(actionElement);
         },
-        expectedResultHtml: basicTableHtml,
-        testUndoRedo: true
+        expectedResultHtml: basicTableHtml
     });
 });
 
@@ -848,8 +836,7 @@ test("Deleting all rows removes table", function () {
             var actionElement = wymeditor.$body().find('#td_3_1')[0];
             wymeditor.tableEditor.removeRow(actionElement);
         },
-        expectedResultHtml: removedRow3Html,
-        testUndoRedo: true
+        expectedResultHtml: removedRow3Html
     });
 
     manipulationTestHelper({
@@ -858,8 +845,7 @@ test("Deleting all rows removes table", function () {
             var actionElement = wymeditor.$body().find('#td_2_1')[0];
             wymeditor.tableEditor.removeRow(actionElement);
         },
-        expectedResultHtml: removedRow2And3Html,
-        testUndoRedo: true
+        expectedResultHtml: removedRow2And3Html
     });
 
     manipulationTestHelper({
@@ -868,8 +854,7 @@ test("Deleting all rows removes table", function () {
             var actionElement = wymeditor.$body().find('#td_1_1')[0];
             wymeditor.tableEditor.removeRow(actionElement);
         },
-        expectedResultHtml: '<br />',
-        testUndoRedo: true
+        expectedResultHtml: '<br />'
     });
 });
 
@@ -881,8 +866,7 @@ test("Deleting all columns removes table", function () {
             var actionElement = wymeditor.$body().find('#td_3_3')[0];
             wymeditor.tableEditor.removeColumn(actionElement);
         },
-        expectedResultHtml: removedColumn3Html,
-        testUndoRedo: true
+        expectedResultHtml: removedColumn3Html
     });
 
     manipulationTestHelper({
@@ -891,8 +875,7 @@ test("Deleting all columns removes table", function () {
             var actionElement = wymeditor.$body().find('#td_2_2')[0];
             wymeditor.tableEditor.removeColumn(actionElement);
         },
-        expectedResultHtml: removedColumn3And2Html,
-        testUndoRedo: true
+        expectedResultHtml: removedColumn3And2Html
     });
 
     manipulationTestHelper({
@@ -901,8 +884,7 @@ test("Deleting all columns removes table", function () {
             var actionElement = wymeditor.$body().find('#span_2_1')[0];
             wymeditor.tableEditor.removeColumn(actionElement);
         },
-        expectedResultHtml: '<br />',
-        testUndoRedo: true
+        expectedResultHtml: '<br />'
     });
 });
 
@@ -1025,8 +1007,7 @@ test("Row", function () {
             var actionElement = wymeditor.$body().find('#td_3_2')[0];
             wymeditor.tableEditor.addRow(actionElement);
         },
-        expectedResultHtml: addRowFancyTd32,
-        testUndoRedo: true
+        expectedResultHtml: addRowFancyTd32
     });
 
     manipulationTestHelper({
@@ -1035,8 +1016,7 @@ test("Row", function () {
             var actionElement = wymeditor.$body().find('#tr_3 + tr td')[0];
             wymeditor.tableEditor.removeRow(actionElement);
         },
-        expectedResultHtml: fancyTableHtml,
-        testUndoRedo: true
+        expectedResultHtml: fancyTableHtml
     });
 });
 
@@ -1048,8 +1028,7 @@ test("Row in colspan", function () {
             var actionElement = wymeditor.$body().find('#td_1_2')[0];
             wymeditor.tableEditor.addRow(actionElement);
         },
-        expectedResultHtml: addRowFancyTd12,
-        testUndoRedo: true
+        expectedResultHtml: addRowFancyTd12
     });
 
     manipulationTestHelper({
@@ -1058,8 +1037,7 @@ test("Row in colspan", function () {
             var actionElement = wymeditor.$body().find('#tr_1 + tr td')[0];
             wymeditor.tableEditor.removeRow(actionElement);
         },
-        expectedResultHtml: fancyTableHtml,
-        testUndoRedo: true
+        expectedResultHtml: fancyTableHtml
     });
 });
 
@@ -1072,8 +1050,7 @@ if (!SKIP_KNOWN_FAILING_TESTS) {
                 var actionElement = wymeditor.$body().find('#td_2_2')[0];
                 wymeditor.tableEditor.addRow(actionElement);
             },
-            expectedResultHtml: addRowFancyTd22,
-            testUndoRedo: true
+            expectedResultHtml: addRowFancyTd22
         });
 
         manipulationTestHelper({
@@ -1082,8 +1059,7 @@ if (!SKIP_KNOWN_FAILING_TESTS) {
                 var actionElement = wymeditor.$body().find('#tr_2 + tr td')[0];
                 wymeditor.tableEditor.removeRow(actionElement);
             },
-            expectedResultHtml: fancyTableHtml,
-            testUndoRedo: true
+            expectedResultHtml: fancyTableHtml
         });
     });
 }
@@ -1097,8 +1073,7 @@ if (!SKIP_KNOWN_FAILING_TESTS) {
                 var actionElement = wymeditor.$body().find('#td_1_2')[0];
                 wymeditor.tableEditor.addColumn(actionElement);
             },
-            expectedResultHtml: addColumnFancyTd12,
-            testUndoRedo: true
+            expectedResultHtml: addColumnFancyTd12
         });
 
         manipulationTestHelper({
@@ -1107,8 +1082,7 @@ if (!SKIP_KNOWN_FAILING_TESTS) {
                 var actionElement = wymeditor.$body().find('#td_1_2 + td')[0];
                 wymeditor.tableEditor.removeColumn(actionElement);
             },
-            expectedResultHtml: fancyTableHtml,
-            testUndoRedo: true
+            expectedResultHtml: fancyTableHtml
         });
     });
 }
@@ -1122,8 +1096,7 @@ if (!SKIP_KNOWN_FAILING_TESTS) {
                 var actionElement = wymeditor.$body().find('#td_2_3')[0];
                 wymeditor.tableEditor.addColumn(actionElement);
             },
-            expectedResultHtml: addColumnFancyTd23,
-            testUndoRedo: true
+            expectedResultHtml: addColumnFancyTd23
         });
 
         manipulationTestHelper({
@@ -1132,8 +1105,7 @@ if (!SKIP_KNOWN_FAILING_TESTS) {
                 var actionElement = wymeditor.$body().find('#td_2_3 + td')[0];
                 wymeditor.tableEditor.removeColumn(actionElement);
             },
-            expectedResultHtml: fancyTableHtml,
-            testUndoRedo: true
+            expectedResultHtml: fancyTableHtml
         });
     });
 }
@@ -1147,8 +1119,7 @@ if (!SKIP_KNOWN_FAILING_TESTS) {
                 var actionElement = wymeditor.$body().find('#td_3_2')[0];
                 wymeditor.tableEditor.addColumn(actionElement);
             },
-            expectedResultHtml: addColumnFancyTd32,
-            testUndoRedo: true
+            expectedResultHtml: addColumnFancyTd32
         });
 
         manipulationTestHelper({
@@ -1157,8 +1128,7 @@ if (!SKIP_KNOWN_FAILING_TESTS) {
                 var actionElement = wymeditor.$body().find('#td_3_2 + td')[0];
                 wymeditor.tableEditor.removeColumn(actionElement);
             },
-            expectedResultHtml: fancyTableHtml,
-            testUndoRedo: true
+            expectedResultHtml: fancyTableHtml
         });
     });
 }
@@ -1171,8 +1141,7 @@ test("Column before colspan", function () {
             var actionElement = wymeditor.$body().find('#td_1_1')[0];
             wymeditor.tableEditor.addColumn(actionElement);
         },
-        expectedResultHtml: addColumnFancyTd11,
-        testUndoRedo: true
+        expectedResultHtml: addColumnFancyTd11
     });
 
     manipulationTestHelper({
@@ -1181,8 +1150,7 @@ test("Column before colspan", function () {
             var actionElement = wymeditor.$body().find('#td_1_1 + td')[0];
             wymeditor.tableEditor.removeColumn(actionElement);
         },
-        expectedResultHtml: fancyTableHtml,
-        testUndoRedo: true
+        expectedResultHtml: fancyTableHtml
     });
 });
 
@@ -1194,8 +1162,7 @@ test("Column in span", function () {
             var actionElement = wymeditor.$body().find('#span_2_1')[0];
             wymeditor.tableEditor.addColumn(actionElement);
         },
-        expectedResultHtml: addColumnFancyTd21,
-        testUndoRedo: true
+        expectedResultHtml: addColumnFancyTd21
     });
 
     manipulationTestHelper({
@@ -1204,8 +1171,7 @@ test("Column in span", function () {
             var actionElement = wymeditor.$body().find('#td_2_1 + td')[0];
             wymeditor.tableEditor.removeColumn(actionElement);
         },
-        expectedResultHtml: fancyTableHtml,
-        testUndoRedo: true
+        expectedResultHtml: fancyTableHtml
     });
 });
 
@@ -1218,8 +1184,7 @@ if (!SKIP_KNOWN_FAILING_TESTS) {
                 var actionElement = wymeditor.$body().find('#td_2_2')[0];
                 wymeditor.tableEditor.addColumn(actionElement);
             },
-            expectedResultHtml: addColumnFancyTd22,
-            testUndoRedo: true
+            expectedResultHtml: addColumnFancyTd22
         });
 
         manipulationTestHelper({
@@ -1228,8 +1193,7 @@ if (!SKIP_KNOWN_FAILING_TESTS) {
                 var actionElement = wymeditor.$body().find('#td_2_2 + td')[0];
                 wymeditor.tableEditor.removeColumn(actionElement);
             },
-            expectedResultHtml: fancyTableHtml,
-            testUndoRedo: true
+            expectedResultHtml: fancyTableHtml
         });
     });
 }
@@ -1242,8 +1206,7 @@ test("Column with TH mid column", function () {
             var actionElement = wymeditor.$body().find('#td_3_2')[0];
             wymeditor.tableEditor.addColumn(actionElement);
         },
-        expectedResultHtml: addColumnThTd32Html,
-        testUndoRedo: true
+        expectedResultHtml: addColumnThTd32Html
     });
 
     manipulationTestHelper({
@@ -1252,8 +1215,7 @@ test("Column with TH mid column", function () {
             var actionElement = wymeditor.$body().find('#td_3_2 + td')[0];
             wymeditor.tableEditor.removeColumn(actionElement);
         },
-        expectedResultHtml: thTableHtml,
-        testUndoRedo: true
+        expectedResultHtml: thTableHtml
     });
 });
 
@@ -1265,8 +1227,7 @@ test("Column with TH in th", function () {
             var actionElement = wymeditor.$body().find('#th_1_3')[0];
             wymeditor.tableEditor.addColumn(actionElement);
         },
-        expectedResultHtml: addColumnThTh13Html,
-        testUndoRedo: true
+        expectedResultHtml: addColumnThTh13Html
     });
 
     manipulationTestHelper({
@@ -1275,8 +1236,7 @@ test("Column with TH in th", function () {
             var actionElement = wymeditor.$body().find('#th_1_3 + th')[0];
             wymeditor.tableEditor.removeColumn(actionElement);
         },
-        expectedResultHtml: thTableHtml,
-        testUndoRedo: true
+        expectedResultHtml: thTableHtml
     });
 });
 
@@ -1288,8 +1248,7 @@ test("Row with TH end row", function () {
             var actionElement = wymeditor.$body().find('#td_3_2')[0];
             wymeditor.tableEditor.addRow(actionElement);
         },
-        expectedResultHtml: addRowThTd32Html,
-        testUndoRedo: true
+        expectedResultHtml: addRowThTd32Html
     });
 
     manipulationTestHelper({
@@ -1298,8 +1257,7 @@ test("Row with TH end row", function () {
             var actionElement = wymeditor.$body().find('#tr_3 + tr td').eq(1)[0];
             wymeditor.tableEditor.removeRow(actionElement);
         },
-        expectedResultHtml: thTableHtml,
-        testUndoRedo: true
+        expectedResultHtml: thTableHtml
     });
 });
 
@@ -1311,8 +1269,7 @@ test("Row with TH first th row", function () {
             var actionElement = wymeditor.$body().find('#th_1_3')[0];
             wymeditor.tableEditor.addRow(actionElement);
         },
-        expectedResultHtml: addRowThTh13Html,
-        testUndoRedo: true
+        expectedResultHtml: addRowThTh13Html
     });
 
     manipulationTestHelper({
@@ -1321,8 +1278,7 @@ test("Row with TH first th row", function () {
             var actionElement = wymeditor.$body().find('#tr_1 + tr td').eq(2)[0];
             wymeditor.tableEditor.removeRow(actionElement);
         },
-        expectedResultHtml: thTableHtml,
-        testUndoRedo: true
+        expectedResultHtml: thTableHtml
     });
 });
 
