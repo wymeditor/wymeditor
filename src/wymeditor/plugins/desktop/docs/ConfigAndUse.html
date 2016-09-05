@@ -1,0 +1,513 @@
+<html>
+  <head>
+    <title>How to Configure and Use The Desktop Plugin</title>
+    <style type="text/css">
+      body {
+        background-color: #FFFFFF; color: #000000;
+        font-size: 12pt; font-family: serif;
+      }
+      h2 { font-family: sans-serif; }
+      h3 {
+        font-family: monospace;
+        margin-top: 10px; padding-top: 10px;
+        margin-bottom: 2px; padding-bottom: 2px;
+      }
+      ul {
+        margin-top: 1px; padding-top: 1px;
+        margin-bottom: 1px; padding-bottom: 1px;
+        font-family: inherit; font-size: inherit;
+      }
+      li {
+        margin-top: inherit; padding-top: inherit;
+        margin-bottom: inherit; padding-bottom: inherit;
+        font-family: inherit; font-size: inherit;
+      }
+      table { font-family: inherit; font-size: inherit; }
+      thead { font-family: inherit; font-size: inherit; }
+      tbody { font-family: inherit; font-size: inherit; }
+      tfoot { font-family: inherit; font-size: inherit; }
+      th { font-family: inherit; font-size: inherit; }
+      tr { font-family: inherit; font-size: inherit; }
+      td { font-family: inherit; font-size: inherit; }
+      ul.list {
+        margin-top: 1px; padding-top: 1px;
+        margin-bottom: 1px; padding-bottom: 1px;
+        font-family: inherit; font-size: inherit;
+      }
+      li.list {
+        margin-top: inherit; padding-top: inherit;
+        margin-bottom: inherit; padding-bottom: inherit;
+        font-family: inherit; font-size: inherit;
+      }
+      ul.toc { font-family: sans-serif; font-weight: bold; font-size: 14pt; }
+      li.toc { font-family: inherit; font-weight: inherit; font-size: inherit; }
+      a.toc {
+        font-family: inherit; font-weight: inherit; font-size: inherit;
+        text-decoration: none;
+      }
+      a.toc:hover { text-decoration: underline; }
+      tt.code { background-color: #FFFFCC; }
+      table.code { margin-left: 10px; padding-left: 10px; }
+      div.code {
+        white-space: pre;
+        margin: 5px; padding: 5px;
+        background-color: #EEFFEE;
+        border: 2px solid #339933;
+        font-family: monospace; font-size: 10pt;
+        width: auto;
+      }
+      p.note { text-indent: -2em; margin-left: 2em; }
+      div.section {
+        margin: 5px; padding: 5px;
+        border: 1px solid #EEEEEE;
+        font-family: inherit;
+      }
+      div.section:hover { border: 1px solid #DDDDDD; }
+      img.smiley { font-family: serif;  font-size: 11pt;
+                   margin: 0px; padding: 0px;
+                   vertical-align: middle; }
+    </style>
+  </head>
+  <body>
+    <!-- Emoitcons are from "Silk icon set 1.3" by Mark James [[ http://www.famfamfam.com/lab/icons/silk/ ]]
+         Licensed under Creative Commons Attribution 2.5 License [[ http://creativecommons.org/licenses/by/2.5/ ]] -->
+    <center><h1>How to Configure and Use The Desktop Plugin</h1></center>
+
+    <div class="section">
+      <a name="table_of_contents"><h2>Table of Contents</h2></a>
+      <ul class="toc">
+        <li class="toc"><a href="#basic_setup" class="toc">Basic Setup</a></li>
+        <li class="toc"><a href="#extended_setup" class="toc">Extending the Basic Setup</a></li>
+        <li class="toc"><a href="#reference" class="toc">Reference</a>
+          <ul class="toc">
+            <li class="toc"><a href="#Desktop_domUtils_sameNode" class="toc"><tt>.domUtils.sameNode(&hellip;)</tt></a></li>
+            <li class="toc"><a href="#Desktop_setParent" class="toc"><tt>.setParent(&hellip;)</tt></a></li>
+            <li class="toc"><a href="#Desktop_setDebug" class="toc"><tt>.setDebug(&hellip;)</tt></a></li>
+            <li class="toc"><a href="#Desktop_availableTools" class="toc"><tt>.availableTools()</tt></a></li>
+            <li class="toc"><a href="#Desktop_availableToolNames" class="toc"><tt>.availableToolNames()</tt></a></li>
+            <li class="toc"><a href="#Desktop_defaultToolNames" class="toc"><tt>.defaultToolNames()</tt></a></li>
+            <li class="toc"><a href="#Desktop_validTags" class="toc"><tt>.validTags()</tt></a></li>
+            <li class="toc"><a href="#Desktop_expandTag" class="toc"><tt>.expandTag(&hellip;)</tt></a></li>
+            <li class="toc"><a href="#Desktop_generateToolList" class="toc"><tt>.generateToolList(&hellip;)</tt></a></li>
+            <li class="toc"><a href="#Desktop_init" class="toc"><tt>.init(&hellip;)</tt></a></li>
+          </ul></li>
+        <li class="toc"><a href="gpl-2.0-standalone.html" class="toc">GPL 2.0</a>
+      </ul>
+    </div>
+
+    <br/><br/>
+
+    <div class="section">
+      <a name="basic_setup"><h2>Basic Setup</h2></a>
+      <p>Minimally the <tt>&lt;head&gt;</tt> section of your HTML needs to contain the below code (replace <tt><b>{<i>Path_to_JS_Directory</i>}</b></tt> with the actual path to your JavaScript directory<sup><small><a href="#note_one">[1]</a></small></sup>):<table border="0" cellpadding="0" cellspacing="0" class="code"><tr><td><div class="code">&lt;head&gt;
+    &lt;meta http-equiv="Content-type" value="text/html; charset=UTF-8" /&gt;
+
+    &lt;!-- Load the jQuery library. --&gt;
+    &lt;script language="JavaScript" type="text/javascript"
+            src="/<b>{<i>Path_to_JS_Directory</i>}</b>/wymeditor/jquery/jquery.js"&gt;&lt;/script&gt;
+
+    &lt;!-- Load the WYMeditor code. --&gt;
+    &lt;script language="JavaScript" type="text/javascript"
+            src="/<b>{<i>Path_to_JS_Directory</i>}</b>/wymeditor/wymeditor/jquery.wymeditor.js"&gt;&lt;/script&gt;
+
+    &lt;!-- Load the Desktop plugin for WYMeditor. --&gt;
+    &lt;script language="JavaScript" type="text/javascript"
+            src="/<b>{<i>Path_to_JS_Directory</i>}</b>/wymeditor/wymeditor/plugins/desktop/jquery.wymeditor.desktop.js"&gt;&lt;/script&gt;
+
+    &lt;!-- The JavaScript code which will initialize WYMeditor and the Desktop plugin. --&gt;
+    &lt;!-- This will run as soon as the document is ready (typically after the HTML document is fully loaded). --&gt;
+    &lt;!-- This code can safely be placed in an external JavaScript file. --&gt;
+    &lt;script language="JavaScript" type="text/javascript"&gt;
+        $(document).ready(function() {
+            $(".wymeditor").wymeditor({
+                html: '&lt;p&gt;Testing... Hello, World!&lt;\/p&gt;',
+                stylesheet: '/<b>{<i>Path_to_JS_Directory</i>}</b>/wymeditor/wymeditor/skins/styles.css',
+                skin: 'desktop',
+                postInit: function(wym) {
+                    wym.desktop.setParent(wym);
+                    wym.desktop.setDebug(true);
+                    wym.desktop.init(':default');
+                }
+            });
+        });
+    &lt;/script&gt;
+&lt;/head&gt;</div></td></tr></table>
+      While the <tt>&lt;body&gt;</tt> section of your HTML needs to contain something to the effect of:<table border="0" cellpadding="0" cellspacing="0" class="code"><tr><td><div class="code">&lt;body&gt;
+    &lt;form method="POST" action=""&gt;
+        &lt;textarea class="wymeditor"&gt;&lt;/textarea&gt;
+    &lt;/form&gt;
+&lt;/body&gt;</div></td></tr></table></p>
+      <p>Now load your HTML file in a web browser.&thinsp; And&hellip; that is everything!&thinsp; You should now be viewing something like the following image:<table border="0" cellpadding="0" cellspacing="0" class="code"><tr><td><div class="code"><img src="img/basic_example.png" alt=" [ Image displaying the above example code in action. ] " border="0" width="660" height="290" /></div></td></tr></table></p>
+      <br />
+      <p><a name="notes"><big><b><u>&nbsp;Notes:&nbsp;</u></b></big></a></p>
+      <p class="note"><a name="note_one"><b>[</b>1<b>]</b></a>&nbsp; If you are using a web server (like <a href="http://httpd.apache.org/">Apache</a> or <a href="http://www.apachefriends.org/en/index.html">XAMPP</a>) to serve up the resulting page, absolute paths are preferred as they remove the uncertainty of where the code is being retrieved from.&thinsp; However, if you are viewing the reulting page directly in a web browser (i.e., the location bar starts with <tt>file:///</tt>), then relative paths are preferred as writing the correct absolute path in the HTML file can get perversely interesting.&thinsp; Remember, an absolute path starts with a forward slash character (<tt>/</tt>).&thinsp; And if you are on Windows, remember to convert your paths to use forward slash characters because JavaScript interprets backslashes as metacharacter escape sequences (e.g., convert from this <tt class="code">path\to\some\file.html</tt> format to this <tt class="code">path/to/some/file.html</tt> format; unless, of course, you actually managed to shove a tab character and a form-feed character into your path).</p>
+    </div>
+
+    <br/><br/>
+
+    <div class="section">
+      <a name="extended_setup"><h2>Extending the Basic Setup</h2></a>
+      <p>Now that we have verified your installation of WYMeditor and the Desktop plugin is working, let's tweak the code to include some buttons which are unique to the Desktop plugin.</p>
+      <p>To modify the basic setup, we only need to change the inline JavaScript:<table border="0" cellpadding="0" cellspacing="0" class="code"><tr><td><div class="code">&lt;!-- The JavaScript code which will initialize WYMeditor and the Desktop plugin. --&gt;
+&lt;!-- This will run as soon as the document is ready (typically after the HTML document is fully loaded). --&gt;
+&lt;!-- This code can safely be placed in an external JavaScript file. --&gt;
+&lt;script language="JavaScript" type="text/javascript"&gt;
+    $(document).ready(function() {
+        $(".wymeditor").wymeditor({
+            html: '&lt;p&gt;Testing... Hello, World!&lt;\/p&gt;',
+            stylesheet: '/<b>{<i>Path_to_JS_Directory</i>}</b>/wymeditor/wymeditor/skins/styles.css',
+            skin: 'desktop',
+            postInit: function(wym) {
+                wym.desktop.setParent(wym);
+                wym.desktop.setDebug(true);
+                
+                /* Get the various icons and icon lists we want to use. */
+                var docNewIcon = wym.desktop.generateToolList(['DocumentNew']);
+                var formatList = wym.desktop.generateToolList([':format']);
+                var editList = wym.desktop.generateToolList([':edit']);
+                var helpIcon = wym.desktop.generateToolList(['HelpBrowser']);
+                
+                /* Initialize our array of requested icons. */
+                var requested = new Array();
+                requested.push(docNewIcon[0]);
+                
+                /* Now place the format icons on the requested list in the order we want then to appear. */
+                var formatOrder = [ 'FormatTextBold', 'FormatTextItalic', 'FormatTextUnderline',
+                                    'FormatTextStrikethrough', 'FormatSuperscript', 'FormatSubscript',
+                                    'FormatJustifyLeft', 'FormatJustifyCenter', 'FormatJustifyRight',
+                                    'FormatJustifyFill', 'FormatIndentMore', 'FormatIndentLess' ];
+                for(var i = 0; i &lt; formatList.length; i++) {
+                    var pos = 0;
+                    while((pos &lt; formatList.length) &amp;&amp; (formatList[pos].name != formatOrder[i])) {
+                        pos++;
+                    }
+                    if((pos &lt; formatList.length) &amp;&amp; (formatList[pos].name == formatOrder[i])) {
+                        requested.push(formatList[pos]);
+                    }
+                }
+                
+                /* Now place the edit icons on the requested list in the order we want then to appear. */
+                var editOrder = ['EditCut', 'EditCopy', 'EditPaste', 'EditClear', 'EditUndo', 'EditRedo'];
+                for(var i = 0; i &lt; editList.length; i++) {
+                    var pos = 0;
+                    while((pos &lt; editList.length) &amp;&amp; (editList[pos].name != editOrder[i])) {
+                        pos++;
+                    }
+                    if((pos &lt; editList.length) &amp;&amp; (editList[pos].name == editOrder[i])) {
+                        requested.push(editList[pos]);
+                    }
+                }
+                
+                /* Finally add our last icon. */
+                requested.push(helpIcon[0]);
+                
+                /* Initialize the Desktop plugin. */
+                wym.desktop.init(requested);
+            }
+        });
+    });
+&lt;/script&gt;</div></td></tr></table></p>
+      <p>Now load your HTML file in a web browser.&thinsp; You should now be viewing something like the following image:<table border="0" cellpadding="0" cellspacing="0" class="code"><tr><td><div class="code"><img src="img/extended_example_1.png" alt=" [ Image displaying the above example code in action. ] " border="0" width="660" height="290" /></div></td></tr></table>
+      <!-- Emoitcons are from "Silk icon set 1.3" by Mark James [[ http://www.famfamfam.com/lab/icons/silk/ ]]
+           Licensed under Creative Commons Attribution 2.5 License [[ http://creativecommons.org/licenses/by/2.5/ ]] -->
+      Awesome!&thinsp; We are no longer restricted to a limited button selection.&nbsp; <img src="img/emoticon_smile.png" alt=" :-) " width="16" height="16" /></p>
+      <p>Lets add some functionality.&thinsp; For this example we will extend the <tt>StrikeThrough</tt> button (the button with a line through the middle of a lowercase A, the fifth button from the left in the above image) to place <tt>&lt;strike&gt;</tt> tags around whatever text is highlighted.&thinsp; We are also modifying the initial HTML so we can better test the new functionality.&thinsp; Obviously we want this new functionality to trigger when we click the <tt>StrikeThrough</tt> button, so our <tt>postInit</tt> function now becomes (please note the '&thinsp;<tt><b>&#8285;</b>&thinsp;</tt>' character is used to indicate duplicate code from the previous code section):<table border="0" cellpadding="0" cellspacing="0" class="code"><tr><td><div class="code"><b>&nbsp;&#8285;</b>
+    html: '&lt;p&gt;Testing... &lt;b&gt;Test&lt;/b&gt;&lt;i&gt;ing&lt;/i&gt;... Hello, World!&lt;\/p&gt;',
+<b>&nbsp;&#8285;</b>
+    postInit: function(wym) {
+        wym.desktop.setParent(wym);
+        wym.desktop.setDebug(true);
+        
+        /* Get the various icons and icon lists we want to use. */
+        var docNewIcon = wym.desktop.generateToolList(['DocumentNew']);
+        var formatList = wym.desktop.generateToolList([':format']);
+        var editList = wym.desktop.generateToolList([':edit']);
+        var helpIcon = wym.desktop.generateToolList(['HelpBrowser']);
+        
+        /* Initialize our array of requested icons. */
+        var requested = new Array();
+        requested.push(docNewIcon[0]);
+        
+        <b>&nbsp;&#8285;</b>
+        
+        /* Finally add our last icon. */
+        requested.push(helpIcon[0]);
+        
+        /* Find the FormatTextStrikethrough tool. */
+        var toolPos = 0;
+        while(requested[toolPos].name != 'FormatTextStrikethrough') {
+            toolPos++;
+        }
+        
+        /* Our new FormatTextStrikethrough click handler. */
+        requested[toolPos].click = function(eventObj) {
+            /*
+             * In a dynamically loaded button (such as those found in the .../jquery.wymeditor.desktop.toolFunctions/
+             * directory), to get to the 'wym' object would require using 'this.selfObject.parent.parent'
+             */
+            
+            /* The actual selection. */
+            var sel = wym.selection();
+            
+            /* Some anchor shortcuts. */
+            var anchor = sel.anchorNode;
+            var anchorValue = anchor.nodeValue;
+            var anchorParent = anchor.parentNode;
+            
+            /* Some focus shortcuts. */
+            var focus = sel.focusNode;
+            var focusValue = focus.nodeValue;
+            var focusParent = focus.parentNode;
+            
+            /* The beginning and ending location within the respective nodes. */
+            var begin = sel.anchorOffset;
+            var end = sel.focusOffset;
+            
+            /* Is the selection within a single node? */
+            if(wym.desktop.domUtils.sameNode(anchor, focus)) {
+                /* Setup the before, strike, and after nodes. */
+                var beforeNode = document.createTextNode(anchorValue.substring(0, begin));
+                var strikeNode = document.createElement("strike");
+                strikeNode.innerHTML = anchorValue.substring(begin, end);
+                var afterNode = document.createTextNode(anchorValue.substring(end, anchorValue.length));
+                
+                /* Place the nodes where they are supposed to be. */
+                /*
+                 * Because the DOM (in its infinite wisdom) does not have an .insertAfter() method,
+                 * _always_ start and the end of the modification sequence for a given node.  For
+                 * example, the original node is a text node containing "foo, bar, baz" inside a
+                 * paragraph node (i.e., "&lt;p&gt;foo, bar, baz&lt;/p&gt;") and we want to strike
+                 * out the substring "bar,":
+                 *     1) Replace the paragraph child with the text after the stricken text:
+                 *            &lt;p&gt; baz&lt;/p&gt;
+                 *     2) Insert the new strike node before the text node:
+                 *            &lt;p&gt;&lt;strike&gt;bar,&lt;/strike&gt; baz&lt;/p&gt;
+                 *     3) Insert the text which was before the stricken text:
+                 *            &lt;p&gt;foo, &lt;strike&gt;bar,&lt;/strike&gt; baz&lt;/p&gt;
+                 */
+                anchorParent.replaceChild(afterNode, anchor);
+                anchorParent.insertBefore(strikeNode, afterNode);
+                anchorParent.insertBefore(beforeNode, strikeNode);
+            }
+            /* Okay, so the selection must span multiple nodes. */
+            else {
+                /* Setup the anchor node replacements. */
+                var beforeNode = document.createTextNode(anchorValue.substring(0, begin));
+                var strikeNodeBegin = document.createElement("strike");
+                strikeNodeBegin.innerHTML = anchorValue.substring(begin, anchorValue.length);
+                
+                /* Wrap the contents of all nodes between the anchor and focus nodes. */
+                var curNode = (anchor.nextSibling != null)
+                                ? anchor.nextSibling
+                                : anchor.parentNode.nextSibling.firstChild;
+                while((curNode != null) &amp;&amp; (!wym.desktop.domUtils.sameNode(curNode, focus))) {
+                    curNode.innerHTML = "&lt;strike&gt;" + curNode.innerHTML + "&lt;/strike&gt;";
+                    curNode = (curNode.nextSibling != null)
+                                ? curNode.nextSibling
+                                : curNode.parentNode.nextSibling.firstChild;
+                }
+                
+                /* Setup the focus node replacements. */
+                var afterNode = document.createTextNode(focusValue.substring(end, focusValue.length));
+                var strikeNodeEnd = document.createElement("strike");
+                strikeNodeEnd.innerHTML = focusValue.substring(0, end);
+                
+                /* Modify the anchor and focus nodes. */
+                anchorParent.replaceChild(strikeNodeBegin, anchor);
+                anchorParent.insertBefore(beforeNode, strikeNodeBegin);
+                focusParent.replaceChild(afterNode, focus);
+                focusParent.insertBefore(strikeNodeEnd, afterNode);
+            }
+        };
+        
+        wym.desktop.init(requested);
+    }
+<b>&nbsp;&#8285;</b></div></td></tr></table></p>
+      <p>You may notice we are using the <tt>.selection()</tt> method in the above example.&thinsp; Yet this method is not part of the core WYMeditor, but defined in the WYMeditor <span style="font-family: sans-serif;">rangy</span> interface plugin.&thinsp;  The explanation is the Desktop plugin loads all of its dependencies within the <tt>.init()</tt> method.&thinsp; Thus, there is no need for additional <tt>&lt;script&gt;</tt> tags to load dependencies; the Desktop plugin tries very hard to be self-contained and easy to implement and use.</p>
+      <p>Now to test our code.&thinsp; On page load, nothing but the initial HTML seems different:<table border="0" cellpadding="0" cellspacing="0" class="code"><tr><td><div class="code"><img src="img/extended_example_2.png" alt=" [ Image displaying the above example code in action. ] " border="0" width="660" height="290" /></div></td></tr></table>
+      So we highlight the <q>Testing...</q> phrases:<table border="0" cellpadding="0" cellspacing="0" class="code"><tr><td><div class="code"><img src="img/extended_example_3.png" alt=" [ Image displaying the above example code in action. ] " border="0" width="660" height="290" /></div></td></tr></table>
+      Then click the <tt>StrikeThrough</tt> button:<table border="0" cellpadding="0" cellspacing="0" class="code"><tr><td><div class="code"><img src="img/extended_example_4.png" alt=" [ Image displaying the above example code in action. ] " border="0" width="660" height="290" /></div></td></tr></table>
+      <!-- Emoitcons are from "Silk icon set 1.3" by Mark James [[ http://www.famfamfam.com/lab/icons/silk/ ]]
+           Licensed under Creative Commons Attribution 2.5 License [[ http://creativecommons.org/licenses/by/2.5/ ]] -->
+      Huzza, it worked!&thinsp; <q>This was a triumph.&thinsp; I'm making a note here: HUGE SUCCESS.</q>&nbsp; <img src="img/emoticon_grin.png" alt=" :-D " width="16" height="16" /></p>
+      <p>Let's add some more functionality.&thinsp; For this example we will extend the <tt>HelpBrowser</tt> button (that would be the button on the right end of the button list, it looks like a <a href="http://en.wikipedia.org/wiki/Lifebuoy">ring buoy</a>) to display a help dialog retrieved from a server.&thinsp; Again, we will use the <tt>click</tt> event handler; except it will be on the <tt>HelpBrowser</tt> button this time, so our <tt>postInit</tt> function now becomes:<table border="0" cellpadding="0" cellspacing="0" class="code"><tr><td><div class="code"><b>&nbsp;&#8285;</b>
+    postInit: function(wym) {
+        wym.desktop.setParent(wym);
+        wym.desktop.setDebug(true);
+        
+        /* Get the various icons and icon lists we want to use. */
+        var docNewIcon = wym.desktop.generateToolList(['DocumentNew']);
+        var formatList = wym.desktop.generateToolList([':format']);
+        var editList = wym.desktop.generateToolList([':edit']);
+        var helpIcon = wym.desktop.generateToolList(['HelpBrowser']);
+        
+        /* Initialize our array of requested icons. */
+        var requested = new Array();
+        requested.push(docNewIcon[0]);
+        
+        <b>&nbsp;&#8285;</b>
+        
+        /* Finally add our last icon. */
+        requested.push(helpIcon[0]);
+        
+        /* Find the FormatTextStrikethrough tool. */
+        var toolPos = 0;
+        while(requested[toolPos].name != 'FormatTextStrikethrough') {
+            toolPos++;
+        }
+        
+        /* Our new FormatTextStrikethrough click handler. */
+        requested[toolPos].click = function(eventObj) {
+            <b>&#8285;</b>
+        };
+        
+        /* Find the HelpBrowser tool. */
+        toolPos = 0;
+        while(requested[toolPos].name != 'HelpBrowser') {
+            toolPos++;
+        }
+        
+        /* Our new HelpBrowser click handler. */
+        requested[toolPos].click = function(eventObj) {
+            /*
+             * In a dynamically loaded button (such as those found in the .../jquery.wymeditor.desktop.toolFunctions/
+             * directory), to get to the 'wym' object would require using 'this.selfObject.parent.parent'
+             */
+            
+            /* Build the path to the HTML files. */
+            var baseDir = wym.computeBasePath() + "plugins/desktop/docs";
+            
+            /* Build IFRAME element. */
+            var iframeSource = baseDir + '/iframe.html';
+            var iframeStyle = 'width: 600px; height: 200px; ' +
+                              'margin: 3px; padding: 3px; ' +
+                              'background-color: #FFFFFF; ' +
+                              'border: 2px solid #999999';
+            var iframeOnLoad = '$( "#htmlHelpContent",' +
+                               /* For reasons only known to jQuery, $("#id") does not work in the line below.  :-( */
+                               '   document.getElementById("iframeHelpContent").contentDocument )' +
+                               '.load( "' + baseDir + '/ExampleHelp.html",' +
+                               '       {help: 1},' +
+                               '       function() {' +
+                               '           alert("Help file loaded.");' +
+                               '       });';
+            var helpIframe = '&lt;iframe id="iframeHelpContent" src="' + iframeSource +
+                                 '" style="' + iframeStyle +
+                                 '" onLoad=\'' + iframeOnLoad + '\'&gt;' +
+                             'Please use a browser which supports the IFRAME element.' +
+                             '&lt;/iframe&gt;';
+            
+            /* Build close button. */
+            var helpButton = '&lt;input type="button" id="buttonHelpClose" value="Close Help" /&gt;';
+            
+            /* Now we can build the Help DIV element. */
+            var helpDivStyle = 'border: 6px ridge #996666; ' +
+                               'background-color: #FFFFFF; ' +
+                               'z-index: 10; position: fixed; ' +
+                               'top: 5px; left: 5px; ' +
+                               'margin: 3px; padding: 3px;';
+            var helpDiv = '&lt;div id="divHelp" style="' + helpDivStyle + '"&gt;' +
+                            '&lt;center&gt;' +
+                              helpIframe + '&lt;br /&gt;' + helpButton +
+                            '&lt;/center&gt;' +
+                          '&lt;/div&gt;';
+            
+            /* Place the Help DIV element in the DOM. */
+            $(wym._box).after(helpDiv);
+            
+            /* Set the close button click event handler. */
+            $("#buttonHelpClose").click(function() { $("#divHelp").remove(); });
+        };
+        
+        wym.desktop.init(requested);
+    }
+<b>&nbsp;&#8285;</b></div></td></tr></table></p>
+      <p>Testing time again!&thinsp; After loading the above code and clicking on the <tt>Help</tt> button, we are greeted with this:<table border="0" cellpadding="0" cellspacing="0" class="code"><tr><td><div class="code"><img src="img/extended_example_5.png" alt=" [ Image displaying the above example code in action. ] " border="0" width="660" height="290" /></div></td></tr></table>
+      That is a very good sign, as the <tt>alert()</tt> dialog will only show after the example help file is loaded.&thinsp; After scrolling a bit, we confirm the file was indeed loaded:<table border="0" cellpadding="0" cellspacing="0" class="code"><tr><td><div class="code"><img src="img/extended_example_6.png" alt=" [ Image displaying the above example code in action. ] " border="0" width="660" height="290" /></div></td></tr></table>
+      <!-- Emoitcons are from "Silk icon set 1.3" by Mark James [[ http://www.famfamfam.com/lab/icons/silk/ ]]
+           Licensed under Creative Commons Attribution 2.5 License [[ http://creativecommons.org/licenses/by/2.5/ ]] -->
+      <q>And we're out of beta, we're releasing on time.</q>&nbsp; <img src="img/emoticon_wink.png" alt=" ;-) " width="16" height="16" /></p>
+      <!-- Emoitcons are from "Silk icon set 1.3" by Mark James [[ http://www.famfamfam.com/lab/icons/silk/ ]]
+           Licensed under Creative Commons Attribution 2.5 License [[ http://creativecommons.org/licenses/by/2.5/ ]] -->
+      <p>Now that we have walked through two different additions of functionality, you should be ready to add to and extend the Desktop plugin to fit your needs.&thinsp; A good starting point would be with the two click handlers above:<ul>
+        <li>Modify the <tt>HelpBrowser</tt> click handler to only ask for the page on the first click and to show/hide the div for all subsequent clicks (and remove that annoying alert <img src="img/emoticon_tongue.png" alt=" :-P " width="16" height="16" />, while still unobstusivly displaying success/failure of the help page load request).</li>
+        <li>Modify the <tt>FormatTextStrikethrough</tt> click handler to remove the <tt>&lt;strike&gt;</tt> tags if said tags are already present while still adding them if the tags are not present.&thinsp; You could even add the ability to toggle strike-through formatting on or off (like a desktop word processor).</li>
+      </ul>
+      Also, do not forget to check in at <a href="http://wymeditor.github.com/">wymeditor.github.com</a> and <a href="http://github.com/wymeditor/wymeditor">github.com/wymeditor/wymeditor</a> for the latest news and most recent edition of the WYMeditor code and plugins.</p>
+    </div>
+
+    <br/><br/>
+
+    <div class="section">
+      <a name="reference"><h2>Reference</h2></a>
+
+      <p><a name="Desktop_domUtils_sameNode"><h3><i>DesktopObject</i>.domUtils.sameNode(<i>nodeOne</i>, <i>nodeTwo</i>)</h3></a>Compares two nodes and returns a boolean indicating if the two nodes are equivalent.&thinsp; Notice we said <u>equivalent</u>, not <q>pointing to the same node</q> or <q>identical nodes</q>.&thinsp;  There <i>may</i> be some weird edge cases where this method will return true and the nodes are not actually equvalent.</p>
+
+      <p><a name="Desktop_setParent"><h3><i>DesktopObject</i>.setParent(<i>parentObject</i>)</h3></a>This method sets the parent object of the given Desktop object.</p>
+      <p><a name="Desktop_setDebug"><h3><i>DesktopObject</i>.setDebug(<i>booleanValue</i>)</h3></a>This method turns <a href="http://getfirebug.com/">Firebug</a> console debugging on (<tt>true</tt>) or off (<tt>false</tt>).</p>
+
+      <p><h3><i>DesktopObject</i>.availableEventNames()</h3>Provides the list of all available event names recognized by the Desktop plugin.</p>
+
+      <p><a name="Desktop_availableTools"><h3><i>DesktopObject</i>.availableTools()</h3></a>Provies the list of all available Desktop plugin tools, and their default settings.<br/>
+      The returned object has the following format:<table border="0" cellpadding="0" cellspacing="0" class="code"><tr><td><div class="code"><b>{<i>ToolName1</i>}</b>: {
+  title: '<b>{<i>Tool_Title_1</i>}</b>',
+  css: '<b>{<i>tool_css_class_1</i>}</b>'
+},
+<b>{<i>ToolName2</i>}</b>: {
+  title: '<b>{<i>Tool_Title_2</i>}</b>',
+  css: '<b>{<i>tool_css_class_2</i>}</b>'
+},
+&hellip;</div></td></tr></table>
+    Both the <tt>name:</tt> and <tt>file:</tt> values are autogenerated from the <tt><b>{<i>ToolName</i>}</b></tt>.&thinsp; Optional configuration includes the use of <tt><b>{<i>event</i>}</b></tt> keys.  Said key's value may either be a boolean value or an anonymous function; and the key itself must be one of the event types returned by the <tt>.availableEventNames()</tt> method.  For example:<table border="0" cellpadding="0" cellspacing="0" class="code"><tr><td><div class="code">ClearFormat: {
+  title: 'Clear_Format', css: 'wym_tools_clear'
+},
+Undo: {
+  title: 'Undo', css: 'wym_tools_undo',
+  click: true
+},
+Redo: {
+  title: 'Redo', css: 'wym_tools_redo',
+  hover: function(eventObject) { console.log(eventObject); },
+  click: true
+}</div></td></tr></table>
+      All of the above tool configuration examples are valid.</p>
+
+      <p><a name="Desktop_availableToolNames"><h3><i>DesktopObject</i>.availableToolNames()</h3></a>Provides the list of all available tool names.</p>
+
+      <p><a name="Desktop_defaultToolNames"><h3><i>DesktopObject</i>.defaultToolNames()</h3></a>Provides the list of default tool names.</p>
+
+      <p><a name="Desktop_validTags"><h3><i>DesktopObject</i>.validTags()</h3></a>Provides the list of valid tag strings.</p>
+
+      <p><a name="Desktop_expandTag"><h3><i>DesktopObject</i>.expandTag(<i>tagString</i>)</h3></a>Convert the given tag string into a list of tool names&thinsp; The recognized tags are: ':default', ':all', and any string from the array returned by the <tt>.validTags()</tt> method.</p>
+
+      <p><a name="Desktop_generateToolList"><h3><i>DesktopObject</i>.generateToolList(<i>requestedTools</i>)</h3></a>Generate an array of objects (where each object contains the default configuration for that tool) from the given list of requested tools.&thinsp; The <tt>requestedTools</tt> parameter must be an array of strings (<q>tag</q> strings are allowed).&thinsp; Returns the generated list of requested tools with their default configurations (this is useful for tweaking a handful of tools without having to hard code large quantities of data which will likely never change).</p>
+
+      <p><a name="Desktop_init"><h3><i>DesktopObject</i>.init(<i>requestedTools</i>, [<i>parentObject</i>], [<i>isDebug</i>], [<i>dependList</i>])</h3></a>Initialize the Desktop plugin.&thinsp; The <tt>.init()</tt> method requires one parameter and can accept up to four parameters:<ul type="none" class="list">
+        <li class="list"><table border="0" cellpadding="2" cellspacing="2"><tr><td valign="top"><tt class="code"><i>requestedTools</i></tt>&nbsp;</td><td valign="top">[Required]</td><td valign="top">Either an array of strings (each string can be one of the names of which tools you want active or a <q>tag</q> string) or an array of objects (each object must have at least <tt>name:</tt>, <tt>title:</tt>, and <tt>css:</tt> keys).<br/>If you choose to pass in an array of objects, the valid keys within each object are:<ul type="none" class="list">
+          <li class="list"><table border="0" cellpadding="2" cellspacing="2"><tr><td valign="top"><tt class="code">name:</tt>&nbsp;</td><td valign="top">[Required]</td><td valign="top">The tool name.&thinsp; Tool names take the form of CamelCase.</td></tr></table></li>
+          <li class="list"><table border="0" cellpadding="2" cellspacing="2"><tr><td valign="top"><tt class="code">title:</tt>&nbsp;</td><td valign="top">[Required]</td><td valign="top">The tool title.&thinsp; Spaces are forbidden and underscores are translated to spaces at the appropriate time.</td></tr></table></li>
+          <li class="list"><table border="0" cellpadding="2" cellspacing="2"><tr><td valign="top"><tt class="code">css:</tt>&nbsp;</td><td valign="top">[Required]</td><td valign="top">The tool's CSS class name.&thinsp; This must be the same as the class name in the Desktop skin CSS.</td></tr></table></li>
+          <li class="list"><table border="0" cellpadding="2" cellspacing="2"><tr><td valign="top"><tt class="code">file:</tt>&nbsp;</td><td valign="top">[Optional]</td><td valign="top">The JavaScript file associated with this tool.&thinsp; Will be dynamically loaded.</td></tr></table></li>
+          <li class="list"><table border="0" cellpadding="2" cellspacing="2"><tr><td valign="top"><tt class="code"><b>{<i>event</i>}</b>:</tt>&nbsp;</td><td valign="top">[Optional]</td><td valign="top">Any event name returned by the <tt>.availableEventNames()</tt> method.&thinsp; Can be set to either a boolean value or an anonymous function.&thinsp; If boolean, sets the event handler according to the code in the file referenced by the <tt>file:</tt> key.</td></tr></table></li>
+        </ul>
+        Thus, examples for each of the three formats follows:<table border="0" cellpadding="0" cellspacing="0" class="code"><tr><td><div class="code">/* List of Strings */
+var requestedTools = [ 'ClearFormat', 'Undo', 'Redo' ];</div></td></tr></table><table border="0" cellpadding="0" cellspacing="0" class="code"><tr><td><div class="code">/* List of Objects */
+var requestedTools = [
+            { name: 'ClearFormat', title: 'Clear_Format', css: 'wym_tools_clear' },
+            { name: 'Undo', title: 'Undo', css: 'wym_tools_undo', click: true },
+            { name: 'Redo', title: 'Redo', css: 'wym_tools_redo',
+              hover: function(eventObject) { console.log(eventObject); }, click: true }
+        ];</div></td></tr></table><table border="0" cellpadding="0" cellspacing="0" class="code"><tr><td><div class="code">/* Tag String */
+var requestedTools = ':all';</div></td></tr></table>
+        Valid tag strings are:&nbsp; <tt>':default'</tt>, <tt>':all'</tt>, and any string from the array returned by the <tt>.validTags()</tt> method.</td></tr></table></li>
+        <li class="list"><table border="0" cellpadding="2" cellspacing="2"><tr><td valign="top"><tt class="code"><i>parentObject</i></tt>&nbsp;</td><td valign="top">[Optional]</td><td valign="top">A reference to the parent object (typically this is the WYMeditor object).&thinsp; If you wish to leave the parent object at its default value (because, for example, you set it earlier with the <tt>.setParent()</tt> method), then pass in the <tt>null</tt> value.</td></tr></table></li>
+        <li class="list"><table border="0" cellpadding="2" cellspacing="2"><tr><td valign="top"><tt class="code"><i>isDebug</i></tt>&nbsp;</td><td valign="top">[Optional]</td><td valign="top">A boolean value which turns debugging console output on or off.&thinsp; If you wish to leave debugging at its default value (because, for example, you set it earlier with the <tt>.setDebug()</tt> method), then pass in the <tt>null</tt> value.</td></tr></table></li>
+        <li class="list"><table border="0" cellpadding="2" cellspacing="2"><tr><td valign="top"><tt class="code"><i>dependList</i></tt>&nbsp;</td><td valign="top">[Optional]</td><td valign="top">A list of JavaScript dependencies to be loaded (they will be loaded in the order given).&thinsp; If you wish to leave the dependency list at its default value (the recommended course of action), then omit this parameter.&thinsp; Because this parameter is the last one and because it is optional, you can also simply omit this parameter; the same logic holds true for the debugging parameter if the dependency list is omitted and the parent object parameter if the debugging parameter and the dependency list are omitted.</td></tr></table></li>
+      </ul></p>
+    </div>
+    <!-- Code examples:  <table border="0" cellpadding="0" cellspacing="0" class="code"><tr><td><div class="code">yadda</div></td></tr></table> -->
+    <!-- TOC entry:  <li class="toc"><a href="#Desktop_" class="toc"><tt>.</tt></a></li> -->
+    <!-- Method documentation:  <p><a name="Desktop_"><h3><i>DesktopObject</i>.yadda(<i>yadda</i>)</h3></a>yadda</p> -->
+  </body>
+</html>
+

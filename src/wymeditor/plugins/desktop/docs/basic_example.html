@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <meta http-equiv="Content-type" value="text/html; charset=UTF-8" />
+
+        <!-- Load the jQuery library. -->
+        <script language="JavaScript" type="text/javascript" src="/{Path_to_JS_Directory}/wymeditor/jquery/jquery.js"></script>
+
+        <!-- Load the WYMeditor code. -->
+        <script language="JavaScript" type="text/javascript" src="/{Path_to_JS_Directory}/wymeditor/wymeditor/jquery.wymeditor.js"></script>
+
+        <!-- Load the Desktop plugin for WYMeditor. -->
+        <script language="JavaScript" type="text/javascript" src="/{Path_to_JS_Directory}/wymeditor/wymeditor/plugins/desktop/jquery.wymeditor.desktop.js"></script>
+
+        <!-- The JavaScript code which will initialize WYMeditor and the Desktop plugin. -->
+        <script language="JavaScript" type="text/javascript">
+            $(document).ready(function() {
+                $(".wymeditor").wymeditor({
+                    html: '<p>Testing... Hello, World!<\/p>',
+                    stylesheet: '/{Path_to_JS_Directory}/wymeditor/wymeditor/skins/styles.css',
+                    skin: 'desktop',
+                    postInit: function(wym) {
+                        wym.desktop.setParent(wym);
+                        wym.desktop.setDebug(true);
+                        wym.desktop.init(':default');
+                    }
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <form method="POST" action="">
+            <textarea class="wymeditor"></textarea>
+        </form>
+    </body>
+</html>
+
