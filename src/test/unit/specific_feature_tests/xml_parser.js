@@ -55,12 +55,12 @@ test("Should correct orphaned sublists", function () {
     // IE has invalid sublist nesting
     /*jslint white:false */
     expected = String() +
-            "<ul>\r\n" +
+            "<ul>" +
                 '<li>a' +
-                    '<ul>\r\n' +
+                    '<ul>' +
                         '<li>a.1<\/li>' +
                     '<\/ul>' +
-                '<\/li>\r\n' +
+                '<\/li>' +
                 '<li>b<\/li>' +
             '<\/ul>';
     design_mode_pseudo_html = String() +
