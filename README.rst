@@ -151,6 +151,10 @@ Requirements
 Global Pollution
 ================
 
+.. image:: https://badges.gitter.im/Join%20Chat.svg
+   :alt: Join the chat at https://gitter.im/wymeditor/wymeditor
+   :target: https://gitter.im/wymeditor/wymeditor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+
 * ``window.jQuery.browser``: `jquery.browser`_ v``~0.0.6``
 * ``window.rangy``: `Rangy`_ v``1.2.2``
   (includes the selection save and restore module)
