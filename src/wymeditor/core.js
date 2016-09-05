@@ -1100,11 +1100,6 @@ WYMeditor.Helper = {
         return str.replace(rExp, rep);
     },
 
-    //insert 'inserted' at position 'pos' in 'str' string
-    insertAt: function (str, inserted, pos) {
-        return str.substr(0, pos) + inserted + str.substring(pos);
-    },
-
     //trim 'str' string
     trim: function (str) {
         return str.replace(/^(\s*)|(\s*)$/gm, '');
