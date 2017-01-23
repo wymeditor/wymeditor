@@ -367,11 +367,11 @@ WYMeditor.editor.prototype._afterDesignModeOn = function () {
     // Set the text direction.
     jQuery('html', wym._doc).attr('dir', wym._options.direction);
     // Set lang.
-    if ( wym._options.lang != 'en' ) {
+    if (wym._options.lang !== 'en') {
         jQuery('html', wym._doc).attr('lang', wym._options.lang);
         jQuery('html', wym._doc).attr('xml:lang', wym._options.lang);
         wym.translateTheme();
-    };
+    }
 
     wym.keyboard = new WYMeditor.Keyboard(wym);
     wym.keyboard._attachDefaultKeyboardShortcuts();
@@ -1482,41 +1482,52 @@ WYMeditor.editor.prototype._setSingleSelectionRange = function (range) {
 */
 WYMeditor.editor.prototype.translateTheme = function () {
     var wym = this,
-        aRules=[],
-        aContent=[],
+        aRules = [],
+        aContent = [],
         oCssRule,
         i,
         c = '';
     // Get all rules with -> body:lang(en)
     for (i = 0; i < wym._doc.styleSheets[0].cssRules.length; i++) {
-        var oCssRule = wym._doc.styleSheets[0].cssRules[i];
-        if (oCssRule.type == oCssRule.STYLE_RULE) {
+        oCssRule = wym._doc.styleSheets[0].cssRules[i];
+        if (oCssRule.type === oCssRule.STYLE_RULE) {
             if (oCssRule.selectorText.match(/body:lang\(en\)/i)) {
                 aRules.push(oCssRule.selectorText);
-                aContent.push((oCssRule.style.content[0] == "'" || oCssRule.style.content[0] == '"')
-                               ? oCssRule.style.content : "'" + oCssRule.style.content + "'"
-                ); // Webkit is terrible... isn't consistent: 'Document Division' but Paragraph, Emphasis (without quotation marks)
-            };
-        };
-    };
+                // Webkit is terrible... isn't consistent:
+                // 'Document Division' but Paragraph, Emphasis (without quotation marks)
+                aContent.push((
+                    oCssRule.style.content[0] === "'" ||
+                    oCssRule.style.content[0] === '"') ? oCssRule.style.content
+                    : "'" + oCssRule.style.content + "'");
+            }
+        }
+    }
     // Nothing to translate
-    if (aRules.length == 0) return;
+    if (aRules.length === 0) {
+        return;
+    }
     // Replace lang() pseudo selector
     for (i = 0; i < aRules.length; i++) {
-        aRules[i] = aRules[i].replace('body:lang(en)', 'body:lang('+wym._options.lang+')', 'gi');
-    };
+        aRules[i] = aRules[i].replace('body:lang(en)'
+            , 'body:lang(' + wym._options.lang + ')'
+            , 'gi');
+    }
     // Convert content to string to simplify replace
-    aContent.forEach(function(element) {
+    aContent.forEach(function (element) {
         c += element + '\n';
     });
     // Replace db strings in content
     for (i in WYMeditor.STRINGS[wym._options.lang]) {
         if (WYMeditor.STRINGS[wym._options.lang].hasOwnProperty(i)) {
-            if ( i == 'Title' ) { continue; } // Workaround for 'Work Title'
-            c = c.replace( new RegExp( i.replace(/_/g, ' '), 'g'), WYMeditor.STRINGS[wym._options.lang][i] );
-        };
-    };
-    // Webkit... 'Document Division type "', attr(class), '"' -> 'Document Division type "' attr(class) '"'
+            if (i === 'Title') { // Workaround for 'Work Title'
+                continue;
+            }
+            c = c.replace(new RegExp(i.replace(/_/g, ' '), 'g'),
+                WYMeditor.STRINGS[wym._options.lang][i]);
+        }
+    }
+    // Webkit... 'Document Division type "', attr(class), '"'
+    // -> 'Document Division type "' attr(class) '"'
     c = c.replace(/,/g, '');
     /*@cc_on
     c = c.replace(/\\/g, '');
@@ -1527,8 +1538,10 @@ WYMeditor.editor.prototype.translateTheme = function () {
     aContent = c.split('\n');
     // Make CSS rules
     for (i = 0; i < aRules.length; i++) {
-        wym._doc.styleSheets[0].insertRule(aRules[i] + ' { content: ' + aContent[i] + ' }', wym._doc.styleSheets[0].cssRules.length);
-    };
+        wym._doc.styleSheets[0].insertRule(
+            aRules[i] + ' { content: ' + aContent[i] + ' }',
+            wym._doc.styleSheets[0].cssRules.length);
+    }
 };
 
 /**
