@@ -1,6 +1,8 @@
 sudo: false
 language: node_js
-before_script: npm install -g grunt-cli
+install:
+    - npm install
+    - npm install -g grunt-cli
 env:
     - GRUNT_TASK="test --jquery=1.4.4"
     - GRUNT_TASK="test --jquery=1.5.2"
@@ -11,4 +13,5 @@ env:
     - GRUNT_TASK=jshint
     - GRUNT_TASK=build
 
-script: grunt $GRUNT_TASK
+script:
+    - grunt $GRUNT_TASK
