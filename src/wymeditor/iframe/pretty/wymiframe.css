@@ -374,6 +374,8 @@ sub:hover::before                       { content: "subscript" }
 sub[class]:hover::before                { content: "subscript type \"" attr(class) "\""}
 body.short sub:hover::before            { content: "sub" }
 body.short sub[class]:hover::before     { content: "sub." attr(class) }
+/* Hide annotations on .wym-editor-only elements (e.g. image resize handles) */
+.wym-editor-only::before                { display: none }
 
 span:hover,
 strong:hover, b:hover,
