@@ -660,7 +660,7 @@ WYMeditor.ImageHandler.prototype._detachResizeHandle = function () {
         ih._$currentImg.height() >= 16 &&
         ih._$currentImg.width() >= 16
     ) {
-        ih._$currentImg.css({padding: 0, margin: 0});
+        ih._$currentImg.css({'background-color': '', padding: '', margin: ''});
     }
     ih._$currentImg = null;
     ih._$resizeHandle.hide();
