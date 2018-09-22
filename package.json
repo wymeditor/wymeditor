@@ -27,7 +27,7 @@
     "lodash.times": "^3.0.1",
     "combokeys": "^2.4.3",
     "edited": "^1.1.2",
-    "grunt": "~0.4.1",
+    "grunt": "1.2.0",
     "grunt-bower-install-simple": "^0.9.3",
     "grunt-bower-linker": "^0.1.4",
     "grunt-browserify": "^3.7.0",
